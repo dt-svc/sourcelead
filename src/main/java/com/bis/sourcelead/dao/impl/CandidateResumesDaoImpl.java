@@ -190,4 +190,19 @@ public class CandidateResumesDaoImpl implements CandidateResumesDao {
 			return candidateResumes;
 }
 
+
+@Override
+@Transactional
+public CandidateResumes getCandidateResumeByResumeUUID(String resumeUUID) throws Exception {
+	logger.debug("In Candidate Resume By ResumeId");
+	Session session = this.sessionFactory.getCurrentSession();
+	String query = " from CandidateResumes candidateResumes where candidateResumes.resumeUUID = :resumeUUID" ;
+	List<CandidateResumes> candidateResumesList = session.createQuery(query).setString("resumeUUID", resumeUUID).setCacheable(true).list(); 
+	CandidateResumes candidateResumes = null;
+	if(candidateResumesList != null && !candidateResumesList.isEmpty()){
+		candidateResumes = candidateResumesList.iterator().next();
+	}
+	return candidateResumes;
+}
+
 }

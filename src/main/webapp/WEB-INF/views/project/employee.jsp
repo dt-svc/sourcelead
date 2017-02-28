@@ -168,7 +168,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
     			result = result +' <a><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
     		}
     		
-    		result = result +'<div class="export_pop">';
+    		result = result +'<div class="" id="exportPop" style="display:none;">';
     		result = result +'<ul>';
     		if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
     			result = result +'<li onclick="exportToPdf(\''+projectId+'\',\''+projectName+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
@@ -690,7 +690,8 @@ function flushEmployee(){
 <script>
   $('#selector').delay(2000).fadeOut('slow');
   function exportFun(){
-	  $("#export-pop").next("div.export_pop").toggle();
+	  //$("#export-pop").next("div.export_pop").toggle();
+	  $("#exportPop").toggle();
   }
 </script> 
 

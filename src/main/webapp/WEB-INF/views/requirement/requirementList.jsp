@@ -254,14 +254,14 @@ function prepareRequirementData(data){
    	 result = result +"<tr>"; /*  onclick='sideBar("+opt.id+");' */
    	 if(opt.jobId != '' && opt.jobId != null){
    	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-        	result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobId+"-"+opt.jobTitle+"'>"+opt.jobId+"-"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+        	result = result +"<td><a href='<c:url value='/requirementSummary?requirementUUID="+opt.requirementUUID+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobId+"-"+opt.jobTitle+"'>"+opt.jobId+"-"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
         '</sec:authorize>';
         '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
         	result = result +"<td><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobId+"-"+opt.jobTitle+"'>"+opt.jobId+"-"+opt.jobTitle+"</span></div></td>";
         '</sec:authorize>';
    	 }else{
    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-            	result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+            	result = result +"<td><a href='<c:url value='/requirementSummary?requirementUUID="+opt.requirementUUID+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
             '</sec:authorize>';
             '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
             	result = result +"<td><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
@@ -283,9 +283,9 @@ function prepareRequirementData(data){
         }
        
         if(opt.state!=null && opt.state !='' && opt.state !='undefined' &&  opt.city !='undefined' && opt.city !='' &&  opt.city!=null){
-            result = result +"<td><div><span title='"+opt.country+', '+opt.state+', '+opt.city+"'>"+opt.country+', '+opt.state+', '+opt.city+"</span></div></td>";
+            result = result +"<td><div><span title='"+opt.country+', '+opt.state+', '+opt.city+"'>"+opt.city+', '+opt.state+', '+opt.country+"</span></div></td>";
         }else if(opt.state!=null && opt.state !='' && opt.state !='undefined'){
-            result = result +"<td><div><span title='"+opt.country+', '+opt.state+"'>"+opt.country+', '+opt.state+"</span></div></td>";
+            result = result +"<td><div><span title='"+opt.country+', '+opt.state+"'>"+opt.state+', '+opt.country+"</span></div></td>";
 
         }else{
             result = result +"<td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
@@ -296,7 +296,6 @@ function prepareRequirementData(data){
        	 result = result +"<td><div>----</div></td>";
         }
         if(opt.totalApplicantsForRequirement!=null && opt.totalApplicantsForRequirement!='' && opt.totalApplicantsForRequirement!='undefined'){
-       	// result = result +"<td><a href='<c:url value='/requirementSummary?requirementId="+opt.id+"'/>'><div>"+opt.totalApplicantsForRequirement+"</div></a></td>";
        	result = result +"<td><div>"+opt.totalApplicantsForRequirement+"</div></td>";
         }else{
        	 result = result +"<td><div>0</div></td>";
@@ -411,9 +410,9 @@ function prepareRequirementData(data){
         if(((orgATS == 'Y' && orgVMS == 'Y') || orgATS != 'Y') && (opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN')){
        	 '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
        	 if(opt.isRequirementReleasedByuser == 'Y'){
-       		 result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementId="+opt.id+"'/>'><i class='fa fa-bullhorn success'></i></a></div></td>"; 
+       		 result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success'></i></a></div></td>"; 
        	 }else{	
-       	 result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementId="+opt.id+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
+       	 result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
        	 }
        	 '</sec:authorize>';
        	 '<sec:authorize access="!hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
@@ -1201,7 +1200,7 @@ function requirementPipeline(requirementId){
   <div class="timesheet_out">
     <div class="vendor_wrap">
       <div class="timesheet_head">
-       <div class="pull-left cand-advsrch">
+       <div class="pull-left cand-advsrch advsrch_chosen">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenRequirementScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
           <form:form id="requirement_form" name="requirement_form"  enctype='multipart/form-data' >
           <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
@@ -1324,13 +1323,14 @@ function requirementPipeline(requirementId){
                       <option>ONHOLD</option>
                       <option>FILLEDCLOSED</option>
                       <option>UNFILLEDCLOSED</option>
+                      <option>REJECTED</option>
                     </select>
                   </div>
                 </div>
                 <div class="col-md-4">
                   <label>Posted On</label>
                   <div class="clearfix">
-                    <select class="chosen-select" id="updatedOn" name="updatedOn" data-placeholder="Updated On">
+                    <select class="chosen-select" id="updatedOn" name="updatedOn" data-placeholder="Posted On">
                       <option>All</option>
                       <option>1 Day Ago</option>
                       <option>3 Days Ago</option>
@@ -1365,7 +1365,7 @@ function requirementPipeline(requirementId){
 						   <div class="col-md-4">
 							  <label>Country</label>
 							  <div class="clearfix adv-srh-chosen">
-								 <select class="chosen-select" name="country" id="country" field-name="Country"  >
+								 <select class="chosen-select" name="country" id="country" field-name="Country" onchange="getStates();" >
 								     <c:forEach var="cntry" items="${countryList}">
 							                     <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
 						                </c:forEach>

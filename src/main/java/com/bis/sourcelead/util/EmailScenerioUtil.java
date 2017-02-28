@@ -140,6 +140,30 @@ public void sendNotification(String actionLink,User loginUser,User toUser, OrgLo
 	
 	}
 
+public void sendNotificationToClientOrVendor(String actionLink,User loginUser,User fromUser, User toUser, OrgLocations loginOrgLocation, EmailScenario emailScenario) throws Exception{
+	
+	//new Notification logic
+	Notifications notification = new Notifications();
+	notification.setActionLink(actionLink);
+	notification.setBody(emailScenario.getBody());
+	notification.setNotificationFrom(fromUser);
+	notification.setNotificationTo(toUser);
+	notification.setNotificationScenarioId(emailScenario);
+	notification.setMode(Constants.NOTIFICATION_UNREAD);
+	notification.setCreatedBy(loginUser.getUserCode());
+	notification.setCreatedDate(new Date());
+	notification.setLocationCode(loginOrgLocation.getLocationCode());
+	notification.setOrgCode(loginOrgLocation.getOrg().getOrgCode());
+	notification.setUserNotificationStatus("Sent");
+	notification.setNotificationStatus(Constants.NOTIFICATION_NOT_DELETED);
+	if(null != emailScenario.getUUID()  && !emailScenario.getUUID().isEmpty()){
+		notification.setUUID(emailScenario.getUUID());
+	}
+	
+	Notifications notification1 = notificationsService.saveNotification(notification);
+	
+	}
+
 public void sendWithAttachmentEmail(EmailMessage emailMessage, Long locationsId, InternetAddress[] iAdressArray,List<EmailAttachment> attachmentList, String[] submissionIds) throws Exception{
 	emailMessageService.sendEmailWithAttachment(emailMessage,locationsId,iAdressArray,attachmentList,submissionIds);
 	

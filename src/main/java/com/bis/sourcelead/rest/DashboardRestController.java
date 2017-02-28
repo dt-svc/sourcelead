@@ -47,6 +47,7 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -422,12 +423,25 @@ public class DashboardRestController {
 				timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
 			}
 			
-			
+			Date startUTCDate = null;
+			Date endUTCDate = null;
 			if("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole)){
 				userType = "ADMIN";
-				requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode);
-			}else{
-				requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode);
+				if(dateRange != null && !"today".equals(dateRange) && !"previous".equals(dateRange) && !"upcoming".equals(dateRange)){
+					DateFormat END_TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
+					
+					Date startTime =  commonUtil.getDateFormat(dateRange);
+					String startTimeTS = Constants.TZ_DF.format(startTime); 
+					String endTimeTS = END_TZ_DF.format(startTime);
+					
+					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),"UTC", startTimeTS);
+					String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),"UTC", endTimeTS);
+					 startUTCDate = Constants.TZ_DF_TS.parse(startDateString);
+					 endUTCDate = Constants.TZ_DF_TS.parse(endDateString);
+				}
+				requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode,startUTCDate,endUTCDate);
+				}else{
+				requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode,startUTCDate,endUTCDate);
 			}
 			
 			for(RequirementInterviewHistory interviewHistory : requirementInterviewList){
@@ -458,7 +472,7 @@ public class DashboardRestController {
 				
 				//changed as per the timezone
 				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm aa");
-				if(timezone != null){
+				if(null != timezone.getTimeZoneId()){
 					String currentTimeStr = Constants.TZ_DF.format(interviewHistory.getInterviewId().getStartTime());  
 					String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
 					Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);

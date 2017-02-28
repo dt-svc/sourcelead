@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
+import org.jsoup.select.Evaluator.IsEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -209,10 +210,12 @@ public class TeamRestController {
 			ids.add(team.getOwnerUserId().getId());
 		}
 		String[] existedTeamMemberUserIds = existedTeamMembersIds.split(",");
+		
+		if(null != existedTeamMemberUserIds && existedTeamMemberUserIds.length>0 && !existedTeamMembersIds.isEmpty()){
 		for(String id  : existedTeamMemberUserIds){
 			ids.add(Long.parseLong(id));
 		}
-		
+		}
 		List<User> userList = userService.getUserListExceptExistedTeamMembersList(ids, loginOrgLocation.getId());
 		resultJson = commonUtil.toJSON(userList);
 		return resultJson;
@@ -437,4 +440,25 @@ public class TeamRestController {
 		}
 
 		  
+		     /**
+			  * To  validate Team Name
+			  * @param name
+			  * @return
+			  */
+			 @RequestMapping(value = "/validateTeamName" , method = RequestMethod.POST)
+			 public @ResponseBody  String validateTeamName(@RequestParam(value="name", required=false) String name,HttpServletRequest request) throws Exception {
+				 	
+				 	String result = null;
+				 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				 	Team team = teamService.findByTeamName(name,orgLocation.getId());
+				 	
+				 	if (null != team) {
+						result = "true";
+					}else{
+						result = "false";
+					}
+					return result;
+			   }
+			 
+		      
 }

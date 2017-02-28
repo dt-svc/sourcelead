@@ -101,7 +101,7 @@ width: auto;
 										  <label>Reason for Reject</label>
 										  <textarea class="form-control" rows="2" placeholder="Reason" id="rejectId"></textarea>	
 									  </div>
-									  <div class="col-md-12 mt10"><button type="button" class="btn btn-sm btn-danger pull-right" onclick="storeReject();">Submit</button></div>
+									  <div class="col-md-12 mt10"><button type="button" id="reject_Rate" class="btn btn-sm btn-danger pull-right" onclick="storeReject();">Submit</button></div>
 								  	
 								  </div>
 							  </div>
@@ -182,6 +182,7 @@ width: auto;
 
 <script type="text/javascript">
 	function storeReject() {
+		$('#reject_Rate').attr("disabled", true);
 			var sourceleadUrl = '${sourceleadUrl}';
 			var submissionId = '${submissionId}';
 			var type = '${type}';

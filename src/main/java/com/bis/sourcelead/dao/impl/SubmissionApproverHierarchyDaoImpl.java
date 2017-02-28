@@ -353,7 +353,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    			sah.setSubmissionApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);
 	    		}
 	    		try {
-					updateSubmissionApproverHierarchy(sah);
+	    			 session.saveOrUpdate(sah);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -364,118 +364,6 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	
 	
 	}
-	 
-	//can you write the description
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public void updateApprovalStatusForApprover(Long empId,Long approverUserId, Date startDate, String status,String rejectedReason) {
-		// TODO Auto-generated method stub
-		Session session = this.sessionFactory.getCurrentSession();
-		java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
-		
-		/*
-		 *  get submissionapproverhierarchy list by using empId and logged in user id as approver(either user may exist in project hierarchy  or user may be admin)
-		 */
-		String query = " from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId submission left join fetch submission.projectMembers pm left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee emp left join fetch emp.user where sah.submissionApprovalStatus != 'APPROVED' and emp.id =:empId and sah.submissionId.startDate = :startDate "
-				        + "and ("
-				           /*
-						   *  logged in user as approver in project_approver_hierarchy (Either Admins/project_managers/team leads ...etc)
-						   */
-					        + "    (hierarchy.approverUserId.id = :approverUserId ) "
-					        /*
-							 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
-							 */
-					        + " OR ( :approverUserId NOT IN( select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.projectMembers.employee.id = :empId and subsah.submissionApprovalStatus != 'APPROVED' and subsah.submissionId.startDate = :startDate) and "+Constants.loginUserAsAdminWithMaxHeirarchyLevel+")"
-				        	+ ")";
-		@SuppressWarnings("unchecked")
-		List<SubmissionApproverHierarchy> sahMainList = session.createQuery(query)
-																	  .setLong("empId", empId)	
-																	  .setLong("approverUserId",approverUserId)
-																	  .setLong("userId",approverUserId)
-				                                                      .setParameter("startDate", sqlStartDate).list();
-		
-	
-		if(sahMainList != null && !sahMainList.isEmpty()){
-	    	for(SubmissionApproverHierarchy sah :sahMainList){
-	    		
-	    		/*
-	    		 * get Max Level
-	    	    */
-	    		Query queryForMaxLevel = session.createQuery("select Max(sah.hierarchyId.level) from SubmissionApproverHierarchy sah  where sah.submissionId.projectMembers.employee.id =:empId and sah.submissionId.id = :submissionId and sah.submissionId.startDate = :startDate ");
-	    		List<Integer> maxList = queryForMaxLevel.setLong("empId", empId).setLong("submissionId", sah.getSubmissionId().getId()).setParameter("startDate", sqlStartDate).list();
-	    		Integer maxLevel = 0;
-	    		if(maxList !=null && !maxList.isEmpty()){
-	    			maxLevel = maxList.iterator().next();
-	    		}
-	    		
-	    		
-	    	   /* query = " from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId submission left join fetch submission.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where emp.id =:empId and sah.submissionId.id = :submissionId and sah.submissionId.startDate = :startDate and hierarchy.approverUserId.id = :approverUserId ";
-	    		@SuppressWarnings("unchecked")
-	    		List<SubmissionApproverHierarchy> sahList = session.createQuery(query)
-	    																	  .setLong("empId", empId)	
-	    																	  .setLong("approverUserId",approverUserId)
-	    																	  .setLong("submissionId", mainSah.getSubmissionId().getId())
-	    				                                                      .setParameter("startDate", sqlStartDate).list();*/
-	         /* for(SubmissionApproverHierarchy sah :sahList){*/
-	    		
-	    		if(status!=null && status.equalsIgnoreCase("REJECTED")){
-            	 	sah.setSubmissionApprovalStatus(Submission_ApprovalStatus.REJECTED);
-            	 	sah.setSubmissionStatus(Submission_Status.REJECTED);
-            	 	sah.setActionPerformedBy("Rejected By "+sah.getHeirarchyId().getApproverUserId().getFirstName() + " "+sah.getHeirarchyId().getApproverUserId().getLastName());
-            	 	sah.setRejectedReason(rejectedReason);
-            	 	
-	             }else if(status!=null && status.equalsIgnoreCase("APPROVED")){
-	            	 sah.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
-	            	 sah.setSubmissionStatus(Submission_Status.APPROVED);
-	            	 sah.setActionPerformedBy("Approved By "+sah.getHeirarchyId().getApproverUserId().getFirstName() + " "+sah.getHeirarchyId().getApproverUserId().getLastName());
-	             }
-	    		 try {
-					updateSubmissionApproverHierarchy(sah);
-				} catch (Exception e) {
-				}
-	    		
-	    		String queryForAllApprovers = " from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId submission left join fetch submission.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user where sah.id <> :id and emp.id =:empId and sah.submissionId.id = :submissionId  and sah.submissionId.startDate = :startDate  ";
-	    		@SuppressWarnings("unchecked")
-        		List<SubmissionApproverHierarchy> approversList = session.createQuery(queryForAllApprovers)
-        																	  .setLong("empId", empId)	
-        																	  .setLong("submissionId", sah.getSubmissionId().getId())
-        																	  .setLong("id", sah.getId())
-        				                                                      .setParameter("startDate", sqlStartDate).list();
-	    		
-                	if(approversList != null && !approversList.isEmpty()){
-                		for(SubmissionApproverHierarchy approver  :  approversList){
-                			  //If logged in user is high level approver then all appropriate submission will be reflected
-	                	      if(sah.getHeirarchyId().getLevel()==(maxLevel)){
-		                			if(status!=null && status.equalsIgnoreCase("REJECTED")){
-		                				approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.REJECTED);
-		                				approver.setSubmissionStatus(Submission_Status.REJECTED);
-		                				approver.setActionPerformedBy("Rejected By "+sah.getHeirarchyId().getApproverUserId().getFirstName() + " "+sah.getHeirarchyId().getApproverUserId().getLastName());
-		                				approver.setRejectedReason(rejectedReason);
-		                        	 	
-		            	             }else if(status!=null && status.equalsIgnoreCase("APPROVED")){
-		            	            	 approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
-		            	            	 approver.setSubmissionStatus(Submission_Status.APPROVED);
-		            	            	 approver.setActionPerformedBy("Approved By "+sah.getHeirarchyId().getApproverUserId().getFirstName() + " "+sah.getHeirarchyId().getApproverUserId().getLastName());
-		            	             }
-	                		 }
-	                	      //if logged in user is low level approver then record will be submitted to high level approver
-	                	     else{
-	                	    	 approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);
-            	            	 approver.setSubmissionStatus(Submission_Status.SUBMITTED);
-	                	     }
-                	        try {
-             			 		updateSubmissionApproverHierarchy(approver);
-             				} catch (Exception e) {
-             				}
-                	   }
-                	}
-	    	   //}	 
-	    	}
-	    }
-		
-		
-	}
-	
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -490,17 +378,18 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		 *  get submissionapproverhierarchy list by using empId and logged in user id as approver(either user may exist in project hierarchy  or user may be admin)
 		 */
 		String query = " from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId submission left join fetch submission.projectMembers pm left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee emp left join fetch emp.user "
-				+ " where sah.submissionApprovalStatus != 'APPROVED' and pm.id =:projectMemberId and (sah.submissionId.startDate between  :startDate and  :endDate) "
+				+ " where pm.id =:projectMemberId and sah.frequencyStartDate =:startDate and  sah.frequencyEndDate =:endDate "
 				        + "and ("
 				           /*
 						   *  logged in user as approver in project_approver_hierarchy (Either Admins/project_managers/team leads ...etc)
 						   */
-					        + "    (hierarchy.approverUserId.id = :approverUserId ) "
+					        + "    hierarchy.approverUserId.id = :approverUserId  "
 					        /*
 							 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 							 */
-					        + " OR ( :approverUserId NOT IN( select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.projectMembers.id = :projectMemberId and subsah.submissionApprovalStatus != 'APPROVED' and (subsah.submissionId.startDate between  :startDate and  :endDate ) and "+Constants.loginUserAsAdminWithMaxHeirarchyLevel+")"
-				        	+ "))";
+					          + " OR ( :approverUserId NOT IN( select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.projectMembers.id = :projectMemberId and subsah.submissionApprovalStatus != 'APPROVED' and subsah.frequencyStartDate = :startDate and subsah.frequencyEndDate = :endDate ) "
+					        + " and "+ Constants.loginUserAsAdminWithMaxHeirarchyLevel + ")"
+				            + ")";
 		@SuppressWarnings("unchecked")
 		List<SubmissionApproverHierarchy> sahMainList = session.createQuery(query)
 																	  .setLong("projectMemberId", projectMemberId)	
@@ -536,7 +425,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	            	 sah.setActionPerformedBy(""+loginUser.getFullName());
 	             }
 	    		 try {
-					updateSubmissionApproverHierarchy(sah);
+	    			 updateSubmissionApproverHierarchy(sah);
 				} catch (Exception e) {
 				}
 	    		
@@ -551,32 +440,24 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    		
                 	if(approversList != null && !approversList.isEmpty()){
                 		for(SubmissionApproverHierarchy approver  :  approversList){
-                			  //If logged in user is high level approver then all appropriate submission will be reflected
-	                	      if(sah.getHeirarchyId().getLevel()==(maxLevel)){
-		                			if(status!=null && status.equalsIgnoreCase("REJECTED")){
-		                				approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.REJECTED);
-		                				approver.setSubmissionStatus(Submission_Status.REJECTED);
-		                				approver.setActionPerformedBy(""+loginUser.getFullName());
-		                				approver.setRejectedReason(rejectedReason);
-		                        	 	
-		            	             }else if(status!=null && status.equalsIgnoreCase("APPROVED")){
+                			 if(status!=null && status.equalsIgnoreCase("REJECTED")){
+                				approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.REJECTED);
+                				approver.setSubmissionStatus(Submission_Status.REJECTED);
+                				approver.setActionPerformedBy(" "+loginUser.getFullName());
+                				approver.setRejectedReason(rejectedReason);
+                        	 	
+            	              }
+                			 else if(sah.getHeirarchyId().getLevel()==(maxLevel) && (status!=null && status.equalsIgnoreCase("APPROVED"))){
 		            	            	 approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
 		            	            	 approver.setSubmissionStatus(Submission_Status.APPROVED);
-		            	            	 approver.setActionPerformedBy(""+loginUser.getFullName());
-		            	             }
-	                		 }
-	                	      //if logged in user is low level approver then record will be submitted to high level approver
-	                	     else{
-	                	    	 approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);
-            	            	 approver.setSubmissionStatus(Submission_Status.SUBMITTED);
-	                	     }
+		            	            	 approver.setActionPerformedBy(" "+loginUser.getFullName());
+	                		  }
                 	        try {
-             			 		updateSubmissionApproverHierarchy(approver);
+                	        	updateSubmissionApproverHierarchy(approver);
              				} catch (Exception e) {
              				}
                 	   }
                 	}
-	    	   //}	 
 	    	}
 	    }
 		
@@ -877,7 +758,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 			sqlEndDate = new java.sql.Date(frequencyEndDate.getTime());
 		}
 		
-		Query submissionApproverHierarchyListQuery= session.createQuery("from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee  emp  left join fetch emp.user where pm.id = :projectMemberId and  (ts.startDate between :startDate and :endDate OR ts.startDate = :startDate) and sah.submissionApprovalStatus = :approvalStatus");
+		Query submissionApproverHierarchyListQuery= session.createQuery("from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee  emp  left join fetch emp.user where pm.id = :projectMemberId and  sah.frequencyStartDate = :startDate and sah.frequencyEndDate = :endDate and sah.submissionApprovalStatus = :approvalStatus");
 		@SuppressWarnings("unchecked")
 		List<SubmissionApproverHierarchy>  submissionApproverHierarchyList=submissionApproverHierarchyListQuery.setLong("projectMemberId", projectMemberId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setString("approvalStatus", approvalStatus).setCacheable(true).list();
 		SubmissionApproverHierarchy sah = null;

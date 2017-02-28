@@ -133,18 +133,21 @@ public class OrgDocumentsRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getOrgDocument", method = RequestMethod.POST)
-	public @ResponseBody String getOrgDocument(String docId, Long orgRelationId, HttpServletRequest request) throws Exception {
+	public @ResponseBody String getOrgDocument(String docId, Long orgRelationId, HttpServletRequest request,String type) throws Exception {
 		String resultJson = null;
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		OrgDocuments orgDocument = orgDocumentsService.getOrgDocumentsById(Long.parseLong(docId));
 		
 		//to fetch client contact list
-		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, user.getId(),orgLocations.getId());
+		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, user.getId(),orgLocations.getId(),type);
 		for (OrgSpoc orgSpoc : orgSpocsList) {
-			StringBuilder name = new StringBuilder();
-			orgSpoc.setSpocName(name.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
-			orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
+			if(null != type && "Client".equalsIgnoreCase(type)){
+				orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
+			}else{
+				orgSpoc.setSpocUserId(orgSpoc.getVendorUser().getId());
+			}
+			
 		}
 		
 		//to fetch Owners list
@@ -167,12 +170,7 @@ public class OrgDocumentsRestController {
 		OrgDocuments orgDocument = orgDocumentsService.getOrgDocumentsByIdAndSpocId(Long.parseLong(docId),Long.parseLong(userId));
 		
 		//to fetch client contact list
-		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, user.getId(),orgLocations.getId());
-		for (OrgSpoc orgSpoc : orgSpocsList) {
-			StringBuilder name = new StringBuilder();
-			orgSpoc.setSpocName(name.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
-			orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
-		}
+		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, user.getId(),orgLocations.getId(),"Client");
 		
 		//to fetch Owners list
 		List<User> ownersList = userService.getOwnersByOrgLocationId(orgLocations.getId());

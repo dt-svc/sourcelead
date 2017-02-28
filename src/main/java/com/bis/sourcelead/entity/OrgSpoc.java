@@ -35,16 +35,20 @@ public class OrgSpoc implements Serializable{
 	private OrgRelations orgRelations;
 	
 	@ManyToOne
-    @JoinColumn(name="RESPONDER_LOCATION_ID", nullable=false )        
-    private OrgLocations responderLocationId;
+    @JoinColumn(name="VENDOR_LOCATION_ID", nullable=false )        
+    private OrgLocations vendorLocationId;
 	
 	@ManyToOne
-    @JoinColumn(name="INITIATOR_LOCATION_ID", nullable=false )        
-    private OrgLocations initiatorLocationId;
+    @JoinColumn(name="CLIENT_LOCATION_ID", nullable=false )        
+    private OrgLocations clientLocationId;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "SPOC_USER_ID")
-	private User spocUser;
+	@JoinColumn(name = "VENDOR_USER_ID")
+	private User vendorUser;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "CLIENT_USER_ID")
+	private User clientUser;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "OWNER_USER_ID")
@@ -73,6 +77,9 @@ public class OrgSpoc implements Serializable{
 	
 	@Column(name = "TERMINATE_REASON", columnDefinition = "TEXT default NULL")
 	private String terminateReason;
+	
+	@Column(name="UUID")
+	private String UUID;
 	
 	@Transient
 	private String spocName;
@@ -186,12 +193,36 @@ public class OrgSpoc implements Serializable{
 		this.orgRelations = orgRelations;
 	}
 
-	public User getSpocUser() {
-		return spocUser;
+	public OrgLocations getVendorLocationId() {
+		return vendorLocationId;
 	}
 
-	public void setSpocUser(User spocUser) {
-		this.spocUser = spocUser;
+	public void setVendorLocationId(OrgLocations vendorLocationId) {
+		this.vendorLocationId = vendorLocationId;
+	}
+
+	public OrgLocations getClientLocationId() {
+		return clientLocationId;
+	}
+
+	public void setClientLocationId(OrgLocations clientLocationId) {
+		this.clientLocationId = clientLocationId;
+	}
+
+	public User getVendorUser() {
+		return vendorUser;
+	}
+
+	public void setVendorUser(User vendorUser) {
+		this.vendorUser = vendorUser;
+	}
+
+	public User getClientUser() {
+		return clientUser;
+	}
+
+	public void setClientUser(User clientUser) {
+		this.clientUser = clientUser;
 	}
 
 	public User getOwnerUser() {
@@ -200,22 +231,6 @@ public class OrgSpoc implements Serializable{
 
 	public void setOwnerUser(User ownerUser) {
 		this.ownerUser = ownerUser;
-	}
-
-	public OrgLocations getResponderLocationId() {
-		return responderLocationId;
-	}
-
-	public void setResponderLocationId(OrgLocations responderLocationId) {
-		this.responderLocationId = responderLocationId;
-	}
-
-	public OrgLocations getInitiatorLocationId() {
-		return initiatorLocationId;
-	}
-
-	public void setInitiatorLocationId(OrgLocations initiatorLocationId) {
-		this.initiatorLocationId = initiatorLocationId;
 	}
 
 	public String getInvitationStatus() {
@@ -320,6 +335,14 @@ public class OrgSpoc implements Serializable{
 
 	public void setTerminateReason(String terminateReason) {
 		this.terminateReason = terminateReason;
+	}
+
+	public String getUUID() {
+		return UUID;
+	}
+
+	public void setUUID(String uUID) {
+		UUID = uUID;
 	}
 
 	public String getOwnerUserId() {

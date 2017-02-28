@@ -106,7 +106,8 @@ public class UniversalSearchHelper {
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("level1ManagerName", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("level2ManagerName", keywd));
 //		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("startDate", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("invoiceFrequency", keywd));
+//		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("invoiceFrequency", keywd));
+		
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("clientName", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("projectStatus", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("projectMembers", keywd));

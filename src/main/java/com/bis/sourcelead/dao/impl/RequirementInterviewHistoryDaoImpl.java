@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +79,7 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 			Long submissionId, Long orgLocationsId) throws Exception {
 		logger.debug("In RequirementInterviewHistoryDaoImpl class getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RequirementInterviewHistory rih where rih.submissionId.id = :submissionId and rih.orgLocationId.id = :orgLocationsId ORDER BY rih.createdDate DESC";
+		String query = "from RequirementInterviewHistory rih left join fetch rih.interviewId  where rih.submissionId.id = :submissionId and rih.orgLocationId.id = :orgLocationsId ORDER BY rih.createdDate DESC";
 		List<RequirementInterviewHistory> interviewsList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
 		
 		return interviewsList;
@@ -95,7 +96,7 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<RequirementInterviewHistory> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode)
+	public List<RequirementInterviewHistory> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode,Date startUTCDate,Date endUTCDate)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		
@@ -108,9 +109,6 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 			subQuery = "and ((rih.submissionId.requirement.managerUserId.id =:userId OR rih.createdBy =:userCode) OR (rih.interviewId.id IN (select interviewer.requirementInterview.id from RequirementInterviewer interviewer where interviewer.interviewerUser.id = :userId  ))) ";
 			params.put("userId",userId);
 			params.put("userCode",userCode);
-			//subQuery = "and ri.submissionId.requirement.managerUserId.id =:userId";
-			//namedParameters = ".setLong('userId', userId)";
-			//params.put("userId",userId);
 			params.put("orgLocationsId",orgLocationsId);
 		}else{
 			
@@ -125,11 +123,9 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
         }else if(dateRange != null && "upcoming".equals(dateRange)){
         	query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) > CURDATE())"+ subQuery;
         }else{
-        	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        	java.util.Date date = dateFormat.parse(dateRange);
-        	java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
-        	query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) = :sqlStartDate)"+ subQuery;
-        	params.put("sqlStartDate",sqlStartDate);
+        	query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and (rih.interviewId.dateOfInterview between :startDate and :endDate)"; 
+        	params.put("startDate",startUTCDate);
+        	params.put("endDate",endUTCDate);
         }
         
         Query queryExe = session.createQuery(query);
