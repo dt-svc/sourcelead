@@ -10,6 +10,26 @@
 <link href="resources/css/sourcelead-main.css" rel="stylesheet">
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+
+<script>
+$(document).ready(function() {
+	
+	if('${requirementType}' != null && '${requirementType}' != '' && '${requirementType}' != 'undefined'){
+		$("#jobType").html('${requirementType}');
+	}else{
+		$("#jobType").html('No Data');
+	}
+	
+	if('${jobRate}' != null && '${jobRate}' != '' && '${jobRate}' != 'jobRate'){
+		$("#jobRate").html('${jobRate}');
+	}else{
+		$("#jobRate").html('No Data');
+	}
+	
+});
+</script>
+
+
 <!-- Content Area Starts -->
   <section class="content-wraper">
     <section class="content-header clearfix">
@@ -106,6 +126,70 @@
                       </label>
                     </div>
                   </div>
+                  
+                  <div class="form-group clearfix" id="crowd_rate" style="display: none">
+                    <div class="clearfix">
+                      <label class="col-md-5"><strong>Requirement Details</strong></label>
+                      <div class="col-md-7">
+                        <p><i class="fa fa-suitcase text-muted paddingRight"></i>
+                          <label id="jobType"></label>
+                        </p>
+                        <p><i class="fa fa-money text-muted paddingRight"></i>
+                          <label id="jobRate"></label>
+                        </p>
+                      </div>
+                    </div>
+                    <div class="clearfix">
+                      <label class="col-md-12"><strong>Reward Price</strong></label>
+                    </div>
+                    <div class="clearfix">
+                      <div class="col-md-3 paddingRight">
+                        <div class="btn-group btn_Block">
+                          <button type="button" class="btn btn-sm btn-primary" id="percentageBtn" value="percentage" onClick="getRewardType('Percentage')">%</button>
+                          <button type="button" class="btn btn-sm btn-default" id="flatBtn" value="flat" onClick="getRewardType('Flat')">Flat</button>
+                        </div>
+                      </div>
+                      <div class="col-md-7 paddingLeft">
+                        <div class="form-group positionRelative iconHolder percentage" id="percentageReward"  style="display: none">
+                          <input type="text" class="form-control input-sm" name="percentageReward" placeholder="Percentage">
+                          <i class="fa fa-percent"></i> 
+                        </div>
+                        
+                        <div class="row flat">
+                          <div class="form-group col-md-8 paddingRight positionRelative iconHolder">
+                            <input type="text" class="form-control input-sm" id="flatReward" name="flatReward"   style="display: none" placeholder="Flat">
+                            <i class="fa fa-money" id="flatRewardIcon"  style="display: none"></i> </div>
+                          <div class="form-group select-field col-md-4 paddingLeft">
+                            <select class="form-control input-sm" id="flatRateType" name="flatRateType"  style="display: none">
+                              <option  ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}><i class="fa fa-rupee" title="INR"></i>INR</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}><i class="fa fa-dollar" title="USD"></i>USD</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}><i class="fa fa-aud" title="AUD"></i>AUD</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'EUR' ? 'selected' : ''}><i class="fa fa-eur" title="Eur"></i>EUR</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'SGD' ? 'selected' : ''}><i class="fa fa-sgd" title="SGD"></i>SGD</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'GBP' ? 'selected' : ''}><i class="fa fa-gdp" title="GDP"></i>GBP</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="clearfix">
+                      <label class="col-md-3">Reward guarantee period</label>
+                      <div class="select-field col-md-7 paddingLeft">
+                        <select class="form-control input-sm" name="guaranteePeriod">
+                          <option value="120 Days">120 Days</option>
+                          <option value="90 Days">90 Days</option>
+                          <option value="60 Days" selected="selected">60 Days</option>
+                          <option value="30 Days">30 Days</option>
+                          <option value="15 Days">15 Days</option>
+                          <option value="7 Days">7 Days</option>
+                          <option value="Immediate">Immediate</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="clearfix col-lg-12 hidden"> <span class="text-muted">Note:</span> <span class="text-info"><b>5%</b> will be sourcelead fund and remaining....</span> </div>
+                  </div>
+                  
+                  
                 </div>
               </div>
             </div>
@@ -117,9 +201,7 @@
         <div class="col-lg-12">
           <div class="pull-right">
             <span class="jquery_form_error_message" style="display:none;">Vendor/Contact/Open Network selection is mandatory</span>
-            <sec:authorize access="hasAnyRole('ROLE_RELEASE_REQUIREMENT')">
             	<input type="button" class="btn btn-primary ml" id="releaseBtn" onclick="releaseTo();" value="Release">
-			</sec:authorize>
             <input type="button" class="btn btn-default ml" id="releaseCancelBtn" value="Cancel" onClick="javascript:location.href = '<c:url value='requirementList'/>'">
           </div>
         </div>
@@ -287,6 +369,34 @@ function getContactsLists(){
    		    },
 	 });
 }	
+</script>
+
+<script type="text/javascript">
+function getRewardType(rewardType){
+	
+	if(rewardType == 'Percentage'){
+		document.getElementById("crowd_rate").style.display="";
+		document.getElementById("percentageReward").style.display="";
+		document.getElementById("flatReward").style.display="none";
+		document.getElementById("flatRateType").style.display="none";
+		document.getElementById("flatRewardIcon").style.display="none";
+		
+		document.getElementById("percentageBtn").className = 'btn btn-sm btn-primary active'
+	    document.getElementById("flatBtn").className = 'btn btn-sm btn-primary'
+		
+	}
+	
+	if(rewardType == 'Flat'){
+		document.getElementById("crowd_rate").style.display="";
+		document.getElementById("flatReward").style.display="";
+		document.getElementById("flatRateType").style.display="";
+		document.getElementById("flatRewardIcon").style.display="";
+		document.getElementById("percentageReward").style.display="none";
+		
+		document.getElementById("percentageBtn").className = 'btn btn-sm btn-primary'
+		document.getElementById("flatBtn").className = 'btn btn-sm btn-primary active'
+	}
+}
 </script>
 
 
@@ -559,8 +669,11 @@ function ispublic(){
 function isCrowdScourcing(){
 	 if(document.getElementById('isCrowdScourcingId').checked) {
 	        $("#isCrowdScourcingId").val('Y');
+	        document.getElementById("crowd_rate").style.display="";
+	        getRewardType('Percentage')
 	    }else{
 	        $("#isCrowdScourcingId").val('N');
+	        document.getElementById("crowd_rate").style.display="none";
 	    }
 }
 </script>
@@ -579,6 +692,7 @@ function opennetwork(){
    		    	}
    		    	if(json.isCrowdSourcing == "Y"){
       		    	 $("#isCrowdScourcingId").prop('checked', true).val('Y');
+      		    	 getRewardType('Percentage')
       		    }
    		      $("#isPublicGlobel").val(json.isPublic);
    		      $("#isCrowdScourcingGlobel").val(json.isCrowdSourcing);

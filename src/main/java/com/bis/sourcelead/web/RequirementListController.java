@@ -174,6 +174,15 @@ public class RequirementListController {
 			model.addObject("vendor_list", vendorsList);
 	        model.addObject(vendorsList);
 	        model.addObject("requirementId",requirement.getId());
+	       
+	        if(!isNullOrEmpty(requirement.getJobType())){
+	        	model.addObject("requirementType",requirement.getJobType());
+	        }
+	       
+	        if(null != requirement.getRate()){
+	        	 model.addObject("jobRate",requirement.getCurrencyCode()+" "+requirement.getRate()+" / "+requirement.getRateType());	
+	        }
+	       
 			
 			request.getSession().setAttribute("sessionData",sessionData);
 		}else{
