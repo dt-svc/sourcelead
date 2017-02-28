@@ -410,6 +410,9 @@ public class RequirementReleaseRestController {
 		
 		requirement.setJobTitle(parentRequirement.getJobTitle());
 		requirement.setJobType(parentRequirement.getJobType());
+		if(parentRequirement.getJobType().equalsIgnoreCase("Other") && null != parentRequirement.getJobType() &&  parentRequirement.getJobType() != "" &&  parentRequirement.getJobType() != "undefined"){
+			requirement.setOtherJobType(parentRequirement.getOtherJobType());
+		}
 		requirement.setJobId(parentRequirement.getJobId());
 		requirement.setPositions(parentRequirement.getPositions());
 		requirement.setEducation(parentRequirement.getEducation());
