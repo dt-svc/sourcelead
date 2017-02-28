@@ -21,6 +21,8 @@
     <div class="content-area clearfix">
       <div id="accordion-sl" class="release-jobs">
       <!-- Accordion First Tab -->
+        
+        <c:if test="${SourceLeadWeb_vms == 'Y'}">
         <div class="clearfix">
           <h2>Profile</h2>
           <div class="content clearfix">
@@ -75,6 +77,7 @@
           </div>
         </div>
 	  <!-- Accordion First Tab Ends -->
+	  </c:if>
 
       <!-- Accordion second Tab -->
          <div class="clearfix">
