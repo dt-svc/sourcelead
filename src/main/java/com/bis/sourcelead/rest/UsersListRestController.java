@@ -41,7 +41,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.UserIndex;
+import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -144,7 +146,10 @@ public class UsersListRestController {
 
 	@Autowired
 	SourceleadELKBaseIndexer sourceleadELKBaseIndexer;
-
+	
+	@Autowired
+	ClientVendorContactsIndexHelper clientVendorContactsIndexHelper;
+	
 	/**
 	 * To get All the Users by filtering
 	 * 
@@ -377,7 +382,17 @@ public class UsersListRestController {
 
 		// Rate Per
 		if (jsonObj.has("ratePer") && StringUtils.isNotEmpty(jsonObj.getString("ratePer"))) {
-			boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("ratePer", jsonObj.getString("ratePer")));
+			//boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("ratePer", jsonObj.getString("ratePer")));
+			if(jsonObj.getString("ratePer").equalsIgnoreCase("Weekly")){
+				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("ratePer", "Weekly"));
+				boolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("ratePer", "Bi-Weekly"));
+			}else if(jsonObj.getString("ratePer").equalsIgnoreCase("Monthly")){
+				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("ratePer", "Monthly"));
+				boolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("ratePer", "Semi-Monthly"));
+			}else{
+				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("ratePer", jsonObj.getString("ratePer")));
+			}
+			
 		}
 
 		List<UserIndex> usersList = new ArrayList<UserIndex>();
@@ -736,45 +751,63 @@ public class UsersListRestController {
 
 			}
 
-			if (jsonObj.has("clientUsers") && !isNullOrEmpty("clientUsers")) {
+			if (jsonObj.has("vendorUsers") && !isNullOrEmpty("vendorUsers")) {
 				User clientOwnerOrUser = new User();
-				clientOwnerOrUser.setId(Long.valueOf(jsonObj.getString("clientUsers")));
+				clientOwnerOrUser.setId(Long.valueOf(jsonObj.getString("vendorUsers")));
 				List<OrgSpoc> orgSpocList = orgSpocService.getAssignedAsClientOrVendorSpocByUserId(userId,
 						orgLocations.getId(), "Client");
 				if (null != orgSpocList) {
 					for (OrgSpoc orgSpoc : orgSpocList) {
-						if (orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId()
+						/*if (orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId()
 								.longValue()) {
 							//orgSpoc.setOwnerUser(clientOwnerOrUser);
+							orgSpoc.set
 						} else if (orgSpoc.getOrgRelations().getLocationId().getId().longValue() != orgLocations.getId()
 								.longValue()) {
 							//orgSpoc.setSpocUser(clientOwnerOrUser);
+						}*/
+						if((orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId().longValue())&&(orgSpoc.getClientUser().getId()==orgSpoc.getOwnerUser().getId())){
+							orgSpoc.setOwnerUser(clientOwnerOrUser);
+							orgSpoc.setClientUser(clientOwnerOrUser);
+						}else{
+							orgSpoc.setClientUser(clientOwnerOrUser);
 						}
+						
 						orgSpoc.setUpdatedBy(user.getUserCode());
 						orgSpoc.setUpdatedDate(new Date());
 						orgSpocService.addOrgSpoc(orgSpoc);
+						 ClientVendorContactsIndex clientVendorContactsIndex = clientVendorContactsIndexHelper.getClientVendorContactIndexFromSpoc(orgSpoc);
+						  sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorContactsIndex, Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,orgSpoc.getId().toString());
 					}
 				}
 
 			}
 
-			if (jsonObj.has("vendorUsers") && !isNullOrEmpty("vendorUsers")) {
+			if (jsonObj.has("clientUsers") && !isNullOrEmpty("clientUsers")) {
 				User vendorOwnerOrUser = new User();
-				vendorOwnerOrUser.setId(Long.valueOf(jsonObj.getString("vendorUsers")));
+				vendorOwnerOrUser.setId(Long.valueOf(jsonObj.getString("clientUsers")));
 				List<OrgSpoc> orgSpocList = orgSpocService.getAssignedAsClientOrVendorSpocByUserId(userId,
 						orgLocations.getId(), "Vendor");
 				if (null != orgSpocList) {
 					for (OrgSpoc orgSpoc : orgSpocList) {
-						if (orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId()
+						/*if (orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId()
 								.longValue()) {
 							//orgSpoc.setOwnerUser(vendorOwnerOrUser);
 						} else if (orgSpoc.getOrgRelations().getLocationId().getId().longValue() != orgLocations.getId()
 								.longValue()) {
 							//orgSpoc.setSpocUser(vendorOwnerOrUser);
+						}*/
+						if((orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId().longValue())&&(orgSpoc.getVendorUser().getId()==orgSpoc.getOwnerUser().getId())){
+							orgSpoc.setOwnerUser(vendorOwnerOrUser);
+							orgSpoc.setVendorUser(vendorOwnerOrUser);
+						}else{
+							orgSpoc.setVendorUser(vendorOwnerOrUser);
 						}
 						orgSpoc.setUpdatedBy(user.getUserCode());
 						orgSpoc.setUpdatedDate(new Date());
 						orgSpocService.addOrgSpoc(orgSpoc);
+						 ClientVendorContactsIndex clientVendorContactsIndex = clientVendorContactsIndexHelper.getClientVendorContactIndexFromSpoc(orgSpoc);
+						  sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorContactsIndex, Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,orgSpoc.getId().toString());
 					}
 				}
 
@@ -891,6 +924,8 @@ public class UsersListRestController {
 			Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(updateUserRole.getUser().getId(),
 					orgLocations.getId());
 			userService.saveOrUpdateUserElkDocument(updateUserRole, employee, user.getUserCode());
+			
+			 
 		}
 
 		return "success";

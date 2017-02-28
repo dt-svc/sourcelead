@@ -211,6 +211,22 @@ public class RequirementListRestController {
 					StringBuilder name = new StringBuilder();
 					requirement.setManager(name.append(managerFirstName).append(" ").append(managerLastName).toString());
 				}
+				
+				
+				if(null != requirement.getReleasedBy()){
+					List<Long> userId = new ArrayList<Long>();
+					for (String s : requirement.getReleasedBy().split(",")){
+						userId.add(Long.parseLong(s));
+					 }
+					boolean flag = userId.contains(user.getId());
+	         		if(flag == true){
+	         			requirement.setIsRequirementReleasedByuser("Y");
+	         		}else{
+	         			requirement.setIsRequirementReleasedByuser("N");
+	         		}
+				}
+				
+         		
 				msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqStatusChange");
 				if(msg != null && msg != ""){
 					requirement.setMsg(msg);
@@ -349,6 +365,7 @@ public class RequirementListRestController {
 			String resultJson = null;
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
 
 			if(requirementId !=null && !requirementId.isEmpty()){
 				Requirement requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
@@ -392,33 +409,37 @@ public class RequirementListRestController {
 					
 					List<RequirementApproverHierarchy> list = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(Long.parseLong(requirementId));
 					
-					Integer highestLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(Long.parseLong(requirementId));
+/*					Integer highestLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(Long.parseLong(requirementId));
+*/					
+					
 					ArrayList<String> ar = new ArrayList<String>();
 					if(list !=null && list.size() >0){
 						StringBuilder sb = new StringBuilder();
 						for(RequirementApproverHierarchy approverN :list ){
 							StringBuilder approverSB = new StringBuilder();
 							ar.add(approverSB.append(approverN.getApproverUserId().getFirstName()).append(" ").append(approverN.getApproverUserId().getLastName()).toString());
-							if(Constants.REJECTED.equalsIgnoreCase(approverN.getRequirementApproverStatus().toString())){
-								requirement.setRejectReason(sb.append(requirementApproverHierarchy.getRejectedReason()).toString());
+							if(null != approverN.getRejectedReason() && !approverN.getRejectedReason().equalsIgnoreCase("") && Constants.REJECTED.equalsIgnoreCase(approverN.getRequirementApproverStatus().toString())){
+								requirement.setRejectReasonForRequirement(sb.append(approverN.getRejectedReason()).toString());
+								break;
 							}
+							requirement.setApprovalMechanismType(approverN.getHierarchyType().toString());
 						}
-						requirement.setHighestLevel(highestLevel);
 						requirement.setApproverNames(ar);
 					}else{
 						
 						requirement.setApproverNames(ar);
 					}
 					
-					Boolean isLoginUserAsTeamMember =   requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(Long.parseLong(requirementId), user.getId());
+					
+					// UnWanted Code 
+					
+					/*Boolean isLoginUserAsTeamMember =   requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(Long.parseLong(requirementId), user.getId());
 					requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
 					
 					requirement.setIsLoginUserAsApprover(isLoginUserAsApprover.toString());
 					
 					Boolean isLoginUserAsManager =   requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(Long.parseLong(requirementId), user.getId());
-					requirement.setIsLoginUserAsManager(isLoginUserAsManager.toString());
-					
-					
+					requirement.setIsLoginUserAsManager(isLoginUserAsManager.toString());*/
 					
 					resultJson = commonUtil.toJSON(requirement);
 				 
@@ -490,7 +511,6 @@ public class RequirementListRestController {
 				String resultJson = null;
 				
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-				 
 				Timezone timezone = null;
 				if(null != loginOrgLocation.getTimezone()){
 			    	 timezone = timeZoneService.getTimezone(loginOrgLocation.getTimezone().getId());
@@ -563,17 +583,17 @@ public class RequirementListRestController {
 									}
 									requirementSubmission.setCandidateName(candidateName);
 									requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
-									if(requirementSubmission.getFinalizedRate() !=null && !"".equalsIgnoreCase(requirementSubmission.getFinalizedRate())){
+									/*if(requirementSubmission.getFinalizedRate() !=null && !"".equalsIgnoreCase(requirementSubmission.getFinalizedRate())){
 										requirementSubmission.setExpectedCTC(requirementSubmission.getFinalizedRate());
 									}else{
 										requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
-									}
-									
+									}*/
 									
 									requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
 									requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
 									requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
 									requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
+									requirementSubmission.setResumeUUID(requirementSubmission.getCandidateResumes().getResumeUUID());
 									
 									
 									if(null != submissionType && submissionType.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
@@ -588,12 +608,13 @@ public class RequirementListRestController {
 											RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(clientSubmission.getId());
 											if(pastRequirementRateSubmissionNegotiation != null){
 												requirementSubmission.setProposedSubmissionRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+												requirementSubmission.setSubmitToClientRate(pastRequirementRateSubmissionNegotiation.getRequirementsubmissionId().getFinalizedRate());
 											}
 										}
 									}
 									
 									
-										RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
+										/*RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
 										if(pastRequirementRateSubmissionNegotiation != null){
 											if(pastRequirementRateSubmissionNegotiation.getRateInitiatorType().equals(SubmissionRateStatus.VENDOR) || pastRequirementRateSubmissionNegotiation.getRateInitiatorType().equals(SubmissionRateStatus.CLIENT)){
 												requirementSubmission.setProposedSubmissionRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
@@ -601,7 +622,7 @@ public class RequirementListRestController {
 												requirementSubmission.setExpectedCTC(pastRequirementRateSubmissionNegotiation.getExpectedRate());
 											}
 											
-										}
+										}*/
 										
 										
 										
@@ -1353,6 +1374,13 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
    		resultJson = commonUtil.toJSON(uniRequirementList);
    		return resultJson;
    	 }
-        
+     
+        @RequestMapping(value = "/getTimezonesList")
+		public @ResponseBody String getTimezonesList(HttpServletRequest request) throws Exception {
+		 String resultJson = null;
+		 List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
+		 resultJson = commonUtil.toJSON(timezoneList);
+		 return resultJson;
+		}
 }
 

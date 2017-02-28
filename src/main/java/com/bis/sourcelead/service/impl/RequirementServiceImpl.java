@@ -226,6 +226,7 @@ public class RequirementServiceImpl implements RequirementService {
 				requirement.setCreatedBy(user.getUserCode());
 				requirement.setUpdatedBy(user.getUserCode());
 				requirement.setUpdatedDate(commonUtil.currentDate());
+				requirement.setRequirementUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			}
 		    
 			if(orgLocations != null){
@@ -449,7 +450,7 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 			
 			requirement.setStatus(Constants.TEAM_ACTIVE);
-			requirement.setRequirementUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());
+			
 			
 			//requirement status 
 			if(jsonObj.has("saveType")){            
@@ -684,50 +685,7 @@ public class RequirementServiceImpl implements RequirementService {
 								requirementAssignToList.add(requirementAssignTo);
 							}
 						}
-				
-				        /*Long teamId = 0L;
-						Team team = null;
-						if(jsonObj.has("assignedTeamId") && StringUtils.isNotEmpty(jsonObj.getString("assignedTeamId")) && !"undefined".equalsIgnoreCase(jsonObj.getString("assignedTeamId"))){
-							String assignedTeamId = jsonObj.getString("assignedTeamId");
-					    	if(!assignedTeamId.contains("role") && !assignedTeamId.contains("All")){
-					    		teamId = Long.parseLong(assignedTeamId);
-							    team = teamService.getTeamByTeamId(teamId);
-							    // Adding Team Owner as RequirementAssignTo
-							    RequirementAssignTo  requirementAssignTo = new RequirementAssignTo();
-									User assUser = userService.getUserById(team.getOwnerUserId().getId());
-									requirementAssignTo.setAssignUserId(assUser);
-									requirementAssignTo.setRequirementId(requirement);
-									requirementAssignTo.setTeamId(team);
-									UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assUser.getId(),orgLocations.getId());
-									requirementAssignTo.setRoleId(userRole.getRoles());
-									requirementAssignToList.add(requirementAssignTo);
-					    	}
-						}   
-					    // User roleUser = team.getOwnerUserId();
-						if(StringUtils.isNotEmpty(assignedToMaxCount)){
-						int MaxCount = Integer.parseInt(assignedToMaxCount);
-							for (int c = 1; c < MaxCount; c++) {
-								RequirementAssignTo  requirementAssignTo = null;
-								User assUser = userService.getUserById(Long.parseLong(jsonObj.getString("assignUserId"+c)));
-								if(requirement.getId() !=null){
-									 requirementAssignTo = requirementAssignToService.getRequirementAssignToByRequirementIdandAssignedUserId(requirement.getId(), assUser.getId());
-									if(requirementAssignTo == null){
-										requirementAssignTo = new RequirementAssignTo();
-										requirementAssignTo.setTeamId(team);
-									}
-								}else{
-									requirementAssignTo = new RequirementAssignTo();
-									requirementAssignTo.setTeamId(team);
-								}
-								requirementAssignTo.setAssignUserId(assUser);
-								
-								requirementAssignTo.setRequirementId(requirement);
-								UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assUser.getId(),orgLocations.getId());
-								requirementAssignTo.setRoleId(userRole.getRoles());
-								requirementAssignToList.add(requirementAssignTo);
-		
-							}
-						}*/
+				     
 			}
 			requirement.setRequirementAssignTo(requirementAssignToList);
 			//storing assigned team END
@@ -2814,6 +2772,9 @@ public class RequirementServiceImpl implements RequirementService {
 		            	}
 		            	else if(requirementIndex.getTeamAssignUserId()!=null&&Arrays.asList(requirementIndex.getTeamAssignUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
 		            		requirement = getData(requirementIndex,user);
+		            	}
+		            	if(null != requirementIndex.getRequirementUUID()){
+		            		requirement.setRequirementUUID(requirementIndex.getRequirementUUID());
 		            	}
 		            	searchList.add(requirement);
 		            }

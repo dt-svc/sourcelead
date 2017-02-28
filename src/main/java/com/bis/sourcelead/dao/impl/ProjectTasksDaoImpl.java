@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 
@@ -165,5 +166,17 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		
 	}
 
-
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ProjectTasks validateTaskNameByTaskId(Long taskId, String taskName, Long projectId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectTasks projectsTasks where projectsTasks.projectId =:projectId and projectsTasks.taskName =:taskName and projectsTasks.id =:taskId";
+		List<ProjectTasks> projectTasksList =session.createQuery(query) .setString("taskName", taskName).setLong("taskId", taskId).setLong("projectId", projectId).setCacheable(true).list();
+		ProjectTasks projectTasks = null;
+		if(projectTasksList != null && !projectTasksList.isEmpty())
+		{
+			projectTasks = (ProjectTasks) projectTasksList.iterator().next();
+		}
+		return projectTasks;
+	}
 }

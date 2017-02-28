@@ -185,12 +185,12 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			    	   		result = result + '<ul class="list-unstyled list-inline">';
 			    	   		result = result + '<span id="statusDiv">';
 			    	    	if(json.submissionRateStatus != 'ACCEPTED' && json.submissionRateStatus != 'REJECTED'){   
-								result = result + '	<li><i class="fa fa-check labelsuccess" title="Accept" onClick="acceptFun('+submissionId+');"></i>';
+								result = result + '	<li><i class="fa fa-check labelsuccess" title="Accept Applicant Authorization" onClick="acceptFun('+submissionId+');"></i>';
 								result = result + '		<div class="acceptreject-pop" id="accpet-div">';
 								result = result + '		</div>';
 								result = result + '	</li>';
 								
-								result = result + '	<li><i class="fa fa-close labeldanger" title="Reject" onClick="rejectFun('+submissionId+');"></i>';
+								result = result + '	<li><i class="fa fa-close labeldanger" title="Reject Applicant Authorization" onClick="rejectFun('+submissionId+');"></i>';
 								result = result + '		<div class="acceptreject-pop" id="reject">';
 								result = result + '		</div>';
 								result = result + '	</li>';
@@ -333,9 +333,6 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + '<div id="tabb-1" class="new-tabs_inn" style="display: block;">';
 
 		       result = result + '<div class="require_wrap_details">';
-		       if(json.submissionStatus == 'REJECTED'){
-		    	   result = result + '<div ><a href="javascript:void(0)" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';
-		       }
 		       result = result + '<div class="clearfix">';
 			   result = result + '</div> ';        
 				   
@@ -413,27 +410,6 @@ $(".new-tabs a").click(function(event) {
 }
 </script>
 
-<script type="text/javascript">
-function reActivateApplicant(submissionId,candidateId,requirementId){
-	var result = "";
-	var sourceleadUrl ='${sourceleadUrl}';
-	var message = confirm("You are choosing to ReActivate the Applicant");
-	if (message == true) {
-		$.ajax({
-	        type : "POST",
-	         url: sourceleadUrl+"/reActivateRejectedApplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
-	         success :function(data) {
-	               if(data != null && data != 'undefined' && data != ""){
-	            	   getSubmissionDetailsSideBar(submissionId,candidateId,requirementId);
-	                } 
-	                 },
-	              }); 
-		
-	}
-	
-}
-</script>
-
 
 <script>
     $(".viewCandidate_close, .side_mask").click(function() {
@@ -470,13 +446,7 @@ function getInternalInterviewsList(submissionId){
          url: sourceleadUrl+"/getAllInternalInterviews?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
          success :function(data) {
               if(data != null && data != 'undefined' && data != "" && data != '[]'){
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{
+            	
 	                	 $("#internalInterviewsList").empty();
 	                	 var result = "";
                     	 result = result + '<div class="clearfix">';
@@ -532,7 +502,7 @@ function getInternalInterviewsList(submissionId){
 	   					    	result = result + '<i class="fa fa-handshake-o pull-right" title="FeedBack" onclick="interviewFeedback('+report.interviewId.id+',\''+report.interviewTemplateid+'\',\''+report.id+'\');"></i>';	 
 	   					     }
 	   					  }
-	   					     result = result + '<h2>Interview: <span>'+interviewTypeHeader+' '+report.dateOfInterviewStr+' '+report.startTimeStr+' </span></h2>';
+	   					     result = result + '<h2>Interview: <span>'+interviewTypeHeader+' '+report.interviewTimezoneDateStr+' '+report.interviewTimeZoneStartTimeStr+' </span></h2>';
 	                    	result = result + '<div class="content clearfix">';
 	                    	
 	                    	 result = result + '<div id="feedbackdiv'+report.interviewId.id+'" class="require_wrap_table demo" style="display:none;">';
@@ -580,7 +550,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<label class="col-md-5">';
-	                    	 result = result + '<strong>Interview Location</strong>';
+	                    	 result = result + '<strong>Interview Details</strong>';
 	                    	 result = result + '</label>';
 	                    	 result = result + '<p class="col-md-7">'+location+'</p>';
 	                    	 result = result + '</div>';
@@ -670,7 +640,6 @@ function getInternalInterviewsList(submissionId){
 	                             $(this).toggleClass('active').next().slideDown('slow');
 	                         }
 	                     });
-			    	} 
               }/* else{
 	    	         var result ="";
 					 $("#internalInterviewsList").empty();
@@ -756,13 +725,7 @@ function getCustomerInterviewsList(submissionId,requirementId){
          url: sourceleadUrl+"/getAllCustomerInterviews?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&requirementId="+requirementId,        
          success :function(data) {
               if(data != null && data != 'undefined' && data != "" && data != '[]'){
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{
+            		
 	                	 $("#customerInterviewsList").empty();
 	                	 var result = "";
                     	 result = result + '<div class="clearfix">';
@@ -821,7 +784,7 @@ function getCustomerInterviewsList(submissionId,requirementId){
 	                    	 
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<label class="col-md-5">';
-	                    	 result = result + '<strong>Interview Location</strong>';
+	                    	 result = result + '<strong>Interview Details</strong>';
 	                    	 result = result + '</label>';
 	                    	 result = result + '<p class="col-md-7">'+location+'</p>';
 	                    	 result = result + '</div>';
@@ -882,7 +845,6 @@ function getCustomerInterviewsList(submissionId,requirementId){
 	                             $(this).toggleClass('active').next().slideDown('slow');
 	                         }
 	                     });
-			    	} 
               }/* else{
 	    	         var result ="";
 					 $("#customerInterviewsList").empty();
@@ -906,13 +868,7 @@ function getOfferDetails(submissionId){
          url: sourceleadUrl+"/getOfferDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
          success :function(data) {
          if(data != null && data != 'undefined' && data != "" && data != '{}'){
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{
+            		
             			 $("#offerDetails").empty();
             			 var json = JSON.parse(data);
             			 for (var i = 0; i < json.length; i++) { 
@@ -1089,7 +1045,6 @@ function getOfferDetails(submissionId){
 		                         }
 		                     });
 			    	} 
-                }
          } else{
 				  $("#offerDetails").empty();
                }

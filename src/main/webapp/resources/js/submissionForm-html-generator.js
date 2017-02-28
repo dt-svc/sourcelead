@@ -384,7 +384,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             		 '<option value="INR">INR</option>'+
             		 '<option value="AUD">AUD</option>'+
             		 '<option value="USD">USD</option>'+
-            		 '<option value="GPB">GPB</option>'+
+            		 '<option value="GBP">GBP</option>'+
             		 '<option value="SGD">SGD</option>'+
                      '<option value="EUR">EUR</option>'+
                      '</select>&nbsp;';
@@ -412,7 +412,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             		 '<option value="INR">INR</option>'+
             		 '<option value="AUD">AUD</option>'+
             		 '<option value="USD">USD</option>'+
-            		 '<option value="GPB">GPB</option>'+
+            		 '<option value="GBP">GBP</option>'+
             		 '<option value="SGD">SGD</option>'+
                      '<option value="EUR">EUR</option>'+
                      '</select>&nbsp;';
@@ -510,6 +510,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                  }
              }
              init();
+             setRateTypesByLocation();
              changeRateLabels();
              var d = new Date();
              var year = d.getFullYear() - 18;
