@@ -128,7 +128,8 @@ public class CandidateIndex implements Serializable {
 	private String reqSubmissionId;
 	
 	private boolean isCandidateAdedd;
-
+	
+	private Long recruiterUserId;
 	
 	private double finalScore;
 	
@@ -617,6 +618,15 @@ public class CandidateIndex implements Serializable {
 	public void setFinalScore(double finalScore) {
 		this.finalScore = finalScore;
 	}
+
+	public Long getRecruiterUserId() {
+		return recruiterUserId;
+	}
+
+	public void setRecruiterUserId(Long recruiterUserId) {
+		this.recruiterUserId = recruiterUserId;
+	}
+
 
 	}
 
