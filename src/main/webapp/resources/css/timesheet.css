@@ -2540,9 +2540,10 @@ padding-right:10px;
 .openPostBtns a.refer {
 	background-color:#375d81;
 }
-.openPostBtns a:hover {
+.openPostBtns a:hover, .openPostBtns a.appliedJob {
 	background-color:#0cc2aa; color: #FFF;
 }
+
 .OpenJob {
 	padding:15px 20px; width: 70%; float: left;
 }

@@ -27,5 +27,7 @@ public interface RequirementReferService {
 	List<RequirementRefer> getReferedToMeRequirementsByUserId(Long userId,Integer offset,Integer maxResults,String jobTitle,String location,String postedOn) throws Exception;
 	
 	RequirementRefer getRequirementReferById(Long referId) throws Exception;
+	
+	RequirementRefer getAppliedRequirementReferByRequirementIdAndUserId(Long requirementId,Long userId) throws Exception;
 
 }

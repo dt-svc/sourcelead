@@ -233,4 +233,10 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		return requirementReferDao.getRequirementReferById(referId);
 	}
 
+	@Override
+	public RequirementRefer getAppliedRequirementReferByRequirementIdAndUserId(Long requirementId, Long userId)
+			throws Exception {
+		return requirementReferDao.getAppliedRequirementReferByRequirementIdAndUserId(requirementId, userId);
+	}
+
 }

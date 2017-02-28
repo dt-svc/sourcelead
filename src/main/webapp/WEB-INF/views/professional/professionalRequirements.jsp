@@ -644,7 +644,12 @@ function requirementsList(offset){
 				 				}
 				 				
 				 				if(requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'Y'){
-				 					result = result +'<a href="javascript:void(0)" class="jobApply">Applied</a>';
+				 					if(requirements.isReferedRequiremetnApplied == 'Y'){
+				 						result = result +'<a href="javascript:void(0)" class="jobApply appliedJob">Applied</a>';
+				 					}else{
+				 						result = result +'<a href="javascript:void(0)" class="jobApply">Applied</a>';
+				 					}
+				 					
 				 				}
 				 				
 				 				
@@ -687,6 +692,11 @@ function requirementsList(offset){
 			 					result = result +'<div class="openPostDate">';
 			 					result = result +'<i class="fa fa-clock-o"></i> Applied on : <b>'+requirements.requirementAppliedDate+'</b>';
 			 					result = result +'</div>';
+			 					if(requirements.referedUser != '' && requirements.referedUser != null && requirements.referedUser != 'undefined'){
+				 					result = result +'<div class="applShare Refer">';
+					 				result = result +'Referred by : '+requirements.referedUser+'';
+					 				result = result +'</div>';
+				 				}
 			 					result = result +'</div>';
 			 					result = result +'</div>';
 			 				  

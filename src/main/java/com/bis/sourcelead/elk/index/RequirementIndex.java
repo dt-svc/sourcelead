@@ -109,6 +109,8 @@ public class RequirementIndex {
 	
 	private Integer noOfSearchHits;
 	
+	private String isReferedRequiremetnApplied;
+	
 	
 	
 	
@@ -523,6 +525,14 @@ public class RequirementIndex {
 
 	public void setNoOfSearchHits(Integer noOfSearchHits) {
 		this.noOfSearchHits = noOfSearchHits;
+	}
+
+	public String getIsReferedRequiremetnApplied() {
+		return isReferedRequiremetnApplied;
+	}
+
+	public void setIsReferedRequiremetnApplied(String isReferedRequiremetnApplied) {
+		this.isReferedRequiremetnApplied = isReferedRequiremetnApplied;
 	}
 	
 }

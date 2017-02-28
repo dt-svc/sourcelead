@@ -224,4 +224,23 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 			return null;
 		}
    	}
+
+
+	@Override
+	@Transactional
+	public RequirementRefer getAppliedRequirementReferByRequirementIdAndUserId(Long requirementId, Long userId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<RequirementRefer> requirementRefer = new ArrayList<RequirementRefer>();
+		logger.debug("getAppliedRequirementReferByRequirementIdAndUserId start");
+		requirementRefer = session.createQuery("from RequirementRefer refer left join fetch refer.referFromUser user left join fetch refer.requirementId requirement "
+				+ "left join fetch refer.referToUser toUser where toUser.id = :userId and requirement.id = :requirementId and refer.referStatus = 'Applied' " ).setLong("userId", userId).setLong("requirementId", requirementId).setCacheable(true).list();
+		logger.debug("getAppliedRequirementReferByRequirementIdAndUserId end");
+		if (requirementRefer.size() > 0) {
+			return requirementRefer.get(0);
+		} else {
+			return null;
+		}
+   	}
 }
