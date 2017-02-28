@@ -640,7 +640,7 @@ $(document).ready(function () {
                   <c:set var="val" value="${requirement.isClientJob}"/>
                   <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
-			   				<select class="chosen-select form-control" disabled="disabled" name="selectContact" data-validation-optional="true" field-name = "Client Contact" id="selectContact">
+			   				<select class="chosen-select form-control" disabled="disabled" data-validation-optional="true" field-name = "Client Contact" >
                       			 <c:if test="${fn:length(clientContactList) gt 0}">
 								   <c:forEach var="report" items="${clientContactList}">
 			         		<%-- <option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocId.SpocUser.firstName}&nbsp;${report.spocId.SpocUser.lastName}</option> --%>
@@ -648,7 +648,7 @@ $(document).ready(function () {
 					    		 </c:forEach>
 								</c:if>
                       			 <c:if test="${fn:length(clientContactList) lt 1}">
-					    		 	<option value=''>${clientContactWithOwner}</option>
+					    		 	<option >${clientContactWithOwner}</option>
 					    		 </c:if>
                     		</select>
 						 </c:when>
@@ -2028,8 +2028,12 @@ window.ids = new Array();
 function handleClick() {
 	ids = [];
 	$("input:checkbox[name=team]:checked").each(function(){
+		$('span.jquery_form_error_message').hide();
 		ids.push($(this).val());
 	});
+	if(ids.length < 1){
+		$('span.jquery_form_error_message').show();
+	}
 }
 </script>
 
@@ -2169,10 +2173,16 @@ function pagination(){
 function assignMembers() {
 	handleTeamRoleClick();
 	var result = "";
-	var oTable = $('#example').dataTable();
+	var oTable = $('#example').DataTable();
 	var rowcollection =  oTable.$(".myCheckbox:checked", {"page": "all"});
-	var totalCount = $("[type='checkbox']:checked").length;
+	//var totalCount = $("[type='checkbox']:checked").length;
 	var count = 1;
+	var totalCount = oTable
+    .rows()
+    .nodes()
+    .to$()
+	.find('input[type="checkbox"].myCheckbox:checked').length;
+	
 	if(totalCount == 0){
 		$('span.jquery_form_error_message').show();
 	}else{

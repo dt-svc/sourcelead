@@ -409,7 +409,9 @@ public class RequirementListRestController {
 					
 					List<RequirementApproverHierarchy> list = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(Long.parseLong(requirementId));
 					
-					Integer highestLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(Long.parseLong(requirementId));
+/*					Integer highestLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(Long.parseLong(requirementId));
+*/					
+					
 					ArrayList<String> ar = new ArrayList<String>();
 					if(list !=null && list.size() >0){
 						StringBuilder sb = new StringBuilder();
@@ -420,21 +422,24 @@ public class RequirementListRestController {
 								requirement.setRejectReasonForRequirement(sb.append(approverN.getRejectedReason()).toString());
 								break;
 							}
+							requirement.setApprovalMechanismType(approverN.getHierarchyType().toString());
 						}
-						requirement.setHighestLevel(highestLevel);
 						requirement.setApproverNames(ar);
 					}else{
 						
 						requirement.setApproverNames(ar);
 					}
 					
-					Boolean isLoginUserAsTeamMember =   requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(Long.parseLong(requirementId), user.getId());
+					
+					// UnWanted Code 
+					
+					/*Boolean isLoginUserAsTeamMember =   requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(Long.parseLong(requirementId), user.getId());
 					requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
 					
 					requirement.setIsLoginUserAsApprover(isLoginUserAsApprover.toString());
 					
 					Boolean isLoginUserAsManager =   requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(Long.parseLong(requirementId), user.getId());
-					requirement.setIsLoginUserAsManager(isLoginUserAsManager.toString());
+					requirement.setIsLoginUserAsManager(isLoginUserAsManager.toString());*/
 					
 					resultJson = commonUtil.toJSON(requirement);
 				 

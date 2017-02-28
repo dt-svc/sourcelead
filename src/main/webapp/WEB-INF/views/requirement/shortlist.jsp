@@ -86,11 +86,11 @@ function candidateShortList(requirementId){
 				        	result = result + '<td><div><span>--</span></div></td>';
 			    	     }
 			           
-			           if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-			        	   result = result + '<td><div><span>'+report.expectedCTC+'</span></div></td>';
+			           if(report.finalizedRate != null && report.finalizedRate != '' && report.finalizedRate != 'undefined'){
+			        	   result = result + '<td><div><span>'+report.finalizedRate+'</span></div></td>';
 				           }
 				       else{
-				        	result = result + '<td><div><span>--</span></div></td>';
+				    	   result = result + '<td><div><span>--</span></div></td>';
 			    	     }
 			           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
 			        	   result = result + '<td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
