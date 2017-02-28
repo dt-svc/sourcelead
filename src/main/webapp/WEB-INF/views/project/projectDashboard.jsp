@@ -103,7 +103,7 @@ overflow-x: auto;
 		<%-- <c:if test="${!empty projectsList}"> --%>
 		<div class="project_wrap">
 		
-		<div class="pull-left cand-advsrche">
+		<%-- <div class="pull-left cand-advsrche">
 			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();">
 			  Advanced Search&nbsp;&nbsp;
 			  <i class="fa fa-search"></i>
@@ -248,7 +248,7 @@ overflow-x: auto;
 				  
 			  </form:form>
 			  </div>
-      </div>
+      </div> --%>
 		
 		
         <div class="timesheet_head">
@@ -339,9 +339,11 @@ function projectsList(searchValue,searchresult,projectId,projectName,startDate,e
 		  filter();
 		  
 	  }else{
-		searchProject();
-		$('input[name=projectStatus]').attr('checked',false);
-		$('input[name=clientNameById]').attr('checked',false);
+		  	$('input[name=projectStatus]').attr('checked',false);
+		  	$("#c6").prop("checked", true);
+			$('input[name=clientNameById]').attr('checked',false);
+			filter();
+		/* searchProject(); */
 		}
 }
 </script>
@@ -576,17 +578,17 @@ function filter(){
    		    		/*result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.employeeStartDateStr+'\',\''+report.employeeEndDateStr+'\',\''+report.projectStatus+'\');"><span class="tbldata-dotdot-vsm">'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';*/
 
    		    		result = result +'<td data-title="Manager">';
-   		    		result = result +'<div><span title='+report.managerLevel1+'>';
+   		    		result = result +'<div>';
    		    		if(report.managerLevel1 !=null && report.managerLevel1 !='' && report.managerLevel1 !='undefined'){
-   		    			result = result +report.managerLevel1;
+   		    			result = result +'<span title="'+report.managerLevel1+'">'+report.managerLevel1+'</span>';
    		    		}
    		    		if(report.managerLevel1 !=null && report.managerLevel1 !='' && report.managerLevel1 !='undefined' && report.managerLevel2!=null && report.managerLevel2!='' && report.managerLevel2 !='undefined'){
    		    			result = result + " , ";
    		    		}
    		    		if(report.managerLevel2!=null && report.managerLevel2!='' && report.managerLevel2 !='undefined'){
-   		    			result = result +report.managerLevel2;
+   		    			result = result +'<span title="'+report.managerLevel2+'">'+report.managerLevel2+'</span>'; 
    		    		} 
-   		    		result = result +'</span></div>';
+   		    		result = result +'</div>';
    		    		result = result +'</td>';
    		    		
    		    		
@@ -716,6 +718,10 @@ $(document).ready(function() {
 	    $("#excludeKeyWord").empty(); */
 	    $("#projectIdAdvanced").empty();
 	    $("#projectNameAdvanced").empty();
+	    $("#projectManagerAdvanced").empty();
+	    $("#clientsAdvanced").empty();
+	    $("#employeeNameAdvanced").empty();
+	    $("#employeeEmailAdvanced").empty();
 	}
 </script>
 
@@ -838,7 +844,7 @@ $(document).ready(function() {
 		    });
 		    
 		    
-		    /* var selectfive, chosenfive;
+		    var selectfive, chosenfive;
 		    selectfive = $("#projectManagerAdvanced");
 		    selectfive.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    chosenfive = selectfive.data('chosen');
@@ -860,7 +866,7 @@ $(document).ready(function() {
 		    });
 		    
 		    
-		    var selectsix, chosensix;
+		    /* var selectsix, chosensix;
 		    selectsix = $("#invoiceFrequencyAdvanced");
 		    selectsix.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    chosensix = selectsix.data('chosen');
@@ -879,7 +885,7 @@ $(document).ready(function() {
 	        		$("#invoiceFrequencyAdvanced").trigger("chosen:updated");
 	        		
 		        }
-		    });
+		    }); */
 		    
 		    
 		    var selectseven, chosenseven;
@@ -903,7 +909,7 @@ $(document).ready(function() {
 		        }
 		    });
 		    
-		    
+		    /* 
 		    var selecteight, choseneight;
 		    selecteight = $("#statusAdvanced");
 		    selecteight.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
@@ -923,7 +929,7 @@ $(document).ready(function() {
 	        		$("#statusAdvanced").trigger("chosen:updated");
 	        		
 		        }
-		    });
+		    }); */
 		    
 		    
 		    var selectnine, chosennine;
@@ -967,7 +973,7 @@ $(document).ready(function() {
 	        		$("#employeeEmailAdvanced").trigger("chosen:updated");
 	        		
 		        }
-		    }); */
+		    });
 		    
 				for (var selector in config) {
 				  $(selector).chosen(config[selector]);

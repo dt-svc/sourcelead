@@ -275,24 +275,30 @@ public class VendorController {
 			
 			MultipartFile multipartFile = uploadedFile.getFile();
 			if(multipartFile != null){
-				String fileName = multipartFile.getOriginalFilename();
-				
-				
-				String isFileCreated = clientImportsService.clientBulkSaving(multipartFile,user,orgLocation,org,uploadedFile.getEmail(),responderType);
-				
-				if (fileName.equalsIgnoreCase(isFileCreated)) {
-					model.addAttribute("errorMessage", "Please download Error file here");
-		             model.addAttribute("fileName", fileName);
-					return "upload/uploadVendorForm";
-				}/*else if("FailureUsersForCheck.xls".equalsIgnoreCase(isFileCreated)){
-					model.addAttribute("errorMessage", "Please download Error file here");
-		            model.addAttribute("fileName", "xls");
-					return "upload/uploadVendorForm";
-				}else if("worngFileName".equalsIgnoreCase(isFileCreated)){
-					model.addAttribute("fileNameWrong", "File name should follow as vendors_contacts_Import/vendors_import_template with .xls or .xlsx");
+				String fn = multipartFile.getOriginalFilename(); // vendors_contacts_Import vendors_import_template.xls
+				String fileName = getFileName(fn);
+				if(fileName.contains(Constants.VENDORS_CONTACTS_IMPORT_XLS) || fileName.contains(Constants.VENDORS_CONTACTS_IMPORT_XLSX) || fileName.contains(Constants.VENDORS_IMPORT_TEMPLATE_XLS) || fileName.contains(Constants.VENDORS_IMPORT_TEMPLATE_XLSX)){
+					String isFileCreated = clientImportsService.clientBulkSaving(multipartFile,user,orgLocation,org,uploadedFile.getEmail(),responderType);
+					
+					if (fileName.equalsIgnoreCase(isFileCreated)) {
+						model.addAttribute("errorMessage", "Please download Error file here");
+			             model.addAttribute("fileName", fileName);
+						return "upload/uploadVendorForm";
+					}/*else if("FailureUsersForCheck.xls".equalsIgnoreCase(isFileCreated)){
+						model.addAttribute("errorMessage", "Please download Error file here");
+			            model.addAttribute("fileName", "xls");
+						return "upload/uploadVendorForm";
+					}*/else if("worngFileName".equalsIgnoreCase(isFileCreated)){
+						model.addAttribute("fileNameWrong", "File name should follow as vendors_contacts_Import/vendors_import_template with .xls or .xlsx");
+			            model.addAttribute("fileName", "xls");
+						return "upload/uploadClientForm";
+					}
+				}else{
+					model.addAttribute("fileNameWrong", "Oops.! It's Not Vendor template");
 		            model.addAttribute("fileName", "xls");
 					return "upload/uploadClientForm";
-				}*/
+				}
+				
 			}else{
 				return "upload/uploadClientForm";
 			}
@@ -312,34 +318,16 @@ public class VendorController {
 		public void downloadFile(@PathVariable String fileName,HttpServletResponse response) throws IOException {
 			
 				File file;
-//				vendors_import_template.xls
-//				vendors_contacts_Import.xls
-				StringBuilder finalFileName = new StringBuilder();
-				if(fileName.contains("(")){
-				    String fileArray [] = fileName.split("\\.");
-				    String fileName1 = fileArray[0].substring(0, fileArray[0].indexOf("("));
-				    finalFileName.append(fileName1).append(".").append(fileArray[1]);
-				    String finalValue = finalFileName.toString().replaceAll("\\s", "");
-				    if(Constants.VENDORS_IMPORT_TEMPLATE_XLS.equalsIgnoreCase(finalValue)){
+				String fn = getFileName(fileName);
+					if(Constants.VENDORS_IMPORT_TEMPLATE_XLS.equalsIgnoreCase(fn)){
 						 file = new File("vendors_import_template.xls");
-					}else if(Constants.VENDORS_CONTACTS_IMPORT_XLS.equalsIgnoreCase(finalValue)){
+					}else if(Constants.VENDORS_CONTACTS_IMPORT_XLS.equalsIgnoreCase(fn)){
 						 file = new File("vendors_contacts_Import.xls");
-					}else if(Constants.VENDORS_IMPORT_TEMPLATE_XLSX.equalsIgnoreCase(finalValue)){
+					}else if(Constants.VENDORS_IMPORT_TEMPLATE_XLSX.equalsIgnoreCase(fn)){
 						file = new File("vendors_import_template.xlsx");
 					}else{
 						file = new File("vendors_import_template.xlsx");
 					}
-				}else{
-					if(Constants.VENDORS_IMPORT_TEMPLATE_XLS.equalsIgnoreCase(fileName)){
-						 file = new File("vendors_import_template.xls");
-					}else if(Constants.VENDORS_CONTACTS_IMPORT_XLS.equalsIgnoreCase(fileName)){
-						 file = new File("vendors_contacts_Import.xls");
-					}else if(Constants.VENDORS_IMPORT_TEMPLATE_XLSX.equalsIgnoreCase(fileName)){
-						file = new File("vendors_import_template.xlsx");
-					}else{
-						file = new File("vendors_import_template.xlsx");
-					}
-				}
 				
 				String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 				if (mimeType == null) {
@@ -354,5 +342,24 @@ public class VendorController {
 				inputStream.close();
 				response.getOutputStream().close();
 				response.getOutputStream().flush();	
+		}
+	/**	
+	 * removing special charactes from file name
+	 * @param file
+	 * @return String
+	 */
+		private String getFileName(String file) {
+			String finalName;
+			if(file.contains("(")){
+					StringBuilder sb = new StringBuilder();
+				    String fileArray [] = file.split("\\.");
+				    String fileName1 = fileArray[0].substring(0, fileArray[0].indexOf("("));
+				    sb.append(fileName1).append(".").append(fileArray[1]);
+				    finalName = sb.toString().replaceAll("\\s", "");
+			}else{
+				finalName = file;
+			}
+			return finalName; 
+			
 		}
 }

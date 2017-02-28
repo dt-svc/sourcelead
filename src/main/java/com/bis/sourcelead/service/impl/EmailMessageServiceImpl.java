@@ -188,6 +188,11 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			if(null != emailMessage.getEmailType() && emailMessage.getEmailType().equalsIgnoreCase(Constants.EMAIL_CAMPAIGN)){
 				message.setFrom(new InternetAddress(emailMessage.getFromEmail(), emailMessage.getFromName()));
 				message.setRecipients(Message.RecipientType.BCC, iAdressArray);
+			}
+			//here mail forward from custom user mail(not with default mail) by prasad salina
+			else if(null != emailMessage.getEmailType() && emailMessage.getEmailType().equalsIgnoreCase(Constants.CLIENTORVENDORMAIL)){
+				message.setFrom(new InternetAddress(emailMessage.getFromEmail(), emailMessage.getFromName()));
+				message.setRecipients(Message.RecipientType.TO, iAdressArray);
 			}else{
 				message.setFrom(new InternetAddress(username, emailMessage.getFromName()));
 				message.setRecipients(Message.RecipientType.TO, iAdressArray);

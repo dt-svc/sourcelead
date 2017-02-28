@@ -240,7 +240,8 @@ public class UserRoleDaoImpl implements UserRoleDao {
        
 		String from = "from UserRole userRole where "; 
 		
-		String subQuery = "userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1' " ;
+		String subQuery = "userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1' "
+				+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' " ;
 		params.put("locationId",locationId);
 		params.put("userId",userId);
 		subquerys.add(subQuery);

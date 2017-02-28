@@ -148,7 +148,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			params.put("level1",1);
 			params.put("level2",2);
 			
-			String subQuery4 = "requirement.managerUserId.id = :managerUserId and requirement.requirementSubmissionStatus <> 'DRAFT' and requirement.requirementSubmissionStatus <> 'SUBMITTED'  ";
+			String subQuery4 = "requirement.managerUserId.id = :managerUserId and requirement.requirementSubmissionStatus <> 'DRAFT'";
 			params.put("managerUserId",user.getId());
 			
 			String subQuery5 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId)) and requirement.requirementSubmissionStatus <> 'DRAFT' and requirement.requirementSubmissionStatus <> 'SUBMITTED'  ";
@@ -311,8 +311,15 @@ public class RequirementDaoImpl implements RequirementDao {
 				params.put("orgLocationId",orgLocationId);
 			}
 		}else{
-			subQuery = "where requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where  ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT')  and requirement.orgLocationId.id =:orgLocationId  ";
-			params.put("orgLocationId",orgLocationId);
+			String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where  ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT') ";
+			
+			String subQuery2 = "requirement.managerUserId.id = :managerUserId and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
+			params.put("managerUserId",userId);
+			
+			if(subQuery1 != "" || subQuery2 !=""){
+				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+")) ";
+				params.put("orgLocationId",orgLocationId);
+			}
 		}
 		
 		
@@ -765,7 +772,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Requirement getRequirementByRequirementUUID(String requirementUUID) throws Exception {
     Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Requirement requirement left join fetch requirement.parentRequirement left join fetch requirement.clientId  orgrelation left join fetch orgrelation.responderLocationId orgLocation  where requirement.requirementUUID =:requirementUUID";
+		String query = "from Requirement requirement left join fetch requirement.orgLocationId left join fetch requirement.parentRequirement left join fetch requirement.clientId  orgrelation left join fetch orgrelation.responderLocationId orgLocation  where requirement.requirementUUID =:requirementUUID";
 		List requirementList = session.createQuery(query).setString("requirementUUID", requirementUUID).setCacheable(true).list();
 		
 		Requirement requirement = null;

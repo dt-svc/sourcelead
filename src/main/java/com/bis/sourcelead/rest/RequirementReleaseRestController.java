@@ -30,6 +30,7 @@ import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 /**
  * 
@@ -85,9 +86,9 @@ public class RequirementReleaseRestController {
 		List<OrgSpoc>  contactsList = null;	
 		    for (OrgRelations orgRelation : vandorsListByOrgLocationId) {
 		    	
-		    	contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(user.getId(),orgLocations.getId(), "Client","Active",null,"Accepted");
+		    	contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(user.getId(),orgLocations.getId(), "Client","Active,New,Contracted",null,"");
 		    	
-		    	for (OrgSpoc orgSpoc : contactsList) {
+		    	for (OrgSpoc orgSpoc : contactsList) {/*
 		    		
 
 					if(orgSpoc.getSpocUser().getId().longValue() == user.getId().longValue() || orgSpoc.getOwnerUser().getId().longValue() == user.getId().longValue()){
@@ -107,7 +108,6 @@ public class RequirementReleaseRestController {
 							}
 		    				 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
 		    				 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
-		    				// orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
 		    				 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
 		    				 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
 						}
@@ -127,7 +127,6 @@ public class RequirementReleaseRestController {
 							}
 								 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
 								 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
-								 //orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
 								 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
 								 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
 							}
@@ -184,22 +183,9 @@ public class RequirementReleaseRestController {
 					
 					orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
 					orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
-					orgSpoc.setOrgRelationId(orgSpoc.getOrgRelations().getId());
+					orgSpoc.setOrgRelationId(orgSpoc.getOrgRelations().getId());*/
 		    	}
-					/*if(orgRelation.getLocationId().getId() == orgLocations.getId()){
-						contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Client");
-					}
-					if(orgRelation.getResponderLocationId().getId() == orgLocations.getId()){
-						contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Vendor");
-					}*/
 					
-					/*for (Iterator<OrgSpoc> it = contactsList.iterator(); it.hasNext(); ) {
-
-						OrgSpoc orgSpoc = it.next();
-					    if ((vendorsRelationId != null && !Arrays.asList(vendorsRelationId).contains(orgSpoc.getOrgRelations().getId().toString())) || (orgSpoc.getSpocStatus().equalsIgnoreCase("In-Active"))) {
-					       it.remove();
-					    }
-					}*/
 			}
 		    if(contactsList != null){
 		    	for(OrgSpoc contact : contactsList){
@@ -246,7 +232,7 @@ public class RequirementReleaseRestController {
 					//List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Client");
 					//List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgId(orgRelation.getId());
 					//List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgIdAndInvitationStatusAndSpocStatus(orgRelation.getId(),"Accepted","Active");
-					List<OrgSpoc> contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(user.getId(),orgLocations.getId(), "Client","Active",orgRelation.getId().toString(),"Accepted");
+					List<OrgSpoc> contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(user.getId(),orgLocations.getId(), "Client","Active,New,Contracted",orgRelation.getId().toString(),"");
 					int nonAssignedCount = 0;
 					orgRelation.setNoOfContatcs(0); 
 					if(!contactsList.isEmpty()){
@@ -279,7 +265,7 @@ public class RequirementReleaseRestController {
 					//List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Vendor");
 					//List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgId(orgRelation.getId());
 					//List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgIdAndInvitationStatusAndSpocStatus(orgRelation.getId(),"Accepted","Active");
-					List<OrgSpoc> contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(user.getId(),orgLocations.getId(), "Client","Active",orgRelation.getId().toString(),"Accepted");
+					List<OrgSpoc> contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(user.getId(),orgLocations.getId(), "Client","Active,New,Contracted",orgRelation.getId().toString(),"");
 					int nonAssignedCount = 0;
 					orgRelation.setNoOfContatcs(0); 
 					if(!contactsList.isEmpty()){
@@ -346,119 +332,12 @@ public class RequirementReleaseRestController {
 			if(vendors != null &&  vendors.length>0 && vendors[0] != null && vendors[0] != ""){
 				for(String vendor   : vendors){
 					
-					//List<OrgSpoc> orgSpocList = orgSpocService.getAllContactsbyOrgId(Long.parseLong(vendor));
 					
 					OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(vendor));
-					/*Long locationId = null;
-					if(StringUtils.equals(orgRelations.getInitiatorType(), "Vendor")){
-						locationId = orgRelations.getLocationId().getId();
-					}else if(StringUtils.equals(orgRelations.getInitiatorType(), "Client")){
-						locationId = orgRelations.getResponderLocationId().getId();
-					}
 					
-					List<OrgSpoc> orgSpocList = orgSpocService.getAllContactsbyOrgRelationIdAndLocationId(Long.parseLong(vendor), locationId, orgRelations.getInitiatorType());*/
-					
-					
-					 List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(loginUser.getId(),loginOrgLocation.getId(), "Client","Active",vendor,"Accepted");
+					 List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(loginUser.getId(),loginOrgLocation.getId(), "Client","Active",vendor,"");
 					
 					for(OrgSpoc orgSpoc : vandorsContactListByOrgLocationId){
-						
-						if(orgSpoc.getSpocUser().getId().longValue() == loginUser.getId().longValue() || orgSpoc.getOwnerUser().getId().longValue() == loginUser.getId().longValue()){
-							//if login user is spoc
-							if(orgSpoc.getSpocUser().getId().longValue() == loginUser.getId().longValue()){
-								if(orgSpoc.getOwnerUser().getFirstName() != null && orgSpoc.getOwnerUser().getFirstName() != "" && orgSpoc.getOwnerUser().getLastName() != null && orgSpoc.getOwnerUser().getLastName() != "" ){
-									StringBuilder spocNameSB = new StringBuilder();
-									orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
-								}else{
-									orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName());
-								}
-								if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
-									StringBuilder ownerNameSB = new StringBuilder();
-									orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
-								}else{
-									orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName());
-								}
-			    				 orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
-			    				 orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
-			    				// orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
-			    				 orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
-			    				 orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
-							}
-							//if login user is Owner
-							else if(orgSpoc.getOwnerUser().getId().longValue() == loginUser.getId().longValue()){
-								if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
-									StringBuilder spocNameSB1 = new StringBuilder();
-									orgSpoc.setSpocName(spocNameSB1.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
-								}else{
-									orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName());
-								}
-								if(orgSpoc.getOwnerUser().getFirstName() != null && orgSpoc.getOwnerUser().getFirstName() != "" && orgSpoc.getOwnerUser().getLastName() != null && orgSpoc.getOwnerUser().getLastName() != "" ){
-									StringBuilder ownerNameSB1 = new StringBuilder();
-									 orgSpoc.setOwnerName(ownerNameSB1.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
-								}else{
-									orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName());
-								}     
-									 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
-									 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
-									 //orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
-									 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
-									 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
-								}
-								
-							 
-						}else{
-							if(orgSpoc.getInitiatorLocationId().getId().longValue() == loginOrgLocation.getId().longValue() ){
-								if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
-									StringBuilder spocNameSB2 = new StringBuilder();
-									orgSpoc.setSpocName(spocNameSB2.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
-								}else{
-									orgSpoc.setSpocName(orgSpoc.getSpocUser().getFirstName());
-								}
-								
-								if(orgSpoc.getOwnerUser().getFirstName() != null && orgSpoc.getOwnerUser().getFirstName() != "" && orgSpoc.getOwnerUser().getLastName() != null && orgSpoc.getOwnerUser().getLastName() != "" ){
-									StringBuilder ownerNameSB2 = new StringBuilder();
-									orgSpoc.setOwnerName(ownerNameSB2.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
-								}else{
-									orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName());
-								}
-								 orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
-								 orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
-								 orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
-								 orgSpoc.setUserId(orgSpoc.getSpocUser().getId());
-							 }
-							if(orgSpoc.getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()){
-								if(orgSpoc.getOwnerUser().getFirstName() != null && orgSpoc.getOwnerUser().getFirstName() != "" && orgSpoc.getOwnerUser().getLastName() != null && orgSpoc.getOwnerUser().getLastName() != "" ){
-									StringBuilder spocNameSB3 = new StringBuilder();
-									orgSpoc.setSpocName(spocNameSB3.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName()).toString());
-								}else{
-									orgSpoc.setSpocName(orgSpoc.getOwnerUser().getFirstName());
-								}
-								
-								if(orgSpoc.getSpocUser().getFirstName() != null && orgSpoc.getSpocUser().getFirstName() != "" && orgSpoc.getSpocUser().getLastName() != null && orgSpoc.getSpocUser().getLastName() != "" ){
-									StringBuilder ownerNameSB3 = new StringBuilder();
-									orgSpoc.setOwnerName(ownerNameSB3.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
-								}else{
-									orgSpoc.setOwnerName(orgSpoc.getSpocUser().getFirstName());
-								}
-							    orgSpoc.setSpocEmail(orgSpoc.getOwnerUser().getEmail());
-							    orgSpoc.setSpocMobilePhone(orgSpoc.getOwnerUser().getMobilePhone());
-							    orgSpoc.setTempOwnerId(orgSpoc.getSpocUser().getId());
-							    orgSpoc.setUserId(orgSpoc.getOwnerUser().getId());
-							}
-						}
-						if(orgSpoc.getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()){
-							orgSpoc.setSpocLocationId(orgSpoc.getInitiatorLocationId().getId());
-							orgSpoc.setOrgName(orgSpoc.getInitiatorLocationId().getOrg().getOrgName());
-						}
-						if(orgSpoc.getInitiatorLocationId().getId().longValue() == loginOrgLocation.getId().longValue() ){
-							orgSpoc.setSpocLocationId(orgSpoc.getResponderLocationId().getId());
-							orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
-						}
-						
-						orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
-						orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
-						orgSpoc.setOrgRelationId(orgSpoc.getOrgRelations().getId());
-						
 					    Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(requirementId, orgSpoc.getId());
 					    if(isJobReleased.toString().equalsIgnoreCase("false")){
 					    	Requirement requirement  = new Requirement();
@@ -471,11 +350,11 @@ public class RequirementReleaseRestController {
 				}
 			}
 			
-			if(null != isPublics && !"".equalsIgnoreCase(isPublics)){
+			if(null != isPublics && !"".equalsIgnoreCase(isPublics) && "undefined" == isPublics){
 				parentRequirement.setIsPublic(isPublics);
 				parentRequirement.setPostedOrgName(org.getOrgName());
 			}
-			if(null != isCrowdScourcing && !"".equalsIgnoreCase(isCrowdScourcing)){
+			if(null != isCrowdScourcing && !"".equalsIgnoreCase(isCrowdScourcing) && "undefined" == isCrowdScourcing){
 				parentRequirement.setIsCrowdSourcing(isCrowdScourcing);
 				parentRequirement.setPostedOrgName(org.getOrgName());
 			}
@@ -511,7 +390,7 @@ public class RequirementReleaseRestController {
 			requirement.setOrgLocationId(orgSpoc.getResponderLocationId());
 		}*/
 		
-		if(orgSpoc != null && orgSpoc.getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()){
+		/*if(orgSpoc != null && orgSpoc.getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()){
 			requirement.setOrgLocationId(orgSpoc.getInitiatorLocationId());
 			requirement.setManagerUserId(orgSpoc.getOwnerUser());
 			requirement.setUpdatedBy(orgSpoc.getOwnerUser().getUserCode());
@@ -522,8 +401,12 @@ public class RequirementReleaseRestController {
 			requirement.setManagerUserId(orgSpoc.getSpocUser());
 			requirement.setUpdatedBy(orgSpoc.getSpocUser().getUserCode());
 			requirement.setCreatedBy(orgSpoc.getSpocUser().getUserCode());
-		}
+		}*/
 		
+		requirement.setOrgLocationId(orgSpoc.getVendorLocationId());
+		requirement.setManagerUserId(orgSpoc.getVendorUser());
+		requirement.setUpdatedBy(orgSpoc.getVendorUser().getUserCode());
+		requirement.setCreatedBy(orgSpoc.getVendorUser().getUserCode());
 		
 		requirement.setJobTitle(parentRequirement.getJobTitle());
 		requirement.setJobType(parentRequirement.getJobType());
@@ -547,9 +430,14 @@ public class RequirementReleaseRestController {
 		requirement.setIsTemplate("N");
 		requirement.setSubmissionTemplateJsonString(parentRequirement.getSubmissionTemplateJsonString());
 		requirement.setClientSubmissionTemplateJsonString(parentRequirement.getSubmissionTemplateJsonString());
-		requirement.setClientCurrencyCode(parentRequirement.getClientCurrencyCode());
-		requirement.setClientRate(parentRequirement.getClientRate());
-		requirement.setClientRateType(parentRequirement.getClientRateType());
+		//requirement.setClientCurrencyCode(parentRequirement.getClientCurrencyCode());
+		//requirement.setClientRate(parentRequirement.getClientRate());
+		//requirement.setClientRateType(parentRequirement.getClientRateType());
+		requirement.setClientCurrencyCode(parentRequirement.getCurrencyCode());
+		requirement.setClientRate(parentRequirement.getRate());
+		requirement.setClientRateType(parentRequirement.getRateType());
+		
+		requirement.setRequirementUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		
 		if(parentRequirement.getClientSubmissionTemplateId()!=null){
 			requirement.setClientSubmissionTemplateId(parentRequirement.getClientSubmissionTemplateId());
