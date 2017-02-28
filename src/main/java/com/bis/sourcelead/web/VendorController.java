@@ -277,7 +277,7 @@ public class VendorController {
 			if(multipartFile != null){
 				String fn = multipartFile.getOriginalFilename(); // vendors_contacts_Import vendors_import_template.xls
 				String fileName = getFileName(fn);
-				if(fileName.contains(Constants.VENDORS_CONTACTS_IMPORT_XLS) || fileName.contains(Constants.VENDORS_CONTACTS_IMPORT_XLSX) || fileName.contains(Constants.VENDORS_IMPORT_TEMPLATE_XLS) || fileName.contains(Constants.VENDORS_IMPORT_TEMPLATE_XLSX)){
+				if(!fileName.contains(Constants.CLIENTS_CONTACTS_IMPORT_XLS) && !fileName.contains(Constants.CLIENTS_CONTACTS_IMPORT_XLSX) && !fileName.contains(Constants.CLIENTS_IMPORT_TEMPLATE_XLS) && !fileName.contains(Constants.CLIENTS_IMPORT_TEMPLATE_XLSX)){
 					String isFileCreated = clientImportsService.clientBulkSaving(multipartFile,user,orgLocation,org,uploadedFile.getEmail(),responderType);
 					
 					if (fileName.equalsIgnoreCase(isFileCreated)) {
