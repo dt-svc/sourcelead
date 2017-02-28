@@ -147,18 +147,21 @@ $(document).ready(function() {
                         <div class="btn-group btn_Block">
                           <button type="button" class="btn btn-sm btn-primary" id="percentageBtn" value="percentage" onClick="getRewardType('Percentage')">%</button>
                           <button type="button" class="btn btn-sm btn-default" id="flatBtn" value="flat" onClick="getRewardType('Flat')">Flat</button>
+                          <input type="hidden" name="buttonType" id="buttonType" value=""/>
                         </div>
                       </div>
                       <div class="col-md-7 paddingLeft">
                         <div class="form-group positionRelative iconHolder percentage" id="percentageReward"  style="display: none">
-                          <input type="text" class="form-control input-sm" name="percentageReward" placeholder="Percentage">
+                          <input type="text" class="form-control input-sm" id="percentageRewardValue" name="percentageReward" placeholder="Percentage">
+                          <span  id="percentRewardErrorMsg" class="jquery_form_error_message"  style="font-size: 11px; display: none;" >Percentage is mandatory</span>
                           <i class="fa fa-percent"></i> 
                         </div>
                         
                         <div class="row flat">
-                          <div class="form-group col-md-8 paddingRight positionRelative iconHolder">
-                            <input type="text" class="form-control input-sm" id="flatReward" name="flatReward"   style="display: none" placeholder="Flat">
-                            <i class="fa fa-money" id="flatRewardIcon"  style="display: none"></i> </div>
+                          <div class="form-group col-md-8 paddingRight positionRelative iconHolder" id="flatReward" style="display: none">
+                            <input type="text" class="form-control input-sm" id="flatRewardValue"  name="flatReward" placeholder="Flat">
+                             <span class="jquery_form_error_message" id="flatRewardErrorMsg"  style="font-size: 11px; display: none;" >Flat is mandatory</span>
+                            <i class="fa fa-money" id="flatRewardIcon"></i> </div>
                           <div class="form-group select-field col-md-4 paddingLeft">
                             <select class="form-control input-sm" id="flatRateType" name="flatRateType"  style="display: none">
                               <option  ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}><i class="fa fa-rupee" title="INR"></i>INR</option>
@@ -234,24 +237,53 @@ function releaseTo(){
 	    
 	    var isPublicGlobel = $("#isPublicGlobel").val();
 	    var isCrowdScourcingGlobel = $("#isCrowdScourcingGlobel").val();
+	    var releaseRequirement = true;
 	    
-	    if(contactsIds.length > 0 || vendorIds.length > 0 || isPublic == "Y" || isCrowdScourcing == "Y" || (isPublicGlobel != isPublic && isPublicGlobel != "") || (isCrowdScourcingGlobel != isCrowdScourcing && isCrowdScourcingGlobel != "")){
-	    	$('span.jquery_form_error_message').hide();
-	    	$("#releaseBtn").prop('disabled', true);
-	    	$("#releaseCancelBtn").prop('disabled', true);
-			$("#releaseBtn").prop('value', 'Processing');
-		    var sourceleadUrl ='${sourceleadUrl}';
-		    var requirementId = '${requirementId}';
-			$.ajax({
-		           type : "POST",
-		           url: sourceleadUrl+"/releaseJobsToClientsOrVendors?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds+"&isCrowdScourcing="+isCrowdScourcing+"&isPublic="+isPublic,    
-		            success :function(data) {
-							location.replace(sourceleadUrl+"/requirementList");
-		            },
-		    }); 
-	    }else{
-	    	$('span.jquery_form_error_message').show();
+	    if(isCrowdScourcing == 'Y'){
+	    	var buttonType = document.getElementById("buttonType").value;
+	    	if(buttonType == 'Percentage'){
+	    		var percentageRewardValue = document.getElementById("percentageRewardValue").value;
+		    	if(percentageRewardValue){
+		    		releaseRequirement = true;
+		    	}else{
+		    		document.getElementById("percentRewardErrorMsg").style.display="";
+		    		document.getElementById("flatRewardErrorMsg").style.display="none";
+		    		releaseRequirement = false;
+		    	}	
+	    	}else if(buttonType == 'Flat'){
+	    		var flatRewardValue = document.getElementById("flatRewardValue").value;
+		    	if(flatRewardValue){
+		    		releaseRequirement = true;
+		    	}else{
+		    		document.getElementById("flatRewardErrorMsg").style.display="";
+		    		document.getElementById("percentRewardErrorMsg").style.display="none";
+		    		releaseRequirement = false;
+		    	}	
+	    	}
+	    	
+	    	
 	    }
+	    
+	    if(releaseRequirement == true){
+	    	 if(contactsIds.length > 0 || vendorIds.length > 0 || isPublic == "Y" || isCrowdScourcing == "Y" || (isPublicGlobel != isPublic && isPublicGlobel != "") || (isCrowdScourcingGlobel != isCrowdScourcing && isCrowdScourcingGlobel != "")){
+	 	    	$('span.jquery_form_error_message').hide();
+	 	    	$("#releaseBtn").prop('disabled', true);
+	 	    	$("#releaseCancelBtn").prop('disabled', true);
+	 			$("#releaseBtn").prop('value', 'Processing');
+	 		    var sourceleadUrl ='${sourceleadUrl}';
+	 		    var requirementId = '${requirementId}';
+	 			 $.ajax({
+	 		           type : "POST",
+	 		           url: sourceleadUrl+"/releaseJobsToClientsOrVendors?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds+"&isCrowdScourcing="+isCrowdScourcing+"&isPublic="+isPublic,    
+	 		            success :function(data) {
+	 							location.replace(sourceleadUrl+"/requirementList");
+	 		            },
+	 		    });  
+	 	    }else{
+	 	    	$('span.jquery_form_error_message').show();
+	 	    } 
+	    }
+	   
 }
 
 function releaseToOneContact(contactscheckboxId){
@@ -374,27 +406,35 @@ function getContactsLists(){
 <script type="text/javascript">
 function getRewardType(rewardType){
 	
+	 $("#buttonType").val(rewardType);
+	 
+	    document.getElementById("percentRewardErrorMsg").style.display="none";
+		document.getElementById("flatRewardErrorMsg").style.display="none";
+	 
+	 $("#percentageRewardValue").val('');
+	 $("#flatRewardValue").val('');
+	 
 	if(rewardType == 'Percentage'){
 		document.getElementById("crowd_rate").style.display="";
 		document.getElementById("percentageReward").style.display="";
 		document.getElementById("flatReward").style.display="none";
 		document.getElementById("flatRateType").style.display="none";
-		document.getElementById("flatRewardIcon").style.display="none";
 		
 		document.getElementById("percentageBtn").className = 'btn btn-sm btn-primary active'
 	    document.getElementById("flatBtn").className = 'btn btn-sm btn-primary'
-		
+	    
 	}
 	
 	if(rewardType == 'Flat'){
 		document.getElementById("crowd_rate").style.display="";
 		document.getElementById("flatReward").style.display="";
 		document.getElementById("flatRateType").style.display="";
-		document.getElementById("flatRewardIcon").style.display="";
 		document.getElementById("percentageReward").style.display="none";
 		
 		document.getElementById("percentageBtn").className = 'btn btn-sm btn-primary'
 		document.getElementById("flatBtn").className = 'btn btn-sm btn-primary active'
+		
+		
 	}
 }
 </script>
