@@ -5,8 +5,10 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -36,6 +38,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @Controller
 public class RequirementListController {
 	
+	private static final Logger logger = LoggerFactory.getLogger(RequirementListController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -214,6 +217,16 @@ public class RequirementListController {
 			resultJson = commonUtil.toJSON(requirement);
 			return resultJson;
 		}
-	 
+	 /*
+	  * 
+	  */
+	 @RequestMapping(value = "/requirementListForReports")
+		public ModelAndView requirementListForReports(@RequestParam(value="serachValue", required=false)String serachValue) throws Exception {
+		 logger.info("checkkkkk");
+		 ModelAndView model = new ModelAndView();
+		 model.setViewName("requirement/requirementReports");
+		 return model;
+			
+	 }	 
 	 
 }

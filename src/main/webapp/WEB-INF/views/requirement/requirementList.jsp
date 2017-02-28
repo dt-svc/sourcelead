@@ -1196,7 +1196,23 @@ function requirementPipeline(requirementId){
       <h2>Requirement List</h2>
     </div>
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requirement List</div>
+    	<div class=" pull-left reportsH">
+			<a title="Reports"><i class="fa fa-pie-chart"></i>Reports</a>
+			<div class="RePop">
+				<ul>
+				 <li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
+					<!-- <li><a href="reports.html"><i class="fa fa-user"></i>Requirements Posted</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Client Requirements</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Applicants Received</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Applicants</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Short listed</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Interview</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Offer</a></li> -->
+				</ul>
+			</div>
+		</div>
   </section>
+  
   <div class="timesheet_out">
     <div class="vendor_wrap">
       <div class="timesheet_head">
