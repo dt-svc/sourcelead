@@ -216,31 +216,34 @@ public class CandidateResumeRestController {
 	* @throws Exception
 	*/
 	@RequestMapping(value = "/downloadResume", method = RequestMethod.GET)
-    public void downloadResume(@RequestParam(value="resumeId", required=false) String resumeId ,HttpServletResponse response) throws Exception {
+    public void downloadResume(@RequestParam(value="resumeUUID", required=false) String resumeUUID ,HttpServletResponse response) throws Exception {
 		
-			CandidateResumes candidateResume =  candidateResumesService.getCandidateResumeByResumeId(Long.parseLong(resumeId));
+			CandidateResumes candidateResume =  candidateResumesService.getCandidateResumeByResumeUUID(resumeUUID);
 		    
-		    response.setContentType("application/octet-stream");
-		    StringBuilder fileName = new StringBuilder();
-	        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(candidateResume.getFileName()).append("\"").toString());
+			if(null != candidateResume){
+				response.setContentType("application/octet-stream");
+			    StringBuilder fileName = new StringBuilder();
+		        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(candidateResume.getFileName()).append("\"").toString());
+			    
+				InputStream inputStream = new ByteArrayInputStream(candidateResume.getDocFile());
+				try {
+					OutputStream outStream = response.getOutputStream();
+
+					byte[] buffer = new byte[4096];
+					int bytesRead = -1;
+
+					while ((bytesRead = inputStream.read(buffer)) != -1) {
+						outStream.write(buffer, 0, bytesRead);
+					}
+
+					inputStream.close();
+					outStream.close();
+
+				} catch (FileNotFoundException e) {
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+				} 
+			}
 		    
-			InputStream inputStream = new ByteArrayInputStream(candidateResume.getDocFile());
-			try {
-				OutputStream outStream = response.getOutputStream();
-
-				byte[] buffer = new byte[4096];
-				int bytesRead = -1;
-
-				while ((bytesRead = inputStream.read(buffer)) != -1) {
-					outStream.write(buffer, 0, bytesRead);
-				}
-
-				inputStream.close();
-				outStream.close();
-
-			} catch (FileNotFoundException e) {
-				logger.error(ExceptionUtils.getFullStackTrace(e));
-			} 
 		}
 	
 	@RequestMapping(value = "/offerDownloadDocument", method = RequestMethod.GET)

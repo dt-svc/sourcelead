@@ -343,6 +343,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Transient
 	private String rejectReasonForRequirement;
+	
+	@Transient
+	private String approvalMechanismType;
 
 	public String getSearchType() {
 		return searchType;
@@ -1111,5 +1114,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	public void setReqlevel2ApproverStatus(String reqlevel2ApproverStatus) {
 		this.reqlevel2ApproverStatus = reqlevel2ApproverStatus;
 	}
+
+	public String getApprovalMechanismType() {
+		return approvalMechanismType;
+	}
+
+	public void setApprovalMechanismType(String approvalMechanismType) {
+		this.approvalMechanismType = approvalMechanismType;
+	}
+
 	
 }

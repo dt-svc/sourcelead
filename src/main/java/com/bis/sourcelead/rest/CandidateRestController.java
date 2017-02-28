@@ -208,13 +208,13 @@ public class CandidateRestController {
 	  * @throws Exception
 	  */
 	 @RequestMapping(value = "/validateCandidateEmail" , method = RequestMethod.POST)
-	 public @ResponseBody  String validateCandidateEmail(@RequestParam(value="email", required=false) String email,HttpServletRequest request) throws Exception {
+	 public @ResponseBody  String validateCandidateEmail(@RequestParam(value="email", required=false) String email,@RequestParam(value="candidateType", required=false) String candidateType,HttpServletRequest request) throws Exception {
 		 	
 		 	String result = null;
 		 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	Candidate candidate = candidateService.findByCandidateEmail(email,orgLocation.getId());
 		 	
-		 	if (null != candidate) {
+		 	if (null != candidate && candidateType.equalsIgnoreCase(candidate.getCandidateType())) {
 				result = "true";
 			}else{
 				result = "false";

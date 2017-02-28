@@ -217,7 +217,7 @@ function getUsersSearchResult(searchValue){
        
        
        
-       <div class="positionRelative pull-left mt10">
+       <div class="positionRelative pull-left">
        <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
           <li><i class="fa fa-filter"></i>&nbsp;

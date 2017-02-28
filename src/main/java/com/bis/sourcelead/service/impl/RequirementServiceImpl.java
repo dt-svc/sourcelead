@@ -226,6 +226,7 @@ public class RequirementServiceImpl implements RequirementService {
 				requirement.setCreatedBy(user.getUserCode());
 				requirement.setUpdatedBy(user.getUserCode());
 				requirement.setUpdatedDate(commonUtil.currentDate());
+				requirement.setRequirementUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			}
 		    
 			if(orgLocations != null){
@@ -449,7 +450,7 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 			
 			requirement.setStatus(Constants.TEAM_ACTIVE);
-			requirement.setRequirementUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());
+			
 			
 			//requirement status 
 			if(jsonObj.has("saveType")){            
@@ -2771,6 +2772,9 @@ public class RequirementServiceImpl implements RequirementService {
 		            	}
 		            	else if(requirementIndex.getTeamAssignUserId()!=null&&Arrays.asList(requirementIndex.getTeamAssignUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
 		            		requirement = getData(requirementIndex,user);
+		            	}
+		            	if(null != requirementIndex.getRequirementUUID()){
+		            		requirement.setRequirementUUID(requirementIndex.getRequirementUUID());
 		            	}
 		            	searchList.add(requirement);
 		            }

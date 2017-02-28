@@ -104,7 +104,7 @@ function validateTaskName(){
 						<div class="form-group">
 							<label class="col-md-3"> Project Description </label>
 							<div class="col-md-9">
-								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length10-500"
+								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length10-5000"
 									data-validation-optional="true"></textarea>
 								<span class="hidden">Project Description</span>
 							</div>
@@ -307,7 +307,7 @@ function validateTaskName(){
 												<button data-dismiss="modal" class="btn btn-primary"
 													type="button" onclick="assignEmployee();">Assign</button>
 												<button data-dismiss="modal" class="btn btn-default"
-													type="button" onclick="assignEmployee();">Cancel</button>
+													type="button" onclick="assignEmployeeCancel();">Cancel</button>
 											</div>
 										</div>
 									</div>
@@ -926,6 +926,12 @@ function assignEmployeespagination(){
 		$('#newClient').find('p.jquery_form_error_message').remove();
 	}
 </script>
+<script>
+function assignEmployeeCancel(){
+	$('#assignEmployeePagination tbody input[type="checkbox"]').prop('checked', false);
+}
+</script>
+
 
 <script>
 	$(function() {

@@ -560,12 +560,11 @@ margin-bottom: 5px; line-height: normal !important; padding-left: 10px;
 	z-index: 810;
 	padding-top: 50px;
 	box-shadow: 1px 1px 2px #707070;
-	/*
     transition: 0.3s ease-in-out;
 	-moz-transition: 0.3s ease-in-out;
 	-webkit-transition: 0.3s ease-in-out;
     overflow-x:hidden;
-	overflow-y:auto; */
+	overflow-y:auto;
 	overflow: hidden;
 }
 /* hide time sheet */
@@ -666,8 +665,31 @@ ul.timesheet-menu li a:hover, ul.backoffice-menu li a:hover {
 	font-weight: bold;
 	text-align: center;
 	line-height: 60px;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    width: 200px;
+    white-space: nowrap;
 	vertical-align: middle;
 }
+
+/* sidebar for custom */
+.side-bar .user-panel.user-panel-active .media .media-body .text-logo {
+    font-size: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 40px;
+    display: block;
+}
+.side-bar .user-panel.user-panel-active .media .media-body .text-logo .tbldata-dotdot {
+    font-size: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 40px;
+    display: block;
+}
+/* sidebar for custom */
 .msg-img img {
 	display: block;
 	margin: 0 auto;
@@ -6237,8 +6259,88 @@ Header icon border */
     font-size: 13px;
     line-height: 16px;
 }
+/* Export and pdf buttons from data tables */
+div.dt-buttons {
+position: absolute !important;
+float: left;
+top: -35px;
+left: 15px;
+z-index: 9;
+}
+#requirementSideDiv
+div.dt-buttons {
+top: 0px;
+left: 15px;
+z-index: 99;
+}
+button.dt-button, div.dt-button, a.dt-button{
+   line-height: 15px;
+   padding: 5px 10px 0 15px !important;
+   min-height: 20px;
+}
+.buttons-excel:before {
+       content: '\f1c3';
+font-family: Fontawesome;
+color: #368ee0;
+position: relative;
+top: -5px;
+left: -6px;
+}
+.buttons-pdf:before {
+       content: '\f1c1';
+font-family: Fontawesome;
+color: red;
+position: relative;
+top: -5px;
+left: -6px;
+}
+/* Export and pdf buttons from data tables */
+.timeZone {
+    width: 155px;
+}
+.timeZone .positionRelative{
+    width: 75px !important;
+}
+#addInterviewTbl .chosen-container-single .chosen-single {
+height: 30px !important;
+line-height: 30px !important;
+}
+#addInterviewTbl .chosen-container-single .chosen-single div{
+    top: -3px;
+}
+.interview-form .form-control{
+    height: 34px !important;
+}
+.orgrole-switch .slider.round {
+width: 50px;
+background:#babdb6;
+height: 20px; 
+}
+.orgrole-switch input:checked + .slider {
+background-color: #8f5902;
+}
+.orgrole-switch .switch {
+margin-top: 10px;
+}
+.select-skills.selectSkills_view{
+    line-height: 18px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    word-break: break-all;
+}
+.select-skills.selectSkills_view ul{
+    margin-bottom: 0;
+}
+.select-skills.selectSkills_view li{
+    line-height: 20px;
+    word-break: break-all;
+}
 /* media 320px */
 @media (max-width: 320px) {
+	.uasrch-selectpicker {
+    width: 48% !important;
+    float: left !important;
+}
     .universalSrch {
     margin-top: 0px;
     width: 52% !important;
@@ -6271,9 +6373,19 @@ div.pages-404.width {
 .login-user:hover .user-details {
 	right: -170px;
 }
+#alert:hover .alert-area {
+	transform: translateX(90px);
+	-ms-transform: translateX(90px) ;
+	-webkit-transform: translateX(90px);
+}
 }
 
 @media only screen and (min-width:321px) and (max-width: 475px) {
+	#alert:hover .alert-area {
+	transform: translateX(90px);
+	-ms-transform: translateX(90px) ;
+	-webkit-transform: translateX(90px);
+}
 .login-user:hover .user-details {
 right: -170px;
 }
@@ -6283,11 +6395,77 @@ right: -170px;
 .main-header .navbar .custom-navbar ul.custom-navbar-inner li {
 	padding: 15px 5px
 }
+.uasrch-selectpicker {
+    width: 40% !important;
+    float: left !important;
+}
 }
 
 
 @media (max-width:767px) {
-	.login-user:hover .user-details {
+		.cand-advsrch-popup {
+	width: 350px;
+	overflow-y:auto !important;
+	}
+	
+	/*filter styels */
+	.timesheet_head ul {
+	clear: both;
+	display: inline-block;
+	width: 95% !important;
+	padding: 2px 5px 2px 0px !important;
+	float:left;
+	}
+	.timesheet_head ul li{
+	clear: both;
+    display: inline-block;
+    width: 100%;
+    margin-left:0 !important;
+    float: none !important;
+}
+.section-action-btns ul li {
+	width: 48%;
+	float:left;
+	margin: 5px 10px 0 0;
+}
+.section-action-btns ul li > select {
+	width: 90%;
+	font-size: 14px;
+	padding: 0px 26px 0px 10px;
+	border: none;
+	color: #333;
+	border-radius: 3px;
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	-ms-appearance: none;
+	-o-appearance: none;
+	font-weight: 500;
+	cursor: pointer;
+	box-sizing: border-box;
+	background-image: url("../images/arrow-d-g.png") !important;
+	background-repeat: no-repeat;
+	background-position: 92% center;
+	background-size: 10px;
+	border: 1px solid #ccc !important;
+}	
+.dashboard-data .dataTables_filter {
+	position: relative !important;
+	right: 0px !important;
+	margin: 0px 0px;
+	top: 0 !important;
+	padding: 0 !important;
+	float: right;
+}
+.dashboard-widget .nav-tabs {
+border-bottom: 1px solid #f60;
+position: inherit;
+top: 0;
+right: 0px;
+width: 100%;
+margin-bottom: 10px;
+}
+.login-user:hover .user-details {
 }
 .require_wrap_table span{
 	max-width:100% !important;
@@ -6358,14 +6536,25 @@ right: -170px;
 }
     .universalSrch {
     margin-top: 0px;
-    width: 58% !important;
+    width: 58%;
 }
 }
 
 @media (max-width: 1160px) {
+	.side-bar .user-panel.user-panel-active .media .media-body .text-logo .tbldata-dotdot {
+    font-size: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 180px;
+    display: block;
+}
+	.addTask {
+	top:120px;
+	}
     .uasrch-selectpicker {
     clear: both;
-    width: 100%;
+    /* width: 100%; */
 }
         .search-area {
     clear: both;
@@ -6396,6 +6585,7 @@ right: -170px;
 	display: none !important;
 }
 .side-bar .user-panel.user-panel-active .media .media-body .text-logo {
+	width:200px;
 	font-size: 15px;
 }
 .side-bar .user-panel.user-panel-active {
@@ -6528,6 +6718,10 @@ right: -170px;
 }
 
 @media (min-width: 768px) and (max-width: 1024px) {
+	.cand-advsrch-popup {
+	width: 350px;
+	overflow-y:auto !important;
+	}
     .universalSrch {
     margin-top:0px;
     width: 80%;
@@ -6551,7 +6745,7 @@ right: -170px;
 	display: block;
 	top: 50px;
 	left: 0;
-	padding: 10px 5%;
+	padding: 10px 2%;
 	background: #1b3352;
 	-ms-transition: all ease-in-out 0.2s;
 	-moz-transition: all ease-in-out 0.2s;

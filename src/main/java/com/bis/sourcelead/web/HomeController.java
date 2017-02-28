@@ -27,9 +27,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Notifications;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.service.LoginService;
-import com.bis.sourcelead.service.OrgService;
-import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.NotificationsService;
+import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -50,13 +56,15 @@ public class HomeController {
 	@Autowired
 	public LoginService loginService;
 	
-
-	@Autowired
-	private OrgService orgService;
-	
-	@Autowired
-	private UserService userService;
-	
+	 @Autowired
+	 private NotificationsService notificationsService;
+	 
+	 @Autowired
+	 OrgLocationService orgLocationService;
+	 
+	 @Autowired
+	 OrgSpocService orgSpocService;
+	 
 	@Value("${jdbc.username}")
 	private String user;
 	
@@ -194,9 +202,65 @@ public class HomeController {
 		return model;
 	}
 	
+	@RequestMapping(value = "/Inlogin",  method = { RequestMethod.GET, RequestMethod.POST })
+	public ModelAndView loginPageClient(@RequestParam(value = "logout", required = false) String logout,
+			@RequestParam(value = "spocUUID", required = false) String spocUUID,
+			@RequestParam(value = "UUID", required = false) String UUID
+			,HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+		 model.addObject("spocUUID",spocUUID);
+		 model.addObject("UUID",UUID);
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if(auth != null && auth.getPrincipal() != null && !(auth instanceof AnonymousAuthenticationToken) && !StringUtils.isNotEmpty(logout)){
+			 if(null != UUID && !"".equalsIgnoreCase(UUID) && null != spocUUID && !"".equalsIgnoreCase(spocUUID)){
+				 
+				 OrgSpoc orgSpoc = orgSpocService.getSpocBySpocUUID(spocUUID);
+				 
+				 if(null != orgSpoc && !auth.getPrincipal().equals(orgSpoc.getOwnerUser().getEmail()) && (auth.getPrincipal().equals(orgSpoc.getClientUser().getEmail()) || auth.getPrincipal().equals(orgSpoc.getVendorUser().getEmail()))){
+					 orgSpoc.setInvitationStatus(Constants.MAIL_ACCEPTED);
+					 orgSpocService.addOrgSpoc(orgSpoc);
+					 if(null != orgSpoc.getOwnerUser() && null != orgSpoc.getClientUser() &&  orgSpoc.getOwnerUser().getId().longValue() == orgSpoc.getClientUser().getId().longValue()){
+						  OrgLocations vendorLocation = orgLocationService.getOrgLocations(orgSpoc.getVendorLocationId().getId());
+						  OrgLocations clientLocation = orgLocationService.getOrgLocations(orgSpoc.getClientLocationId().getId());
+						  StringBuilder stringBuilder = new StringBuilder();
+						  stringBuilder.append("You accepted ").append(orgSpoc.getOwnerUser().getFirstName()).append(" (").append(clientLocation.getOrg().getOrgName()).append(") ").append("invitation successfully").append(" in ").append(vendorLocation.getOrg().getOrgName());
+						  model.addObject("msg", stringBuilder);
+					 }else if(null != orgSpoc.getOwnerUser() && null != orgSpoc.getVendorUser() &&  orgSpoc.getOwnerUser().getId().longValue() == orgSpoc.getVendorUser().getId().longValue()){
+						  OrgLocations clinetLocation = orgLocationService.getOrgLocations(orgSpoc.getClientLocationId().getId());
+						  OrgLocations vendorLocation = orgLocationService.getOrgLocations(orgSpoc.getVendorLocationId().getId());
+						  StringBuilder stringBuilder = new StringBuilder();
+						  stringBuilder.append("You accepted ").append(orgSpoc.getOwnerUser().getFirstName()).append(" (").append(vendorLocation.getOrg().getOrgName()).append(") ").append("invitation successfully").append(" in ").append(clinetLocation.getOrg().getOrgName());
+						  model.addObject("msg", stringBuilder);
+					 }
+					 
+					 Notifications notifications = notificationsService.getNotificationsByUUID(UUID);
+					 if(null != notifications){
+						 notifications.setUserNotificationStatus("Accepted");
+						 notificationsService.saveNotification(notifications);
+					 }
+				 }
+			 }
+				model.setViewName("/dashboard");
+				model.addObject("sourceleadUrl", sourceleadUrl);
+	    }
+		 else{
+			 if (logout != null) {
+					model.addObject("msg", "You've been logged out successfully.");
+			 }
+			 
+			 String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "resetPasswordSucessfulMsg");
+	  			if(!isNullOrEmpty(msg)){
+	  				model.addObject("msg", msg);
+	  				SourceLeadSessionManager.removeSessionAttribute(request, "resetPasswordSucessfulMsg");
+	  			}
+			 model.setViewName("login");
+		    	 
+		 }
+		return model;
+	}
 	
-			
-	 @RequestMapping(value = { "/ehCacheTest"}, method = RequestMethod.GET)
+
+	@RequestMapping(value = { "/ehCacheTest"}, method = RequestMethod.GET)
 	  	public ModelAndView ehCachePage() {
 	  			ModelAndView model = new ModelAndView();
 	  			model.setViewName("ehCacheTest");

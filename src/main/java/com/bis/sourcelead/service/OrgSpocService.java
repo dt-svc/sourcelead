@@ -71,7 +71,15 @@ public interface OrgSpocService {
 	 * @param spocUserId
 	 * @return
 	 */
-	OrgSpoc getSpocUserByUserId(Long spocUserId) throws Exception;
+	OrgSpoc getSpocByClientOrVendorUserId(Long spocUserId) throws Exception;
+	
+	/**
+	 * @author Prasad Salina
+	 * @param spocUUID
+	 * @return
+	 * @throws Exception
+	 */
+	OrgSpoc getSpocBySpocUUID(String spocUUID) throws Exception;
 	
 	/**To get Spoc user Contact List for requirement
 	 * @author David Raju
@@ -92,7 +100,7 @@ public interface OrgSpocService {
 	
 	List<OrgSpoc> getAllClientContactsListByOrgLocationId(Long userId,Long orgLocationId) throws Exception;
 	
-	Integer getAllClientContactsCountForCampaignByOrgLocationId(Long userId,Long orgLocationId) throws Exception;
+	Integer getAllClientContactsCountForCampaignByOrgLocationId(Long orgRelationId,Long userId,Long orgLocationId) throws Exception;
 	
 	OrgSpoc getSpocListByResponderLocationId(Long initiatingPartyOrgLocationId,Long responderLocationId,String respondingOrgType) throws Exception;
 	
@@ -103,4 +111,6 @@ public interface OrgSpocService {
 	void saveOrUpdateClientVendorContactElkDocument(OrgSpoc orgSpoc) throws Exception;
 
 	List<OrgSpoc> getOrgSpocByUserIdAndOrgLocationCode(Long userId, Long orgLocationId) throws Exception;
+
+	List<Long> getOwnerListByUserIdAndOrglocationId(User user, OrgLocations orgLocations, String type);
 }

@@ -279,12 +279,20 @@ public class ClientServiceImpl implements ClientService{
 					}else{
 						orgSpoc.setInvitationStatus(Constants.MAIL_NEW);
 					}
+					String UUID = SourceLeadRandomCodeHelper.generateUUID();
+					orgSpoc.setUUID(UUID);
 					orgSpoc.setStatus(Constants.MEMBER_ACTIVE);
 					orgSpoc.setCreatedDate(commonUtil.currentDate());
 					orgSpoc.setCreatedBy(user.getUserCode());
 					orgSpoc.setUpdatedDate(commonUtil.currentDate());
 					orgSpoc.setUpdatedBy(user.getUserCode());
 					orgSpocService.addOrgSpoc(orgSpoc);
+					
+					if((("Client".equals(responderType) || "Vendor".equals(responderType)) 
+							&& jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) 
+							&& ("Y".equals(jsonObj.getString("isMailSent")))){
+						userService.sendEmailToClientOrVendor(orgSpoc.getUUID(),spocUser,ownerUser,user,spocUser.getTempPwd(),responderType,loginOrg,clientOrgLocations.getOrg(),clientOrgLocations);
+					}
 				}
 			}
 			
@@ -726,7 +734,7 @@ public class ClientServiceImpl implements ClientService{
 		}
 		
 		@Override
-		public OrgSpoc updateVendorContactDetails(JSONObject jsonObj, Long spocId,Long loginOrgId, User loginUser ,Long ownerId, Long spocUserId,OrgLocations orgLocation) throws Exception {
+		public OrgSpoc updateVendorContactDetails(JSONObject jsonObj, Long spocId,Long loginOrgId, User loginUser ,Long ownerId, Long spocUserId,OrgLocations orgLocation,String type) throws Exception {
 			
 			//OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(vendorLocationId,orgRelationId);
 			
@@ -779,24 +787,38 @@ public class ClientServiceImpl implements ClientService{
 					orgSpoc.setSpocStatus(jsonObj.getString(spocStatus));
 				}
 				
-				User user = orgSpoc.getClientUser();
+				
+				if(null != type && !"".equalsIgnoreCase(type) && "Client".equalsIgnoreCase(type)){
+					User user = orgSpoc.getClientUser();
 					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
 						User spocUser = new User();
 						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
 						orgSpoc.setVendorUser(spocUser);
-						
 						//new owner filed updated when owner updated
 						orgSpoc.setOwnerUser(spocUser);
 					}
 					orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
+					OrgSpoc orSpocElk = orgSpocService.addOrgSpoc(orgSpoc);
 					
-				
-				OrgSpoc orSpocElk = orgSpocService.addOrgSpoc(orgSpoc);
-				
-				
-				if(null != orgSpoc.getTempOwnerId() && orgSpoc.getTempOwnerId().longValue() != orSpocElk.getVendorUser().getId().longValue()){
-					user= userService.getUserById(Long.parseLong(jsonObj.getString(owner)));
-					sendEmailToClientContact(user,editUser,orgLocation,loginUser);
+					
+					if(null != orgSpoc.getTempOwnerId() && orgSpoc.getTempOwnerId().longValue() != orSpocElk.getVendorUser().getId().longValue()){
+						user= userService.getUserById(Long.parseLong(jsonObj.getString(owner)));
+						sendEmailToClientContact(user,editUser,orgLocation,loginUser);
+					}
+				}else if(null != type && !"".equalsIgnoreCase(type) && "Vendor".equalsIgnoreCase(type)){
+					User user = orgSpoc.getVendorUser();
+					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
+						User spocUser = new User();
+						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
+						orgSpoc.setClientUser(spocUser);
+						//new owner filed updated when owner updated
+						orgSpoc.setOwnerUser(spocUser);
+					}
+					OrgSpoc orSpocElk = orgSpocService.addOrgSpoc(orgSpoc);
+					if(null != orgSpoc.getTempOwnerId() && orgSpoc.getTempOwnerId().longValue() != orSpocElk.getVendorUser().getId().longValue()){
+						user= userService.getUserById(Long.parseLong(jsonObj.getString(owner)));
+						sendEmailToClientContact(user,editUser,orgLocation,loginUser);
+					}
 				}
 				
 			}else{
@@ -855,7 +877,7 @@ public class ClientServiceImpl implements ClientService{
 			 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
 			 noificationEmailScenario.setBody(notificationbody);
 			 
-			 emailScenerioUtil.sendNotification(actionLink, loginUser, editUser, orgLocation, noificationEmailScenario);
+			 emailScenerioUtil.sendNotificationToClientOrVendor(actionLink, loginUser,user, editUser, orgLocation, noificationEmailScenario);
 			
 		}
 		
