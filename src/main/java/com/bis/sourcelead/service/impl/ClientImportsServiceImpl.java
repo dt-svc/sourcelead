@@ -36,6 +36,7 @@ import org.apache.poi.xssf.usermodel.XSSFDataValidationConstraint;
 import org.apache.poi.xssf.usermodel.XSSFDataValidationHelper;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.sis.internal.jaxb.gmd.Country;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.json.JSONException;
@@ -751,6 +752,8 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 				}
 			
 				writeRow.createCell(5).setCellValue(row.getCell(5).toString());
+				
+			
 			} else {
 				if(!fname.endsWith("xlsx")){
 					createExcelsheet.addValidationData(getDropDownListForCell(Constants.STATUS_DROPDOWN,5));
@@ -768,6 +771,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 				writeRow.createCell(7).setCellValue(client.getReason());
 			} 
 		}
+	
 		
 		
 		/**
@@ -792,7 +796,16 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 				writeRow.createCell(1).setCellValue("");
 			}
 			if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
-			    writeRow.createCell(2).setCellValue(row.getCell(2).toString());
+				if(!fname.endsWith("xlsx")){
+					createExcelsheet.addValidationData(getDropDownListForCell(Constants.COUNTRY_DROPDOWN,2));
+				}else{
+					createExcelsheet.addValidationData(getXssfDropDownlist(Constants.COUNTRY_DROPDOWN,2,createExcelsheet));
+				}
+				
+				writeRow.createCell(2).setCellValue(row.getCell(2).toString());
+				
+				
+				writeRow.createCell(2).setCellValue(row.getCell(2).toString());
 			} else {
 				 writeRow.createCell(2).setCellValue("");
 			}
