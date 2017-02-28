@@ -843,6 +843,16 @@ function getChangeRole(userId,userRoleId){
          $('#RatePer').removeAttr('data-validation');
          $('#RatePer').attr("data-validation-optional","true");
      }
+     var RatePer = document.getElementById("RatePer").value;
+	 if(RatePer != null && RatePer != ""){
+		 $('#Rate').removeAttr('data-validation-optional');
+		 $('#Rate').attr("data-validation","required"); 
+	 }else{
+		 $('#Rate').removeAttr('data-validation');
+	 	 $('#Rate').attr("data-validation-optional","true"); 
+		 $('#RatePer').removeAttr('data-validation');
+	 	 $('#RatePer').attr("data-validation-optional","true"); 
+	 }
       if ($('#editUser_form').validate(false, validationSettings)){
     	  if(EmployeeId!=null&&EmployeeId!="" && empId != EmployeeId){
           $.ajax({
@@ -1203,7 +1213,7 @@ $("#editRoleDetailsList").empty();
 		 	     	
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Rate</label>';
-					result = result + ' <input type="text" class="rate_filed" value="'+rate+'" id="Rate"  name="Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
+					result = result + ' <input type="text" class="rate_filed" value="'+rate+'" id="Rate" field-name="Rate" name="Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
 					result = result + ' <select class="rate_sele" id="RatePer" name="RatePer" field-name="Rate Per">';
 					result = result + ' <option value="">-Rate Per-</option>';
 					result = result + ' <option '+selected1+'>Hourly</option>';
