@@ -291,7 +291,7 @@ $(document).ready(function(){
 					result = result + ' 		</div>';
 				}
 				
-				if(json.user.mobilePhone != null && json.mobilePhone != "" && json.mobilePhone != 'undefined'){
+				if(json.user.mobilePhone != null && json.user.mobilePhone != "" && json.user.mobilePhone != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				 <strong>Phone Number:</strong><span class="fix">'+json.user.mobilePhone+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
