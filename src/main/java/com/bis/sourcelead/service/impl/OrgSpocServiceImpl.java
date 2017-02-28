@@ -1,7 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -21,13 +20,13 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 /**
  * Handles OrgSpoce activities
  * @author root
@@ -148,7 +147,8 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				}else{
 					orgSpoc.setSpocStatus(Constants.ACTIVE);
 				}
-				
+				String UUID = SourceLeadRandomCodeHelper.generateUUID();
+				orgSpoc.setUUID(UUID);
 				
 				orgSpoc.setUpdatedDate(CommonUtil.currentDate());
 				orgSpoc.setUpdatedBy(user.getUserCode());
@@ -158,6 +158,12 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				  ClientVendorContactsIndex clientVendorContactsIndex = clientVendorContactsIndexHelper.getClientVendorContactIndexFromSpoc(orgs);
 				  sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorContactsIndex, Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,orgs.getId().toString());
 				
+				  if((("Client".equals(responderType) || "Vendor".equals(responderType)) 
+							&& jsonObj.has("isMailSent") && null != jsonObj.getString("isMailSent") ) 
+							&& ("Y".equals(jsonObj.getString("isMailSent")))){
+						userService.sendEmailToClientOrVendor(orgSpoc.getUUID(),spocUser,ownerUser,user,spocUser.getTempPwd(),responderType,loginOrg,respondingOrgLocation.getOrg(),respondingOrgLocation);
+					}
+				  
 				logger.debug("Vendor Contac is added successfully");
 				} 
 		}
@@ -325,9 +331,15 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	 }
 	
 	@Override
-	public OrgSpoc getSpocUserByUserId(Long spocUserId) throws Exception {
+	public OrgSpoc getSpocByClientOrVendorUserId(Long userId) throws Exception {
 		logger.debug("In OrgSpocService class...");
-		return orgSpocDao.getSpocUserByUserId(spocUserId);
+		return orgSpocDao.getSpocByClientOrVendorUserId(userId);
+	}
+	
+	@Override
+	public OrgSpoc getSpocBySpocUUID(String spocUUID) throws Exception {
+		logger.debug("In OrgSpocService class...");
+		return orgSpocDao.getSpocBySpocUUID(spocUUID);
 	}
 	
 	@Override
@@ -434,8 +446,8 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	}
 
 	@Override
-	public Integer getAllClientContactsCountForCampaignByOrgLocationId(Long userId,Long orgLocationId) throws Exception {
-		return orgSpocDao.getAllClientContactsCountForCampaignByOrgLocationId(userId,orgLocationId);
+	public Integer getAllClientContactsCountForCampaignByOrgLocationId(Long orgRelationId,Long userId,Long orgLocationId) throws Exception {
+		return orgSpocDao.getAllClientContactsCountForCampaignByOrgLocationId(orgRelationId,userId,orgLocationId);
 	}
 	
 	@Override
@@ -461,6 +473,11 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	@Override
 	public List<OrgSpoc> getOrgSpocByUserIdAndOrgLocationCode(Long userId, Long orgLocationId) throws Exception {
 		return orgSpocDao.getOrgSpocByUserIdAndOrgLocationCode(userId,orgLocationId);
+	}
+
+	@Override
+	public List<Long> getOwnerListByUserIdAndOrglocationId(User user, OrgLocations orgLocations,String type) {
+		return  orgSpocDao.getOwnerListByUserIdAndOrglocationId(user,orgLocations,type);
 	}
 	
 }

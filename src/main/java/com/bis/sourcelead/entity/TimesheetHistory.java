@@ -40,6 +40,11 @@ public class TimesheetHistory implements Serializable{
 	@JoinColumn(name="TIMESHEET_SUBMISSION_ID") 
 	private TimesheetSubmissions timesheetSubmissions;
 	
+	
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="TIMESHEET_ENTRIES_ID") 
+	private TimesheetEntries timesheetEntries;
+
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name = "PROJECT_TASK")
 	private ProjectTasks projectTask;
@@ -170,6 +175,15 @@ public class TimesheetHistory implements Serializable{
 		this.timesheetSubmissions = timesheetSubmissions;
 	}
     
+	@JsonIgnore
+	public TimesheetEntries getTimesheetEntries() {
+		return timesheetEntries;
+	}
+
+	public void setTimesheetEntries(TimesheetEntries timesheetEntries) {
+		this.timesheetEntries = timesheetEntries;
+	}
+	
 	@JsonIgnore
 	public ProjectTasks getProjectTask() {
 		return projectTask;

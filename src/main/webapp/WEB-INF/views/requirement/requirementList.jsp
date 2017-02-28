@@ -283,9 +283,9 @@ function prepareRequirementData(data){
         }
        
         if(opt.state!=null && opt.state !='' && opt.state !='undefined' &&  opt.city !='undefined' && opt.city !='' &&  opt.city!=null){
-            result = result +"<td><div><span title='"+opt.country+', '+opt.state+', '+opt.city+"'>"+opt.country+', '+opt.state+', '+opt.city+"</span></div></td>";
+            result = result +"<td><div><span title='"+opt.country+', '+opt.state+', '+opt.city+"'>"+opt.city+', '+opt.state+', '+opt.country+"</span></div></td>";
         }else if(opt.state!=null && opt.state !='' && opt.state !='undefined'){
-            result = result +"<td><div><span title='"+opt.country+', '+opt.state+"'>"+opt.country+', '+opt.state+"</span></div></td>";
+            result = result +"<td><div><span title='"+opt.country+', '+opt.state+"'>"+opt.state+', '+opt.country+"</span></div></td>";
 
         }else{
             result = result +"<td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
@@ -1196,7 +1196,23 @@ function requirementPipeline(requirementId){
       <h2>Requirement List</h2>
     </div>
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requirement List</div>
+    	<div class=" pull-left reportsH">
+			<a title="Reports"><i class="fa fa-pie-chart"></i>Reports</a>
+			<div class="RePop">
+				<ul>
+				 <li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
+					<!-- <li><a href="reports.html"><i class="fa fa-user"></i>Requirements Posted</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Client Requirements</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Applicants Received</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Applicants</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Short listed</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Interview</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Offer</a></li> -->
+				</ul>
+			</div>
+		</div>
   </section>
+  
   <div class="timesheet_out">
     <div class="vendor_wrap">
       <div class="timesheet_head">
@@ -1365,7 +1381,7 @@ function requirementPipeline(requirementId){
 						   <div class="col-md-4">
 							  <label>Country</label>
 							  <div class="clearfix adv-srh-chosen">
-								 <select class="chosen-select" name="country" id="country" field-name="Country"  >
+								 <select class="chosen-select" name="country" id="country" field-name="Country" onchange="getStates();" >
 								     <c:forEach var="cntry" items="${countryList}">
 							                     <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
 						                </c:forEach>

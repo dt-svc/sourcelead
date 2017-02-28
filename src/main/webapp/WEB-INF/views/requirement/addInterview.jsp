@@ -28,6 +28,7 @@ padding:0!important;
 
 <script>
 function addInterview(requirementId){
+	$('.action-pop').slideUp();
 	interviewTemplate();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var parentRequirement = '${parentRequirement}';
@@ -55,7 +56,7 @@ function addInterview(requirementId){
 			result = result + '<th>Applicant</th>';
 			result = result + '<th>Inteview Type</th>';
 			result = result + '<th>Interview Date</th>';
-			result = result + '<th>Start Time/End Time</th>';
+			result = result + '<th>Start Time/End Time</th>';	
 			result = result + '<th>Time Zone</th>';
 			result = result + '<th>Details</th>';
 			result = result + '<th>Interviewer</th>';
@@ -241,16 +242,13 @@ function selectInterviewApplicants(){
 		<option value="Telephonic">Telephonic</option>
 		<option value="Technical">Technical</option>
 		<option value="Screening">Screening</option>
-		<option value="Skype/Webex">Skype/Webex</option>
+		<option value="Skype">Skype</option>
+		<option value="Webex/GoToMeeting">Webex/GoTo Meeting</option>
 	</select>
 </div>
 
 <div id="divTaskTd5" style="display: none; float: left;">
-   	 <select class="form-control" id="REPLACEROWIDtimeZone" name="REPLACEROWIDtimeZone" field-name="timezone">
-		<%-- <option value="">--Select Time Zone--</option>
-		  <c:forEach var="option" items="${timezoneList}">
-				<option value="${option.id}">${option.timeZoneId}</option>
-		 </c:forEach> --%>
+   	 <select class="form-control" id="REPLACEROWIDtimeZone" name="REPLACEROWIDtimeZone" field-name="Timezone" data-validation="required">
 	</select>
 </div>
 
@@ -323,6 +321,7 @@ function selectInterviewApplicants(){
 		
 		$("#"+maxRowNum+"endTime").timepicker({
 			'showDuration': true,
+			 'maxTime': '23:30:00',
 			'disableTextInput': true
 		}).on('changeTime', function() {
             $("#"+maxRowNum+"startTime").timepicker('option', 'maxTime', $(this).val());

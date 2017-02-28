@@ -78,6 +78,9 @@ public class OrgSpoc implements Serializable{
 	@Column(name = "TERMINATE_REASON", columnDefinition = "TEXT default NULL")
 	private String terminateReason;
 	
+	@Column(name="UUID")
+	private String UUID;
+	
 	@Transient
 	private String spocName;
 	
@@ -332,6 +335,14 @@ public class OrgSpoc implements Serializable{
 
 	public void setTerminateReason(String terminateReason) {
 		this.terminateReason = terminateReason;
+	}
+
+	public String getUUID() {
+		return UUID;
+	}
+
+	public void setUUID(String uUID) {
+		UUID = uUID;
 	}
 
 	public String getOwnerUserId() {
