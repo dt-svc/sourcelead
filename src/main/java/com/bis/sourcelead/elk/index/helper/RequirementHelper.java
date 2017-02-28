@@ -176,13 +176,15 @@ public class RequirementHelper {
 			}
 				
 			//Prasad salina	
-			if (requirement1.getSpocId().getClientUser() !=null && requirement1.getSpocId().getClientUser()!=null) {
-				sb.append(requirement1.getSpocId().getClientUser().getFirstName()).append(" ")
-						.append(requirement1.getSpocId().getClientUser().getLastName());
-			} else {
-				sb.append(requirement1.getSpocId().getClientUser().getFirstName());
+			if(null != requirement1.getSpocId()){
+				if (requirement1.getSpocId().getClientUser() !=null && requirement1.getSpocId().getClientUser().getLastName()!=null && !"".equals(requirement1.getSpocId().getClientUser().getLastName())) {
+					sb.append(requirement1.getSpocId().getClientUser().getFirstName()).append(" ")
+							.append(requirement1.getSpocId().getClientUser().getLastName());
+				} else {
+					sb.append(requirement1.getSpocId().getClientUser().getFirstName());
+				}
+				requirementIndex.setClientContactName(sb.toString());
 			}
-			requirementIndex.setClientContactName(sb.toString());
 			requirementIndex.setClientContactEmail(requirement1.getClientId().getLocationId().getUser().getEmail());
 		}
 				

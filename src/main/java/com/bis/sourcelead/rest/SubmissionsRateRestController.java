@@ -526,6 +526,8 @@ public class SubmissionsRateRestController {
 			requirementRateSubmissionNegotiation.setRateReason("");
 			if(status.equalsIgnoreCase("Accepted")){
 				requirementRateSubmissionNegotiation.setRateStage(SubmissionRateStatus.ACCEPTED);
+				requirementSubmission.setFinalizedRate(requirementRateSubmissionNegotiation.getExpectedRate());
+				requirementSubmission.setFinalizedRateType(requirementRateSubmissionNegotiation.getExpectedRateType());
 			}
 			if(status.equalsIgnoreCase("Rejected")){
 				requirementRateSubmissionNegotiation.setRateStage(SubmissionRateStatus.REJECTED);
@@ -538,8 +540,6 @@ public class SubmissionsRateRestController {
 			requirementRateSubmissionNegotiation.setUpdatedBy(users.getUserCode());
 			requirementRateSubmissionNegotiationService.saveRateNegotiation(requirementRateSubmissionNegotiation);
 			
-			requirementSubmission.setFinalizedRate(requirementRateSubmissionNegotiation.getExpectedRate());
-			requirementSubmission.setFinalizedRateType(requirementRateSubmissionNegotiation.getExpectedRateType());
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			
 			if(requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.ORG && "Accepted".equalsIgnoreCase(status)){
