@@ -2773,6 +2773,9 @@ public class RequirementServiceImpl implements RequirementService {
 		            	else if(requirementIndex.getTeamAssignUserId()!=null&&Arrays.asList(requirementIndex.getTeamAssignUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
 		            		requirement = getData(requirementIndex,user);
 		            	}
+		            	if(null != requirementIndex.getRequirementUUID()){
+		            		requirement.setRequirementUUID(requirementIndex.getRequirementUUID());
+		            	}
 		            	searchList.add(requirement);
 		            }
 				}
