@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.OrgLocations;
@@ -26,11 +27,13 @@ public interface RequirementInterviewHistoryService {
 	 * @param userType
 	 * @param userId
 	 * @param userCode
+	 * @param endUTCDate 
+	 * @param startUTCDate 
 	 * @return
 	 * @throws Exception
 	 * To get dashboard interviews
 	 */
-	List<RequirementInterviewHistory> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode)throws Exception;
+	List<RequirementInterviewHistory> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode, Date startUTCDate, Date endUTCDate)throws Exception;
 	
 	List<RequirementInterviewHistory> getAllProfessinalInterviews(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode,Long candidateId)throws Exception;
 	

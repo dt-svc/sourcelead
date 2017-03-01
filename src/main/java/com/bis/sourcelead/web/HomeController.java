@@ -213,14 +213,10 @@ public class HomeController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if(auth != null && auth.getPrincipal() != null && !(auth instanceof AnonymousAuthenticationToken) && !StringUtils.isNotEmpty(logout)){
 			 if(null != UUID && !"".equalsIgnoreCase(UUID) && null != spocUUID && !"".equalsIgnoreCase(spocUUID)){
-				 Notifications notifications = notificationsService.getNotificationsByUUID(UUID);
-				 if(null != notifications){
-					 notifications.setUserNotificationStatus("Accepted");
-					 notificationsService.saveNotification(notifications);
-				 }
 				 
 				 OrgSpoc orgSpoc = orgSpocService.getSpocBySpocUUID(spocUUID);
-				 if(null != orgSpoc ){
+				 
+				 if(null != orgSpoc && !auth.getPrincipal().equals(orgSpoc.getOwnerUser().getEmail()) && (auth.getPrincipal().equals(orgSpoc.getClientUser().getEmail()) || auth.getPrincipal().equals(orgSpoc.getVendorUser().getEmail()))){
 					 orgSpoc.setInvitationStatus(Constants.MAIL_ACCEPTED);
 					 orgSpocService.addOrgSpoc(orgSpoc);
 					 if(null != orgSpoc.getOwnerUser() && null != orgSpoc.getClientUser() &&  orgSpoc.getOwnerUser().getId().longValue() == orgSpoc.getClientUser().getId().longValue()){
@@ -235,6 +231,12 @@ public class HomeController {
 						  StringBuilder stringBuilder = new StringBuilder();
 						  stringBuilder.append("You accepted ").append(orgSpoc.getOwnerUser().getFirstName()).append(" (").append(vendorLocation.getOrg().getOrgName()).append(") ").append("invitation successfully").append(" in ").append(clinetLocation.getOrg().getOrgName());
 						  model.addObject("msg", stringBuilder);
+					 }
+					 
+					 Notifications notifications = notificationsService.getNotificationsByUUID(UUID);
+					 if(null != notifications){
+						 notifications.setUserNotificationStatus("Accepted");
+						 notificationsService.saveNotification(notifications);
 					 }
 				 }
 			 }
