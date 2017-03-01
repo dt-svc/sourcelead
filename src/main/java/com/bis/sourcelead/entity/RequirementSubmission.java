@@ -297,6 +297,9 @@ public class RequirementSubmission implements Serializable{
 	@Transient
 	private RequirementSubmissionTemplateFields requirementSubmissionTemplateFields;
 	
+	@Transient
+	private String requirementUUID;
+	
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
 	}
@@ -955,5 +958,13 @@ public class RequirementSubmission implements Serializable{
 
 	public void setResumeUUID(String resumeUUID) {
 		this.resumeUUID = resumeUUID;
+	}
+
+	public String getRequirementUUID() {
+		return requirementUUID;
+	}
+
+	public void setRequirementUUID(String requirementUUID) {
+		this.requirementUUID = requirementUUID;
 	}
 }

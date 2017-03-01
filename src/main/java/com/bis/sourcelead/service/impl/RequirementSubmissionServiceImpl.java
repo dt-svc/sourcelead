@@ -2289,6 +2289,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
         	reqsub.setRequirementId(reqsub.getRequirement().getId());
         	StringBuilder jbt = new  StringBuilder();
             reqsub.setRequirementName(jbt.append(reqsub.getRequirement().getJobTitle()).toString());
+            reqsub.setRequirementUUID(reqsub.getRequirement().getRequirementUUID());
             /*if("ACCEPTED".equalsIgnoreCase(reqsub.getSubmissionRateStatus().toString())){
             	StringBuilder app = new  StringBuilder();
             	  User  approvedUser = userDao.getUserByUserCode(reqsub.getUpdatedBy());
