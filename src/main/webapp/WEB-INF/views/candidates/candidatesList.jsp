@@ -438,6 +438,15 @@ function candidateSideBar(candidateId){
          			 		mobilePhone = '';
          			 	 }
          			 	 
+         			 	if(json.candidateType != null && json.candidateType != '' && json.candidateType != 'undefined'){
+         			 		candidateType =json.candidateType;
+         			 	 }else{
+         			 		 
+         			 		candidateType = '';
+         			 	 }
+         			 	 
+         			 	json.candidateType
+         			 	 
 	                	 var result = "";
 	                	 result = result+'<div id="popUp" ></div>  ';
 	                	
@@ -488,7 +497,7 @@ function candidateSideBar(candidateId){
 			            
 			             result = result+'                       <ul class="list-unstyled">';
 			             
-			             result = result+'                        <li>Type - '+json.candidateType+'</li>';  
+			             result = result+'                        <li>Type - '+candidateType+'</li>';  
 			             
                          
 			             result = result+'                       </ul>';
@@ -1264,6 +1273,8 @@ function cancel(candidateId){
             </div>
           </li>
           </sec:authorize>
+          
+          <!--  <li><a href="uploadCandidateForm"><i class="fa fa-upload"></i>&nbsp;Imports</a></li> -->
 	      
            <li id="filter2ApprovePop"><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter2ApprovedPop" class="approved_pop">
@@ -1718,6 +1729,9 @@ function savedCommentAndCount(candidateId){
 	// Close Advanced Search
 		function closePop(){
 			$("div.cand-advsrch-popup").hide();
+			clearCandidateSearchKeys();
+			 $('#expId').find('p.jquery_form_error_message').remove();
+			 
 		}
 		function openPop(){
 		  $("div.cand-advsrch-popup").toggle();
@@ -2027,6 +2041,10 @@ function getCities(){
 		    	   minMaxExperience();
 		       });
 		       
+		       $("#minExpYears").on('change', function (e) {
+		    	   minMaxExperience();
+		       });
+		       
 				for (var selector in config) {
 				  $(selector).chosen(config[selector]);
 				}
@@ -2280,6 +2298,8 @@ function minMaxExperience(){
 	     
 	     $("#minExpYears").val(''); 
 	     $("#maxExpYears").val(''); 
+	     $('#expId').find('p.jquery_form_error_message').remove();
+	     
 	     $("#noticePeriod").empty(); 
 	     
 	     $("#country").val(''); 
