@@ -118,10 +118,16 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 		String query = "";
         if(dateRange != null && "today".equals(dateRange)){
             query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) = CURDATE()) and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime >= NOW()) "+ subQuery;
+            params.put("startDate",startUTCDate);
+        	params.put("endDate",endUTCDate);
         }else if(dateRange != null && "previous".equals(dateRange)){
             query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) <= CURDATE()) and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime < NOW())"+ subQuery;
+            params.put("startDate",startUTCDate);
+        	params.put("endDate",endUTCDate);
         }else if(dateRange != null && "upcoming".equals(dateRange)){
         	query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) > CURDATE())"+ subQuery;
+        	params.put("startDate",startUTCDate);
+        	params.put("endDate",endUTCDate);
         }else{
         	query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and (rih.interviewId.dateOfInterview between :startDate and :endDate)"; 
         	params.put("startDate",startUTCDate);
