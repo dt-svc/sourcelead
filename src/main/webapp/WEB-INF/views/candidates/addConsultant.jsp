@@ -201,9 +201,11 @@
          <label class="col-md-3">Employment type</label>
          <div class="col-md-9">
              <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getDesignationType(this);">
-                <option value="">Select</option>
+                <option value="">--Select--</option>
                  <option>C2C</option>
                  <option>W-2</option>
+                 <option>C2H</option>
+                 <option>Contract</option>
                  <option>Part Time</option>
                  <option>Full Time</option>
                  <option>Other</option>
