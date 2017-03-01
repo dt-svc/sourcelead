@@ -2028,8 +2028,12 @@ window.ids = new Array();
 function handleClick() {
 	ids = [];
 	$("input:checkbox[name=team]:checked").each(function(){
+		$('span.jquery_form_error_message').hide();
 		ids.push($(this).val());
 	});
+	if(ids.length < 1){
+		$('span.jquery_form_error_message').show();
+	}
 }
 </script>
 
@@ -2169,10 +2173,16 @@ function pagination(){
 function assignMembers() {
 	handleTeamRoleClick();
 	var result = "";
-	var oTable = $('#example').dataTable();
+	var oTable = $('#example').DataTable();
 	var rowcollection =  oTable.$(".myCheckbox:checked", {"page": "all"});
-	var totalCount = $("[type='checkbox']:checked").length;
+	//var totalCount = $("[type='checkbox']:checked").length;
 	var count = 1;
+	var totalCount = oTable
+    .rows()
+    .nodes()
+    .to$()
+	.find('input[type="checkbox"].myCheckbox:checked').length;
+	
 	if(totalCount == 0){
 		$('span.jquery_form_error_message').show();
 	}else{

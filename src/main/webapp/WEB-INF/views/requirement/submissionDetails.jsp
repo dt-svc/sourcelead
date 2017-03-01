@@ -333,6 +333,9 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + '<div id="tabb-1" class="new-tabs_inn" style="display: block;">';
 
 		       result = result + '<div class="require_wrap_details">';
+		       if(json.submissionStatus == 'REJECTED'){
+		    	   result = result + '<div ><a href="#" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';
+		       }
 		       result = result + '<div class="clearfix">';
 			   result = result + '</div> ';        
 				   
@@ -502,7 +505,7 @@ function getInternalInterviewsList(submissionId){
 	   					    	result = result + '<i class="fa fa-handshake-o pull-right" title="FeedBack" onclick="interviewFeedback('+report.interviewId.id+',\''+report.interviewTemplateid+'\',\''+report.id+'\');"></i>';	 
 	   					     }
 	   					  }
-	   					     result = result + '<h2>Interview: <span>'+interviewTypeHeader+' '+report.dateOfInterviewStr+' '+report.startTimeStr+' </span></h2>';
+	   					     result = result + '<h2>Interview: <span>'+interviewTypeHeader+' '+report.interviewTimezoneDateStr+' '+report.interviewTimeZoneStartTimeStr+' </span></h2>';
 	                    	result = result + '<div class="content clearfix">';
 	                    	
 	                    	 result = result + '<div id="feedbackdiv'+report.interviewId.id+'" class="require_wrap_table demo" style="display:none;">';
@@ -1777,3 +1780,23 @@ function closefeedback(){
 }
 </script>
 <!-- this script using for interview feedback Ends -->
+<script type="text/javascript">
+function reActivateApplicant(submissionId,candidateId,requirementId){
+	var result = "";
+	var sourceleadUrl ='${sourceleadUrl}';
+	var message = confirm("You are choosing to ReActivate the Applicant");
+	if (message == true) {
+		$.ajax({
+	        type : "POST",
+	         url: sourceleadUrl+"/reActivateRejectedApplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
+	         success :function(data) {
+	               if(data != null && data != 'undefined' && data != ""){
+	            	   getSubmissionDetailsSideBar(submissionId,candidateId,requirementId);
+	                } 
+	                 },
+	              }); 
+		
+	}
+	
+}
+</script>

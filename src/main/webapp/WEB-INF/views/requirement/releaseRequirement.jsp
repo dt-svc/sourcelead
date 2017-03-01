@@ -215,6 +215,7 @@ function getContactsLists(){
 			   	        	result = result +'  <th>Name</th>';
 			   	        	result = result +'  <th>Email</th>';
 			   	        	result = result +' <th>Phone</th>';
+			   	        	result = result +' <th>Owner</th>';
 			   	        	result = result +' <th>Vendor</th>';
 			   	        	result = result +' <th>Release</th>';
 			   	        	result = result +'</tr>';
@@ -239,6 +240,9 @@ function getContactsLists(){
 					        			result = result +'</td>';
 					        			result = result +'<td>';
 					        			result = result +'<div title="'+report.spocMobilePhone+'"><span>'+report.spocMobilePhone+'</span></div>';
+					        			result = result +'</td>';
+					        			result = result +'<td>';
+					        			result = result +'<div title="'+report.ownerName+'"><span>'+report.ownerName+'</span></div>';
 					        			result = result +'</td>';
 					        			result = result +'<td>';
 					        			result = result +'<div title=""><span>'+report.orgName+'</span></div>';
