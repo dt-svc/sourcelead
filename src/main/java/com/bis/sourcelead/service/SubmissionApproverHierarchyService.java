@@ -3,7 +3,9 @@ package com.bis.sourcelead.service;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.entity.User;
 
 public interface SubmissionApproverHierarchyService {
 	
@@ -33,6 +35,12 @@ public interface SubmissionApproverHierarchyService {
     
 	public void updateSubmissionStatusByProjectMemberIdStartDateAndEndDate(Long projectMemberId,Date startDate,Date endDate,String status);
 	
+	public User updateSubmissionStatusByProjectMemberIdStartDateAndEndDateWithReOpenReason(Long projectMemberId,
+			Date startDate, Date endDate, String reason, User loginUser, String type, String isSuperUser) throws Exception;
+	
+	public void sendReopenTimeSheetMail(Long projectMemberId,String reason, User loginUser, OrgLocations orgLoc, String timesheetFrequency) throws Exception;
+	
+	public void sendReopenTimeSheetAcceptOrRejectMail(Long projectMemberId,String reason, User loginUser, OrgLocations orgLoc, String timesheetFrequency, String type, User reopenedUser) throws Exception;
 	
 	public SubmissionApproverHierarchy isThereAnyApproverChangesStatusForTheSubmission(Long submissionId,String approvalStatus);
 	
@@ -63,4 +71,6 @@ public interface SubmissionApproverHierarchyService {
 	public Boolean getCronRemainderForEmployeeByProjectMemberId(Date frequencyStartDate,Date frequencyEndDate,Long projectMemberId);
 
 	public SubmissionApproverHierarchy isThereAnyApproverChangesStatusForProjectMember(Long projectMemberId,Date frequencyStartDate,Date frequencyEndDate,String approvalStatus);
+
+	
 }

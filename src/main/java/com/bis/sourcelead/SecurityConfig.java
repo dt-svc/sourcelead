@@ -108,6 +108,7 @@ public class SecurityConfig  {
     			.antMatchers("/acceptOrRejectOffer").permitAll()
     			.antMatchers("/acceptOrRejectRequirementOffer").permitAll()
     			.antMatchers("/downloadOfferAttachment").permitAll()
+    			.antMatchers("/acceptOrRejectReopenTimeSheet").permitAll() 
     			.antMatchers("/publicInterviewFeedBackTemplate").permitAll()
     			.antMatchers("/downloadRequirementAttachment").permitAll()
     			.antMatchers("/resources/**/**").permitAll() 
