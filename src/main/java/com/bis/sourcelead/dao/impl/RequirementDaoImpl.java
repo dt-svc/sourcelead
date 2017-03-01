@@ -120,7 +120,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,User user,String userRoleName) throws Exception {
+	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,Long clients,User user,String userRoleName) throws Exception {
 		 
 		Session session = this.sessionFactory.getCurrentSession();
 		//User user = userDao.getUserById(userId);
@@ -163,8 +163,19 @@ public class RequirementDaoImpl implements RequirementDao {
 			}
 		}
 		
+		String subQuery7 = "";
+		if(null != clients){
+			subQuery7 = "and requirement.clientId.id = :clients";
+			params.put("clients",clients);
+		}
 		
-		String whereCondition = subQuery;
+		String whereCondition = "";
+		if(null != subQuery7){
+			whereCondition = subQuery + subQuery7;
+		}else{
+			whereCondition = subQuery;
+		}
+		
 		
 		Query query = session.createQuery(from+" "+whereCondition+" ORDER BY requirement.id DESC");
 		for (String str : query.getNamedParameters())

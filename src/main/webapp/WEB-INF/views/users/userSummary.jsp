@@ -835,14 +835,6 @@ function getChangeRole(userId,userRoleId){
      var EmployeeId = document.getElementById("EmployeeId").value;
      var EmailId = document.getElementById("EmailId").value;
      var sourceleadUrl ='${sourceleadUrl}';
-     var Rate = document.getElementById("Rate").value;
-     if(Rate != null && Rate != ""){
-         $('#RatePer').removeAttr('data-validation-optional');
-         $('#RatePer').attr("data-validation","required");
-     }else{
-         $('#RatePer').removeAttr('data-validation');
-         $('#RatePer').attr("data-validation-optional","true");
-     }
      var RatePer = document.getElementById("RatePer").value;
 	 if(RatePer != null && RatePer != ""){
 		 $('#Rate').removeAttr('data-validation-optional');
@@ -853,6 +845,15 @@ function getChangeRole(userId,userRoleId){
 		 $('#RatePer').removeAttr('data-validation');
 	 	 $('#RatePer').attr("data-validation-optional","true"); 
 	 }
+     var Rate = document.getElementById("Rate").value;
+     if(Rate != null && Rate != ""){
+         $('#RatePer').removeAttr('data-validation-optional');
+         $('#RatePer').attr("data-validation","required");
+     }else{
+         $('#RatePer').removeAttr('data-validation');
+         $('#RatePer').attr("data-validation-optional","true");
+     }
+     
       if ($('#editUser_form').validate(false, validationSettings)){
     	  if(EmployeeId!=null&&EmployeeId!="" && empId != EmployeeId){
           $.ajax({
