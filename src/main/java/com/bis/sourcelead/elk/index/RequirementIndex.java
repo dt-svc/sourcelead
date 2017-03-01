@@ -111,6 +111,16 @@ public class RequirementIndex {
 	
 	private String isReferedRequiremetnApplied;
 	
+	private String rewardPercentage;
+	
+	private String rewardFlat;
+	
+	private String rewardFlatRateType;
+	
+	private String rewardGuaranteePeriod;
+	
+	private String rewardType;
+	
 	
 	
 	
@@ -533,6 +543,46 @@ public class RequirementIndex {
 
 	public void setIsReferedRequiremetnApplied(String isReferedRequiremetnApplied) {
 		this.isReferedRequiremetnApplied = isReferedRequiremetnApplied;
+	}
+
+	public String getRewardPercentage() {
+		return rewardPercentage;
+	}
+
+	public void setRewardPercentage(String rewardPercentage) {
+		this.rewardPercentage = rewardPercentage;
+	}
+
+	public String getRewardFlat() {
+		return rewardFlat;
+	}
+
+	public void setRewardFlat(String rewardFlat) {
+		this.rewardFlat = rewardFlat;
+	}
+
+	public String getRewardFlatRateType() {
+		return rewardFlatRateType;
+	}
+
+	public void setRewardFlatRateType(String rewardFlatRateType) {
+		this.rewardFlatRateType = rewardFlatRateType;
+	}
+
+	public String getRewardGuaranteePeriod() {
+		return rewardGuaranteePeriod;
+	}
+
+	public void setRewardGuaranteePeriod(String rewardGuaranteePeriod) {
+		this.rewardGuaranteePeriod = rewardGuaranteePeriod;
+	}
+
+	public String getRewardType() {
+		return rewardType;
+	}
+
+	public void setRewardType(String rewardType) {
+		this.rewardType = rewardType;
 	}
 	
 }

@@ -236,6 +236,29 @@ public class AddElkRequirement {
 					requirementIndex.setAppliedProfessionals(appliedProfessionals.split(","));
 				}
 				
+				
+				if(null != rs.getString("REWARD_TYPE")){
+					requirementIndex.setRewardType(rs.getString("REWARD_TYPE"));
+				}
+				
+				if(null != rs.getString("REWARD_PERCENTAGE")){
+					requirementIndex.setRewardPercentage(rs.getString("REWARD_PERCENTAGE"));
+				}
+				
+				if(null != rs.getString("REWARD_FLAT")){
+					requirementIndex.setRewardFlat(rs.getString("REWARD_FLAT"));
+				}
+				
+				if(null != rs.getString("REWARD_FLAT_RATE_TYPE")){
+					requirementIndex.setRewardFlatRateType(rs.getString("REWARD_FLAT_RATE_TYPE"));
+				}
+				
+				if(null != rs.getString("REWARD_GUARANTEE_PERIOD")){
+					requirementIndex.setRewardGuaranteePeriod(rs.getString("REWARD_GUARANTEE_PERIOD"));
+				}
+				
+				
+				
 				ResultSet statusRs =getApproverHierarchyStatus(rs.getString("ID"),conn);
 				if(null != statusRs){
 					while(statusRs.next()){

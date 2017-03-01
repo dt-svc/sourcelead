@@ -146,8 +146,11 @@ public class RequirementSubmission implements Serializable{
     @Column(name = "UPDATED_USER")
 	@Type(type="text")
 	private String updatedUser;
-	
     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="RECRUITER_USER_ID")        
+    private User recruiterUserId;
+	
     @Transient
 	private String userName;
     
@@ -966,5 +969,13 @@ public class RequirementSubmission implements Serializable{
 
 	public void setRequirementUUID(String requirementUUID) {
 		this.requirementUUID = requirementUUID;
+	}
+
+	public User getRecruiterUserId() {
+		return recruiterUserId;
+	}
+
+	public void setRecruiterUserId(User recruiterUserId) {
+		this.recruiterUserId = recruiterUserId;
 	}
 }

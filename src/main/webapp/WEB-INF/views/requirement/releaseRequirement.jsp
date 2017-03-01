@@ -11,25 +11,6 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
-<script>
-$(document).ready(function() {
-	
-	if('${requirementType}' != null && '${requirementType}' != '' && '${requirementType}' != 'undefined'){
-		$("#jobType").html('${requirementType}');
-	}else{
-		$("#jobType").html('No Data');
-	}
-	
-	if('${jobRate}' != null && '${jobRate}' != '' && '${jobRate}' != 'jobRate'){
-		$("#jobRate").html('${jobRate}');
-	}else{
-		$("#jobRate").html('No Data');
-	}
-	
-});
-</script>
-
-
 <!-- Content Area Starts -->
   <section class="content-wraper">
     <section class="content-header clearfix">
@@ -44,7 +25,7 @@ $(document).ready(function() {
         
         <c:if test="${SourceLeadWeb_vms == 'Y'}">
         <div class="clearfix">
-          <h2>Profile</h2>
+          <h2 onclick="openVendors();">Profile</h2>
           <div class="content clearfix">
             <div class="vendor_wrap">
               <div class="col-md-2 custom-selectpicker mt10 mb10">
@@ -100,6 +81,7 @@ $(document).ready(function() {
 	  </c:if>
 
       <!-- Accordion second Tab -->
+         <form:form id="releaseToCrowdSourcing_form"  name="releaseToCrowdSourcing_form" method="post">
          <div class="clearfix">
           <h2 onclick="opennetwork();">Open Network</h2>
           <div class="content clearfix" >
@@ -121,7 +103,7 @@ $(document).ready(function() {
                     <input type="hidden" id="isCrowdScourcingGlobel" value="">
                     <div class="col-md-7 toggle-button">
                       <label class="switch">
-                      <input type="checkbox" name="isCrowdScourcing" value="N" id="isCrowdScourcingId" onclick="isCrowdScourcing();" >
+                      <input type="checkbox" name="isCrowdScourcing" value="N" id="isCrowdScourcingId" onclick="isCrowd();" >
                       <div class="slider round"></div>
                       </label>
                     </div>
@@ -147,20 +129,18 @@ $(document).ready(function() {
                         <div class="btn-group btn_Block">
                           <button type="button" class="btn btn-sm btn-primary" id="percentageBtn" value="percentage" onClick="getRewardType('Percentage')">%</button>
                           <button type="button" class="btn btn-sm btn-default" id="flatBtn" value="flat" onClick="getRewardType('Flat')">Flat</button>
-                          <input type="hidden" name="buttonType" id="buttonType" value=""/>
+                          <input type="hidden" name="rewardType" id="rewardType" value=""/>
                         </div>
                       </div>
                       <div class="col-md-7 paddingLeft">
                         <div class="form-group positionRelative iconHolder percentage" id="percentageReward"  style="display: none">
-                          <input type="text" class="form-control input-sm" id="percentageRewardValue" name="percentageReward" placeholder="Percentage">
-                          <span  id="percentRewardErrorMsg" class="jquery_form_error_message"  style="font-size: 11px; display: none;" >Percentage is mandatory</span>
+                          <input type="text" class="form-control input-sm" field-name="Percentage" id="percentageRewardValue" name="percentageReward" placeholder="Percentage">
                           <i class="fa fa-percent"></i> 
                         </div>
                         
                         <div class="row flat">
                           <div class="form-group col-md-8 paddingRight positionRelative iconHolder" id="flatReward" style="display: none">
-                            <input type="text" class="form-control input-sm" id="flatRewardValue"  name="flatReward" placeholder="Flat">
-                             <span class="jquery_form_error_message" id="flatRewardErrorMsg"  style="font-size: 11px; display: none;" >Flat is mandatory</span>
+                            <input type="text" class="form-control input-sm" field-name="Flat" id="flatRewardValue"  name="flatReward" placeholder="Flat">
                             <i class="fa fa-money" id="flatRewardIcon"></i> </div>
                           <div class="form-group select-field col-md-4 paddingLeft">
                             <select class="form-control input-sm" id="flatRateType" name="flatRateType"  style="display: none">
@@ -178,7 +158,7 @@ $(document).ready(function() {
                     <div class="clearfix">
                       <label class="col-md-3">Reward guarantee period</label>
                       <div class="select-field col-md-7 paddingLeft">
-                        <select class="form-control input-sm" name="guaranteePeriod">
+                        <select class="form-control input-sm" id="guaranteePeriod" name="guaranteePeriod">
                           <option value="120 Days">120 Days</option>
                           <option value="90 Days">90 Days</option>
                           <option value="60 Days" selected="selected">60 Days</option>
@@ -198,13 +178,23 @@ $(document).ready(function() {
             </div>
           </div>
         </div> 
-      <!-- Accordion second Tab Ends -->
-      </div>
-      <div class="form-footer clearfix row mt">
+        <div class="form-footer clearfix row mt" id="releaseToCrowdSourcing" style="display: none">
         <div class="col-lg-12">
           <div class="pull-right">
             <span class="jquery_form_error_message" style="display:none;">Vendor/Contact/Open Network selection is mandatory</span>
-            	<input type="button" class="btn btn-primary ml" id="releaseBtn" onclick="releaseTo();" value="Release">
+           	<input type="button" class="btn btn-primary ml" onclick="releaseToCrowdSourcing();" id="releaseToCWBtn" value="Release">
+            <input type="button" class="btn btn-default ml" id="releaseCancelBtn" value="Cancel" onClick="javascript:location.href = '<c:url value='requirementList'/>'">
+          </div>
+        </div>
+      </div>
+        </form:form>
+      <!-- Accordion second Tab Ends -->
+      </div>
+      <div class="form-footer clearfix row mt" id="releaseToVendors" style="display: block">
+        <div class="col-lg-12">
+          <div class="pull-right">
+            <span class="jquery_form_error_message" style="display:none;">Vendor/Contact/Open Network selection is mandatory</span>
+           	<input type="button" class="btn btn-primary ml" id="releaseBtn" onclick="releaseTo();" value="Release">
             <input type="button" class="btn btn-default ml" id="releaseCancelBtn" value="Cancel" onClick="javascript:location.href = '<c:url value='requirementList'/>'">
           </div>
         </div>
@@ -213,12 +203,32 @@ $(document).ready(function() {
   </section>
 <!-- Content Area Starts -->
 
+
+
+
+
+
 <script> 
 $(document).ready(function(){
 	getVendorLists();
-	//getVendorContactLists();
+	
+    openVendors();
+	
+	if('${requirementType}' != null && '${requirementType}' != '' && '${requirementType}' != 'undefined'){
+		$("#jobType").html('${requirementType}');
+	}else{
+		$("#jobType").html('No Data');
+	}
+	
+	if('${jobRate}' != null && '${jobRate}' != '' && '${jobRate}' != 'jobRate'){
+		$("#jobRate").html('${jobRate}');
+	}else{
+		$("#jobRate").html('No Data');
+	}
+	
 });
 </script>
+
 <script>
 function releaseTo(){
 	    var contactsIds = new Array();
@@ -238,33 +248,8 @@ function releaseTo(){
 	    var isPublicGlobel = $("#isPublicGlobel").val();
 	    var isCrowdScourcingGlobel = $("#isCrowdScourcingGlobel").val();
 	    var releaseRequirement = true;
+	    var percentageRewardValue = '';
 	    
-	    if(isCrowdScourcing == 'Y'){
-	    	var buttonType = document.getElementById("buttonType").value;
-	    	if(buttonType == 'Percentage'){
-	    		var percentageRewardValue = document.getElementById("percentageRewardValue").value;
-		    	if(percentageRewardValue){
-		    		releaseRequirement = true;
-		    	}else{
-		    		document.getElementById("percentRewardErrorMsg").style.display="";
-		    		document.getElementById("flatRewardErrorMsg").style.display="none";
-		    		releaseRequirement = false;
-		    	}	
-	    	}else if(buttonType == 'Flat'){
-	    		var flatRewardValue = document.getElementById("flatRewardValue").value;
-		    	if(flatRewardValue){
-		    		releaseRequirement = true;
-		    	}else{
-		    		document.getElementById("flatRewardErrorMsg").style.display="";
-		    		document.getElementById("percentRewardErrorMsg").style.display="none";
-		    		releaseRequirement = false;
-		    	}	
-	    	}
-	    	
-	    	
-	    }
-	    
-	    if(releaseRequirement == true){
 	    	 if(contactsIds.length > 0 || vendorIds.length > 0 || isPublic == "Y" || isCrowdScourcing == "Y" || (isPublicGlobel != isPublic && isPublicGlobel != "") || (isCrowdScourcingGlobel != isCrowdScourcing && isCrowdScourcingGlobel != "")){
 	 	    	$('span.jquery_form_error_message').hide();
 	 	    	$("#releaseBtn").prop('disabled', true);
@@ -274,7 +259,7 @@ function releaseTo(){
 	 		    var requirementId = '${requirementId}';
 	 			 $.ajax({
 	 		           type : "POST",
-	 		           url: sourceleadUrl+"/releaseJobsToClientsOrVendors?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds+"&isCrowdScourcing="+isCrowdScourcing+"&isPublic="+isPublic,    
+	 		           url: sourceleadUrl+"/releaseJobsToClientsOrVendors?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds,    
 	 		            success :function(data) {
 	 							location.replace(sourceleadUrl+"/requirementList");
 	 		            },
@@ -282,7 +267,6 @@ function releaseTo(){
 	 	    }else{
 	 	    	$('span.jquery_form_error_message').show();
 	 	    } 
-	    }
 	   
 }
 
@@ -291,6 +275,83 @@ function releaseToOneContact(contactscheckboxId){
 	$("#" + contactscheckboxId).prop('checked', true);
 	releaseTo();
 }
+</script>
+
+
+
+
+<script type="text/javascript">
+ function releaseToCrowdSourcing() {
+	 
+	 
+	   if ($('#releaseToCrowdSourcing_form').validate(false, validationSettings)){ 
+		    var frm = $('#releaseToCrowdSourcing_form').serializeFormJSON();
+	        var con = JSON.stringify(frm);
+	        con = con.replace(/[{}]/g, "");
+	        
+	        //It will escape all the special characters
+	        var jsonData = encodeURIComponent(con);
+	        
+	        var sourceleadUrl ='${sourceleadUrl}';
+	        var requirementUUID = '${requirementUUID}';
+       	    var requirementId = '${requirementId}';
+	        
+     		$("#releaseToCWBtn" ).addClass('button').val('Processing..');
+       	    
+	        
+       	    $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/releaseToCrowdSourcingNetwork?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&requirementId="+requirementId, 
+		        success: function(result) {
+		        	location.replace(sourceleadUrl+"/releaseRequirementToClientOrVendors?requirementUUID="+requirementUUID);
+		        },
+		    }); 
+	        return true;
+		
+	  }else{
+		return false;
+	  }
+    }
+ 
+   $('body').on('blur', '#releaseToCrowdSourcing_form', function() {
+		$("#releaseToCrowdSourcing_form").showHelpOnFocus();
+		$("#releaseToCrowdSourcing_form").validateOnBlur(false, validationSettings);  
+   });
+  
+ 
+</script>  
+
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+
+        
+</script> 
+
+      
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
 </script>
 
 
@@ -410,13 +471,13 @@ function getContactsLists(){
 <script type="text/javascript">
 function getRewardType(rewardType){
 	
-	 $("#buttonType").val(rewardType);
-	 
-	    document.getElementById("percentRewardErrorMsg").style.display="none";
-		document.getElementById("flatRewardErrorMsg").style.display="none";
+	 $("#rewardType").val(rewardType);
 	 
 	 $("#percentageRewardValue").val('');
 	 $("#flatRewardValue").val('');
+	 
+	 $('#percentageReward').find('p.jquery_form_error_message').remove();
+	 $('#flatReward').find('p.jquery_form_error_message').remove();
 	 
 	if(rewardType == 'Percentage'){
 		document.getElementById("crowd_rate").style.display="";
@@ -426,6 +487,11 @@ function getRewardType(rewardType){
 		
 		document.getElementById("percentageBtn").className = 'btn btn-sm btn-primary active'
 	    document.getElementById("flatBtn").className = 'btn btn-sm btn-primary'
+    	$('#percentageRewardValue').attr("data-validation","required validate_float");  
+		$('#percentageRewardValue').removeAttr('data-validation-optional');
+	    $('#flatRewardValue').removeAttr('data-validation');
+	    $('#flatRewardValue').attr("data-validation-optional","true"); 
+	    	
 	    
 	}
 	
@@ -437,7 +503,11 @@ function getRewardType(rewardType){
 		
 		document.getElementById("percentageBtn").className = 'btn btn-sm btn-primary'
 		document.getElementById("flatBtn").className = 'btn btn-sm btn-primary active'
-		
+		$('#flatRewardValue').attr("data-validation","required validate_float");
+		$('#flatRewardValue').removeAttr('data-validation-optional');
+		$('#percentageRewardValue').removeAttr('data-validation');
+		$('#percentageRewardValue').attr("data-validation-optional","true"); 
+		    	
 		
 	}
 }
@@ -710,11 +780,18 @@ function ispublic(){
 </script>
 
 <script>
-function isCrowdScourcing(){
+function isCrowd(){
 	 if(document.getElementById('isCrowdScourcingId').checked) {
 	        $("#isCrowdScourcingId").val('Y');
 	        document.getElementById("crowd_rate").style.display="";
-	        getRewardType('Percentage')
+	        
+	        var rewardType = '${rewardType}';
+	        if('${rewardType}' != null && '${rewardType}' != '' && '${rewardType}' != 'undefined'){
+	        	 getRewardType('${rewardType}')
+	        }else{
+	        	 getRewardType('Percentage')
+	        }
+	       
 	    }else{
 	        $("#isCrowdScourcingId").val('N');
 	        document.getElementById("crowd_rate").style.display="none";
@@ -724,6 +801,10 @@ function isCrowdScourcing(){
 
 <script>
 function opennetwork(){
+	
+	document.getElementById("releaseToCrowdSourcing").style.display="";
+	document.getElementById("releaseToVendors").style.display="none";
+	
 	var sourceleadUrl ='${sourceleadUrl}';
 	var requirementId = '${requirementId}';
 	  $.ajax({
@@ -736,12 +817,49 @@ function opennetwork(){
    		    	}
    		    	if(json.isCrowdSourcing == "Y"){
       		    	 $("#isCrowdScourcingId").prop('checked', true).val('Y');
-      		    	 getRewardType('Percentage')
+      		    	 var rewardType = '${rewardType}';
+	      		       if('${rewardType}' != null && '${rewardType}' != '' && '${rewardType}' != 'undefined'){
+	      		       	 getRewardType('${rewardType}')
+	      		       	 
+	      		        $("#percentageBtn").attr("disabled", "disabled");
+	      		        $("#flatBtn").attr("disabled", "disabled");
+	      		       	 
+	      		       	 
+	      		       if('${rewardPercentage}' != null && '${rewardPercentage}' != '' && '${rewardPercentage}' != 'rewardPercentage'){
+	      		    	 $("#percentageRewardValue").val('${rewardPercentage}');
+	      		    	 $("#percentageRewardValue").attr("disabled", "disabled");
+	      		       }
+	      		       
+	      		     if('${rewardFlat}' != null && '${rewardFlat}' != '' && '${rewardFlat}' != 'rewardFlat'){
+	      		    	 $("#flatRewardValue").val('${rewardFlat}');
+	      		    	 $("#flatRewardValue").attr("disabled", "disabled");
+	      		    	 
+	      		    	 $("#flatRateType").val('${rewardFlatRateType}');
+	      		    	 $("#flatRateType").attr("disabled", "disabled");
+	      		       }
+	      		       
+		      		     $("#guaranteePeriod").val('${rewardGauranteePeriod}');
+		      		     $("#guaranteePeriod").attr("disabled", "disabled");
+	      		       	 
+	      		       	 
+	      		       	 
+	      		       }else{
+	      		       	 getRewardType('Percentage')
+	      		       }
       		    }
    		      $("#isPublicGlobel").val(json.isPublic);
    		      $("#isCrowdScourcingGlobel").val(json.isCrowdSourcing);
    		    }
 	  });
+	  
+	 
+}
+</script>
+
+<script>
+function openVendors(){
+	document.getElementById("releaseToCrowdSourcing").style.display="none";
+	document.getElementById("releaseToVendors").style.display="";
 }
 </script>
 
