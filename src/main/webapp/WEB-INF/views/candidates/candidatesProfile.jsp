@@ -981,6 +981,18 @@ function candidateProfile(candidateId){
 		 $('#expectedRateType').removeAttr('data-validation');
 		 $('#expectedRateType').attr("data-validation-optional","true"); 
 		 }
+		 
+		 var rateType = document.getElementById("expectedRateType").value; 
+		 if(rateType != null && rateType != ""){
+			 $('#expectedRate').removeAttr('data-validation-optional');
+			 $('#expectedRate').attr("data-validation","required"); 
+		 }else{
+			 $('#expectedRate').removeAttr('data-validation');
+			 $('#expectedRate').attr("data-validation-optional","true");
+			 $('#expectedRateType').removeAttr('data-validation');
+			 $('#expectedRateType').attr("data-validation-optional","true"); 
+		 }
+		 
 		 var currentRate = document.getElementById("currentRate").value; 
 			 if(currentRate != null && currentRate != ""){
 				
@@ -991,6 +1003,17 @@ function candidateProfile(candidateId){
 			 $('#currentRateType').attr("data-validation-optional","true"); 
 			 }
 			 
+		 var currentRateType = document.getElementById("currentRateType").value; 
+			if(currentRateType != null && currentRateType != ""){
+				$('#currentRate').removeAttr('data-validation-optional');
+				$('#currentRate').attr("data-validation","required"); 
+			}else{
+				$('#currentRate').removeAttr('data-validation');
+			 	$('#currentRate').attr("data-validation-optional","true"); 
+				$('#currentRateType').removeAttr('data-validation');
+			 	$('#currentRateType').attr("data-validation-optional","true"); 
+			}
+			
 		var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',

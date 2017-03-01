@@ -224,6 +224,7 @@ public class RequirementListController {
 		public ModelAndView requirementListForReports(@RequestParam(value="serachValue", required=false)String serachValue) throws Exception {
 		 logger.info("checkkkkk");
 		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 model.setViewName("requirement/requirementReports");
 		 return model;
 			
