@@ -128,6 +128,8 @@ public class CandidateListRestController {
 		
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		List<Candidate> candList = new ArrayList<Candidate>();
 		//List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange,candidateType);
 		
@@ -146,8 +148,17 @@ public class CandidateListRestController {
 				  boolQueryBuilder.must(QueryBuilders.matchQuery("status", 0));
 			}
 			
-			if(null != candidateType && !candidateType.isEmpty() && !candidateType.equalsIgnoreCase("All")){
-				boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", candidateType));
+			if(null != userRole && !userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+				if(null != candidateType && !candidateType.isEmpty() && !candidateType.equalsIgnoreCase("All")){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", candidateType));
+				}
+			}
+			
+			
+			if(null != userRole && userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("recruiterUserId", user.getId()));
+			}else{
+				boolQueryBuilder.must(QueryBuilders.matchQuery("recruiterUserId", 0));
 			}
 			
 			if(StringUtils.isNotEmpty(updatedDateRange) && !"null".equalsIgnoreCase(updatedDateRange)   && !updatedDateRange.equalsIgnoreCase("0")  && !updatedDateRange.equalsIgnoreCase("undefined")){
@@ -888,7 +899,7 @@ public class CandidateListRestController {
 	   
 	   
 	   
-	   @PreAuthorize("hasRole('ROLE_ADD_CANDIDATE_HOTLIST')")
+	   @PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_HOTLIST','ROLE_CROWDSOURCING_CANDIDATES')")
 	   @RequestMapping(value = "/saveCandidateAsFavourite", method = RequestMethod.POST)
 		public @ResponseBody String saveCandidateAsFavourite(@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
 			

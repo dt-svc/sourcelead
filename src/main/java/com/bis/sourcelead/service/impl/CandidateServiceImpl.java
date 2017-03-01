@@ -42,10 +42,12 @@ import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.UniversalSearchHelper;
@@ -94,6 +96,9 @@ public class CandidateServiceImpl implements CandidateService {
 	
 	@Autowired
 	private UniversalSearchHelper universalSearchHelper;
+	
+	@Autowired
+	UserRoleService userRoleService;
 	/**
 	 * @author prasad k
 	 * @since  aug 26 2016
@@ -223,6 +228,11 @@ public class CandidateServiceImpl implements CandidateService {
 		
 		if(jsonObj.has("address") && jsonObj.getString("address") !=null){
 			candidate.setAddress(jsonObj.getString("address"));
+		}
+		
+		UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		if(null != userRole && userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+			candidate.setRecruiterUserId(userRole.getUser());	
 		}
 		
 		if(jsonObj.has("candidateSkills") && jsonObj.getString("candidateSkills") !=null){
