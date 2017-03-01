@@ -417,7 +417,6 @@ public class RequirementReleaseRestController {
 		requirement.setUpdatedBy(orgSpoc.getVendorUser().getUserCode());
 		requirement.setCreatedBy(orgSpoc.getVendorUser().getUserCode());
 		
-		requirement.setJobTitle(parentRequirement.getJobTitle());
 		if(null != parentRequirement.getJobType()){
 			requirement.setJobType(parentRequirement.getJobType());	
 		}

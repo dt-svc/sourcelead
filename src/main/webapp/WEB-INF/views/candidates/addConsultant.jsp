@@ -201,9 +201,11 @@
          <label class="col-md-3">Employment type</label>
          <div class="col-md-9">
              <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getDesignationType(this);">
-                <option value="">Select</option>
+                <option value="">--Select--</option>
                  <option>C2C</option>
                  <option>W-2</option>
+                 <option>C2H</option>
+                 <option>Contract</option>
                  <option>Part Time</option>
                  <option>Full Time</option>
                  <option>Other</option>
@@ -269,10 +271,10 @@
                     <option value="">Rate Per</option>
                     <option ${currentRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
                     <option ${currentRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-                    <option ${currentRateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
-                    <option ${currentRateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
+                    <option ${currentRateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+                    <option ${currentRateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
                     <option ${currentRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-                    <option ${currentRateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
+                    <option ${currentRateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
                     <option ${currentRateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
                   </select>
                 </div>
@@ -307,10 +309,10 @@
                     <option value="">Rate Per</option>
                     <option ${rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
                     <option ${rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-                    <option ${rateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
-                    <option ${rateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
+                    <option ${rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+                    <option ${rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
                     <option ${rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-                    <option ${rateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
+                    <option ${rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
                     <option ${rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
                   </select>
                 </div>
