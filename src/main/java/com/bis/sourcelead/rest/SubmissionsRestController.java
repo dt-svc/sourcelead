@@ -610,6 +610,7 @@ public class SubmissionsRestController {
 			@RequestParam(value = "selectedIds", required = false) String submissionsList,
 			@RequestParam(value = "requirementId", required = false) Long requirementId,
 			@RequestParam(value = "selectedShortlistsRate", required = false) String selectedShortlistsRate,
+			@RequestParam(value = "selectedShortlistsRatePer", required = false) String selectedShortlistsRatePer,
 			MultipartHttpServletRequest multPartrequest) throws Exception {
 		String jsonc = "{" + jsonData + "}";
 		JSONObject jsonObj = new JSONObject(jsonc);
@@ -620,7 +621,7 @@ public class SubmissionsRestController {
 		final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) multPartrequest;
 		final Map<String, MultipartFile> files = multiRequest.getFileMap();
 		requirementSubmissionService.storeClientSubmissionWithEmailPreview(requirementId, user, orgLocations,
-				submissionsList, org, jsonObj, files,selectedShortlistsRate);
+				submissionsList, org, jsonObj, files,selectedShortlistsRate,selectedShortlistsRatePer);
 		return "success";
 	}
 
