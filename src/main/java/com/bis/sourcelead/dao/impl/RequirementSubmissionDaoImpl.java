@@ -554,10 +554,22 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				}
 			}
 			//to get applicates list of the team member 
+//			if(requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && flag && !teamFlag){
+//				String query = "select count(*) from RequirementSubmission reqSub where (reqSub.orgLocations.id =:loginOrgLocation or "
+//						+ "reqSub.sourceSubmission.id =:loginOrgLocation) and reqSub.createdBy =:usercode and reqSub.requirement.id =:requirementId "+submissionStages+" ";
+//				candidatesCount = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setString("usercode", user.getUserCode()).setLong("requirementId", requirementId).setCacheable(true).list();
+//			}
+			//to get applicates list of the team member 
 			if(requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && flag && !teamFlag){
-				String query = "select count(*) from RequirementSubmission reqSub where (reqSub.orgLocations.id =:loginOrgLocation or "
-						+ "reqSub.sourceSubmission.id =:loginOrgLocation) and reqSub.createdBy =:usercode and reqSub.requirement.id =:requirementId "+submissionStages+" ";
+				String query = "select count(*) from RequirementSubmission reqSub left join fetch reqSub.requirement left join fetch "
+						+ "reqSub.candidate left join fetch reqSub.sourceSubmission "
+						+ "left join fetch reqSub.candidateResumes where (reqSub.orgLocations.id =:loginOrgLocation or "
+						+ "reqSub.sourceSubmission.id =:loginOrgLocation) and reqSub.createdBy =:usercode and reqSub.requirement.id =:requirementId "+submissionStages+" ORDER BY reqSub.id DESC";
 				candidatesCount = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setString("usercode", user.getUserCode()).setLong("requirementId", requirementId).setCacheable(true).list();
+			}else if(!isadmin && requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && !flag && !teamFlag){
+				String query = "select count(*) from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId and  reqSub.requirement.id  IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:userId) "+submissionStages+" ORDER BY reqSub.candidateScore DESC ";
+				candidatesCount = session.createQuery(query).setLong("userId", user.getId()).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).setCacheable(true).list();
+
 			}
 		 
 	        Integer count = 0;
