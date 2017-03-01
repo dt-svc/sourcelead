@@ -502,6 +502,8 @@ public class SubmissionsRestController {
 		requirementSubmission.setRejectedReason(reason);
 		requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
 		requirementSubmission.setUpdatedBy(user.getUserCode());
+		StringBuilder sb = new StringBuilder();
+		requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		requirementSubmission.setUpdatedDate(new Date());
 		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 		requirementSubmissionService.sendRejectionMailToVendorContact(user,reason,submissionId,orgLocations);
@@ -732,6 +734,7 @@ public class SubmissionsRestController {
 
 		// to update Submission status
 		requirementSubmission.setSubmissionStatus(requirementSubmission.getPreviousSubmissionStatus());
+		requirementSubmission.setSubmissionRateStatus(null);
 		requirementSubmission.setPreviousSubmissionStatus(null);
 		requirementSubmission.setUpdatedBy(user.getUserCode());
 		requirementSubmission.setUpdatedDate(new Date());
