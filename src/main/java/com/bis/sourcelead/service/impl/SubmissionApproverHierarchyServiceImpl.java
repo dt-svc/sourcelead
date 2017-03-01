@@ -154,6 +154,10 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 
 				 ProjectMembers projectMembers = projectMembersDao.getProjectMemberById(projectMemberId);
 				 
+				 String[] frequency = timesheetFrequency.split("To");
+			 	 String weekStartDate = frequency[0].trim();
+			  	 String weekEndDate = frequency[1].trim();
+				 
 				//setting the class filed values
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
 				 globalVarsMap.put("superUserName",ol.getUser().getFirstName());
@@ -161,7 +165,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 globalVarsMap.put("managerName",loginUser.getFirstName());
 				 globalVarsMap.put("projectName", projectMembers.getProjects().getProjectName());
 				 globalVarsMap.put("frequencyType",projectMembers.getProjects().getInvoiceFrequency());
-				 globalVarsMap.put("frequencyPeriod",timesheetFrequency);
+				 globalVarsMap.put("frequencyPeriod",weekStartDate+" TO "+weekEndDate);
 				 globalVarsMap.put("totalHours","100");
 				 globalVarsMap.put("reason",reason);
 				 

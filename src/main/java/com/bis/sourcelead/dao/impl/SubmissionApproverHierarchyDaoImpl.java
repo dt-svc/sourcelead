@@ -385,15 +385,26 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		List<SubmissionApproverHierarchy>  submissionApproverHierarchyList=submissionApproverHierarchyListQuery.setLong("projectMemberId", projectMemberId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setCacheable(true).list();
 	    if(submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()){
 	    	for(SubmissionApproverHierarchy sah :submissionApproverHierarchyList){
-	    		if(null != type && "notify".equalsIgnoreCase(type)){
+	    		if(null != type && "notify".equalsIgnoreCase(type) && null != isSuperUser && isSuperUser.equalsIgnoreCase(Constants.YES)){
 	    			sah.setReopenReason(reason);
 	    			sah.setReopenedUser(loginUser);
-	    		}else if(null != type && "reject".equalsIgnoreCase(type)){
-	    			sah.setReopenRejectedReason(reason);
-	    		}else{
 	    			sah.setSubmissionStatus(Submission_Status.DRAFT);
 	    			sah.setSubmissionApprovalStatus(Submission_ApprovalStatus.NEW);
 	    			sah.setReopenRejectedReason(null);
+	    		}else{
+	    			if(null != type && "notify".equalsIgnoreCase(type)){
+		    			sah.setReopenReason(reason);
+		    			sah.setReopenedUser(loginUser);
+		    			sah.setReopenRejectedReason(null);
+		    		}else if(null != type && "reject".equalsIgnoreCase(type)){
+		    			sah.setReopenRejectedReason(reason);
+		    			sah.setReopenReason(null);
+		    		}else{
+		    			sah.setSubmissionStatus(Submission_Status.DRAFT);
+		    			sah.setSubmissionApprovalStatus(Submission_ApprovalStatus.NEW);
+		    			sah.setReopenRejectedReason(null);
+		    			sah.setReopenReason(null);
+		    		}
 	    		}
 	    		try {
 	    			 session.saveOrUpdate(sah);
