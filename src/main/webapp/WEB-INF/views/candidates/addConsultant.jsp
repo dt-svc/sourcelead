@@ -201,9 +201,10 @@
          <label class="col-md-3">Employment type</label>
          <div class="col-md-9">
              <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getDesignationType(this);">
-                <option value="">Select</option>
+                <option value="">--Select--</option>
                  <option>C2C</option>
                  <option>W-2</option>
+                 <option>C2H</option>
                  <option>Part Time</option>
                  <option>Full Time</option>
                  <option>Other</option>
@@ -269,10 +270,10 @@
                     <option value="">Rate Per</option>
                     <option ${currentRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
                     <option ${currentRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-                    <option ${currentRateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
-                    <option ${currentRateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
+                    <option ${currentRateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+                    <option ${currentRateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
                     <option ${currentRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-                    <option ${currentRateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
+                    <option ${currentRateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
                     <option ${currentRateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
                   </select>
                 </div>
@@ -307,10 +308,10 @@
                     <option value="">Rate Per</option>
                     <option ${rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
                     <option ${rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-                    <option ${rateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
-                    <option ${rateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
+                    <option ${rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+                    <option ${rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
                     <option ${rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-                    <option ${rateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
+                    <option ${rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
                     <option ${rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
                   </select>
                 </div>
@@ -431,38 +432,11 @@
      2.parameter : csrf token,con.
      3.ajax url implementation in CandidateRestController.
     --%>
-<script type="text/javascript">
-        var validationSettings = {
-            errorMessagePosition : 'element',
-            borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd' 
-            };
-</script> 
+ 
 <script type="text/javascript">
 	function storeCandidate() {
 		
-		var expectedRate = document.getElementById("expectedRate").value; 
-		 if(expectedRate != null && expectedRate != ""){
-			
-			 $('#rateType').removeAttr('data-validation-optional');
-			 $('#rateType').attr("data-validation","required"); 
-		 }else{
-		 $('#rateType').removeAttr('data-validation');
-		 $('#rateType').attr("data-validation-optional","true"); 
-		 }
-		 
-		 
-		 var currentRate = document.getElementById("currentRate").value; 
-			 if(currentRate != null && currentRate != ""){
-				
-				 $('#currentRateType').removeAttr('data-validation-optional');
-				 $('#currentRateType').attr("data-validation","required"); 
-			 }else{
-			 $('#currentRateType').removeAttr('data-validation');
-			 $('#currentRateType').attr("data-validation-optional","true"); 
-			 }
-		 
+		rateValidations();
 		
 		var validationSettings = {
 				errorMessagePosition : 'element',
@@ -1041,5 +1015,60 @@ function getDesignationType(designationType){
 			  $("#designationOtherType").val('');
 		  }
 	}
+}
+</script>
+
+<!-- This script for Current Rate ,Rate Type,Expected Rate, Expected Rate Type validation checks -->
+<script>
+
+function rateValidations(){
+var rateType = document.getElementById("rateType").value; 
+if(rateType != null && rateType != ""){
+	 $('#expectedRate').removeAttr('data-validation-optional');
+	 $('#expectedRate').attr("data-validation","required"); 
+}else{
+	 $('#expectedRate').removeAttr('data-validation');
+	 $('#expectedRate').attr("data-validation-optional","true");
+	 $('#rateType').removeAttr('data-validation');
+	 $('#rateType').attr("data-validation-optional","true"); 
+} 
+
+var expectedRate = document.getElementById("expectedRate").value; 
+if(expectedRate != null && expectedRate != ""){
+	
+	 $('#rateType').removeAttr('data-validation-optional');
+	 $('#rateType').attr("data-validation","required"); 
+}else{
+$('#rateType').removeAttr('data-validation');
+$('#rateType').attr("data-validation-optional","true"); 
+}
+
+
+
+var currentRateType = document.getElementById("currentRateType").value; 
+	if(currentRateType != null && currentRateType != ""){
+		$('#currentRate').removeAttr('data-validation-optional');
+		$('#currentRate').attr("data-validation","required"); 
+	}else{
+		$('#currentRate').removeAttr('data-validation');
+	 	$('#currentRate').attr("data-validation-optional","true"); 
+		$('#currentRateType').removeAttr('data-validation');
+	 	$('#currentRateType').attr("data-validation-optional","true"); 
+	} 
+
+
+var currentRate = document.getElementById("currentRate").value; 
+	 if(currentRate != null && currentRate != ""){
+		
+		 $('#currentRateType').removeAttr('data-validation-optional');
+		 $('#currentRateType').attr("data-validation","required"); 
+		 
+	 }else{
+		 
+			 $('#currentRateType').removeAttr('data-validation');
+			 $('#currentRateType').attr("data-validation-optional","true"); 
+	 
+	 }
+	 
 }
 </script>
