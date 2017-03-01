@@ -13,6 +13,9 @@
 .require_wrap_details{
 text-align:left;
 }
+#skillName {
+width: 100%;
+}
 </style>
 
 
