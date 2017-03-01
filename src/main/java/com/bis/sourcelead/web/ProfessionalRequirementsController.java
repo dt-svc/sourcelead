@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.States;
@@ -150,8 +151,12 @@ public class ProfessionalRequirementsController {
 			        model.addObject("statesList", statesList);
 				}
 				
-				List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+				/*List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+				model.addObject("skillsList", skillsList);*/
+				
+				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 				model.addObject("skillsList", skillsList);
+				
 			    
 				
 				model.setViewName("professional/professionalRequirements");

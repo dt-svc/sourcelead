@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.io.Writer;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -40,6 +41,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.CampaignIndex;
+import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -52,6 +54,7 @@ import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementReferService;
@@ -60,6 +63,10 @@ import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
 public class CrowdSourcingRequirementsRestController {
@@ -90,6 +97,9 @@ public class CrowdSourcingRequirementsRestController {
 	
 	@Autowired
 	ReferContactsService referContactsService;
+	
+	@Autowired
+	CandidateService candidateService;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -788,6 +798,62 @@ public class CrowdSourcingRequirementsRestController {
 		}
 	 
 	 
+	 @RequestMapping(value = "/getRecruiterCandidatesList", method = RequestMethod.POST)
+		public @ResponseBody String getRecruiterCandidatesList(
+				@RequestParam(value = "requirementId", required = false) Long requirementId,
+				@RequestParam(value = "candidateType", required = false) String candidateType, HttpServletRequest request) throws Exception {
+			String resultJson = null;
+			String candidateStatus = null;
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+			
+			List<Long> candidateIdsList = requirementSubmissionService.getSubmittedCandidateIdsByRequirementId(requirementId);
+			
+			    List<CandidateIndex> candidatesList = new ArrayList<CandidateIndex>();
+			    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			    df.setTimeZone(TimeZone.getTimeZone("GMT"));
+		        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+		        boolQueryBuilder.must(QueryBuilders.matchQuery("recruiterUserId", user.getId()));
+		        boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
+		        boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", "Candidate"));
+		        boolQueryBuilder.must(QueryBuilders.matchQuery("status", 1));
+		        
+		        if(!isNullOrEmpty(candidateType) && candidateType.equalsIgnoreCase("FavCandidates")){
+		        	boolQueryBuilder.must(QueryBuilders.matchQuery("isFavourite", 1));
+		        }
+		        
+		        Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocations.getId(),candidateStatus);
+			
+			if(null != candidateIdsList && candidateIdsList.size() > 0){
+				BoolQueryBuilder candidateBoolQueryBuilder = QueryBuilders.boolQuery();
+				for(Long candidateId : candidateIdsList){
+					candidateBoolQueryBuilder.should(QueryBuilders.matchQuery("candidateId", candidateId));
+				}
+				boolQueryBuilder.mustNot(candidateBoolQueryBuilder);
+			}
+			
+	        try {
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+				    if(null != searchHits && searchHits.length >0){
+				    	ObjectMapper mapper = new ObjectMapper();
+				    	for (SearchHit hit : searchHits) {
+				    		String json = hit.getSourceAsString();
+				    		mapper.setDateFormat(df);
+				    	    CandidateIndex candidateIndex = mapper.readValue(json, CandidateIndex.class);
+				    	    
+				    	    candidatesList.add(candidateIndex);
+				    	}
+				    	
+				    }
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			
+			resultJson = toJSON(candidatesList);
+			return resultJson;
+		}
+	 
+	 
 		@RequestMapping(value = "/getRefercontactList", method = RequestMethod.POST)
 		public String getRefercontactList(HttpServletRequest request,HttpServletResponse response) throws Exception {
 			String resultJson = null;
@@ -820,4 +886,13 @@ public class CrowdSourcingRequirementsRestController {
 			return resultJson;
 
 		}
+		
+		public String toJSON(Object obj){
+	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
+	            public HierarchicalStreamWriter createWriter(Writer writer) {
+	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+	            }
+	        });
+	        return xstream.toXML(obj);
+	    }
 }

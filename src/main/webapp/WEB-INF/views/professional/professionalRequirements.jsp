@@ -262,7 +262,10 @@ window.onload = function () {
 	  
 	 <div class="side_mask"><div class="proj_close"></div></div>
 	 <div class="new_side_wrap">
+	 <div class="new_side_wrap_inn">
+	<div class="new_side_wrap_cta">
 		<div id="applytoJobDiv"></div>
+		</div></div>
 	 </div> 
 	 
             
