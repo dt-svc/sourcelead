@@ -914,7 +914,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			realSheet = setCLirntTemplateHeaders(realSheet);
 			HSSFSheet hidden = workbook.createSheet("hidden");
 			String[] vendorsList = getClientList(orgLocationId);
-			String[] ownersList = getOwnerList(orgLocationId,Long.valueOf(Constants.TAB_VENDOR));
+//			String[] ownersList = getOwnerList(orgLocationId,Long.valueOf(Constants.TAB_VENDOR));
 			for (int i = 0, length= vendorsList.length; i < length; i++) {
 			   String name = vendorsList[i];
 			   HSSFRow row = hidden.createRow(i);
@@ -932,15 +932,15 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 				 realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_CONTACTS_STATUS_DROPDOWN,5,"xls"));
 				 realSheet.addValidationData(validation);
 			 }
-			 if(ownersList.length > 0){
-//				 namedCell.setRefersToFormula("hidden!$G$1:$G$" + ownersList.length);	 
-//				 DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
-//				 CellRangeAddressList addressList = new CellRangeAddressList(1,500,0,0);
-//				 HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
-//				 workbook.setSheetHidden(1, true);
-				 realSheet.addValidationData(getDropDownListForCell(ownersList,6,"xls"));
-//				 realSheet.addValidationData(validation);
-			 }
+//			 if(ownersList.length > 0){
+////				 namedCell.setRefersToFormula("hidden!$G$1:$G$" + ownersList.length);	 
+////				 DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
+////				 CellRangeAddressList addressList = new CellRangeAddressList(1,500,0,0);
+////				 HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
+////				 workbook.setSheetHidden(1, true);
+//				 realSheet.addValidationData(getDropDownListForCell(ownersList,6,"xls"));
+////				 realSheet.addValidationData(validation);
+//			 }
 			 File file = new File("clients_contacts_Import.xls");
 			 FileOutputStream stream = new FileOutputStream(file);
 			 workbook.write(stream);
@@ -1028,15 +1028,15 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		}
 		
 
-		private String[] getOwnerList(Long orgLocationId, Long vendortab) throws Exception {
-			List<String> ownerList = new ArrayList<>();
-			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationId,vendortab);
-			for(User usr : userList){
-				ownerList.add(usr.getEmail());
-			}
-			String [] ownersList = ownerList.toArray(new String[ownerList.size()]);
-			 return ownersList;
-		}
+//		private String[] getOwnerList(Long orgLocationId, Long vendortab) throws Exception {
+//			List<String> ownerList = new ArrayList<>();
+//			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationId,vendortab);
+//			for(User usr : userList){
+//				ownerList.add(usr.getEmail());
+//			}
+//			String [] ownersList = ownerList.toArray(new String[ownerList.size()]);
+//			 return ownersList;
+//		}
 		
 		private HSSFSheet setTemplateHeaders(HSSFSheet sheet) {
 			String headers[] = Constants.VENDOR_CONTACTS_HEADERS;
