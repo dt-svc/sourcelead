@@ -1006,8 +1006,9 @@ function cancel(candidateId){
 			  <i class="fa fa-search"></i>
 			  </a> 
 			  <form:form id="candidatelist_form" name="candidatelist_form"  enctype='multipart/form-data' >
-				  <div class="cand-advsrch-popup" >
+				  <div class="cand-advsrch-popup candAdvsrch-popup" >
 					  <a href="javascript:void(0)" class="close-div" onclick="closePop();"><i class="fa fa-close"></i></a>
+					  <div class="candAdvsrch-inner">
 					  <div class="row">
 						  <div class="col-md-4">
 							  <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
@@ -1048,7 +1049,7 @@ function cancel(candidateId){
 							<div class="row">
 								<div class="col-md-6">
 									<label>Rate</label>
-									 <div class="input-group error-field">
+									 <div class="input-group error-field ratetype">
 										<div id="currencyDiv" class="input-group-btn selp-custom-min custommin">
 										    <select class="selectpicker" name="currency" id="currency" field-name="Currency"  >
 										        <option value="">Currency</option>
@@ -1067,10 +1068,7 @@ function cancel(candidateId){
 								</div> 
 							<div class="col-md-6">
 								<label>&nbsp;</label> 
-								<div class="input-group error-field">
-								    <div id="maxRateDiv">
-									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
-									</div>
+								<div class="input-group error-field ratetype">
 									<div id="rateTypeDiv" class="input-group-btn selp-custom-min custommin">
 									      <select class="selectpicker" name="rateType" id="rateType" field-name="Rate Type"  >
 									            <option value="">Rate Type</option>
@@ -1082,6 +1080,9 @@ function cancel(candidateId){
 												<option value="Bi-Monthly">Bi-Monthly</option>
 												<option value="Yearly">Yearly</option>
 				                            </select> 
+									</div>
+									<div id="maxRateDiv">
+									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
 									</div>
 								</div>
 							</div>
@@ -1243,7 +1244,8 @@ function cancel(candidateId){
 							  </div>
 						    </div>
 					  </div>
-					  <div class="row form-footer mt">
+					</div>
+					  <div class="form-footer clearfix">
 						  <div class="pull-right mr">
 							   <input type="button" value="Search" id="search_candidate" onclick="searchCandidate();" class="btn btn-sm btn-primary"/>
                                <input type="button"  value="Clear"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-default ml10"/>
