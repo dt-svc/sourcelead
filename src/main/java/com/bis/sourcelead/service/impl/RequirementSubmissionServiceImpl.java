@@ -1499,7 +1499,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 
    		 clientSubmission.setSubmissionTemplateJsonStringValue(jsonArray.toString());
    		 
-   		 
+   		 StringBuilder sb = new StringBuilder();
    		 clientSubmission.setScore(submission.getScore());
    		 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
    		 clientSubmission.setVendorLocationId(loginOrgLocation);
@@ -1507,6 +1507,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 clientSubmission.setCreatedDate(new Date());
    		 clientSubmission.setCreatedBy(user.getUserCode());
    		 clientSubmission.setUpdatedDate(commonUtil.currentDate());
+   		 if(user.getFirstName()!=null && user.getLastName() !=null){
+   			sb.append(user.getFirstName()).append(" ").append(user.getLastName());
+   		 }else{
+   			sb.append(user.getFirstName());
+   		 }
+   		clientSubmission.setCreatedUser(sb.toString());
    		 clientSubmission = requirementSubmissionDao.storeRequirementSubmission(clientSubmission);
    		 
    		 
