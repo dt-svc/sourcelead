@@ -624,6 +624,27 @@ function requirementsList(offset){
 			 				result = result +'</ul>';
 			 				result = result +'<div class="clearfix"></div>';
 			 				result = result +'</h5>';
+			 				
+			 				if(requirementType != "OpenJobs"){
+			 				result = result +'<div class="disCount">';
+			 				result = result +'<div class="disCountTop">';
+			 				result = result +'<span>You will get</span>';
+			 				if(requirements.rewardType == 'Percentage'){
+			 					result = result +'<b>'+requirements.rewardPercentage+'%</b>';
+			 				}
+			 				
+			 				if(requirements.rewardType == 'Flat'){
+			 					result = result +'<strong>'+requirements.rewardFlatRateType+'</strong>';
+			 					result = result +' <b class="inr">'+requirements.rewardFlat+'</b>';
+			 				}
+			 				
+			 				result = result +'<span>on base salary</span>';
+			 				result = result +'</div>';
+			 				
+			 				result = result +'<p>Referral reward guarantee period '+requirements.rewardGuaranteePeriod+' ';
+			 				result = result +'</p>';
+			 				result = result +'</div>';
+			 				}
 			 		  
 			 				result = result +'</div>';
 			 				
@@ -873,6 +894,27 @@ function searchRequirement(offset){
 									 				result = result +'</ul>';
 									 				result = result +'<div class="clearfix"></div>';
 									 				result = result +'</h5>';
+									 				
+									 				if(requirementType != "OpenJobs"){
+										 				result = result +'<div class="disCount">';
+										 				result = result +'<div class="disCountTop">';
+										 				result = result +'<span>You will get</span>';
+										 				if(requirements.rewardType == 'Percentage'){
+										 					result = result +'<b>'+requirements.rewardPercentage+'%</b>';
+										 				}
+										 				
+										 				if(requirements.rewardType == 'Flat'){
+										 					result = result +'<strong>'+requirements.rewardFlatRateType+'</strong>';
+										 					result = result +' <b class="inr">'+requirements.rewardFlat+'</b>';
+										 				}
+										 				
+										 				result = result +'<span>on base salary</span>';
+										 				result = result +'</div>';
+										 				
+										 				result = result +'<p>Referral reward guarantee period '+requirements.rewardGuaranteePeriod+' ';
+										 				result = result +'</p>';
+										 				result = result +'</div>';
+										 				}
 									 		  
 									 				result = result +'</div>';
 									 				

@@ -301,6 +301,12 @@ public class CrowdSourcingRequirementsRestController {
     					  }else{
     						  requirementIndex.setIsReferedRequiremetnApplied(Constants.NO);
     					  }
+    					  
+    					  requirementIndex.setRewardType(refer.getRequirementId().getRewardType());
+    					  requirementIndex.setRewardPercentage(refer.getRequirementId().getRewardPercentage());
+    					  requirementIndex.setRewardFlat(refer.getRequirementId().getRewardFlat());
+    					  requirementIndex.setRewardFlatRateType(refer.getRequirementId().getRewardFlatRateType());
+    					  requirementIndex.setRewardGuaranteePeriod(refer.getRequirementId().getRewardGuaranteePeriod());
     					 
     					 requirementList.add(requirementIndex);
 	    			 } 
@@ -358,13 +364,9 @@ public class CrowdSourcingRequirementsRestController {
 			if(diffDays == 0){
 				requirement.setCalDays("Today");
 			}
-			else if(diffDays < 7){
+			else if(diffDays > 0){
 				requirement.setCalDays(time.append(diffDays).append(" day(s) ago").toString());
-			}else{
-				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm:ss aa");
-				String commonDateFormat = standardFormat.format(requirement.getCreatedDate());
-				requirement.setCalDays(commonDateFormat.toString());
-			} 
+			}
 			
 			
 			if(null != requirement.getSkills()){

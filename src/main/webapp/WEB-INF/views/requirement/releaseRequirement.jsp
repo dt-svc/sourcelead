@@ -159,12 +159,12 @@
                       <label class="col-md-3">Reward guarantee period</label>
                       <div class="select-field col-md-7 paddingLeft">
                         <select class="form-control input-sm" id="guaranteePeriod" name="guaranteePeriod">
-                          <option value="120 Days">120 Days</option>
-                          <option value="90 Days">90 Days</option>
-                          <option value="60 Days" selected="selected">60 Days</option>
-                          <option value="30 Days">30 Days</option>
-                          <option value="15 Days">15 Days</option>
-                          <option value="7 Days">7 Days</option>
+                          <option value="120 days">120 Days</option>
+                          <option value="90 days">90 Days</option>
+                          <option value="60 days" selected="selected">60 Days</option>
+                          <option value="30 days">30 Days</option>
+                          <option value="15 days">15 Days</option>
+                          <option value="7 days">7 Days</option>
                           <option value="Immediate">Immediate</option>
                         </select>
                       </div>
