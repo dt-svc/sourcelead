@@ -114,6 +114,17 @@ public class ProfessionalRequirementsController {
 	  			}
 	 			return model;
 	 	}
+	 
+	    @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+	    @RequestMapping(value = "/bankAccountDetails")
+	 	public ModelAndView bankAccountDetails(HttpServletRequest request) {
+	 			ModelAndView model = new ModelAndView();
+	 			model.setViewName("professional/bankAccountDetails");
+	 			model.addObject("sourceleadUrl", sourceleadUrl);
+	 			
+	 			return model;
+	 	}
+	
 	
 	 
 	 

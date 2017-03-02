@@ -165,7 +165,7 @@
                           <option value="30 days">30 Days</option>
                           <option value="15 days">15 Days</option>
                           <option value="7 days">7 Days</option>
-                          <option value="Immediate">Immediate</option>
+                          <option value="Immediately">Immediately</option>
                         </select>
                       </div>
                     </div>
