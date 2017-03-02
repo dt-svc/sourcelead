@@ -1459,7 +1459,7 @@ function requirementPipeline(requirementId,submissionType){
 							        else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	     }
-							          
+							        
 						            if(report.vendorLocationId != null && report.sourceSubmission != null){
 						        	   if(report.finalizedRate != null && report.finalizedRate != '' && report.finalizedRate != 'undefined'){
 						        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.finalizedRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
@@ -1496,8 +1496,7 @@ function requirementPipeline(requirementId,submissionType){
 							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
 							        	   }
 							           }
-							       }
-							           
+							      }   
 						           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
 						        	   result = result + '         <td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
 							           }

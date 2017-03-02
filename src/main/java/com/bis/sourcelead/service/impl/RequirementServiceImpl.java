@@ -648,11 +648,11 @@ public class RequirementServiceImpl implements RequirementService {
 			       if(!requirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.DRAFT)){
 				 		
 					 mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
-					 if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
+					/*if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
 						  String approverNames = jsonObj.getString("sequentialApprover1");
 						  User approverUser = userService.getUserById(Long.parseLong(approverNames));
 						  approverEmailScenario(user, approverUser ,savedRequirement,location,orgLocations);
-				     }
+				     }*/
 			  
 					//send mail to sequential approver1 
 					if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
@@ -2487,13 +2487,14 @@ public class RequirementServiceImpl implements RequirementService {
 		            		//&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())
 		            		requirement = getData(requirementIndex,user);
 		            	}
+		            	
+		            	
 		            	if(requirement !=null){
 		            		reqList.add(requirement);
 		            	}
 		            }
 				}
 			}
-			logger.info("*****************============="+reqList.size());
 		return reqList;
 		
 	}
@@ -2529,9 +2530,22 @@ public class RequirementServiceImpl implements RequirementService {
      	}
      	Boolean isLoginUserAsTeamMember =  requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementIndex.getRequirementId(), user.getId());
 		requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
- 
-//     	if(user.getId().toString())
-//     	isLoginUserAsTeamMember
+
+       if(null != requirementIndex.getReleasedBy() && !"".equalsIgnoreCase(requirementIndex.getReleasedBy())){
+			List<Long> userId = new ArrayList<Long>();
+			for (String s : requirementIndex.getReleasedBy().split(",")){
+				userId.add(Long.parseLong(s));
+			 }
+			boolean flag = userId.contains(user.getId());
+     		if(flag == true){
+     			requirement.setIsRequirementReleasedByuser("Y");
+     		}else{
+     			requirement.setIsRequirementReleasedByuser("N");
+     		}
+		}
+       if(null != requirementIndex.getRequirementUUID()){
+   		requirement.setRequirementUUID(requirementIndex.getRequirementUUID());	
+   	   }
      	return requirement;
 	}
 
