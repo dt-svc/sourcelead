@@ -11,6 +11,7 @@ public interface OrgLocationsDao {
     public OrgLocations updateOrgLocations(OrgLocations orgLocations)throws Exception;
     public OrgLocations getOrgLocations(Long id)throws Exception;
     public Boolean deleteOrgLocations(Long id)throws Exception;
+    public Boolean isLoginUserIsSuperUser(Long userId) throws Exception;
     public List<OrgLocations> getAllOrgLocations()throws Exception; 
     public  OrgLocations getOrgLocationsByLocationCode(String  locationCode) throws Exception;
     public  OrgLocations getOrgLocationsByOrgCode(String  orgCode) throws Exception;

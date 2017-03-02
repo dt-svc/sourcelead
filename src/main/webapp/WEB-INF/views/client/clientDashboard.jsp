@@ -1013,6 +1013,8 @@ function preparedClientContacts(data){
 					result = result + ' <option '+(report.spocStatus == "Negotiation" ? "selected" : '') +'>Negotiation</option>';
 					result = result + ' <option '+(report.spocStatus == "Contracted" ? "selected" : '') +'>Contracted</option>';
 					result = result + ' </select>';
+					
+					result = result + '<span id="spocSpanState'+report.id+'"> </span>';
 	    		}
 				result = result + ' </div></td>';
 				
@@ -1139,6 +1141,8 @@ function preparedClientContactListFromElk(data){
 					result = result + ' <option '+(report.spocStatus == "Negotiation" ? "selected" : '') +'>Negotiation</option>';
 					result = result + ' <option '+(report.spocStatus == "Contracted" ? "selected" : '') +'>Contracted</option>';
 					result = result + ' </select>';
+					
+					result = result + '<span id="spocSpanState'+report.id+'"> </span>';
 	    		}
 				result = result + ' </div></td>';
 				
@@ -1914,6 +1918,10 @@ function rejectInvitation(spocId){
     			$("#row"+spocId).empty();
     	    	$("#row"+spocId).html(rowHtmlContent);
     	        $("#invitationStatus"+spocId).html("<b class='proj_closed'>Rejected</b>");
+    	        
+    	        $("#spocState"+spocId).remove();
+    	        $("#spocSpanState"+spocId).html("<span>In-Active</span>");
+    	        
 		    	msgFadein();
 		    }
 	   });

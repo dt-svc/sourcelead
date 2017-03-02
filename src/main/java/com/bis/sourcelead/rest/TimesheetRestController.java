@@ -155,9 +155,12 @@ public class TimesheetRestController {
 	public @ResponseBody String timesheetEntriesDivByProjectMemberId(HttpServletRequest request,
 			@RequestParam(value="projectMemberId", required=false) String projectMemberId,
 			@RequestParam(value="from", required=false) String from) throws Exception {
+		
+		    Long superUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "superUserId");
+		    Boolean isSuperUser = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isSuperUser");
 	    	StringBuilder projectDiv = new StringBuilder("");
 		    if(StringUtils.isNotEmpty(projectMemberId)){
-		    	 projectDiv = timesheetEntriesDivByProjectMemberId(projectMemberId,from);
+		    	 projectDiv = timesheetEntriesDivByProjectMemberId(projectMemberId,from,superUserId,isSuperUser);
 		    }
 		    return projectDiv.toString();
 	}
@@ -167,12 +170,15 @@ public class TimesheetRestController {
 			@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,
 			@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
 			@RequestParam(value="from", required=false) String from) throws Exception {
+		
+		Long superUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "superUserId");
+		Boolean isSuperUser = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isSuperUser");
 		StringBuilder frequencyBasedDiv = new StringBuilder();
 		if(StringUtils.isNotEmpty(timesheetFrequency)){
 		 	 String[] frequency = timesheetFrequency.split("To");
 		 	 String weekStartDate = frequency[0].trim();
 		  	 String weekEndDate = frequency[1].trim();
-			 frequencyBasedDiv = timesheetEntriesDivByFrequnecy(weekStartDate,weekEndDate,projectMemberId,from);
+			 frequencyBasedDiv = timesheetEntriesDivByFrequnecy(weekStartDate,weekEndDate,projectMemberId,from,superUserId,isSuperUser);
 		}
 		
 		return frequencyBasedDiv.toString();
@@ -204,6 +210,9 @@ public class TimesheetRestController {
 			@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,
 			@RequestParam(value="approvalStatus", required=false) String approvalStatus,
 			@RequestParam(value="from", required=false) String from) throws Exception {
+		
+		    Long superUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "superUserId");
+		    Boolean isSuperUser = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isSuperUser");
 		    StringBuilder tabDiv = new StringBuilder("");
 		    StringBuilder statusDiv = new StringBuilder("");
 		    Boolean isModifyMyTimeSheet = commonUtil.hasRole("ROLE_MODIFY_MY_TIMESHEETS");
@@ -238,7 +247,13 @@ public class TimesheetRestController {
 				   innerStyleWidth = "style='width:40%;'";
 				   statusDivWidth = "244";
 			     }
-				 StringBuilder submissionStatusDiv = getSubmissionStatusDiv(sah ,projectMemberId,frequencyStartDate,frequencyEndDate,startDate,endDate,from,isSahApproved,pullRightClass,styleWidth,innerStyleWidth);
+			    
+			    boolean isSahReopened = false;
+			    if(null != isSah && from.equalsIgnoreCase("approver") && null != isSah.getReopenReason() && !"".equalsIgnoreCase(isSah.getReopenReason()) /*&& null != isSah.getReopenRejectedReason() && !"".equalsIgnoreCase(isSah.getReopenRejectedReason())*/){
+				   isSahReopened = true;
+			    }
+			    
+				 StringBuilder submissionStatusDiv = getSubmissionStatusDiv(sah ,projectMemberId,frequencyStartDate,frequencyEndDate,startDate,endDate,from,isSahApproved,pullRightClass,styleWidth,innerStyleWidth,superUserId,isSahReopened,isSuperUser);
 				 statusDiv.append("<div>");
 				 statusDiv.append(submissionStatusDiv);
 			     result.put("StatusDiv",statusDiv.toString());
@@ -258,6 +273,9 @@ public class TimesheetRestController {
 			 
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long superUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "superUserId");
+		Boolean isSuperUser = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isSuperUser");
+		
 		List<ProjectMembers> projectMembersList =  projectMembersService.getProjectMembersListByOrgLocationsIdAndEmpUserId(orgLoc.getId(),loginUser.getId());
 		
 		if(projectMembersList != null && !projectMembersList.isEmpty()){
@@ -290,7 +308,7 @@ public class TimesheetRestController {
 			
 				timesheetEntriesDiv.append("					<div id='timesheetEntriesDivByProjectMemberId'>");
 				if(initialProjectMemberId != null){
-					 StringBuilder projectDiv = timesheetEntriesDivByProjectMemberId(initialProjectMemberId.toString(),from);
+					 StringBuilder projectDiv = timesheetEntriesDivByProjectMemberId(initialProjectMemberId.toString(),from,superUserId,isSuperUser);
 					 timesheetEntriesDiv.append(projectDiv);		 
 				}
 				timesheetEntriesDiv.append("		            </div>");	
@@ -304,7 +322,7 @@ public class TimesheetRestController {
 		}
 	}
 	
-	public StringBuilder timesheetEntriesDivByProjectMemberId(String projectMemberId,String from) throws Exception{
+	public StringBuilder timesheetEntriesDivByProjectMemberId(String projectMemberId,String from,Long superUserId,boolean isSuperUser) throws Exception{
 		StringBuilder timesheetEntriesDiv = new StringBuilder();
 		if(StringUtils.isNotEmpty(projectMemberId)){
 			ProjectMembers projectMember = projectMembersService.getProjectMemberById(Long.parseLong(projectMemberId));
@@ -348,7 +366,7 @@ public class TimesheetRestController {
 				timesheetEntriesDiv.append("		            </div> ");
 				
 				timesheetEntriesDiv.append("			<div id='timesheetDivByFrequency'> ");
-					StringBuilder frequencyBasedDiv = timesheetEntriesDivByFrequnecy(selectedStartDate.toString(),selectedEndDate.toString(),projectMember.getId(),from);
+					StringBuilder frequencyBasedDiv = timesheetEntriesDivByFrequnecy(selectedStartDate.toString(),selectedEndDate.toString(),projectMember.getId(),from,superUserId,isSuperUser);
 					timesheetEntriesDiv.append(frequencyBasedDiv);
 				timesheetEntriesDiv.append("		            </div> ");
 				
@@ -378,7 +396,7 @@ public class TimesheetRestController {
 		
 	}
 	
-	public StringBuilder timesheetEntriesDivByFrequnecy(String weekStartDate,String weekEndDate,Long projectMemberId,String from) throws Exception{
+	public StringBuilder timesheetEntriesDivByFrequnecy(String weekStartDate,String weekEndDate,Long projectMemberId,String from,Long superUserId,boolean isSuperUser) throws Exception{
 		
 		Boolean isModifyMyTimeSheet = commonUtil.hasRole("ROLE_MODIFY_MY_TIMESHEETS");
 		
@@ -410,10 +428,15 @@ public class TimesheetRestController {
 			 styleWidth = "style='width:244px;'";
 			 innerStyleWidth = "style='width:40%;'";
 		   }
+		   
+		   boolean isSahReopened = false;
+		   if(null != isSah && from.equalsIgnoreCase("approver") && null != isSah.getReopenReason() && !"".equalsIgnoreCase(isSah.getReopenReason()) /*&& null != isSah.getReopenRejectedReason() && !"".equalsIgnoreCase(isSah.getReopenRejectedReason())*/){
+			   isSahReopened = true;
+		   }
 		
 	 	  timesheetEntriesDiv.append("					<div id='timesheetSubmissionStatusDiv' "+styleWidth+" class='timeNewSe "+pullRightClass+"'>");
 	 	 
-		   StringBuilder submissionStatusDiv = getSubmissionStatusDiv(sah ,projectMemberId,frequencyStartDate,frequencyEndDate,weekStartDate,weekEndDate,from,isSahApproved,pullRightClass,styleWidth,innerStyleWidth);
+		   StringBuilder submissionStatusDiv = getSubmissionStatusDiv(sah ,projectMemberId,frequencyStartDate,frequencyEndDate,weekStartDate,weekEndDate,from,isSahApproved,pullRightClass,styleWidth,innerStyleWidth,superUserId,isSahReopened,isSuperUser);
 	      timesheetEntriesDiv.append(submissionStatusDiv); 
 	      timesheetEntriesDiv.append("					</div>   ");
 		  timesheetEntriesDiv.append("					<div class='clearfix'></div>   ");
@@ -528,11 +551,12 @@ public class TimesheetRestController {
 	}
 	
 	
-	public StringBuilder getSubmissionStatusDiv(SubmissionApproverHierarchy sah ,Long projectMemberId,Date frequencyStartDate,Date frequencyEndDate,String weekStartDate,String weekEndDate,String from,boolean isSahApproved,String pullRightClass,String styleWidth,String innerStyleWidth){
+	public StringBuilder getSubmissionStatusDiv(SubmissionApproverHierarchy sah ,Long projectMemberId,Date frequencyStartDate,Date frequencyEndDate,String weekStartDate,String weekEndDate,String from,boolean isSahApproved,String pullRightClass,String styleWidth,String innerStyleWidth,Long superUserId,boolean isSahReopened,boolean isSuperUser){
 		
 		   Submission_Status submissionStatus = sah.getSubmissionStatus();
 		   String submissionStatusStr = submissionStatus.getValue();
 		   StringBuilder timesheetEntriesDiv = new StringBuilder();
+		   DateFormat format = Constants.DF_DMY;
 		   Boolean isModifyMyTimeSheet = commonUtil.hasRole("ROLE_MODIFY_MY_TIMESHEETS");
 		   
 		    timesheetEntriesDiv.append("<input type='hidden' name='timesheetSubmissionStatus'  id='timesheetSubmissionStatus' value='"+submissionStatusStr+"' >");
@@ -540,6 +564,12 @@ public class TimesheetRestController {
 		    	timesheetEntriesDiv.append("<b class='proj_new "+pullRightClass+"'>").append(submissionStatus).append("</b>");
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()))){
+	        	//to show re-open reason
+        		if(null != sah.getReopenReason()){
+        			timesheetEntriesDiv.append(" <i class='glyphicon glyphicon-comment rejectedHover'>");
+        			timesheetEntriesDiv.append(" <div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>").append(sah.getReopenReason()).append("</div>");
+	        		timesheetEntriesDiv.append(" </i>");
+        		}
 	        	timesheetEntriesDiv.append("<b class='proj_draft "+pullRightClass+"'>").append(submissionStatus).append("</b>");
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
@@ -550,6 +580,40 @@ public class TimesheetRestController {
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
 	        	timesheetEntriesDiv.append("<b class='proj_active "+pullRightClass+"'>").append(submissionStatus).append("</b>");
+	        	
+	        	timesheetEntriesDiv.append("<div id='reopenTimeSheetId'>");
+	        	if(from.equalsIgnoreCase("approver") && null == sah.getReopenReason()){
+	        		//to show re-open rejected reason
+	        		if(null != sah.getReopenRejectedReason()){
+	        			timesheetEntriesDiv.append(" <i class='glyphicon glyphicon-comment rejectedHover'>");
+	        			timesheetEntriesDiv.append(" <div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>").append(sah.getReopenRejectedReason()).append("</div>");
+		        		timesheetEntriesDiv.append(" </i>");
+	        		}
+	        		timesheetEntriesDiv.append("<div>&nbsp;&nbsp;<a  href='#' onClick='reOpenMyTimesheet(\""+projectMemberId+"\",\""+weekStartDate+"To"+weekEndDate+"\");' >Re-Open</a></div>");
+	        	}
+	        	else if(from.equalsIgnoreCase("approver") && !isSuperUser && null == sah.getReopenRejectedReason() && isSahReopened){
+	        		//to show re-open reason
+	        		if(null != sah.getReopenReason()){
+	        			timesheetEntriesDiv.append(" <i class='glyphicon glyphicon-comment rejectedHover'>");
+	        			timesheetEntriesDiv.append(" <div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>").append(sah.getReopenReason()).append("</div>");
+		        		timesheetEntriesDiv.append(" </i>");
+	        		}
+	        		timesheetEntriesDiv.append("<div>&nbsp;&nbsp;Request sent</div>");
+		        }
+	        	else if(from.equalsIgnoreCase("approver") && isSahReopened && isSuperUser && null != sah.getReopenedUser()){
+	        		//to show re-open reason
+	        		if(null != sah.getReopenReason()){
+	        			timesheetEntriesDiv.append(" <i class='glyphicon glyphicon-comment rejectedHover'>");
+	        			timesheetEntriesDiv.append(" <div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>").append(sah.getReopenReason()).append("</div>");
+		        		timesheetEntriesDiv.append(" </i>");
+	        		}
+	        		 timesheetEntriesDiv.append("<div class='sm text-center'>").append("<i class='fa fa-check' alt='Approve'  onclick='acceptReopenTimeSheetBySuperUser(\"")
+	                .append(projectMemberId).append("\",\"").append(sah.getReopenedUser().getId()).append("\",\"").append(weekStartDate+"To"+weekEndDate)
+	                .append("\");'></i>|<i class='fa fa-times' alt='Rejected' onclick='rejectReopenTimeSheetBySuperUser(\"")
+	                .append(projectMemberId).append("\",\"").append(sah.getReopenedUser().getId()).append("\",\"").append(weekStartDate+"To"+weekEndDate)
+	                .append("\");'></i></div>");
+	        	}
+	        	timesheetEntriesDiv.append("</div>");
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
 	        	timesheetEntriesDiv.append("<b class='proj_closed "+pullRightClass+"'>").append(submissionStatus).append("</b>");
@@ -1782,6 +1846,74 @@ public class TimesheetRestController {
 
 		}  
 		
+		@RequestMapping(value = "/notifyReopenTimeSheet", method = RequestMethod.POST)
+		public @ResponseBody void notifyReopenTimeSheet(@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
+				@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,
+				@RequestParam(value="reason", required=false) String reason,
+				@RequestParam(value="totalHours", required=false) Float totalHours, HttpServletRequest request) throws Exception {
+				
+			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			    
+			    String isSuperUser = Constants.NO;
+			    if(null != orgLoc.getUser() && null != orgLoc.getUser().getId() && orgLoc.getUser().getId().longValue() == loginUser.getId().longValue()){
+			    	isSuperUser = Constants.YES;
+			    }
+			    
+				DateFormat format = Constants.DF_DMY;
+				if(StringUtils.isNotEmpty(timesheetFrequency)){
+				 	 String[] frequency = timesheetFrequency.split("To");
+				 	 String weekStartDate = frequency[0].trim();
+				  	 String weekEndDate = frequency[1].trim();
+				  	 Date startDate = format.parse(weekStartDate.replaceAll("/", "-"));
+					 Date endDate = format.parse(weekEndDate.replaceAll("/", "-"));
+				  	submissionApproverHierarchyService.updateSubmissionStatusByProjectMemberIdStartDateAndEndDateWithReOpenReason(projectMemberId, startDate, endDate,reason,loginUser,"notify",isSuperUser);
+				
+				    //send mail & notification logic
+				  	if(isSuperUser.equalsIgnoreCase(Constants.NO)){
+				  		submissionApproverHierarchyService.sendReopenTimeSheetMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,totalHours);
+				  	}
+				  	
+				}
+			
+		}
+		
+		
+		@RequestMapping(value = "/acceptOrRejectReopenTimeSheetBySuperUser", method = RequestMethod.POST)
+		public @ResponseBody void acceptOrRejectReopenTimeSheetBySuperUser(@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
+				@RequestParam(value="reOpenedUserId", required=false) Long reopenedUserId,
+				@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,
+				@RequestParam(value="type", required=false) String type,
+				@RequestParam(value="reason", required=false) String reason, HttpServletRequest request) throws Exception {
+				
+			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			    User reopenedUser = userService.getUserById(reopenedUserId);
+				DateFormat format = Constants.DF_DMY;
+				if(StringUtils.isNotEmpty(timesheetFrequency) && null != type && "accept".equalsIgnoreCase(type)){
+				 	 String[] frequency = timesheetFrequency.split("To");
+				 	 String weekStartDate = frequency[0].trim();
+				  	 String weekEndDate = frequency[1].trim();
+				  	 Date startDate = format.parse(weekStartDate.replaceAll("/", "-"));
+					 Date endDate = format.parse(weekEndDate.replaceAll("/", "-"));
+				  	 submissionApproverHierarchyService.updateSubmissionStatusByProjectMemberIdStartDateAndEndDateWithReOpenReason(projectMemberId, startDate, endDate,reason,loginUser,type,Constants.YES);
+				
+				    //send mail & notification logic
+				  	submissionApproverHierarchyService.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,type,reopenedUser);
+				  	
+				}else if(StringUtils.isNotEmpty(timesheetFrequency) && null != type && "reject".equalsIgnoreCase(type) && null != reason && !"".equalsIgnoreCase(reason)){
+					 String[] frequency = timesheetFrequency.split("To");
+				 	 String weekStartDate = frequency[0].trim();
+				  	 String weekEndDate = frequency[1].trim();
+				  	 Date startDate = format.parse(weekStartDate.replaceAll("/", "-"));
+				  	 Date endDate = format.parse(weekEndDate.replaceAll("/", "-"));
+				  	 submissionApproverHierarchyService.updateSubmissionStatusByProjectMemberIdStartDateAndEndDateWithReOpenReason(projectMemberId, startDate, endDate,reason,loginUser,type,Constants.YES);
+				
+				    //send mail & notification logic
+				  	submissionApproverHierarchyService.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,type,reopenedUser);
+				}
+			
+		}
 		
 		@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
 		@RequestMapping(value = "/deleteSubmissionDocument", method = RequestMethod.POST)
