@@ -174,7 +174,7 @@ public class RequirementServiceTest {
 		@Test
 		public void getRequirementListByOrgLocationID() throws Exception{
 			String status="OPEN";
-			Long client = 2l;
+			String client = "Tcs";
 			Long orgLocationId=1l;
 			User user = new User();
 			String userRoleName = "ROLE_SOURCELEAD_ADMIN";
