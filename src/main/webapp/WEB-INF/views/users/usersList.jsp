@@ -255,8 +255,8 @@ function getUsersSearchResult(searchValue){
 		   <li><a  id="export-pop"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>
 			    <div id="exportPop" class="user_exp">
 				   <ul class="ul_padding">
-				   <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
-				   <li onclick="exportUserData();"><i class="fa fa-file-excel-o"></i>&nbsp; Excel</li>
+				   <li onclick="exportToPdf();" title="PDF"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
+				   <li onclick="exportUserData();" title="Excel"><i class="fa fa-file-excel-o"></i>&nbsp; Excel</li>
 				   </ul>
 				</div>
 		   </li>

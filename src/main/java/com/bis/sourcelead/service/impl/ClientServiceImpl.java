@@ -783,7 +783,7 @@ public class ClientServiceImpl implements ClientService{
 			
 				}
 				
-				if(jsonObj.getString(spocStatus) != null && !jsonObj.getString(spocStatus).isEmpty()){
+				if(jsonObj.has(spocStatus) && jsonObj.getString(spocStatus) != null && !jsonObj.getString(spocStatus).isEmpty()){
 					orgSpoc.setSpocStatus(jsonObj.getString(spocStatus));
 				}
 				
@@ -875,11 +875,12 @@ public class ClientServiceImpl implements ClientService{
 			 
 			 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.EDIT_CLIENTCONTACT,Constants.ENTITY_TYPE_NOTIFICATION); 
 			 String actionLink = "";
-			 
+			 String rejectActionLink = "";
+			 String spocUUID = "";
 			 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
 			 noificationEmailScenario.setBody(notificationbody);
 			 
-			 emailScenerioUtil.sendNotificationToClientOrVendor(actionLink, loginUser,user, editUser, orgLocation, noificationEmailScenario);
+			 emailScenerioUtil.sendNotificationToClientOrVendor(actionLink, rejectActionLink, loginUser,user, editUser, orgLocation, noificationEmailScenario,spocUUID);
 			
 		}
 		

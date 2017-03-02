@@ -417,13 +417,12 @@ public class RequirementReleaseRestController {
 		requirement.setUpdatedBy(orgSpoc.getVendorUser().getUserCode());
 		requirement.setCreatedBy(orgSpoc.getVendorUser().getUserCode());
 		
-		if(null != parentRequirement.getJobType()){
-			requirement.setJobType(parentRequirement.getJobType());	
-		}
-		if(null != parentRequirement.getJobType() && parentRequirement.getJobType().equalsIgnoreCase("Other") &&  parentRequirement.getJobType() != "" &&  parentRequirement.getJobType() != "undefined"){
+		requirement.setJobTitle(parentRequirement.getJobTitle());
+		requirement.setJobType(parentRequirement.getJobType());
+		if(null != parentRequirement.getJobType() &&  parentRequirement.getJobType() != "" &&  parentRequirement.getJobType() != "undefined" && parentRequirement.getJobType().equalsIgnoreCase("Other")){
 			requirement.setOtherJobType(parentRequirement.getOtherJobType());
 		}
-		requirement.setJobId(parentRequirement.getJobId());
+//		requirement.setJobId(parentRequirement.getJobId());
 		requirement.setPositions(parentRequirement.getPositions());
 		requirement.setEducation(parentRequirement.getEducation());
 		requirement.setMinExp(parentRequirement.getMinExp());
