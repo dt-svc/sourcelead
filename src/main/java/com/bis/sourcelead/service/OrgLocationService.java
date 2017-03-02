@@ -18,6 +18,8 @@ public interface OrgLocationService {
 	public OrgLocations getOrgLocations(Long id) throws Exception;
 
 	public Boolean deleteOrgLocations(Long id) throws Exception;
+	
+	public Boolean isLoginUserIsSuperUser(Long userId) throws Exception;
 
 	public List<OrgLocations> getAllOrgLocations() throws Exception;
 

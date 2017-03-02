@@ -13,6 +13,9 @@
 .require_wrap_details{
 text-align:left;
 }
+#skillName {
+width: 100%;
+}
 </style>
 
 
@@ -220,7 +223,7 @@ function editCandidate(candidateId){
 			                
 			                result = result + '</div>';
 							
-			                result = result + '<input type="text" class="form-control input-sm" name="currentRate"  value="'+currentRate+'" placeholder="Current Rate" field-name="Current Rate" data-validation="validate_Space validate_float" data-validation-optional="true">';
+			                result = result + '<input type="text" class="form-control input-sm" name="currentRate" id="currentRate" value="'+currentRate+'" placeholder="Current Rate" field-name="Current Rate" data-validation="validate_Space validate_float" data-validation-optional="true">';
 							
 							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
 							result = result + '<select class="selct-picker" id="currentRateType" name="currentRateType" field-name="Rate Type">';
@@ -255,7 +258,7 @@ function editCandidate(candidateId){
 			                
 			                result = result + '</div>';
 							
-							result = result + '<input type="text" class="form-control input-sm" name="expectedRate"  value="'+expectedRate+'" placeholder="Expected Rate" field-name="Expected Rate" data-validation="validate_Space validate_float" data-validation-optional="true">';
+							result = result + '<input type="text" class="form-control input-sm" name="expectedRate" id="expectedRate" value="'+expectedRate+'" placeholder="Expected Rate" field-name="Expected Rate" data-validation="validate_Space validate_float" data-validation-optional="true">';
 							
 							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
 							result = result + '<select class="selct-picker" id="rateType" name="rateType" field-name="Rate Type">';
@@ -894,6 +897,47 @@ function removeSkillPopUp(candidateId){
 <script type="text/javascript">
 	function upDateCandidate(candidateId) {
 	
+		var expectedRate = document.getElementById("expectedRate").value; 
+		 if(expectedRate != null && expectedRate != ""){
+			 $('#rateType').removeAttr('data-validation-optional');
+			 $('#rateType').attr("data-validation","required"); 
+		 }else{
+		 $('#rateType').removeAttr('data-validation');
+		 $('#rateType').attr("data-validation-optional","true"); 
+		 }
+		 
+		 var rateType = document.getElementById("rateType").value; 
+		 if(rateType != null && rateType != ""){
+			 $('#expectedRate').removeAttr('data-validation-optional');
+			 $('#expectedRate').attr("data-validation","required"); 
+		 }else{
+			 $('#expectedRate').removeAttr('data-validation');
+			 $('#expectedRate').attr("data-validation-optional","true");
+			 $('#rateType').removeAttr('data-validation');
+			 $('#rateType').attr("data-validation-optional","true"); 
+		 }
+		 
+		 var currentRate = document.getElementById("currentRate").value; 
+			 if(currentRate != null && currentRate != ""){
+				
+				 $('#currentRateType').removeAttr('data-validation-optional');
+				 $('#currentRateType').attr("data-validation","required"); 
+			 }else{
+			 $('#currentRateType').removeAttr('data-validation');
+			 $('#currentRateType').attr("data-validation-optional","true"); 
+			 }
+			 
+		 var currentRateType = document.getElementById("currentRateType").value; 
+			if(currentRateType != null && currentRateType != ""){
+				$('#currentRate').removeAttr('data-validation-optional');
+				$('#currentRate').attr("data-validation","required"); 
+			}else{
+				$('#currentRate').removeAttr('data-validation');
+			 	$('#currentRate').attr("data-validation-optional","true"); 
+				$('#currentRateType').removeAttr('data-validation');
+			 	$('#currentRateType').attr("data-validation-optional","true"); 
+			}
+			
 		var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',

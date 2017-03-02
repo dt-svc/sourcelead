@@ -44,6 +44,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.NotificationsService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -104,6 +105,9 @@ public class LoginSessionController {
 	
 	@Autowired 
 	private RequirementService requirementService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	@Autowired 
 	private CountriesService countriesService;
@@ -388,7 +392,7 @@ public class LoginSessionController {
 	}
 
 
-	private void setSessionUserAttributes(User user, HttpServletRequest request,String sourceleadUrl)
+	private void setSessionUserAttributes(User user, HttpServletRequest request,String sourceleadUrl) throws Exception
 	{
 		
 		SourceLeadSessionManager.setSessionAttribute(request, "sourceleadUrl", sourceleadUrl);
@@ -396,6 +400,10 @@ public class LoginSessionController {
 		SourceLeadSessionManager.setSessionAttribute(request, "userType", user.getUserType());
 		SourceLeadSessionManager.setSessionAttribute(request, "userCode", user.getUserCode());
 		SourceLeadSessionManager.setSessionAttribute(request, "userId", user.getId());
+		
+		boolean isSuperUser = orgLocationService.isLoginUserIsSuperUser(user.getId());
+		SourceLeadSessionManager.setSessionAttribute(request, "isSuperUser", isSuperUser);
+		
 		StringBuilder userNameSB = new StringBuilder();
 		if(null != user.getLastName()){
 			SourceLeadSessionManager.setSessionAttribute(request, "userName", userNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
@@ -411,6 +419,10 @@ public class LoginSessionController {
 		SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
 		SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
 		SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
+		if(null != orgLocations.getUser() && null != orgLocations.getUser().getId()){
+			SourceLeadSessionManager.setSessionAttribute(request, "superUserId", orgLocations.getUser().getId());
+		}
+		
 		SourceLeadSessionManager.setSessionAttribute(request, "country", orgLocations.getCountry());
 		
 		try {
