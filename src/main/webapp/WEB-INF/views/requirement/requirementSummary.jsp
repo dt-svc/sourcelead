@@ -3645,7 +3645,7 @@ function clientSideBar(candidateId){
 			             
 			             result = result+'<div class="col-xs-12 col-sm-5 col-md-5">';
 			             result = result+'<div id="candidateImageId">';
-			             result = result+'<div class="well text-center clearfix">';
+			             result = result+'<div class="well well-sm text-center clearfix">';
 						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
 						 result = result+'   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class=" img-responsive center-block img-circle">';
 						 result = result+'  <div class="btn-group uploadfile">';
@@ -3662,8 +3662,8 @@ function clientSideBar(candidateId){
 						 result = result+'  </div>';
 						 result = result+'  </div>';
 						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not supported</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif are not supported</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Size should not more than 200 KB</p>';
 						 result = result+' </div>';
 						 result = result+' </div>';
 						 result = result+'</form>';
@@ -3672,6 +3672,7 @@ function clientSideBar(candidateId){
 			             result = result+'                       <h4 class="media-heading">'+json.firstName+' '+lastName+'</h4>';
 			            
 			             result = result+'                       <ul class="list-unstyled">';
+			             result = result+'                        <li>Type - '+json.candidateType+'</li>';
 			                                                       if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
 			             result = result+'                         <li>Experience - '+json.experienceYears+' years '+json.experienceMonths+' months </li>';
               		                                                  }else{
@@ -3682,19 +3683,6 @@ function clientSideBar(candidateId){
 			             
 			             
 			             result = result+'                 <div class="clearfix">';
-			             result = result+'                 <div class="professinal-details">';
-			             
-			            
-			             result = result+'<ul class="list-inline list-unstyled">';
-			             if(json.skillsName != null && json.skillsName != '' && json.skillsName != 'undefined'){
-			            // for (i=0;i < skills.length;i++)
-			            // {
-			            	 result = result+'<li>'+json.skillsName+'</li>';
-			            // }
-			             }
-			             result = result+'</ul>';
-			             
-			             result = result+'                 </div>';
 			             result = result+'                 <div class="socialnetwork-details">';
 			             result = result+'                 <ul class="list-inline list-unstyled">';
 			             result = result+'                                 <li class="bg-facebook"><a href="javascript:void(0)"> <i class="fa fa-facebook-square"></i></a></li>';

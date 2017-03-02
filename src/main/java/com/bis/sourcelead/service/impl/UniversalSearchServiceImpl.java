@@ -130,36 +130,36 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 							Requirement requirement = null;
 							RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
 			            	if(userRole != null&&( "ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
-			            		requirement = getData(requirementIndex);
+			            		requirement = getData(requirementIndex,user);
 			            	}
 			            	else if(requirementIndex.getReqCreatedBy().equalsIgnoreCase(user.getUserCode()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
 			            	{
-			            		requirement = getData(requirementIndex);
+			            		requirement = getData(requirementIndex,user);
 			            	}
 			            	
 			            	else if((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 			            			||((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString()))
 			            			&& ("APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus()) || "OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 			            			)){
-			            		requirement = getData(requirementIndex);
+			            		requirement = getData(requirementIndex,user);
 			            	}
 			            	else if(requirementIndex.getReqLevel2ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel2ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())
 			            			&&(requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&"APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 			            			|| (requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())
 			            			&&("APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus())||"OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 			            			)){
-			            		requirement = getData(requirementIndex);
+			            		requirement = getData(requirementIndex,user);
 			            	}
 			            	
 			            	else if(requirementIndex.getManagerUserId().equalsIgnoreCase(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-			            		requirement = getData(requirementIndex);
+			            		requirement = getData(requirementIndex,user);
 			            	}
 			            	
 			            	else if(requirementIndex.getTeamOwnerUserId()!=null&&Arrays.asList(requirementIndex.getTeamOwnerUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-			            		requirement = getData(requirementIndex);
+			            		requirement = getData(requirementIndex,user);
 			            	}
 			            	else if(requirementIndex.getTeamAssignUserId()!=null&&Arrays.asList(requirementIndex.getTeamAssignUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-			            		requirement = getData(requirementIndex);
+			            		requirement = getData(requirementIndex,user);
 			            	}
 			            	searchList.add(requirement);
 			            }
@@ -407,9 +407,10 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 	/**
 	 * populating requirement pojo
 	 * @param requirementIndex
+	 * @param user 
 	 * @return Requirement
 	 */
-	 private Requirement getData(RequirementIndex requirementIndex) {
+	 private Requirement getData(RequirementIndex requirementIndex, User user) {
 		 Requirement requirement = new Requirement();
 		requirement.setId(requirementIndex.getRequirementId());
 		requirement.setRequirementUUID(requirementIndex.getRequirementUUID());
@@ -437,6 +438,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
      	if(requirementIndex.getRequirementStatus() !=null && !"".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
          	requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.valueOf(requirementIndex.getRequirementStatus()));
      	}	
+     	
      	return requirement;
 	}
 	 /**
@@ -517,36 +519,36 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 							Requirement requirement = null;
 							RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
 			            	if(userRole != null&&( "ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
-			            		requirement = getData(requirementIndex);
+			            		requirement = getData(requirementIndex,user);
 			            	}
 			            	else if(requirementIndex.getReqCreatedBy().equalsIgnoreCase(user.getUserCode()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
 			            	{
-			            		requirement = getData(requirementIndex);
+			            		requirement = getData(requirementIndex,user);
 			            	}
 			            	
 			            	else if((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 			            			||((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString()))
 			            			&& ("APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus()) || "OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 			            			)){
-			            		requirement = getData(requirementIndex);
+			            		requirement = getData(requirementIndex,user);
 			            	}
 			            	else if(requirementIndex.getReqLevel2ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel2ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())
 			            			&&(requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&"APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 			            			|| (requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())
 			            			&&("APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus())||"OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 			            			)){
-			            		requirement = getData(requirementIndex);
+			            		requirement = getData(requirementIndex,user);
 			            	}
 			            	
 			            	else if(requirementIndex.getManagerUserId().equalsIgnoreCase(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-			            		requirement = getData(requirementIndex);
+			            		requirement = getData(requirementIndex,user);
 			            	}
 			            	
 			            	else if(requirementIndex.getTeamOwnerUserId()!=null&&Arrays.asList(requirementIndex.getTeamOwnerUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-			            		requirement = getData(requirementIndex);
+			            		requirement = getData(requirementIndex,user);
 			            	}
 			            	else if(requirementIndex.getTeamAssignUserId()!=null&&Arrays.asList(requirementIndex.getTeamAssignUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-			            		requirement = getData(requirementIndex);
+			            		requirement = getData(requirementIndex,user);
 			            	}
 			            	searchListForRequirement.add(requirement);
 			            }

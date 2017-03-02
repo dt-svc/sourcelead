@@ -134,7 +134,7 @@ public interface RequirementSubmissionService {
 	//void storeClientSubmissionWithEmailPreview(Long requirementId, User user, OrgLocations orgLocations,String submissionsList, Org org, JSONObject jsonObj, Map files)throws Exception;
 	
 
-	void storeClientSubmissionWithEmailPreview(Long requirementId, User user, OrgLocations orgLocations,String submissionsList, Org org, JSONObject jsonObj, Map files, String selectedShortlistsRate)throws Exception;
+	void storeClientSubmissionWithEmailPreview(Long requirementId, User user, OrgLocations orgLocations,String submissionsList, Org org, JSONObject jsonObj, Map files, String selectedShortlistsRate, String selectedShortlistsRatePer)throws Exception;
 
 	List<RequirementSubmission> duplicateCandidateCountList(Long requirementId, User user,
 			OrgLocations loginOrgLocation)throws Exception;
