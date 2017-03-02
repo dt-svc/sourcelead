@@ -14,7 +14,13 @@
 <script type="text/javascript">
 window.onload = function () {
 	requirementsList(0);
-	document.getElementById('requirementType').value = 'OpenJobs';
+	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+	if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
+		document.getElementById('requirementType').value = 'OpenJobs';
+	}else{
+		document.getElementById('requirementType').value = 'CrowdSourcingJobs';
+	}
+	
  };
 </script>
 
@@ -24,7 +30,9 @@ window.onload = function () {
       <div class="pull-left">
         <h2>Requirements<span class="select-fild">
           <select id="requirementType" onchange="requirementsList('0');">
+           	<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
            	<option value="OpenJobs">Open Jobs</option>
+           	</c:if>
             <option value="CrowdSourcingJobs">CrowdSourcing Jobs</option>
             <option value="AppliedJobs">Applied Jobs</option>
           </select>
