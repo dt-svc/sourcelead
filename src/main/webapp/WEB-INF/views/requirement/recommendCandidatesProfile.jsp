@@ -193,6 +193,7 @@ function editCandidate(candidateId){
 							result = result + '<option value="">--Select Employment Type--</option>';
 							result = result + ' <option '+(json.designationType == "C2C" ? "selected" : '') +'>C2C</option>';
 							result = result + '<option  '+ (json.designationType == "W-2" ? "selected" : '') +'>W-2</option>';
+							result = result + '<option  '+ (json.designationType == "C2H" ? "selected" : '') +'>C2H</option>';
 							result = result + '<option  '+(json.designationType == "Part Time" ? "selected" : '') +'>Part Time</option>';
 							result = result + '<option  '+(json.designationType == "Full Time" ? "selected" : '') +'>Full Time</option>';
 							result = result + '<option  '+(json.designationType == "Other" ? "selected" : '') +'>Other</option>';
