@@ -120,6 +120,10 @@ public class Constants {
 	public static String CLIENT_INTERVIEW = "CLIENT_INTERVIEW";
 	public static String INTERVIEW = "INTERVIEW";
 	
+	public static String MAIL_REOPEN_TIMESHEET = "ReopenTimeSheet";
+	public static String MAIL_ACCEPT_REOPEN_TIMESHEET = "AcceptReopenTimeSheet";
+	public static String MAIL_REJECT_REOPEN_TIMESHEET = "RejectReopenTimeSheet";
+	
 	
 	public static String MAIL_BOX_SENT = "Sent";
 	public static String MAIL_BOX_INBOX = "Inbox";
@@ -348,6 +352,8 @@ public class Constants {
 	public static String[] ROLE_DROPDOWN = {"Admin","Project Manager","HR Manager","Recruiter"};
 	
 	public static String[] STATUS_DROPDOWN = {"Active","In-Active","New","Negotiation","Contracted"};
+	
+	public static String[] COUNTRY_DROPDOWN = {"India","Australia","France","Singapore","United Kingdom","United States"};
 	
 	public static String[] LEVEL_DROPDOWN = {"Tier-1","Tier-2","Tier-3","Tier-4","Tier-5"};
 	

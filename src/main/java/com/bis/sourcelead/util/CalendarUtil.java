@@ -25,7 +25,6 @@ public  class CalendarUtil {
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 		currentCal.setLenient(false);
 		currentCal.setTime(new Date());
-		
 		System.out.println("<<<<======Current Week Dates===========>>>>>>>>>>");
 		Calendar currentMonday = getCurrentWeekDayByCalendar(currentCal, "MON");
 		System.out.println("Current-Monday>>>>>>>>>>>>"+currentMonday.getTime());
