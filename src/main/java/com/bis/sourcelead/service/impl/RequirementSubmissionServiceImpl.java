@@ -2281,15 +2281,21 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
         
         List<RequirementSubmission> submittedApplicantsList =  requirementSubmissionDao.getApplicantsByStatus(orgLocationsId, status);
         
+
         for(RequirementSubmission reqsub :submittedApplicantsList){
-            
-        	StringBuilder sb = new  StringBuilder();
-        	if(reqsub.getCandidate().getLastName() != null && !" ".equalsIgnoreCase(reqsub.getCandidate().getLastName())){
-	        		
-	                reqsub.setCandidateName(sb.append(reqsub.getCandidate().getFirstName()).append(" ").append(reqsub.getCandidate().getLastName()).toString());
-        	}else{
-                    reqsub.setCandidateName(sb.append(reqsub.getCandidate().getFirstName()).toString());
-        	}
+                   
+               	
+               	RequirementSubmissionTemplateFields reTemplate = requirementSubmissionTemplateFieldsDao.getSubmissionsTemplateFieldsByRequirementSubmissionsId(reqsub.getId());
+
+               	if(null != reTemplate){
+               		StringBuilder sb = new  StringBuilder();
+                   	if(reTemplate.getLastName() != null && !" ".equalsIgnoreCase(reTemplate.getLastName())){
+           	        		
+           	                reqsub.setCandidateName(sb.append(reTemplate.getFirstName()).append(" ").append(reTemplate.getLastName()).toString());
+                   	}else{
+                               reqsub.setCandidateName(sb.append(reTemplate.getFirstName()).toString());
+                   	}
+               	}
         	reqsub.setRequirementId(reqsub.getRequirement().getId());
         	StringBuilder jbt = new  StringBuilder();
             reqsub.setRequirementName(jbt.append(reqsub.getRequirement().getJobTitle()).toString());
