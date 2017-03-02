@@ -1562,6 +1562,7 @@ function requirementPipeline(requirementId,submissionType){
 							     $(tab).fadeIn();
 							 });
 							prepareAllCounts(requirementId);
+					
 							
               }else{
                      	 $("#requirementSideDiv").removeAttr("style");
@@ -3907,6 +3908,8 @@ function tabEnable(local){
 }
 
 </script>
+
+
 
 <script>
 //piplineexportpop 
