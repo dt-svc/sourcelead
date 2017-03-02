@@ -2982,3 +2982,16 @@ padding: 2px 10px !important;
 	/*    Reports CSS    */
 
 
+.dataTables_empty{
+	background-color: #fff; height: 200px !important; background-image:url(../images/norecords.jpg); background-repeat:no-repeat; background-position:center;
+	background-size:260px; 
+}
+
+.loadMoreDiv {
+	background-color: #fff; height: 200px !important; background-image:url(../images/norecords.jpg); background-repeat:no-repeat; background-position:center;
+	background-size:260px; margin: 0px 15px;
+}
+
+
+
+

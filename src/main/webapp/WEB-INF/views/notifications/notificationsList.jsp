@@ -148,12 +148,21 @@ function getNotificationtLists(){
 				    
 				    result = result +'   <td><div class="mailbox-date tbldata-dotdot-vsm">'+report.calDays+' </div></td>';
 				    result = result +'   <td>';
-				     if(report.userNotificationStatus != "Accepted"){
+				     if(report.userNotificationStatus == "Sent" && report.userNotificationStatus != 'Rejected' && report.actionLink != null && report.actionLink != "" && report.actionLink != "undefined"){
 				    	result = result +'<span class="mailbox-trash"><a href="'+report.actionLink+'" title="Accept"><i class="text-muted fa fa-check-circle"></i></a></span>';
+				     }
+				  
+				    if(report.userNotificationStatus == "Sent" && report.userNotificationStatus != 'Accepted' && report.rejectActionLink != null && report.rejectActionLink != "" && report.rejectActionLink != "undefined"){
+				    	result = result +'&nbsp;|&nbsp;<span class="mailbox-trash"><a href="'+report.rejectActionLink+'" title="Reject"><i class="text-muted fa fa-times"></i></a></span>';
 				    }
-				  if(report.userNotificationStatus == 'Accepted'){
+				  
+				   if(report.userNotificationStatus == 'Accepted'){
 				    	result = result +'   <span class="mailbox-trash"><font color="green">Accepted</font></span>';
 				    }
+				  
+				   if(report.userNotificationStatus == 'Rejected'){
+				    	result = result +'   &nbsp;<span class="mailbox-trash"><font color="red">Rejected</font></span>';
+				   }
 				    result = result +'<span class="mailbox-trash"><a href="javascript:void(0);"  onclick="deleteNotification('+report.id+');">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="text-danger fa fa-trash-o"></i></a></span>';
 				    result = result +'   </td>';
 				    result = result +' </tr>';

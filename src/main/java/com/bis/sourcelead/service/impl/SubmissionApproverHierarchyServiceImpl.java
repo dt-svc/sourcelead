@@ -139,7 +139,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	}
 	
 	@Override
-	public void sendReopenTimeSheetMail(Long projectMemberId,String reason, User loginUser, OrgLocations orgLocations, String timesheetFrequency) throws Exception {
+	public void sendReopenTimeSheetMail(Long projectMemberId,String reason, User loginUser, OrgLocations orgLocations, String timesheetFrequency, Float totalHours) throws Exception {
 		
 			OrgLocations ol = orgLocationsDao.getOrgLocations(orgLocations.getId());
 			 if(null != ol && null != ol.getUser()){
@@ -150,7 +150,9 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 
 				 emailMessage.setFromEmail(loginUser.getEmail());
 				 emailMessage.setCreatedBy(loginUser.getUserCode());
-				 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+				 emailMessage.setFromName(loginUser.getFullName());
+				 
+				 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 				 
 				 ProjectMembers projectMembers = projectMembersDao.getProjectMemberById(projectMemberId);
 				 
@@ -160,13 +162,14 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 
 				//setting the class filed values
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
-				 globalVarsMap.put("superUserName",ol.getUser().getFirstName());
-				 globalVarsMap.put("employeeName",projectMembers.getEmployee().getUser().getFirstName());
-				 globalVarsMap.put("managerName",loginUser.getFirstName());
+				 globalVarsMap.put("superUserName",ol.getUser().getFullName());
+				 globalVarsMap.put("employeeName",projectMembers.getEmployee().getUser().getFullName());
+				 globalVarsMap.put("managerName",loginUser.getFullName());
 				 globalVarsMap.put("projectName", projectMembers.getProjects().getProjectName());
 				 globalVarsMap.put("frequencyType",projectMembers.getProjects().getInvoiceFrequency());
-				 globalVarsMap.put("frequencyPeriod",weekStartDate+" TO "+weekEndDate);
-				 globalVarsMap.put("totalHours","100");
+				 StringBuilder emailMsgBuilder = new StringBuilder();
+				 globalVarsMap.put("frequencyPeriod",emailMsgBuilder.append(weekStartDate).append(" TO ").append(weekEndDate).toString());
+				 globalVarsMap.put("totalHours",totalHours.toString());
 				 globalVarsMap.put("reason",reason);
 				 
 				 StringBuilder acceptBuilder = new StringBuilder();
@@ -195,11 +198,11 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 				 
 			
-				/*EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_PROJECT_MANAGER_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION);
+				EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION);
 				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 				notificationScenario.setBody(notificationBody);
 				String actionLink = "";
-				emailScenerioUtil.sendNotification(actionLink, loginUser, ol.getUser(), orgLocations, notificationScenario);*/
+				emailScenerioUtil.sendNotification(actionLink, loginUser, ol.getUser(), orgLocations, notificationScenario);
 			 }
 	}
 	
@@ -207,6 +210,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	public void sendReopenTimeSheetAcceptOrRejectMail(Long projectMemberId,String reason, User loginUser, OrgLocations orgLocations, String timesheetFrequency,String type, User reopenedUser) throws Exception {
 		
 				 EmailScenario emailScenario = null;
+				 EmailScenario  notificationScenario = null;
 				 EmailMessage emailMessage = new EmailMessage();
 				 emailMessage.setFirstName(reopenedUser.getFirstName());
 				 emailMessage.setLastName(reopenedUser.getLastName());
@@ -214,15 +218,18 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 
 				 emailMessage.setFromEmail(loginUser.getEmail());
 				 emailMessage.setCreatedBy(loginUser.getUserCode());
-				 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+				 emailMessage.setFromName(loginUser.getFullName());
+				 
+				 
+				 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 				 
 				 ProjectMembers projectMembers = projectMembersDao.getProjectMemberById(projectMemberId);
 				 
 				//setting the class filed values
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
-				 globalVarsMap.put("superUserName",loginUser.getFirstName());
-				 globalVarsMap.put("employeeName",projectMembers.getEmployee().getUser().getFirstName());
-				 globalVarsMap.put("managerName",loginUser.getFirstName());
+				 globalVarsMap.put("superUserName",loginUser.getFullName());
+				 globalVarsMap.put("employeeName",projectMembers.getEmployee().getUser().getFullName());
+				 globalVarsMap.put("managerName",reopenedUser.getFullName());
 				 globalVarsMap.put("projectName", projectMembers.getProjects().getProjectName());
 				 globalVarsMap.put("reason",reason);
 				 
@@ -234,8 +241,10 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 //getting the current EmailScenario by EmailScenario unique name and entity type
 				 if(null != type && "accept".equalsIgnoreCase(type)){
 					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_ACCEPT_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_EMAIL);
+					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_ACCEPT_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION);
 				 }if(null != type && "reject".equalsIgnoreCase(type)){
 					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REJECT_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_EMAIL);
+					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REJECT_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION); 
 				 }
 				 
 				
@@ -252,13 +261,12 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 
 				 //calling the sendEmail method of emailScenerioUtil
 				 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-				 
-			
-				/*EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_PROJECT_MANAGER_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION);
+				
+				//calling the sendNotification method of emailScenerioUtil
 				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 				notificationScenario.setBody(notificationBody);
 				String actionLink = "";
-				emailScenerioUtil.sendNotification(actionLink, loginUser, ol.getUser(), orgLocations, notificationScenario);*/
+				emailScenerioUtil.sendNotification(actionLink, loginUser, reopenedUser, orgLocations, notificationScenario);
 	}
 
 	@Override
