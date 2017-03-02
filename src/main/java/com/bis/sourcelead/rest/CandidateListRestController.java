@@ -548,6 +548,8 @@ public class CandidateListRestController {
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("noticePriod", keywd));
 			//matchQueryBuilderList.add(QueryBuilders.matchQuery("currentResumeName", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("resumeContent", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("alternateMobilePhone", keywd));
 			
 			
 			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);

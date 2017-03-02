@@ -70,7 +70,7 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 			res.setReqirementId(requirement);	
 		}
 		if(null != orgLocations){
-			res.setOrgLocationId(orgLocations);	
+			res.setOrgLocationId(requirement.getOrgLocationId());	
 		}
 		if(null != requirement.getSkills()){
 			res.setCustomizeSkills(requirement.getSkills());	
