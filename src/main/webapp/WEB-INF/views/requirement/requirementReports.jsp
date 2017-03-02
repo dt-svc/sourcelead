@@ -1,0 +1,529 @@
+<jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterSideNav.jsp" />
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+ <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<script src="resources/js/formvalidator.js"></script>
+<script src="resources/js/jquery.dataTables.min.js"></script>
+<!-- <link href="resources/css/dataTablePagination.css" rel="stylesheet" type="text/css"> -->
+<!-- these files for autocomplete with tagit -->
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<!-- end files for autocomplete with tagit -->
+
+
+<!-- Content Area -->
+<script type="text/javascript">
+window.onload = function() { 
+	getRequirementList();
+	}
+</script>
+
+<script>
+function getRequirementList(){
+		var sourceleadUrl ='${sourceleadUrl}';
+	    var status = "";
+	    var clients = "";
+		$.ajax({
+	         type : "POST",
+	          url: sourceleadUrl+"/getRequirementListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients,    
+	          success :function(data) {
+	        	 prepareReportDataDiv(data);
+	         },
+	          
+	     }); 
+}
+</script>
+<script>
+function prepareReportDataDiv(data){
+	var result = '';
+	result = result +  '<table id="requirementReportPagination" class="display" cellspacing="0" width="100%" >';
+	result = result + '	<thead>';
+	result = result + '   <tr>';
+	result = result + '      <th>Title</th>';
+	result = result + '    <th>Client</th>';
+	result = result + '    <th>Employement Type</th>';
+	result = result + '    <th>Location</th>';
+	result = result + '    <th>No.Of positions</th>';
+	result = result + '    <th>owner</th>';
+	result = result + '    <th>status</th>';
+	result = result + '    <th>No.Of Applicants</th>';
+	result = result + '    <th>Posted On</th>';
+	result = result + '   </tr>';
+	result = result + '	</thead>';
+	result = result + '	<tbody>';
+	var json = JSON.parse(data);
+    for (var i = 0; i < json.length; i++) {
+    	var report= json[i];
+    	result = result + '<tr>';
+        result = result + '<td>';
+        result = result + '<div><span>'+report.jobTitle+'</span></div> ';
+        result = result + '</td>';
+
+        result = result + '<td>';
+        if(report.clientName != null && report.clientName != '' && report.clientName !='undefined'&& report.clientName != null && report.clientName != ''){
+       	result = result + '<div><span>'+report.clientName+'</span></div>';
+ 		} else{
+		result = result + '<div><span>---</span></div>';
+		    }
+        result = result + '</td>';
+        result = result + '<td>';
+        if(report.jobType != null && report.jobType != '' && report.jobType !='undefined'&& report.jobType != null && report.jobType != ''){
+         result = result + '<div><span>'+report.jobType+'</span></div>';
+        }
+        else{
+		 result = result + '<div><span>---</span></div>';
+		    }
+         result = result + '</td>';
+       	 result = result + '<td>';
+        if(report.country != null && report.country != '' && report.country !='undefined'&& report.country != null && report.country != ''){
+       	 result = result + "<div><span>"+report.country+"</span></div>";
+        }
+        else{
+		 result = result + "<div><span>---</span></div>";
+		    }
+         result = result + '</td>';
+        
+         result = result + '<td>';
+        if(report.positions != null && report.positions != '' && report.positions !='undefined'&& report.positions != null && report.positions != ''){
+        		result = result + "<div><span>"+report.positions+"</span></div>";
+        }
+        else{
+		 result = result + "<div><span>---</span></div>";
+		    }
+        result = result + '</td>';
+        
+        result = result + '<td>';
+        if(report.manager != null && report.manager != '' && report.manager !='undefined'&& report.manager != null && report.manager != ''){
+       	 result = result + "<div><span>"+report.manager+"</span></div>";
+        }
+        else{
+		 result = result + "<div><span>---</span></div>";
+		    }
+       		 
+        result = result + '</td>';
+        
+        result = result + '<td>';
+        if(report.requirementSubmissionStatus != null && report.requirementSubmissionStatus != '' && report.requirementSubmissionStatus !='undefined'&& report.requirementSubmissionStatus != null && report.requirementSubmissionStatus != ''){
+        		result = result + "<div><span>"+report.requirementSubmissionStatus+"</span></div> ";
+        }
+        else{
+		    	result = result + "<div><span>---</span></div>";
+		    }
+        result = result + '</td>';
+        
+        result = result + '<td>';
+        if(report.totalApplicantsForRequirement != null && report.totalApplicantsForRequirement != '' && report.totalApplicantsForRequirement !='undefined'&& report.totalApplicantsForRequirement != null && report.totalApplicantsForRequirement != ''){
+        		result = result + "<div><span>"+report.totalApplicantsForRequirement+"</span></div> ";
+        }
+        else{
+		    	result = result + "<div><span>---</span></div>";
+		    }
+        result = result + '</td>';
+        
+        result = result + '<td>';
+        if(report.postedDateStr != null && report.postedDateStr != '' && report.postedDateStr !='undefined'&& report.postedDateStr != null && report.postedDateStr != ''){
+       		 result = result + "<div><span>"+report.postedDateStr+"</span></div>";
+        }
+        else{
+		    	result = result + "<div><span>---</span></div>";
+		    }
+        result = result + '</td>';
+        result = result + '</tr>';
+    }
+	result = result + '	</tbody>';
+	result = result + '</table>';
+    $("#requirementReportsDiv12").append(result);
+    requirementReportPagination();
+}
+
+</script>
+<script>
+function requirementReportPagination(){
+	$('#requirementReportPagination').DataTable({ 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
+
+</script>
+
+
+<section class="content-wraper">
+  <section class="content-header clearfix">
+    <div class="pull-left">
+      <h2 class="pull-left">Reports</h2>
+		<div class=" pull-left reportsH">
+			<a title="Reports"><i class="fa fa-pie-chart"></i>Requirements Posted</a>
+			<div class="RePop">
+				<ul>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Requirements Posted</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Client Requirements</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Applicants Received</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Applicants</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Short  listed</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Interview</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Offer</a></li>
+				</ul>
+			</div>
+		</div>
+    </div>
+    <div class="pull-right brud-crum">Home &raquo; Vendor &raquo; Client Contact Details</div>
+  </section>
+  <div class="timesheet_out">
+    <div class="vendor_wrap">
+     
+      <div class="timesheet_head">
+
+<div class="pull-left reportBtns">
+	  <div class="reportBtn">
+		<select class="form-control select-bg" id="reportTypeId" onChange="getDayWiseReports()">
+		  <option value="today">Today</option>
+		  <option value="yesterday">Yesterday</option>
+		  <option value="week">1 week</option>
+		  <option value="twoweeks">2 weeks</option>
+		  <option value="month">1 month</option>
+		  <option value="twomonths">2 months</option>
+		  <option value="custom">Custom</option>
+		</select>
+	 </div>	
+	 <span class="dashboard-datepkr"><input type="text" class="input-sm hasDatepicker" id="datepicker"><i class="fa fa-calendar"></i></span>
+	 <span class="dashboard-datepkr"><input type="text" class="input-sm hasDatepicker" id="datepicker1"><i class="fa fa-calendar"></i></span>			
+</div>
+                     
+        <ul style="padding: 2px 220px 2px 0px;">
+          <li><i class="fa fa-filter"></i><span>Fliter</span><i class="glyphicon glyphicon-play" id="status-pop"></i>|
+            <div class="export_pop">
+              <ul>
+                <li>PDF<i class="fa fa-file-pdf-o"></i></li>
+                <li>Excel<i class="fa fa-file-excel-o"></i></li>
+                <li>Word<i class="fa fa-file-word-o"></i></li>
+              </ul>
+            </div>
+          </li>
+          <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>
+            <div class="export_pop">
+              <ul>
+                <li>PDF<i class="fa fa-file-pdf-o"></i></li>
+                <li>Excel<i class="fa fa-file-excel-o"></i></li>
+                <li>Word<i class="fa fa-file-word-o"></i></li>
+              </ul>
+            </div>
+          </li>
+          <div class="clearfix"></div>
+        </ul>
+        <div class="clearfix"></div>
+        <div class="remove_search">
+          <input type="text" placeholder="search" />
+        </div>
+      </div>
+      
+	<div class="reportsCount">
+		<ul>
+			<li title="Applicants">
+				<span><i class="fa fa-users"></i></span><b>100</b>
+			</li>
+			<li title="Shortlisted" class="colorTwo">
+				<span><i class="fa fa-file-text"></i></span><b>100</b>
+			</li>
+			<li title="Submit to Client">
+				<span><i class="glyphicon glyphicon-send"></i></span><b>100</b>
+			</li>
+			<li title="Interviews" class="colorTwo">
+				<span><img src="images/interview1.png" alt=""/></span><b>100</b>
+			</li>
+			<li title="Offers">
+				<span><i class="fa fa-tags"></i></span><b>100</b>
+			</li>
+			<li title="Rejected" class="colorTwo">
+				<span><i class="glyphicon glyphicon-trash"></i></span><b>100</b>
+			</li>
+					<div class="clearfix"></div>
+		</ul>
+	</div>
+
+  <div class="project_tabs_inn_table vendor_wrap_inn_table">
+                 <div id="requirementReportsDiv12"></div>
+                </div>      
+      
+ </div>
+
+
+  </div>
+</section>
+<!--   Error Message   -->
+<div class="vendor_wrap_mask"></div>
+<div class="vendor_error">
+  <p>Delete conformation message....</p>
+  <textarea placeholder="Enter message"></textarea>
+  <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
+
+<!--   Error Message   --> 
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
+<script src="js/moment.min.js"></script>
+<script src="js/bootstrap-datetimepicker.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
+<script src="js/masterHeaderAction.js"></script> 
+<script src="js/bootstrap-select.min.js"></script> 
+<script src="js/chosen.jquery.min.js"></script>  -->
+
+<script type="text/javascript">
+            $(function () {
+                $('#datetimepicker3').datetimepicker({
+                    format: 'LT'
+                });
+            });
+        </script> 
+<script type="text/javascript">
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+
+});
+ 		</script> 
+<script>
+
+// Error pop
+$(document).ready(function() {
+    $(".glyphicon-trash").click(function(){
+		$(".vendor_error").slideToggle(200);
+		$(".vendor_wrap_mask").fadeIn(200);
+	});
+	$(".vendor_error a").click(function(){
+		$(".vendor_error").slideUp(200);
+		$(".vendor_wrap_mask").fadeOut(200);
+	});
+});	
+
+// Approved Popup
+$(document).ready(function() {
+    $("#appro-pop").click(function(){
+		$(".approved_pop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $(".approved_pop").slideUp(200);
+    });
+    $(".approved_pop, #appro-pop").click(function(e) {
+        e.stopPropagation();
+    });	
+});
+
+// Export Popup
+$(document).ready(function() {
+    $("#export-pop").click(function(){
+		$(".export_pop").slideToggle(200);
+	});
+    $("html").click(function() {
+        $(".export_pop").slideUp(200);
+    });
+    $(".export_pop, #export-pop").click(function(e) {
+        e.stopPropagation();
+    });	
+});	
+	
+// project side bar
+$(document).ready(function() {
+    $(".proj_show").click(function(){
+		$(".clients_side_wrap").addClass("clients_side_wrap_active");
+		$(".side_mask").fadeIn(200);
+		$("body").css('overflow-y', 'hidden');
+	});
+    $(".proj_close, .side_mask").click(function(){
+		$(".clients_side_wrap").removeClass("clients_side_wrap_active");
+		$(".side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
+	});	
+});
+
+// project side bar tabs
+$(document).ready(function() {
+	$("#tab-1").show()
+    $(".project-tabs-menu a").click(function(event) {
+        event.preventDefault();
+        $(this).parent().addClass("current");
+        $(this).parent().siblings().removeClass("current");
+        var tab = $(this).attr("href");
+        $(".project_tabs_inn").not(tab).css("display", "none");
+        $(tab).fadeIn();
+    });
+});
+
+// project side bar tabs
+$(document).ready(function() {
+	$("#tabb-1").show()
+    $(".new-tabs a").click(function(event) {
+        event.preventDefault();
+        $(this).parent().addClass("current");
+        $(this).parent().siblings().removeClass("current");
+        var tab = $(this).attr("href");
+        $(".new-tabs_inn").not(tab).css("display", "none");
+        $(tab).fadeIn();
+    });
+});
+
+// script for scroll Popups:: Add or Edit details
+$(document).ready(function(event) {	
+$(".addUser-org").click(function(){
+	 $(".edit-details").toggleClass("edit-details-active");
+	 $(".collapse-div").removeClass("edit-details-active");
+ });
+ $(".close-div").click(function(){
+	 $(this).closest(".edit-details").toggleClass("edit-details-active");
+	 });
+ $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
+	 e.stopPropagation();
+ });
+ $('html').click(function(){
+	$(".edit-details").removeClass("edit-details-active");
+   });	
+   $("#endDate").click(function(){
+	   $(".endDate").toggle(200);
+   });
+   event.preventDefault();
+});
+
+$(".addSkills").click(function(){
+	$(".add-skills").toggleClass('add-skills-active');
+	});
+$(".close-div").click(function(){
+	$(".add-skills").removeClass('add-skills-active');
+	});
+$(".add-skills").click(function(e){
+	 e.stopPropagation();
+ });
+
+
+// Bar chat pop
+$(document).ready(function() {
+    $(".graf_icon").click(function(){
+		$(".pipeline_graf").slideToggle(200);
+	});
+$( "ul#canName-ch li").click(function(){
+   var m = $(this).text();
+  $("#canName").text(m);
+});
+});
+</script> 
+<script>
+$( "#pri-ch li").click(function(){
+   var m = $(this).text();
+    var mid = $(this).attr('id');
+    $("#pri-val").text(m);
+     if('h' === $(this).attr("id")){
+          $("#pri-val").removeClass("text-warning text-primary").addClass("text-danger");
+     }else if('m' === $(this).attr("id")){
+        $("#pri-val").removeClass("text-danger text-warning").addClass("text-primary");
+     }else{
+      $("#pri-val").removeClass("text-danger text-primary").addClass("text-warning");
+     }   
+});
+</script> 
+<script>
+$(document).ready(function(){
+	// Levels adding script
+$(".add-offer").click(function(){
+	 $(".addOffer-Req").toggleClass("show-div");
+	 $(".addInterview-Re").removeClass("show-div");
+	 $(".addApplicant-Re").removeClass("show-div");
+ });
+$(".add-interview").click(function(){
+	 $(".addInterview-Re").toggleClass("show-div");
+	 $(".addOffer-Req").removeClass("show-div");
+	 $(".addApplicant-Re").removeClass("show-div");
+ });
+$(".add-applicant").click(function(){
+	 $(".addApplicant-Re").toggleClass("show-div");
+	 $(".addOffer-Req").removeClass("show-div");
+	 $(".addInterview-Re").removeClass("show-div");
+ });
+$(".reminder").click(function(){
+	 $(".reminder-div").toggleClass("reminder-div-active");
+ });
+
+ $(".close-div").click(function(){
+	 $(this).parent().toggleClass("show-div");
+	 });
+ $(".div-close").click(function(){
+	 $(this).parent().toggleClass("showDiv");
+	 });
+
+ $(".reminder").click(function(e){
+	 e.stopPropagation();
+ });
+ $('html').click(function(){
+    $("").removeClass("show-div");
+   });	
+   $("#endDate").click(function(){
+	   $(".endDate").toggle(200);
+   });
+   });
+   
+// new SlideToggle
+ $("#id1").click(function(){
+	  $(".hide-row").slideToggle(200);
+	  $(".profile_details h4 i").toggleClass('icon-add');
+	 });	 
+   
+   
+   
+</script>
+<script type="text/javascript">
+            $(function () {
+                $('#datetimepicker5').datetimepicker({
+					locale: 'ru'
+                });
+            });
+        </script>
+      <script>
+	// Close Advanced Search
+		function closePop(){
+			$("div.cand-advsrch-popup").hide();
+		}
+		function openPop(){
+			$("div.cand-advsrch-popup").toggle();
+		}
+	</script> 
+
+
+<script>
+function getDayWiseReports(){
+	var reportType = $("#reportTypeId").val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	$.ajax({
+         type : "POST",
+          url: sourceleadUrl+"/getRequirementReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType,    
+          success :function(data) {
+        	 prepareReportDataDiv(data);
+         },
+          
+     });  
+	
+}
+
+</script>
+ 
