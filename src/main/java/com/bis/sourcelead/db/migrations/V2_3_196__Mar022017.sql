@@ -46,3 +46,6 @@ INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_S
 #email_scenario
 INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `TEMPLATE_TYPE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES ('RejectMailFromClientToVendor', 'Notification', 'RejectMailFromClient_To_Vendor', 'Used to notify vendor about candidate rejection','org','{{RejectMailFromClientToVendor.applicantName}} got Rejected','N', 'SLADMIN', 'sourceLead.com', 'in.sourceLead.com');
 
+CALL sourcelead.AlterTableAddColumn ('sourcelead','NOTIFICATIONS','REJECT_ACTION_LINK','TEXT NULL AFTER `ACTION_LINK`');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','NOTIFICATIONS','SPOC_UUID','VARCHAR(250) NULL');
+
