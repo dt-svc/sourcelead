@@ -56,6 +56,7 @@ function candidateEducation(candidateId){
 <script>
 function candidateEducationList(candidateId){
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
