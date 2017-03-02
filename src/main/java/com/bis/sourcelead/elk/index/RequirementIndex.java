@@ -45,6 +45,8 @@ public class RequirementIndex {
 	
 	private String[] appliedProfessionals;
 	
+	private String[] appliedRecruiters;
+	
 	private String jobType;
 	
 	private String jobId;
@@ -120,6 +122,8 @@ public class RequirementIndex {
 	private String rewardGuaranteePeriod;
 	
 	private String rewardType;
+	
+	private Integer recruiterSubmissionsCount;
 	
 	
 	
@@ -473,6 +477,14 @@ public class RequirementIndex {
 		this.appliedProfessionals = appliedProfessionals;
 	}
 
+	public String[] getAppliedRecruiters() {
+		return appliedRecruiters;
+	}
+
+	public void setAppliedRecruiters(String[] appliedRecruiters) {
+		this.appliedRecruiters = appliedRecruiters;
+	}
+
 	public String getIsJobApplied() {
 		return isJobApplied;
 	}
@@ -583,6 +595,14 @@ public class RequirementIndex {
 
 	public void setRewardType(String rewardType) {
 		this.rewardType = rewardType;
+	}
+
+	public Integer getRecruiterSubmissionsCount() {
+		return recruiterSubmissionsCount;
+	}
+
+	public void setRecruiterSubmissionsCount(Integer recruiterSubmissionsCount) {
+		this.recruiterSubmissionsCount = recruiterSubmissionsCount;
 	}
 	
 }

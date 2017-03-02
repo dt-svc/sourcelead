@@ -119,6 +119,7 @@ public class CrowdSourcingRequirementsRestController {
 
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		boolean isELKSearchEnable = true;
 		
 	    String resultJson;
@@ -157,7 +158,14 @@ public class CrowdSourcingRequirementsRestController {
 	    	 
 	     }
 	     else if (requirementType.equalsIgnoreCase("AppliedJobs")){
-	    	 boolQueryBuilder.must(QueryBuilders.matchQuery("appliedProfessionals", user.getId()));
+	    	 if(!isNullOrEmpty(loginUserRole)){
+	    		 if(loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")){
+	    			 boolQueryBuilder.must(QueryBuilders.matchQuery("appliedProfessionals", user.getId()));
+	    		 }else if(loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+	    			 boolQueryBuilder.must(QueryBuilders.matchQuery("appliedRecruiters", user.getId()));
+	    		 }
+	    	 }
+	    	
 	     }
 	     
 	     if(!isNullOrEmpty(postedOn)){
@@ -217,10 +225,18 @@ public class CrowdSourcingRequirementsRestController {
 	 	    	   }
 	 	    	    
 	 	    	   if (requirementType.equalsIgnoreCase("AppliedJobs")){
-	 	    		   RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
-	 	    		   if(null != submission){
-	 	    			  requirementIndex.setRequirementAppliedDate(Constants.DF_YMD.format(submission.getCreatedDate()));
-	 	    		   }
+	 	    		  if(!isNullOrEmpty(loginUserRole)){
+	 		    		 if(loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")){
+	 		    			 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+	 		 	    		   if(null != submission){
+	 		 	    			  requirementIndex.setRequirementAppliedDate(Constants.DF_YMD.format(submission.getCreatedDate()));
+	 		 	    		   }
+	 		    		 }else if(loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+	 		    			 Integer submissionCount = requirementSubmissionService.getRecruiterSubmissionsCountByRecruiterIdAndRequirementId(requirementIndex.getRequirementId(), user.getId());
+	 		    			 requirementIndex.setRecruiterSubmissionsCount(submissionCount);
+	 		    		 }
+	 	    		  }
+	 	    		  
 	 	    		   
 	 	    		   RequirementRefer requirementRefer = requirementReferService.getAppliedRequirementReferByRequirementIdAndUserId(requirementIndex.getRequirementId(), user.getId());
 	 	    		   if(null != requirementRefer){

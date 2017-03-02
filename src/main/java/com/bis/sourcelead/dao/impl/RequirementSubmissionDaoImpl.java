@@ -880,6 +880,45 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		  return null;
 	}
 
+		@Override
+		@Transactional
+		public RequirementSubmission validateRequirementByRecruiterCandidateEmail(String email, Long requirementId,
+				Long recruiterUserId) throws Exception {
+			Session session = this.sessionFactory.getCurrentSession();
+			List<RequirementSubmission> submission = new ArrayList<RequirementSubmission>();
+			logger.debug("validateRequirementByRecruiterCandidateEmail start");
+			try{
+				submission = session.createQuery("from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate "
+						+ "left join fetch rs.sourceSubmission left join fetch rs.candidateResumes left join fetch rs.recruiterUserId "
+						+ "where rs.candidate.email = :email and rs.requirement.id = :requirementId and rs.recruiterUserId.id = :recruiterUserId " )
+						.setString( "email", email ).setLong("requirementId", requirementId ).setLong("recruiterUserId", recruiterUserId ).setCacheable(true).list();
+				
+				logger.debug("validateRequirementByRecruiterCandidateEmail end");
+				if (submission.size() > 0) {
+					return submission.get(0);
+				} else {
+					return null;
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		@Override
+		@Transactional
+		public Integer getRecruiterSubmissionsCountByRecruiterIdAndRequirementId(Long requirementId, Long userId)
+				throws Exception {
+			Session session = this.sessionFactory.getCurrentSession();
+		     String query = "select count(*) from RequirementSubmission rs  where rs.requirement.id = :requirementId and rs.recruiterUserId.id = :recruiterUserId ";
+		     List<Long> requirementPerCandidateCount = session.createQuery(query).setLong("requirementId", requirementId).setLong("recruiterUserId", userId).setCacheable(true).list();
+			Integer count= 0;
+			if(requirementPerCandidateCount != null && !requirementPerCandidateCount.isEmpty()){
+					count = requirementPerCandidateCount.get(0).intValue();
+			}
+			return count;
+		}
+
   }
 
 

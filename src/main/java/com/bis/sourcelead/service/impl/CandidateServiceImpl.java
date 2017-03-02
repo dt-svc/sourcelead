@@ -598,61 +598,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return searchList;
 			
 	}
-//	private ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForAll(String keywd) {
-//		ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-//	    matchQueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
-//	    matchQueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
-//		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
-//		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("alternateEmail", keywd));
-//		matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
-//		matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
-//		matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
-//		matchQueryBuilderList.add(QueryBuilders.matchQuery("address", keywd));
-//		matchQueryBuilderList.add(QueryBuilders.matchQuery("designation", keywd));
-//		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("designationType", keywd));
-//		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRateType", keywd));
-//		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRateCurrency", keywd));
-//		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rateType", keywd));
-//		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("expectedRateCurrencey", keywd));
-//		matchQueryBuilderList.add(QueryBuilders.matchQuery("summary", keywd));
-//		matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
-//		matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
-//		matchQueryBuilderList.add(QueryBuilders.matchQuery("employer", keywd));
-//		matchQueryBuilderList.add(QueryBuilders.matchQuery("certifications", keywd));
-//		matchQueryBuilderList.add(QueryBuilders.matchQuery("candidateType", keywd));
-//		matchQueryBuilderList.add(QueryBuilders.matchQuery("noticePriod", keywd));
-//		//matchQueryBuilderList.add(QueryBuilders.matchQuery("currentResumeName", keywd));
-//		matchQueryBuilderList.add(QueryBuilders.matchQuery("resumeContent", keywd));
-//		
-//		
-//		Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
-//		if(matcher.find()){
-//			Float expYears = Float.valueOf(matcher.group());
-//			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceYears", expYears));
-//			//matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceMonths", keywd));
-//			
-//			String regex = "^(\\+[9]\\d|[1]\\d{2})$";
-//			RegularExpression regExp = new RegularExpression(regex);
-//			String mobileKeywd =matcher.group().replaceAll(regExp.toString(), "");
-//			matchQueryBuilderList.add(QueryBuilders.matchQuery("alternateMobilePhone", mobileKeywd));
-//			matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
-//		}
-//		if(StringUtils.isNumeric(keywd)){
-//			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRate", keywd));
-//			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("expectedRate", keywd));
-//		}
-//		
-//			
-//		return matchQueryBuilderList; 
-//
-//	}
 
-//	private ArrayList<String> getSearchValuesFromChosenSelectField(String searchValue) {
-//		 ArrayList<String> keyWordList = null;
-//		 if(searchValue !=null && !"".equalsIgnoreCase(searchValue)){
-//			 String searchKeywordString = searchValue.replaceAll("\\[", "").replaceAll("\\]","");
-//		     keyWordList = new ArrayList<String>(Arrays.asList(searchKeywordString.split(",")));
-//		 }
-//        return keyWordList;
-//	}
+
+	@Override
+	public Candidate getCandidateByEmailAndRecruiterUserId(String email, Long recruiterUserId) throws Exception {
+		return candidateDao.getCandidateByEmailAndRecruiterUserId(email, recruiterUserId);
+	}
+
+
 }

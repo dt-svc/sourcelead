@@ -191,7 +191,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 
 
 	@Override
-	public RequirementSubmission saveRequirementSubmission(JSONObject jsonObj,User user,OrgLocations orgLocations,String jsonStringvalues,MultipartFile multiFile) throws Exception {
+	public RequirementSubmission saveRequirementSubmission(JSONObject jsonObj,User user,OrgLocations orgLocations,String jsonStringvalues,MultipartFile multiFile,String loginUserRole) throws Exception {
 		
 		 Requirement requirement = null;;
 		 RequirementSubmission requirementSubmission = new RequirementSubmission();
@@ -210,7 +210,12 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 			 candidate.setId(Long.parseLong(jsonObj.getString("candidateId")));
 			 requirementSubmission.setCandidate(candidate);
 		 }else if(candidate == null && jsonObj.has("EmailId") && !isNullOrEmpty(jsonObj.getString("EmailId"))){
-			 candidate = candidateDao.findByCandidateEmail(jsonObj.getString("EmailId"),orgLocations.getId());
+			if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+				 candidate = candidateDao.getCandidateByEmailAndRecruiterUserId(jsonObj.getString("EmailId"), user.getId());
+			}else{
+				 candidate = candidateDao.findByCandidateEmail(jsonObj.getString("EmailId"),orgLocations.getId());
+			}
+			
 			 if(candidate != null){
 				 requirementSubmission.setCandidate(candidate);
 			 }
@@ -284,6 +289,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					candidate.setCreatedDate(new Date());
 					candidate.setUpdatedDate(new Date());
 					candidate.setStatus(Constants.CANDIDATE_ACTIVE);
+					if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+						candidate.setRecruiterUserId(user);
+					}
 					
 					 
 					 if(jsonObj.has("candidateSkills") && !isNullOrEmpty(jsonObj.getString("candidateSkills"))){
@@ -301,16 +309,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 							
 						 
 						 candidate.setSkillsName(candidateSkills);
-						 
-						 
-//						 for(int i=0; i<skillsList.length; i++){
-//							  CandidateSkills candSkill = new  CandidateSkills();
-//				    		  candSkill.setName(skillsList[i]);
-//				    		  candSkill.setCandidateId(candidate);
-//				    		  candSkill.setStatus(Constants.CANDIDATE_SKILL_ACTIVE);
-//				    		  candSkill.setOrgLocationID(orgLocations);
-//				    		  candidateSkillsService.storeCandidateSkills(candSkill);
-//						 }
+
 					 }
 					
 					candidateDao.storeCandidate(candidate);
@@ -377,7 +376,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 			 }
 		 }
 		 
-		 requirementSubmission.setOrgLocations(orgLocations);
+		 
 		 requirementSubmission.setSubmissionTemplateJsonStringValue(jsonStringvalues);
 		 
 		 if(jsonObj.has("needApplicantPermit") && !isNullOrEmpty(jsonObj.getString("needApplicantPermit"))){
@@ -410,6 +409,14 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 
 		 requirementSubmission.setCreatedUser(userName.toString());
 		 requirementSubmission.setUpdatedUser(userName.toString());
+		 
+		 if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+			 requirementSubmission.setRecruiterUserId(user);
+			 requirementSubmission.setOrgLocations(requirement.getOrgLocationId());
+		 }else{
+			 requirementSubmission.setOrgLocations(orgLocations);
+		 }
+		
 		 
 		 requirementSubmission = requirementSubmissionDao.storeRequirementSubmission(requirementSubmission);
 		
@@ -501,6 +508,24 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 templateFields.setCreatedDate(new Date());
 		 templateFields.setUpdatedDate(commonUtil.currentDate());
 		 requirementSubmissionTemplateFieldsDao.storeRequirementSubmissionTemplateFields(templateFields);
+		 
+		 if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+				if(null == requirement.getAppliedRecruiters()){
+					requirement.setAppliedRecruiters(user.getId().toString());
+				}else{
+					List<Long> userId = new ArrayList<Long>();
+					for (String s : requirement.getAppliedRecruiters().split(",")){
+						userId.add(Long.parseLong(s));
+					 }
+					boolean flag = userId.contains(user.getId());
+	         		if(flag == false){
+	         			StringBuilder appliedUser = new StringBuilder();
+	         			appliedUser = appliedUser.append(",").append(user.getId().toString());
+	    				requirement.setAppliedRecruiters(requirement.getAppliedRecruiters()+appliedUser.toString());
+	         		}
+				}
+				requirementDao.storeRequirement(requirement);
+		 }
 		 
 		 if("Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit())){
 			 applicantReceiveMailAboutRequirement(requirementSubmission.getId(),requirement,candidate,user,orgLocations);
@@ -2788,7 +2813,6 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
     				requirement.setAppliedProfessionals(requirement.getAppliedProfessionals()+appliedUser.toString());
          		}
 			}
-			requirement.setUpdatedDate(new Date());
 			requirementDao.storeRequirement(requirement);
 			
 			
@@ -3033,6 +3057,18 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 	   }
+	}
+
+	@Override
+	public RequirementSubmission validateRequirementByRecruiterCandidateEmail(String email, Long requirementId,
+			Long recruiterUserId) throws Exception {
+		return requirementSubmissionDao.validateRequirementByRecruiterCandidateEmail(email, requirementId, recruiterUserId);
+	}
+
+	@Override
+	public Integer getRecruiterSubmissionsCountByRecruiterIdAndRequirementId(Long requirementId, Long userId)
+			throws Exception {
+		return requirementSubmissionDao.getRecruiterSubmissionsCountByRecruiterIdAndRequirementId(requirementId, userId);
 	}
 
 }

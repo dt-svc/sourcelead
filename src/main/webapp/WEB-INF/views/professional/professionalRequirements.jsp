@@ -513,6 +513,8 @@ function requirementsList(offset){
 	var postedOn = document.getElementById('postedOn').value;
 	var jobTitleSearch = document.getElementById('jobTitleSearch').value;
 	var jobLocationSearch = document.getElementById('jobLocationSearch').value;
+	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+	
     loadChosenRequirementScripts();
 	
 	
@@ -714,7 +716,13 @@ function requirementsList(offset){
 			 					result = result +'<div class="appliedWrap">';
 			 					result = result +'<i class="fa fa-check-circle"></i>';
 			 					result = result +'<div class="openPostDate">';
-			 					result = result +'<i class="fa fa-clock-o"></i> Applied on : <b>'+requirements.requirementAppliedDate+'</b>';
+			 					
+			 					if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
+			 						result = result +'<i class="fa fa-clock-o"></i> Applied on : <b>'+requirements.requirementAppliedDate+'</b>';
+			 					}else{
+			 						result = result +'<i class="fa fa-user-circle"></i> Submissions Count : <b>'+requirements.recruiterSubmissionsCount+'</b>';
+			 					}
+			 					
 			 					result = result +'</div>';
 			 					if(requirements.referedUser != '' && requirements.referedUser != null && requirements.referedUser != 'undefined'){
 				 					result = result +'<div class="applShare Refer">';

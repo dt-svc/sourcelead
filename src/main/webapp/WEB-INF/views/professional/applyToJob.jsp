@@ -93,7 +93,7 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 		result = result + '<div class="col-md-7 radioInline">';
 		result = result + '<label class="mr"><input type="radio" checked="checked" value="Candidates" name="candidateType" onClick="getCandidatesList('+requirementId+',\'Candidate\');">Candidates</label>';
 		result = result + '<label class="mr"><input type="radio" value="Consultants" name="candidateType" onClick="getCandidatesList('+requirementId+',\'FavCandidates\');">Favourite Candidates</label>';
-		result = result + '<label class="mr"><input type="radio" value="Parese candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'parseCandidate\');">Parse Candidate</label>';
+		result = result + '<label class="mr"><input type="radio" value="Parese candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'parseCandidate\');">Parse Resume</label>';
 		result = result + '</div>';	
 		
 		result = result + '<div class="col-md-5 pull-right">';
@@ -453,7 +453,9 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
  		        		$("#candidateSkills").trigger("chosen:updated");
   						
 			        	 
-						// validateCandidateEmail();
+						 validateCandidateEmail();
+						 getAllSubmissionCandidateCountries();
+						 setRateTypesByLocation();
 						 $("#loading").removeAttr("style");
 					},
 				});
@@ -461,6 +463,38 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
  });
 
 </script> 
+
+
+<script type="text/javascript">
+ function validateCandidateEmail() {
+	 var email =   $("input[name=EmailId]").val();
+	$('#emailDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var requirementId = $("#requirementId").val();
+	 if(email != null && email != ""){
+		 $("#save_button").attr("disabled", "disabled");
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateRequirementRecruiterCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&requirementId="+requirementId, 
+		        success: function(data) {
+		         	if(data == 'true'){
+			        	  $("#save_button" ).addClass('btn btn-sm btn-primary').val('SUBMIT');
+			        	  $('.jquery_form_error_message').remove();
+		        		  $("input[name=EmailId]").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+		        		  $("input[name=EmailId]").setAttribute('record-exist','yes');
+		        		  $("input[name=EmailId]").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
+		        	}
+		        	else{
+		        		$("#save_button").removeAttr("disabled");
+		        		$("input[name=EmailId]").removeAttr( "record-exist record-exist-errormsg");
+		        		$('.jquery_form_error_message').remove();
+		        		
+		        	} 
+		        },
+		    });
+	 }
+ }
+ </script>
 
 <script type="text/javascript">
 function validate_fileupload(fileName)
@@ -1147,7 +1181,6 @@ $('body').on('submit', '#submitCandidateToJob_form', function(e){
       var con = JSON.stringify(fields);
       
       con = encodeURIComponent(con);
-     
 		
         $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
       

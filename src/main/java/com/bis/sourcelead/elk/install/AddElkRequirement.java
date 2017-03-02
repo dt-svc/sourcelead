@@ -236,6 +236,11 @@ public class AddElkRequirement {
 					requirementIndex.setAppliedProfessionals(appliedProfessionals.split(","));
 				}
 				
+				String appliedRecruiters = rs.getString("APPLIED_RECRUITERS");
+				if(!("").equalsIgnoreCase(appliedRecruiters) && appliedRecruiters!=null){
+					requirementIndex.setAppliedRecruiters(appliedRecruiters.split(","));
+				}
+				
 				
 				if(null != rs.getString("REWARD_TYPE")){
 					requirementIndex.setRewardType(rs.getString("REWARD_TYPE"));
