@@ -671,14 +671,6 @@ ul.timesheet-menu li a:hover, ul.backoffice-menu li a:hover {
     white-space: nowrap;
 	vertical-align: middle;
 }
-.side-bar .user-panel .media .media-body .text-logo .tbldata-dotdot {
-    font-size: 15px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 40px;
-    display: block;
-}
 /* sidebar for custom */
 .side-bar .user-panel.user-panel-active .media .media-body .text-logo {
     font-size: 15px;
@@ -703,9 +695,7 @@ ul.timesheet-menu li a:hover, ul.backoffice-menu li a:hover {
 	text-align: center;
 	border: 1px solid #ccc;
     position: relative;
-    top: 50%;
-    -webkit-transform: translateY(-50%);
-    transform: translateY(-50%);
+    top: 0%;
     max-height: 100%;
     max-width: 100%;
 }
@@ -3747,9 +3737,9 @@ ul.addTasUl li .fa{
        border:1px solid #ccc;
        margin-right:5px;
 }
-.dashboard-widget .require_wrap_table {
+/* .dashboard-widget .require_wrap_table {
 	overflow-y: visible !important;
-}
+} */
 .ratepop-parent {
 	position:relative;
 }
@@ -6437,23 +6427,23 @@ div.pages-404.width {
 	margin-top: 15px;
 }
 .login-user:hover .user-details {
-	right: -170px;
+	right: -125px;
 }
 #alert:hover .alert-area {
-	transform: translateX(90px);
-	-ms-transform: translateX(90px) ;
-	-webkit-transform: translateX(90px);
+	transform: translateX(40px);
+	-ms-transform: translateX(40px) ;
+	-webkit-transform: translateX(40px);
 }
 }
 
 @media only screen and (min-width:321px) and (max-width: 475px) {
 	#alert:hover .alert-area {
-	transform: translateX(90px);
-	-ms-transform: translateX(90px) ;
-	-webkit-transform: translateX(90px);
+	transform: translateX(40px);
+	-ms-transform: translateX(40px) ;
+	-webkit-transform: translateX(40px);
 }
 .login-user:hover .user-details {
-right: -170px;
+right: -95px;
 }
 .hidden-xs {
 	display: none !important;
@@ -6465,11 +6455,17 @@ right: -170px;
     width: 40% !important;
     float: left !important;
 }
+
+element {
+}
+.universalSrch {
+    margin-top: 0px;
+    width: 58% !important;
+}
 }
 
-
 @media (max-width:767px) {
-		.cand-advsrch-popup {
+	.cand-advsrch-popup {
 	width: 350px;
 	overflow-y:auto !important;
 	}
@@ -6596,16 +6592,26 @@ margin-bottom: 10px;
 .note-area.note-area-active {
 	transform: translateX(123px);
 }
-.uasrch-selectpicker {
-    clear: both;
-    width: 100%;
+.main-header span.logo {
+	float: none;
+	width: 100%;
+	display: block;
 }
-    .universalSrch {
-    margin-top: 0px;
-    width: 58%;
+.main-header .navbar {
+	margin-left: 0;
 }
+.main-header .navbar .custom-navbar ul.custom-navbar-inner li {
+    display: inline-block;
+    padding: 16.5px 12px;
 }
+.flag-image {
+	position: fixed !important; top:0; right:10px; z-index: 9;
+}
+.brud-crum {
+	display: none;
 
+	}
+}
 @media (max-width: 1160px) {
 	.side-bar .user-panel.user-panel-active .media .media-body .text-logo .tbldata-dotdot {
     font-size: 15px;
@@ -6616,20 +6622,22 @@ margin-bottom: 10px;
     display: block;
 }
 	.addTask {
-	top:120px;
+	top:125px;
+	}
+	.theme-color {
+	top:160px;
 	}
     .uasrch-selectpicker {
-    clear: both;
-    /* width: 100%; */
+    float: left;
 }
-        .search-area {
+ .search-area {
     clear: both;
-        float: none;
+    float: none;
     margin-top: 0;
 }
     .universalSrch {
     margin-top:0px;
-    width: 85.2%;
+    width: 79%;
 }
 .universalSrch .fa-search{
  top: 10px !important;
@@ -6724,6 +6732,7 @@ margin-bottom: 10px;
 	-webkit-transform: translateX(-240px);
 	-ms-transform: translateX(-240px);
 	display: block;
+	top:100px;
 }
 .side-bar.side-bar-active {
 	width: 230px;
@@ -6735,10 +6744,10 @@ margin-bottom: 10px;
 	display: block;
 	padding: 15px 13px;
 } */
-.main-header .navbar .custom-navbar ul.custom-navbar-inner li {
+/* .main-header .navbar .custom-navbar ul.custom-navbar-inner li {
 	display: inline-block;
-	padding: 16.5px 13px;
-}
+	padding: 16.5px 9.5px;
+} */
 .content-wraper {
 	padding: 10px;
 }
@@ -6780,6 +6789,19 @@ margin-bottom: 10px;
 	-ms-transform: translateY(43px);
 	-moz-transform: translateY(43px);
 	transform: translateY(43px);
+}
+}
+
+@media (max-width: 767px) {
+/* .addTask {
+ top:120px;
+}
+.side-bar {
+top:150px;
+} */
+.universalSrch {
+    margin-top: 0px;
+   width: 78%;
 }
 }
 
