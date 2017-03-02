@@ -8,23 +8,159 @@
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script src="resources/js/formvalidator.js"></script>
-<!-- Bootstrap -->
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="css/bootstrap-select.min.css">
-<link rel="stylesheet" href="datetimepicker.css">
-<link rel="stylesheet" href="css/chosen.min.css">
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
-<link href="css/sourcelead-main.css" rel="stylesheet">
-<link href="css/timesheet.css" rel="stylesheet">
-<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->
+<script src="resources/js/jquery.dataTables.min.js"></script>
+<!-- <link href="resources/css/dataTablePagination.css" rel="stylesheet" type="text/css"> -->
+<!-- these files for autocomplete with tagit -->
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<!-- end files for autocomplete with tagit -->
 
 
 <!-- Content Area -->
+<script type="text/javascript">
+window.onload = function() { 
+	getRequirementList();
+	}
+</script>
+
+<script>
+function getRequirementList(){
+		var sourceleadUrl ='${sourceleadUrl}';
+	    var status = "";
+	    var clients = "";
+		$.ajax({
+	         type : "POST",
+	          url: sourceleadUrl+"/getRequirementListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients,    
+	          success :function(data) {
+	        	 prepareReportDataDiv(data);
+	         },
+	          
+	     }); 
+}
+</script>
+<script>
+function prepareReportDataDiv(data){
+	var result = '';
+	result = result +  '<table id="requirementReportPagination" class="display" cellspacing="0" width="100%" >';
+	result = result + '	<thead>';
+	result = result + '   <tr>';
+	result = result + '      <th>Title</th>';
+	result = result + '    <th>Client</th>';
+	result = result + '    <th>Employement Type</th>';
+	result = result + '    <th>Location</th>';
+	result = result + '    <th>No.Of positions</th>';
+	result = result + '    <th>owner</th>';
+	result = result + '    <th>status</th>';
+	result = result + '    <th>No.Of Applicants</th>';
+	result = result + '    <th>Posted On</th>';
+	result = result + '   </tr>';
+	result = result + '	</thead>';
+	result = result + '	<tbody>';
+	var json = JSON.parse(data);
+    for (var i = 0; i < json.length; i++) {
+    	var report= json[i];
+    	result = result + '<tr>';
+        result = result + '<td>';
+        result = result + '<div><span>'+report.jobTitle+'</span></div> ';
+        result = result + '</td>';
+
+        result = result + '<td>';
+        if(report.clientName != null && report.clientName != '' && report.clientName !='undefined'&& report.clientName != null && report.clientName != ''){
+       	result = result + '<div><span>'+report.clientName+'</span></div>';
+ 		} else{
+		result = result + '<div><span>---</span></div>';
+		    }
+        result = result + '</td>';
+        result = result + '<td>';
+        if(report.jobType != null && report.jobType != '' && report.jobType !='undefined'&& report.jobType != null && report.jobType != ''){
+         result = result + '<div><span>'+report.jobType+'</span></div>';
+        }
+        else{
+		 result = result + '<div><span>---</span></div>';
+		    }
+         result = result + '</td>';
+       	 result = result + '<td>';
+        if(report.country != null && report.country != '' && report.country !='undefined'&& report.country != null && report.country != ''){
+       	 result = result + "<div><span>"+report.country+"</span></div>";
+        }
+        else{
+		 result = result + "<div><span>---</span></div>";
+		    }
+         result = result + '</td>';
+        
+         result = result + '<td>';
+        if(report.positions != null && report.positions != '' && report.positions !='undefined'&& report.positions != null && report.positions != ''){
+        		result = result + "<div><span>"+report.positions+"</span></div>";
+        }
+        else{
+		 result = result + "<div><span>---</span></div>";
+		    }
+        result = result + '</td>';
+        
+        result = result + '<td>';
+        if(report.manager != null && report.manager != '' && report.manager !='undefined'&& report.manager != null && report.manager != ''){
+       	 result = result + "<div><span>"+report.manager+"</span></div>";
+        }
+        else{
+		 result = result + "<div><span>---</span></div>";
+		    }
+       		 
+        result = result + '</td>';
+        
+        result = result + '<td>';
+        if(report.requirementSubmissionStatus != null && report.requirementSubmissionStatus != '' && report.requirementSubmissionStatus !='undefined'&& report.requirementSubmissionStatus != null && report.requirementSubmissionStatus != ''){
+        		result = result + "<div><span>"+report.requirementSubmissionStatus+"</span></div> ";
+        }
+        else{
+		    	result = result + "<div><span>---</span></div>";
+		    }
+        result = result + '</td>';
+        
+        result = result + '<td>';
+        if(report.totalApplicantsForRequirement != null && report.totalApplicantsForRequirement != '' && report.totalApplicantsForRequirement !='undefined'&& report.totalApplicantsForRequirement != null && report.totalApplicantsForRequirement != ''){
+        		result = result + "<div><span>"+report.totalApplicantsForRequirement+"</span></div> ";
+        }
+        else{
+		    	result = result + "<div><span>---</span></div>";
+		    }
+        result = result + '</td>';
+        
+        result = result + '<td>';
+        if(report.postedDateStr != null && report.postedDateStr != '' && report.postedDateStr !='undefined'&& report.postedDateStr != null && report.postedDateStr != ''){
+       		 result = result + "<div><span>"+report.postedDateStr+"</span></div>";
+        }
+        else{
+		    	result = result + "<div><span>---</span></div>";
+		    }
+        result = result + '</td>';
+        result = result + '</tr>';
+    }
+	result = result + '	</tbody>';
+	result = result + '</table>';
+    $("#requirementReportsDiv12").append(result);
+    requirementReportPagination();
+}
+
+</script>
+<script>
+function requirementReportPagination(){
+	$('#requirementReportPagination').DataTable({ 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": ""
+     	}
+    } );
+}
+
+</script>
+
+
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
@@ -53,14 +189,14 @@
 
 <div class="pull-left reportBtns">
 	  <div class="reportBtn">
-		<select class="form-control select-bg">
-		  <option>To day</option>
-		  <option>Yesterday</option>
-		  <option>1 week</option>
-		  <option>2 weeks</option>
-		  <option>1 month</option>
-		  <option>2 months</option>
-		  <option>Custom</option>
+		<select class="form-control select-bg" id="reportTypeId" onChange="getDayWiseReports()">
+		  <option value="today">Today</option>
+		  <option value="yesterday">Yesterday</option>
+		  <option value="week">1 week</option>
+		  <option value="twoweeks">2 weeks</option>
+		  <option value="month">1 month</option>
+		  <option value="twomonths">2 months</option>
+		  <option value="custom">Custom</option>
 		</select>
 	 </div>	
 	 <span class="dashboard-datepkr"><input type="text" class="input-sm hasDatepicker" id="datepicker"><i class="fa fa-calendar"></i></span>
@@ -113,280 +249,20 @@
 			</li>
 			<li title="Rejected" class="colorTwo">
 				<span><i class="glyphicon glyphicon-trash"></i></span><b>100</b>
-			</li>											
+			</li>
+					<div class="clearfix"></div>
 		</ul>
 	</div>
 
-<div class="project_tabs_inn_table vendor_wrap_inn_table">
-                  <table>
-                    <tbody>
-                      <tr>
-                        <th>Name</th>
-                        <th>Provider</th>
-                        <th>Score</th>
-                        <th>Description</th>
-                        <th>Valid from</th>
-                        <th>Valid to</th>
-                        <th>Action</th>
-                      </tr>
-                      <tr>
-                        <td>
-                          <div><span>TCS Pvt Ltd</span></div>
-                        </td>
-                        <td>
-                          <div><span>Web developer</span></div>
-                        </td>
-                        <td>
-                          <div><span>300</span></div>
-                        </td>
-                        <td>
-                          <div><span>Description Description</span></div>
-                        </td>
-                        <td>
-                          <div><span>30/08/2016</span></div>
-                        </td>
-                        <td>
-                          <div><span>30/09/2016</span></div>
-                        </td>
-                        <td>
-                          <div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <div><span>TCS Pvt Ltd</span></div>
-                        </td>
-                        <td>
-                          <div><span>Web developer</span></div>
-                        </td>
-                        <td>
-                          <div><span>300</span></div>
-                        </td>
-                        <td>
-                          <div><span>Description Description</span></div>
-                        </td>
-                        <td>
-                          <div><span>30/08/2016</span></div>
-                        </td>
-                        <td>
-                          <div><span>30/09/2016</span></div>
-                        </td>
-                        <td>
-                          <div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <div><span>TCS Pvt Ltd</span></div>
-                        </td>
-                        <td>
-                          <div><span>Web developer</span></div>
-                        </td>
-                        <td>
-                          <div><span>300</span></div>
-                        </td>
-                        <td>
-                          <div><span>Description Description</span></div>
-                        </td>
-                        <td>
-                          <div><span>30/08/2016</span></div>
-                        </td>
-                        <td>
-                          <div><span>30/09/2016</span></div>
-                        </td>
-                        <td>
-                          <div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <div><span>TCS Pvt Ltd</span></div>
-                        </td>
-                        <td>
-                          <div><span>Web developer</span></div>
-                        </td>
-                        <td>
-                          <div><span>300</span></div>
-                        </td>
-                        <td>
-                          <div><span>Description Description</span></div>
-                        </td>
-                        <td>
-                          <div><span>30/08/2016</span></div>
-                        </td>
-                        <td>
-                          <div><span>30/09/2016</span></div>
-                        </td>
-                        <td>
-                          <div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <div><span>TCS Pvt Ltd</span></div>
-                        </td>
-                        <td>
-                          <div><span>Web developer</span></div>
-                        </td>
-                        <td>
-                          <div><span>300</span></div>
-                        </td>
-                        <td>
-                          <div><span>Description Description</span></div>
-                        </td>
-                        <td>
-                          <div><span>30/08/2016</span></div>
-                        </td>
-                        <td>
-                          <div><span>30/09/2016</span></div>
-                        </td>
-                        <td>
-                          <div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <div><span>TCS Pvt Ltd</span></div>
-                        </td>
-                        <td>
-                          <div><span>Web developer</span></div>
-                        </td>
-                        <td>
-                          <div><span>300</span></div>
-                        </td>
-                        <td>
-                          <div><span>Description Description</span></div>
-                        </td>
-                        <td>
-                          <div><span>30/08/2016</span></div>
-                        </td>
-                        <td>
-                          <div><span>30/09/2016</span></div>
-                        </td>
-                        <td>
-                          <div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <div><span>TCS Pvt Ltd</span></div>
-                        </td>
-                        <td>
-                          <div><span>Web developer</span></div>
-                        </td>
-                        <td>
-                          <div><span>300</span></div>
-                        </td>
-                        <td>
-                          <div><span>Description Description</span></div>
-                        </td>
-                        <td>
-                          <div><span>30/08/2016</span></div>
-                        </td>
-                        <td>
-                          <div><span>30/09/2016</span></div>
-                        </td>
-                        <td>
-                          <div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <div><span>TCS Pvt Ltd</span></div>
-                        </td>
-                        <td>
-                          <div><span>Web developer</span></div>
-                        </td>
-                        <td>
-                          <div><span>300</span></div>
-                        </td>
-                        <td>
-                          <div><span>Description Description</span></div>
-                        </td>
-                        <td>
-                          <div><span>30/08/2016</span></div>
-                        </td>
-                        <td>
-                          <div><span>30/09/2016</span></div>
-                        </td>
-                        <td>
-                          <div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <div><span>TCS Pvt Ltd</span></div>
-                        </td>
-                        <td>
-                          <div><span>Web developer</span></div>
-                        </td>
-                        <td>
-                          <div><span>300</span></div>
-                        </td>
-                        <td>
-                          <div><span>Description Description</span></div>
-                        </td>
-                        <td>
-                          <div><span>30/08/2016</span></div>
-                        </td>
-                        <td>
-                          <div><span>30/09/2016</span></div>
-                        </td>
-                        <td>
-                          <div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <div><span>TCS Pvt Ltd</span></div>
-                        </td>
-                        <td>
-                          <div><span>Web developer</span></div>
-                        </td>
-                        <td>
-                          <div><span>300</span></div>
-                        </td>
-                        <td>
-                          <div><span>Description Description</span></div>
-                        </td>
-                        <td>
-                          <div><span>30/08/2016</span></div>
-                        </td>
-                        <td>
-                          <div><span>30/09/2016</span></div>
-                        </td>
-                        <td>
-                          <div><i class="glyphicon glyphicon-eye-open"></i><i class="glyphicon glyphicon-trash"></i></div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+  <div class="project_tabs_inn_table vendor_wrap_inn_table">
+                 <div id="requirementReportsDiv12"></div>
                 </div>      
       
-      <nav>
-        <ul id="paging" class="pagination">
-          <li><a href="#">Previous</a></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">4</a></li>
-          <li><a href="#">5</a></li>
-          <li class="disabled"><a href="#">6</a></li>
-          <li data-page="last"><a href="#">Next</a></li>
-        </ul>
-        <div class="clearfix"></div>
-      </nav>
-    </div>
+ </div>
 
 
   </div>
 </section>
-<!-- Footer Area -->
-<footer class="footer-area clearfix">
-  <div class="copyright"> @ Copyright : Source Lead, All right reserved </div>
-  <div class="powered-by"> Powered by: businessintelli.com </div>
-</footer>
-<!-- Footer Area --> 
-
 <!--   Error Message   -->
 <div class="vendor_wrap_mask"></div>
 <div class="vendor_error">
@@ -397,13 +273,13 @@
 <!--   Error Message   --> 
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
 <script src="js/moment.min.js"></script>
 <script src="js/bootstrap-datetimepicker.min.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
 <script src="js/masterHeaderAction.js"></script> 
 <script src="js/bootstrap-select.min.js"></script> 
-<script src="js/chosen.jquery.min.js"></script> 
+<script src="js/chosen.jquery.min.js"></script>  -->
 
 <script type="text/javascript">
             $(function () {
@@ -622,15 +498,6 @@ $(".reminder").click(function(){
                 });
             });
         </script>
-<div class="theme-color"> <span class="icon-theme" title="click here"><i class="fa fa-gears"></i></span>
-  <ul class="list-unstyled">
-    <li><a href="#" class="" id="btn1"><span class="dark-blue"></span><span class="light-grey"></span></a></li>
-    <li><a href="#" class="" id="btn2"><span class="flat-green"></span><span class="dark-purle"></span></a></li>
-    <li><a href="#" class="" id="btn3"><span class="hdr-blue"></span><span class="sidenav-blue"></span></a></li>
-  </ul>
-</div>
-
-    
       <script>
 	// Close Advanced Search
 		function closePop(){
@@ -640,3 +507,23 @@ $(".reminder").click(function(){
 			$("div.cand-advsrch-popup").toggle();
 		}
 	</script> 
+
+
+<script>
+function getDayWiseReports(){
+	var reportType = $("#reportTypeId").val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	$.ajax({
+         type : "POST",
+          url: sourceleadUrl+"/getRequirementReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType,    
+          success :function(data) {
+        	 prepareReportDataDiv(data);
+         },
+          
+     });  
+	
+}
+
+</script>
+ 
