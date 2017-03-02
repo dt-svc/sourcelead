@@ -550,7 +550,9 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 			            	else if(requirementIndex.getTeamAssignUserId()!=null&&Arrays.asList(requirementIndex.getTeamAssignUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
 			            		requirement = getData(requirementIndex,user);
 			            	}
-			            	searchListForRequirement.add(requirement);
+			            	if(null !=requirement){
+			            		searchListForRequirement.add(requirement);	
+			            	}
 			            }
 					}
 				}
@@ -603,7 +605,9 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 						mapper.setDateFormat(df);
 						UserIndex userIndex = mapper.readValue(json, UserIndex.class);
 						userIndex.setSearchType(Constants.USER);
-						searchListForUsers.add(userIndex);
+						if(null != userIndex){
+							searchListForUsers.add(userIndex);
+						}
 					}
 				}
 			
