@@ -1792,6 +1792,7 @@ function reActivateApplicant(submissionId,candidateId,requirementId){
 	         success :function(data) {
 	               if(data != null && data != 'undefined' && data != ""){
 	            	   getSubmissionDetailsSideBar(submissionId,candidateId,requirementId);
+	            	   pipelineList(requirementId);
 	                } 
 	                 },
 	              }); 
@@ -1800,3 +1801,21 @@ function reActivateApplicant(submissionId,candidateId,requirementId){
 	
 }
 </script>
+
+<script type="text/javascript">
+function pipelineList(requirementId){
+	var submissionType = "all";
+	$("#duplicataplctli").removeClass("pipeline-active");
+	$("#requestSentli").removeClass("pipeline-active");
+	$("#shortListli").removeClass("pipeline-active");
+	$("#submitToClientli").removeClass("pipeline-active");
+	$("#interviewli").removeClass("pipeline-active");
+	$("#offerMadeli").removeClass("pipeline-active");
+	$("#rejectedli").removeClass("pipeline-active");
+	$("#applicantli").addClass("pipeline-active");
+	filterReq(requirementId,submissionType);
+}
+</script>
+
+
+
