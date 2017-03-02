@@ -804,7 +804,7 @@ public class UserServiceImpl implements UserService {
 		 emailMessage.setOrgLocationId(respondingPartyOrgLocation.getId());
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailMessage.setEmailType(Constants.CLIENTORVENDORMAIL);
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 emailScenerioUtil.sendEmail(emailMessage,respondingPartyOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
 		 noificationEmailScenario.setBody(notificationbody);
