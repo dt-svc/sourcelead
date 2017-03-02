@@ -6,7 +6,7 @@ function candidateHistory(candidateId){
 	result  = result + '   <div class="project_tabs_inn_head addUser-org"> ';
 	result  = result + '   	<span class="pad-sea"> <a href="javascript:void(0)"></a></span> ';
 	result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-	result  = result + '   <div id="candidateCertificateList" ></div>';
+	result  = result + '   <div id="candidateHistoryDiv" ></div>';
 	result  = result + '   </div>';
 	result = result+'	    </div>';
 
@@ -19,21 +19,21 @@ function candidateHistory(candidateId){
     $("#history").empty();
     $("#history").append(result);
     
-    candidateCertificateList(candidateId);
+    candidateHistoryList(candidateId);
     
 }
 </script>
 <script>
-function candidateCertificateList(candidateId){
+function candidateHistoryList(candidateId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateHistoryList?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
           success :function(data) {
              		 
-	                	 $("#candidateCertificateList").empty();
+	                	 $("#candidateHistoryDiv").empty();
 	                	 var result = "";
-	                	 result = result +"<table id='candidateCertificatePagination' class='display' cellspacing='0' width='100%' >"; 
+	                	 result = result +"<table id='candidateHistorypagenation' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
 	                     result  = result +"           <th>Requirement Name</th>";
@@ -56,8 +56,8 @@ function candidateCertificateList(candidateId){
 	                      } 
 	                     result = result +" </tbody>";
 	                     result = result +"</table>";
-	                     $("#candidateCertificateList").append(result); 
-	                     certificationPagination(); 
+	                     $("#candidateHistoryDiv").append(result); 
+	                     candidateHistoryPagination(); 
         },
           
      }); 
@@ -65,8 +65,8 @@ function candidateCertificateList(candidateId){
 </script>
 
 <script>
-function certificationPagination(){  
-    $('#candidateCertificatePagination').DataTable( { 
+function candidateHistoryPagination(){  
+    $('#candidateHistorypagenation').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
