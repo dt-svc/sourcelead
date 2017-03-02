@@ -127,7 +127,7 @@ overflow-y:hidden;
 overflow-y:inherit !important;
 }
 .require_wrap_table {
-overflow-y:auto !important;
+overflow-y:inherit !important;
 
 .require_wrap_details_cta.require_uploadfile span{
 width:auto !important;
@@ -1383,8 +1383,8 @@ function requirementPipeline(requirementId,submissionType){
 					            result = result +'<a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
 					            result = result +'<div class="export_pipline" style="display:none">';
 					            result = result +'<ul>';
-					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
-					            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');"><i class="fa fa-file-pdf-o text-danger"></i>&nbsp;&nbsp;PDF</li>';
+					            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>';
 					            result = result +' </ul>';
 					            result = result +'</div>';
 					          '</sec:authorize>';
@@ -1459,7 +1459,7 @@ function requirementPipeline(requirementId,submissionType){
 							        else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	     }
-							          
+							        
 						            if(report.vendorLocationId != null && report.sourceSubmission != null){
 						        	   if(report.finalizedRate != null && report.finalizedRate != '' && report.finalizedRate != 'undefined'){
 						        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.finalizedRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
@@ -1496,8 +1496,7 @@ function requirementPipeline(requirementId,submissionType){
 							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
 							        	   }
 							           }
-							       }
-							           
+							      }   
 						           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
 						        	   result = result + '         <td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
 							           }
@@ -1590,6 +1589,7 @@ function requirementPipeline(requirementId,submissionType){
 function documentpagination(){  
     $('#requirementsPagination').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -1822,6 +1822,7 @@ function requirementPipelineDA(requirementId,submissionType){
 function documentpaginationDA(){  
     $('#requirementsPaginationDA').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -2049,6 +2050,7 @@ function requirementPipelineRS(requirementId,submissionType){
 function documentpaginationRS(){  
     $('#requirementsPaginationRS').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -2288,6 +2290,7 @@ function requirementPipelineSL(requirementId,submissionType){
 function documentpaginationSL(){  
     $('#requirementsPaginationSL').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -2503,6 +2506,7 @@ function requirementPipelineSC(requirementId,submissionType){
 function documentpaginationSC(){  
     $('#requirementsPaginationSC').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -2672,6 +2676,7 @@ function requirementPipelineIN(requirementId,submissionType){
 function documentpaginationIN(){  
     $('#requirementsPaginationIN').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -2861,6 +2866,7 @@ function requirementPipelineOffer(requirementId,submissionType){
 function documentpaginationOffer(){  
     $('#requirementsPaginationOffer').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -3064,6 +3070,7 @@ function requirementPipelineRejected(requirementId,submissionType){
 function documentpaginationRejected(){  
     $('#requirementsPaginationRejected').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -3345,7 +3352,7 @@ function requirementRecommendations(requirementId){
 		    
 		    result = result +'</div>';
 		    result = result +'</div>';
-		    result = result +'<div class="project_tabs_inn_table  clients_wrap_table">';
+		    result = result +'<div class="project_tabs_inn_table  clients_wrap_table" style="overflow: inherit;">';
 		    result = result +'<table id="recommendationTable" class="display" cellspacing="0" width="100%"">';
 		    result = result +'<thead>';
 		    result = result +'<tr>';
@@ -3526,6 +3533,7 @@ function requirementRecommendations(requirementId){
 function recommendationpagination(){  
     $('#recommendationTable').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -4155,6 +4163,7 @@ function closeratediv(){
 
 <script>
 function exportPipelineToExcel(requirementId,submissionType){
+	$('.export_pipline').hide();
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  var emptypilpeline = $("#emptyPipelinelist").val();
@@ -4180,6 +4189,7 @@ function exportPipelineToExcel(requirementId,submissionType){
 
  <script>
 function exportPipelineToPdf(requirementId,submissionType){
+	$('.export_pipline').hide();
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  var emptypilpeline = $("#emptyPipelinelist").val();

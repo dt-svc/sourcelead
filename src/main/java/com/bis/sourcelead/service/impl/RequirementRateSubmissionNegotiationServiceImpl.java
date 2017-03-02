@@ -75,7 +75,7 @@ public class RequirementRateSubmissionNegotiationServiceImpl implements Requirem
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 		
 		StringBuilder tempHTML = new StringBuilder();
-		 if(null != negotiationList){
+		 if(!negotiationList.isEmpty()){
 			 
 	         tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
 	         tempHTML.append("<tr>");

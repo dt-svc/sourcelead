@@ -238,41 +238,21 @@ public class RequirementServiceImpl implements RequirementService {
 					requirement.setJobTitle(jsonObj.getString("jobTitle"));
 				}
 				
-			}
-			
-			
-			if(jsonObj.has("jobType") ){	
-				if(!"".equalsIgnoreCase(jsonObj.getString("jobType"))){
+			}if(jsonObj.has("jobType") ){	
 				requirement.setJobType(jsonObj.getString("jobType"));
-			   }
-			}	
-			
-			if(jsonObj.has("jobOtherType") && jsonObj.has("jobType") && "Other".equalsIgnoreCase(jsonObj.getString("jobType"))){
+			}if(jsonObj.has("jobOtherType") && jsonObj.has("jobType") && "Other".equalsIgnoreCase(jsonObj.getString("jobType"))){
 					requirement.setOtherJobType(jsonObj.getString("jobOtherType"));
 			}else{
 					requirement.setOtherJobType(null);
-			}
-						
-			if(jsonObj.has("jobId")){
-				if(!"".equalsIgnoreCase(jsonObj.getString("jobId"))){
+			}if(jsonObj.has("jobId")){
 					requirement.setJobId(jsonObj.getString("jobId"));
-				}
-			
-			}
-			
-			if(jsonObj.has("positions")){
-				if(!"".equalsIgnoreCase(jsonObj.getString("positions"))){
+			}if(jsonObj.has("positions")){
 					requirement.setPositions(jsonObj.getString("positions"));
-				}
-			
-			}
-			if(jsonObj.has("countryReq")){
+			}if(jsonObj.has("countryReq")){
 			requirement.setCountry(jsonObj.getString("countryReq"));
 			location.append(jsonObj.getString("countryReq"));
 			location.append(",");
-			}
-			
-			if(jsonObj.has("state")){
+			}if(jsonObj.has("state")){
 				if(!jsonObj.getString("state").isEmpty()){
 					requirement.setState(jsonObj.getString("state"));
 					location.append(jsonObj.getString("state"));
@@ -280,10 +260,7 @@ public class RequirementServiceImpl implements RequirementService {
 				}else{
 					location.append("--").append(",");
 				}
-			
-			}
-			
-			if (jsonObj.has("city")) {
+			}if (jsonObj.has("city")) {
 				if (!jsonObj.getString("state").isEmpty()) {
 					requirement.setCity(jsonObj.getString("city"));
 					location.append(jsonObj.getString("city"));
@@ -291,50 +268,23 @@ public class RequirementServiceImpl implements RequirementService {
 				} else {
 					location.append("--").append(".");
 				}
-			}
-			
-			if(jsonObj.has("maxExp")){
-				if(!"".equalsIgnoreCase(jsonObj.getString("maxExp"))){
+			}if(jsonObj.has("maxExp")){
 					requirement.setMaxExp(jsonObj.getString("maxExp"));
-				}
-			}
-			
-			if(jsonObj.has("minExp")){
-				if(!"".equalsIgnoreCase(jsonObj.getString("minExp"))){
+			}if(jsonObj.has("minExp")){
 					requirement.setMinExp(jsonObj.getString("minExp"));
-				}
-			}
-			
-			if(jsonObj.has("rate")){
-				if(!"".equalsIgnoreCase(jsonObj.getString("rate"))){
+			}if(jsonObj.has("rate")){
 					requirement.setRate(jsonObj.getString("rate"));
-				}
-			}
-			
-			if(jsonObj.has("rateType")){
-				if(!"".equalsIgnoreCase(jsonObj.getString("rateType"))){
+			}if(jsonObj.has("rateType")){
 					requirement.setRateType(jsonObj.getString("rateType"));
-				}
-			} 
-			
-			if(jsonObj.has("description")){
-				if(!"".equalsIgnoreCase(jsonObj.getString("description"))){
+			}if(jsonObj.has("description")){
 					//requirement.setDescription(java.net.URLDecoder.decode(jsonObj.getString("description"), "utf-8"));
 					requirement.setDescription(jsonObj.getString("description"));	
-				}
-			
-			}
-			
-			
-			if(jsonObj.has("currencyCode")){
+			}if(jsonObj.has("currencyCode")){
 				if(!"".equalsIgnoreCase(jsonObj.getString("currencyCode"))){
 					requirement.setCurrencyCode(jsonObj.getString("currencyCode"));
 				}
 			
-			}
-			
-			
-			if(jsonObj.has("priority")){
+			}if(jsonObj.has("priority")){
 				if(!"".equalsIgnoreCase(jsonObj.getString("priority"))){
 					requirement.setPriority(jsonObj.getString("priority"));
 				}
@@ -698,11 +648,11 @@ public class RequirementServiceImpl implements RequirementService {
 			       if(!requirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.DRAFT)){
 				 		
 					 mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
-					 if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
+					/*if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
 						  String approverNames = jsonObj.getString("sequentialApprover1");
 						  User approverUser = userService.getUserById(Long.parseLong(approverNames));
 						  approverEmailScenario(user, approverUser ,savedRequirement,location,orgLocations);
-				     }
+				     }*/
 			  
 					//send mail to sequential approver1 
 					if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
@@ -818,7 +768,7 @@ public class RequirementServiceImpl implements RequirementService {
 	*/
 
 	@Override
-	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,User  user,String userRoleName) throws Exception {
+	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,Long clients,User  user,String userRoleName) throws Exception {
 		return requirementDao.getRequirementListByOrgLocationID(orgLocationId,status,clients,user,userRoleName);
 	}
 
@@ -2537,13 +2487,14 @@ public class RequirementServiceImpl implements RequirementService {
 		            		//&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())
 		            		requirement = getData(requirementIndex,user);
 		            	}
+		            	
+		            	
 		            	if(requirement !=null){
 		            		reqList.add(requirement);
 		            	}
 		            }
 				}
 			}
-			logger.info("*****************============="+reqList.size());
 		return reqList;
 		
 	}
@@ -2579,9 +2530,22 @@ public class RequirementServiceImpl implements RequirementService {
      	}
      	Boolean isLoginUserAsTeamMember =  requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementIndex.getRequirementId(), user.getId());
 		requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
- 
-//     	if(user.getId().toString())
-//     	isLoginUserAsTeamMember
+
+       if(null != requirementIndex.getReleasedBy() && !"".equalsIgnoreCase(requirementIndex.getReleasedBy())){
+			List<Long> userId = new ArrayList<Long>();
+			for (String s : requirementIndex.getReleasedBy().split(",")){
+				userId.add(Long.parseLong(s));
+			 }
+			boolean flag = userId.contains(user.getId());
+     		if(flag == true){
+     			requirement.setIsRequirementReleasedByuser("Y");
+     		}else{
+     			requirement.setIsRequirementReleasedByuser("N");
+     		}
+		}
+       if(null != requirementIndex.getRequirementUUID()){
+   		requirement.setRequirementUUID(requirementIndex.getRequirementUUID());	
+   	   }
      	return requirement;
 	}
 
