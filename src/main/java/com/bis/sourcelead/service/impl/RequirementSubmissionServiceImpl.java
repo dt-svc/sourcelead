@@ -1481,13 +1481,15 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    			 jsonObj.put("value", "-----");
    			}
    			else if(jsonObj.getString("name").equalsIgnoreCase("ExpectedCTC")){
-   				String clientRate = clientShortlistsRate[i];
-   				if(!isNullOrEmpty(clientRate)){
-   				    StringBuilder rateBuilder = new StringBuilder();
-   				    rateBuilder = rateBuilder.append(templateFields.getExpectedRateType()).append(" ").append(clientRate).append(" / ").append(templateFields.getExpectedRatePer());
-   					jsonObj.put("value", rateBuilder.toString());
-   				}else{
-   					jsonObj.put("value", "");
+   				if(clientShortlistsRate.length>0){
+   					String clientRate = clientShortlistsRate[i];
+   	   				if(!isNullOrEmpty(clientRate)){
+   	   				    StringBuilder rateBuilder = new StringBuilder();
+   	   				    rateBuilder = rateBuilder.append(templateFields.getExpectedRateType()).append(" ").append(clientRate).append(" / ").append(templateFields.getExpectedRatePer());
+   	   					jsonObj.put("value", rateBuilder.toString());
+   	   				}else{
+   	   					jsonObj.put("value", "");
+   	   				}
    				}
   				
   			 }
