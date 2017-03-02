@@ -1,5 +1,3 @@
-<script src="resources/js/formvalidator.js"></script>
- 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
@@ -76,12 +74,12 @@ function editCandidate(candidateId){
 	  $("#profileEditPopup").show();
 	  var loginCountryName = '${loginCountryName}';
 	  var sourceleadUrl ='${sourceleadUrl}';
-		var validationSettings = {
+	/* 	var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
-	         }; 
+	         };  */
 		
  if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
 	  
@@ -234,6 +232,7 @@ function editCandidate(candidateId){
 							result = result + '<option value="">--Select Employment Type--</option>';
 							result = result + ' <option '+(json.designationType == "C2C" ? "selected" : '') +'>C2C</option>';
 							result = result + '<option  '+ (json.designationType == "W-2" ? "selected" : '') +'>W-2</option>';
+							result = result + ' <option '+(json.designationType == "C2H" ? "selected" : '') +'>C2H</option>';
 							result = result + '<option  '+(json.designationType == "Part Time" ? "selected" : '') +'>Part Time</option>';
 							result = result + '<option  '+(json.designationType == "Full Time" ? "selected" : '') +'>Full Time</option>';
 							result = result + '<option  '+(json.designationType == "Other" ? "selected" : '') +'>Other</option>';
@@ -972,48 +971,7 @@ function candidateProfile(candidateId){
 --%>         
 <script type="text/javascript">
 	function upDateCandidate(candidateId) {
-	
-		var expectedRate = document.getElementById("expectedRate").value; 
-		 if(expectedRate != null && expectedRate != ""){
-			 $('#expectedRateType').removeAttr('data-validation-optional');
-			 $('#expectedRateType').attr("data-validation","required"); 
-		 }else{
-		 $('#expectedRateType').removeAttr('data-validation');
-		 $('#expectedRateType').attr("data-validation-optional","true"); 
-		 }
-		 
-		 var rateType = document.getElementById("expectedRateType").value; 
-		 if(rateType != null && rateType != ""){
-			 $('#expectedRate').removeAttr('data-validation-optional');
-			 $('#expectedRate').attr("data-validation","required"); 
-		 }else{
-			 $('#expectedRate').removeAttr('data-validation');
-			 $('#expectedRate').attr("data-validation-optional","true");
-			 $('#expectedRateType').removeAttr('data-validation');
-			 $('#expectedRateType').attr("data-validation-optional","true"); 
-		 }
-		 
-		 var currentRate = document.getElementById("currentRate").value; 
-			 if(currentRate != null && currentRate != ""){
-				
-				 $('#currentRateType').removeAttr('data-validation-optional');
-				 $('#currentRateType').attr("data-validation","required"); 
-			 }else{
-			 $('#currentRateType').removeAttr('data-validation');
-			 $('#currentRateType').attr("data-validation-optional","true"); 
-			 }
-			 
-		 var currentRateType = document.getElementById("currentRateType").value; 
-			if(currentRateType != null && currentRateType != ""){
-				$('#currentRate').removeAttr('data-validation-optional');
-				$('#currentRate').attr("data-validation","required"); 
-			}else{
-				$('#currentRate').removeAttr('data-validation');
-			 	$('#currentRate').attr("data-validation-optional","true"); 
-				$('#currentRateType').removeAttr('data-validation');
-			 	$('#currentRateType').attr("data-validation-optional","true"); 
-			}
-			
+		
 		var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -1021,6 +979,7 @@ function candidateProfile(candidateId){
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
 		
+		rateValidations();
 		
 		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
 			var sourceleadUrl = '${sourceleadUrl}';
@@ -1589,3 +1548,52 @@ function updateDesignationType(){
  </script>     
  
  <!-- Candidate Email validation script ends here -->
+ 
+ 
+<!-- This script for Current Rate ,Rate Type,Expected Rate, Expected Rate Type validation checks -->
+<script type="text/javascript">
+
+function rateValidations(){
+	
+var rateType = document.getElementById("expectedRateType").value; 
+if(rateType != null && rateType != ""){
+	 $('#expectedRate').removeAttr('data-validation-optional');
+	 $('#expectedRate').attr("data-validation","required"); 
+}else{
+	 $('#expectedRate').removeAttr('data-validation');
+	 $('#expectedRate').attr("data-validation-optional","true");
+	 $('#expectedRateType').removeAttr('data-validation');
+	 $('#expectedRateType').attr("data-validation-optional","true"); 
+}
+
+var expectedRate = document.getElementById("expectedRate").value; 
+if(expectedRate != null && expectedRate != ""){
+	 $('#expectedRateType').removeAttr('data-validation-optional');
+	 $('#expectedRateType').attr("data-validation","required"); 
+}else{
+$('#expectedRateType').removeAttr('data-validation');
+$('#expectedRateType').attr("data-validation-optional","true"); 
+}
+
+var currentRateType = document.getElementById("currentRateType").value; 
+	if(currentRateType != null && currentRateType != ""){
+		$('#currentRate').removeAttr('data-validation-optional');
+		$('#currentRate').attr("data-validation","required"); 
+	}else{
+		$('#currentRate').removeAttr('data-validation');
+	 	$('#currentRate').attr("data-validation-optional","true"); 
+		$('#currentRateType').removeAttr('data-validation');
+	 	$('#currentRateType').attr("data-validation-optional","true"); 
+	}
+	
+var currentRate = document.getElementById("currentRate").value; 
+	 if(currentRate != null && currentRate != ""){
+		
+		 $('#currentRateType').removeAttr('data-validation-optional');
+		 $('#currentRateType').attr("data-validation","required"); 
+	 }else{
+	 $('#currentRateType').removeAttr('data-validation');
+	 $('#currentRateType').attr("data-validation-optional","true"); 
+	 }
+}
+</script>
