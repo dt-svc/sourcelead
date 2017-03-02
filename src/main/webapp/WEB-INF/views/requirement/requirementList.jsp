@@ -1214,7 +1214,7 @@ function requirementPipeline(requirementId){
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
-      <div class="timesheet_head">
+      <div class="timesheet_head timesheetHead_Custom">
        <div class="pull-left cand-advsrch advsrch_chosen">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenRequirementScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
           <form:form id="requirement_form" name="requirement_form"  enctype='multipart/form-data' >
@@ -1473,7 +1473,7 @@ function requirementPipeline(requirementId){
         <ul>
         <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')">
         
-        <li  id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="clientsList" ></i>|
+        <li  id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="clientsList" ></i>
            		<div id="filter1ApprovedPop" class="approved_pop">
                		<ul>
                	  		<c:forEach var="report" items="${add_clientList}">  
