@@ -163,7 +163,7 @@ public class RequirementListRestController {
 	   */
 	 @PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT')")
 	 @RequestMapping(value = "/getRequirementListByOrgLocationID")
-	 public String getRequirementListByOrgLocationID(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
+	 public String getRequirementListByOrgLocationID(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) Long clients,HttpServletRequest request) throws Exception {
 		
 		 String msg = "";
 			String resultJson;
@@ -698,7 +698,7 @@ public class RequirementListRestController {
 		  */
 		 @PreAuthorize("hasAnyRole('ROLE_EXPORT_REQUIREMENTS')")
 		 @RequestMapping(value = "/getRequirementExportListByOrgLocationID")
-		 public void getRequirementExportListByOrgLocationID(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		 public void getRequirementExportListByOrgLocationID(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) Long clients,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception {
 
 //			String resultJson;
 			Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
