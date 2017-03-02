@@ -198,11 +198,11 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 				 
 			
-				/*EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_PROJECT_MANAGER_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION);
+				EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION);
 				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 				notificationScenario.setBody(notificationBody);
 				String actionLink = "";
-				emailScenerioUtil.sendNotification(actionLink, loginUser, ol.getUser(), orgLocations, notificationScenario);*/
+				emailScenerioUtil.sendNotification(actionLink, loginUser, ol.getUser(), orgLocations, notificationScenario);
 			 }
 	}
 	
@@ -210,6 +210,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	public void sendReopenTimeSheetAcceptOrRejectMail(Long projectMemberId,String reason, User loginUser, OrgLocations orgLocations, String timesheetFrequency,String type, User reopenedUser) throws Exception {
 		
 				 EmailScenario emailScenario = null;
+				 EmailScenario  notificationScenario = null;
 				 EmailMessage emailMessage = new EmailMessage();
 				 emailMessage.setFirstName(reopenedUser.getFirstName());
 				 emailMessage.setLastName(reopenedUser.getLastName());
@@ -240,8 +241,10 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 //getting the current EmailScenario by EmailScenario unique name and entity type
 				 if(null != type && "accept".equalsIgnoreCase(type)){
 					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_ACCEPT_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_EMAIL);
+					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_ACCEPT_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION);
 				 }if(null != type && "reject".equalsIgnoreCase(type)){
 					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REJECT_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_EMAIL);
+					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REJECT_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION); 
 				 }
 				 
 				
@@ -258,13 +261,12 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 
 				 //calling the sendEmail method of emailScenerioUtil
 				 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-				 
-			
-				/*EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_PROJECT_MANAGER_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION);
+				
+				//calling the sendNotification method of emailScenerioUtil
 				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 				notificationScenario.setBody(notificationBody);
 				String actionLink = "";
-				emailScenerioUtil.sendNotification(actionLink, loginUser, ol.getUser(), orgLocations, notificationScenario);*/
+				emailScenerioUtil.sendNotification(actionLink, loginUser, reopenedUser, orgLocations, notificationScenario);
 	}
 
 	@Override
