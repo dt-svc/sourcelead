@@ -101,7 +101,7 @@ margin:10px 220px 0;
 			  According this template, the Users need to <span class="text-danger"><strong>Import Required Fields</strong></span></p>
 			  </p>
 			  <p>
-			  <label><i class="fa fa-user"></i>&nbsp;&nbsp;Client Name</label>
+			  <label><i class="fa fa-user"></i>&nbsp;&nbsp;Vendor Name</label>
 			  <!-- <label><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</label>
 			  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Role</label> -->
 			  </p>

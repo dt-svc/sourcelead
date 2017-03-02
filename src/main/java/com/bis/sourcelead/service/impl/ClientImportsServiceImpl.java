@@ -36,6 +36,7 @@ import org.apache.poi.xssf.usermodel.XSSFDataValidationConstraint;
 import org.apache.poi.xssf.usermodel.XSSFDataValidationHelper;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.sis.internal.jaxb.gmd.Country;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.json.JSONException;
@@ -64,6 +65,7 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
 import com.fasterxml.jackson.core.sym.Name;
 /**
  * 
@@ -98,6 +100,8 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	@Value("${sourceLeadBlockedSocialDomains}")
 	private String sourceLeadBlockedSocialDomains;
 	
+	@Autowired
+	UserService userService;
 	
 	@Override
 	public String clientBulkSaving(MultipartFile multipartFile,User user,OrgLocations orgLocation,Org  org,String isMailSent,String responderType) throws Exception {
@@ -748,6 +752,8 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 				}
 			
 				writeRow.createCell(5).setCellValue(row.getCell(5).toString());
+				
+			
 			} else {
 				if(!fname.endsWith("xlsx")){
 					createExcelsheet.addValidationData(getDropDownListForCell(Constants.STATUS_DROPDOWN,5));
@@ -765,6 +771,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 				writeRow.createCell(7).setCellValue(client.getReason());
 			} 
 		}
+	
 		
 		
 		/**
@@ -789,7 +796,16 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 				writeRow.createCell(1).setCellValue("");
 			}
 			if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
-			    writeRow.createCell(2).setCellValue(row.getCell(2).toString());
+				if(!fname.endsWith("xlsx")){
+					createExcelsheet.addValidationData(getDropDownListForCell(Constants.COUNTRY_DROPDOWN,2));
+				}else{
+					createExcelsheet.addValidationData(getXssfDropDownlist(Constants.COUNTRY_DROPDOWN,2,createExcelsheet));
+				}
+				
+				writeRow.createCell(2).setCellValue(row.getCell(2).toString());
+				
+				
+				writeRow.createCell(2).setCellValue(row.getCell(2).toString());
 			} else {
 				 writeRow.createCell(2).setCellValue("");
 			}
@@ -898,6 +914,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			realSheet = setCLirntTemplateHeaders(realSheet);
 			HSSFSheet hidden = workbook.createSheet("hidden");
 			String[] vendorsList = getClientList(orgLocationId);
+//			String[] ownersList = getOwnerList(orgLocationId,Long.valueOf(Constants.TAB_VENDOR));
 			for (int i = 0, length= vendorsList.length; i < length; i++) {
 			   String name = vendorsList[i];
 			   HSSFRow row = hidden.createRow(i);
@@ -915,6 +932,15 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 				 realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_CONTACTS_STATUS_DROPDOWN,5,"xls"));
 				 realSheet.addValidationData(validation);
 			 }
+//			 if(ownersList.length > 0){
+////				 namedCell.setRefersToFormula("hidden!$G$1:$G$" + ownersList.length);	 
+////				 DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
+////				 CellRangeAddressList addressList = new CellRangeAddressList(1,500,0,0);
+////				 HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
+////				 workbook.setSheetHidden(1, true);
+//				 realSheet.addValidationData(getDropDownListForCell(ownersList,6,"xls"));
+////				 realSheet.addValidationData(validation);
+//			 }
 			 File file = new File("clients_contacts_Import.xls");
 			 FileOutputStream stream = new FileOutputStream(file);
 			 workbook.write(stream);
@@ -957,6 +983,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			realSheet = setTemplateHeaders(realSheet);
 			HSSFSheet hidden = workbook.createSheet("hidden");
 			String[] vendorsList = getVendorsList(orgLocationId);
+//			String[] ownersList = getOwnerList(orgLocationId,Long.valueOf(Constants.TAB_VENDOR));
 			for (int i = 0, length= vendorsList.length; i < length; i++) {
 			   String name = vendorsList[i];
 			   HSSFRow row = hidden.createRow(i);
@@ -974,12 +1001,43 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 				 realSheet.addValidationData(getDropDownListForCell(Constants.VENDOR_CONTACTS_STATUS_DROPDOWN,5,"xls"));
 				 realSheet.addValidationData(validation);
 			 }
+			 
+//			 for (int j = 0, length= ownersList.length; j < length; j++) {
+//				   String ownerName = ownersList[j];
+//				   System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++"+ownerName);
+//				   HSSFRow row1 = hidden.createRow(j);
+//				   HSSFCell cell1 = row1.createCell(6);
+//				   cell1.setCellValue(ownerName);
+//				 }
+			 
+//			 if(ownersList.length > 0){
+//				 namedCell.setRefersToFormula("hidden!$G$2:$G$" + ownersList.length);	 
+//				 DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
+//				 CellRangeAddressList addressList = new CellRangeAddressList(1,500,6,6);
+//				 HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
+//				 workbook.setSheetHidden(1, true);
+////				 realSheet.addValidationData(getDropDownListForCell(Constants.VENDOR_CONTACTS_STATUS_DROPDOWN,5,"xls"));
+//				 realSheet.addValidationData(validation);
+//			 }	
+
 			 File file = new File("vendors_contacts_Import.xls");
 			 FileOutputStream stream = new FileOutputStream(file);
 			 workbook.write(stream);
 			 stream.close();
 			 return file;
 		}
+		
+
+//		private String[] getOwnerList(Long orgLocationId, Long vendortab) throws Exception {
+//			List<String> ownerList = new ArrayList<>();
+//			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationId,vendortab);
+//			for(User usr : userList){
+//				ownerList.add(usr.getEmail());
+//			}
+//			String [] ownersList = ownerList.toArray(new String[ownerList.size()]);
+//			 return ownersList;
+//		}
+		
 		private HSSFSheet setTemplateHeaders(HSSFSheet sheet) {
 			String headers[] = Constants.VENDOR_CONTACTS_HEADERS;
 			Row excelHeader = sheet.createRow(0);
@@ -1029,4 +1087,5 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			return finalName; 
 			
 		}
+		
 }
