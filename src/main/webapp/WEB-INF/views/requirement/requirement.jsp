@@ -1061,7 +1061,7 @@ $(document).ready(function () {
 		validateJobId();
 		$('#addClient').empty();
 		$('#addContact').empty();
-		$('#addTeam').empty();
+		//$('#addTeam').empty(); /* commented by Venkat Kesav because of issue #2673 */ 
 		
 		var validationSettings = {
 		        errorMessagePosition : 'element',

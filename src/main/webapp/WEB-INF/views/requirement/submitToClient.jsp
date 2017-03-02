@@ -54,6 +54,7 @@ function submitToClient(requirementId){
 	           result = result + '           <th>Applied on</th>';
 	           result = result + '           <th>Rate</th>';
 	           result = result + '           <th>Submission Rate</th>';
+	           result = result + '           <th>Rate Per</th>';
 	           result = result + '           <th>Source</th>';
 	           result = result + '           <th>Experience</th>';
 	           result = result + '         </tr>';
@@ -118,6 +119,18 @@ function submitToClient(requirementId){
 				       else{
 				    	   result = result + '<td><div><input type="text" class="form-control" onkeypress="validateRate(event,'+report.id+')" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value=""></div></td>';
 			    	     }
+						
+						result = result + '<td><select class="selct-picker" id="submissionRateType'+report.id+'" name="submissionRateType" field-name="Rate Type" data-validation-optional="true">';
+						result = result + '<option value="">Rate Per</option>';
+						result = result + '<option value="Hourly">Hourly</option>';
+						result = result + '<option value="Weekly">Weekly</option>';
+						result = result + '<option value="Bi-weekly">Bi-weekly</option>';
+						result = result + '<option value="Semi-Monthly">Semi-Monthly</option>';
+						result = result + '<option value="Monthly">Monthly</option>';
+						result = result + '<option value="Bi-Monthly">Bi-Monthly</option>';
+						result = result + '<option value="Yearly">Yearly</option>';
+						result = result + ' </select></td>';
+			           
 			           
 			           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
 			        	   result = result + '<td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
@@ -309,11 +322,15 @@ function addEmailtemplate(requirementId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 		 var selectedShortlists = [];
 		 var selectedShortlistsRate = [];
+		 var selectedShortlistsRatePer = [];
 		 $("input[name='shortlist[]']:checked").each( function (i) {
 			 selectedShortlists[i] = $(this).val();
 			 var rateId = $(this).val();
 			 var selectedRate = $("#submissionRate"+rateId).val();
 			 selectedShortlistsRate[i] = selectedRate;
+			 var rateIdper = $(this).val();
+			 var selectedRatePer =  $("#submissionRateType"+rateIdper).val();
+			 selectedShortlistsRatePer[i] = selectedRatePer;
 		});
 		 if(selectedShortlists.length >0){
 		 $.ajax({ 
@@ -404,7 +421,7 @@ function addEmailtemplate(requirementId){
 					result = result +'				<div class="col-md-6">';
 					result = result +'					<div class="pull-right">';
 					result = result +'						<button type="button" id="sendMail"';
-					result = result +'							class="btn btn-sm btn-success" onclick="submitToClientMail(\''+selectedShortlists+'\',\''+json.id+'\',\''+selectedShortlistsRate+'\');">';
+					result = result +'							class="btn btn-sm btn-success" onclick="submitToClientMail(\''+selectedShortlists+'\',\''+json.id+'\',\''+selectedShortlistsRate+'\',\''+selectedShortlistsRatePer+'\');">';
 					result = result +'							<i class="fa fa-envelope-o"></i>&nbsp;Send</button>';
 					result = result +'						<button type="button" class="btn btn-sm btn-default" onclick="cancelSubmit();">';
 					result = result +'							<i class="fa fa-times" ></i>&nbsp;Cancel';
@@ -544,7 +561,7 @@ function addAttachment(){
 
 
 <script>
-function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate){
+function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate,selectedShortlistsRatePer){
 	 if ($('#submitToClientMailTemplate').validate(false, validationSettings)){ 
 			var frm = $('#submitToClientMailTemplate').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -563,7 +580,7 @@ function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate){
 	      	         processData: false,
 	      	         contentType:false,
 	          	     dataType : 'json',
-					url : sourceleadUrl+"/submitToClient?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&selectedIds="+selectedIds+"&requirementId="+requirementId+"&selectedShortlistsRate="+selectedShortlistsRate,
+					url : sourceleadUrl+"/submitToClient?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&selectedIds="+selectedIds+"&requirementId="+requirementId+"&selectedShortlistsRate="+selectedShortlistsRate+"&selectedShortlistsRatePer="+selectedShortlistsRatePer,
 					success : function(result) {
 
 						$(".submitnew-wrap").removeClass("submitnew-wrap_active");
