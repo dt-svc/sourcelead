@@ -345,6 +345,7 @@ function cancelPop(){
         var jsonStringData = encodeURIComponent(con2);
         if( myArray.length > 0){
             if(submitTemplate){
+            	$("#save_button").attr("disabled", "disabled");
             	$( "#save_button" ).addClass('button').val('Processing..');
             	  $.ajax({
           	    	type: "POST",

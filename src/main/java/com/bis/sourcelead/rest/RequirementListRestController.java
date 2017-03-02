@@ -8,24 +8,16 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -183,7 +175,12 @@ public class RequirementListRestController {
 			
 			for(Requirement requirement : requirementList){
 				Boolean isLoginUserAsTeamMember =  requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirement.getId(), user.getId());
-				requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
+				//assign to member role is admin show Status dropdown other then that disable dropdown in list
+				if(isLoginUserAsTeamMember){
+                    if(!userRoleName.equalsIgnoreCase(Constants.ROLE_ADMIN)){
+                        requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
+                    }
+              }				
 				requirement.setPostedDateStr(Constants.DF_DMY.format(requirement.getCreatedDate()));
 				int totalApplicatsCountForRequirement = 0;
 				totalApplicatsCountForRequirement = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(loginOrgLocation,requirement.getId(),user,userRoleName);

@@ -1418,11 +1418,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public void storeClientSubmissionWithEmailPreview(Long requirementId, User user, OrgLocations loginOrgLocation,String submissionIds, Org org, JSONObject jsonData,Map files,String selectedShortlistsRate) throws Exception {
-		
+	public void storeClientSubmissionWithEmailPreview(Long requirementId, User user, OrgLocations loginOrgLocation,String submissionIds, Org org, JSONObject jsonData,Map files,String selectedShortlistsRate,String selectedShortlistsRatePer) throws Exception {
 		 String requirementName = null;
 		 String fullName = null;
 		 String[] submissionId = submissionIds.split(",");
+		 String[] submissionratePer = selectedShortlistsRatePer.split(",");
 		 String[] clientShortlistsRate = selectedShortlistsRate.split(",");
    	     Requirement requirement = requirementDao.getRequirementByRequirementId(requirementId);
 		 requirement.setId(requirementId);
@@ -1452,7 +1452,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    			 clientSubmission.setOrgLocations(requirement.getParentRequirement().getOrgLocationId());
        	 }
    		 else if(requirement.getParentRequirement() == null && requirement.getIsClientJob() != null &&  requirement.getIsClientJob().equalsIgnoreCase("Y")){
-   			 //clientSubmission.setRequirement(requirement);
+   			// clientSubmission.setRequirement(requirement);
    			 if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
    				clientSubmission.setOrgLocations(requirement.getClientId().getResponderLocationId());
    			 }else if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
@@ -1499,7 +1499,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 
    		 clientSubmission.setSubmissionTemplateJsonStringValue(jsonArray.toString());
    		 
-   		 StringBuilder sb = new StringBuilder();
+   		 
    		 clientSubmission.setScore(submission.getScore());
    		 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
    		 clientSubmission.setVendorLocationId(loginOrgLocation);
@@ -1507,12 +1507,6 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 clientSubmission.setCreatedDate(new Date());
    		 clientSubmission.setCreatedBy(user.getUserCode());
    		 clientSubmission.setUpdatedDate(commonUtil.currentDate());
-   		 if(user.getFirstName()!=null && user.getLastName() !=null){
-   			sb.append(user.getFirstName()).append(" ").append(user.getLastName());
-   		 }else{
-   			sb.append(user.getFirstName());
-   		 }
-   		clientSubmission.setCreatedUser(sb.toString());
    		 clientSubmission = requirementSubmissionDao.storeRequirementSubmission(clientSubmission);
    		 
    		 
@@ -1521,9 +1515,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 rateNegotiation.setRequirementsubmissionId(clientSubmission);
 		 if(clientShortlistsRate.length >0){
 			 String clientRate = clientShortlistsRate[i];
+			 String clientRatePer = submissionratePer[i];
 			 rateNegotiation.setExpectedRate(clientRate);
+			 rateNegotiation.setExpectedRateType(clientRatePer);
 		 }
-		      rateNegotiation.setExpectedRateType("Yearly");
 			 rateNegotiation.setRateInitiatorType(SubmissionRateStatus.VENDOR);
 			 rateNegotiation.setInitiatorOrgLocationId(loginOrgLocation);
 			 rateNegotiation.setRateReason("");
