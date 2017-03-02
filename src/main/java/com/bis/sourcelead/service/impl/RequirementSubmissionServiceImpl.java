@@ -1419,7 +1419,6 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 
 	@Override
 	public void storeClientSubmissionWithEmailPreview(Long requirementId, User user, OrgLocations loginOrgLocation,String submissionIds, Org org, JSONObject jsonData,Map files,String selectedShortlistsRate,String selectedShortlistsRatePer) throws Exception {
-		
 		 String requirementName = null;
 		 String fullName = null;
 		 String[] submissionId = submissionIds.split(",");
@@ -1453,7 +1452,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    			 clientSubmission.setOrgLocations(requirement.getParentRequirement().getOrgLocationId());
        	 }
    		 else if(requirement.getParentRequirement() == null && requirement.getIsClientJob() != null &&  requirement.getIsClientJob().equalsIgnoreCase("Y")){
-   			 //clientSubmission.setRequirement(requirement);
+   			// clientSubmission.setRequirement(requirement);
    			 if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
    				clientSubmission.setOrgLocations(requirement.getClientId().getResponderLocationId());
    			 }else if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
