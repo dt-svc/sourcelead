@@ -516,6 +516,7 @@ function pagination(){
      	}
 		
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 
