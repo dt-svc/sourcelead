@@ -1849,7 +1849,8 @@ public class TimesheetRestController {
 		@RequestMapping(value = "/notifyReopenTimeSheet", method = RequestMethod.POST)
 		public @ResponseBody void notifyReopenTimeSheet(@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
 				@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,
-				@RequestParam(value="reason", required=false) String reason, HttpServletRequest request) throws Exception {
+				@RequestParam(value="reason", required=false) String reason,
+				@RequestParam(value="totalHours", required=false) Float totalHours, HttpServletRequest request) throws Exception {
 				
 			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -1870,7 +1871,7 @@ public class TimesheetRestController {
 				
 				    //send mail & notification logic
 				  	if(isSuperUser.equalsIgnoreCase(Constants.NO)){
-				  		submissionApproverHierarchyService.sendReopenTimeSheetMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency);
+				  		submissionApproverHierarchyService.sendReopenTimeSheetMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,totalHours);
 				  	}
 				  	
 				}

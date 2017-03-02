@@ -139,7 +139,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	}
 	
 	@Override
-	public void sendReopenTimeSheetMail(Long projectMemberId,String reason, User loginUser, OrgLocations orgLocations, String timesheetFrequency) throws Exception {
+	public void sendReopenTimeSheetMail(Long projectMemberId,String reason, User loginUser, OrgLocations orgLocations, String timesheetFrequency, Float totalHours) throws Exception {
 		
 			OrgLocations ol = orgLocationsDao.getOrgLocations(orgLocations.getId());
 			 if(null != ol && null != ol.getUser()){
@@ -150,7 +150,9 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 
 				 emailMessage.setFromEmail(loginUser.getEmail());
 				 emailMessage.setCreatedBy(loginUser.getUserCode());
-				 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+				 emailMessage.setFromName(loginUser.getFullName());
+				 
+				 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 				 
 				 ProjectMembers projectMembers = projectMembersDao.getProjectMemberById(projectMemberId);
 				 
@@ -160,13 +162,14 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 
 				//setting the class filed values
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
-				 globalVarsMap.put("superUserName",ol.getUser().getFirstName());
-				 globalVarsMap.put("employeeName",projectMembers.getEmployee().getUser().getFirstName());
-				 globalVarsMap.put("managerName",loginUser.getFirstName());
+				 globalVarsMap.put("superUserName",ol.getUser().getFullName());
+				 globalVarsMap.put("employeeName",projectMembers.getEmployee().getUser().getFullName());
+				 globalVarsMap.put("managerName",loginUser.getFullName());
 				 globalVarsMap.put("projectName", projectMembers.getProjects().getProjectName());
 				 globalVarsMap.put("frequencyType",projectMembers.getProjects().getInvoiceFrequency());
-				 globalVarsMap.put("frequencyPeriod",weekStartDate+" TO "+weekEndDate);
-				 globalVarsMap.put("totalHours","100");
+				 StringBuilder emailMsgBuilder = new StringBuilder();
+				 globalVarsMap.put("frequencyPeriod",emailMsgBuilder.append(weekStartDate).append(" TO ").append(weekEndDate).toString());
+				 globalVarsMap.put("totalHours",totalHours.toString());
 				 globalVarsMap.put("reason",reason);
 				 
 				 StringBuilder acceptBuilder = new StringBuilder();
@@ -214,15 +217,18 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 
 				 emailMessage.setFromEmail(loginUser.getEmail());
 				 emailMessage.setCreatedBy(loginUser.getUserCode());
-				 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+				 emailMessage.setFromName(loginUser.getFullName());
+				 
+				 
+				 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 				 
 				 ProjectMembers projectMembers = projectMembersDao.getProjectMemberById(projectMemberId);
 				 
 				//setting the class filed values
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
-				 globalVarsMap.put("superUserName",loginUser.getFirstName());
-				 globalVarsMap.put("employeeName",projectMembers.getEmployee().getUser().getFirstName());
-				 globalVarsMap.put("managerName",loginUser.getFirstName());
+				 globalVarsMap.put("superUserName",loginUser.getFullName());
+				 globalVarsMap.put("employeeName",projectMembers.getEmployee().getUser().getFullName());
+				 globalVarsMap.put("managerName",reopenedUser.getFullName());
 				 globalVarsMap.put("projectName", projectMembers.getProjects().getProjectName());
 				 globalVarsMap.put("reason",reason);
 				 

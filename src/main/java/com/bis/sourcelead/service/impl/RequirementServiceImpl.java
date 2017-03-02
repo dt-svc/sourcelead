@@ -1748,6 +1748,15 @@ public class RequirementServiceImpl implements RequirementService {
 		
 	}
 	
+	
+	@Override
+	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(Long orgLocationId, String userType, Long userId, String userCode)
+			throws Exception {
+		
+			return requirementDao.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(orgLocationId, userType, userId, userCode);
+		
+	}
+	
 	@Override
 	public List<Requirement> getApproverRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode,String statusType)
 			throws Exception {
