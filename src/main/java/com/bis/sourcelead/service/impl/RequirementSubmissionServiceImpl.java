@@ -1418,11 +1418,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public void storeClientSubmissionWithEmailPreview(Long requirementId, User user, OrgLocations loginOrgLocation,String submissionIds, Org org, JSONObject jsonData,Map files,String selectedShortlistsRate) throws Exception {
-		
+	public void storeClientSubmissionWithEmailPreview(Long requirementId, User user, OrgLocations loginOrgLocation,String submissionIds, Org org, JSONObject jsonData,Map files,String selectedShortlistsRate,String selectedShortlistsRatePer) throws Exception {
 		 String requirementName = null;
 		 String fullName = null;
 		 String[] submissionId = submissionIds.split(",");
+		 String[] submissionratePer = selectedShortlistsRatePer.split(",");
 		 String[] clientShortlistsRate = selectedShortlistsRate.split(",");
    	     Requirement requirement = requirementDao.getRequirementByRequirementId(requirementId);
 		 requirement.setId(requirementId);
@@ -1515,9 +1515,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 rateNegotiation.setRequirementsubmissionId(clientSubmission);
 		 if(clientShortlistsRate.length >0){
 			 String clientRate = clientShortlistsRate[i];
+			 String clientRatePer = submissionratePer[i];
 			 rateNegotiation.setExpectedRate(clientRate);
+			 rateNegotiation.setExpectedRateType(clientRatePer);
 		 }
-		      rateNegotiation.setExpectedRateType("Yearly");
 			 rateNegotiation.setRateInitiatorType(SubmissionRateStatus.VENDOR);
 			 rateNegotiation.setInitiatorOrgLocationId(loginOrgLocation);
 			 rateNegotiation.setRateReason("");
