@@ -698,6 +698,7 @@ public class RequirementServiceImpl implements RequirementService {
 			       if(!requirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.DRAFT)){
 				 		
 					 mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
+					//send mail to sequential approver1 
 					 if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
 						  String approverNames = jsonObj.getString("sequentialApprover1");
 						  User approverUser = userService.getUserById(Long.parseLong(approverNames));
@@ -705,11 +706,11 @@ public class RequirementServiceImpl implements RequirementService {
 				     }
 			  
 					//send mail to sequential approver1 
-					if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
+					/*if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
 						  String approverNames = jsonObj.getString("sequentialApprover1");
 						  User approverUser = userService.getUserById(Long.parseLong(approverNames));
 						  approverEmailScenario(user, approverUser ,savedRequirement,location,orgLocations);
-					}
+					}*/
 					
 					//send mail to parallel approver
 					if(jsonObj.has("parallelApprover")){
