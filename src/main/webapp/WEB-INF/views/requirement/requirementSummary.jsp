@@ -278,7 +278,7 @@ function rejectedCount(requirementId){
 </script>
 
 <!-- Content Area -->
-<section class="content-wraper">
+<section class="content-wraper" onclick="popClose(); piplineexportClose();">
   <section class="content-header clearfix">
     <div class="pull-left">
       <h2>Requirement Summary</h2>
@@ -1380,7 +1380,7 @@ function requirementPipeline(requirementId,submissionType){
 							 result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
 							 result = result +'<span class="applicant_export">';
 							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-					            result = result +'<a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+					            result = result +'<a onClick="piplineexport();"class="Clo1"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
 					            result = result +'<div class="export_pipline" style="display:none">';
 					            result = result +'<ul>';
 					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');"><i class="fa fa-file-pdf-o text-danger"></i>&nbsp;&nbsp;PDF</li>';
@@ -1622,7 +1622,7 @@ function requirementPipelineDA(requirementId,submissionType){
 						   
 						   result = result +'<span class="applicant_export">';
 							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-					            result = result +'<a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+					            result = result +'<a onClick="piplineexport(); " class="Clo1"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
 					            result = result +'<div class="export_pipline" style="display:none">';
 					            result = result +'<ul>';
 					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
@@ -1855,7 +1855,7 @@ function requirementPipelineRS(requirementId,submissionType){
 						   
 						   result = result +'<span class="applicant_export">';
 							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-					            result = result +'<a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+					            result = result +'<a onClick="piplineexport();" class="Clo1"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
 					            result = result +'<div class="export_pipline" style="display:none">';
 					            result = result +'<ul>';
 					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
@@ -2082,7 +2082,7 @@ function requirementPipelineSL(requirementId,submissionType){
 				           
 						   result = result +'<span class="applicant_export">';
 							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-					            result = result +'<a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+					            result = result +'<a onClick="piplineexport();" class="Clo1"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
 					            result = result +'<div class="export_pipline" style="display:none">';
 					            result = result +'<ul>';
 					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
@@ -2322,7 +2322,7 @@ function requirementPipelineSC(requirementId,submissionType){
 						   
 						   result = result +'<span class="applicant_export">';
 							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-					            result = result +'<a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+					            result = result +'<a onClick="piplineexport();" class="Clo1"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
 					            result = result +'<div class="export_pipline" style="display:none">';
 					            result = result +'<ul>';
 					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
@@ -2540,7 +2540,7 @@ function requirementPipelineIN(requirementId,submissionType){
 						   
 						   result = result +'<span class="applicant_export">';
 							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-					            result = result +'<a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+					            result = result +'<a onClick="piplineexport();" class="Clo1"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
 					            result = result +'<div class="export_pipline" style="display:none">';
 					            result = result +'<ul>';
 					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
@@ -2708,7 +2708,7 @@ function requirementPipelineOffer(requirementId,submissionType){
 						   
 						   result = result +'<span class="applicant_export">';
 							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-					            result = result +'<a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+					            result = result +'<a onClick="piplineexport();" class="Clo1"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
 					            result = result +'<div class="export_pipline" style="display:none">';
 					            result = result +'<ul>';
 					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
@@ -2897,7 +2897,7 @@ function requirementPipelineRejected(requirementId,submissionType){
 						  
 						   result = result +'<span class="applicant_export">';
 							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-					            result = result +'<a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+					            result = result +'<a onClick="piplineexport();" class="Clo1"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
 					            result = result +'<div class="export_pipline" style="display:none">';
 					            result = result +'<ul>';
 					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
@@ -3087,26 +3087,51 @@ function documentpaginationRejected(){
 <script>
 function rejectApplicant(submissionId,requirementId,submissionType){
 	$("#reasonForApplicantDiv").empty()
+	var subId = submissionId;
+	var reqId = requirementId;
+	var subType = submissionType;
 	var selectBox = $('#rejectApplicantSelectspocState'+submissionId).val();
     if(selectBox != "Status"){
     	var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
-		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"	   <div id='remove_user_pop"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
+// 		result = result +"<form id='myForm'>";
 		result = result +"		<p>Applicant reject message here</p>";
 		result = result +"		<textarea  id='reasonForReject' name='reasonForReject'  placeholder='Comments here'></textarea>";
 		result = result + ' <div id="reasonForApplicantDiv"/>';
-		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveRejectApplicantReason("+submissionId+","+requirementId+",\""+submissionType+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelRejectApplicant();'></b>";
+		result = result +"		<input id='saveReason' type='button' value='Submit' onclick='saveRejectApplicantReason("+subId+","+reqId+",\""+subType+"\");'><input class='u_can_color' type='button' id='saveReasonCancel' value='Cancel' onClick='cancelRejectApplicant("+subId+","+reqId+",\""+subType+"\");'>";
+// 		result = result +"</form>";
 		result = result +"	</div>";
 		$("#popUp").append(result);
-		$("#remove_user_pop").slideDown(200);
+		$("#remove_user_pop"+submissionId).slideDown(200);
 		$(".project_inn_mask").fadeIn(200);
     }
 }
 </script>
 
 <script type="text/javascript">
-function cancelRejectApplicant(){ 
-	$("#remove_user_pop, .project_inn_mask").fadeOut(200);
+function cancelRejectApplicant(submissionId,requirementId,submissionType){ 
+	$("#remove_user_pop"+submissionId).fadeOut(200);
+	$(".project_inn_mask").fadeOut(200);
+	/* $("#remove_user_pop, .project_inn_mask").fadeOut(200); */
+	if(submissionType == 'all'){
+		requirementPipeline(requirementId,submissionType);
+	}else if(submissionType == 'DUPLICATE_APPLICANTS'){
+		requirementPipelineDA(requirementId,submissionType);
+	}else if(submissionType == 'REQUEST_SENT'){
+		requirementPipelineRS(requirementId,submissionType);
+	}else if(submissionType == 'SHORTLIST'){
+		requirementPipelineSL(requirementId,submissionType);
+	}else if(submissionType == 'INTERVIEW'){
+		requirementPipelineIN(requirementId,submissionType);
+	}else if(submissionType == 'OFFERMADE'){
+		requirementPipelineOffer(requirementId,submissionType);
+	}else if(submissionType == 'REJECTED'){
+		requirementPipelineRejected(requirementId,submissionType);
+	}else if(submissionType == 'SUBMIT_TO_CLIENT'){
+		requirementPipelineSC(requirementId,submissionType);
+	}
+	
 };
 </script>
 
@@ -3556,6 +3581,12 @@ function getActions(){
 	 	e.stopPropagation();
  	}); */	
 }
+function popClose(){
+	$(".action-pop").hide();
+	$(".action, .action-pop").click(function(e){
+	 	e.stopPropagation();
+ 	});	
+}
 </script>
 
 <script>
@@ -3883,12 +3914,13 @@ function piplineexport(){
 	$(".export_pipline").toggle();
 	 $(".action-pop").slideUp(200);	
 };
-/* $("#pipline-exportpop").click(function(){
-	$("#export_pipline").show();
-	});*/
-$(".export_pipline").click(function(e){
- 	e.stopPropagation();
-	});
+
+function piplineexportClose(){
+	$(".export_pipline").hide();
+	$(".Clo1, .export_pipline").click(function(e){
+	 	e.stopPropagation();
+ 	});	
+}
 </script>
 <script>
 //inline-edit pop
