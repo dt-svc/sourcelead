@@ -3905,9 +3905,27 @@ function getRateListDiv(submissionId, candidateId){
           		 else if (data.indexOf('exception') >= 0) {
           			 location.replace(sourceleadUrl+"/errorPage");
           		 }else{
+          			var expectedRate = json[0].expectedRate;
+          			if(expectedRate != null && expectedRate != '' && expectedRate != 'undefined'){
+          				expectedRate = expectedRate;
+          			}else{
+          				expectedRate = ""
+          			}
+          			var expectedRateType =json[0].expectedRateType;
+          			if(expectedRateType != null && expectedRateType != '' && expectedRateType != 'undefined'){
+          				expectedRateType = expectedRateType;
+          			}else{
+          				expectedRateType ="";
+          			}
+          			var expectedRatePer =json[0].expectedRatePer;
+          			if(expectedRatePer != null && expectedRatePer != '' && expectedRatePer != 'undefined'){
+          				expectedRatePer = expectedRatePer;
+          			}else{
+          				expectedRatePer = "";
+          			}
           			     var result = "";
       			         result = result + '<i class="fa fa-times text-danger close-ratepop" title="closediv" onClick="closeratediv();"></i>';
-      			         result = result + '<p><strong>Rate Negotiation History</strong></p>';
+      			         result = result + '<p><strong>Rate Negotiation History </strong> <strong>&nbsp;&nbsp;Expected Rate</strong> :'+expectedRateType+' &nbsp; '+expectedRate+'  &nbsp; '+expectedRatePer+'</p>';
          			     result = result + '<section class="tbl-scroll require_wrap_table">';
 	                     result = result + '  <table>';
 	                     result = result + '    <thead>';

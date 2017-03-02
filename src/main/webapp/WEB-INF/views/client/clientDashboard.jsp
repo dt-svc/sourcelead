@@ -895,6 +895,7 @@ function pagination(){
      	}
 		
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -1406,6 +1407,7 @@ function pagination1(){
      		"sSearch": ""
      	}
     })
+    $(".dataTables_empty").html("");
 }
 </script>
 

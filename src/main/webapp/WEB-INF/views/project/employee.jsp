@@ -749,9 +749,9 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
    result = result +'	</div>';
    
    
-   result = result +'<div class="form-group">';
-   result = result +'<label class="col-lg-3">Start date<span <span class="text-danger">*</span></label>';
-   result = result +'<div class="col-lg-9 positionRelative">';
+   result = result +'<div class="form-group" >';
+   result = result +'<label class="col-lg-3" >Start date<span <span class="text-danger">*</span></label>';
+   result = result +'<div class="col-lg-9 positionRelative" id="empDatePicker">';
    
    result = result +'<input type="text" class="form-control calendar" readonly="readonly" placeholder="DD/MM/YYYY" id="Re-StartDate" name="Re-StartDate" field-name="Start Date" data-validation="required">';
 
@@ -787,10 +787,12 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 		  minDate:endDate,
 		  maxDate:projectEndDateStr,
 	      onSelect: function (selected) {
+	    	    removevalidation();
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() + 1);
 	            $("#Re-EndDate").datepicker("option", "minDate", dt);
 	        }
+	  
 	  });
 	  
 	  $('#Re-EndDate').datepicker({
@@ -816,6 +818,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() + 1);
 	            $("#Re-EndDate").datepicker("option", "minDate", dt);
+	            removevalidation();
 	        }
 	  });
 	  
@@ -831,12 +834,18 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() - 1);
 	            $("#Re-StartDate").datepicker("option", "maxDate", dt);
+	            removevalidation();
 	        }
 	  });
   }	  
    
 }
 
+</script>
+<script>
+function removevalidation(){
+	$('#empDatePicker').find('p.jquery_form_error_message').remove();	
+}
 </script>
 
 <script type="text/javascript">

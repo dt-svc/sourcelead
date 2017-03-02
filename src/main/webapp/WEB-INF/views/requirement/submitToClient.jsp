@@ -114,10 +114,10 @@ function submitToClient(requirementId){
 			    	     }
 			           
 			           if(report.submitToClientRate != null && report.submitToClientRate != '' && report.submitToClientRate != 'undefined'){
-			        	   result = result + '<td><div><input type="text" class="form-control" onkeypress="validateRate(event,'+report.id+')" data-validation="validate_length length1-10" data-validation-optional="true" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value="'+report.submitToClientRate+'"></div></td>';
+			        	   result = result + '<td><div><input type="text" class="form-control quantity" maxlength="10" onkeypress="validateRate(event,'+report.id+')" data-validation="validate_length length1-10" data-validation-optional="true" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value="'+report.submitToClientRate+'"></div></td>';
 				           }
 				       else{
-				    	   result = result + '<td><div><input type="text" class="form-control" onkeypress="validateRate(event,'+report.id+')" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value=""></div></td>';
+				    	   result = result + '<td><div><input type="text" class="form-control quantity" maxlength="10" onkeypress="validateRate(event,'+report.id+')" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value=""></div></td>';
 			    	     }
 						
 						result = result + '<td><select class="selct-picker" id="submissionRateType'+report.id+'" name="submissionRateType" field-name="Rate Type" data-validation-optional="true">';
@@ -175,20 +175,31 @@ function submitToClient(requirementId){
 	
 }
 </script>
-
-<!-- this script is used for validate the rate, which accepts only numerics and upto 10 digits (Venkat Kesav) -->
 <script>
+$(document).on('keyup', '.quantity', function(event) {
+	   var v = this.value;
+	   if($.isNumeric(v) === false) {
+	        //chop off the last char entered
+	        this.value = this.value.slice(0,-1);
+	   }
+	   $('input.quantity').bind('cut copy paste', function (e) {
+		    e.preventDefault(); //disable cut,copy,paste
+		});
+	});
+</script>
+<!-- this script is used for validate the rate, which accepts only numerics and upto 10 digits (Venkat Kesav) -->
+<!-- <script>
 function validateRate(evt, rateId) {
   var theEvent = evt || window.event;
   var key = theEvent.keyCode || theEvent.which;
   key = String.fromCharCode( key );
   var regex = /[0-9]/;
   if( !regex.test(key) || $("#submissionRate"+rateId+"").val().length>9) {
+   if(theEvent.preventDefault) theEvent.preventDefault();
     theEvent.returnValue = false;
-    if(theEvent.preventDefault) theEvent.preventDefault();
   }
 }
-</script>
+</script> -->
 
 <script>
 function pagination(){  
