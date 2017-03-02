@@ -205,7 +205,6 @@
                  <option>C2C</option>
                  <option>W-2</option>
                  <option>C2H</option>
-                 <option>Contract</option>
                  <option>Part Time</option>
                  <option>Full Time</option>
                  <option>Other</option>
@@ -433,59 +432,12 @@
      2.parameter : csrf token,con.
      3.ajax url implementation in CandidateRestController.
     --%>
-<script type="text/javascript">
-        var validationSettings = {
-            errorMessagePosition : 'element',
-            borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd' 
-            };
-</script> 
+ 
 <script type="text/javascript">
 	function storeCandidate() {
 		
-		var expectedRate = document.getElementById("expectedRate").value; 
-		 if(expectedRate != null && expectedRate != ""){
-			
-			 $('#rateType').removeAttr('data-validation-optional');
-			 $('#rateType').attr("data-validation","required"); 
-		 }else{
-		 $('#rateType').removeAttr('data-validation');
-		 $('#rateType').attr("data-validation-optional","true"); 
-		 }
-		 
-		 var rateType = document.getElementById("rateType").value; 
-		 if(rateType != null && rateType != ""){
-			 $('#expectedRate').removeAttr('data-validation-optional');
-			 $('#expectedRate').attr("data-validation","required"); 
-		 }else{
-			 $('#expectedRate').removeAttr('data-validation');
-			 $('#expectedRate').attr("data-validation-optional","true");
-			 $('#rateType').removeAttr('data-validation');
-			 $('#rateType').attr("data-validation-optional","true"); 
-		 }
-		 
-		 var currentRate = document.getElementById("currentRate").value; 
-			 if(currentRate != null && currentRate != ""){
-				
-				 $('#currentRateType').removeAttr('data-validation-optional');
-				 $('#currentRateType').attr("data-validation","required"); 
-			 }else{
-			 $('#currentRateType').removeAttr('data-validation');
-			 $('#currentRateType').attr("data-validation-optional","true"); 
-			 }
-		 
-		 var currentRateType = document.getElementById("currentRateType").value; 
-			if(currentRateType != null && currentRateType != ""){
-				$('#currentRate').removeAttr('data-validation-optional');
-				$('#currentRate').attr("data-validation","required"); 
-			}else{
-				$('#currentRate').removeAttr('data-validation');
-			 	$('#currentRate').attr("data-validation-optional","true"); 
-				$('#currentRateType').removeAttr('data-validation');
-			 	$('#currentRateType').attr("data-validation-optional","true"); 
-			}
-				
+		rateValidations();
+		
 		var validationSettings = {
 				errorMessagePosition : 'element',
 				borderColorOnError : '',
@@ -1063,5 +1015,60 @@ function getDesignationType(designationType){
 			  $("#designationOtherType").val('');
 		  }
 	}
+}
+</script>
+
+<!-- This script for Current Rate ,Rate Type,Expected Rate, Expected Rate Type validation checks -->
+<script>
+
+function rateValidations(){
+var rateType = document.getElementById("rateType").value; 
+if(rateType != null && rateType != ""){
+	 $('#expectedRate').removeAttr('data-validation-optional');
+	 $('#expectedRate').attr("data-validation","required"); 
+}else{
+	 $('#expectedRate').removeAttr('data-validation');
+	 $('#expectedRate').attr("data-validation-optional","true");
+	 $('#rateType').removeAttr('data-validation');
+	 $('#rateType').attr("data-validation-optional","true"); 
+} 
+
+var expectedRate = document.getElementById("expectedRate").value; 
+if(expectedRate != null && expectedRate != ""){
+	
+	 $('#rateType').removeAttr('data-validation-optional');
+	 $('#rateType').attr("data-validation","required"); 
+}else{
+$('#rateType').removeAttr('data-validation');
+$('#rateType').attr("data-validation-optional","true"); 
+}
+
+
+
+var currentRateType = document.getElementById("currentRateType").value; 
+	if(currentRateType != null && currentRateType != ""){
+		$('#currentRate').removeAttr('data-validation-optional');
+		$('#currentRate').attr("data-validation","required"); 
+	}else{
+		$('#currentRate').removeAttr('data-validation');
+	 	$('#currentRate').attr("data-validation-optional","true"); 
+		$('#currentRateType').removeAttr('data-validation');
+	 	$('#currentRateType').attr("data-validation-optional","true"); 
+	} 
+
+
+var currentRate = document.getElementById("currentRate").value; 
+	 if(currentRate != null && currentRate != ""){
+		
+		 $('#currentRateType').removeAttr('data-validation-optional');
+		 $('#currentRateType').attr("data-validation","required"); 
+		 
+	 }else{
+		 
+			 $('#currentRateType').removeAttr('data-validation');
+			 $('#currentRateType').attr("data-validation-optional","true"); 
+	 
+	 }
+	 
 }
 </script>
