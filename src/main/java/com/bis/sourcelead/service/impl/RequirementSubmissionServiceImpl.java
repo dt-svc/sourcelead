@@ -1216,11 +1216,14 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 }else{
 				 globalVarsMap.put("applicantName",requirementSubmissionTemplateFields.getFirstName());
 			 }
-		 if(requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate())){
+		 if(null != requirement.getCurrencyCode() && requirementRateSubmissionNegotiation.getExpectedRate()!= null && !"".equalsIgnoreCase(requirementRateSubmissionNegotiation.getExpectedRate()) && null != requirementRateSubmissionNegotiation.getExpectedRateType() && !"".equalsIgnoreCase(requirementRateSubmissionNegotiation.getExpectedRateType())){
 			 StringBuilder rateBuild = new StringBuilder();
 			 globalVarsMap.put("requirementRate", rateBuild.append(requirement.getCurrencyCode()).append("-").append(requirementRateSubmissionNegotiation.getExpectedRate()).append("-").append(requirementRateSubmissionNegotiation.getExpectedRateType()).toString());
+			 }else if(null != requirement.getCurrencyCode() && null != requirementSubmissionTemplateFields.getExpectedCTC() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getExpectedCTC()) && null != requirementSubmissionTemplateFields.getExpectedRatePer() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getExpectedRatePer())){
+				 StringBuilder rateBuild = new StringBuilder();
+				 globalVarsMap.put("requirementRate",rateBuild.append(requirement.getCurrencyCode()).append(requirementSubmissionTemplateFields.getExpectedCTC()).append(" / ").append(requirementSubmissionTemplateFields.getExpectedRatePer()).toString());
 			 }else{
-				 globalVarsMap.put("requirementRate","--");
+				 globalVarsMap.put("requirementRate","---");
 			 }
 		 
 		 if(rejectreason != null && !"".equalsIgnoreCase(rejectreason)){
@@ -1452,7 +1455,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    			 clientSubmission.setOrgLocations(requirement.getParentRequirement().getOrgLocationId());
        	 }
    		 else if(requirement.getParentRequirement() == null && requirement.getIsClientJob() != null &&  requirement.getIsClientJob().equalsIgnoreCase("Y")){
-   			 clientSubmission.setRequirement(requirement);
+   			// clientSubmission.setRequirement(requirement);
    			 if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
    				clientSubmission.setOrgLocations(requirement.getClientId().getResponderLocationId());
    			 }else if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){

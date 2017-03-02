@@ -127,7 +127,7 @@ overflow-y:hidden;
 overflow-y:inherit !important;
 }
 .require_wrap_table {
-overflow-y:auto !important;
+overflow-y:inherit !important;
 
 .require_wrap_details_cta.require_uploadfile span{
 width:auto !important;
@@ -1383,8 +1383,8 @@ function requirementPipeline(requirementId,submissionType){
 					            result = result +'<a onClick="piplineexport();"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
 					            result = result +'<div class="export_pipline" style="display:none">';
 					            result = result +'<ul>';
-					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
-					            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');"><i class="fa fa-file-pdf-o text-danger"></i>&nbsp;&nbsp;PDF</li>';
+					            result = result +' <li onclick="exportPipelineToExcel('+requirementId+',\''+submissionType+'\');"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>';
 					            result = result +' </ul>';
 					            result = result +'</div>';
 					          '</sec:authorize>';
@@ -1590,6 +1590,7 @@ function requirementPipeline(requirementId,submissionType){
 function documentpagination(){  
     $('#requirementsPagination').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -1822,6 +1823,7 @@ function requirementPipelineDA(requirementId,submissionType){
 function documentpaginationDA(){  
     $('#requirementsPaginationDA').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -2049,6 +2051,7 @@ function requirementPipelineRS(requirementId,submissionType){
 function documentpaginationRS(){  
     $('#requirementsPaginationRS').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -2288,6 +2291,7 @@ function requirementPipelineSL(requirementId,submissionType){
 function documentpaginationSL(){  
     $('#requirementsPaginationSL').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -2503,6 +2507,7 @@ function requirementPipelineSC(requirementId,submissionType){
 function documentpaginationSC(){  
     $('#requirementsPaginationSC').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -2672,6 +2677,7 @@ function requirementPipelineIN(requirementId,submissionType){
 function documentpaginationIN(){  
     $('#requirementsPaginationIN').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -2861,6 +2867,7 @@ function requirementPipelineOffer(requirementId,submissionType){
 function documentpaginationOffer(){  
     $('#requirementsPaginationOffer').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -3064,6 +3071,7 @@ function requirementPipelineRejected(requirementId,submissionType){
 function documentpaginationRejected(){  
     $('#requirementsPaginationRejected').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -3345,7 +3353,7 @@ function requirementRecommendations(requirementId){
 		    
 		    result = result +'</div>';
 		    result = result +'</div>';
-		    result = result +'<div class="project_tabs_inn_table  clients_wrap_table">';
+		    result = result +'<div class="project_tabs_inn_table  clients_wrap_table" style="overflow: inherit;">';
 		    result = result +'<table id="recommendationTable" class="display" cellspacing="0" width="100%"">';
 		    result = result +'<thead>';
 		    result = result +'<tr>';
@@ -3526,6 +3534,7 @@ function requirementRecommendations(requirementId){
 function recommendationpagination(){  
     $('#recommendationTable').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -4155,6 +4164,7 @@ function closeratediv(){
 
 <script>
 function exportPipelineToExcel(requirementId,submissionType){
+	$('.export_pipline').hide();
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  var emptypilpeline = $("#emptyPipelinelist").val();
@@ -4180,6 +4190,7 @@ function exportPipelineToExcel(requirementId,submissionType){
 
  <script>
 function exportPipelineToPdf(requirementId,submissionType){
+	$('.export_pipline').hide();
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  var emptypilpeline = $("#emptyPipelinelist").val();
@@ -4785,6 +4796,186 @@ function cancelCustomize(){
 	$("#customizePopUp").hide();
 }
 </script>
+
+<!-- Script for Requirement recommendation profile saving , deleting -->
+
+<script type="text/javascript">
+function loadFile(event,candidateId){
+	
+		var output = document.getElementById('userImage');
+	    var uploadedImage = document.getElementById('uploadedImage').value;
+	    var sizeinbytes = document.getElementById('uploadedImage').files[0].size;
+	    document.getElementById("errorImage").style.display="none"; 
+	    
+	    var extension = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1).toLowerCase();
+	    
+	    if(extension != 'jpg'){
+	    	output.src = URL.createObjectURL(event.target.files[0]);
+	    	
+	    	var extensionName = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
+	 		var msg = "."+extensionName+" extension not supported";
+	 		recommendationAlertMessage(msg,candidateId);
+	    }else if(sizeinbytes > 200000){
+	    	output.src = URL.createObjectURL(event.target.files[0]);
+	 		var msg = "Image size should be less than 200 KB";
+	 		recommendationAlertMessage(msg,candidateId);
+	    }else{
+	    	output.src = URL.createObjectURL(event.target.files[0]);
+	    	var msg = "Do you want to save the picture.";
+	    	saveOrCancel(msg,candidateId);
+	   } 
+}
+</script>
+
+<script type="text/javascript">
+function recommendationAlertMessage(message,candidateId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>"+message+"</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='recommendationAlertCancel("+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='recommendationAlertCancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+	refreshImageBlock(candidateId);
+
+}
+</script>
+
+<script>
+function refreshImageBlock(candidateId){   
+	var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+          type : "POST",
+           url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+           success :function(data) {   
+                if(data != null && data != 'undefined' && data != ""){  
+                	 var json = JSON.parse(data);
+	                	 $("#candidateImageId").empty();
+	                	 var result = '';
+			             result = result+'<div class="well text-center clearfix">';
+						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
+						 result = result+'   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class=" img-responsive center-block img-circle">';
+						 result = result+'  <div class="btn-group uploadfile">';
+						 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
+						 result = result+'  <i class="fa fa-upload"></i></button>';
+						 result = result+'  <label class="btn btn-sm btn-primary">';
+					     result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event,\''+candidateId+'\')" style="display: none;">';
+					     result = result+'  </label>';
+					     if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
+						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
+							 result = result+'  <i class="fa fa-trash"></i></button>';
+					     } 
+						 result = result+'  </div>';
+						 result = result+'  </div>';
+						 
+						 
+						 result = result+'  </div>';
+						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not supported</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
+						 result = result+' </div>';
+						 $("#candidateImageId").append(result);
+                }
+         	},
+      }); 
+   }
+</script>
+
+<script type="text/javascript">
+function deleteImage(candidateId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure ?</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteProfileImage("+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='recommendationAlertCancel("+candidateId+");'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<script type="text/javascript">
+function deleteProfileImage(candidateId){   
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+		    type: "GET",
+            url: sourceleadUrl+"/deleteCandidateImage?candidateId="+candidateId,
+	        success: function(data) {
+	        	 var result = data;
+	        	 $("#popUp").empty();
+	        	 $(".project_inn_mask").fadeOut(200);
+	        	 refreshImageBlock(candidateId);
+	       },
+	        
+     }); 
+}
+</script>
+
+<script type="text/javascript">
+function saveOrCancel(message,candidateId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>"+message+"</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick='saveCandidateImage("+candidateId+");' ><input class='u_can_color' type='button'  value='Cancel' onClick='recommendationAlertCancel("+candidateId+");'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<script>
+function saveCandidateImage(candidateId){
+	            		
+          		var frm = $('#candidate_form').serializeFormJSON();
+              	var con = JSON.stringify(frm);
+  			    con = con.replace(/[{}]/g, ""); 
+  			    
+  		        var jsonData = encodeURIComponent(con);
+          		
+          		var sourceleadUrl ='${sourceleadUrl}';
+          		var form = $('#candidate_form')[0];
+           		var formData = new FormData(form);
+	            		
+	            $.ajax({
+	                	      type: "POST",
+	                	      data: formData,
+	                	      contentType : 'application/json; charset=utf-8',
+	                	      enctype: 'multipart/form-data',
+	            	          processData: false,
+	            	          contentType:false,
+	                	      dataType : 'json',
+	                	      
+	                      	  url: sourceleadUrl+"/saveCandidateProfile?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
+	                          success: function(result) {
+	                        	  recommendationAlertCancel(candidateId);
+	    			          },  
+	            });
+}
+</script> 
+
+<script>
+	function predefineProfileImage(imageId){   
+		$(imageId).attr('src','resources/images/userprofile-img.png');
+	}
+</script>
+
+<script type="text/javascript">
+function recommendationAlertCancel(candidateId){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+	refreshImageBlock(candidateId);
+}
+</script>
+
+<!-- Ends Script for Requirement recommendation profile saving , deleting -->
 
 <jsp:include page="addApplicant.jsp" />
 <jsp:include page="addInterview.jsp" />

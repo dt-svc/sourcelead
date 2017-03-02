@@ -897,15 +897,7 @@ function removeSkillPopUp(candidateId){
 <script type="text/javascript">
 	function upDateCandidate(candidateId) {
 	
-		var expectedRate = document.getElementById("expectedRate").value; 
-		 if(expectedRate != null && expectedRate != ""){
-			 $('#rateType').removeAttr('data-validation-optional');
-			 $('#rateType').attr("data-validation","required"); 
-		 }else{
-		 $('#rateType').removeAttr('data-validation');
-		 $('#rateType').attr("data-validation-optional","true"); 
-		 }
-		 
+		
 		 var rateType = document.getElementById("rateType").value; 
 		 if(rateType != null && rateType != ""){
 			 $('#expectedRate').removeAttr('data-validation-optional');
@@ -917,16 +909,15 @@ function removeSkillPopUp(candidateId){
 			 $('#rateType').attr("data-validation-optional","true"); 
 		 }
 		 
-		 var currentRate = document.getElementById("currentRate").value; 
-			 if(currentRate != null && currentRate != ""){
-				
-				 $('#currentRateType').removeAttr('data-validation-optional');
-				 $('#currentRateType').attr("data-validation","required"); 
-			 }else{
-			 $('#currentRateType').removeAttr('data-validation');
-			 $('#currentRateType').attr("data-validation-optional","true"); 
-			 }
-			 
+		var expectedRate = document.getElementById("expectedRate").value; 
+		 if(expectedRate != null && expectedRate != ""){
+			 $('#rateType').removeAttr('data-validation-optional');
+			 $('#rateType').attr("data-validation","required"); 
+		 }else{
+		 $('#rateType').removeAttr('data-validation');
+		 $('#rateType').attr("data-validation-optional","true"); 
+		 }
+		 
 		 var currentRateType = document.getElementById("currentRateType").value; 
 			if(currentRateType != null && currentRateType != ""){
 				$('#currentRate').removeAttr('data-validation-optional');
@@ -937,6 +928,18 @@ function removeSkillPopUp(candidateId){
 				$('#currentRateType').removeAttr('data-validation');
 			 	$('#currentRateType').attr("data-validation-optional","true"); 
 			}
+		 
+		 var currentRate = document.getElementById("currentRate").value; 
+			 if(currentRate != null && currentRate != ""){
+				
+				 $('#currentRateType').removeAttr('data-validation-optional');
+				 $('#currentRateType').attr("data-validation","required"); 
+			 }else{
+			 $('#currentRateType').removeAttr('data-validation');
+			 $('#currentRateType').attr("data-validation-optional","true"); 
+			 }
+			 
+		 
 			
 		var validationSettings = {
 		        errorMessagePosition : 'element',

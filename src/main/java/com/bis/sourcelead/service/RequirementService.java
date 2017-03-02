@@ -31,7 +31,7 @@ public interface RequirementService {
  
 	public Requirement addRequirement(Requirement requirement) throws Exception;
 	
-	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,User  user, String userRoleName) throws Exception;
+	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,Long clients,User  user, String userRoleName) throws Exception;
 	
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception;
 	
@@ -58,6 +58,8 @@ public interface RequirementService {
 	public Requirement getRequirementByParentRequirementId(Long requirementId) throws Exception;
 	
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode) throws Exception;
+	
+	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(Long orgLocationId, String userType, Long userId, String userCode) throws Exception;
 	
 	public List<Requirement> getApproverRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode,String statusType) throws Exception;
 	

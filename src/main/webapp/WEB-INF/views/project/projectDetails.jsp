@@ -373,7 +373,6 @@
 							var name = projrctmanager[0];
 							var id = projrctmanager[1];
 							var selected = '';
-							alert("json.relationId>>>>>>>"+managers);
 							if (json.relationId == id) {
 								selected = 'selected';
 								result = result + "<option value="+id+" "+selected+" >"+name+ "</option>";

@@ -120,7 +120,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,User user,String userRoleName) throws Exception {
+	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,Long clients,User user,String userRoleName) throws Exception {
 		 
 		Session session = this.sessionFactory.getCurrentSession();
 		//User user = userDao.getUserById(userId);
@@ -163,8 +163,19 @@ public class RequirementDaoImpl implements RequirementDao {
 			}
 		}
 		
+		String subQuery7 = "";
+		if(null != clients){
+			subQuery7 = "and requirement.clientId.id = :clients";
+			params.put("clients",clients);
+		}
 		
-		String whereCondition = subQuery;
+		String whereCondition = "";
+		if(null != subQuery7){
+			whereCondition = subQuery + subQuery7;
+		}else{
+			whereCondition = subQuery;
+		}
+		
 		
 		Query query = session.createQuery(from+" "+whereCondition+" ORDER BY requirement.id DESC");
 		for (String str : query.getNamedParameters())
@@ -340,6 +351,65 @@ public class RequirementDaoImpl implements RequirementDao {
 		return query.setCacheable(true).list();
 		
 	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(Long orgLocationId, String userType, Long userId, String userCode)
+			throws Exception {
+		 
+		Session session = this.sessionFactory.getCurrentSession();
+		User user = userDao.getUserById(userId);
+				
+		Map<String, Object> params = new HashMap<String,Object>();
+		
+		/*String subQueryRole = "";*/
+		String from = "from Requirement requirement left join fetch requirement.parentRequirement "; 
+		String subQuery = "";
+		if(!StringUtils.equalsIgnoreCase(userType, "ADMIN")){
+			
+			String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT'  ";
+			params.put("userId",userId);
+
+			String subQuery2 = "requirement.managerUserId.id = :managerUserId and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
+			params.put("managerUserId",userId);
+			
+			String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId)) and requirement.requirementSubmissionStatus <> 'DRAFT' and requirement.requirementSubmissionStatus <> 'SUBMITTED'  ";
+			params.put("userId",userId);
+			
+			if(subQuery1 != "" || subQuery2 != "" || subQuery3 !=""){
+				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+")  or ("+subQuery3+") ) ";
+				params.put("orgLocationId",orgLocationId);
+			}
+		}else{
+			String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where  ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT') ";
+			
+			String subQuery2 = "requirement.managerUserId.id = :managerUserId and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
+			params.put("managerUserId",userId);
+			
+			if(subQuery1 != "" || subQuery2 !=""){
+				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+")) ";
+				params.put("orgLocationId",orgLocationId);
+			}
+		}
+		
+		String whereCondition = subQuery;
+		Query query = session.createQuery(from+" "+whereCondition+" ORDER BY requirement.id DESC");
+		for (String str : query.getNamedParameters())
+        {
+			if(str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId")){
+				query.setLong(str, (long) params.get( str ));
+			}
+			else{
+				query.setParameter( str, params.get( str ) );
+			}
+        	
+        }
+		return query.setCacheable(true).list();
+		
+	}
+	
 	
 	@SuppressWarnings("unchecked")
 	@Override
