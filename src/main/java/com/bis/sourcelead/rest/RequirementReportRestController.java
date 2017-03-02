@@ -55,7 +55,7 @@ public class RequirementReportRestController {
 	 @RequestMapping(value = "/getRequirementReports")
 	 public String getRequirementListByOrgLocationID(@RequestParam(value="reportType", required=false) String reportType,HttpServletRequest request,HttpServletResponse response) throws Exception{
 
-		 String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		 /*String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 
 		    OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -98,7 +98,7 @@ public class RequirementReportRestController {
 				}
 			}
 			List<Requirement> requirementList = requirementReportService.getRequirementReports(userRoleName,orgLocation,user,filterDate);
-		 
+		 */
 			return null;
 		 
 	 }

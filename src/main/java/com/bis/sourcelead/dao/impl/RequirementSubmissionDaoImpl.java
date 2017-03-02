@@ -583,26 +583,61 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public Integer duplicateCandidateCountsByRequirementId(Long requirementId, User user,
 			OrgLocations loginOrgLocation) throws Exception {
-		Session session = this.sessionFactory.getCurrentSession();
-		    List<Long> candidatesCount = null;
+		  Session session = this.sessionFactory.getCurrentSession();
+//		    List<Long> candidatesCount = null;
 
-		    String subQuery = " and reqSub.candidate.email IN(select tempReqSub.candidate.email from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
-	 		Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
-	 		Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(user.getId(),loginOrgLocation.getId());
-			if(requirement.getManagerUserId() !=null){
-				if (isadmin && requirement.getManagerUserId().getId().longValue() !=user.getId().longValue()) {
-					String query = "select count(*) from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId "+subQuery+" ";
-					candidatesCount = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).setCacheable(true).list();
-				}	
+		  String subQuery = " and reqSub.candidate.email IN(select tempReqSub.candidate.email from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+		  
+		    Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
+			List<RequirementAssignTo> requirementAssignToList =  requirementAssignToService.getRequirementAssignToListByRequirementId(requirementId);
+			List<Long> candidatesCount = null;
+			Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(user.getId(),loginOrgLocation.getId());
+			
+			//to get all applicates list if login user is manager or admin
+			if (isadmin || requirement.getManagerUserId().getId().longValue() == user.getId().longValue() ) {
+				String query = "select count(*) from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId "+subQuery+" ";
+				candidatesCount = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).setCacheable(true).list();
 			}
-			if(requirement.getManagerUserId().getId() !=null){
-				if(requirement.getManagerUserId().getId().longValue() == user.getId().longValue()){
-					String query = "select count(*) from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId "+subQuery+" ";
-					candidatesCount = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).setCacheable(true).list();
+			//to get applicates list of the team lead and team submissions
+			
+			Boolean teamFlag = teamDao.getTeamOwnersListByUserIdAndRequirementId(user,loginOrgLocation.getId(),requirement.getId());
+			if(requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && teamFlag){
+				List<String> userCodes = new ArrayList<>();
+				for (RequirementAssignTo requirementAssignTo : requirementAssignToList) {
+					User usercode= userDao.getUserById(requirementAssignTo.getAssignUserId().getId());
+					userCodes.add(usercode.getUserCode());
+				}
+				String query = "select count(*) from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.createdBy IN (:usercode) and reqSub.requirement.id =:requirementId "+subQuery+" ";
+				candidatesCount = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setParameterList("usercode", userCodes).setLong("requirementId", requirementId).setCacheable(true).list();
+			}  
+			
+			
+			boolean flag = false;
+			for (RequirementAssignTo requirementAssignTo : requirementAssignToList) {
+				if(requirementAssignTo.getAssignUserId().getId().longValue() == user.getId().longValue()){
+					flag = true;
 				}
 			}
-			
-			Integer count = 0;
+			//to get applicates list of the team member 
+//			if(requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && flag && !teamFlag){
+//				String query = "select count(*) from RequirementSubmission reqSub where (reqSub.orgLocations.id =:loginOrgLocation or "
+//						+ "reqSub.sourceSubmission.id =:loginOrgLocation) and reqSub.createdBy =:usercode and reqSub.requirement.id =:requirementId "+submissionStages+" ";
+//				candidatesCount = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setString("usercode", user.getUserCode()).setLong("requirementId", requirementId).setCacheable(true).list();
+//			}
+			//to get applicates list of the team member 
+			if(requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && flag && !teamFlag){
+				String query = "select count(*) from RequirementSubmission reqSub left join fetch reqSub.requirement left join fetch "
+						+ "reqSub.candidate left join fetch reqSub.sourceSubmission "
+						+ "left join fetch reqSub.candidateResumes where (reqSub.orgLocations.id =:loginOrgLocation or "
+						+ "reqSub.sourceSubmission.id =:loginOrgLocation) and reqSub.createdBy =:usercode and reqSub.requirement.id =:requirementId "+subQuery+" ORDER BY reqSub.id DESC";
+				candidatesCount = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setString("usercode", user.getUserCode()).setLong("requirementId", requirementId).setCacheable(true).list();
+			}else if(!isadmin && requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && !flag && !teamFlag){
+				String query = "select count(*) from RequirementSubmission reqSub where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId and  reqSub.requirement.id  IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:userId) "+subQuery+" ORDER BY reqSub.candidateScore DESC ";
+				candidatesCount = session.createQuery(query).setLong("userId", user.getId()).setLong("loginOrgLocation", loginOrgLocation.getId()).setLong("requirementId", requirementId).setCacheable(true).list();
+
+			}
+		 
+	        Integer count = 0;
 			if(candidatesCount != null && !candidatesCount.isEmpty()){
 					count = candidatesCount.get(0).intValue();
 			}
