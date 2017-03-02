@@ -1264,6 +1264,8 @@ function cancel(candidateId){
             </div>
           </li>
           </sec:authorize>
+          
+           <!--  <li><a href="uploadCandidateForm"><i class="fa fa-upload"></i>&nbsp;Imports</a></li> -->
 	      
            <li id="filter2ApprovePop"><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter2ApprovedPop" class="approved_pop">
@@ -1719,7 +1721,9 @@ function savedCommentAndCount(candidateId){
     <script>
 	// Close Advanced Search
 		function closePop(){
-			$("div.cand-advsrch-popup").hide();
+			 $("div.cand-advsrch-popup").hide();
+			 clearCandidateSearchKeys();
+			 $('#expId').find('p.jquery_form_error_message').remove();
 		}
 		function openPop(){
 		  $("div.cand-advsrch-popup").toggle();
@@ -2029,6 +2033,10 @@ function getCities(){
 		    	   minMaxExperience();
 		       });
 		       
+		       $("#minExpYears").on('change', function (e) {
+		    	   minMaxExperience();
+		       });
+		       
 				for (var selector in config) {
 				  $(selector).chosen(config[selector]);
 				}
@@ -2244,7 +2252,6 @@ function minMaxExperience(){
 </script>
 
 <!-- This  clearCandidateSearchKeys() method for clear search data-->
-
 <script type="text/javascript">	
 	function clearCandidateSearchKeys(){
 		
@@ -2282,6 +2289,8 @@ function minMaxExperience(){
 	     
 	     $("#minExpYears").val(''); 
 	     $("#maxExpYears").val(''); 
+	     $('#expId').find('p.jquery_form_error_message').remove();
+	     
 	     $("#noticePeriod").empty(); 
 	     
 	     $("#country").val(''); 

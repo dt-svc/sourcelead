@@ -60,7 +60,6 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
-import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
@@ -73,7 +72,6 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
-import com.bis.sourcelead.service.RequirementReferService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
@@ -163,9 +161,6 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	
 	@Autowired
 	private UserService userService;
-	
-	@Autowired
-	RequirementReferService requirementReferService;
 	
 	@Override
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
@@ -2794,14 +2789,6 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			}
 			requirement.setUpdatedDate(new Date());
 			requirementDao.storeRequirement(requirement);
-			
-			 if(jsonObj.has("referId") && !isNullOrEmpty(jsonObj.getString("referId"))){
-				 RequirementRefer requirementRefer = requirementReferService.getRequirementReferById(Long.valueOf(jsonObj.getString("referId")));
-				 if(null != requirementRefer){
-					 requirementRefer.setReferStatus(Constants.REFER_JOB_APPLIED);
-					 requirementReferService.addRequirementRefer(requirementRefer);
-				 }
-			 }
 			
 			
 			sendEmailToProfessionalForAppliedJob(user, requirement);

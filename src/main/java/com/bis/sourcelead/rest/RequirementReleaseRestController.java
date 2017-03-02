@@ -22,11 +22,13 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.UserService;
@@ -65,11 +67,14 @@ public class RequirementReleaseRestController {
 	@Autowired
 	UserService userService;
 	
+	@Autowired
+	RecommendedCustomizeScoreService recommendedCustomizeScoreService;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
 	
+
 	/**
 	 * @author Venkat Kesav
 	 * this is method is using contacts List
@@ -417,9 +422,10 @@ public class RequirementReleaseRestController {
 		requirement.setUpdatedBy(orgSpoc.getVendorUser().getUserCode());
 		requirement.setCreatedBy(orgSpoc.getVendorUser().getUserCode());
 		
-		requirement.setJobTitle(parentRequirement.getJobTitle());
-		requirement.setJobType(parentRequirement.getJobType());
-		if(parentRequirement.getJobType().equalsIgnoreCase("Other") && null != parentRequirement.getJobType() &&  parentRequirement.getJobType() != "" &&  parentRequirement.getJobType() != "undefined"){
+		if(null != parentRequirement.getJobType()){
+			requirement.setJobType(parentRequirement.getJobType());	
+		}
+		if(null != parentRequirement.getJobType() && parentRequirement.getJobType().equalsIgnoreCase("Other") &&  parentRequirement.getJobType() != "" &&  parentRequirement.getJobType() != "undefined"){
 			requirement.setOtherJobType(parentRequirement.getOtherJobType());
 		}
 		requirement.setJobId(parentRequirement.getJobId());
@@ -471,7 +477,11 @@ public class RequirementReleaseRestController {
 		requirement.setUpdatedDate(commonUtil.currentDate());
 		
 		requirement.setId(null);
-		requirementService.addRequirement(requirement);
+        Requirement req= requirementService.addRequirement(requirement);
+		
+		//store recommended customizeScore
+	   RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScoreService.saveCustomizeScore(req);
+
 	}
 	
 	
