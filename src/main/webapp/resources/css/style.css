@@ -288,6 +288,7 @@ display: block;
 	clear:both;
 	display: inline-block;
     padding:15px;
+    width: 100%;
 }
 .viewTemplate .sjfb-field {
 	display: inline-block;

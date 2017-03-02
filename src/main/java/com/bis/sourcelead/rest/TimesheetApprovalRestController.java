@@ -369,7 +369,17 @@ public class TimesheetApprovalRestController {
                	        	   && Integer.parseInt(client) == projects.getOrgRelationId().getId()){
                	        		isSelected.append("selected='selected'");
                	        	}
-               	        	timesheetApprovalDiv.append("<option ").append(isSelected.toString()).append("  value='").append(projects.getOrgRelationId().getId()).append("'>").append(projects.getOrgRelationId().getResponderLocationId().getOrg().getOrgName()).append("</option>");
+               	        	
+               	        	if(null != projects.getOrgRelationId().getLocationId() && projects.getOrgRelationId().getLocationId().getId() != null && projects.getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+        						if(projects.getOrgRelationId().getResponderLocationId() != null){
+        							timesheetApprovalDiv.append("<option ").append(isSelected.toString()).append("  value='").append(projects.getOrgRelationId().getId()).append("'>").append(projects.getOrgRelationId().getResponderLocationId().getOrg().getOrgName()).append("</option>");
+        						}
+        					}
+        					if(null != projects.getOrgRelationId().getResponderLocationId() && null != projects.getOrgRelationId().getResponderLocationId().getId() && projects.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+        						if(projects.getOrgRelationId().getLocationId() != null){
+        							timesheetApprovalDiv.append("<option ").append(isSelected.toString()).append("  value='").append(projects.getOrgRelationId().getId()).append("'>").append(projects.getOrgRelationId().getLocationId().getOrg().getOrgName()).append("</option>");
+        						}
+        					}
                	        });
 							
                }
@@ -608,7 +618,24 @@ public class TimesheetApprovalRestController {
 						 timesheetApprovalDiv.append("   <div>");
 						 timesheetApprovalDiv.append(" </td>");
 					     timesheetApprovalDiv.append("	<td><div>").append(projectMember.getProjects().getProjectName()).append("</div></td>");
-					     timesheetApprovalDiv.append("	<td><div>").append(((projectMember.getProjects().getOrgRelationId() != null) ?projectMember.getProjects().getOrgRelationId().getResponderLocationId().getOrg().getOrgName() : "--")).append("</div></td>");
+					     
+					     if(null != projectMember.getProjects().getOrgRelationId()){
+					    	 if(null != projectMember.getProjects().getOrgRelationId().getLocationId() && projectMember.getProjects().getOrgRelationId().getLocationId().getId() != null && projectMember.getProjects().getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+		     						if(projectMember.getProjects().getOrgRelationId().getResponderLocationId() != null){
+		     							timesheetApprovalDiv.append("<td><div>").append(projectMember.getProjects().getOrgRelationId().getResponderLocationId().getOrg().getOrgName()).append("</div></td>");
+		     						}
+		     					}
+		     					if(null != projectMember.getProjects().getOrgRelationId().getResponderLocationId() && null != projectMember.getProjects().getOrgRelationId().getResponderLocationId().getId() && projectMember.getProjects().getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+		     						if(projectMember.getProjects().getOrgRelationId().getLocationId() != null){
+		     							timesheetApprovalDiv.append("<td><div>").append(projectMember.getProjects().getOrgRelationId().getLocationId().getOrg().getOrgName()).append("</div></td>");
+		     						}
+		     					}
+					     }else{
+					    	 timesheetApprovalDiv.append("<td><div>").append("--").append("</div></td>");
+					     }
+					     
+					     
+					     
 					     Float totalHours = 0f;
 					     Float estimatedTotalHours = 0f;
 					     SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(user.getId(),projectMember.getId(),actualStartDate,actualEndDate);
