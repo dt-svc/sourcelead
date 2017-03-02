@@ -19,12 +19,12 @@ function candidateHistory(candidateId){
     $("#history").empty();
     $("#history").append(result);
     
-    candidateCertificateList(candidateId);
+    candidateHistoryList(candidateId);
     
 }
 </script>
 <script>
-function candidateCertificateList(candidateId){
+function candidateHistoryList(candidateId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
