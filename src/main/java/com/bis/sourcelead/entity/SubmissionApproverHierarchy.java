@@ -75,6 +75,18 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	@Column(name = "STATUS")
 	private String status;
 	
+	@ManyToOne(fetch = FetchType.EAGER)
+   	@JoinColumn(name = "REOPENED_USER_ID", nullable = false)
+	private User reopenedUser;
+	
+	@Column(name = "REOPEN_REASON")
+	@Type(type="text")
+	private String reopenReason;
+	
+	@Column(name = "REOPEN_REJECTED_REASON")
+	@Type(type="text")
+	private String reopenRejectedReason;
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -214,6 +226,30 @@ public class SubmissionApproverHierarchy implements  Serializable{
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	
+	public User getReopenedUser() {
+		return reopenedUser;
+	}
+
+	public void setReopenedUser(User reopenedUser) {
+		this.reopenedUser = reopenedUser;
+	}
+
+	public String getReopenReason() {
+		return reopenReason;
+	}
+
+	public void setReopenReason(String reopenReason) {
+		this.reopenReason = reopenReason;
+	}
+
+	public String getReopenRejectedReason() {
+		return reopenRejectedReason;
+	}
+
+	public void setReopenRejectedReason(String reopenRejectedReason) {
+		this.reopenRejectedReason = reopenRejectedReason;
 	}
 
 	public String getRejectedReason() {

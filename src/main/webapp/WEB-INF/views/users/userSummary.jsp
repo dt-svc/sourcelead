@@ -201,7 +201,7 @@ $(document).ready(function(){
 				if(json.userState != null && json.userState != "" && json.userState != 'INACTIVE'){
 				    result = result + ' <div class="useredit">';
 				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_USER\')">'
-				    result = result + ' <a id="edit-userRole" onclick="getRoles('+json.roles.id+');" href="javascript:editUserRole();"><i class="fa fa-edit"></i>Edit Role</a>';
+				    result = result + ' <a id="edit-userRole" onclick="getRoles('+json.roles.id+');removeErrorMsg();" href="javascript:editUserRole();"><i class="fa fa-edit"></i>Edit Role</a>';
 				    '</sec:authorize>';
 				    
 				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_USER\')">'
@@ -377,6 +377,13 @@ $(document).ready(function(){
 	});
  }
 </script>
+
+<script type="text/javascript">
+function removeErrorMsg(){
+	$("editRole_form").validate().resetForm();
+}
+</script>
+
 
 <!--  Script for First Name displaying right corner  -->
 <script type="text/javascript">
