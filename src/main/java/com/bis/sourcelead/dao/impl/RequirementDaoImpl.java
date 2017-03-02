@@ -163,8 +163,24 @@ public class RequirementDaoImpl implements RequirementDao {
 			}
 		}
 		
+		String[] client = null;
+		if(clients != null){
+			client = clients.split(",");
+		}
+		String subQuery7 = "";
+		if (client != null && client[0] != null && client[0].length() > 0) {
+			for (String clnt : client) {
+				subQuery7 = "and requirement.clientId.id = " + clnt+"";
+			}
+		}
 		
-		String whereCondition = subQuery;
+		String whereCondition = "";
+		if(null != subQuery7){
+			whereCondition = subQuery + subQuery7;
+		}else{
+			whereCondition = subQuery;
+		}
+		
 		
 		Query query = session.createQuery(from+" "+whereCondition+" ORDER BY requirement.id DESC");
 		for (String str : query.getNamedParameters())

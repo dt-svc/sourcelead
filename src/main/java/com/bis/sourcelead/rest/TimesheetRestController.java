@@ -565,7 +565,7 @@ public class TimesheetRestController {
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()))){
 	        	//to show re-open reason
-        		if(null != sah.getReopenReason()){
+        		if(from.equalsIgnoreCase("approver") && null != sah.getReopenReason()){
         			timesheetEntriesDiv.append(" <i class='glyphicon glyphicon-comment rejectedHover'>");
         			timesheetEntriesDiv.append(" <div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>").append(sah.getReopenReason()).append("</div>");
 	        		timesheetEntriesDiv.append(" </i>");
@@ -617,8 +617,9 @@ public class TimesheetRestController {
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
 	        	timesheetEntriesDiv.append("<b class='proj_closed "+pullRightClass+"'>").append(submissionStatus).append("</b>");
-	        	timesheetEntriesDiv.append(" <i class='glyphicon glyphicon-comment rejectedHover' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'>");
-	        	timesheetEntriesDiv.append(" <div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>").append(sah.getRejectedReason()).append("</div>");
+	        	//timesheetEntriesDiv.append(" <i class='glyphicon glyphicon-comment rejectedHover' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'>");
+	        	timesheetEntriesDiv.append(" <i class='glyphicon glyphicon-comment rejectedHover'>");
+	        	timesheetEntriesDiv.append(" <div class='app_error_mes' id='rejectedMessage1"+projectMemberId+"'>").append(sah.getRejectedReason()).append("</div>");
 	        	timesheetEntriesDiv.append(" </i>");
 	        }
 	        return timesheetEntriesDiv;
@@ -1150,10 +1151,14 @@ public class TimesheetRestController {
 					  
 			    /*tabDiv.append("		            <div class='commentTime'><textarea placeholder='comments here...'></textarea></div>");*/	
 			   
-			    
+				  String readonly = "readonly='readonly'";
+				  if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue())) ){
+					  readonly = "";
+				  }
+					  
 			    if(ts != null && ts.getWeekcomments() != null && !ts.getWeekcomments().isEmpty()){
 			    	tabDiv.append("<div class='commentTime'>");
-			    	tabDiv.append("<textarea  name='weekComment'  id='weekComment' readonly='readonly' placeholder='comments here...'>").append(ts.getWeekcomments()).append("</textarea>");
+			    	tabDiv.append("<textarea  name='weekComment'  id='weekComment' "+readonly+" placeholder='comments here...'>").append(ts.getWeekcomments()).append("</textarea>");
 			    	tabDiv.append("</div>");
 				}else{
 					tabDiv.append("<div class='commentTime'>");
@@ -1353,6 +1358,10 @@ public class TimesheetRestController {
 		            			  freshSaHierarchyList.add(saHierarchy);
 		            		 }
 		            		 submissionApproverHierarchyService.saveAllSubmissionApproverHierarchy(new ArrayList<>(freshSaHierarchyList));
+		            		 timesheetSubmissions.setWeekcomments(jsonObj.getString("weekComment"));
+		            		 timesheetSubmissions.setUpdatedDate(CommonUtil.currentDate());
+	 		     	    	 timesheetSubmissions.setUpdatedBy(loginUser.getUserCode());
+	 		     	    	 timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
 		            	 }
 		            	 
 		            }else{
@@ -1849,7 +1858,8 @@ public class TimesheetRestController {
 		@RequestMapping(value = "/notifyReopenTimeSheet", method = RequestMethod.POST)
 		public @ResponseBody void notifyReopenTimeSheet(@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
 				@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,
-				@RequestParam(value="reason", required=false) String reason, HttpServletRequest request) throws Exception {
+				@RequestParam(value="reason", required=false) String reason,
+				@RequestParam(value="totalHours", required=false) Float totalHours, HttpServletRequest request) throws Exception {
 				
 			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -1870,7 +1880,7 @@ public class TimesheetRestController {
 				
 				    //send mail & notification logic
 				  	if(isSuperUser.equalsIgnoreCase(Constants.NO)){
-				  		submissionApproverHierarchyService.sendReopenTimeSheetMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency);
+				  		submissionApproverHierarchyService.sendReopenTimeSheetMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,totalHours);
 				  	}
 				  	
 				}

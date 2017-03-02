@@ -140,11 +140,13 @@ public void sendNotification(String actionLink,User loginUser,User toUser, OrgLo
 	
 	}
 
-public void sendNotificationToClientOrVendor(String actionLink,User loginUser,User fromUser, User toUser, OrgLocations loginOrgLocation, EmailScenario emailScenario) throws Exception{
+public void sendNotificationToClientOrVendor(String actionLink,String rejectActionLink, User loginUser,User fromUser, User toUser, OrgLocations loginOrgLocation, EmailScenario emailScenario, String spocUUID) throws Exception{
 	
 	//new Notification logic
 	Notifications notification = new Notifications();
 	notification.setActionLink(actionLink);
+	notification.setRejectActionLink(rejectActionLink);
+	notification.setSpocUUID(spocUUID);
 	notification.setBody(emailScenario.getBody());
 	notification.setNotificationFrom(fromUser);
 	notification.setNotificationTo(toUser);
