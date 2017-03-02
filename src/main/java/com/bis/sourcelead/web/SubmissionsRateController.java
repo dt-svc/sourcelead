@@ -95,7 +95,7 @@ public class SubmissionsRateController {
 		String type = "Candidate";
 		ModelAndView model = new ModelAndView();
 		String permission = "YES";
-		if((requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.SUBMISSION || requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REJECTED)  || (pastRequirementRateSubmissionNegotiation != null && pastRequirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.CANDIDATE)){
+		if((requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.SUBMISSION || requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REJECTED) && (pastRequirementRateSubmissionNegotiation != null && pastRequirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.CANDIDATE)){
 			permission = "NO";
 		}
 		model.addObject("permission",permission);
