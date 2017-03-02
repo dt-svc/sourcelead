@@ -1196,14 +1196,30 @@ function requirementPipeline(requirementId){
       <h2>Requirement List</h2>
     </div>
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requirement List</div>
+    	<div class=" pull-left reportsH">
+			<a title="Reports"><i class="fa fa-pie-chart"></i>Reports</a>
+			<div class="RePop">
+				<ul>
+				 <li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
+					<!-- <li><a href="reports.html"><i class="fa fa-user"></i>Requirements Posted</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Client Requirements</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Applicants Received</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Applicants</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Short listed</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Interview</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Offer</a></li> -->
+				</ul>
+			</div>
+		</div>
   </section>
+  
   <div class="timesheet_out">
     <div class="vendor_wrap">
       <div class="timesheet_head">
        <div class="pull-left cand-advsrch advsrch_chosen">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenRequirementScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
           <form:form id="requirement_form" name="requirement_form"  enctype='multipart/form-data' >
-          <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
+          <div class="cand-advsrch-popup reqadvsrch"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
             <div class="row">
              <!--  <div class="col-md-4">
                 <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
