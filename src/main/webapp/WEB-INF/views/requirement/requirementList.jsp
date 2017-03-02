@@ -407,7 +407,8 @@ function prepareRequirementData(data){
 			result = result +" </select>";	
            result = result +" </td>";
         }
-        if(((orgATS == 'Y' && orgVMS == 'Y') || orgATS != 'Y') && (opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN')){
+      
+        /*   if(((orgATS == 'Y' && orgVMS == 'Y') || orgATS != 'Y') && (opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN')){
        	 '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
        	 if(opt.isRequirementReleasedByuser == 'Y'){
        		 result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success'></i></a></div></td>"; 
@@ -420,9 +421,20 @@ function prepareRequirementData(data){
        	 '</sec:authorize>';
         }else{
             result = result +"<td><div>--</div></td>";
+        } */
+    
+        if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN'){
+		   	 if(opt.isRequirementReleasedByuser == 'Y'){
+		   		 result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success'></i></a></div></td>"; 
+		   	 }else{	
+		   	 result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
+		   	 }
+        }else{
+            result = result +"<td><div>--</div></td>";
         }
-        result = result +"</tr>";
-        result = result +"</tr>";
+        
+      result = result +"</tr>";
+      result = result +"</tr>";
        
     }
     result = result +" </tbody>";

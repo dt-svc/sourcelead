@@ -174,6 +174,24 @@ public class RequirementListController {
 			model.addObject("vendor_list", vendorsList);
 	        model.addObject(vendorsList);
 	        model.addObject("requirementId",requirement.getId());
+	        model.addObject("requirementUUID",requirementUUID);
+	       
+	        if(!isNullOrEmpty(requirement.getJobType())){
+	        	model.addObject("requirementType",requirement.getJobType());
+	        }
+	       
+	        if(null != requirement.getRate()){
+	        	 model.addObject("jobRate",requirement.getCurrencyCode()+" "+requirement.getRate()+" / "+requirement.getRateType());	
+	        }
+	        
+	        if(null != requirement.getRewardType()){
+	        	model.addObject("rewardType", requirement.getRewardType());
+	        	model.addObject("rewardPercentage", requirement.getRewardPercentage());
+	        	model.addObject("rewardFlat", requirement.getRewardFlat());
+	        	model.addObject("rewardFlatRateType", requirement.getRewardFlatRateType());
+	        	model.addObject("rewardGauranteePeriod", requirement.getRewardGuaranteePeriod());
+	        }
+	       
 			
 			request.getSession().setAttribute("sessionData",sessionData);
 		}else{

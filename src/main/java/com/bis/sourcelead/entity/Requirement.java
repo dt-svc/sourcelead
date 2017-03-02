@@ -138,6 +138,22 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String postedOrgName;
 	
 	
+	@Column(name = "REWARD_PERCENTAGE")
+	private String rewardPercentage;
+	
+	@Column(name = "REWARD_FLAT")
+	private String rewardFlat;
+	
+	@Column(name = "REWARD_FLAT_RATE_TYPE")
+	private String rewardFlatRateType;
+	
+	@Column(name = "REWARD_GUARANTEE_PERIOD")
+	private String rewardGuaranteePeriod;
+	
+	
+	@Column(name = "REWARD_TYPE")
+	private String rewardType;
+	
 	@ManyToOne
     @JoinColumn(name="SUBMISSION_TEMPLATE_ID" )        
     private SubmissionTemplate submissionTemplateId;
@@ -1121,6 +1137,46 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setApprovalMechanismType(String approvalMechanismType) {
 		this.approvalMechanismType = approvalMechanismType;
+	}
+
+	public String getRewardPercentage() {
+		return rewardPercentage;
+	}
+
+	public void setRewardPercentage(String rewardPercentage) {
+		this.rewardPercentage = rewardPercentage;
+	}
+
+	public String getRewardFlat() {
+		return rewardFlat;
+	}
+
+	public void setRewardFlat(String rewardFlat) {
+		this.rewardFlat = rewardFlat;
+	}
+
+	public String getRewardFlatRateType() {
+		return rewardFlatRateType;
+	}
+
+	public void setRewardFlatRateType(String rewardFlatRateType) {
+		this.rewardFlatRateType = rewardFlatRateType;
+	}
+
+	public String getRewardGuaranteePeriod() {
+		return rewardGuaranteePeriod;
+	}
+
+	public void setRewardGuaranteePeriod(String rewardGuaranteePeriod) {
+		this.rewardGuaranteePeriod = rewardGuaranteePeriod;
+	}
+
+	public String getRewardType() {
+		return rewardType;
+	}
+
+	public void setRewardType(String rewardType) {
+		this.rewardType = rewardType;
 	}
 
 	
