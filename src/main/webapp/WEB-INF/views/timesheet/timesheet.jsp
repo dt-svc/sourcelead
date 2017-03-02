@@ -29,10 +29,12 @@ $(document).ready(function() {
 	$(document).on("mouseover", ".rejectedHover", function() { 
 		var projectMemberId = $("#projectMemberId").val();
 		$("#rejectedMessage"+projectMemberId).addClass('app_error_mes_active');
+		$("#rejectedMessage1"+projectMemberId).addClass('app_error_mes_active');
 	});	
 	$(document).on("mouseleave", ".rejectedHover", function() { 
 		 var projectMemberId = $("#projectMemberId").val();
 		  $("#rejectedMessage"+projectMemberId).removeClass('app_error_mes_active');
+		  $("#rejectedMessage1"+projectMemberId).removeClass('app_error_mes_active');
 	});	
 </script>
 
@@ -213,7 +215,7 @@ $(document).ready(function() {
 	  		    	  	   $("#timesheetDivByTab").append(result["TabDiv"]);
 	  		    	  	   maskme();
 	  		    	  	   $("html").trigger('click');
-	  		    	  	   
+	  		    	       timesheetDivByFrequency();
 	  			    	   $("#tab-1").show();
 	  	 		    	   $(".project-tabs-menu a").click(function(event) {
 	  	 		    	        event.preventDefault();

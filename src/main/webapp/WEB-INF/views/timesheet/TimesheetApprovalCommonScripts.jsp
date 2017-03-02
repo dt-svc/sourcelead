@@ -87,10 +87,12 @@ margin-top: 3px;
 	$(document).on("mouseover", ".rejectedHover", function() { 
 		var projectMemberId = $("#projectMemberId").val();
 		$("#rejectedMessage"+projectMemberId).addClass('app_error_mes_active');
+		$("#rejectedMessage1"+projectMemberId).addClass('app_error_mes_active');
 	});	
 	$(document).on("mouseleave", ".rejectedHover", function() { 
 		 var projectMemberId = $("#projectMemberId").val();
 		  $("#rejectedMessage"+projectMemberId).removeClass('app_error_mes_active');
+		  $("#rejectedMessage1"+projectMemberId).removeClass('app_error_mes_active');
 	});	
 </script>
 
@@ -1340,13 +1342,14 @@ function pagination(){
 
 <script type="text/javascript">
 function reOpenMyTimesheet(projectMemberId,timesheetFrequency){ 
+	var totalHours = $("#totalHours").val();
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Re-open message here</p>";
 	result = result +"		<textarea  id='reOpenReason' name='reOpenReason'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="reOpenReasonDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='notifyReopenTimeSheet("+projectMemberId+",\""+timesheetFrequency+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpen();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='notifyReopenTimeSheet("+projectMemberId+",\""+timesheetFrequency+"\","+totalHours+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpen();'></b>";
 	result = result +"	</div>";
 	$("#reOpenPopup").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1355,14 +1358,14 @@ function reOpenMyTimesheet(projectMemberId,timesheetFrequency){
 </script>
 
 <script>
-function notifyReopenTimeSheet(projectMemberId,timesheetFrequency){
+function notifyReopenTimeSheet(projectMemberId,timesheetFrequency,totalHours){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reOpenReason").value;
 	if(reason.match(/^[^\s-](.*)*$/) != null){
 		$("#reOpenReasonDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/notifyReopenTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&reason="+reason,	    	   
+		    url: sourceleadUrl+"/notifyReopenTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&reason="+reason+"&totalHours="+totalHours,	    	   
 		    success: function(data) {
 		    	$("#reOpenPopup").empty();
    			 	$(".project_inn_mask").fadeOut(200);
