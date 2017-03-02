@@ -612,7 +612,7 @@ ul.timesheet-menu li a, .backoffice-menu li a {
 }
 ul.timesheet-menu li a::before, .backoffice-menu li a::before {
 	color: #f0ad4e;
-	content: "";
+	content: "ïˆ­";
 	font-family: fontawesome;
 	padding-right: 5px;
 }
@@ -671,7 +671,14 @@ ul.timesheet-menu li a:hover, ul.backoffice-menu li a:hover {
     white-space: nowrap;
 	vertical-align: middle;
 }
-
+.side-bar .user-panel .media .media-body .text-logo .tbldata-dotdot {
+    font-size: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 40px;
+    display: block;
+}
 /* sidebar for custom */
 .side-bar .user-panel.user-panel-active .media .media-body .text-logo {
     font-size: 15px;
@@ -1837,6 +1844,7 @@ transform: rotate(0)
 }
 .collapses {
 	display: none;
+
 }
 .side-bar .side-nav ul li ul li {
 	border-bottom: 1px solid #456185;
@@ -2199,6 +2207,7 @@ ul.hierachy-role li span.role-active:before {
 	margin-right: 10px;
 	background: #fff;
 	border-radius: 3px;
+
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 	margin-top: 10px;
 }
@@ -6336,23 +6345,62 @@ margin-top: 10px;
     word-break: break-all;
 }
 
-
-/* ReleaseJob Styles Feb28 */
 .iconHolder .fa{
-position: absolute;
-right: 15px;
-top: 8px;
-color: #747474;
+    position: absolute;
+    right: 15px;
+    top: 8px;
+    color: #747474;
 }
-
 .btn_Block .btn{
-/*width: 50%;
-padding: 5px 25px;*/
-font-size: 16px;
-padding: 2px 15px;
+    /*width: 50%;
+    padding: 5px 25px;*/
+        font-size: 16px;
+    padding: 2px 15px;
 }
-/* ReleaseJob Styles Feb28 */ 
 
+/* Customized Candidate advanced search */
+.cand-advsrch-popup.candAdvsrch-popup{
+overflow: inherit;
+padding: 0;
+}
+.cand-advsrch-popup.candAdvsrch-popup h4{
+margin-top: 0;
+font-size: 16px;
+}
+.cand-advsrch-popup.candAdvsrch-popup .close-div {
+right: -5px;
+top: -10px;
+}
+.candAdvsrch-inner {
+min-height: 100px;
+height: 350px;
+overflow-y:auto;
+padding:20px 15px 15px 15px; 
+}
+.cand-advsrch-popup.candAdvsrch-popup .form-footer {
+min-height: 55px;
+line-height: 55px;
+position: relative;
+z-index: 0;
+}
+.cand-advsrch-popup.candAdvsrch-popup .chosen-container .chosen-drop {
+}
+.cand-advsrch-popup.reqadvsrch {
+    overflow: inherit;
+}
+.cand-advsrch-popup.reqadvsrch .close-div {
+    right: -5px; top: -5px;
+}
+/* Customized Candidate advanced search */
+.hdr-styles ul li {
+margin: 5px 0 5px 8px !important;
+}
+.dashboard-widget.crowd_dashboard .nav-tabs {
+	border-bottom:1px solid #f60; position: relative; float: left; top: 0px; right: 0px;
+}
+.customtimesheet-head ul li ul {
+     padding: 2px 0px 2px 0px !important;
+    }
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
