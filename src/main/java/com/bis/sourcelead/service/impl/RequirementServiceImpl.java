@@ -2487,6 +2487,8 @@ public class RequirementServiceImpl implements RequirementService {
 		            		//&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())
 		            		requirement = getData(requirementIndex,user);
 		            	}
+		            	
+		            	
 		            	if(requirement !=null){
 		            		reqList.add(requirement);
 		            	}
@@ -2541,6 +2543,9 @@ public class RequirementServiceImpl implements RequirementService {
      			requirement.setIsRequirementReleasedByuser("N");
      		}
 		}
+       if(null != requirementIndex.getRequirementUUID()){
+   		requirement.setRequirementUUID(requirementIndex.getRequirementUUID());	
+   	   }
      	return requirement;
 	}
 

@@ -1,4 +1,4 @@
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+f<link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
@@ -609,7 +609,7 @@ function deleteVendorDocument(vendorLocationId,orgRelationId,docId,docName){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Vendor delete message here</p>";
+	result = result +"		<p>Document delete message here</p>";
 	result = result +"		<textarea  id='terminateReason' name='terminateReason'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="terminateReasonDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReasonForVendorDoc("+vendorLocationId+","+orgRelationId+","+docId+",\""+docName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDocTermination();'></b>";
