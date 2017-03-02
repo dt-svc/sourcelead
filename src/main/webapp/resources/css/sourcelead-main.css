@@ -612,7 +612,7 @@ ul.timesheet-menu li a, .backoffice-menu li a {
 }
 ul.timesheet-menu li a::before, .backoffice-menu li a::before {
 	color: #f0ad4e;
-	content: "ïˆ­";
+	content: "";
 	font-family: fontawesome;
 	padding-right: 5px;
 }
@@ -3777,7 +3777,7 @@ margin-bottom: 10px;
 .ratepop section.tbl-scroll{
 	margin-bottom:15px;
 	height:175px;	
-	overflow-y:scroll;
+	overflow-y:scroll !important;
 }
 .ratepop section.tbl-scroll .fa{
 	padding:0 2px;
@@ -6391,6 +6391,9 @@ margin: 5px 0 5px 8px !important;
 .customtimesheet-head ul li ul {
      padding: 2px 0px 2px 0px !important;
     }
+.timesheet_head.timesheetHead_Custom > ul {
+    padding-right: 210px;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
