@@ -699,6 +699,30 @@ public class RequirementListRestController {
 		 }
 		 
 		 
+		 @RequestMapping(value = "/changeStatusAuthorisation" , method = RequestMethod.POST)
+		 @ResponseBody  String changeStatusAuthorisation(@RequestParam(value="requirementId", required=false) Long  requirementId,
+				                                 @RequestParam(value="status", required=false) String  status,
+				                                 HttpServletRequest request) throws Exception {
+			
+			 
+			 
+			   User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 
+			   // authorizing if the login user as Team Member Or Not
+				Boolean isLoginUserAsTeamMember =  requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
+				if(isLoginUserAsTeamMember){
+					return "false";
+				}else{
+					
+					return "true";
+				}
+			 
+			
+		 }
+		 
+		 
+		 
+		 
 		 /**
 		  * @author Rajashekar
 		  * used fro export xls and pdf

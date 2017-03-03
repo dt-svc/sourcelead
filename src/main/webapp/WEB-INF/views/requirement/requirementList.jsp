@@ -1751,7 +1751,7 @@ function changeStatusAuthorisation(requirementId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	   $.ajax({
          type : "POST",
-          url: sourceleadUrl+"/saveChangedStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status,        
+          url: sourceleadUrl+"/changeStatusAuthorisation?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status,        
           success :function(data) {
         	  if(data == "true"){
         		  document.getElementById("changeStatusId" + requirementId).disabled=false;

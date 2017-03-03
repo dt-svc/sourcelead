@@ -170,13 +170,13 @@ function getSearchResults(searchType,searchValue){
 				    	}
 				    	result = result+'<label>'+experience+'</label>';
 				    	if(report.city !=null && report.city != '' && report.city !="undefined"){
-				    		location = location + report.city;
+				    		location = location + report.city +",";
 				    	}
 				    	if(report.state !=null && report.state != '' && report.state !="undefined"){
-				    		location = location + report.state;
+				    		location = location + report.state+",";
 				    	}
 				    	if(report.country !=null && report.country != '' && report.country !="undefined"){
-				    		location = location + report.country;
+				    		location = location +report.country;
 				    	}
 				    	result = result+'          <label>'+location+'</label>';
 				    	result = result+'          </p>';
