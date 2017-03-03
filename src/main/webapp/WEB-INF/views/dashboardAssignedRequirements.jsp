@@ -12,7 +12,7 @@
         </span> -->
         </h4>
       <!-- <a href="#" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
-        <div class="clearfix require_wrap_table dashboard-data"> 
+        <div class="clearfix require_wrap_table dashboard-data overflow_inherint"> 
         		 <div id="requirementList"></div>
         </div>
       </div>
@@ -143,6 +143,7 @@ function requirementList(){
 function pagination(){ 
     $('#requirementPagination').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -151,5 +152,6 @@ function pagination(){
             "sSearch": ""
        }
     } );
+    $(".dataTables_empty").html("");
 }
 </script>

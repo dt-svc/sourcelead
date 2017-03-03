@@ -435,7 +435,9 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
      	requirement.setCity(requirementIndex.getCity());
      	requirement.setSearchType(Constants.REQUIREMENT);
      	requirement.setPositions(requirementIndex.getNumberOfPositions());
-     	requirement.setNoOfApplicants(requirementIndex.getNumberOfApplicants());
+     	if(null != requirementIndex.getNumberOfApplicants()){
+     		requirement.setTotalApplicants(Integer.parseInt(requirementIndex.getNumberOfApplicants()));
+     	}
      	requirement.setManager(requirementIndex.getManager());
      	if(requirementIndex.getRequirementStatus() !=null && !"".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
          	requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.valueOf(requirementIndex.getRequirementStatus()));
