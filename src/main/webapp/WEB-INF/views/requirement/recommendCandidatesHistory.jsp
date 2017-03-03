@@ -76,6 +76,6 @@ function candidateHistoryPagination(){
      		"sSearch": ""
      	}
     } );
- 
+    $(".dataTables_empty").html("");
  }
 </script>
