@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -164,25 +165,24 @@ public class RequirementDaoImpl implements RequirementDao {
 		}
 		
 		String[] client = null;
-		if(clients != null){
+		if("" != clients){
 			client = clients.split(",");
 		}
-		String subQuery7 = "";
-		if (client != null && client[0] != null && client[0].length() > 0) {
-			for (String clnt : client) {
-				subQuery7 = "and requirement.clientId.id = " + clnt+"";
+		List<Long> clientsList = new ArrayList<>();
+		if(client != null){
+			for(int i=0;i<client.length;i++){
+				clientsList.add(Long.parseLong(client[i]));
 			}
 		}
 		
-		String whereCondition = "";
-		if(null != subQuery7){
-			whereCondition = subQuery + subQuery7;
-		}else{
-			whereCondition = subQuery;
+		Query query = null;
+		if(clientsList.isEmpty()){
+			query = session.createQuery(from+" "+subQuery+" ORDER BY requirement.id DESC");
+		}
+		else{
+			query = session.createQuery(from+" "+subQuery+"and requirement.clientId.id IN (:clientList) ORDER BY requirement.id DESC");
 		}
 		
-		
-		Query query = session.createQuery(from+" "+whereCondition+" ORDER BY requirement.id DESC");
 		for (String str : query.getNamedParameters())
         {
 			if(str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("approverUserId") || str.equalsIgnoreCase("managerUserId")){
@@ -191,7 +191,9 @@ public class RequirementDaoImpl implements RequirementDao {
 			if(str.equalsIgnoreCase("level") || str.equalsIgnoreCase("level1") || str.equalsIgnoreCase("level2")){
 				query.setInteger(str, (int) params.get( str ));
 			}
-			
+			if(!clientsList.isEmpty()){
+				query.setParameterList("clientList", clientsList);
+			}
 			else{
 				query.setParameter( str, params.get( str ) );
 			}
@@ -857,5 +859,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		}
 		return requirement;
 	}
+
+	
 	
 }

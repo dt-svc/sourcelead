@@ -198,8 +198,8 @@ public class RequirementHelper {
 			requirementIndex.setPriority(requirement.getPriority());
 			requirementIndex.setCurrentRateCurrency(requirement.getCurrencyCode());
 			requirementIndex.setNumberOfPositions(requirement.getPositions());
-			if(null != requirement.getTotalApplicantsForRequirement()){
-				requirementIndex.setNumberOfApplicants(requirement.getTotalApplicantsForRequirement().toString());
+			if(null != requirement.getTotalApplicants()){
+				requirementIndex.setNumberOfApplicants(requirement.getTotalApplicants().toString());
 			}
 			requirementIndex.setReleasedBy(requirement.getReleasedBy());
 			

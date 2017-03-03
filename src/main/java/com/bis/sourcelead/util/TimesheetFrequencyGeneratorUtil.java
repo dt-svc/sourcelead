@@ -282,7 +282,12 @@ public  class TimesheetFrequencyGeneratorUtil {
 											tsEndDate = CalendarUtil.getDateIncrementByincrement(tsEndCal, 13).getTime();
 										    
 									  }
-						    
+									  if(totalWeeks == 0){
+										  tsCal.setTime(empStartMonday.getTime());
+										  tsStartDate = CalendarUtil.getCurrentWeekDayByCalendar(tsCal, "MON").getTime();
+										  tsEndDate = CalendarUtil.getCurrentWeekDayByCalendar(tsCal, "SUN").getTime();
+										  timesheetFrequencyList.put(format.format(tsStartDate), format.format(tsEndDate));
+									  }
 						    
 						    
 						    
@@ -376,6 +381,13 @@ public  class TimesheetFrequencyGeneratorUtil {
 									    timesheetFrequencyList.put(format.format(tsStartDate), format.format(tsEndDate));
 									    tsStartDate = CalendarUtil.getNextWeekDayByCalendar(tsCal, "MON").getTime();
 										tsEndDate = CalendarUtil.getNextWeekDayByCalendar(tsCal, "SUN").getTime();
+								  }
+								  
+								  if(totalWeeks == 0){
+									  tsCal.setTime(empStartMonday.getTime());
+									  tsStartDate = CalendarUtil.getCurrentWeekDayByCalendar(tsCal, "MON").getTime();
+									  tsEndDate = CalendarUtil.getCurrentWeekDayByCalendar(tsCal, "SUN").getTime();
+									  timesheetFrequencyList.put(format.format(tsStartDate), format.format(tsEndDate));
 								  }
 						    }
 						   

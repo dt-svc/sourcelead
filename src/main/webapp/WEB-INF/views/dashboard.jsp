@@ -136,7 +136,11 @@ overflow-x: auto;
 	    
 	    <div class="row clearfix">
 	    <div class="col-md-6 mb">
+<<<<<<< HEAD
         <div class="clients_wrap_table dashboard-widget"  id="assignTaskListDiv" style="display: none;">
+=======
+        <div class="clients_wrap_table dashboard-widget overflow_inherint">
+>>>>>>> 436907e6470ff973ea4aabd8b8024770d13ad0c5
           <!-- <h4 class="pull-left">Tasks &nbsp;&nbsp;
           <b class="newdate">
                <i class="fa fa-filter"></i>
@@ -147,7 +151,7 @@ overflow-x: auto;
            <h4 class="clearfix">Tasks
         <b class="dashboard-datepkr"><input class="input-sm" id="dasboardTaskDatpicker" readonly="readonly" type="text"><i class="fa fa-calendar"></i></b>  
           </h4>	
-          <div class="clearfix require_wrap_table dashboard-data">
+          <div class="clearfix require_wrap_table dashboard-data Tasks overflow_inherint">
             <div id="assignTaskList"></div>
             
           </div>
