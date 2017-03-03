@@ -1,4 +1,3 @@
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%-- 
      @author : David Raju.
@@ -193,6 +192,7 @@ function editCandidate(candidateId){
 							result = result + '<option value="">--Select Employment Type--</option>';
 							result = result + ' <option '+(json.designationType == "C2C" ? "selected" : '') +'>C2C</option>';
 							result = result + '<option  '+ (json.designationType == "W-2" ? "selected" : '') +'>W-2</option>';
+							result = result + '<option  '+ (json.designationType == "C2H" ? "selected" : '') +'>C2H</option>';
 							result = result + '<option  '+(json.designationType == "Part Time" ? "selected" : '') +'>Part Time</option>';
 							result = result + '<option  '+(json.designationType == "Full Time" ? "selected" : '') +'>Full Time</option>';
 							result = result + '<option  '+(json.designationType == "Other" ? "selected" : '') +'>Other</option>';
@@ -353,7 +353,7 @@ function editCandidate(candidateId){
 							getAllCandidateCountries();
 							 getAllCandidateStates();
 							
-							$(function(){
+							
 							    var config = {
 									  '.chosen-select'           : {},
 									  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -377,8 +377,8 @@ function editCandidate(candidateId){
 							    $('.chosen-select').each(function() {
 										var $this = $(this);
 										$this.next().css({'width': '100%'});
-								  })
-							});
+								  });
+						
             		 
             		 }
                 }else{
@@ -733,10 +733,15 @@ function candidateProfile(candidateId){
 							result = result +'</div>';
 							result = result +'</div> ';
 							
+							//Employee Div
+							result = result + '<div id="employeeSubmissionProfile"></div> '; 
 							
-					//		result = result + '<div id="candidateSkillList" class="heightScroll clearfix"></div> ';
+							//Education Div
+							result = result + '<div id="educationSubmissionProfile"></div> ';
 							
-							/* result = result + '      <a href="javascript:void(0)">more <i class="fa fa-angle-right"></i></a>'; */
+							//Certification Div
+							result = result + '<div id="certificationSubmissionProfile"></div> ';
+							
 							result = result + '    </div>';
 							result = result + '  </div>';
 							$("#tab-11").empty();
@@ -748,12 +753,11 @@ function candidateProfile(candidateId){
 							$("#tab-11").append(result);  
 							    
 							candidateSkillsList(candidateId);
+							employeeSubmissionProfile(candidateId);
+							educationSubmissionProfile(candidateId);
+							certificationSubmissionProfile(candidateId);
 							
 							$("#tab-11").show();
-							
-										
-									       
-								     
 							$("#tab-1").show();
 							$(".project-tabs-menu a").click(function(event) {
 							     event.preventDefault();
@@ -1366,3 +1370,225 @@ function updateDesignationType(){
  </script>     
  
  <!-- Candidate Email validation script ends here -->
+ 
+ 
+ 
+ <script>
+	function employeeSubmissionProfile(candidateId) {
+		var sourceleadUrl = '${sourceleadUrl}';
+				$.ajax({
+					type : "POST",
+					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId,
+					success : function(data) {
+						if (data != null && data != 'undefined' && data != "" && data != '[]') {
+								$("#employeeSubmissionDetailsList").empty();
+								var result = "";
+								result = result +'        <div class="clearfix design-view">';
+								result = result +'          <h2 class="education"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Employers</h2>';
+								result = result +'          <div class="row">';
+								result = result +'            <div class="col-md-12">';
+								result = result +'              <ul class="list-unstyled personal-info">';
+								var json = JSON.parse(data);
+								for (var i = 0; i < json.length; i++) {
+									var opt = json[i];
+									if (opt.name != null && opt.name != '' && opt.name != 'undefined') {
+										name = opt.name;
+									} else {
+										name = " ";
+									}
+									if (opt.designation != null	&& opt.designation!='' && opt.designation != 'undefined') {
+										designation = opt.designation;
+									} else {
+										designation = " "; 
+									}
+									
+									
+									 if (opt.startMonth != null && opt.startMonth != '' && opt.startMonth != 'undefined') {
+										startMonth=   opt.startMonth +' - ';
+									}else{
+										startMonth = " ";
+									}
+									
+									if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined') {
+										startYear=   opt.startYear  +' TO ';
+									}else{
+										startYear = " ";
+									}
+									
+									if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
+										endMonth = opt.endMonth +' - ';  
+									} else {
+										endMonth = " ";
+									}
+									
+									if (opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
+										endYear = opt.endYear;  
+									} else {
+										endYear = " ";
+									}
+									result = result +'   <li>';
+									result = result +'   <div class="clearfix">';
+									result = result +' <h3>'+name+'</h3>';
+									result = result +' <p>'+designation+'</p>';
+									result = result +' <p>';
+								    result = result + startMonth +''+startYear +' '+endMonth +''+endYear; 
+									result = result +'  </p>';
+									result = result +'  </div>';
+									result = result +'</li>';
+								}
+								result = result +'              </ul>';
+								result = result +'            </div>';
+								result = result +'          </div>';
+								result = result +'        </div>';
+								$("#employeeSubmissionProfile").append(result);
+						}
+					},
+
+				});
+	}
+</script>
+
+<script>
+function educationSubmissionProfile(candidateId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({  
+          type : "POST",
+          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          success :function(data) {
+        	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
+	                	 $("#educationSubmissionDetailsList").empty();
+	                	 var result = "";
+	                	 
+	                	 
+	                	     result = result +'        <div class="clearfix design-view">';
+							result = result +'          <h2 class="education"><i class="fa fa-graduation-cap"></i>&nbsp;&nbsp;Education</h2>';
+							result = result +'          <div class="row">';
+							result = result +'            <div class="col-md-12">';
+							result = result +'              <ul class="list-unstyled personal-info">';
+							
+							
+							 var json = JSON.parse(data);
+		                     for (var i = 0; i < json.length; i++) { 
+		                    	 var opt = json[i];  
+		                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
+	                    		        EducationName = opt.name;
+		                    	    }else{
+		                    	    	EducationName = " ";
+		                    	    }
+			                     if(opt.specialization != null && opt.specialization != '' && opt.specialization != 'undefined'){
+			                    	 specialization= '(' + opt.specialization +')';
+		                    	  }else{
+		                    		  specialization= " ";
+		                       	 }
+			                     if(opt.institute != null && opt.institute != '' && opt.institute != 'undefined'){
+			                    	 institute = opt.institute;
+		                    	 }else{
+		                    		 institute = " ";
+		                    	 }
+			                     if(opt.grade != null && opt.grade != '' && opt.grade  != 'undefined'){
+			                    	 Educationgrade= opt.grade + ' , ';
+		                    	 }else{
+		                    		 Educationgrade = ""; 
+		                    	 }
+		                    	 if(opt.gradeType != null && opt.gradeType != '' && opt.grgradeTypeade  != 'undefined'){
+		                    		 EducationgradeType  = opt.gradeType + ' - ';
+				                 }else{
+				                	 EducationgradeType = " "; 
+				                 }
+		                    	 if(opt.address != null && opt.address != '' && opt.address != 'undefined'){
+		                    		 Educationaddress = ' , ' +opt.address;
+		                    	 }else{
+		                    		 Educationaddress = " ";
+		                    	 }
+		                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
+		                    		 EducationstartDateStr = opt.startDateStr +' TO ';
+		                    	 }else{
+		                    		 EducationstartDateStr = " ";
+		                    	 }
+		                    	 if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){ 
+		                    		 EducationendDateStr = opt.endDateStr;
+		                    	 }else{
+		                    		 EducationendDateStr = " ";
+		                    	 }
+			                        result = result +'                <li>';
+									result = result +'                  <div class="clearfix">';
+		                    	    result = result +'                    <h3>'+EducationName+' <span class="small text-muted">&nbsp;'+specialization+'</span></h3>';
+		                    	    result = result +'                    <p>'+EducationgradeType + ' '+Educationgrade+' '+institute+' '+Educationaddress+'</p>';
+									result = result +'                    <p>'+EducationstartDateStr+' '+EducationendDateStr+'</p>';
+									result = result +'                  </div>';
+									result = result +'                </li>';
+		                     }
+							
+							
+							result = result +'              </ul>';
+							result = result +'            </div>';
+							result = result +'          </div>';
+							result = result +'        </div>';
+	                     $("#educationSubmissionProfile").append(result); 
+        	  }
+        },
+          
+     }); 
+}
+</script> 
+
+<script>
+function certificationSubmissionProfile(candidateId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({  
+          type : "POST",
+          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          success :function(data) {
+        	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
+	                	 $("#certificationSubmissionProfile").empty();
+	                	 var result = "";
+	                	 
+	                	 result = result +'        <div class="clearfix design-view">';
+							result = result +'          <h2 class="education"><i class="fa fa-certificate"></i>&nbsp;&nbsp;Certification</h2>';
+							result = result +'          <div class="row">';
+							result = result +'            <div class="col-md-12">';
+							result = result +'              <ul class="list-unstyled personal-info">';
+							 var json = JSON.parse(data);
+							for (var i = 0; i < json.length; i++) { 
+		                    	var opt = json[i];  
+		                    	if(opt.score != null && opt.score != 'undefined' && opt.score != ""){
+				            		score =' ( ' + opt.score;
+				            	}else{
+				            		score = " ";
+				            	}
+				            	if(opt.scoreType != null && opt.scoreType != 'undefined' && opt.scoreType != ""){
+				            		scoreType = opt.scoreType +' ) ';
+				            	}else{
+				            		scoreType = " ";
+				            	}
+				            	if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
+				            		candidatevalidFromDateToString = opt.candidatevalidFromDateToString;
+				            	}else{
+				            		candidatevalidFromDateToString = " ";
+				            	}
+				            	if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
+				            		candidatevalidToDateToString = opt.candidatevalidToDateToString;
+				            	}else{
+				            		candidatevalidToDateToString = " ";
+				            	}
+				            	
+								result = result +'                <li>';
+								result = result +'                  <div class="clearfix">';
+								result = result +'                    <h3>'+opt.name+' <span class="small text-muted">&nbsp;'+score+'  '+scoreType+'</span></h3>';
+								result = result +'                    <p>'+opt.provider+' </p>';
+								result = result +'                    <p> '+candidatevalidFromDateToString+' TO '+candidatevalidToDateToString+'</p>';
+								result = result +'                  </div>';
+								result = result +'                </li>';
+							}
+							result = result +'              </ul>';
+							result = result +'            </div>';
+							result = result +'          </div>';
+							result = result +'        </div>';
+							
+							$("#certificationSubmissionProfile").append(result); 
+        	  }
+        },
+          
+     }); 
+}
+</script>

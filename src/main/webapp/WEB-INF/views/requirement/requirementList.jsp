@@ -196,9 +196,9 @@ function requirementList(){
            type : "POST",
            url: sourceleadUrl+"/getRequirementListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients,    
             success :function(data) {
-                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
+                 /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
 					prepareRequirementData(data);
-                 }else{
+					/* } else{
                 	 $("#requirementList").empty();
                 	 $("#requirementList").removeAttr("style");
                 	 $("#requirementEmptyListMessage").val("noRequirement");
@@ -208,11 +208,9 @@ function requirementList(){
 					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
 					 result = result+"			        <p>No Requirement Found</p>";
 					 result = result+"			 </div>";
-					/*  noRequirements();
-					$("#noReq").val("noreq"); */
 					$("#requirementList").empty();
 				    $("#requirementList").append(result); 
-                }
+                } */
           },
             
        }); 
@@ -227,6 +225,7 @@ function requirementList(){
 
 <script>
 function prepareRequirementData(data){
+ 	 
 	var orgATS = '${SourceLeadWeb_ats}';
 	var orgVMS = '${SourceLeadWeb_vms}';
 	 $("#requirementList").removeAttr("style");
@@ -248,7 +247,7 @@ function prepareRequirementData(data){
     result = result +"</thead>";
     result = result +"<tbody>"; 
     var json = JSON.parse(data);
-    for (var i = 0; i < 1; i++) {
+    /* for (var i = 0; i < 1; i++) {
            var val= json[i];
            var opt = "";
                    if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
@@ -258,8 +257,9 @@ function prepareRequirementData(data){
                            }
                    $("#msgDiv").empty();
                    $("#msgDiv").append(opt);
-           }
+           } */
     for (var i = 0; i < json.length; i++) { 
+    	
    	 var opt = json[i]; 
    	 result = result +"<tr>"; /*  onclick='sideBar("+opt.id+");' */
    	 if(opt.jobId != '' && opt.jobId != null){
@@ -440,6 +440,7 @@ function prepareRequirementData(data){
         result = result +"</tr>";
        
     }
+    
     result = result +" </tbody>";
     result = result +"</table>"; 
     $("#noReq").val('');
@@ -460,6 +461,7 @@ function pagination(){
             "sSearch": ""
        }
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -1211,7 +1213,7 @@ function requirementPipeline(requirementId){
       <h2>Requirement List</h2>
     </div>
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requirement List</div>
-    	<div class=" pull-left reportsH">
+    <%-- 	<div class=" pull-left reportsH">
 			<a title="Reports"><i class="fa fa-pie-chart"></i>Reports</a>
 			<div class="RePop">
 				<ul>
@@ -1225,7 +1227,7 @@ function requirementPipeline(requirementId){
 					<li><a href="reports.html"><i class="fa fa-user"></i>Offer</a></li> -->
 				</ul>
 			</div>
-		</div>
+		</div> --%>
   </section>
   
   <div class="timesheet_out">
@@ -1938,9 +1940,9 @@ function searchRequirement(){
 							$("#search_requiremet").addClass('button').val('Search');
 							$("#search_requiremet").removeAttr("disabled");
 							closePop();
-							if(data != null && data != 'undefined' && data != "" && data != '[]'){
+							/* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
 			                	 prepareRequirementData(data);
-		                 }else{
+/* 		                 }else{
 		                	 $("#requirementList").empty();
 		                	 $("#requirementList").removeAttr("style");
 		                	 $("#requirementEmptyListMessage").val("noRequirement");
@@ -1948,14 +1950,12 @@ function searchRequirement(){
 				    	    
 							 result = result+"			<div class='blank-pages'>";
 							 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-							 result = result+"			        <p>No Requirement Found</p>";
+							 result = result+"			        <p>No Requirement Found1111</p>";
 							 result = result+"			 </div>";
-							/*  noRequirements();
-							$("#noReq").val("noreq"); */
 							$("#requirementList").empty();
 						    $("#requirementList").append(result); 
 		                }
-						},
+ */						},
 					}); 
 			return true;
 		}else{ 

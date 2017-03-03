@@ -144,18 +144,43 @@ width: 11.5%;
     <nav class="header-nav navbar">
     <a href="javascript:void(0)" class="side-menu"> <i class="fa fa-bars pull-left"></i> </a>
       <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-      <div class="search-area col-md-offset-0 col-sm-offset-0 col-lg-offset-2">
+      <div class="search-area searchArea_mrgn">
            <form:form name ="search_form" id="search_form">
 			<div class="uasrch-selectpicker">
 			<select id="searchType" name="searchType" class="selectpicker uasrch pull-left show-menu-arrow" >
 			<option data-icon="fa fa-th-large" ${searchType == "All" ?"selected='selected'":""} value="All">All</option>
-			<option data-icon="fa fa-users"  ${searchType == "Users" ?"selected='selected'":""} value="Users">Users</option>
-			<option data-icon="fa fa-briefcase" ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Requirement</option>
-			<option data-icon="fa fa-user-circle" ${searchType == "Candidate" ?"selected='selected'":""} value="Candidate">Candidate</option>
-			<option data-icon="fa fa-user-plus" ${searchType == "Client" ?"selected='selected'":""} value="Client">Clients</option>
-			<option data-icon="fa fa-suitcase" ${searchType == "Vendor" ?"selected='selected'":""} value="Vendor">Vendors</option>
-			<option data-icon="fa fa-bar-chart" ${searchType == "Projects" ?"selected='selected'":""} value="Projects">Projects</option>
-			</select>
+			<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
+		       <c:if test="${userTabs.tabName == 'Users'}">
+	                 <option data-icon="fa fa-users"  ${searchType == "Users" ?"selected='selected'":""} value="Users">Users</option>
+	           </c:if>
+	           <c:if test="${userTabs.tabName == 'Requirement'}"> 
+	                <option data-icon="fa fa-briefcase" ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Requirement</option>
+	           </c:if>
+	           <c:if test="${userTabs.tabName == 'Candidates'}">
+	                <option data-icon="fa fa-user-circle" ${searchType == "Candidate" ?"selected='selected'":""} value="Candidate">Candidate</option>
+	           </c:if> 
+	           <c:if test="${userTabs.tabName == 'Clients'}">
+                 	  <option data-icon="fa fa-user-plus" ${searchType == "Client" ?"selected='selected'":""} value="Client">Clients</option>
+               </c:if>
+	           <c:if test="${userTabs.tabName == 'Vendors'}">
+	                  <option data-icon="fa fa-suitcase" ${searchType == "Vendor" ?"selected='selected'":""} value="Vendor">Vendors</option>
+	           </c:if> 
+	           <c:if test="${userTabs.tabName == 'Projects'}">
+	             <option data-icon="fa fa-bar-chart" ${searchType == "Projects" ?"selected='selected'":""} value="Projects">Projects</option>   	  
+	           </c:if>
+			</c:forEach>
+		</select>
+			
+			
+			<%-- <select id="searchType" name="searchType" class="selectpicker uasrch pull-left show-menu-arrow" >
+			<option data-icon="fa fa-th-large" ${searchType == "All" ?"selected='selected'":""} value="All">All</option> --%>
+			<%-- <option data-icon="fa fa-users"  ${searchType == "Users" ?"selected='selected'":""} value="Users">Users</option> --%>
+			<%-- <option data-icon="fa fa-briefcase" ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Requirement</option> --%>
+			<%-- <option data-icon="fa fa-user-circle" ${searchType == "Candidate" ?"selected='selected'":""} value="Candidate">Candidate</option> --%>
+			<%-- <option data-icon="fa fa-user-plus" ${searchType == "Client" ?"selected='selected'":""} value="Client">Clients</option> --%>
+			<%-- <option data-icon="fa fa-suitcase" ${searchType == "Vendor" ?"selected='selected'":""} value="Vendor">Vendors</option> --%>
+			<%-- <option data-icon="fa fa-bar-chart" ${searchType == "Projects" ?"selected='selected'":""} value="Projects">Projects</option> --%>
+			<!-- </select> -->
 			</div>
 			
 			
@@ -1005,6 +1030,7 @@ function myTasksPagination(){
      		"sSearch": ""
      	}
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -1020,6 +1046,7 @@ function assignedTasksPagination(){
      		"sSearch": ""
      	}
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 <script>
@@ -1034,6 +1061,7 @@ function closedTasksPagination(){
      		"sSearch": ""
      	}
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 <script>

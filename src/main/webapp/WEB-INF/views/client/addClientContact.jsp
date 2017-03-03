@@ -698,6 +698,7 @@ function getRolesList(){
 <script type="text/javascript">
  function getOwnersList() {
 	 var email = document.getElementById("email").value; 
+	 var SourceLeadWeb_userId= '${SourceLeadWeb_userId}';
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(email != null && email != "" && email != 'undefined'){
 		 $.ajax({
@@ -708,8 +709,13 @@ function getRolesList(){
 		        	var output = "";
 		        	for (var i=0; i<json.length; i++)
 					{
-			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		 var opt = json[i];
+		        		if(opt.id == SourceLeadWeb_userId){
+		        			output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+" "+opt.lastName+"</option>";
+		        		}
+		        		else{
+		        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+		        		}
 					}
 		        	$("#owner").empty();
 			        $("#owner").append(output);

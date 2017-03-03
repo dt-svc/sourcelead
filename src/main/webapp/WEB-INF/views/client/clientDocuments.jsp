@@ -85,7 +85,6 @@ function clientDocumentsList(clientLocationId,orgRelationId){
           type : "POST",
           url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+clientLocationId+"&sourceType=Client",        
           success :function(data) {
-               if(data != null && data != 'undefined' && data != "" && data != '[]'){
              			var json = JSON.parse(data);
              			/* for (var i = 0; i < 1; i++) { 
              				var val= json[i];
@@ -185,36 +184,6 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                     $("#clientDocumentsList").append(result); 
 	                     documentpagination(); 
 	                     //msgFadein();
-               }else{
-            	   
-            	    var val= "${SourceLeadWeb_deleteDocument}";
-    				var opt = "";
-    					if(val != null && val != '' && val != 'undefined'){
-        					opt  = opt + '<div class="success_pop" id="selector1" style="display: block;">';
-        					opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val+'</span>';
-        					opt  = opt + '</div>';
-    						}
-    					$("#msgDiv").empty();
-    					$("#msgDiv").append(opt);
-    					<%
-    					session.removeAttribute( "deleteDocument" );
-    			         %>
-            	   
-	    	         var result ="";
-		    	     result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Documents Found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> "; 
-					$("#clientDocumentsList").empty();
-				    $("#clientDocumentsList").append(result); 
-				    msgFadein();
-               }
         },
           
      }); 
@@ -233,6 +202,7 @@ function documentpagination(){
      		"sSearch": ""
      	}
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -635,7 +605,7 @@ function deleteClientDocument(clientLocationId,orgRelationId,docId,docName){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>User delete message here</p>";
+	result = result +"		<p>Document delete message here</p>";
 	result = result +"		<textarea  id='terminateReason' name='terminateReason'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="terminateReasonDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReasonForDoc("+clientLocationId+","+orgRelationId+","+docId+",\""+docName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDocTermination();'></b>";
