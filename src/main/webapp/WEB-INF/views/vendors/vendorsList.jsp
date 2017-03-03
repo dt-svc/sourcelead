@@ -1378,6 +1378,7 @@ function saveReason1(spocId, orgRelationID){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
 	if(reason.match(/^[^\s-](.*)*$/) != null){
+		 reason = encodeURIComponent(reason);
 		 $("#reasonForSpocDiv").empty();
 		
 		 $("#row"+spocId).empty();
