@@ -46,6 +46,7 @@ import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
@@ -348,6 +349,18 @@ public class SubmissionsRestController {
 			HttpServletRequest request) throws Exception {
 
 		String resultJson = null;
+		boolean submitToClient = true;
+		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+		
+		if(null != requirement){
+			if(null != requirement.getParentRequirement() && requirement.getIsClientJob().equalsIgnoreCase("Y")){
+				if(!requirement.getParentRequirement().getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.OPEN)){
+					submitToClient = false;
+				}
+			}
+		}
+		
+		if(submitToClient){
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		List<RequirementSubmission> shortlistedList = requirementSubmissionService
@@ -388,6 +401,9 @@ public class SubmissionsRestController {
 		}
 		resultJson = toJSON(candidatesList);
 		return resultJson;
+		}else{
+			return "failed";
+		}
 
 	}
 
