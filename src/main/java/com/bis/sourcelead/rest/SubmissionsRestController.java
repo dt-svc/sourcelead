@@ -222,19 +222,28 @@ public class SubmissionsRestController {
 		}
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(jsonObj,
-				user, orgLocations, con, multiFile);
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		String  userRoleName = (String)SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(jsonObj,user, orgLocations, con, multiFile);
 		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
 		requirementSubmissionHistory.setFromStage("NEW");
 //		requirementSubmission.get
 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
 		Requirement requirement = requirementSubmission.getRequirement();
-		Integer count = requirementSubmissionService.getNumberOfApplicantsForRequirement(orgLocations.getId(), requirement.getId());
-		requirement.setTotalApplicantsForRequirement(count);
-		requirementElkUtil.saveElkRequirement(requirement,new JSONObject());
+		
+		if(null != requirement){
+			int totalApplicatsCountForRequirement = 0;
+		   //updating total number of applicants for requrement
+			totalApplicatsCountForRequirement = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(orgLocations,requirement.getId(),user,userRoleName);
+			if(totalApplicatsCountForRequirement > 0){
+				requirement.setTotalApplicants(totalApplicatsCountForRequirement); 
+				requirementService.updateRequirement(requirement);
+			}else{
+				requirement.setTotalApplicants(0); 
+			}
+			requirementElkUtil.saveElkRequirement(requirement,new JSONObject());	
+		}
 		return "success";
 
 	}
