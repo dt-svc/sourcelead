@@ -369,7 +369,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             		 
             		 style = 'style="width:130px !important; padding-right:5px;"'; 
             		 
-            		 ratePer = '&nbsp;<select style="width:115px !important; padding-right:5px;" id="currentCTCRatePer" name="currentCTCRatePer" field-name="Rate Per">'+
+            		 ratePer = '&nbsp;<select style="width:115px !important; padding-right:5px;" onblur="validateCurrentCTCRatePer();"  id="currentCTCRatePer" name="currentCTCRatePer" field-name="Rate Per">'+
             		 '<option value="">Rate Per</option>'+
             		 '<option value="Yearly">Yearly</option>'+
             		 '<option value="Monthly">Monthly</option>'+
@@ -397,7 +397,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             		 labelId = 'id="expectedRate"';
             		 onblur = 'onblur="validateExpectedCTC();"';
             		 
-            		 ratePer = '&nbsp;<select  style="width:115px !important; padding-right:5px;" id="expectedCTCRatePer" name="expectedCTCRatePer" field-name="Rate Per">'+
+            		 ratePer = '&nbsp;<select  style="width:115px !important; padding-right:5px;" onblur="validateExpectedCTCRatePer();"  id="expectedCTCRatePer" name="expectedCTCRatePer" field-name="Rate Per">'+
             		 '<option value="">Rate Per</option>'+
             		 '<option value="Yearly">Yearly</option>'+
             		 '<option value="Monthly">Monthly</option>'+

@@ -374,6 +374,7 @@ search-area .btn-default:hover {
 	transform: translateX(0px);
 	-ms-transform: translateX(0px) ;
 	-webkit-transform: translateX(0px);
+	display: block;
 }
 /* Alerts Styels ends */
 /*updated links for quick links based on user */
@@ -6412,6 +6413,12 @@ padding: 10px;
 .searchArea_mrgn{
    margin-left: 10%;
 }
+.require_wrap_table.overflow_inherint, .clients_wrap_table.overflow_inherint{
+	overflow: inherit !important;
+}
+.overflow_inherint{
+	overflow: inherit !important;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
@@ -6635,8 +6642,8 @@ margin-bottom: 10px;
 }
 @media (max-width: 1210px) {
     .searchArea_mrgn{
-    margin-left: 5%;
-    }
+    margin-left: 1%;
+   }
 }
 @media (max-width: 1160px) {
      .searchArea_mrgn{

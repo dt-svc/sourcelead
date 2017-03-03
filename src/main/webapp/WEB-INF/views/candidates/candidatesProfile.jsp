@@ -242,7 +242,7 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							 
 							result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv" style="display:none">';
-							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType" value="'+designationOtherType+'" placeholder="Designation Other Type" field-name="Designation Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
+							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType" value="'+designationOtherType+'" placeholder="Employment Other Type" field-name="Employment Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
 							result = result + '</div>';
 						
 							result = result + '</div>';
@@ -1529,7 +1529,7 @@ function updateDesignationType(){
 		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email, 
 		        success: function(data) {
 		        	if(data == 'true'){
-		        		 
+		        		
 						  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
 						  $("#update_candidate").attr("disabled", "disabled");
 						  $("#update_candidate").addClass('button').val('Processing..');

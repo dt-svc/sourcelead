@@ -46,6 +46,7 @@ import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
@@ -222,19 +223,29 @@ public class SubmissionsRestController {
 		}
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(jsonObj,
-				user, orgLocations, con, multiFile);
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		String  userRoleName = (String)SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(jsonObj,user, orgLocations, con, multiFile);
 		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
 		requirementSubmissionHistory.setFromStage("NEW");
 //		requirementSubmission.get
 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
 		Requirement requirement = requirementSubmission.getRequirement();
-		Integer count = requirementSubmissionService.getNumberOfApplicantsForRequirement(orgLocations.getId(), requirement.getId());
-		requirement.setTotalApplicantsForRequirement(count);
-		requirementElkUtil.saveElkRequirement(requirement,new JSONObject());
+		
+		if(null != requirement){
+			Integer totalApplicatsCountForRequirement = 0;
+		   //updating total number of applicants for requrement
+			totalApplicatsCountForRequirement = requirementSubmissionService.getNumberOfApplicantsForRequirement(orgLocations.getId(), requirement.getId());
+//			totalApplicatsCountForRequirement = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(orgLocations,requirement.getId(),user,userRoleName);
+			if(totalApplicatsCountForRequirement > 0){
+				requirement.setTotalApplicants(totalApplicatsCountForRequirement); 
+				requirementService.updateRequirement(requirement);
+			}else{
+				requirement.setTotalApplicants(0); 
+			}
+			requirementElkUtil.saveElkRequirement(requirement,new JSONObject());	
+		}
 		return "success";
 
 	}
@@ -348,6 +359,18 @@ public class SubmissionsRestController {
 			HttpServletRequest request) throws Exception {
 
 		String resultJson = null;
+		boolean submitToClient = true;
+		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+		
+		if(null != requirement){
+			if(null != requirement.getParentRequirement() && requirement.getIsClientJob().equalsIgnoreCase("Y")){
+				if(!requirement.getParentRequirement().getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.OPEN)){
+					submitToClient = false;
+				}
+			}
+		}
+		
+		if(submitToClient){
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		List<RequirementSubmission> shortlistedList = requirementSubmissionService
@@ -388,6 +411,9 @@ public class SubmissionsRestController {
 		}
 		resultJson = toJSON(candidatesList);
 		return resultJson;
+		}else{
+			return "failed";
+		}
 
 	}
 
