@@ -8,6 +8,8 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -628,7 +630,8 @@ public class RequirementListRestController {
 										String currentTimeStr = Constants.TZ_DF.format(requirementSubmission.getCreatedDate());
 										if(null != timezone && null != timezone.getTimeZoneId()){
 											String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
-											Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
+											DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+											Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
 											currentDateInTimezone = Constants.DMY.format(converteDate);
 											requirementSubmission.setCreatedDateStr(currentDateInTimezone);	
 										}
@@ -637,7 +640,8 @@ public class RequirementListRestController {
 										String currentTimeStr = Constants.TZ_DF.format(requirementSubmission.getUpdatedDate());
 										if(null !=timezone && null != timezone.getTimeZoneId()){
 											String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
-											Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
+											DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+											Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
 											currentDateInTimezone = Constants.DMY.format(converteDate);
 											requirementSubmission.setUpDatedStr(currentDateInTimezone);
 										}
