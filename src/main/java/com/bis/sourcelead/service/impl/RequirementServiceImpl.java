@@ -637,6 +637,7 @@ public class RequirementServiceImpl implements RequirementService {
 						}
 				     
 			}
+			requirement.setTotalApplicants(0);
 			requirement.setRequirementAssignTo(requirementAssignToList);
 			//storing assigned team END
 			
@@ -731,7 +732,7 @@ public class RequirementServiceImpl implements RequirementService {
 						mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
 					}
 		 }		
-
+			       
 			       requirementElkUtil.saveElkRequirement(savedRequirement,jsonObj);
 			    
 		return savedRequirement;
@@ -2522,7 +2523,7 @@ public class RequirementServiceImpl implements RequirementService {
      	requirement.setSearchType("Requirement");
      	requirement.setPositions(requirementIndex.getNumberOfPositions());
      	if(null != requirementIndex.getNumberOfApplicants()){
-     		requirement.setTotalApplicantsForRequirement(Integer.parseInt(requirementIndex.getNumberOfApplicants()));
+     		requirement.setTotalApplicants(Integer.parseInt(requirementIndex.getNumberOfApplicants()));
      	}
      	requirement.setManager(requirementIndex.getManager());
      	if(requirementIndex.getRequirementStatus() !=null && !"".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
@@ -2766,6 +2767,11 @@ public class RequirementServiceImpl implements RequirementService {
 	@Override
 	public Requirement getRequirementByRequirementUUID(String requirementUUID) throws Exception {
 		return requirementDao.getRequirementByRequirementUUID(requirementUUID);
+	}
+
+	@Override
+	public Requirement updateRequirement(Requirement requirement) throws Exception {
+		return requirementDao.storeRequirement(requirement);	
 	}
 
 }

@@ -650,6 +650,11 @@ public class UserServiceImpl implements UserService {
 		return userDao.getManagersByUserIdAndUserRolesAndOrgLocationId(userId, roleId, orgLocationsId);
 	}
 	
+	@Override
+	public List<User> getManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(Long userId, Long roleId, Long orgLocationsId, Long tabId) throws Exception {
+		return userDao.getManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(userId, roleId, orgLocationsId,tabId);
+	}
+	
 
 	@Override
 	public User getUserDetailsByUserCode(String userCode) {
