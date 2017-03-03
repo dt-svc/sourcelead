@@ -135,6 +135,7 @@ function requirementInterviewsPagination(){
             "sSearch": ""
        }
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 <script>
