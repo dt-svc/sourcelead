@@ -71,4 +71,5 @@ public interface RequirementDao {
 	
 	List<String> getAllRequirementSkillsByRequirementI(Long requirementId)throws Exception;
 
+
 }
