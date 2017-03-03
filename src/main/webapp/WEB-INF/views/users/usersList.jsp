@@ -92,7 +92,7 @@ function getUsersSearchResult(searchValue){
     </div>
   </div>
       <section class="clearfix usersHeader positionRelative">
-      <div class="section-action-btns clearfix">
+      
       <div class="pull-left cand-advsrche">
        <input id="searchElement" type="hidden"></input>
        
@@ -216,7 +216,7 @@ function getUsersSearchResult(searchValue){
       </div>
        
        
-       
+       <div class="section-action-btns clearfix">
        <div class="positionRelative pull-left">
        <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
