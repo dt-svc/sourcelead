@@ -137,7 +137,7 @@ else{
 </script>
  <script>
   function prepareCandidateList(data){
-	  if(data != null && data != 'undefined' && data != "" && data != '[]'){
+	  /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
 	 	     $("#candidateList").removeAttr("style");
 	     	 $("#candidateList").empty();
 	     	 var result = "";
@@ -200,10 +200,10 @@ else{
 		            	if(opt.country != null && opt.country != "" && opt.country != 'undefined'){
 		            		location = opt.country;
 		            		if(opt.state != null && opt.state != "" && opt.state != 'undefined'){
-		            			location = location+", "+opt.state;
+		            			location = opt.state+", "+location;
 			            	}
 		            		if(opt.city != null && opt.city != "" &&  opt.city != 'undefined'){
-		            			location = location+", "+opt.city;
+		            			location = opt.city+", "+location;
 			            	}
 		            	}
 		            	
@@ -256,7 +256,7 @@ else{
 	          $("#noCandidates").val('');
 	          $("#candidateList").append(result);
 	          cpagination(); 
-	  }
+	 /*  }
 	  else{
      	 $("#candidateList").removeAttr("style");
 	         var result ="";
@@ -267,7 +267,7 @@ else{
 			$("#noCandidates").val("nocandidate");
 			$("#candidateList").empty();
 		    $("#candidateList").append(result); 
-      }
+      } */
   }
 </script>
 <%-- 
@@ -304,6 +304,7 @@ function cpagination(){
      		"sSearch": ""
      	}
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -1006,8 +1007,9 @@ function cancel(candidateId){
 			  <i class="fa fa-search"></i>
 			  </a> 
 			  <form:form id="candidatelist_form" name="candidatelist_form"  enctype='multipart/form-data' >
-				  <div class="cand-advsrch-popup" >
+				  <div class="cand-advsrch-popup candAdvsrch-popup" >
 					  <a href="javascript:void(0)" class="close-div" onclick="closePop();"><i class="fa fa-close"></i></a>
+					  <div class="candAdvsrch-inner">
 					  <div class="row">
 						  <div class="col-md-4">
 							  <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
@@ -1048,7 +1050,7 @@ function cancel(candidateId){
 							<div class="row">
 								<div class="col-md-6">
 									<label>Rate</label>
-									 <div class="input-group error-field">
+									 <div class="input-group error-field ratetype">
 										<div id="currencyDiv" class="input-group-btn selp-custom-min custommin">
 										    <select class="selectpicker" name="currency" id="currency" field-name="Currency"  >
 										        <option value="">Currency</option>
@@ -1067,10 +1069,7 @@ function cancel(candidateId){
 								</div> 
 							<div class="col-md-6">
 								<label>&nbsp;</label> 
-								<div class="input-group error-field">
-								    <div id="maxRateDiv">
-									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
-									</div>
+								<div class="input-group error-field ratetype">
 									<div id="rateTypeDiv" class="input-group-btn selp-custom-min custommin">
 									      <select class="selectpicker" name="rateType" id="rateType" field-name="Rate Type"  >
 									            <option value="">Rate Type</option>
@@ -1082,6 +1081,9 @@ function cancel(candidateId){
 												<option value="Bi-Monthly">Bi-Monthly</option>
 												<option value="Yearly">Yearly</option>
 				                            </select> 
+									</div>
+									<div id="maxRateDiv">
+									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
 									</div>
 								</div>
 							</div>
@@ -1243,7 +1245,8 @@ function cancel(candidateId){
 							  </div>
 						    </div>
 					  </div>
-					  <div class="row form-footer mt">
+					</div>
+					  <div class="form-footer clearfix">
 						  <div class="pull-right mr">
 							   <input type="button" value="Search" id="search_candidate" onclick="searchCandidate();" class="btn btn-sm btn-primary"/>
                                <input type="button"  value="Clear"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-default ml10"/>
@@ -1264,6 +1267,8 @@ function cancel(candidateId){
             </div>
           </li>
           </sec:authorize>
+          
+           <!--  <li><a href="uploadCandidateForm"><i class="fa fa-upload"></i>&nbsp;Imports</a></li> -->
 	      
            <li id="filter2ApprovePop"><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter2ApprovedPop" class="approved_pop">
@@ -1717,7 +1722,9 @@ function savedCommentAndCount(candidateId){
     <script>
 	// Close Advanced Search
 		function closePop(){
-			$("div.cand-advsrch-popup").hide();
+			 $("div.cand-advsrch-popup").hide();
+			 clearCandidateSearchKeys();
+			 $('#expId').find('p.jquery_form_error_message').remove();
 		}
 		function openPop(){
 		  $("div.cand-advsrch-popup").toggle();
@@ -2027,6 +2034,10 @@ function getCities(){
 		    	   minMaxExperience();
 		       });
 		       
+		       $("#minExpYears").on('change', function (e) {
+		    	   minMaxExperience();
+		       });
+		       
 				for (var selector in config) {
 				  $(selector).chosen(config[selector]);
 				}
@@ -2242,7 +2253,6 @@ function minMaxExperience(){
 </script>
 
 <!-- This  clearCandidateSearchKeys() method for clear search data-->
-
 <script type="text/javascript">	
 	function clearCandidateSearchKeys(){
 		
@@ -2280,6 +2290,8 @@ function minMaxExperience(){
 	     
 	     $("#minExpYears").val(''); 
 	     $("#maxExpYears").val(''); 
+	     $('#expId').find('p.jquery_form_error_message').remove();
+	     
 	     $("#noticePeriod").empty(); 
 	     
 	     $("#country").val(''); 

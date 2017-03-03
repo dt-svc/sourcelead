@@ -181,7 +181,13 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				 //client summary contacts
 				 if(null != type && !"".equalsIgnoreCase(type) && "Client".equalsIgnoreCase(type)){
 					 orgSpoc.setSpocEmail(orgSpoc.getClientUser().getEmail());
-					 orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()).toString());
+					 if(orgSpoc.getClientUser().getFirstName() !=null && orgSpoc.getClientUser().getLastName() !=null){
+						 spocNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()); 
+					 }else{
+						 spocNameSB.append(orgSpoc.getClientUser().getFirstName());
+					 }
+					 orgSpoc.setSpocName(spocNameSB.toString());
+					 
 					 orgSpoc.setSpocMobilePhone(orgSpoc.getClientUser().getMobilePhone());
 					 orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName()).toString());
 					
@@ -446,8 +452,8 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	}
 
 	@Override
-	public Integer getAllClientContactsCountForCampaignByOrgLocationId(Long userId,Long orgLocationId) throws Exception {
-		return orgSpocDao.getAllClientContactsCountForCampaignByOrgLocationId(userId,orgLocationId);
+	public Integer getAllClientContactsCountForCampaignByOrgLocationId(Long orgRelationId,Long userId,Long orgLocationId) throws Exception {
+		return orgSpocDao.getAllClientContactsCountForCampaignByOrgLocationId(orgRelationId,userId,orgLocationId);
 	}
 	
 	@Override

@@ -99,6 +99,8 @@ public class Constants {
 	
 	public static String CLIENTORVENDORMAIL = "ClientOrVendorMail";
 	
+	public static String CUSTOM_USER_EMAIL = "customUserEmail";
+	
 	public static String SUBMIT_TO_CLIENT = "Submit To Client";
 	public static String ADD_OFFER_MAIL ="Forward the Mail";
 
@@ -119,6 +121,10 @@ public class Constants {
 	
 	public static String CLIENT_INTERVIEW = "CLIENT_INTERVIEW";
 	public static String INTERVIEW = "INTERVIEW";
+	
+	public static String MAIL_REOPEN_TIMESHEET = "ReopenTimeSheet";
+	public static String MAIL_ACCEPT_REOPEN_TIMESHEET = "AcceptReopenTimeSheet";
+	public static String MAIL_REJECT_REOPEN_TIMESHEET = "RejectReopenTimeSheet";
 	
 	
 	public static String MAIL_BOX_SENT = "Sent";
@@ -277,7 +283,7 @@ public class Constants {
 	public static String UPDATE_PASSWORD = "Update Password";
 	public static String MAIL_PROJECT_MANAGER = "Mail To Project Manager";
 	
-
+	public static String REJECTMAILFROMCLIENT_TO_VENDOR = "RejectMailFromClient_To_Vendor";
 
 	public static String CONTACTS = "CONTACTS";
 	public static String VENDORSTYPE = "VENDORS";
@@ -348,6 +354,8 @@ public class Constants {
 	public static String[] ROLE_DROPDOWN = {"Admin","Project Manager","HR Manager","Recruiter"};
 	
 	public static String[] STATUS_DROPDOWN = {"Active","In-Active","New","Negotiation","Contracted"};
+	
+	public static String[] COUNTRY_DROPDOWN = {"India","Australia","France","Singapore","United Kingdom","United States"};
 	
 	public static String[] LEVEL_DROPDOWN = {"Tier-1","Tier-2","Tier-3","Tier-4","Tier-5"};
 	
@@ -501,4 +509,4 @@ public class Constants {
     public static String VENDORS_IMPORT_TEMPLATE_XLS = "vendors_import_template.xls";
     public static String VENDORS_IMPORT_TEMPLATE_XLSX = "vendors_import_template.xlsx";
    
-}
+}	

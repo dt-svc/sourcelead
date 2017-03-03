@@ -33,6 +33,7 @@ overflow-x: auto;
 	     <div class="success_pop" id="venselector" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="venmsgDiv"></span>
        </div>
+       <div id="loading"></div>
           <div class="pull-left">
             <h2>Vendors<span class="select-fild">
                 	<select id="listOfVendors" onchange="listChange(this);">
@@ -301,7 +302,8 @@ overflow-x: auto;
 	                  </li>
                   
 	                	 
-						<li id="contactLevel" style="display:none"><i class="fa fa-filter"></i><span>Tier</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>
+						<li id="contactLevel" style="display:none">
+					   <div id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Tier</span><i class="glyphicon glyphicon-play" style="right:20px;"></i></div>
 		                	<div id="filter2ApprovedPop" class="approved_pop">
 		                    	<ul>
 									<li><input id="c6"  type="checkbox" name="clinetLevel" value ="Tier-1"  onclick="getVendorLists();"><label>Tier-1</label></li>
@@ -761,6 +763,7 @@ function preparedVendorsListFromElk(data){
 		   	result = result +' <th>Website</th>';
 		   	result = result +'<th>Location</th>';
 		   	result = result +'<th>Tier</th>';
+		 	result = result +'<th>Created By</th>';
 		   	result = result +'<th>Released Jobs</th>';
 		   	result = result +'<th>No.of Contacts</th>';
 		   	/* result = result +'<th>Actions</th>'; */
@@ -824,6 +827,12 @@ function preparedVendorsListFromElk(data){
 		   		}
 				
 		   	    result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.initiatorLevel+'">'+report.initiatorLevel+'</span>';
+		   	    
+		   	 if(null != report.createdBy && report.createdBy  != '' && report.createdBy  != 'undefined'){
+					result = result +' <td><div>'+report.createdBy+'</div></td>';
+			   	}else{
+			   		result = result +'<td><div>---</div></td>';
+			   	}
 				result = result +' <td><div id="releasedJobsCount'+report.orgRelationId+'">---</div></td>';
 				result = result +'<td><div >'+report.noContacts+'</div></td>';
 				/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
@@ -992,6 +1001,7 @@ function pagination1(){
      	}
 		
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -1099,7 +1109,7 @@ function preparedVendorContactListFromElk(data){
 		   		var report = json[i];
 		   		
 		   		
-		   		result = result +'<tr>';
+		   		result = result +'<tr id="row'+report.id+'">';
 		   		
 		   		
 		   		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
@@ -1140,41 +1150,44 @@ function preparedVendorContactListFromElk(data){
    						result = result + ' <option '+(report.spocStatus == "Negotiation" ? "selected" : '') +'>Negotiation</option>';
    						result = result + ' <option '+(report.spocStatus == "Contracted" ? "selected" : '') +'>Contracted</option>';
    						result = result + ' </select>';
+   						
+   						result = result + '<span id="spocSpanState'+report.id+'"> </span>';
    	        		}
    	        		result = result + ' </div></td>';
 		   			
+   	        	result = result +' <td><div id="invitationStatus'+report.id+'">';	
 		   		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
-		   		  result = result +' <td><div><i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i></div></td>';
+		   		  result = result +' <i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i>';
 		   		}
 		   		
 		   		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
-		            result = result +' <td><div>---</div></td>';
+		            result = result +' ---';
 		      	}
 		   		
 		   		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
-		   			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendVendorSpocInvitation('+report.spocUserId+','+report.id+','+report.orgRelationId+');">Send</a></b></div></td>';
+		   			result = result +' <b class="proj_process"><a href="javascript:void(0)" onClick="resendVendorSpocInvitation('+report.spocUserId+','+report.id+','+report.orgRelationId+');">Send</a></b>';
 		   		}
 		   		
 		   		if(report.spocUserId != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
-		   			result = result +' <td><div>---</div></td>';
+		   			result = result +' ---';
 		   		}
 		   		
 		   		if(report.spocUserId != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){ 
-		   			result = result +' <td><div><b class="proj_process">Received</b></div></td>';
+		   			result = result +' <b class="proj_process">Received</b>';
 		   		}
 		   		
 		   		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
-		   			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendVendorSpocInvitation('+report.spocUserId+','+report.id+','+report.orgRelationId+');">Resend</a></b></div></td>';
+		   			result = result +' <b class="proj_process"><a href="javascript:void(0)" onClick="resendVendorSpocInvitation('+report.spocUserId+','+report.id+','+report.orgRelationId+');">Resend</a></b>';
 		   		}
 		   		
 		   		if(report.invitationStatus == 'Accepted'){ 
-		   			result = result +' <td><div><b class="proj_active">'+report.invitationStatus+'</b></div></td>';
+		   			result = result +' <b class="proj_active">'+report.invitationStatus+'</b>';
 		   		}
 		 		
 		 		if(report.invitationStatus == 'Rejected'){
-		 			result = result +' <td><div><b class="proj_closed">'+report.invitationStatus+'</b></div></td>';
+		 			result = result +' <b class="proj_closed">'+report.invitationStatus+'</b>';
 		 		}
-		   		
+		 		result = result + ' </div></td>';
 		   		/* result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
 		   		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';
@@ -1223,7 +1236,7 @@ function preparedVendorContactList(data){
 		   	for (var i=0; i<json.length; i++)
 				{  
 		   		var report = json[i];
-		   		result = result +'<tr>';
+		   		result = result +'<tr id="row'+report.id+'">';
 		   		
 		   		
 		   		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
@@ -1257,41 +1270,45 @@ function preparedVendorContactList(data){
 						result = result + ' <option '+(report.spocStatus == "Negotiation" ? "selected" : '') +'>Negotiation</option>';
 						result = result + ' <option '+(report.spocStatus == "Contracted" ? "selected" : '') +'>Contracted</option>';
 						result = result + ' </select>';
+						
+						result = result + '<span id="spocSpanState'+report.id+'"> </span>';
 	        		}
 	        		result = result + ' </div></td>';
-		   			
+		   		
+	        	result = result +' <td><div id="invitationStatus'+report.id+'">';	
 		   		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
-		   		  result = result +' <td><div><i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i></div></td>';
+		   		  result = result +' <i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i>';
 		   		}
 		   		
 		   		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
-		            result = result +' <td><div>---</div></td>';
+		            result = result +' ---';
 		      	}
 		   		
 		   		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
-		   			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendVendorSpocInvitation('+report.spocUserId+','+report.id+','+report.orgRelationId+');">Send</a></b></div></td>';
+		   			result = result +' <b class="proj_process"><a href="javascript:void(0)" onClick="resendVendorSpocInvitation('+report.spocUserId+','+report.id+','+report.orgRelationId+');">Send</a></b>';
 		   		}
 		   		
 		   		if(report.spocUserId != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
-		   			result = result +' <td><div>---</div></td>';
+		   			result = result +' ---';
 		   		}
 		   		
 		   		if(report.spocUserId != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){ 
-		   			result = result +' <td><div><b class="proj_process">Received</b></div></td>';
+		   			result = result +' <b class="proj_process">Received</b>';
 		   		}
 		   		
 		   		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
-		   			result = result +' <td><div><b class="proj_process"><a href="javascript:void(0)" onClick="resendVendorSpocInvitation('+report.spocUserId+','+report.id+','+report.orgRelationId+');">Resend</a></b></div></td>';
+		   			result = result +' <b class="proj_process"><a href="javascript:void(0)" onClick="resendVendorSpocInvitation('+report.spocUserId+','+report.id+','+report.orgRelationId+');">Resend</a></b>';
 		   		}
 		   		
 		   		if(report.invitationStatus == 'Accepted'){ 
-		   			result = result +' <td><div><b class="proj_active">'+report.invitationStatus+'</b></div></td>';
+		   			result = result +' <b class="proj_active">'+report.invitationStatus+'</b>';
 		   		}
 		 		
 		 		if(report.invitationStatus == 'Rejected'){
-		 			result = result +' <td><div><b class="proj_closed">'+report.invitationStatus+'</b></div></td>';
+		 			result = result +' <b class="proj_closed">'+report.invitationStatus+'</b>';
 		 		}
-		   		
+		 		result = result + ' </div></td>';
+		 		
 		   		/* result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
 		   		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';
@@ -1321,16 +1338,20 @@ function preparedVendorContactList(data){
 <!-- This script is for resending the invitation mail -->
 <script type="text/javascript">
 function resendVendorSpocInvitation(spocUserId,orgSpocId,orgRelationId){
-	var sourceleadUrl ='${sourceleadUrl}';
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 
+	 var rowHtmlContent =  $("#row"+orgSpocId).html();
+	 $("#row"+orgSpocId).empty();
+	 $("#row"+orgSpocId).html("<td colspan='8'  id='loading"+orgSpocId+"'></td>");
 	if(spocUserId != null && spocUserId != ""){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#loading"+orgSpocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendSpocInvitationEmail?${_csrf.parameterName}=${_csrf.token}&spocUserId="+spocUserId+"&orgSpocId="+orgSpocId+"&responderType=Vendor&orgRelationID="+orgRelationId, 
 			        success: function(result) {
-			        	$("#loading").removeAttr("style"); 
-			        	/* getVendorContactLists(); */
-			        	 getVendorContactListsELK();
+			        	 $("#row"+orgSpocId).empty();
+			    	     $("#row"+orgSpocId).html(rowHtmlContent);
+			    	     $("#invitationStatus"+orgSpocId).html("<b class='proj_process'><a href='javascript:void(0)' onClick='resendVendorSpocInvitation("+spocUserId+','+orgSpocId+','+orgRelationId+");'>Resend</a></b>");
 			        },
 			    });
 		 } 
@@ -1359,7 +1380,12 @@ function saveReason1(spocId, orgRelationID){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
 	if(reason.match(/^[^\s-](.*)*$/) != null){
-		$("#reasonForSpocDiv").empty();
+		 $("#reasonForSpocDiv").empty();
+		
+		 $("#row"+spocId).empty();
+		 $("#row"+spocId).html("<td colspan='8'  id='loading"+spocId+"'></td>");
+		 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+		
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
@@ -1369,10 +1395,11 @@ function saveReason1(spocId, orgRelationID){
 	  			 $("#venmsgDiv").html("vendor contact removed");
 	  			 $("#popUp").empty();
 	 			 $(".project_inn_mask").fadeOut(200);
-   			    //vendorContactList(orgRelationID);
-   			    /*  getVendorContactLists(); */
-   			     getVendorContactListsELK();
-   			  msgFadein();
+	 			 
+	 			 var table = $('#vendorContactList').DataTable();
+	  		     table.row("#row"+spocId).remove().draw( false );
+   			     
+	 			 msgFadein();
 		    }
 	   });
 	}else{
@@ -1390,12 +1417,19 @@ function saveReason1(spocId, orgRelationID){
 function updateSpocStatus(spocId){
     var spocStatus = $('#spocState'+spocId).val();
 	var sourceleadUrl = '${sourceleadUrl}';
+	
+	 var rowHtmlContent =  $("#row"+spocId).html();
+	 $("#row"+spocId).empty();
+	 $("#row"+spocId).html("<td colspan='8'  id='loading"+spocId+"'></td>");
+	 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+	
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/changeSpocStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&spocStatus="+spocStatus,	    	   
 	    success: function(data) {
-	    	/*  getVendorContactLists(); */
-	    	 getVendorContactListsELK();
+	    	$("#row"+spocId).empty();
+	    	$("#row"+spocId).html(rowHtmlContent);
+	        $("#spocState"+spocId).val(spocStatus);
 	    }
    });
 }
@@ -1418,6 +1452,7 @@ function pagination(){
      	}
 		
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -1568,6 +1603,7 @@ function pagination1(){
     	} ); document.getElementById("example").style.display="block";
 
     	} ); */
+    $(".dataTables_empty").html("");
 }
 </script>
 <script>
@@ -1985,6 +2021,10 @@ $(".addcon-pop").click(function(){
 <script>
 function acceptInvitation(spocId){
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var rowHtmlContent =  $("#row"+spocId).html();
+	 $("#row"+spocId).empty();
+	 $("#row"+spocId).html("<td colspan='8'  id='loading"+spocId+"'></td>");
+	 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 	 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Accepted",	    	   
@@ -1992,8 +2032,10 @@ function acceptInvitation(spocId){
 		    	$("#venselector").removeAttr("style");
     			$("#venselector").css({ display: "block" });
     			$("#venmsgDiv").html("Accept Invitation Successfully");
-		    	/* getVendorContactLists(); */
-		    	 getVendorContactListsELK();
+    			
+    			$("#row"+spocId).empty();
+    	    	$("#row"+spocId).html(rowHtmlContent);
+    	        $("#invitationStatus"+spocId).html("<b class='proj_active'>Accepted</b>");
 		    	msgFadein();
 		    }
 	   });
@@ -2003,6 +2045,10 @@ function acceptInvitation(spocId){
 <script>
 function rejectInvitation(spocId){
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var rowHtmlContent =  $("#row"+spocId).html();
+	 $("#row"+spocId).empty();
+	 $("#row"+spocId).html("<td colspan='8'  id='loading"+spocId+"'></td>");
+	 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 	 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/saveInvitationStatus?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&invitationStaus=Rejected",
@@ -2010,8 +2056,14 @@ function rejectInvitation(spocId){
 		    	$("#venselector").removeAttr("style");
     			$("#venselector").css({ display: "block" });
     			$("#venmsgDiv").html("Reject Invitation Successfully");
-		    	/* getVendorContactLists(); */
-		    	 getVendorContactListsELK();
+    			
+    			$("#row"+spocId).empty();
+    	    	$("#row"+spocId).html(rowHtmlContent);
+    	        $("#invitationStatus"+spocId).html("<b class='proj_closed'>Rejected</b>");
+    	        
+    	        $("#spocState"+spocId).remove();
+    	        $("#spocSpanState"+spocId).html("<span>In-Active</span>");
+    	        
 		    	msgFadein();
 		    }
 	   });

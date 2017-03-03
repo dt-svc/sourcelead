@@ -52,6 +52,11 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 		return orgLocationsDao.deleteOrgLocations(id);
 		
 	}
+	
+	@Override
+	public Boolean isLoginUserIsSuperUser(Long userId) throws Exception {
+		return orgLocationsDao.isLoginUserIsSuperUser(userId);
+	}
 
 	@Override
 	public List<OrgLocations> getAllOrgLocations() throws Exception {

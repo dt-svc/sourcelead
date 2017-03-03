@@ -65,6 +65,8 @@ margin-top: 3px;
 }
 </style>
 <div id='rejectedPopup'></div>
+<div id='reOpenPopup'></div>
+<div id='reOpenRejectedPopup'></div>
 <div class="side_mask"><div class="proj_close"></div></div>	
 <div class="time_appr_side_wrap">
 	<div class="time_appr_side_wrap_inn">
@@ -80,6 +82,20 @@ margin-top: 3px;
 <div class="time_pop time_pop_a"><p>Monday hours should not be more than 24<b>X</b></p></div>
 <!--   Timesheet approval popup   -->
 <!-- this script is for Timesheet Approval popup -->
+
+<script>
+	$(document).on("mouseover", ".rejectedHover", function() { 
+		var projectMemberId = $("#projectMemberId").val();
+		$("#rejectedMessage"+projectMemberId).addClass('app_error_mes_active');
+		$("#rejectedMessage1"+projectMemberId).addClass('app_error_mes_active');
+	});	
+	$(document).on("mouseleave", ".rejectedHover", function() { 
+		 var projectMemberId = $("#projectMemberId").val();
+		  $("#rejectedMessage"+projectMemberId).removeClass('app_error_mes_active');
+		  $("#rejectedMessage1"+projectMemberId).removeClass('app_error_mes_active');
+	});	
+</script>
+
 <script>
 function timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMemberId,from){
 		var sourceleadUrl ='${sourceleadUrl}';
@@ -395,7 +411,6 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 	    	 $(".side_mask").fadeOut(200); 
      		 $("body").css('overflow-y', 'scrool');
 	    	 var table = $('#example').DataTable();
-	    	 alert('#row'+projectMemberId+timesheetFrequency+'');
 			 table.row('#row'+projectMemberId+timesheetFrequency+'').remove().draw( false );
 		 }
 		 else{
@@ -1324,6 +1339,130 @@ function pagination(){
     } );
 }
 </script>
+
+<script type="text/javascript">
+function reOpenMyTimesheet(projectMemberId,timesheetFrequency){ 
+	var totalHours = $("#totalHours").val();
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Re-open message here</p>";
+	result = result +"		<textarea  id='reOpenReason' name='reOpenReason'  placeholder='Comments here'></textarea>";
+	result = result + ' <div id="reOpenReasonDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='notifyReopenTimeSheet("+projectMemberId+",\""+timesheetFrequency+"\","+totalHours+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpen();'></b>";
+	result = result +"	</div>";
+	$("#reOpenPopup").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<script>
+function notifyReopenTimeSheet(projectMemberId,timesheetFrequency,totalHours){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var reason = document.getElementById("reOpenReason").value;
+	if(reason.match(/^[^\s-](.*)*$/) != null){
+		$("#reOpenReasonDiv").empty();
+		$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/notifyReopenTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&reason="+reason+"&totalHours="+totalHours,	    	   
+		    success: function(data) {
+		    	$("#reOpenPopup").empty();
+   			 	$(".project_inn_mask").fadeOut(200);
+   			 	
+   			 	 timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMemberId,"approver");
+   			 	
+   			    timesheetDivByFrequency();
+	    	    $("html").trigger('click');
+	    	    maskme();
+		    }
+	   });
+	}else{
+		if(reason){
+			$("#reOpenReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+		}else{
+			$("#reOpenReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+		}
+	}
+	  
+}
+</script>
+
+<script>
+function cancelReOpen(){
+$("#reOpenPopup").empty();
+$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+
+<script>
+function rejectReopenTimeSheetBySuperUser(projectMemberId,reOpenedUserId,timesheetFrequency){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Re-open message here</p>";
+	result = result +"		<textarea  id='reOpenRejectedReason' name='reOpenRejectedReason'  placeholder='Comments here'></textarea>";
+	result = result + ' <div id="reOpenRejectedReasonDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='storeReopenRejectedReason("+projectMemberId+","+reOpenedUserId+",\""+timesheetFrequency+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpenRejected();'></b>";
+	result = result +"	</div>";
+	$("#reOpenRejectedPopup").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<script>
+function storeReopenRejectedReason(projectMemberId,reOpenedUserId,timesheetFrequency){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var superUserId = '${SourceLeadWeb_superUserId}';
+	var reason = document.getElementById("reOpenRejectedReason").value;
+	if(reason.match(/^[^\s-](.*)*$/) != null){
+		$("#reOpenRejectedReasonDiv").empty();
+		$.ajax({
+		   	type: "POST",
+		   	url : sourceleadUrl+"/acceptOrRejectReopenTimeSheetBySuperUser?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reOpenedUserId="+reOpenedUserId+"&timesheetFrequency="+timesheetFrequency+"&type=reject&reason="+reason,	    	   
+		    success: function(data) {
+		    	$("#reOpenRejectedPopup").empty();
+   			 	$(".project_inn_mask").fadeOut(200);
+   			    timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMemberId,"approver");
+   			 	
+	    	    $("html").trigger('click');
+	    	    maskme();
+		    }
+	   });
+	}else{
+		if(reason){
+			$("#reOpenRejectedReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+		}else{
+			$("#reOpenRejectedReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+		}
+	}
+	  
+}
+</script>
+
+<script>
+function cancelReOpenRejected(){
+$("#reOpenRejectedPopup").empty();
+$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+<script>
+function acceptReopenTimeSheetBySuperUser(projectMemberId,reOpenedUserId,timesheetFrequency){
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl+"/acceptOrRejectReopenTimeSheetBySuperUser?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reOpenedUserId="+reOpenedUserId+"&timesheetFrequency="+timesheetFrequency+"&type=accept",
+		success : function(data) {
+			timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMemberId,"approver");
+		},
+	});
+}
+</script>
+
+
 
 
 <script>

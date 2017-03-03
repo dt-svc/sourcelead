@@ -516,6 +516,7 @@ function pagination(){
      	}
 		
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -578,17 +579,17 @@ function filter(){
    		    		/*result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.employeeStartDateStr+'\',\''+report.employeeEndDateStr+'\',\''+report.projectStatus+'\');"><span class="tbldata-dotdot-vsm">'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';*/
 
    		    		result = result +'<td data-title="Manager">';
-   		    		result = result +'<div><span title='+report.managerLevel1+'>';
+   		    		result = result +'<div>';
    		    		if(report.managerLevel1 !=null && report.managerLevel1 !='' && report.managerLevel1 !='undefined'){
-   		    			result = result +report.managerLevel1;
+   		    			result = result +'<span title="'+report.managerLevel1+'">'+report.managerLevel1+'</span>';
    		    		}
    		    		if(report.managerLevel1 !=null && report.managerLevel1 !='' && report.managerLevel1 !='undefined' && report.managerLevel2!=null && report.managerLevel2!='' && report.managerLevel2 !='undefined'){
    		    			result = result + " , ";
    		    		}
    		    		if(report.managerLevel2!=null && report.managerLevel2!='' && report.managerLevel2 !='undefined'){
-   		    			result = result +report.managerLevel2;
+   		    			result = result +'<span title="'+report.managerLevel2+'">'+report.managerLevel2+'</span>'; 
    		    		} 
-   		    		result = result +'</span></div>';
+   		    		result = result +'</div>';
    		    		result = result +'</td>';
    		    		
    		    		

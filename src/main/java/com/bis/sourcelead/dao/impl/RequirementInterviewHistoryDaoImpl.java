@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,7 +96,7 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<RequirementInterviewHistory> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode)
+	public List<RequirementInterviewHistory> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode,Date startUTCDate,Date endUTCDate)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		
@@ -108,28 +109,31 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 			subQuery = "and ((rih.submissionId.requirement.managerUserId.id =:userId OR rih.createdBy =:userCode) OR (rih.interviewId.id IN (select interviewer.requirementInterview.id from RequirementInterviewer interviewer where interviewer.interviewerUser.id = :userId  ))) ";
 			params.put("userId",userId);
 			params.put("userCode",userCode);
-			//subQuery = "and ri.submissionId.requirement.managerUserId.id =:userId";
-			//namedParameters = ".setLong('userId', userId)";
-			//params.put("userId",userId);
 			params.put("orgLocationsId",orgLocationsId);
 		}else{
 			
 			params.put("orgLocationsId",orgLocationsId);
 		}
 		
+		String subQueryCommon = "from RequirementInterviewHistory rih left join fetch rih.interviewId where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and";
+		
 		String query = "";
         if(dateRange != null && "today".equals(dateRange)){
-            query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) = CURDATE()) and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime >= NOW()) "+ subQuery;
+            query = subQueryCommon+ "(DATE(rih.interviewId.dateOfInterview) = CURDATE()) and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime >= NOW()) "+ subQuery;
+            params.put("startDate",startUTCDate);
+        	params.put("endDate",endUTCDate);
         }else if(dateRange != null && "previous".equals(dateRange)){
-            query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) <= CURDATE()) and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime < NOW())"+ subQuery;
+            query = subQueryCommon+ " (DATE(rih.interviewId.dateOfInterview) <= CURDATE()) and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime < NOW())"+ subQuery;
+            params.put("startDate",startUTCDate);
+        	params.put("endDate",endUTCDate);
         }else if(dateRange != null && "upcoming".equals(dateRange)){
-        	query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) > CURDATE())"+ subQuery;
+        	query = subQueryCommon+ " (DATE(rih.interviewId.dateOfInterview) > CURDATE())"+ subQuery;
+        	params.put("startDate",startUTCDate);
+        	params.put("endDate",endUTCDate);
         }else{
-        	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        	java.util.Date date = dateFormat.parse(dateRange);
-        	java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
-        	query ="from RequirementInterviewHistory rih where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) = :sqlStartDate)"+ subQuery;
-        	params.put("sqlStartDate",sqlStartDate);
+        	query = subQueryCommon+ " (rih.interviewId.dateOfInterview between :startDate and :endDate)"; 
+        	params.put("startDate",startUTCDate);
+        	params.put("endDate",endUTCDate);
         }
         
         Query queryExe = session.createQuery(query);

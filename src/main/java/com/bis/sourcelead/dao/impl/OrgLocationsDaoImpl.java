@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
@@ -85,6 +86,27 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 			return orgLocation;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean isLoginUserIsSuperUser(Long userId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean isSuperUser = false;
+		List<OrgLocations> orgLocations = new ArrayList<OrgLocations>();
+		try{
+			String query = ("from OrgLocations orgLocations where orgLocations.user.id = :userId");
+			orgLocations = session.createQuery(query.toString()).setLong("userId", userId).list();
+			if (null != orgLocations && !orgLocations.isEmpty() && orgLocations.size() > 0) {
+				isSuperUser = true;
+			} 
+		}catch(Exception e){
+			StringBuilder message= new StringBuilder(MessageFormat.format(statusDelete,"ORGLOCATIONS"));
+			throw new SourceLeadObjectNotFoundException(message.toString());	
+		}
+		
+		return isSuperUser;
+	}
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Boolean deleteOrgLocations(Long id) throws Exception

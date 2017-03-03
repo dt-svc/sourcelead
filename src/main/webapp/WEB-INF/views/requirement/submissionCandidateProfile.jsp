@@ -46,11 +46,11 @@ function getCandidateProfile(candidateId){
 							     // Select Skills
 							          
 							    result = result +'      <h2 class="education">Skills:</h2>';
-							    result = result +'      <div class="select-skills">';
+							    result = result +'      <div class="select-skills selectSkills_view">';
 							    result = result +'       <div class="divskill col-md-12"> ';
 							    
 							    
-							    result = result +'<div class="clearfix mt"></div>';
+							    result = result +'<div class="clearfix"></div>';
 								result = result +'<div class="append_skill ">';  
 								result = result +'<ul class="list-inline list-unstyled">';
 								if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
@@ -302,7 +302,7 @@ function candidateSkillsList(candidateId){
 								$("#employeeSubmissionDetailsList").empty();
 								var result = "";
 								result = result +'        <div class="clearfix design-view">';
-								result = result +'          <h2 class="education"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Experience</h2>';
+								result = result +'          <h2 class="education"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Employers</h2>';
 								result = result +'          <div class="row">';
 								result = result +'            <div class="col-md-12">';
 								result = result +'              <ul class="list-unstyled personal-info">';
