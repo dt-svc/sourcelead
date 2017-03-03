@@ -85,7 +85,7 @@ function ApplicantAuthorization(status){
                                     	    	resultToday = resultToday + '<a  href="javascript:void(0)"  onClick="acceptRejectCandidateFromDashboard(\''+report.id+'\', \'accept\');"><i class="fa fa-check text-success"></i></a>';
                                     	    	resultToday = resultToday + '<a  href="javascript:void(0)"   onClick="rejectApplicantAlertMessage(\''+report.id+'\', \'rejected\');"><i class="fa fa-close text-danger"></i></a>';
                                     	    }
-                                    	    result = result +"</td>";
+                                    	    resultToday = resultToday +"</td>";
                                       }
                                       resultToday = resultToday+'     </tr>';
 	            			                                }
