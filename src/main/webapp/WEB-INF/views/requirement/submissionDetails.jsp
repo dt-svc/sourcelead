@@ -219,7 +219,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 					    	    		result = result + 'Candidate status : '+json.submissionRateStatus;
 										result = result + '	</li>';
 			    	    			}
-									if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
+									/* if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
 										result = result + '	<li>';
 					    	    		result = result + 'Request Comment : '+json.submissionRequestComment;
 										result = result + '	</li>';
@@ -228,7 +228,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 										result = result + '	<li>';
 										result = result + '<a href="downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'">'+json.submissionRequestFileName+'</a>';
 										result = result + '	</li>';
-									}	
+									}	 */
 									
 			    	    		}
 			    	    	} 
@@ -245,7 +245,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 										result = result + '<a href="downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'">'+json.submissionRequestFileName+'</a>';
 									result = result + '	</li>';
 									result = result + '	<li>';
-										result = result + "comment: "+json.submissionRequestComment;
+										result = result + "Comment: "+json.submissionRequestComment;
 									result = result + '	</li>';
 									if(json.submissionRateStatus != null && json.submissionRateStatus != '' && json.submissionRateStatus != 'undefined'){
 										result = result + '<li>';
