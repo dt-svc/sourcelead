@@ -24,18 +24,18 @@ window.onload = ApplicantAuthorization('requestSent');
 function ApplicantAuthorization(status){
 	var resultToday ="";
 	var sourceleadUrl = '${sourceleadUrl}';
-	$("#accepted").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	//$("#accepted").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 			type : "POST",
 			url : sourceleadUrl+"/getApplicantsByStatus?${_csrf.parameterName}=${_csrf.token}&status="+status,
 			success : function(data) {
 				var json = JSON.parse(data);
-				if(data != null && data != 'undefined' && data != "" && data != '[]'){
+				/* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
               		
 	              			$("#accepted").empty();
 	        	        	$("#requestSent").empty();
 	              			$("#accepted").removeAttr("style");
-	              			if(json.length > 0){
+	              			//if(json.length > 0){
 	            				resultToday = resultToday+'	<table id="applicantsPagination" class="display" cellspacing="0" width="100%">';
 	            				resultToday = resultToday+'	<thead>';
 	            				resultToday = resultToday+'	  <tr>';
@@ -63,7 +63,7 @@ function ApplicantAuthorization(status){
                                           resultToday  = resultToday + '           <td><div>-----</div></td>';
                                       }
                                       if(report.requirementName != '' && report.requirementName != null && report.requirementName !='undefined'){
-                                          resultToday = resultToday +'<td><div class="tbldata-dotdot-sm"> <a href="'+sourceleadUrl+'/requirementSummary?requirementUUID='+report.requirement.requirementUUID+'"><span title='+report.requirementName+'>'+report.requirementName+'</span></a></div></td>';
+                                          resultToday = resultToday +'<td><div class="tbldata-dotdot-sm"> <a href="'+sourceleadUrl+'/requirementSummary?requirementUUID='+report.requirementUUID+'"><span title='+report.requirementName+'>'+report.requirementName+'</span></a></div></td>';
 
                                       }else{
                                           resultToday  = resultToday + '           <td><div>-----</div></td>';
@@ -91,7 +91,7 @@ function ApplicantAuthorization(status){
 	            			                                }
 	            					resultToday = resultToday+'	 </tbody>';
 	            					resultToday = resultToday+'	</table>';											
-	            			}
+	            			//}
 	            	        if(status == 'accepted'){
 	            	            $("#accepted").append(resultToday);
 	            	            applicantsPagination();
@@ -109,7 +109,7 @@ function ApplicantAuthorization(status){
 	            				$("#requestSentTab").removeClass("active");
 	            				
 	            	        } 
-					}else{
+					/* }else{
 	               	 	$("#accepted").removeAttr("style");
 	               	 	$("#accepted").empty();
      	        		$("#requestSent").empty();
@@ -119,7 +119,7 @@ function ApplicantAuthorization(status){
 						result = result+"			        <p>No Applicants Found</p>";
 						result = result+"			 </div>";
 					    $("#accepted").append(result); 
-	               }
+	               } */
 			},
 	});
 	return true;

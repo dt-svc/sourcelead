@@ -28,14 +28,6 @@ $(document).ready(function(){
 </script>
 
 
-<script>
-function getSelectedSearchType(){
-	alert("hi");
-}
-</script>
-
-
-
 <section class="content-wraper">
 <section class="content-header clearfix">
 		<div class="pull-left">

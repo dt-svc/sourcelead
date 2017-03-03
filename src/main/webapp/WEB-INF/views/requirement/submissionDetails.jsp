@@ -185,7 +185,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			    	   		result = result + '<ul class="list-unstyled list-inline">';
 			    	   		result = result + '<span id="statusDiv">';
 			    	    	if(json.submissionRateStatus != 'ACCEPTED' && json.submissionRateStatus != 'REJECTED'){   
-								result = result + '	<li><i class="fa fa-check labelsuccess" title="Accept Applicant Authorization" onClick="acceptFun('+submissionId+');"></i>';
+								result = result + '	<li><i class="fa fa-check labelsuccess" title="Accept Applicant Authorization" onClick="acceptCandidate(\''+submissionId+'\',\'accept\');"></i>';
 								result = result + '		<div class="acceptreject-pop" id="accpet-div">';
 								result = result + '		</div>';
 								result = result + '	</li>';
@@ -268,7 +268,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 				result = result + '</div>';
 				result = result + '<div class="clearfix"></div>';
 				/* New comments div creation Nov 8th, 2016 */ 
-	            result = result+'<div class="comments-div clearfix mr" id="latestMessage">';
+	            result = result+'<div class="comments-div clearfix" id="latestMessage">';
 	            result = result+'    <div class="commentsimg">';
 	            result = result+'    <i class="fa fa-comments"></i>';
 	            result = result+'        <div class="commentsimg-inner">';
@@ -1180,14 +1180,14 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 
 <script>
 		// Accept function
-	function acceptFun(submissionId){
+	/* function acceptFun(submissionId){
 		$('#accpet-div').empty();
 		$('#reject').empty();
 		var result = "";	
 		result = result + '	        <form id="accept_form" name="accept_form" action="upload" enctype="multipart/form-data" method="post">';
 		result = result + '			<div class="row">';
 		result = result + '				<div class="col-md-12">';
-		result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" data-validation="required" field-name="Comment"></textarea>';
+		result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" data-validation="required validate_Space validate_length length2-250" field-name="Comment"></textarea>';
 		result = result + '				</div>';
 		result = result + '				</div>';
 		result = result + '				<div class="row">';
@@ -1203,7 +1203,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		$('#reject').fadeOut();
 		$('#request').fadeOut();
 		
-	};
+	}; */
 	/* $("#accpet-div, .clients_side_wrap, .clients_side_wrap_active, .fa, .fa-check, .labelsuccess").click(function(e){
 		 e.stopPropagation();
 	 });
@@ -1217,7 +1217,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		result = result + '	        <form id="reject_form" name="reject_form" action="upload" enctype="multipart/form-data" method="post">';
 		result = result + '			<div class="row">';
 		result = result + '				<div class="col-md-12">';
-		result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" data-validation="required" field-name="Comment"></textarea>';
+		result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" data-validation="required validate_Space validate_length length2-250" field-name="Comment"></textarea>';
 		result = result + '				</div>';
 		result = result + '			</div>';
 		result = result + '			<div class="row">';
@@ -1242,7 +1242,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		result = result + '<form id="request_form" name="request_form" action="upload" enctype="multipart/form-data" method="post">';
 		result = result + '			<div class="row">';
 		result = result + '				<div class="col-md-12">';
-		result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" data-validation="required" field-name="Comment"></textarea>';
+		result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" data-validation="required validate_Space validate_length length2-250" field-name="Comment"></textarea>';
 		result = result + '				</div>';
 		result = result + '		    </div>';
 		result = result + '		    <div class="row">';
@@ -1792,6 +1792,7 @@ function reActivateApplicant(submissionId,candidateId,requirementId){
 	         success :function(data) {
 	               if(data != null && data != 'undefined' && data != ""){
 	            	   getSubmissionDetailsSideBar(submissionId,candidateId,requirementId);
+	            	   pipelineList(requirementId);
 	                } 
 	                 },
 	              }); 
@@ -1800,3 +1801,21 @@ function reActivateApplicant(submissionId,candidateId,requirementId){
 	
 }
 </script>
+
+<script type="text/javascript">
+function pipelineList(requirementId){
+	var submissionType = "all";
+	$("#duplicataplctli").removeClass("pipeline-active");
+	$("#requestSentli").removeClass("pipeline-active");
+	$("#shortListli").removeClass("pipeline-active");
+	$("#submitToClientli").removeClass("pipeline-active");
+	$("#interviewli").removeClass("pipeline-active");
+	$("#offerMadeli").removeClass("pipeline-active");
+	$("#rejectedli").removeClass("pipeline-active");
+	$("#applicantli").addClass("pipeline-active");
+	filterReq(requirementId,submissionType);
+}
+</script>
+
+
+

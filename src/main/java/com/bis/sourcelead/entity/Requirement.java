@@ -362,6 +362,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Transient
 	private String approvalMechanismType;
+	
+	@Transient
+	private String postedDateStr;
 
 	public String getSearchType() {
 		return searchType;
@@ -1177,6 +1180,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setRewardType(String rewardType) {
 		this.rewardType = rewardType;
+	}
+	
+	public String getPostedDateStr() {
+		return postedDateStr;
+	}
+
+	public void setPostedDateStr(String postedDateStr) {
+		this.postedDateStr = postedDateStr;
 	}
 
 	

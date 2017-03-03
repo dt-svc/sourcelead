@@ -181,6 +181,7 @@ public class RequirementListRestController {
                         requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
                     }
               }				
+				requirement.setPostedDateStr(Constants.DF_DMY.format(requirement.getCreatedDate()));
 				int totalApplicatsCountForRequirement = 0;
 				totalApplicatsCountForRequirement = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(loginOrgLocation,requirement.getId(),user,userRoleName);
 				if(totalApplicatsCountForRequirement > 0){
@@ -570,7 +571,6 @@ public class RequirementListRestController {
 											
 										}
 									}
-									
 									
 									String candidateName = requirementSubmissionTemplateFields.getFirstName();
 									if(requirementSubmissionTemplateFields.getLastName()!=null){

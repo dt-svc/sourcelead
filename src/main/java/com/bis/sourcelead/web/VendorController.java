@@ -179,7 +179,7 @@ public class VendorController {
 	@RequestMapping(value = "/addVendor")
 	public ModelAndView addVendor(HttpServletRequest request)  {
 		
-		ModelAndView model = new ModelAndView();
+		ModelAndView model = new ModelAndView();      
 		try{
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("vendors/vendor");
