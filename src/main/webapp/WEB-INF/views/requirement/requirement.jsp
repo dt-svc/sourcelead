@@ -420,7 +420,17 @@ $(document).ready(function () {
                 <input type="text" class="form-control" id="rate" name="rate" field-name="Rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true"  value="">
                 <div class="input-group-btn selp-custom-min">
                   <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Type">
-                    <option value="">Rate Per</option>
+                  <c:if test="${orgLocation=='India'}">
+                    <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+                    <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+                  </c:if>
+                  
+                  <c:if test="${orgLocation=='United States'}">
                     <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
                     <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
                     <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
@@ -428,9 +438,21 @@ $(document).ready(function () {
                     <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
                     <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
                     <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+                  </c:if>
+                 	
+                 <c:if test="${orgLocation}">
+                 	<option value="Rate Per">Rate Per</option>
+                  	<option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+                    <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+                 </c:if>
                   </select>
                 </div>
-              </div>
+              </div>`
             </div>
           </div>
           
@@ -509,24 +531,26 @@ $(document).ready(function () {
              <textarea rows="5" class="form-control" id="description" name="description" value="${requirement.description}" field-name="Description"  data-validation-optional="true">${requirement.description}</textarea>
             </div>
           </div>
-          
-          <div class="form-group">
-            
-            <label class="col-md-3">Is Template</label>
-            <div class="col-md-9">
-            
-            <c:set var="val" value="${requirement.isClientJob}"/>
-			<c:choose> 
-			  <c:when test="${val == 'Y'}">
-			   		    <input disabled="disabled" type="checkbox" name="isTemplate" id="isTemplate" value="" onclick="getTemplateVal();">
-			  </c:when>
-			  <c:otherwise>
-						<input type="checkbox" name="isTemplate" id="isTemplate" value="" onclick="getTemplateVal();">
-			  </c:otherwise>
-			</c:choose>
-		    </div>
-        </div>
-        
+
+			<div class="form-group">
+				<div class="ml">
+					<c:set var="val" value="${requirement.isClientJob}" />
+					<c:choose>
+						<c:when test="${val == 'Y'}">
+							<input disabled="disabled" type="checkbox" name="isTemplate"
+								id="isTemplate" value="" onclick="getTemplateVal();">
+						</c:when>
+						<c:otherwise>
+							<input type="checkbox" name="isTemplate" id="isTemplate"
+								value="" onclick="getTemplateVal();">
+						</c:otherwise>
+					</c:choose>
+					<label>&nbsp;&nbsp;<strong>Is Template</strong>
+						&nbsp;&nbsp;
+					</label>
+				</div>
+			</div>
+       
       </div>
       <div class="clearfix mt">
         <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12">
@@ -2471,9 +2495,9 @@ function minMaxExperience(){
     if (parseFloat(maxExp) <= parseFloat(minExp)){
         $('#expId').find('p.jquery_form_error_message').remove(); 
 		$('input#expValidation').attr('class','error signin_fild');
-		$("input#expValidation").after("<p class='jquery_form_error_message'>Max Experience is greater than Min Experience</p>");
+		$("input#expValidation").after("<p class='jquery_form_error_message'>Max Experience should be greater than Min Experience</p>");
 		$('input#expValidation').attr('record-exist','yes');
-		$('input#expValidation').attr('record-exist-errorMsg','Max Experience is greater than Min Experience'); 
+		$('input#expValidation').attr('record-exist-errorMsg','Max Experience should be greater than Min Experience'); 
     }  else{
     	$('#expId').find('p.jquery_form_error_message').remove(); 
     	$('input#expValidation').removeAttr( "class record-exist record-exist-errormsg");

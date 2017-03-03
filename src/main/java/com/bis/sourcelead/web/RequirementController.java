@@ -318,7 +318,11 @@ public class RequirementController {
 				model.addObject("clientSubmissionTemplete", clientSubmissionTemplete);
 			}
 		}
-
+		
+		if(null != orgLocations.getCountry()){
+		  String Location = orgLocations.getCountry();
+		  model.addObject("orgLocation", Location);
+		}
 		return model;
 
 	}
