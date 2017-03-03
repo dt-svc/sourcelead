@@ -799,8 +799,6 @@ function sideBar(requirementId){
 							 result = result +'</div>';
 							 
 							 var submitToClient = '';
-							 alert("clientSubmissions---"+clientSubmissions);
-							 alert("isSpocActive---"+isSpocActive);
 						     if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
 	           				    submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
 	           			     }
