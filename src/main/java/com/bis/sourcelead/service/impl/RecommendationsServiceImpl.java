@@ -666,7 +666,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					
 					//keywords calculation
 				    float totalKeyWordPer = 0;
-					if(null != candidateIndex.getSummary() && null != numOfKeyWords){
+					if(null != candidateIndex.getSummary() && "undefined" != candidateIndex.getSummary() && null != numOfKeyWords){
 						for(int i=0;i<numOfKeyWords.length;i++){
 							if(candidateIndex.getSummary().contains(numOfKeyWords[i])){
 								totalKeyWordPer = totalKeyWordPer + percentPerkeyword;	
@@ -755,7 +755,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 
 			int  candidateExpMonths = (Integer.parseInt(candidateIndex.getExperienceYears()))*12 + (Integer.parseInt(candidateIndex.getExperienceMonths()));
 			
-			if(null != recommendedCustomizeScore.getCustomizeMinExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMinExperience()) && null != recommendedCustomizeScore.getCustomizeMaxExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMaxExperience())){
+			if(null != recommendedCustomizeScore.getCustomizeMinExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMinExperience()) &&  "undefined" != recommendedCustomizeScore.getCustomizeMinExperience() && null != recommendedCustomizeScore.getCustomizeMaxExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMaxExperience()) && "undefiend" != recommendedCustomizeScore.getCustomizeMaxExperience() ){
 				
 				 String recommendationYearAndMonth[] = recommendedCustomizeScore.getCustomizeMinExperience().split("\\.");
 				 if(recommendationYearAndMonth.length == 2){
@@ -772,11 +772,11 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			if(candidateExpMonths >= recommendationExpMonthsMin && candidateExpMonths <= recommendationExpMonthsMax){
 					 expPercentage = Float.parseFloat(recommendedCustomizeScore.getCustomizeExperienceScore());
 				 }
-			}else if(null != recommendedCustomizeScore.getCustomizeMinExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMinExperience())){
+			}else if(null != recommendedCustomizeScore.getCustomizeMinExperience() && "undefined" != recommendedCustomizeScore.getCustomizeMinExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMinExperience())){
 				 if(candidateExpMonths >= Integer.parseInt(recommendedCustomizeScore.getCustomizeMinExperience()) *12){
 					 expPercentage = Float.parseFloat(recommendedCustomizeScore.getCustomizeExperienceScore());
 				 }
-			}else if(null != recommendedCustomizeScore.getCustomizeMaxExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMaxExperience())){
+			}else if(null != recommendedCustomizeScore.getCustomizeMaxExperience() && "undefined" != recommendedCustomizeScore.getCustomizeMaxExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMaxExperience())){
 				 if(candidateExpMonths <= Integer.parseInt(recommendedCustomizeScore.getCustomizeMaxExperience()) *12){
 					 expPercentage = Float.parseFloat(recommendedCustomizeScore.getCustomizeExperienceScore());
 				 }

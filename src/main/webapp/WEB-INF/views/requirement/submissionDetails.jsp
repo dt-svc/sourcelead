@@ -185,7 +185,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			    	   		result = result + '<ul class="list-unstyled list-inline">';
 			    	   		result = result + '<span id="statusDiv">';
 			    	    	if(json.submissionRateStatus != 'ACCEPTED' && json.submissionRateStatus != 'REJECTED'){   
-								result = result + '	<li><i class="fa fa-check labelsuccess" title="Accept Applicant Authorization" onClick="acceptFun('+submissionId+');"></i>';
+								result = result + '	<li><i class="fa fa-check labelsuccess" title="Accept Applicant Authorization" onClick="acceptCandidate(\''+submissionId+'\',\'accept\');"></i>';
 								result = result + '		<div class="acceptreject-pop" id="accpet-div">';
 								result = result + '		</div>';
 								result = result + '	</li>';
@@ -1180,7 +1180,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 
 <script>
 		// Accept function
-	function acceptFun(submissionId){
+	/* function acceptFun(submissionId){
 		$('#accpet-div').empty();
 		$('#reject').empty();
 		var result = "";	
@@ -1203,7 +1203,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		$('#reject').fadeOut();
 		$('#request').fadeOut();
 		
-	};
+	}; */
 	/* $("#accpet-div, .clients_side_wrap, .clients_side_wrap_active, .fa, .fa-check, .labelsuccess").click(function(e){
 		 e.stopPropagation();
 	 });

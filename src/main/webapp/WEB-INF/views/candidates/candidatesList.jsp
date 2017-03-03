@@ -137,7 +137,7 @@ else{
 </script>
  <script>
   function prepareCandidateList(data){
-	  if(data != null && data != 'undefined' && data != "" && data != '[]'){
+	  /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
 	 	     $("#candidateList").removeAttr("style");
 	     	 $("#candidateList").empty();
 	     	 var result = "";
@@ -256,7 +256,7 @@ else{
 	          $("#noCandidates").val('');
 	          $("#candidateList").append(result);
 	          cpagination(); 
-	  }
+	 /*  }
 	  else{
      	 $("#candidateList").removeAttr("style");
 	         var result ="";
@@ -267,7 +267,7 @@ else{
 			$("#noCandidates").val("nocandidate");
 			$("#candidateList").empty();
 		    $("#candidateList").append(result); 
-      }
+      } */
   }
 </script>
 <%-- 
@@ -304,6 +304,7 @@ function cpagination(){
      		"sSearch": ""
      	}
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 

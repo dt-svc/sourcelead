@@ -225,6 +225,7 @@ public class DashboardRestController {
 			requirement.setNoOfSubmittedApplicants(String.valueOf(submittedCount));
 			requirement.setNoOfInterviewedApplicants(String.valueOf(interviewedCount));
 			requirement.setNoOfOfferedApplicants(String.valueOf(offeredCount));
+			
 			if(null != requirement.getReleasedBy() && !"".equalsIgnoreCase(requirement.getReleasedBy())){
 				List<Long> userId = new ArrayList<Long>();
 				for (String s : requirement.getReleasedBy().split(",")){

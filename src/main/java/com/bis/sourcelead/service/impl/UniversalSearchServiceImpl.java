@@ -441,6 +441,20 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
          	requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.valueOf(requirementIndex.getRequirementStatus()));
      	}	
      	
+     	if(null != requirementIndex.getReleasedBy()){
+			List<Long> userId = new ArrayList<Long>();
+			for (String s : requirementIndex.getReleasedBy().split(",")){
+				userId.add(Long.parseLong(s));
+			 }
+			boolean flag = userId.contains(user.getId());
+     		if(flag == true){
+     			requirement.setIsRequirementReleasedByuser("Y");
+     		}else{
+     			requirement.setIsRequirementReleasedByuser("N");
+     		}
+		}
+     	
+     	
      	return requirement;
 	}
 	 /**
