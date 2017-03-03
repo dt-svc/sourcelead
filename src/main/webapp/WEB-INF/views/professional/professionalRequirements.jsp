@@ -14,7 +14,13 @@
 <script type="text/javascript">
 window.onload = function () {
 	requirementsList(0);
-	document.getElementById('requirementType').value = 'OpenJobs';
+	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+	if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
+		document.getElementById('requirementType').value = 'OpenJobs';
+	}else{
+		document.getElementById('requirementType').value = 'CrowdSourcingJobs';
+	}
+	
  };
 </script>
 
@@ -24,7 +30,9 @@ window.onload = function () {
       <div class="pull-left">
         <h2>Requirements<span class="select-fild">
           <select id="requirementType" onchange="requirementsList('0');">
+           	<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
            	<option value="OpenJobs">Open Jobs</option>
+           	</c:if>
             <option value="CrowdSourcingJobs">CrowdSourcing Jobs</option>
             <option value="AppliedJobs">Applied Jobs</option>
           </select>
@@ -513,6 +521,8 @@ function requirementsList(offset){
 	var postedOn = document.getElementById('postedOn').value;
 	var jobTitleSearch = document.getElementById('jobTitleSearch').value;
 	var jobLocationSearch = document.getElementById('jobLocationSearch').value;
+	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+	
     loadChosenRequirementScripts();
 	
 	
@@ -714,7 +724,13 @@ function requirementsList(offset){
 			 					result = result +'<div class="appliedWrap">';
 			 					result = result +'<i class="fa fa-check-circle"></i>';
 			 					result = result +'<div class="openPostDate">';
-			 					result = result +'<i class="fa fa-clock-o"></i> Applied on : <b>'+requirements.requirementAppliedDate+'</b>';
+			 					
+			 					if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
+			 						result = result +'<i class="fa fa-clock-o"></i> Applied on : <b>'+requirements.requirementAppliedDate+'</b>';
+			 					}else{
+			 						result = result +'<i class="fa fa-user-circle"></i> Submissions Count : <b>'+requirements.recruiterSubmissionsCount+'</b>';
+			 					}
+			 					
 			 					result = result +'</div>';
 			 					if(requirements.referedUser != '' && requirements.referedUser != null && requirements.referedUser != 'undefined'){
 				 					result = result +'<div class="applShare Refer">';

@@ -202,6 +202,10 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Type(type="text")
 	private String appliedProfessionals;
 	
+	@Column(name="APPLIED_RECRUITERS")
+	@Type(type="text")
+	private String appliedRecruiters;
+	
 	@Column(name="PRIORITY")
 	private String priority;
 	
@@ -1188,6 +1192,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setPostedDateStr(String postedDateStr) {
 		this.postedDateStr = postedDateStr;
+	}
+
+	public String getAppliedRecruiters() {
+		return appliedRecruiters;
+	}
+
+	public void setAppliedRecruiters(String appliedRecruiters) {
+		this.appliedRecruiters = appliedRecruiters;
 	}
 
 	

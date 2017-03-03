@@ -105,4 +105,6 @@ public interface CandidateService {
 
 	Candidate getProfessionalInfoByLoginUserIdAndCandidateType(Long userId,String candidateType) throws Exception;
 	
+	Candidate getCandidateByEmailAndRecruiterUserId(String email,Long recruiterUserId) throws Exception;
+	
 }

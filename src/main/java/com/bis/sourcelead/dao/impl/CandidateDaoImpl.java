@@ -488,6 +488,19 @@ public class CandidateDaoImpl implements CandidateDao {
 		return candidate;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateByEmailAndRecruiterUserId(String email, Long recruiterUserId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate  where candidate.email = :email and candidate.candidateType = 'Candidate' and candidate.recruiterUserId.id = :recruiterUserId ";  
+		List<Candidate> candidateList =  session.createQuery(query).setLong("recruiterUserId", recruiterUserId).setString("email", email).setCacheable(true).list();
+		Candidate candidate = null;
+		if (candidateList != null && candidateList.size() > 0) {
+			candidate = (Candidate) candidateList.iterator().next();
+		}
+		return candidate;
+	}
+
 	
 	
 }

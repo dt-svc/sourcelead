@@ -230,6 +230,13 @@ public class RequirementHelper {
 				String[] appliedProfessionals = requirement.getAppliedProfessionals().split(",");
 				requirementIndex.setAppliedProfessionals(appliedProfessionals);
 			}
+			
+			
+			if (null != requirement.getAppliedRecruiters() && !"".equalsIgnoreCase(requirement.getAppliedRecruiters())) {
+				String[] appliedRecruiters = requirement.getAppliedRecruiters().split(",");
+				requirementIndex.setAppliedRecruiters(appliedRecruiters);
+			}
+			
 			if(null != requirement.getReqlevel1ApproverStatus() && !"".equalsIgnoreCase(requirement.getReqlevel1ApproverStatus())){
 				requirementIndex.setReqLevel1ApproverStatus(requirement.getReqlevel1ApproverStatus());	
 			}
