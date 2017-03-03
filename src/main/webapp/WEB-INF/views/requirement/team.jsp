@@ -202,7 +202,7 @@ function teamEditDetails(teamId){
 	        	outPut = outPut+ '<div class="form-horizontal clearfix teamEditDetails">';
 	        	outPut = outPut+ '<div class="clearfix mb10">';
 	        	outPut = outPut+ '<div class="col-md-6" id="teamNameDiv">';
-	        	outPut = outPut +'<input type="hidden" class="form-control input-sm" name="teamId"  value="'+teamId+'">';
+	        	outPut = outPut +'<input type="hidden" class="form-control input-sm" name="teamId" id="teamId" value="'+teamId+'">';
 	        	outPut = outPut+ '<label>Team Name<b class="text-danger">*</b> </label>';
 	        	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" id="name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="'+json.name+'"  onblur="validateTeamName();">';
 	        	outPut = outPut+ '                </div>';
@@ -295,7 +295,7 @@ var validationSettings = {
 
 <script>
 function storeEditedTeam(){
-	
+	var teamId = $("#teamId").val();
 	  /*  var validationSettings = {
 	        errorMessagePosition : 'element',
 	       borderColorOnError : '',
@@ -315,7 +315,8 @@ function storeEditedTeam(){
 					type : "POST",
 					url : sourceleadUrl+"/storeEditedTeam?${_csrf.parameterName}=${_csrf.token}&json="+con,
 					success :function(data) {  
-						location.replace(sourceleadUrl+"/team");
+						sideBar(teamId);
+						//location.replace(sourceleadUrl+"/team");
 				      }, 
 		    });
 			return true; 
@@ -914,7 +915,8 @@ function storeTeamMembers(teamId){
 					type : "POST",
 					url : sourceleadUrl+"/storeTeamMembers?${_csrf.parameterName}=${_csrf.token}&json="+con+"&teamId="+teamId,
 					success :function(data) {  
-						location.replace(sourceleadUrl+"/team");
+						sideBar(teamId);
+						//location.replace(sourceleadUrl+"/team");
 				    }, 
 		    });
 			return true; 
