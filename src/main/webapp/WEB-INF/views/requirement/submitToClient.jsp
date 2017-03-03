@@ -598,12 +598,7 @@ function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate,sel
 	          	     dataType : 'json',
 					url : sourceleadUrl+"/submitToClient?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&selectedIds="+selectedIds+"&requirementId="+requirementId+"&selectedShortlistsRate="+selectedShortlistsRate+"&selectedShortlistsRatePer="+selectedShortlistsRatePer,
 					success : function(result) {
-
-						$(".submitnew-wrap").removeClass("submitnew-wrap_active");
-						$(".new_side_wrap").removeClass("new_side_wrap_active");
-                        $(".side_mask").fadeOut(200);
-                        $("body").css('overflow-y', 'auto');
-                        var allApplicants = 'all';
+						cancelSubmit();
                         requirementPipeline(requirementId,allApplicants); 
 					},
 				}); 
