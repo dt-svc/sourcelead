@@ -701,7 +701,8 @@ public class UserServiceImpl implements UserService {
 		 isUserActive = userRoleService.isUserActive(user.getId());
 		
 		
-		String actionLink = null; 
+		 String actionLink = null; 
+		 String rejectActionLink = null; 
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
@@ -744,6 +745,9 @@ public class UserServiceImpl implements UserService {
 		     StringBuilder actionUrlBuilder = new StringBuilder();
 			 actionLink = actionUrlBuilder.append("").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=VMS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("&spocUUID=").append(spocUUID).append(" ").toString();
 			 
+			 StringBuilder rejectActionBuilder = new StringBuilder();
+			 rejectActionLink = rejectActionBuilder.append("").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?actionLink=rejectNotification&respondingOrgType=VMS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("&spocUUID=").append(spocUUID).append(" ").toString();
+			 
 			 
 		 }else if("Vendor".equals(responderType)){
 			 globalVarsMap.put("firstName", emailMessage.getFirstName());
@@ -775,6 +779,8 @@ public class UserServiceImpl implements UserService {
 			 StringBuilder actionLinkBuilder = new StringBuilder();
 			 actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=ATS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("&spocUUID=").append(spocUUID).append("").toString();
 			 
+			 StringBuilder rejectActionBuilder = new StringBuilder();
+			 rejectActionLink = rejectActionBuilder.append("").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?actionLink=rejectNotification&respondingOrgType=ATS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("&spocUUID=").append(spocUUID).append("").toString();
 		 }
 		 
 		 //setting the Recipient information
@@ -804,13 +810,13 @@ public class UserServiceImpl implements UserService {
 		 emailMessage.setOrgLocationId(respondingPartyOrgLocation.getId());
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailMessage.setEmailType(Constants.CLIENTORVENDORMAIL);
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 emailScenerioUtil.sendEmail(emailMessage,respondingPartyOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
 		 noificationEmailScenario.setBody(notificationbody);
 		 noificationEmailScenario.setUUID(UUID);
 		 
-		 emailScenerioUtil.sendNotificationToClientOrVendor(actionLink, loginUser,ownerUser, user, respondingPartyOrgLocation, noificationEmailScenario);
+		 emailScenerioUtil.sendNotificationToClientOrVendor(actionLink,rejectActionLink, loginUser,ownerUser, user, respondingPartyOrgLocation, noificationEmailScenario,spocUUID);
 	}
 	
 	@Override

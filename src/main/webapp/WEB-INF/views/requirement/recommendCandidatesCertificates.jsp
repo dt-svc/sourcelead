@@ -10,7 +10,7 @@ function closeCertificatePopup(){
 }
 </script>
 <%-- 
-     @author : Ajith Matta, Shiva yogi.
+     @author : Ajith Matta, Shiva yogi,PrasadK.
      this script is for display candidate education tab data.
 --%>
 
@@ -59,7 +59,7 @@ var validationSettings = {
 </script>
 
 <%-- 
-     @author : Ajith Matta, Shiva yogi.
+     @author : Ajith Matta, Shiva yogi,prasadK.
      this script is to Store  storeCertificate.
      1.usage     :  used in addCertification function
      2.parameter : candidateId,csrf.token

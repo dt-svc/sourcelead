@@ -94,9 +94,19 @@ public class RequirementReleaseRestController {
 	    List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLocations.getId(),status);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		List<OrgSpoc>  contactsList = null;	
-		    for (OrgRelations orgRelation : vandorsListByOrgLocationId) {
+		List<Long> vendorOrgLocationsIds = new ArrayList<Long>();
+		   for (OrgRelations orgRelation : vandorsListByOrgLocationId) {
+			   if(orgRelation.getResponderLocationId().getId().equals(orgLocations.getId())){
+				   vendorOrgLocationsIds.add(orgRelation.getLocationId().getId());
+			   }else if(orgRelation.getLocationId().getId().equals(orgLocations.getId())){
+				   vendorOrgLocationsIds.add(orgRelation.getResponderLocationId().getId());
+			   }
+		   }
 		    	
-		    	contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(user.getId(),orgLocations.getId(), "Client","Active,New,Contracted",null,"");
+		
+		    	//contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(user.getId(),orgLocations.getId(), "Client","Active,New,Contracted",null,"");
+		    	
+		    	contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationIdAndTabAccess(user.getId(),orgLocations.getId(), "Client","Active,New,Contracted",null,"", vendorOrgLocationsIds);
 		    	
 		    	for (OrgSpoc orgSpoc : contactsList) {/*
 		    		
@@ -196,7 +206,6 @@ public class RequirementReleaseRestController {
 					orgSpoc.setOrgRelationId(orgSpoc.getOrgRelations().getId());*/
 		    	}
 					
-			}
 		    if(contactsList != null){
 		    	for(OrgSpoc contact : contactsList){
 			    	Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(Long.parseLong(requirementId), contact.getId());
@@ -237,6 +246,13 @@ public class RequirementReleaseRestController {
 		    //List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
  
 		    for (OrgRelations orgRelation : vandorsListByOrgLocationIdDuplicate) {
+		    	
+		    	List<Long> vendorOrgLocationsIds = new ArrayList<Long>();
+			    if(orgRelation.getResponderLocationId().getId().equals(orgLocations.getId())){
+				    vendorOrgLocationsIds.add(orgRelation.getLocationId().getId());
+			    }else if(orgRelation.getLocationId().getId().equals(orgLocations.getId())){
+				    vendorOrgLocationsIds.add(orgRelation.getResponderLocationId().getId());
+			    }
 				
 				if(orgRelation.getLocationId().getId().equals(orgLocations.getId())){
 					orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
@@ -248,7 +264,9 @@ public class RequirementReleaseRestController {
 					//List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Client");
 					//List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgId(orgRelation.getId());
 					//List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgIdAndInvitationStatusAndSpocStatus(orgRelation.getId(),"Accepted","Active");
-					List<OrgSpoc> contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(user.getId(),orgLocations.getId(), "Client","Active,New,Contracted",orgRelation.getId().toString(),"");
+					//List<OrgSpoc> contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(user.getId(),orgLocations.getId(), "Client","Active,New,Contracted",orgRelation.getId().toString(),"");
+					List<OrgSpoc> contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationIdAndTabAccess(user.getId(),orgLocations.getId(), "Client","Active,New,Contracted",orgRelation.getId().toString(),"", vendorOrgLocationsIds);
+					
 					int nonAssignedCount = 0;
 					orgRelation.setNoOfContatcs(0); 
 					if(!contactsList.isEmpty()){
@@ -281,7 +299,8 @@ public class RequirementReleaseRestController {
 					//List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Vendor");
 					//List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgId(orgRelation.getId());
 					//List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgIdAndInvitationStatusAndSpocStatus(orgRelation.getId(),"Accepted","Active");
-					List<OrgSpoc> contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(user.getId(),orgLocations.getId(), "Client","Active,New,Contracted",orgRelation.getId().toString(),"");
+					//List<OrgSpoc> contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(user.getId(),orgLocations.getId(), "Client","Active,New,Contracted",orgRelation.getId().toString(),"");
+					List<OrgSpoc> contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationIdAndTabAccess(user.getId(),orgLocations.getId(), "Client","Active,New,Contracted",orgRelation.getId().toString(),"", vendorOrgLocationsIds);
 					int nonAssignedCount = 0;
 					orgRelation.setNoOfContatcs(0); 
 					if(!contactsList.isEmpty()){
@@ -348,8 +367,14 @@ public class RequirementReleaseRestController {
 					
 					
 					OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(vendor));
+					List<Long> vendorOrgLocationsIds = new ArrayList<Long>();
+						   if(orgRelations.getResponderLocationId().getId().equals(loginOrgLocation.getId())){
+							   vendorOrgLocationsIds.add(orgRelations.getLocationId().getId());
+						   }else if(orgRelations.getLocationId().getId().equals(loginOrgLocation.getId())){
+							   vendorOrgLocationsIds.add(orgRelations.getResponderLocationId().getId());
+						   }
 					
-					 List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(loginUser.getId(),loginOrgLocation.getId(), "Client","Active",vendor,"");
+					 List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactFilterListByOrgLocationIdAndTabAccess(loginUser.getId(),loginOrgLocation.getId(), "Client","Active",vendor,"", vendorOrgLocationsIds);
 					
 					for(OrgSpoc orgSpoc : vandorsContactListByOrgLocationId){
 					    Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(requirementId, orgSpoc.getId());
@@ -422,13 +447,12 @@ public class RequirementReleaseRestController {
 		requirement.setUpdatedBy(orgSpoc.getVendorUser().getUserCode());
 		requirement.setCreatedBy(orgSpoc.getVendorUser().getUserCode());
 		
-		if(null != parentRequirement.getJobType()){
-			requirement.setJobType(parentRequirement.getJobType());	
-		}
-		if(null != parentRequirement.getJobType() && parentRequirement.getJobType().equalsIgnoreCase("Other") &&  parentRequirement.getJobType() != "" &&  parentRequirement.getJobType() != "undefined"){
+		requirement.setJobTitle(parentRequirement.getJobTitle());
+		requirement.setJobType(parentRequirement.getJobType());
+		if(null != parentRequirement.getJobType() &&  parentRequirement.getJobType() != "" &&  parentRequirement.getJobType() != "undefined" && parentRequirement.getJobType().equalsIgnoreCase("Other")){
 			requirement.setOtherJobType(parentRequirement.getOtherJobType());
 		}
-		requirement.setJobId(parentRequirement.getJobId());
+//		requirement.setJobId(parentRequirement.getJobId());
 		requirement.setPositions(parentRequirement.getPositions());
 		requirement.setEducation(parentRequirement.getEducation());
 		requirement.setMinExp(parentRequirement.getMinExp());

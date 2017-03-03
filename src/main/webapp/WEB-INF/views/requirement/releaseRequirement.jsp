@@ -1,5 +1,3 @@
-
-
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
@@ -366,6 +364,7 @@ function releaseToOneContact(contactscheckboxId){
 
 <script>
 function getContactsLists(){
+	alert("sss");
 	var vendors = "Client";
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
@@ -862,4 +861,4 @@ function openVendors(){
 	document.getElementById("releaseToVendors").style.display="";
 }
 </script>
-
+<jsp:include page="../masterFooter.jsp" />
