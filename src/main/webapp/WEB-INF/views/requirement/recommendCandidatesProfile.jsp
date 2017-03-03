@@ -1,4 +1,3 @@
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%-- 
      @author : David Raju.
@@ -354,7 +353,7 @@ function editCandidate(candidateId){
 							getAllCandidateCountries();
 							 getAllCandidateStates();
 							
-							$(function(){
+							
 							    var config = {
 									  '.chosen-select'           : {},
 									  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -378,8 +377,8 @@ function editCandidate(candidateId){
 							    $('.chosen-select').each(function() {
 										var $this = $(this);
 										$this.next().css({'width': '100%'});
-								  })
-							});
+								  });
+						
             		 
             		 }
                 }else{

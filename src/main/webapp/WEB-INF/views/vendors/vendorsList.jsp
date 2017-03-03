@@ -1000,6 +1000,7 @@ function pagination1(){
      	}
 		
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -1450,6 +1451,7 @@ function pagination(){
      	}
 		
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -1600,6 +1602,7 @@ function pagination1(){
     	} ); document.getElementById("example").style.display="block";
 
     	} ); */
+    $(".dataTables_empty").html("");
 }
 </script>
 <script>
