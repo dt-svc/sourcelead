@@ -111,8 +111,9 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 						Date interviewConverteDate = Constants.TZ_DF_TS.parse(interviewStartTimeUTC);
 						String interviewConvertedDateStr = DF_DMY.format(interviewConverteDate);
 						interviewHistory.setInterviewTimeZoneStartTimeStr(interviewConvertedDateStr+"("+requirementInterview.getTimezone().getTimeZoneId()+")");
-						
-						 interviewHistory.setFeedbackStartTime("feedbackStartTime");
+						if(requirementInterview.getStartTime().compareTo(new Date())>0){
+								interviewHistory.setFeedbackStartTime("feedbackStartTime");
+							}
 			    }
 			    
 			    if(requirementInterview.getEndTime() != null){
@@ -127,8 +128,9 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 						Date interviewConverteDate = Constants.TZ_DF_TS.parse(interviewStartTimeUTC);
 						String interviewConvertedDateStr = DF_DMY.format(interviewConverteDate);
 						interviewHistory.setInterviewTimeZoneEndTimeStr(interviewConvertedDateStr);
-					
-					 interviewHistory.setFeedbackStartTime("feedbackEndTime");
+						if(requirementInterview.getEndTime().compareTo(new Date())>0){
+				    		 interviewHistory.setFeedbackEndTime("feedbackEndTime");
+						}
 			    }
 			    if(requirementInterview.getInterviewTemplateId() != null){
 			    	interviewHistory.setInterviewTemplateid(requirementInterview.getInterviewTemplateId().getId());

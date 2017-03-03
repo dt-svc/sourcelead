@@ -1524,7 +1524,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 
 		 RequirementRateSubmissionNegotiation rateNegotiation = new RequirementRateSubmissionNegotiation();
 		 rateNegotiation.setRequirementsubmissionId(clientSubmission);
-		 if(clientShortlistsRate.length >0){
+		 if(null != clientShortlistsRate[i] && !"".equalsIgnoreCase(clientShortlistsRate[i])){
 			 String clientRate = clientShortlistsRate[i];
 			 String clientRatePer = submissionratePer[i];
 			 rateNegotiation.setExpectedRate(clientRate);

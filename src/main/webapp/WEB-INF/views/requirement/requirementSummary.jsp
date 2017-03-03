@@ -831,7 +831,7 @@ function sideBar(requirementId){
 				            	result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
 				            '</sec:authorize>';
 				            '<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
-				            	result = result + submitToClient
+				            	result = result + submitToClient;
 				            '</sec:authorize>';
 				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">';
 				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
@@ -1640,6 +1640,7 @@ function documentpagination(){
      		"sSearch": ""
      	}
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -1893,6 +1894,7 @@ function documentpaginationDA(){
      		"sSearch": ""
      	}
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -2141,6 +2143,7 @@ function documentpaginationRS(){
      		"sSearch": ""
      	}
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -2401,6 +2404,7 @@ function documentpaginationSL(){
      		"sSearch": ""
      	}
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -2637,6 +2641,7 @@ function documentpaginationSC(){
      		"sSearch": ""
      	}
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -2807,6 +2812,7 @@ function documentpaginationIN(){
      		"sSearch": ""
      	}
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -2997,6 +3003,7 @@ function documentpaginationOffer(){
      		"sSearch": ""
      	}
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -3231,6 +3238,7 @@ function documentpaginationRejected(){
      		"sSearch": ""
      	}
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -3719,6 +3727,7 @@ function recommendationpagination(){
      		"sSearch": ""
      	}
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 

@@ -674,8 +674,10 @@ function getCandidateDetails(){
 		        	 
 		        	 if(json['rateType'] != null && json['rateType'] != "" && json['rateType'] != 'undefined'){
 		        		 $("select[name=expectedCTCRatePer]").val(json['rateType']);
+		        		 validateExpectedCTCRatePer();
 		        	 }else{
 		        		 $("select[name=expectedCTCRatePer]").val('');
+		        		 validateExpectedCTCRatePer();
 		        	 }
 		        	 
 		        	 if(json['expectedRateCurrencey'] != null && json['expectedRateCurrencey'] != "" && json['expectedRateCurrencey'] != 'undefined'){
@@ -693,9 +695,11 @@ function getCandidateDetails(){
 		        	 if(json['currentRateType'] != null && json['currentRateType'] != "" && json['currentRateType'] != 'undefined'){
 		        		 $("select[name=currentCTCRatePer]").val(json['currentRateType']);
 		        		 validateExpectedCTC();
+		        		 validateCurrentCTCRatePer();
 		        	 }else{
 		        		 $("select[name=currentCTCRatePer]").val(''); 
 		        		 validateExpectedCTC();
+		        		 validateCurrentCTCRatePer();
 		        	 }
 		        	 
 		        	 if(json['currentRateCurrency'] != null && json['currentRateCurrency'] != "" && json['currentRateCurrency'] != 'undefined'){
@@ -1038,6 +1042,34 @@ function validate_fileupload(fileName)
 	 }
  }
  </script>
+ 
+ <script>
+ function validateExpectedCTCRatePer(){
+	 var expectedCTCRatePer = document.getElementById("expectedCTCRatePer").value;
+	 if(expectedCTCRatePer){
+		 $("input[name=ExpectedCTC]").removeAttr("data-validation-optional");
+		 $("input[name=ExpectedCTC]").attr("data-validation", "required");
+	 }else{
+		 $("input[name=ExpectedCTC]").removeAttr("data-validation");
+		 $("input[name=ExpectedCTC]").attr("data-validation-optional", "true");
+	 }
+ }
+ </script>
+ 
+ <script>
+ function validateCurrentCTCRatePer(){
+	 var currentCTCRatePer = document.getElementById("currentCTCRatePer").value;
+	 if(currentCTCRatePer){
+		 $("input[name=CurrentCTC]").removeAttr("data-validation-optional");
+		 $("input[name=CurrentCTC]").attr("data-validation", "required");
+	 }else{
+		 $("input[name=CurrentCTC]").removeAttr("data-validation");
+		 $("input[name=CurrentCTC]").attr("data-validation-optional", "true");
+	 }
+ }
+ </script>
+ 
+ 
  
  <script>
  function changeRateLabels(){

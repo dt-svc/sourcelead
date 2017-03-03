@@ -192,7 +192,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
     		result = result + ' <i class="fa fa-check-circle"></i><span id="docMsgDiv3"></span>';
     		result = result + ' </div>';
     	    result = result + '        <div id="employeesLoadingImg"></div>';
-    		if(json.projectMembersList.length!=null && json.projectMembersList.length!=''){
+    		/* if(json.projectMembersList.length!=null && json.projectMembersList.length!=''){ */
     	    result = result + '	<table id="projectEmployeePagination" class="display" cellspacing="0" width="100%">';
     		result = result + '	<thead>';
     		result = result + '		<tr>';
@@ -287,7 +287,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
 			}
         	result = result + '	     </tbody>';
     	    result = result + '	 </table>   ';
-    		 }else{
+    		/*  }else{
     		
     			 result = result + '<div class="table_nodata">';
     			 result = result + '<div class="table_nodata_inn">';
@@ -297,7 +297,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
     			 result = result + '<div class="clearfix"></div>';
     			 result = result + '</div>';
     			 result = result + '</div>';
-    		 }
+    		 } */
     		result = result + '	     </div>';
     		$("#tab-3").empty();  
     		$("#tab-2").empty();  
@@ -368,6 +368,7 @@ function projectEmployeePagination(){
      		"sSearch": ""
      	}
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 <!-- this script is for Employee EndDate Inline functionality at Projects screen -->

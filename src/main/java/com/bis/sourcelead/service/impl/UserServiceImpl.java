@@ -650,6 +650,11 @@ public class UserServiceImpl implements UserService {
 		return userDao.getManagersByUserIdAndUserRolesAndOrgLocationId(userId, roleId, orgLocationsId);
 	}
 	
+	@Override
+	public List<User> getManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(Long userId, Long roleId, Long orgLocationsId, Long tabId) throws Exception {
+		return userDao.getManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(userId, roleId, orgLocationsId,tabId);
+	}
+	
 
 	@Override
 	public User getUserDetailsByUserCode(String userCode) {
@@ -974,8 +979,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<User> getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(Long orgLocationsId, Long tabId,
 			List<Long> ownersList) throws Exception {
-		List<User> userList = null;
-		userList = userDao.getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(orgLocationsId, tabId,ownersList);
+		List<User> userList = userDao.getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(orgLocationsId, tabId,ownersList);
 		if(null != userList && !userList.isEmpty()){
 			for (User user : userList) {
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),orgLocationsId);
