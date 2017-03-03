@@ -182,11 +182,11 @@ public class RequirementListRestController {
                     }
               }				
 				requirement.setPostedDateStr(Constants.DF_DMY.format(requirement.getCreatedDate()));
-				int totalApplicatsCountForRequirement = 0;
+				/*int totalApplicatsCountForRequirement = 0;
 				totalApplicatsCountForRequirement = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(loginOrgLocation,requirement.getId(),user,userRoleName);
 				if(totalApplicatsCountForRequirement > 0){
 					requirement.setTotalApplicantsForRequirement(totalApplicatsCountForRequirement); ;
-				}
+				}*/
 				
 				if(requirement.getClientId() != null){
 					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
@@ -272,7 +272,7 @@ public class RequirementListRestController {
 			}
 			 long endTime = System.currentTimeMillis();
 			 long totalTime = endTime - startTime;
-			 logger.info("**************************************************** "+totalTime);
+			 logger.info("Total Time for the Requirement Response = "+totalTime);
 			return resultJson;
 		 
 		 
