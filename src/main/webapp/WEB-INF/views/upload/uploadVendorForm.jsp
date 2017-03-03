@@ -83,6 +83,7 @@ margin:10px 220px 0;
 			<!-- <p class="text-danger text-center mt hidden">Please Select the file &hellip;</p> -->
 			<p class="text-danger text-center mt" id="fileExist"><form:errors path="file" /></p>
 			<p class="text-danger text-center mt" id="success">${msg}</p> 
+			<div><span class="text-danger"><strong>${fileNameWrong}</strong></span></div>
 		   	 
 		   	 <!--  Downloaded File show here -->
 		   	   <div class="col-xs-3 alert alert-success fade in hidden" style="position:absolute; top:10px;" id="fileAttached">
