@@ -543,13 +543,7 @@ public class RequirementListRestController {
 										
 										if(requirementSubmissionHistoryServiceList !=null && requirementSubmissionHistoryServiceList.size() >0){
 											RequirementSubmissionHistory requirementSubmissionHistory = requirementSubmissionHistoryServiceList.get(0); 								
-											User usr = userService.getUserByUserCode(requirementSubmissionHistory.getCreatedBy());
-											if(usr.getFirstName() != null && usr.getLastName() !=null){
-												StringBuilder name = new StringBuilder();
-												requirementSubmission.setSubmittedBy(name.append(usr.getFirstName()).append(" ").append(usr.getLastName()).toString());
-											}else{
-												requirementSubmission.setSubmittedBy(usr.getFirstName());
-											}
+											requirementSubmission.setSubmittedBy(requirementSubmissionHistory.getCreatedUser());
 										}
 										
 										
