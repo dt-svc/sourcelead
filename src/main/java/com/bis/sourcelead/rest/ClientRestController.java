@@ -555,7 +555,9 @@ public class ClientRestController {
 		     List<Long> ownerListOfSpoc =  orgSpocService.getOwnerIdbySpocId(spocUserId,ownerId);
 		     //List<User> userList = userService.getOwnersByOrgLocationIdAndNotExistedOwnerId(orgLoc.getId(),ownerId,ownerListOfSpoc);
 		     List<User>  userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(orgLoc.getId(),Long.valueOf(Constants.TAB_CLIENT),ownerListOfSpoc);
-		     orgSpoc.setUserList(userList);
+		     if(null != userList && !userList.isEmpty()){
+		    	  orgSpoc.setUserList(userList);
+		     }
 		     String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editSpocMsg");
 		     if(msg != null && msg != ""){
 		    	 orgSpoc.setMsg(msg);
