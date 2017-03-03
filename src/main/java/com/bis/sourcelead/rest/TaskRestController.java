@@ -1,5 +1,7 @@
 package com.bis.sourcelead.rest;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -99,14 +101,16 @@ public class TaskRestController {
 
 				String currentTimeStr = Constants.TZ_DF.format(tk.getTaskDate());
 				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
-				Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
 				currentDateInTimezone = Constants.DMY.format(converteDate);
 				tk.setTaskDateStr(currentDateInTimezone);
 		    }
 			if(tk.getTaskTime() != null){
 				String currentTimeStr = Constants.TZ_DF.format(tk.getTaskDate());
 				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
-				Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
 				currentDateInTimezone = Constants.TMS.format(converteDate);
 				tk.setTaskTime(currentDateInTimezone);
 			}
