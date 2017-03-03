@@ -505,7 +505,7 @@ function closeCertificatePopup(){
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="
 							+ candidateId,
 					success : function(data) {
-						if (data != null && data != 'undefined' && data != "" && data != '[]') {
+						/* if (data != null && data != 'undefined' && data != "" && data != '[]') { */
 							if (data.indexOf('Sign In') >= 0) {
 								location.replace(sourceleadUrl);
 							} else if (data.indexOf('exception') >= 0) {
@@ -574,7 +574,7 @@ function closeCertificatePopup(){
 								$("#candidateEmployersList").append(result);
 								employeePagination();
 							}
-						} else {
+						/* } else {
 							var result = "";
 							result = result + "   <div class='row'>";
 							result = result + "	<div class='col-lg-12'>";
@@ -591,7 +591,7 @@ function closeCertificatePopup(){
 							result = result + "  </div> ";
 							$("#candidateEmployersList").empty();
 							$("#candidateEmployersList").append(result);
-						}
+						} */
 					},
 
 				});
@@ -611,7 +611,7 @@ function employeePagination(){
      		"sSearch": ""
      	}
     } );
- 
+    $(".dataTables_empty").html("");
  }
 </script>
 
