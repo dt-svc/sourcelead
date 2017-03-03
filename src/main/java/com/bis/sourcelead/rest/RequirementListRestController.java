@@ -277,8 +277,7 @@ public class RequirementListRestController {
 			}
 
 			 long endTime = System.currentTimeMillis();
-			 long totalTime = endTime - startTime;
-			 logger.info("Total Time for the Requirement Response = "+totalTime);
+			 logger.info("############## Total Time for the Requirement Response = "+(endTime - startTime));
 
 			return resultJson;
 		 
