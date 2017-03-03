@@ -1144,28 +1144,31 @@ public class TimesheetRestController {
 				tabDiv.append("		    <div class='timesheet_bot'>");	
 				tabDiv.append("		    	<div class='timesheet_week_comm'>");
 				/*if(projectMember.getProjects().getIsTimesheetAttachmentRequired() != null && projectMember.getProjects().getIsTimesheetAttachmentRequired() != 0){*/
-					  StringBuilder attachmentDiv = attachmentsAndComments(approvalStatus,startDate, endDate,ts,projectMember.getProjects().getIsTimesheetAttachmentRequired());
-					  tabDiv.append(attachmentDiv);
-				/*}*/
-			    
-					  
-			    /*tabDiv.append("		            <div class='commentTime'><textarea placeholder='comments here...'></textarea></div>");*/	
-			   
-				  String readonly = "readonly='readonly'";
-				  if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue())) ){
-					  readonly = "";
-				  }
-					  
-			    if(ts != null && ts.getWeekcomments() != null && !ts.getWeekcomments().isEmpty()){
-			    	tabDiv.append("<div class='commentTime'>");
-			    	tabDiv.append("<textarea  name='weekComment'  id='weekComment' "+readonly+" placeholder='comments here...'>").append(ts.getWeekcomments()).append("</textarea>");
-			    	tabDiv.append("</div>");
-				}else{
-					tabDiv.append("<div class='commentTime'>");
-					tabDiv.append("<textarea   name='weekComment' id='weekComment'   placeholder='comments here...'></textarea>");
-					tabDiv.append("</div>");
+				if(StringUtils.isNotEmpty(timesheetFrequencyEndDate)){
+					Date frequencyEndDate = format.parse(timesheetFrequencyEndDate.replaceAll("/", "-"));
+					if(frequencyEndDate.equals(actualEndDate)){
+						StringBuilder attachmentDiv = attachmentsAndComments(approvalStatus,startDate, endDate,ts,projectMember.getProjects().getIsTimesheetAttachmentRequired());
+						  tabDiv.append(attachmentDiv);
+						  
+						  String readonly = "readonly='readonly'";
+						  if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue())) ){
+							  readonly = "";
+						  }
+							  
+					    if(ts != null && ts.getWeekcomments() != null && !ts.getWeekcomments().isEmpty()){
+					    	tabDiv.append("<div class='commentTime'>");
+					    	tabDiv.append("<textarea  name='weekComment'  id='weekComment' "+readonly+" placeholder='comments here...'>").append(ts.getWeekcomments()).append("</textarea>");
+					    	tabDiv.append("</div>");
+						}else{
+							tabDiv.append("<div class='commentTime'>");
+							tabDiv.append("<textarea   name='weekComment' id='weekComment'   placeholder='comments here...'></textarea>");
+							tabDiv.append("</div>");
+						}
+					}
 				}
-			    
+				      
+				/*}*/
+			    /*tabDiv.append("		            <div class='commentTime'><textarea placeholder='comments here...'></textarea></div>");*/	
 			    tabDiv.append("</div>");
 			tabDiv.append("		    </div>  ");	
 			tabDiv.append("</div>");      
@@ -1304,7 +1307,8 @@ public class TimesheetRestController {
 			if(jsonObj.getString("projectMemberId") != null && jsonObj.getString("projectMemberId") != "" && jsonObj.getString("projectMemberId") != "undefined"){
 				  projectMember = projectMembersService.getProjectMemberById(Long.parseLong(jsonObj.getString("projectMemberId")));
 			}
-			
+			Date frequencyStartDate = null;
+			Date frequencyEndDate = null;
 	    	if(status != null && (status.equalsIgnoreCase("Draft") || status.equalsIgnoreCase("Submitted"))){
 				
 					String result = "";
@@ -1315,13 +1319,10 @@ public class TimesheetRestController {
 						 submissionId = jsonObj.getString("submissionId");
 					}
 					
-					
-					
 					Date startDate = null;
 					Date endDate = null;
 					
-					Date frequencyStartDate = null;
-					Date frequencyEndDate = null;
+					
 					if(jsonObj.getString("tabStartDate") != null && jsonObj.getString("tabStartDate") != "" && jsonObj.getString("tabStartDate") != "undefined"){
 			    	    startDate = format.parse(jsonObj.getString("tabStartDate"));
 			    	}
@@ -1329,12 +1330,12 @@ public class TimesheetRestController {
 			    		 endDate = format.parse(jsonObj.getString("tabEndDate"));
 			    	}
 					
-					if(jsonObj.getString("timesheetFrequency") != null && jsonObj.getString("timesheetFrequency") != "" && jsonObj.getString("timesheetFrequency") != "undefined"){
-						 String[] frequency = jsonObj.getString("timesheetFrequency").split("To");
-			       		 String weekStartDate = frequency[0].trim();
-			       		 String  weekEndDate = frequency[1].trim();
-			       		 frequencyStartDate = format.parse(weekStartDate);
-			       		 frequencyEndDate = format.parse(weekEndDate);
+					if(jsonObj.getString("frequencyDates") != null && jsonObj.getString("frequencyDates") != "" && jsonObj.getString("frequencyDates") != "undefined"){
+						 String[] frequency = jsonObj.getString("frequencyDates").split("To");
+			       		 String frstartDate = frequency[0].trim();
+			       		 String frEndDate = frequency[1].trim();
+			       		 frequencyStartDate = format.parse(frstartDate);
+			       		 frequencyEndDate = format.parse(frEndDate);
 			       		
 					}
 					 
@@ -1354,11 +1355,17 @@ public class TimesheetRestController {
 		            			   saHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("submitted for approval"));
 		    					   saHierarchy.setUpdatedDate(CommonUtil.currentDate());
 		    					   saHierarchy.setUpdatedBy(loginUser.getUserCode());
-		    						
-		            			  freshSaHierarchyList.add(saHierarchy);
+		    					   
+		    					   if(frequencyStartDate != null)
+		    					   saHierarchy.setFrequencyStartDate(frequencyStartDate);
+								   if(frequencyEndDate != null)
+								   saHierarchy.setFrequencyEndDate(frequencyEndDate);
+		            			   freshSaHierarchyList.add(saHierarchy);
 		            		 }
 		            		 submissionApproverHierarchyService.saveAllSubmissionApproverHierarchy(new ArrayList<>(freshSaHierarchyList));
-		            		 timesheetSubmissions.setWeekcomments(jsonObj.getString("weekComment"));
+		            		 if(jsonObj.has("weekComment")){
+		            			 timesheetSubmissions.setWeekcomments(jsonObj.getString("weekComment"));
+		            		 }
 		            		 timesheetSubmissions.setUpdatedDate(CommonUtil.currentDate());
 	 		     	    	 timesheetSubmissions.setUpdatedBy(loginUser.getUserCode());
 	 		     	    	 timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
@@ -1374,7 +1381,9 @@ public class TimesheetRestController {
 		     	    	timesheetSubmissions.setCreatedBy(loginUser.getUserCode());
 		     	    	timesheetSubmissions.setUpdatedDate(CommonUtil.currentDate());
 		     	    	timesheetSubmissions.setUpdatedBy(loginUser.getUserCode());
-		     	    	timesheetSubmissions.setWeekcomments(jsonObj.getString("weekComment"));
+		     	    	if(jsonObj.has("weekComment")){
+		     	    		timesheetSubmissions.setWeekcomments(jsonObj.getString("weekComment"));
+		     	    	}
 		     	    	
 		     	    	ArrayList<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
 		    	    	List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(projectMember.getProjects().getId());
@@ -1386,8 +1395,10 @@ public class TimesheetRestController {
 		    						saHierarchy.setSubmissionStatus(Submission_Status.getNameByValue(status));
 		    						saHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("new"));
 		    						saHierarchy.setCreatedDate(timesheetSubmissions.getCreatedDate());
-		    						saHierarchy.setFrequencyStartDate(frequencyStartDate);
-		    						saHierarchy.setFrequencyEndDate(frequencyEndDate);
+		    						if(frequencyStartDate != null)
+			    			        saHierarchy.setFrequencyStartDate(frequencyStartDate);
+									if(frequencyEndDate != null)
+								    saHierarchy.setFrequencyEndDate(frequencyEndDate);
 		    						saHierarchy.setCreatedBy(timesheetSubmissions.getCreatedBy());
 		    						saHierarchy.setUpdatedDate(timesheetSubmissions.getUpdatedDate());
 		    						saHierarchy.setUpdatedBy(timesheetSubmissions.getUpdatedBy());
@@ -1656,6 +1667,10 @@ public class TimesheetRestController {
 								if(sahList != null){
 									for(SubmissionApproverHierarchy sah :  sahList){
 										if(sah != null && sah.getId() != null){
+											if(frequencyStartDate != null)
+											sah.setFrequencyStartDate(frequencyStartDate);
+											if(frequencyEndDate != null)
+											sah.setFrequencyEndDate(frequencyEndDate);
 											sah.setSubmissionStatus(Submission_Status.SUBMITTED);
 											sah.setSubmissionApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);
 											submissionApproverHierarchyService.addSubmissionApproverHierarchy(sah);
@@ -1664,7 +1679,7 @@ public class TimesheetRestController {
 								}
 				            }
 							else{
-					            	insertNewTimesheetRecordByProjectMemberAndDates(projectMember,actualStartDate, actualEndDate,loginUser);
+					            	insertNewTimesheetRecordByProjectMemberAndDates(projectMember,actualStartDate, actualEndDate,frequencyStartDate,frequencyEndDate,loginUser);
 							}
 							
 						}
@@ -1754,7 +1769,7 @@ public class TimesheetRestController {
 	}
 	
 	    @Async
-		public void insertNewTimesheetRecordByProjectMemberAndDates(ProjectMembers projectMember,Date actualStartDate,Date actualEndDate,User loginUser) throws Exception{
+		public void insertNewTimesheetRecordByProjectMemberAndDates(ProjectMembers projectMember,Date actualStartDate,Date actualEndDate,Date frequencyStartDate,Date frequencyEndDate,User loginUser) throws Exception{
 				
 			TimesheetSubmissions timesheetSubmissions =  new TimesheetSubmissions();
 			timesheetSubmissions = new TimesheetSubmissions();
@@ -1776,6 +1791,10 @@ public class TimesheetRestController {
 						SubmissionApproverHierarchy saHierarchy = new SubmissionApproverHierarchy();
 						saHierarchy.setHeirarchyId(hierarchy);
 						saHierarchy.setSubmissionId(timesheetSubmissions);
+						if(frequencyStartDate != null)
+    			        saHierarchy.setFrequencyStartDate(frequencyStartDate);
+						if(frequencyEndDate != null)
+					    saHierarchy.setFrequencyEndDate(frequencyEndDate);
 						saHierarchy.setSubmissionStatus(Submission_Status.SUBMITTED);
 						saHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);
 						saHierarchy.setCreatedDate(timesheetSubmissions.getCreatedDate());

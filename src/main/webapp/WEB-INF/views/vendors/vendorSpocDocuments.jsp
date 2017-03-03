@@ -47,7 +47,7 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
           type : "POST",
           url: sourceleadUrl+"/getclientDocumentsListByResponderLocationIdAndSpocUserId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+clientLocationId+"&userId="+userId,        
           success :function(data) {
-               if(data != null && data != 'undefined' && data != "" && data != '[]'){
+               /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
              			var json = JSON.parse(data);
              			/* for (var i = 0; i < 1; i++) { 
              				var val= json[i];
@@ -141,7 +141,7 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                     $("#spocDocumentsList").append(result); 
 	                     spocDocumentpagination(); 
 	                    
-               }else{
+              /*  }else{
 	    	         var result ="";
 		    	     result = result+"   <div class='row'>"; 
 					 result = result+"	<div class='col-lg-12'>"; 
@@ -155,7 +155,7 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 					 result = result+"  </div> "; 
 					$("#spocDocumentsList").empty();
 				    $("#spocDocumentsList").append(result); 
-               }
+               } */
         },
           
      }); 
@@ -174,6 +174,7 @@ function spocDocumentpagination(){
      		"sSearch": ""
      	}
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 

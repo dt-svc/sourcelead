@@ -144,7 +144,7 @@ width: 11.5%;
     <nav class="header-nav navbar">
     <a href="javascript:void(0)" class="side-menu"> <i class="fa fa-bars pull-left"></i> </a>
       <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-      <div class="search-area col-md-offset-0 col-sm-offset-0 col-lg-offset-2">
+      <div class="search-area searchArea_mrgn">
            <form:form name ="search_form" id="search_form">
 			<div class="uasrch-selectpicker">
 			<select id="searchType" name="searchType" class="selectpicker uasrch pull-left show-menu-arrow" >
@@ -1030,6 +1030,7 @@ function myTasksPagination(){
      		"sSearch": ""
      	}
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -1045,6 +1046,7 @@ function assignedTasksPagination(){
      		"sSearch": ""
      	}
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 <script>
@@ -1059,6 +1061,7 @@ function closedTasksPagination(){
      		"sSearch": ""
      	}
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 <script>

@@ -164,8 +164,9 @@ public class RequirementListRestController {
 	 @PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT')")
 	 @RequestMapping(value = "/getRequirementListByOrgLocationID")
 	 public String getRequirementListByOrgLocationID(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
-		
-		 String msg = "";
+
+		 long startTime = System.currentTimeMillis();
+		   String msg = "";
 			String resultJson;
 			User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -174,19 +175,21 @@ public class RequirementListRestController {
 			List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user,userRoleName);
 			
 			for(Requirement requirement : requirementList){
-				Boolean isLoginUserAsTeamMember =  requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirement.getId(), user.getId());
+				
+				
+			/*	Boolean isLoginUserAsTeamMember =  requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirement.getId(), user.getId());
 				//assign to member role is admin show Status dropdown other then that disable dropdown in list
 				if(isLoginUserAsTeamMember){
                     if(!userRoleName.equalsIgnoreCase(Constants.ROLE_ADMIN)){
                         requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
                     }
-              }				
+                  }		*/		
 				requirement.setPostedDateStr(Constants.DF_DMY.format(requirement.getCreatedDate()));
-				int totalApplicatsCountForRequirement = 0;
+				/*int totalApplicatsCountForRequirement = 0;
 				totalApplicatsCountForRequirement = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(loginOrgLocation,requirement.getId(),user,userRoleName);
 				if(totalApplicatsCountForRequirement > 0){
 					requirement.setTotalApplicantsForRequirement(totalApplicatsCountForRequirement); ;
-				}
+				}*/
 				
 				if(requirement.getClientId() != null){
 					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
@@ -270,6 +273,11 @@ public class RequirementListRestController {
 			}else{
 				resultJson = commonUtil.toJSON(requirementList);
 			}
+
+			 long endTime = System.currentTimeMillis();
+			 long totalTime = endTime - startTime;
+			 logger.info("Total Time for the Requirement Response = "+totalTime);
+
 			return resultJson;
 		 
 		 
@@ -666,22 +674,28 @@ public class RequirementListRestController {
 			
 			 
 			 
-			 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-
-			 Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-			 REQUIREMENT_SUBMISSION_STATUS previousStatus = requirement.getRequirementSubmissionStatus();
+			   User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			 
-			 REQUIREMENT_SUBMISSION_STATUS changedStatus = Enum.valueOf(REQUIREMENT_SUBMISSION_STATUS.class, status);
-			 requirement.setRequirementSubmissionStatus(changedStatus);
-			 requirement.setRequirementSubmissionPreviousStatus(previousStatus);
-			 requirement.setUpdatedBy(loginUser.getUserCode());
-			 requirement.setUpdatedDate(commonUtil.currentDate());
-			 requirementService.addRequirement(requirement); 
+			   // authorizing if the login user as Team Member Or Not
+				Boolean isLoginUserAsTeamMember =  requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
+				if(isLoginUserAsTeamMember){
+					return "false";
+				}else{
+					
+					 Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+					 REQUIREMENT_SUBMISSION_STATUS previousStatus = requirement.getRequirementSubmissionStatus();
+					 REQUIREMENT_SUBMISSION_STATUS changedStatus = Enum.valueOf(REQUIREMENT_SUBMISSION_STATUS.class, status);
+					 requirement.setRequirementSubmissionStatus(changedStatus);
+					 requirement.setRequirementSubmissionPreviousStatus(previousStatus);
+					 requirement.setUpdatedBy(loginUser.getUserCode());
+					 requirement.setUpdatedDate(commonUtil.currentDate());
+					 requirementService.addRequirement(requirement); 
+					 
+					 StringBuilder reqStatusChange = new StringBuilder();
+					 SourceLeadSessionManager.setSessionAttribute(request, "reqStatusChange", reqStatusChange.append(" ").append(requirement.getJobTitle()).append(" Status changed ").append(requirement.getRequirementSubmissionPreviousStatus()).append(" to ").append(requirement.getRequirementSubmissionStatus()).append(" ").toString());
+				}
 			 
-			 StringBuilder reqStatusChange = new StringBuilder();
-			 SourceLeadSessionManager.setSessionAttribute(request, "reqStatusChange", reqStatusChange.append(" ").append(requirement.getJobTitle()).append(" Status changed ").append(requirement.getRequirementSubmissionPreviousStatus()).append(" to ").append(requirement.getRequirementSubmissionStatus()).append(" ").toString());
-
-			return "success";
+			return "true";
 		 }
 		 
 		 

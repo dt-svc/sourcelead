@@ -5,7 +5,7 @@
         <div class="dashboard-widget">
           <h4 class="clearfix">Requirement Approvals &nbsp;&nbsp;<!-- <a href="#" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a> --></h4>
           <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
-          <div class="clearfix require_wrap_table dashboard-data" style="margin-top: 36px;">
+          <div class="clearfix require_wrap_table dashboard-data overflow_inherint" style="margin-top: 55px;">
             <ul class="nav nav-tabs">
               <li class="active" id="waitingTab"><a data-toggle="tab" onclick="requirementApproverList('SUBMITTED');">Waiting </a></li>
               <li id="approvedTab"><a data-toggle="tab" onclick="requirementApproverList('APPROVED');">Approved </a></li>
@@ -41,12 +41,12 @@ function requirementApproverList(statusType){
 	
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  
-	  $("#requirementApproverList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  //$("#requirementApproverList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
            type : "GET",
            url: sourceleadUrl+"/getApproverRequirementApproverListByOrgLocationIDAndUserId?statusType="+statusType,    
             success :function(data) {
-                 if(data != null && data != 'undefined' && data != "" && data != '[]'){  
+                 /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */  
                	
 			    	     $("#requirementApproverList").removeAttr("style");
 	                	 $("#requirementApproverList").empty();
@@ -59,8 +59,10 @@ function requirementApproverList(statusType){
 	                     result = result +"    <th>Rate</th>"; 
 	                     result = result +"    <th>Exp</th>"; 
 	                     
-	                     if(statusType == "APPROVED" || statusType == "REJECTED"){
-	                    	 result = result +"    <th>"+statusType+" By</th>";
+	                     if(statusType == "APPROVED"){
+	                    	 result = result +"    <th>Approved By</th>";
+	                     }else if( statusType == "REJECTED"){
+	                    	 result = result +"    <th>Rejected By</th>";
 	                     }else{
 	                    	 result = result +"    <th>Action</th>";
 	                     }
@@ -123,7 +125,7 @@ function requirementApproverList(statusType){
 	                     result = result +"</table>"; 
 	                     $("#requirementApproverList").append(result); 
 	                     requirementApprovalPagination(); 
-                 }else{
+                 /* } *//* else{
                 	 $("#requirementApproverList").removeAttr("style");
 					 $("#requirementApproverList").empty();
 					 $("#requirementApproverList").removeAttr("style");
@@ -138,7 +140,7 @@ function requirementApproverList(statusType){
 						result = result+"			        <p> No Records found in  "+statusType+" Stage</p>";
 						result = result+"			 </div>";
 				    $("#requirementApproverList").append(result); 
-                }
+                } */
           },
             
        }); 
@@ -157,6 +159,7 @@ function requirementApprovalPagination(){
             "sSearch": ""
        }
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 
