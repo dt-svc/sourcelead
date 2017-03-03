@@ -1213,6 +1213,7 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 	
 	 var msg = $("#reject"+projectMemberId+"message").val(); 
 	 if(msg.match(/^[^\s-](.*)*$/) != null){
+		 msg = encodeURIComponent(msg);
 		 $("#rejectReasonDiv").empty();
 		 var sourceleadUrl ='${sourceleadUrl}';
 	     var rowHtmlContent =  $("#row"+projectMemberId).html();
