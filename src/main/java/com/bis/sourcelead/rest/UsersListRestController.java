@@ -515,6 +515,15 @@ public class UsersListRestController {
 			userRole.setDailyHours(employee.getDailyHours());
 
 		}
+		
+		List<User> userList = userService.getManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(userRole.getUser().getId(), userRole.getRoles().getId(), orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
+		 for (User user : userList) {
+			    UserRole userRole1 = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				if(null != userRole1){
+					user.setUserType(userRole1.getUserType());
+				}
+		  }
+		 userRole.setAllReportingManagers(userList);
 
 		resultJson = toJSON(userRole);
 		return resultJson;
