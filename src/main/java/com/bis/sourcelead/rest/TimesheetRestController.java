@@ -1361,7 +1361,9 @@ public class TimesheetRestController {
 		            			  freshSaHierarchyList.add(saHierarchy);
 		            		 }
 		            		 submissionApproverHierarchyService.saveAllSubmissionApproverHierarchy(new ArrayList<>(freshSaHierarchyList));
-		            		 timesheetSubmissions.setWeekcomments(jsonObj.getString("weekComment"));
+		            		 if(jsonObj.has("weekComment")){
+		            			 timesheetSubmissions.setWeekcomments(jsonObj.getString("weekComment"));
+		            		 }
 		            		 timesheetSubmissions.setUpdatedDate(CommonUtil.currentDate());
 	 		     	    	 timesheetSubmissions.setUpdatedBy(loginUser.getUserCode());
 	 		     	    	 timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
@@ -1377,7 +1379,9 @@ public class TimesheetRestController {
 		     	    	timesheetSubmissions.setCreatedBy(loginUser.getUserCode());
 		     	    	timesheetSubmissions.setUpdatedDate(CommonUtil.currentDate());
 		     	    	timesheetSubmissions.setUpdatedBy(loginUser.getUserCode());
-		     	    	timesheetSubmissions.setWeekcomments(jsonObj.getString("weekComment"));
+		     	    	if(jsonObj.has("weekComment")){
+		     	    		timesheetSubmissions.setWeekcomments(jsonObj.getString("weekComment"));
+		     	    	}
 		     	    	
 		     	    	ArrayList<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
 		    	    	List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(projectMember.getProjects().getId());
