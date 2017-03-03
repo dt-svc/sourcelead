@@ -1462,38 +1462,79 @@ function requirementPipeline(requirementId,submissionType){
 							        
 						            if(report.vendorLocationId != null && report.sourceSubmission != null){
 						        	   if(report.finalizedRate != null && report.finalizedRate != '' && report.finalizedRate != 'undefined'){
-						        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.finalizedRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+						        		   '<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+						        		   		result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.finalizedRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+						        		   '</sec:authorize>';
+											'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate">'+report.finalizedRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+						        		   '</sec:authorize>';
 								           }
 								       /* else if(report.needApplicantPermit == 'N'){
 								    	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">---</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
 							    	     } */
 								       else{
-								    	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+											'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+												result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+						        		   '</sec:authorize>';
+											'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+												result = result + '         <td><div><span class="showRate"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+						        		   '</sec:authorize>';
 							    	     }
 						            }else{
 						        	   if(report.finalizedRate != null && report.finalizedRate != '' && report.finalizedRate != 'undefined'){
-							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.finalizedRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+											'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.finalizedRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		'</sec:authorize>';
+											'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate">'+report.finalizedRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		'</sec:authorize>';
 								           }
 						        	   /* else if(report.needApplicantPermit == 'N'){
 						        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">---</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
 						        	   } */
 								       else{
-								    	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+												'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+														result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
+												'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+														result = result + '         <td><div><span class="showRate"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
 							    	     }
 						            }
 							          
 							      if(clientSubmissions == 'Y' && submissionType == 'SUBMIT_TO_CLIENT'){
 							           if((report.vendorLocationId == null || report.vendorLocationId == '' || report.vendorLocationId == 'undefined') && (report.sourceSubmission == null || report.sourceSubmission == '' || report.sourceSubmission == 'undefined')){
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
-							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+													'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+														result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								        		   '</sec:authorize>';
+													'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+														result = result + '         <td><div><span class="showRate">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								        		   '</sec:authorize>';
 							        	   }else{
-							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+												'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+														result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								        		   '</sec:authorize>';
+													'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+														result = result + '         <td><div><span class="showRate" ><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								        		   '</sec:authorize>';
+							        		   
 							        	   }
 							           }else{
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
-							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+												'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+														result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								        		   '</sec:authorize>';
+													'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+														result = result + '         <td><div><span class="showRate">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								        		   '</sec:authorize>';
 							        	   }else{
-							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+												'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+														result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								        		   '</sec:authorize>';
+													'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+														result = result + '         <td><div><span class="showRate"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								        		   '</sec:authorize>';
 							        	   }
 							           }
 							      }   
@@ -1703,17 +1744,37 @@ function requirementPipelineDA(requirementId,submissionType){
 							    	     
 						           if(report.vendorLocationId != null && report.sourceSubmission != null){
 						        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+											'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
+												'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
 								           }
 								       else{
-								    	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+											'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
+												'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
 							    	     }
 						           }else{
 						        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.expectedCTC+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+											'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.expectedCTC+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
+												'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate">'+report.expectedCTC+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
 								           }
 								       else{
-								    	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+											'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
+												'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
 							    	     }
 						           }
 							          
@@ -1932,17 +1993,37 @@ function requirementPipelineRS(requirementId,submissionType){
 							    	     
 						           if(report.vendorLocationId != null && report.sourceSubmission != null){
 						        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+											'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
+												'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
 								           }
 								       else{
-								    	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+											'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
+												'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate" ><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
 							    	     }
 						           }else{
 						        	   if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.expectedCTC+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+											'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.expectedCTC+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
+												'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate">'+report.expectedCTC+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
 								           }
 								       else{
-								    	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+											'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
+												'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
 							    	     }
 						           }
 							          
@@ -2165,17 +2246,37 @@ function requirementPipelineSL(requirementId,submissionType){
 							    	     
 						           if(report.vendorLocationId != null && report.sourceSubmission != null){
 						        	   if(report.finalizedRate != null && report.finalizedRate != '' && report.finalizedRate != 'undefined'){
-							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.finalizedRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+											'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.finalizedRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
+												'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate">'+report.finalizedRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
 								           }
 								       else{
-								    	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+											'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
+												'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
 							    	     }
 						           }else{
 						        	   if(report.finalizedRate != null && report.finalizedRate != '' && report.finalizedRate != 'undefined'){
-							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.finalizedRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+											'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.finalizedRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
+												'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate">'+report.finalizedRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
 								           }
 								       else{
-								    	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+											'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
+												'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
 							    	     }
 						           }
 							          
@@ -2404,15 +2505,35 @@ function requirementPipelineSC(requirementId,submissionType){
 							      if(clientSubmissions == 'Y'){
 							           if((report.vendorLocationId == null || report.vendorLocationId == '' || report.vendorLocationId == 'undefined') && (report.sourceSubmission == null || report.sourceSubmission == '' || report.sourceSubmission == 'undefined')){
 							        	   if(report.submitToClientRate != null && report.submitToClientRate != '' && report.submitToClientRate != 'undefined'){
-							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.submitToClientRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+												'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+														result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.submitToClientRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								        		   '</sec:authorize>';
+													'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+														result = result + '         <td><div><span class="showRate">'+report.submitToClientRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								        		   '</sec:authorize>';
 							        	   }else{
-							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+												'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+														result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								        		   '</sec:authorize>';
+													'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+														result = result + '         <td><div><span class="showRate"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								        		   '</sec:authorize>';
 							        	   }
 							           }else{
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
-							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+												'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+														result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								        		   '</sec:authorize>';
+													'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+														result = result + '         <td><div><span class="showRate">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								        		   '</sec:authorize>';
 							        	   }else{
-							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+												'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+														result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								        		   '</sec:authorize>';
+													'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+														result = result + '         <td><div><span class="showRate"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								        		   '</sec:authorize>';
 							        	   }
 							           }
 							        }
@@ -2972,30 +3093,60 @@ function requirementPipelineRejected(requirementId,submissionType){
 							    	     
 						           if(report.vendorLocationId != null && report.sourceSubmission != null){
 						        	   if(report.finalizedRate != null && report.finalizedRate != '' && report.finalizedRate != 'undefined'){
-							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.finalizedRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+											'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.finalizedRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
+												'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate">'+report.finalizedRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
 								           }
 								       else{
-								    	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+											'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
+												'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
 							    	     }
 						           }else{
 						        	   if(report.finalizedRate != null && report.finalizedRate != '' && report.finalizedRate != 'undefined'){
-							        	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.finalizedRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+											'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.finalizedRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
+												'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate">'+report.finalizedRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
 								           }
 								       else{
-								    	   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+											'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
+												'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													result = result + '         <td><div><span class="showRate"><i class="glyphicon fa fa-money"></i></span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+							        		   '</sec:authorize>';
 							    	     }
 						           }
 							          
 							      if(clientSubmissions == 'Y'){
 							           if((report.vendorLocationId == null || report.vendorLocationId == '' || report.vendorLocationId == 'undefined') && (report.sourceSubmission == null || report.sourceSubmission == '' || report.sourceSubmission == 'undefined')){
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
-							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+												'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+														result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.clientSubmissionId+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								        		   '</sec:authorize>';
+													'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+														result = result + '         <td><div><span class="showRate">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								        		   '</sec:authorize>';
 							        	   }else{
 							        		   result = result + '         <td><div><span>--</span></div></td>';
 							        	   }
 							           }else{
 							        	   if(report.proposedSubmissionRate != null && report.proposedSubmissionRate != '' && report.proposedSubmissionRate != 'undefined'){
-							        		   result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+												'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+														result = result + '         <td><div><span class="showRate" onclick="getRateListDiv('+report.id+','+report.candidateId+');">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								        		   '</sec:authorize>';
+													'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+														result = result + '         <td><div><span class="showRate">'+report.proposedSubmissionRate+'</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+								        		   '</sec:authorize>';
 							        	   }else{
 							        		   result = result + '         <td><div><span>--</span></div></td>';
 							        	   }
@@ -3948,9 +4099,27 @@ function getRateListDiv(submissionId, candidateId){
           		 else if (data.indexOf('exception') >= 0) {
           			 location.replace(sourceleadUrl+"/errorPage");
           		 }else{
+          			var expectedRate = json[0].expectedRate;
+          			if(expectedRate != null && expectedRate != '' && expectedRate != 'undefined'){
+          				expectedRate = expectedRate;
+          			}else{
+          				expectedRate = ""
+          			}
+          			var expectedRateType =json[0].expectedRateType;
+          			if(expectedRateType != null && expectedRateType != '' && expectedRateType != 'undefined'){
+          				expectedRateType = expectedRateType;
+          			}else{
+          				expectedRateType ="";
+          			}
+          			var expectedRatePer =json[0].expectedRatePer;
+          			if(expectedRatePer != null && expectedRatePer != '' && expectedRatePer != 'undefined'){
+          				expectedRatePer = expectedRatePer;
+          			}else{
+          				expectedRatePer = "";
+          			}
           			     var result = "";
       			         result = result + '<i class="fa fa-times text-danger close-ratepop" title="closediv" onClick="closeratediv();"></i>';
-      			         result = result + '<p><strong>Rate Negotiation History</strong></p>';
+      			         result = result + '<p><strong>Rate Negotiation History </strong> <strong>&nbsp;&nbsp;Expected Rate</strong> :'+expectedRateType+' &nbsp; '+expectedRate+'  &nbsp; '+expectedRatePer+'</p>';
          			     result = result + '<section class="tbl-scroll require_wrap_table">';
 	                     result = result + '  <table>';
 	                     result = result + '    <thead>';
@@ -4028,6 +4197,7 @@ function getRateListDiv(submissionId, candidateId){
 	                     result = result + '</section>';
 	                     if(report.submissionStatus != "REJECTED"){
 	                    	 /* if(report.isNeedApplicantPermit=="N" || (null != report.submissionRateStatus && '' != report.submissionRateStatus && 'undefined' != report.submissionRateStatus && 'REJECTED' != report.submissionRateStatus)){ */
+	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
 		                     result = result + '<div class="clearfix row">';
 		                     result = result + '<form name="rate_form" id="rate_form" method="post">';
 		                     result = result + '  <div class="form-group col-md-6">';
@@ -4058,6 +4228,7 @@ function getRateListDiv(submissionId, candidateId){
 		                     result = result + '  </div>';
 		                     result = result + '</form>';
 		                     result = result + '</div>';
+		                     '</sec:authorize>';
 	                    	/*  } */
 	                     }
 	                     result = result + '</i>';
@@ -4082,6 +4253,7 @@ function getRateListDiv(submissionId, candidateId){
 					 result = result+"  </div> ";
 					 if(report.submissionStatus != "REJECTED"){
 					 /* if(null != report.submissionRateStatus && '' != report.submissionRateStatus && 'undefined' != report.submissionRateStatus && 'REJECTED' != report.submissionRateStatus){ */
+					 '<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';	 
 		    	     result = result + '<div class="clearfix row">';
 		    	     result = result + '<form name="rate_form" id="rate_form" method="post">';
                      result = result + '  <div class="form-group col-md-6">';
@@ -4112,6 +4284,7 @@ function getRateListDiv(submissionId, candidateId){
                      result = result + '  </div>';
                      result = result + '</form>';
                      result = result + '</div>';
+                     '</sec:authorize>';
         	 		 /* } */
 					 }
                      result = result + '</i>';

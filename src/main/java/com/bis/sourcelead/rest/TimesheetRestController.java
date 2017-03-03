@@ -1144,28 +1144,31 @@ public class TimesheetRestController {
 				tabDiv.append("		    <div class='timesheet_bot'>");	
 				tabDiv.append("		    	<div class='timesheet_week_comm'>");
 				/*if(projectMember.getProjects().getIsTimesheetAttachmentRequired() != null && projectMember.getProjects().getIsTimesheetAttachmentRequired() != 0){*/
-					  StringBuilder attachmentDiv = attachmentsAndComments(approvalStatus,startDate, endDate,ts,projectMember.getProjects().getIsTimesheetAttachmentRequired());
-					  tabDiv.append(attachmentDiv);
-				/*}*/
-			    
-					  
-			    /*tabDiv.append("		            <div class='commentTime'><textarea placeholder='comments here...'></textarea></div>");*/	
-			   
-				  String readonly = "readonly='readonly'";
-				  if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue())) ){
-					  readonly = "";
-				  }
-					  
-			    if(ts != null && ts.getWeekcomments() != null && !ts.getWeekcomments().isEmpty()){
-			    	tabDiv.append("<div class='commentTime'>");
-			    	tabDiv.append("<textarea  name='weekComment'  id='weekComment' "+readonly+" placeholder='comments here...'>").append(ts.getWeekcomments()).append("</textarea>");
-			    	tabDiv.append("</div>");
-				}else{
-					tabDiv.append("<div class='commentTime'>");
-					tabDiv.append("<textarea   name='weekComment' id='weekComment'   placeholder='comments here...'></textarea>");
-					tabDiv.append("</div>");
+				if(StringUtils.isNotEmpty(timesheetFrequencyEndDate)){
+					Date frequencyEndDate = format.parse(timesheetFrequencyEndDate.replaceAll("/", "-"));
+					if(frequencyEndDate.equals(actualEndDate)){
+						StringBuilder attachmentDiv = attachmentsAndComments(approvalStatus,startDate, endDate,ts,projectMember.getProjects().getIsTimesheetAttachmentRequired());
+						  tabDiv.append(attachmentDiv);
+						  
+						  String readonly = "readonly='readonly'";
+						  if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue())) ){
+							  readonly = "";
+						  }
+							  
+					    if(ts != null && ts.getWeekcomments() != null && !ts.getWeekcomments().isEmpty()){
+					    	tabDiv.append("<div class='commentTime'>");
+					    	tabDiv.append("<textarea  name='weekComment'  id='weekComment' "+readonly+" placeholder='comments here...'>").append(ts.getWeekcomments()).append("</textarea>");
+					    	tabDiv.append("</div>");
+						}else{
+							tabDiv.append("<div class='commentTime'>");
+							tabDiv.append("<textarea   name='weekComment' id='weekComment'   placeholder='comments here...'></textarea>");
+							tabDiv.append("</div>");
+						}
+					}
 				}
-			    
+				      
+				/*}*/
+			    /*tabDiv.append("		            <div class='commentTime'><textarea placeholder='comments here...'></textarea></div>");*/	
 			    tabDiv.append("</div>");
 			tabDiv.append("		    </div>  ");	
 			tabDiv.append("</div>");      
