@@ -203,7 +203,7 @@ function selectOfferApplicants(){
 		cell0.innerHTML = divTsTd1Str;
 		
 		var cell1 = row.insertCell(1);
-		cell1.innerHTML = "<div class='positionRelative date'><input class='form-control input-sm Datepicker' placeholder='Date' name='"+maxRowNum+"joiningDate' id='"+maxRowNum+"joiningDate'  readonly='readonly'  type='text' data-validation='required' field-name='Joining Date' > <span class='input-group-addon input-groupAddon'><i class='fa fa-calendar'></i></span> </div>";
+		cell1.innerHTML = "<div class='positionRelative date' id='offerDatePic'><input class='form-control input-sm Datepicker' placeholder='Date' name='"+maxRowNum+"joiningDate' id='"+maxRowNum+"joiningDate'  readonly='readonly'  type='text' data-validation='required' field-name='Joining Date' > <span class='input-group-addon input-groupAddon'><i class='fa fa-calendar'></i></span> </div>";
 		
 		var cell2 = row.insertCell(2);
 		var divTsTd3Str = document.getElementById("divOfferTd3").innerHTML;
@@ -229,7 +229,15 @@ function selectOfferApplicants(){
 		
 		$("#"+maxRowNum+"applicantId").chosen();
 		
-		$(".Datepicker").datepicker();  
+		$('.Datepicker').datepicker({
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				removevalidation();
+			}
+		});
+		
+		
 		
 		$(".add_offer_wrap").addClass("add_offer_wrap_active");
 		$(".side_mask").fadeIn(200);
@@ -246,7 +254,11 @@ function selectOfferApplicants(){
 		
 }		
 </script>
-
+<script>
+function removevalidation(){
+	$('#offerDatePic').find('p.jquery_form_error_message').remove();	
+}
+</script>
 <script type="text/javascript">
 	function removeOfferRow(rowId) {
 		var rowNum = $("#divTsRow"+rowId).val();
