@@ -256,6 +256,7 @@ function dasboardTasksPagination(){
      		"sSearch": ""
      	}
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 

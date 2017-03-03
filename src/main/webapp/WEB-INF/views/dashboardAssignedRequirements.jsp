@@ -151,5 +151,6 @@ function pagination(){
             "sSearch": ""
        }
     } );
+    $(".dataTables_empty").html("");
 }
 </script>

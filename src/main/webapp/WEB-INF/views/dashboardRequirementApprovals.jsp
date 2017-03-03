@@ -159,6 +159,7 @@ function requirementApprovalPagination(){
             "sSearch": ""
        }
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 
