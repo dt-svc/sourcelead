@@ -106,10 +106,11 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 				     Date hEndDate = null;
 					 if(pmh.getProjectAssignedDate().after(startDate)){
 						 hStartDate = pmh.getProjectAssignedDate();	
-					 } 
-					 else{
-						 continue;
 					 }
+					 else{
+						 hStartDate = startDate;
+					 }
+					 
 					 if(pmh.getProjectTerminationDate()!= null && pmh.getProjectTerminationDate().before(endDate)){
 						 hEndDate = pmh.getProjectTerminationDate();
 					 }
