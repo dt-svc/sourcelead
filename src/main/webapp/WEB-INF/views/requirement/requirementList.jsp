@@ -191,7 +191,7 @@ function requirementList(){
 	    });
 	var orgATS = '${SourceLeadWeb_ats}';
 	var orgVMS = '${SourceLeadWeb_vms}';
-	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  $("#loadingDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getRequirementListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients,    
@@ -456,6 +456,7 @@ function prepareRequirementData(data){
 function pagination(){ 
     $('#requirementPagination').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -1565,6 +1566,8 @@ function requirementPipeline(requirementId){
         </ul>
         <div class="clearfix"></div>
       </div>
+      
+      <div id="loadingDiv"></div>
       
       <!-- list requirement -->
       <div class="require_wrap_table">
