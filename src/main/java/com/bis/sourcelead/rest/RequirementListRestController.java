@@ -572,7 +572,6 @@ public class RequirementListRestController {
 										}
 									}
 									
-									
 									String candidateName = requirementSubmissionTemplateFields.getFirstName();
 									if(requirementSubmissionTemplateFields.getLastName()!=null){
 										StringBuilder candidateNameSB = new StringBuilder();
