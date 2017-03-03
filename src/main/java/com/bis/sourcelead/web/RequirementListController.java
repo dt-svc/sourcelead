@@ -166,13 +166,13 @@ public class RequirementListController {
 			sessionData.setNav(Constants.Requirement);
 			
 			//List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLoc.getId());
-			List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLoc.getId(), "");
+			List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLoc.getId(), "", "");
 			
 			for(OrgRelations orgRelation :vendorsList){
-				if(orgRelation.getLocationId().getId() == orgLoc.getId()){
+				if(orgRelation.getLocationId().getId().equals(orgLoc.getId())){
 					orgRelation.setClientName(orgRelation.getResponderLocationId().getOrg().getOrgName());
 				}
-				if(orgRelation.getResponderLocationId().getId() == orgLoc.getId()){
+				if(orgRelation.getResponderLocationId().getId().equals(orgLoc.getId())){
 					orgRelation.setClientName(orgRelation.getLocationId().getOrg().getOrgName());
 				}
 			}
