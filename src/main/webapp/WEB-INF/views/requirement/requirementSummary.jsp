@@ -799,6 +799,8 @@ function sideBar(requirementId){
 							 result = result +'</div>';
 							 
 							 var submitToClient = '';
+							 alert("clientSubmissions---"+clientSubmissions);
+							 alert("isSpocActive---"+isSpocActive);
 						     if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
 	           				    submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
 	           			     }
@@ -831,7 +833,7 @@ function sideBar(requirementId){
 				            	result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
 				            '</sec:authorize>';
 				            '<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
-				            	result = result + submitToClient
+				            	result = result + submitToClient;
 				            '</sec:authorize>';
 				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">';
 				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
