@@ -191,7 +191,7 @@ function requirementList(){
 	    });
 	var orgATS = '${SourceLeadWeb_ats}';
 	var orgVMS = '${SourceLeadWeb_vms}';
-	  $("#loadingDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getRequirementListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients,    
@@ -1567,7 +1567,7 @@ function requirementPipeline(requirementId){
         <div class="clearfix"></div>
       </div>
       
-      <div id="loadingDiv"></div>
+     <!--  <div id="loadingDiv"></div> -->
       
       <!-- list requirement -->
       <div class="require_wrap_table">
@@ -1751,7 +1751,7 @@ function changeStatusAuthorisation(requirementId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	   $.ajax({
          type : "POST",
-          url: sourceleadUrl+"/saveChangedStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status,        
+          url: sourceleadUrl+"/changeStatusAuthorisation?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status,        
           success :function(data) {
         	  if(data == "true"){
         		  document.getElementById("changeStatusId" + requirementId).disabled=false;
