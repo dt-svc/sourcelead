@@ -8,9 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,9 +33,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.CampaignIndex;
@@ -45,7 +41,7 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
-import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.CrowdSourcingUserBankAccounts;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
@@ -55,6 +51,7 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.CrowdSourcingUserBankAccountsService;
 import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementReferService;
@@ -100,6 +97,9 @@ public class CrowdSourcingRequirementsRestController {
 	
 	@Autowired
 	CandidateService candidateService;
+	
+	@Autowired
+	CrowdSourcingUserBankAccountsService crowdSourcingUserBankAccountsService;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -435,6 +435,44 @@ public class CrowdSourcingRequirementsRestController {
 		Integer count = requirementSubmissionService.getNumberOfApplicantsForRequirement(requirement.getOrgLocationId().getId(), requirement.getId());
 		requirement.setTotalApplicantsForRequirement(count);
 		requirementElkUtil.saveElkRequirement(requirement,new JSONObject());
+		return "success";
+
+	}
+	
+	@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+	@RequestMapping(value = "/saveBankAccountDetails", method = RequestMethod.POST)
+	public String saveBankAccountDetails(@RequestParam(value = "jsonData", required = false) String json,HttpServletRequest request)
+			throws Exception {
+
+		String json1 = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json1);
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		CrowdSourcingUserBankAccounts bankAccount = null;
+		
+		bankAccount = crowdSourcingUserBankAccountsService.getUserBankAccountByUserId(user.getId());
+		
+		if(null == bankAccount){
+			bankAccount = new CrowdSourcingUserBankAccounts();
+			bankAccount.setAccountUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			bankAccount.setCreatedDate(new Date());
+		}
+		
+		bankAccount.setAccountUserId(user);
+		bankAccount.setAccountHolderName(jsonObj.getString("accountHolderName"));
+		bankAccount.setCountry(jsonObj.getString("country"));
+		bankAccount.setCurrency(jsonObj.getString("currency"));
+		if(jsonObj.has("bankName")){
+		  bankAccount.setBankName(jsonObj.getString("bankName"));
+		}
+		bankAccount.setAccountNumber(jsonObj.getString("accountNumber"));
+		bankAccount.setBankCode(jsonObj.getString("bankCode"));
+		bankAccount.setCreatedBy(user.getUserCode());
+		bankAccount.setUpdatedBy(user.getUserCode());
+		bankAccount.setUpdatedDate(new Date());
+		
+		crowdSourcingUserBankAccountsService.addUserBankAccounts(bankAccount);
+		
 		return "success";
 
 	}

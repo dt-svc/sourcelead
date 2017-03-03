@@ -31,8 +31,9 @@
 		  </ul>
 
 		  <div class="tab-content panel-body">
+		  <div id="loading"></div>
 			<div id="profile" class="tab-pane fade in active">
-		<form:form class="login-form clearfix"  id="profileSettings_form"  name="profileSettings_form" method="post" >
+		<form:form class="login-form clearfix"  id="bankAccount_form"  name="bankAccount_form" method="post" >
 			  
 			  <div class="col-xs-12 col-sm-3 col-md-3 text-center well">
 				  <div class="password-icon mt mb text-center">
@@ -47,7 +48,7 @@
 					<div class="form-group">
 					<label class="col-md-4">A/C Holder Name</label>
 					<div class="col-md-8">
-					  <input type="text" name="accountHolderName" value="${SourceLeadWeb_user.firstName}" field-name="First Name" class="form-control" data-validation="required validate_Alphanumeric validate_Space validate_length length2-100"  >
+					  <input type="text" name="accountHolderName" value="${bankAccounts.accountHolderName}" field-name="A/C Holder Name" class="form-control" data-validation="required validate_Alphanumeric validate_Space validate_length length2-100"  >
 					</div>
 					</div>
 				   <div class="form-group">
@@ -55,15 +56,22 @@
 					<div class="col-md-8">
 					  <select class="form-control select-bg" name="country" id="country" field-name="Country" onchange="getCurrency();" data-validation="required" value="${country}" >
 		                <option value="">Select Location</option>
-		                <option value="India">India</option>
-		                <option value="United States">United States</option>
+		                <c:if test="${empty bankAccounts.country}">
+			                <option ${SourceLeadWeb_country == 'India' ? 'selected' : ''} >India</option>
+			                <option ${SourceLeadWeb_country == 'United States' ? 'selected' : ''} >United States</option>
+		                </c:if>
+		                
+	                 	<c:if test="${!empty bankAccounts.country}">
+			                <option ${bankAccounts.country == 'India' ? 'selected' : ''} >India</option>
+			                <option ${bankAccounts.country == 'United States' ? 'selected' : ''} >United States</option>
+		                </c:if>
 		              </select>
 					</div>
 				   </div>
 				  <div class="form-group">
 					<label class="col-md-4">Currency</label>
 					<div class="col-md-8">
-					<input type="text" readonly="readonly"  id="currency" name="currency" class="form-control">
+					<input type="text" readonly="readonly"  id="currency"  value="${bankAccounts.currency}" name="currency" field-name="Currency" class="form-control">
 					</div>
 				  </div>
 		
@@ -73,19 +81,19 @@
 						  <div class="form-group">
 							<label class="col-md-4">Bank Name</label>
 							<div class="col-md-8">
-							  <input type="text" name="bankName" field-name="Designation" value="${SourceLeadWeb_designation}" class="form-control" data-validation-optional="true" data-validation="validate_length length2-100" />
+							  <input type="text" name="bankName" field-name="Bank Name" value="${bankAccounts.bankName}" class="form-control" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length2-100" />
 							</div>
 						  </div>
 						  <div class="form-group">
 							<label class="col-md-4">Account Number</label>
 							<div class="col-md-8">
-							  <input type="text" name="accountNumber" field-name="Mobile Phone" value="${SourceLeadWeb_user.mobilePhone}" class="form-control" data-validation-optional="true" data-validation="validate_Space validate_length length9-20 validate_phone" />
+							  <input type="text" name="accountNumber" field-name="Account Number" value="${bankAccounts.accountNumber}" class="form-control" data-validation="required validate_Space validate_int validate_length length2-100" />
 							</div>
 						  </div>
 						  <div class="form-group">
 							<label class="col-md-4" id="code">Code</label>
 							<div class="col-md-8">
-							   <input type="text" name="bankCode" id="bankCode" field-name="Bank Code" value="${SourceLeadWeb_user.mobilePhone}" class="form-control" data-validation-optional="true" data-validation="validate_Space validate_length length9-20 validate_phone" />
+							   <input type="text" name="bankCode" id="bankCode" field-name="Bank Code" value="${bankAccounts.bankCode}" class="form-control"  />
 							</div>
 						</div>
 					</div>
@@ -95,7 +103,7 @@
 						 <hr>
 							<div class="pull-right">
 							  <input type="submit" class="btn btn-primary mr" id="profile_submit" value="Save">
-							  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/dashboard'" >
+							  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/professionalDashboard'" >
 							</div>
 					  </div>
 			 </div>
@@ -112,24 +120,109 @@
   
 <jsp:include page="../masterFooter.jsp" />
 
+
+<script>
+$(document).ready(function() {
+	getCurrency();
+});
+</script>
+
 <script type="text/javascript">
 function getCurrency(){
 	var country = document.getElementById("country").value;
 	 if(country == "India"){
 		$('#currency').val('INR');
 		$('#code').html("IFSC Code");
+		$("#bankCode").removeAttr("data-validation");
+		$("#bankCode").attr("data-validation", "required validate_Alphanumeric validate_length length11-20");
+		
 	}else if(country == "United States"){
 		$('#currency').val('USD');
 		$('#code').html("Routing Number");
+		$("#bankCode").removeAttr("data-validation");
+		$("#bankCode").attr("data-validation", "required validate_int validate_length length9-20");
 	}else{
 		$('#currency').val('');
 		$('#code').html("Code");
+		$('#bankCode').val('');
+		$("#bankCode").removeAttr("data-validation");
 	} 
 	 
-	 $('#bankCode').val('');
 	 
 }
 </script>
 
+<script type="text/javascript">
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   };  
+         $('body').on('submit', '#bankAccount_form', function(e){
+        	  if ($(this).validate(false, validationSettings)){
+        		e.preventDefault();
+            	
+        		var frm = $('#bankAccount_form').serializeFormJSON();
+            	var con = JSON.stringify(frm);
+			    con = con.replace(/[{}]/g, ""); 
+			    var jsonData = encodeURIComponent(con);
+         		var sourceleadUrl ='${sourceleadUrl}';
+         		
+         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+         		  	$.ajax({
+          	      type: "POST",
+          	      contentType : 'application/json; charset=utf-8',
+          	      dataType : 'json',
+                	  url: sourceleadUrl+"/saveBankAccountDetails?&${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
+                  	success: function(result) {
+                  		location.replace(sourceleadUrl+"/bankAccountDetails");
+			        },  
+               }); 
+                
+            	    return true;
+            }
+            else{
+            	return false;	
+               }
+            });
+            
+         $('body').on('blur', '#bankAccount_form', function() {
+     		$("#bankAccount_form").showHelpOnFocus();
+     		$("#bankAccount_form").validateOnBlur(false, validationSettings);
+     	});
+     
+	</script>
+	
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
 
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>
+
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+
+        
+</script> 
 

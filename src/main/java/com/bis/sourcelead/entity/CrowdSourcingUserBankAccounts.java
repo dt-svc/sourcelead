@@ -50,6 +50,9 @@ public class CrowdSourcingUserBankAccounts implements Serializable{
 	@Column(name = "BANK_CODE")
 	private String bankCode;
 	
+	@Column(name = "ACCOUNT_UUID")
+	private String accountUUID;
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -158,6 +161,14 @@ public class CrowdSourcingUserBankAccounts implements Serializable{
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getAccountUUID() {
+		return accountUUID;
+	}
+
+	public void setAccountUUID(String accountUUID) {
+		this.accountUUID = accountUUID;
 	}
 	
 }

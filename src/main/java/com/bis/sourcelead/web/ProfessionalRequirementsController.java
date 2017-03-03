@@ -20,12 +20,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.CrowdSourcingUserBankAccounts;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.CrowdSourcingUserBankAccountsService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.service.RequirementReferService;
@@ -65,6 +67,9 @@ public class ProfessionalRequirementsController {
 	
 	@Autowired
 	UserService userservie;
+	
+	@Autowired
+	CrowdSourcingUserBankAccountsService crowdSourcingUserBankAccountsService;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -117,10 +122,18 @@ public class ProfessionalRequirementsController {
 	 
 	    @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
 	    @RequestMapping(value = "/bankAccountDetails")
-	 	public ModelAndView bankAccountDetails(HttpServletRequest request) {
+	 	public ModelAndView bankAccountDetails(HttpServletRequest request) throws Exception {
+	    	
+	    	    User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+	    	
 	 			ModelAndView model = new ModelAndView();
 	 			model.setViewName("professional/bankAccountDetails");
 	 			model.addObject("sourceleadUrl", sourceleadUrl);
+	 			
+	 			CrowdSourcingUserBankAccounts bankAccounts = crowdSourcingUserBankAccountsService.getUserBankAccountByUserId(user.getId());
+	 			if(null != bankAccounts){
+	 				model.addObject("bankAccounts", bankAccounts);
+	 			}
 	 			
 	 			return model;
 	 	}
