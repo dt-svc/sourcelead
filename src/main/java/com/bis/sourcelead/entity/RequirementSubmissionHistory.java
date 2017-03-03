@@ -59,7 +59,7 @@ public class RequirementSubmissionHistory implements Serializable{
     private String fileName;
 	 
     @Transient
-    private Long resumeid;
+    private String resumeid;
     
     @Transient
     private String createdDateStr;
@@ -190,11 +190,11 @@ public class RequirementSubmissionHistory implements Serializable{
 		this.fileName = fileName;
 	}
 
-	public Long getResumeid() {
+	public String getResumeid() {
 		return resumeid;
 	}
 
-	public void setResumeid(Long resumeid) {
+	public void setResumeid(String resumeid) {
 		this.resumeid = resumeid;
 	}
 

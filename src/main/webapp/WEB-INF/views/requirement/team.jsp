@@ -788,7 +788,11 @@ function getTeamOwners(){
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		var lastName= "";
+			        		if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
+			        			lastName = opt.lastName;
+			        		}
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+lastName+"</option>";
 					}
 		        	$("#ownerUserId").empty();
 			        $("#ownerUserId").append(output);
