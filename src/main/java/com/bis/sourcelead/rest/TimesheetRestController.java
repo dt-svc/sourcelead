@@ -293,13 +293,22 @@ public class TimesheetRestController {
 			
 			timesheetEntriesDiv.append("		                <select id='projectMemberId' name='projectMemberId' class='form-control chosen-select' onChange='timesheetEntriesDivByProjectMemberId()'>");
 			Long initialProjectMemberId = null;
+			StringBuilder isSelected = new StringBuilder("");
 			if(projectMembersList != null && !projectMembersList.isEmpty()){
 				long count = 1;
 				for(ProjectMembers pm :projectMembersList){
-					if(count == 1)
+					if(count == 1 && !"0".equalsIgnoreCase(pm.getStatus())){
+						isSelected.setLength(0);
+						isSelected.append("selected='selected'");
 						initialProjectMemberId = pm.getId();
-					timesheetEntriesDiv.append("		                  <option value='"+pm.getId()+"'>"+pm.getProjects().getProjectName()+"</option>");
-				    count++;
+						 count++;
+					}
+					else if(count>1){
+						isSelected.setLength(0);
+						 count++;
+					}
+					timesheetEntriesDiv.append("		                  <option  "+isSelected.toString()+" value='"+pm.getId()+"'>"+pm.getProjects().getProjectName()+"</option>");
+				   
 				}
 				
 			}
@@ -402,6 +411,9 @@ public class TimesheetRestController {
 		
 		StringBuilder timesheetEntriesDiv = new StringBuilder();
 		DateFormat format = Constants.DF_DMY;
+		if(!isNullOrEmpty(weekStartDate) && !isNullOrEmpty(weekEndDate)){
+			
+		
 		Date frequencyStartDate = format.parse(weekStartDate.replaceAll("/", "-"));
 		Date frequencyEndDate = format.parse(weekEndDate.replaceAll("/", "-"));
 		 
@@ -545,8 +557,10 @@ public class TimesheetRestController {
 		/*timesheetEntriesDiv.append("</div>");  */ 
 		
 		timesheetEntriesDiv.append("		 </form> 	");	
-		
+		}
 		return timesheetEntriesDiv;
+		
+		
 		
 	}
 	
