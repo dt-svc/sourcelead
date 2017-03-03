@@ -321,6 +321,7 @@ function saveSpocTerminateReason(spocId, orgRelationID,clientLocationId,spocName
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
 	if(reason.match(/^[^\s-](.*)*$/) != null){
+		 reason = encodeURIComponent(reason);
 		$("#reasonForSpocDiv").empty();
 		$.ajax({
 		   	type: "POST",
