@@ -1,5 +1,3 @@
-
-
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
@@ -77,57 +75,9 @@
 	  <!-- Accordion First Tab Ends -->
 
       <!-- Accordion second Tab -->
-        <div class="clearfix">
+        <!-- <div class="clearfix">
           <h2 onclick="opennetwork();">Open Network</h2>
           <div class="content clearfix" >
-            <!-- <div class="row">
-              <div class="col-md-12">
-                <div class="panel panel-success">
-                  <div class="panel-heading ">Selected Job Boards</div>
-                  <div class="panel-body">
-                    <ul class="list-unstyled list-inline sl-jobboard">
-                      <li class="bg-dice">
-                        <label class="radio-inline">
-                          <input type="radio" name="optradio">
-                          <span><img src="images/dice.jpg" alt="dice" title="Dice"></span> </label>
-                      </li>
-                      <li>
-                        <label class="radio-inline">
-                          <input type="radio" name="optradio">
-                          <span><img src="images/monster.jpg" alt="Monster" title="Monster"></span> </label>
-                      </li>
-                      <li>
-                        <label class="radio-inline">
-                          <input type="radio" name="optradio">
-                          <span><img src="images/naukri.jpg" alt="Naukri" title="Naukri"></span> </label>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                <div class="panel panel-info">
-                  <div class="panel-heading">Select Social Networks</div>
-                  <div class="panel-body">
-                    <ul class="list-unstyled list-inline connet-socialicons">
-                      <li class="bg-facebook">
-                        <label class="checkbox-inline">
-                          <input type="checkbox" name="checkbox">
-                          <span><i class="fa fa-facebook-square"></i>FaceBook</span> </label>
-                      </li>
-                      <li class="bg-linked">
-                        <label class="checkbox-inline">
-                          <input type="checkbox" name="checkbox">
-                          <span><i class="fa fa-linkedin-square"></i>LinkedIn</span> </label>
-                      </li>
-                      <li class="bg-twitter">
-                        <label class="checkbox-inline">
-                          <input type="checkbox" name="checkbox">
-                          <span><i class="fa fa-twitter-square"></i>Twitter</span> </label>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div> -->
             <div class="row">
               <div class="col-md-6">
                 <div class="row">
@@ -155,7 +105,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
       <!-- Accordion second Tab Ends -->
       </div>
       <div class="form-footer clearfix row mt">
@@ -236,6 +186,7 @@ function releaseToOneContact(contactscheckboxId){
 
 <script>
 function getContactsLists(){
+	alert("sss");
 	var vendors = "Client";
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
@@ -263,6 +214,7 @@ function getContactsLists(){
 			   	        	result = result +'  <th>Name</th>';
 			   	        	result = result +'  <th>Email</th>';
 			   	        	result = result +' <th>Phone</th>';
+			   	        	result = result +' <th>Owner</th>';
 			   	        	result = result +' <th>Vendor</th>';
 			   	        	result = result +' <th>Release</th>';
 			   	        	result = result +'</tr>';
@@ -287,6 +239,9 @@ function getContactsLists(){
 					        			result = result +'</td>';
 					        			result = result +'<td>';
 					        			result = result +'<div title="'+report.spocMobilePhone+'"><span>'+report.spocMobilePhone+'</span></div>';
+					        			result = result +'</td>';
+					        			result = result +'<td>';
+					        			result = result +'<div title="'+report.ownerName+'"><span>'+report.ownerName+'</span></div>';
 					        			result = result +'</td>';
 					        			result = result +'<td>';
 					        			result = result +'<div title=""><span>'+report.orgName+'</span></div>';
@@ -631,4 +586,4 @@ function opennetwork(){
 	  });
 }
 </script>
-
+<jsp:include page="../masterFooter.jsp" />

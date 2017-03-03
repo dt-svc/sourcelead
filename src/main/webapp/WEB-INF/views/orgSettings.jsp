@@ -240,7 +240,7 @@ function cancelOrgImg(){
 							</div>
 							
 							<div class="form-group">
-				            <label class="col-md-3">Time Zone ${orgLocations.timezone.timeZoneId}<span class="text-danger">&nbsp;*</span></label>
+				            <label class="col-md-3">Time Zone<span class="text-danger">&nbsp;*</span></label>
 				            <div class="col-md-9">
 								 <select class="chosen-select form-control" data-placeholder="Time Zone" field-name="Timezone" data-validation="required" id="timeZone" name="timeZone">
 									 <option value="" >Select Timezone</option>
@@ -272,13 +272,13 @@ function cancelOrgImg(){
 						<div class="form-group mt">
 							<label class="col-md-3">Phone</label>
 							<div class="col-md-9">
-							<input type="text"  class="form-control" name="phone" field-name="phone" data-validation="validate_int validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.phone}" />
+							<input type="text"  class="form-control" name="phone" field-name="phone" data-validation="validate_phone validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.phone}" />
 							</div>
 						</div>
 						<div class="form-group mt">
 							<label class="col-md-3">Fax</label>
 							<div class="col-md-9">
-							<input type="text"  class="form-control" name="fax" field-name="fax" data-validation="validate_int validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.fax}" />
+							<input type="text"  class="form-control" name="fax" field-name="fax" data-validation="validate_phone validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.fax}" />
 							</div>
 						</div>
 						

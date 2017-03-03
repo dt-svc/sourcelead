@@ -319,7 +319,7 @@ $(document).ready(function () {
        
        
        <div class="form-group jobTypeDiv" id="jobTypeDiv" style="display:none">
-            <label class="col-md-3">Employment Type</label>
+            <label class="col-md-3">Other</label>
             <div class="col-md-9">
               <input type="text" class="form-control" id="jobOtherType" name="jobOtherType" value="${requirement.otherJobType}"  field-name="Job Type" value="">
             </div>
@@ -640,7 +640,7 @@ $(document).ready(function () {
                   <c:set var="val" value="${requirement.isClientJob}"/>
                   <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
-			   				<select class="chosen-select form-control" disabled="disabled" name="selectContact" data-validation-optional="true" field-name = "Client Contact" id="selectContact">
+			   				<select class="chosen-select form-control" disabled="disabled" data-validation-optional="true" field-name = "Client Contact" >
                       			 <c:if test="${fn:length(clientContactList) gt 0}">
 								   <c:forEach var="report" items="${clientContactList}">
 			         		<%-- <option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocId.SpocUser.firstName}&nbsp;${report.spocId.SpocUser.lastName}</option> --%>
@@ -648,7 +648,7 @@ $(document).ready(function () {
 					    		 </c:forEach>
 								</c:if>
                       			 <c:if test="${fn:length(clientContactList) lt 1}">
-					    		 	<option value=''>${clientContactWithOwner}</option>
+					    		 	<option >${clientContactWithOwner}</option>
 					    		 </c:if>
                     		</select>
 						 </c:when>
@@ -1061,7 +1061,7 @@ $(document).ready(function () {
 		validateJobId();
 		$('#addClient').empty();
 		$('#addContact').empty();
-		$('#addTeam').empty();
+		//$('#addTeam').empty(); /* commented by Venkat Kesav because of issue #2673 */ 
 		
 		var validationSettings = {
 		        errorMessagePosition : 'element',
@@ -1101,6 +1101,15 @@ $(document).ready(function () {
 			 $('#clientSubmissionForm').attr("data-validation-optional","true");
 		}
 		
+          var rateType = document.getElementById("rateType").value; 
+ 		 if(rateType != null && rateType != ""){
+ 			 $('#rate').removeAttr('data-validation-optional');
+ 			 $('#rate').attr("data-validation","required"); 
+ 		 }else{
+ 			 $('#rate').removeAttr('data-validation');
+ 			 $('#rate').attr("data-validation-optional","true"); 
+ 		 }
+ 		 
 		 var rate = document.getElementById("rate").value; 
 		 if(rate != null && rate != ""){
 			 $('#rateType').removeAttr('data-validation-optional');
@@ -1109,13 +1118,14 @@ $(document).ready(function () {
 			 $('#rateType').removeAttr('data-validation');
 			 $('#rateType').attr("data-validation-optional","true"); 
 		 }
-		 var rateType = document.getElementById("rateType").value; 
-		 if(rateType != null && rateType != ""){
-			 $('#rate').removeAttr('data-validation-optional');
-			 $('#rate').attr("data-validation","required"); 
+		 
+		 var clientRateType = document.getElementById("clientRateType").value; 
+		 if(clientRateType != null && clientRateType != ""){
+			 $('#clientRate').removeAttr('data-validation-optional');
+			 $('#clientRate').attr("data-validation","required"); 
 		 }else{
-			 $('#rate').removeAttr('data-validation');
-			 $('#rate').attr("data-validation-optional","true"); 
+			 $('#clientRate').removeAttr('data-validation');
+			 $('#clientRate').attr("data-validation-optional","true"); 
 		 }
 		 
 		 var clientRate = document.getElementById("clientRate").value; 
@@ -1126,14 +1136,7 @@ $(document).ready(function () {
 			 $('#clientRateType').removeAttr('data-validation');
 			 $('#clientRateType').attr("data-validation-optional","true"); 
 		 }
-		 var clientRateType = document.getElementById("clientRateType").value; 
-		 if(clientRateType != null && clientRateType != ""){
-			 $('#clientRate').removeAttr('data-validation-optional');
-			 $('#clientRate').attr("data-validation","required"); 
-		 }else{
-			 $('#clientRate').removeAttr('data-validation');
-			 $('#clientRate').attr("data-validation-optional","true"); 
-		 }
+		
 		   if ($('#requirement_form').validate(false, validationSettings)){   
 			
 			var frm = $('#requirement_form').serializeFormJSON();
@@ -2028,8 +2031,12 @@ window.ids = new Array();
 function handleClick() {
 	ids = [];
 	$("input:checkbox[name=team]:checked").each(function(){
+		$('span.jquery_form_error_message').hide();
 		ids.push($(this).val());
 	});
+	if(ids.length < 1){
+		$('span.jquery_form_error_message').show();
+	}
 }
 </script>
 
@@ -2169,10 +2176,16 @@ function pagination(){
 function assignMembers() {
 	handleTeamRoleClick();
 	var result = "";
-	var oTable = $('#example').dataTable();
+	var oTable = $('#example').DataTable();
 	var rowcollection =  oTable.$(".myCheckbox:checked", {"page": "all"});
-	var totalCount = $("[type='checkbox']:checked").length;
+	//var totalCount = $("[type='checkbox']:checked").length;
 	var count = 1;
+	var totalCount = oTable
+    .rows()
+    .nodes()
+    .to$()
+	.find('input[type="checkbox"].myCheckbox:checked').length;
+	
 	if(totalCount == 0){
 		$('span.jquery_form_error_message').show();
 	}else{

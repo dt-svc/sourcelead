@@ -24,7 +24,7 @@
 <!-- For add New Applicant -->
 <script>
 function getAddApplicant(requirementId){
-	
+	$('.action-pop').slideUp();
 	var sourceleadUrl ='${sourceleadUrl}';
 	generateOrgSubmissionForm(sourceleadUrl,requirementId)
 	var result = "";
@@ -637,7 +637,7 @@ function getCandidateDetails(){
 		        	 }
 		        	 
 		        	 if(json['city'] != null && json['city'] != "" && json['city'] != 'undefined'){
-		        		 getCandidateCities(json['city']);
+		        		 getSubmissionCandidateCities(json['city']);
 		        	 }else{
 		        		 $("select[name=city]").val('');
 		        	 }
@@ -802,7 +802,7 @@ function getCandidateStates(){
 
 
 <script>
-function getCandidateCities(city){
+function getSubmissionCandidateCities(city){
 	
 	var countryName = $("#submissionCountry").val();
 	var stateName = $("#submissionState").val();
@@ -847,10 +847,10 @@ function init(){
 	      
 	       $("#submissionCountry").on('change', function (e) {
 	    	   getCandidateStates();
-	    	   getCandidateCities();
+	    	   getSubmissionCandidateCities();
 	       });
 	       $("#submissionState").on('change', function (e) {
-	    	   getCandidateCities();
+	    	   getSubmissionCandidateCities();
 	       });
 	      
 	       $('.chosen-select').each(function() {

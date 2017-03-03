@@ -8,24 +8,16 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -183,8 +175,13 @@ public class RequirementListRestController {
 			
 			for(Requirement requirement : requirementList){
 				Boolean isLoginUserAsTeamMember =  requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirement.getId(), user.getId());
-				requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
-				
+				//assign to member role is admin show Status dropdown other then that disable dropdown in list
+				if(isLoginUserAsTeamMember){
+                    if(!userRoleName.equalsIgnoreCase(Constants.ROLE_ADMIN)){
+                        requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
+                    }
+              }				
+				requirement.setPostedDateStr(Constants.DF_DMY.format(requirement.getCreatedDate()));
 				int totalApplicatsCountForRequirement = 0;
 				totalApplicatsCountForRequirement = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(loginOrgLocation,requirement.getId(),user,userRoleName);
 				if(totalApplicatsCountForRequirement > 0){
@@ -409,7 +406,9 @@ public class RequirementListRestController {
 					
 					List<RequirementApproverHierarchy> list = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(Long.parseLong(requirementId));
 					
-					Integer highestLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(Long.parseLong(requirementId));
+/*					Integer highestLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(Long.parseLong(requirementId));
+*/					
+					
 					ArrayList<String> ar = new ArrayList<String>();
 					if(list !=null && list.size() >0){
 						StringBuilder sb = new StringBuilder();
@@ -420,21 +419,24 @@ public class RequirementListRestController {
 								requirement.setRejectReasonForRequirement(sb.append(approverN.getRejectedReason()).toString());
 								break;
 							}
+							requirement.setApprovalMechanismType(approverN.getHierarchyType().toString());
 						}
-						requirement.setHighestLevel(highestLevel);
 						requirement.setApproverNames(ar);
 					}else{
 						
 						requirement.setApproverNames(ar);
 					}
 					
-					Boolean isLoginUserAsTeamMember =   requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(Long.parseLong(requirementId), user.getId());
+					
+					// UnWanted Code 
+					
+					/*Boolean isLoginUserAsTeamMember =   requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(Long.parseLong(requirementId), user.getId());
 					requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
 					
 					requirement.setIsLoginUserAsApprover(isLoginUserAsApprover.toString());
 					
 					Boolean isLoginUserAsManager =   requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(Long.parseLong(requirementId), user.getId());
-					requirement.setIsLoginUserAsManager(isLoginUserAsManager.toString());
+					requirement.setIsLoginUserAsManager(isLoginUserAsManager.toString());*/
 					
 					resultJson = commonUtil.toJSON(requirement);
 				 
@@ -570,7 +572,6 @@ public class RequirementListRestController {
 										}
 									}
 									
-									
 									String candidateName = requirementSubmissionTemplateFields.getFirstName();
 									if(requirementSubmissionTemplateFields.getLastName()!=null){
 										StringBuilder candidateNameSB = new StringBuilder();
@@ -588,6 +589,7 @@ public class RequirementListRestController {
 									requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
 									requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
 									requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
+									requirementSubmission.setResumeUUID(requirementSubmission.getCandidateResumes().getResumeUUID());
 									
 									
 									if(null != submissionType && submissionType.equalsIgnoreCase("SUBMIT_TO_CLIENT")){

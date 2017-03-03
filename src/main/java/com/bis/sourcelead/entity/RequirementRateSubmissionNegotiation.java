@@ -106,6 +106,9 @@ public class RequirementRateSubmissionNegotiation {
 	@Transient
 	private String submissionStatus;
 	
+	@Transient
+	private String expectedRatePer;
+	
 
 	public Long getId() {
 		return id;
@@ -145,6 +148,15 @@ public class RequirementRateSubmissionNegotiation {
 
 	public void setSubmissionStatus(String submissionStatus) {
 		this.submissionStatus = submissionStatus;
+	}
+
+
+	public String getExpectedRatePer() {
+		return expectedRatePer;
+	}
+
+	public void setExpectedRatePer(String expectedRatePer) {
+		this.expectedRatePer = expectedRatePer;
 	}
 
 	public OrgLocations getInitiatorOrgLocationId() {

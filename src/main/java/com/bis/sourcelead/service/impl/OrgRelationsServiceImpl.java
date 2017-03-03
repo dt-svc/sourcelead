@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -309,6 +310,71 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		
 		return vandorsContactsList;
 	}
+	
+	
+	/**
+	 * @author VenkatKesav
+	 * @since  March 02 2017
+	 * @version 0.0.1
+	 * This method is for get All Vendors Contact By OrgLocationId And TabAccess
+	 * @param loginUserId, orgLocationId, relationType, status, vendorIds, invitationStatus, vendorOrgLocationsIds
+	 * @return Set<OrgRelations> 
+	 * @throws NullPointer
+	 */
+	@Override
+	public List<OrgSpoc> getAllVendorsContactFilterListByOrgLocationIdAndTabAccess(Long loginUserId,Long orgLocationId, String relationType,String status,String vendorIds, String invitationStatus, List<Long> vendorOrgLocationsIds) throws Exception {
+		List<Long> userIds = userRoleService.getAllUserIdsByReportingManagerId(loginUserId);
+		//List<OrgSpoc> vandorsContactsList =  orgRelationsDao.getAllVendorsContactFilterListByOrgLocationId(loginUserId,userIds,orgLocationId, relationType,status,vendorIds,invitationStatus);
+		
+		List<OrgSpoc> vandorsContactsList =  orgRelationsDao.getAllVendorsContactFilterListByOrgLocationIdAndTabAccess(loginUserId,userIds,orgLocationId, relationType,status,vendorIds,invitationStatus, Long.valueOf(Constants.TAB_REQUIREMENT), vendorOrgLocationsIds);
+		if(vandorsContactsList != null && !vandorsContactsList.isEmpty()){
+		   for (OrgSpoc orgSpoc : vandorsContactsList) {
+			     StringBuilder spocNameSB = new StringBuilder();
+				 StringBuilder ownerNameSB = new StringBuilder();
+				 
+				 if("Vendor".equalsIgnoreCase(relationType)){
+					 orgSpoc.setSpocEmail(orgSpoc.getClientUser().getEmail());
+					 orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()).toString());
+					 orgSpoc.setSpocMobilePhone(orgSpoc.getClientUser().getMobilePhone());
+					 orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName()).toString());
+					
+					 orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
+					 orgSpoc.setUserId(orgSpoc.getClientUser().getId());
+					
+					 orgSpoc.setSpocLocationId(orgSpoc.getClientLocationId().getId());
+					 orgSpoc.setOrgName(orgSpoc.getClientLocationId().getOrg().getOrgName());
+				 }else{
+					 orgSpoc.setSpocEmail(orgSpoc.getVendorUser().getEmail());
+					 orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName()).toString());
+					 orgSpoc.setSpocMobilePhone(orgSpoc.getVendorUser().getMobilePhone());
+					 orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()).toString());
+					 
+					 orgSpoc.setTempOwnerId(orgSpoc.getClientUser().getId());
+					 orgSpoc.setUserId(orgSpoc.getVendorUser().getId());
+					
+					 orgSpoc.setSpocLocationId(orgSpoc.getVendorLocationId().getId());
+					 orgSpoc.setOrgName(orgSpoc.getVendorLocationId().getOrg().getOrgName()); 
+				 }
+			   
+				if(null != orgSpoc.getClientUser() && null != orgSpoc.getOwnerUser() && orgSpoc.getOwnerUser().getId().longValue() == orgSpoc.getClientUser().getId().longValue()){
+					 orgSpoc.setSpocUserId(orgSpoc.getVendorUser().getId());
+					 orgSpoc.setOwnerUserId(orgSpoc.getClientUser().getId().toString());
+				}
+				else{
+					orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
+					orgSpoc.setOwnerUserId(orgSpoc.getVendorUser().getId().toString());
+				}
+				
+				if(orgSpoc.getOrgRelations() != null && orgSpoc.getOrgRelations().getId() != null){
+					orgSpoc.setOrgRelationId(orgSpoc.getOrgRelations().getId());
+				}
+			}
+	   }
+		
+		return vandorsContactsList;
+	}
+	
+	
 
 	@Override
 	public List<OrgRelations> getAllVendorsListByOrgName(String orgName,Long orgLocationId) {
@@ -335,7 +401,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 				List<OrgSpoc> orgSpocs = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(),loginUserId,orgLocationId,"");
 				orgRelation.setNoOfContatcs(orgSpocs.size());
 				
-				Integer spocsCount = orgSpocService.getAllClientContactsCountForCampaignByOrgLocationId(loginUserId,orgLocationId);
+				Integer spocsCount = orgSpocService.getAllClientContactsCountForCampaignByOrgLocationId(orgRelation.getId(),loginUserId,orgLocationId);
 				orgRelation.setNoOfContatcsForCampaign(spocsCount);
 				
 				if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue() == orgLocationId.longValue()){

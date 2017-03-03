@@ -21,11 +21,13 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.UserService;
@@ -64,7 +66,8 @@ public class RequirementReleaseRestController {
 	@Autowired
 	UserService userService;
 	
-	
+	@Autowired
+	RecommendedCustomizeScoreService recommendedCustomizeScoreService;
 	/**
 	 * @author Venkat Kesav
 	 * this is method is using contacts List
@@ -84,9 +87,19 @@ public class RequirementReleaseRestController {
 	    List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLocations.getId(),status);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		List<OrgSpoc>  contactsList = null;	
-		    for (OrgRelations orgRelation : vandorsListByOrgLocationId) {
+		List<Long> vendorOrgLocationsIds = new ArrayList<Long>();
+		   for (OrgRelations orgRelation : vandorsListByOrgLocationId) {
+			   if(orgRelation.getResponderLocationId().getId().equals(orgLocations.getId())){
+				   vendorOrgLocationsIds.add(orgRelation.getLocationId().getId());
+			   }else if(orgRelation.getLocationId().getId().equals(orgLocations.getId())){
+				   vendorOrgLocationsIds.add(orgRelation.getResponderLocationId().getId());
+			   }
+		   }
 		    	
-		    	contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(user.getId(),orgLocations.getId(), "Client","Active",null,"");
+		
+		    	//contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(user.getId(),orgLocations.getId(), "Client","Active,New,Contracted",null,"");
+		    	
+		    	contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationIdAndTabAccess(user.getId(),orgLocations.getId(), "Client","Active,New,Contracted",null,"", vendorOrgLocationsIds);
 		    	
 		    	for (OrgSpoc orgSpoc : contactsList) {/*
 		    		
@@ -186,11 +199,16 @@ public class RequirementReleaseRestController {
 					orgSpoc.setOrgRelationId(orgSpoc.getOrgRelations().getId());*/
 		    	}
 					
-			}
 		    if(contactsList != null){
 		    	for(OrgSpoc contact : contactsList){
 			    	Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(Long.parseLong(requirementId), contact.getId());
 			    	contact.setReleasedRequirement(isJobReleased.toString());
+			    	StringBuilder ownerName = new StringBuilder();
+			    	if(null != contact.getClientUser() && null != contact.getClientUser().getLastName() &&  "" != contact.getClientUser().getLastName()){
+			    		contact.setOwnerName(ownerName.append(contact.getClientUser().getFirstName()).append(" ").append(contact.getClientUser().getLastName()).toString());
+			    	}else{
+			    		contact.setOwnerName(ownerName.append(contact.getClientUser().getFirstName()).toString());
+			    	}
 				}
 		    }
 		    
@@ -221,6 +239,13 @@ public class RequirementReleaseRestController {
 		    //List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
  
 		    for (OrgRelations orgRelation : vandorsListByOrgLocationIdDuplicate) {
+		    	
+		    	List<Long> vendorOrgLocationsIds = new ArrayList<Long>();
+			    if(orgRelation.getResponderLocationId().getId().equals(orgLocations.getId())){
+				    vendorOrgLocationsIds.add(orgRelation.getLocationId().getId());
+			    }else if(orgRelation.getLocationId().getId().equals(orgLocations.getId())){
+				    vendorOrgLocationsIds.add(orgRelation.getResponderLocationId().getId());
+			    }
 				
 				if(orgRelation.getLocationId().getId().equals(orgLocations.getId())){
 					orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
@@ -232,7 +257,9 @@ public class RequirementReleaseRestController {
 					//List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Client");
 					//List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgId(orgRelation.getId());
 					//List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgIdAndInvitationStatusAndSpocStatus(orgRelation.getId(),"Accepted","Active");
-					List<OrgSpoc> contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(user.getId(),orgLocations.getId(), "Client","Active",orgRelation.getId().toString(),"");
+					//List<OrgSpoc> contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(user.getId(),orgLocations.getId(), "Client","Active,New,Contracted",orgRelation.getId().toString(),"");
+					List<OrgSpoc> contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationIdAndTabAccess(user.getId(),orgLocations.getId(), "Client","Active,New,Contracted",orgRelation.getId().toString(),"", vendorOrgLocationsIds);
+					
 					int nonAssignedCount = 0;
 					orgRelation.setNoOfContatcs(0); 
 					if(!contactsList.isEmpty()){
@@ -265,7 +292,8 @@ public class RequirementReleaseRestController {
 					//List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Vendor");
 					//List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgId(orgRelation.getId());
 					//List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgIdAndInvitationStatusAndSpocStatus(orgRelation.getId(),"Accepted","Active");
-					List<OrgSpoc> contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(user.getId(),orgLocations.getId(), "Client","Active",orgRelation.getId().toString(),"");
+					//List<OrgSpoc> contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(user.getId(),orgLocations.getId(), "Client","Active,New,Contracted",orgRelation.getId().toString(),"");
+					List<OrgSpoc> contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationIdAndTabAccess(user.getId(),orgLocations.getId(), "Client","Active,New,Contracted",orgRelation.getId().toString(),"", vendorOrgLocationsIds);
 					int nonAssignedCount = 0;
 					orgRelation.setNoOfContatcs(0); 
 					if(!contactsList.isEmpty()){
@@ -334,8 +362,14 @@ public class RequirementReleaseRestController {
 					
 					
 					OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(vendor));
+					List<Long> vendorOrgLocationsIds = new ArrayList<Long>();
+						   if(orgRelations.getResponderLocationId().getId().equals(loginOrgLocation.getId())){
+							   vendorOrgLocationsIds.add(orgRelations.getLocationId().getId());
+						   }else if(orgRelations.getLocationId().getId().equals(loginOrgLocation.getId())){
+							   vendorOrgLocationsIds.add(orgRelations.getResponderLocationId().getId());
+						   }
 					
-					 List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(loginUser.getId(),loginOrgLocation.getId(), "Client","Active",vendor,"");
+					 List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactFilterListByOrgLocationIdAndTabAccess(loginUser.getId(),loginOrgLocation.getId(), "Client","Active",vendor,"", vendorOrgLocationsIds);
 					
 					for(OrgSpoc orgSpoc : vandorsContactListByOrgLocationId){
 					    Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(requirementId, orgSpoc.getId());
@@ -350,11 +384,11 @@ public class RequirementReleaseRestController {
 				}
 			}
 			
-			if(null != isPublics && !"".equalsIgnoreCase(isPublics)){
+			if(null != isPublics && !"".equalsIgnoreCase(isPublics) && "undefined" == isPublics){
 				parentRequirement.setIsPublic(isPublics);
 				parentRequirement.setPostedOrgName(org.getOrgName());
 			}
-			if(null != isCrowdScourcing && !"".equalsIgnoreCase(isCrowdScourcing)){
+			if(null != isCrowdScourcing && !"".equalsIgnoreCase(isCrowdScourcing) && "undefined" == isCrowdScourcing){
 				parentRequirement.setIsCrowdSourcing(isCrowdScourcing);
 				parentRequirement.setPostedOrgName(org.getOrgName());
 			}
@@ -410,7 +444,10 @@ public class RequirementReleaseRestController {
 		
 		requirement.setJobTitle(parentRequirement.getJobTitle());
 		requirement.setJobType(parentRequirement.getJobType());
-		requirement.setJobId(parentRequirement.getJobId());
+		if(null != parentRequirement.getJobType() &&  parentRequirement.getJobType() != "" &&  parentRequirement.getJobType() != "undefined" && parentRequirement.getJobType().equalsIgnoreCase("Other")){
+			requirement.setOtherJobType(parentRequirement.getOtherJobType());
+		}
+//		requirement.setJobId(parentRequirement.getJobId());
 		requirement.setPositions(parentRequirement.getPositions());
 		requirement.setEducation(parentRequirement.getEducation());
 		requirement.setMinExp(parentRequirement.getMinExp());
@@ -430,9 +467,13 @@ public class RequirementReleaseRestController {
 		requirement.setIsTemplate("N");
 		requirement.setSubmissionTemplateJsonString(parentRequirement.getSubmissionTemplateJsonString());
 		requirement.setClientSubmissionTemplateJsonString(parentRequirement.getSubmissionTemplateJsonString());
-		requirement.setClientCurrencyCode(parentRequirement.getClientCurrencyCode());
-		requirement.setClientRate(parentRequirement.getClientRate());
-		requirement.setClientRateType(parentRequirement.getClientRateType());
+		//requirement.setClientCurrencyCode(parentRequirement.getClientCurrencyCode());
+		//requirement.setClientRate(parentRequirement.getClientRate());
+		//requirement.setClientRateType(parentRequirement.getClientRateType());
+		requirement.setClientCurrencyCode(parentRequirement.getCurrencyCode());
+		requirement.setClientRate(parentRequirement.getRate());
+		requirement.setClientRateType(parentRequirement.getRateType());
+		
 		requirement.setRequirementUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		
 		if(parentRequirement.getClientSubmissionTemplateId()!=null){
@@ -455,6 +496,10 @@ public class RequirementReleaseRestController {
 		requirement.setUpdatedDate(commonUtil.currentDate());
 		
 		requirement.setId(null);
-		requirementService.addRequirement(requirement);
+        Requirement req= requirementService.addRequirement(requirement);
+		
+		//store recommended customizeScore
+	   RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScoreService.saveCustomizeScore(req);
+
 	}
 }
