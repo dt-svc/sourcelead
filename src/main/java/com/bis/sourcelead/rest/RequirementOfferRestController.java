@@ -540,15 +540,15 @@ public class RequirementOfferRestController {
 	}
 	
 	@RequestMapping(value = "/acceptRejectCandidateFromDashboard", method = RequestMethod.POST)
-	public @ResponseBody String acceptRejectCandidateFromDashboard(String submissionId,String status,HttpServletRequest request) throws Exception { 
+	public @ResponseBody String acceptRejectCandidateFromDashboard(Long submissionId,String status,@RequestParam(value = "reason", required = false) String reason, HttpServletRequest request) throws Exception { 
 												 
 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		
-		if(StringUtils.isNotEmpty(submissionId)){
-			RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId));
+		if(null !=submissionId){
+			RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 			if(StringUtils.equalsIgnoreCase(status, "accept")){
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
@@ -560,6 +560,9 @@ public class RequirementOfferRestController {
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
 				requirementSubmission.setSubmissionRequestUser(user.getFirstName()+""+user.getLastName());
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
+				if(null != reason && !"".equalsIgnoreCase(reason)){
+					requirementSubmission.setRejectedReason(reason);
+				}
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			}
 		}

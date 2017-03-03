@@ -1176,6 +1176,10 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <input type="text" value="'+lastName+'" name="LastName" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true">';
 					result = result + ' </div>';
 					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + '<strong>Role:</strong><span class="fix">'+json.roles.displayName+'</span></div>';
+					result = result + ' </div>'; 
+					
 					result = result + ' <div class="user_summary_edit_cta" id="EmployeeIdDiv">';
 					result = result + ' <label>Employee Id</label>';
 					result = result + ' <input type="text" value="'+employeeId+'" name="EmployeeId" id="EmployeeId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" onKeyUp="validateEmployeeId('+json.id+','+json.user.id+');">';

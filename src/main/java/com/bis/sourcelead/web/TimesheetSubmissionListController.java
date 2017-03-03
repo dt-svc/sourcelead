@@ -143,6 +143,7 @@ public class TimesheetSubmissionListController {
 			     for(SubmissionApproverHierarchy submissionApproverHierarchy:list){
 				    	 Date actualStartDate =submissionApproverHierarchy.getFrequencyStartDate();
 				    	 Date actualEndDate =submissionApproverHierarchy.getFrequencyEndDate();
+				    	 if(actualStartDate != null && actualEndDate != null){
 				    	 LinkedHashMap<Date, Date> displayWeeksList = new LinkedHashMap<>();
 				    		Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(actualStartDate), format.format(actualEndDate));
 							if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
@@ -237,7 +238,8 @@ public class TimesheetSubmissionListController {
 					     sb.append("    </td>");
 			            sb.append("</tr>");
 			    	
-				}
+				    }
+			     }
 		         
 		     }
 			sb.append(" </tbody>");	

@@ -186,7 +186,6 @@ function releaseToOneContact(contactscheckboxId){
 
 <script>
 function getContactsLists(){
-	alert("sss");
 	var vendors = "Client";
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
