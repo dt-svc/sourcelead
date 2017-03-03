@@ -164,9 +164,9 @@ public class RequirementListRestController {
 	 @PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT')")
 	 @RequestMapping(value = "/getRequirementListByOrgLocationID")
 	 public String getRequirementListByOrgLocationID(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
-		
-		  long startTime = System.currentTimeMillis();
-		 String msg = "";
+
+		 long startTime = System.currentTimeMillis();
+		   String msg = "";
 			String resultJson;
 			User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -185,11 +185,11 @@ public class RequirementListRestController {
                     }
                   }		*/		
 				requirement.setPostedDateStr(Constants.DF_DMY.format(requirement.getCreatedDate()));
-				int totalApplicatsCountForRequirement = 0;
+				/*int totalApplicatsCountForRequirement = 0;
 				totalApplicatsCountForRequirement = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(loginOrgLocation,requirement.getId(),user,userRoleName);
 				if(totalApplicatsCountForRequirement > 0){
 					requirement.setTotalApplicantsForRequirement(totalApplicatsCountForRequirement); ;
-				}
+				}*/
 				
 				if(requirement.getClientId() != null){
 					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
@@ -273,11 +273,11 @@ public class RequirementListRestController {
 			}else{
 				resultJson = commonUtil.toJSON(requirementList);
 			}
-			
-			 long stopTime = System.currentTimeMillis();
-		      long elapsedTime = stopTime - startTime;
-		      System.out.println(elapsedTime);
-		      
+
+			 long endTime = System.currentTimeMillis();
+			 long totalTime = endTime - startTime;
+			 logger.info("Total Time for the Requirement Response = "+totalTime);
+
 			return resultJson;
 		 
 		 

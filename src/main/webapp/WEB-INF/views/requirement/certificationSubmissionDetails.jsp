@@ -28,7 +28,7 @@ function certificationSubmissionDetailsList(candidateId){
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
           success :function(data) {
-               if(data != null && data != 'undefined' && data != "" && data != '[]'){
+               /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
              		 if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
 			    	 }
@@ -99,7 +99,7 @@ function certificationSubmissionDetailsList(candidateId){
 	                     $("#certificationSubmissionDetailsList").append(result); 
 	                     certificationSubmissionDetailsPagination(); 
 			    	} 
-               }else{
+               /* }else{
 	    	         var result ="";
 		    	     result = result+"   <div class='row'>"; 
 					 result = result+"	<div class='col-lg-12'>"; 
@@ -114,7 +114,7 @@ function certificationSubmissionDetailsList(candidateId){
 					$("#certificationSubmissionDetailsList").empty();
 				    $("#certificationSubmissionDetailsList").append(result);
 				    
-               }
+               } */
         },
           
      }); 
@@ -133,6 +133,6 @@ function certificationSubmissionDetailsPagination(){
      		"sSearch": ""
      	}
     } );
- 
+    $(".dataTables_empty").html("");
  }
 </script>

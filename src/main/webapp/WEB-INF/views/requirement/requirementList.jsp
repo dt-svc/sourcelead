@@ -312,11 +312,11 @@ function prepareRequirementData(data){
         }else{
        	 result = result +"<td><div>----</div></td>";
         }
-        if(opt.totalApplicantsForRequirement!=null && opt.totalApplicantsForRequirement!='' && opt.totalApplicantsForRequirement!='undefined'){
-       	result = result +"<td><div>"+opt.totalApplicantsForRequirement+"</div></td>";
-        }else{
+       /*  if(opt.totalApplicantsForRequirement!=null && opt.totalApplicantsForRequirement!='' && opt.totalApplicantsForRequirement!='undefined'){ */
+       	result = result +"<td><div>"+opt.totalApplicants+"</div></td>";
+       	/* } else{
        	 result = result +"<td><div>0</div></td>";
-        }
+        } */
         if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
        	 result = result +"<td><div><span title="+opt.manager+">"+opt.manager+"</span></div></td>";
         }else{

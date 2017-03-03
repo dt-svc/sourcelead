@@ -183,16 +183,10 @@ function candidateCertificateList(candidateId){
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
           success :function(data) {
-               if(data != null && data != 'undefined' && data != "" && data != '[]'){
-             		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-             		 else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		 }
-             		 else{
+        	  var json = JSON.parse(data);
+               /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
              			 
-             			var json = JSON.parse(data);
+             			/* var json = JSON.parse(data);
 	                      for (var i = 0; i < 1; i++) {
 	                             var val= json[i];
 	                             var opt = "";
@@ -203,7 +197,7 @@ function candidateCertificateList(candidateId){
 	                                             }
 	                                     $("#msgDiv").empty();
 	                                     $("#msgDiv").append(opt);
-	                             }
+	                             } */
 	                      
 	                	 $("#candidateCertificateList").empty();
 	                	 var result = "";
@@ -293,8 +287,7 @@ function candidateCertificateList(candidateId){
 	                     $("#candidateCertificateList").append(result); 
 	                     certificationPagination(); 
 	                     msgFadein(); 
-			    	} 
-               }else{
+             /*   }else{
 	    	         var result ="";
 		    	     result = result+"   <div class='row'>"; 
 					 result = result+"	<div class='col-lg-12'>"; 
@@ -311,7 +304,7 @@ function candidateCertificateList(candidateId){
 				    
 				    $("#popUpDivEmp").empty();
 					$("#popUpDivEmp").append(result);
-               }
+               } */
         },
           
      }); 
@@ -330,7 +323,7 @@ function certificationPagination(){
      		"sSearch": ""
      	}
     } );
- 
+    $(".dataTables_empty").html("");
  }
 </script>
 

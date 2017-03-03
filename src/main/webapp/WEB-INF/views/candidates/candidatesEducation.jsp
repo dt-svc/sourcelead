@@ -86,14 +86,14 @@ function candidateEducationList(candidateId){
           type : "POST",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
           success :function(data) {
-               if(data != null && data != 'undefined' && data != "" && data != '[]'){
+            /*    if(data != null && data != 'undefined' && data != "" && data != '[]'){
              		 if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
 			    	 }
              		 else if (data.indexOf('exception') >= 0) {
              			 location.replace(sourceleadUrl+"/errorPage");
              		 }
-             		 else{
+             		 else{ */
              			var json = JSON.parse(data);
              			/* for (var i = 0; i < 1; i++) {
                             var val= json[i];
@@ -187,7 +187,7 @@ function candidateEducationList(candidateId){
 	                     result = result +"</table>";
 	                     $("#candidateEducationList").append(result); 
 	                     educationPagination(); 
-			    	} 
+			    	/* } 
                }else{
 	    	         var result ="";
 		    	     result = result+"   <div class='row'>"; 
@@ -202,7 +202,7 @@ function candidateEducationList(candidateId){
 					 result = result+"  </div> "; 
 					$("#candidateEducationList").empty();
 				    $("#candidateEducationList").append(result); 
-               }
+               } */
         },
           
      }); 
@@ -227,6 +227,7 @@ function educationPagination(){
      		"sSearch": ""
      	}
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
 
