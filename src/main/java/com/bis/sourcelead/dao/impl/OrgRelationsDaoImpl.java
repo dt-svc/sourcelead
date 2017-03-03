@@ -309,7 +309,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<OrgRelations> getAllVendorsFilterByOrgLocationId(Long orgLocationId, String status) throws Exception {
+	public List<OrgRelations> getAllVendorsFilterByOrgLocationId(Long orgLocationId, String status, String vendorsRelationId) throws Exception {
 		logger.debug("In OrgRelations getAllVendorsByOrgLocationId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		
@@ -317,8 +317,6 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		if(status != null){
 			level = status.split(",");	
 		}
-		
-		
 		
 		String subQuery2 = "";
 		String subQuery3  ="";
@@ -367,16 +365,50 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 				subQuery3 = " (" + subQuery3.substring(0, subQuery3.length() - 4) + ")";
 			}
 		}
+		
+		List<Long> vendorsRelationIdList = new ArrayList<Long>();
+		String[] vendorsRelationIdArr = null;
+	    if(vendorsRelationId != ""){
+	    	vendorsRelationIdArr = vendorsRelationId.split(",");
+	    	for(String VRID : vendorsRelationIdArr){
+	    		vendorsRelationIdList.add(Long.parseLong(VRID));
+	    	}
+	    }
+		
+		String subQuery4 = "";
+		
 			
+		//orgrelation.id IN (:vendorsRelationIdList)
+		if(vendorsRelationIdList.size() > 0){
+			subQuery4 = " and orgrelation.id IN (:vendorsRelationIdList) ";
+		}
 		
 		
 		List<OrgRelations> vandorsList = null;
 		if(level == null || Arrays.asList(level).contains("")){
-			Query vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.locationId left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Client') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Client' )");
-			vandorsList = vendorsListQuery.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			Query vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.locationId left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where ( (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Client') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Client' )) "+subQuery4+" ");
+			if(vendorsRelationIdList.size() > 0){
+				vandorsList = vendorsListQuery
+						.setLong("orgLocationId", orgLocationId)
+						.setParameterList("vendorsRelationIdList", vendorsRelationIdList)
+						.setCacheable(true).list();
+			}else{
+			vandorsList = vendorsListQuery
+						.setLong("orgLocationId", orgLocationId)
+						.setCacheable(true).list();
+			}
 		}else{
-			Query vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.locationId left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where ("+subQuery2+" and orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Client') or ("+subQuery3+" and orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Client' )");
-			vandorsList = vendorsListQuery.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			Query vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.locationId left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where ( ("+subQuery2+" and orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Client') or ("+subQuery3+" and orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Client' ) ) "+subQuery4+" ");
+			if(vendorsRelationIdList.size() > 0){
+				vandorsList = vendorsListQuery
+						.setLong("orgLocationId", orgLocationId)
+						.setParameterList("vendorsRelationIdList", vendorsRelationIdList)
+						.setCacheable(true).list();
+			}else{
+			vandorsList = vendorsListQuery
+						.setLong("orgLocationId", orgLocationId)
+						.setCacheable(true).list();
+			}
 		}
 		
 		return vandorsList;
