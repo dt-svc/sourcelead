@@ -140,7 +140,7 @@ $(document).ready(function() {
 	   		    	      $("#timesheetDivByFrequency").empty();
 			    	  	  $("#timesheetDivByFrequency").append(result); 
 			    	  	  
-			    	  	  maskme();
+			    	  	 maskme();
 			    	  	 $("html").trigger('click');
 			    	  	 prepareChosenScripts();
 			    	  	 $("#tab-1").show();
@@ -162,6 +162,7 @@ $(document).ready(function() {
 	         var sourceleadUrl ='${sourceleadUrl}';
 	         var projectMemberId = $("#projectMemberId").val();
 	         var timesheetFrequency = $("#timesheetFrequency").val();
+	         approvalStatus =$("#timesheetSubmissionStatus").val();
 	         $("#timesheetDivByTab").empty();
 	         $("#timesheetDivByTab").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	         $.ajax({
@@ -169,24 +170,12 @@ $(document).ready(function() {
         	      dataType : 'json',
   	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&approvalStatus="+approvalStatus+"&from=user",		
   		          success :function(result) {
-  		    	       
   		        	   $("#timesheetDivByTab").removeAttr("style");
   		    	       $("#timesheetDivByTab").empty();
 		    	  	   $("#timesheetDivByTab").append(result);
-		    	  	   
 		    	  	   maskme();
 		    	  	   $("html").trigger('click');
-		    	  	   
 			    	   $("#tab-1").show();
-	 		    	   $(".project-tabs-menu a").click(function(event) {
-	 		    	        event.preventDefault();
-	 		    	        $(this).parent().addClass("current");
-	 		    	        $(this).parent().siblings().removeClass("current");
-	 		    	        var tab = $(this).attr("href");
-	 		    	        $(".project_tabs_inn").not(tab).css("display", "none");
-	 		    	        $(tab).fadeIn();
-	 		    	   });
-		    	  	   
   		          }
   	         }); 
 	}
@@ -204,6 +193,7 @@ $(document).ready(function() {
   	      	  	  url: sourceleadUrl+"/timesheetDivAfterSaving?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&approvalStatus="+approvalStatus+"&from=user",		
   		          success :function(result) {
   		        	   $("#timesheetDivByTab").removeAttr("style");
+  		        	   $("#timesheetDivByTab").empty();
   		        	   if(result != null){
   		        		   var statusDivWidth = result["statusDivWidth"];
   		        		   $("#timesheetSubmissionStatusDiv").empty();
@@ -211,20 +201,25 @@ $(document).ready(function() {
 	  		    	  	   if(statusDivWidth != null && statusDivWidth != '' && statusDivWidth != 'undefined'){
 	  		    	  		   $("#timesheetSubmissionStatusDiv").attr("style","width:244px;"); 
 	  		    	  	   }
-	  		    	  	   $("#timesheetDivByTab").empty();
 	  		    	  	   $("#timesheetDivByTab").append(result["TabDiv"]);
 	  		    	  	   maskme();
 	  		    	  	   $("html").trigger('click');
-	  		    	       timesheetDivByFrequency();
-	  			    	   $("#tab-1").show();
-	  	 		    	   $(".project-tabs-menu a").click(function(event) {
-	  	 		    	        event.preventDefault();
-	  	 		    	        $(this).parent().addClass("current");
-	  	 		    	        $(this).parent().siblings().removeClass("current");
-	  	 		    	        var tab = $(this).attr("href");
-	  	 		    	        $(".project_tabs_inn").not(tab).css("display", "none");
-	  	 		    	        $(tab).fadeIn();
-	  	 		    	   });
+	  			     	   $("#tab-1").show();
+	  			    	   approvalStatus =$("#timesheetSubmissionStatus").val();
+	  			    	   var activeElement = $('.project-tabs-menu li.current');
+	 		    	        if(approvalStatus != null && approvalStatus != '' && approvalStatus != 'undefined' && approvalStatus != 'new' && approvalStatus != 'draft'){
+	 		    	        	activeElement.addClass("current subColor");
+	 		    	        	activeElement.siblings().removeClass("current");
+	 		    	        	activeElement.siblings().addClass("subColor");
+	 		    	        }
+	 		    	        else if(approvalStatus != null && approvalStatus != '' && approvalStatus != 'undefined' && approvalStatus == 'draft'){
+	 		    	        	activeElement.addClass("current subColor");
+	 		    	        	activeElement.siblings().removeClass("current");
+	 		    	        } 
+	 		    	        else{
+	 		    	        	activeElement.addClass("current");
+	 		    	        	activeElement.siblings().removeClass("current");
+	 		    	        }
   		        	   }
   		    	      
 		    	  	   
