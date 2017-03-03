@@ -7,6 +7,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,8 +115,13 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 						Date interviewConverteDate = Constants.TZ_DF_TS.parse(interviewStartTimeUTC);
 						String interviewConvertedDateStr = DF_DMY.format(interviewConverteDate);
 						interviewHistory.setInterviewTimeZoneStartTimeStr(interviewConvertedDateStr+"("+requirementInterview.getTimezone().getTimeZoneId()+")");
+						DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+						Date currentDateinTZ = zoned.toDate();
 						
-						 interviewHistory.setFeedbackStartTime("feedbackStartTime");
+						if(requirementInterview.getStartTime().compareTo(currentDateinTZ)<0){
+							    		 interviewHistory.setFeedbackStartTime("feedbackStartTime");
+						    	 }
+						// interviewHistory.setFeedbackStartTime("feedbackStartTime");
 			    }
 			    
 			    if(requirementInterview.getEndTime() != null){
@@ -127,8 +136,12 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 						Date interviewConverteDate = Constants.TZ_DF_TS.parse(interviewStartTimeUTC);
 						String interviewConvertedDateStr = DF_DMY.format(interviewConverteDate);
 						interviewHistory.setInterviewTimeZoneEndTimeStr(interviewConvertedDateStr);
-					
-					 interviewHistory.setFeedbackStartTime("feedbackEndTime");
+
+						DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+						Date currentDateinTZ = zoned.toDate();
+						if(requirementInterview.getEndTime().compareTo(currentDateinTZ)<0){
+				    		 interviewHistory.setFeedbackEndTime("feedbackStartTime");
+						}
 			    }
 			    if(requirementInterview.getInterviewTemplateId() != null){
 			    	interviewHistory.setInterviewTemplateid(requirementInterview.getInterviewTemplateId().getId());
