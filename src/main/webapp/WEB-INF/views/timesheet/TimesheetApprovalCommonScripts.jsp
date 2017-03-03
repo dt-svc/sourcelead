@@ -134,7 +134,7 @@ function timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMembe
 	         var sourceleadUrl ='${sourceleadUrl}';
 	         var projectMemberId = $("[name='projectMemberId']").val();
 	         var timesheetFrequency = $("[name='timesheetFrequency']").val();
-		     
+	         approvalStatus =$("#timesheetSubmissionStatus").val();
 	         $("#timesheetDivByTab").empty();
 	         $("#timesheetDivByTab").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	         $.ajax({
@@ -142,24 +142,12 @@ function timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMembe
         	      dataType : 'json',
   	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&approvalStatus="+approvalStatus+"&from=approver",		
   		          success :function(result) {
-  		    	       
   		        	   $("#timesheetDivByTab").removeAttr("style");
   		    	       $("#timesheetDivByTab").empty();
 		    	  	   $("#timesheetDivByTab").append(result);
-		    	  	   
 		    	  	   maskme();
 		    	  	   $("html").trigger('click');
-		    	  	   
 			    	   $("#tab-1").show();
-	 		    	   $(".project-tabs-menu a").click(function(event) {
-	 		    	        event.preventDefault();
-	 		    	        $(this).parent().addClass("current");
-	 		    	        $(this).parent().siblings().removeClass("current");
-	 		    	        var tab = $(this).attr("href");
-	 		    	        $(".project_tabs_inn").not(tab).css("display", "none");
-	 		    	        $(tab).fadeIn();
-	 		    	   });
-		    	  	   
   		          }
   	         }); 
 	}
@@ -471,9 +459,9 @@ function newSaveTimesheet(status,savingType){
        		   var form = $('#timesheet_form')[0];
        		   var formData = new FormData(form); 
        		   var submissionIds = $("#submissionId").val();
-       		   $("#timesheetPopUp").empty();
-  	  	       $("#timesheetPopUp").append('<div class="loadTime" id="loadTime"></div>'); 
-       		   $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+       		   $("#timesheetDivByTab").empty();
+  	  	       $("#timesheetDivByTab").append('<div class="loadTime" id="loadTime"></div>'); 
+       		   $("#loadTime").attr('style','position:absolute; width:100%; height:350px;top:-38px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:center; background-repeat:no-repeat; background-size:50px;');
         	
        		   $.ajax({
 	      	          type : "POST",
@@ -489,10 +477,7 @@ function newSaveTimesheet(status,savingType){
         		    		  timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMemberId,savingType);
         		    	  }
         		    	  else{
-        		    		  
-        		    		  timesheetDivAfterSaving(startDate,endDate,approvalStatus)
-        		    		  
-        		    		  //timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMemberId,savingType);
+        		    		  timesheetDivAfterSaving(startDate,endDate,status)
         		    	  }
      	        		  
         		      }
@@ -651,35 +636,39 @@ function clearTimesheet(){
 	         var sourceleadUrl ='${sourceleadUrl}';
 	         var projectMemberId = $("#projectMemberId").val();
 	         var timesheetFrequency = $("#frequencyDates").val();
-	         $("#timesheetDivByTab").empty();
-	         $("#timesheetDivByTab").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	         $.ajax({
     	          type : "POST",
         	      dataType : 'json',
   	      	  	  url: sourceleadUrl+"/timesheetDivAfterSaving?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&approvalStatus="+approvalStatus+"&from=approver",		
   		          success :function(result) {
-  		        	   $("#timesheetDivByTab").removeAttr("style");
   		        	   if(result != null){
+  		        		   $("#timesheetDivByTab").removeAttr("style");
+    		    	       $("#timesheetDivByTab").empty();
   		        		   var statusDivWidth = result["statusDivWidth"];
   		        		   $("#timesheetSubmissionStatusDiv").empty();
 	  		    	  	   $("#timesheetSubmissionStatusDiv").append(result["StatusDiv"]); 
 	  		    	  	   if(statusDivWidth != null && statusDivWidth != '' && statusDivWidth != 'undefined'){
-	  		    	  		   $("#timesheetSubmissionStatusDiv").attr("style","width:244px;"); 
+	  		    	  		 $("#timesheetSubmissionStatusDiv").attr("style","width:244px;"); 
 	  		    	  	   }
-	  		    	  	   $("#timesheetDivByTab").empty();
 	  		    	  	   $("#timesheetDivByTab").append(result["TabDiv"]);
 	  		    	  	   maskme();
 	  		    	  	   $("html").trigger('click');
-	  		    	  	   
-	  			    	   $("#tab-1").show();
-	  	 		    	   $(".project-tabs-menu a").click(function(event) {
-	  	 		    	        event.preventDefault();
-	  	 		    	        $(this).parent().addClass("current");
-	  	 		    	        $(this).parent().siblings().removeClass("current");
-	  	 		    	        var tab = $(this).attr("href");
-	  	 		    	        $(".project_tabs_inn").not(tab).css("display", "none");
-	  	 		    	        $(tab).fadeIn();
-	  	 		    	   });
+	  			    	    $("#tab-1").show();
+	  			    	    approvalStatus =$("#timesheetSubmissionStatus").val();
+  			    	        var activeElement = $('.project-tabs-menu li.current');
+ 	 		    	        if(approvalStatus != null && approvalStatus != '' && approvalStatus != 'undefined' && approvalStatus != 'new' && approvalStatus != 'draft'){
+ 	 		    	        	activeElement.addClass("current subColor");
+ 	 		    	        	activeElement.siblings().removeClass("current");
+ 	 		    	        	activeElement.siblings().addClass("subColor");
+ 	 		    	        }
+ 	 		    	        else if(approvalStatus != null && approvalStatus != '' && approvalStatus != 'undefined' && approvalStatus == 'draft'){
+ 	 		    	        	activeElement.addClass("current subColor");
+ 	 		    	        	activeElement.siblings().removeClass("current");
+ 	 		    	        } 
+ 	 		    	        else{
+ 	 		    	        	activeElement.addClass("current");
+ 	 		    	        	activeElement.siblings().removeClass("current");
+ 	 		    	        }
   		        	   }
   		    	      
 		    	  	   
@@ -1129,17 +1118,7 @@ $("#rejectedMessage"+localId).removeClass('app_error_mes_active');
 		    	 		$(".time_appr_side_wrap").addClass("time_appr_side_wrap_active");
 		    	 		$(".side_mask").fadeIn(200);
 		    	 		$("body").css('overflow-y', 'hidden');
-		    	 	 
 		    	 		$("#tab-1").show()
-		 		    	   $(".project-tabs-menu a").click(function(event) {
-		 		    	        event.preventDefault();
-		 		    	        $(this).parent().addClass("current");
-		 		    	        $(this).parent().siblings().removeClass("current");
-		 		    	        var tab = $(this).attr("href");
-		 		    	        $(".project_tabs_inn").not(tab).css("display", "none");
-		 		    	        $(tab).fadeIn();
-		 		    	 });
-		    	  	   
   		          }
   	         }); 
 	}
