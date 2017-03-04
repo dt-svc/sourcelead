@@ -712,11 +712,12 @@ public class RequirementListRestController {
 			File file =null;
 			
 			TimeSheetSubmissionCount requirementSubCount = getRequirementCount(requirementList);
-			StringBuilder sb = new StringBuilder();
+			
 			for(Requirement requirement : requirementList){
 				if(requirement.getClientId() != null){
 					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
 						if(requirement.getClientId().getResponderLocationId() != null){
+							StringBuilder sb = new StringBuilder();
 							requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
 							if(requirement.getSpocId().getClientUser().getFirstName() !=null && requirement.getSpocId().getClientUser().getLastName() !=null){
 								sb.append(requirement.getSpocId().getClientUser().getFirstName()).append(" ").append(requirement.getSpocId().getClientUser().getLastName());
@@ -728,20 +729,21 @@ public class RequirementListRestController {
 							requirement.setClientContactEmail(requirement.getSpocId().getClientUser().getEmail());
 						}
 					}
-					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
-						requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
-					}
 					/*if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
 						requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
-						
-						if(requirement.getSpocId().getSpocUser().getFirstName() !=null && requirement.getSpocId().getSpocUser().getLastName() !=null){
-							sb.append(requirement.getSpocId().getSpocUser().getFirstName()).append(" ").append(requirement.getSpocId().getSpocUser().getLastName());
-						}else{
-							sb.append(requirement.getSpocId().getSpocUser().getFirstName());
-						}
-						requirement.setClientContactName(sb.toString());
-						requirement.setClientContactEmail(requirement.getSpocId().getSpocUser().getEmail());
 					}*/
+					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+						StringBuilder sb1 = new StringBuilder();
+						requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+						
+						if(requirement.getSpocId().getVendorUser().getFirstName() !=null && requirement.getSpocId().getVendorUser().getLastName() !=null){
+							sb1.append(requirement.getSpocId().getVendorUser().getFirstName()).append(" ").append(requirement.getSpocId().getVendorUser().getLastName());
+						}else{
+							sb1.append(requirement.getSpocId().getVendorUser().getFirstName());
+						}
+						requirement.setClientContactName(sb1.toString());
+						requirement.setClientContactEmail(requirement.getSpocId().getVendorUser().getEmail());
+					}
 				}
 				if(requirement.getManagerUserId() != null){
 					String managerFirstName = "";
@@ -765,26 +767,28 @@ public class RequirementListRestController {
 						if(stat.equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())){
 							if(requirement.getClientId() != null){
 								if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
+									StringBuilder sb3 = new StringBuilder();
 									requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
 									if(requirement.getSpocId().getClientUser().getFirstName() !=null && requirement.getSpocId().getClientUser().getLastName() !=null){
-										sb.append(requirement.getSpocId().getClientUser().getFirstName()).append(" ").append(requirement.getSpocId().getClientUser().getLastName());
+										sb3.append(requirement.getSpocId().getClientUser().getFirstName()).append(" ").append(requirement.getSpocId().getClientUser().getLastName());
 									}else{
-										sb.append(requirement.getSpocId().getClientUser().getFirstName());
+										sb3.append(requirement.getSpocId().getClientUser().getFirstName());
 									}
 									
-									requirement.setClientContactName(sb.toString());
+									requirement.setClientContactName(sb3.toString());
 									requirement.setClientContactEmail(requirement.getSpocId().getClientUser().getEmail());
 								}
 								if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+									StringBuilder sb4 = new StringBuilder();
 									requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
-									/*if(requirement.getSpocId().getSpocUser().getFirstName() !=null && requirement.getSpocId().getSpocUser().getLastName() !=null){
-										sb.append(requirement.getSpocId().getSpocUser().getFirstName()).append(" ").append(requirement.getSpocId().getSpocUser().getLastName());
+									if(requirement.getSpocId().getVendorUser().getFirstName() !=null && requirement.getSpocId().getVendorUser().getLastName() !=null){
+										sb4.append(requirement.getSpocId().getVendorUser().getFirstName()).append(" ").append(requirement.getSpocId().getVendorUser().getLastName());
 									}else{
-										sb.append(requirement.getSpocId().getSpocUser().getFirstName());
+										sb4.append(requirement.getSpocId().getVendorUser().getFirstName());
 									}
 									
-									requirement.setClientContactName(sb.toString());
-									requirement.setClientContactEmail(requirement.getSpocId().getSpocUser().getEmail());*/
+									requirement.setClientContactName(sb4.toString());
+									requirement.setClientContactEmail(requirement.getSpocId().getVendorUser().getEmail());
 								}
 							}
 							if(requirement.getManagerUserId() != null){
