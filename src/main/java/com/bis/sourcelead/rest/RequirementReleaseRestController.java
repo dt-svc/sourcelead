@@ -473,7 +473,7 @@ public class RequirementReleaseRestController {
 		requirement.setClientCurrencyCode(parentRequirement.getCurrencyCode());
 		requirement.setClientRate(parentRequirement.getRate());
 		requirement.setClientRateType(parentRequirement.getRateType());
-		
+		requirement.setTotalApplicants(parentRequirement.getTotalApplicants());
 		requirement.setRequirementUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		
 		if(parentRequirement.getClientSubmissionTemplateId()!=null){
