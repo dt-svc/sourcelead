@@ -1468,9 +1468,6 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 clientSubmission.setCandidateResumes(submission.getCandidateResumes());
    		 clientSubmission.setSourceSubmission(submission);
    		 clientSubmission.setSubmissionTemplateJsonString(submission.getSubmissionTemplateJsonString());
-   		 
-   		 
-   		 
    		 JSONArray array = new JSONArray(submission.getSubmissionTemplateJsonStringValue()); 
    		 JSONArray jsonArray = new JSONArray();
    		 
@@ -1518,6 +1515,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    			 sb.append(user.getFirstName());
    		 }
    		 clientSubmission.setCreatedUser(sb.toString());
+		 if(null != submission.getCandidateScore() && !"".equalsIgnoreCase(submission.getCandidateScore())){
+			 clientSubmission.setCandidateScore(submission.getCandidateScore());		 
+		 }
    		 clientSubmission = requirementSubmissionDao.storeRequirementSubmission(clientSubmission);
    		 
    		 
@@ -1621,6 +1621,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 submission.setUpdatedBy(user.getUserCode());
    		 submission.setUpdatedDate(commonUtil.currentDate());
    		 requirementSubmissionDao.storeRequirementSubmission(submission);
+   		 
    		 
    		 requirementSubmissionHistoryService.updateRequirementHistory(submission, user, requirementSubmissionHistory);
    		 
@@ -2284,10 +2285,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, String status) throws Exception {
+	public List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, User user,String status) throws Exception {
 		
         
-        List<RequirementSubmission> submittedApplicantsList =  requirementSubmissionDao.getApplicantsByStatus(orgLocationsId, status);
+        List<RequirementSubmission> submittedApplicantsList =  requirementSubmissionDao.getApplicantsByStatus(orgLocationsId, user, status);
         
         for(RequirementSubmission reqsub :submittedApplicantsList){
             
@@ -2628,8 +2629,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public Integer getRequirementPerCandidateCount(Long candudateId) throws Exception {
-		return requirementSubmissionDao.getRequirementPerCandidateCount(candudateId);
+	public Integer getRequirementPerCandidateCount(Long candudateId,Long orgLocationId) throws Exception {
+		return requirementSubmissionDao.getRequirementPerCandidateCount(candudateId,orgLocationId);
 	}
 
 	@Override

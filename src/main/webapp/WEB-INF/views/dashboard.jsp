@@ -115,8 +115,10 @@ overflow-x: auto;
 			    </div>
 		    </c:if>
 		     <div class="clearfix row mb"> 
-		    	 <c:if test = "${isManagerWithSubmissionRateStatusAsRequestOrAccept == true}">  
+		    	 <c:if test = "${isManagerWithSubmissionRateStatusAsRequestOrAccept == true || isAdmin == true}"> 
+		     		<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 		     		<jsp:include page="dashboardApplicants.jsp"></jsp:include>
+		     		</sec:authorize>
 		     	</c:if>
 		     </div>
 	    
@@ -136,7 +138,9 @@ overflow-x: auto;
 	    
 	    <div class="row clearfix">
 	    <div class="col-md-6 mb">
-        <div class="clients_wrap_table dashboard-widget overflow_inherint">
+
+        <div class="clients_wrap_table dashboard-widget overflow_inherint"  id="assignTaskListDiv" style="display: none;">
+
           <!-- <h4 class="pull-left">Tasks &nbsp;&nbsp;
           <b class="newdate">
                <i class="fa fa-filter"></i>
@@ -203,7 +207,6 @@ $('#dasboardTaskDatpicker').datepicker({
 	         	result = result + ' </tr>';
 	        	result = result + ' </thead>';
 	        	result = result + ' <tbody>';
-	        	
 	        	for (var i=0; i<json.length; i++)
 				{
 	        		var report = json[i];
@@ -236,6 +239,10 @@ $('#dasboardTaskDatpicker').datepicker({
 	        	 result = result + '   </table>';
 	        	 $("#assignTaskList").empty();
 	           	 $("#assignTaskList").append(result); 
+	           	 if(json.length > 0){
+	           		$("#assignTaskListDiv").css("display", "block");
+	           	 }
+	           	 
 	           	dasboardTasksPagination();
 	        }
 		});

@@ -18,8 +18,11 @@ function closeCertificatePopup(){
 function candidateCertificate(candidateId){
 	 
 	var result = "";
-	result  = result + '   <div class="project_tabs_inn_head addUser-org"> ';
-	
+	if(window.candidateStatusGlobal == '0'){
+		result  = result + '   <div class="project_tabs_inn_head addUser-org overflow_inherint mt25"> ';
+	}else{
+		result  = result + '   <div class="project_tabs_inn_head addUser-org overflow_inherint mt10"> ';
+	}
 	result  = result + '<div class="success_pop" id="selector5" style="display: none;">';
     result  = result + '<i class="fa fa-check-circle"></i><span id="cerMsgDiv"></span>';
     result  = result + '</div>';
@@ -27,7 +30,7 @@ function candidateCertificate(candidateId){
 	result = result +'<div id="msgDiv"></div>';
 	if(window.candidateStatusGlobal == '0'){
 		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\')"> ';
-		 result  = result + '   	<a href="javascript:void(0)" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a> ';
+		 result  = result + '   	<a href="javascript:void(0)" class="addUser-org"></a> ';
 		 result = result +' </sec:authorize>';
 	}
 	else{

@@ -685,7 +685,12 @@ function cancelInterviewPopup(){
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		if(opt.lastName != 'undefined' && opt.lastName != null && opt.lastName!=""){
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		}else{
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+"</option>";
+			        		}
+			        		
 					}
 		        	$("#"+rowId+"interviewer").empty();
 		        	$("#"+rowId+"interviewer").append(output);
@@ -771,6 +776,7 @@ function interviewTemplate(){
 <script>
 function getTimezonesList(rowId){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var timezone = '${timezone}';
 	 $.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/getTimezonesList?${_csrf.parameterName}=${_csrf.token}", 
@@ -780,7 +786,12 @@ function getTimezonesList(rowId){
 	        output = output + "<option value=''>--Select--</option>"; 
 	        	for (var i=0; i<json.length; i++){
 	        		var opt = json[i];
-	        		output = output + "<option value='" +opt.id+ "'>"+opt.timeZoneId+"</option>";
+	        		if(opt.timeZoneId == timezone){
+	        			output = output + "<option value='" +opt.id+ "' selected>"+opt.timeZoneId+"</option>";
+	        		}else{
+	        			output = output + "<option value='" +opt.id+ "'>"+opt.timeZoneId+"</option>";
+	        		}
+	        		
 				}
 	        	$("#"+rowId+"timeZone").empty();
 	        	$("#"+rowId+"timeZone").append(output);
