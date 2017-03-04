@@ -582,7 +582,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			
 			//Long  count = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,0,boolQueryBuilder).getTotalHits();
 			
-			SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+			SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,200,boolQueryBuilder).getHits();
 			
 			if(null != searchHits && searchHits.length >0){
 				percentPerSkill = Integer.parseInt(recommendedCustomizeScore.getCustomizeSkillScore())/(float)reqMaxSkills.length;
@@ -637,7 +637,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					
 					
 					//List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidateIndex.getCandidateId());
-					Integer reqListCount = requirementSubmissionService.getRequirementPerCandidateCount(candidateIndex.getCandidateId());
+					Integer reqListCount = requirementSubmissionService.getRequirementPerCandidateCount(candidateIndex.getCandidateId(),candidateIndex.getOrgLocationId());
 					
 					//get the skillPercentage method
 					 				 
@@ -854,7 +854,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	 * @return float
 	 */
 	private float getNoticeperiodPercentage(RecommendedCustomizeScore recommendedCustomizeScore, CandidateIndex candidateIndex, float noticePeriod) {
-		if(recommendedCustomizeScore.getCustomizeNoticeperiod() !=null){
+		if(null !=recommendedCustomizeScore.getCustomizeNoticeperiod() && null !=candidateIndex.getNoticePriod() && !"".equalsIgnoreCase(candidateIndex.getNoticePriod()) && "undefined" != candidateIndex.getNoticePriod() ){
 			String []  np = recommendedCustomizeScore.getCustomizeNoticeperiod().split(",");
 			int totalDays = 0;
 			int canTotalDays = 0;
@@ -888,6 +888,8 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			if(totalDays <= canTotalDays){
 				noticePeriod = Integer.parseInt(recommendedCustomizeScore.getCustomizeNoticeperiodScore());
 			}
+		}else{
+			noticePeriod = 0;
 		}
 		return noticePeriod;
 	}
