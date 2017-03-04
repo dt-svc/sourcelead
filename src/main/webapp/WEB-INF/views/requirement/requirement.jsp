@@ -510,22 +510,24 @@ $(document).ready(function () {
             </div>
           </div>
           
-          <div class="form-group">
-            
-            <label class="col-md-3">Is Template</label>
-            <div class="col-md-9">
-            
-            <c:set var="val" value="${requirement.isClientJob}"/>
-			<c:choose> 
-			  <c:when test="${val == 'Y'}">
-			   		    <input disabled="disabled" type="checkbox" name="isTemplate" id="isTemplate" value="" onclick="getTemplateVal();">
-			  </c:when>
-			  <c:otherwise>
-						<input type="checkbox" name="isTemplate" id="isTemplate" value="" onclick="getTemplateVal();">
-			  </c:otherwise>
-			</c:choose>
-		    </div>
-        </div>
+         <div class="form-group">
+				<div class="ml">
+					<c:set var="val" value="${requirement.isClientJob}" />
+					<c:choose>
+						<c:when test="${val == 'Y'}">
+							<input disabled="disabled" type="checkbox" name="isTemplate"
+								id="isTemplate" value="" onclick="getTemplateVal();">
+						</c:when>
+						<c:otherwise>
+							<input type="checkbox" name="isTemplate" id="isTemplate"
+								value="" onclick="getTemplateVal();">
+						</c:otherwise>
+					</c:choose>
+					<label>&nbsp;&nbsp;<strong>Is Template</strong>
+						&nbsp;&nbsp;
+					</label>
+				</div>
+			</div>
         
       </div>
       <div class="clearfix mt">
@@ -2471,9 +2473,9 @@ function minMaxExperience(){
     if (parseFloat(maxExp) <= parseFloat(minExp)){
         $('#expId').find('p.jquery_form_error_message').remove(); 
 		$('input#expValidation').attr('class','error signin_fild');
-		$("input#expValidation").after("<p class='jquery_form_error_message'>Max Experience is greater than Min Experience</p>");
+		$("input#expValidation").after("<p class='jquery_form_error_message'>Max Experience should be greater than Min Experience</p>");
 		$('input#expValidation').attr('record-exist','yes');
-		$('input#expValidation').attr('record-exist-errorMsg','Max Experience is greater than Min Experience'); 
+		$('input#expValidation').attr('record-exist-errorMsg','Max Experience should be greater than Min Experience'); 
     }  else{
     	$('#expId').find('p.jquery_form_error_message').remove(); 
     	$('input#expValidation').removeAttr( "class record-exist record-exist-errormsg");

@@ -36,7 +36,7 @@ function submitToClient(requirementId){
 	    			
 	    	success: function(data) {
 	    		
-	    		if(data != null && data != 'undefined' && data != "" && data != '[]'){
+	    		if(data != null && data != 'undefined' && data != "" && data != '[]' && data != 'failed'){
 		       
 	    	   var json = JSON.parse(data);
 		        
@@ -158,8 +158,12 @@ function submitToClient(requirementId){
 		    			$("#submitToClientDiv").empty();
 		    			$("#submitToClientDiv").append(result);
 		   		}
-		   		}else{
+		   		}else if(data != 'failed'){
 		    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-user'></i><h3>Shortlisted List is Empty</h3></div>";
+		    		$('#submitToClientDiv').empty();
+		    		$('#submitToClientDiv').append(result);
+		    	}else if(data == 'failed'){
+		    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-briefcase'></i><h3>Client requirement was Closed/Onhold/Canceled. </h3></div>";
 		    		$('#submitToClientDiv').empty();
 		    		$('#submitToClientDiv').append(result);
 		    	}
@@ -594,12 +598,7 @@ function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate,sel
 	          	     dataType : 'json',
 					url : sourceleadUrl+"/submitToClient?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&selectedIds="+selectedIds+"&requirementId="+requirementId+"&selectedShortlistsRate="+selectedShortlistsRate+"&selectedShortlistsRatePer="+selectedShortlistsRatePer,
 					success : function(result) {
-
-						$(".submitnew-wrap").removeClass("submitnew-wrap_active");
-						$(".new_side_wrap").removeClass("new_side_wrap_active");
-                        $(".side_mask").fadeOut(200);
-                        $("body").css('overflow-y', 'auto');
-                        var allApplicants = 'all';
+						cancelSubmit();
                         requirementPipeline(requirementId,allApplicants); 
 					},
 				}); 
