@@ -671,13 +671,13 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	        table.setWidthPercentage(100);
 	        
 	        if(timesheetFrequency.equalsIgnoreCase("Monthly")){
-	        	 table.setWidths(new int[]{5,5,5,5,3,3,3,3,3,3,3,5});
+	        	 table.setWidths(new int[]{5,5,5,5,5,3,3,3,3,3,3,3,5});
 	        }else if(timesheetFrequency.equalsIgnoreCase("Semi-monthly")){
-            table.setWidths(new int[]{3,5,5,3,5,3,3,3,3,5});
+            table.setWidths(new int[]{3,5,5,3,5,5,3,3,3,3,5});
 	        }else if(timesheetFrequency.equalsIgnoreCase("Bi-weekly")){
-	        	table.setWidths(new int[]{3,5,5,3,5,3,3,3,5});
+	        	table.setWidths(new int[]{3,5,5,3,5,5,3,3,3,5});
 	        }else{
-	        	table.setWidths(new int[]{3,5,5,3,5,3,3,5});
+	        	table.setWidths(new int[]{3,5,5,3,5,5,3,3,5});
 	        }
             table.addCell(cell1);
 	        for (int i = 0; i < headers.length; i++) {
@@ -723,7 +723,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	
 	private String[] getHeaders(String[] headers, String dates) {
 		String[] weekDates = dates.split(",");
-		int k=4;
+		int k=5;
 		List<String> headerList = new ArrayList<String>(Arrays.asList(headers));
 		List<String> listDates = new ArrayList<String>(Arrays.asList(weekDates));
 	    	for(String dateDynamic :listDates){
@@ -788,8 +788,13 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	}else{
 		timeSheetApprovalArray[3] = "--";
 	}
+	if(projMembers.getProjects().getProjectName() != null){
+		timeSheetApprovalArray[4] = projMembers.getProjects().getProjectName();
+	}else{
+		timeSheetApprovalArray[4] = "--";
+	}
 	
-	int count = 4;
+	int count = 5;
 		LinkedHashMap<Date,Date> displayWeeksList= getTotalCountFromStartAndEndDate(startDate, endDate);
 			Float totalHours = 0f;
 		    Float estimatedTotalHours = 0f;
@@ -888,7 +893,6 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
             com.itextpdf.text.List orderedList = new  com.itextpdf.text.List(com.itextpdf.text.List.ORDERED);
             StringBuilder reqNameBuilder=new StringBuilder();
             StringBuilder locBuilder=new StringBuilder();
-	        orderedList.add(new ListItem(reqNameBuilder.append("Project Name :").append(proMembers.getProjects().getProjectName()).toString()));
 	        orderedList.add(new ListItem(locBuilder.append("Project Frequency :").append(proMembers.getProjects().getInvoiceFrequency()).toString()));
 	        document.add(orderedList);
 	    }catch(Exception ex){
@@ -961,7 +965,11 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 			writeRow.createCell(3).setCellValue(projMembers.getProjects().getOrgRelationId().getResponderLocationId().getOrg().getOrgName());
 			createExcelsheet.setColumnWidth(3, 10000);
 		}
-		int count = 4;
+		if (projMembers.getProjects().getProjectName() != null) {
+			writeRow.createCell(4).setCellValue(projMembers.getProjects().getProjectName());
+			createExcelsheet.setColumnWidth(4, 10000);
+		}
+		int count = 5;
 			LinkedHashMap<Date,Date> displayWeeksList= getTotalCountFromStartAndEndDate(startDate, endDate);
 				Float totalHours = 0f;
 				Float estimatedTotalHours = 0f;
@@ -1047,7 +1055,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	}
 
 	private void prepareHeaders(OrgLocations orgLocations, ProjectMembers proMembers, Sheet createExcelsheet,Row writeRow, CellStyle style) {
-		writeRow = createExcelsheet.createRow(1);
+		/*writeRow = createExcelsheet.createRow(1);
 		createExcelsheet.setColumnWidth(0, 10000);
 		createExcelsheet.setColumnWidth(1, 10000);
 
@@ -1056,9 +1064,9 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		cell1.setCellStyle(style);
 		Cell cell2 = writeRow.createCell(1);
 		cell2.setCellValue(proMembers.getProjects().getProjectName());
-		cell2.setCellStyle(style);
+		cell2.setCellStyle(style);*/
 
-		writeRow = createExcelsheet.createRow(2);
+		writeRow = createExcelsheet.createRow(1);
 		createExcelsheet.setColumnWidth(0, 10000);
 		createExcelsheet.setColumnWidth(1, 10000);
 

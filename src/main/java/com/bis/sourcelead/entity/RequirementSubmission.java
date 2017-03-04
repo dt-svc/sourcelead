@@ -300,6 +300,9 @@ public class RequirementSubmission implements Serializable{
 	@Transient
 	private String requirementUUID;
 	
+	@Transient
+	private String loginOrgLOcationName;
+	
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
 	}
@@ -967,4 +970,13 @@ public class RequirementSubmission implements Serializable{
 	public void setRequirementUUID(String requirementUUID) {
 		this.requirementUUID = requirementUUID;
 	}
+
+	public String getLoginOrgLOcationName() {
+		return loginOrgLOcationName;
+	}
+
+	public void setLoginOrgLOcationName(String loginOrgLOcationName) {
+		this.loginOrgLOcationName = loginOrgLOcationName;
+	}
+	
 }
