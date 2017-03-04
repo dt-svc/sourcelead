@@ -3178,7 +3178,9 @@ function requirementPipelineRejected(requirementId,submissionType){
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	   } 
 						           result = result + '<td><div class="tblwidth-150"><span>'+report.upDatedStr+'</span>';
-						           result = result + '<td><div class="tblwidth-150"><span>'+report.createdUser+'</span>';
+						           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
+						        	   result = result + '<td><div class="tblwidth-150"><span>'+report.createdUser+'</span>';
+						           }
 					        	   result = result + '<td><div class="tblwidth-150"><span>'+report.previousSubmissionStatus+'</span>';
 					        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
 					        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
