@@ -292,10 +292,12 @@ function cpagination(){
 </script>
  -->
 <script>
+$('#candidatePagination').DataTable( { 
+	"autoWidth": false,
+});
 function cpagination(){ 
     $('#candidatePagination').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,

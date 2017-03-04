@@ -453,10 +453,13 @@ function prepareRequirementData(data){
 }
 </script>
 <script>
+$('#requirementPagination').DataTable( { 
+	"autoWidth": false,
+	"scrollX": true,
+});
 function pagination(){ 
     $('#requirementPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
