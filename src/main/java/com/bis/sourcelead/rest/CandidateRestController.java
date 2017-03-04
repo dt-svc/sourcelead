@@ -511,7 +511,7 @@ public class CandidateRestController {
 				 rsh.setOfferResumeid(ros.getId());
 			 }
 			 if(null != rsh.getSubmissionId().getCandidateResumes()){
-				 rsh.setResumeid(rsh.getSubmissionId().getCandidateResumes().getId());
+				 rsh.setResumeid(rsh.getSubmissionId().getCandidateResumes().getResumeUUID());
 				 rsh.setFileName(rsh.getSubmissionId().getCandidateResumes().getFileName());
 			 }
 			 if(!"".equalsIgnoreCase(rsh.getSubmissionId().getOrgLocations().getOrg().toString()) && null != rsh.getSubmissionId().getOrgLocations().getOrg()){

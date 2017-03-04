@@ -212,7 +212,7 @@ public class VendorRestController {
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    String resultJson;
 	    
-	    List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLocations.getId(),status);
+	    List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLocations.getId(),status,"");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    //List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
  
@@ -292,7 +292,7 @@ public class VendorRestController {
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    String resultJson;
 	    
-	    List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLocations.getId(),status);
+	    List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLocations.getId(),status,"");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    //List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
  
@@ -410,7 +410,7 @@ public class VendorRestController {
 
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		    List<OrgRelations> vandorsList = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLocations.getId(),status);
+		    List<OrgRelations> vandorsList = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLocations.getId(),status,"");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				
 			    for (OrgRelations orgRelation : vandorsList) {

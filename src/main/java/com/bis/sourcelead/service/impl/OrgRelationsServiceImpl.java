@@ -256,8 +256,8 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	}
 
 	@Override
-	public List<OrgRelations> getAllVendorsFilterByOrgLocationId(Long orgLocationId, String status) throws Exception{
-		return orgRelationsDao.getAllVendorsFilterByOrgLocationId(orgLocationId,status);
+	public List<OrgRelations> getAllVendorsFilterByOrgLocationId(Long orgLocationId, String status, String vendorsRelationId) throws Exception{
+		return orgRelationsDao.getAllVendorsFilterByOrgLocationId(orgLocationId, status, vendorsRelationId);
 	}
 
 	@Override

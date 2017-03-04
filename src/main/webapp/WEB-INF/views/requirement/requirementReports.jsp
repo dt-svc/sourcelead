@@ -190,6 +190,7 @@ function requirementReportPagination(){
 <div class="pull-left reportBtns">
 	  <div class="reportBtn">
 		<select class="form-control select-bg" id="reportTypeId" onChange="getDayWiseReports()">
+		 <option value="">select</option>
 		  <option value="today">Today</option>
 		  <option value="yesterday">Yesterday</option>
 		  <option value="week">1 week</option>

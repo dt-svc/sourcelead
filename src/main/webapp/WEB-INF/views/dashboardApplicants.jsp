@@ -18,9 +18,13 @@
         </div>
       </div>
 <!-- Applicant Authorization Ends --> 
-
 <script>
-window.onload = ApplicantAuthorization('requestSent');
+window.onload = function () {
+ApplicantAuthorization('requestSent');
+};
+
+</script>
+<script>
 function ApplicantAuthorization(status){
 	var resultToday ="";
 	var sourceleadUrl = '${sourceleadUrl}';
