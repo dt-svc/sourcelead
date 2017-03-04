@@ -574,8 +574,10 @@ public class RequirementListRestController {
 											
 										}
 									}
+									String candidateName = "";
+									if(requirementSubmissionTemplateFields != null){
+										candidateName = requirementSubmissionTemplateFields.getFirstName();
 									
-									String candidateName = requirementSubmissionTemplateFields.getFirstName();
 									if(requirementSubmissionTemplateFields.getLastName()!=null){
 										StringBuilder candidateNameSB = new StringBuilder();
 										candidateName = candidateNameSB.append(candidateName).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString();
@@ -589,8 +591,9 @@ public class RequirementListRestController {
 									}*/
 									
 									requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
-									requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
 									requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+									}
+									requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
 									requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
 									requirementSubmission.setResumeUUID(requirementSubmission.getCandidateResumes().getResumeUUID());
 									
