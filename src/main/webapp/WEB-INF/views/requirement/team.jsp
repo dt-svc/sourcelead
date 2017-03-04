@@ -295,7 +295,7 @@ var validationSettings = {
 
 <script>
 function storeEditedTeam(){
-	
+	var teamId = $("#teamId").val();
 	  /*  var validationSettings = {
 	        errorMessagePosition : 'element',
 	       borderColorOnError : '',
@@ -315,7 +315,8 @@ function storeEditedTeam(){
 					type : "POST",
 					url : sourceleadUrl+"/storeEditedTeam?${_csrf.parameterName}=${_csrf.token}&json="+con,
 					success :function(data) {  
-						location.replace(sourceleadUrl+"/team");
+						  sideBar(teamId);
+						//location.replace(sourceleadUrl+"/team");
 				      }, 
 		    });
 			return true; 
@@ -788,7 +789,11 @@ function getTeamOwners(){
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		var lastName= "";
+			        		if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
+			        			lastName = opt.lastName;
+			        		}
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+lastName+"</option>";
 					}
 		        	$("#ownerUserId").empty();
 			        $("#ownerUserId").append(output);
@@ -914,7 +919,8 @@ function storeTeamMembers(teamId){
 					type : "POST",
 					url : sourceleadUrl+"/storeTeamMembers?${_csrf.parameterName}=${_csrf.token}&json="+con+"&teamId="+teamId,
 					success :function(data) {  
-						location.replace(sourceleadUrl+"/team");
+						sideBar(teamId);
+						//location.replace(sourceleadUrl+"/team");
 				    }, 
 		    });
 			return true; 

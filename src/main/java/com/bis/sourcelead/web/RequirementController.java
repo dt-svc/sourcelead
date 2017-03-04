@@ -348,10 +348,10 @@ public class RequirementController {
 			
 			Boolean isManager = requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirementId, loginUser.getId());
 			model.addObject("isManager",isManager);
-	
-			Boolean isAdmin = userRoleService.isUserAdmin(loginUser.getId());
-			model.addObject("isAdmin",isAdmin);
 			
+			Boolean isAdmin = userRoleService.isUserAdminByOrgLocationId(loginUser.getId(),orgLocations.getId());
+			model.addObject("isAdmin",isAdmin);
+	
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			
 			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);

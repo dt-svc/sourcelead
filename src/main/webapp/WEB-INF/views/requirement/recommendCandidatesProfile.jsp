@@ -117,10 +117,12 @@ function editCandidate(candidateId){
 							result = result + '		          <div class="col-md-6">';
 							
 							if(json.candidateType == 'Consultant'){
+								
 							     result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email"  data-validation="validate_Space required validate_email" readonly="true">';
 							}
 							
 							if(json.candidateType == 'Candidate'){
+								result = result + '<input type="hidden" name="candidateType" id="candidateType" value="'+json.candidateType+'" />';
 								result = result + '<input type="text" class="form-control input-sm" id="email" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email"  data-validation="validate_Space required validate_email" onblur="validateCandidateEmail();">';
 								}
 							result = result + '</div>';
@@ -1343,12 +1345,13 @@ function updateDesignationType(){
 <script type="text/javascript">
  function validateCandidateEmail() {
 	 var email = $('#email').val(); 
+	 var candidateType = $('#candidateType').val();
 	 $('#emailDiv').find('p.jquery_form_error_message').remove();
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(email != null && email != ""){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email, 
+		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&candidateType="+candidateType, 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		 
