@@ -84,7 +84,7 @@ public class RecommendedCustomizeScoreRestController {
 		    	}
 		   }  
 	  	}
-		rcs.setDbSkills(skillsList.toString());
+		rcs.setDbSkills(skillsList.toString().replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]",""));
 		resultJson = commonUtil.toJSON(rcs);
 		return resultJson;
 	}

@@ -578,7 +578,7 @@ public class RequirementListRestController {
 									if(requirementSubmissionTemplateFields != null){
 										candidateName = requirementSubmissionTemplateFields.getFirstName();
 									
-									if(requirementSubmissionTemplateFields.getLastName()!=null){
+									if(StringUtils.isNotBlank(requirementSubmissionTemplateFields.getLastName())){
 										StringBuilder candidateNameSB = new StringBuilder();
 										candidateName = candidateNameSB.append(candidateName).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString();
 									}
@@ -1246,7 +1246,7 @@ public class RequirementListRestController {
 								
 							}
 							String candidateName = requirementSubmissionTemplateFields.getFirstName();
-							if(requirementSubmissionTemplateFields.getLastName()!=null){
+							if(StringUtils.isNotBlank(requirementSubmissionTemplateFields.getLastName())){
 								StringBuilder candidateNameSB = new StringBuilder();
 								candidateName = candidateNameSB.append(candidateName).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString();
 							}
