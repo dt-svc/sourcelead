@@ -632,6 +632,7 @@ function getCandidateDetails(){
 		        	 
 		        	 if(json['state'] != null && json['state'] != "" && json['state'] != 'undefined'){
 		        		 $("select[name=state]").val(json['state']);
+		        		 getCandidateStates(json['state']);
 		        	 }else{
 		        		 $("select[name=state]").val('');
 		        	 }
@@ -770,7 +771,7 @@ function getAllSubmissionCandidateCountries(){
 </script>
 
 <script>
-function getCandidateStates(){
+function getCandidateStates(state){
 	
 	var countryName = $("#submissionCountry").val();
 	if(countryName != null && countryName != "" && countryName !="undefined"){
@@ -783,7 +784,12 @@ function getCandidateStates(){
 	        	$('#submissionState').empty();
 	        	$('#submissionState').append('<option value="">---Select---</option>');
 	            for(var i=0;i<json.length;i++){
-	            	$('#submissionState').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	if(state != null && state != 'undefined' && json[i] == state){
+	            		$('#submissionState').append('<option value="'+state+'" selected>'+json[i]+'</option>');
+	            	}
+	            	else{
+	            		$('#submissionState').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	}
 	            }
 	            $('#submissionState').trigger("chosen:updated");
 	            
