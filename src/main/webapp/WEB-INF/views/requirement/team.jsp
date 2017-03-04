@@ -295,7 +295,7 @@ var validationSettings = {
 
 <script>
 function storeEditedTeam(){
-	
+	var teamId = $("#teamId").val();
 	  /*  var validationSettings = {
 	        errorMessagePosition : 'element',
 	       borderColorOnError : '',
@@ -315,7 +315,8 @@ function storeEditedTeam(){
 					type : "POST",
 					url : sourceleadUrl+"/storeEditedTeam?${_csrf.parameterName}=${_csrf.token}&json="+con,
 					success :function(data) {  
-						location.replace(sourceleadUrl+"/team");
+						  sideBar(teamId);
+						//location.replace(sourceleadUrl+"/team");
 				      }, 
 		    });
 			return true; 
@@ -918,7 +919,8 @@ function storeTeamMembers(teamId){
 					type : "POST",
 					url : sourceleadUrl+"/storeTeamMembers?${_csrf.parameterName}=${_csrf.token}&json="+con+"&teamId="+teamId,
 					success :function(data) {  
-						location.replace(sourceleadUrl+"/team");
+						sideBar(teamId);
+						//location.replace(sourceleadUrl+"/team");
 				    }, 
 		    });
 			return true; 
