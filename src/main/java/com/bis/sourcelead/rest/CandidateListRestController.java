@@ -227,6 +227,8 @@ public class CandidateListRestController {
 			String jsonc = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(jsonc);
 			// Long maxResults =null;
+
+			
 			 Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			
@@ -235,7 +237,7 @@ public class CandidateListRestController {
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
 			 
 			 
-			 /*if(null != candidateStatus){
+			/*if(null != candidateStatus){
 				  maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId(),candidateStatus.toString());
 			 }else{
 				  maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId(),null);
@@ -383,6 +385,11 @@ public class CandidateListRestController {
 			   //Rate Type
 				if(jsonObj.has("rateType") && StringUtils.isNotEmpty(jsonObj.getString("rateType"))){
 					boolQueryBuilder.must(QueryBuilders.matchQuery("rateType", jsonObj.getString("rateType")));
+			    }
+				
+				//Designation Type
+				if(jsonObj.has("designationType") && StringUtils.isNotEmpty(jsonObj.getString("designationType"))){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("designationType", jsonObj.getString("designationType")));
 			    }
 				
 				//updatedOn
