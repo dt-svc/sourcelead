@@ -39,9 +39,11 @@ public interface OrgRelationsDao {
 	
 	List<OrgRelations> getAllClientsFilterByOrgLocationId(Long orgLocationId,String status) throws Exception;
 	
-	List<OrgRelations> getAllVendorsFilterByOrgLocationId(Long id,String status)throws Exception;
+	List<OrgRelations> getAllVendorsFilterByOrgLocationId(Long id,String status, String vendorsRelationId)throws Exception;
 	
 	List<OrgSpoc> getAllVendorsContactFilterListByOrgLocationId(Long loginUserId, List<Long> userIds, Long orgLocationId, String relationType,String vendorStatus,String vendorIds,String vendorInvitationStatus);
+	
+	List<OrgSpoc> getAllVendorsContactFilterListByOrgLocationIdAndTabAccess(Long loginUserId, List<Long> userIds, Long orgLocationId, String relationType,String vendorStatus,String vendorIds,String vendorInvitationStatus, Long tabId, List<Long> vendorOrgLocationsIds);
 
 	public List<OrgRelations> getAllVendorsListByOrgName(String orgName,Long orgLocationId);
 

@@ -47,10 +47,8 @@ function candidateCommentsList(candidateId,submissionId){
             	          }
 	              }else{
 	 	    	         var result ="";
-	 	    	         
-	 	    	        
-	 	    	       result = result+"   <div class='project_tabs_inn_head mt25'>"; 
-	 	    	        result = result+"   <div class='row'>"; 
+	 	    	        result = result+"   <div class='dataTables_empty'>"; 
+	 	    	       /*  result = result+"   <div class='row'>"; 
 						 result = result+"	<div class='col-lg-12'>"; 
 						 result = result+"		<div class='content-area clearfix'>"; 
 						 result = result+"			<div class='blank-pages'>";
@@ -59,7 +57,7 @@ function candidateCommentsList(candidateId,submissionId){
 						 result = result+"			 </div>";
 						 result = result+"		</div>"; 
 						 result = result+"	</div>"; 
-						 result = result+"  </div> "; 
+						 result = result+"  </div> ";  */
 						 result = result+"  </div> ";
 	                }
           	  result  = result + '              </div>';

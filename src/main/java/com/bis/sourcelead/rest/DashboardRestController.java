@@ -225,6 +225,7 @@ public class DashboardRestController {
 			requirement.setNoOfSubmittedApplicants(String.valueOf(submittedCount));
 			requirement.setNoOfInterviewedApplicants(String.valueOf(interviewedCount));
 			requirement.setNoOfOfferedApplicants(String.valueOf(offeredCount));
+			
 			if(null != requirement.getReleasedBy() && !"".equalsIgnoreCase(requirement.getReleasedBy())){
 				List<Long> userId = new ArrayList<Long>();
 				for (String s : requirement.getReleasedBy().split(",")){
@@ -450,8 +451,9 @@ public class DashboardRestController {
 					
 					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),"UTC", startTimeTS);
 					String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),"UTC", endTimeTS);
-					 startUTCDate = Constants.TZ_DF_TS.parse(startDateString);
-					 endUTCDate = Constants.TZ_DF_TS.parse(endDateString);
+					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+					 startUTCDate = TZ_DF_TS.parse(startDateString);
+					 endUTCDate = TZ_DF_TS.parse(endDateString);
 				}
 				requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode,startUTCDate,endUTCDate);
 				}else{
@@ -492,7 +494,8 @@ public class DashboardRestController {
 				if(null != timezone.getTimeZoneId() && null != interviewHistory.getInterviewId() && null != interviewHistory.getInterviewId().getId() && null != interviewHistory.getInterviewId().getStartTime()){
 					String currentTimeStr = Constants.TZ_DF.format(interviewHistory.getInterviewId().getStartTime());  
 					String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
-					Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
+					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+					Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
 					currentDateInTimezone = standardFormat.format(converteDate);
 					interviewHistory.setInterviewStartDateTimeStr(currentDateInTimezone);
 				}

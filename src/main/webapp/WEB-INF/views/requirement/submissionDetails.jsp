@@ -35,6 +35,7 @@
 function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
+	
 	$.ajax({ 
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getSubmissionDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,
@@ -181,11 +182,11 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			    result = result + '<div class="acceptreject-actions">';
 			    if(json.needApplicantPermit == 'Y'){
 			    	
-			    	    <c:if test="${isManager == true}">
+			    	    <c:if test="${isManager == true || isAdmin == true}">
 			    	   		result = result + '<ul class="list-unstyled list-inline">';
 			    	   		result = result + '<span id="statusDiv">';
 			    	    	if(json.submissionRateStatus != 'ACCEPTED' && json.submissionRateStatus != 'REJECTED'){   
-								result = result + '	<li><i class="fa fa-check labelsuccess" title="Accept Applicant Authorization" onClick="acceptFun('+submissionId+');"></i>';
+								result = result + '	<li><i class="fa fa-check labelsuccess" title="Accept Applicant Authorization" onClick="acceptCandidate(\''+submissionId+'\',\'accept\');"></i>';
 								result = result + '		<div class="acceptreject-pop" id="accpet-div">';
 								result = result + '		</div>';
 								result = result + '	</li>';
@@ -219,7 +220,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 					    	    		result = result + 'Candidate status : '+json.submissionRateStatus;
 										result = result + '	</li>';
 			    	    			}
-									if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
+									/* if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
 										result = result + '	<li>';
 					    	    		result = result + 'Request Comment : '+json.submissionRequestComment;
 										result = result + '	</li>';
@@ -228,7 +229,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 										result = result + '	<li>';
 										result = result + '<a href="downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'">'+json.submissionRequestFileName+'</a>';
 										result = result + '	</li>';
-									}	
+									}	 */
 									
 			    	    		}
 			    	    	} 
@@ -245,7 +246,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 										result = result + '<a href="downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'">'+json.submissionRequestFileName+'</a>';
 									result = result + '	</li>';
 									result = result + '	<li>';
-										result = result + "comment: "+json.submissionRequestComment;
+										result = result + "Comment: "+json.submissionRequestComment;
 									result = result + '	</li>';
 									if(json.submissionRateStatus != null && json.submissionRateStatus != '' && json.submissionRateStatus != 'undefined'){
 										result = result + '<li>';
@@ -253,7 +254,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 										result = result + '</li>';
 									}
 						   }else{
-							   <c:if test="${isTeamMember == true && isManager == false}">
+							   <c:if test="${isTeamMember == true && isManager == false && isAdmin == false}">
 									result = result + '	<li><i class="fa fa-check labelsuccess" title="Request" onClick="requestFun('+submissionId+');"></i>';
 									result = result + '		<div class="acceptreject-pop" id="request">';
 									result = result + '		</div>';
@@ -1180,7 +1181,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 
 <script>
 		// Accept function
-	function acceptFun(submissionId){
+	/* function acceptFun(submissionId){
 		$('#accpet-div').empty();
 		$('#reject').empty();
 		var result = "";	
@@ -1203,7 +1204,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		$('#reject').fadeOut();
 		$('#request').fadeOut();
 		
-	};
+	}; */
 	/* $("#accpet-div, .clients_side_wrap, .clients_side_wrap_active, .fa, .fa-check, .labelsuccess").click(function(e){
 		 e.stopPropagation();
 	 });
@@ -1792,6 +1793,7 @@ function reActivateApplicant(submissionId,candidateId,requirementId){
 	         success :function(data) {
 	               if(data != null && data != 'undefined' && data != ""){
 	            	   getSubmissionDetailsSideBar(submissionId,candidateId,requirementId);
+	            	   pipelineList(requirementId);
 	                } 
 	                 },
 	              }); 
@@ -1800,3 +1802,21 @@ function reActivateApplicant(submissionId,candidateId,requirementId){
 	
 }
 </script>
+
+<script type="text/javascript">
+function pipelineList(requirementId){
+	var submissionType = "all";
+	$("#duplicataplctli").removeClass("pipeline-active");
+	$("#requestSentli").removeClass("pipeline-active");
+	$("#shortListli").removeClass("pipeline-active");
+	$("#submitToClientli").removeClass("pipeline-active");
+	$("#interviewli").removeClass("pipeline-active");
+	$("#offerMadeli").removeClass("pipeline-active");
+	$("#rejectedli").removeClass("pipeline-active");
+	$("#applicantli").addClass("pipeline-active");
+	filterReq(requirementId,submissionType);
+}
+</script>
+
+
+

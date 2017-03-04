@@ -783,7 +783,7 @@ public class ClientServiceImpl implements ClientService{
 			
 				}
 				
-				if(jsonObj.getString(spocStatus) != null && !jsonObj.getString(spocStatus).isEmpty()){
+				if(jsonObj.has(spocStatus) && jsonObj.getString(spocStatus) != null && !jsonObj.getString(spocStatus).isEmpty()){
 					orgSpoc.setSpocStatus(jsonObj.getString(spocStatus));
 				}
 				
@@ -791,23 +791,25 @@ public class ClientServiceImpl implements ClientService{
 				if(null != type && !"".equalsIgnoreCase(type) && "Client".equalsIgnoreCase(type)){
 					User user = orgSpoc.getClientUser();
 					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
+						orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
 						User spocUser = new User();
 						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
 						orgSpoc.setVendorUser(spocUser);
 						//new owner filed updated when owner updated
 						orgSpoc.setOwnerUser(spocUser);
 					}
-					orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
+					
 					OrgSpoc orSpocElk = orgSpocService.addOrgSpoc(orgSpoc);
 					
 					
-					if(null != orgSpoc.getTempOwnerId() && orgSpoc.getTempOwnerId().longValue() != orSpocElk.getVendorUser().getId().longValue()){
+					if(null != orgSpoc.getTempOwnerId() && orgSpoc.getTempOwnerId().longValue() != orgSpoc.getVendorUser().getId().longValue()){
 						user= userService.getUserById(Long.parseLong(jsonObj.getString(owner)));
 						sendEmailToClientContact(user,editUser,orgLocation,loginUser);
 					}
 				}else if(null != type && !"".equalsIgnoreCase(type) && "Vendor".equalsIgnoreCase(type)){
 					User user = orgSpoc.getVendorUser();
 					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
+						orgSpoc.setTempOwnerId(orgSpoc.getClientUser().getId());
 						User spocUser = new User();
 						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
 						orgSpoc.setClientUser(spocUser);
@@ -815,7 +817,7 @@ public class ClientServiceImpl implements ClientService{
 						orgSpoc.setOwnerUser(spocUser);
 					}
 					OrgSpoc orSpocElk = orgSpocService.addOrgSpoc(orgSpoc);
-					if(null != orgSpoc.getTempOwnerId() && orgSpoc.getTempOwnerId().longValue() != orSpocElk.getVendorUser().getId().longValue()){
+					if(null != orgSpoc.getTempOwnerId() && orgSpoc.getTempOwnerId().longValue() != orgSpoc.getClientUser().getId().longValue()){
 						user= userService.getUserById(Long.parseLong(jsonObj.getString(owner)));
 						sendEmailToClientContact(user,editUser,orgLocation,loginUser);
 					}
@@ -873,11 +875,12 @@ public class ClientServiceImpl implements ClientService{
 			 
 			 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.EDIT_CLIENTCONTACT,Constants.ENTITY_TYPE_NOTIFICATION); 
 			 String actionLink = "";
-			 
+			 String rejectActionLink = "";
+			 String spocUUID = "";
 			 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
 			 noificationEmailScenario.setBody(notificationbody);
 			 
-			 emailScenerioUtil.sendNotificationToClientOrVendor(actionLink, loginUser,user, editUser, orgLocation, noificationEmailScenario);
+			 emailScenerioUtil.sendNotificationToClientOrVendor(actionLink, rejectActionLink, loginUser,user, editUser, orgLocation, noificationEmailScenario,spocUUID);
 			
 		}
 		

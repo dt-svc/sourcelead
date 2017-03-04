@@ -637,6 +637,7 @@ public class RequirementServiceImpl implements RequirementService {
 						}
 				     
 			}
+			requirement.setTotalApplicants(0);
 			requirement.setRequirementAssignTo(requirementAssignToList);
 			//storing assigned team END
 			
@@ -731,7 +732,7 @@ public class RequirementServiceImpl implements RequirementService {
 						mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
 					}
 		 }		
-
+			       
 			       requirementElkUtil.saveElkRequirement(savedRequirement,jsonObj);
 			    
 		return savedRequirement;
@@ -768,7 +769,7 @@ public class RequirementServiceImpl implements RequirementService {
 	*/
 
 	@Override
-	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,Long clients,User  user,String userRoleName) throws Exception {
+	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,User  user,String userRoleName) throws Exception {
 		return requirementDao.getRequirementListByOrgLocationID(orgLocationId,status,clients,user,userRoleName);
 	}
 
@@ -2487,6 +2488,8 @@ public class RequirementServiceImpl implements RequirementService {
 		            		//&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())
 		            		requirement = getData(requirementIndex,user);
 		            	}
+		            	
+		            	
 		            	if(requirement !=null){
 		            		reqList.add(requirement);
 		            	}
@@ -2520,7 +2523,7 @@ public class RequirementServiceImpl implements RequirementService {
      	requirement.setSearchType("Requirement");
      	requirement.setPositions(requirementIndex.getNumberOfPositions());
      	if(null != requirementIndex.getNumberOfApplicants()){
-     		requirement.setTotalApplicantsForRequirement(Integer.parseInt(requirementIndex.getNumberOfApplicants()));
+     		requirement.setTotalApplicants(Integer.parseInt(requirementIndex.getNumberOfApplicants()));
      	}
      	requirement.setManager(requirementIndex.getManager());
      	if(requirementIndex.getRequirementStatus() !=null && !"".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
@@ -2541,6 +2544,9 @@ public class RequirementServiceImpl implements RequirementService {
      			requirement.setIsRequirementReleasedByuser("N");
      		}
 		}
+       if(null != requirementIndex.getRequirementUUID()){
+   		requirement.setRequirementUUID(requirementIndex.getRequirementUUID());	
+   	   }
      	return requirement;
 	}
 
@@ -2761,6 +2767,11 @@ public class RequirementServiceImpl implements RequirementService {
 	@Override
 	public Requirement getRequirementByRequirementUUID(String requirementUUID) throws Exception {
 		return requirementDao.getRequirementByRequirementUUID(requirementUUID);
+	}
+
+	@Override
+	public Requirement updateRequirement(Requirement requirement) throws Exception {
+		return requirementDao.storeRequirement(requirement);	
 	}
 
 }

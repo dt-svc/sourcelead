@@ -196,9 +196,9 @@ function requirementList(){
            type : "POST",
            url: sourceleadUrl+"/getRequirementListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients,    
             success :function(data) {
-                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
+                 /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
 					prepareRequirementData(data);
-                 }else{
+					/* } else{
                 	 $("#requirementList").empty();
                 	 $("#requirementList").removeAttr("style");
                 	 $("#requirementEmptyListMessage").val("noRequirement");
@@ -208,11 +208,9 @@ function requirementList(){
 					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
 					 result = result+"			        <p>No Requirement Found</p>";
 					 result = result+"			 </div>";
-					/*  noRequirements();
-					$("#noReq").val("noreq"); */
 					$("#requirementList").empty();
 				    $("#requirementList").append(result); 
-                }
+                } */
           },
             
        }); 
@@ -227,10 +225,12 @@ function requirementList(){
 
 <script>
 function prepareRequirementData(data){
+ 	 
 	var orgATS = '${SourceLeadWeb_ats}';
 	var orgVMS = '${SourceLeadWeb_vms}';
 	 $("#requirementList").removeAttr("style");
 	 $("#requirementList").empty();
+	 
 	var result = "";
 	 result = result +"<table id='requirementPagination' class='display' cellspacing='0' width='100%' >"; 
     result = result +"<thead>"; 
@@ -248,7 +248,7 @@ function prepareRequirementData(data){
     result = result +"</thead>";
     result = result +"<tbody>"; 
     var json = JSON.parse(data);
-    for (var i = 0; i < 1; i++) {
+    /* for (var i = 0; i < 1; i++) {
            var val= json[i];
            var opt = "";
                    if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
@@ -258,9 +258,11 @@ function prepareRequirementData(data){
                            }
                    $("#msgDiv").empty();
                    $("#msgDiv").append(opt);
-           }
+           } */
     for (var i = 0; i < json.length; i++) { 
+    	
    	 var opt = json[i]; 
+        	
    	 result = result +"<tr>"; /*  onclick='sideBar("+opt.id+");' */
    	 if(opt.jobId != '' && opt.jobId != null){
    	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
@@ -310,21 +312,18 @@ function prepareRequirementData(data){
         }else{
        	 result = result +"<td><div>----</div></td>";
         }
-        if(opt.totalApplicantsForRequirement!=null && opt.totalApplicantsForRequirement!='' && opt.totalApplicantsForRequirement!='undefined'){
-       	result = result +"<td><div>"+opt.totalApplicantsForRequirement+"</div></td>";
-        }else{
+       /*  if(opt.totalApplicantsForRequirement!=null && opt.totalApplicantsForRequirement!='' && opt.totalApplicantsForRequirement!='undefined'){ */
+       	result = result +"<td><div>"+opt.totalApplicants+"</div></td>";
+       	/* } else{
        	 result = result +"<td><div>0</div></td>";
-        }
+        } */
         if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
        	 result = result +"<td><div><span title="+opt.manager+">"+opt.manager+"</span></div></td>";
         }else{
        	 result = result +"<td><div>----</div></td>";
         }
-        if(opt.isLoginUserAsTeamMember !=null && opt.isLoginUserAsTeamMember !='' && opt.isLoginUserAsTeamMember !='undefined'  && opt.isLoginUserAsTeamMember == 'true'){
-       	 result = result +"<td>"+opt.requirementSubmissionStatus+"</td>";
-        }
-        else{
-           result = result +"<td><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+");' id='changeStatusId"+opt.id+"'>";
+        
+          result = result +"<td><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+");'  id='changeStatusId"+opt.id+"'>";
            if(opt.requirementSubmissionStatus == "DRAFT"){
 				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
 				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
@@ -421,7 +420,6 @@ function prepareRequirementData(data){
 
 			result = result +" </select>";	
            result = result +" </td>";
-        }
         if(((orgATS == 'Y' && orgVMS == 'Y') || orgATS != 'Y') && (opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN')){
        	 '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
        	 if(opt.isRequirementReleasedByuser == 'Y'){
@@ -440,10 +438,16 @@ function prepareRequirementData(data){
         result = result +"</tr>";
        
     }
+    
     result = result +" </tbody>";
     result = result +"</table>"; 
     $("#noReq").val('');
     $("#requirementList").append(result); 
+    for (var i = 0; i < json.length; i++) { 
+      	 var opt = json[i];
+      	statusvalidating(opt.id);
+    }
+    
     pagination(); 
     msgFadein1(); 
 }
@@ -452,6 +456,7 @@ function prepareRequirementData(data){
 function pagination(){ 
     $('#requirementPagination').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -460,11 +465,14 @@ function pagination(){
             "sSearch": ""
        }
     } );
+    $(".dataTables_empty").html("");
 }
 </script>
-
-
-
+<script>
+function statusvalidating(id){
+	changeStatusAuthorisation(id);
+}
+</script>
 
 <%-- 
      @author : sarath kumar.
@@ -1211,7 +1219,7 @@ function requirementPipeline(requirementId){
       <h2>Requirement List</h2>
     </div>
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requirement List</div>
-    <%-- 	<div class=" pull-left reportsH">
+   	<div class=" pull-left reportsH">
 			<a title="Reports"><i class="fa fa-pie-chart"></i>Reports</a>
 			<div class="RePop">
 				<ul>
@@ -1225,7 +1233,7 @@ function requirementPipeline(requirementId){
 					<li><a href="reports.html"><i class="fa fa-user"></i>Offer</a></li> -->
 				</ul>
 			</div>
-		</div> --%>
+		</div> 
   </section>
   
   <div class="timesheet_out">
@@ -1559,6 +1567,8 @@ function requirementPipeline(requirementId){
         <div class="clearfix"></div>
       </div>
       
+     <!--  <div id="loadingDiv"></div> -->
+      
       <!-- list requirement -->
       <div class="require_wrap_table">
           <div id="requirementList"></div>
@@ -1733,19 +1743,53 @@ $(".reminder").click(function(){
 </script>
 
 
+
+
+<script type="text/javascript">
+function changeStatusAuthorisation(requirementId){
+	var status = document.getElementById('changeStatusId' + requirementId).value;
+	 var sourceleadUrl ='${sourceleadUrl}';
+	   $.ajax({
+         type : "POST",
+          url: sourceleadUrl+"/changeStatusAuthorisation?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status,        
+          success :function(data) {
+        	  if(data == "true"){
+        		  document.getElementById("changeStatusId" + requirementId).disabled=false;
+        		  
+        	  }else if(data == "false"){
+        		  document.getElementById("changeStatusId" + requirementId).disabled=true;
+        		  
+        	  }
+        	  
+          }
+}); 
+}
+</script>
+
+
+
+
+
 <script type="text/javascript">
 function changeStatus(requirementId){
+	
+		 
+
 	var status = document.getElementById('changeStatusId' + requirementId).value;
+	
 	/* $("#changeStatusId option[value=status]").remove(); */
 	 var sourceleadUrl ='${sourceleadUrl}';
 	   $.ajax({
          type : "POST",
           url: sourceleadUrl+"/saveChangedStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status,        
-          success :function(data) { 
-        	  $("#changeStatusId" +requirementId).val('');
-        	  location.replace(sourceleadUrl+"/requirementList");
+          success :function(data) {
+        		  
+        		  $("#changeStatusId" +requirementId).val('');
+            	  location.replace(sourceleadUrl+"/requirementList");
+        	  
           }
 }); 
+	   
 }
 </script>
 
@@ -1938,9 +1982,9 @@ function searchRequirement(){
 							$("#search_requiremet").addClass('button').val('Search');
 							$("#search_requiremet").removeAttr("disabled");
 							closePop();
-							if(data != null && data != 'undefined' && data != "" && data != '[]'){
+							/* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
 			                	 prepareRequirementData(data);
-		                 }else{
+/* 		                 }else{
 		                	 $("#requirementList").empty();
 		                	 $("#requirementList").removeAttr("style");
 		                	 $("#requirementEmptyListMessage").val("noRequirement");
@@ -1948,14 +1992,12 @@ function searchRequirement(){
 				    	    
 							 result = result+"			<div class='blank-pages'>";
 							 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-							 result = result+"			        <p>No Requirement Found</p>";
+							 result = result+"			        <p>No Requirement Found1111</p>";
 							 result = result+"			 </div>";
-							/*  noRequirements();
-							$("#noReq").val("noreq"); */
 							$("#requirementList").empty();
 						    $("#requirementList").append(result); 
 		                }
-						},
+ */						},
 					}); 
 			return true;
 		}else{ 

@@ -179,7 +179,7 @@ public class VendorController {
 	@RequestMapping(value = "/addVendor")
 	public ModelAndView addVendor(HttpServletRequest request)  {
 		
-		ModelAndView model = new ModelAndView();
+		ModelAndView model = new ModelAndView();      
 		try{
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("vendors/vendor");
@@ -300,7 +300,7 @@ public class VendorController {
 				}
 				
 			}else{
-				return "upload/uploadClientForm";
+				return "upload/uploadVendorForm";
 			}
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "vendorImport", "Success!! New vendors created ");

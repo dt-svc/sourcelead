@@ -36,7 +36,7 @@ function submitToClient(requirementId){
 	    			
 	    	success: function(data) {
 	    		
-	    		if(data != null && data != 'undefined' && data != "" && data != '[]'){
+	    		if(data != null && data != 'undefined' && data != "" && data != '[]' && data != 'failed'){
 		       
 	    	   var json = JSON.parse(data);
 		        
@@ -114,10 +114,10 @@ function submitToClient(requirementId){
 			    	     }
 			           
 			           if(report.submitToClientRate != null && report.submitToClientRate != '' && report.submitToClientRate != 'undefined'){
-			        	   result = result + '<td><div><input type="text" class="form-control" onkeypress="validateRate(event,'+report.id+')" data-validation="validate_length length1-10" data-validation-optional="true" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value="'+report.submitToClientRate+'"></div></td>';
+			        	   result = result + '<td><div><input type="text" class="form-control quantity" maxlength="10" onkeypress="validateRate(event,'+report.id+')" data-validation="validate_length length1-10" data-validation-optional="true" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value="'+report.submitToClientRate+'"></div></td>';
 				           }
 				       else{
-				    	   result = result + '<td><div><input type="text" class="form-control" onkeypress="validateRate(event,'+report.id+')" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value=""></div></td>';
+				    	   result = result + '<td><div><input type="text" class="form-control quantity" maxlength="10" onkeypress="validateRate(event,'+report.id+')" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value=""></div></td>';
 			    	     }
 						
 						result = result + '<td><select class="selct-picker" id="submissionRateType'+report.id+'" name="submissionRateType" field-name="Rate Type" data-validation-optional="true">';
@@ -158,8 +158,12 @@ function submitToClient(requirementId){
 		    			$("#submitToClientDiv").empty();
 		    			$("#submitToClientDiv").append(result);
 		   		}
-		   		}else{
+		   		}else if(data != 'failed'){
 		    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-user'></i><h3>Shortlisted List is Empty</h3></div>";
+		    		$('#submitToClientDiv').empty();
+		    		$('#submitToClientDiv').append(result);
+		    	}else if(data == 'failed'){
+		    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-briefcase'></i><h3>Client requirement was Closed/Onhold/Canceled. </h3></div>";
 		    		$('#submitToClientDiv').empty();
 		    		$('#submitToClientDiv').append(result);
 		    	}
@@ -175,20 +179,31 @@ function submitToClient(requirementId){
 	
 }
 </script>
-
-<!-- this script is used for validate the rate, which accepts only numerics and upto 10 digits (Venkat Kesav) -->
 <script>
+$(document).on('keyup', '.quantity', function(event) {
+	   var v = this.value;
+	   if($.isNumeric(v) === false) {
+	        //chop off the last char entered
+	        this.value = this.value.slice(0,-1);
+	   }
+	   $('input.quantity').bind('cut copy paste', function (e) {
+		    e.preventDefault(); //disable cut,copy,paste
+		});
+	});
+</script>
+<!-- this script is used for validate the rate, which accepts only numerics and upto 10 digits (Venkat Kesav) -->
+<!-- <script>
 function validateRate(evt, rateId) {
   var theEvent = evt || window.event;
   var key = theEvent.keyCode || theEvent.which;
   key = String.fromCharCode( key );
   var regex = /[0-9]/;
   if( !regex.test(key) || $("#submissionRate"+rateId+"").val().length>9) {
+   if(theEvent.preventDefault) theEvent.preventDefault();
     theEvent.returnValue = false;
-    if(theEvent.preventDefault) theEvent.preventDefault();
   }
 }
-</script>
+</script> -->
 
 <script>
 function pagination(){  
@@ -278,6 +293,7 @@ function clientSubmissions(requirementId){
 			    		$("body").css('overflow-y', 'auto');
 			    		var allApplicants = 'all';
 			    		requirementPipeline(requirementId,allApplicants); 
+			    		pipelineList(requirementId);
 			        },
 			 }); 
 		 }else{
@@ -582,12 +598,7 @@ function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate,sel
 	          	     dataType : 'json',
 					url : sourceleadUrl+"/submitToClient?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&selectedIds="+selectedIds+"&requirementId="+requirementId+"&selectedShortlistsRate="+selectedShortlistsRate+"&selectedShortlistsRatePer="+selectedShortlistsRatePer,
 					success : function(result) {
-
-						$(".submitnew-wrap").removeClass("submitnew-wrap_active");
-						$(".new_side_wrap").removeClass("new_side_wrap_active");
-                        $(".side_mask").fadeOut(200);
-                        $("body").css('overflow-y', 'auto');
-                        var allApplicants = 'all';
+						cancelSubmit();
                         requirementPipeline(requirementId,allApplicants); 
 					},
 				}); 

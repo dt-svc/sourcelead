@@ -1,5 +1,3 @@
-
-
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
@@ -188,15 +186,22 @@ function releaseToOneContact(contactscheckboxId){
 
 <script>
 function getContactsLists(){
+	
+	var vendorSelectedIds = [];
+	$('input:checkbox[name=vendorSelected]:checked').each(function() 
+    {
+		vendorSelectedIds.push($(this).val());
+    });
+	
 	var vendors = "Client";
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	var requirementId = '${requirementId}';
 	  $.ajax({
 		   	type: "GET",
-		    url: sourceleadUrl+"/getAllContactsbyOrgLocationIdAndUserIdForRequirement?requirementId="+requirementId+"&vendors="+vendors+"&status="+status, 	   
+		    url: sourceleadUrl+"/getAllContactsbyOrgLocationIdAndUserIdForRequirement?requirementId="+requirementId+"&vendors="+vendors+"&status="+status+"&vendorSelectedIds="+vendorSelectedIds, 	   
    		    success: function(data) {
-   		    	if(data != null && data != 'undefined' && data != "" && data != '[]'){
+   		    	/* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
    		    		if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
 			    	 }
@@ -267,6 +272,7 @@ function getContactsLists(){
 			   	        	result = result +' </div>';
 			   	        	
 			   	        	$("#vendorStatus").hide();
+			   	        	$("input[name='vendorStatus']:checkbox").attr('checked',false);
 			   	        	$("#vendorSelected").show();
 			   	        
 			   	    	    $("#vendor").empty();
@@ -274,7 +280,7 @@ function getContactsLists(){
 			   	    	    $("#vendorContacts").append(result);
 			   	    	 	candidatePagination();
                		}
-	   		    	}else{
+	   		    	/* }else{
 	               	 $("#vendorContacts").removeAttr("style");
 		    	     var result ="";
 					 result = result+"	<div class='blank-pages'>";
@@ -284,7 +290,7 @@ function getContactsLists(){
 					$("#vendorStatus").hide();
 					$("#vendorContacts").empty();
 				    $("#vendorContacts").append(result); 
-	            }
+	            } */
    		    },
 	 });
 }	
@@ -385,6 +391,7 @@ function getVendorLists(){
 	           	        	
 	           	        	$("#vendorStatus").show();
 	           	        	$("#vendorSelected").hide();
+	           	        	$("input[name='vendorSelected']:checkbox").attr('checked',false);
 	           	        	
 	           	    	    $("#vendorContacts").empty();  
 	           	    	 	$("#vendor").empty();
@@ -587,4 +594,4 @@ function opennetwork(){
 	  });
 }
 </script>
-
+<jsp:include page="../masterFooter.jsp" />

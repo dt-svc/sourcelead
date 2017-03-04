@@ -52,7 +52,7 @@ function addOffer(requirementId){
 				result= result + '	                  <th>Applicant</th>';
 				result= result + '	                  <th>Date of Joining</th>';
 				result= result + '	                  <th>Rate / Salary</th>';
-				result= result + '	                  <th>Position Type</th>';
+				result= result + '	                  <th>Employment Type</th>';
 				result= result + '	                  <th>Attachment</th>';
 				/* result = result + '<th class="action">Action</th>'; */
 				result= result + '	                </tr>';
@@ -146,8 +146,12 @@ function selectOfferApplicants(){
 <div id="divOfferTd3" style="display: none; float: left;">
    	 <div class="positionRelative float">
            <select class="form-control" id="REPLACEROWIDPaymentType" name="REPLACEROWIDPaymentType"  >
-	           <option>Rupee</option>
-	           <option>Dollar</option>
+	          		 <option value="INR">INR</option>
+	                 <option value="AUD">AUD</option>
+	                 <option value="USD">USD</option>
+	                 <option value="GBP">GBP</option>
+	                 <option value="SGD">SGD</option>
+	                 <option value="EUR">EUR</option>
            </select>
      </div>
      <div class="positionRelative float">
@@ -155,17 +159,27 @@ function selectOfferApplicants(){
      </div>
    	 <div class="positionRelative float">
            <select class="form-control" id="REPLACEROWIDPaymentMode" name="REPLACEROWIDPaymentMode">
-           <option>Yearly</option>
-           <option>Monthly</option>
+	                 <option value=" ">Rate Per</option>
+	                 <option value="Hourly">Hourly</option>
+	                 <option value="Weekly">Weekly</option>
+	                 <option value="Bi-weekly">Bi-weekly</option>
+	                 <option value="Monthly">Monthly</option>
+	                 <option value="Bi-Monthly">Bi-Monthly</option>
+	                 <option value="Yearly">Yearly</option>
            </select>
      </div>
 </div> 
 
 <div id="divOfferTd4" style="display: none; float: left;">
  	<select class="form-control" id="REPLACEROWIDPositionType" name="REPLACEROWIDPositionType">
-	                      <option>Fulltime</option>
-	                      <option>Parttime</option>
-	                      <option>C2C</option>
+ 	 				 <option value="" disabled selected>Select Type</option>
+	                 <option  value="C2C">C2C</option>
+	                 <option  value="W-2">W-2</option>
+	                 <option  value="C2H">C2H</option>
+	                 <option  value="Contract">Contract</option>
+	                 <option  value="Part Time">Part Time</option>
+	                 <option  value="Full Time">Full Time</option>
+	                      
 	</select>
 </div>	              
 <div id="divOfferTd5" style="display: none; float: left;">
@@ -203,7 +217,7 @@ function selectOfferApplicants(){
 		cell0.innerHTML = divTsTd1Str;
 		
 		var cell1 = row.insertCell(1);
-		cell1.innerHTML = "<div class='positionRelative date'><input class='form-control input-sm Datepicker' placeholder='Date' name='"+maxRowNum+"joiningDate' id='"+maxRowNum+"joiningDate'  readonly='readonly'  type='text' data-validation='required' field-name='Joining Date' > <span class='input-group-addon input-groupAddon'><i class='fa fa-calendar'></i></span> </div>";
+		cell1.innerHTML = "<div class='positionRelative date' id='offerDatePic'><input class='form-control input-sm Datepicker' placeholder='Date' name='"+maxRowNum+"joiningDate' id='"+maxRowNum+"joiningDate'  readonly='readonly'  type='text' data-validation='required' field-name='Joining Date' > <span class='input-group-addon input-groupAddon'><i class='fa fa-calendar'></i></span> </div>";
 		
 		var cell2 = row.insertCell(2);
 		var divTsTd3Str = document.getElementById("divOfferTd3").innerHTML;
@@ -229,7 +243,15 @@ function selectOfferApplicants(){
 		
 		$("#"+maxRowNum+"applicantId").chosen();
 		
-		$(".Datepicker").datepicker();  
+		$('.Datepicker').datepicker({
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				removevalidation();
+			}
+		});
+		
+		
 		
 		$(".add_offer_wrap").addClass("add_offer_wrap_active");
 		$(".side_mask").fadeIn(200);
@@ -246,7 +268,11 @@ function selectOfferApplicants(){
 		
 }		
 </script>
-
+<script>
+function removevalidation(){
+	$('#offerDatePic').find('p.jquery_form_error_message').remove();	
+}
+</script>
 <script type="text/javascript">
 	function removeOfferRow(rowId) {
 		var rowNum = $("#divTsRow"+rowId).val();
@@ -340,6 +366,7 @@ function cancelAddOffer(){
      		$("body").css('overflow-y', 'auto');
      		var allApplicants = 'all';
 	    		requirementPipeline(requirementId,allApplicants); 
+	    		pipelineList(requirementId);
 	        },
 	    });
   	  }else{
