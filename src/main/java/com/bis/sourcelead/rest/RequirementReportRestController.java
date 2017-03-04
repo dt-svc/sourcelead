@@ -77,6 +77,7 @@ public class RequirementReportRestController {
 				if("today".equals(reportType)){
 					String startDate = outputFormatter.print(zoned);
 					String startDateString = CommonUtil.convertTimeZones("UTC",timezone.getTimeZoneId(), startDate);
+					filterDate = CommonUtil.convertTimeZones("UTC",timezone.getTimeZoneId(), startDate);
 					logger.info("++++++++++++++++++++++++startDateString "+startDateString);
 					logger.info("++++++++++++++++++++++++endDateString "+endDateString);
 					startDateUTC = TZ_DF_TS.parse(startDateString);

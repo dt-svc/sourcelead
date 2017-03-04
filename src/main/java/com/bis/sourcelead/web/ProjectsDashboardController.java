@@ -102,6 +102,7 @@ public class ProjectsDashboardController {
         if(null != searchResult && null != searchValue){
         	model.addObject("searchValue", searchValue);
         	model.addObject("searchResult", searchResult);
+        	model.addObject("searchType", "Projects");
         }
         
         if(null != projectKeyword && !"".equalsIgnoreCase(projectKeyword) &&  projectKeyword.equalsIgnoreCase("projectSearch")){
