@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,7 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String filterDate) {
+	public List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String filterDate,Date startDateUTC, Date endDateUTC) {
 		 
 		Session session = this.sessionFactory.getCurrentSession();
 		//User user = userDao.getUserById(userId);
@@ -33,8 +34,9 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 //		UserRole userRole1 = userRoleDao.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
 				
 		Map<String, Object> params = new HashMap<String,Object>();
+		String dateSubQuery = " and requirement.createdDate between :startDateUTC AND :endDateUTC";
 		
-		String from = "from Requirement requirement  left join fetch requirement.parentRequirement  left join fetch requirement.clientId left join fetch requirement.spocId left join fetch requirement.submissionTemplateId left join fetch requirement.clientSubmissionTemplateId left join fetch requirement.parentRequirement where requirement.createdDate between :filterDate AND :filterEndDate"; 
+		String from = "from Requirement requirement  left join fetch requirement.parentRequirement  left join fetch requirement.clientId left join fetch requirement.spocId left join fetch requirement.submissionTemplateId left join fetch requirement.clientSubmissionTemplateId left join fetch requirement.parentRequirement"; 
 		String subQuery = "";
 		
 		if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
@@ -69,22 +71,21 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		}
 		
 		
-		String whereCondition = subQuery;
+		String whereCondition = subQuery +dateSubQuery;
 		
 		Query query = session.createQuery(from+" "+whereCondition+" ORDER BY requirement.id DESC");
 		for (String str : query.getNamedParameters())
         {
 			if(str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("approverUserId") || str.equalsIgnoreCase("managerUserId")){
 				query.setLong(str, (long) params.get( str ));
+			}if( str.equalsIgnoreCase("startDateUTC")){
+				query.setDate("startDateUTC", startDateUTC);
+			}if(str.equalsIgnoreCase("endDateUTC")){
+				query.setDate("endDateUTC", endDateUTC);
 			}
 			if(str.equalsIgnoreCase("level") || str.equalsIgnoreCase("level1") || str.equalsIgnoreCase("level2")){
 				query.setInteger(str, (int) params.get( str ));
 			}
-			if(str.equalsIgnoreCase("filterDate")){
-				query.setParameter("filterDate", "2017-03-01 00:00:00");
-				query.setParameter("filterEndDate", "2017-03-01 23:59:59");
-			}
-			
 			else{
 				query.setParameter( str, params.get( str ) );
 			}

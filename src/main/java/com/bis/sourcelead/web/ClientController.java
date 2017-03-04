@@ -118,6 +118,7 @@ public class ClientController {
 			if(null != searchResult && !searchResult.equalsIgnoreCase("") && searchResult.equals("clientSearchResult")){
 				model.addObject("clientSearchResult","clientSearchResult");
 				model.addObject("searchValue",searchValue);
+				model.addObject("searchType","Client");
 			}
 			
 			if(null != clientKeyword && !clientKeyword.equalsIgnoreCase("") && clientKeyword.equals("clientSearch")){
