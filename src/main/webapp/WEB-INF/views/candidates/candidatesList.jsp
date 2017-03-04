@@ -427,13 +427,13 @@ function candidateSideBar(candidateId){
          			 	}
          			 	
          			 	if(json.alternateMobilePhone != null && json.alternateMobilePhone != '' && json.alternateMobilePhone != 'undefined'){
-         			 		alternateMobilePhone = json.alternateMobilePhone;
+         			 		alternateMobilePhone = ' , ' +json.alternateMobilePhone;
          			 	}else{
          			 		alternateMobilePhone = '';
          			 	}
          			 	
          			 	 if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
-         			 		mobilePhone =json.mobilePhone+',';
+         			 		mobilePhone =json.mobilePhone;
          			 	 }else{
          			 		 
          			 		mobilePhone = '';
@@ -569,7 +569,7 @@ function candidateSideBar(candidateId){
 			             
 			             result = result+'</li>';
 			             
-			             result = result+'<li><i class="fa fa-money"></i><b>Expected:</b>';
+			             result = result+'<li><i class="fa fa-money"></i><b>Expected Rate:</b>';
 			             
 			             result = result+''+expectedRate+' '+rateType+''+expectedRateCurrencey+'';
 			             

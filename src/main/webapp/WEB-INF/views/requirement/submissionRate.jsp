@@ -132,7 +132,7 @@ width: auto;
 										   <div class="clearfix">
 										  <div class="row">
 										  <div class="col-md-3">
-										  <input type="text" class="form-control input-sm" field-name=" ApplicantRate rate" placeholder="rate" id="rateProposal" name="rateProposal" data-validation="required validate_Space validate_float validate_length length1-10">
+										  <input type="text" class="form-control input-sm" field-name=" ApplicantRate rate" placeholder="Rate" id="rateProposal" name="rateProposal" data-validation="required validate_Space validate_float validate_length length1-10">
 										  </div> 
 										  <input type="hidden" name="candidateId" id="candidateId" value="${requirementSubmission.candidate.id}"/> 
 										  <div class="col-md-3 select-field">
@@ -273,7 +273,13 @@ width: auto;
 			                     result = result +"</thead>";
 			                     result = result +"<tbody>"; 
 			                     for (var i = 0; i < json.length; i++) { 
-			                    	 var opt = json[i];  
+			                    	 var opt = json[i]; 
+			                    	 if(opt.expectedRatePer != null && opt.expectedRatePer != '' && opt.expectedRatePer != 'undefined'){
+			                    		 expectedRatePer = opt.expectedRatePer;
+			                    	 }else{
+			                    		 expectedRatePer ="";
+			                    	 }
+			                    	 
 			                    	 if(i==0){
 			                    		 result  = result + '<input type="hidden" id="lastProposedBy" value='+opt.previouslyProposedBy+'>';
 			                    	 }
@@ -284,7 +290,7 @@ width: auto;
 		                    	    	 result  = result + ' <td><div><span>--</span></div></td>';
 		                    	     }
 			                    	 if(opt.expectedRate != null && opt.expectedRate != '' && opt.expectedRate != 'undefined' && opt.expectedRateType != null && opt.expectedRateType != '' && opt.expectedRateType != 'undefined'){
-			                    	 result  = result + ' <td><div><span>'+opt.expectedRate+'/'+opt.expectedRateType+'</span></div></td>';
+			                    	 result  = result + ' <td><div><span>'+opt.expectedRate+' '+expectedRatePer+'/'+opt.expectedRateType+' </span></div></td>';
 			                    	 }else if(opt.expectedRate != null && opt.expectedRate != '' && opt.expectedRate != 'undefined'){
 			                    		 result  = result + ' <td><div><span>'+opt.expectedRate+'</span></div></td>';
 			                    	 }else{
