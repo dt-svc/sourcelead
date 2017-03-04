@@ -300,7 +300,7 @@ public class VendorController {
 				}
 				
 			}else{
-				return "upload/uploadClientForm";
+				return "upload/uploadVendorForm";
 			}
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "vendorImport", "Success!! New vendors created ");
