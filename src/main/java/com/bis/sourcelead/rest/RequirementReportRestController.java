@@ -55,32 +55,37 @@ public class RequirementReportRestController {
 	 @RequestMapping(value = "/getRequirementReports")
 	 public String getRequirementListByOrgLocationID(@RequestParam(value="reportType", required=false) String reportType,HttpServletRequest request,HttpServletResponse response) throws Exception{
 
-		 /*String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		 String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 
-		    OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+
+		 Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+		 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+		 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+		 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+		 
+		 String endDate = outputFormatter1.print(zoned);
+		 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),"UTC", endDate);
+		 Date endDateUTC = TZ_DF_TS.parse(endDateString);
 			
-			Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
-			DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-			DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-			String currentDateInTimezone = outputFormatter.print(zoned);
-			
-			DateFormat END_TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-			
-			Date startTime =  commonUtil.getDateFormat(currentDateInTimezone);
-			String startTimeTS = Constants.TZ_DF.format(startTime); 
-			String endTimeTS = END_TZ_DF.format(startTime);
-			String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),"UTC", startTimeTS);
-			
-			
-			
+		 
 			String filterDate = null;
+			Date startDateUTC = null;
 			if(null != reportType && !"".equals(reportType)){
 				if("today".equals(reportType)){
-					filterDate = currentDateInTimezone;
+					String startDate = outputFormatter.print(zoned);
+					String startDateString = CommonUtil.convertTimeZones("UTC",timezone.getTimeZoneId(), startDate);
+					logger.info("++++++++++++++++++++++++startDateString "+startDateString);
+					logger.info("++++++++++++++++++++++++endDateString "+endDateString);
+					startDateUTC = TZ_DF_TS.parse(startDateString);
 				}else if("yesterday".equals(reportType)){
 					DateTime yesterDayZoned = zoned.minusDays(1);
-					filterDate = outputFormatter.print(yesterDayZoned);
+					String yesterDayDate = outputFormatter.print(yesterDayZoned);
+					String startDateString = CommonUtil.convertTimeZones("UTC",timezone.getTimeZoneId(), yesterDayDate);
+					Date YesterDateDateUTC = TZ_DF_TS.parse(startDateString);
+					
 				}else if("week".equals(reportType)){
 					DateTime weekZoned = zoned.minusDays(7);
 					filterDate = outputFormatter.print(weekZoned);
@@ -97,8 +102,9 @@ public class RequirementReportRestController {
 					
 				}
 			}
-			List<Requirement> requirementList = requirementReportService.getRequirementReports(userRoleName,orgLocation,user,filterDate);
-		 */
+			
+			List<Requirement> requirementList = requirementReportService.getRequirementReports(userRoleName,orgLocation,user,filterDate,startDateUTC,endDateUTC);
+		    logger.info("*****************************== "+requirementList.size());  
 			return null;
 		 
 	 }

@@ -10,14 +10,18 @@
 	function candidateExperience(candidateId) {
 
 		var result = "";
-		result = result	+ '    <div class="project_tabs_inn_head addUser-org">  ';
+		if(window.candidateStatusGlobal == '0'){
+			result = result	+ '    <div class="project_tabs_inn_head addUser-org overflow_inherint mt25">  ';
+		}else{
+			result = result	+ '    <div class="project_tabs_inn_head addUser-org overflow_inherint mt10">  ';
+		}
 		result  = result + '<div class="success_pop" id="selector3" style="display: none;">';
 	    result  = result + '<i class="fa fa-check-circle"></i><span id="empMsgDiv"></span>';
 	    result  = result + '</div>';
 		result =result +'<div id = "msgDiv2"></div>';
 		if(window.candidateStatusGlobal == '0'){
 		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_EMPLOYEER\')">'; 	
-		result = result	+ '<a href="javascript:void(0)" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a>';
+		result = result	+ '<a href="javascript:void(0)" class="addUser-org" ></a>';
 		'</sec:authorize>';
 		}else{
 			'<sec:authorize access="hasAnyRole(\'ROLE_ADD_EMPLOYEER\')">';

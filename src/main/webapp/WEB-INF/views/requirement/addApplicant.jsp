@@ -955,7 +955,7 @@ function setRateTypesByLocation(){
  		        		$("#candidateSkills").trigger("chosen:updated");
   						
 			        	 
-						 validateCandidateEmail();
+						 validateSubmissionCandidateEmail();
 						 $("#loading").removeAttr("style");
 					},
 				});
@@ -986,7 +986,7 @@ function validate_fileupload(fileName)
 
 
 <script type="text/javascript">
- function validateCandidateEmail() {
+ function validateSubmissionCandidateEmail() {
 	 var email =   $("input[name=EmailId]").val();
 	$('#emailDiv').find('p.jquery_form_error_message').remove();
 	 var sourceleadUrl ='${sourceleadUrl}';

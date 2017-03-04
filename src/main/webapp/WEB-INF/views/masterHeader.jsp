@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/png" href="resources/images/fav.png" />
@@ -257,7 +260,7 @@ width: 11.5%;
 	          </c:if>
          
           <li id="alert"> 
-          <a href="#" title="Alerts" id="alert" onclick="notificationStatusAsRead();" > <i class="fa fa-bell bell" ></i> <span class="label label-warning">${SourceLeadWeb_notificationCount}</span></a>
+          <a href="#" title="Alerts" id="alert" onmouseover="notificationStatusAsRead();" > <i class="fa fa-bell bell" ></i> <span class="label label-warning">${SourceLeadWeb_notificationCount}</span></a>
             <div class="header-widget alert-area">
               <ul class="list-unstyled">
               <c:if test="${empty SourceLeadWeb_notificationList}">
@@ -368,12 +371,12 @@ function notificationStatusAsRead(){
 	      type: "POST",
 	  	  url: sourceleadUrl+"/notificationStatusAsRead?${_csrf.parameterName}=${_csrf.token}&orgCode="+orgCode+"&locationCode="+locationCode,
 	  			  success :function(data) {
-	    	      			
+	  				 $("span.label-warning").text(0);
       			 }							     
 	}); 
-	 $("#alert").click(function(){
+	 /* $("#alert").click(function(){
          $("span.label-warning").text(0);
-	 });
+	 }); */
 }
 </script>
 
@@ -1108,3 +1111,5 @@ $("#searchType").selectpicker('refresh');
 </script>
 
 <!-- Task related code Ends -->
+
+

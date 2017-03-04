@@ -122,7 +122,9 @@ public class RequirementDaoImpl implements RequirementDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,User user,String userRoleName) throws Exception {
-		 
+		
+		long startTime = System.currentTimeMillis(); 
+		List<Requirement> reqList = null;
 		Session session = this.sessionFactory.getCurrentSession();
 		//User user = userDao.getUserById(userId);
 		
@@ -200,7 +202,12 @@ public class RequirementDaoImpl implements RequirementDao {
         	
         }
 		
-		return query.setCacheable(true).list();
+		reqList = query.setCacheable(true).list();
+		
+		long endTime = System.currentTimeMillis();
+		 logger.info("############## Total Time for the Requirement Response = "+(endTime - startTime));
+
+		return reqList;
 		
 	}
 
@@ -392,7 +399,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		}else{
 			String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where  ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT') ";
 			
-			String subQuery2 = "requirement.managerUserId.id = :managerUserId and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
+			String subQuery2 = " ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
 			params.put("managerUserId",userId);
 			
 			if(subQuery1 != "" || subQuery2 !=""){
