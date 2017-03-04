@@ -1117,7 +1117,15 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			Long projectMemberId) throws Exception {
 		return timesheetSubmissionsDao.getAllEmployeeTimesheetSubmissionsByProjectMemberId(startDate, endDate, projectMemberId);
 	}
+	
+	@Override
+	public List<TimesheetSubmissions> getAllEmployeeTimesheetSubmissionsByProjectMemberIdForUpdation(Date startDate, Date endDate,
+			Long projectMemberId) throws Exception {
+		return timesheetSubmissionsDao.getAllEmployeeTimesheetSubmissionsByProjectMemberIdForUpdation(startDate, endDate, projectMemberId);
+	}
 
+	
+	
 
 		
 }
