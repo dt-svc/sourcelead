@@ -695,7 +695,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		  Session session = this.sessionFactory.getCurrentSession();
 //		    List<Long> candidatesCount = null;
 
-		  String subQuery = " and reqSub.candidate.email IN(select tempReqSub.candidate.email from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+		  String subQuery = " and reqSub.candidate.email IN(select tempReqSub.candidate.email from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id) and reqSub.submissionStatus <> 'REJECTED'";
 		  
 		    Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
 			List<RequirementAssignTo> requirementAssignToList =  requirementAssignToService.getRequirementAssignToListByRequirementId(requirementId);
@@ -825,7 +825,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			statusSubQuery = " and (reqSub.submissionStatus = 'OFFERMADE' OR reqSub.submissionStatus = 'OFFERACCEPTED' OR reqSub.submissionStatus = 'OFFERREJECTED' "
 					+ " OR reqSub.submissionStatus = 'CLIENT_OFFERMADE' OR reqSub.submissionStatus = 'CLIENT_OFFERACCEPTED' OR reqSub.submissionStatus = 'CLIENT_OFFERREJECTED') "; 
 		}else if(Constants.DUPLICATE_APPLICANTS.equalsIgnoreCase(submissionType)){
-			statusSubQuery = " and reqSub.candidate.email IN(select tempReqSub.candidate.email from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+			statusSubQuery = " and reqSub.candidate.email IN(select tempReqSub.candidate.email from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id) and reqSub.submissionStatus <> 'REJECTED'";
 			//subQuery = " and reqSub.submissionStatus = '"+submissionType+"' ";
 		}else{
 			statusSubQuery = " and reqSub.submissionStatus = '"+submissionType+"' ";
@@ -1233,10 +1233,10 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 
 		@Override
 		@Transactional(rollbackFor = { Exception.class })
-		public Integer getRequirementPerCandidateCount(Long candudateId) throws Exception {
+		public Integer getRequirementPerCandidateCount(Long candudateId,Long orgLocationId) throws Exception {
 			Session session = this.sessionFactory.getCurrentSession();
-		     String query = "select count(*) from RequirementSubmission rs  where rs.candidate.id = :candudateId";
-		     List<Long> requirementPerCandidateCount = session.createQuery(query).setLong("candudateId", candudateId).setCacheable(true).list();
+		     String query = "select count(*) from RequirementSubmission rs  where rs.candidate.id = :candudateId and rs.orgLocations.id = :orgLocationId";
+		     List<Long> requirementPerCandidateCount = session.createQuery(query).setLong("candudateId", candudateId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 			Integer count= 0;
 			if(requirementPerCandidateCount != null && !requirementPerCandidateCount.isEmpty()){
 					count = requirementPerCandidateCount.get(0).intValue();

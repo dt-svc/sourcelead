@@ -90,6 +90,18 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	    		   expectedRate = " ";
 	    	   }
 	    	   
+	    	   if(json.requirementSubmissionTemplateFields.currentRateType != null && json.requirementSubmissionTemplateFields.currentRateType != '' && json.requirementSubmissionTemplateFields.currentRateType !='undefined'){
+	    		   currentRateType = json.requirementSubmissionTemplateFields.currentRateType; 
+	    	   }else{
+	    		   currentRateType = " ";
+	    	   }
+	    	   
+	    	   if(json.requirementSubmissionTemplateFields.currentRatePer != null && json.requirementSubmissionTemplateFields.currentRatePer != '' && json.requirementSubmissionTemplateFields.currentRatePer !='undefined'){
+	    		   currentRatePer = json.requirementSubmissionTemplateFields.currentRatePer; 
+	    	   }else{
+	    		   currentRatePer = " ";
+	    	   }
+	    	   
 	    	   /* if(json.candidate.currentRateCurrency != null && json.candidate.currentRateCurrency != '' && json.candidate.currentRateCurrency !='undefined'){
 	    		   currentRateCurrency = json.candidate.currentRateCurrency; 
 	    	   }else{
@@ -171,8 +183,8 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + '<li><i class="fa fa-location-arrow"></i>';
 		       result = result +country +''+ state +''+ city
 		       result = result +'</li>';
-		       result = result + '<li><i class="fa fa-rupee"></i>'+currentRate+' - Current CTC </li>';
-		       result = result + '<li><i class="fa fa-rupee"></i>'+expectedRate+' - Expected CTC </li>';
+		       result = result + '<li><i class="fa fa-money"></i><b>Current Rate:&nbsp;</b>'+currentRate+'   '+currentRatePer+'/'+currentRateType+'</li>';
+		       result = result + '<li><i class="fa fa-money"></i><b>Expected Rate:&nbsp;</b>'+expectedRate+'  '+currentRatePer+'/'+currentRateType+'</li>';
 		       result = result + '</ul>';
 		       result = result + ' </div>';
 		       
