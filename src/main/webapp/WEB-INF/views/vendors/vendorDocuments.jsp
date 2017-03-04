@@ -285,7 +285,7 @@ function addDocument(vendorLocationId,orgRelationId) {
 	
 	result = result+'	                  <div class="clearfix mb10">';
 	result = result+'	                    <div class="col-md-12">';
-	result = result+'	                      <textarea rows="2" placeholder="Description" value="" id="description" name="description" data-validation="validate_length length2-500" data-validation-optional="true" field-name="Description" class="form-control"></textarea>';
+	result = result+'	                      <textarea rows="2" placeholder="Description" value="" id="docDescription" name="description" data-validation="validate_length length2-500" data-validation-optional="true" field-name="Description" class="form-control"></textarea>';
 	result = result+'	                    </div>';
 	result = result+'	                  </div>';
 	
@@ -541,7 +541,7 @@ function getClientDocument(vendorLocationId,orgRelationId,docId){
     			 
     			 
     			 if(json.description != null && json.description != "undefined" && json.description != ""){
-    				 document.getElementById("description").value = json.description;
+    				 document.getElementById("docDescription").value = json.description;
     			 }
     			 
     			 $("#update_doc").attr("onclick", "storeClientDocument("+vendorLocationId+","+orgRelationId+","+json.id+");");
