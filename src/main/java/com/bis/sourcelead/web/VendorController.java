@@ -109,6 +109,7 @@ public class VendorController {
 		    model.addObject("universalVendorList", "universalVendorList");
 		    model.addObject("searchValue",searchValue);
 		    model.addObject("searchType",searchType);
+		    model.addObject("searchType","Vendor");
 		}
 		
 		if(null != orgLoc && StringUtils.isNotEmpty(orgLoc.getCountry())){

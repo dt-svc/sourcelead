@@ -2285,10 +2285,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, String status) throws Exception {
+	public List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, User user,String status) throws Exception {
 		
         
-        List<RequirementSubmission> submittedApplicantsList =  requirementSubmissionDao.getApplicantsByStatus(orgLocationsId, status);
+        List<RequirementSubmission> submittedApplicantsList =  requirementSubmissionDao.getApplicantsByStatus(orgLocationsId, user, status);
         
         for(RequirementSubmission reqsub :submittedApplicantsList){
             

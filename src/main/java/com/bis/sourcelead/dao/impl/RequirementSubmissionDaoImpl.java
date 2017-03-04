@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
@@ -172,6 +173,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
 		String[] releasedBy =null;
+		
+		ArrayList<RequirementSubmission> finalList  = new ArrayList<RequirementSubmission>();
+		
 		if(!"".equalsIgnoreCase(requirement.getReleasedBy()) && requirement.getReleasedBy()!= null ){
 			releasedBy = requirement.getReleasedBy().split(",");
 		}
@@ -190,60 +194,92 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		String from = "from RequirementSubmission reqSub left join fetch reqSub.requirement req   left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes "; 
 		String subQuery = "";
 		
-		if(isadmin){
-			subQuery = " where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId ";
-			params.put("loginOrgLocation",loginOrgLocation.getId());
-			params.put("requirementId",requirementId);
+		
+		// These conditions are to check  for vendors  Submitted Applicants  and Requirement who Released
+			if(null != releasedBy && releasedBy.length > 0){
+				
+				String subQueryForVendors = "where req.id IN ( select rq.id from Requirement rq where     rq.parentRequirement.id =:requirementId and  rq.spocId.id IN ( select orgSpock.id from OrgSpoc orgSpock  where  orgSpock.clientUser.id =:userId and orgSpock.clientLocationId.id =:loginOrgLocation )   and reqSub.id IN( select sourceSub.sourceSubmission.id from   RequirementSubmission sourceSub    ) ) ";
+												params.put("userId",user.getId());
+												params.put("loginOrgLocation",loginOrgLocation.getId());
+												params.put("requirementId",requirementId);
+				
+	            String whereCondition = subQueryForVendors;
+				
+				Query queryForVendors = session.createQuery(from+" "+whereCondition+"  GROUP BY reqSub.id  ORDER BY reqSub.id DESC");
+				for (String str : queryForVendors.getNamedParameters())
+		        {
+					if(str.equalsIgnoreCase("requirementId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("loginOrgLocation") ){
+						queryForVendors.setLong(str, (long) params.get( str ));
+					}else{
+						queryForVendors.setParameter( str, params.get( str ) );
+					}
+		        }
+				
+				List<RequirementSubmission> vendorSubmittedApplicants = queryForVendors.setCacheable(true).list() ; 
+				 List<Long> sourceSubmissionIds = new ArrayList<Long>();
+				 if(null != vendorSubmittedApplicants && vendorSubmittedApplicants.size() >0 ){
+					 for(RequirementSubmission rs :vendorSubmittedApplicants){
+							sourceSubmissionIds.add(rs.getId());
+						}
+						String sourceSubmissionIdQuery = "from RequirementSubmission reqSub left join fetch reqSub.requirement req   left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes where  reqSub.sourceSubmission.id  IN (:sourceSubmissionIds)  "; 
+						List<RequirementSubmission> finalSourceList = session.createQuery(sourceSubmissionIdQuery.toString())
+																			.setParameterList("sourceSubmissionIds", sourceSubmissionIds)
+																			.setCacheable(true).list();
+						finalList.addAll(finalSourceList);
+						
+				   }
+				
+			}
 			
-			// This Condition is if The Requirement is Released by the login User
-		}else if(null != releasedBy && requirementReleased){
-			
-			subQuery = "where req.id IN ( select rq.id from Requirement rq where  rq.spocId.id IN ( select orgSpock.id from OrgSpoc orgSpock  where  orgSpock.clientUser.id =:userId and orgSpock.clientLocationId.id =:loginOrgLocation ) ) ";
-			params.put("userId",user.getId());
-			params.put("loginOrgLocation",loginOrgLocation.getId());
-			
-     
-		}else{
-			//This is for Requirement Manger 
-			String subQuery1 = "reqSub.requirement.managerUserId.id  =:userId ";
-			params.put("userId",user.getId());
-			
-			// This is if the user is  created by 
-			String subQuery2 = "reqSub.createdBy =:usercode";
-			params.put("usercode",user.getUserCode());
-			
-			//  this is if the  user is   Assign Team  Owner
-			String subQuery3 = "req.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId))";
-			params.put("userId",user.getId());
-			
-		   //  this is if the  user is   Assign Team  Member
-			String subQuery4 = "req.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId) and reqSub.createdBy =:usercode";
-			params.put("userId",user.getId());
-			params.put("usercode",user.getUserCode());
-			
-			
-			if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" ){
-				subQuery = "where reqSub.orgLocations.id =:loginOrgLocation and req.id =:requirementId  and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery3+")  OR ("+subQuery4+") )";
+			/// These Conditions are for  own Organization  Submitted Applicants
+			if(isadmin){
+				subQuery = " where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId ";
 				params.put("loginOrgLocation",loginOrgLocation.getId());
 				params.put("requirementId",requirementId);
-			}
-		}
-		
-		
-		String whereCondition = subQuery;
-		
-		Query query = session.createQuery(from+" "+whereCondition+" ORDER BY reqSub.id DESC");
-		for (String str : query.getNamedParameters())
-        {
-			if(str.equalsIgnoreCase("requirementId") || str.equalsIgnoreCase("userId")){
-				query.setLong(str, (long) params.get( str ));
+				
+				// This Condition is if The Requirement is Released by the login User
 			}else{
-				query.setParameter( str, params.get( str ) );
+				//This is for Requirement Manger 
+				String subQuery1 = "reqSub.requirement.managerUserId.id  =:userId ";
+				params.put("userId",user.getId());
+				
+				// This is if the user is  created by 
+				String subQuery2 = "reqSub.createdBy =:usercode";
+				params.put("usercode",user.getUserCode());
+				
+				//  this is if the  user is   Assign Team  Owner
+				String subQuery3 = "req.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId))";
+				params.put("userId",user.getId());
+				
+			   //  this is if the  user is   Assign Team  Member
+				String subQuery4 = "req.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId) and reqSub.createdBy =:usercode";
+				params.put("userId",user.getId());
+				params.put("usercode",user.getUserCode());
+				
+				
+				if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" ){
+					subQuery = "where reqSub.orgLocations.id =:loginOrgLocation and req.id =:requirementId  and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery3+")  OR ("+subQuery4+") )";
+					params.put("loginOrgLocation",loginOrgLocation.getId());
+					params.put("requirementId",requirementId);
+				}
 			}
-        }
-		
-		List<RequirementSubmission> list = query.setCacheable(true).list() ;
-		return list;
+			
+			String whereCondition = subQuery;
+			
+			Query query = session.createQuery(from+" "+whereCondition+" ORDER BY reqSub.id DESC");
+			for (String str : query.getNamedParameters())
+	        {
+				if(str.equalsIgnoreCase("requirementId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("loginOrgLocation") ){
+					query.setLong(str, (long) params.get( str ));
+				}else{
+					query.setParameter( str, params.get( str ) );
+				}
+	        }
+			
+			List<RequirementSubmission> ownApplicantsList = query.setCacheable(true).list() ;
+		    finalList.addAll(ownApplicantsList);
+		    List<RequirementSubmission> listDistinct = finalList.stream().distinct().collect(Collectors.toList());
+		return listDistinct;
 		
 		/*
 		
@@ -659,7 +695,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		  Session session = this.sessionFactory.getCurrentSession();
 //		    List<Long> candidatesCount = null;
 
-		  String subQuery = " and reqSub.candidate.email IN(select tempReqSub.candidate.email from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+		  String subQuery = " and reqSub.candidate.email IN(select tempReqSub.candidate.email from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id) and reqSub.submissionStatus <> 'REJECTED'";
 		  
 		    Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
 			List<RequirementAssignTo> requirementAssignToList =  requirementAssignToService.getRequirementAssignToListByRequirementId(requirementId);
@@ -789,11 +825,121 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			statusSubQuery = " and (reqSub.submissionStatus = 'OFFERMADE' OR reqSub.submissionStatus = 'OFFERACCEPTED' OR reqSub.submissionStatus = 'OFFERREJECTED' "
 					+ " OR reqSub.submissionStatus = 'CLIENT_OFFERMADE' OR reqSub.submissionStatus = 'CLIENT_OFFERACCEPTED' OR reqSub.submissionStatus = 'CLIENT_OFFERREJECTED') "; 
 		}else if(Constants.DUPLICATE_APPLICANTS.equalsIgnoreCase(submissionType)){
-			statusSubQuery = " and reqSub.candidate.email IN(select tempReqSub.candidate.email from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+			statusSubQuery = " and reqSub.candidate.email IN(select tempReqSub.candidate.email from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id) and reqSub.submissionStatus <> 'REJECTED'";
 			//subQuery = " and reqSub.submissionStatus = '"+submissionType+"' ";
 		}else{
 			statusSubQuery = " and reqSub.submissionStatus = '"+submissionType+"' ";
 		}
+		
+		Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
+		String[] releasedBy =null;
+		
+		ArrayList<RequirementSubmission> finalList  = new ArrayList<RequirementSubmission>();
+		
+		if(!"".equalsIgnoreCase(requirement.getReleasedBy()) && requirement.getReleasedBy()!= null ){
+			releasedBy = requirement.getReleasedBy().split(",");
+		}
+		 boolean requirementReleased = false;
+		 List<Long> releasedByUserIds = new ArrayList<Long>();
+		 if(!"".equalsIgnoreCase(requirement.getReleasedBy()) && requirement.getReleasedBy()!= null ){
+		 for (String s : requirement.getReleasedBy().split(",")){
+			 releasedByUserIds.add(Long.parseLong(s));
+    	 }
+		 if(releasedByUserIds != null ){
+			 requirementReleased = releasedByUserIds.contains(user.getId());
+		 }
+		 }
+		Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(user.getId(),loginOrgLocation.getId());
+        Map<String, Object> params = new HashMap<String,Object>();
+		String from = "from RequirementSubmission reqSub left join fetch reqSub.requirement req   left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes "; 
+		String subQuery = "";
+		
+		
+		// These conditions are to check  for vendors  Submitted Applicants  and Requirement who Released
+			if(null != releasedBy && releasedBy.length > 0){
+				
+				String subQueryForVendors = "where req.id IN ( select rq.id from Requirement rq where     rq.parentRequirement.id =:requirementId and  rq.spocId.id IN ( select orgSpock.id from OrgSpoc orgSpock  where  orgSpock.clientUser.id =:userId and orgSpock.clientLocationId.id =:loginOrgLocation )   and reqSub.id IN( select sourceSub.sourceSubmission.id from   RequirementSubmission sourceSub    ) ) ";
+												params.put("userId",user.getId());
+												params.put("loginOrgLocation",loginOrgLocation.getId());
+												params.put("requirementId",requirementId);
+				
+	            String whereCondition = subQueryForVendors;
+				
+				Query queryForVendors = session.createQuery(from+" "+whereCondition+"  GROUP BY reqSub.id  ORDER BY reqSub.id DESC");
+				for (String str : queryForVendors.getNamedParameters())
+		        {
+					if(str.equalsIgnoreCase("requirementId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("loginOrgLocation") ){
+						queryForVendors.setLong(str, (long) params.get( str ));
+					}else{
+						queryForVendors.setParameter( str, params.get( str ) );
+					}
+		        }
+				
+				List<RequirementSubmission> vendorSubmittedApplicants = queryForVendors.setCacheable(true).list() ; 
+				 List<Long> sourceSubmissionIds = new ArrayList<Long>();
+				 if(null != vendorSubmittedApplicants && vendorSubmittedApplicants.size() >0 ){
+					 for(RequirementSubmission rs :vendorSubmittedApplicants){
+							sourceSubmissionIds.add(rs.getId());
+						}
+						String sourceSubmissionIdQuery = "from RequirementSubmission reqSub left join fetch reqSub.requirement req   left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes where  reqSub.sourceSubmission.id  IN (:sourceSubmissionIds)  "; 
+						List<RequirementSubmission> finalSourceList = session.createQuery(sourceSubmissionIdQuery.toString())
+																			.setParameterList("sourceSubmissionIds", sourceSubmissionIds)
+																			.setCacheable(true).list();
+						finalList.addAll(finalSourceList);
+						
+				   }
+				
+			}
+			
+			/// These Conditions are for  own Organization  Submitted Applicants
+			if(isadmin){
+				subQuery = " where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId ";
+				params.put("loginOrgLocation",loginOrgLocation.getId());
+				params.put("requirementId",requirementId);
+				
+				// This Condition is if The Requirement is Released by the login User
+			}else{
+				//This is for Requirement Manger 
+				String subQuery1 = "reqSub.requirement.managerUserId.id  =:userId ";
+				params.put("userId",user.getId());
+				
+				// This is if the user is  created by 
+				String subQuery2 = "reqSub.createdBy =:usercode";
+				params.put("usercode",user.getUserCode());
+				
+				//  this is if the  user is   Assign Team  Owner
+				String subQuery3 = "req.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId))";
+				params.put("userId",user.getId());
+				
+			   //  this is if the  user is   Assign Team  Member
+				String subQuery4 = "req.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId) and reqSub.createdBy =:usercode";
+				params.put("userId",user.getId());
+				params.put("usercode",user.getUserCode());
+				
+				
+				if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" ){
+					subQuery = "where reqSub.orgLocations.id =:loginOrgLocation and req.id =:requirementId  and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery3+")  OR ("+subQuery4+") )";
+					params.put("loginOrgLocation",loginOrgLocation.getId());
+					params.put("requirementId",requirementId);
+				}
+			}
+			
+			String whereCondition = subQuery+statusSubQuery;
+			
+			Query query = session.createQuery(from+" "+whereCondition+" ORDER BY reqSub.id DESC");
+			for (String str : query.getNamedParameters())
+	        {
+				if(str.equalsIgnoreCase("requirementId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("loginOrgLocation") ){
+					query.setLong(str, (long) params.get( str ));
+				}else{
+					query.setParameter( str, params.get( str ) );
+				}
+	        }
+			
+			List<RequirementSubmission> ownApplicantsList = query.setCacheable(true).list() ;
+		    finalList.addAll(ownApplicantsList);
+		    List<RequirementSubmission> listDistinct = finalList.stream().distinct().collect(Collectors.toList());
+		return listDistinct;
 		
 		/*Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
 		List<RequirementAssignTo> requirementAssignToList =  requirementAssignToService.getRequirementAssignToListByRequirementId(requirementId);
@@ -836,7 +982,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					+ "reqSub.sourceSubmission.id =:loginOrgLocation) and reqSub.createdBy =:usercode and reqSub.requirement.id =:requirementId "+subQuery+" ORDER BY reqSub.candidateScore DESC ";
 		  requirementSubmission = session.createQuery(query).setLong("loginOrgLocation", loginOrgLocation.getId()).setString("usercode", user.getUserCode()).setLong("requirementId", requirementId).setCacheable(true).list();
 		}
-		*/
+		
 		Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
 		String[] releasedBy =null;
 		if(!"".equalsIgnoreCase(requirement.getReleasedBy()) && requirement.getReleasedBy()!= null ){
@@ -911,7 +1057,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		
 		List<RequirementSubmission> list = query.setCacheable(true).list() ;
 		return list;
-//		return requirementSubmission;
+		return requirementSubmission;*/
 	}
 	
 	
@@ -999,19 +1145,74 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 
 		@Override
 		@Transactional(rollbackFor = { Exception.class })
-		public List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, String status) {
+		public List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, User user,String status) {
 
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "";
+			String subQuery = "";
+			String statusQuery ="";
+			String from = "from RequirementSubmission reqSub left join fetch reqSub.requirement req   left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes "; 
+			Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(user.getId(),orgLocationsId);
 			List<RequirementSubmission> requirementSubmissionList = null;
-			if("accepted".equalsIgnoreCase(status)){     
-					query = "from RequirementSubmission reqSub left join fetch reqSub.requirement left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes where reqSub.orgLocations.id =:orgLocations and reqSub.submissionRateStatus = 'ACCEPTED' "; 
-					requirementSubmissionList =session.createQuery(query).setLong("orgLocations", orgLocationsId).setCacheable(true).list(); 
+			 Map<String, Object> params = new HashMap<String,Object>();
+			if("accepted".equalsIgnoreCase(status)){
+				 statusQuery = "  and  reqSub.submissionRateStatus = 'ACCEPTED' ";
 			}else if("requestSent".equalsIgnoreCase(status)){
-					query = "from RequirementSubmission reqSub left join fetch reqSub.requirement left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes where reqSub.orgLocations.id =:orgLocations and reqSub.submissionRateStatus = 'REQUEST' "; 
-					requirementSubmissionList =session.createQuery(query).setLong("orgLocations", orgLocationsId).setCacheable(true).list(); 
+				statusQuery= "  and  reqSub.submissionRateStatus = 'REQUEST'";
 			}
-			return requirementSubmissionList;
+			if(isadmin){
+				subQuery = " where reqSub.orgLocations.id =:loginOrgLocation "  +statusQuery;
+				params.put("loginOrgLocation",orgLocationsId);
+				
+				// This Condition is if The Requirement is Released by the login User
+			}else{
+			
+					//This is for Requirement Manger 
+					String subQuery1 = "reqSub.requirement.managerUserId.id  =:userId " +statusQuery;
+					params.put("userId",user.getId());
+					
+					// This is if the user is  created by 
+					String subQuery2 = "reqSub.createdBy =:usercode" +statusQuery;
+					params.put("usercode",user.getUserCode());
+					
+					//  this is if the  user is   Assign Team  Owner
+					String subQuery3 = "req.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId))" +statusQuery;
+					params.put("userId",user.getId());
+					
+				   //  this is if the  user is   Assign Team  Member
+					String subQuery4 = "req.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId) and reqSub.createdBy =:usercode" +statusQuery;
+					params.put("userId",user.getId());
+					params.put("usercode",user.getUserCode());
+					
+					//applicant list display in dashboard.
+					/*if("accepted".equalsIgnoreCase(status)){     
+						query = "from RequirementSubmission reqSub left join fetch reqSub.requirement left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes where reqSub.orgLocations.id =:orgLocations and reqSub.submissionRateStatus = 'ACCEPTED' "; 
+						requirementSubmissionList =session.createQuery(query).setLong("orgLocations", orgLocationsId).setCacheable(true).list(); 
+				}else if("requestSent".equalsIgnoreCase(status)){
+						query = "from RequirementSubmission reqSub left join fetch reqSub.requirement left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes where reqSub.orgLocations.id =:orgLocations and reqSub.submissionRateStatus = 'REQUEST' "; 
+						requirementSubmissionList =session.createQuery(query).setLong("orgLocations", orgLocationsId).setCacheable(true).list(); 
+				}*/
+					
+					if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" ){
+						subQuery = "where reqSub.orgLocations.id =:loginOrgLocation   and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery3+")  OR ("+subQuery4+") )";
+						params.put("loginOrgLocation",orgLocationsId);
+					}
+			}
+			String whereCondition = subQuery;
+			
+			
+			Query query = session.createQuery(from +" "+whereCondition+" ORDER BY reqSub.id DESC");
+			for (String str : query.getNamedParameters())
+	        {
+				if(str.equalsIgnoreCase("loginOrgLocation") || str.equalsIgnoreCase("userId")){
+					query.setLong(str, (long) params.get( str ));
+				}else{
+					query.setParameter( str, params.get( str ) );
+				}
+	        }
+			
+			List<RequirementSubmission> list = query.setCacheable(true).list() ;
+			return list;
+			//return requirementSubmissionList;
 		}
 
 		@Override
