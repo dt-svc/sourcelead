@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,8 @@ public class RequirementReportServiceImpl implements RequirementReportService{
 	@Autowired
 	RequirementReportDao requirementReportDao;
 	@Override
-	public List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String filterDate) {
-		return  requirementReportDao.getRequirementReports(userRoleName,orgLocation,user,filterDate);
+	public List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String filterDate,Date startDateUTC, Date endDateUTC) {
+		return  requirementReportDao.getRequirementReports(userRoleName,orgLocation,user,filterDate,startDateUTC,endDateUTC);
 	}
 
 }
