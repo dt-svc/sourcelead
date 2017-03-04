@@ -65,6 +65,10 @@ public interface UserRoleService {
 	
 	public Boolean isUserAdmin(Long userId);
 	
+	public Boolean isUserAdminByOrgLocationId(Long userId, Long orgLocationId);
+
+
+	
 	//Prasad Salina to get managers list baded on role type
 	/*List<UserRole> getManagersByUserRolesAndOrgLocationId(String roleType , Long orgLocationsId) throws Exception;
 			
