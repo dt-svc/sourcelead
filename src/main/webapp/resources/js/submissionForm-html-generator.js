@@ -279,7 +279,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
         		 if(required == 1){
         			 if(label == 'Email Id'){
         				 datavalidation = 'data-validation="required validate_email validate_Space validate_length length2-100"';
-        				 onBlurEvent = 'onblur="validateCandidateEmail();"';
+        				 onBlurEvent = 'onblur="validateSubmissionCandidateEmail();"';
         				 
         			 }else if(label == 'Phone Number'){
         				 datavalidation = 'data-validation="required validate_phone validate_Space validate_length length9-20"';
