@@ -587,7 +587,9 @@ function removeProjectMemberAlertMessage(teamMemberId,teamId){
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"	<div id='reasonDiv'/>";
 	result = result +"		<b href='#'><input id='confirm-id' type='button' value='Ok' onclick='deleteTeamMember("+teamMemberId+","+teamId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
+	result = result +"	</div>";
 	result = result +"	</div>";
 	$("#removeCandidateAlert").append(result);
 	$("#remove_user_pop").slideDown(200); 
@@ -619,7 +621,9 @@ function cancelAlert(){
 function deleteTeamMember(teamMemberId,teamId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var reason = document.getElementById("rejectReason").value;
-	  $.ajax({
+	  if(reason.match(/^[^\s-](.*)*$/) != null){
+		 $('#reasonDiv').empty();
+		 $.ajax({
         type : "POST",
          url: sourceleadUrl+"/deleteTeamMemberByCandidateId?${_csrf.parameterName}=${_csrf.token}&teamMemberId="+teamMemberId+"&reason="+reason,        
          success :function(data) {
@@ -630,6 +634,13 @@ function deleteTeamMember(teamMemberId,teamId){
                 }
                  }, 
               }); 
+	  }else{
+			if(reason){
+				$("#reasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+			}else{
+				$("#reasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+			}
+		}
 }
 </script>
 

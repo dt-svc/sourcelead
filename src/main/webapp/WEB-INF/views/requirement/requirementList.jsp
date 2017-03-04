@@ -1219,7 +1219,7 @@ function requirementPipeline(requirementId){
       <h2>Requirement List</h2>
     </div>
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requirement List</div>
-    <%-- 	<div class=" pull-left reportsH">
+    	<div class=" pull-left reportsH">
 			<a title="Reports"><i class="fa fa-pie-chart"></i>Reports</a>
 			<div class="RePop">
 				<ul>
@@ -1233,7 +1233,7 @@ function requirementPipeline(requirementId){
 					<li><a href="reports.html"><i class="fa fa-user"></i>Offer</a></li> -->
 				</ul>
 			</div>
-		</div> --%>
+		</div>  
   </section>
   
   <div class="timesheet_out">

@@ -315,7 +315,7 @@ function addResume(candidateId) {
 						           		result = result+'	            <i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
 					           		}else{
 					           			result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addResume('+candidateId+'); getResume('+candidateId+', '+opt.id+');"></a>';
-						           		result = result+'	            <i class="glyphicon glyphicon-trash" onclick="deleteResume('+candidateId+','+opt.id+');"></i>';
+						           		result = result+'	            <i class="glyphicon glyphicon-trash" style="color:#f51515 !important;" onclick="deleteResume('+candidateId+','+opt.id+');"></i>';
 					           		}
 					           		result = result+'	            </div></td>';
 					           		result = result+'	          </tr>';
