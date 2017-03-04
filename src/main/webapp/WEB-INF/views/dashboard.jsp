@@ -136,11 +136,9 @@ overflow-x: auto;
 	    
 	    <div class="row clearfix">
 	    <div class="col-md-6 mb">
-<<<<<<< HEAD
-        <div class="clients_wrap_table dashboard-widget"  id="assignTaskListDiv" style="display: none;">
-=======
-        <div class="clients_wrap_table dashboard-widget overflow_inherint">
->>>>>>> 436907e6470ff973ea4aabd8b8024770d13ad0c5
+
+        <div class="clients_wrap_table dashboard-widget overflow_inherint"  id="assignTaskListDiv" style="display: none;">
+
           <!-- <h4 class="pull-left">Tasks &nbsp;&nbsp;
           <b class="newdate">
                <i class="fa fa-filter"></i>
