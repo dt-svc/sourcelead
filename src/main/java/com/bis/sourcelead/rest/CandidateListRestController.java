@@ -226,7 +226,9 @@ public class CandidateListRestController {
 			}
 			String jsonc = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(jsonc);
-			// Long maxResults =null;
+			 Long maxResults =null;
+
+			
 			 Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			
@@ -235,12 +237,12 @@ public class CandidateListRestController {
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
 			 
 			 
-			 /*if(null != candidateStatus){
+			if(null != candidateStatus){
 				  maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId(),candidateStatus.toString());
 			 }else{
 				  maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId(),null);
 
-			 }*/
+			 }
 			 
 		   	 //Exclude Keyword
 			 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
@@ -385,6 +387,11 @@ public class CandidateListRestController {
 					boolQueryBuilder.must(QueryBuilders.matchQuery("rateType", jsonObj.getString("rateType")));
 			    }
 				
+				//Designation Type
+				if(jsonObj.has("designationType") && StringUtils.isNotEmpty(jsonObj.getString("designationType"))){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("designationType", jsonObj.getString("designationType")));
+			    }
+				
 				//updatedOn
 				if(jsonObj.has("updatedOn") && StringUtils.isNotEmpty(jsonObj.getString("updatedOn"))){
 					try{
@@ -479,7 +486,7 @@ public class CandidateListRestController {
 				
 				try {
 				
-				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,Constants.MAX_RESULTS_200,boolQueryBuilder).getHits();
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
 				    if(null != searchHits && searchHits.length >0){
 				    	ObjectMapper mapper = new ObjectMapper();
 				    	mapper.setDateFormat(df);
