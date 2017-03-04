@@ -999,19 +999,74 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 
 		@Override
 		@Transactional(rollbackFor = { Exception.class })
-		public List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, String status) {
+		public List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, User user,String status) {
 
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "";
+			String subQuery = "";
+			String statusQuery ="";
+			String from = "from RequirementSubmission reqSub left join fetch reqSub.requirement req   left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes "; 
+			Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(user.getId(),orgLocationsId);
 			List<RequirementSubmission> requirementSubmissionList = null;
-			if("accepted".equalsIgnoreCase(status)){     
-					query = "from RequirementSubmission reqSub left join fetch reqSub.requirement left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes where reqSub.orgLocations.id =:orgLocations and reqSub.submissionRateStatus = 'ACCEPTED' "; 
-					requirementSubmissionList =session.createQuery(query).setLong("orgLocations", orgLocationsId).setCacheable(true).list(); 
+			 Map<String, Object> params = new HashMap<String,Object>();
+			if("accepted".equalsIgnoreCase(status)){
+				 statusQuery = "  and  reqSub.submissionRateStatus = 'ACCEPTED' ";
 			}else if("requestSent".equalsIgnoreCase(status)){
-					query = "from RequirementSubmission reqSub left join fetch reqSub.requirement left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes where reqSub.orgLocations.id =:orgLocations and reqSub.submissionRateStatus = 'REQUEST' "; 
-					requirementSubmissionList =session.createQuery(query).setLong("orgLocations", orgLocationsId).setCacheable(true).list(); 
+				statusQuery= "  and  reqSub.submissionRateStatus = 'REQUEST'";
 			}
-			return requirementSubmissionList;
+			if(isadmin){
+				subQuery = " where reqSub.orgLocations.id =:loginOrgLocation "  +statusQuery;
+				params.put("loginOrgLocation",orgLocationsId);
+				
+				// This Condition is if The Requirement is Released by the login User
+			}else{
+			
+					//This is for Requirement Manger 
+					String subQuery1 = "reqSub.requirement.managerUserId.id  =:userId " +statusQuery;
+					params.put("userId",user.getId());
+					
+					// This is if the user is  created by 
+					String subQuery2 = "reqSub.createdBy =:usercode" +statusQuery;
+					params.put("usercode",user.getUserCode());
+					
+					//  this is if the  user is   Assign Team  Owner
+					String subQuery3 = "req.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId))" +statusQuery;
+					params.put("userId",user.getId());
+					
+				   //  this is if the  user is   Assign Team  Member
+					String subQuery4 = "req.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId) and reqSub.createdBy =:usercode" +statusQuery;
+					params.put("userId",user.getId());
+					params.put("usercode",user.getUserCode());
+					
+					//applicant list display in dashboard.
+					/*if("accepted".equalsIgnoreCase(status)){     
+						query = "from RequirementSubmission reqSub left join fetch reqSub.requirement left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes where reqSub.orgLocations.id =:orgLocations and reqSub.submissionRateStatus = 'ACCEPTED' "; 
+						requirementSubmissionList =session.createQuery(query).setLong("orgLocations", orgLocationsId).setCacheable(true).list(); 
+				}else if("requestSent".equalsIgnoreCase(status)){
+						query = "from RequirementSubmission reqSub left join fetch reqSub.requirement left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes where reqSub.orgLocations.id =:orgLocations and reqSub.submissionRateStatus = 'REQUEST' "; 
+						requirementSubmissionList =session.createQuery(query).setLong("orgLocations", orgLocationsId).setCacheable(true).list(); 
+				}*/
+					
+					if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" ){
+						subQuery = "where reqSub.orgLocations.id =:loginOrgLocation   and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery3+")  OR ("+subQuery4+") )";
+						params.put("loginOrgLocation",orgLocationsId);
+					}
+			}
+			String whereCondition = subQuery;
+			
+			
+			Query query = session.createQuery(from +" "+whereCondition+" ORDER BY reqSub.id DESC");
+			for (String str : query.getNamedParameters())
+	        {
+				if(str.equalsIgnoreCase("loginOrgLocation") || str.equalsIgnoreCase("userId")){
+					query.setLong(str, (long) params.get( str ));
+				}else{
+					query.setParameter( str, params.get( str ) );
+				}
+	        }
+			
+			List<RequirementSubmission> list = query.setCacheable(true).list() ;
+			return list;
+			//return requirementSubmissionList;
 		}
 
 		@Override
