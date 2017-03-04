@@ -8,6 +8,12 @@
 <link href="resources/css/sourcelead-main.css" rel="stylesheet">
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<style type="text/css">
+.text-center {
+    text-align: center !important;
+}
+</style>
+
 <!-- Content Area Starts -->
   <section class="content-wraper">
     <section class="content-header clearfix">
@@ -111,7 +117,7 @@
       <div class="form-footer clearfix row mt">
         <div class="col-lg-12">
           <div class="pull-right">
-            <span class="jquery_form_error_message" style="display:none;">Vendor/Contact/Open Network selection is mandatory</span>
+            <span class="jquery_form_error_message" style="display:none;">Vendor/Contact selection is mandatory</span>
             <sec:authorize access="hasAnyRole('ROLE_RELEASE_REQUIREMENT')">
             	<input type="button" class="btn btn-primary ml" id="releaseBtn" onclick="releaseTo();" value="Release">
 			</sec:authorize>
@@ -216,7 +222,7 @@ function getContactsLists(){
 			                result = result +'<table id="candidatePagination" class="display" cellspacing="0" width="100%">';
 			   	        	result = result +'<thead>';
 			   	        	result = result +'<tr>';
-			   	            result = result +'<th><input type="checkbox" id="contactscheckbox" onclick="toggle(this);"/></th>'; 
+			   	            result = result +'<th class="text-center"><input type="checkbox" id="contactscheckbox" onclick="toggle(this);"/></th>'; 
 			   	        	result = result +'  <th>Name</th>';
 			   	        	result = result +'  <th>Email</th>';
 			   	        	result = result +' <th>Phone</th>';
@@ -232,7 +238,7 @@ function getContactsLists(){
 				   	        		resultVendors = resultVendors + '';
 				   	        		result = result +'<tr>';
 				   	        		if(report.releasedRequirement =="true"){
-				   	        			result = result +'  <td><input type="checkbox" checked disabled readonly id="'+report.id+'"/></td>';
+				   	        			result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
 				   	        		}
 				   	        		if(report.releasedRequirement =="false"){
 				   	        			result = result +'  <td><input name="contactscheckbox" type="checkbox" id="'+report.id+'"/></td>';
@@ -328,7 +334,7 @@ function getVendorLists(){
 	                        result = result +'<table id="vendorPagination" class="display" cellspacing="0" width="100%">';
 	           	        	result = result +'<thead>';
 	           	        	result = result +'<tr>';
-	           	            result = result +'<th><input type="checkbox" id="checkbox1" onclick="toggle(this);"/></th>'; 
+	           	            result = result +'<th class="text-center"><input type="checkbox" id="checkbox1" onclick="toggle(this);"/></th>'; 
 	           	        	result = result +'  <th>Name</th>';
 	           	        	result = result +'  <th>Location</th>';
 	           	        	result = result +' <th>No. of contacts</th>';
@@ -352,7 +358,7 @@ function getVendorLists(){
 	           	        		result = result +'<tr>';
 	           	        	    
 	           	        	 	if(report.noOfNonReleasedContacts == 0){
-	           	        	 		result = result +'  <td><input type="checkbox" checked disabled readonly id="'+report.id+'" /></td>';
+	           	        	 		result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
 	        	        		}else{
 	        	        			result = result +'  <td><input name="vendorcheckbox" type="checkbox" id="'+report.id+'" /></td>';
 	        	        		}
