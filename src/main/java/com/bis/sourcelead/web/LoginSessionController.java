@@ -164,6 +164,9 @@ public class LoginSessionController {
 			
 			Boolean isManagerWithSubmissionRateStatusAsRequestOrAccept = requirementService.checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(user.getId(), orgLocations.getId());
 			model.addObject("isManagerWithSubmissionRateStatusAsRequestOrAccept", isManagerWithSubmissionRateStatusAsRequestOrAccept);
+			Boolean isAdmin = userRoleService.isUserAdmin(user.getId());
+			model.addObject("isAdmin",isAdmin);
+			
 		}
 		else{
 			commonUtil.highLightMenu(Constants.Dashboard, request);

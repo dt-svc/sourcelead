@@ -679,7 +679,9 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					double roundOff = Math.round(totalPercentage * 100.0) / 100.0;
 					candidateIndex.setFinalScore(roundOff);
 					candidateIndex.setNoOfReq(reqListCount);
-					candidateIndex.setSkillPercentage(skillPercentage);
+					
+					double skillRoundOff = Math.round(skillPercentage * 100.0) / 100.0;
+					candidateIndex.setSkillPercentage((float)(skillRoundOff));
 					candidateIndex.setExpPercentage(expPercentage);
 					candidateIndex.setLocationPercentage(locationPercentage);
 					candidateIndex.setRatePercentage(ratePercentage);
@@ -790,6 +792,8 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			}else{
 				expPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeExperienceScore());
 			}*/
+		}else{
+			expPercentage = 0;
 		}
 		return expPercentage;
 	}
@@ -835,6 +839,8 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			if(perMonthCandidateSal<=reqPerMonthSal){
 				ratePercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeRateScore());
 			}
+		}else{
+			ratePercentage = 0;
 		}
 		return ratePercentage;
 	}
