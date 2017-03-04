@@ -612,12 +612,12 @@ public class TimesheetApprovalRestController {
 						 timesheetApprovalDiv.append("<div class='time_appr_user'>");
 						 timesheetApprovalDiv.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='").append(request.getContextPath()).append("/displayUserImage/").append(projectMember.getEmployee().getUser().getId()).append("' alt='Profile Image' class='img-circle img-responsive'>");
 						 timesheetApprovalDiv.append("    <span><b>").append(projectMember.getEmployee().getUser().getFullName()).append("</b>")
-						                                             .append("<b>").append(projectMember.getEmployee().getUser().getEmail()).append("</b>")
-						                                             .append("<b>").append((projectMember.getEmployee().getUser().getMobilePhone() != null) ?(projectMember.getEmployee().getUser().getMobilePhone()) : "").append("</b>")
+						                                             .append("<b title='").append(projectMember.getEmployee().getUser().getEmail()).append("'>").append(projectMember.getEmployee().getUser().getEmail()).append("</b>")
+						                                             .append("<b title='").append((projectMember.getEmployee().getUser().getMobilePhone() != null) ?(projectMember.getEmployee().getUser().getMobilePhone()) : "").append("'>").append((projectMember.getEmployee().getUser().getMobilePhone() != null) ?(projectMember.getEmployee().getUser().getMobilePhone()) : "").append("</b>")
 						                                             .append("</span>");
 						 timesheetApprovalDiv.append("   <div>");
 						 timesheetApprovalDiv.append(" </td>");
-					     timesheetApprovalDiv.append("	<td><div>").append(projectMember.getProjects().getProjectName()).append("</div></td>");
+					     timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'>").append(projectMember.getProjects().getProjectName()).append("<span title='").append(projectMember.getProjects().getProjectName()).append("'>").append("</span></div></td>");
 					     
 					     if(null != projectMember.getProjects().getOrgRelationId()){
 					    	 if(null != projectMember.getProjects().getOrgRelationId().getLocationId() && projectMember.getProjects().getOrgRelationId().getLocationId().getId() != null && projectMember.getProjects().getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
