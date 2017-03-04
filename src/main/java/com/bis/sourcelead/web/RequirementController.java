@@ -38,6 +38,7 @@ import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.SubmissionTemplate;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
@@ -53,6 +54,7 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -116,6 +118,9 @@ public class RequirementController {
 	
 	@Autowired
 	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+	
+	@Autowired
+	TimeZoneService timeZoneService;
 	
 	@SuppressWarnings("unchecked")
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT', 'ROLE_VIEW_REQUIREMENT', 'ROLE_VIEW_EDIT_REQUIREMENT')")
@@ -335,13 +340,15 @@ public class RequirementController {
 		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ModelAndView model = new ModelAndView();
-		
+		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
 			Long requirementId = requirement.getId();
 			
 			model.setViewName("requirement/requirementSummary");
 			model.addObject("requirementId",requirementId);
+			
+			model.addObject("timezone",timezone.getTimeZoneId());
 			
 			Boolean isTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
 			model.addObject("isTeamMember",isTeamMember);

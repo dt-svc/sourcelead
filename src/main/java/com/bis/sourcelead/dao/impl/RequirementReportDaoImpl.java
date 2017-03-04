@@ -79,9 +79,9 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 			if(str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("approverUserId") || str.equalsIgnoreCase("managerUserId")){
 				query.setLong(str, (long) params.get( str ));
 			}if( str.equalsIgnoreCase("startDateUTC")){
-				query.setTimestamp("startDateUTC", startDateUTC);
+				query.setDate("startDateUTC", startDateUTC);
 			}if(str.equalsIgnoreCase("endDateUTC")){
-				query.setTimestamp("endDateUTC", endDateUTC);
+				query.setDate("endDateUTC", endDateUTC);
 			}
 			if(str.equalsIgnoreCase("level") || str.equalsIgnoreCase("level1") || str.equalsIgnoreCase("level2")){
 				query.setInteger(str, (int) params.get( str ));

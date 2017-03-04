@@ -1098,10 +1098,10 @@ jQuery('.main-header').removeClass('navbar-fixed-top');}
 </script> -->
 <script>
 jQuery(window).scroll(function () {
-if( jQuery(window).scrollTop() > jQuery('.main-header').offset().top + 50 && !(jQuery('.main-header').hasClass('navbar-fixed-top'))){
+if( jQuery(window).scrollTop() > jQuery('.main-header').offset().top + 100 && !(jQuery('.main-header').hasClass('navbar-fixed-top'))){
 jQuery('.main-header').addClass('navbar-fixed-top').animate({"top":"0%"}, 500);
-} else if (jQuery(window).scrollTop() <= 10){
-jQuery('.main-header').removeClass('navbar-fixed-top').css({"top":"-13%"});
+} else if (jQuery(window).scrollTop() <= 50){
+jQuery('.main-header').removeClass('navbar-fixed-top').css({"top":"-20%"});
 }
 });
 
