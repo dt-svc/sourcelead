@@ -282,7 +282,7 @@ overflow-x: auto;
         </div>
 			
 		    <div id="projectFilterList"></div>
-		    <div class="project_wrap_table">
+		    <div class="project_wrap_table" onclick="removeErroeMsg();">
 		    				<table id="example" class="display" cellspacing="0" width="100%">
 							</table>
 			</div>	   
@@ -514,12 +514,18 @@ function pagination(){
     	"oLanguage": {
      		"sSearch": ""
      	}
-		
     } );
     $(".dataTables_empty").html("");
+    $(".odd").td(empty);
 }
 </script>
 
+<script>
+function removeErroeMsg(){
+	$(".dataTables_empty").html("");
+	$(".odd").td(empty);
+}
+</script>
 <script>
 function filter(){
 	

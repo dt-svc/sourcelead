@@ -280,7 +280,7 @@ function prepareRequirementData(data){
             '</sec:authorize>';
    	 }
         if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
-       	 result = result +"<td><div title="+opt.clientName+"><span>"+opt.clientName+"</span></div></td>";
+       	 result = result +"<td><div title='"+opt.clientName+"'><span>"+opt.clientName+"</span></div></td>";
         }else{
        	 result = result +"<td><div>-----</div></td>";
         }
@@ -318,7 +318,7 @@ function prepareRequirementData(data){
        	 result = result +"<td><div>0</div></td>";
         } */
         if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
-       	 result = result +"<td><div><span title="+opt.manager+">"+opt.manager+"</span></div></td>";
+       	 result = result +"<td><div><span title='"+opt.manager+"'>"+opt.manager+"</span></div></td>";
         }else{
        	 result = result +"<td><div>----</div></td>";
         }
