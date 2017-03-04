@@ -74,6 +74,7 @@ public class RequirementListController {
 		if(searchResult != null && !searchResult.equalsIgnoreCase("undefined") && searchResult.equalsIgnoreCase("universalRequirementList")){
 		    model.addObject("universalRequirementList", "universalRequirementList");
 		    model.addObject("serachValue",serachValue);
+		    model.addObject("searchType","Requirement");
 		}
 		
 		/*List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
