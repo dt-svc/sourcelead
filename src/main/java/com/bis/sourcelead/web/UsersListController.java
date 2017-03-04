@@ -86,6 +86,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		if(searchResult !=null && searchValue !=null){
 			model.addObject("searchResult", searchResult);
 			model.addObject("searchValue", searchValue);
+			model.addObject("searchType", "Users");
 		}
 		
 		Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");

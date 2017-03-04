@@ -1291,8 +1291,9 @@ function updateReuqirementStatus(status){
 		 reason = '';
 	 }
      $("#approverbut").attr("disabled", "disabled");
-
-	$.ajax({
+ 	if(reason.match(/^[^\s-](.*)*$/) != null){
+	$('#reasonDiv').empty();
+ 	$.ajax({
       type : "POST",
       url: sourceleadUrl+"/requirementAcceptOrReject?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&reason="+reason, 
     		  success :function(data) {  
@@ -1317,6 +1318,13 @@ function updateReuqirementStatus(status){
             }
        },
 	  }); 
+	 }else{
+			if(reason){
+				$("#reasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+			}else{
+				$("#reasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+			}
+		}
 }
 </script>
 
@@ -1331,7 +1339,9 @@ function rejectRequirementAlertMessage(status){
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"	<div id='reasonDiv'/>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='updateReuqirementStatus(\""+ status+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
+	result = result +"	</div>";
 	result = result +"	</div>";
 	$("#rejectRequirementAlert").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1418,7 +1428,6 @@ function requirementPipeline(requirementId,submissionType){
 				           for (var i=0; i<json.length; i++)
 			   				{  
 			   	        		var report = json[i];
-			   	        		
 			   	        		if(report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
 			   	        			orgName = "("+report.orgName+")";
 			   	        		}else{
@@ -3169,7 +3178,9 @@ function requirementPipelineRejected(requirementId,submissionType){
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	   } 
 						           result = result + '<td><div class="tblwidth-150"><span>'+report.upDatedStr+'</span>';
-						           result = result + '<td><div class="tblwidth-150"><span>'+report.createdUser+'</span>';
+						           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
+						        	   result = result + '<td><div class="tblwidth-150"><span>'+report.createdUser+'</span>';
+						           }
 					        	   result = result + '<td><div class="tblwidth-150"><span>'+report.previousSubmissionStatus+'</span>';
 					        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
 					        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
