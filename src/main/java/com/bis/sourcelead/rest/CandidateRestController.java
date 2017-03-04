@@ -8,6 +8,7 @@ import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
@@ -135,6 +136,10 @@ public class CandidateRestController {
 	
     @Autowired
     private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+    
+    protected boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
 
 	/**
 	 * @author prasad k
@@ -253,7 +258,7 @@ public class CandidateRestController {
 		        boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", candidateType));
 		        boolQueryBuilder.must(QueryBuilders.matchQuery("status", 1));
 		        
-		        Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocations.getId(),candidateStatus);
+		        //Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocations.getId(),candidateStatus);
 			
 			if(null != candidateIdsList && candidateIdsList.size() > 0){
 				BoolQueryBuilder candidateBoolQueryBuilder = QueryBuilders.boolQuery();
@@ -264,7 +269,7 @@ public class CandidateRestController {
 			}
 			
 	        try {
-				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,Constants.MAX_RESULTS_200,boolQueryBuilder).getHits();
 				    if(null != searchHits && searchHits.length >0){
 				    	ObjectMapper mapper = new ObjectMapper();
 				    	for (SearchHit hit : searchHits) {
@@ -436,6 +441,39 @@ public class CandidateRestController {
 			return commonUtil.toJSON(userList);
 			
 		}
+	 
+	 
+	 @RequestMapping(value = "/getCandidatesListByCandidateType", method = RequestMethod.POST)
+		public @ResponseBody String getCandidatesListByCandidateType(
+				@RequestParam(value = "requirementId", required = false) Long requirementId,
+				@RequestParam(value = "candidateType", required = false) String candidateType,
+				@RequestParam(value = "applicantSearch", required = false) String applicantSearch,HttpServletRequest request) throws Exception {
+			
+			List<Candidate> candidatesList = null;
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			
+			HashMap<String, Long> hm = new HashMap<String, Long>();	
+			try {
+				candidatesList = candidateService.getCandidatesByOrgLocationIDAndSearchText(orgLocations.getId(),requirementId,candidateType,applicantSearch);
+			} catch (Exception e) {
+				logger.error(ExceptionUtils.getFullStackTrace(e)); 
+			}
+			if(candidatesList != null)
+			{
+				for(Candidate candidate: candidatesList){
+					StringBuilder candidateName = new StringBuilder();
+					
+					if(!isNullOrEmpty(candidate.getLastName())){
+						candidateName = candidateName.append(candidate.getFirstName()).append(" ").append(candidate.getLastName());
+					}else{
+						candidateName = candidateName.append(candidate.getFirstName());
+					}
+					hm.put(candidateName.toString(), candidate.getId());
+				}
+			}
+			return commonUtil.toJSON(hm);
+		}
+	 
 	 
 	 @PreAuthorize("hasRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')")
 	 @RequestMapping(value = "/getTeams", method = RequestMethod.POST)
