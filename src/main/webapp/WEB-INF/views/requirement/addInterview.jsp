@@ -218,11 +218,28 @@ function checkEmails(){
 function selectInterviewApplicants(){
 	var selectedInterviewApplicants =  $('#1applicant_chosen  span').size();
 	$("#selectedInterviewApplicantsCount").html(selectedInterviewApplicants);
+	$('#1applicant_chosen').next("p").remove();
 	
 	$('.search-choice-close').click(function() {
 		var interviewApplicants =  $('#1applicant_chosen  span').size();
+		if(interviewApplicants <1){
+			$('#1applicant_chosen').after('<p class="jquery_form_error_message">Applicant is Required</p>');
+		}
 		$("#selectedInterviewApplicantsCount").html(interviewApplicants);
 	});
+}
+</script>
+
+<script>
+function validateTimeZone(){
+	var timezoneVal = $("#1timeZone").val();
+	if(timezoneVal !=null && timezoneVal != '' && timezoneVal != 'undefined'){
+		$('#1timeZone_chosen').next("p").remove();
+	}
+	else{
+		$('#1timeZone_chosen').next("p").remove();
+		$('#1timeZone_chosen').after('<p class="jquery_form_error_message">Timezone is Required</p>');
+	}
 }
 </script>
 
@@ -248,7 +265,7 @@ function selectInterviewApplicants(){
 </div>
 
 <div id="divTaskTd5" style="display: none; float: left;">
-   	 <select class="form-control" id="REPLACEROWIDtimeZone" name="REPLACEROWIDtimeZone" field-name="Timezone" data-validation="required">
+   	 <select class="form-control" id="REPLACEROWIDtimeZone" name="REPLACEROWIDtimeZone" onchange="validateTimeZone()" field-name="Timezone" data-validation="required">
 	</select>
 </div>
 
@@ -308,10 +325,9 @@ function selectInterviewApplicants(){
 			 changeYear: true, 
 		      minDate: 0  ,
 		      onSelect : function(selected) {
-		    	  removevalidation();
+		    	  removeInterviewvalidation();
 		      }
 		});
-		removevalidation();
 		var cell3 = row.insertCell(3);
 		cell3.innerHTML = "<div class='pull-left timeZone' id='"+maxRowNum+"timeDiv'> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='Start Time' name='"+maxRowNum+"startTime' id='"+maxRowNum+"startTime' onBlur='validateEndTime("+maxRowNum+");' type='text' data-validation='required' field-name='Start Time'/></span> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='End Time' name='"+maxRowNum+"endTime' id='"+maxRowNum+"endTime' onBlur='validateEndTime("+maxRowNum+");' type='text' field-name='End Time' /></span> </div> ";
 		
@@ -374,7 +390,7 @@ function selectInterviewApplicants(){
 }		
 </script>
 <script>
-function removevalidation(){
+function removeInterviewvalidation(){
 	$('#inteviewDatePic').find('p.jquery_form_error_message').remove();	
 }
 </script>

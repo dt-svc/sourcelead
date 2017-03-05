@@ -1202,6 +1202,12 @@ public class VendorRestController {
 						/* Long numberOfContacts = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,0,0,forNumberOfContacts).getTotalHits();
 						 clientVendor.setNoContacts(numberOfContacts);*/
 						 
+						
+						List<Requirement> vendorReleasedJobsList = requirementService.getAllReleasedJobsForVendor(clientVendor.getOrgLocationId(),clientVendor.getId(),loginUser,loginOrgLocation);
+						if(vendorReleasedJobsList != null && vendorReleasedJobsList.size()>0){
+							
+						}
+						
 						if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == loginOrgLocation.getId().longValue()){
 							
 							clientVendor.setWebsite(clientVendor.getResponderWebSite());

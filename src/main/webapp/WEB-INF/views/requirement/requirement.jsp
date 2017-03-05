@@ -2436,7 +2436,7 @@ function getLevel2Approvers(currentApproverId){
 			        	}
 			        	else{
 			        		 $('input#jobId').removeAttr( "record-exist record-exist-errormsg");
-			        		 $('#jobIdDiv').find('p.jquery_form_error_message').remove(); 
+			        		//$('#jobIdDiv').find('p.jquery_form_error_message').remove(); 
 	                         $("#draft").removeAttr("disabled");
 	                         $("#save").removeAttr("disabled", "disabled");
 	                		 $("#submitForApproval").removeAttr("disabled", "disabled");
