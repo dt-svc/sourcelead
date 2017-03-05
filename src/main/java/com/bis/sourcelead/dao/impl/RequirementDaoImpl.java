@@ -399,7 +399,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		}else{
 			String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where  ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT') ";
 			
-			String subQuery2 = "requirement.managerUserId.id = :managerUserId and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
+			String subQuery2 = " ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
 			params.put("managerUserId",userId);
 			
 			if(subQuery1 != "" || subQuery2 !=""){
@@ -673,7 +673,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			
 			UserRole userRole  = userRoleDao.getUserRoleByUserIdAndLocationId(user.getId(), loginOrgLocations.getId());
 			/*if("Admin".equalsIgnoreCase(userRole.getUserType())){*/
-				query = "from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.orgLocationId.id =:orgLocationId and requirement.clientId.id =:orgRelationId and requirement.parentRequirement IS NOT NULL";
+				query = "from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId  and requirement.clientId.id IN (  select orgRelation.id from OrgRelations orgRelation where orgRelation.locationId.id =:orgLocationId )and requirement.parentRequirement IS NOT NULL";
 				releasedJobsList = session.createQuery(query).setLong( "orgLocationId", orgLocationId ).setLong( "orgRelationId", orgRelationId ).setCacheable(true).list();
 			/*}else{
 				query = "from Requirement requirement where requirement.orgLocationId.id =:orgLocationId and requirement.clientId.id =:orgRelationId and parentRequirement !='null' and requirement.spocId.createdBy =:loginUserCode";

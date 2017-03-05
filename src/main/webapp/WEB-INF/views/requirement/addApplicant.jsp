@@ -450,7 +450,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	    		$("body").css('overflow-y', 'auto');
 	    		var allApplicants = 'all';
 	    		requirementPipeline(requirementId,allApplicants); 
-	        	
+	    		pipelineList(requirementId);
 	        },
 	    }); 
       return true; 
@@ -632,6 +632,7 @@ function getCandidateDetails(){
 		        	 
 		        	 if(json['state'] != null && json['state'] != "" && json['state'] != 'undefined'){
 		        		 $("select[name=state]").val(json['state']);
+		        		 getCandidateStates(json['state']);
 		        	 }else{
 		        		 $("select[name=state]").val('');
 		        	 }
@@ -770,7 +771,7 @@ function getAllSubmissionCandidateCountries(){
 </script>
 
 <script>
-function getCandidateStates(){
+function getCandidateStates(state){
 	
 	var countryName = $("#submissionCountry").val();
 	if(countryName != null && countryName != "" && countryName !="undefined"){
@@ -783,7 +784,12 @@ function getCandidateStates(){
 	        	$('#submissionState').empty();
 	        	$('#submissionState').append('<option value="">---Select---</option>');
 	            for(var i=0;i<json.length;i++){
-	            	$('#submissionState').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	if(state != null && state != 'undefined' && json[i] == state){
+	            		$('#submissionState').append('<option value="'+state+'" selected>'+json[i]+'</option>');
+	            	}
+	            	else{
+	            		$('#submissionState').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	}
 	            }
 	            $('#submissionState').trigger("chosen:updated");
 	            
@@ -861,6 +867,8 @@ function init(){
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 		  })
+		  
+    setRateTypesByLocation();
 }
 </script>
 
@@ -955,7 +963,7 @@ function setRateTypesByLocation(){
  		        		$("#candidateSkills").trigger("chosen:updated");
   						
 			        	 
-						 validateCandidateEmail();
+						 validateSubmissionCandidateEmail();
 						 $("#loading").removeAttr("style");
 					},
 				});
@@ -986,7 +994,7 @@ function validate_fileupload(fileName)
 
 
 <script type="text/javascript">
- function validateCandidateEmail() {
+ function validateSubmissionCandidateEmail() {
 	 var email =   $("input[name=EmailId]").val();
 	$('#emailDiv').find('p.jquery_form_error_message').remove();
 	 var sourceleadUrl ='${sourceleadUrl}';
@@ -1048,7 +1056,7 @@ function validate_fileupload(fileName)
 	 var expectedCTCRatePer = document.getElementById("expectedCTCRatePer").value;
 	 if(expectedCTCRatePer){
 		 $("input[name=ExpectedCTC]").removeAttr("data-validation-optional");
-		 $("input[name=ExpectedCTC]").attr("data-validation", "required");
+		 $("input[name=ExpectedCTC]").attr("data-validation", "required validate_float length1-8");
 	 }else{
 		 $("input[name=ExpectedCTC]").removeAttr("data-validation");
 		 $("input[name=ExpectedCTC]").attr("data-validation-optional", "true");
@@ -1061,7 +1069,7 @@ function validate_fileupload(fileName)
 	 var currentCTCRatePer = document.getElementById("currentCTCRatePer").value;
 	 if(currentCTCRatePer){
 		 $("input[name=CurrentCTC]").removeAttr("data-validation-optional");
-		 $("input[name=CurrentCTC]").attr("data-validation", "required");
+		 $("input[name=CurrentCTC]").attr("data-validation", "required validate_float length1-8");
 	 }else{
 		 $("input[name=CurrentCTC]").removeAttr("data-validation");
 		 $("input[name=CurrentCTC]").attr("data-validation-optional", "true");
