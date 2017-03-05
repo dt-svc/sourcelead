@@ -1083,10 +1083,11 @@ function validate_fileupload(fileName)
 	 var expectedCTCRatePer = document.getElementById("expectedCTCRatePer").value;
 	 if(expectedCTCRatePer){
 		 $("input[name=ExpectedCTC]").removeAttr("data-validation-optional");
-		 $("input[name=ExpectedCTC]").attr("data-validation", "required validate_float length1-8");
+		 $("input[name=ExpectedCTC]").attr("data-validation", "required validate_Space validate_float validate_length length1-8");
 	 }else{
 		 $("input[name=ExpectedCTC]").removeAttr("data-validation");
 		 $("input[name=ExpectedCTC]").attr("data-validation-optional", "true");
+		 $("input[name=ExpectedCTC]").attr("data-validation", "validate_Space validate_float validate_length length1-8");
 	 }
  }
  </script>
@@ -1096,10 +1097,11 @@ function validate_fileupload(fileName)
 	 var currentCTCRatePer = document.getElementById("currentCTCRatePer").value;
 	 if(currentCTCRatePer){
 		 $("input[name=CurrentCTC]").removeAttr("data-validation-optional");
-		 $("input[name=CurrentCTC]").attr("data-validation", "required validate_float length1-8");
+		 $("input[name=CurrentCTC]").attr("data-validation", "required validate_Space validate_float validate_length length1-8");
 	 }else{
 		 $("input[name=CurrentCTC]").removeAttr("data-validation");
 		 $("input[name=CurrentCTC]").attr("data-validation-optional", "true");
+		 $("input[name=CurrentCTC]").attr("data-validation", "validate_Space validate_float validate_length length1-8");
 	 }
  }
  </script>
