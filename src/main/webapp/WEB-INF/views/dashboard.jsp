@@ -115,11 +115,9 @@ overflow-x: auto;
 			    </div>
 		    </c:if>
 		     <div class="clearfix row mb"> 
-		    	 <c:if test = "${isManagerWithSubmissionRateStatusAsRequestOrAccept == true || isAdmin == true}"> 
 		     		<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 		     		<jsp:include page="dashboardApplicants.jsp"></jsp:include>
 		     		</sec:authorize>
-		     	</c:if>
 		     </div>
 	    
 	   			 <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_INTERVIEW')">
