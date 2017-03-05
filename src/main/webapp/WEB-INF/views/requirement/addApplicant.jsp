@@ -138,16 +138,43 @@ function getAddApplicant(requirementId){
 				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 				  '.chosen-select-width'     : {width:"95%"}
 				}
-				for (var selector in config) {
-				  $(selector).chosen(config[selector]);
-				}
-				$('.chosen-select').each(function() {
-					var $this = $(this);
-					$this.next().css({'width': '100%'});
-					})
+	   
+	   
+	 //Adding Customized Skills to the list
+       var select, chosen;
+	    select = $("#candidateSkills");
+	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
+	    chosen = select.data('chosen');
+	    chosen.search_field.on('keyup', function(e)
+	    {
+	    	var newSkill = this.value.replace(",","");
+	        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+	        {
+	        	var par = this.parent;
+	            var option = $("<option>").val(newSkill).text(newSkill);
+	            select.append(option);
+	            select.find(option).prop('selected', true);
+	          //to doesn't allow duplicates
+                  $("#candidateSkills option").each(function(){
+                        $(this).siblings("[value='"+ this.value+"']").remove();
+                  });
+                  //end
+       		$("#candidateSkills").trigger("chosen:updated");
+       		
+	        }
+	    });
+	    //Adding Customized Skills to the list
 			
-			
-	$("#candSkills").val('').trigger("chosen:updated");
+	$("#candidateSkills").val('').trigger("chosen:updated");
+	    
+		for (var selector in config) {
+		  $(selector).chosen(config[selector]);
+		}
+		$('.chosen-select').each(function() {
+			var $this = $(this);
+			$this.next().css({'width': '100%'});
+			})
+	
 	
 	$(".new_side_wrap").addClass("new_side_wrap_active");
 	$(".side_mask").fadeIn(200);
