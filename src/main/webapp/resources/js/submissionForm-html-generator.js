@@ -510,7 +510,6 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                  }
              }
              init();
-             setRateTypesByLocation();
              changeRateLabels();
              var d = new Date();
              var year = d.getFullYear() - 18;

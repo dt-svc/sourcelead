@@ -867,6 +867,8 @@ function init(){
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 		  })
+		  
+    setRateTypesByLocation();
 }
 </script>
 
@@ -1054,7 +1056,7 @@ function validate_fileupload(fileName)
 	 var expectedCTCRatePer = document.getElementById("expectedCTCRatePer").value;
 	 if(expectedCTCRatePer){
 		 $("input[name=ExpectedCTC]").removeAttr("data-validation-optional");
-		 $("input[name=ExpectedCTC]").attr("data-validation", "required");
+		 $("input[name=ExpectedCTC]").attr("data-validation", "required validate_float length1-8");
 	 }else{
 		 $("input[name=ExpectedCTC]").removeAttr("data-validation");
 		 $("input[name=ExpectedCTC]").attr("data-validation-optional", "true");
@@ -1067,7 +1069,7 @@ function validate_fileupload(fileName)
 	 var currentCTCRatePer = document.getElementById("currentCTCRatePer").value;
 	 if(currentCTCRatePer){
 		 $("input[name=CurrentCTC]").removeAttr("data-validation-optional");
-		 $("input[name=CurrentCTC]").attr("data-validation", "required");
+		 $("input[name=CurrentCTC]").attr("data-validation", "required validate_float length1-8");
 	 }else{
 		 $("input[name=CurrentCTC]").removeAttr("data-validation");
 		 $("input[name=CurrentCTC]").attr("data-validation-optional", "true");
