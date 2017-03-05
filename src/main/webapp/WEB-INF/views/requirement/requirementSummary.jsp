@@ -938,7 +938,11 @@ function requirementDetails(requirementId){
 				            	result = result +'   <div class="anchor-inline">';
 				            	result = result +'   <div class="rejected_Reason">';
 				            	result = result +'   <h5>Rejected Reason:</h5>'; 
-				            	result = result +'   <div>'+json.rejectReasonForRequirement+'</div>';
+				            	if(json.rejectReasonForRequirement != null && json.rejectReasonForRequirement != "undefined"){
+					            	result = result +'   <div class="mb">'+json.rejectReasonForRequirement+'</div>';
+					            	}else{
+						            	result = result +'   <div class="mb"> No Data</div>';
+					            	}
 				            	result = result +'   </div>';
 				            	result = result +'   </div>';
 				          	   }
@@ -1291,7 +1295,7 @@ function updateReuqirementStatus(status){
 		 reason = '';
 	 }
      $("#approverbut").attr("disabled", "disabled");
- 	if(reason.match(/^[^\s-](.*)*$/) != null){
+ 	
 	$('#reasonDiv').empty();
  	$.ajax({
       type : "POST",
@@ -1318,13 +1322,7 @@ function updateReuqirementStatus(status){
             }
        },
 	  }); 
-	 }else{
-			if(reason){
-				$("#reasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
-			}else{
-				$("#reasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
-			}
-		}
+	 
 }
 </script>
 
