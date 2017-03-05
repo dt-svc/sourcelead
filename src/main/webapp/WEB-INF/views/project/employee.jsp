@@ -365,10 +365,10 @@ function projectEmployeePagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 <!-- this script is for Employee EndDate Inline functionality at Projects screen -->
@@ -593,7 +593,8 @@ function assignEmployeespagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
 		
     } );

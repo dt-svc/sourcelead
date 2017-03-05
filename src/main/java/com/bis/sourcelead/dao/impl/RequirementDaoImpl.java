@@ -167,8 +167,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		}
 		
 		String[] client = null;
-		if("" != clients){
-			client = clients.split(",");
+		if(null != clients && !"".equals(clients)){			
 		}
 		List<Long> clientsList = new ArrayList<>();
 		if(client != null){

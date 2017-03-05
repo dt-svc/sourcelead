@@ -432,7 +432,8 @@ function vendorPagination(){
        	"bDestroy": true,
        	"ordering": false,
        	"oLanguage": {
-        		"sSearch": ""
+        		"sSearch": "",
+        		 "sZeroRecords": "", "sEmptyTable": ""
         	}
        } );
 }
@@ -447,7 +448,8 @@ function candidatePagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
