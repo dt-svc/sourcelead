@@ -128,9 +128,13 @@ function loadRemiderDiv(){
 function selectOfferApplicants(){
 	var selectedOfferApplicants =  $('#1applicantId_chosen  span').size();
 	$("#selectedOfferApplicantsCount").html(selectedOfferApplicants);
+	$('#1applicantId_chosen').next("p").remove();
 	
 	$('.search-choice-close').click(function() {
 		var offerApplicants =  $('#1applicantId_chosen  span').size();
+		if(offerApplicants <1){
+			$('#1applicantId_chosen').after('<p class="jquery_form_error_message">Applicant is Required</p>');
+		}
 		$("#selectedOfferApplicantsCount").html(offerApplicants);
 	});
 }
