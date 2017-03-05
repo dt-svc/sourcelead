@@ -748,7 +748,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		int recommendationExpMonthsMax = 0;
 		if(null != candidateIndex.getExperienceYears() && !"".equalsIgnoreCase(candidateIndex.getExperienceYears())){
 			if(candidateIndex.getExperienceYears().equalsIgnoreCase("25+")){
-				Years = Integer.parseInt("25");	
+				Years = Integer.valueOf(25);	
 			}else{
 				Years = Integer.parseInt(candidateIndex.getExperienceYears());
 			}
