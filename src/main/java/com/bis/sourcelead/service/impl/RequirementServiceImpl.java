@@ -1997,23 +1997,29 @@ public class RequirementServiceImpl implements RequirementService {
 			// bringing the old  requirementapprovalHierarachy  list based on the requirementID
 			
 			List<RequirementApproverHierarchy> requirementApproverHierarchies = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirement.getId());
-			for(RequirementApproverHierarchy rah :requirementApproverHierarchies){
-				oldApproversList.add(rah.getApproverUserId().getId().toString());
-			}
-			
-			// seperating the lists
-			for (String item : oldApproversList) {
-	    	    if (newApproversList.contains(item)) {
-	    	    	uniqueApproversList.add(item);
-	    	    } else {
-	    	    	removedApproversList.add(item);
-	    	    }
-	    	}
-			
-			
-			// Removing  the unselected approvals from  the RequirementApprovalHierarachy
-			for (String item : removedApproversList) {
-				requirementApproverHierarchyService.deleteTheRequirementApproverByRequirementIdAndApproverId(Long.parseLong(item),requirement.getId());
+			if(null != requirementApproverHierarchies){
+				for(RequirementApproverHierarchy rah :requirementApproverHierarchies){
+					oldApproversList.add(rah.getApproverUserId().getId().toString());
+				}
+				
+				// seperating the lists
+				if(null != oldApproversList){
+					for (String item : oldApproversList) {
+			    	    if (newApproversList.contains(item)) {
+			    	    	uniqueApproversList.add(item);
+			    	    } else {
+			    	    	removedApproversList.add(item);
+			    	    }
+			    	}
+					
+					
+					// Removing  the unselected approvals from  the RequirementApprovalHierarachy
+					if(null != removedApproversList){
+						for (String item : removedApproversList) {
+							requirementApproverHierarchyService.deleteTheRequirementApproverByRequirementIdAndApproverId(Long.parseLong(item),requirement.getId());
+						}
+					}
+				}
 			}
 		}
 		
