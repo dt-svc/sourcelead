@@ -3551,7 +3551,7 @@ function requirementRecommendations(requirementId){
 		    
 		    result = result +'</div>';
 		    result = result +'</div>';
-		    result = result +'<div class="project_tabs_inn_table  clients_wrap_table" style="overflow: inherit;">';
+		    result = result +'<div class="project_tabs_inn_table  clients_wrap_table">';
 		    result = result +'<table id="recommendationTable" class="display" cellspacing="0" width="100%"">';
 		    result = result +'<thead>';
 		    result = result +'<tr>';
@@ -3732,7 +3732,6 @@ function requirementRecommendations(requirementId){
 function recommendationpagination(){  
     $('#recommendationTable').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -3792,13 +3791,13 @@ function clientSideBar(candidateId){
 				         var city = '';
 			             
 			             if(json.country != null && json.country != '' && json.country != 'undefined'){
-	         			 		country = ','+json.country;
+	         			 		country = json.country;
 	             			 	}else{
 	             			 		country = '';
 	             			 	}
 	         			 	
 	         			 	if(json.state != null && json.state != '' && json.state != 'undefined'){
-	         			 		state =json.state;
+	         			 		state =json.state +',';
 	             			 	}else{
 	             			 		state = '';
 	             			 	}
@@ -3810,7 +3809,7 @@ function clientSideBar(candidateId){
 	             			 	}
 	         			 	
 	         			 	if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
-	         			 		currentRate = json.currentRate+',';
+	         			 		currentRate = json.currentRate;
 	         			 	}else{
 	         			 		currentRate = '';
 	         			 	}
@@ -3828,19 +3827,19 @@ function clientSideBar(candidateId){
 	         			 	}
 	         			 	
 	         			 	if(json.currentRateCurrency != null && json.currentRateCurrency != '' && json.currentRateCurrency != 'undefined'){
-	         			 		currentRateCurrency = json.currentRateCurrency+',';
+	         			 		currentRateCurrency = json.currentRateCurrency;
 	         			 	}else{
 	         			 		currentRateCurrency = '';
 	         			 	}
 	         			 	
 	         			 	if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
-	         			 		expectedRate = json.expectedRate+',';
+	         			 		expectedRate = json.expectedRate;
 	         			 	}else{
 	         			 		expectedRate = '';
 	         			 	}
 
 	         			 	if(json.expectedRateCurrencey != null && json.expectedRateCurrencey != '' && json.expectedRateCurrencey != 'undefined'){
-	         			 		expectedRateCurrencey = json.expectedRateCurrencey+',';
+	         			 		expectedRateCurrencey = json.expectedRateCurrencey;
 	         			 	}else{
 	         			 		expectedRateCurrencey = '';
 	         			 	}
@@ -3850,7 +3849,11 @@ function clientSideBar(candidateId){
 		                	 }else{
 		                		 lastName = "";
 		                	 }
-			             
+			             if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
+			            	 mobilePhone = json.mobilePhone;
+			             }else{
+			            	 mobilePhone ="--";
+			             }
 	                	 var result = "";
 	                	 result = result+'<div id="popUp" ></div>  ';
 	                	 result = result+'<form id="candidate_form" name="candidate_form" method="post" >';
@@ -3877,8 +3880,8 @@ function clientSideBar(candidateId){
 						 result = result+'  </div>';
 						 result = result+'  </div>';
 						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif are not supported</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Size should not more than 200 KB</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif are not support</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Size should not more than 200kb</p>';
 						 result = result+' </div>';
 						 result = result+' </div>';
 						 result = result+'</form>';
@@ -3914,18 +3917,13 @@ function clientSideBar(candidateId){
 			             result = result+'               <div class="col-md-6">';
 			             result = result+'                 <ul class="list-unstyled can-perdt">';
 			             result = result+'                   <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">'+json.email+'</a></li>';
-			                                                  if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
-			             result = result+'                   <li><i class="fa fa-phone"></i>+'+json.mobilePhone+'</li>';
-			                                                  }else{
-			                                                	  
-			             result = result+'                   <li><i class="fa fa-phone"></i>----</li>';         	  
-			                                                  }
+			             result = result+'                   <li><i class="fa fa-phone"></i>'+mobilePhone+'</li>';
 			                                                  
 			             result = result+'                   <li><i class="fa fa-location-arrow"></i>'+city+''+state+''+country+'</li>';
 			             
-			             result = result+'                   <li><i class="fa fa-money"></i>'+currentRateCurrency+''+currentRate+''+currentRateType+'</li>';
+			             result = result+'                   <li><i class="fa fa-money"></i><b>Current Rate:&nbsp;</b>'+currentRate+'  '+currentRateType+' / '+currentRateCurrency+'</li>';
 			             
-			             result = result+'                   <li><i class="fa fa-money"></i>'+expectedRateCurrencey+''+expectedRate+''+rateType+'</li>';
+			             result = result+'                   <li><i class="fa fa-money"></i><b>Expected Rate:&nbsp;</b>'+expectedRate+'  '+rateType+' / '+expectedRateCurrencey+'</li>';
 			             result = result+'                 </ul>';
 			             result = result+'               </div>';
 			             result = result+'			</div>';
@@ -4598,25 +4596,19 @@ function customizeScore(requirementId){
 		        result = result +'		                   <label>Notice Period</label>';
 		        result = result +'		                      <select class="chosen-select" data-placeholder="Notice" multiple id="noticeperiod" name="noticeperiod">';
 		      //split the noticeperiod
+		      var noticeperiod = new Array();
 		    	if(json.customizeNoticeperiod != null && json.customizeNoticeperiod != '' && json.customizeNoticeperiod != 'undefined'){
 		    		var customizeNoticeperiod = json.customizeNoticeperiod;
-			    	var noticeperiod = new Array();
 			    	noticeperiod =  customizeNoticeperiod.split(",");
-			        for (var j = 0; j < noticeperiod.length; j++) { 
-			        	var customnoticeperiods = noticeperiod[j];
-			        	 result = result  +' <option value="Immediately available" '+(customnoticeperiods == "Immediately" ? "selected" : '') +'>Immediately available</option>';
-			        	 result = result  +' <option value="15 Days" '+(customnoticeperiods == "15 Days" ? "selected" : '') +'>15 Days</option>';
-			        	 result = result  +' <option value="1 Month" '+(customnoticeperiods == "1 Month" ? "selected" : '') +'>1 Month</option>';
-			        	 result = result  +' <option value="2 Month" '+(customnoticeperiods == "2 Month" ? "selected" : '') +'>2 Month</option>';
-			        	 result = result  +' <option value="3 Month" '+(customnoticeperiods == "3 Month" ? "selected" : '') +'>3 Month</option>';
-			        } 
-		    	}else{
-		    		result = result  +' <option value="Immediately available" >Immediately available</option>';
-		        	 result = result  +' <option value="15 Days" >15 Days</option>';
-		        	 result = result  +' <option value="1 Month" >1 Month</option>';
-		        	 result = result  +' <option value="2 Month" >2 Month</option>';
-		        	 result = result  +' <option value="3 Month" >3 Month</option>';
 		    	}
+	        	 result = result  +' <option value="available" '+(noticeperiod.includes("available") ? "selected" : '') +'>Immediately available</option>';
+	        	 result = result  +' <option value="15Days" '+(noticeperiod.includes("15Days") ? "selected" : '') +'>15 Days</option>';
+	        	 result = result  +' <option value="1Month" '+(noticeperiod.includes("1Month") ? "selected" : '') +'>1 Month</option>';
+	        	 result = result  +' <option value="2Month" '+(noticeperiod.includes("2Month") ? "selected" : '') +'>2 Month</option>';
+	        	 result = result  +' <option value="3Month" '+(noticeperiod.includes( "3Month") ? "selected" : '') +'>3 Month</option>';
+	        	 $("#noticeperiod").empty();
+	        	 $("#noticeperiod").append(result);
+   			     $("#noticeperiod").trigger('chosen:update');
 		        result = result +'		                    </select> ';
 		        result = result +'		                    </div>  ';
 		        
@@ -4766,6 +4758,7 @@ function customizeScore(requirementId){
 		    			for (var selector in config) {
 		    			  $(selector).chosen(config[selector]);
 		    			}
+		    	
 		    	    $("#country").chosen();
 		            $("#state").chosen();
 		            $("#city").chosen();
@@ -4781,7 +4774,7 @@ function customizeScore(requirementId){
 		    				var $this = $(this);
 		    				$this.next().css({'width': '100%'});
 		    		   });
-		    			
+
 		    			
 		    			   //Adding Customized Skills to the list
 		    	        var select, chosen;

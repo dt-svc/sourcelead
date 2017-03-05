@@ -270,6 +270,26 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			return ts;
 	}
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<TimesheetSubmissions> getAllEmployeeTimesheetSubmissionsByProjectMemberIdForUpdation(Date startDate,Date endDate,Long projectMemberId) throws Exception {
+			
+		    // TODO Auto-generated method stub
+			Session session = this.sessionFactory.getCurrentSession();
+			java.sql.Date sqlStartDate = null;
+			if(startDate != null){
+				sqlStartDate = new java.sql.Date(startDate.getTime());
+			}
+			java.sql.Date sqlEndDate = null;
+			if(endDate != null){
+				sqlEndDate = new java.sql.Date(endDate.getTime());
+			}
+			String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.projects pr  left join fetch pm.employee emp left join fetch emp.user where pm.id = :projectMemberId and ts.status ='1' and ts.startDate = :startDate and ts.endDate = :endDate  order by pr.id ";  
+			List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("projectMemberId", projectMemberId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();
+			return timesheetSubmissionsList;
+	}
+	
+	
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
