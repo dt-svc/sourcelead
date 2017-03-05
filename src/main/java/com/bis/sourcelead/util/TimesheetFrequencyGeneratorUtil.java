@@ -525,13 +525,12 @@ public  class TimesheetFrequencyGeneratorUtil {
 		projCal.setLenient(false);
 		projCal.setTime(projects.getStartDate());
 		Calendar projectStartMonday = CalendarUtil.getCurrentWeekDayByCalendar(projCal, "MON");
-		
 		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 		cal.setLenient(false);
 		cal.setTime(employeeEndDate);
 		Calendar empEndSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SUN");
 		if(projectStartMonday.before(empEndSunday)){
-			while(projectStartMonday.before(employeeEndDate)){
+			while(projectStartMonday.before(empEndSunday)){
 				projectStartMonday = CalendarUtil.getDateIncrementByincrement(projectStartMonday,14);
 			}
 			biWeeklyEndSundayDate = CalendarUtil.getDateIncrementByincrement(projectStartMonday, 13).getTime();

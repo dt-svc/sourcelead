@@ -578,30 +578,33 @@ public class RequirementListRestController {
 									if(requirementSubmissionTemplateFields != null){
 										candidateName = requirementSubmissionTemplateFields.getFirstName();
 									
-									if(requirementSubmissionTemplateFields.getLastName()!=null){
-										StringBuilder candidateNameSB = new StringBuilder();
-										candidateName = candidateNameSB.append(candidateName).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString();
-									}
-									requirementSubmission.setCandidateName(candidateName);
-									requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
-									/*if(requirementSubmission.getFinalizedRate() !=null && !"".equalsIgnoreCase(requirementSubmission.getFinalizedRate())){
-										requirementSubmission.setExpectedCTC(requirementSubmission.getFinalizedRate());
-									}else{
-										requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
-									}*/
-									
-									requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
-									requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+										if(StringUtils.isNotBlank(requirementSubmissionTemplateFields.getLastName())){
+											StringBuilder candidateNameSB = new StringBuilder();
+											candidateName = candidateNameSB.append(candidateName).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString();
+										}
+										requirementSubmission.setCandidateName(candidateName);
+										requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
+										/*if(requirementSubmission.getFinalizedRate() !=null && !"".equalsIgnoreCase(requirementSubmission.getFinalizedRate())){
+											requirementSubmission.setExpectedCTC(requirementSubmission.getFinalizedRate());
+										}else{
+											requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
+										}*/
+										
+										requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
+										requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
 									}
 									requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
 									requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
 									requirementSubmission.setResumeUUID(requirementSubmission.getCandidateResumes().getResumeUUID());
 									
+									if(null != requirementSubmission.getVendorLocationId()){
+										requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrg().getOrgName());
+									}
 									
 									if(null != submissionType && submissionType.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
-										if(requirementSubmission.getVendorLocationId() != null){
+										/*if(requirementSubmission.getVendorLocationId() != null){
 											requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrg().getOrgName());
-										}
+										}*/
 										
 										RequirementSubmission clientSubmission = requirementSubmissionService.getClientSubmissionsBySubmissionIdAndOrgLocationId(requirementSubmission.getId(), requirementSubmission.getOrgLocations().getId());
 										
@@ -1246,7 +1249,7 @@ public class RequirementListRestController {
 								
 							}
 							String candidateName = requirementSubmissionTemplateFields.getFirstName();
-							if(requirementSubmissionTemplateFields.getLastName()!=null){
+							if(StringUtils.isNotBlank(requirementSubmissionTemplateFields.getLastName())){
 								StringBuilder candidateNameSB = new StringBuilder();
 								candidateName = candidateNameSB.append(candidateName).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString();
 							}
