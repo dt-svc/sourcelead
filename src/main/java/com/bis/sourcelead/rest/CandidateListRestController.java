@@ -389,7 +389,18 @@ public class CandidateListRestController {
 				
 				//Designation Type
 				if(jsonObj.has("designationType") && StringUtils.isNotEmpty(jsonObj.getString("designationType"))){
-					boolQueryBuilder.must(QueryBuilders.matchQuery("designationType", jsonObj.getString("designationType")));
+					
+					if(jsonObj.getString("designationType").equalsIgnoreCase("Part Time")){
+						boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("designationType", "Part Time"));
+						boolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("designationType", "Full Time"));
+					}else if(jsonObj.getString("designationType").equalsIgnoreCase("Full Time")){
+						boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("designationType", "Full Time"));
+						boolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("designationType", "Part Time"));
+					}else{
+						boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("designationType", jsonObj.getString("designationType")));
+					}
+					
+					//boolQueryBuilder.must(QueryBuilders.matchQuery("designationType", jsonObj.getString("designationType")));
 			    }
 				
 				//updatedOn
