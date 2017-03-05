@@ -3,7 +3,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
   <aside>
-  <div class="side-bar">
+  <div class="side-bar theme_sideMenu">
     <div class="side-bar-inner">
       <div class="user-panel">
                 
