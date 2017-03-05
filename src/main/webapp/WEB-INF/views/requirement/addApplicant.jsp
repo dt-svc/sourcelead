@@ -450,7 +450,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	    		$("body").css('overflow-y', 'auto');
 	    		var allApplicants = 'all';
 	    		requirementPipeline(requirementId,allApplicants); 
-	        	
+	    		pipelineList(requirementId);
 	        },
 	    }); 
       return true; 
