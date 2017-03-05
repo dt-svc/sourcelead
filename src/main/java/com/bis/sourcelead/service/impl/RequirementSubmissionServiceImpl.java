@@ -72,6 +72,7 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
+import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
@@ -162,6 +163,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	RequirementService requirementService;
+	 
 	@Override
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
 		return requirementSubmissionDao.getRequirementSubmissionById(submissionId);
@@ -250,18 +254,25 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					candidate.setEmail(jsonObj.getString("EmailId"));
 					}
 					
+					if(jsonObj.has("currentCTCRateType") && !isNullOrEmpty(jsonObj.getString("currentCTCRateType"))){
+						candidate.setCurrentRateCurrency(jsonObj.getString("currentCTCRateType"));
+					}
+					
 					if(jsonObj.has("CurrentCTC") && !isNullOrEmpty(jsonObj.getString("CurrentCTC"))){
 						candidate.setCurrentRate(jsonObj.getString("CurrentCTC"));
-						candidate.setCurrentRateCurrency(jsonObj.getString("currentCTCRateType"));
 					}
 					
 					if(jsonObj.has("currentCTCRatePer") && !isNullOrEmpty(jsonObj.getString("currentCTCRatePer"))){
 						 candidate.setCurrentRateType(jsonObj.getString("currentCTCRatePer"));
 					}
+					
+					if(jsonObj.has("expectedCTCRateType") && !isNullOrEmpty(jsonObj.getString("expectedCTCRateType"))){
+						 candidate.setExpectedRateCurrencey(jsonObj.getString("expectedCTCRateType"));
+						 
+					}
 					 
 					if(jsonObj.has("ExpectedCTC") && !isNullOrEmpty(jsonObj.getString("ExpectedCTC"))){
 						 candidate.setExpectedRate(jsonObj.getString("ExpectedCTC"));
-						 candidate.setExpectedRateCurrencey(jsonObj.getString("expectedCTCRateType"));
 						 
 					}
 					
@@ -1468,9 +1479,6 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 clientSubmission.setCandidateResumes(submission.getCandidateResumes());
    		 clientSubmission.setSourceSubmission(submission);
    		 clientSubmission.setSubmissionTemplateJsonString(submission.getSubmissionTemplateJsonString());
-   		 
-   		 
-   		 
    		 JSONArray array = new JSONArray(submission.getSubmissionTemplateJsonStringValue()); 
    		 JSONArray jsonArray = new JSONArray();
    		 
@@ -1518,7 +1526,25 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    			 sb.append(user.getFirstName());
    		 }
    		 clientSubmission.setCreatedUser(sb.toString());
+		 if(null != submission.getCandidateScore() && !"".equalsIgnoreCase(submission.getCandidateScore())){
+			 clientSubmission.setCandidateScore(submission.getCandidateScore());		 
+		 }
    		 clientSubmission = requirementSubmissionDao.storeRequirementSubmission(clientSubmission);
+   		 
+         if(null != requirement.getParentRequirement()){
+             Integer totalApplicatsCountForRequirement = 0;
+             Requirement req = requirement.getParentRequirement();
+            //updating total number of applicants for requrement
+             totalApplicatsCountForRequirement = getNumberOfApplicantsForRequirement(requirement.getParentRequirement().getOrgLocationId().getId(), requirement.getParentRequirement().getId());
+//             totalApplicatsCountForRequirement = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(orgLocations,requirement.getId(),user,userRoleName);
+             if(totalApplicatsCountForRequirement > 0){
+                req.setTotalApplicants(totalApplicatsCountForRequirement); 
+                 requirementService.updateRequirement(req);
+             }else{
+                req.setTotalApplicants(0); 
+             }
+             //requirementElkUtil.saveElkRequirement(requirement,new JSONObject());    
+         }
    		 
    		 
    		 
@@ -1621,6 +1647,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 submission.setUpdatedBy(user.getUserCode());
    		 submission.setUpdatedDate(commonUtil.currentDate());
    		 requirementSubmissionDao.storeRequirementSubmission(submission);
+   		 
    		 
    		 requirementSubmissionHistoryService.updateRequirementHistory(submission, user, requirementSubmissionHistory);
    		 
@@ -2628,8 +2655,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public Integer getRequirementPerCandidateCount(Long candudateId) throws Exception {
-		return requirementSubmissionDao.getRequirementPerCandidateCount(candudateId);
+	public Integer getRequirementPerCandidateCount(Long candudateId,Long orgLocationId) throws Exception {
+		return requirementSubmissionDao.getRequirementPerCandidateCount(candudateId,orgLocationId);
 	}
 
 	@Override
@@ -2755,16 +2782,23 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 templateFields.setEducation(jsonObj.getString("Education"));
 		 }
 		 
+		 
+		 if(jsonObj.has("currentCTCRateType") && !isNullOrEmpty(jsonObj.getString("currentCTCRateType"))){
+			 templateFields.setCurrentRateType(jsonObj.getString("currentCTCRateType"));
+		 }
+		 
+		 
 		 if(jsonObj.has("CurrentCTC") && !isNullOrEmpty(jsonObj.getString("CurrentCTC"))){
 			 templateFields.setCurrentCTC(jsonObj.getString("CurrentCTC"));
-			 templateFields.setCurrentRateType(jsonObj.getString("currentCTCRateType"));
+		 }
+		 
+		 if(jsonObj.has("expectedCTCRateType") && !isNullOrEmpty(jsonObj.getString("expectedCTCRateType"))){
+			 templateFields.setExpectedRateType(jsonObj.getString("expectedCTCRateType"));
 		 }
 		 
 		 if(jsonObj.has("ExpectedCTC") && !isNullOrEmpty(jsonObj.getString("ExpectedCTC"))){
 			 templateFields.setExpectedCTC(jsonObj.getString("ExpectedCTC"));
-			 templateFields.setExpectedRateType(jsonObj.getString("expectedCTCRateType"));
 		 }
-		 
 			
 		 if(jsonObj.has("currentCTCRatePer") && !isNullOrEmpty(jsonObj.getString("currentCTCRatePer"))){
 			templateFields.setCurrentRatePer(jsonObj.getString("currentCTCRatePer"));
@@ -3048,9 +3082,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 		notificationScenario.setBody(notificationBody);
 		String actionLink = "";
+		if(null != submission.getVendorLocationId()){
 		emailScenerioUtil.sendNotification(actionLink, userClient, userVendor, submission.getVendorLocationId(), notificationScenario);
-		 
-		 
+		}
 	   }
 	}
 

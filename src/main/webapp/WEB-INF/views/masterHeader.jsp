@@ -606,36 +606,27 @@ $('#taskDatpicker').datepicker({
 	});
 	
 $('#myTaskDatpicker').datepicker({
-	//dateFormat : 'dd-mm-yy',
+	dateFormat : 'dd-mm-yy',
 	changeMonth: true,
 	changeYear: true, 
 	onSelect : function(selected) {
-		var dt = new Date(selected);
-		dt.setDate(dt.getDate() + 1);
-		$("#myTaskDatpicker").datepicker("option", "minDate", dt);
 		tasksList('myTask');
     	}
 	});
 	
 $('#assignedTaskDatpicker').datepicker({
-	//dateFormat : 'dd-mm-yy',
+	dateFormat : 'dd-mm-yy',
 	changeMonth: true,
 	changeYear: true, 
 	onSelect : function(selected) {
-		var dt = new Date(selected);
-		dt.setDate(dt.getDate() + 1);
-		$("#assignedTaskDatpicker").datepicker("option", "minDate", dt);
 		assignedTasksList('assignedTasks');
 	   }
 	});
 $('#closedTaskDatpicker').datepicker({
-	//dateFormat : 'dd-mm-yy',
+	dateFormat : 'dd-mm-yy',
 	changeMonth: true,
 	changeYear: true, 
 	onSelect : function(selected) {
-		var dt = new Date(selected);
-		dt.setDate(dt.getDate() + 1);
-		$("#closedTaskDatpicker").datepicker("option", "minDate", dt);
 		closedTasksList('closedTasks');
 	  }
 	});
@@ -1030,10 +1021,10 @@ function myTasksPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -1046,10 +1037,10 @@ function assignedTasksPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 <script>
@@ -1061,10 +1052,10 @@ function closedTasksPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 <script>
@@ -1098,10 +1089,10 @@ jQuery('.main-header').removeClass('navbar-fixed-top');}
 </script> -->
 <script>
 jQuery(window).scroll(function () {
-if( jQuery(window).scrollTop() > jQuery('.main-header').offset().top + 50 && !(jQuery('.main-header').hasClass('navbar-fixed-top'))){
+if( jQuery(window).scrollTop() > jQuery('.main-header').offset().top + 100 && !(jQuery('.main-header').hasClass('navbar-fixed-top'))){
 jQuery('.main-header').addClass('navbar-fixed-top').animate({"top":"0%"}, 500);
-} else if (jQuery(window).scrollTop() <= 10){
-jQuery('.main-header').removeClass('navbar-fixed-top').css({"top":"-13%"});
+} else if (jQuery(window).scrollTop() <= 50){
+jQuery('.main-header').removeClass('navbar-fixed-top').css({"top":"-20%"});
 }
 });
 

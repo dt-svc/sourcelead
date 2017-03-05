@@ -565,7 +565,7 @@ function closeCertificatePopup(){
 									}if(window.candidateStatusGlobal == '0'){
 										result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
 									}else{
-										result = result+'<i class="glyphicon glyphicon-trash" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ');"></i></div></td>';
+										result = result+'<i class="glyphicon glyphicon-trash" style="color:#f51515 !important;" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ');"></i></div></td>';
 									}
 									result = result + '</tr>';
 								}
@@ -603,15 +603,16 @@ function closeCertificatePopup(){
 function employeePagination(){  
     $('#candidateEmployersPagination').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
  }
 </script>
 

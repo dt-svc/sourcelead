@@ -1,8 +1,8 @@
 
 <style>
-.comments-content textarea {
+#tab-7 .comments-content textarea {
 	width: 957px;
-    border-color: white;
+    border: none;
 }
 </style>
 
@@ -149,7 +149,8 @@ function commentsPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
  

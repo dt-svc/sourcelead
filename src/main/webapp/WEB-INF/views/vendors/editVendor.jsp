@@ -186,6 +186,7 @@
 			    url: sourceleadUrl+"/vendorDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId, 	   
 	   		    success: function(data) {
 	   		    	vendorDetailsbyLocationId(vendorLocationId,orgRelationId);
+	   		    	getVendorListsElk();
 	   		    }
 		 }); 
 	     	return true;

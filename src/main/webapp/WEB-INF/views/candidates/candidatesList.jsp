@@ -289,22 +289,22 @@ function cpagination(){
      	}
     } );
 }
-</script> -->
- 
- <script>
+
+</script>
+ -->
+<script>
 function cpagination(){ 
     $('#candidatePagination').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script> 
 
@@ -427,13 +427,13 @@ function candidateSideBar(candidateId){
          			 	}
          			 	
          			 	if(json.alternateMobilePhone != null && json.alternateMobilePhone != '' && json.alternateMobilePhone != 'undefined'){
-         			 		alternateMobilePhone = json.alternateMobilePhone;
+         			 		alternateMobilePhone = ' , ' +json.alternateMobilePhone;
          			 	}else{
          			 		alternateMobilePhone = '';
          			 	}
          			 	
          			 	 if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
-         			 		mobilePhone =json.mobilePhone+',';
+         			 		mobilePhone =json.mobilePhone;
          			 	 }else{
          			 		 
          			 		mobilePhone = '';
@@ -569,7 +569,7 @@ function candidateSideBar(candidateId){
 			             
 			             result = result+'</li>';
 			             
-			             result = result+'<li><i class="fa fa-money"></i><b>Expected:</b>';
+			             result = result+'<li><i class="fa fa-money"></i><b>Expected Rate:</b>';
 			             
 			             result = result+''+expectedRate+' '+rateType+''+expectedRateCurrencey+'';
 			             
@@ -1328,7 +1328,7 @@ function cancel(candidateId){
         
         <div class="clearfix"></div>
       </div>
-      <div class="candidate_wrap_table">
+      <div class="candidate_wrap_table" style='overflow-X:auto'>
         <div id="candidateList"></div>
         <div id="emptyPopup"></div>
       </div>

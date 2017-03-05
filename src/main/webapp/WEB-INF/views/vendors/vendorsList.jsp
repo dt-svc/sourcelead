@@ -776,7 +776,7 @@ function preparedVendorsListFromElk(data){
 		   		
 		   		var report = json[i];
 		   		
-		   		releasedJobsCountByOrgRelationId(report.orgRelationId);
+		   		
 		   		
 		   		var location = "";
 		   		if(report.city != null && report.city != '' && report.city != 'undefined'){
@@ -842,6 +842,15 @@ function preparedVendorsListFromElk(data){
 		    	result = result +'</tbody>';
 			    $("#vendorList").empty();  
 			    $("#vendorList").append(result)
+			    
+			    for (var i=0; i<json.length; i++)
+				{  
+		   		
+		   		var report = json[i];
+		   		
+			    releasedJobsCountByOrgRelationId(report.orgRelationId);
+			    
+				}
 			    $("#emptyVendorList").val(json.length)
 			    pagination1();
 }
@@ -997,11 +1006,11 @@ function pagination1(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
 		
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -1449,11 +1458,11 @@ function pagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
 		
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -1588,7 +1597,8 @@ function pagination1(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
 		
     } );
