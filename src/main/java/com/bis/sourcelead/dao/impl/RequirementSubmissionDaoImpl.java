@@ -257,8 +257,12 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				params.put("usercode",user.getUserCode());
 				
 				
-				if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" ){
-					subQuery = "where reqSub.orgLocations.id =:loginOrgLocation and req.id =:requirementId  and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery3+")  OR ("+subQuery4+") )";
+				 //  this is if the  user is   ApproverHirachy   Member  from Requirement i,e login user is approver for given Requirement
+				String subQuery5 = "req.id IN ( select reqApproverHirachy.requirementId from RequirementApproverHierarchy reqApproverHirachy where reqApproverHirachy.approverUserId.id =:userId)";
+				params.put("userId",user.getId());
+				
+				if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" || subQuery5 != "" ){
+					subQuery = "where reqSub.orgLocations.id =:loginOrgLocation and req.id =:requirementId  and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery3+")  OR ("+subQuery4+") OR ("+subQuery5+")   )";
 					params.put("loginOrgLocation",loginOrgLocation.getId());
 					params.put("requirementId",requirementId);
 				}
@@ -398,6 +402,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
     		//login user as a  manager for this job.
     		String subQuery3 = "rs.requirement.id IN ( select requirement.id from Requirement requirement where  requirement.managerUserId.id = :managerUserId )  ";
     		params.put("managerUserId",user.getId());
+    		
     		
     		
     		String subQuery = "";
@@ -773,8 +778,14 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
                     params.put("usercode",user.getUserCode());
                     
                     
-                    if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" ){
-                        subQuery = "where reqSub.orgLocations.id =:loginOrgLocation  "+submissionStages+" and reqSub.requirement.id =:requirementId  and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery3+")  OR ("+subQuery4+") )";
+                    //  this is if the  user is   ApproverHirachy   Member  from Requirement i,e login user is approver for given Requirement
+    				String subQuery5 = "reqSub.requirement.id IN ( select reqApproverHirachy.requirementId from RequirementApproverHierarchy reqApproverHirachy where reqApproverHirachy.approverUserId.id =:userId)";
+    				params.put("userId",user.getId());
+    				
+    				
+                    
+                    if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != ""  || subQuery5 != ""  ){
+                        subQuery = "where reqSub.orgLocations.id =:loginOrgLocation  "+submissionStages+" and reqSub.requirement.id =:requirementId  and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery3+")  OR ("+subQuery4+") OR ("+subQuery5+")  )";
                         params.put("loginOrgLocation",loginOrgLocation.getId());
                         params.put("requirementId",requirementId);
                     }
@@ -859,7 +870,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						 for(RequirementSubmission rs :vendorSubmittedApplicants){
 								sourceSubmissionIds.add(rs.getId());
 							}
-							String sourceSubmissionIdQuery = "from RequirementSubmission reqSub left join fetch reqSub.requirement req   left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes where  reqSub.sourceSubmission.id  IN (:sourceSubmissionIds)  " +statusSubQuery; 
+							String sourceSubmissionIdQuery = "from RequirementSubmission reqSub left join fetch reqSub.requirement req   where  reqSub.sourceSubmission.id  IN (:sourceSubmissionIds)  " +statusSubQuery; 
 							List<RequirementSubmission> finalSourceList = null;
 																				
 										finalSourceList =		session.createQuery(sourceSubmissionIdQuery.toString())
@@ -898,9 +909,14 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					params.put("userId",user.getId());
 					params.put("usercode",user.getUserCode());
 					
+				//  this is if the  user is   ApproverHirachy   Member  from Requirement i,e login user is approver for given Requirement
+    				String subQuery5 = "req.id IN ( select reqApproverHirachy.requirementId from RequirementApproverHierarchy reqApproverHirachy where reqApproverHirachy.approverUserId.id =:userId)";
+    				params.put("userId",user.getId());
+    				
+    				
 					
-					if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" ){
-						subQuery = "where reqSub.orgLocations.id =:loginOrgLocation and req.id =:requirementId  and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery3+")  OR ("+subQuery4+") )";
+					if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" || subQuery5 != ""    ){
+						subQuery = "where reqSub.orgLocations.id =:loginOrgLocation and req.id =:requirementId  and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery3+")  OR ("+subQuery4+")  OR ("+subQuery5+")   )";
 						params.put("loginOrgLocation",loginOrgLocation.getId());
 						params.put("requirementId",requirementId);
 					}
@@ -1159,8 +1175,12 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				params.put("usercode",user.getUserCode());
 				
 				
-				if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" ){
-					subQuery = "where reqSub.orgLocations.id =:loginOrgLocation and req.id =:requirementId  and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery3+")  OR ("+subQuery4+") )";
+			//  this is if the  user is   ApproverHirachy   Member  from Requirement i,e login user is approver for given Requirement
+				String subQuery5 = "req.id IN ( select reqApproverHirachy.requirementId from RequirementApproverHierarchy reqApproverHirachy where reqApproverHirachy.approverUserId.id =:userId)";
+				params.put("userId",user.getId());
+				
+				if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" || subQuery5 != ""   ){
+					subQuery = "where reqSub.orgLocations.id =:loginOrgLocation and req.id =:requirementId  and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery3+")  OR ("+subQuery4+") OR ("+subQuery5+")    )";
 					params.put("loginOrgLocation",loginOrgLocation.getId());
 					params.put("requirementId",requirementId);
 				}
@@ -1396,21 +1416,36 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(user.getId(),orgLocationsId);
 			List<RequirementSubmission> requirementSubmissionList = null;
 			 Map<String, Object> params = new HashMap<String,Object>();
-			if("accepted".equalsIgnoreCase(status)){
-				 statusQuery = "  and  reqSub.submissionRateStatus = 'ACCEPTED' ";
-			}else if("requestSent".equalsIgnoreCase(status)){
-				statusQuery= "  and  reqSub.submissionRateStatus = 'REQUEST'";
-			}
+			
+			 
+			//This is for Requirement Manger 
+			   String subQuery1 = "reqSub.requirement.managerUserId.id  =:userId ";
+				params.put("userId",user.getId());
+				
+				
 			if(isadmin){
+				 if("accepted".equalsIgnoreCase(status)){
+					 statusQuery = "  and  reqSub.submissionRateStatus = 'ACCEPTED' and reqSub.needApplicantPermit <>'N'  and reqSub.submissionRateStatus IS NOT NULL ";
+				}else if("requestSent".equalsIgnoreCase(status)){
+					statusQuery= "  and  reqSub.submissionRateStatus = 'REQUEST' and reqSub.needApplicantPermit <>'N' and reqSub.submissionRateStatus IS NOT NULL";
+				}
+				 
 				subQuery = " where reqSub.orgLocations.id =:loginOrgLocation "  +statusQuery;
 				params.put("loginOrgLocation",orgLocationsId);
 				
 				// This Condition is if The Requirement is Released by the login User
 			}else{
 			
-					//This is for Requirement Manger 
-					String subQuery1 = "reqSub.requirement.managerUserId.id  =:userId " +statusQuery;
+				 if("accepted".equalsIgnoreCase(status)){
+					 statusQuery = "  and  reqSub.submissionRateStatus = 'ACCEPTED' and reqSub.needApplicantPermit <>'N'  and reqSub.submissionRateStatus IS NOT NULL ";
+				
+						
+				 }else if("requestSent".equalsIgnoreCase(status)){
+					statusQuery= " and "+subQuery1+"  and  reqSub.submissionRateStatus = 'REQUEST' and reqSub.needApplicantPermit <>'N' and reqSub.submissionRateStatus IS NOT NULL";
 					params.put("userId",user.getId());
+					
+			 
+				 }
 					
 					// This is if the user is  created by 
 					String subQuery2 = "reqSub.createdBy =:usercode" +statusQuery;
@@ -1425,6 +1460,13 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					params.put("userId",user.getId());
 					params.put("usercode",user.getUserCode());
 					
+					 //  this is if the  user is   ApproverHirachy   Member  from Requirement i,e login user is approver for given Requirement
+					String subQuery5 = "req.id IN ( select reqApproverHirachy.requirementId from RequirementApproverHierarchy reqApproverHirachy where reqApproverHirachy.approverUserId.id =:userId)" +statusQuery;
+					params.put("userId",user.getId());
+					
+					
+					
+					
 					//applicant list display in dashboard.
 					/*if("accepted".equalsIgnoreCase(status)){     
 						query = "from RequirementSubmission reqSub left join fetch reqSub.requirement left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes where reqSub.orgLocations.id =:orgLocations and reqSub.submissionRateStatus = 'ACCEPTED' "; 
@@ -1434,8 +1476,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						requirementSubmissionList =session.createQuery(query).setLong("orgLocations", orgLocationsId).setCacheable(true).list(); 
 				}*/
 					
-					if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" ){
-						subQuery = "where reqSub.orgLocations.id =:loginOrgLocation   and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery3+")  OR ("+subQuery4+") )";
+					if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != ""  || subQuery5 != ""){
+						subQuery = "where reqSub.orgLocations.id =:loginOrgLocation   and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery3+")  OR ("+subQuery4+")   OR ("+subQuery5+")   )";
 						params.put("loginOrgLocation",orgLocationsId);
 					}
 			}
