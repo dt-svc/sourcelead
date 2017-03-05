@@ -187,10 +187,10 @@ function educationPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -221,7 +221,7 @@ function addEducation(candidateId) {
 	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
-	result = result  +'                  <div class="clearfix mb10 col-md-12"> ';
+	result = result  +'                  <div class="clearfix mb10 col-md-12" id="chosen-educationMsg"> ';
 	result = result  +'						<select label=" " class="chosen-select form-control" field-name="Education" data-placeholder = "Select Education" name="name" id="name" data-validation=" required" onchange="validateEduname('+candidateId+');">';
 	
 											 <c:forEach var="edu" items="${educationsList}">
@@ -773,6 +773,7 @@ function clearSearchKey() {
 
 <script type="text/javascript">
  function validateEduname(candidateId) {
+	 $('#chosen-educationMsg').find('p.jquery_form_error_message').remove();
 	  var name = document.getElementById("name").value; 
  	  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
 	 var sourceleadUrl ='${sourceleadUrl}';

@@ -293,9 +293,6 @@ function cpagination(){
 </script>
  -->
 <script>
-$('#candidatePagination').DataTable( { 
-	"autoWidth": false,
-});
 function cpagination(){ 
     $('#candidatePagination').DataTable( { 
     	"scrollCollapse": false,
@@ -304,10 +301,10 @@ function cpagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script> 
 
@@ -1331,7 +1328,7 @@ function cancel(candidateId){
         
         <div class="clearfix"></div>
       </div>
-      <div class="candidate_wrap_table">
+      <div class="candidate_wrap_table" style='overflow-X:auto'>
         <div id="candidateList"></div>
         <div id="emptyPopup"></div>
       </div>

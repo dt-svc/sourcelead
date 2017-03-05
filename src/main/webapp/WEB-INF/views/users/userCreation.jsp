@@ -83,7 +83,7 @@
                 
                 <div class="form-group">
                   <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
-                  <div class="col-md-9">
+                  <div class="col-md-9" id="chosen-role">
                          <select class="form-control select-bg" id="role" name="roleType" field-name="Role" onchange="getReportingManager()" data-validation="required" >
 		                        <option value="">-Select Role-</option>
 		                        <c:forEach var="option" items="${rolesList}">
@@ -392,6 +392,7 @@
  
 <script type="text/javascript">
  function getReportingManager() {
+	 $('#chosen-role').find('p.jquery_form_error_message').remove();
 	 var role = document.getElementById("role").value; 
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(role != null && role != "" && role != 'undefined'){
@@ -422,7 +423,6 @@
 	
  }
 </script>
-
 <script type="text/javascript">
 $(function(){
 	       var config = {

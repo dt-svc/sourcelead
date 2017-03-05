@@ -606,36 +606,27 @@ $('#taskDatpicker').datepicker({
 	});
 	
 $('#myTaskDatpicker').datepicker({
-	//dateFormat : 'dd-mm-yy',
+	dateFormat : 'dd-mm-yy',
 	changeMonth: true,
 	changeYear: true, 
 	onSelect : function(selected) {
-		var dt = new Date(selected);
-		dt.setDate(dt.getDate() + 1);
-		$("#myTaskDatpicker").datepicker("option", "minDate", dt);
 		tasksList('myTask');
     	}
 	});
 	
 $('#assignedTaskDatpicker').datepicker({
-	//dateFormat : 'dd-mm-yy',
+	dateFormat : 'dd-mm-yy',
 	changeMonth: true,
 	changeYear: true, 
 	onSelect : function(selected) {
-		var dt = new Date(selected);
-		dt.setDate(dt.getDate() + 1);
-		$("#assignedTaskDatpicker").datepicker("option", "minDate", dt);
 		assignedTasksList('assignedTasks');
 	   }
 	});
 $('#closedTaskDatpicker').datepicker({
-	//dateFormat : 'dd-mm-yy',
+	dateFormat : 'dd-mm-yy',
 	changeMonth: true,
 	changeYear: true, 
 	onSelect : function(selected) {
-		var dt = new Date(selected);
-		dt.setDate(dt.getDate() + 1);
-		$("#closedTaskDatpicker").datepicker("option", "minDate", dt);
 		closedTasksList('closedTasks');
 	  }
 	});
@@ -1030,10 +1021,10 @@ function myTasksPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -1046,10 +1037,10 @@ function assignedTasksPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 <script>
@@ -1061,10 +1052,10 @@ function closedTasksPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 <script>
