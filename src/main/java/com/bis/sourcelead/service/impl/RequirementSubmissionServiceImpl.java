@@ -1489,7 +1489,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    			 jsonObj.put("value", "-----");
    			}
    			else if(jsonObj.getString("name").equalsIgnoreCase("ExpectedCTC")){
-   				if(clientShortlistsRate.length>0){
+   				if(clientShortlistsRate != null && clientShortlistsRate.length>i && !isNullOrEmpty(clientShortlistsRate[i])){
    					String clientRate = clientShortlistsRate[i];
    	   				if(!isNullOrEmpty(clientRate)){
    	   				    StringBuilder rateBuilder = new StringBuilder();
@@ -1550,7 +1550,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 
 		 RequirementRateSubmissionNegotiation rateNegotiation = new RequirementRateSubmissionNegotiation();
 		 rateNegotiation.setRequirementsubmissionId(clientSubmission);
-		 if(null != clientShortlistsRate[i] && !"".equalsIgnoreCase(clientShortlistsRate[i])){
+		 if(null != clientShortlistsRate && clientShortlistsRate.length >i && null != clientShortlistsRate[i] && !"".equalsIgnoreCase(clientShortlistsRate[i])){
 			 String clientRate = clientShortlistsRate[i];
 			 String clientRatePer = submissionratePer[i];
 			 rateNegotiation.setExpectedRate(clientRate);
