@@ -22,6 +22,8 @@ public interface TimesheetSubmissionsDao {
     
     public TimesheetSubmissions getAllEmployeeTimesheetSubmissionsByProjectMemberId(Date startDate,Date endDate,Long projectMemberId) throws Exception;
     
+    public List<TimesheetSubmissions> getAllEmployeeTimesheetSubmissionsByProjectMemberIdForUpdation(Date startDate,Date endDate,Long projectMemberId) throws Exception;
+    
     public TimesheetSubmissions getAllApprovalEmployeeTimesheetSubmissions(Date startDate,Date endDate,Long userId)throws Exception;
     
     public TimesheetSubmissions getAllApprovalEmployeeTimesheetSubmissionsByEmployeeUserId(Date startDate,Date endDate,Long userId,Long empUserId,Long employeeId)throws Exception;
