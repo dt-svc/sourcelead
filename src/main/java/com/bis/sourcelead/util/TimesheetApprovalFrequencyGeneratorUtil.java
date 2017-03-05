@@ -433,7 +433,7 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 		return timesheetFrequencyList;
 		
 	}
-	private Date getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(Projects projects) throws Exception{
+	public Date getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(Projects projects) throws Exception{
 		Date biWeeklyStartMondayDate = null;
 		Calendar projCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 		projCal.setLenient(false);

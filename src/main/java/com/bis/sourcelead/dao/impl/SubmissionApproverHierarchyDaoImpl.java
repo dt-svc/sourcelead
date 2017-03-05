@@ -592,14 +592,22 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		String query = subQueryForList +" and  ( hierarchy.level IN("+subQueryForMaxLevel+"))  and  sah.submissionApprovalStatus = :approvalStatus" ;
 		List<SubmissionApproverHierarchy> tslist =session.createQuery(query.toString()).setLong("userId", userId).setLong("projectId",projectId).setString("approvalStatus", approvalStatus).setCacheable(true).list(); 
 		Float totalHours = 0.0F;
-		if(tslist !=null){
-		   for (int i = 0; i < tslist.size(); i++) {
-			   if(tslist.get(i).getSubmissionId().getTotalHours() != null && ! "".equalsIgnoreCase(tslist.get(i).getSubmissionId().getTotalHours())){
-				   totalHours = totalHours + Float.parseFloat(tslist.get(i).getSubmissionId().getTotalHours());
-			   }
-		   }  
-	   }
-		return totalHours;
+		if(tslist !=null && !tslist.isEmpty()){
+			for(SubmissionApproverHierarchy sah :tslist){
+				if(sah.getSubmissionId() != null && sah.getSubmissionId().getTotalHours() != null){
+					 totalHours = totalHours + Float.parseFloat(sah.getSubmissionId().getTotalHours());
+				}
+			}
+	    }
+        float tsHours = totalHours;
+        float tsHoursValue = (int) tsHours;
+        float tsMinutesValue = tsHours - tsHoursValue;
+        float totalMinutes = (tsHoursValue* 60)+(tsMinutesValue*100);
+     
+        float actualHours = (int) (totalMinutes / 60); 
+        float actualMinutes = (totalMinutes % 60)/100;
+        String actualTimeString = String.format("%.2f", (actualHours+actualMinutes));
+		return Float.parseFloat(actualTimeString);
 	}
 	
 	
@@ -616,40 +624,47 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		
 		//Getting Max Hierarchy Level for which employee is Assigned
 		String subQueryForUserIdCheckingInMaxLevel = " (subsah.submissionId.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)) ";
-		String subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from  SubmissionApproverHierarchy subsah  where "+subQueryForUserIdCheckingInMaxLevel+" and pm.projects.id = :projectId ";
+		String subQueryForMaxLevel = " select Min(subsah.hierarchyId.level) from  SubmissionApproverHierarchy subsah  where "+subQueryForUserIdCheckingInMaxLevel+" and pm.projects.id = :projectId ";
 		
 		String query = subQueryForList +" and  ( hierarchy.level IN("+subQueryForMaxLevel+"))  and  sah.submissionStatus = :submissionStatus" ;
 		List<SubmissionApproverHierarchy> tslist =session.createQuery(query.toString()).setLong("userId", userId).setLong("projectId",projectId).setString("submissionStatus", submissionStatus).setCacheable(true).list(); 
 		Float totalHours = 0.0F;
-		if(tslist !=null){
-		   for (int i = 0; i < tslist.size(); i++) {
-			   if(tslist.get(i).getSubmissionId().getTotalHours() != null && ! "".equalsIgnoreCase(tslist.get(i).getSubmissionId().getTotalHours())){
-				   totalHours = totalHours + Float.parseFloat(tslist.get(i).getSubmissionId().getTotalHours());
-			   }
-		   }  
-	   }
-		return totalHours;
+		if(tslist !=null && !tslist.isEmpty()){
+			for(SubmissionApproverHierarchy sah :tslist){
+				if(sah.getSubmissionId() != null && sah.getSubmissionId().getTotalHours() != null){
+					 totalHours = totalHours + Float.parseFloat(sah.getSubmissionId().getTotalHours());
+				}
+			}
+	    }
+        float tsHours = totalHours;
+        float tsHoursValue = (int) tsHours;
+        float tsMinutesValue = tsHours - tsHoursValue;
+        float totalMinutes = (tsHoursValue* 60)+(tsMinutesValue*100);
+     
+        float actualHours = (int) (totalMinutes / 60); 
+        float actualMinutes = (totalMinutes % 60)/100;
+        String actualTimeString = String.format("%.2f", (actualHours+actualMinutes));
+		return Float.parseFloat(actualTimeString);
 	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<SubmissionApproverHierarchy> getTotalDraftAndSubmittedListByuserIdAndProjectIdForEmployee(Long userId,
 			Long projectId, String submissionStatus) {
-		
-		
-		 Session session = this.sessionFactory.getCurrentSession();
-		   //Getting List for which employee  is Assigned
-				String subQueryForUserIdChecking = " (emp.id IN(select emp.id from Employees emp where emp.user.id = :userId)) ";
-				String subQueryForList = " from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects left join fetch pm.employee emp where "+subQueryForUserIdChecking+" and pm.projects.id = :projectId ";
-				
-				//Getting Max Hierarchy Level for which employee is Assigned
-				String subQueryForUserIdCheckingInMaxLevel = " (subsah.submissionId.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)) ";
-				String subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from  SubmissionApproverHierarchy subsah  where "+subQueryForUserIdCheckingInMaxLevel+" and pm.projects.id = :projectId ";
-				
-				String query = subQueryForList +" and  ( hierarchy.level IN("+subQueryForMaxLevel+"))  and  sah.submissionStatus = :submissionStatus " ;
-				List<SubmissionApproverHierarchy> tslist =session.createQuery(query.toString()).setLong("userId", userId).setLong("projectId",projectId).setString("submissionStatus", submissionStatus).setCacheable(true).list(); 
-				
-				return tslist;
+		 
+	        Session session = this.sessionFactory.getCurrentSession();
+	      //Getting List for which employee  is Assigned
+			String subQueryForUserIdChecking = " (emp.id IN(select emp.id from Employees emp where emp.user.id = :userId)) ";
+			String subQueryForList = " from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects left join fetch pm.employee emp where "+subQueryForUserIdChecking+" and pm.projects.id = :projectId ";
+			
+			//Getting Max Hierarchy Level for which employee is Assigned
+			String subQueryForUserIdCheckingInMaxLevel = " (subsah.submissionId.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)) ";
+			String subQueryForMaxLevel = " select Min(subsah.hierarchyId.level) from  SubmissionApproverHierarchy subsah  where "+subQueryForUserIdCheckingInMaxLevel+" and pm.projects.id = :projectId ";
+			
+			String query = subQueryForList +" and  ( hierarchy.level IN("+subQueryForMaxLevel+"))  and  sah.submissionStatus = :submissionStatus " ;
+			List<SubmissionApproverHierarchy> tslist =session.createQuery(query.toString()).setLong("userId", userId).setLong("projectId",projectId).setString("submissionStatus", submissionStatus).setCacheable(true).list(); 
+			
+			return tslist;
 	}
 	
 	
@@ -839,7 +854,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		}
 		
 		String query = "from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee  emp  left join fetch emp.user "
-				+ " where  pm.id = :projectMemberId and (ts.startDate between :startDate and :endDate OR ts.startDate = :startDate)"
+				+ " where  pm.id = :projectMemberId and sah.frequencyStartDate = :startDate and sah.frequencyEndDate = :endDate"
 				+ "  and ( "
 				/*
 				*  logged in user as approver in project_approver_hierarchy (Either Admins/project_managers/team leads ...etc)
@@ -848,7 +863,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				/*
 				 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 				 */
-				+ "  OR ( :userId NOT IN( select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.projectMembers.id = pm.id and (subsah.submissionId.startDate between :startDate and :endDate OR subsah.submissionId.startDate = :startDate)) and "+Constants.loginUserAsAdminWithMaxHeirarchyLevel+") "
+				+ "  OR ( :userId NOT IN( select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.projectMembers.id = pm.id  and subsah.frequencyStartDate = :startDate and subsah.frequencyEndDate = :endDate) and "+Constants.loginUserAsAdminWithMaxHeirarchyLevel+") "
 				+ "   ) ";
 		@SuppressWarnings("unchecked")
 		List<SubmissionApproverHierarchy> submissionApproverHierarchyList =session.createQuery(query.toString()).setLong("userId", approverUserId).setLong("projectMemberId", projectMemberId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setCacheable(true).list(); 

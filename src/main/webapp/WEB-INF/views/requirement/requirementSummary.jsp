@@ -938,7 +938,11 @@ function requirementDetails(requirementId){
 				            	result = result +'   <div class="anchor-inline">';
 				            	result = result +'   <div class="rejected_Reason">';
 				            	result = result +'   <h5>Rejected Reason:</h5>'; 
-				            	result = result +'   <div>'+json.rejectReasonForRequirement+'</div>';
+				            	if(json.rejectReasonForRequirement != null && json.rejectReasonForRequirement != "undefined"){
+					            	result = result +'   <div class="mb">'+json.rejectReasonForRequirement+'</div>';
+					            	}else{
+						            	result = result +'   <div class="mb"> No Data</div>';
+					            	}
 				            	result = result +'   </div>';
 				            	result = result +'   </div>';
 				          	   }
@@ -1291,7 +1295,7 @@ function updateReuqirementStatus(status){
 		 reason = '';
 	 }
      $("#approverbut").attr("disabled", "disabled");
- 	if(reason.match(/^[^\s-](.*)*$/) != null){
+ 	
 	$('#reasonDiv').empty();
  	$.ajax({
       type : "POST",
@@ -1318,13 +1322,7 @@ function updateReuqirementStatus(status){
             }
        },
 	  }); 
-	 }else{
-			if(reason){
-				$("#reasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
-			}else{
-				$("#reasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
-			}
-		}
+	 
 }
 </script>
 
@@ -3064,7 +3062,7 @@ function requirementPipelineRejected(requirementId,submissionType){
 					       result = result + '<th>Source</th>';
 			        	   result = result + '<th>Rejected On</th>';
 			        	   result = result + '<th>Rejected By</th>';
-				           result = result + '<th>Rejected Stage</th>';
+				          /*  result = result + '<th>Rejected Stage</th>'; */
 				           result = result + '<th>Status</th>';
 				           result = result + '         </tr>';
 				           result = result + '       </thead>';
@@ -3181,7 +3179,7 @@ function requirementPipelineRejected(requirementId,submissionType){
 						           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
 						        	   result = result + '<td><div class="tblwidth-150"><span>'+report.createdUser+'</span>';
 						           }
-					        	   result = result + '<td><div class="tblwidth-150"><span>'+report.previousSubmissionStatus+'</span>';
+					        	  /*  result = result + '<td><div class="tblwidth-150"><span>'+report.previousSubmissionStatus+'</span>'; */
 					        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
 					        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
 					        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
