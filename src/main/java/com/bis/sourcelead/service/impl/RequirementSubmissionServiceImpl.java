@@ -3049,9 +3049,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 		notificationScenario.setBody(notificationBody);
 		String actionLink = "";
+		if(null != submission.getVendorLocationId()){
 		emailScenerioUtil.sendNotification(actionLink, userClient, userVendor, submission.getVendorLocationId(), notificationScenario);
-		 
-		 
+		}
 	   }
 	}
 
