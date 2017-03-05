@@ -147,6 +147,10 @@ public class RequirementListRestController {
 	 @Autowired
 	 private TimeZoneService timeZoneService;
 	 
+	 protected boolean isNullOrEmpty(String str) {
+			return (str == null || "".equals(str.trim()));
+		}
+	 
 	 /**
 	   * @author sarath kumar
 	   * @since  aug 30 2016
@@ -576,11 +580,11 @@ public class RequirementListRestController {
 									}
 									String candidateName = "";
 									if(requirementSubmissionTemplateFields != null){
-										candidateName = requirementSubmissionTemplateFields.getFirstName();
-									
 									if(StringUtils.isNotBlank(requirementSubmissionTemplateFields.getLastName())){
 										StringBuilder candidateNameSB = new StringBuilder();
 										candidateName = candidateNameSB.append(candidateName).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString();
+									}else{
+										candidateName = requirementSubmissionTemplateFields.getFirstName();
 									}
 									requirementSubmission.setCandidateName(candidateName);
 									requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
