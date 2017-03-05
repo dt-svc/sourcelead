@@ -258,7 +258,7 @@ public class CandidateRestController {
 		        boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", candidateType));
 		        boolQueryBuilder.must(QueryBuilders.matchQuery("status", 1));
 		        
-		        Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocations.getId(),candidateStatus);
+		        //Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocations.getId(),candidateStatus);
 			
 			if(null != candidateIdsList && candidateIdsList.size() > 0){
 				BoolQueryBuilder candidateBoolQueryBuilder = QueryBuilders.boolQuery();
@@ -269,7 +269,7 @@ public class CandidateRestController {
 			}
 			
 	        try {
-				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,Constants.MAX_RESULTS_200,boolQueryBuilder).getHits();
 				    if(null != searchHits && searchHits.length >0){
 				    	ObjectMapper mapper = new ObjectMapper();
 				    	for (SearchHit hit : searchHits) {
