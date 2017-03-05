@@ -1233,10 +1233,10 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 
 		@Override
 		@Transactional(rollbackFor = { Exception.class })
-		public Integer getRequirementPerCandidateCount(Long candudateId) throws Exception {
+		public Integer getRequirementPerCandidateCount(Long candudateId,Long orgLocationId) throws Exception {
 			Session session = this.sessionFactory.getCurrentSession();
-		     String query = "select count(*) from RequirementSubmission rs  where rs.candidate.id = :candudateId";
-		     List<Long> requirementPerCandidateCount = session.createQuery(query).setLong("candudateId", candudateId).setCacheable(true).list();
+		     String query = "select count(*) from RequirementSubmission rs  where rs.candidate.id = :candudateId and rs.orgLocations.id = :orgLocationId";
+		     List<Long> requirementPerCandidateCount = session.createQuery(query).setLong("candudateId", candudateId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 			Integer count= 0;
 			if(requirementPerCandidateCount != null && !requirementPerCandidateCount.isEmpty()){
 					count = requirementPerCandidateCount.get(0).intValue();

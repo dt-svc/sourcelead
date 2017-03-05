@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -565,7 +566,24 @@ public class TimesheetApprovalRestController {
 		        }
 		        
 		        List<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, actualStartDate, actualEndDate, clientId, stage, orgLocations.getId(), user.getId());
+		        HashSet<ProjectMembers> freshProjectMembers = new HashSet<>();
 		        if(projectMembers != null && !projectMembers.isEmpty()){
+		        	
+		        	if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Bi-Weekly")){
+			        	for(ProjectMembers pm :projectMembers){
+			        		Date biweeklyCurrentStartMonDayDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(pm.getProjects());
+			        	    if(CalendarUtil.getNumberOfDays(biweeklyCurrentStartMonDayDate, actualStartDate)%14==0){
+			        	    	freshProjectMembers.add(pm);
+			        	    }
+			        	
+			        	}
+		        	}
+		        	 else{
+				        	freshProjectMembers = new HashSet<>(projectMembers);
+				        }
+		         }
+		        
+		        if(freshProjectMembers != null && !freshProjectMembers.isEmpty()){
 		        	int tdSpanLength = 6;
 		        	timesheetApprovalDiv.append("			<div class='timesheet_appr_table'>");
 					timesheetApprovalDiv.append("	    	<table id='example' style='width:100%'>");
