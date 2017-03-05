@@ -125,6 +125,7 @@ function requirementTemplateList(){
 	                     result = result +" </tbody>";
 	                     result = result +"</table>"; 
 	                     $("#requirementTemplateList").append(result); 
+	                     pagination();
 			    	
                  }else{
                  	 $("#requirementTemplateList").removeAttr("style");
@@ -159,7 +160,8 @@ function pagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-            "sSearch": ""
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
        }
     } );
 }

@@ -1647,10 +1647,10 @@ function documentpagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -1901,10 +1901,10 @@ function documentpaginationDA(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -2150,10 +2150,10 @@ function documentpaginationRS(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -2411,10 +2411,10 @@ function documentpaginationSL(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -2648,10 +2648,10 @@ function documentpaginationSC(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -2819,10 +2819,10 @@ function documentpaginationIN(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -3010,10 +3010,10 @@ function documentpaginationOffer(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -3062,7 +3062,7 @@ function requirementPipelineRejected(requirementId,submissionType){
 					       result = result + '<th>Source</th>';
 			        	   result = result + '<th>Rejected On</th>';
 			        	   result = result + '<th>Rejected By</th>';
-				           result = result + '<th>Rejected Stage</th>';
+				          /*  result = result + '<th>Rejected Stage</th>'; */
 				           result = result + '<th>Status</th>';
 				           result = result + '         </tr>';
 				           result = result + '       </thead>';
@@ -3176,10 +3176,10 @@ function requirementPipelineRejected(requirementId,submissionType){
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	   } 
 						           result = result + '<td><div class="tblwidth-150"><span>'+report.upDatedStr+'</span>';
-						           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
-						        	   result = result + '<td><div class="tblwidth-150"><span>'+report.createdUser+'</span>';
+						           if(report.updatedUser != null && report.updatedUser != '' && report.updatedUser != 'undefined'){
+						        	   result = result + '<td><div class="tblwidth-150"><span>'+report.updatedUser+'</span>';
 						           }
-					        	   result = result + '<td><div class="tblwidth-150"><span>'+report.previousSubmissionStatus+'</span>';
+					        	  /*  result = result + '<td><div class="tblwidth-150"><span>'+report.previousSubmissionStatus+'</span>'; */
 					        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
 					        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
 					        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
@@ -3247,10 +3247,10 @@ function documentpaginationRejected(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -3473,8 +3473,8 @@ function assignedMemberList(requirementId){
 						    $("#assignedMemberList").append(result);
                  }else{
 						$("#assignedMemberList").removeAttr("style");
-       	    	         var result ="";
-      		    	     result = result+"   <div class='row'>"; 
+       	    	          var result ="";
+       	    	       /*  result = result+"   <div class='row'>"; 
       					 result = result+"	<div class='col-lg-12'>"; 
       					 result = result+"		<div class='content-area clearfix'>"; 
       					 result = result+"			<div class='blank-pages'>";
@@ -3483,7 +3483,8 @@ function assignedMemberList(requirementId){
       					 result = result+"			 </div>";
       					 result = result+"		</div>"; 
       					 result = result+"	</div>"; 
-      					 result = result+"  </div> "; 
+      					 result = result+"  </div> ";  */
+      					 result = result+"   <div class='dataTables_empty'>"; 
       					$("#assignedMemberList").empty();
       				    $("#assignedMemberList").append(result); 
                       }
@@ -3735,10 +3736,10 @@ function recommendationpagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 
