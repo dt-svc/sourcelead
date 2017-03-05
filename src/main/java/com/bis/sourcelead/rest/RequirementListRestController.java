@@ -171,7 +171,6 @@ public class RequirementListRestController {
 	 @RequestMapping(value = "/getRequirementListByOrgLocationID")
 	 public String getRequirementListByOrgLocationID(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
 
-		 long startTime = System.currentTimeMillis();
 		   String msg = "";
 			String resultJson;
 			User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -280,9 +279,7 @@ public class RequirementListRestController {
 				resultJson = commonUtil.toJSON(requirementList);
 			}
 
-			 long endTime = System.currentTimeMillis();
-			 logger.info("############## Total Time for the Requirement Response = "+(endTime - startTime));
-
+			 
 			return resultJson;
 		 
 		 
