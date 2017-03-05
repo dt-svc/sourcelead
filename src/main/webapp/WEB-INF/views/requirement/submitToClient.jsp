@@ -490,7 +490,7 @@ function addEmailtemplate(requirementId){
 	$("#pipeline_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
  }
-		 S
+		 
  }else{
 	    var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
@@ -620,7 +620,9 @@ function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate,sel
 					url : sourceleadUrl+"/submitToClient?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&selectedIds="+selectedIds+"&requirementId="+requirementId+"&selectedShortlistsRate="+selectedShortlistsRate+"&selectedShortlistsRatePer="+selectedShortlistsRatePer,
 					success : function(result) {
 						cancelSubmit();
-                        requirementPipeline(requirementId,allApplicants); 
+						var allApplicants = 'all';
+			    		requirementPipeline(requirementId,allApplicants); 
+			    		pipelineList(requirementId);
 					},
 				}); 
 	 }
