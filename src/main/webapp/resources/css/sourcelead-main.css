@@ -865,12 +865,10 @@ ul.timesheet-menu li a:hover, ul.backoffice-menu li a:hover {
 	min-height: 620px;
 	margin-left: 230px;
 	padding: 0 30px 30px;
-/*
 	-moz-transition: all ease-in-out 0.3s;
 	-ms-transition: all ease-in-out 0.3s;
 	-webkit-transition: all ease-in-out 0.5s;
 	transition: all ease-in-out 0.3s;
-*/
 }
 .content-wraper.content-wraper-active {
 	margin-left: 50px;
@@ -884,10 +882,10 @@ ul.timesheet-menu li a:hover, ul.backoffice-menu li a:hover {
 	-webkit-box-shadowbox-shadow: 0px 0px 3px #707070;
 	-moz-box-shadow: 0px 0px 3px #707070;
 	padding: 0 15px;
-/*	-moz-transition: all ease-in-out 0.3s;
+	-moz-transition: all ease-in-out 0.3s;
 	-ms-transition: all ease-in-out 0.3s;
 	-webkit-transition: all ease-in-out 0.3s;
-	transition: all ease-in-out 0.3s;*/
+	transition: all ease-in-out 0.3s;
 	position: relative;
 }
 .inner-content {
@@ -1495,8 +1493,8 @@ transform: rotate(0)
 	-webkit-transform: translateY(0px);
 	transform: translateY(0px);
 	-moz-transition: all ease-in-out 0.5s;
-	transition: all ease-in-out 0.5s;
-	transition: all ease-in-out 0.5s;
+	-webkit-transition: all ease-in-out 0.5s;
+	-o-transition: all ease-in-out 0.5s;
 	box-shadow: 0px 0px 10px 5px #e1e6fa;
 }
 .profile-img-container .comp-image {
@@ -2628,7 +2626,7 @@ ul.can-perdt li a {
 	background: #d9534f;
 	border-radius:0;
 	padding:5px 5px 0px 5px;
-	position: absolute;
+	position: fixed;
 	top: 125px;
 	-webkit-transition: all 0.8s ease-in-out 0s;
 	-ms-transition: all 0.8s ease-in-out 0s;
@@ -3307,7 +3305,7 @@ a.collpase-div .fa-angle-down:hover{
 	color:#333;
 }
 .addTask {
-	position:absolute;
+	position:fixed;
 	right: 0px;
 	top: 90px;
 	z-index: 9999;
@@ -4552,13 +4550,13 @@ import-tranhd  [class*="col-md-"]{
 	max-height: 200px;
 	overflow-y:auto;
 	background: #fff;
-	border: 1px solid #ccc;
-	border-radiu:3px !important;
+	border:1px solid #ccc;
+	border-radius:3px !important;
 	z-index: 9999;
 	color:#333;
 	display:none;
 	font-weight: normal;
-	transistion:all 0.2s;
+	transition:all 0.2s;
 }
 .show-reason:hover .reason{
 	display:block;
@@ -5512,7 +5510,7 @@ color: #ccc
 max-height: 150px !important;
 }
 .divmax-width{
-    width:225px;
+    width:200px;
 }
 .dashboard-widget.req-profile ul{
        position: relative;
@@ -6429,11 +6427,14 @@ position: absolute; top: -8px; width: 55%; right:10px; min-height: 20px; line-he
     background-color: #3F51B5;
 }
 .jobs-graphview .count{
-    min-width: 30px;
-    min-height: 30px;
+    min-width: 50px;
+    min-height: 50px;
     padding:10px 15px;
     border-radius: 50%;
     background: #fff;
+    position: absolute;
+    right: 10px;
+    bottom: 15px;
 }
 /* media 320px */
 @media (max-width: 320px) {
