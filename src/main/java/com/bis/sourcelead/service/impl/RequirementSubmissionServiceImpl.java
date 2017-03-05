@@ -3103,9 +3103,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 						User userVendor = userService.getUserByUserCode(reqsub.getCreatedBy());
 						User userClient  = userService.getUserByUserCode(reqsub.getUpdatedBy());
 						int candidateCount = getShortlistedCount(submissionId,reqsub.getVendorLocationId().getId());
-						if(submissionId.length == 5){
+							if(candidateCount <= 5){
 							shortlistTable = buildShortlistedApplicantTable(submissionId,reqsub.getVendorLocationId().getId());
-						}
+							}
 						/*if(null != reqsub.getSourceSubmission()){
 							if (reqsub.getSourceSubmission().getRequirement().getId().longValue() == childReq.getId().longValue()) {*/
 								
@@ -3148,8 +3148,6 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 								 }
 								 if(null != shortlistTable  && !"".equalsIgnoreCase(shortlistTable.toString())){
 								 globalVarsMap.put("shortlistedTable", shortlistTable.toString());	 
-								 }else{
-								 globalVarsMap.put("shortlistedTable","--"); 
 								 }
 								 
 								 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
