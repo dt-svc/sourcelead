@@ -231,7 +231,7 @@ function candidateCertificateList(candidateId){
 	                    	 if(window.candidateStatusGlobal == '0'){
 	                    		 result = result  +'<i class="glyphicon glyphicon-trash"></i></div></td>';
 	                    	}else{
-	                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate"></i></div></td>';
+	                    		 result = result  +'<i class="glyphicon glyphicon-trash" style="color:#f51515 !important;" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate"></i></div></td>';
 	                    	}
 	                    	 result  = result + '         </tr>';
 	                      } 
@@ -268,6 +268,7 @@ function candidateCertificateList(candidateId){
 function certificationPagination(){  
     $('#candidateCertificatePagination').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,

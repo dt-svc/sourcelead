@@ -861,7 +861,7 @@ ul.timesheet-menu li a:hover, ul.backoffice-menu li a:hover {
 
 /* content Area Styels */
 .content-wraper {
-	background: #e1e6fa;
+	background: #f1f2f7;
 	min-height: 620px;
 	margin-left: 230px;
 	padding: 0 30px 30px;
@@ -5836,7 +5836,7 @@ z-index: 99;
 	display: none;
 	top:-15px;
 	padding:5px 10px;
-	left:-380px;
+	left:-412px;
 	z-index:999;
 	transition:all ease-in-out 0.3s;
 	-moz-box-shadow: 0px 1px 8px #9E9E9E;
@@ -6401,11 +6401,8 @@ margin: 5px 0 5px 8px !important;
 	margin: 5px 0px 5px 5px;
 }
 .content_widget {
-background: #fff;
-box-shadow: 0 1px 1px rgba(0,0,0,0.1);
-border-radius: 5px;
-min-height: 50px;
-padding: 10px;
+background: #fff;box-shadow: 0 1px 1px rgba(0,0,0,0.1);border-radius: 5px;min-height: 50px;
+max-height: 125px;padding: 10px;position: relative;
 }
 .activeJobs div[class*="col-md-"] {
     margin-bottom: 15px;
@@ -6418,6 +6415,25 @@ padding: 10px;
 }
 .overflow_inherint{
 	overflow: inherit !important;
+}
+.jobs-graphview .label {
+position: absolute; top: -8px; width: 55%; right:10px; min-height: 20px; line-height: 16px; font-size: 14px; color: #fff;
+}
+.jobs-graphview .fa {
+    position: relative;top: 5px;color: #fff;opacity: 0.5;
+}
+.buttonView{
+    background: #5C6BC0;
+}
+.jobs-graphview .label-info {
+    background-color: #3F51B5;
+}
+.jobs-graphview .count{
+    min-width: 30px;
+    min-height: 30px;
+    padding:10px 15px;
+    border-radius: 50%;
+    background: #fff;
 }
 /* media 320px */
 @media (max-width: 320px) {
@@ -6911,5 +6927,3 @@ top:150px;
 #divTsRow1 .chosen-container-active .chosen-choices {
     max-height: 100px !important; overflow-y:auto !important;
 }
-
-
