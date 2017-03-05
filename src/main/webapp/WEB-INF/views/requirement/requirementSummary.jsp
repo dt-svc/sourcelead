@@ -3062,7 +3062,7 @@ function requirementPipelineRejected(requirementId,submissionType){
 					       result = result + '<th>Source</th>';
 			        	   result = result + '<th>Rejected On</th>';
 			        	   result = result + '<th>Rejected By</th>';
-				           result = result + '<th>Rejected Stage</th>';
+				          /*  result = result + '<th>Rejected Stage</th>'; */
 				           result = result + '<th>Status</th>';
 				           result = result + '         </tr>';
 				           result = result + '       </thead>';
@@ -3179,7 +3179,7 @@ function requirementPipelineRejected(requirementId,submissionType){
 						           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
 						        	   result = result + '<td><div class="tblwidth-150"><span>'+report.createdUser+'</span>';
 						           }
-					        	   result = result + '<td><div class="tblwidth-150"><span>'+report.previousSubmissionStatus+'</span>';
+					        	  /*  result = result + '<td><div class="tblwidth-150"><span>'+report.previousSubmissionStatus+'</span>'; */
 					        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
 					        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
 					        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
