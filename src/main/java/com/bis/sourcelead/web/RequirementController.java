@@ -348,6 +348,8 @@ public class RequirementController {
 			model.setViewName("requirement/requirementSummary");
 			model.addObject("requirementId",requirementId);
 			
+			model.addObject("requirement",requirement);
+			
 			model.addObject("timezone",timezone.getTimeZoneId());
 			
 			Boolean isTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());

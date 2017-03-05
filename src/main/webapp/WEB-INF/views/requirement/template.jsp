@@ -125,6 +125,7 @@ function requirementTemplateList(){
 	                     result = result +" </tbody>";
 	                     result = result +"</table>"; 
 	                     $("#requirementTemplateList").append(result); 
+	                     pagination();
 			    	
                  }else{
                  	 $("#requirementTemplateList").removeAttr("style");

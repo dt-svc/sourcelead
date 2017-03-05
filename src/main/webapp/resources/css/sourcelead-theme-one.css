@@ -2,6 +2,7 @@
 /* CSS Document */
 
 body{
+
 }
 
 .main-header{
@@ -139,13 +140,11 @@ ul.timesheet-menu li a:hover{
     padding: 10px 15px;
     width: 230px;
 }
-.side-bar .user-panel.user-panel-active .media .media-body .text-logo .tbldata-dotdot {
-    font-size: 18px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 180px;
-    display: block;
+.side-bar .user-panel.user-panel-active .media .media-body .text-logo{
+    width: 200px;
+}
+.side-bar .user-panel.user-panel-active .media .media-body .text-logo span{
+    width: 200px !important;
 }
 .side-bar .user-panel.user-panel-active .image img {
     max-height: 60px;
@@ -277,4 +276,13 @@ ul.timesheet-menu li a:hover{
 }
 .header-widget {
 	border-top: 4px solid #517aa3;
+}
+.theme_sideMenu.themeSideMenu_Active{
+	
+}
+.theme_sideMenu.themeSideMenu_Active a.tree-view {
+display: block !important;
+}
+.tree-view-new tree-view-new-active:hover + ul {
+display: block;
 }

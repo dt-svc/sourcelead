@@ -123,7 +123,6 @@ public class RequirementDaoImpl implements RequirementDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,User user,String userRoleName) throws Exception {
 		
-		long startTime = System.currentTimeMillis(); 
 		List<Requirement> reqList = null;
 		Session session = this.sessionFactory.getCurrentSession();
 		//User user = userDao.getUserById(userId);
@@ -202,11 +201,7 @@ public class RequirementDaoImpl implements RequirementDao {
         	
         }
 		
-		reqList = query.setCacheable(true).list();
-		
-		long endTime = System.currentTimeMillis();
-		 logger.info("############## Total Time for the Requirement Response = "+(endTime - startTime));
-
+		reqList = query.setCacheable(true).list();		
 		return reqList;
 		
 	}
@@ -591,7 +586,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Requirement> getRequirementListById(Long requirementId) {
 		Session session = sessionFactory.getCurrentSession();
-		String query = "from Requirement requ  left join fetch requ.parentRequirement left join fetch requ.spocId spoc   left join fetch spoc.spocUser left join fetch requ.parentRequirement where requ.parentRequirement.id =:requirementId";
+		String query = "from Requirement requ  left join fetch requ.parentRequirement left join fetch requ.spocId spoc    left join fetch requ.parentRequirement where requ.parentRequirement.id =:requirementId";
 		return session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
 		
 	}

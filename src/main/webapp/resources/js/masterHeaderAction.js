@@ -6,6 +6,8 @@
 			$('.footer-area').toggleClass("footer-area-active");
 			$("div.side-nav ul li").find('ul.collapses, .tree-view').toggleClass("tree-view-active");
 			$("div.side-nav ul li").find('.tree-view-new').toggleClass('tree-view-new-active');
+			//Theme one side bar
+			$('.theme_sideMenu').toggleClass('themeSideMenu_Active');
 			$(".collapses").hide();
 			});
 		$('.srch-btn-xs').click(function(){
