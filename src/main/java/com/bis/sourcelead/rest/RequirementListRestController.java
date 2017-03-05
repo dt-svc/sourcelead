@@ -582,7 +582,7 @@ public class RequirementListRestController {
 									if(requirementSubmissionTemplateFields != null){
 										if(!isNullOrEmpty(requirementSubmissionTemplateFields.getLastName())){
 											StringBuilder candidateNameSB = new StringBuilder();
-											candidateName = candidateNameSB.append(candidateName).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString();
+											candidateName = candidateNameSB.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString();
 										}else{
 											candidateName = requirementSubmissionTemplateFields.getFirstName();
 										}

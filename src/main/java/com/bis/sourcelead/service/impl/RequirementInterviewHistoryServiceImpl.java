@@ -114,7 +114,7 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 					 Date interviewConverteDate = TZ_DF_TSP.parse(interviewStartTimeUTC);
 						String interviewConvertedDateStr = DF_DMY.format(interviewConverteDate);
 						interviewHistory.setInterviewTimeZoneStartTimeStr(interviewConvertedDateStr+"("+requirementInterview.getTimezone().getTimeZoneId()+")");
-						if(requirementInterview.getStartTime().compareTo(new Date())>0){
+						if(requirementInterview.getStartTime().compareTo(new Date())<0){
 								interviewHistory.setFeedbackStartTime("feedbackStartTime");
 							}
 			    }
@@ -133,7 +133,7 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 					 Date interviewConverteDate = TZ_DF_TSP.parse(interviewStartTimeUTC);
 						String interviewConvertedDateStr = DF_DMY.format(interviewConverteDate);
 						interviewHistory.setInterviewTimeZoneEndTimeStr(interviewConvertedDateStr);
-						if(requirementInterview.getEndTime().compareTo(new Date())>0){
+						if(requirementInterview.getEndTime().compareTo(new Date())<0){
 				    		 interviewHistory.setFeedbackEndTime("feedbackEndTime");
 						}
 			    }
