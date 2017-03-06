@@ -54,12 +54,14 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -97,6 +99,9 @@ public class CandidateListRestController {
 	
 	  @Autowired
 	  CandidateHotListService candidateHotListService;
+	  
+	  @Autowired
+	  CountriesService countriesService;
 	  
 	  @Autowired
 	  private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
@@ -630,7 +635,17 @@ public class CandidateListRestController {
 	 @RequestMapping(value = "/getCandidateById" , method = RequestMethod.POST)
 	 public @ResponseBody  String getCandidateById(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
 			String resultJson ="" ;
+			 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Countries countries = countriesService.getCountriesByCountryName(loginUser.getCountry());
 			Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
+			if(null != can.getCurrentRateCurrency() && null != can.getExpectedRateCurrencey()){
+				can.setCurrentRateCurrency(can.getCurrentRateCurrency());
+				can.setCurrentRateCurrency(can.getExpectedRateCurrencey());
+			}else{
+				can.setCurrentRateCurrency(countries.getCurrency());	
+				can.setExpectedRateCurrencey(countries.getCurrency());
+			}
+			
 			resultJson = commonUtil.toJSON(can);
 			return resultJson;
      }
