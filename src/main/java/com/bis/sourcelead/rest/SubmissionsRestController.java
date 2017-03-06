@@ -255,7 +255,7 @@ public class SubmissionsRestController {
 		if(null != requirement){
 			Integer totalApplicatsCountForRequirement = 0;
 		   //updating total number of applicants for requrement
-			totalApplicatsCountForRequirement = requirementSubmissionService.getNumberOfApplicantsForRequirement(orgLocations.getId(), requirement.getId());
+			totalApplicatsCountForRequirement = requirementSubmissionService.getNumberOfApplicantsForRequirement(requirement.getOrgLocationId().getId(), requirement.getId());
 //			totalApplicatsCountForRequirement = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(orgLocations,requirement.getId(),user,userRoleName);
 			if(totalApplicatsCountForRequirement > 0){
 				requirement.setTotalApplicants(totalApplicatsCountForRequirement); 
