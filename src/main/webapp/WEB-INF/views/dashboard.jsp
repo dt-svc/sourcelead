@@ -115,11 +115,9 @@ overflow-x: auto;
 			    </div>
 		    </c:if>
 		     <div class="clearfix row mb"> 
-		    	 <c:if test = "${isManagerWithSubmissionRateStatusAsRequestOrAccept == true || isAdmin == true}"> 
 		     		<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 		     		<jsp:include page="dashboardApplicants.jsp"></jsp:include>
 		     		</sec:authorize>
-		     	</c:if>
 		     </div>
 	    
 	   			 <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_INTERVIEW')">
@@ -170,16 +168,11 @@ overflow-x: auto;
 <jsp:include page="masterFooter.jsp" />
 <script type="text/javascript">
 $('#dasboardTaskDatpicker').datepicker({
-	dateFormat : 'dd-mm-yy',
+//	dateFormat : 'dd-mm-yy',
 	changeMonth: true,
 	changeYear: true, 
 	onSelect : function(selected) {
-		var dt = new Date(selected);
-		dt.setDate(dt.getDate() + 1);
-		$("#dasboardTaskDatpicker").datepicker("option", "minDate", dt);
 		assignTasksList();
-		
-		
 	   }
 	});
 </script>
@@ -260,10 +253,10 @@ function dasboardTasksPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 

@@ -383,7 +383,8 @@ function pagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     })
 }
@@ -440,7 +441,8 @@ function pagination1(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     })
 }

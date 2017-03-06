@@ -79,8 +79,14 @@ function ApplicantAuthorization(status){
                                           resultToday  = resultToday + '           <td><div>-----</div></td>';
                                       }
                                       if(status == 'accepted'){
+                                    	  if(report.submissionRequestUser != null && report.submissionRequestUser != 'undefined'){
                                     	  resultToday  = resultToday + '           <td><div><span title="'+report.submissionRequestUser+'">'+report.submissionRequestUser+'</span></div></td>';
-                                          resultToday  = resultToday + '           <td><div><span title="'+report.submittedOn+'">'+report.submittedOn+'</span></div></td>';
+                                    	  }else{
+                                        	  resultToday  = resultToday + '           <td><div><span title="'+report.candidateName+'">'+report.candidateName+'</span></div></td>';
+
+                                    	  }
+                                    		  
+                                    	  resultToday  = resultToday + '           <td><div><span title="'+report.submittedOn+'">'+report.submittedOn+'</span></div></td>';
                                       }
                                       if(status == 'requestSent'){ 
                                     	    resultToday  = resultToday + '<td><div>'+report.submissionRateStatus+'</div></td>';
@@ -199,7 +205,8 @@ function applicantsPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-            "sSearch": ""
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
        }
     } );
 }

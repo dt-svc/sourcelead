@@ -320,7 +320,8 @@ function pagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-            "sSearch": ""
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
        }
     } );
 }
@@ -335,7 +336,8 @@ function pagination1(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-            "sSearch": ""
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
        }
     } );
 }
@@ -351,7 +353,8 @@ function pagination2(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-            "sSearch": ""
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
        }
     } );
 }
@@ -367,7 +370,8 @@ function pagination3(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-            "sSearch": ""
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
        }
     } );
 }

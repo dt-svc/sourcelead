@@ -26,7 +26,7 @@
       <div id="accordion-sl" class="release-jobs">
       <!-- Accordion First Tab -->
         <div class="clearfix">
-          <h2>Profile</h2>
+          <h2 id="jobTitle">Profile</h2>
           <div class="content clearfix">
             <div class="vendor_wrap">
               <div class="col-md-2 custom-selectpicker mt10 mb10">
@@ -132,6 +132,7 @@
 <script> 
 $(document).ready(function(){
 	getVendorLists();
+	$("#jobTitle").html("Release to Vendors (${jobTitle})");
 	//getVendorContactLists();
 });
 </script>
@@ -432,7 +433,8 @@ function vendorPagination(){
        	"bDestroy": true,
        	"ordering": false,
        	"oLanguage": {
-        		"sSearch": ""
+        		"sSearch": "",
+        		 "sZeroRecords": "", "sEmptyTable": ""
         	}
        } );
 }
@@ -447,7 +449,8 @@ function candidatePagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }

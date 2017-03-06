@@ -12,7 +12,6 @@
 <!-- end files for autocomplete with tagit -->
 
 
-
 <%-- 
      @author : p.sarath kumar
      this script is for candidate Activation
@@ -248,7 +247,7 @@ else{
 	              
 	              result = result +"  <td><div><span title='"+location+"'>"+location+"</span></div></td>";
 	
-	              result = result +"  <td><div>"+candidateUpdateDateToString+"</div></td>";
+	              result = result +"  <td><div class='tblminwidth-75'>"+candidateUpdateDateToString+"</div></td>";
 	              result = result +"</tr>"; 
 	          }
 	          result = result +" </tbody>";
@@ -293,9 +292,6 @@ function cpagination(){
 </script>
  -->
 <script>
-$('#candidatePagination').DataTable( { 
-	"autoWidth": false,
-});
 function cpagination(){ 
     $('#candidatePagination').DataTable( { 
     	"scrollCollapse": false,
@@ -304,10 +300,10 @@ function cpagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script> 
 
@@ -1002,7 +998,7 @@ function cancel(candidateId){
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Candidate List</div>
   </section>
   <div class="timesheet_out">
-    <div class="vendor_wrap">
+    <div class="vendor_wrap" style="overflow-X:auto;">
     
      <div class="pull-left cand-advsrche">
 			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">

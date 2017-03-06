@@ -236,7 +236,7 @@ function validateTaskName(){
 							<label class="col-md-3" for="Project Manager">Manager <span
 								class="text-danger">*&nbsp;<i class=" text-info fa fa-info-circle" title="Before Selecting The Manager Project Start Date is Mandatory"></i></span></label>
 							<div class="col-md-9">
-								<div class="form-icon-min">
+								<div class="form-icon-min" id="chosen-level1Manager">
 									<select class="form-control chosen-select" name="level1Manager" id="level1Manager" field-name="Select Manager" data-validation="required" onchange="getLevel2Approvers();">
 										<option value="">-- Select Manager --</option>
 										<c:forEach var="option" items="${user_List}">
@@ -332,8 +332,8 @@ function validateTaskName(){
 						
 						<div class="form-group">
 		                  <label class="col-md-3">Invoice Frequency <span class="text-danger">*</span></label>
-		                  <div class="col-md-9">
-		                         <select class="form-control chosen-select" id="invoiceFrequency" name="invoiceFrequency" field-name="Invoice Frequency" data-validation="required" >
+		                  <div class="col-md-9" id="chosen-frequency">
+		                         <select class="form-control chosen-select" id="invoiceFrequency" name="invoiceFrequency" onchange="removeFrequencyValidation();" field-name="Invoice Frequency" data-validation="required" >
 				                        <option value="">-Invoice Frequency-</option>
 						                <option value="Weekly">Weekly</option>
 						        	    <option value="Bi-Weekly">Bi-Weekly</option>
@@ -368,7 +368,11 @@ function validateTaskName(){
 	</div>
 </section>
 <!-- Content Area Ends-->
-
+<script>
+function removeFrequencyValidation(){
+	$('#chosen-frequency').find('p.jquery_form_error_message').remove();
+}
+</script>
 <script>
 function getStatus(){
 	$('#endDateDiv').find('p.jquery_form_error_message').remove(); 
@@ -879,7 +883,8 @@ function assignEmployeespagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
 		
     } );
@@ -1024,6 +1029,7 @@ function assignEmployeeCancel(){
 </script>
 <script type="text/javascript">
 function getLevel2Approvers(){
+	$('#chosen-level1Manager').find('p.jquery_form_error_message').remove();
 	var currentApproverId = document.getElementById("level1Manager").value;
 	var currentUser = currentApproverId.split(',');
 	var currentUserId = currentUser[0];

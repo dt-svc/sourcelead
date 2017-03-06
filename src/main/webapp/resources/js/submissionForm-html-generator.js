@@ -285,7 +285,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
         				 datavalidation = 'data-validation="required validate_phone validate_Space validate_length length9-20"';
         			 }
         			 else if(label == 'Current CTC' || label == 'Expected CTC'){
-            			 datavalidation = 'data-validation="required validate_Space validate_float length1-8"';
+            			 datavalidation = 'data-validation="required validate_Space validate_float validate_length length1-8"';
             		 }
         			 else if(label == 'Designation'){
             			 datavalidation = 'data-validation="required validate_Space validate_Name validate_length length2-250"';
@@ -306,7 +306,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
         			 }
         			 
         			 else if(label == 'Current CTC' || label == 'Expected CTC'){
-        				 datavalidation = 'data-validation="required validate_Space validate_float length1-8"';
+        				 datavalidation = 'data-validation="validate_Space validate_float validate_length length1-8"';
             		 }
         			 else if(label == 'Designation'){
             			 datavalidation = 'data-validation="validate_Space validate_Name validate_length length2-250"';
@@ -510,7 +510,6 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                  }
              }
              init();
-             setRateTypesByLocation();
              changeRateLabels();
              var d = new Date();
              var year = d.getFullYear() - 18;
