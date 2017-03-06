@@ -3623,7 +3623,8 @@ function requirementRecommendations(requirementId){
 		    result = result +'<div class="col-md-6 paddingRight">';
 		    result = result +'<label>Skills</label>';
 		    result = result +'<div class="progress">';
-		    result = result +'<div class="progress-bar progress-bar-success" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+report.skillPercentage+'%"> '+report.skillPercentage+'%';
+		    var skillGraph = (100 * report.skillPercentage)/report.totalSkillPercentage;
+		    result = result +'<div class="progress-bar progress-bar-success" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+skillGraph+'%"> '+report.skillPercentage+'%';
    	        result = result +'</div>';
    	        result = result +'</div>';
 		    result = result +' </div>';
@@ -3631,7 +3632,8 @@ function requirementRecommendations(requirementId){
 		    result = result +'<div class="col-md-6 paddingLeft">';
 		    result = result +'<label>Location</label>';
 		    result = result +'<div class="progress">';
-		    result = result +'<div class="progress-bar progress-bar-warning" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+report.locationPercentage+'%"> '+report.locationPercentage+'% ';
+		    var locationGraph = (100 * report.locationPercentage)/report.totalLocationPercentage;
+		    result = result +'<div class="progress-bar progress-bar-warning" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+locationGraph+'%"> '+report.locationPercentage+'% ';
 		    result = result +'</div>';
 		    result = result +'</div>';
 		    result = result +' </div>';
@@ -3644,7 +3646,8 @@ function requirementRecommendations(requirementId){
 		    result = result +'<div class="col-md-6 paddingRight">';
 		    result = result +'<label>Experience</label>';
 		    result = result +'<div class="progress">';
-		    result = result +'<div class="progress-bar progress-bar-info" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+report.expPercentage+'%"> '+report.expPercentage+'% ';
+		    var exGraph = (100 * report.expPercentage)/report.totalExpPercentage;
+		    result = result +'<div class="progress-bar progress-bar-info" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+exGraph+'%"> '+report.expPercentage+'% ';
    	        result = result +'</div>';
 		    result = result +' </div>';
 		    result = result +' </div>';
@@ -3652,7 +3655,8 @@ function requirementRecommendations(requirementId){
 		    result = result +'<div class="col-md-6 paddingLeft">';
 		    result = result +'<label>Rate</label>';
 		    result = result +'<div class="progress">';
-		    result = result +'<div class="progress-bar progress-bar-warning" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+report.ratePercentage+'%"> '+report.ratePercentage+'% ';
+		    var rateGraph =  (100 * report.ratePercentage)/report.totalRatePercentage;
+		    result = result +'<div class="progress-bar progress-bar-warning" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+rateGraph+'%"> '+report.ratePercentage+'% ';
    	        result = result +'</div>';
 		    result = result +' </div>';
 		    result = result +' </div>';
@@ -3664,7 +3668,8 @@ function requirementRecommendations(requirementId){
 		    result = result +'<div class="col-md-6 paddingRight">';
 		    result = result +'<label>NoticePeriod</label>';
 		    result = result +'<div class="progress">';
-		    result = result +'<div class="progress-bar progress-bar-danger" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+report.noticePeriodPercentage+'%"> '+report.noticePeriodPercentage+'% ';
+		    var noticePeriodGraph = (100 * report.noticePeriodPercentage)/report.totalNoticePeriodPercentage;
+		    result = result +'<div class="progress-bar progress-bar-danger" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+noticePeriodGraph+'%"> '+report.noticePeriodPercentage+'% ';
    	        result = result +'</div>';
 		    result = result +' </div>';
 		    result = result +' </div>';
@@ -3672,7 +3677,8 @@ function requirementRecommendations(requirementId){
 		    result = result +'<div class="col-md-6 paddingLeft">';
 		    result = result +'<label>KeyWord</label>';
 		    result = result +'<div class="progress">';
-		    result = result +'<div class="progress-bar progress-bar-primary" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+report.totalKeyWordPerPercentage+'%"> '+report.totalKeyWordPerPercentage+'% ';
+		    var keywordGraph = (100 * report.totalKeyWordPerPercentage)/report.keyWordPerPercentage;
+		    result = result +'<div class="progress-bar progress-bar-primary" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+keywordGraph+'%"> '+report.totalKeyWordPerPercentage+'% ';
    	        result = result +'</div>';
 		    result = result +' </div>';
 		    result = result +' </div>';

@@ -78,8 +78,6 @@ public class RequirementReportRestController {
 					String startDate = outputFormatter.print(zoned);
 					String startDateString = CommonUtil.convertTimeZones("UTC",timezone.getTimeZoneId(), startDate);
 					filterDate = CommonUtil.convertTimeZones("UTC",timezone.getTimeZoneId(), startDate);
-					logger.info("++++++++++++++++++++++++startDateString "+startDateString);
-					logger.info("++++++++++++++++++++++++endDateString "+endDateString);
 					startDateUTC = TZ_DF_TS.parse(startDateString);
 				}else if("yesterday".equals(reportType)){
 					DateTime yesterDayZoned = zoned.minusDays(1);
@@ -104,9 +102,14 @@ public class RequirementReportRestController {
 				}
 			}
 			
-			List<Requirement> requirementList = requirementReportService.getRequirementReports(userRoleName,orgLocation,user,filterDate,startDateUTC,endDateUTC);
-		    logger.info("*****************************== "+requirementList.size());  
-			return null;
+			List<Requirement> requirementList = requirementReportService.getRequirementReports(userRoleName,orgLocation,user,filterDate,startDateUTC,endDateUTC,reportType);
+		   
+			for(Requirement requirement : requirementList){
+				String postedDate = new SimpleDateFormat("yyyy-MM-dd").format(requirement.getCreatedDate());
+				requirement.setPostedDateStr(postedDate);
+			}
+		    String reportsList = commonUtil.toJSON(requirementList);
+			return reportsList;
 		 
 	 }
 }

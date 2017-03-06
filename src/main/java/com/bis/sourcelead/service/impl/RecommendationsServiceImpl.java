@@ -666,7 +666,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					
 					//keywords calculation
 				    float totalKeyWordPer = 0;
-					if(null != candidateIndex.getSummary() && "undefined" != candidateIndex.getSummary() && null != numOfKeyWords){
+					if(null != candidateIndex.getSummary() && !"".equalsIgnoreCase(candidateIndex.getSummary()) && "undefined" != candidateIndex.getSummary() && null != numOfKeyWords){
 						for(int i=0;i<numOfKeyWords.length;i++){
 							if(candidateIndex.getSummary().contains(numOfKeyWords[i])){
 								totalKeyWordPer = totalKeyWordPer + percentPerkeyword;	
@@ -682,11 +682,23 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					
 					double skillRoundOff = Math.round(skillPercentage * 100.0) / 100.0;
 					candidateIndex.setSkillPercentage((float)(skillRoundOff));
+					candidateIndex.setTotalSkillPercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeSkillScore()));
+					
 					candidateIndex.setExpPercentage(expPercentage);
+					candidateIndex.setTotalExpPercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeExperienceScore()));
+					
 					candidateIndex.setLocationPercentage(locationPercentage);
+					candidateIndex.setTotalLocationPercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeLocationScore()));
+					
 					candidateIndex.setRatePercentage(ratePercentage);
+					candidateIndex.setTotalRatePercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeRateScore()));
+					
 					candidateIndex.setNoticePeriodPercentage(noticePeriod);
+					candidateIndex.setTotalNoticePeriodPercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeNoticeperiodScore()));
+					
 					candidateIndex.setTotalKeyWordPerPercentage(totalKeyWordPer);
+					candidateIndex.setKeyWordPerPercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeKeywordsScore()));
+					
 					candidateIndex.setIsCandidateAdedd(isCandidateAdded);
 					
 					if(skillPercentage !=0 && totalPercentage !=0 ){
