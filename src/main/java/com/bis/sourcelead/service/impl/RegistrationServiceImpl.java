@@ -30,6 +30,9 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.ReferContacts;
+import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
@@ -51,7 +54,10 @@ import com.bis.sourcelead.service.PasswordResetsSevice;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.service.RegistrationService;
+import com.bis.sourcelead.service.RequirementReferService;
+import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
@@ -134,10 +140,17 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Autowired
 	private CandidateService candidateService;
 	
+	@Autowired
+	ReferContactsService referContactsService;
 	
+	@Autowired
+	RequirementReferService requirementReferService;
 	
 	@Autowired
 	private TimeZoneService timeZoneService;
+	
+	@Autowired
+	RequirementService requirementService;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -786,7 +799,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 
 	@Override
-	public void saveProfessional(JSONObject jsonObj) throws Exception {
+	public void saveProfessional(JSONObject jsonObj,String contactUUID) throws Exception {
 		
 		User user = new User();
 		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
@@ -860,6 +873,31 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidate.setUpdatedDate(new Date());
 		
 		candidateService.addCandidate(candidate);
+		
+		
+		if(!isNullOrEmpty(contactUUID)){
+			
+			ReferContacts referContacts = referContactsService.getReferContactsByUUID(contactUUID); 
+			String referToEmail = referContacts.getContactUserEmail();
+			referContacts.setFirstName(user.getFirstName());
+			referContacts.setLastName(user.getLastName());
+			referContacts.setContactUserEmail(user.getEmail());
+			referContacts.setContactUser(user);
+			referContactsService.addReferContacts(referContacts);
+			
+			List<RequirementRefer>  requirementReferList = requirementReferService.getRequirementReferListByEmail(referToEmail);
+			if(null != requirementReferList && requirementReferList.size() > 0){
+				for(RequirementRefer requirementRefer : requirementReferList){
+					requirementRefer.setReferToUser(user);
+					requirementRefer.setReferToEmail(referContacts.getContactUserEmail());
+					requirementReferService.addRequirementRefer(requirementRefer);
+					
+				}
+			}
+			
+			
+		}
+		
 		
 		sendEmailToProfessional(user);
 		
