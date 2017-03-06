@@ -1,9 +1,12 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -16,6 +19,7 @@ import com.bis.sourcelead.dao.RequirementReportDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.util.CalendarUtil;
 
 @Repository
 public class RequirementReportDaoImpl implements RequirementReportDao{
@@ -26,15 +30,80 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String filterDate,Date startDateUTC, Date endDateUTC) {
+	public List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String filterDate,Date startDateUTC, Date endDateUTC,String reportType) {
 		 
 		Session session = this.sessionFactory.getCurrentSession();
 		//User user = userDao.getUserById(userId);
+		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
+		currentCal.setLenient(false);
+		currentCal.setTime(new Date());
 		
-//		UserRole userRole1 = userRoleDao.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
-				
 		Map<String, Object> params = new HashMap<String,Object>();
-		String dateSubQuery = " and requirement.createdDate between :startDateUTC AND :endDateUTC";
+		String dateSubQuery = "";
+		if(reportType != null && !"".equalsIgnoreCase(reportType)){
+			if("today".equalsIgnoreCase(reportType)){
+				dateSubQuery = " and requirement.createdDate >= CURDATE()";
+			}else if("yesterday".equalsIgnoreCase(reportType)){
+//				SELECT id FROM folk WHERE DATE(time) = CURDATE() - 1"
+//				dateSubQuery = " and (DATE(requirement.createdDate) <= CURDATE()))";
+				dateSubQuery = " and DATE(requirement.createdDate) = CURDATE()-1";
+			}else if("week".equalsIgnoreCase(reportType)){
+//				WHERE yourDateColumn > DATEADD(DAY, -7, GETDATE()) ;
+				java.sql.Date sqlStartDate = null;
+				java.sql.Date sqlEndDate  = null;
+				
+				//Date toDate = df.parse("2012-04-09 23:59:59");
+				try {
+					Date previousWeekDate = CalendarUtil.getDateIncrementByincrement(currentCal, -7).getTime();
+					Date currentWeekDate = CalendarUtil.getDateIncrementByincrement(currentCal, 1).getTime();
+					sqlStartDate = new java.sql.Date(previousWeekDate.getTime());
+				    sqlEndDate = new java.sql.Date(currentWeekDate.getTime());
+				} catch (Exception e) {}
+				dateSubQuery = " and requirement.createdDate >= '"+sqlStartDate+"' and requirement.createdDate <= '"+sqlEndDate+"'";
+			}else if("twoweeks".equalsIgnoreCase(reportType)){
+				
+				java.sql.Date sqlStartDate = null;
+				java.sql.Date sqlEndDate  = null;
+				
+				//Date toDate = df.parse("2012-04-09 23:59:59");
+				try {
+					Date previousWeekDate = CalendarUtil.getDateIncrementByincrement(currentCal, -14).getTime();
+					Date currentWeekDate = CalendarUtil.getDateIncrementByincrement(currentCal, 1).getTime();
+					sqlStartDate = new java.sql.Date(previousWeekDate.getTime());
+				    sqlEndDate = new java.sql.Date(currentWeekDate.getTime());
+				} catch (Exception e) {}
+				dateSubQuery = " and requirement.createdDate >= '"+sqlStartDate+"' and requirement.createdDate <= '"+sqlEndDate+"'";
+				
+				//dateSubQuery = " and DATE(requirement.createdDate) BETWEEN (CURDATE() - 14) and (CURDATE()+1)";
+			}else if("month".equalsIgnoreCase(reportType)){
+				java.sql.Date sqlStartDate = null;
+				java.sql.Date sqlEndDate  = null;
+				
+				//Date toDate = df.parse("2012-04-09 23:59:59");
+				try {
+					Date previousWeekDate = CalendarUtil.getDateIncrementByincrement(currentCal, -30).getTime();
+					Date currentWeekDate = CalendarUtil.getDateIncrementByincrement(currentCal, 1).getTime();
+					sqlStartDate = new java.sql.Date(previousWeekDate.getTime());
+				    sqlEndDate = new java.sql.Date(currentWeekDate.getTime());
+				} catch (Exception e) {}
+				dateSubQuery = " and requirement.createdDate >= '"+sqlStartDate+"' and requirement.createdDate <= '"+sqlEndDate+"'";
+				//dateSubQuery = " and DATE(requirement.createdDate) >= CURDATE()-30";
+			}else if("twomonths".equalsIgnoreCase(reportType)){
+				java.sql.Date sqlStartDate = null;
+				java.sql.Date sqlEndDate  = null;
+				
+				//Date toDate = df.parse("2012-04-09 23:59:59");
+				try {
+					Date previousWeekDate = CalendarUtil.getDateIncrementByincrement(currentCal, -60).getTime();
+					Date currentWeekDate = CalendarUtil.getDateIncrementByincrement(currentCal, 1).getTime();
+					sqlStartDate = new java.sql.Date(previousWeekDate.getTime());
+				    sqlEndDate = new java.sql.Date(currentWeekDate.getTime());
+				} catch (Exception e) {}
+				dateSubQuery = " and requirement.createdDate >= '"+sqlStartDate+"' and requirement.createdDate <= '"+sqlEndDate+"'";
+				//dateSubQuery = " DATE(requirement.createdDate) >= CURDATE()-60";
+			}
+		}
+		
 		
 		String from = "from Requirement requirement  left join fetch requirement.parentRequirement  left join fetch requirement.clientId left join fetch requirement.spocId left join fetch requirement.submissionTemplateId left join fetch requirement.clientSubmissionTemplateId left join fetch requirement.parentRequirement"; 
 		String subQuery = "";
@@ -78,18 +147,18 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
         {
 			if(str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("approverUserId") || str.equalsIgnoreCase("managerUserId")){
 				query.setLong(str, (long) params.get( str ));
-			}if( str.equalsIgnoreCase("startDateUTC")){
-				query.setDate("startDateUTC", startDateUTC);
-			}if(str.equalsIgnoreCase("endDateUTC")){
-				query.setDate("endDateUTC", endDateUTC);
 			}
+//			if( str.equalsIgnoreCase("startDateUTC")){
+//				query.setDate("startDateUTC", startDateUTC);
+//			}if(str.equalsIgnoreCase("endDateUTC")){
+//				query.setDate("endDateUTC", endDateUTC);
+//			}
 			if(str.equalsIgnoreCase("level") || str.equalsIgnoreCase("level1") || str.equalsIgnoreCase("level2")){
 				query.setInteger(str, (int) params.get( str ));
 			}
 			else{
 				query.setParameter( str, params.get( str ) );
 			}
-        	
         }
 		
 		return query.setCacheable(true).list();

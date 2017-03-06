@@ -88,6 +88,8 @@ public class Constants {
 	public static String REJECT_CLIENT = "Reject Client";
 	public static String REJECT_VENDOR = "Reject Vendor";
 	
+	public static String SHORTLISTMAILFROMCLIENT_TO_VENDOR = "ShortlistMailFromClient_To_Vendor";
+	
 	public static String OFFER_MAIL_TO_VENDORS="Client to Vendor Acceptence";
 	public static String APPLICANT_INTERVIEW = "Applicant Interview";
 	public static String INTERVIEWER_INVITATION = "Interviewer Invitation";

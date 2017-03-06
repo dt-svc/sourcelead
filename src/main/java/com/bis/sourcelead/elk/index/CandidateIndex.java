@@ -125,6 +125,18 @@ public class CandidateIndex implements Serializable {
 	
 	private int noOfReq;
 	
+	private int totalExpPercentage;
+	
+	private int totalSkillPercentage;
+	
+	private int totalLocationPercentage;
+	       
+	private int totalRatePercentage;
+	       
+	private int totalNoticePeriodPercentage;
+	       
+	private int keyWordPerPercentage;
+	
 	private String reqSubmissionId;
 	
 	private boolean isCandidateAdedd;
@@ -627,7 +639,54 @@ public class CandidateIndex implements Serializable {
 		this.recruiterUserId = recruiterUserId;
 	}
 
-
+	public int getTotalSkillPercentage() {
+		return totalSkillPercentage;
 	}
+
+	public void setTotalSkillPercentage(int totalSkillPercentage) {
+		this.totalSkillPercentage = totalSkillPercentage;
+	}
+
+	public int getTotalLocationPercentage() {
+		return totalLocationPercentage;
+	}
+
+	public void setTotalLocationPercentage(int totalLocationPercentage) {
+		this.totalLocationPercentage = totalLocationPercentage;
+	}
+
+	public int getTotalRatePercentage() {
+		return totalRatePercentage;
+	}
+
+	public void setTotalRatePercentage(int totalRatePercentage) {
+		this.totalRatePercentage = totalRatePercentage;
+	}
+
+	public int getTotalNoticePeriodPercentage() {
+		return totalNoticePeriodPercentage;
+	}
+
+	public void setTotalNoticePeriodPercentage(int totalNoticePeriodPercentage) {
+		this.totalNoticePeriodPercentage = totalNoticePeriodPercentage;
+	}
+
+	public int getKeyWordPerPercentage() {
+		return keyWordPerPercentage;
+	}
+
+	public void setKeyWordPerPercentage(int keyWordPerPercentage) {
+		this.keyWordPerPercentage = keyWordPerPercentage;
+	}
+
+	public int getTotalExpPercentage() {
+		return totalExpPercentage;
+	}
+
+	public void setTotalExpPercentage(int totalExpPercentage) {
+		this.totalExpPercentage = totalExpPercentage;
+>>>>>>> 7a0bd9b090ff84e4ab59acbb0f1d61ff83a43990
+	}
+}
 
 

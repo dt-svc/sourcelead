@@ -177,4 +177,8 @@ public interface RequirementSubmissionService {
 	void sendRejectionMailToVendorContact(User user, String reason, Long submissionId, OrgLocations orgLocations) throws Exception;
 
 	RequirementSubmission validateRequirementByRecruiterCandidateEmail(String email, Long requirementId, Long recruiterUserId) throws Exception;
+
+	void shortListedMailToVendorFromClient(Requirement requirement, String submissionsList, OrgLocations orgLocations,
+			User user) throws Exception;
+
 }
