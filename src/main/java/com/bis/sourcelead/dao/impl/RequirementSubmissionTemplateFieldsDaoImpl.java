@@ -69,7 +69,16 @@ public class RequirementSubmissionTemplateFieldsDaoImpl implements RequirementSu
 		return requirementSubmissionTemplateFields;
 	}
 
-	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmissionTemplateFields> getSubmissionsTemplateFieldsByRequirementSubmissionsIdAndOrgLocationId(
+			long submissionId, Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementSubmissionTemplateFields reqSubTemp where reqSubTemp.requirementSubmission.id =:requirementSubmissionsId and reqSubTemp.requirementSubmission.vendorLocationId.id =:orgLocationId";
+		List<RequirementSubmissionTemplateFields> requirementSubmissionTemplateFieldsList =  session.createQuery(query.toString()).setLong("requirementSubmissionsId", submissionId).setLong("orgLocationId", orgLocationId)
+				.setCacheable(true).list();
+		return requirementSubmissionTemplateFieldsList;
+	}
     
   }
 

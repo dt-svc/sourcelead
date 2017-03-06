@@ -773,7 +773,6 @@ function clearSearchKey() {
 
 <script type="text/javascript">
  function validateEduname(candidateId) {
-	 $('#chosen-educationMsg').find('p.jquery_form_error_message').remove();
 	  var name = document.getElementById("name").value; 
  	  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
 	 var sourceleadUrl ='${sourceleadUrl}';
@@ -786,13 +785,15 @@ function clearSearchKey() {
 		        		  /* document.getElementById("name").setAttribute('record-exist','yes');
 						  document.getElementById("name").setAttribute('record-exist-errorMsg',name+' is Already Existed'); 
 						   */
+						   $('#chosen-educationMsg').find('p.jquery_form_error_message').remove();
 						   $("#name").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
 						  $("#save_button").attr('disabled','disabled');
 						 // return false;
 		        	}
 		        	else{
 		        		 $('#nameIdDiv').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#nameIdDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $('#nameIdDiv').find('p.jquery_form_error_message').remove();
+		        		 $('#chosen-educationMsg').find('p.jquery_form_error_message').remove();
                          $("#save_button").removeAttr("disabled");
 		        	}
 		        },

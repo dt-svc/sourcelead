@@ -180,6 +180,7 @@ public class RequirementListController {
 			model.addObject("vendor_list", vendorsList);
 	        model.addObject(vendorsList);
 	        model.addObject("requirementId",requirement.getId());
+	        model.addObject("jobTitle",requirement.getJobTitle());
 			
 			request.getSession().setAttribute("sessionData",sessionData);
 		}else{
