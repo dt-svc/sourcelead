@@ -139,6 +139,7 @@ function prepareReportDataDiv(data){
     }
 	result = result + '	</tbody>';
 	result = result + '</table>';
+	  $("#requirementReportsDiv12").empty();
     $("#requirementReportsDiv12").append(result);
     requirementReportPagination();
 }
