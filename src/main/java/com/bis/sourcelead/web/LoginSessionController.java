@@ -44,6 +44,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.NotificationsService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -56,6 +57,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.itextpdf.text.log.SysoLogger;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
@@ -104,6 +106,9 @@ public class LoginSessionController {
 	
 	@Autowired 
 	private RequirementService requirementService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	@Autowired 
 	private CountriesService countriesService;
@@ -159,12 +164,17 @@ public class LoginSessionController {
 			
 			Boolean isManagerWithSubmissionRateStatusAsRequestOrAccept = requirementService.checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(user.getId(), orgLocations.getId());
 			model.addObject("isManagerWithSubmissionRateStatusAsRequestOrAccept", isManagerWithSubmissionRateStatusAsRequestOrAccept);
+			
+			Boolean isAdmin = userRoleService.isUserAdminByOrgLocationId(user.getId(),orgLocations.getId());
+			model.addObject("isAdmin",isAdmin);
+			
 		}
 		else{
 			commonUtil.highLightMenu(Constants.Dashboard, request);
 			setSessionUserAttributes(user,request,sourceleadUrl);
 			setSessionOrgAttributes(userRole.getOrgId(), request);
 			tabsList = tabsService.getCrowdSourcingTabsListByRoleId(userRole.getRoles().getId());
+			
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserRole", userRole.getRoles().getRoleName());
@@ -180,7 +190,13 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
 			
-			Candidate candidate = candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(user.getId(), Constants.PROFESSIONAL);
+			Candidate candidate = null;
+			if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")){
+				candidate = candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(user.getId(), Constants.PROFESSIONAL);
+			}else if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+				candidate = candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(user.getId(), Constants.INDIVIDUAL_RECRUITER);
+			}
+			
 			SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
 			SourceLeadSessionManager.setSessionAttribute(request, "candidateId", candidate.getId());
 			
@@ -388,7 +404,7 @@ public class LoginSessionController {
 	}
 
 
-	private void setSessionUserAttributes(User user, HttpServletRequest request,String sourceleadUrl)
+	private void setSessionUserAttributes(User user, HttpServletRequest request,String sourceleadUrl) throws Exception
 	{
 		
 		SourceLeadSessionManager.setSessionAttribute(request, "sourceleadUrl", sourceleadUrl);
@@ -396,6 +412,10 @@ public class LoginSessionController {
 		SourceLeadSessionManager.setSessionAttribute(request, "userType", user.getUserType());
 		SourceLeadSessionManager.setSessionAttribute(request, "userCode", user.getUserCode());
 		SourceLeadSessionManager.setSessionAttribute(request, "userId", user.getId());
+		
+		boolean isSuperUser = orgLocationService.isLoginUserIsSuperUser(user.getId());
+		SourceLeadSessionManager.setSessionAttribute(request, "isSuperUser", isSuperUser);
+		
 		StringBuilder userNameSB = new StringBuilder();
 		if(null != user.getLastName()){
 			SourceLeadSessionManager.setSessionAttribute(request, "userName", userNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
@@ -411,6 +431,10 @@ public class LoginSessionController {
 		SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
 		SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
 		SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
+		if(null != orgLocations.getUser() && null != orgLocations.getUser().getId()){
+			SourceLeadSessionManager.setSessionAttribute(request, "superUserId", orgLocations.getUser().getId());
+		}
+		
 		SourceLeadSessionManager.setSessionAttribute(request, "country", orgLocations.getCountry());
 		
 		try {

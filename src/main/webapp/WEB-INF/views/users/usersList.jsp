@@ -92,7 +92,7 @@ function getUsersSearchResult(searchValue){
     </div>
   </div>
       <section class="clearfix usersHeader positionRelative">
-      <div class="section-action-btns clearfix">
+      
       <div class="pull-left cand-advsrche">
        <input id="searchElement" type="hidden"></input>
        
@@ -216,7 +216,7 @@ function getUsersSearchResult(searchValue){
       </div>
        
        
-       
+       <div class="section-action-btns clearfix">
        <div class="positionRelative pull-left">
        <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
@@ -255,8 +255,8 @@ function getUsersSearchResult(searchValue){
 		   <li><a  id="export-pop"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>
 			    <div id="exportPop" class="user_exp">
 				   <ul class="ul_padding">
-				   <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
-				   <li onclick="exportUserData();"><i class="fa fa-file-excel-o"></i>&nbsp; Excel</li>
+				   <li onclick="exportToPdf();" title="PDF"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
+				   <li onclick="exportUserData();" title="Excel"><i class="fa fa-file-excel-o"></i>&nbsp; Excel</li>
 				   </ul>
 				</div>
 		   </li>

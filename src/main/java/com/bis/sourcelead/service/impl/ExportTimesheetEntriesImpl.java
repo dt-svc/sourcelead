@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
@@ -64,6 +66,7 @@ import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
+import com.itextpdf.text.ListItem;
 import com.itextpdf.text.Font.FontFamily;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
@@ -597,13 +600,31 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	@Override
 	public File timeSheetApprovelExport(User user, OrgLocations orgLocations, Date startDate, Date endDate,String timesheetFrequency, String client, String stage,String frequencyMonth,String weekFrequency) throws Exception {
 		Long clientId;
-		if(!client.equalsIgnoreCase("")){
+		if(!client.equalsIgnoreCase("") && !client.equalsIgnoreCase("All")){
 		 clientId = Long.parseLong(client) ;
 		}else{
 		  clientId = null;
 		}
 		
-		List<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, stage, orgLocations.getId(), user.getId());
+		 List<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, stage, orgLocations.getId(), user.getId());
+		 HashSet<ProjectMembers> freshProjectMembers = new HashSet<>();
+         if(projectMembers != null && !projectMembers.isEmpty()){
+        	
+        	if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Bi-Weekly")){
+	        	for(ProjectMembers pm :projectMembers){
+	        		Date biweeklyCurrentStartMonDayDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(pm.getProjects());
+	        	    if(CalendarUtil.getNumberOfDays(biweeklyCurrentStartMonDayDate, startDate)%14==0){
+	        	    	freshProjectMembers.add(pm);
+	        	    }
+	        	
+	        	}
+        	}
+        	 else{
+		        	freshProjectMembers = new HashSet<>(projectMembers);
+		        }
+         }
+	        
+		
 		String[] headers;
 		int flag = 0;
 			StringBuilder StDateAndEndDate = new StringBuilder("");
@@ -643,6 +664,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	    File file = File.createTempFile(fileSB.append(orgLocations.getOrg().getOrgName()).append("_TimeSheetApproval_").append(dateFormat.format(new Date())).toString(),".pdf");
 
 	    file.setReadable(true);
+	    
 	    try {
 	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
 	        PdfWriter.getInstance(document, new FileOutputStream(file));
@@ -668,13 +690,13 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	        table.setWidthPercentage(100);
 	        
 	        if(timesheetFrequency.equalsIgnoreCase("Monthly")){
-	        	 table.setWidths(new int[]{5,5,5,5,3,3,3,3,3,3,3,5});
+	        	 table.setWidths(new int[]{5,5,5,5,5,3,3,3,3,3,3,3,5});
 	        }else if(timesheetFrequency.equalsIgnoreCase("Semi-monthly")){
-            table.setWidths(new int[]{3,5,5,3,5,3,3,3,3,5});
+            table.setWidths(new int[]{3,5,5,3,5,5,3,3,3,3,5});
 	        }else if(timesheetFrequency.equalsIgnoreCase("Bi-weekly")){
-	        	table.setWidths(new int[]{3,5,5,3,5,3,3,3,5});
+	        	table.setWidths(new int[]{3,5,5,3,5,5,3,3,3,5});
 	        }else{
-	        	table.setWidths(new int[]{3,5,5,3,5,3,3,5});
+	        	table.setWidths(new int[]{3,5,5,3,5,5,3,3,5});
 	        }
             table.addCell(cell1);
 	        for (int i = 0; i < headers.length; i++) {
@@ -688,7 +710,8 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	        }
 	        table.completeRow();
 	        java.util.List<String[]> timesheetApproval = new ArrayList<>();
-	        for(ProjectMembers proMembers : projectMembers){
+	        for(ProjectMembers proMembers : freshProjectMembers){
+	        	document =  prepareHeadres(orgLocations,proMembers,file);
 	        	timesheetApproval.add(prepareTimesheetPdfToArray(proMembers,client,timesheetFrequency,stage,user,startDate,endDate));
 	        }
 	        
@@ -719,7 +742,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	
 	private String[] getHeaders(String[] headers, String dates) {
 		String[] weekDates = dates.split(",");
-		int k=4;
+		int k=5;
 		List<String> headerList = new ArrayList<String>(Arrays.asList(headers));
 		List<String> listDates = new ArrayList<String>(Arrays.asList(weekDates));
 	    	for(String dateDynamic :listDates){
@@ -784,8 +807,13 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	}else{
 		timeSheetApprovalArray[3] = "--";
 	}
+	if(projMembers.getProjects().getProjectName() != null){
+		timeSheetApprovalArray[4] = projMembers.getProjects().getProjectName();
+	}else{
+		timeSheetApprovalArray[4] = "--";
+	}
 	
-	int count = 4;
+	int count = 5;
 		LinkedHashMap<Date,Date> displayWeeksList= getTotalCountFromStartAndEndDate(startDate, endDate);
 			Float totalHours = 0f;
 		    Float estimatedTotalHours = 0f;
@@ -818,8 +846,16 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 					}
 				}
 			}
-	     if(totalHours != null && !"".equalsIgnoreCase(totalHours.toString())){
-	    	 timeSheetApprovalArray[count]   = totalHours+"/"+estimatedTotalHours;
+		 float tsHours = totalHours;
+	     float tsHoursValue = (int) tsHours;
+	     float tsMinutesValue = tsHours - tsHoursValue;
+	     float totalMinutes = (tsHoursValue* 60)+(tsMinutesValue*100);
+	     
+	     float actualHours = (int) (totalMinutes / 60); 
+	     float actualMinutes = (totalMinutes % 60)/100;
+	     String actualTimeString = String.format("%.2f", (actualHours+actualMinutes));
+	     if(actualTimeString != null && !"".equalsIgnoreCase(actualTimeString.toString())){
+	    	 timeSheetApprovalArray[count]   = actualTimeString+"/"+estimatedTotalHours;
 	     }else{
 	    	 timeSheetApprovalArray[count] = "0.0/"+estimatedTotalHours;
 	     }
@@ -866,6 +902,33 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	    cell.setBorderWidthBottom(2f);
 	    }
 
+	private Document prepareHeadres(OrgLocations loginOrgLocation,ProjectMembers proMembers, File file) {
+	    Document document = new Document(PageSize.LETTER.rotate());
+	    StringBuilder orderedListStringBuilder=new StringBuilder();
+	    try {
+	    	PdfWriter.getInstance(document, new FileOutputStream(file));
+	        document.open();
+	        com.itextpdf.text.Font boldFont = new  com.itextpdf.text.Font( com.itextpdf.text.Font.FontFamily.TIMES_ROMAN, 18,  com.itextpdf.text.Font.BOLD);
+	        BaseColor myBordColor = WebColors.getRGBColor("#000000");
+	        boldFont.setColor(myBordColor);
+	        StringBuilder sbPipeHearder = new StringBuilder();
+	        sbPipeHearder.append(loginOrgLocation.getOrg().getOrgName()).append(" ");
+            Paragraph para = new Paragraph(orderedListStringBuilder.append(loginOrgLocation.getOrg().getOrgName()).toString(),boldFont);
+            para.setAlignment(Element.ALIGN_CENTER);
+            document.add(para);
+	        // Create an instance of PdfPTable. After that we transform the header and
+            com.itextpdf.text.List orderedList = new  com.itextpdf.text.List(com.itextpdf.text.List.ORDERED);
+            StringBuilder reqNameBuilder=new StringBuilder();
+            StringBuilder locBuilder=new StringBuilder();
+	        orderedList.add(new ListItem(locBuilder.append("Project Frequency :").append(proMembers.getProjects().getInvoiceFrequency()).toString()));
+	        document.add(orderedList);
+	    }catch(Exception ex){
+	    	ex.printStackTrace();
+	    }
+		return document;
+}
+	
+	
 	
 	
 	
@@ -874,7 +937,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	public File timeSheetApprovelExportExcel(User user, OrgLocations orgLocations,Date startDate,Date endDate,String timesheetFrequency,String client,String stage,String frequencyMonth,String weekFrequency) throws Exception {
 		File file= null;
 		Long clientId;
-		if(!client.equalsIgnoreCase("")){
+		if(!client.equalsIgnoreCase("") && !client.equalsIgnoreCase("All")){
 		 clientId = Long.parseLong(client) ;
 		}else{
 		  clientId = null;
@@ -887,13 +950,29 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		Row writeRow = null;
 		// to get list of project members from data base.
 		List<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, stage, orgLocations.getId(), user.getId());
-		for (ProjectMembers proMembers : projectMembers){
-			createExcelsheet = getExcelSheetWithHeaderTimesheetApproval(createExcelsheet, writeRow, createExcelworkbook,proMembers,startDate,endDate);
+		HashSet<ProjectMembers> freshProjectMembers = new HashSet<>();
+        if(projectMembers != null && !projectMembers.isEmpty()){
+       	if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Bi-Weekly")){
+	        	for(ProjectMembers pm :projectMembers){
+	        		Date biweeklyCurrentStartMonDayDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(pm.getProjects());
+	        	    if(CalendarUtil.getNumberOfDays(biweeklyCurrentStartMonDayDate, startDate)%14==0){
+	        	    	freshProjectMembers.add(pm);
+	        	    }
+	        	
+	        	}
+       	}
+       	 else{
+		        	freshProjectMembers = new HashSet<>(projectMembers);
+		        }
+        }
+		
+		for (ProjectMembers proMembers : freshProjectMembers){
+			createExcelsheet = getExcelSheetWithHeaderTimesheetApproval(createExcelsheet, writeRow, createExcelworkbook,proMembers,startDate,endDate,orgLocations);
 		}
 		// Iteration of project members list.
 		int column = 0;
 		for (ProjectMembers proMembers : projectMembers) {
-			writeRow = createExcelsheet.createRow(column + 1);
+			writeRow = createExcelsheet.createRow(column + 5);
 			createExcelsheet = createXlsSheetTimesheetApproval(createExcelsheet, writeRow,proMembers,client,timesheetFrequency,startDate,endDate,user);
 			column++;
 		}
@@ -929,7 +1008,11 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 			writeRow.createCell(3).setCellValue(projMembers.getProjects().getOrgRelationId().getResponderLocationId().getOrg().getOrgName());
 			createExcelsheet.setColumnWidth(3, 10000);
 		}
-		int count = 4;
+		if (projMembers.getProjects().getProjectName() != null) {
+			writeRow.createCell(4).setCellValue(projMembers.getProjects().getProjectName());
+			createExcelsheet.setColumnWidth(4, 10000);
+		}
+		int count = 5;
 			LinkedHashMap<Date,Date> displayWeeksList= getTotalCountFromStartAndEndDate(startDate, endDate);
 				Float totalHours = 0f;
 				Float estimatedTotalHours = 0f;
@@ -961,8 +1044,16 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 						}
 					}
 				}
-				 if(totalHours != null && !"".equalsIgnoreCase(totalHours.toString())){
-					 writeRow.createCell(count).setCellValue( totalHours.toString()+"/"+estimatedTotalHours);
+				 float tsHours = totalHours;
+			     float tsHoursValue = (int) tsHours;
+			     float tsMinutesValue = tsHours - tsHoursValue;
+			     float totalMinutes = (tsHoursValue* 60)+(tsMinutesValue*100);
+			     
+			     float actualHours = (int) (totalMinutes / 60); 
+			     float actualMinutes = (totalMinutes % 60)/100;
+			     String actualTimeString = String.format("%.2f", (actualHours+actualMinutes));
+				 if(actualTimeString != null && !"".equalsIgnoreCase(actualTimeString.toString())){
+					 writeRow.createCell(count).setCellValue( actualTimeString.toString()+"/"+estimatedTotalHours);
 			     }else{
 			    	 writeRow.createCell(count).setCellValue( "0.0/"+estimatedTotalHours);
 			     }
@@ -979,7 +1070,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		return createExcelsheet;
 	}
 
-	private Sheet getExcelSheetWithHeaderTimesheetApproval(Sheet createExcelsheet, Row writeRow,Workbook createExcelworkbook, ProjectMembers proMembers,Date startDate,Date endDate) throws Exception {
+	private Sheet getExcelSheetWithHeaderTimesheetApproval(Sheet createExcelsheet, Row writeRow,Workbook createExcelworkbook, ProjectMembers proMembers,Date startDate,Date endDate, OrgLocations orgLocations) throws Exception {
 	CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
 		int flag = 0;
 		StringBuilder StDateAndEndDate = new StringBuilder("");
@@ -1009,8 +1100,35 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	}
 	String head[] = Constants.TIMESHEET_APPROVAL_MECHANISM_HEADER;
 	String[] headers = getHeaders(head, StDateAndEndDate.toString());
-	createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style, headers, 0);
+    prepareHeaders(orgLocations,proMembers,createExcelsheet,writeRow,style);
+	createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style, headers, 4);
 	return createExcelsheet;
+	}
+
+	private void prepareHeaders(OrgLocations orgLocations, ProjectMembers proMembers, Sheet createExcelsheet,Row writeRow, CellStyle style) {
+		/*writeRow = createExcelsheet.createRow(1);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell1 = writeRow.createCell(0);
+		cell1.setCellValue("Project Name :");
+		cell1.setCellStyle(style);
+		Cell cell2 = writeRow.createCell(1);
+		cell2.setCellValue(proMembers.getProjects().getProjectName());
+		cell2.setCellStyle(style);*/
+
+		writeRow = createExcelsheet.createRow(1);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell3 = writeRow.createCell(0);
+		cell3.setCellValue("Project Frequency :");
+		cell3.setCellStyle(style);
+
+		
+		Cell cell4 = writeRow.createCell(1);
+		cell4.setCellValue(proMembers.getProjects().getInvoiceFrequency());
+		cell4.setCellStyle(style);
 	}
 
 	

@@ -201,7 +201,7 @@ $(document).ready(function(){
 				if(json.userState != null && json.userState != "" && json.userState != 'INACTIVE'){
 				    result = result + ' <div class="useredit">';
 				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_USER\')">'
-				    result = result + ' <a id="edit-userRole" onclick="getRoles('+json.roles.id+');" href="javascript:editUserRole();"><i class="fa fa-edit"></i>Edit Role</a>';
+				    result = result + ' <a id="edit-userRole" onclick="getRoles('+json.roles.id+');removeErrorMsg();" href="javascript:editUserRole();"><i class="fa fa-edit"></i>Edit Role</a>';
 				    '</sec:authorize>';
 				    
 				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_USER\')">'
@@ -291,7 +291,7 @@ $(document).ready(function(){
 					result = result + ' 		</div>';
 				}
 				
-				if(json.user.mobilePhone != null && json.mobilePhone != "" && json.mobilePhone != 'undefined'){
+				if(json.user.mobilePhone != null && json.user.mobilePhone != "" && json.user.mobilePhone != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				 <strong>Phone Number:</strong><span class="fix">'+json.user.mobilePhone+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
@@ -377,6 +377,13 @@ $(document).ready(function(){
 	});
  }
 </script>
+
+<script type="text/javascript">
+function removeErrorMsg(){
+	$("editRole_form").validate().resetForm();
+}
+</script>
+
 
 <!--  Script for First Name displaying right corner  -->
 <script type="text/javascript">
@@ -835,6 +842,16 @@ function getChangeRole(userId,userRoleId){
      var EmployeeId = document.getElementById("EmployeeId").value;
      var EmailId = document.getElementById("EmailId").value;
      var sourceleadUrl ='${sourceleadUrl}';
+     var RatePer = document.getElementById("RatePer").value;
+	 if(RatePer != null && RatePer != ""){
+		 $('#Rate').removeAttr('data-validation-optional');
+		 $('#Rate').attr("data-validation","required"); 
+	 }else{
+		 $('#Rate').removeAttr('data-validation');
+	 	 $('#Rate').attr("data-validation-optional","true"); 
+		 $('#RatePer').removeAttr('data-validation');
+	 	 $('#RatePer').attr("data-validation-optional","true"); 
+	 }
      var Rate = document.getElementById("Rate").value;
      if(Rate != null && Rate != ""){
          $('#RatePer').removeAttr('data-validation-optional');
@@ -843,6 +860,7 @@ function getChangeRole(userId,userRoleId){
          $('#RatePer').removeAttr('data-validation');
          $('#RatePer').attr("data-validation-optional","true");
      }
+     
       if ($('#editUser_form').validate(false, validationSettings)){
     	  if(EmployeeId!=null&&EmployeeId!="" && empId != EmployeeId){
           $.ajax({
@@ -1158,6 +1176,10 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <input type="text" value="'+lastName+'" name="LastName" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true">';
 					result = result + ' </div>';
 					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + '<strong>Role:</strong><span class="fix">'+json.roles.displayName+'</span></div>';
+					result = result + ' </div>'; 
+					
 					result = result + ' <div class="user_summary_edit_cta" id="EmployeeIdDiv">';
 					result = result + ' <label>Employee Id</label>';
 					result = result + ' <input type="text" value="'+employeeId+'" name="EmployeeId" id="EmployeeId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" onKeyUp="validateEmployeeId('+json.id+','+json.user.id+');">';
@@ -1203,7 +1225,7 @@ $("#editRoleDetailsList").empty();
 		 	     	
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Rate</label>';
-					result = result + ' <input type="text" class="rate_filed" value="'+rate+'" id="Rate"  name="Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
+					result = result + ' <input type="text" class="rate_filed" value="'+rate+'" id="Rate" field-name="Rate" name="Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
 					result = result + ' <select class="rate_sele" id="RatePer" name="RatePer" field-name="Rate Per">';
 					result = result + ' <option value="">-Rate Per-</option>';
 					result = result + ' <option '+selected1+'>Hourly</option>';

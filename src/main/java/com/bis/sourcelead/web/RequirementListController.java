@@ -1,12 +1,13 @@
 package com.bis.sourcelead.web;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -21,14 +22,17 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.StatesService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -36,6 +40,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @Controller
 public class RequirementListController {
 	
+	private static final Logger logger = LoggerFactory.getLogger(RequirementListController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -64,10 +69,12 @@ public class RequirementListController {
 		
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
 		if(searchResult != null && !searchResult.equalsIgnoreCase("undefined") && searchResult.equalsIgnoreCase("universalRequirementList")){
 		    model.addObject("universalRequirementList", "universalRequirementList");
 		    model.addObject("serachValue",serachValue);
+		    model.addObject("searchType","Requirement");
 		}
 		
 		/*List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
@@ -76,7 +83,6 @@ public class RequirementListController {
 		List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
 		model.addObject("skillsList", skillsList);
 
-		
 		List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		model.addObject("educationsList", educationsList);
 		
@@ -161,19 +167,40 @@ public class RequirementListController {
 			sessionData.setNav(Constants.Requirement);
 			
 			//List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLoc.getId());
-			List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLoc.getId(), "");
+			List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLoc.getId(), "", "");
 			
 			for(OrgRelations orgRelation :vendorsList){
-				if(orgRelation.getLocationId().getId() == orgLoc.getId()){
+				if(orgRelation.getLocationId().getId().equals(orgLoc.getId())){
 					orgRelation.setClientName(orgRelation.getResponderLocationId().getOrg().getOrgName());
 				}
-				if(orgRelation.getResponderLocationId().getId() == orgLoc.getId()){
+				if(orgRelation.getResponderLocationId().getId().equals(orgLoc.getId())){
 					orgRelation.setClientName(orgRelation.getLocationId().getOrg().getOrgName());
 				}
 			}
 			model.addObject("vendor_list", vendorsList);
 	        model.addObject(vendorsList);
 	        model.addObject("requirementId",requirement.getId());
+
+	        model.addObject("requirementUUID",requirementUUID);
+	       
+	        if(!isNullOrEmpty(requirement.getJobType())){
+	        	model.addObject("requirementType",requirement.getJobType());
+	        }
+	       
+	        if(null != requirement.getRate()){
+	        	 model.addObject("jobRate",requirement.getCurrencyCode()+" "+requirement.getRate()+" / "+requirement.getRateType());	
+	        }
+	        
+	        if(null != requirement.getRewardType()){
+	        	model.addObject("rewardType", requirement.getRewardType());
+	        	model.addObject("rewardPercentage", requirement.getRewardPercentage());
+	        	model.addObject("rewardFlat", requirement.getRewardFlat());
+	        	model.addObject("rewardFlatRateType", requirement.getRewardFlatRateType());
+	        	model.addObject("rewardGauranteePeriod", requirement.getRewardGuaranteePeriod());
+	        }
+	       
+
+	        model.addObject("jobTitle",requirement.getJobTitle());
 			
 			request.getSession().setAttribute("sessionData",sessionData);
 		}else{
@@ -214,6 +241,17 @@ public class RequirementListController {
 			resultJson = commonUtil.toJSON(requirement);
 			return resultJson;
 		}
-	 
+	 /*
+	  * 
+	  */
+	 @RequestMapping(value = "/requirementListForReports")
+		public ModelAndView requirementListForReports(@RequestParam(value="serachValue", required=false)String serachValue) throws Exception {
+		 logger.info("checkkkkk");
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("requirement/requirementReports");
+		 return model;
+			
+	 }	 
 	 
 }

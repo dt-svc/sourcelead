@@ -12,7 +12,6 @@
 <!-- end files for autocomplete with tagit -->
 
 
-
 <%-- 
      @author : p.sarath kumar
      this script is for candidate Activation
@@ -137,7 +136,7 @@ else{
 </script>
  <script>
   function prepareCandidateList(data){
-	  if(data != null && data != 'undefined' && data != "" && data != '[]'){
+	  /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
 	 	     $("#candidateList").removeAttr("style");
 	     	 $("#candidateList").empty();
 	     	 var result = "";
@@ -248,7 +247,7 @@ else{
 	              
 	              result = result +"  <td><div><span title='"+location+"'>"+location+"</span></div></td>";
 	
-	              result = result +"  <td><div>"+candidateUpdateDateToString+"</div></td>";
+	              result = result +"  <td><div class='tblminwidth-75'>"+candidateUpdateDateToString+"</div></td>";
 	              result = result +"</tr>"; 
 	          }
 	          result = result +" </tbody>";
@@ -256,7 +255,7 @@ else{
 	          $("#noCandidates").val('');
 	          $("#candidateList").append(result);
 	          cpagination(); 
-	  }
+	 /*  }
 	  else{
      	 $("#candidateList").removeAttr("style");
 	         var result ="";
@@ -267,7 +266,7 @@ else{
 			$("#noCandidates").val("nocandidate");
 			$("#candidateList").empty();
 		    $("#candidateList").append(result); 
-      }
+      } */
   }
 </script>
 <%-- 
@@ -276,7 +275,7 @@ else{
      1.usage     : used in candidateList() function.
 --%>
 
-<!-- <script>
+<!--  <script>
 function cpagination(){  
     $('#candidatePagination').DataTable( { 
     	"scrollCollapse": false,
@@ -289,23 +288,24 @@ function cpagination(){
      	}
     } );
 }
+
 </script>
  -->
 <script>
 function cpagination(){ 
     $('#candidatePagination').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
-</script>
+</script> 
 
 
 
@@ -426,13 +426,13 @@ function candidateSideBar(candidateId){
          			 	}
          			 	
          			 	if(json.alternateMobilePhone != null && json.alternateMobilePhone != '' && json.alternateMobilePhone != 'undefined'){
-         			 		alternateMobilePhone = json.alternateMobilePhone;
+         			 		alternateMobilePhone = ' , ' +json.alternateMobilePhone;
          			 	}else{
          			 		alternateMobilePhone = '';
          			 	}
          			 	
          			 	 if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
-         			 		mobilePhone =json.mobilePhone+',';
+         			 		mobilePhone =json.mobilePhone;
          			 	 }else{
          			 		 
          			 		mobilePhone = '';
@@ -568,7 +568,7 @@ function candidateSideBar(candidateId){
 			             
 			             result = result+'</li>';
 			             
-			             result = result+'<li><i class="fa fa-money"></i><b>Expected:</b>';
+			             result = result+'<li><i class="fa fa-money"></i><b>Expected Rate:</b>';
 			             
 			             result = result+''+expectedRate+' '+rateType+''+expectedRateCurrencey+'';
 			             
@@ -998,7 +998,7 @@ function cancel(candidateId){
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Candidate List</div>
   </section>
   <div class="timesheet_out">
-    <div class="vendor_wrap">
+    <div class="vendor_wrap" style="overflow-X:auto;">
     
      <div class="pull-left cand-advsrche">
 			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
@@ -1127,19 +1127,19 @@ function cancel(candidateId){
 				                </select>
 							  </div>
 						  </div>
-						  <div class="col-md-4"> &nbsp;
-							<!--   <label>Updated On</label>
-							  <div class="clearfix">
-								  <select class="chosen-select" id="updatedOn" name="updatedOn" data-placeholder="Updated On">
-									  <option value="">All</option>
-									  <option value="1">1 Day Ago</option>
-									  <option value="3">3 Days Ago</option>
-									  <option value="7">1 Week Ago</option>
-									  <option value="14">2 Weeks Ago</option>
-									  <option value="30">1 Month Ago</option>
-									  <option value="90">3 Months Ago</option>
-								  </select>
-							  </div> -->
+						    <div class="col-md-4">
+						    <label>Employment Type</label>
+						     <div class="clearfix">
+						             <select class="chosen-select form-control" id="designationType" name="designationType">
+						                <option value="">--Select--</option>
+						                 <option>C2C</option>
+						                 <option>W-2</option>
+						                 <option>C2H</option>
+						                 <option>Part Time</option>
+						                 <option>Full Time</option>
+						                 <option>Other</option>
+						             </select>
+						    </div>
 						  </div>
 						  </div>
 						  <div class="clearfix">
@@ -1264,6 +1264,8 @@ function cancel(candidateId){
             </div>
           </li>
           </sec:authorize>
+          
+           <!--  <li><a href="uploadCandidateForm"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>  -->
 	      
            <li id="filter2ApprovePop"><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter2ApprovedPop" class="approved_pop">
@@ -1719,7 +1721,9 @@ function savedCommentAndCount(candidateId){
     <script>
 	// Close Advanced Search
 		function closePop(){
-			$("div.cand-advsrch-popup").hide();
+			 $("div.cand-advsrch-popup").hide();
+			 clearCandidateSearchKeys();
+			 $('#expId').find('p.jquery_form_error_message').remove();
 		}
 		function openPop(){
 		  $("div.cand-advsrch-popup").toggle();
@@ -2029,6 +2033,10 @@ function getCities(){
 		    	   minMaxExperience();
 		       });
 		       
+		       $("#minExpYears").on('change', function (e) {
+		    	   minMaxExperience();
+		       });
+		       
 				for (var selector in config) {
 				  $(selector).chosen(config[selector]);
 				}
@@ -2244,7 +2252,6 @@ function minMaxExperience(){
 </script>
 
 <!-- This  clearCandidateSearchKeys() method for clear search data-->
-
 <script type="text/javascript">	
 	function clearCandidateSearchKeys(){
 		
@@ -2265,6 +2272,8 @@ function minMaxExperience(){
 	    $("#excludeEmployers").val('').trigger("chosen:updated");
 	    $("#applicantType").val('').trigger("chosen:updated");
 	    $("#candidateSkills").val('').trigger("chosen:updated");
+	    $("#designationType").val('').trigger("chosen:updated");
+	    
 	    
 	     $("#anyOfKeyword").empty();
 	     $("#allKeywords").empty();
@@ -2282,11 +2291,16 @@ function minMaxExperience(){
 	     
 	     $("#minExpYears").val(''); 
 	     $("#maxExpYears").val(''); 
+	     $('#expId').find('p.jquery_form_error_message').remove();
+	     
 	     $("#noticePeriod").empty(); 
 	     
 	     $("#country").val(''); 
 	     $("#state").val(''); 
 	     $("#city").val(''); 
+	     
+	     $("#designationType").val(''); 
+	     
 	     
 	     $("#education").val(''); 
 	     $("#excludeEducation").val('');

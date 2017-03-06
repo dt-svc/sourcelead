@@ -143,10 +143,14 @@ public class DashboardRestController {
 			
 		     //to update user state in user role based on location----> Prasad Salina
 		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
 		     UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
 		     if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
    			    userRole.setUserState(Status.ACTIVE);
    			   UserRole userRoleElk = userRoleService.addUserRole(userRole);
+   			   
+   			   
    			   
    			   //user update/save in user Elk
    			  userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
@@ -190,9 +194,11 @@ public class DashboardRestController {
 		
 		if("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole)){
 			userType = "ADMIN";
-			requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
+			//requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
+			requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode);
 		}else{
-			requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
+			//requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
+			requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode);
 		}
 		
 		//List<Requirement>   requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
@@ -224,6 +230,19 @@ public class DashboardRestController {
 			requirement.setNoOfInterviewedApplicants(String.valueOf(interviewedCount));
 			requirement.setNoOfOfferedApplicants(String.valueOf(offeredCount));
 			
+			if(null != requirement.getReleasedBy() && !"".equalsIgnoreCase(requirement.getReleasedBy())){
+				List<Long> userId = new ArrayList<Long>();
+				for (String s : requirement.getReleasedBy().split(",")){
+					userId.add(Long.parseLong(s));
+				 }
+				boolean flag = userId.contains(user.getId());
+	     		if(flag == true){
+	     			requirement.setIsRequirementReleasedByuser("Y");
+	     		}else{
+	     			requirement.setIsRequirementReleasedByuser("N");
+	     		}
+			}
+
 		}
 		
 		resultJson = commonUtil.toJSON(requirementList);
@@ -436,8 +455,9 @@ public class DashboardRestController {
 					
 					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),"UTC", startTimeTS);
 					String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),"UTC", endTimeTS);
-					 startUTCDate = Constants.TZ_DF_TS.parse(startDateString);
-					 endUTCDate = Constants.TZ_DF_TS.parse(endDateString);
+					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+					 startUTCDate = TZ_DF_TS.parse(startDateString);
+					 endUTCDate = TZ_DF_TS.parse(endDateString);
 				}
 				requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode,startUTCDate,endUTCDate);
 				}else{
@@ -463,6 +483,9 @@ public class DashboardRestController {
 				if(interviewHistory.getSubmissionId() != null && interviewHistory.getSubmissionId().getRequirement().getJobTitle() != null){
 					requirementTitle = interviewHistory.getSubmissionId().getRequirement().getJobTitle();
 				}
+				if(interviewHistory.getSubmissionId() != null && interviewHistory.getSubmissionId().getRequirement().getRequirementUUID() != null){
+					interviewHistory.setRequirementUUID(interviewHistory.getSubmissionId().getRequirement().getRequirementUUID());
+				}
 				
 				interviewHistory.setCandidateName(candidateName.append(candidateFirstName).append(" ").append(candidateLastName).toString());
 				
@@ -472,10 +495,11 @@ public class DashboardRestController {
 				
 				//changed as per the timezone
 				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm aa");
-				if(null != timezone.getTimeZoneId()){
+				if(null != timezone.getTimeZoneId() && null != interviewHistory.getInterviewId() && null != interviewHistory.getInterviewId().getId() && null != interviewHistory.getInterviewId().getStartTime()){
 					String currentTimeStr = Constants.TZ_DF.format(interviewHistory.getInterviewId().getStartTime());  
 					String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
-					Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
+					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+					Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
 					currentDateInTimezone = standardFormat.format(converteDate);
 					interviewHistory.setInterviewStartDateTimeStr(currentDateInTimezone);
 				}
@@ -655,9 +679,9 @@ public class DashboardRestController {
 		public String getApplicantsByStatus(@RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception {
 
 		 String resultJson;
-
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 List<RequirementSubmission> requirementSubmissionList = requirementSubmissionService.getApplicantsByStatus(loginOrgLocations.getId(), status);
+		 List<RequirementSubmission> requirementSubmissionList = requirementSubmissionService.getApplicantsByStatus(loginOrgLocations.getId(), user,status);
 		 resultJson = commonUtil.toJSON(requirementSubmissionList);
 		 return resultJson;
 

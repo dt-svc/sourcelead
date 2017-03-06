@@ -147,7 +147,8 @@ function pagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     	"sSearch": ""
+     	"sSearch": "",
+     	 "sZeroRecords": "", "sEmptyTable": ""
      	}
 		
     } );
@@ -224,6 +225,7 @@ function shortlist(requirementId){
 			        		$("body").css('overflow-y', 'auto');
 			        		var allApplicants = 'all';
 				    		requirementPipeline(requirementId,allApplicants); 
+				    		pipelineList(requirementId);
 				        },
 				 });  
 		  }else{

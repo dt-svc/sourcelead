@@ -578,7 +578,8 @@ function pagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -730,7 +731,8 @@ function candidatePagenation(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -903,7 +905,7 @@ function getCheckedCandidates(){
 		    {
 		    	 var otherEmailArray = this.value.split(",");
 		    	 if(otherEmailArray.length > 1){
-		    		 for (var i=0; i < enterEmailArray.length; i++) {
+		    		 for (var i=0; i < otherEmailArray.length; i++) {
 	        			 var option = $("<option>").val(otherEmailArray[i].replace(",","")).text(otherEmailArray[i].replace(",",""));
 	        			 select.append(option);
 	 		             select.find(option).prop('selected', true);

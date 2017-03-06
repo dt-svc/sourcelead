@@ -28,6 +28,8 @@ public interface RequirementDao {
 	
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode) throws Exception;
 	
+	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(Long orgLocationId, String userType, Long userId, String userCode) throws Exception;
+	
 	public List<Requirement> getApproverRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode,String statusType) throws Exception;
 	
 	
@@ -68,5 +70,6 @@ public interface RequirementDao {
 	public Long getRequirementListByOrgLocationID(Long orgLocationId) throws Exception;
 	
 	List<String> getAllRequirementSkillsByRequirementI(Long requirementId)throws Exception;
+
 
 }

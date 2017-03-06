@@ -20,11 +20,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.CrowdSourcingUserBankAccounts;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.CrowdSourcingUserBankAccountsService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.service.RequirementReferService;
@@ -64,6 +67,9 @@ public class ProfessionalRequirementsController {
 	
 	@Autowired
 	UserService userservie;
+	
+	@Autowired
+	CrowdSourcingUserBankAccountsService crowdSourcingUserBankAccountsService;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -113,6 +119,25 @@ public class ProfessionalRequirementsController {
 	  			}
 	 			return model;
 	 	}
+	 
+	    @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+	    @RequestMapping(value = "/bankAccountDetails")
+	 	public ModelAndView bankAccountDetails(HttpServletRequest request) throws Exception {
+	    	
+	    	    User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+	    	
+	 			ModelAndView model = new ModelAndView();
+	 			model.setViewName("professional/bankAccountDetails");
+	 			model.addObject("sourceleadUrl", sourceleadUrl);
+	 			
+	 			CrowdSourcingUserBankAccounts bankAccounts = crowdSourcingUserBankAccountsService.getUserBankAccountByUserId(user.getId());
+	 			if(null != bankAccounts){
+	 				model.addObject("bankAccounts", bankAccounts);
+	 			}
+	 			
+	 			return model;
+	 	}
+	
 	
 	 
 	 
@@ -150,8 +175,12 @@ public class ProfessionalRequirementsController {
 			        model.addObject("statesList", statesList);
 				}
 				
-				List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+				/*List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+				model.addObject("skillsList", skillsList);*/
+				
+				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 				model.addObject("skillsList", skillsList);
+				
 			    
 				
 				model.setViewName("professional/professionalRequirements");
@@ -219,7 +248,7 @@ public class ProfessionalRequirementsController {
 		        	}
 		        }
 		        
-		        if(null !=  requirement.getAppliedProfessionals()){
+		        if(null !=  requirement.getAppliedProfessionals() && null != user){
 	    			  List<Long> userId = new ArrayList<Long>();
 	    			  String[] appliedProfessionals = requirement.getAppliedProfessionals().split(",");
 	 					for (int i=0; i < appliedProfessionals.length; i++){

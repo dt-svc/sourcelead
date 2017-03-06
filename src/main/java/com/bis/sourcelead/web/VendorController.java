@@ -109,6 +109,7 @@ public class VendorController {
 		    model.addObject("universalVendorList", "universalVendorList");
 		    model.addObject("searchValue",searchValue);
 		    model.addObject("searchType",searchType);
+		    model.addObject("searchType","Vendor");
 		}
 		
 		if(null != orgLoc && StringUtils.isNotEmpty(orgLoc.getCountry())){
@@ -179,7 +180,7 @@ public class VendorController {
 	@RequestMapping(value = "/addVendor")
 	public ModelAndView addVendor(HttpServletRequest request)  {
 		
-		ModelAndView model = new ModelAndView();
+		ModelAndView model = new ModelAndView();      
 		try{
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("vendors/vendor");
@@ -277,7 +278,7 @@ public class VendorController {
 			if(multipartFile != null){
 				String fn = multipartFile.getOriginalFilename(); // vendors_contacts_Import vendors_import_template.xls
 				String fileName = getFileName(fn);
-				if(fileName.contains(Constants.VENDORS_CONTACTS_IMPORT_XLS) || fileName.contains(Constants.VENDORS_CONTACTS_IMPORT_XLSX) || fileName.contains(Constants.VENDORS_IMPORT_TEMPLATE_XLS) || fileName.contains(Constants.VENDORS_IMPORT_TEMPLATE_XLSX)){
+				if(!fileName.contains(Constants.CLIENTS_CONTACTS_IMPORT_XLS) && !fileName.contains(Constants.CLIENTS_CONTACTS_IMPORT_XLSX) && !fileName.contains(Constants.CLIENTS_IMPORT_TEMPLATE_XLS) && !fileName.contains(Constants.CLIENTS_IMPORT_TEMPLATE_XLSX)){
 					String isFileCreated = clientImportsService.clientBulkSaving(multipartFile,user,orgLocation,org,uploadedFile.getEmail(),responderType);
 					
 					if (fileName.equalsIgnoreCase(isFileCreated)) {
@@ -291,16 +292,16 @@ public class VendorController {
 					}*/else if("worngFileName".equalsIgnoreCase(isFileCreated)){
 						model.addAttribute("fileNameWrong", "File name should follow as vendors_contacts_Import/vendors_import_template with .xls or .xlsx");
 			            model.addAttribute("fileName", "xls");
-						return "upload/uploadClientForm";
+						return "upload/uploadVendorForm";
 					}
 				}else{
 					model.addAttribute("fileNameWrong", "Oops.! It's Not Vendor template");
 		            model.addAttribute("fileName", "xls");
-					return "upload/uploadClientForm";
+					return "upload/uploadVendorForm";
 				}
 				
 			}else{
-				return "upload/uploadClientForm";
+				return "upload/uploadVendorForm";
 			}
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "vendorImport", "Success!! New vendors created ");

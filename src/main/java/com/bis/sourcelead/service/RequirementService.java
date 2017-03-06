@@ -59,6 +59,8 @@ public interface RequirementService {
 	
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode) throws Exception;
 	
+	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(Long orgLocationId, String userType, Long userId, String userCode) throws Exception;
+	
 	public List<Requirement> getApproverRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode,String statusType) throws Exception;
 	
 	public List<Requirement> getAssignedRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId,Long  userId) throws Exception;
@@ -110,6 +112,8 @@ public interface RequirementService {
 	public Long getRequirementsListById(Long requirementId) throws Exception;
 	
 	public List<Object> getAllUniversalSearchRequirementList(OrgLocations orgLocations, String serachValue,String userRole, User user) throws Exception;
+
+	public Requirement updateRequirement(Requirement requirement) throws Exception;
 
 
 }

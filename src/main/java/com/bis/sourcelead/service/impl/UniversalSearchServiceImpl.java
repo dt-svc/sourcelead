@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -28,6 +29,7 @@ import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateService;
@@ -130,38 +132,41 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 							Requirement requirement = null;
 							RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
 			            	if(userRole != null&&( "ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
-			            		requirement = getData(requirementIndex);
+			            		requirement = getData(requirementIndex,user);
 			            	}
 			            	else if(requirementIndex.getReqCreatedBy().equalsIgnoreCase(user.getUserCode()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
 			            	{
-			            		requirement = getData(requirementIndex);
+			            		requirement = getData(requirementIndex,user);
 			            	}
 			            	
 			            	else if((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 			            			||((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString()))
 			            			&& ("APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus()) || "OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 			            			)){
-			            		requirement = getData(requirementIndex);
+			            		requirement = getData(requirementIndex,user);
 			            	}
 			            	else if(requirementIndex.getReqLevel2ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel2ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())
 			            			&&(requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&"APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 			            			|| (requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())
 			            			&&("APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus())||"OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
 			            			)){
-			            		requirement = getData(requirementIndex);
+			            		requirement = getData(requirementIndex,user);
 			            	}
 			            	
 			            	else if(requirementIndex.getManagerUserId().equalsIgnoreCase(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-			            		requirement = getData(requirementIndex);
+			            		requirement = getData(requirementIndex,user);
 			            	}
 			            	
 			            	else if(requirementIndex.getTeamOwnerUserId()!=null&&Arrays.asList(requirementIndex.getTeamOwnerUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-			            		requirement = getData(requirementIndex);
+			            		requirement = getData(requirementIndex,user);
 			            	}
 			            	else if(requirementIndex.getTeamAssignUserId()!=null&&Arrays.asList(requirementIndex.getTeamAssignUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-			            		requirement = getData(requirementIndex);
+			            		requirement = getData(requirementIndex,user);
 			            	}
-			            	searchList.add(requirement);
+			            	if(null !=requirement){
+			            		searchList.add(requirement);
+			            	}
+			            	
 			            }
 					}
 				}
@@ -407,9 +412,10 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 	/**
 	 * populating requirement pojo
 	 * @param requirementIndex
+	 * @param user 
 	 * @return Requirement
 	 */
-	 private Requirement getData(RequirementIndex requirementIndex) {
+	 private Requirement getData(RequirementIndex requirementIndex, User user) {
 		 Requirement requirement = new Requirement();
 		requirement.setId(requirementIndex.getRequirementId());
 		requirement.setRequirementUUID(requirementIndex.getRequirementUUID());
@@ -432,11 +438,28 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
      	requirement.setCity(requirementIndex.getCity());
      	requirement.setSearchType(Constants.REQUIREMENT);
      	requirement.setPositions(requirementIndex.getNumberOfPositions());
-     	requirement.setNoOfApplicants(requirementIndex.getNumberOfApplicants());
+     	if(null != requirementIndex.getNumberOfApplicants()){
+     		requirement.setTotalApplicants(Integer.parseInt(requirementIndex.getNumberOfApplicants()));
+     	}
      	requirement.setManager(requirementIndex.getManager());
      	if(requirementIndex.getRequirementStatus() !=null && !"".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
          	requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.valueOf(requirementIndex.getRequirementStatus()));
      	}	
+     	
+     	if(null != requirementIndex.getReleasedBy()){
+			List<Long> userId = new ArrayList<Long>();
+			for (String s : requirementIndex.getReleasedBy().split(",")){
+				userId.add(Long.parseLong(s));
+			 }
+			boolean flag = userId.contains(user.getId());
+     		if(flag == true){
+     			requirement.setIsRequirementReleasedByuser("Y");
+     		}else{
+     			requirement.setIsRequirementReleasedByuser("N");
+     		}
+		}
+     	
+     	
      	return requirement;
 	}
 	 /**
@@ -469,7 +492,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 	
 	
 	@Override
-	public List<List<Object>> univesalSearchForAll(OrgLocations orgLocation, String searchType, String searchValue,Org org, String userRole, User user) throws Exception {
+	public List<List<Object>> univesalSearchForAll(OrgLocations orgLocation, String searchType, String searchValue,Org org, String userRole, User user,Collection<Tabs> tabList) throws Exception {
 
 		List<Object>   searchListForRequirement = new ArrayList<>();
 		List<Object>   searchListForUsers = new ArrayList<>();
@@ -480,18 +503,148 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 		
 		
 		List<List<Object>>   searchListForAll = new ArrayList<>();
-		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-		boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
 		
-			 Long maxResultsForRequirement = requirementDao.getRequirementListByOrgLocationID(orgLocation.getId());
-			//Elk for Requirement
-			 if(searchValue != null && !"".equalsIgnoreCase(searchValue)){
-				 ArrayList<String> anyKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
-				 if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		df.setTimeZone(TimeZone.getTimeZone("GMT"));
+		
+		for(Tabs tabs :tabList){
+			if("Requirement".equals(tabs.getTabName())){
+				BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+				boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
+				
+					 Long maxResultsForRequirement = requirementDao.getRequirementListByOrgLocationID(orgLocation.getId());
+					//Elk for Requirement
+					 if(searchValue != null && !"".equalsIgnoreCase(searchValue)){
+						 ArrayList<String> anyKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
+						 if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+							 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+							 for(String keywd : anyKeyWordArray){
+								 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+								ArrayList<MatchQueryBuilder> matchQueryBuilderList =universalSearchHelper.getMatchQueryBuilderListForRequirementSearch(keywd);
+								if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+									for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+										anyBoolSubQueryBuilder.should(matchQueryBuilder);
+									}
+									anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+								}
+							}
+							 boolQueryBuilder.must(anyBoolQueryBuilder);
+						} 
+					
+					 }
+					 
+					 
+					 
+					 
+					 SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,0,maxResultsForRequirement.intValue(),boolQueryBuilder).getHits();
+						
+						if(searchHits != null && searchHits.length >0){
+							for (SearchHit hit : searchHits) {
+								String sourceAsString = hit.getSourceAsString();
+								ObjectMapper mapper = new ObjectMapper();
+								if (sourceAsString != null) {
+									Requirement requirement = null;
+									RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
+					            	if(userRole != null&&( "ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
+					            		requirement = getData(requirementIndex,user);
+					            	}
+					            	else if(requirementIndex.getReqCreatedBy().equalsIgnoreCase(user.getUserCode()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
+					            	{
+					            		requirement = getData(requirementIndex,user);
+					            	}
+					            	
+					            	else if((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+					            			||((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString()))
+					            			&& ("APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus()) || "OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+					            			)){
+					            		requirement = getData(requirementIndex,user);
+					            	}
+					            	else if(requirementIndex.getReqLevel2ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel2ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())
+					            			&&(requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&"APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+					            			|| (requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())
+					            			&&("APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus())||"OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+					            			)){
+					            		requirement = getData(requirementIndex,user);
+					            	}
+					            	
+					            	else if(requirementIndex.getManagerUserId().equalsIgnoreCase(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
+					            		requirement = getData(requirementIndex,user);
+					            	}
+					            	
+					            	else if(requirementIndex.getTeamOwnerUserId()!=null&&Arrays.asList(requirementIndex.getTeamOwnerUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
+					            		requirement = getData(requirementIndex,user);
+					            	}
+					            	else if(requirementIndex.getTeamAssignUserId()!=null&&Arrays.asList(requirementIndex.getTeamAssignUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
+					            		requirement = getData(requirementIndex,user);
+					            	}
+					            	if(null !=requirement){
+					            		searchListForRequirement.add(requirement);	
+					            	}
+					            }
+							}
+						}	
+			}
+			if("Users".equals(tabs.getTabName())){
+				// ELK list for the user
+				BoolQueryBuilder userBoolQueryBuilder = new BoolQueryBuilder();
+				userBoolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
+				userBoolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
+				 Long maxResultsForUser = userRoleService.getUsersCountByOrgLocationID(orgLocation.getId());
+				 
+					ArrayList<String> anyKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
+					if (null != anyKeyWordArray && !anyKeyWordArray.isEmpty()) {
+
+						BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+						for (String keywd : anyKeyWordArray) {
+							BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+							ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getUsersMatchQueryBuilderList(keywd);
+
+							if (null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()) {
+								for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
+									anyBoolSubQueryBuilder.should(matchQueryBuilder);
+								}
+								anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+							}
+						}
+						userBoolQueryBuilder.must(anyBoolQueryBuilder);
+					}
+					SearchHit[] searchHitsForUser = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,0,maxResultsForUser.intValue(),userBoolQueryBuilder).getHits();
+					if(null != searchHitsForUser && searchHitsForUser.length >0){
+						ObjectMapper mapper = new ObjectMapper();
+						for (SearchHit hit : searchHitsForUser) {
+							String json = hit.getSourceAsString();
+							mapper.setDateFormat(df);
+							UserIndex userIndex = mapper.readValue(json, UserIndex.class);
+							userIndex.setSearchType(Constants.USER);
+							if(null != userIndex){
+								searchListForUsers.add(userIndex);
+							}
+						}
+					}	
+			}
+			if("Clients".equals(tabs.getTabName())){
+				// ELK list for the Clients and Vendors
+				String responderTypeAsVendor = Constants.VENDOR; 
+				 searchListForClient =	getSearchListForClientsVendors(searchType,orgLocation,df,searchListForClient,searchValue,responderTypeAsVendor);
+				 
+			}
+			if("Vendors".equals(tabs.getTabName())){
+				 String responderTypeAsClient = Constants.CLIENT;
+				 searchListForVendor =  getSearchListForClientsVendors(searchType,orgLocation,df,searchListForVendor,searchValue,responderTypeAsClient);
+			
+			}
+			if("Candidates".equals(tabs.getTabName())){
+				// ELK list for the Candidate
+				BoolQueryBuilder candidateBoolQueryBuilder = new BoolQueryBuilder();
+				candidateBoolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
+			 Long maxResultsForCandidate = candidateService.getCandidatesCountByOrgLocationID(orgLocation.getId(),null);
+			 ArrayList<String> allKeyWordArrayForCandidate = getSearchValuesFromChosenSelectField(searchValue);
+			 
+				if(allKeyWordArrayForCandidate != null && !allKeyWordArrayForCandidate.isEmpty()){
 					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
-					 for(String keywd : anyKeyWordArray){
+					 for(String keywd : allKeyWordArrayForCandidate){
 						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList =universalSearchHelper.getMatchQueryBuilderListForRequirementSearch(keywd);
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForCandidate(keywd);
 						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
 							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
 								anyBoolSubQueryBuilder.should(matchQueryBuilder);
@@ -499,123 +652,42 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
 					}
-					 boolQueryBuilder.must(anyBoolQueryBuilder);
-				} 
-			
-			 }
-			 
-			 
-			 
-			 
-			 SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,0,maxResultsForRequirement.intValue(),boolQueryBuilder).getHits();
-				
-				if(searchHits != null && searchHits.length >0){
-					for (SearchHit hit : searchHits) {
-						String sourceAsString = hit.getSourceAsString();
-						ObjectMapper mapper = new ObjectMapper();
-						if (sourceAsString != null) {
-							Requirement requirement = null;
-							RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
-			            	if(userRole != null&&( "ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
-			            		requirement = getData(requirementIndex);
-			            	}
-			            	else if(requirementIndex.getReqCreatedBy().equalsIgnoreCase(user.getUserCode()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
-			            	{
-			            		requirement = getData(requirementIndex);
-			            	}
-			            	
-			            	else if((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
-			            			||((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString()))
-			            			&& ("APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus()) || "OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
-			            			)){
-			            		requirement = getData(requirementIndex);
-			            	}
-			            	else if(requirementIndex.getReqLevel2ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel2ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())
-			            			&&(requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&"APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
-			            			|| (requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())
-			            			&&("APPROVED".equalsIgnoreCase(requirementIndex.getRequirementStatus())||"OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
-			            			)){
-			            		requirement = getData(requirementIndex);
-			            	}
-			            	
-			            	else if(requirementIndex.getManagerUserId().equalsIgnoreCase(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-			            		requirement = getData(requirementIndex);
-			            	}
-			            	
-			            	else if(requirementIndex.getTeamOwnerUserId()!=null&&Arrays.asList(requirementIndex.getTeamOwnerUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-			            		requirement = getData(requirementIndex);
-			            	}
-			            	else if(requirementIndex.getTeamAssignUserId()!=null&&Arrays.asList(requirementIndex.getTeamAssignUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-			            		requirement = getData(requirementIndex);
-			            	}
-			            	searchListForRequirement.add(requirement);
-			            }
-					}
+					 candidateBoolQueryBuilder.must(anyBoolQueryBuilder);
 				}
+
 				
-			// ELK list for the user
-			BoolQueryBuilder userBoolQueryBuilder = new BoolQueryBuilder();
-			userBoolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
-			userBoolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
-			 Long maxResultsForUser = userRoleService.getUsersCountByOrgLocationID(orgLocation.getId());
-			 
-				ArrayList<String> anyKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
-				if (null != anyKeyWordArray && !anyKeyWordArray.isEmpty()) {
-
-					BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
-					for (String keywd : anyKeyWordArray) {
-						BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getUsersMatchQueryBuilderList(keywd);
-
-						if (null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()) {
-							for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-								anyBoolSubQueryBuilder.should(matchQueryBuilder);
-							}
-							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
-						}
-					}
-					userBoolQueryBuilder.must(anyBoolQueryBuilder);
-				}
-//				if(null != allKeyWordArray && !allKeyWordArray.isEmpty()){
-//					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
-//					 for(String keywd : allKeyWordArray){
-//						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-//						ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getUsersMatchQueryBuilderList(keywd);
-//						if(null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()){
-//							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-//								allBoolSubQueryBuilder.should(matchQueryBuilder);
-//							}
-//							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
-//						}
-//					}
-//					 userBoolQueryBuilder.must(allBoolQueryBuilder);
-//				}
-			
-				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));
-				SearchHit[] searchHitsForUser = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,0,maxResultsForUser.intValue(),userBoolQueryBuilder).getHits();
-				if(null != searchHitsForUser && searchHitsForUser.length >0){
-					ObjectMapper mapper = new ObjectMapper();
-					for (SearchHit hit : searchHitsForUser) {
-						String json = hit.getSourceAsString();
-						mapper.setDateFormat(df);
-						UserIndex userIndex = mapper.readValue(json, UserIndex.class);
-						userIndex.setSearchType(Constants.USER);
-						searchListForUsers.add(userIndex);
-					}
-				}
-			
-		
-			// ELK list for the Clients and Vendors
-				String responderTypeAsVendor = Constants.VENDOR; 
-				 searchListForClient =	getSearchListForClientsVendors(searchType,orgLocation,df,searchListForClient,searchValue,responderTypeAsVendor);
-				 
-				 String responderTypeAsClient = Constants.CLIENT;
-				 
-				 searchListForVendor =  getSearchListForClientsVendors(searchType,orgLocation,df,searchListForVendor,searchValue,responderTypeAsClient);
-			//-----------------------sart
-				 //-------------------end
-			// ELK list for the projects
+				
+				SearchHit[] searchHitsForCandidate = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResultsForCandidate.intValue(),candidateBoolQueryBuilder).getHits();
+				    if(null != searchHitsForCandidate && searchHitsForCandidate.length >0){
+				    	ObjectMapper mapper = new ObjectMapper();
+				    	for (SearchHit hit : searchHitsForCandidate) {
+				    		String json = hit.getSourceAsString();
+				    		mapper.setDateFormat(df);
+				    	    CandidateIndex candidateIndex = mapper.readValue(json, CandidateIndex.class);
+				    	    if(candidateIndex.getUpdatedDate() != null){
+				    	    	candidateIndex.setCandidateUpdateDateToString(candidateIndex.getUpdatedDate());
+				   			}
+				    	    StringBuilder sb = new StringBuilder();
+				    	    if(candidateIndex.getFirstName()!=null && candidateIndex.getLastName() !=null && !"".equalsIgnoreCase(candidateIndex.getFirstName()) && !"".equalsIgnoreCase(candidateIndex.getLastName())){
+				    	    	sb.append(candidateIndex.getFirstName()).append(" ").append(candidateIndex.getLastName());
+				    	    }else{
+				    	    	sb.append(candidateIndex.getFirstName());
+				    	    }
+				    	    candidateIndex.setCandidateName(sb.toString());
+				    	   if(candidateIndex.getSkillsName() != null){
+				    		   String skillArray[] = candidateIndex.getSkillsName().split(",");
+				    		   String skills = getReqSkills(skillArray);
+				    		   candidateIndex.setSkillSet(skills);
+				    	   }
+				    	   candidateIndex.setSearchType(Constants.CANDIDATE);
+				    	    searchListForCandidates.add(candidateIndex);
+				    	}
+				    	
+				    }
+			}
+			if("Projects".equals(tabs.getTabName())){
+				 // ELK list for the projects
 				BoolQueryBuilder projectBoolQueryBuilder = new BoolQueryBuilder();
 				projectBoolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
 			 
@@ -647,108 +719,24 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 						}
 						 projectBoolQueryBuilder.must(anyBoolQueryBuilder);
 					}
-			/*	if(allKeyWordArrayForProjects != null && !allKeyWordArrayForProjects.isEmpty()){
-					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
-					 for(String keywd : allKeyWordArrayForProjects){
-						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getProjectsMatchQueryBuilderList(keywd);
-						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								allBoolSubQueryBuilder.should(matchQueryBuilder);
-							}
-							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
-						}
-					}
-					 projectBoolQueryBuilder.must(allBoolQueryBuilder);
-				}*/
-			//	List<ProjectsIndex> projectsList = new ArrayList<ProjectsIndex>();
-//				df.setTimeZone(TimeZone.getTimeZone("GMT"));
+			
 				SearchHit[] searchHitsForProjects = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,0,maxResultsForProjects.intValue(),projectBoolQueryBuilder).getHits();
 				if(searchHitsForProjects != null && searchHitsForProjects.length >0){
 					ObjectMapper mapper = new ObjectMapper();
 					for (SearchHit hit : searchHitsForProjects) {
 						String json = hit.getSourceAsString();
-//						mapper.setDateFormat(df);
 						ProjectsIndex projectsIndex = mapper.readValue(json, ProjectsIndex.class);
 						projectsIndex.setSearchType(Constants.PROJECT);
 						searchListForProjects.add(projectsIndex);
 					}
 				}
-			
-		
-			
-		
-			// ELK list for the Candidate
-				BoolQueryBuilder candidateBoolQueryBuilder = new BoolQueryBuilder();
-				candidateBoolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
-			 Long maxResultsForCandidate = candidateService.getCandidatesCountByOrgLocationID(orgLocation.getId(),null);
-			 ArrayList<String> allKeyWordArrayForCandidate = getSearchValuesFromChosenSelectField(searchValue);
-			 
-				if(allKeyWordArrayForCandidate != null && !allKeyWordArrayForCandidate.isEmpty()){
-					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
-					 for(String keywd : allKeyWordArrayForCandidate){
-						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForCandidate(keywd);
-						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								anyBoolSubQueryBuilder.should(matchQueryBuilder);
-							}
-							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
-						}
-					}
-					 candidateBoolQueryBuilder.must(anyBoolQueryBuilder);
-				}
-//				if(allKeyWordArrayForCandidate != null && !allKeyWordArrayForCandidate.isEmpty()){
-//					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
-//					 for(String keywd : allKeyWordArrayForCandidate){
-//						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-//						ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForCandidate(keywd);
-//						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-//							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-//								allBoolSubQueryBuilder.should(matchQueryBuilder);
-//							}
-//							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
-//						}
-//					}
-//					 candidateBoolQueryBuilder.must(allBoolQueryBuilder);
-//				}
-				
-				df.setTimeZone(TimeZone.getTimeZone("GMT"));
-				
-				SearchHit[] searchHitsForCandidate = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResultsForCandidate.intValue(),candidateBoolQueryBuilder).getHits();
-				    if(null != searchHitsForCandidate && searchHitsForCandidate.length >0){
-				    	ObjectMapper mapper = new ObjectMapper();
-				    	for (SearchHit hit : searchHitsForCandidate) {
-				    		String json = hit.getSourceAsString();
-				    		mapper.setDateFormat(df);
-				    	    CandidateIndex candidateIndex = mapper.readValue(json, CandidateIndex.class);
-				    	    if(candidateIndex.getUpdatedDate() != null){
-				    	    	candidateIndex.setCandidateUpdateDateToString(candidateIndex.getUpdatedDate());
-				   			}
-				    	    StringBuilder sb = new StringBuilder();
-				    	    if(candidateIndex.getFirstName()!=null && candidateIndex.getLastName() !=null && !"".equalsIgnoreCase(candidateIndex.getFirstName()) && !"".equalsIgnoreCase(candidateIndex.getLastName())){
-				    	    	sb.append(candidateIndex.getFirstName()).append(" ").append(candidateIndex.getLastName());
-				    	    }else{
-				    	    	sb.append(candidateIndex.getFirstName());
-				    	    }
-				    	    candidateIndex.setCandidateName(sb.toString());
-				    	   if(candidateIndex.getSkillsName() != null){
-				    		   String skillArray[] = candidateIndex.getSkillsName().split(",");
-				    		   String skills = getReqSkills(skillArray);
-				    		   candidateIndex.setSkillSet(skills);
-				    	   }
-				    	   candidateIndex.setSearchType(Constants.CANDIDATE);
-				    	    searchListForCandidates.add(candidateIndex);
-				    	}
-				    	
-				    }
-				    searchListForAll.add(searchListForCandidates) ;
+			}
+		}
 				    searchListForAll.add(searchListForClient) ;
 				    searchListForAll.add(searchListForVendor);
 				    searchListForAll.add(searchListForProjects) ;
 				    searchListForAll.add(searchListForUsers) ;
 				    searchListForAll.add(searchListForRequirement);
-				    
 				    
 					return searchListForAll;
 	}
@@ -787,20 +775,6 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 		 Integer maxResultsClientAndVendor = orgRelationsService.getAllVendorsCountByOrgLocationId(loginOrgLocation.getId(),responderType);
 			//All Keywords
 		 ArrayList<String> anyKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
-//			if(allKeyWordArrayForClientAndVendor != null && !allKeyWordArrayForClientAndVendor.isEmpty()){
-//				 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
-//				 for(String keywd : allKeyWordArrayForClientAndVendor){
-//					 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-//					ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForClientVendor(keywd);
-//					if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-//						for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-//							allBoolSubQueryBuilder.should(matchQueryBuilder);
-//						}
-//						allBoolQueryBuilder.must(allBoolSubQueryBuilder);
-//					}
-//				}
-//				 clientVendorBoolQueryBuilder.must(allBoolQueryBuilder);
-//			}
 			
 		 if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
 			 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();

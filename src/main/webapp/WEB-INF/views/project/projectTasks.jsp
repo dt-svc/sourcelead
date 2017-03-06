@@ -411,7 +411,8 @@ function taskPagination(){
     	"ordering": false,
     	"autoWidth": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }

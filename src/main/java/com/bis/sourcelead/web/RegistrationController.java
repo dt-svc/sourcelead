@@ -215,21 +215,36 @@ public class RegistrationController {
 		    
 			if(null == actionLink){
 				StringBuilder redirectUrl = new StringBuilder();
-				//return "redirect:/login";
 				response.sendRedirect(redirectUrl.append("/sourcelead/Inlogin?spocUUID=").append(spocUUID).append("&UUID=").append(UUID).toString());
 			}else{
 				 StringBuilder redirectUrl = new StringBuilder();
-				 Notifications notifications = notificationsService.getNotificationsByUUID(UUID);
-				 if(null != notifications){
-					 notifications.setUserNotificationStatus("Accepted");
-					 notificationsService.saveNotification(notifications);
+				 if("acceptNotification".equalsIgnoreCase(actionLink)){
+					 Notifications notifications = notificationsService.getNotificationsByUUID(UUID);
+					 if(null != notifications){
+						 notifications.setUserNotificationStatus("Accepted");
+						 notificationsService.saveNotification(notifications);
+					 }
+					 
+					 OrgSpoc orgSpoc = orgSpocService.getSpocBySpocUUID(spocUUID);
+					 if(null != orgSpoc ){
+						 orgSpoc.setInvitationStatus(Constants.MAIL_ACCEPTED);
+						 orgSpocService.addOrgSpoc(orgSpoc);
+					 }
+				 }else if("rejectNotification".equalsIgnoreCase(actionLink)){
+					 Notifications notifications = notificationsService.getNotificationsByUUID(UUID);
+					 if(null != notifications){
+						 notifications.setUserNotificationStatus("Rejected");
+						 notificationsService.saveNotification(notifications);
+					 }
+					 
+					 OrgSpoc orgSpoc = orgSpocService.getSpocBySpocUUID(spocUUID);
+					 if(null != orgSpoc ){
+						 orgSpoc.setInvitationStatus(Constants.MAIL_REJECTED);
+						 orgSpoc.setSpocStatus("In-Active");
+						 orgSpocService.addOrgSpoc(orgSpoc);
+					 }
 				 }
 				 
-				 OrgSpoc orgSpoc = orgSpocService.getSpocBySpocUUID(spocUUID);
-				 if(null != orgSpoc ){
-					 orgSpoc.setInvitationStatus(Constants.MAIL_ACCEPTED);
-					 orgSpocService.addOrgSpoc(orgSpoc);
-				 }
 				 response.sendRedirect(redirectUrl.append("/sourcelead/dashboard/").append(respondingPartyOrgLocationId).toString());
 			}
 			

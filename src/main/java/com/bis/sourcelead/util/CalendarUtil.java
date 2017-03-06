@@ -18,14 +18,25 @@ import org.joda.time.Weeks;
 import com.bis.sourcelead.constants.Constants;
 
 public  class CalendarUtil {
-	
+	public static void main(String[] args){
+		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
+		currentCal.setLenient(false);
+		currentCal.setTime(new Date("02/26/2017"));
+		System.out.println(currentCal.getTime());
+		
+		Calendar nextCal = Calendar.getInstance(TimeZone.getDefault());
+		nextCal.setLenient(false);
+		nextCal.setTime(new Date("02/12/2017"));
+		System.out.println(nextCal.getTime());
+		
+		System.out.println(CalendarUtil.getNumberOfDays(currentCal.getTime(),nextCal.getTime()));
+	}
 	
 	
 	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 		currentCal.setLenient(false);
 		currentCal.setTime(new Date());
-		
 		System.out.println("<<<<======Current Week Dates===========>>>>>>>>>>");
 		Calendar currentMonday = getCurrentWeekDayByCalendar(currentCal, "MON");
 		System.out.println("Current-Monday>>>>>>>>>>>>"+currentMonday.getTime());

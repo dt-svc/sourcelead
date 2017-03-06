@@ -46,6 +46,7 @@ import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
@@ -178,6 +179,23 @@ public class SubmissionsRestController {
 			}
 			return result;
 	   }
+	 
+	 
+	 @RequestMapping(value = "/validateRequirementRecruiterCandidateEmail" , method = RequestMethod.POST)
+	 public @ResponseBody  String validateRequirementRecruiterCandidateEmail(@RequestParam(value="email", required=false) String email,@RequestParam(value="requirementId", required=false) Long requirementId,HttpServletRequest request) throws Exception {
+		 	
+		 	String result = null;
+		 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 	RequirementSubmission requirementSubmission = requirementSubmissionService.validateRequirementByRecruiterCandidateEmail(email, requirementId, user.getId());
+		 	
+		 	if (requirementSubmission != null) {
+				result = "true";
+			}else{
+				result = "false";
+			}
+			return result;
+	   }
 
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_SUBMISSION_TEMPLATE','ROLE_ADD_APPLICANT','ROLE_CROWDSOURCING_REQUIREMENTS')")
 	@RequestMapping(value = "/getRequirmentOrgSubmissionTemplate", method = RequestMethod.GET)
@@ -197,7 +215,7 @@ public class SubmissionsRestController {
 		return st.getJsonString();
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADD_APPLICANT')")
+	@PreAuthorize("hasAnyRole('ROLE_ADD_APPLICANT','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/saveAddApplicant", method = RequestMethod.POST)
 	public String saveAddApplicant(@RequestParam(value = "jsonData", required = false) String json,
 			@RequestParam(value = "con", required = false) String con, MultipartHttpServletRequest request,
@@ -222,19 +240,31 @@ public class SubmissionsRestController {
 		}
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(jsonObj,
-				user, orgLocations, con, multiFile);
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+
+		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(jsonObj,user, orgLocations, con, multiFile,loginUserRole);
+
 		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
 		requirementSubmissionHistory.setFromStage("NEW");
 //		requirementSubmission.get
 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
 		Requirement requirement = requirementSubmission.getRequirement();
-		Integer count = requirementSubmissionService.getNumberOfApplicantsForRequirement(orgLocations.getId(), requirement.getId());
-		requirement.setTotalApplicantsForRequirement(count);
-		requirementElkUtil.saveElkRequirement(requirement,new JSONObject());
+		
+		if(null != requirement){
+			Integer totalApplicatsCountForRequirement = 0;
+		   //updating total number of applicants for requrement
+			totalApplicatsCountForRequirement = requirementSubmissionService.getNumberOfApplicantsForRequirement(orgLocations.getId(), requirement.getId());
+//			totalApplicatsCountForRequirement = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(orgLocations,requirement.getId(),user,userRoleName);
+			if(totalApplicatsCountForRequirement > 0){
+				requirement.setTotalApplicants(totalApplicatsCountForRequirement); 
+				requirementService.updateRequirement(requirement);
+			}else{
+				requirement.setTotalApplicants(0); 
+			}
+			requirementElkUtil.saveElkRequirement(requirement,new JSONObject());	
+		}
 		return "success";
 
 	}
@@ -309,7 +339,7 @@ public class SubmissionsRestController {
 		for (RequirementSubmission requirementSubmission : shortlistedList) {
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService
 					.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
-			if (requirementSubmissionTemplateFields.getLastName() != null) {
+			if (null != requirementSubmissionTemplateFields.getLastName()) {
 				StringBuilder canNameSB = new StringBuilder();
 				requirementSubmission.setCandidateName(canNameSB.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
 			} else {
@@ -348,6 +378,18 @@ public class SubmissionsRestController {
 			HttpServletRequest request) throws Exception {
 
 		String resultJson = null;
+		boolean submitToClient = true;
+		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+		
+		if(null != requirement){
+			if(null != requirement.getParentRequirement() && requirement.getIsClientJob().equalsIgnoreCase("Y")){
+				if(!requirement.getParentRequirement().getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.OPEN)){
+					submitToClient = false;
+				}
+			}
+		}
+		
+		if(submitToClient){
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		List<RequirementSubmission> shortlistedList = requirementSubmissionService
@@ -388,6 +430,9 @@ public class SubmissionsRestController {
 		}
 		resultJson = toJSON(candidatesList);
 		return resultJson;
+		}else{
+			return "failed";
+		}
 
 	}
 
@@ -502,6 +547,8 @@ public class SubmissionsRestController {
 		requirementSubmission.setRejectedReason(reason);
 		requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
 		requirementSubmission.setUpdatedBy(user.getUserCode());
+		StringBuilder sb = new StringBuilder();
+		requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		requirementSubmission.setUpdatedDate(new Date());
 		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 		requirementSubmissionService.sendRejectionMailToVendorContact(user,reason,submissionId,orgLocations);
@@ -610,6 +657,7 @@ public class SubmissionsRestController {
 			@RequestParam(value = "selectedIds", required = false) String submissionsList,
 			@RequestParam(value = "requirementId", required = false) Long requirementId,
 			@RequestParam(value = "selectedShortlistsRate", required = false) String selectedShortlistsRate,
+			@RequestParam(value = "selectedShortlistsRatePer", required = false) String selectedShortlistsRatePer,
 			MultipartHttpServletRequest multPartrequest) throws Exception {
 		String jsonc = "{" + jsonData + "}";
 		JSONObject jsonObj = new JSONObject(jsonc);
@@ -620,7 +668,7 @@ public class SubmissionsRestController {
 		final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) multPartrequest;
 		final Map<String, MultipartFile> files = multiRequest.getFileMap();
 		requirementSubmissionService.storeClientSubmissionWithEmailPreview(requirementId, user, orgLocations,
-				submissionsList, org, jsonObj, files,selectedShortlistsRate);
+				submissionsList, org, jsonObj, files,selectedShortlistsRate,selectedShortlistsRatePer);
 		return "success";
 	}
 
@@ -727,10 +775,13 @@ public class SubmissionsRestController {
 		// to update submission history
 		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 		requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.REJECTED.getValue());
+		if(requirementSubmission.getPreviousSubmissionStatus()!=null){
 		requirementSubmissionHistory.setToStage(requirementSubmission.getPreviousSubmissionStatus().getValue());
+		}
 
 		// to update Submission status
 		requirementSubmission.setSubmissionStatus(requirementSubmission.getPreviousSubmissionStatus());
+		requirementSubmission.setSubmissionRateStatus(null);
 		requirementSubmission.setPreviousSubmissionStatus(null);
 		requirementSubmission.setUpdatedBy(user.getUserCode());
 		requirementSubmission.setUpdatedDate(new Date());

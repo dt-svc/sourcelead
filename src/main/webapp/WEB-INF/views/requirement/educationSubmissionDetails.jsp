@@ -28,7 +28,7 @@ function educationSubmissionDetailsList(candidateId){
           type : "POST",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
           success :function(data) {
-               if(data != null && data != 'undefined' && data != "" && data != '[]'){
+               /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
              		 if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
 			    	 }
@@ -104,7 +104,7 @@ function educationSubmissionDetailsList(candidateId){
 	                     $("#educationSubmissionDetailsList").append(result); 
 	                     educationSubmissionPagination(); 
 			    	} 
-               }else{
+               /* }else{
 	    	         var result ="";
 		    	     result = result+"   <div class='row'>"; 
 					 result = result+"	<div class='col-lg-12'>"; 
@@ -118,7 +118,7 @@ function educationSubmissionDetailsList(candidateId){
 					 result = result+"  </div> "; 
 					$("#educationSubmissionDetailsList").empty();
 				    $("#educationSubmissionDetailsList").append(result); 
-               }
+               } */
         },
           
      }); 
@@ -134,9 +134,9 @@ function educationSubmissionPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
- 
  }
 </script>

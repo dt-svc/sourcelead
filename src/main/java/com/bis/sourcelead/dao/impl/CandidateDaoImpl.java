@@ -488,6 +488,38 @@ public class CandidateDaoImpl implements CandidateDao {
 		return candidate;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateByEmailAndRecruiterUserId(String email, Long recruiterUserId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate  where candidate.email = :email and candidate.candidateType = 'Candidate' and candidate.recruiterUserId.id = :recruiterUserId ";  
+		List<Candidate> candidateList =  session.createQuery(query).setLong("recruiterUserId", recruiterUserId).setString("email", email).setCacheable(true).list();
+		Candidate candidate = null;
+		if (candidateList != null && candidateList.size() > 0) {
+			candidate = (Candidate) candidateList.iterator().next();
+		}
+		return candidate;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getCandidatesByOrgLocationIDAndSearchText(Long orgLocationId, Long requirementId,
+			String candidateType, String searchApplicant) throws Exception {
+		logger.debug("In getCandidatesByOrgLocationID method");
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Candidate> candidatesList = null;
+		String subQuery = "";
+		if(!isNullOrEmpty(searchApplicant)){
+			subQuery = "and (candidate.firstName LIKE '" + searchApplicant + "%') OR (candidate.lastName LIKE '" +searchApplicant + "%')";
+		}
+		
+		Query candidateListQuery= session.createQuery("from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.candidateType = :candidateType "
+				+ "and candidate.status = '1' and candidate.id NOT IN (select submission.candidate.id from RequirementSubmission submission "
+				+ "where submission.requirement.id = :requirementId) "+subQuery+" ORDER BY candidate.id DESC ");
+		candidatesList = candidateListQuery.setLong("orgLocationId", orgLocationId).setLong("requirementId", requirementId).setString("candidateType", candidateType).setCacheable(true).list();
+		return candidatesList;
+	}
+
 	
 	
 }

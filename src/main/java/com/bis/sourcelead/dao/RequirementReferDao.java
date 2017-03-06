@@ -17,5 +17,11 @@ public interface RequirementReferDao {
 	List<Long> getReferByMeRequirementsByUserId(Long userId,Integer offset,Integer maxResults) throws Exception;
 	
 	List<RequirementRefer> getRequirementReferListByEmail(String email) throws Exception;
+	
+	List<RequirementRefer> getReferedToMeRequirementsByUserId(Long userId,Integer offset,Integer maxResults,String jobTitle,String location,String postedOn) throws Exception;
+	
+	RequirementRefer getRequirementReferById(Long referId) throws Exception;
+	
+	RequirementRefer getAppliedRequirementReferByRequirementIdAndUserId(Long requirementId,Long userId) throws Exception;
 
 }

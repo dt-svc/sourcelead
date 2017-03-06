@@ -5,28 +5,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,12 +27,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -56,6 +42,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.ClientVendorExport;
+import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
@@ -127,6 +114,9 @@ public class ClientRestController {
 	
 	@Autowired
 	private ClientVendorExport clientVendorExport;
+	
+	@Autowired
+	NotificationsService notificationsService;
 	
   
 	@Autowired
@@ -521,14 +511,27 @@ public class ClientRestController {
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");        
 	        OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
 	        if(orgSpoc !=  null){
+	        	
+	        	Notifications notifications = notificationsService.getNotificationBySpocUUID(orgSpoc.getUUID());
+	        	
 	        	if(invitationStaus != null && "Accepted".equals(invitationStaus)){
 	        		orgSpoc.setInvitationStatus(Constants.MAIL_ACCEPTED);
 	        		clientService.sendAcceptEmailToClientOrVendor(orgSpoc,loginUser,orgLocations);
+	        		
+	        		if(null != notifications){
+	        			 notifications.setUserNotificationStatus("Accepted");
+						 notificationsService.saveNotification(notifications);
+	        		}
+	        		
 	        		SourceLeadSessionManager.setSessionAttribute(request, "acceptContact","Success !! Accepted the invitation.");
 	        	}else if(invitationStaus != null && "Rejected".equals(invitationStaus)){
 	        		orgSpoc.setInvitationStatus(Constants.MAIL_REJECTED);
 	        		orgSpoc.setSpocStatus(Constants.INACTIVE);
 	        		clientService.sendRejectEmailToClientOrVendor(orgSpoc,loginUser,orgLocations);
+	        		if(null != notifications){
+	        			notifications.setUserNotificationStatus("Rejected");
+						notificationsService.saveNotification(notifications);
+	        		}
 	        		SourceLeadSessionManager.setSessionAttribute(request, "acceptContact","Rejected the invitation.");
 	        	}
 	        	orgSpocService.addOrgSpoc(orgSpoc);
@@ -555,7 +558,9 @@ public class ClientRestController {
 		     List<Long> ownerListOfSpoc =  orgSpocService.getOwnerIdbySpocId(spocUserId,ownerId);
 		     //List<User> userList = userService.getOwnersByOrgLocationIdAndNotExistedOwnerId(orgLoc.getId(),ownerId,ownerListOfSpoc);
 		     List<User>  userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(orgLoc.getId(),Long.valueOf(Constants.TAB_CLIENT),ownerListOfSpoc);
-		     orgSpoc.setUserList(userList);
+		     if(null != userList && !userList.isEmpty()){
+		    	  orgSpoc.setUserList(userList);
+		     }
 		     String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editSpocMsg");
 		     if(msg != null && msg != ""){
 		    	 orgSpoc.setMsg(msg);

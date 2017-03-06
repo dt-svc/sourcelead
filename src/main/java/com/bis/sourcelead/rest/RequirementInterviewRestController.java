@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -83,7 +84,7 @@ public class RequirementInterviewRestController {
 		for (RequirementSubmission sub : shortListCandidatesList) {
 			 StringBuilder nameBuilder = new StringBuilder();
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(sub.getId());
-			if(requirementSubmissionTemplateFields.getLastName() != null){
+			if(StringUtils.isNotBlank(requirementSubmissionTemplateFields.getLastName())){
 				sub.setCandidateName(nameBuilder.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
 			}else{
 				sub.setCandidateName(requirementSubmissionTemplateFields.getFirstName());

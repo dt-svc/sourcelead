@@ -72,7 +72,7 @@ public class Constants {
 	public static DateFormat SHORT_DF_STD_DM = new SimpleDateFormat("dd/MM");
 	
 	public static final DateFormat TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'HH:mm:ss");
-	public static final DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+	/*public static final DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");*/
 	
 	public static String MAIL_TEAM_MEMBERS = "Mail To Team Members";
 	public static String INVITE_USER = "Invite User";
@@ -99,6 +99,8 @@ public class Constants {
 	
 	public static String CLIENTORVENDORMAIL = "ClientOrVendorMail";
 	
+	public static String CUSTOM_USER_EMAIL = "customUserEmail";
+	
 	public static String SUBMIT_TO_CLIENT = "Submit To Client";
 	public static String ADD_OFFER_MAIL ="Forward the Mail";
 
@@ -119,6 +121,10 @@ public class Constants {
 	
 	public static String CLIENT_INTERVIEW = "CLIENT_INTERVIEW";
 	public static String INTERVIEW = "INTERVIEW";
+	
+	public static String MAIL_REOPEN_TIMESHEET = "ReopenTimeSheet";
+	public static String MAIL_ACCEPT_REOPEN_TIMESHEET = "AcceptReopenTimeSheet";
+	public static String MAIL_REJECT_REOPEN_TIMESHEET = "RejectReopenTimeSheet";
 	
 	
 	public static String MAIL_BOX_SENT = "Sent";
@@ -229,6 +235,7 @@ public class Constants {
 	public static int MAX_RESULTS_TWENTY = 20;
 	public static int MAX_RESULTS_THIRTY = 30;
 	public static int MAX_RESULTS_FIFTY = 50;
+	public static int MAX_RESULTS_200 = 200;
 	public static int PAGES_INCREMENT = 10;
 	public static int PAGES_DECREMENT = -10;
 	
@@ -331,6 +338,8 @@ public class Constants {
 	public static String OFFERMADE = "OFFERMADE";
 	public static String CLIENT_OFFERMADE = "CLIENT_OFFERMADE";
 	
+	public static String REFER_JOB_APPLIED = "Applied";
+	
 	
 	public static String REQUIREMENT_STATUS = "Draft";
 	
@@ -348,6 +357,8 @@ public class Constants {
 	public static String[] ROLE_DROPDOWN = {"Admin","Project Manager","HR Manager","Recruiter"};
 	
 	public static String[] STATUS_DROPDOWN = {"Active","In-Active","New","Negotiation","Contracted"};
+	
+	public static String[] COUNTRY_DROPDOWN = {"India","Australia","France","Singapore","United Kingdom","United States"};
 	
 	public static String[] LEVEL_DROPDOWN = {"Tier-1","Tier-2","Tier-3","Tier-4","Tier-5"};
 	
@@ -375,7 +386,7 @@ public class Constants {
     public static String[] TIMESHEET_EXCEL_HEADERS2 = {"Tasks","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Total"};
     public static String[] TIMESHEET_EXCEL_HEADERS3 = {"Status"};
     
-    public static String[] TIMESHEET_APPROVAL_MECHANISM_HEADER={"Employee Name","Email id","Phone Number","Client","Total","Stage","approved By"};
+    public static String[] TIMESHEET_APPROVAL_MECHANISM_HEADER={"Employee Name","Email id","Phone Number","Client","projectName","Total","Stage","approved By"};
    
     public static String[] CLIENT_EXCEL_HEADERS = {"Client Name","Website","Location","Tiers","Number of Contacts"};
     
@@ -500,5 +511,40 @@ public class Constants {
     public static String VENDORS_CONTACTS_IMPORT_XLSX = "vendors_contacts_Import.xlsx";
     public static String VENDORS_IMPORT_TEMPLATE_XLS = "vendors_import_template.xls";
     public static String VENDORS_IMPORT_TEMPLATE_XLSX = "vendors_import_template.xlsx";
+    
+    
+    public static String CANDIDATE_FIRST_NAME = "First Name*";
+    public static String CANDIDATE_LAST_NAME = "Last Name";
+    public static String CANDIDATE_EAMIL = "Email id*";
+    public static String CANDIDATE_PHONE_NUMBER = "Phone Number";
+    public static String CANDIDATE_COUNTRY = "Country";
+    public static String CANDIDATE_STATE = "State";
+    public static String CANDIDATE_CITY = "City";
+    
+    public static String CANDIDATE_ADDRESS = "Address";
+    public static String CANDIDATE_DESIGNATION = "Designation";
+    public static String CANDIDATE_TYPE = "Type";
+    
+    public static String CANDIDATE_EXPERIENCE_YEARS = "Experince (Years)";
+    public static String CANDIDATE_EXPERIENCE_MONTHS = "Experince (Months)";
+    
+    public static String CANDIDATE_CURRENT_RATE = "Current Rate";
+    public static String CANDIDATE_CURRENT_RATE_TYPE = "Current Rate Type";
+    public static String CANDIDATE_CURRENT_RATE_CURRENCY = "Current Rate Currency";
+    
+    public static String CANDIDATE_EXPECTED_RATE = "Expected Rate";
+    public static String CANDIDATE_EXPECTED_RATE_TYPE = "Expected Rate Type";
+    public static String CANDIDATE_EXPECTED_RATE_CURRENCY = "Expected Rate Currency";
+    
+    public static String CANDIDATE_SKILLS_NAME = "Skills Name";
+    public static String CANDIDATE_EDUCATION = "Education";
+    public static String CANDIDATE_EMPLOERS = "Employer's";
+    
+    
+    
+    
+    
+    
+    
    
 }	

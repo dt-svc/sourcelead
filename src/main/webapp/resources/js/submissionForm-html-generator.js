@@ -279,13 +279,13 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
         		 if(required == 1){
         			 if(label == 'Email Id'){
         				 datavalidation = 'data-validation="required validate_email validate_Space validate_length length2-100"';
-        				 onBlurEvent = 'onblur="validateCandidateEmail();"';
+        				 onBlurEvent = 'onblur="validateSubmissionCandidateEmail();"';
         				 
         			 }else if(label == 'Phone Number'){
         				 datavalidation = 'data-validation="required validate_phone validate_Space validate_length length9-20"';
         			 }
         			 else if(label == 'Current CTC' || label == 'Expected CTC'){
-            			 datavalidation = 'data-validation="required validate_Space validate_float length1-8"';
+            			 datavalidation = 'data-validation="required validate_Space validate_float validate_length length1-8"';
             		 }
         			 else if(label == 'Designation'){
             			 datavalidation = 'data-validation="required validate_Space validate_Name validate_length length2-250"';
@@ -306,7 +306,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
         			 }
         			 
         			 else if(label == 'Current CTC' || label == 'Expected CTC'){
-        				 datavalidation = 'data-validation="required validate_Space validate_float length1-8"';
+        				 datavalidation = 'data-validation="validate_Space validate_float validate_length length1-8"';
             		 }
         			 else if(label == 'Designation'){
             			 datavalidation = 'data-validation="validate_Space validate_Name validate_length length2-250"';
@@ -369,7 +369,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             		 
             		 style = 'style="width:130px !important; padding-right:5px;"'; 
             		 
-            		 ratePer = '&nbsp;<select style="width:115px !important; padding-right:5px;" id="currentCTCRatePer" name="currentCTCRatePer" field-name="Rate Per">'+
+            		 ratePer = '&nbsp;<select style="width:115px !important; padding-right:5px;" onblur="validateCurrentCTCRatePer();"  id="currentCTCRatePer" name="currentCTCRatePer" field-name="Rate Per">'+
             		 '<option value="">Rate Per</option>'+
             		 '<option value="Yearly">Yearly</option>'+
             		 '<option value="Monthly">Monthly</option>'+
@@ -397,7 +397,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             		 labelId = 'id="expectedRate"';
             		 onblur = 'onblur="validateExpectedCTC();"';
             		 
-            		 ratePer = '&nbsp;<select  style="width:115px !important; padding-right:5px;" id="expectedCTCRatePer" name="expectedCTCRatePer" field-name="Rate Per">'+
+            		 ratePer = '&nbsp;<select  style="width:115px !important; padding-right:5px;" onblur="validateExpectedCTCRatePer();"  id="expectedCTCRatePer" name="expectedCTCRatePer" field-name="Rate Per">'+
             		 '<option value="">Rate Per</option>'+
             		 '<option value="Yearly">Yearly</option>'+
             		 '<option value="Monthly">Monthly</option>'+
@@ -510,7 +510,6 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                  }
              }
              init();
-             setRateTypesByLocation();
              changeRateLabels();
              var d = new Date();
              var year = d.getFullYear() - 18;

@@ -10,7 +10,7 @@ function closeCertificatePopup(){
 }
 </script>
 <%-- 
-     @author : Ajith Matta, Shiva yogi.
+     @author : Ajith Matta, Shiva yogi,PrasadK.
      this script is for display candidate education tab data.
 --%>
 
@@ -59,7 +59,7 @@ var validationSettings = {
 </script>
 
 <%-- 
-     @author : Ajith Matta, Shiva yogi.
+     @author : Ajith Matta, Shiva yogi,prasadK.
      this script is to Store  storeCertificate.
      1.usage     :  used in addCertification function
      2.parameter : candidateId,csrf.token
@@ -157,7 +157,7 @@ function candidateCertificateList(candidateId){
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
           success :function(data) {
-               if(data != null && data != 'undefined' && data != "" && data != '[]'){
+              /*  if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
              		 if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
 			    	 }
@@ -231,7 +231,7 @@ function candidateCertificateList(candidateId){
 	                    	 if(window.candidateStatusGlobal == '0'){
 	                    		 result = result  +'<i class="glyphicon glyphicon-trash"></i></div></td>';
 	                    	}else{
-	                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate"></i></div></td>';
+	                    		 result = result  +'<i class="glyphicon glyphicon-trash" style="color:#f51515 !important;" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate"></i></div></td>';
 	                    	}
 	                    	 result  = result + '         </tr>';
 	                      } 
@@ -240,7 +240,7 @@ function candidateCertificateList(candidateId){
 	                     $("#candidateCertificateList").append(result); 
 	                     certificationPagination(); 
 			    	} 
-               }else{
+               /* }else{
 	    	         var result ="";
 		    	     result = result+"   <div class='row'>"; 
 					 result = result+"	<div class='col-lg-12'>"; 
@@ -257,7 +257,7 @@ function candidateCertificateList(candidateId){
 				    
 				    $("#popUpDivEmp").empty();
 					$("#popUpDivEmp").append(result);
-               }
+               } */
         },
           
      }); 
@@ -268,15 +268,16 @@ function candidateCertificateList(candidateId){
 function certificationPagination(){  
     $('#candidateCertificatePagination').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
- 
  }
 </script>
 

@@ -2,7 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
@@ -168,7 +167,7 @@
         <div class="form-group">
           <label class="col-md-3">Address</label>
           <div class="col-md-9">
-           <input type="text" class="form-control" id="address" name="address" value="${address}"  field-name="Address" data-validation="" data-validation-optional="true">
+           <input type="text" class="form-control" id="address" name="address" value="${address}"  field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
           </div>
         </div>
         
@@ -183,9 +182,10 @@
          <label class="col-md-3">Employment type</label>
          <div class="col-md-9">
               <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getDesignationType(this);">
-                <option value="">Select</option>
+                <option value="">--Select--</option>
                  <option>C2C</option>
                  <option>W-2</option>
+                 <option>C2H</option>
                  <option>Part Time</option>
                  <option>Full Time</option>
                  <option>Other</option>
@@ -394,57 +394,9 @@
      3.ajax url implementation in CandidateRestController.
     --%>
 <script type="text/javascript">
-        var validationSettings = {
-            errorMessagePosition : 'element',
-            borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd' 
-            };
-</script> 
-<script type="text/javascript">
 	function storeCandidate() {
 		
-		var expectedRate = document.getElementById("expectedRate").value; 
-		 if(expectedRate != null && expectedRate != ""){
-			
-			 $('#rateType').removeAttr('data-validation-optional');
-			 $('#rateType').attr("data-validation","required"); 
-		 }else{
-		 $('#rateType').removeAttr('data-validation');
-		 $('#rateType').attr("data-validation-optional","true"); 
-		 }
-		
-		 var rateType = document.getElementById("rateType").value; 
-		 if(rateType != null && rateType != ""){
-			 $('#expectedRate').removeAttr('data-validation-optional');
-			 $('#expectedRate').attr("data-validation","required"); 
-		 }else{
-			 $('#expectedRate').removeAttr('data-validation');
-			 $('#expectedRate').attr("data-validation-optional","true");
-			 $('#rateType').removeAttr('data-validation');
-			 $('#rateType').attr("data-validation-optional","true"); 
-		 }
-		 
-		 var currentRate = document.getElementById("currentRate").value; 
-			 if(currentRate != null && currentRate != ""){
-				
-				 $('#currentRateType').removeAttr('data-validation-optional');
-				 $('#currentRateType').attr("data-validation","required"); 
-			 }else{
-			 $('#currentRateType').removeAttr('data-validation');
-			 $('#currentRateType').attr("data-validation-optional","true"); 
-			 }
-			 
-		 var currentRateType = document.getElementById("currentRateType").value; 
-			if(currentRateType != null && currentRateType != ""){
-				$('#currentRate').removeAttr('data-validation-optional');
-				$('#currentRate').attr("data-validation","required"); 
-			}else{
-				$('#currentRate').removeAttr('data-validation');
-			 	$('#currentRate').attr("data-validation-optional","true"); 
-				$('#currentRateType').removeAttr('data-validation');
-			 	$('#currentRateType').attr("data-validation-optional","true"); 
-			}
+		rateValidations();
 		
 		var validationSettings = {
 				errorMessagePosition : 'element',
@@ -664,6 +616,7 @@ function getCities(){
 		            select.find(option).prop('selected', true);
 		          //to doesn't allow duplicates
                     $("#candidateSkills option").each(function(){
+                    	alert("hi");
                           $(this).siblings("[value='"+ this.value+"']").remove();
                     });
                     //end
@@ -887,5 +840,60 @@ function getDesignationType(designationType){
 			  $("#designationOtherType").val('');
 		  }
 	}
+}
+</script>
+
+<!-- This script for Current Rate ,Rate Type,Expected Rate, Expected Rate Type validation checks -->
+<script>
+
+function rateValidations(){
+var rateType = document.getElementById("rateType").value; 
+if(rateType != null && rateType != ""){
+	 $('#expectedRate').removeAttr('data-validation-optional');
+	 $('#expectedRate').attr("data-validation","required"); 
+}else{
+	 $('#expectedRate').removeAttr('data-validation');
+	 $('#expectedRate').attr("data-validation-optional","true");
+	 $('#rateType').removeAttr('data-validation');
+	 $('#rateType').attr("data-validation-optional","true"); 
+} 
+
+var expectedRate = document.getElementById("expectedRate").value; 
+if(expectedRate != null && expectedRate != ""){
+	
+	 $('#rateType').removeAttr('data-validation-optional');
+	 $('#rateType').attr("data-validation","required"); 
+}else{
+$('#rateType').removeAttr('data-validation');
+$('#rateType').attr("data-validation-optional","true"); 
+}
+
+
+
+var currentRateType = document.getElementById("currentRateType").value; 
+	if(currentRateType != null && currentRateType != ""){
+		$('#currentRate').removeAttr('data-validation-optional');
+		$('#currentRate').attr("data-validation","required"); 
+	}else{
+		$('#currentRate').removeAttr('data-validation');
+	 	$('#currentRate').attr("data-validation-optional","true"); 
+		$('#currentRateType').removeAttr('data-validation');
+	 	$('#currentRateType').attr("data-validation-optional","true"); 
+	} 
+
+
+var currentRate = document.getElementById("currentRate").value; 
+	 if(currentRate != null && currentRate != ""){
+		
+		 $('#currentRateType').removeAttr('data-validation-optional');
+		 $('#currentRateType').attr("data-validation","required"); 
+		 
+	 }else{
+		 
+			 $('#currentRateType').removeAttr('data-validation');
+			 $('#currentRateType').attr("data-validation-optional","true"); 
+	 
+	 }
+	 
 }
 </script>

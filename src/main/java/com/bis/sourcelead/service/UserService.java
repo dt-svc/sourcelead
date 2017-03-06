@@ -85,6 +85,8 @@ public interface UserService  {
 	//Prasad Salina to get managers list baded on role type and except current user
 	List<User> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,Long roleId , Long orgLocationsId) throws Exception;
 	
+	List<User> getManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(Long userId, Long roleId, Long orgLocationsId, Long tabId) throws Exception;
+	
 	public List<User>  getUserListExceptExistedUsersList(List<Long> userIds,Long orgLocationId, Long tabId)throws Exception;
 
 	

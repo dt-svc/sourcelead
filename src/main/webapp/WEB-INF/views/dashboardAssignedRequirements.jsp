@@ -12,7 +12,7 @@
         </span> -->
         </h4>
       <!-- <a href="#" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
-        <div class="clearfix require_wrap_table dashboard-data"> 
+        <div class="clearfix require_wrap_table dashboard-data overflow_inherint"> 
         		 <div id="requirementList"></div>
         </div>
       </div>
@@ -71,13 +71,13 @@ function requirementList(){
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
 	                    	 if(opt.jobId!=null && opt.jobId !='' && opt.jobId !='undefined'){
-	                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title="+opt.jobId+"-"+opt.jobTitle+">"+opt.jobId+"-"+opt.jobTitle+"</span></a></div></td>";
-		                     }else{
-		                    	 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title="+opt.jobTitle+">"+opt.jobTitle+"</span></a></div></td>";
+	                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobId+"-"+opt.jobTitle+"'>"+opt.jobId+"-"+opt.jobTitle+"</span></a></div></td>";
+	                    	 }else{
+		                    	 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
 		                     }
 		                     
 		                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
-		                    	 result = result +"<td><div><span title="+opt.clientName+">"+opt.clientName+"</span></div></td>";
+		                    	 result = result +"<td><div><span title='"+opt.clientName+"'>"+opt.clientName+"</span></div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
@@ -100,8 +100,13 @@ function requirementList(){
 		                     result = result +"<td><div>"+opt.noOfOfferedApplicants+"</div></td>";
 		                     if(((orgATS == 'Y' && orgVMS == 'Y') || orgATS != 'Y') && (opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN')){
 		                    	 '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
-		                    	 	result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
-		                    	 '</sec:authorize>';
+		                    	 	/* result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>"; */
+		                    	 if(opt.isRequirementReleasedByuser == 'Y'){
+		                       		 result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success'></i></a></div></td>"; 
+		                       	 }else{	
+		                       	 result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
+		                       	 }
+		                    	 	'</sec:authorize>';
 		                    	 '<sec:authorize access="!hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
 		                    	 	result = result +"<td><div><i class='fa fa-bullhorn'></i></div></td>";
 		                    	 '</sec:authorize>';
@@ -138,12 +143,14 @@ function requirementList(){
 function pagination(){ 
     $('#requirementPagination').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-            "sSearch": ""
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
        }
     } );
 }

@@ -298,7 +298,8 @@ overflow-x: auto;
 	                      </div>                	
 	                  </li>
 	                  
-		                  <li id="contactLevel" style="display:none"><i class="fa fa-filter"></i><span>Tier</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
+		                  <li id="contactLevel" style="display:none">
+		                  <div id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Tier</span><i class="glyphicon glyphicon-play" style="right:20px;"></i></div>
 		                	<div id="filter2ApprovedPop" class="approved_pop">
 		                    	<ul>
 									<!-- <li><input id="c5"  type="checkbox" name="clinetLevel" value ="All" onclick="getClientDetails();"  ><label for="c5">All</label></li> -->
@@ -891,9 +892,9 @@ function pagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-		
     } );
 }
 </script>
@@ -1013,6 +1014,8 @@ function preparedClientContacts(data){
 					result = result + ' <option '+(report.spocStatus == "Negotiation" ? "selected" : '') +'>Negotiation</option>';
 					result = result + ' <option '+(report.spocStatus == "Contracted" ? "selected" : '') +'>Contracted</option>';
 					result = result + ' </select>';
+					
+					result = result + '<span id="spocSpanState'+report.id+'"> </span>';
 	    		}
 				result = result + ' </div></td>';
 				
@@ -1139,6 +1142,8 @@ function preparedClientContactListFromElk(data){
 					result = result + ' <option '+(report.spocStatus == "Negotiation" ? "selected" : '') +'>Negotiation</option>';
 					result = result + ' <option '+(report.spocStatus == "Contracted" ? "selected" : '') +'>Contracted</option>';
 					result = result + ' </select>';
+					
+					result = result + '<span id="spocSpanState'+report.id+'"> </span>';
 	    		}
 				result = result + ' </div></td>';
 				
@@ -1403,7 +1408,8 @@ function pagination1(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     })
 }
@@ -1862,6 +1868,7 @@ function saveReason1(spocId, orgRelationID){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
 	if(reason.match(/^[^\s-](.*)*$/) != null){
+		 reason = encodeURIComponent(reason);
 		$("#reasonForSpocDiv").empty();
 		
 		 $("#row"+spocId).empty();
@@ -1914,6 +1921,10 @@ function rejectInvitation(spocId){
     			$("#row"+spocId).empty();
     	    	$("#row"+spocId).html(rowHtmlContent);
     	        $("#invitationStatus"+spocId).html("<b class='proj_closed'>Rejected</b>");
+    	        
+    	        $("#spocState"+spocId).remove();
+    	        $("#spocSpanState"+spocId).html("<span>In-Active</span>");
+    	        
 		    	msgFadein();
 		    }
 	   });

@@ -319,7 +319,7 @@ $(document).ready(function () {
        
        
        <div class="form-group jobTypeDiv" id="jobTypeDiv" style="display:none">
-            <label class="col-md-3">Employment Type</label>
+            <label class="col-md-3">Other</label>
             <div class="col-md-9">
               <input type="text" class="form-control" id="jobOtherType" name="jobOtherType" value="${requirement.otherJobType}"  field-name="Job Type" value="">
             </div>
@@ -510,22 +510,24 @@ $(document).ready(function () {
             </div>
           </div>
           
-          <div class="form-group">
-            
-            <label class="col-md-3">Is Template</label>
-            <div class="col-md-9">
-            
-            <c:set var="val" value="${requirement.isClientJob}"/>
-			<c:choose> 
-			  <c:when test="${val == 'Y'}">
-			   		    <input disabled="disabled" type="checkbox" name="isTemplate" id="isTemplate" value="" onclick="getTemplateVal();">
-			  </c:when>
-			  <c:otherwise>
-						<input type="checkbox" name="isTemplate" id="isTemplate" value="" onclick="getTemplateVal();">
-			  </c:otherwise>
-			</c:choose>
-		    </div>
-        </div>
+         <div class="form-group">
+				<div class="ml">
+					<c:set var="val" value="${requirement.isClientJob}" />
+					<c:choose>
+						<c:when test="${val == 'Y'}">
+							<input disabled="disabled" type="checkbox" name="isTemplate"
+								id="isTemplate" value="" onclick="getTemplateVal();">
+						</c:when>
+						<c:otherwise>
+							<input type="checkbox" name="isTemplate" id="isTemplate"
+								value="" onclick="getTemplateVal();">
+						</c:otherwise>
+					</c:choose>
+					<label>&nbsp;&nbsp;<strong>Is Template</strong>
+						&nbsp;&nbsp;
+					</label>
+				</div>
+			</div>
         
       </div>
       <div class="clearfix mt">
@@ -1061,7 +1063,7 @@ $(document).ready(function () {
 		validateJobId();
 		$('#addClient').empty();
 		$('#addContact').empty();
-		$('#addTeam').empty();
+		//$('#addTeam').empty(); /* commented by Venkat Kesav because of issue #2673 */ 
 		
 		var validationSettings = {
 		        errorMessagePosition : 'element',
@@ -1101,39 +1103,43 @@ $(document).ready(function () {
 			 $('#clientSubmissionForm').attr("data-validation-optional","true");
 		}
 		
-		 var rate = document.getElementById("rate").value; 
-		 if(rate != null && rate != ""){
-			 $('#rateType').removeAttr('data-validation-optional');
-			 $('#rateType').attr("data-validation","required"); 
-		 }else{
-			 $('#rateType').removeAttr('data-validation');
-			 $('#rateType').attr("data-validation-optional","true"); 
-		 }
-		 var rateType = document.getElementById("rateType").value; 
-		 if(rateType != null && rateType != ""){
-			 $('#rate').removeAttr('data-validation-optional');
-			 $('#rate').attr("data-validation","required"); 
-		 }else{
-			 $('#rate').removeAttr('data-validation');
-			 $('#rate').attr("data-validation-optional","true"); 
-		 }
-		 
-		 var clientRate = document.getElementById("clientRate").value; 
-		 if(clientRate != null && clientRate != ""){
-			 $('#clientRateType').removeAttr('data-validation-optional');
-			 $('#clientRateType').attr("data-validation","required"); 
-		 }else{
-			 $('#clientRateType').removeAttr('data-validation');
-			 $('#clientRateType').attr("data-validation-optional","true"); 
-		 }
-		 var clientRateType = document.getElementById("clientRateType").value; 
-		 if(clientRateType != null && clientRateType != ""){
-			 $('#clientRate').removeAttr('data-validation-optional');
-			 $('#clientRate').attr("data-validation","required"); 
-		 }else{
-			 $('#clientRate').removeAttr('data-validation');
-			 $('#clientRate').attr("data-validation-optional","true"); 
-		 }
+          var rateType = document.getElementById("rateType").value; 
+  		 if(rateType != null && rateType != ""){
+  			 $('#rate').removeAttr('data-validation-optional');
+  			 $('#rate').attr("data-validation","required validate_Space validate_float validate_length length1-8"); 
+  		 }else{
+  			 $('#rate').removeAttr('data-validation');
+  			 $('#rate').attr("data-validation-optional","true"); 
+  		 }
+  		 
+ 		 var rate = document.getElementById("rate").value; 
+ 		 if(rate != null && rate != ""){
+ 			 $('#rateType').removeAttr('data-validation-optional');
+ 			 $('#rateType').attr("data-validation","required");
+ 			 $('#rate').attr("data-validation","required validate_Space validate_float validate_length length1-8");
+ 		 }else{
+ 			 $('#rateType').removeAttr('data-validation');
+ 			 $('#rateType').attr("data-validation-optional","true"); 
+ 		 }
+ 		 
+ 		 var clientRateType = document.getElementById("clientRateType").value; 
+ 		 if(clientRateType != null && clientRateType != ""){
+ 			 $('#clientRate').removeAttr('data-validation-optional');
+ 			 $('#clientRate').attr("data-validation","required"); 
+ 		 }else{
+ 			 $('#clientRate').removeAttr('data-validation');
+ 			 $('#clientRate').attr("data-validation-optional","true"); 
+ 		 }
+ 		 
+ 		 var clientRate = document.getElementById("clientRate").value; 
+ 		 if(clientRate != null && clientRate != ""){
+ 			 $('#clientRateType').removeAttr('data-validation-optional');
+ 			 $('#clientRateType').attr("data-validation","required"); 
+ 		 }else{
+ 			 $('#clientRateType').removeAttr('data-validation');
+ 			 $('#clientRateType').attr("data-validation-optional","true"); 
+ 		 }
+		
 		   if ($('#requirement_form').validate(false, validationSettings)){   
 			
 			var frm = $('#requirement_form').serializeFormJSON();
@@ -2163,7 +2169,8 @@ function pagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -2431,7 +2438,7 @@ function getLevel2Approvers(currentApproverId){
 			        	}
 			        	else{
 			        		 $('input#jobId').removeAttr( "record-exist record-exist-errormsg");
-			        		 $('#jobIdDiv').find('p.jquery_form_error_message').remove(); 
+			        		//$('#jobIdDiv').find('p.jquery_form_error_message').remove(); 
 	                         $("#draft").removeAttr("disabled");
 	                         $("#save").removeAttr("disabled", "disabled");
 	                		 $("#submitForApproval").removeAttr("disabled", "disabled");
@@ -2468,9 +2475,9 @@ function minMaxExperience(){
     if (parseFloat(maxExp) <= parseFloat(minExp)){
         $('#expId').find('p.jquery_form_error_message').remove(); 
 		$('input#expValidation').attr('class','error signin_fild');
-		$("input#expValidation").after("<p class='jquery_form_error_message'>Max Experience is greater than Min Experience</p>");
+		$("input#expValidation").after("<p class='jquery_form_error_message'>Max Experience should be greater than Min Experience</p>");
 		$('input#expValidation').attr('record-exist','yes');
-		$('input#expValidation').attr('record-exist-errorMsg','Max Experience is greater than Min Experience'); 
+		$('input#expValidation').attr('record-exist-errorMsg','Max Experience should be greater than Min Experience'); 
     }  else{
     	$('#expId').find('p.jquery_form_error_message').remove(); 
     	$('input#expValidation').removeAttr( "class record-exist record-exist-errormsg");

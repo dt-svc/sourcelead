@@ -35,6 +35,7 @@
 function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
+	
 	$.ajax({ 
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getSubmissionDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,
@@ -87,6 +88,18 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	    		   expectedRate = json.requirementSubmissionTemplateFields.expectedCTC; 
 	    	   }else{
 	    		   expectedRate = " ";
+	    	   }
+	    	   
+	    	   if(json.requirementSubmissionTemplateFields.currentRateType != null && json.requirementSubmissionTemplateFields.currentRateType != '' && json.requirementSubmissionTemplateFields.currentRateType !='undefined'){
+	    		   currentRateType = json.requirementSubmissionTemplateFields.currentRateType; 
+	    	   }else{
+	    		   currentRateType = " ";
+	    	   }
+	    	   
+	    	   if(json.requirementSubmissionTemplateFields.currentRatePer != null && json.requirementSubmissionTemplateFields.currentRatePer != '' && json.requirementSubmissionTemplateFields.currentRatePer !='undefined'){
+	    		   currentRatePer = json.requirementSubmissionTemplateFields.currentRatePer; 
+	    	   }else{
+	    		   currentRatePer = " ";
 	    	   }
 	    	   
 	    	   /* if(json.candidate.currentRateCurrency != null && json.candidate.currentRateCurrency != '' && json.candidate.currentRateCurrency !='undefined'){
@@ -170,8 +183,8 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + '<li><i class="fa fa-location-arrow"></i>';
 		       result = result +country +''+ state +''+ city
 		       result = result +'</li>';
-		       result = result + '<li><i class="fa fa-rupee"></i>'+currentRate+' - Current CTC </li>';
-		       result = result + '<li><i class="fa fa-rupee"></i>'+expectedRate+' - Expected CTC </li>';
+		       result = result + '<li><i class="fa fa-money"></i><b>Current Rate:&nbsp;</b>'+currentRate+'   '+currentRatePer+'/'+currentRateType+'</li>';
+		       result = result + '<li><i class="fa fa-money"></i><b>Expected Rate:&nbsp;</b>'+expectedRate+'  '+currentRatePer+'/'+currentRateType+'</li>';
 		       result = result + '</ul>';
 		       result = result + ' </div>';
 		       
@@ -181,11 +194,11 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			    result = result + '<div class="acceptreject-actions">';
 			    if(json.needApplicantPermit == 'Y'){
 			    	
-			    	    <c:if test="${isManager == true}">
+			    	    <c:if test="${isManager == true || isAdmin == true}">
 			    	   		result = result + '<ul class="list-unstyled list-inline">';
 			    	   		result = result + '<span id="statusDiv">';
 			    	    	if(json.submissionRateStatus != 'ACCEPTED' && json.submissionRateStatus != 'REJECTED'){   
-								result = result + '	<li><i class="fa fa-check labelsuccess" title="Accept Applicant Authorization" onClick="acceptFun('+submissionId+');"></i>';
+								result = result + '	<li><i class="fa fa-check labelsuccess" title="Accept Applicant Authorization" onClick="acceptCandidate(\''+submissionId+'\',\'accept\');"></i>';
 								result = result + '		<div class="acceptreject-pop" id="accpet-div">';
 								result = result + '		</div>';
 								result = result + '	</li>';
@@ -219,7 +232,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 					    	    		result = result + 'Candidate status : '+json.submissionRateStatus;
 										result = result + '	</li>';
 			    	    			}
-									if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
+									/* if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
 										result = result + '	<li>';
 					    	    		result = result + 'Request Comment : '+json.submissionRequestComment;
 										result = result + '	</li>';
@@ -228,7 +241,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 										result = result + '	<li>';
 										result = result + '<a href="downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'">'+json.submissionRequestFileName+'</a>';
 										result = result + '	</li>';
-									}	
+									}	 */
 									
 			    	    		}
 			    	    	} 
@@ -245,7 +258,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 										result = result + '<a href="downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'">'+json.submissionRequestFileName+'</a>';
 									result = result + '	</li>';
 									result = result + '	<li>';
-										result = result + "comment: "+json.submissionRequestComment;
+										result = result + "Comment: "+json.submissionRequestComment;
 									result = result + '	</li>';
 									if(json.submissionRateStatus != null && json.submissionRateStatus != '' && json.submissionRateStatus != 'undefined'){
 										result = result + '<li>';
@@ -253,7 +266,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 										result = result + '</li>';
 									}
 						   }else{
-							   <c:if test="${isTeamMember == true && isManager == false}">
+							   <c:if test="${isTeamMember == true && isManager == false && isAdmin == false}">
 									result = result + '	<li><i class="fa fa-check labelsuccess" title="Request" onClick="requestFun('+submissionId+');"></i>';
 									result = result + '		<div class="acceptreject-pop" id="request">';
 									result = result + '		</div>';
@@ -268,7 +281,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 				result = result + '</div>';
 				result = result + '<div class="clearfix"></div>';
 				/* New comments div creation Nov 8th, 2016 */ 
-	            result = result+'<div class="comments-div clearfix mr" id="latestMessage">';
+	            result = result+'<div class="comments-div clearfix" id="latestMessage">';
 	            result = result+'    <div class="commentsimg">';
 	            result = result+'    <i class="fa fa-comments"></i>';
 	            result = result+'        <div class="commentsimg-inner">';
@@ -333,6 +346,9 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + '<div id="tabb-1" class="new-tabs_inn" style="display: block;">';
 
 		       result = result + '<div class="require_wrap_details">';
+		       if(json.submissionStatus == 'REJECTED'){
+		    	   result = result + '<div ><a href="#" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';
+		       }
 		       result = result + '<div class="clearfix">';
 			   result = result + '</div> ';        
 				   
@@ -1177,14 +1193,14 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 
 <script>
 		// Accept function
-	function acceptFun(submissionId){
+	/* function acceptFun(submissionId){
 		$('#accpet-div').empty();
 		$('#reject').empty();
 		var result = "";	
 		result = result + '	        <form id="accept_form" name="accept_form" action="upload" enctype="multipart/form-data" method="post">';
 		result = result + '			<div class="row">';
 		result = result + '				<div class="col-md-12">';
-		result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" data-validation="required" field-name="Comment"></textarea>';
+		result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" data-validation="required validate_Space validate_length length2-250" field-name="Comment"></textarea>';
 		result = result + '				</div>';
 		result = result + '				</div>';
 		result = result + '				<div class="row">';
@@ -1200,7 +1216,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		$('#reject').fadeOut();
 		$('#request').fadeOut();
 		
-	};
+	}; */
 	/* $("#accpet-div, .clients_side_wrap, .clients_side_wrap_active, .fa, .fa-check, .labelsuccess").click(function(e){
 		 e.stopPropagation();
 	 });
@@ -1214,7 +1230,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		result = result + '	        <form id="reject_form" name="reject_form" action="upload" enctype="multipart/form-data" method="post">';
 		result = result + '			<div class="row">';
 		result = result + '				<div class="col-md-12">';
-		result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" data-validation="required" field-name="Comment"></textarea>';
+		result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" data-validation="required validate_Space validate_length length2-250" field-name="Comment"></textarea>';
 		result = result + '				</div>';
 		result = result + '			</div>';
 		result = result + '			<div class="row">';
@@ -1239,7 +1255,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		result = result + '<form id="request_form" name="request_form" action="upload" enctype="multipart/form-data" method="post">';
 		result = result + '			<div class="row">';
 		result = result + '				<div class="col-md-12">';
-		result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" data-validation="required" field-name="Comment"></textarea>';
+		result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" data-validation="required validate_Space validate_length length2-250" field-name="Comment"></textarea>';
 		result = result + '				</div>';
 		result = result + '		    </div>';
 		result = result + '		    <div class="row">';
@@ -1777,3 +1793,42 @@ function closefeedback(){
 }
 </script>
 <!-- this script using for interview feedback Ends -->
+<script type="text/javascript">
+function reActivateApplicant(submissionId,candidateId,requirementId){
+	var result = "";
+	var sourceleadUrl ='${sourceleadUrl}';
+	var message = confirm("You are choosing to ReActivate the Applicant");
+	if (message == true) {
+		$.ajax({
+	        type : "POST",
+	         url: sourceleadUrl+"/reActivateRejectedApplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
+	         success :function(data) {
+	               if(data != null && data != 'undefined' && data != ""){
+	            	   getSubmissionDetailsSideBar(submissionId,candidateId,requirementId);
+	            	   pipelineList(requirementId);
+	                } 
+	                 },
+	              }); 
+		
+	}
+	
+}
+</script>
+
+<script type="text/javascript">
+function pipelineList(requirementId){
+	var submissionType = "all";
+	$("#duplicataplctli").removeClass("pipeline-active");
+	$("#requestSentli").removeClass("pipeline-active");
+	$("#shortListli").removeClass("pipeline-active");
+	$("#submitToClientli").removeClass("pipeline-active");
+	$("#interviewli").removeClass("pipeline-active");
+	$("#offerMadeli").removeClass("pipeline-active");
+	$("#rejectedli").removeClass("pipeline-active");
+	$("#applicantli").addClass("pipeline-active");
+	filterReq(requirementId,submissionType);
+}
+</script>
+
+
+

@@ -101,13 +101,17 @@ public interface RequirementSubmissionDao {
 
 	List<RequirementSubmission> duplicateCandidateCountList(Long requirementId, User user, OrgLocations loginOrgLocation) throws Exception;
 	
-	List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, String status);
+	List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, User user,String status);
 	
 	List<Long> getSubmittedCandidateIdsByRequirementId(Long requirementId) throws Exception;
 
-	Integer getRequirementPerCandidateCount(Long candudateId)throws Exception;
+	Integer getRequirementPerCandidateCount(Long candudateId,Long loginOrgLocation)throws Exception;
 
 	Integer getNumberOfApplicantsForRequirement(Long orgLocationId, Long requirementId)throws Exception;
 	
 	RequirementSubmission getRequirementSubmissionByRequirementIdAndCandidateId(Long requirementId,Long candidateId) throws Exception;
+	
+	RequirementSubmission validateRequirementByRecruiterCandidateEmail(String email, Long requirementId, Long recruiterUserId) throws Exception;
+	
+	Integer getRecruiterSubmissionsCountByRecruiterIdAndRequirementId(Long requirementId,Long userId) throws Exception;
 }
