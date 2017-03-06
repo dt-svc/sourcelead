@@ -19,9 +19,9 @@ $(document).ready(function() {
 
 <section class="content-header clearfix">
     <div class="pull-left">
-      <h2>Refer Requirement Lis</h2>
+      <h2>Contacts List</h2>
     </div>
-    <div class="pull-right brud-crum">Refer Requirement List</div>
+    <div class="pull-right brud-crum">Contacts List</div>
   </section>
   <div class="timesheet_out">
       <div class="vendor_wrap">
@@ -142,7 +142,8 @@ function refercontactpagenation(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+ 			"sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
