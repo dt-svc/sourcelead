@@ -37,7 +37,7 @@ function addOffer(requirementId){
 				result = result + '<input type="hidden" id="isFlushCandidateRequired" name="isFlushCandidateRequired">';
 				
 				/* result= result + '	            <div class="add_inter_head"> <span>Add Offer</span><a href="javascript:void(0)" onClick="addOfferRow(this);"><i class="fa fa-plus"></i> Add row</a>'; */
-				result= result + '	            <div class="add_inter_head"> <span>Add Offer</span><span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="selectedOfferApplicantsCount">0</b></span>';
+				result= result + '	            <div class="add_inter_head"> <span>Generate offer</span><span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="selectedOfferApplicantsCount">0</b></span>';
 				result= result + '	              <div class="clearfix"></div>';
 				result= result + '	            </div>';
 				
@@ -150,12 +150,12 @@ function selectOfferApplicants(){
 <div id="divOfferTd3" style="display: none; float: left;">
    	 <div class="positionRelative float">
            <select class="form-control" id="REPLACEROWIDPaymentType" name="REPLACEROWIDPaymentType"  >
-	          		 <option value="INR">INR</option>
-	                 <option value="AUD">AUD</option>
-	                 <option value="USD">USD</option>
-	                 <option value="GBP">GBP</option>
-	                 <option value="SGD">SGD</option>
-	                 <option value="EUR">EUR</option>
+	          		 <option ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}>INR</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}>AUD</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}>USD</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'GBP' ? 'selected' : ''}>GBP</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'SGD' ? 'selected' : ''}>SGD</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'EUR' ? 'selected' : ''}>EUR</option>
            </select>
      </div>
      <div class="positionRelative float">
@@ -177,12 +177,13 @@ function selectOfferApplicants(){
 <div id="divOfferTd4" style="display: none; float: left;">
  	<select class="form-control" id="REPLACEROWIDPositionType" name="REPLACEROWIDPositionType">
  	 				 <option value="" disabled selected>Select Type</option>
-	                 <option  value="C2C">C2C</option>
-	                 <option  value="W-2">W-2</option>
-	                 <option  value="C2H">C2H</option>
-	                 <option  value="Contract">Contract</option>
-	                 <option  value="Part Time">Part Time</option>
-	                 <option  value="Full Time">Full Time</option>
+	                 <option  ${requirement.jobType  == 'C2C' ? 'selected' : ''}>C2C</option>
+	                 <option  ${requirement.jobType  == 'W-2' ? 'selected' : ''}>W-2</option>
+	                 <option  ${requirement.jobType  == 'C2H' ? 'selected' : ''}>C2H</option>
+	                 <option  ${requirement.jobType  == 'Contract' ? 'selected' : ''}>Contract</option>
+	                 <option  ${requirement.jobType  == 'Part Time' ? 'selected' : ''}>Part Time</option>
+	                 <option  ${requirement.jobType  == 'Full Time' ? 'selected' : ''}>Full Time</option>
+	                 <option  ${requirement.jobType  == 'Other' ? 'selected' : ''}>Other</option>
 	                      
 	</select>
 </div>	              

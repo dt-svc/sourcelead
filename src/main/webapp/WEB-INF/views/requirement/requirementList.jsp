@@ -191,7 +191,8 @@ function requirementList(){
 	    });
 	var orgATS = '${SourceLeadWeb_ats}';
 	var orgVMS = '${SourceLeadWeb_vms}';
-	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$("#requirementList").empty();
+	 $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getRequirementListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients,    
@@ -420,7 +421,8 @@ function prepareRequirementData(data){
 
 			result = result +" </select>";	
            result = result +" </td>";
-        if(((orgATS == 'Y' && orgVMS == 'Y') || orgATS != 'Y') && (opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN')){
+       
+       /*  if(((orgATS == 'Y' && orgVMS == 'Y') || orgATS != 'Y') && (opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN')){
        	 '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
        	 if(opt.isRequirementReleasedByuser == 'Y'){
        		 result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success'></i></a></div></td>"; 
@@ -431,9 +433,24 @@ function prepareRequirementData(data){
        	 '<sec:authorize access="!hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
        	 	result = result +"<td><div><i class='fa fa-bullhorn'></i></div></td>";
        	 '</sec:authorize>';
+       	 
         }else{
             result = result +"<td><div>--</div></td>";
-        }
+        } */
+        
+        if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN'){
+        	'<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
+	        	if(opt.isRequirementReleasedByuser == 'Y'){
+		   		 	result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success'></i></a></div></td>"; 
+			   	 }else{	
+			   	 	result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
+			   	 }
+       	 '</sec:authorize>';
+       }else{
+           result = result +"<td><div>--</div></td>";
+       }
+        
+        
         result = result +"</tr>";
         result = result +"</tr>";
        
@@ -1227,13 +1244,13 @@ function requirementPipeline(requirementId){
 			<div class="RePop">
 				<ul>
 				 <li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
-					<!-- <li><a href="reports.html"><i class="fa fa-user"></i>Requirements Posted</a></li>
+					 <li><a href="reports.html"><i class="fa fa-user"></i>Requirements Posted</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Client Requirements</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Applicants Received</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Applicants</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Short listed</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Interview</a></li>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Offer</a></li> -->
+					<li><a href="reports.html"><i class="fa fa-user"></i>Offer</a></li> 
 				</ul>
 			</div>
 		</div>  

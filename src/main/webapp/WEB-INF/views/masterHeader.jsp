@@ -312,7 +312,14 @@ width: 11.5%;
          </sec:authorize>
          
          <sec:authorize access="hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')">
-            	<li><a href="#" title="Settings" class="settings"><i class="fa fa-cog fa-spin fa-fw"></i></a></li>
+            	<li id="settingArea"><a href="#" title="Settings" class="settings"><i class="fa fa-cog fa-spin fa-fw"></i></a>
+            	<div class="setting-area">
+            	<ul class="list-unstyled">
+            	<li><a href="<c:url value="/referRequirementList" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Contacts</a></li>
+            	<li><a href="<c:url value="/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Account</a></li>
+            	</ul>
+            	</div>
+            	</li>
          </sec:authorize>
          
           <%-- <c:if test="${SourceLeadWeb_orgSettingsVisible == 'Y' && SourceLeadWeb_enrollOrgVisible != 'Y'}">

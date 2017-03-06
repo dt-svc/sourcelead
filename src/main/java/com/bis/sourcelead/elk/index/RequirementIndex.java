@@ -45,6 +45,8 @@ public class RequirementIndex {
 	
 	private String[] appliedProfessionals;
 	
+	private String[] appliedRecruiters;
+	
 	private String jobType;
 	
 	private String jobId;
@@ -102,6 +104,28 @@ public class RequirementIndex {
 	private String reqLevel1ApproverStatus;
 	
 	private String reqLevel2ApproverStatus;
+	
+	private Long referId;
+	
+	private String referedUser;
+	
+	private Integer noOfSearchHits;
+	
+	private String isReferedRequiremetnApplied;
+	
+	private String rewardPercentage;
+	
+	private String rewardFlat;
+	
+	private String rewardFlatRateType;
+	
+	private String rewardGuaranteePeriod;
+	
+	private String rewardType;
+	
+	private Integer recruiterSubmissionsCount;
+	
+	
 	
 	
 	public String getManagerUserId() {
@@ -453,6 +477,14 @@ public class RequirementIndex {
 		this.appliedProfessionals = appliedProfessionals;
 	}
 
+	public String[] getAppliedRecruiters() {
+		return appliedRecruiters;
+	}
+
+	public void setAppliedRecruiters(String[] appliedRecruiters) {
+		this.appliedRecruiters = appliedRecruiters;
+	}
+
 	public String getIsJobApplied() {
 		return isJobApplied;
 	}
@@ -491,6 +523,86 @@ public class RequirementIndex {
 
 	public void setReqLevel2ApproverStatus(String reqLevel2ApproverStatus) {
 		this.reqLevel2ApproverStatus = reqLevel2ApproverStatus;
+	}
+
+	public Long getReferId() {
+		return referId;
+	}
+
+	public void setReferId(Long referId) {
+		this.referId = referId;
+	}
+
+	public String getReferedUser() {
+		return referedUser;
+	}
+
+	public void setReferedUser(String referedUser) {
+		this.referedUser = referedUser;
+	}
+
+	public Integer getNoOfSearchHits() {
+		return noOfSearchHits;
+	}
+
+	public void setNoOfSearchHits(Integer noOfSearchHits) {
+		this.noOfSearchHits = noOfSearchHits;
+	}
+
+	public String getIsReferedRequiremetnApplied() {
+		return isReferedRequiremetnApplied;
+	}
+
+	public void setIsReferedRequiremetnApplied(String isReferedRequiremetnApplied) {
+		this.isReferedRequiremetnApplied = isReferedRequiremetnApplied;
+	}
+
+	public String getRewardPercentage() {
+		return rewardPercentage;
+	}
+
+	public void setRewardPercentage(String rewardPercentage) {
+		this.rewardPercentage = rewardPercentage;
+	}
+
+	public String getRewardFlat() {
+		return rewardFlat;
+	}
+
+	public void setRewardFlat(String rewardFlat) {
+		this.rewardFlat = rewardFlat;
+	}
+
+	public String getRewardFlatRateType() {
+		return rewardFlatRateType;
+	}
+
+	public void setRewardFlatRateType(String rewardFlatRateType) {
+		this.rewardFlatRateType = rewardFlatRateType;
+	}
+
+	public String getRewardGuaranteePeriod() {
+		return rewardGuaranteePeriod;
+	}
+
+	public void setRewardGuaranteePeriod(String rewardGuaranteePeriod) {
+		this.rewardGuaranteePeriod = rewardGuaranteePeriod;
+	}
+
+	public String getRewardType() {
+		return rewardType;
+	}
+
+	public void setRewardType(String rewardType) {
+		this.rewardType = rewardType;
+	}
+
+	public Integer getRecruiterSubmissionsCount() {
+		return recruiterSubmissionsCount;
+	}
+
+	public void setRecruiterSubmissionsCount(Integer recruiterSubmissionsCount) {
+		this.recruiterSubmissionsCount = recruiterSubmissionsCount;
 	}
 	
 }

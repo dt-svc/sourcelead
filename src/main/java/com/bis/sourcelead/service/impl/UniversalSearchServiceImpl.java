@@ -163,7 +163,10 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 			            	else if(requirementIndex.getTeamAssignUserId()!=null&&Arrays.asList(requirementIndex.getTeamAssignUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
 			            		requirement = getData(requirementIndex,user);
 			            	}
-			            	searchList.add(requirement);
+			            	if(null !=requirement){
+			            		searchList.add(requirement);
+			            	}
+			            	
 			            }
 					}
 				}
@@ -734,6 +737,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 				    searchListForAll.add(searchListForProjects) ;
 				    searchListForAll.add(searchListForUsers) ;
 				    searchListForAll.add(searchListForRequirement);
+				    searchListForAll.add(searchListForCandidates);
 				    
 					return searchListForAll;
 	}
