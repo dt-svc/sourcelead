@@ -55,11 +55,14 @@ public class RequirementSubmissionHistory implements Serializable{
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "CREATED_USER")
+	private String createdUser;
+	
     @Transient
     private String fileName;
 	 
     @Transient
-    private Long resumeid;
+    private String resumeid;
     
     @Transient
     private String createdDateStr;
@@ -190,11 +193,11 @@ public class RequirementSubmissionHistory implements Serializable{
 		this.fileName = fileName;
 	}
 
-	public Long getResumeid() {
+	public String getResumeid() {
 		return resumeid;
 	}
 
-	public void setResumeid(Long resumeid) {
+	public void setResumeid(String resumeid) {
 		this.resumeid = resumeid;
 	}
 
@@ -324,5 +327,13 @@ public class RequirementSubmissionHistory implements Serializable{
 
 	public void setRequirementOfferHistoryList(List<RequirementOfferHistory> requirementOfferHistoryList) {
 		this.requirementOfferHistoryList = requirementOfferHistoryList;
+	}
+
+	public String getCreatedUser() {
+		return createdUser;
+	}
+
+	public void setCreatedUser(String createdUser) {
+		this.createdUser = createdUser;
 	}
 }

@@ -10,14 +10,18 @@
 	function candidateExperience(candidateId) {
 
 		var result = "";
-		result = result	+ '    <div class="project_tabs_inn_head addUser-org">  ';
+		if(window.candidateStatusGlobal == '0'){
+			result = result	+ '    <div class="project_tabs_inn_head addUser-org overflow_inherint mt25">  ';
+		}else{
+			result = result	+ '    <div class="project_tabs_inn_head addUser-org overflow_inherint mt10">  ';
+		}
 		result  = result + '<div class="success_pop" id="selector3" style="display: none;">';
 	    result  = result + '<i class="fa fa-check-circle"></i><span id="empMsgDiv"></span>';
 	    result  = result + '</div>';
 		result =result +'<div id = "msgDiv2"></div>';
 		if(window.candidateStatusGlobal == '0'){
 		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_EMPLOYEER\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 	
-		result = result	+ '<a href="javascript:void(0)" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a>';
+		result = result	+ '<a href="javascript:void(0)" class="addUser-org" ></a>';
 		'</sec:authorize>';
 		}else{
 			'<sec:authorize access="hasAnyRole(\'ROLE_ADD_EMPLOYEER\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
@@ -423,12 +427,12 @@ function closeCertificatePopup(){
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="
 							+ candidateId,
 					success : function(data) {
-						if (data != null && data != 'undefined' && data != "" && data != '[]') {
+					/* 	if (data != null && data != 'undefined' && data != "" && data != '[]') {
 							if (data.indexOf('Sign In') >= 0) {
 								location.replace(sourceleadUrl);
 							} else if (data.indexOf('exception') >= 0) {
 								location.replace(sourceleadUrl + "/errorPage");
-							} else {
+							} else { */
 								var json = JSON.parse(data);
 		             			/* for (var i = 0; i < 1; i++) {
 		                            var val= json[i];
@@ -502,7 +506,7 @@ function closeCertificatePopup(){
 								$("#candidateEmployersList").append(result);
 								employeePagination();
 								msgFadein2();
-							}
+						/* 	}
 						} else {
 							var result = "";
 							result = result + "   <div class='row'>";
@@ -519,7 +523,7 @@ function closeCertificatePopup(){
 							result = result + "  </div> ";
 							$("#candidateEmployersList").empty();
 							$("#candidateEmployersList").append(result);
-						}
+						} */
 					},
 
 				});
@@ -536,10 +540,10 @@ function employeePagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
- 
  }
 </script>
 

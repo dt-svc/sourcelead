@@ -74,6 +74,7 @@ public class RequirementListController {
 		if(searchResult != null && !searchResult.equalsIgnoreCase("undefined") && searchResult.equalsIgnoreCase("universalRequirementList")){
 		    model.addObject("universalRequirementList", "universalRequirementList");
 		    model.addObject("serachValue",serachValue);
+		    model.addObject("searchType","Requirement");
 		}
 		
 		/*List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
@@ -166,19 +167,20 @@ public class RequirementListController {
 			sessionData.setNav(Constants.Requirement);
 			
 			//List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLoc.getId());
-			List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLoc.getId(), "");
+			List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLoc.getId(), "", "");
 			
 			for(OrgRelations orgRelation :vendorsList){
-				if(orgRelation.getLocationId().getId() == orgLoc.getId()){
+				if(orgRelation.getLocationId().getId().equals(orgLoc.getId())){
 					orgRelation.setClientName(orgRelation.getResponderLocationId().getOrg().getOrgName());
 				}
-				if(orgRelation.getResponderLocationId().getId() == orgLoc.getId()){
+				if(orgRelation.getResponderLocationId().getId().equals(orgLoc.getId())){
 					orgRelation.setClientName(orgRelation.getLocationId().getOrg().getOrgName());
 				}
 			}
 			model.addObject("vendor_list", vendorsList);
 	        model.addObject(vendorsList);
 	        model.addObject("requirementId",requirement.getId());
+
 	        model.addObject("requirementUUID",requirementUUID);
 	       
 	        if(!isNullOrEmpty(requirement.getJobType())){
@@ -197,6 +199,8 @@ public class RequirementListController {
 	        	model.addObject("rewardGauranteePeriod", requirement.getRewardGuaranteePeriod());
 	        }
 	       
+
+	        model.addObject("jobTitle",requirement.getJobTitle());
 			
 			request.getSession().setAttribute("sessionData",sessionData);
 		}else{

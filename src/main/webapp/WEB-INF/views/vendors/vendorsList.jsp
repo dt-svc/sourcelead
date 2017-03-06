@@ -302,7 +302,8 @@ overflow-x: auto;
 	                  </li>
                   
 	                	 
-						<li id="contactLevel" style="display:none"><i class="fa fa-filter"></i><span>Tier</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>
+						<li id="contactLevel" style="display:none">
+					   <div id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Tier</span><i class="glyphicon glyphicon-play" style="right:20px;"></i></div>
 		                	<div id="filter2ApprovedPop" class="approved_pop">
 		                    	<ul>
 									<li><input id="c6"  type="checkbox" name="clinetLevel" value ="Tier-1"  onclick="getVendorLists();"><label>Tier-1</label></li>
@@ -775,7 +776,7 @@ function preparedVendorsListFromElk(data){
 		   		
 		   		var report = json[i];
 		   		
-		   		releasedJobsCountByOrgRelationId(report.orgRelationId);
+		   		
 		   		
 		   		var location = "";
 		   		if(report.city != null && report.city != '' && report.city != 'undefined'){
@@ -841,6 +842,15 @@ function preparedVendorsListFromElk(data){
 		    	result = result +'</tbody>';
 			    $("#vendorList").empty();  
 			    $("#vendorList").append(result)
+			    
+			    for (var i=0; i<json.length; i++)
+				{  
+		   		
+		   		var report = json[i];
+		   		
+			    releasedJobsCountByOrgRelationId(report.orgRelationId);
+			    
+				}
 			    $("#emptyVendorList").val(json.length)
 			    pagination1();
 }
@@ -996,11 +1006,11 @@ function pagination1(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
 		
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -1379,6 +1389,7 @@ function saveReason1(spocId, orgRelationID){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
 	if(reason.match(/^[^\s-](.*)*$/) != null){
+		 reason = encodeURIComponent(reason);
 		 $("#reasonForSpocDiv").empty();
 		
 		 $("#row"+spocId).empty();
@@ -1447,11 +1458,11 @@ function pagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
 		
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -1586,7 +1597,8 @@ function pagination1(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
 		
     } );

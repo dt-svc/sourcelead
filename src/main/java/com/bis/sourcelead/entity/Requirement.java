@@ -21,6 +21,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.criteria.CriteriaBuilder.In;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -205,6 +206,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name="APPLIED_RECRUITERS")
 	@Type(type="text")
 	private String appliedRecruiters;
+
+	@Column(name = "TOTAL_APPLICANTS",nullable = false,columnDefinition = "INT NULL DEFAULT 0")
+	private Integer totalApplicants;
 	
 	@Column(name="PRIORITY")
 	private String priority;
@@ -1200,6 +1204,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setAppliedRecruiters(String appliedRecruiters) {
 		this.appliedRecruiters = appliedRecruiters;
+	}
+	
+	public Integer getTotalApplicants() {
+		return totalApplicants;
+	}
+
+	public void setTotalApplicants(Integer totalApplicants) {
+		this.totalApplicants = totalApplicants;
 	}
 
 	

@@ -25,6 +25,31 @@ float: left; min-height: 36px; margin-bottom: 15px;
 .viewTemplate .sjfb-field textarea {
 max-height: 65px;
 }
+.viewTemplate .sjfb-field  {
+width: 80%;
+margin: 0 0 10px 15px;
+}
+.viewTemplate .sjfb-field:nth-child(2n+2) {
+    margin-left: 15px;
+}
+.viewTemplate .sjfb-field label {
+float: left; width: 30%;
+}
+.sjfb-radio .choices-radio, .sjfb-checkbox .choices-checkbox {
+float: left; width: 70%;
+}
+.sjfb-radio .choices-radio label, .sjfb-checkbox .choices-checkbox label {
+	min-width: 50%;
+	max-width: 100%;
+	position:relative;
+	padding-right: 10px;
+	padding-left: 30px;
+}
+.choices input[type="checkbox"], .choices input[type="radio"] {
+float: left;
+position: absolute;
+left:0;
+}
 </style>
 
 
@@ -122,7 +147,8 @@ function templatepagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }

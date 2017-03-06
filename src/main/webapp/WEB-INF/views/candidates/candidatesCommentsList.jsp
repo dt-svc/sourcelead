@@ -1,5 +1,10 @@
 
-
+<style>
+#tab-7 .comments-content textarea {
+	width: 957px;
+    border: none;
+}
+</style>
 
 <script>
 function candidateCommentsList(candidateId,submissionId){
@@ -40,17 +45,15 @@ function candidateCommentsList(candidateId,submissionId){
             	        	    result = result+'         <p class="comment-by">';
             	        	    result = result+'            By <span class="text-danger">'+report.commentAuthor+'</span>';
             	        	    result = result+'            <span class="small">('+report.commentTime+')</span></p>';
-            	        	    result = result+'         <p class="commentText">'+report.comment+'</p>';
+            	        	    result = result+'         <textarea class="commentText" readonly>'+report.comment+'</textarea>';
             	        	    result = result+'         </div>';
             	        	    result = result+'     </div>';
             	        	    result = result+'</div>';
             	          }
 	              }else{
 	 	    	         var result ="";
-	 	    	         
-	 	    	        
-	 	    	       result = result+"   <div class='project_tabs_inn_head mt25'>"; 
-	 	    	        result = result+"   <div class='row'>"; 
+	 	    	        result = result+"   <div class='dataTables_empty'>"; 
+	 	    	       /*  result = result+"   <div class='row'>"; 
 						 result = result+"	<div class='col-lg-12'>"; 
 						 result = result+"		<div class='content-area clearfix'>"; 
 						 result = result+"			<div class='blank-pages'>";
@@ -59,7 +62,7 @@ function candidateCommentsList(candidateId,submissionId){
 						 result = result+"			 </div>";
 						 result = result+"		</div>"; 
 						 result = result+"	</div>"; 
-						 result = result+"  </div> "; 
+						 result = result+"  </div> ";  */
 						 result = result+"  </div> ";
 	                }
           	  result  = result + '              </div>';
@@ -146,7 +149,8 @@ function commentsPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
  

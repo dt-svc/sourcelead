@@ -140,7 +140,7 @@ public interface RequirementSubmissionService {
 			OrgLocations loginOrgLocation)throws Exception;
 
 	
-	List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, String status) throws Exception;
+	List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, User user,String status) throws Exception;
 	
 	public void sendEmailtoRequirementManager(Org loginOrg, User users,RequirementSubmission requirementSubmission,
 			 OrgLocations loginOrgLocation) throws Exception;
@@ -163,7 +163,7 @@ public interface RequirementSubmissionService {
 	
 	List<Long> getSubmittedCandidateIdsByRequirementId(Long requirementId) throws Exception;
 	
-	Integer getRequirementPerCandidateCount(Long candudateId) throws Exception;
+	Integer getRequirementPerCandidateCount(Long candudateId,Long orgLocationId) throws Exception;
 	
 	Integer getRecruiterSubmissionsCountByRecruiterIdAndRequirementId(Long requirementId,Long userId) throws Exception;
 	

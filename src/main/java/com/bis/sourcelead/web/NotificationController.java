@@ -67,6 +67,7 @@ public class NotificationController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		String locationCode =  (String) SourceLeadSessionManager.getSessionAttribute(request,"locationCode");
+		String orgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
 		List<Notifications> notificationsList = notificationsService.getAllNotificationsListByUserId(userId,orgLocations.getOrg().getOrgCode(), locationCode);
 		if(notificationsList!=null){
 			calculateDays(notificationsList, timezone);
@@ -76,6 +77,14 @@ public class NotificationController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("orgCode", orgLocations.getOrg().getOrgCode());
 		model.addObject("locationCode", locationCode);
+		
+		SourceLeadSessionManager.removeSessionAttribute(request, "notificationList");
+		SourceLeadSessionManager.setSessionAttribute(request, "notificationList",notificationsList);
+		
+		Integer notificationCount = notificationsService.getNotificationsCountByUserId(userId,orgCode,locationCode);
+		SourceLeadSessionManager.removeSessionAttribute(request, "notificationCount");
+		SourceLeadSessionManager.setSessionAttribute(request, "notificationCount",notificationCount);
+		
 		return model;
 
 	}
@@ -129,7 +138,8 @@ public class NotificationController {
 				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm:ss aa");
 				String currentTimeStr = Constants.TZ_DF.format(notifications.getCreatedDate());
 				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
-				Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
 				String commonDateFormat = standardFormat.format(converteDate);
 				notifications.setCalDays(commonDateFormat.toString());
 			} 	

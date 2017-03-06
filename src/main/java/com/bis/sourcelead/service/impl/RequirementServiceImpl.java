@@ -637,6 +637,7 @@ public class RequirementServiceImpl implements RequirementService {
 						}
 				     
 			}
+			requirement.setTotalApplicants(0);
 			requirement.setRequirementAssignTo(requirementAssignToList);
 			//storing assigned team END
 			
@@ -731,7 +732,7 @@ public class RequirementServiceImpl implements RequirementService {
 						mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
 					}
 		 }		
-
+			       
 			       requirementElkUtil.saveElkRequirement(savedRequirement,jsonObj);
 			    
 		return savedRequirement;
@@ -1996,23 +1997,29 @@ public class RequirementServiceImpl implements RequirementService {
 			// bringing the old  requirementapprovalHierarachy  list based on the requirementID
 			
 			List<RequirementApproverHierarchy> requirementApproverHierarchies = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirement.getId());
-			for(RequirementApproverHierarchy rah :requirementApproverHierarchies){
-				oldApproversList.add(rah.getApproverUserId().getId().toString());
-			}
-			
-			// seperating the lists
-			for (String item : oldApproversList) {
-	    	    if (newApproversList.contains(item)) {
-	    	    	uniqueApproversList.add(item);
-	    	    } else {
-	    	    	removedApproversList.add(item);
-	    	    }
-	    	}
-			
-			
-			// Removing  the unselected approvals from  the RequirementApprovalHierarachy
-			for (String item : removedApproversList) {
-				requirementApproverHierarchyService.deleteTheRequirementApproverByRequirementIdAndApproverId(Long.parseLong(item),requirement.getId());
+			if(null != requirementApproverHierarchies){
+				for(RequirementApproverHierarchy rah :requirementApproverHierarchies){
+					oldApproversList.add(rah.getApproverUserId().getId().toString());
+				}
+				
+				// seperating the lists
+				if(null != oldApproversList){
+					for (String item : oldApproversList) {
+			    	    if (newApproversList.contains(item)) {
+			    	    	uniqueApproversList.add(item);
+			    	    } else {
+			    	    	removedApproversList.add(item);
+			    	    }
+			    	}
+					
+					
+					// Removing  the unselected approvals from  the RequirementApprovalHierarachy
+					if(null != removedApproversList){
+						for (String item : removedApproversList) {
+							requirementApproverHierarchyService.deleteTheRequirementApproverByRequirementIdAndApproverId(Long.parseLong(item),requirement.getId());
+						}
+					}
+				}
 			}
 		}
 		
@@ -2522,7 +2529,7 @@ public class RequirementServiceImpl implements RequirementService {
      	requirement.setSearchType("Requirement");
      	requirement.setPositions(requirementIndex.getNumberOfPositions());
      	if(null != requirementIndex.getNumberOfApplicants()){
-     		requirement.setTotalApplicantsForRequirement(Integer.parseInt(requirementIndex.getNumberOfApplicants()));
+     		requirement.setTotalApplicants(Integer.parseInt(requirementIndex.getNumberOfApplicants()));
      	}
      	requirement.setManager(requirementIndex.getManager());
      	if(requirementIndex.getRequirementStatus() !=null && !"".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
@@ -2766,6 +2773,11 @@ public class RequirementServiceImpl implements RequirementService {
 	@Override
 	public Requirement getRequirementByRequirementUUID(String requirementUUID) throws Exception {
 		return requirementDao.getRequirementByRequirementUUID(requirementUUID);
+	}
+
+	@Override
+	public Requirement updateRequirement(Requirement requirement) throws Exception {
+		return requirementDao.storeRequirement(requirement);	
 	}
 
 }

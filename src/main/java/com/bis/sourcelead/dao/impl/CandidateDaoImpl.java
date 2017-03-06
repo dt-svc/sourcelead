@@ -500,6 +500,25 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 		return candidate;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getCandidatesByOrgLocationIDAndSearchText(Long orgLocationId, Long requirementId,
+			String candidateType, String searchApplicant) throws Exception {
+		logger.debug("In getCandidatesByOrgLocationID method");
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Candidate> candidatesList = null;
+		String subQuery = "";
+		if(!isNullOrEmpty(searchApplicant)){
+			subQuery = "and (candidate.firstName LIKE '" + searchApplicant + "%') OR (candidate.lastName LIKE '" +searchApplicant + "%')";
+		}
+		
+		Query candidateListQuery= session.createQuery("from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.candidateType = :candidateType "
+				+ "and candidate.status = '1' and candidate.id NOT IN (select submission.candidate.id from RequirementSubmission submission "
+				+ "where submission.requirement.id = :requirementId) "+subQuery+" ORDER BY candidate.id DESC ");
+		candidatesList = candidateListQuery.setLong("orgLocationId", orgLocationId).setLong("requirementId", requirementId).setString("candidateType", candidateType).setCacheable(true).list();
+		return candidatesList;
+	}
 
 	
 	
