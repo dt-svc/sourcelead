@@ -130,7 +130,8 @@ function pagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -180,7 +181,7 @@ function sideBar(teamId){
 		$("body").css('overflow-y', 'hidden');
 		$("#tab-1").show();
 		projectMemberList(teamId);
-		
+		teamEditDetails(teamId);
 }
 </script>
 
@@ -660,7 +661,8 @@ function TeamMemberpagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -1260,7 +1262,8 @@ function cpagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }

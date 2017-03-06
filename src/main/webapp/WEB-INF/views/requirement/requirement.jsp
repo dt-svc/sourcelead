@@ -1104,40 +1104,41 @@ $(document).ready(function () {
 		}
 		
           var rateType = document.getElementById("rateType").value; 
- 		 if(rateType != null && rateType != ""){
- 			 $('#rate').removeAttr('data-validation-optional');
- 			 $('#rate').attr("data-validation","required"); 
+  		 if(rateType != null && rateType != ""){
+  			 $('#rate').removeAttr('data-validation-optional');
+  			 $('#rate').attr("data-validation","required validate_Space validate_float validate_length length1-8"); 
+  		 }else{
+  			 $('#rate').removeAttr('data-validation');
+  			 $('#rate').attr("data-validation-optional","true"); 
+  		 }
+  		 
+ 		 var rate = document.getElementById("rate").value; 
+ 		 if(rate != null && rate != ""){
+ 			 $('#rateType').removeAttr('data-validation-optional');
+ 			 $('#rateType').attr("data-validation","required");
+ 			 $('#rate').attr("data-validation","required validate_Space validate_float validate_length length1-8");
  		 }else{
- 			 $('#rate').removeAttr('data-validation');
- 			 $('#rate').attr("data-validation-optional","true"); 
+ 			 $('#rateType').removeAttr('data-validation');
+ 			 $('#rateType').attr("data-validation-optional","true"); 
  		 }
  		 
-		 var rate = document.getElementById("rate").value; 
-		 if(rate != null && rate != ""){
-			 $('#rateType').removeAttr('data-validation-optional');
-			 $('#rateType').attr("data-validation","required"); 
-		 }else{
-			 $('#rateType').removeAttr('data-validation');
-			 $('#rateType').attr("data-validation-optional","true"); 
-		 }
-		 
-		 var clientRateType = document.getElementById("clientRateType").value; 
-		 if(clientRateType != null && clientRateType != ""){
-			 $('#clientRate').removeAttr('data-validation-optional');
-			 $('#clientRate').attr("data-validation","required"); 
-		 }else{
-			 $('#clientRate').removeAttr('data-validation');
-			 $('#clientRate').attr("data-validation-optional","true"); 
-		 }
-		 
-		 var clientRate = document.getElementById("clientRate").value; 
-		 if(clientRate != null && clientRate != ""){
-			 $('#clientRateType').removeAttr('data-validation-optional');
-			 $('#clientRateType').attr("data-validation","required"); 
-		 }else{
-			 $('#clientRateType').removeAttr('data-validation');
-			 $('#clientRateType').attr("data-validation-optional","true"); 
-		 }
+ 		 var clientRateType = document.getElementById("clientRateType").value; 
+ 		 if(clientRateType != null && clientRateType != ""){
+ 			 $('#clientRate').removeAttr('data-validation-optional');
+ 			 $('#clientRate').attr("data-validation","required"); 
+ 		 }else{
+ 			 $('#clientRate').removeAttr('data-validation');
+ 			 $('#clientRate').attr("data-validation-optional","true"); 
+ 		 }
+ 		 
+ 		 var clientRate = document.getElementById("clientRate").value; 
+ 		 if(clientRate != null && clientRate != ""){
+ 			 $('#clientRateType').removeAttr('data-validation-optional');
+ 			 $('#clientRateType').attr("data-validation","required"); 
+ 		 }else{
+ 			 $('#clientRateType').removeAttr('data-validation');
+ 			 $('#clientRateType').attr("data-validation-optional","true"); 
+ 		 }
 		
 		   if ($('#requirement_form').validate(false, validationSettings)){   
 			
@@ -2168,7 +2169,8 @@ function pagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }

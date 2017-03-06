@@ -477,7 +477,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 }
 		 
 		 if(jsonObj.has("WorkExperience") && !isNullOrEmpty(jsonObj.getString("WorkExperience"))){
-			 templateFields.setWorkExperience(jsonObj.getString("WorkExperience"));
+			 StringBuilder sb = new StringBuilder();
+			 templateFields.setWorkExperience(sb.append(jsonObj.getString("WorkExperience")).append(".").append(jsonObj.getString("monthExp")).toString());
 		 }
 		 
 		 if(jsonObj.has("Education") && !isNullOrEmpty(jsonObj.getString("Education"))){
@@ -1489,7 +1490,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    			 jsonObj.put("value", "-----");
    			}
    			else if(jsonObj.getString("name").equalsIgnoreCase("ExpectedCTC")){
-   				if(clientShortlistsRate.length>0){
+   				if(clientShortlistsRate != null && clientShortlistsRate.length>i && !isNullOrEmpty(clientShortlistsRate[i])){
    					String clientRate = clientShortlistsRate[i];
    	   				if(!isNullOrEmpty(clientRate)){
    	   				    StringBuilder rateBuilder = new StringBuilder();
@@ -1550,7 +1551,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 
 		 RequirementRateSubmissionNegotiation rateNegotiation = new RequirementRateSubmissionNegotiation();
 		 rateNegotiation.setRequirementsubmissionId(clientSubmission);
-		 if(null != clientShortlistsRate[i] && !"".equalsIgnoreCase(clientShortlistsRate[i])){
+		 if(null != clientShortlistsRate && clientShortlistsRate.length >i && null != clientShortlistsRate[i] && !"".equalsIgnoreCase(clientShortlistsRate[i])){
 			 String clientRate = clientShortlistsRate[i];
 			 String clientRatePer = submissionratePer[i];
 			 rateNegotiation.setExpectedRate(clientRate);
@@ -3087,6 +3088,170 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		}
 	   }
 	}
+	@Override
+	public void shortListedMailToVendorFromClient(Requirement req, String submissionsList,OrgLocations orgLocations, User user) throws Exception {
+		String[] submissionId = submissionsList.split(",");
+		StringBuilder shortlistTable = null;
+		EmailMessage emailMessage = new EmailMessage();
+		List<Long> vendorIds = new ArrayList<>();
+			for (int i = 0; i < submissionId.length; i++) {
+				StringBuilder linkBuild = new StringBuilder();
+				RequirementSubmission reqsub = requirementSubmissionDao.getRequirementSubmissionById(Long.parseLong(submissionId[i]));
+				
+				if(null != reqsub.getVendorLocationId()){
+					if(vendorIds.size()>=0 && !vendorIds.contains(reqsub.getVendorLocationId().getId())){
+						User userVendor = userService.getUserByUserCode(reqsub.getCreatedBy());
+						User userClient  = userService.getUserByUserCode(reqsub.getUpdatedBy());
+						int candidateCount = getShortlistedCount(submissionId,reqsub.getVendorLocationId().getId());
+							if(candidateCount <= 5){
+							shortlistTable = buildShortlistedApplicantTable(submissionId,reqsub.getVendorLocationId().getId());
+							}
+						/*if(null != reqsub.getSourceSubmission()){
+							if (reqsub.getSourceSubmission().getRequirement().getId().longValue() == childReq.getId().longValue()) {*/
+								
+								 emailMessage.setFirstName(userVendor.getFirstName());
+								 emailMessage.setLastName(userVendor.getLastName());
+								 emailMessage.setToEmail(userVendor.getEmail());
+								 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+								 emailMessage.setCreatedBy(user.getUserCode());
+								 StringBuilder msgBuild = new StringBuilder();
+								 emailMessage.setFromName(msgBuild.append(userClient.getFirstName()).append(" ").append(userClient.getLastName()).toString());
+								 
+								//setting the class filed values
+								 Map<String, String> globalVarsMap = new HashMap<String, String>();
+								 if(null!= userVendor.getFirstName()  && !"".equalsIgnoreCase(userVendor.getFirstName())){
+								 globalVarsMap.put("vendorContactName", userVendor.getFirstName()); 
+								 }else{
+								 globalVarsMap.put("vendorContactName", "--");	 
+								 }
+								 
+								 if(userClient.getFirstName()!= null  && !"".equalsIgnoreCase(userClient.getFirstName())){
+								 globalVarsMap.put("clientContactName", userClient.getFirstName());	 
+								 }else{
+								 globalVarsMap.put("clientContactName","--"); 
+								 }
+								 if(candidateCount != 0){
+								 globalVarsMap.put("countOfApplicants",Long.toString(candidateCount));	 
+								 }else{
+								 globalVarsMap.put("countOfApplicants","--"); 
+								 }
+								 if(null != reqsub.getRequirement().getJobTitle()  && !"".equalsIgnoreCase(reqsub.getRequirement().getJobTitle())){
+								 globalVarsMap.put("requirementTitle", reqsub.getRequirement().getJobTitle()); 
+								 }else{
+								 globalVarsMap.put("requirementTitle","--"); 
+								 }
+								 
+								 if(null != reqsub.getOrgLocations().getOrg().getOrgName() && !"".equalsIgnoreCase(reqsub.getOrgLocations().getOrg().getOrgName())){
+								 globalVarsMap.put("clientOrgName", reqsub.getOrgLocations().getOrg().getOrgName());
+								 }else{
+								 globalVarsMap.put("clientOrgName","--"); 
+								 }
+								 if(null != shortlistTable  && !"".equalsIgnoreCase(shortlistTable.toString())){
+								 globalVarsMap.put("shortlistedTable", shortlistTable.toString());	 
+								 }
+								 
+								 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+								 
+								 //setting the Recipient information
+								 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+								 EmailRecipient emailRecipient = new EmailRecipient();
+								 emailRecipient.setEmail(emailMessage.getToEmail());
+								 StringBuilder recipBuild = new StringBuilder();
+								 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
+								 emailRecipientList.add(emailRecipient);
+							
+								 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+								 
+								 //getting the current EmailScenario by EmailScenario unique name and entity type
+								 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SHORTLISTMAILFROMCLIENT_TO_VENDOR,Constants.ENTITY_TYPE_EMAIL);
+								 EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SHORTLISTMAILFROMCLIENT_TO_VENDOR,Constants.ENTITY_TYPE_NOTIFICATION);
+								 
+								 //covert subject,body and signature
+								 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+								 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+								 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+								 String url = "";
+								 
+								 //construct HTML template using required data
+								 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+								 emailMessage.setSubject(subject);
+								 emailMessage.setMessageBody(emailTemplate);
+								 
+								 //calling the sendEmail method of emailScenerioUtil
+								 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+								 
+								String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+								notificationScenario.setBody(notificationBody);
+								String actionLink = "";
+								if(null != reqsub.getVendorLocationId()){
+								emailScenerioUtil.sendNotification(actionLink, userClient, userVendor, reqsub.getVendorLocationId(), notificationScenario);
+								}
+						 }	
+					 vendorIds.add(reqsub.getVendorLocationId().getId());
+					 
+				}
+				
+				
+			  }
+	}
 
+	
+	private int getShortlistedCount(String[] submissionId, Long vendorLocationId) {
+		int count = 0;
+		 for(int i=0;i<submissionId.length;i++){
+	     		List<RequirementSubmissionTemplateFields> requirementSubmissionTemplate = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsIdAndOrgLocationId(Long.parseLong(submissionId[i]), vendorLocationId);
+	     		for(RequirementSubmissionTemplateFields requirementSubmissionTemplateFields:requirementSubmissionTemplate){
+	     				count++;
+	     			}
+	     		}
+		 return count;	
+		 }
+	     	
+		 
+
+	public StringBuilder buildShortlistedApplicantTable(String[] submissionId, Long vendorLocationId) throws Exception {
+		StringBuilder tempHTML = new StringBuilder();
+		if(submissionId.length !=0){
+	         tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
+	         tempHTML.append("<tr>");
+	         tempHTML.append("<th> Applicant Name </th>");
+	         tempHTML.append("<th> Phone Number </th>");
+	         tempHTML.append("<th> Experience </th>");
+	         tempHTML.append("<th> Status </th>");
+	         tempHTML.append("</tr>");
+	         
+	         for(int i=0;i<submissionId.length;i++){
+	     		List<RequirementSubmissionTemplateFields> requirementSubmissionTemplate = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsIdAndOrgLocationId(Long.parseLong(submissionId[i]), vendorLocationId);
+	     		for(RequirementSubmissionTemplateFields requirementSubmissionTemplateFields:requirementSubmissionTemplate){
+			         tempHTML.append("<tr>");
+			         
+			         if(requirementSubmissionTemplateFields.getLastName() != null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
+		        		 tempHTML.append("<td>").append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).append("</td>");
+		        	 }else{
+		        		 tempHTML.append("<td>").append(requirementSubmissionTemplateFields.getFirstName()).append("</td>");
+		        	 }
+			         
+			         if(requirementSubmissionTemplateFields.getPhoneNumber() != null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getPhoneNumber())){
+		        		 tempHTML.append("<td>").append(requirementSubmissionTemplateFields.getPhoneNumber()).append("</td>");
+		        	 }else{
+		        		 tempHTML.append("<td>").append("--").append("</td>");
+		        	 }
+			         
+			         if(requirementSubmissionTemplateFields.getWorkExperience() != null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getWorkExperience())){
+		        		 tempHTML.append("<td>").append(requirementSubmissionTemplateFields.getWorkExperience()).append("</td>");
+		        	 }else{
+		        		 tempHTML.append("<td>").append("--").append("</td>");
+		        	 }
+			         
+		        		tempHTML.append("<td>").append("Shortlisted").append("</td>");
+
+			         
+	     		}
+	         }
+	         tempHTML.append("</tr>");
+		     tempHTML.append("</table> ");
+		}
+		return tempHTML;
+	}
 }
 

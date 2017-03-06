@@ -70,10 +70,11 @@ public class TaskDaoImpl implements TaskDao{
 		List<Tasks> tasksList  = null;
 		String strDate = null;
 		String query = null;
+		Date date1 = null;
 		if(null != date && "" != date){
-			Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(date);
-			 strDate = new SimpleDateFormat("yyyy-MM-dd").format(date1);
-			subQuery = "and tasks.taskDate =:strDate";	
+			 date1 = new SimpleDateFormat("dd-MM-yyyy").parse(date);
+			 strDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date1);
+			subQuery = "and (CONVERT(tasks.taskDate AS DATE) =:strDate)";	
 		}else{
 			subQuery = "";
 		}
