@@ -1308,7 +1308,6 @@ $('body').on('submit', '#submitCandidateToJob_form', function(e){
 <script type="text/javascript">
 function setRateTypesByLocation(){
 	var country = '${SourceLeadWeb_country}';
-	alert(country);
 	if(country == 'India'){
 		$('#currentCTCRateType').val('INR');
 		$('#expectedCTCRateType').val('INR');
