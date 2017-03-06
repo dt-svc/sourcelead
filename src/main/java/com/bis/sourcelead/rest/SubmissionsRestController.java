@@ -462,7 +462,7 @@ public class SubmissionsRestController {
 				"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-
+		int  count = 0;
 		String[] submissionId = submissionsList.split(",");
 
 		for (int i = 0; i < submissionId.length; i++) {
@@ -472,6 +472,9 @@ public class SubmissionsRestController {
 			requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
 			submission.setSubmissionStatus(ApplicantSubmissionStatus.SHORTLIST);
 			submission.setUpdatedBy(user.getUserCode());
+			if(null != submission.getSourceSubmission()){
+				count = count + 1;
+			}
 			submission.setUpdatedDate(new Date());
 			RequirementSubmission requirementSubmission = requirementSubmissionService
 					.storeRequirementSubmission(submission);
@@ -483,6 +486,9 @@ public class SubmissionsRestController {
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 		if (requirement.getManagerUserId().getEmail() != null) {
 			sendEmailToManages(requirement, orgLocations, user, shotListCount, loginOrg);
+		}
+		if(count>0){
+			requirementSubmissionService.shortListedMailToVendorFromClient(requirement,submissionsList,orgLocations,user);
 		}
 		return "success";
 	}
