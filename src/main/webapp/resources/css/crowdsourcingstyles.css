@@ -8,13 +8,13 @@
 .chip {
     display:inline-block;
     padding: 5px 25px;
-    min-height: 50px;
+    min-height: 10px;
     font-size: 14px;
     line-height: 22px;
     border-radius: 25px;
     background-color: #CFD8DC;
     position:relative;
-    margin-top: 15px;
+    margin-top: 30px;
 }
 .chip img {
     margin:0;
@@ -24,7 +24,7 @@
     position:absolute;
     left:0;
     margin-right:50px;
-    top:-10px;
+    top:-25px;
     border: 1px solid #333;
 }
 .chip span{
