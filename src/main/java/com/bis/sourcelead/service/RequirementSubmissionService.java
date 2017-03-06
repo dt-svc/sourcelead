@@ -174,4 +174,7 @@ public interface RequirementSubmissionService {
 
 	void sendRejectionMailToVendorContact(User user, String reason, Long submissionId, OrgLocations orgLocations) throws Exception;
 
+	void shortListedMailToVendorFromClient(Requirement requirement, String submissionsList, OrgLocations orgLocations,
+			User user) throws Exception;
+
 }
