@@ -162,7 +162,7 @@ public class TimesheetSubmissionListController {
 							}
 							
 				    	  ProjectMembers projectMember = projectMembersService.getProjectMemberById(submissionApproverHierarchy.getSubmissionId().getProjectMembers().getId());
-						 sb.append("<tr id='row").append(projectMember.getId()).append(Constants.DF_DMY.format(submissionApproverHierarchy.getSubmissionId().getStartDate())).append("To").append(Constants.DF_DMY.format(submissionApproverHierarchy.getSubmissionId().getEndDate())).append("'>");
+						 sb.append("<tr id='row").append(projectMember.getId()).append(Constants.DF_DMY.format(actualStartDate)).append("To").append(Constants.DF_DMY.format(actualEndDate)).append("'>");
 						 sb.append("  <td>");
 						 sb.append("<div class='time_appr_user'>");
 						 sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='").append(request.getContextPath()).append("/displayUserImage/").append(projectMember.getEmployee().getUser().getId()).append("' alt='Profile Image' class='img-circle img-responsive'>");
@@ -177,7 +177,7 @@ public class TimesheetSubmissionListController {
 					     sb.append("	<td><div>").append(((projectMember.getProjects().getOrgRelationId() != null) ?projectMember.getProjects().getOrgRelationId().getResponderLocationId().getOrg().getOrgName() : "--")).append("</div></td>");
 					     sb.append("	<td><div>").append(projectMember.getProjects().getInvoiceFrequency()).append("</div></td>");
 					     sb.append("<td><div id='datefrequency"+projectMember.getId()+"'>");
-				         sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+Constants.DF_DMY.format(submissionApproverHierarchy.getSubmissionId().getStartDate())+" To "+Constants.DF_DMY.format(submissionApproverHierarchy.getSubmissionId().getEndDate())+"</span>");
+				         sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+Constants.DF_DMY.format(actualStartDate)+" To "+Constants.DF_DMY.format(actualEndDate)+"</span>");
 				         sb.append("    </div>");
 				     	 sb.append("    </td>");
 					     Float totalHours = 0f;
@@ -207,9 +207,18 @@ public class TimesheetSubmissionListController {
 					    	    	
 					    	     }
 					     }
+					     
+					     float tsHours = totalHours;
+		                 float tsHoursValue = (int) tsHours;
+		                 float tsMinutesValue = tsHours - tsHoursValue;
+		                 float totalMinutes = (tsHoursValue* 60)+(tsMinutesValue*100);
+		                 
+		                 float actualHours = (int) (totalMinutes / 60);
+		                 float actualMinutes = (totalMinutes % 60)/100;
+		                 String actualTimeString = String.format("%.2f", (actualHours+actualMinutes));
 					
 					    /*sb.append("<td><div class='sm'><a href='javascript:void(0)'>").append(totalHours).append("/40</a></div></td>");*/
-					     sb.append("<td><div class='sm'><a href='#' onClick='timesheetApprovalPopUpByProjectMemberId(\""+format.format(actualStartDate)+"To"+format.format(actualEndDate)+"\" ,\""+projectMember.getId()+"\",\"dashboard\");'>").append(totalHours).append("/").append(estimatedTotalHours).append("</a></div></td>");
+					     sb.append("<td><div class='sm'><a href='#' onClick='timesheetApprovalPopUpByProjectMemberId(\""+format.format(actualStartDate)+"To"+format.format(actualEndDate)+"\" ,\""+projectMember.getId()+"\",\"dashboard\");'>").append(actualTimeString).append("/").append(estimatedTotalHours).append("</a></div></td>");
 					    sb.append("<td><div class='sm' id='status").append(projectMember.getId()).append("'>").append(sah.getSubmissionApprovalStatus()).append("</div></td>");
 					    sb.append("<td>");
 					     if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){

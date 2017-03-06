@@ -132,10 +132,10 @@ function requirementInterviewsPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-            "sSearch": ""
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
        }
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 <script>

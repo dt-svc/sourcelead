@@ -938,7 +938,11 @@ function requirementDetails(requirementId){
 				            	result = result +'   <div class="anchor-inline">';
 				            	result = result +'   <div class="rejected_Reason">';
 				            	result = result +'   <h5>Rejected Reason:</h5>'; 
-				            	result = result +'   <div>'+json.rejectReasonForRequirement+'</div>';
+				            	if(json.rejectReasonForRequirement != null && json.rejectReasonForRequirement != "undefined"){
+					            	result = result +'   <div class="mb">'+json.rejectReasonForRequirement+'</div>';
+					            	}else{
+						            	result = result +'   <div class="mb"> No Data</div>';
+					            	}
 				            	result = result +'   </div>';
 				            	result = result +'   </div>';
 				          	   }
@@ -1291,7 +1295,7 @@ function updateReuqirementStatus(status){
 		 reason = '';
 	 }
      $("#approverbut").attr("disabled", "disabled");
- 	if(reason.match(/^[^\s-](.*)*$/) != null){
+ 	
 	$('#reasonDiv').empty();
  	$.ajax({
       type : "POST",
@@ -1318,13 +1322,7 @@ function updateReuqirementStatus(status){
             }
        },
 	  }); 
-	 }else{
-			if(reason){
-				$("#reasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
-			}else{
-				$("#reasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
-			}
-		}
+	 
 }
 </script>
 
@@ -1649,10 +1647,10 @@ function documentpagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -1903,10 +1901,10 @@ function documentpaginationDA(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -2152,10 +2150,10 @@ function documentpaginationRS(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -2413,10 +2411,10 @@ function documentpaginationSL(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -2650,10 +2648,10 @@ function documentpaginationSC(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -2821,10 +2819,10 @@ function documentpaginationIN(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -3012,10 +3010,10 @@ function documentpaginationOffer(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -3064,7 +3062,7 @@ function requirementPipelineRejected(requirementId,submissionType){
 					       result = result + '<th>Source</th>';
 			        	   result = result + '<th>Rejected On</th>';
 			        	   result = result + '<th>Rejected By</th>';
-				           result = result + '<th>Rejected Stage</th>';
+				          /*  result = result + '<th>Rejected Stage</th>'; */
 				           result = result + '<th>Status</th>';
 				           result = result + '         </tr>';
 				           result = result + '       </thead>';
@@ -3178,10 +3176,10 @@ function requirementPipelineRejected(requirementId,submissionType){
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	   } 
 						           result = result + '<td><div class="tblwidth-150"><span>'+report.upDatedStr+'</span>';
-						           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
-						        	   result = result + '<td><div class="tblwidth-150"><span>'+report.createdUser+'</span>';
+						           if(report.updatedUser != null && report.updatedUser != '' && report.updatedUser != 'undefined'){
+						        	   result = result + '<td><div class="tblwidth-150"><span>'+report.updatedUser+'</span>';
 						           }
-					        	   result = result + '<td><div class="tblwidth-150"><span>'+report.previousSubmissionStatus+'</span>';
+					        	  /*  result = result + '<td><div class="tblwidth-150"><span>'+report.previousSubmissionStatus+'</span>'; */
 					        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
 					        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
 					        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
@@ -3249,10 +3247,10 @@ function documentpaginationRejected(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 
@@ -3260,6 +3258,7 @@ function documentpaginationRejected(){
 <div id="customizePopUp"></div>
 <script>
 function rejectApplicant(submissionId,requirementId,submissionType){
+	alert
 	$("#reasonForApplicantDiv").empty()
 	var subId = submissionId;
 	var reqId = requirementId;
@@ -3475,8 +3474,8 @@ function assignedMemberList(requirementId){
 						    $("#assignedMemberList").append(result);
                  }else{
 						$("#assignedMemberList").removeAttr("style");
-       	    	         var result ="";
-      		    	     result = result+"   <div class='row'>"; 
+       	    	          var result ="";
+       	    	       /*  result = result+"   <div class='row'>"; 
       					 result = result+"	<div class='col-lg-12'>"; 
       					 result = result+"		<div class='content-area clearfix'>"; 
       					 result = result+"			<div class='blank-pages'>";
@@ -3485,7 +3484,8 @@ function assignedMemberList(requirementId){
       					 result = result+"			 </div>";
       					 result = result+"		</div>"; 
       					 result = result+"	</div>"; 
-      					 result = result+"  </div> "; 
+      					 result = result+"  </div> ";  */
+      					 result = result+"   <div class='dataTables_empty'>"; 
       					$("#assignedMemberList").empty();
       				    $("#assignedMemberList").append(result); 
                       }
@@ -3737,10 +3737,10 @@ function recommendationpagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".dataTables_empty").html("");
 }
 </script>
 

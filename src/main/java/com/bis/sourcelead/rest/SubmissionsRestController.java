@@ -320,7 +320,7 @@ public class SubmissionsRestController {
 		for (RequirementSubmission requirementSubmission : shortlistedList) {
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService
 					.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
-			if (requirementSubmissionTemplateFields.getLastName() != null) {
+			if (null != requirementSubmissionTemplateFields.getLastName()) {
 				StringBuilder canNameSB = new StringBuilder();
 				requirementSubmission.setCandidateName(canNameSB.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
 			} else {

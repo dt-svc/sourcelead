@@ -35,7 +35,7 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 	public RequirementSubmissionHistory updateRequirementHistory(RequirementSubmission requirementSubmission,User user,RequirementSubmissionHistory requirementSubmissionHistory)
 			throws Exception {
 		requirementSubmissionHistory.setSubmissionId(requirementSubmission);
-		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
+		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
 		if(user != null){
 			requirementSubmissionHistory.setCreatedBy(user.getUserCode());
 			requirementSubmissionHistory.setUpdatedBy(user.getUserCode());	
