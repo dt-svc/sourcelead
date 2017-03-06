@@ -18,8 +18,8 @@ public class RequirementReportServiceImpl implements RequirementReportService{
 	@Autowired
 	RequirementReportDao requirementReportDao;
 	@Override
-	public List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String filterDate,Date startDateUTC, Date endDateUTC, String reportType) {
-		return  requirementReportDao.getRequirementReports(userRoleName,orgLocation,user,filterDate,startDateUTC,endDateUTC,reportType);
+	public List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String filterDate,Date startDateUTC, Date endDateUTC) {
+		return  requirementReportDao.getRequirementReports(userRoleName,orgLocation,user,filterDate,startDateUTC,endDateUTC);
 	}
 
 }
