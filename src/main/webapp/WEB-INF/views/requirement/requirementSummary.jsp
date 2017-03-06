@@ -681,7 +681,7 @@ function sideBar(requirementId){
 			        var strFormatedDate = (str[2]+"-"+str[1]+"-"+str[0]);
 			        result = result+'<li><i class="fa fa-clock-o"></i><span>'+strFormatedDate+'</span></li>';
 				        if(json.priority != null && json.priority != '' && json.priority != 'undefined'){
-				        result = result+'<li><i class="fa fa-flag"></i><span>'+json.priority+' Priority</span>';
+				        result = result+'<li><i class="fa fa-flag"></i><span>'+json.priority+'</span>';
 				        }
 				        else{
 					    result = result+'<li><i class="fa fa-flag"></i><span> --- </span>';
