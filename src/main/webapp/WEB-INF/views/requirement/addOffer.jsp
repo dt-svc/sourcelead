@@ -52,7 +52,7 @@ function addOffer(requirementId){
 				result= result + '	                  <th>Applicant</th>';
 				result= result + '	                  <th>Date of Joining</th>';
 				result= result + '	                  <th>Rate / Salary</th>';
-				result= result + '	                  <th>Position Type</th>';
+				result= result + '	                  <th>Employment Type</th>';
 				result= result + '	                  <th>Attachment</th>';
 				/* result = result + '<th class="action">Action</th>'; */
 				result= result + '	                </tr>';
@@ -128,9 +128,13 @@ function loadRemiderDiv(){
 function selectOfferApplicants(){
 	var selectedOfferApplicants =  $('#1applicantId_chosen  span').size();
 	$("#selectedOfferApplicantsCount").html(selectedOfferApplicants);
+	$('#1applicantId_chosen').next("p").remove();
 	
 	$('.search-choice-close').click(function() {
 		var offerApplicants =  $('#1applicantId_chosen  span').size();
+		if(offerApplicants <1){
+			$('#1applicantId_chosen').after('<p class="jquery_form_error_message">Applicant is Required</p>');
+		}
 		$("#selectedOfferApplicantsCount").html(offerApplicants);
 	});
 }
@@ -146,8 +150,12 @@ function selectOfferApplicants(){
 <div id="divOfferTd3" style="display: none; float: left;">
    	 <div class="positionRelative float">
            <select class="form-control" id="REPLACEROWIDPaymentType" name="REPLACEROWIDPaymentType"  >
-	           <option>Rupee</option>
-	           <option>Dollar</option>
+	          		 <option ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}>INR</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}>AUD</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}>USD</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'GBP' ? 'selected' : ''}>GBP</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'SGD' ? 'selected' : ''}>SGD</option>
+	                 <option ${SourceLeadWeb_currencyCode == 'EUR' ? 'selected' : ''}>EUR</option>
            </select>
      </div>
      <div class="positionRelative float">
@@ -155,17 +163,28 @@ function selectOfferApplicants(){
      </div>
    	 <div class="positionRelative float">
            <select class="form-control" id="REPLACEROWIDPaymentMode" name="REPLACEROWIDPaymentMode">
-           <option>Yearly</option>
-           <option>Monthly</option>
+	                 <option value=" ">Rate Per</option>
+	                 <option value="Hourly">Hourly</option>
+	                 <option value="Weekly">Weekly</option>
+	                 <option value="Bi-weekly">Bi-weekly</option>
+	                 <option value="Monthly">Monthly</option>
+	                 <option value="Bi-Monthly">Bi-Monthly</option>
+	                 <option value="Yearly">Yearly</option>
            </select>
      </div>
 </div> 
 
 <div id="divOfferTd4" style="display: none; float: left;">
  	<select class="form-control" id="REPLACEROWIDPositionType" name="REPLACEROWIDPositionType">
-	                      <option>Fulltime</option>
-	                      <option>Parttime</option>
-	                      <option>C2C</option>
+ 	 				 <option value="" disabled selected>Select Type</option>
+	                 <option  ${requirement.jobType  == 'C2C' ? 'selected' : ''}>C2C</option>
+	                 <option  ${requirement.jobType  == 'W-2' ? 'selected' : ''}>W-2</option>
+	                 <option  ${requirement.jobType  == 'C2H' ? 'selected' : ''}>C2H</option>
+	                 <option  ${requirement.jobType  == 'Contract' ? 'selected' : ''}>Contract</option>
+	                 <option  ${requirement.jobType  == 'Part Time' ? 'selected' : ''}>Part Time</option>
+	                 <option  ${requirement.jobType  == 'Full Time' ? 'selected' : ''}>Full Time</option>
+	                 <option  ${requirement.jobType  == 'Other' ? 'selected' : ''}>Other</option>
+	                      
 	</select>
 </div>	              
 <div id="divOfferTd5" style="display: none; float: left;">

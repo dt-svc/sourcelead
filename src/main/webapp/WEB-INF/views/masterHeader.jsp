@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/png" href="resources/images/fav.png" />
@@ -144,7 +147,7 @@ width: 11.5%;
     <nav class="header-nav navbar">
     <a href="javascript:void(0)" class="side-menu"> <i class="fa fa-bars pull-left"></i> </a>
       <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-      <div class="search-area col-md-offset-0 col-sm-offset-0 col-lg-offset-2">
+      <div class="search-area searchArea_mrgn">
            <form:form name ="search_form" id="search_form">
 			<div class="uasrch-selectpicker">
 			<select id="searchType" name="searchType" class="selectpicker uasrch pull-left show-menu-arrow" >
@@ -257,7 +260,7 @@ width: 11.5%;
 	          </c:if>
          
           <li id="alert"> 
-          <a href="#" title="Alerts" id="alert" onclick="notificationStatusAsRead();" > <i class="fa fa-bell bell" ></i> <span class="label label-warning">${SourceLeadWeb_notificationCount}</span></a>
+          <a href="#" title="Alerts" id="alert" onmouseover="notificationStatusAsRead();" > <i class="fa fa-bell bell" ></i> <span class="label label-warning">${SourceLeadWeb_notificationCount}</span></a>
             <div class="header-widget alert-area">
               <ul class="list-unstyled">
               <c:if test="${empty SourceLeadWeb_notificationList}">
@@ -375,12 +378,12 @@ function notificationStatusAsRead(){
 	      type: "POST",
 	  	  url: sourceleadUrl+"/notificationStatusAsRead?${_csrf.parameterName}=${_csrf.token}&orgCode="+orgCode+"&locationCode="+locationCode,
 	  			  success :function(data) {
-	    	      			
+	  				 $("span.label-warning").text(0);
       			 }							     
 	}); 
-	 $("#alert").click(function(){
+	 /* $("#alert").click(function(){
          $("span.label-warning").text(0);
-	 });
+	 }); */
 }
 </script>
 
@@ -610,36 +613,27 @@ $('#taskDatpicker').datepicker({
 	});
 	
 $('#myTaskDatpicker').datepicker({
-	//dateFormat : 'dd-mm-yy',
+	dateFormat : 'dd-mm-yy',
 	changeMonth: true,
 	changeYear: true, 
 	onSelect : function(selected) {
-		var dt = new Date(selected);
-		dt.setDate(dt.getDate() + 1);
-		$("#myTaskDatpicker").datepicker("option", "minDate", dt);
 		tasksList('myTask');
     	}
 	});
 	
 $('#assignedTaskDatpicker').datepicker({
-	//dateFormat : 'dd-mm-yy',
+	dateFormat : 'dd-mm-yy',
 	changeMonth: true,
 	changeYear: true, 
 	onSelect : function(selected) {
-		var dt = new Date(selected);
-		dt.setDate(dt.getDate() + 1);
-		$("#assignedTaskDatpicker").datepicker("option", "minDate", dt);
 		assignedTasksList('assignedTasks');
 	   }
 	});
 $('#closedTaskDatpicker').datepicker({
-	//dateFormat : 'dd-mm-yy',
+	dateFormat : 'dd-mm-yy',
 	changeMonth: true,
 	changeYear: true, 
 	onSelect : function(selected) {
-		var dt = new Date(selected);
-		dt.setDate(dt.getDate() + 1);
-		$("#closedTaskDatpicker").datepicker("option", "minDate", dt);
 		closedTasksList('closedTasks');
 	  }
 	});
@@ -1034,7 +1028,8 @@ function myTasksPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -1049,7 +1044,8 @@ function assignedTasksPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -1063,7 +1059,8 @@ function closedTasksPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -1099,10 +1096,10 @@ jQuery('.main-header').removeClass('navbar-fixed-top');}
 </script> -->
 <script>
 jQuery(window).scroll(function () {
-if( jQuery(window).scrollTop() > jQuery('.main-header').offset().top + 50 && !(jQuery('.main-header').hasClass('navbar-fixed-top'))){
+if( jQuery(window).scrollTop() > jQuery('.main-header').offset().top + 100 && !(jQuery('.main-header').hasClass('navbar-fixed-top'))){
 jQuery('.main-header').addClass('navbar-fixed-top').animate({"top":"0%"}, 500);
-} else if (jQuery(window).scrollTop() <= 10){
-jQuery('.main-header').removeClass('navbar-fixed-top').css({"top":"-13%"});
+} else if (jQuery(window).scrollTop() <= 50){
+jQuery('.main-header').removeClass('navbar-fixed-top').css({"top":"-20%"});
 }
 });
 
@@ -1112,3 +1109,5 @@ $("#searchType").selectpicker('refresh');
 </script>
 
 <!-- Task related code Ends -->
+
+

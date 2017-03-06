@@ -35,6 +35,7 @@
 function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
+	
 	$.ajax({ 
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getSubmissionDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,
@@ -87,6 +88,18 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	    		   expectedRate = json.requirementSubmissionTemplateFields.expectedCTC; 
 	    	   }else{
 	    		   expectedRate = " ";
+	    	   }
+	    	   
+	    	   if(json.requirementSubmissionTemplateFields.currentRateType != null && json.requirementSubmissionTemplateFields.currentRateType != '' && json.requirementSubmissionTemplateFields.currentRateType !='undefined'){
+	    		   currentRateType = json.requirementSubmissionTemplateFields.currentRateType; 
+	    	   }else{
+	    		   currentRateType = " ";
+	    	   }
+	    	   
+	    	   if(json.requirementSubmissionTemplateFields.currentRatePer != null && json.requirementSubmissionTemplateFields.currentRatePer != '' && json.requirementSubmissionTemplateFields.currentRatePer !='undefined'){
+	    		   currentRatePer = json.requirementSubmissionTemplateFields.currentRatePer; 
+	    	   }else{
+	    		   currentRatePer = " ";
 	    	   }
 	    	   
 	    	   /* if(json.candidate.currentRateCurrency != null && json.candidate.currentRateCurrency != '' && json.candidate.currentRateCurrency !='undefined'){
@@ -170,8 +183,8 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + '<li><i class="fa fa-location-arrow"></i>';
 		       result = result +country +''+ state +''+ city
 		       result = result +'</li>';
-		       result = result + '<li><i class="fa fa-rupee"></i>'+currentRate+' - Current CTC </li>';
-		       result = result + '<li><i class="fa fa-rupee"></i>'+expectedRate+' - Expected CTC </li>';
+		       result = result + '<li><i class="fa fa-money"></i><b>Current Rate:&nbsp;</b>'+currentRate+'   '+currentRatePer+'/'+currentRateType+'</li>';
+		       result = result + '<li><i class="fa fa-money"></i><b>Expected Rate:&nbsp;</b>'+expectedRate+'  '+currentRatePer+'/'+currentRateType+'</li>';
 		       result = result + '</ul>';
 		       result = result + ' </div>';
 		       
@@ -181,7 +194,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			    result = result + '<div class="acceptreject-actions">';
 			    if(json.needApplicantPermit == 'Y'){
 			    	
-			    	    <c:if test="${isManager == true}">
+			    	    <c:if test="${isManager == true || isAdmin == true}">
 			    	   		result = result + '<ul class="list-unstyled list-inline">';
 			    	   		result = result + '<span id="statusDiv">';
 			    	    	if(json.submissionRateStatus != 'ACCEPTED' && json.submissionRateStatus != 'REJECTED'){   
@@ -219,7 +232,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 					    	    		result = result + 'Candidate status : '+json.submissionRateStatus;
 										result = result + '	</li>';
 			    	    			}
-									if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
+									/* if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
 										result = result + '	<li>';
 					    	    		result = result + 'Request Comment : '+json.submissionRequestComment;
 										result = result + '	</li>';
@@ -228,7 +241,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 										result = result + '	<li>';
 										result = result + '<a href="downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'">'+json.submissionRequestFileName+'</a>';
 										result = result + '	</li>';
-									}	
+									}	 */
 									
 			    	    		}
 			    	    	} 
@@ -245,7 +258,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 										result = result + '<a href="downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'">'+json.submissionRequestFileName+'</a>';
 									result = result + '	</li>';
 									result = result + '	<li>';
-										result = result + "comment: "+json.submissionRequestComment;
+										result = result + "Comment: "+json.submissionRequestComment;
 									result = result + '	</li>';
 									if(json.submissionRateStatus != null && json.submissionRateStatus != '' && json.submissionRateStatus != 'undefined'){
 										result = result + '<li>';
@@ -253,7 +266,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 										result = result + '</li>';
 									}
 						   }else{
-							   <c:if test="${isTeamMember == true && isManager == false}">
+							   <c:if test="${isTeamMember == true && isManager == false && isAdmin == false}">
 									result = result + '	<li><i class="fa fa-check labelsuccess" title="Request" onClick="requestFun('+submissionId+');"></i>';
 									result = result + '		<div class="acceptreject-pop" id="request">';
 									result = result + '		</div>';

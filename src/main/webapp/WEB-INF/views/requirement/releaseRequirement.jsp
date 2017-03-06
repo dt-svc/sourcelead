@@ -9,6 +9,12 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
+<style type="text/css">
+.text-center {
+    text-align: center !important;
+}
+</style>
+
 <!-- Content Area Starts -->
   <section class="content-wraper">
     <section class="content-header clearfix">
@@ -23,7 +29,9 @@
         
         <c:if test="${SourceLeadWeb_vms == 'Y'}">
         <div class="clearfix">
-          <h2 onclick="openVendors();">Profile</h2>
+
+          <h2 id="jobTitle" onclick="openVendors();">Profile</h2>
+
           <div class="content clearfix">
             <div class="vendor_wrap">
               <div class="col-md-2 custom-selectpicker mt10 mb10">
@@ -191,8 +199,11 @@
       <div class="form-footer clearfix row mt" id="releaseToVendors" style="display: block">
         <div class="col-lg-12">
           <div class="pull-right">
-            <span class="jquery_form_error_message" style="display:none;">Vendor/Contact/Open Network selection is mandatory</span>
-           	<input type="button" class="btn btn-primary ml" id="releaseBtn" onclick="releaseTo();" value="Release">
+         
+            <sec:authorize access="hasAnyRole('ROLE_RELEASE_REQUIREMENT')">
+            	<input type="button" class="btn btn-primary ml" id="releaseBtn" onclick="releaseTo();" value="Release">
+			</sec:authorize>
+			
             <input type="button" class="btn btn-default ml" id="releaseCancelBtn" value="Cancel" onClick="javascript:location.href = '<c:url value='requirementList'/>'">
           </div>
         </div>
@@ -224,6 +235,8 @@ $(document).ready(function(){
 		$("#jobRate").html('No Data');
 	}
 	
+	$("#jobTitle").html("Release to Vendors (${jobTitle})");
+	//getVendorContactLists();
 });
 </script>
 
@@ -364,16 +377,22 @@ function releaseToOneContact(contactscheckboxId){
 
 <script>
 function getContactsLists(){
-	alert("sss");
+	
+	var vendorSelectedIds = [];
+	$('input:checkbox[name=vendorSelected]:checked').each(function() 
+    {
+		vendorSelectedIds.push($(this).val());
+    });
+	
 	var vendors = "Client";
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	var requirementId = '${requirementId}';
 	  $.ajax({
 		   	type: "GET",
-		    url: sourceleadUrl+"/getAllContactsbyOrgLocationIdAndUserIdForRequirement?requirementId="+requirementId+"&vendors="+vendors+"&status="+status, 	   
+		    url: sourceleadUrl+"/getAllContactsbyOrgLocationIdAndUserIdForRequirement?requirementId="+requirementId+"&vendors="+vendors+"&status="+status+"&vendorSelectedIds="+vendorSelectedIds, 	   
    		    success: function(data) {
-   		    	if(data != null && data != 'undefined' && data != "" && data != '[]'){
+   		    	/* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
    		    		if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
 			    	 }
@@ -388,7 +407,7 @@ function getContactsLists(){
 			                result = result +'<table id="candidatePagination" class="display" cellspacing="0" width="100%">';
 			   	        	result = result +'<thead>';
 			   	        	result = result +'<tr>';
-			   	            result = result +'<th><input type="checkbox" id="contactscheckbox" onclick="toggle(this);"/></th>'; 
+			   	            result = result +'<th class="text-center"><input type="checkbox" id="contactscheckbox" onclick="toggle(this);"/></th>'; 
 			   	        	result = result +'  <th>Name</th>';
 			   	        	result = result +'  <th>Email</th>';
 			   	        	result = result +' <th>Phone</th>';
@@ -404,7 +423,7 @@ function getContactsLists(){
 				   	        		resultVendors = resultVendors + '';
 				   	        		result = result +'<tr>';
 				   	        		if(report.releasedRequirement =="true"){
-				   	        			result = result +'  <td><input type="checkbox" checked disabled readonly id="'+report.id+'"/></td>';
+				   	        			result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
 				   	        		}
 				   	        		if(report.releasedRequirement =="false"){
 				   	        			result = result +'  <td><input name="contactscheckbox" type="checkbox" id="'+report.id+'"/></td>';
@@ -444,6 +463,7 @@ function getContactsLists(){
 			   	        	result = result +' </div>';
 			   	        	
 			   	        	$("#vendorStatus").hide();
+			   	        	$("input[name='vendorStatus']:checkbox").attr('checked',false);
 			   	        	$("#vendorSelected").show();
 			   	        
 			   	    	    $("#vendor").empty();
@@ -451,7 +471,7 @@ function getContactsLists(){
 			   	    	    $("#vendorContacts").append(result);
 			   	    	 	candidatePagination();
                		}
-	   		    	}else{
+	   		    	/* }else{
 	               	 $("#vendorContacts").removeAttr("style");
 		    	     var result ="";
 					 result = result+"	<div class='blank-pages'>";
@@ -461,7 +481,7 @@ function getContactsLists(){
 					$("#vendorStatus").hide();
 					$("#vendorContacts").empty();
 				    $("#vendorContacts").append(result); 
-	            }
+	            } */
    		    },
 	 });
 }	
@@ -544,7 +564,7 @@ function getVendorLists(){
 	                        result = result +'<table id="vendorPagination" class="display" cellspacing="0" width="100%">';
 	           	        	result = result +'<thead>';
 	           	        	result = result +'<tr>';
-	           	            result = result +'<th><input type="checkbox" id="checkbox1" onclick="toggle(this);"/></th>'; 
+	           	            result = result +'<th class="text-center"><input type="checkbox" id="checkbox1" onclick="toggle(this);"/></th>'; 
 	           	        	result = result +'  <th>Name</th>';
 	           	        	result = result +'  <th>Location</th>';
 	           	        	result = result +' <th>No. of contacts</th>';
@@ -568,7 +588,7 @@ function getVendorLists(){
 	           	        		result = result +'<tr>';
 	           	        	    
 	           	        	 	if(report.noOfNonReleasedContacts == 0){
-	           	        	 		result = result +'  <td><input type="checkbox" checked disabled readonly id="'+report.id+'" /></td>';
+	           	        	 		result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
 	        	        		}else{
 	        	        			result = result +'  <td><input name="vendorcheckbox" type="checkbox" id="'+report.id+'" /></td>';
 	        	        		}
@@ -607,6 +627,7 @@ function getVendorLists(){
 	           	        	
 	           	        	$("#vendorStatus").show();
 	           	        	$("#vendorSelected").hide();
+	           	        	$("input[name='vendorSelected']:checkbox").attr('checked',false);
 	           	        	
 	           	    	    $("#vendorContacts").empty();  
 	           	    	 	$("#vendor").empty();
@@ -641,7 +662,8 @@ function vendorPagination(){
        	"bDestroy": true,
        	"ordering": false,
        	"oLanguage": {
-        		"sSearch": ""
+        		"sSearch": "",
+        		 "sZeroRecords": "", "sEmptyTable": ""
         	}
        } );
 }
@@ -656,7 +678,8 @@ function candidatePagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }

@@ -143,10 +143,14 @@ public class DashboardRestController {
 			
 		     //to update user state in user role based on location----> Prasad Salina
 		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
 		     UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
 		     if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
    			    userRole.setUserState(Status.ACTIVE);
    			   UserRole userRoleElk = userRoleService.addUserRole(userRole);
+   			   
+   			   
    			   
    			   //user update/save in user Elk
    			  userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
@@ -451,8 +455,9 @@ public class DashboardRestController {
 					
 					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),"UTC", startTimeTS);
 					String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),"UTC", endTimeTS);
-					 startUTCDate = Constants.TZ_DF_TS.parse(startDateString);
-					 endUTCDate = Constants.TZ_DF_TS.parse(endDateString);
+					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+					 startUTCDate = TZ_DF_TS.parse(startDateString);
+					 endUTCDate = TZ_DF_TS.parse(endDateString);
 				}
 				requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode,startUTCDate,endUTCDate);
 				}else{
@@ -493,7 +498,8 @@ public class DashboardRestController {
 				if(null != timezone.getTimeZoneId() && null != interviewHistory.getInterviewId() && null != interviewHistory.getInterviewId().getId() && null != interviewHistory.getInterviewId().getStartTime()){
 					String currentTimeStr = Constants.TZ_DF.format(interviewHistory.getInterviewId().getStartTime());  
 					String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
-					Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
+					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+					Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
 					currentDateInTimezone = standardFormat.format(converteDate);
 					interviewHistory.setInterviewStartDateTimeStr(currentDateInTimezone);
 				}
@@ -673,9 +679,9 @@ public class DashboardRestController {
 		public String getApplicantsByStatus(@RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception {
 
 		 String resultJson;
-
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 List<RequirementSubmission> requirementSubmissionList = requirementSubmissionService.getApplicantsByStatus(loginOrgLocations.getId(), status);
+		 List<RequirementSubmission> requirementSubmissionList = requirementSubmissionService.getApplicantsByStatus(loginOrgLocations.getId(), user,status);
 		 resultJson = commonUtil.toJSON(requirementSubmissionList);
 		 return resultJson;
 

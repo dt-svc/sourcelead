@@ -111,7 +111,7 @@
 				 
 				
 						result = result + '<div class="project_details_cta clearfix">';
-						result = result + '<strong>Min Experience :</strong>';
+						result = result + '<strong>Max Experience :</strong>';
 						if(json.maxExp != null && json.maxExp != "" && json.maxExp != 'undefined'){
 						result = result + '<span class="fix">'+json.maxExp+'</span>';
 						 }

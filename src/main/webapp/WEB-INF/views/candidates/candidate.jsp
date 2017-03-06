@@ -167,7 +167,7 @@
         <div class="form-group">
           <label class="col-md-3">Address</label>
           <div class="col-md-9">
-           <input type="text" class="form-control" id="address" name="address" value="${address}"  field-name="Address" data-validation="" data-validation-optional="true">
+           <input type="text" class="form-control" id="address" name="address" value="${address}"  field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
           </div>
         </div>
         
@@ -616,6 +616,7 @@ function getCities(){
 		            select.find(option).prop('selected', true);
 		          //to doesn't allow duplicates
                     $("#candidateSkills option").each(function(){
+                    	alert("hi");
                           $(this).siblings("[value='"+ this.value+"']").remove();
                     });
                     //end

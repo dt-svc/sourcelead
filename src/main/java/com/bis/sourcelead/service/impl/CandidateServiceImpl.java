@@ -606,4 +606,19 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 
+	@Override
+	public List<Candidate> getCandidatesByOrgLocationIDAndSearchText(Long orgLocationId, Long requirementId, String candidateType,
+			String searchApplicant) throws Exception {
+		return candidateDao.getCandidatesByOrgLocationIDAndSearchText(orgLocationId, requirementId, candidateType, searchApplicant);
+	}
+
+//	private ArrayList<String> getSearchValuesFromChosenSelectField(String searchValue) {
+//		 ArrayList<String> keyWordList = null;
+//		 if(searchValue !=null && !"".equalsIgnoreCase(searchValue)){
+//			 String searchKeywordString = searchValue.replaceAll("\\[", "").replaceAll("\\]","");
+//		     keyWordList = new ArrayList<String>(Arrays.asList(searchKeywordString.split(",")));
+//		 }
+//        return keyWordList;
+//	}
+
 }

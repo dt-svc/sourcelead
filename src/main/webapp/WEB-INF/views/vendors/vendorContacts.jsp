@@ -265,6 +265,7 @@ function saveReasonForVendorSpocTermination(spocId, orgRelationID,vendorLocation
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
 	if(reason.match(/^[^\s-](.*)*$/) != null){
+		 reason = encodeURIComponent(reason);
 		$("#reasonForSpocDiv").empty();
 		$.ajax({
 		   	type: "POST",
@@ -324,7 +325,8 @@ function contactPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
 		
     } );

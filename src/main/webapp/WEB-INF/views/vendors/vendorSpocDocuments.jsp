@@ -47,7 +47,7 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
           type : "POST",
           url: sourceleadUrl+"/getclientDocumentsListByResponderLocationIdAndSpocUserId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+clientLocationId+"&userId="+userId,        
           success :function(data) {
-               if(data != null && data != 'undefined' && data != "" && data != '[]'){
+               /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
              			var json = JSON.parse(data);
              			/* for (var i = 0; i < 1; i++) { 
              				var val= json[i];
@@ -141,7 +141,7 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                     $("#spocDocumentsList").append(result); 
 	                     spocDocumentpagination(); 
 	                    
-               }else{
+              /*  }else{
 	    	         var result ="";
 		    	     result = result+"   <div class='row'>"; 
 					 result = result+"	<div class='col-lg-12'>"; 
@@ -155,7 +155,7 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 					 result = result+"  </div> "; 
 					$("#spocDocumentsList").empty();
 				    $("#spocDocumentsList").append(result); 
-               }
+               } */
         },
           
      }); 
@@ -171,7 +171,8 @@ function spocDocumentpagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -250,7 +251,7 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 	
 	result = result+'	                  <div class="clearfix mb10">';
 	result = result+'	                    <div class="col-md-12">';
-	result = result+'	                      <textarea rows="2" placeholder="Description" value="" id="description" name="description" data-validation="validate_length length2-500" data-validation-optional="true" field-name="Description" class="form-control"></textarea>';
+	result = result+'	                      <textarea rows="2" placeholder="Description" value="" id="spocDocdescription" name="description" data-validation="validate_length length2-500" data-validation-optional="true" field-name="Description" class="form-control"></textarea>';
 	result = result+'	                    </div>';
 	result = result+'	                  </div>';
 	
@@ -542,7 +543,7 @@ function getVendorSpocDocument(clientLocationId,orgRelationId,spocName,userId,do
     			 
     			 
     			 if(json.description != null && json.description != "undefined" && json.description != ""){
-    				 document.getElementById("description").value = json.description;
+    				 document.getElementById("spocDocdescription").value = json.description;
     			 }
     			 
     			 $("#update_doc").attr("onclick", 'storeSpocDocument(\''+clientLocationId+'\',\''+orgRelationId+'\',\''+userId+'\',\''+spocName+'\',\''+json.id+'\');');

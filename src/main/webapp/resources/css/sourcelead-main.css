@@ -374,6 +374,7 @@ search-area .btn-default:hover {
 	transform: translateX(0px);
 	-ms-transform: translateX(0px) ;
 	-webkit-transform: translateX(0px);
+	display: block;
 }
 /* Alerts Styels ends */
 /*updated links for quick links based on user */
@@ -683,6 +684,7 @@ ul.timesheet-menu li a:hover, ul.backoffice-menu li a:hover {
 .side-bar .user-panel.user-panel-active .media .media-body .text-logo .tbldata-dotdot {
     font-size: 15px;
     overflow: hidden;
+
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 40px;
@@ -859,16 +861,14 @@ ul.timesheet-menu li a:hover, ul.backoffice-menu li a:hover {
 
 /* content Area Styels */
 .content-wraper {
-	background: #e1e6fa;
+	background: #f1f2f7;
 	min-height: 620px;
 	margin-left: 230px;
 	padding: 0 30px 30px;
-/*
 	-moz-transition: all ease-in-out 0.3s;
 	-ms-transition: all ease-in-out 0.3s;
 	-webkit-transition: all ease-in-out 0.5s;
 	transition: all ease-in-out 0.3s;
-*/
 }
 .content-wraper.content-wraper-active {
 	margin-left: 50px;
@@ -882,10 +882,10 @@ ul.timesheet-menu li a:hover, ul.backoffice-menu li a:hover {
 	-webkit-box-shadowbox-shadow: 0px 0px 3px #707070;
 	-moz-box-shadow: 0px 0px 3px #707070;
 	padding: 0 15px;
-/*	-moz-transition: all ease-in-out 0.3s;
+	-moz-transition: all ease-in-out 0.3s;
 	-ms-transition: all ease-in-out 0.3s;
 	-webkit-transition: all ease-in-out 0.3s;
-	transition: all ease-in-out 0.3s;*/
+	transition: all ease-in-out 0.3s;
 	position: relative;
 }
 .inner-content {
@@ -1246,6 +1246,7 @@ background-repeat:no-repeat;
 	padding: 6px 12px 6px 30px;
 }
 /*select.select-bg::-ms-expand {
+
     display: none;
 }*/
 /* Form Footer Styles */
@@ -1492,8 +1493,8 @@ transform: rotate(0)
 	-webkit-transform: translateY(0px);
 	transform: translateY(0px);
 	-moz-transition: all ease-in-out 0.5s;
-	transition: all ease-in-out 0.5s;
-	transition: all ease-in-out 0.5s;
+	-webkit-transition: all ease-in-out 0.5s;
+	-o-transition: all ease-in-out 0.5s;
 	box-shadow: 0px 0px 10px 5px #e1e6fa;
 }
 .profile-img-container .comp-image {
@@ -1839,6 +1840,7 @@ transform: rotate(0)
 .side-bar .side-nav ul li ul li {
 	border-bottom: 1px solid #456185;
 }
+
 .side-bar .side-nav ul li ul li:hover {
 	background: #21476b;
 }
@@ -2624,7 +2626,7 @@ ul.can-perdt li a {
 	background: #d9534f;
 	border-radius:0;
 	padding:5px 5px 0px 5px;
-	position: absolute;
+	position: fixed;
 	top: 125px;
 	-webkit-transition: all 0.8s ease-in-out 0s;
 	-ms-transition: all 0.8s ease-in-out 0s;
@@ -3303,7 +3305,7 @@ a.collpase-div .fa-angle-down:hover{
 	color:#333;
 }
 .addTask {
-	position:absolute;
+	position:fixed;
 	right: 0px;
 	top: 90px;
 	z-index: 9999;
@@ -4548,13 +4550,13 @@ import-tranhd  [class*="col-md-"]{
 	max-height: 200px;
 	overflow-y:auto;
 	background: #fff;
-	border: 1px solid #ccc;
-	border-radiu:3px !important;
+	border:1px solid #ccc;
+	border-radius:3px !important;
 	z-index: 9999;
 	color:#333;
 	display:none;
 	font-weight: normal;
-	transistion:all 0.2s;
+	transition:all 0.2s;
 }
 .show-reason:hover .reason{
 	display:block;
@@ -4831,18 +4833,17 @@ a.active-user:hover{
 	color:#5cb85c;	
 }
 .edit-status {
-       position:absolute !important;
-       top:25px;
-       right: 5px;
-       border:1px solid #ccc;
-       background-color:#fff;
-       padding:5px 10px;
-       border-radius:5px;
-       display:none;
-       z-index: 9999 !important;
-       width:175px;
-       text-align: left;
-       word-wrap: break-word;
+    position: fixed !important;
+    top: 45%;
+    right:35%; margin:0px auto;
+    background-color: #fff;
+    padding: 3px 5px 8px 10px;
+    border-radius: 2px;
+    display: none; box-shadow:0px 0px 10px rgba(0,0,0,0.6);
+    z-index: 9999 !important;
+    width: 280px; padding:15px; min-height:60px;
+    text-align: left;
+    word-wrap: break-word; 
 }
 .edit-reason:hover .edit-status {
        display: block;
@@ -5509,7 +5510,7 @@ color: #ccc
 max-height: 150px !important;
 }
 .divmax-width{
-    width:225px;
+    width:200px;
 }
 .dashboard-widget.req-profile ul{
        position: relative;
@@ -5833,7 +5834,7 @@ z-index: 99;
 	display: none;
 	top:-15px;
 	padding:5px 10px;
-	left:-380px;
+	left:-412px;
 	z-index:999;
 	transition:all ease-in-out 0.3s;
 	-moz-box-shadow: 0px 1px 8px #9E9E9E;
@@ -6394,6 +6395,47 @@ margin: 5px 0 5px 8px !important;
 .timesheet_head.timesheetHead_Custom > ul {
     padding-right: 210px;
 }
+.timesheet_head.timesheetHead_Custom > ul > li{
+	margin: 5px 0px 5px 5px;
+}
+.content_widget {
+background: #fff;box-shadow: 0 1px 1px rgba(0,0,0,0.1);border-radius: 5px;min-height: 50px;
+max-height: 125px;padding: 10px;position: relative;
+}
+.activeJobs div[class*="col-md-"] {
+    margin-bottom: 15px;
+}
+.searchArea_mrgn{
+   margin-left: 10%;
+}
+.require_wrap_table.overflow_inherint, .clients_wrap_table.overflow_inherint{
+	overflow: inherit !important;
+}
+.overflow_inherint{
+	overflow: inherit !important;
+}
+.jobs-graphview .label {
+position: absolute; top: -8px; width: 55%; right:10px; min-height: 20px; line-height: 16px; font-size: 14px; color: #fff;
+}
+.jobs-graphview .fa {
+    position: relative;top: 5px;color: #fff;opacity: 0.5;
+}
+.buttonView{
+    background: #5C6BC0;
+}
+.jobs-graphview .label-info {
+    background-color: #3F51B5;
+}
+.jobs-graphview .count{
+    min-width: 50px;
+    min-height: 50px;
+    padding:10px 15px;
+    border-radius: 50%;
+    background: #fff;
+    position: absolute;
+    right: 10px;
+    bottom: 15px;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
@@ -6615,7 +6657,15 @@ margin-bottom: 10px;
 
 	}
 }
+@media (max-width: 1210px) {
+    .searchArea_mrgn{
+    margin-left: 1%;
+   }
+}
 @media (max-width: 1160px) {
+     .searchArea_mrgn{
+    margin-left: 0%;
+    }
 	.side-bar .user-panel.user-panel-active .media .media-body .text-logo .tbldata-dotdot {
     font-size: 15px;
     overflow: hidden;
@@ -6873,3 +6923,8 @@ top:150px;
 	padding:0px 15px 12px 15px;
 	}
 #id1 i { top:15px; position:absolute; right:20px;}	
+
+
+#divTsRow1 .chosen-container-active .chosen-choices {
+    max-height: 100px !important; overflow-y:auto !important;
+}

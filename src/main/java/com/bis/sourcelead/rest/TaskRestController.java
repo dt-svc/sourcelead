@@ -1,5 +1,7 @@
 package com.bis.sourcelead.rest;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -82,7 +84,21 @@ public class TaskRestController {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		List<Tasks> taklist = taskService.tasksListByIdAndOrgLocationIdAssignedUserId(orgLocations.getId(),user.getId(),status,date);
+		
+		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		String taskCurrentTimeStr = "";
+		String taskCurrentDateInTimezone ="";
+		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+		Date converteDate;
+		if(!"".equalsIgnoreCase(date)){
+			Date date1 = new SimpleDateFormat("MM/dd/yyyy").parse(date);
+			taskCurrentTimeStr = Constants.TZ_DF.format(date1);
+			taskCurrentDateInTimezone= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", taskCurrentTimeStr);
+			converteDate = TZ_DF_TS.parse(taskCurrentDateInTimezone);
+			taskCurrentDateInTimezone = Constants.DMY.format(converteDate);
+		}
+		
+		List<Tasks> taklist = taskService.tasksListByIdAndOrgLocationIdAssignedUserId(orgLocations.getId(),user.getId(),status,taskCurrentDateInTimezone);
 		
 		Set<Tasks> taskList = new HashSet<Tasks>();
 		for(Tasks tasks : taklist) {
@@ -92,21 +108,20 @@ public class TaskRestController {
 		for(Tasks tk :taklist){
 			tk.setSubject(tk.getSubject());
 			
-			Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-			
-			
 			if(tk.getTaskDate() != null){
 
 				String currentTimeStr = Constants.TZ_DF.format(tk.getTaskDate());
 				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
-				Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
+				 TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				 converteDate = TZ_DF_TS.parse(currentDateInTimezone);
 				currentDateInTimezone = Constants.DMY.format(converteDate);
 				tk.setTaskDateStr(currentDateInTimezone);
 		    }
 			if(tk.getTaskTime() != null){
 				String currentTimeStr = Constants.TZ_DF.format(tk.getTaskDate());
 				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
-				Date converteDate = Constants.TZ_DF_TS.parse(currentDateInTimezone);
+				 TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				 converteDate = TZ_DF_TS.parse(currentDateInTimezone);
 				currentDateInTimezone = Constants.TMS.format(converteDate);
 				tk.setTaskTime(currentDateInTimezone);
 			}

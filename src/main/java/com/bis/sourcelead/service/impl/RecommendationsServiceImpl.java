@@ -582,7 +582,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			
 			//Long  count = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,0,boolQueryBuilder).getTotalHits();
 			
-			SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+			SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,200,boolQueryBuilder).getHits();
 			
 			if(null != searchHits && searchHits.length >0){
 				percentPerSkill = Integer.parseInt(recommendedCustomizeScore.getCustomizeSkillScore())/(float)reqMaxSkills.length;
@@ -637,7 +637,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					
 					
 					//List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidateIndex.getCandidateId());
-					Integer reqListCount = requirementSubmissionService.getRequirementPerCandidateCount(candidateIndex.getCandidateId());
+					Integer reqListCount = requirementSubmissionService.getRequirementPerCandidateCount(candidateIndex.getCandidateId(),candidateIndex.getOrgLocationId());
 					
 					//get the skillPercentage method
 					 				 
@@ -679,7 +679,9 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					double roundOff = Math.round(totalPercentage * 100.0) / 100.0;
 					candidateIndex.setFinalScore(roundOff);
 					candidateIndex.setNoOfReq(reqListCount);
-					candidateIndex.setSkillPercentage(skillPercentage);
+					
+					double skillRoundOff = Math.round(skillPercentage * 100.0) / 100.0;
+					candidateIndex.setSkillPercentage((float)(skillRoundOff));
 					candidateIndex.setExpPercentage(expPercentage);
 					candidateIndex.setLocationPercentage(locationPercentage);
 					candidateIndex.setRatePercentage(ratePercentage);
@@ -745,7 +747,12 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		int recommendationExpMonthsMin = 0;
 		int recommendationExpMonthsMax = 0;
 		if(null != candidateIndex.getExperienceYears() && !"".equalsIgnoreCase(candidateIndex.getExperienceYears())){
-			 Years = Integer.parseInt(candidateIndex.getExperienceYears());	
+			if(candidateIndex.getExperienceYears().equalsIgnoreCase("25+")){
+				Years = Integer.valueOf(25);	
+			}else{
+				Years = Integer.parseInt(candidateIndex.getExperienceYears());
+			}
+			 	
 		}
 		if(candidateIndex.getExperienceMonths() != null && !"".equalsIgnoreCase(candidateIndex.getExperienceMonths())){
 			 Months = Integer.parseInt(candidateIndex.getExperienceMonths());
@@ -790,6 +797,8 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			}else{
 				expPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeExperienceScore());
 			}*/
+		}else{
+			expPercentage = 0;
 		}
 		return expPercentage;
 	}
@@ -835,6 +844,8 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			if(perMonthCandidateSal<=reqPerMonthSal){
 				ratePercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeRateScore());
 			}
+		}else{
+			ratePercentage = 0;
 		}
 		return ratePercentage;
 	}
@@ -848,7 +859,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	 * @return float
 	 */
 	private float getNoticeperiodPercentage(RecommendedCustomizeScore recommendedCustomizeScore, CandidateIndex candidateIndex, float noticePeriod) {
-		if(recommendedCustomizeScore.getCustomizeNoticeperiod() !=null){
+		if(null !=recommendedCustomizeScore.getCustomizeNoticeperiod() && null !=candidateIndex.getNoticePriod() && !"".equalsIgnoreCase(candidateIndex.getNoticePriod()) && "undefined" != candidateIndex.getNoticePriod() ){
 			String []  np = recommendedCustomizeScore.getCustomizeNoticeperiod().split(",");
 			int totalDays = 0;
 			int canTotalDays = 0;
@@ -882,6 +893,8 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			if(totalDays <= canTotalDays){
 				noticePeriod = Integer.parseInt(recommendedCustomizeScore.getCustomizeNoticeperiodScore());
 			}
+		}else{
+			noticePeriod = 0;
 		}
 		return noticePeriod;
 	}

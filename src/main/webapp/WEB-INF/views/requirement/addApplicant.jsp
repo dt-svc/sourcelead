@@ -138,16 +138,43 @@ function getAddApplicant(requirementId){
 				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 				  '.chosen-select-width'     : {width:"95%"}
 				}
-				for (var selector in config) {
-				  $(selector).chosen(config[selector]);
-				}
-				$('.chosen-select').each(function() {
-					var $this = $(this);
-					$this.next().css({'width': '100%'});
-					})
+	   
+	   
+	 //Adding Customized Skills to the list
+       var select, chosen;
+	    select = $("#candidateSkills");
+	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
+	    chosen = select.data('chosen');
+	    chosen.search_field.on('keyup', function(e)
+	    {
+	    	var newSkill = this.value.replace(",","");
+	        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+	        {
+	        	var par = this.parent;
+	            var option = $("<option>").val(newSkill).text(newSkill);
+	            select.append(option);
+	            select.find(option).prop('selected', true);
+	          //to doesn't allow duplicates
+                  $("#candidateSkills option").each(function(){
+                        $(this).siblings("[value='"+ this.value+"']").remove();
+                  });
+                  //end
+       		$("#candidateSkills").trigger("chosen:updated");
+       		
+	        }
+	    });
+	    //Adding Customized Skills to the list
 			
-			
-	$("#candSkills").val('').trigger("chosen:updated");
+	$("#candidateSkills").val('').trigger("chosen:updated");
+	    
+		for (var selector in config) {
+		  $(selector).chosen(config[selector]);
+		}
+		$('.chosen-select').each(function() {
+			var $this = $(this);
+			$this.next().css({'width': '100%'});
+			})
+	
 	
 	$(".new_side_wrap").addClass("new_side_wrap_active");
 	$(".side_mask").fadeIn(200);
@@ -450,7 +477,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	    		$("body").css('overflow-y', 'auto');
 	    		var allApplicants = 'all';
 	    		requirementPipeline(requirementId,allApplicants); 
-	        	
+	    		pipelineList(requirementId);
 	        },
 	    }); 
       return true; 
@@ -632,6 +659,7 @@ function getCandidateDetails(){
 		        	 
 		        	 if(json['state'] != null && json['state'] != "" && json['state'] != 'undefined'){
 		        		 $("select[name=state]").val(json['state']);
+		        		 getCandidateStates(json['state']);
 		        	 }else{
 		        		 $("select[name=state]").val('');
 		        	 }
@@ -674,8 +702,10 @@ function getCandidateDetails(){
 		        	 
 		        	 if(json['rateType'] != null && json['rateType'] != "" && json['rateType'] != 'undefined'){
 		        		 $("select[name=expectedCTCRatePer]").val(json['rateType']);
+		        		 validateExpectedCTCRatePer();
 		        	 }else{
 		        		 $("select[name=expectedCTCRatePer]").val('');
+		        		 validateExpectedCTCRatePer();
 		        	 }
 		        	 
 		        	 if(json['expectedRateCurrencey'] != null && json['expectedRateCurrencey'] != "" && json['expectedRateCurrencey'] != 'undefined'){
@@ -693,9 +723,11 @@ function getCandidateDetails(){
 		        	 if(json['currentRateType'] != null && json['currentRateType'] != "" && json['currentRateType'] != 'undefined'){
 		        		 $("select[name=currentCTCRatePer]").val(json['currentRateType']);
 		        		 validateExpectedCTC();
+		        		 validateCurrentCTCRatePer();
 		        	 }else{
 		        		 $("select[name=currentCTCRatePer]").val(''); 
 		        		 validateExpectedCTC();
+		        		 validateCurrentCTCRatePer();
 		        	 }
 		        	 
 		        	 if(json['currentRateCurrency'] != null && json['currentRateCurrency'] != "" && json['currentRateCurrency'] != 'undefined'){
@@ -766,7 +798,7 @@ function getAllSubmissionCandidateCountries(){
 </script>
 
 <script>
-function getCandidateStates(){
+function getCandidateStates(state){
 	
 	var countryName = $("#submissionCountry").val();
 	if(countryName != null && countryName != "" && countryName !="undefined"){
@@ -779,7 +811,12 @@ function getCandidateStates(){
 	        	$('#submissionState').empty();
 	        	$('#submissionState').append('<option value="">---Select---</option>');
 	            for(var i=0;i<json.length;i++){
-	            	$('#submissionState').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	if(state != null && state != 'undefined' && json[i] == state){
+	            		$('#submissionState').append('<option value="'+state+'" selected>'+json[i]+'</option>');
+	            	}
+	            	else{
+	            		$('#submissionState').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	}
 	            }
 	            $('#submissionState').trigger("chosen:updated");
 	            
@@ -857,6 +894,8 @@ function init(){
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 		  })
+		  
+    setRateTypesByLocation();
 }
 </script>
 
@@ -951,7 +990,7 @@ function setRateTypesByLocation(){
  		        		$("#candidateSkills").trigger("chosen:updated");
   						
 			        	 
-						 validateCandidateEmail();
+						 validateSubmissionCandidateEmail();
 						 $("#loading").removeAttr("style");
 					},
 				});
@@ -982,7 +1021,7 @@ function validate_fileupload(fileName)
 
 
 <script type="text/javascript">
- function validateCandidateEmail() {
+ function validateSubmissionCandidateEmail() {
 	 var email =   $("input[name=EmailId]").val();
 	$('#emailDiv').find('p.jquery_form_error_message').remove();
 	 var sourceleadUrl ='${sourceleadUrl}';
@@ -1038,6 +1077,36 @@ function validate_fileupload(fileName)
 	 }
  }
  </script>
+ 
+ <script>
+ function validateExpectedCTCRatePer(){
+	 var expectedCTCRatePer = document.getElementById("expectedCTCRatePer").value;
+	 if(expectedCTCRatePer){
+		 $("input[name=ExpectedCTC]").removeAttr("data-validation-optional");
+		 $("input[name=ExpectedCTC]").attr("data-validation", "required validate_Space validate_float validate_length length1-8");
+	 }else{
+		 $("input[name=ExpectedCTC]").removeAttr("data-validation");
+		 $("input[name=ExpectedCTC]").attr("data-validation-optional", "true");
+		 $("input[name=ExpectedCTC]").attr("data-validation", "validate_Space validate_float validate_length length1-8");
+	 }
+ }
+ </script>
+ 
+ <script>
+ function validateCurrentCTCRatePer(){
+	 var currentCTCRatePer = document.getElementById("currentCTCRatePer").value;
+	 if(currentCTCRatePer){
+		 $("input[name=CurrentCTC]").removeAttr("data-validation-optional");
+		 $("input[name=CurrentCTC]").attr("data-validation", "required validate_Space validate_float validate_length length1-8");
+	 }else{
+		 $("input[name=CurrentCTC]").removeAttr("data-validation");
+		 $("input[name=CurrentCTC]").attr("data-validation-optional", "true");
+		 $("input[name=CurrentCTC]").attr("data-validation", "validate_Space validate_float validate_length length1-8");
+	 }
+ }
+ </script>
+ 
+ 
  
  <script>
  function changeRateLabels(){

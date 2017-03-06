@@ -26,17 +26,32 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 	 * @return
 	 * @throws Exception
 	 */
+	
+	protected boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
+	
 	@Override
 	public RequirementSubmissionHistory updateRequirementHistory(RequirementSubmission requirementSubmission,User user,RequirementSubmissionHistory requirementSubmissionHistory)
 			throws Exception {
 		requirementSubmissionHistory.setSubmissionId(requirementSubmission);
-		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
+		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
 		if(user != null){
 			requirementSubmissionHistory.setCreatedBy(user.getUserCode());
 			requirementSubmissionHistory.setUpdatedBy(user.getUserCode());	
 		}
 		requirementSubmissionHistory.setCreatedDate(new Date());
 		requirementSubmissionHistory.setUpdatedDate(new Date());
+		
+		StringBuilder userName = new StringBuilder();
+		
+		if(!isNullOrEmpty(user.getLastName())){
+			userName = userName.append(user.getFirstName()).append(" ").append(user.getLastName());
+		}else{
+			userName = userName.append(user.getFirstName());
+		}
+		requirementSubmissionHistory.setCreatedUser(userName.toString());
+		
 		return requirementSubmissionHistoryDao.updateRequirementHistory(requirementSubmissionHistory);
 	}
 

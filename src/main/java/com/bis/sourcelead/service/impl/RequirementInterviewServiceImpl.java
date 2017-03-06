@@ -147,7 +147,8 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 											      jsonObj.getString(c+"startTime"));
 										String currentTimeStr = Constants.TZ_DF.format(startTime);  
 										String startTimeUTC= CommonUtil.convertTimeZones(zone.getTimeZoneId(), "UTC", currentTimeStr);
-										Date convertedDate = Constants.TZ_DF_TS.parse(startTimeUTC);
+										DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+										Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
 										requirementInterview.setStartTime(convertedDate);
 								}
 								
@@ -156,7 +157,8 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 										      jsonObj.getString(c+"endTime"));
 									String currentTimeStr = Constants.TZ_DF.format(endTime);  
 									String endTimeUTC= CommonUtil.convertTimeZones(zone.getTimeZoneId(), "UTC", currentTimeStr);
-									Date convertedDate = Constants.TZ_DF_TS.parse(endTimeUTC);
+									DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+									Date convertedDate = TZ_DF_TS.parse(endTimeUTC);
 								    requirementInterview.setEndTime(convertedDate);
 								}
 								
@@ -369,7 +371,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 
 		 if(endTime!=null){
 			  StringBuilder sb=new StringBuilder();
-			  time=sb.append(time).append(" - ").append(endTime).toString();
+			  time=sb.append(time).append(" - ").append(endTime).append(" UTC ").toString();
 		 }
 		 StringBuilder dateOfInterviewSB=new StringBuilder();
 		 dateOfInterviewValue = dateOfInterviewSB.append(dateOfInterviewValue).append(" ").append(time).toString();
@@ -453,7 +455,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 
 		 if(endTime!=null){
 			 StringBuilder timeBuilder=new StringBuilder();
-			  time=timeBuilder.append(time).append(" - ").append(endTime).toString();
+			  time=timeBuilder.append(time).append(" - ").append(endTime).append(" UTC ").toString();
 		 }
 		 String interviewTypeValue="--";
 		 if(requirementInterview.getInterviewType() !=null){
@@ -665,7 +667,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 
 		 if(endTime!=null){
 			 StringBuilder endTimeBuilder=new StringBuilder();
-			  time=endTimeBuilder.append(time).append(" - ").append(endTime).toString();
+			  time=endTimeBuilder.append(time).append(" - ").append(endTime).append(" UTC ").toString();
 		 }
 		 
 		 

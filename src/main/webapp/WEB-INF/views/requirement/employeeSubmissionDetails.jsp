@@ -32,7 +32,7 @@
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="
 							+ candidateId,
 					success : function(data) {
-						if (data != null && data != 'undefined' && data != "" && data != '[]') {
+						/* if (data != null && data != 'undefined' && data != "" && data != '[]') { */
 							if (data.indexOf('Sign In') >= 0) {
 								location.replace(sourceleadUrl);
 							} else if (data.indexOf('exception') >= 0) {
@@ -90,7 +90,7 @@
 								$("#employeeSubmissionDetailsList").append(result);
 								employeeSubmittionPagination();
 							}
-						} else {
+						/* } else {
 							var result = "";
 							result = result + "   <div class='row'>";
 							result = result + "	<div class='col-lg-12'>";
@@ -107,7 +107,7 @@
 							result = result + "  </div> ";
 							$("#employeeSubmissionDetailsList").empty();
 							$("#employeeSubmissionDetailsList").append(result);
-						}
+						} */
 					},
 
 				});
@@ -123,10 +123,10 @@ function employeeSubmittionPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
- 
  }
 </script>
 

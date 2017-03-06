@@ -619,65 +619,68 @@ function sideBar(requirementId){
 				        result = result+'<div class="col-md-6">';
 				        result = result+'<ul class="list-unstyled can-perdt">';
 				        if(json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined' && json.minExp != null && json.minExp != '' && json.minExp != 'undefined')
-				        	{
-				       	result = result+'<li><i class="fa fa-black-tie"></i><span>Experience: '+json.minExp+'-'+json.maxExp+'</span></li>';
-				        	}
-					   
-				        else{
-					    result = result+'<li><i class="fa fa-black-tie"></i><span>Experience : --</span></li>';
-				        }
-				        
-				        if(json.currencyCode == 'INR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined')
-				    	   {
-				        result = result+' <li><i class="fa fa-rupee"></i><span>'+json.rate+', '+json.rateType+','+json.currencyCode+'</span></li>';
-				    	   }
-				       else if(json.currencyCode  == 'USD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-					   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
-   
-				       }
-				       else if(json.currencyCode  == 'AUD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-					   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+','+json.currencyCode+'</span></li>';
-				       }
-				       else if(json.currencyCode  == 'SGD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-					   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+','+json.currencyCode+'</span></li>';
-   
-				       }
-				       else if(json.currencyCode  == 'EUR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-					   result = result+'<li><i class="fa fa-eur"></i><span>'+json.rate+', '+json.rateType+','+json.currencyCode+'</span></li>';
-   
-				       }
-				       else if(json.currencyCode  == 'GBP' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-					   result = result+'<li><i class="fa fa-gbp"></i><span>'+json.rate+', '+json.rateType+','+json.currencyCode+'</span></li>';
-  
-				       }
-				       else{
-					   result = result+'<li><i class="fa fa-money"></i><span> --- </span></li>';
-  
-				       }
-				       
-				        if(json.state != null && json.state !='' && json.state != 'undefined' && json.city !=null && json.city !='' && json.city != 'undefined')
-				        	{
-				        result = result+'<li><i class="fa fa-map-marker"></i><span title="'+json.country+', '+json.state+', '+json.city+'">'+json.country+', '+json.state+', '+json.city+'</span></li>';
-				        	}
-				        else if(json.state != null && json.state !='' && json.state != 'undefined')
-				        	{
-					    result = result+' <li><i class="fa fa-map-marker"></i><span title="'+json.country+', '+json.state+'">'+json.country+', '+json.state+'</span></li>';
+			        	{
+			       	result = result+'<li><i class="fa fa-black-tie" title="Experience"></i><span title="'+json.minExp+'-'+json.maxExp+'"> '+json.minExp+'-'+json.maxExp+'</span></li>';
+			        	}
+				   
+			        else{
+				    result = result+'<li><i class="fa fa-black-tie" title="Experience"></i><span> -- </span></li>';
+			        }
+			        
+			        if(json.currencyCode == 'INR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined')
+			    	   {
+			        result = result+' <li><i class="fa fa-rupee"></i><span>'+json.rate+' - '+json.currencyCode+' / '+json.rateType+'</span></li>';
+			    	   }
+			       else if(json.currencyCode  == 'USD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
+				   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+' - '+json.rateType+'</span></li>';
 
-				        	}
-				        else{
-					     result = result+' <li><i class="fa fa-map-marker"></i><span title="'+json.country+'">'+json.country+'</span></li>';
-				        }
-				        result = result+'</ul>';
-				        result = result+'</div>';
-				        result = result+'<div class="col-md-6">';
-				        result = result+'<ul class="list-unstyled can-perdt">';
-				        if(json.manager != null && json.manager != '' && json.manager != 'undefined'){
-				        result = result+'<li> <i class="fa fa-user" ></i><span id="canName">'+json.manager+'</span></li>';
-				        }
-				        else{
-				        	 result = result+'<li> <i class="fa fa-user"></i><span id="canName"> --- </span></li>';	
-				        }
-				        result = result+'<li><i class="fa fa-clock-o"></i><span>'+json.requirementCreatedDateToString+'</span></li>';
+			       }
+			       else if(json.currencyCode  == 'AUD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
+				   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+' - '+json.currencyCode+' / '+json.rateType+'</span></li>';
+			       }
+			       else if(json.currencyCode  == 'SGD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
+				   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+' - '+json.currencyCode+' / '+json.rateType+'</span></li>';
+
+			       }
+			       else if(json.currencyCode  == 'EUR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
+				   result = result+'<li><i class="fa fa-eur"></i><span>'+json.rate+' - '+json.currencyCode+' / '+json.rateType+'</span></li>';
+
+			       }
+			       else if(json.currencyCode  == 'GBP' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
+				   result = result+'<li><i class="fa fa-gbp"></i><span>'+json.rate+' - '+json.currencyCode+' / '+json.rateType+'</span></li>';
+
+			       }
+			       else{
+				   result = result+'<li><i class="fa fa-money"></i><span> --- </span></li>';
+
+			       }
+			       
+			        if(json.state != null && json.state !='' && json.state != 'undefined' && json.city !=null && json.city !='' && json.city != 'undefined')
+			        	{
+			        result = result+'<li><i class="fa fa-map-marker"></i><span title="'+json.city+', '+json.state+', '+json.country+'">'+json.city+', '+json.state+', '+json.country+'</span></li>';
+			        	}
+			        else if(json.state != null && json.state !='' && json.state != 'undefined')
+			        	{
+				    result = result+' <li><i class="fa fa-map-marker"></i><span title="'+json.state+', '+json.country+'">'+json.state+', '+json.country+'</span></li>';
+
+			        	}
+			        else{
+				     result = result+' <li><i class="fa fa-map-marker"></i><span title="'+json.country+'">'+json.country+'</span></li>';
+			        }
+			        result = result+'</ul>';
+			        result = result+'</div>';
+			        result = result+'<div class="col-md-6">';
+			        result = result+'<ul class="list-unstyled can-perdt">';
+			        if(json.manager != null && json.manager != '' && json.manager != 'undefined'){
+			        result = result+'<li> <i class="fa fa-user" ></i><span id="canName">'+json.manager+'</span></li>';
+			        }
+			        else{
+			        	 result = result+'<li> <i class="fa fa-user"></i><span id="canName"> --- </span></li>';	
+			        }
+			        var mydate = json.requirementCreatedDateToString;
+			        var str = mydate.split("-");
+			        var strFormatedDate = (str[2]+"-"+str[1]+"-"+str[0]);
+			        result = result+'<li><i class="fa fa-clock-o"></i><span>'+strFormatedDate+'</span></li>';
 				        if(json.priority != null && json.priority != '' && json.priority != 'undefined'){
 				        result = result+'<li><i class="fa fa-flag"></i><span>'+json.priority+' Priority</span>';
 				        }
@@ -831,7 +834,7 @@ function sideBar(requirementId){
 				            	result = result +'    <a href="javascript:void(0)" title="" onclick="candidateShortList('+requirementId+');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>';
 				            '</sec:authorize>';
 				            '<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
-				            	result = result + submitToClient
+				            	result = result + submitToClient;
 				            '</sec:authorize>';
 				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">';
 				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
@@ -935,7 +938,11 @@ function requirementDetails(requirementId){
 				            	result = result +'   <div class="anchor-inline">';
 				            	result = result +'   <div class="rejected_Reason">';
 				            	result = result +'   <h5>Rejected Reason:</h5>'; 
-				            	result = result +'   <div>'+json.rejectReasonForRequirement+'</div>';
+				            	if(json.rejectReasonForRequirement != null && json.rejectReasonForRequirement != "undefined"){
+					            	result = result +'   <div class="mb">'+json.rejectReasonForRequirement+'</div>';
+					            	}else{
+						            	result = result +'   <div class="mb"> No Data</div>';
+					            	}
 				            	result = result +'   </div>';
 				            	result = result +'   </div>';
 				          	   }
@@ -1288,8 +1295,9 @@ function updateReuqirementStatus(status){
 		 reason = '';
 	 }
      $("#approverbut").attr("disabled", "disabled");
-
-	$.ajax({
+ 	
+	$('#reasonDiv').empty();
+ 	$.ajax({
       type : "POST",
       url: sourceleadUrl+"/requirementAcceptOrReject?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&reason="+reason, 
     		  success :function(data) {  
@@ -1314,6 +1322,7 @@ function updateReuqirementStatus(status){
             }
        },
 	  }); 
+	 
 }
 </script>
 
@@ -1328,7 +1337,9 @@ function rejectRequirementAlertMessage(status){
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"	<div id='reasonDiv'/>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='updateReuqirementStatus(\""+ status+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
+	result = result +"	</div>";
 	result = result +"	</div>";
 	$("#rejectRequirementAlert").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1415,7 +1426,6 @@ function requirementPipeline(requirementId,submissionType){
 				           for (var i=0; i<json.length; i++)
 			   				{  
 			   	        		var report = json[i];
-			   	        		
 			   	        		if(report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
 			   	        			orgName = "("+report.orgName+")";
 			   	        		}else{
@@ -1637,7 +1647,8 @@ function documentpagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -1890,7 +1901,8 @@ function documentpaginationDA(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -2138,7 +2150,8 @@ function documentpaginationRS(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -2398,7 +2411,8 @@ function documentpaginationSL(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -2634,7 +2648,8 @@ function documentpaginationSC(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -2804,7 +2819,8 @@ function documentpaginationIN(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -2994,7 +3010,8 @@ function documentpaginationOffer(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -3045,7 +3062,7 @@ function requirementPipelineRejected(requirementId,submissionType){
 					       result = result + '<th>Source</th>';
 			        	   result = result + '<th>Rejected On</th>';
 			        	   result = result + '<th>Rejected By</th>';
-				           result = result + '<th>Rejected Stage</th>';
+				          /*  result = result + '<th>Rejected Stage</th>'; */
 				           result = result + '<th>Status</th>';
 				           result = result + '         </tr>';
 				           result = result + '       </thead>';
@@ -3159,8 +3176,10 @@ function requirementPipelineRejected(requirementId,submissionType){
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	   } 
 						           result = result + '<td><div class="tblwidth-150"><span>'+report.upDatedStr+'</span>';
-						           result = result + '<td><div class="tblwidth-150"><span>'+report.createdUser+'</span>';
-					        	   result = result + '<td><div class="tblwidth-150"><span>'+report.previousSubmissionStatus+'</span>';
+						           if(report.updatedUser != null && report.updatedUser != '' && report.updatedUser != 'undefined'){
+						        	   result = result + '<td><div class="tblwidth-150"><span>'+report.updatedUser+'</span>';
+						           }
+					        	  /*  result = result + '<td><div class="tblwidth-150"><span>'+report.previousSubmissionStatus+'</span>'; */
 					        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
 					        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
 					        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
@@ -3228,7 +3247,8 @@ function documentpaginationRejected(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -3238,6 +3258,7 @@ function documentpaginationRejected(){
 <div id="customizePopUp"></div>
 <script>
 function rejectApplicant(submissionId,requirementId,submissionType){
+	alert
 	$("#reasonForApplicantDiv").empty()
 	var subId = submissionId;
 	var reqId = requirementId;
@@ -3453,8 +3474,8 @@ function assignedMemberList(requirementId){
 						    $("#assignedMemberList").append(result);
                  }else{
 						$("#assignedMemberList").removeAttr("style");
-       	    	         var result ="";
-      		    	     result = result+"   <div class='row'>"; 
+       	    	          var result ="";
+       	    	       /*  result = result+"   <div class='row'>"; 
       					 result = result+"	<div class='col-lg-12'>"; 
       					 result = result+"		<div class='content-area clearfix'>"; 
       					 result = result+"			<div class='blank-pages'>";
@@ -3463,7 +3484,8 @@ function assignedMemberList(requirementId){
       					 result = result+"			 </div>";
       					 result = result+"		</div>"; 
       					 result = result+"	</div>"; 
-      					 result = result+"  </div> "; 
+      					 result = result+"  </div> ";  */
+      					 result = result+"   <div class='dataTables_empty'>"; 
       					$("#assignedMemberList").empty();
       				    $("#assignedMemberList").append(result); 
                       }
@@ -3529,7 +3551,7 @@ function requirementRecommendations(requirementId){
 		    
 		    result = result +'</div>';
 		    result = result +'</div>';
-		    result = result +'<div class="project_tabs_inn_table  clients_wrap_table" style="overflow: inherit;">';
+		    result = result +'<div class="project_tabs_inn_table  clients_wrap_table">';
 		    result = result +'<table id="recommendationTable" class="display" cellspacing="0" width="100%"">';
 		    result = result +'<thead>';
 		    result = result +'<tr>';
@@ -3710,13 +3732,13 @@ function requirementRecommendations(requirementId){
 function recommendationpagination(){  
     $('#recommendationTable').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -3769,13 +3791,13 @@ function clientSideBar(candidateId){
 				         var city = '';
 			             
 			             if(json.country != null && json.country != '' && json.country != 'undefined'){
-	         			 		country = ','+json.country;
+	         			 		country = json.country;
 	             			 	}else{
 	             			 		country = '';
 	             			 	}
 	         			 	
 	         			 	if(json.state != null && json.state != '' && json.state != 'undefined'){
-	         			 		state =json.state;
+	         			 		state =json.state +',';
 	             			 	}else{
 	             			 		state = '';
 	             			 	}
@@ -3787,7 +3809,7 @@ function clientSideBar(candidateId){
 	             			 	}
 	         			 	
 	         			 	if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
-	         			 		currentRate = json.currentRate+',';
+	         			 		currentRate = json.currentRate;
 	         			 	}else{
 	         			 		currentRate = '';
 	         			 	}
@@ -3805,19 +3827,19 @@ function clientSideBar(candidateId){
 	         			 	}
 	         			 	
 	         			 	if(json.currentRateCurrency != null && json.currentRateCurrency != '' && json.currentRateCurrency != 'undefined'){
-	         			 		currentRateCurrency = json.currentRateCurrency+',';
+	         			 		currentRateCurrency = json.currentRateCurrency;
 	         			 	}else{
 	         			 		currentRateCurrency = '';
 	         			 	}
 	         			 	
 	         			 	if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
-	         			 		expectedRate = json.expectedRate+',';
+	         			 		expectedRate = json.expectedRate;
 	         			 	}else{
 	         			 		expectedRate = '';
 	         			 	}
 
 	         			 	if(json.expectedRateCurrencey != null && json.expectedRateCurrencey != '' && json.expectedRateCurrencey != 'undefined'){
-	         			 		expectedRateCurrencey = json.expectedRateCurrencey+',';
+	         			 		expectedRateCurrencey = json.expectedRateCurrencey;
 	         			 	}else{
 	         			 		expectedRateCurrencey = '';
 	         			 	}
@@ -3827,7 +3849,11 @@ function clientSideBar(candidateId){
 		                	 }else{
 		                		 lastName = "";
 		                	 }
-			             
+			             if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
+			            	 mobilePhone = json.mobilePhone;
+			             }else{
+			            	 mobilePhone ="--";
+			             }
 	                	 var result = "";
 	                	 result = result+'<div id="popUp" ></div>  ';
 	                	 result = result+'<form id="candidate_form" name="candidate_form" method="post" >';
@@ -3854,8 +3880,8 @@ function clientSideBar(candidateId){
 						 result = result+'  </div>';
 						 result = result+'  </div>';
 						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif are not supported</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Size should not more than 200 KB</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif are not support</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Size should not more than 200kb</p>';
 						 result = result+' </div>';
 						 result = result+' </div>';
 						 result = result+'</form>';
@@ -3891,18 +3917,13 @@ function clientSideBar(candidateId){
 			             result = result+'               <div class="col-md-6">';
 			             result = result+'                 <ul class="list-unstyled can-perdt">';
 			             result = result+'                   <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">'+json.email+'</a></li>';
-			                                                  if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
-			             result = result+'                   <li><i class="fa fa-phone"></i>+'+json.mobilePhone+'</li>';
-			                                                  }else{
-			                                                	  
-			             result = result+'                   <li><i class="fa fa-phone"></i>----</li>';         	  
-			                                                  }
+			             result = result+'                   <li><i class="fa fa-phone"></i>'+mobilePhone+'</li>';
 			                                                  
 			             result = result+'                   <li><i class="fa fa-location-arrow"></i>'+city+''+state+''+country+'</li>';
 			             
-			             result = result+'                   <li><i class="fa fa-money"></i>'+currentRateCurrency+''+currentRate+''+currentRateType+'</li>';
+			             result = result+'                   <li><i class="fa fa-money"></i><b>Current Rate:&nbsp;</b>'+currentRate+'  '+currentRateType+' / '+currentRateCurrency+'</li>';
 			             
-			             result = result+'                   <li><i class="fa fa-money"></i>'+expectedRateCurrencey+''+expectedRate+''+rateType+'</li>';
+			             result = result+'                   <li><i class="fa fa-money"></i><b>Expected Rate:&nbsp;</b>'+expectedRate+'  '+rateType+' / '+expectedRateCurrencey+'</li>';
 			             result = result+'                 </ul>';
 			             result = result+'               </div>';
 			             result = result+'			</div>';
@@ -4575,25 +4596,19 @@ function customizeScore(requirementId){
 		        result = result +'		                   <label>Notice Period</label>';
 		        result = result +'		                      <select class="chosen-select" data-placeholder="Notice" multiple id="noticeperiod" name="noticeperiod">';
 		      //split the noticeperiod
+		      var noticeperiod = new Array();
 		    	if(json.customizeNoticeperiod != null && json.customizeNoticeperiod != '' && json.customizeNoticeperiod != 'undefined'){
 		    		var customizeNoticeperiod = json.customizeNoticeperiod;
-			    	var noticeperiod = new Array();
 			    	noticeperiod =  customizeNoticeperiod.split(",");
-			        for (var j = 0; j < noticeperiod.length; j++) { 
-			        	var customnoticeperiods = noticeperiod[j];
-			        	 result = result  +' <option value="Immediately available" '+(customnoticeperiods == "Immediately" ? "selected" : '') +'>Immediately available</option>';
-			        	 result = result  +' <option value="15 Days" '+(customnoticeperiods == "15 Days" ? "selected" : '') +'>15 Days</option>';
-			        	 result = result  +' <option value="1 Month" '+(customnoticeperiods == "1 Month" ? "selected" : '') +'>1 Month</option>';
-			        	 result = result  +' <option value="2 Month" '+(customnoticeperiods == "2 Month" ? "selected" : '') +'>2 Month</option>';
-			        	 result = result  +' <option value="3 Month" '+(customnoticeperiods == "3 Month" ? "selected" : '') +'>3 Month</option>';
-			        } 
-		    	}else{
-		    		result = result  +' <option value="Immediately available" >Immediately available</option>';
-		        	 result = result  +' <option value="15 Days" >15 Days</option>';
-		        	 result = result  +' <option value="1 Month" >1 Month</option>';
-		        	 result = result  +' <option value="2 Month" >2 Month</option>';
-		        	 result = result  +' <option value="3 Month" >3 Month</option>';
 		    	}
+	        	 result = result  +' <option value="available" '+(noticeperiod.includes("available") ? "selected" : '') +'>Immediately available</option>';
+	        	 result = result  +' <option value="15Days" '+(noticeperiod.includes("15Days") ? "selected" : '') +'>15 Days</option>';
+	        	 result = result  +' <option value="1Month" '+(noticeperiod.includes("1Month") ? "selected" : '') +'>1 Month</option>';
+	        	 result = result  +' <option value="2Month" '+(noticeperiod.includes("2Month") ? "selected" : '') +'>2 Month</option>';
+	        	 result = result  +' <option value="3Month" '+(noticeperiod.includes( "3Month") ? "selected" : '') +'>3 Month</option>';
+	        	 $("#noticeperiod").empty();
+	        	 $("#noticeperiod").append(result);
+   			     $("#noticeperiod").trigger('chosen:update');
 		        result = result +'		                    </select> ';
 		        result = result +'		                    </div>  ';
 		        
@@ -4743,6 +4758,7 @@ function customizeScore(requirementId){
 		    			for (var selector in config) {
 		    			  $(selector).chosen(config[selector]);
 		    			}
+		    	
 		    	    $("#country").chosen();
 		            $("#state").chosen();
 		            $("#city").chosen();
@@ -4758,7 +4774,7 @@ function customizeScore(requirementId){
 		    				var $this = $(this);
 		    				$this.next().css({'width': '100%'});
 		    		   });
-		    			
+
 		    			
 		    			   //Adding Customized Skills to the list
 		    	        var select, chosen;
@@ -5197,4 +5213,3 @@ function recommendationAlertCancel(candidateId){
 <jsp:include page="recommendCandidatesEducation.jsp"></jsp:include>
 <jsp:include page="recommendCandidatesCertificates.jsp"></jsp:include>
 <jsp:include page="recommendCandidatesHistory.jsp"></jsp:include>
-

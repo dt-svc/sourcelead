@@ -115,9 +115,9 @@ overflow-x: auto;
 			    </div>
 		    </c:if>
 		     <div class="clearfix row mb"> 
-		    	 <c:if test = "${isManagerWithSubmissionRateStatusAsRequestOrAccept == true}">  
+		     		<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 		     		<jsp:include page="dashboardApplicants.jsp"></jsp:include>
-		     	</c:if>
+		     		</sec:authorize>
 		     </div>
 	    
 	   			 <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_INTERVIEW')">
@@ -136,7 +136,9 @@ overflow-x: auto;
 	    
 	    <div class="row clearfix">
 	    <div class="col-md-6 mb">
-        <div class="clients_wrap_table dashboard-widget ">
+
+        <div class="clients_wrap_table dashboard-widget overflow_inherint"  id="assignTaskListDiv" style="display: none;">
+
           <!-- <h4 class="pull-left">Tasks &nbsp;&nbsp;
           <b class="newdate">
                <i class="fa fa-filter"></i>
@@ -147,7 +149,7 @@ overflow-x: auto;
            <h4 class="clearfix">Tasks
         <b class="dashboard-datepkr"><input class="input-sm" id="dasboardTaskDatpicker" readonly="readonly" type="text"><i class="fa fa-calendar"></i></b>  
           </h4>	
-          <div class="clearfix require_wrap_table dashboard-data">
+          <div class="clearfix require_wrap_table dashboard-data Tasks overflow_inherint">
             <div id="assignTaskList"></div>
             
           </div>
@@ -166,16 +168,11 @@ overflow-x: auto;
 <jsp:include page="masterFooter.jsp" />
 <script type="text/javascript">
 $('#dasboardTaskDatpicker').datepicker({
-	dateFormat : 'dd-mm-yy',
+//	dateFormat : 'dd-mm-yy',
 	changeMonth: true,
 	changeYear: true, 
 	onSelect : function(selected) {
-		var dt = new Date(selected);
-		dt.setDate(dt.getDate() + 1);
-		$("#dasboardTaskDatpicker").datepicker("option", "minDate", dt);
 		assignTasksList();
-		
-		
 	   }
 	});
 </script>
@@ -203,7 +200,6 @@ $('#dasboardTaskDatpicker').datepicker({
 	         	result = result + ' </tr>';
 	        	result = result + ' </thead>';
 	        	result = result + ' <tbody>';
-	        	
 	        	for (var i=0; i<json.length; i++)
 				{
 	        		var report = json[i];
@@ -236,6 +232,10 @@ $('#dasboardTaskDatpicker').datepicker({
 	        	 result = result + '   </table>';
 	        	 $("#assignTaskList").empty();
 	           	 $("#assignTaskList").append(result); 
+	           	 if(json.length > 0){
+	           		$("#assignTaskListDiv").css("display", "block");
+	           	 }
+	           	 
 	           	dasboardTasksPagination();
 	        }
 		});
@@ -253,7 +253,8 @@ function dasboardTasksPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }

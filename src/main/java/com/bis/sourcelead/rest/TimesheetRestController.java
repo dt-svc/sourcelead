@@ -293,13 +293,22 @@ public class TimesheetRestController {
 			
 			timesheetEntriesDiv.append("		                <select id='projectMemberId' name='projectMemberId' class='form-control chosen-select' onChange='timesheetEntriesDivByProjectMemberId()'>");
 			Long initialProjectMemberId = null;
+			StringBuilder isSelected = new StringBuilder("");
 			if(projectMembersList != null && !projectMembersList.isEmpty()){
 				long count = 1;
 				for(ProjectMembers pm :projectMembersList){
-					if(count == 1)
+					if(count == 1 && !"0".equalsIgnoreCase(pm.getStatus())){
+						isSelected.setLength(0);
+						isSelected.append("selected='selected'");
 						initialProjectMemberId = pm.getId();
-					timesheetEntriesDiv.append("		                  <option value='"+pm.getId()+"'>"+pm.getProjects().getProjectName()+"</option>");
-				    count++;
+						 count++;
+					}
+					else if(count>1){
+						isSelected.setLength(0);
+						 count++;
+					}
+					timesheetEntriesDiv.append("		                  <option  "+isSelected.toString()+" value='"+pm.getId()+"'>"+pm.getProjects().getProjectName()+"</option>");
+				   
 				}
 				
 			}
@@ -402,6 +411,9 @@ public class TimesheetRestController {
 		
 		StringBuilder timesheetEntriesDiv = new StringBuilder();
 		DateFormat format = Constants.DF_DMY;
+		if(!isNullOrEmpty(weekStartDate) && !isNullOrEmpty(weekEndDate)){
+			
+		
 		Date frequencyStartDate = format.parse(weekStartDate.replaceAll("/", "-"));
 		Date frequencyEndDate = format.parse(weekEndDate.replaceAll("/", "-"));
 		 
@@ -545,8 +557,10 @@ public class TimesheetRestController {
 		/*timesheetEntriesDiv.append("</div>");  */ 
 		
 		timesheetEntriesDiv.append("		 </form> 	");	
-		
+		}
 		return timesheetEntriesDiv;
+		
+		
 		
 	}
 	
@@ -1307,7 +1321,8 @@ public class TimesheetRestController {
 			if(jsonObj.getString("projectMemberId") != null && jsonObj.getString("projectMemberId") != "" && jsonObj.getString("projectMemberId") != "undefined"){
 				  projectMember = projectMembersService.getProjectMemberById(Long.parseLong(jsonObj.getString("projectMemberId")));
 			}
-			
+			Date frequencyStartDate = null;
+			Date frequencyEndDate = null;
 	    	if(status != null && (status.equalsIgnoreCase("Draft") || status.equalsIgnoreCase("Submitted"))){
 				
 					String result = "";
@@ -1318,13 +1333,10 @@ public class TimesheetRestController {
 						 submissionId = jsonObj.getString("submissionId");
 					}
 					
-					
-					
 					Date startDate = null;
 					Date endDate = null;
 					
-					Date frequencyStartDate = null;
-					Date frequencyEndDate = null;
+					
 					if(jsonObj.getString("tabStartDate") != null && jsonObj.getString("tabStartDate") != "" && jsonObj.getString("tabStartDate") != "undefined"){
 			    	    startDate = format.parse(jsonObj.getString("tabStartDate"));
 			    	}
@@ -1332,12 +1344,12 @@ public class TimesheetRestController {
 			    		 endDate = format.parse(jsonObj.getString("tabEndDate"));
 			    	}
 					
-					if(jsonObj.getString("timesheetFrequency") != null && jsonObj.getString("timesheetFrequency") != "" && jsonObj.getString("timesheetFrequency") != "undefined"){
-						 String[] frequency = jsonObj.getString("timesheetFrequency").split("To");
-			       		 String weekStartDate = frequency[0].trim();
-			       		 String  weekEndDate = frequency[1].trim();
-			       		 frequencyStartDate = format.parse(weekStartDate);
-			       		 frequencyEndDate = format.parse(weekEndDate);
+					if(jsonObj.getString("frequencyDates") != null && jsonObj.getString("frequencyDates") != "" && jsonObj.getString("frequencyDates") != "undefined"){
+						 String[] frequency = jsonObj.getString("frequencyDates").split("To");
+			       		 String frstartDate = frequency[0].trim();
+			       		 String frEndDate = frequency[1].trim();
+			       		 frequencyStartDate = format.parse(frstartDate);
+			       		 frequencyEndDate = format.parse(frEndDate);
 			       		
 					}
 					 
@@ -1357,27 +1369,39 @@ public class TimesheetRestController {
 		            			   saHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("submitted for approval"));
 		    					   saHierarchy.setUpdatedDate(CommonUtil.currentDate());
 		    					   saHierarchy.setUpdatedBy(loginUser.getUserCode());
-		    						
-		            			  freshSaHierarchyList.add(saHierarchy);
+		    					   
+		    					   if(frequencyStartDate != null)
+		    					   saHierarchy.setFrequencyStartDate(frequencyStartDate);
+								   if(frequencyEndDate != null)
+								   saHierarchy.setFrequencyEndDate(frequencyEndDate);
+		            			   freshSaHierarchyList.add(saHierarchy);
 		            		 }
 		            		 submissionApproverHierarchyService.saveAllSubmissionApproverHierarchy(new ArrayList<>(freshSaHierarchyList));
-		            		 timesheetSubmissions.setWeekcomments(jsonObj.getString("weekComment"));
+		            		 if(jsonObj.has("weekComment")){
+		            			 timesheetSubmissions.setWeekcomments(jsonObj.getString("weekComment"));
+		            		 }
 		            		 timesheetSubmissions.setUpdatedDate(CommonUtil.currentDate());
 	 		     	    	 timesheetSubmissions.setUpdatedBy(loginUser.getUserCode());
 	 		     	    	 timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
 		            	 }
 		            	 
 		            }else{
-		            	timesheetSubmissions = new TimesheetSubmissions();
-		            	timesheetSubmissions.setStartDate(startDate);
-		     	    	timesheetSubmissions.setEndDate(endDate);
-		     	    	timesheetSubmissions.setProjectMembers(projectMember);
-		     	    	timesheetSubmissions.setStatus(Constants.RECORD_ACTIVE+"");
-		     	    	timesheetSubmissions.setCreatedDate(CommonUtil.currentDate());
-		     	    	timesheetSubmissions.setCreatedBy(loginUser.getUserCode());
+		            	timesheetSubmissions = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissionsByProjectMemberId(startDate,endDate,projectMember.getId());
+		            	if(timesheetSubmissions == null){
+		            		timesheetSubmissions = new TimesheetSubmissions();	
+		            		timesheetSubmissions.setStartDate(startDate);
+			     	    	timesheetSubmissions.setEndDate(endDate);
+			     	    	timesheetSubmissions.setProjectMembers(projectMember);
+			     	    	timesheetSubmissions.setStatus(Constants.RECORD_ACTIVE+"");
+			     	    	timesheetSubmissions.setCreatedDate(CommonUtil.currentDate());
+			     	    	timesheetSubmissions.setCreatedBy(loginUser.getUserCode());
+		            	}
+		            	
 		     	    	timesheetSubmissions.setUpdatedDate(CommonUtil.currentDate());
 		     	    	timesheetSubmissions.setUpdatedBy(loginUser.getUserCode());
-		     	    	timesheetSubmissions.setWeekcomments(jsonObj.getString("weekComment"));
+		     	    	if(jsonObj.has("weekComment")){
+		     	    		timesheetSubmissions.setWeekcomments(jsonObj.getString("weekComment"));
+		     	    	}
 		     	    	
 		     	    	ArrayList<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
 		    	    	List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(projectMember.getProjects().getId());
@@ -1389,8 +1413,10 @@ public class TimesheetRestController {
 		    						saHierarchy.setSubmissionStatus(Submission_Status.getNameByValue(status));
 		    						saHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("new"));
 		    						saHierarchy.setCreatedDate(timesheetSubmissions.getCreatedDate());
-		    						saHierarchy.setFrequencyStartDate(frequencyStartDate);
-		    						saHierarchy.setFrequencyEndDate(frequencyEndDate);
+		    						if(frequencyStartDate != null)
+			    			        saHierarchy.setFrequencyStartDate(frequencyStartDate);
+									if(frequencyEndDate != null)
+								    saHierarchy.setFrequencyEndDate(frequencyEndDate);
 		    						saHierarchy.setCreatedBy(timesheetSubmissions.getCreatedBy());
 		    						saHierarchy.setUpdatedDate(timesheetSubmissions.getUpdatedDate());
 		    						saHierarchy.setUpdatedBy(timesheetSubmissions.getUpdatedBy());
@@ -1652,22 +1678,28 @@ public class TimesheetRestController {
 							String[] words = tabDate.split("To");	
 							Date actualStartDate = format.parse(words[0].replaceAll("/", "-"));
 							Date actualEndDate = format.parse(words[1].replaceAll("/", "-"));
-							
-							TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissionsByProjectMemberId(actualStartDate, actualEndDate, projectMember.getId());
-				            if(timesheetSubmissions != null){
-				            	List<SubmissionApproverHierarchy>  sahList =submissionApproverHierarchyService.getSubmissionApproverHierarchyBySubmissionId(timesheetSubmissions.getId());
-								if(sahList != null){
-									for(SubmissionApproverHierarchy sah :  sahList){
-										if(sah != null && sah.getId() != null){
-											sah.setSubmissionStatus(Submission_Status.SUBMITTED);
-											sah.setSubmissionApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);
-											submissionApproverHierarchyService.addSubmissionApproverHierarchy(sah);
-							            }
+							List<TimesheetSubmissions> timesheetSubmissionsList = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissionsByProjectMemberIdForUpdation(actualStartDate, actualEndDate, projectMember.getId());
+				            if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
+				            	for(TimesheetSubmissions timesheetSubmissions : timesheetSubmissionsList){
+				            		List<SubmissionApproverHierarchy>  sahList =submissionApproverHierarchyService.getSubmissionApproverHierarchyBySubmissionId(timesheetSubmissions.getId());
+									if(sahList != null){
+										for(SubmissionApproverHierarchy sah :  sahList){
+											if(sah != null && sah.getId() != null){
+												if(frequencyStartDate != null)
+												sah.setFrequencyStartDate(frequencyStartDate);
+												if(frequencyEndDate != null)
+												sah.setFrequencyEndDate(frequencyEndDate);
+												sah.setSubmissionStatus(Submission_Status.SUBMITTED);
+												sah.setSubmissionApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);
+												submissionApproverHierarchyService.addSubmissionApproverHierarchy(sah);
+								            }
+										}
 									}
-								}
+				            	}
+				            	
 				            }
 							else{
-					            	insertNewTimesheetRecordByProjectMemberAndDates(projectMember,actualStartDate, actualEndDate,loginUser);
+					            	insertNewTimesheetRecordByProjectMemberAndDates(projectMember,actualStartDate, actualEndDate,frequencyStartDate,frequencyEndDate,loginUser);
 							}
 							
 						}
@@ -1757,16 +1789,19 @@ public class TimesheetRestController {
 	}
 	
 	    @Async
-		public void insertNewTimesheetRecordByProjectMemberAndDates(ProjectMembers projectMember,Date actualStartDate,Date actualEndDate,User loginUser) throws Exception{
+		public void insertNewTimesheetRecordByProjectMemberAndDates(ProjectMembers projectMember,Date actualStartDate,Date actualEndDate,Date frequencyStartDate,Date frequencyEndDate,User loginUser) throws Exception{
 				
-			TimesheetSubmissions timesheetSubmissions =  new TimesheetSubmissions();
-			timesheetSubmissions = new TimesheetSubmissions();
-	    	timesheetSubmissions.setStartDate(actualStartDate);
-	    	timesheetSubmissions.setEndDate(actualEndDate);
-	    	timesheetSubmissions.setProjectMembers(projectMember);
-	    	timesheetSubmissions.setStatus(Constants.RECORD_ACTIVE+"");
-	    	timesheetSubmissions.setCreatedDate(CommonUtil.currentDate());
-	    	timesheetSubmissions.setCreatedBy(loginUser.getUserCode());
+	    	TimesheetSubmissions timesheetSubmissions  = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissionsByProjectMemberId(actualStartDate,actualEndDate,projectMember.getId());
+	    	
+	    	if(timesheetSubmissions == null){
+	    		timesheetSubmissions =  new TimesheetSubmissions();
+		    	timesheetSubmissions.setStartDate(actualStartDate);
+		    	timesheetSubmissions.setEndDate(actualEndDate);
+		    	timesheetSubmissions.setProjectMembers(projectMember);
+		    	timesheetSubmissions.setStatus(Constants.RECORD_ACTIVE+"");
+		    	timesheetSubmissions.setCreatedDate(CommonUtil.currentDate());
+		    	timesheetSubmissions.setCreatedBy(loginUser.getUserCode());
+	    	}
 	    	timesheetSubmissions.setUpdatedDate(CommonUtil.currentDate());
 	    	timesheetSubmissions.setUpdatedBy(loginUser.getUserCode());
 	    	timesheetSubmissions.setWeekcomments("");
@@ -1779,6 +1814,10 @@ public class TimesheetRestController {
 						SubmissionApproverHierarchy saHierarchy = new SubmissionApproverHierarchy();
 						saHierarchy.setHeirarchyId(hierarchy);
 						saHierarchy.setSubmissionId(timesheetSubmissions);
+						if(frequencyStartDate != null)
+    			        saHierarchy.setFrequencyStartDate(frequencyStartDate);
+						if(frequencyEndDate != null)
+					    saHierarchy.setFrequencyEndDate(frequencyEndDate);
 						saHierarchy.setSubmissionStatus(Submission_Status.SUBMITTED);
 						saHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);
 						saHierarchy.setCreatedDate(timesheetSubmissions.getCreatedDate());

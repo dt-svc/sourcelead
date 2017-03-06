@@ -18,8 +18,11 @@ function closeCertificatePopup(){
 function candidateCertificate(candidateId){
 	 
 	var result = "";
-	result  = result + '   <div class="project_tabs_inn_head addUser-org"> ';
-	
+	if(window.candidateStatusGlobal == '0'){
+		result  = result + '   <div class="project_tabs_inn_head addUser-org overflow_inherint mt25"> ';
+	}else{
+		result  = result + '   <div class="project_tabs_inn_head addUser-org overflow_inherint mt10"> ';
+	}
 	result  = result + '<div class="success_pop" id="selector5" style="display: none;">';
     result  = result + '<i class="fa fa-check-circle"></i><span id="cerMsgDiv"></span>';
     result  = result + '</div>';
@@ -27,7 +30,7 @@ function candidateCertificate(candidateId){
 	result = result +'<div id="msgDiv"></div>';
 	if(window.candidateStatusGlobal == '0'){
 		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
-		 result  = result + '   	<a href="javascript:void(0)" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a> ';
+		 result  = result + '   	<a href="javascript:void(0)" class="addUser-org"></a> ';
 		 result = result +' </sec:authorize>';
 	}
 	else{
@@ -183,16 +186,10 @@ function candidateCertificateList(candidateId){
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
           success :function(data) {
-               if(data != null && data != 'undefined' && data != "" && data != '[]'){
-             		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-             		 else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		 }
-             		 else{
+        	  var json = JSON.parse(data);
+               /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
              			 
-             			var json = JSON.parse(data);
+             			/* var json = JSON.parse(data);
 	                      for (var i = 0; i < 1; i++) {
 	                             var val= json[i];
 	                             var opt = "";
@@ -203,7 +200,7 @@ function candidateCertificateList(candidateId){
 	                                             }
 	                                     $("#msgDiv").empty();
 	                                     $("#msgDiv").append(opt);
-	                             }
+	                             } */
 	                      
 	                	 $("#candidateCertificateList").empty();
 	                	 var result = "";
@@ -293,8 +290,7 @@ function candidateCertificateList(candidateId){
 	                     $("#candidateCertificateList").append(result); 
 	                     certificationPagination(); 
 	                     msgFadein(); 
-			    	} 
-               }else{
+             /*   }else{
 	    	         var result ="";
 		    	     result = result+"   <div class='row'>"; 
 					 result = result+"	<div class='col-lg-12'>"; 
@@ -311,7 +307,7 @@ function candidateCertificateList(candidateId){
 				    
 				    $("#popUpDivEmp").empty();
 					$("#popUpDivEmp").append(result);
-               }
+               } */
         },
           
      }); 
@@ -327,10 +323,10 @@ function certificationPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
- 
  }
 </script>
 

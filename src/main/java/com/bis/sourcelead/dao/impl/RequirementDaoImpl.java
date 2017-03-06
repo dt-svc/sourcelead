@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -121,7 +122,8 @@ public class RequirementDaoImpl implements RequirementDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,User user,String userRoleName) throws Exception {
-		 
+		
+		List<Requirement> reqList = null;
 		Session session = this.sessionFactory.getCurrentSession();
 		//User user = userDao.getUserById(userId);
 		
@@ -164,25 +166,24 @@ public class RequirementDaoImpl implements RequirementDao {
 		}
 		
 		String[] client = null;
-		if(clients != null){
+		if(null != clients && !"".equals(clients)){	
 			client = clients.split(",");
 		}
-		String subQuery7 = "";
-		if (client != null && client[0] != null && client[0].length() > 0) {
-			for (String clnt : client) {
-				subQuery7 = "and requirement.clientId.id = " + clnt+"";
+		List<Long> clientsList = new ArrayList<>();
+		if(client != null){
+			for(int i=0;i<client.length;i++){
+				clientsList.add(Long.parseLong(client[i]));
 			}
 		}
 		
-		String whereCondition = "";
-		if(null != subQuery7){
-			whereCondition = subQuery + subQuery7;
-		}else{
-			whereCondition = subQuery;
+		Query query = null;
+		if(clientsList.isEmpty()){
+			query = session.createQuery(from+" "+subQuery+" ORDER BY requirement.id DESC");
+		}
+		else{
+			query = session.createQuery(from+" "+subQuery+"and requirement.clientId.id IN (:clientList) ORDER BY requirement.id DESC");
 		}
 		
-		
-		Query query = session.createQuery(from+" "+whereCondition+" ORDER BY requirement.id DESC");
 		for (String str : query.getNamedParameters())
         {
 			if(str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("approverUserId") || str.equalsIgnoreCase("managerUserId")){
@@ -191,14 +192,17 @@ public class RequirementDaoImpl implements RequirementDao {
 			if(str.equalsIgnoreCase("level") || str.equalsIgnoreCase("level1") || str.equalsIgnoreCase("level2")){
 				query.setInteger(str, (int) params.get( str ));
 			}
-			
+			if(!clientsList.isEmpty()){
+				query.setParameterList("clientList", clientsList);
+			}
 			else{
 				query.setParameter( str, params.get( str ) );
 			}
         	
         }
 		
-		return query.setCacheable(true).list();
+		reqList = query.setCacheable(true).list();		
+		return reqList;
 		
 	}
 
@@ -390,7 +394,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		}else{
 			String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where  ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT') ";
 			
-			String subQuery2 = "requirement.managerUserId.id = :managerUserId and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
+			String subQuery2 = " ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
 			params.put("managerUserId",userId);
 			
 			if(subQuery1 != "" || subQuery2 !=""){
@@ -582,7 +586,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Requirement> getRequirementListById(Long requirementId) {
 		Session session = sessionFactory.getCurrentSession();
-		String query = "from Requirement requ  left join fetch requ.parentRequirement left join fetch requ.spocId spoc   left join fetch spoc.spocUser left join fetch requ.parentRequirement where requ.parentRequirement.id =:requirementId";
+		String query = "from Requirement requ  left join fetch requ.parentRequirement left join fetch requ.spocId spoc    left join fetch requ.parentRequirement where requ.parentRequirement.id =:requirementId";
 		return session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
 		
 	}
@@ -664,7 +668,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			
 			UserRole userRole  = userRoleDao.getUserRoleByUserIdAndLocationId(user.getId(), loginOrgLocations.getId());
 			/*if("Admin".equalsIgnoreCase(userRole.getUserType())){*/
-				query = "from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.orgLocationId.id =:orgLocationId and requirement.clientId.id =:orgRelationId and requirement.parentRequirement IS NOT NULL";
+				query = "from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId  and requirement.clientId.id IN (  select orgRelation.id from OrgRelations orgRelation where orgRelation.locationId.id =:orgLocationId )and requirement.parentRequirement IS NOT NULL";
 				releasedJobsList = session.createQuery(query).setLong( "orgLocationId", orgLocationId ).setLong( "orgRelationId", orgRelationId ).setCacheable(true).list();
 			/*}else{
 				query = "from Requirement requirement where requirement.orgLocationId.id =:orgLocationId and requirement.clientId.id =:orgRelationId and parentRequirement !='null' and requirement.spocId.createdBy =:loginUserCode";
@@ -857,5 +861,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		}
 		return requirement;
 	}
+
+	
 	
 }

@@ -113,5 +113,7 @@ public interface RequirementService {
 	
 	public List<Object> getAllUniversalSearchRequirementList(OrgLocations orgLocations, String serachValue,String userRole, User user) throws Exception;
 
+	public Requirement updateRequirement(Requirement requirement) throws Exception;
+
 
 }
