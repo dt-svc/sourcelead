@@ -66,7 +66,7 @@ public class ProfessionalRequirementsController {
 	ReferContactsService referContactsService;
 	
 	@Autowired
-	UserService userservie;
+	UserService userServie;
 	
 	@Autowired
 	CrowdSourcingUserBankAccountsService crowdSourcingUserBankAccountsService;
@@ -90,7 +90,7 @@ public class ProfessionalRequirementsController {
 		 				model.addObject("contactUUID", contactUUID);
 		 				model.setViewName("registration");
 	 				}else{
-	 					User user = userservie.getUserById(referContacts.getContactUser().getId());
+	 					User user = userServie.getUserById(referContacts.getContactUser().getId());
 	 					if(null == user.getPassword()){
 	 						model.addObject("userName", user.getUserName());
 			 				model.setViewName("resetloginCredentials");
