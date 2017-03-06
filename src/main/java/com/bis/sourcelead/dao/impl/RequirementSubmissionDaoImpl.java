@@ -1418,68 +1418,34 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			 Map<String, Object> params = new HashMap<String,Object>();
 			
 			 
-			//This is for Requirement Manger 
-			   String subQuery1 = "reqSub.requirement.managerUserId.id  =:userId ";
+			 String	 statusQuery1  ="";
+		//This is for Requirement Manger 
+			   String subManagerQuery1 = "reqSub.requirement.managerUserId.id  =:userId ";
 				params.put("userId",user.getId());
-				
 				
 			if(isadmin){
 				 if("accepted".equalsIgnoreCase(status)){
-					 statusQuery = "  and  reqSub.submissionRateStatus = 'ACCEPTED' and reqSub.needApplicantPermit <>'N'  and reqSub.submissionRateStatus IS NOT NULL ";
+					 statusQuery = "reqSub.submissionRateStatus = 'ACCEPTED' and reqSub.needApplicantPermit <>'N'  and reqSub.submissionRateStatus IS NOT NULL ";
 				}else if("requestSent".equalsIgnoreCase(status)){
-					statusQuery= "  and  reqSub.submissionRateStatus = 'REQUEST' and reqSub.needApplicantPermit <>'N' and reqSub.submissionRateStatus IS NOT NULL";
+					statusQuery= "  reqSub.submissionRateStatus = 'REQUEST' and reqSub.needApplicantPermit <>'N' and reqSub.submissionRateStatus IS NOT NULL";
 				}
 				 
-				subQuery = " where reqSub.orgLocations.id =:loginOrgLocation "  +statusQuery;
+				subQuery = " where reqSub.orgLocations.id =:loginOrgLocation  and  "   +statusQuery;
 				params.put("loginOrgLocation",orgLocationsId);
 				
 				// This Condition is if The Requirement is Released by the login User
 			}else{
 			
 				 if("accepted".equalsIgnoreCase(status)){
-					 statusQuery = "  and  reqSub.submissionRateStatus = 'ACCEPTED' and reqSub.needApplicantPermit <>'N'  and reqSub.submissionRateStatus IS NOT NULL ";
-				
-						
-				 }else if("requestSent".equalsIgnoreCase(status)){
-					statusQuery= " and "+subQuery1+"  and  reqSub.submissionRateStatus = 'REQUEST' and reqSub.needApplicantPermit <>'N' and reqSub.submissionRateStatus IS NOT NULL";
-					params.put("userId",user.getId());
-					
-			 
-				 }
-					
-					// This is if the user is  created by 
-					String subQuery2 = "reqSub.createdBy =:usercode" +statusQuery;
-					params.put("usercode",user.getUserCode());
-					
-					//  this is if the  user is   Assign Team  Owner
-					String subQuery3 = "req.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId))" +statusQuery;
-					params.put("userId",user.getId());
-					
-				   //  this is if the  user is   Assign Team  Member
-					String subQuery4 = "req.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId) and reqSub.createdBy =:usercode" +statusQuery;
-					params.put("userId",user.getId());
-					params.put("usercode",user.getUserCode());
-					
-					 //  this is if the  user is   ApproverHirachy   Member  from Requirement i,e login user is approver for given Requirement
-					String subQuery5 = "req.id IN ( select reqApproverHirachy.requirementId from RequirementApproverHierarchy reqApproverHirachy where reqApproverHirachy.approverUserId.id =:userId)" +statusQuery;
-					params.put("userId",user.getId());
-					
-					
-					
-					
-					//applicant list display in dashboard.
-					/*if("accepted".equalsIgnoreCase(status)){     
-						query = "from RequirementSubmission reqSub left join fetch reqSub.requirement left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes where reqSub.orgLocations.id =:orgLocations and reqSub.submissionRateStatus = 'ACCEPTED' "; 
-						requirementSubmissionList =session.createQuery(query).setLong("orgLocations", orgLocationsId).setCacheable(true).list(); 
+					 statusQuery = "reqSub.submissionRateStatus = 'ACCEPTED' and reqSub.needApplicantPermit <>'N'  and reqSub.submissionRateStatus IS NOT NULL ";
 				}else if("requestSent".equalsIgnoreCase(status)){
-						query = "from RequirementSubmission reqSub left join fetch reqSub.requirement left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes where reqSub.orgLocations.id =:orgLocations and reqSub.submissionRateStatus = 'REQUEST' "; 
-						requirementSubmissionList =session.createQuery(query).setLong("orgLocations", orgLocationsId).setCacheable(true).list(); 
-				}*/
+					statusQuery= "  reqSub.submissionRateStatus = 'REQUEST' and reqSub.needApplicantPermit <>'N' and reqSub.submissionRateStatus IS NOT NULL";
+				}
+				subQuery = " where reqSub.orgLocations.id =:loginOrgLocation  and  reqSub.requirement.managerUserId.id  =:userId and "   +statusQuery;
+				params.put("loginOrgLocation",orgLocationsId);
+				params.put("userId",user.getId());
 					
-					if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != ""  || subQuery5 != ""){
-						subQuery = "where reqSub.orgLocations.id =:loginOrgLocation   and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery3+")  OR ("+subQuery4+")   OR ("+subQuery5+")   )";
-						params.put("loginOrgLocation",orgLocationsId);
-					}
+				
 			}
 			String whereCondition = subQuery;
 			
