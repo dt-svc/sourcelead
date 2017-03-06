@@ -685,7 +685,6 @@ public class CandidateIndex implements Serializable {
 
 	public void setTotalExpPercentage(int totalExpPercentage) {
 		this.totalExpPercentage = totalExpPercentage;
->>>>>>> 7a0bd9b090ff84e4ab59acbb0f1d61ff83a43990
 	}
 }
 
