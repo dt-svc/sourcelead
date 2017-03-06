@@ -87,11 +87,14 @@ public class RequirementListController {
 		model.addObject("educationsList", educationsList);
 		
 		Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
-		for(OrgRelations ocl :orgClientList){
-			ocl.setOrgName(ocl.getResponderLocationId().getOrg().getOrgName());
-			ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
-		 }
-	    model.addObject("add_clientList", orgClientList);
+		if(null != orgClientList && orgClientList.size() > 0){
+			for(OrgRelations ocl :orgClientList){
+				ocl.setOrgName(ocl.getResponderLocationId().getOrg().getOrgName());
+				ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
+			 }
+		    model.addObject("add_clientList", orgClientList);
+		}
+		
 	    model.addObject("loginOrgLocId", orgLocations.getId());
 	    
 	    List<Countries> countryList = countriesService.getAllCountries();
