@@ -3257,6 +3257,7 @@ function documentpaginationRejected(){
 <div id="customizePopUp"></div>
 <script>
 function rejectApplicant(submissionId,requirementId,submissionType){
+	alert
 	$("#reasonForApplicantDiv").empty()
 	var subId = submissionId;
 	var reqId = requirementId;
