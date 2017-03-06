@@ -122,7 +122,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 	public void sendEmail(EmailMessage emailMessage, Long locationsId, InternetAddress[] iAdressArray,
 			List<EmailAttachment> attachmentList) throws Exception {
 
-		logger.info("############## sending mail ###########");
+	//	logger.info("############## sending mail ###########");
 
 		if (emailMessage != null) {
 			Long emailNotificationId = null;

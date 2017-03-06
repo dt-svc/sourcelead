@@ -340,6 +340,7 @@ function addEmailtemplate(requirementId){
 		 var selectedShortlists = [];
 		 var selectedShortlistsRate = [];
 		 var selectedShortlistsRatePer = [];
+		 var isCountinue = true;
 		 $("input[name='shortlist[]']:checked").each( function (i) {
 			 selectedShortlists[i] = $(this).val();
 			 var rateId = $(this).val();
@@ -348,7 +349,13 @@ function addEmailtemplate(requirementId){
 			 var rateIdper = $(this).val();
 			 var selectedRatePer =  $("#submissionRateType"+rateIdper).val();
 			 selectedShortlistsRatePer[i] = selectedRatePer;
+			 
+			 if(selectedRate != '' && selectedRatePer == ''){
+				 isCountinue = false;
+			 }
 		});
+		 
+		 if(isCountinue){
 		 if(selectedShortlists.length >0){
 		 $.ajax({ 
 		    	type: "GET",
@@ -483,6 +490,19 @@ function addEmailtemplate(requirementId){
 	$("#pipeline_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
  }
+		 
+ }else{
+	    var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Rate Per is Required for given Rate</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#pipeline_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+ }
 }
 </script>
 
@@ -600,7 +620,9 @@ function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate,sel
 					url : sourceleadUrl+"/submitToClient?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&selectedIds="+selectedIds+"&requirementId="+requirementId+"&selectedShortlistsRate="+selectedShortlistsRate+"&selectedShortlistsRatePer="+selectedShortlistsRatePer,
 					success : function(result) {
 						cancelSubmit();
-                        requirementPipeline(requirementId,allApplicants); 
+						var allApplicants = 'all';
+			    		requirementPipeline(requirementId,allApplicants); 
+			    		pipelineList(requirementId);
 					},
 				}); 
 	 }
