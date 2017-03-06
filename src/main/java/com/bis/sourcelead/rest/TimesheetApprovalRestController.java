@@ -745,15 +745,15 @@ public class TimesheetApprovalRestController {
 			      timesheetApprovalDiv.append("	</div>");
 				}
 		        else{
-		        	timesheetApprovalDiv.append("   <div class='row'>"); 
-					timesheetApprovalDiv.append("	<div class='col-lg-12'>"); 
+		        	timesheetApprovalDiv.append("   <div class='dataTables_empty'>"); 
+					/*timesheetApprovalDiv.append("	<div class='col-lg-12'>"); 
 					timesheetApprovalDiv.append("		<div class='content-area clearfix'>"); 
 					timesheetApprovalDiv.append("			<div class='blank-pages'>");
 					timesheetApprovalDiv.append("			        <p><i class='fa fa-5x fa-bar-chart'></i></p>");
 					timesheetApprovalDiv.append("			        <p>No Timesheets Found</p>");
 					timesheetApprovalDiv.append("			 </div>");
 					timesheetApprovalDiv.append("		</div>"); 
-					timesheetApprovalDiv.append("	</div>"); 
+					timesheetApprovalDiv.append("	</div>"); */
 					timesheetApprovalDiv.append("  </div> "); 
 		        }
 	    
