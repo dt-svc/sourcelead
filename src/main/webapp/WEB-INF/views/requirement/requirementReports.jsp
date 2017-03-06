@@ -171,13 +171,13 @@ function requirementReportPagination(){
 			<a title="Reports"><i class="fa fa-pie-chart"></i>Requirements Posted</a>
 			<div class="RePop">
 				<ul>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Requirements Posted</a></li>
+					 <li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Client Requirements</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Applicants Received</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Applicants</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Short  listed</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Interview</a></li>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Offer</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Offer</a></li> 
 				</ul>
 			</div>
 		</div>
@@ -199,7 +199,7 @@ function requirementReportPagination(){
 		  <option value="twoweeks">2 weeks</option>
 		  <option value="month">1 month</option>
 		  <option value="twomonths">2 months</option>
-		  <option value="custom">Custom</option>
+		  <!-- <option value="custom">Custom</option> -->
 		</select>
 	 </div>	
 	 <span class="dashboard-datepkr"><input type="text" class="input-sm hasDatepicker" id="datepicker"><i class="fa fa-calendar"></i></span>
