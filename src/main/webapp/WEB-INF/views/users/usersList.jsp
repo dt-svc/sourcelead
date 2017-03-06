@@ -96,10 +96,10 @@ function getUsersSearchResult(searchValue){
       <div class="pull-left cand-advsrche">
        <input id="searchElement" type="hidden"></input>
        
-			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
+			  <!-- <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
 			  Advanced Search&nbsp;&nbsp;
 			  <i class="fa fa-search"></i>
-			  </a> 
+			  </a>  -->
 			  <form id="user_forms" name="user_forms"  >
 				  <div class="cand-advsrch-popup userAdvsrch" >
 					  <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
@@ -217,7 +217,7 @@ function getUsersSearchResult(searchValue){
        
        
        <div class="section-action-btns clearfix">
-       <div class="positionRelative pull-left">
+       <div class="positionRelative clearfix">
        <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
           <li><i class="fa fa-filter"></i>&nbsp;
