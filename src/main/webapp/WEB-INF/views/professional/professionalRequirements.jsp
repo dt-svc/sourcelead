@@ -760,16 +760,7 @@ function requirementsList(offset){
 	   		    }
           }else if(offset == 0){
 	   		     var result ="";
-	    	     result = result+"   <div class='row'>"; 
-	    	     result = result +'<div class="clearfix"></div>';
-				 result = result+"	<div class='col-lg-12'>"; 
-				 result = result+"		<div class='content-area clearfix'>"; 
-				 result = result+"			<div class='blank-pages'>";
-				 result = result+"			        <p><i class='fa fa-5x fa-briefcase'></i></p>";
-				 result = result+"			        <p>No Requirements Found</p>";
-				 result = result+"			 </div>";
-				 result = result+"		</div>"; 
-				 result = result+"	</div>"; 
+	    	     result = result+"   <div class='dataTables_empty'>"; 
 				 result = result+"  </div> "; 
 				$("#requirementsList").empty();
 			    $("#requirementsList").append(result); 
@@ -993,16 +984,7 @@ function searchRequirement(offset){
 							   		    }
 						          }else if(offset == 0){
 				                	 var result ="";
-				    	    	     result = result+"   <div class='row'>"; 
-				    	    	     result = result +'<div class="clearfix"></div>';
-				    				 result = result+"	<div class='col-lg-12'>"; 
-				    				 result = result+"		<div class='content-area clearfix'>"; 
-				    				 result = result+"			<div class='blank-pages'>";
-				    				 result = result+"			        <p><i class='fa fa-5x fa-briefcase'></i></p>";
-				    				 result = result+"			        <p>No Requirements Found</p>";
-				    				 result = result+"			 </div>";
-				    				 result = result+"		</div>"; 
-				    				 result = result+"	</div>"; 
+				    	    	     result = result+"   <div class='dataTables_empty'>"; 
 				    				 result = result+"  </div> "; 
 				    				$("#requirementsList").empty();
 				    			    $("#requirementsList").append(result); 
