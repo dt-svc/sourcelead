@@ -189,7 +189,32 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 					})
 			
 			
-	$("#candSkills").val('').trigger("chosen:updated");
+	 //Adding Customized Skills to the list
+       var select, chosen;
+	    select = $("#candidateSkills");
+	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
+	    chosen = select.data('chosen');
+	    chosen.search_field.on('keyup', function(e)
+	    {
+	    	var newSkill = this.value.replace(",","");
+	        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+	        {
+	        	var par = this.parent;
+	            var option = $("<option>").val(newSkill).text(newSkill);
+	            select.append(option);
+	            select.find(option).prop('selected', true);
+	          //to doesn't allow duplicates
+                  $("#candidateSkills option").each(function(){
+                        $(this).siblings("[value='"+ this.value+"']").remove();
+                  });
+                  //end
+       		$("#candidateSkills").trigger("chosen:updated");
+       		
+	        }
+	    });
+	    //Adding Customized Skills to the list
+			
+	$("#candidateSkills").val('').trigger("chosen:updated");
 	
 	$(".new_side_wrap").addClass("new_side_wrap_active");
 	$(".side_mask").fadeIn(200);
@@ -646,8 +671,10 @@ function getRecruiterCandidateDetails(){
 		        	 
 		        	 if(json['rateType'] != null && json['rateType'] != "" && json['rateType'] != 'undefined'){
 		        		 $("select[name=expectedCTCRatePer]").val(json['rateType']);
+		        		 validateExpectedCTCRatePer();
 		        	 }else{
 		        		 $("select[name=expectedCTCRatePer]").val('');
+		        		 validateExpectedCTCRatePer();
 		        	 }
 		        	 
 		        	 if(json['expectedRateCurrencey'] != null && json['expectedRateCurrencey'] != "" && json['expectedRateCurrencey'] != 'undefined'){
@@ -665,9 +692,11 @@ function getRecruiterCandidateDetails(){
 		        	 if(json['currentRateType'] != null && json['currentRateType'] != "" && json['currentRateType'] != 'undefined'){
 		        		 $("select[name=currentCTCRatePer]").val(json['currentRateType']);
 		        		 validateExpectedCTC();
+		        		 validateCurrentCTCRatePer();
 		        	 }else{
 		        		 $("select[name=currentCTCRatePer]").val(''); 
 		        		 validateExpectedCTC();
+		        		 validateCurrentCTCRatePer();
 		        	 }
 		        	 
 		        	 if(json['currentRateCurrency'] != null && json['currentRateCurrency'] != "" && json['currentRateCurrency'] != 'undefined'){
@@ -785,8 +814,35 @@ function getExpYears(){
 	 }
  }
  </script>
-
-
+ 
+ <script>
+ function validateExpectedCTCRatePer(){
+	 var expectedCTCRatePer = document.getElementById("expectedCTCRatePer").value;
+	 if(expectedCTCRatePer){
+		 $("input[name=ExpectedCTC]").removeAttr("data-validation-optional");
+		 $("input[name=ExpectedCTC]").attr("data-validation", "required validate_Space validate_float validate_length length1-8");
+	 }else{
+		 $("input[name=ExpectedCTC]").removeAttr("data-validation");
+		 $("input[name=ExpectedCTC]").attr("data-validation-optional", "true");
+		 $("input[name=ExpectedCTC]").attr("data-validation", "validate_Space validate_float validate_length length1-8");
+	 }
+ }
+ </script>
+ 
+ <script>
+ function validateCurrentCTCRatePer(){
+	 var currentCTCRatePer = document.getElementById("currentCTCRatePer").value;
+	 if(currentCTCRatePer){
+		 $("input[name=CurrentCTC]").removeAttr("data-validation-optional");
+		 $("input[name=CurrentCTC]").attr("data-validation", "required validate_Space validate_float validate_length length1-8");
+	 }else{
+		 $("input[name=CurrentCTC]").removeAttr("data-validation");
+		 $("input[name=CurrentCTC]").attr("data-validation-optional", "true");
+		 $("input[name=CurrentCTC]").attr("data-validation", "validate_Space validate_float validate_length length1-8");
+	 }
+ }
+ </script>
+ 
 <script type="text/javascript">
 function getAllSubmissionCandidateCountries(){
 	$.ajax({
@@ -1252,6 +1308,7 @@ $('body').on('submit', '#submitCandidateToJob_form', function(e){
 <script type="text/javascript">
 function setRateTypesByLocation(){
 	var country = '${SourceLeadWeb_country}';
+	alert(country);
 	if(country == 'India'){
 		$('#currentCTCRateType').val('INR');
 		$('#expectedCTCRateType').val('INR');

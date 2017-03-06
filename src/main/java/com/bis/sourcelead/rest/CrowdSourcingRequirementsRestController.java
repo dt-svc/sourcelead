@@ -55,6 +55,7 @@ import com.bis.sourcelead.service.CrowdSourcingUserBankAccountsService;
 import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementReferService;
+import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -97,6 +98,9 @@ public class CrowdSourcingRequirementsRestController {
 	
 	@Autowired
 	CandidateService candidateService;
+	
+	@Autowired
+	RequirementService requirementService;
 	
 	@Autowired
 	CrowdSourcingUserBankAccountsService crowdSourcingUserBankAccountsService;
@@ -862,6 +866,7 @@ public class CrowdSourcingRequirementsRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 			
 			List<Long> candidateIdsList = requirementSubmissionService.getSubmittedCandidateIdsByRequirementId(requirementId);
+			Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 			
 			    List<CandidateIndex> candidatesList = new ArrayList<CandidateIndex>();
 			    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -875,6 +880,15 @@ public class CrowdSourcingRequirementsRestController {
 		        if(!isNullOrEmpty(candidateType) && candidateType.equalsIgnoreCase("FavCandidates")){
 		        	boolQueryBuilder.must(QueryBuilders.matchQuery("isFavourite", 1));
 		        }
+		        
+		        if(null != requirement && !isNullOrEmpty(requirement.getSkills())){
+					String[] skills = requirement.getSkills().split(",");
+					BoolQueryBuilder skillsBoolQuery = QueryBuilders.boolQuery();
+					for(int i=0; i < skills.length; i++){
+						skillsBoolQuery.should(QueryBuilders.matchQuery("skillsName", skills[i]));
+					}
+					boolQueryBuilder.must(skillsBoolQuery);
+				}
 		        
 		        Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocations.getId(),candidateStatus);
 			
