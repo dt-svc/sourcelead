@@ -53,7 +53,7 @@ public class ProfessionalProfileController {
 	 @PreAuthorize("hasRole('ROLE_CROWDSOURCING_PROFILE')")
 	 @RequestMapping(value = "/professionalProfile")
 		public ModelAndView professionalProfile(HttpServletRequest request) throws Exception {
-		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		        User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				ModelAndView model = new ModelAndView();
 				
@@ -66,11 +66,12 @@ public class ProfessionalProfileController {
 				
 				request.getSession().setAttribute("sessionData",sessionData);
 				
-				if(null != orgLocations && StringUtils.isNotEmpty(orgLocations.getCountry())){
+				if(null != loginUser && StringUtils.isNotEmpty(loginUser.getCountry())){
 					
-					Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+					Countries countries = countriesService.getCountriesByCountryName(loginUser.getCountry());
 					if(null != countries){
 					   model.addObject("loginCountryName", countries.getName());
+					   model.addObject("currencyCode", countries.getCurrency());
 					}
 			        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
 			        model.addObject("statesList", statesList);

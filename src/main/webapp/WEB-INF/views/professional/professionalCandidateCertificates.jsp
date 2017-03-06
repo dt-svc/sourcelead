@@ -178,23 +178,9 @@ function candidateCertificateList(candidateId){
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
           success :function(data) {
-               if(data != null && data != 'undefined' && data != "" && data != '[]'){
              			var json = JSON.parse(data);
-	                      for (var i = 0; i < 1; i++) {
-	                             var val= json[i];
-	                             var opt = "";
-	                                     if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
-	                                             opt  = opt + '<div class="success_pop" id="selector1" style="display: block;">';
-	                                             opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
-	                                             opt  = opt + '</div>';
-	                                             }
-	                                     $("#msgDiv").empty();
-	                                     $("#msgDiv").append(opt);
-	                             }
-	                      
 	                	 $("#candidateCertificateList").empty();
 	                	 var result = "";
-	                	
 	                	 result = result +"<table id='candidateCertificatePagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
@@ -272,24 +258,6 @@ function candidateCertificateList(candidateId){
 	                     $("#candidateCertificateList").append(result); 
 	                     certificationPagination(); 
 	                     msgFadein(); 
-               }else{
-	    	         var result ="";
-		    	     result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Candidate Certifications Found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> "; 
-					$("#candidateCertificateList").empty();
-				    $("#candidateCertificateList").append(result);
-				    
-				    $("#popUpDivEmp").empty();
-					$("#popUpDivEmp").append(result);
-               }
         },
           
      }); 
@@ -305,7 +273,8 @@ function certificationPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		"sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
  
@@ -340,7 +309,7 @@ function addCertification(candidateId) {
 		result  = result + '                 </div>';
 		
 		result  = result + '                 <div class="clearfix mb10">';
-		result = result  +'	                     <div class="col-md-4" positionRelative>';
+		result = result  +'	                     <div class="col-md-5" positionRelative>';
 		result = result  +'	                     <select class="chosen-select"  name="scoreType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
 		result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 		result = result  +'	                       <option value="Percentage">%</option>';
@@ -348,8 +317,8 @@ function addCertification(candidateId) {
 		result = result  +'	                       <option value="GRADE">GRADE</option>';
 		result = result  +'	                      </select>';
 		result = result  +'	                   </div>';
-		result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
-		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="score" placeholder="Score" id="candidateScore" readonly="readonly" onkeyup="selectScoreType();"';
+		result  = result + '                   <div class="col-md-7" positionRelative id="candidateScoreDiv">';
+		result  = result + '                     <input type="text" class="form-control" value="" name="score" placeholder="Score" id="candidateScore" readonly="readonly" onkeyup="selectScoreType();"';
 		result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 		result  = result + '                 	 </div>';
 		result = result  +'	                   </div>';

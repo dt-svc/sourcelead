@@ -211,7 +211,7 @@ function referToJob(requirementId){
 	    
 	    result = result + '<form id="referToJob_form" name="referToJob_form" method="post">';
 		result = result +'<div class="form-group col-md-6">';
-		result = result +'<input type="hidden" name="searchRequirementId" id="searchRequirementId" value='+requirementId+' >';
+		result = result +'<input type="hidden" name="referRequirementId" id="referRequirementId" value='+requirementId+' >';
 		result = result +'<label class="col-md-12" for="Project Id">First Name *</label>';
 		result = result +'<div class="col-md-12">';
 		result = result +'<input type="text" class="form-control" name="firstName" id="firstName" field-name="First Name" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">';
@@ -226,7 +226,7 @@ function referToJob(requirementId){
 		result = result +'<div class="form-group col-md-6">';
 		result = result +'<label class="col-md-12" for="Project Id">Email Id *</label>';
 		result = result +'<div class="col-md-12">';
-		result = result +'<input type="text" class="form-control" name="email" id="email" field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">';
+		result = result +'<input type="text" class="form-control" name="email" id="email" onblur="validateProfessionalEmail('+requirementId+')"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">';
 		result = result +'<span class="hidden">Enter Project Id</span> </div>';
 		result = result +'</div>'; 
 		result = result +'<div class="form-group col-md-6">';
@@ -237,7 +237,7 @@ function referToJob(requirementId){
 		result = result +'</div>'; 
 		result = result +'<div class="col-md-12 mt5 clearfix">';            
 		result = result +'<div class="pull-right">';
-		result = result +'<input type="submit" value="Refer" onclick="submitRefer();" class="btn btn-primary">';
+		result = result +'<input type="submit" value="Refer" id="submit_refer"  class="btn btn-primary">';
 		result = result +'<input type="button" value="Cancel" onclick="cancelReferPopUp()" class="btn btn-default ml10 canBtn">';
 		result = result +'</div>';    
 		result = result +'</div>'; 
@@ -248,6 +248,44 @@ function referToJob(requirementId){
 	    $("#refertoJobDiv").append(result); 
 }
 </script>
+
+
+
+<script type="text/javascript">
+$('body').on('submit', '#referToJob_form', function(e){
+	  if ($(this).validate(false, validationSettings)){
+      e.preventDefault();
+     
+      var frm = $('#referToJob_form').serializeFormJSON();
+      var con = JSON.stringify(frm);
+      con = con.replace(/[{}]/g, "");
+      
+      //It will escape all the special characters
+      var jsonData = encodeURIComponent(con);
+      var sourceleadUrl ='${sourceleadUrl}';
+      
+        $("#submit_refer").attr("disabled", "disabled");
+		$( "#submit_refer" ).addClass('button').val('Processing..');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	      $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/submitReferToJob?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+		        success: function(result) {
+		        	cancelReferPopUp();
+		        },
+		    });  
+      return true; 
+    }
+    else{
+    	return false;	
+       }
+  });
+
+	$('body').on('blur', '#referToJob_form', function() {
+		$("#referToJob_form").showHelpOnFocus();
+		$("#referToJob_form").validateOnBlur(false, validationSettings);
+	});
+  </script>
 
 
 <script>	
