@@ -66,7 +66,7 @@ public class CandidateCommentsRestController {
 	* @throws Exception
 	*/
 	
-	@PreAuthorize("hasRole('ROLE_POST_COMMENTS')")
+	@PreAuthorize("hasAnyRole('ROLE_POST_COMMENTS','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/saveCandidateComment", method = RequestMethod.POST)
 	public @ResponseBody String saveCandidateComment(@RequestParam(value = "json", required = false) String json, String candidateId, String submissionId, HttpServletRequest request) throws Exception {
 

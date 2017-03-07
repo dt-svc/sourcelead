@@ -9,6 +9,6 @@ import com.bis.sourcelead.entity.User;
 
 public interface RequirementReportDao {
 
-	List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String filterDate, Date startDateUTC, Date endDateUTC, String reportType);
+	List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String filterDate, Date startDateUTC, Date endDateUTC);
 
 }

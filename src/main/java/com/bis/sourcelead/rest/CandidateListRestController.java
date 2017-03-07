@@ -54,12 +54,14 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -99,6 +101,9 @@ public class CandidateListRestController {
 	  CandidateHotListService candidateHotListService;
 	  
 	  @Autowired
+	  CountriesService countriesService;
+	  
+	  @Autowired
 	  private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 	 /**
 	   * @author David and sarath kumar
@@ -128,6 +133,8 @@ public class CandidateListRestController {
 		
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		List<Candidate> candList = new ArrayList<Candidate>();
 		//List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange,candidateType);
 		
@@ -146,8 +153,17 @@ public class CandidateListRestController {
 				  boolQueryBuilder.must(QueryBuilders.matchQuery("status", 0));
 			}
 			
-			if(null != candidateType && !candidateType.isEmpty() && !candidateType.equalsIgnoreCase("All")){
-				boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", candidateType));
+			if(null != userRole && !userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+				if(null != candidateType && !candidateType.isEmpty() && !candidateType.equalsIgnoreCase("All")){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", candidateType));
+				}
+			}
+			
+			
+			if(null != userRole && userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("recruiterUserId", user.getId()));
+			}else{
+				boolQueryBuilder.must(QueryBuilders.matchQuery("recruiterUserId", 0));
 			}
 			
 			if(StringUtils.isNotEmpty(updatedDateRange) && !"null".equalsIgnoreCase(updatedDateRange)   && !updatedDateRange.equalsIgnoreCase("0")  && !updatedDateRange.equalsIgnoreCase("undefined")){
@@ -619,7 +635,17 @@ public class CandidateListRestController {
 	 @RequestMapping(value = "/getCandidateById" , method = RequestMethod.POST)
 	 public @ResponseBody  String getCandidateById(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
 			String resultJson ="" ;
+			 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Countries countries = countriesService.getCountriesByCountryName(loginUser.getCountry());
 			Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
+			if(null != can.getCurrentRateCurrency() && null != can.getExpectedRateCurrencey()){
+				can.setCurrentRateCurrency(can.getCurrentRateCurrency());
+				can.setCurrentRateCurrency(can.getExpectedRateCurrencey());
+			}else{
+				can.setCurrentRateCurrency(countries.getCurrency());	
+				can.setExpectedRateCurrencey(countries.getCurrency());
+			}
+			
 			resultJson = commonUtil.toJSON(can);
 			return resultJson;
      }
@@ -908,7 +934,7 @@ public class CandidateListRestController {
 	   
 	   
 	   
-	   @PreAuthorize("hasRole('ROLE_ADD_CANDIDATE_HOTLIST')")
+	   @PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_HOTLIST','ROLE_CROWDSOURCING_CANDIDATES')")
 	   @RequestMapping(value = "/saveCandidateAsFavourite", method = RequestMethod.POST)
 		public @ResponseBody String saveCandidateAsFavourite(@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
 			

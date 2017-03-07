@@ -8,6 +8,7 @@
 <link href="resources/css/sourcelead-main.css" rel="stylesheet">
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+
 <style type="text/css">
 .text-center {
     text-align: center !important;
@@ -25,8 +26,12 @@
     <div class="content-area clearfix">
       <div id="accordion-sl" class="release-jobs">
       <!-- Accordion First Tab -->
+        
+        <c:if test="${SourceLeadWeb_vms == 'Y'}">
         <div class="clearfix">
-          <h2 id="jobTitle">Profile</h2>
+
+          <h2 id="jobTitle" onclick="openVendors();">Profile</h2>
+
           <div class="content clearfix">
             <div class="vendor_wrap">
               <div class="col-md-2 custom-selectpicker mt10 mb10">
@@ -79,9 +84,11 @@
           </div>
         </div>
 	  <!-- Accordion First Tab Ends -->
+	  </c:if>
 
       <!-- Accordion second Tab -->
-        <!-- <div class="clearfix">
+         <form:form id="releaseToCrowdSourcing_form"  name="releaseToCrowdSourcing_form" method="post">
+         <div class="clearfix">
           <h2 onclick="opennetwork();">Open Network</h2>
           <div class="content clearfix" >
             <div class="row">
@@ -102,25 +109,101 @@
                     <input type="hidden" id="isCrowdScourcingGlobel" value="">
                     <div class="col-md-7 toggle-button">
                       <label class="switch">
-                      <input type="checkbox" name="isCrowdScourcing" value="N" id="isCrowdScourcingId" onclick="isCrowdScourcing();" >
+                      <input type="checkbox" name="isCrowdScourcing" value="N" id="isCrowdScourcingId" onclick="isCrowd();" >
                       <div class="slider round"></div>
                       </label>
                     </div>
                   </div>
+                  
+                  <div class="form-group clearfix" id="crowd_rate" style="display: none">
+                    <div class="clearfix">
+                      <label class="col-md-5"><strong>Requirement Details</strong></label>
+                      <div class="col-md-7">
+                        <p><i class="fa fa-suitcase text-muted paddingRight"></i>
+                          <label id="jobType"></label>
+                        </p>
+                        <p><i class="fa fa-money text-muted paddingRight"></i>
+                          <label id="jobRate"></label>
+                        </p>
+                      </div>
+                    </div>
+                    <div class="clearfix">
+                      <label class="col-md-12"><strong>Reward Price</strong></label>
+                    </div>
+                    <div class="clearfix">
+                      <div class="col-md-3 paddingRight">
+                        <div class="btn-group btn_Block">
+                          <button type="button" class="btn btn-sm btn-primary" id="percentageBtn" value="percentage" onClick="getRewardType('Percentage')">%</button>
+                          <button type="button" class="btn btn-sm btn-default" id="flatBtn" value="flat" onClick="getRewardType('Flat')">Flat</button>
+                          <input type="hidden" name="rewardType" id="rewardType" value=""/>
+                        </div>
+                      </div>
+                      <div class="col-md-7 paddingLeft">
+                        <div class="form-group positionRelative iconHolder percentage" id="percentageReward"  style="display: none">
+                          <input type="text" class="form-control input-sm" field-name="Percentage" id="percentageRewardValue" name="percentageReward" placeholder="Percentage">
+                          <i class="fa fa-percent"></i> 
+                        </div>
+                        
+                        <div class="row flat">
+                          <div class="form-group col-md-8 paddingRight positionRelative iconHolder" id="flatReward" style="display: none">
+                            <input type="text" class="form-control input-sm" field-name="Flat" id="flatRewardValue"  name="flatReward" placeholder="Flat">
+                            <i class="fa fa-money" id="flatRewardIcon"></i> </div>
+                          <div class="form-group select-field col-md-4 paddingLeft">
+                            <select class="form-control input-sm" id="flatRateType" name="flatRateType"  style="display: none">
+                              <option  ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}><i class="fa fa-rupee" title="INR"></i>INR</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}><i class="fa fa-dollar" title="USD"></i>USD</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}><i class="fa fa-aud" title="AUD"></i>AUD</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'EUR' ? 'selected' : ''}><i class="fa fa-eur" title="Eur"></i>EUR</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'SGD' ? 'selected' : ''}><i class="fa fa-sgd" title="SGD"></i>SGD</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'GBP' ? 'selected' : ''}><i class="fa fa-gdp" title="GDP"></i>GBP</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="clearfix">
+                      <label class="col-md-3">Reward guarantee period</label>
+                      <div class="select-field col-md-7 paddingLeft">
+                        <select class="form-control input-sm" id="guaranteePeriod" name="guaranteePeriod">
+                          <option value="120 days">120 Days</option>
+                          <option value="90 days">90 Days</option>
+                          <option value="60 days" selected="selected">60 Days</option>
+                          <option value="30 days">30 Days</option>
+                          <option value="15 days">15 Days</option>
+                          <option value="7 days">7 Days</option>
+                          <option value="Immediately">Immediately</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="clearfix col-lg-12 hidden"> <span class="text-muted">Note:</span> <span class="text-info"><b>5%</b> will be sourcelead fund and remaining....</span> </div>
+                  </div>
+                  
+                  
                 </div>
               </div>
             </div>
           </div>
-        </div> -->
-      <!-- Accordion second Tab Ends -->
-      </div>
-      <div class="form-footer clearfix row mt">
+        </div> 
+        <div class="form-footer clearfix row mt" id="releaseToCrowdSourcing" style="display: none">
         <div class="col-lg-12">
           <div class="pull-right">
-            <span class="jquery_form_error_message" style="display:none;">Vendor/Contact selection is mandatory</span>
+            <span class="jquery_form_error_message" style="display:none;">Vendor/Contact/Open Network selection is mandatory</span>
+           	<input type="button" class="btn btn-primary ml" onclick="releaseToCrowdSourcing();" id="releaseToCWBtn" value="Release">
+            <input type="button" class="btn btn-default ml" id="releaseCancelBtn" value="Cancel" onClick="javascript:location.href = '<c:url value='requirementList'/>'">
+          </div>
+        </div>
+      </div>
+        </form:form>
+      <!-- Accordion second Tab Ends -->
+      </div>
+      <div class="form-footer clearfix row mt" id="releaseToVendors" style="display: block">
+        <div class="col-lg-12">
+          <div class="pull-right">
+         
             <sec:authorize access="hasAnyRole('ROLE_RELEASE_REQUIREMENT')">
             	<input type="button" class="btn btn-primary ml" id="releaseBtn" onclick="releaseTo();" value="Release">
 			</sec:authorize>
+			
             <input type="button" class="btn btn-default ml" id="releaseCancelBtn" value="Cancel" onClick="javascript:location.href = '<c:url value='requirementList'/>'">
           </div>
         </div>
@@ -129,13 +212,34 @@
   </section>
 <!-- Content Area Starts -->
 
+
+
+
+
+
 <script> 
 $(document).ready(function(){
 	getVendorLists();
+	
+    openVendors();
+	
+	if('${requirementType}' != null && '${requirementType}' != '' && '${requirementType}' != 'undefined'){
+		$("#jobType").html('${requirementType}');
+	}else{
+		$("#jobType").html('No Data');
+	}
+	
+	if('${jobRate}' != null && '${jobRate}' != '' && '${jobRate}' != 'jobRate'){
+		$("#jobRate").html('${jobRate}');
+	}else{
+		$("#jobRate").html('No Data');
+	}
+	
 	$("#jobTitle").html("Release to Vendors (${jobTitle})");
 	//getVendorContactLists();
 });
 </script>
+
 <script>
 function releaseTo(){
 	    var contactsIds = new Array();
@@ -154,24 +258,27 @@ function releaseTo(){
 	    
 	    var isPublicGlobel = $("#isPublicGlobel").val();
 	    var isCrowdScourcingGlobel = $("#isCrowdScourcingGlobel").val();
+	    var releaseRequirement = true;
+	    var percentageRewardValue = '';
 	    
-	    if(contactsIds.length > 0 || vendorIds.length > 0 || isPublic == "Y" || isCrowdScourcing == "Y" || (isPublicGlobel != isPublic && isPublicGlobel != "") || (isCrowdScourcingGlobel != isCrowdScourcing && isCrowdScourcingGlobel != "")){
-	    	$('span.jquery_form_error_message').hide();
-	    	$("#releaseBtn").prop('disabled', true);
-	    	$("#releaseCancelBtn").prop('disabled', true);
-			$("#releaseBtn").prop('value', 'Processing');
-		    var sourceleadUrl ='${sourceleadUrl}';
-		    var requirementId = '${requirementId}';
-			$.ajax({
-		           type : "POST",
-		           url: sourceleadUrl+"/releaseJobsToClientsOrVendors?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds+"&isCrowdScourcing="+isCrowdScourcing+"&isPublic="+isPublic,    
-		            success :function(data) {
-							location.replace(sourceleadUrl+"/requirementList");
-		            },
-		    }); 
-	    }else{
-	    	$('span.jquery_form_error_message').show();
-	    }
+	    	 if(contactsIds.length > 0 || vendorIds.length > 0 || isPublic == "Y" || isCrowdScourcing == "Y" || (isPublicGlobel != isPublic && isPublicGlobel != "") || (isCrowdScourcingGlobel != isCrowdScourcing && isCrowdScourcingGlobel != "")){
+	 	    	$('span.jquery_form_error_message').hide();
+	 	    	$("#releaseBtn").prop('disabled', true);
+	 	    	$("#releaseCancelBtn").prop('disabled', true);
+	 			$("#releaseBtn").prop('value', 'Processing');
+	 		    var sourceleadUrl ='${sourceleadUrl}';
+	 		    var requirementId = '${requirementId}';
+	 			 $.ajax({
+	 		           type : "POST",
+	 		           url: sourceleadUrl+"/releaseJobsToClientsOrVendors?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds,    
+	 		            success :function(data) {
+	 							location.replace(sourceleadUrl+"/requirementList");
+	 		            },
+	 		    });  
+	 	    }else{
+	 	    	$('span.jquery_form_error_message').show();
+	 	    } 
+	   
 }
 
 function releaseToOneContact(contactscheckboxId){
@@ -179,6 +286,83 @@ function releaseToOneContact(contactscheckboxId){
 	$("#" + contactscheckboxId).prop('checked', true);
 	releaseTo();
 }
+</script>
+
+
+
+
+<script type="text/javascript">
+ function releaseToCrowdSourcing() {
+	 
+	 
+	   if ($('#releaseToCrowdSourcing_form').validate(false, validationSettings)){ 
+		    var frm = $('#releaseToCrowdSourcing_form').serializeFormJSON();
+	        var con = JSON.stringify(frm);
+	        con = con.replace(/[{}]/g, "");
+	        
+	        //It will escape all the special characters
+	        var jsonData = encodeURIComponent(con);
+	        
+	        var sourceleadUrl ='${sourceleadUrl}';
+	        var requirementUUID = '${requirementUUID}';
+       	    var requirementId = '${requirementId}';
+	        
+     		$("#releaseToCWBtn" ).addClass('button').val('Processing..');
+       	    
+	        
+       	    $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/releaseToCrowdSourcingNetwork?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&requirementId="+requirementId, 
+		        success: function(result) {
+		        	location.replace(sourceleadUrl+"/releaseRequirementToClientOrVendors?requirementUUID="+requirementUUID);
+		        },
+		    }); 
+	        return true;
+		
+	  }else{
+		return false;
+	  }
+    }
+ 
+   $('body').on('blur', '#releaseToCrowdSourcing_form', function() {
+		$("#releaseToCrowdSourcing_form").showHelpOnFocus();
+		$("#releaseToCrowdSourcing_form").validateOnBlur(false, validationSettings);  
+   });
+  
+ 
+</script>  
+
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+
+        
+</script> 
+
+      
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
 </script>
 
 
@@ -301,6 +485,51 @@ function getContactsLists(){
    		    },
 	 });
 }	
+</script>
+
+<script type="text/javascript">
+function getRewardType(rewardType){
+	
+	 $("#rewardType").val(rewardType);
+	 
+	 $("#percentageRewardValue").val('');
+	 $("#flatRewardValue").val('');
+	 
+	 $('#percentageReward').find('p.jquery_form_error_message').remove();
+	 $('#flatReward').find('p.jquery_form_error_message').remove();
+	 
+	if(rewardType == 'Percentage'){
+		document.getElementById("crowd_rate").style.display="";
+		document.getElementById("percentageReward").style.display="";
+		document.getElementById("flatReward").style.display="none";
+		document.getElementById("flatRateType").style.display="none";
+		
+		document.getElementById("percentageBtn").className = 'btn btn-sm btn-primary active'
+	    document.getElementById("flatBtn").className = 'btn btn-sm btn-primary'
+    	$('#percentageRewardValue').attr("data-validation","required validate_float");  
+		$('#percentageRewardValue').removeAttr('data-validation-optional');
+	    $('#flatRewardValue').removeAttr('data-validation');
+	    $('#flatRewardValue').attr("data-validation-optional","true"); 
+	    	
+	    
+	}
+	
+	if(rewardType == 'Flat'){
+		document.getElementById("crowd_rate").style.display="";
+		document.getElementById("flatReward").style.display="";
+		document.getElementById("flatRateType").style.display="";
+		document.getElementById("percentageReward").style.display="none";
+		
+		document.getElementById("percentageBtn").className = 'btn btn-sm btn-primary'
+		document.getElementById("flatBtn").className = 'btn btn-sm btn-primary active'
+		$('#flatRewardValue').attr("data-validation","required validate_float");
+		$('#flatRewardValue').removeAttr('data-validation-optional');
+		$('#percentageRewardValue').removeAttr('data-validation');
+		$('#percentageRewardValue').attr("data-validation-optional","true"); 
+		    	
+		
+	}
+}
 </script>
 
 
@@ -573,17 +802,31 @@ function ispublic(){
 </script>
 
 <script>
-function isCrowdScourcing(){
+function isCrowd(){
 	 if(document.getElementById('isCrowdScourcingId').checked) {
 	        $("#isCrowdScourcingId").val('Y');
+	        document.getElementById("crowd_rate").style.display="";
+	        
+	        var rewardType = '${rewardType}';
+	        if('${rewardType}' != null && '${rewardType}' != '' && '${rewardType}' != 'undefined'){
+	        	 getRewardType('${rewardType}')
+	        }else{
+	        	 getRewardType('Percentage')
+	        }
+	       
 	    }else{
 	        $("#isCrowdScourcingId").val('N');
+	        document.getElementById("crowd_rate").style.display="none";
 	    }
 }
 </script>
 
 <script>
 function opennetwork(){
+	
+	document.getElementById("releaseToCrowdSourcing").style.display="";
+	document.getElementById("releaseToVendors").style.display="none";
+	
 	var sourceleadUrl ='${sourceleadUrl}';
 	var requirementId = '${requirementId}';
 	  $.ajax({
@@ -596,11 +839,49 @@ function opennetwork(){
    		    	}
    		    	if(json.isCrowdSourcing == "Y"){
       		    	 $("#isCrowdScourcingId").prop('checked', true).val('Y');
+      		    	 var rewardType = '${rewardType}';
+	      		       if('${rewardType}' != null && '${rewardType}' != '' && '${rewardType}' != 'undefined'){
+	      		       	 getRewardType('${rewardType}')
+	      		       	 
+	      		        $("#percentageBtn").attr("disabled", "disabled");
+	      		        $("#flatBtn").attr("disabled", "disabled");
+	      		       	 
+	      		       	 
+	      		       if('${rewardPercentage}' != null && '${rewardPercentage}' != '' && '${rewardPercentage}' != 'rewardPercentage'){
+	      		    	 $("#percentageRewardValue").val('${rewardPercentage}');
+	      		    	 $("#percentageRewardValue").attr("disabled", "disabled");
+	      		       }
+	      		       
+	      		     if('${rewardFlat}' != null && '${rewardFlat}' != '' && '${rewardFlat}' != 'rewardFlat'){
+	      		    	 $("#flatRewardValue").val('${rewardFlat}');
+	      		    	 $("#flatRewardValue").attr("disabled", "disabled");
+	      		    	 
+	      		    	 $("#flatRateType").val('${rewardFlatRateType}');
+	      		    	 $("#flatRateType").attr("disabled", "disabled");
+	      		       }
+	      		       
+		      		     $("#guaranteePeriod").val('${rewardGauranteePeriod}');
+		      		     $("#guaranteePeriod").attr("disabled", "disabled");
+	      		       	 
+	      		       	 
+	      		       	 
+	      		       }else{
+	      		       	 getRewardType('Percentage')
+	      		       }
       		    }
    		      $("#isPublicGlobel").val(json.isPublic);
    		      $("#isCrowdScourcingGlobel").val(json.isCrowdSourcing);
    		    }
 	  });
+	  
+	 
+}
+</script>
+
+<script>
+function openVendors(){
+	document.getElementById("releaseToCrowdSourcing").style.display="none";
+	document.getElementById("releaseToVendors").style.display="";
 }
 </script>
 <jsp:include page="../masterFooter.jsp" />

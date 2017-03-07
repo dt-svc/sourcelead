@@ -81,6 +81,11 @@ public class AddElkCandidate{
 					candidateIndex.setAddress(rs.getString("ADDRESS"));
 					candidateIndex.setSummary(rs.getString("SUMMARY"));
 					candidateIndex.setCandidateType(rs.getString("CANDIDATE_TYPE"));
+					if(!isNullOrEmpty(rs.getLong("RECRUITER_USER_ID"))){
+						candidateIndex.setRecruiterUserId(rs.getLong("RECRUITER_USER_ID"));
+					}else{
+						candidateIndex.setRecruiterUserId(0L);
+					}
 					
 					if(!isNullOrEmpty(rs.getString("TEAM_ID"))){
 						candidateIndex.setTeamId(rs.getLong("TEAM_ID"));
@@ -219,6 +224,11 @@ public class AddElkCandidate{
 	}
 	
 	
+	private boolean isNullOrEmpty(long long1) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	public void saveOrUpdateElkDocument(CandidateIndex candidateIndex,String index,String type,String id) {
 		String entityInJson = null;
 		try {
