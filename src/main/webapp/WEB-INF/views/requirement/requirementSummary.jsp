@@ -139,7 +139,6 @@ float: left !important;
 .require_wrap_details_cta.require_uploadfile .glyphicon-download-alt {
 color:blue;
 }
-
 </style>
  
 <script>
@@ -826,7 +825,7 @@ function sideBar(requirementId){
 				            
 				            result = result +' <li ><a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>';
 				            result = result +'<div class="action-pop">';
-				            result = result +'	<span>';
+				            result = result +'	<span class="width175">';
 				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
 				            	result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
 				            '</sec:authorize>';
@@ -837,10 +836,10 @@ function sideBar(requirementId){
 				            	result = result + submitToClient;
 				            '</sec:authorize>';
 				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">';
-				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
+				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Schedule interview</a>';
 				            '</sec:authorize>';
 				            '<sec:authorize access="hasAnyRole(\'ROLE_CREAE_OFFER\')">';
-				            	result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
+				            	result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Generate offer</a>';
 				            '</sec:authorize>';
 				            result = result +'    </span>';
 				            result = result +' </div>';	

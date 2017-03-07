@@ -46,6 +46,7 @@ import com.bis.sourcelead.dao.RequirementSubmissionTemplateFieldsDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
+import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
@@ -166,6 +167,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	@Autowired
 	RequirementService requirementService;
 	 
+	@Autowired
+	RequirementElkUtil requirementElkUtil;
+	
 	@Override
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
 		return requirementSubmissionDao.getRequirementSubmissionById(submissionId);
@@ -2849,22 +2853,35 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 requirementSubmissionTemplateFieldsDao.storeRequirementSubmissionTemplateFields(templateFields);
 		 
 		 
-			if(null == requirement.getAppliedProfessionals()){
-				requirement.setAppliedProfessionals(user.getId().toString());
-			}else{
-				List<Long> userId = new ArrayList<Long>();
-				for (String s : requirement.getAppliedProfessionals().split(",")){
-					userId.add(Long.parseLong(s));
-				 }
-				boolean flag = userId.contains(user.getId());
-         		if(flag == false){
-         			StringBuilder appliedUser = new StringBuilder();
-         			appliedUser = appliedUser.append(",").append(user.getId().toString());
-    				requirement.setAppliedProfessionals(requirement.getAppliedProfessionals()+appliedUser.toString());
-         		}
+		 if(null != requirement){
+				
+				if(null == requirement.getAppliedProfessionals()){
+					requirement.setAppliedProfessionals(user.getId().toString());
+				}else{
+					List<Long> userId = new ArrayList<Long>();
+					for (String s : requirement.getAppliedProfessionals().split(",")){
+						userId.add(Long.parseLong(s));
+					 }
+					boolean flag = userId.contains(user.getId());
+	         		if(flag == false){
+	         			StringBuilder appliedUser = new StringBuilder();
+	         			appliedUser = appliedUser.append(",").append(user.getId().toString());
+	    				requirement.setAppliedProfessionals(requirement.getAppliedProfessionals()+appliedUser.toString());
+	         		}
+				}
+				
+				Integer totalApplicatsCountForRequirement = 0;
+				totalApplicatsCountForRequirement = requirementSubmissionDao.getNumberOfApplicantsForRequirement(requirement.getOrgLocationId().getId(), requirement.getId());
+				if(totalApplicatsCountForRequirement > 0){
+					requirement.setTotalApplicants(totalApplicatsCountForRequirement); 
+				}else{
+					requirement.setTotalApplicants(0); 
+				}
+				
+				requirement.setUpdatedDate(new Date());
+				requirementService.updateRequirement(requirement);
+				requirementElkUtil.saveElkRequirement(requirement,new JSONObject());	
 			}
-			requirement.setUpdatedDate(new Date());
-			requirementDao.storeRequirement(requirement);
 			
 			
 			sendEmailToProfessionalForAppliedJob(user, requirement);
@@ -3294,6 +3311,18 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	public Integer getRecruiterSubmissionsCountByRecruiterIdAndRequirementId(Long requirementId, Long userId)
 			throws Exception {
 		return requirementSubmissionDao.getRecruiterSubmissionsCountByRecruiterIdAndRequirementId(requirementId, userId);
+	}
+
+	@Override
+	public Integer getProfessionalJobAppliedCount(Long candidateId, Date startDate, Date endDate)
+			throws Exception {
+		return requirementSubmissionDao.getProfessionalJobAppliedCount(candidateId, startDate, endDate);
+	}
+
+	@Override
+	public Integer getProfessionalJobSubmisssionsCountBySubmissionType(Long candidateId, String submissionStatus,
+			Date startDate, Date endDate) throws Exception {
+		return requirementSubmissionDao.getProfessionalJobSubmisssionsCountBySubmissionType(candidateId, submissionStatus, startDate, endDate);
 	}
 }
 
