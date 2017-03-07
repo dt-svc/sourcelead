@@ -67,6 +67,7 @@ import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.SubmissionXls;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -1420,6 +1421,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				sendEmailtoApplicant(loginOrg, user,requirementSubmission,loginOrgLocation);
 			}
 			else if(StringUtils.equalsIgnoreCase(decision, "reject")){
+				
+				ApplicantSubmissionStatus previousStatus = requirementSubmission.getSubmissionStatus();
+				 
+				requirementSubmission.setPreviousSubmissionStatus(previousStatus);
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
 				if(jsonObj.has("comment")){
@@ -3311,6 +3316,18 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	public Integer getRecruiterSubmissionsCountByRecruiterIdAndRequirementId(Long requirementId, Long userId)
 			throws Exception {
 		return requirementSubmissionDao.getRecruiterSubmissionsCountByRecruiterIdAndRequirementId(requirementId, userId);
+	}
+
+	@Override
+	public Integer getProfessionalJobAppliedCount(Long candidateId, Date startDate, Date endDate)
+			throws Exception {
+		return requirementSubmissionDao.getProfessionalJobAppliedCount(candidateId, startDate, endDate);
+	}
+
+	@Override
+	public Integer getProfessionalJobSubmisssionsCountBySubmissionType(Long candidateId, String submissionStatus,
+			Date startDate, Date endDate) throws Exception {
+		return requirementSubmissionDao.getProfessionalJobSubmisssionsCountBySubmissionType(candidateId, submissionStatus, startDate, endDate);
 	}
 }
 

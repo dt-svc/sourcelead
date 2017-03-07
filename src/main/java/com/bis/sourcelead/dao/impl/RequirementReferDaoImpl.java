@@ -5,6 +5,7 @@ import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -19,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementReferDao;
 import com.bis.sourcelead.entity.RequirementRefer;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -243,4 +243,31 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 			return null;
 		}
    	}
+
+
+	@Override
+	@Transactional
+	public Integer getReferJobsByReferType(Long userId, String referType, Date startDate, Date endDate)throws Exception {
+		
+		 Session session = this.sessionFactory.getCurrentSession();
+		 String subQuery = "";
+		 
+		 if(referType.equalsIgnoreCase("referToMe")){
+			 subQuery = "refer.referToUser.id = :userId ";
+		 }else if(referType.equalsIgnoreCase("referByMe")){
+			 subQuery = "refer.referFromUser.id = :userId ";
+		 }
+	     
+		 String query = "select  count(distinct refer.requirementId) from RequirementRefer refer where "+subQuery+" and (refer.createdDate BETWEEN :startDate and :endDate))";
+	     
+	     List<Long> referCount = session.createQuery(query).setLong("userId", userId)
+	    		   .setDate("startDate", startDate)
+				   .setDate("endDate", endDate).setCacheable(true).list();
+		 Integer count= 0;
+		 
+		 if(referCount != null && !referCount.isEmpty()){
+				count = referCount.get(0).intValue();
+		 }
+		return count;
+	}
 }

@@ -638,7 +638,7 @@ function requirementsList(offset){
 			 				result = result +'<div class="clearfix"></div>';
 			 				result = result +'</h5>';
 			 				
-			 				if(requirementType != "OpenJobs"){
+			 				if(requirementType != "OpenJobs" && requirements.isCrowdSourcingJob == 'Y'){
 			 				result = result +'<div class="disCount">';
 			 				result = result +'<div class="disCountTop">';
 			 				result = result +'<span>You will get</span>';
@@ -905,7 +905,7 @@ function searchRequirement(offset){
 									 				result = result +'<div class="clearfix"></div>';
 									 				result = result +'</h5>';
 									 				
-									 				if(requirementType != "OpenJobs"){
+									 				if(requirementType != "OpenJobs" && requirements.isCrowdSourcingJob == 'Y'){
 										 				result = result +'<div class="disCount">';
 										 				result = result +'<div class="disCountTop">';
 										 				result = result +'<span>You will get</span>';
@@ -929,7 +929,7 @@ function searchRequirement(offset){
 									 				result = result +'</div>';
 									 				
 									 				
-									 				if(requirementType != "AppliedJobs"){
+									 				if(requirementType != "AppliedJobs" && requirements.isCrowdSourcingJob == 'Y'){
 									 					result = result +'<div class="openCtaRight">';
 										 				/* result = result +'<p>Share Requirement</p>';
 										 				result = result +'<span>';
