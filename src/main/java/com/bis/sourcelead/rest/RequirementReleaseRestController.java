@@ -527,6 +527,8 @@ public class RequirementReleaseRestController {
 	 	if(jsonObj.has("isPublic") && !isNullOrEmpty(jsonObj.getString("isPublic")) && jsonObj.getString("isPublic").equalsIgnoreCase("Y")){
 	 		requirement.setIsPublic(jsonObj.getString("isPublic"));
 	 		requirement.setPostedOrgName(org.getOrgName());
+	 	}else{
+	 		requirement.setIsPublic(jsonObj.getString("isPublic"));
 	 	}
 	 	
 	 	if(jsonObj.has("isCrowdScourcing") && !isNullOrEmpty("isCrowdScourcing") && jsonObj.getString("isCrowdScourcing").equalsIgnoreCase("Y")){
@@ -555,6 +557,8 @@ public class RequirementReleaseRestController {
 	 		if(jsonObj.has("guaranteePeriod") && !isNullOrEmpty(jsonObj.getString("guaranteePeriod"))){
 	 			requirement.setRewardGuaranteePeriod(jsonObj.getString("guaranteePeriod"));
 	 		}
+	 	}else{
+	 		requirement.setIsCrowdSourcing(jsonObj.getString("isCrowdScourcing"));
 	 	}
 	 	 
 		if(null == requirement.getReleasedBy()){
