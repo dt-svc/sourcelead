@@ -208,7 +208,7 @@ function editCandidate(candidateId){
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
 							result = result + '<select class="input-sm form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
-							result = result + '<option value="">Select</option>';
+							result = result + '<option value="">-- select Notice Period --</option>';
 							result = result + ' <option '+(json.noticePeriod == "Immediately available" ? "selected" : '') +'>Immediately available</option>';
 							result = result + '<option  '+ (json.noticePeriod == "15 Days" ? "selected" : '') +'>15 Days</option>';
 							result = result + '<option  '+(json.noticePeriod == "1 Month" ? "selected" : '') +'>1 Month</option>';
@@ -225,8 +225,10 @@ function editCandidate(candidateId){
                             result = result + '<div class="col-md-6 custom-fields">';
 							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
 							result = result + '<select class="form-control" id="designationType" name="designationType" field-name="Designation Type" onchange="updateDesignationType(this);">';
+							result = result + '<option value="">-- select Employement Type --</option>';
 							result = result + ' <option '+(json.designationType == "C2C" ? "selected" : '') +'>C2C</option>';
 							result = result + '<option  '+ (json.designationType == "W-2" ? "selected" : '') +'>W-2</option>';
+							result = result + '<option  '+ (json.designationType == "C2H" ? "selected" : '') +'>C2H</option>';
 							result = result + '<option  '+(json.designationType == "Part Time" ? "selected" : '') +'>Part Time</option>';
 							result = result + '<option  '+(json.designationType == "Full Time" ? "selected" : '') +'>Full Time</option>';
 							result = result + '<option  '+(json.designationType == "Other" ? "selected" : '') +'>Other</option>';
@@ -236,7 +238,7 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							 
 							result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv" style="display:none">';
-							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType" value="'+designationOtherType+'" placeholder="Designation Other Type" field-name="Designation Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
+							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType" value="'+designationOtherType+'" placeholder="Employement Other Type" field-name="Designation Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
 							result = result + '</div>';
 						
 							result = result + '</div>';
@@ -336,7 +338,7 @@ function editCandidate(candidateId){
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
 							if(json.experienceYears == "25+"){
 							result = result + '<select  class="input-sm form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths" disabled="disabled">';
-							result = result + '<option  disabled>Select Months</option>';
+							result = result + '<option  value="">Select Months</option>';
 							
 							<c:forEach var="i" begin="0" end="11" >
 							 	result = result  +'<option  value="${i}" '  + (json.experienceMonths == "${i}" ? "selected" : '') +  '>${i}</option>';
@@ -346,7 +348,7 @@ function editCandidate(candidateId){
 							result = result + '</select>';
 							}else{
 								result = result + '<select  class="input-sm form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths">';
-								result = result + '<option  disabled>Select Months</option>';
+								result = result + '<option  value="">Select Months</option>';
 								
 								<c:forEach var="i" begin="0" end="11" >
 								 result = result  +'<option  value="${i}" '  + (json.experienceMonths == "${i}" ? "selected" : '') +  '>${i}</option>';
@@ -456,7 +458,7 @@ function getAllCandidateCountries(){
         success: function(data) {
         	var json = JSON.parse(data);
         	$('html #professionalCandidateCountry').empty();
-        	$('html #professionalCandidateCountry').append('<option value="">---select---</option>');
+        	$('html #professionalCandidateCountry').append('<option value="">---select Country---</option>');
             for(var i=0;i<json.length;i++){
             	if(json[i] == countryName){
             		$('html #professionalCandidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -501,7 +503,7 @@ var countryName = $("html #professionalCandidateCountry").val();
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('html #candidateState').empty();
-	        	$('html #candidateState').append('<option value="">---select---</option>');
+	        	$('html #candidateState').append('<option value="">---select State---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == stateName){
 	            		$('html #candidateState').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -520,10 +522,10 @@ var countryName = $("html #professionalCandidateCountry").val();
 	    });
 	}else{
 		$('html #candidateState').empty();
-    	$('html #candidateState').append('<option value="">---select---</option>');
+    	$('html #candidateState').append('<option value="">---select State---</option>');
     	$('html #candidateState').trigger("chosen:updated");
     	$('html #candidateCity').empty();
-    	$('html #candidateCity').append('<option value="">---select---</option>');
+    	$('html #candidateCity').append('<option value="">---select City---</option>');
         $('html #candidateCity').trigger("chosen:updated");
 	}
 }
@@ -549,7 +551,7 @@ function getCandidateCities(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('html #candidateCity').empty();
-	        	$('html #candidateCity').append('<option value="">---select---</option>');
+	        	$('html #candidateCity').append('<option value="">---select City---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == cityName){
 	            		$('html #candidateCity').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -565,7 +567,7 @@ function getCandidateCities(){
 	    });
 	}else{
 		$('html #candidateCity').empty();
-    	$('html #candidateCity').append('<option value="">---select---</option>');
+    	$('html #candidateCity').append('<option value="">---select City---</option>');
     	$('html #candidateCity').trigger("chosen:updated");
 	}
 }
@@ -813,6 +815,7 @@ function professionalProfile(candidateId){
 		$("#editSkillBtnSpan").append(result);
 		$("#editSkillBtnSpan").show();
 		skillCountAfter = skillCountBefore = 0;
+		
 	}
 </script>
 
@@ -835,9 +838,7 @@ function professionalProfile(candidateId){
 	          type : "POST",
 	          url: sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+jsonData,        
 	          success :function(data) {
-	               if(data != null && data != 'undefined' && data != "" && data == "success"){
-	            	  //professionalProfile(candidateId);
-	               }
+	        	  getProfessionalInfo();
 	        },
 	          
 	     }); 
