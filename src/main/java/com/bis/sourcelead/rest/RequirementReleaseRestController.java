@@ -534,13 +534,21 @@ public class RequirementReleaseRestController {
 	 		requirement.setPostedOrgName(org.getOrgName());
 	 		
 	 		if(jsonObj.has("rewardType") && !isNullOrEmpty("rewardType") && jsonObj.getString("rewardType").equalsIgnoreCase("Percentage")){
-	 			requirement.setRewardPercentage(jsonObj.getString("percentageReward"));
+	 			if(jsonObj.has("percentageReward")){
+	 				requirement.setRewardPercentage(jsonObj.getString("percentageReward"));
+	 			}
 	 			requirement.setRewardType(jsonObj.getString("rewardType"));
 	 		}
 	 		
 	 		if(jsonObj.has("rewardType") && !isNullOrEmpty("rewardType") && jsonObj.getString("rewardType").equalsIgnoreCase("Flat")){
-	 			requirement.setRewardFlat(jsonObj.getString("flatReward"));
-	 			requirement.setRewardFlatRateType(jsonObj.getString("flatRateType"));
+	 			
+	 			if(jsonObj.has("flatReward")){
+	 				requirement.setRewardFlat(jsonObj.getString("flatReward"));
+	 			}
+	 			
+	 			if(jsonObj.has("flatRateType")){
+	 				requirement.setRewardFlatRateType(jsonObj.getString("flatRateType"));
+	 			}
 	 			requirement.setRewardType(jsonObj.getString("rewardType"));
 	 		}
 	 		
