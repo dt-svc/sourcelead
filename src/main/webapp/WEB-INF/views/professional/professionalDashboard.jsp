@@ -31,7 +31,6 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Jobs Summary</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Vendor &raquo; Add Client</div>
     </section>
     <div class="content-new clearfix mt25"></div>
     
