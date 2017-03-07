@@ -1,0 +1,651 @@
+package com.bis.sourcelead.service.impl;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidatesImport;
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.CandidateUploadFileService;
+
+/**
+ * 
+ * @author 
+ * @date 6th July 2016
+ */
+@Service
+public class CandidateUploadFileServiceImpl implements CandidateUploadFileService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(CandidateUploadFileServiceImpl.class);
+	
+	
+	@Autowired
+	private CandidateService candidateService;
+	
+	
+	
+	@Override
+	public String uploadCandidateFile(MultipartFile multipartFile, OrgLocations orgLocations, User user,
+		String isMailChecked, Org org, Long roleHierarchyId) throws Exception {
+	
+	String isFileCreated = "";
+	String fileName = multipartFile.getOriginalFilename();
+
+	if (!fileName.toLowerCase().endsWith("csv")) {
+		isFileCreated = parseCandidatesXlsxandXlsData(multipartFile, orgLocations,user,isMailChecked,org,roleHierarchyId);
+	}/* else {
+		isFileCreated = parseCSVData(multipartFile,orgLocations,user,isMailChecked);
+	}*/
+	return isFileCreated;
+}
+
+
+
+/**
+ * 
+ * @param multipartFile
+ * @param orgLocations
+ * @param user 
+ * @param isMailChecked 
+ * @param roleHierarchyId 
+ * @param org 
+ * @return List<UsersImport>
+ * @throws FileNotFoundException
+ */
+private String parseCandidatesXlsxandXlsData(MultipartFile multipartFile, OrgLocations orgLocations, User user, String isMailChecked, Org org, Long roleHierarchyId) throws Exception {
+
+	String isFileCreated = "failure";
+	String fileName = multipartFile.getOriginalFilename();
+	Workbook createExcelworkbook = null ;
+
+	if (fileName.endsWith("xlsx")) {
+		createExcelworkbook = new XSSFWorkbook();
+	} else if (fileName.endsWith("xls")) {
+		createExcelworkbook = (Workbook) new HSSFWorkbook();
+	}
+
+	Sheet createExcelsheet = createExcelworkbook.createSheet("candidate");
+	createExcelsheet = setCandidateExcelHeader(createExcelsheet);
+
+	try {
+		File file = new File(multipartFile.getOriginalFilename());
+		multipartFile.transferTo(file);
+		FileInputStream fis = new FileInputStream(file);
+		Workbook workbook;
+		logger.debug("FIle Extension is: " + multipartFile.getOriginalFilename());
+			boolean isValidated = false;
+			boolean isUserFound = false;
+			workbook = WorkbookFactory.create(fis);
+		int numberOfSheets = workbook.getNumberOfSheets();
+		for (int i = 0; i < numberOfSheets; i++) {
+			Sheet sheet = workbook.getSheetAt(i);
+			int count = 0;
+			Iterator<Row> rowIterator = sheet.iterator();
+			while (rowIterator.hasNext()) {
+				CandidatesImport candidateImport = new CandidatesImport();
+				Row row = rowIterator.next();
+				if (row.getRowNum() > 0) {
+					isValidated = validateCandidateExeclData(row,candidateImport,fileName,orgLocations);
+				}
+				if (isValidated) {
+					if (row.getRowNum() > 0) { // Excluding column names
+						logger.info("Reading Row :" + row.getRowNum() + " records");
+						
+						candidateImport.setFirstName(row.getCell(0).toString());
+						
+						if (row.getCell(1) == null || "".equalsIgnoreCase(row.getCell(1).toString())) {
+							candidateImport.setLastName("");
+						} else {
+							candidateImport.setLastName(row.getCell(1).toString());
+						}
+						candidateImport.setEmailId(row.getCell(2).toString());
+
+						if (row.getCell(3) != null) {
+							String mobileNumber = getCellValueAsString(row.getCell(3),fileName);
+							candidateImport.setMobileNumber(mobileNumber);
+						} else {
+							candidateImport.setMobileNumber("");
+						}
+						
+						if (row.getCell(4) != null) {
+							String country = getCellValueAsString(row.getCell(4),fileName);
+							candidateImport.setCountry(country);;
+						} else {
+							candidateImport.setCountry("");
+						}
+						
+						if(row.getCell(5) != null){
+							String state = getCellValueAsString(row.getCell(5), fileName);
+							candidateImport.setState(state);
+						}else{
+							candidateImport.setState("");
+						}
+						
+						if(row.getCell(6) != null){
+							String city = getCellValueAsString(row.getCell(6), fileName);
+							candidateImport.setCity(city);
+						}else{
+							candidateImport.setCity("");
+						}
+						
+						if(row.getCell(7) != null){
+							String address = getCellValueAsString(row.getCell(7), fileName);
+							candidateImport.setAddress(address);
+						}else{
+							candidateImport.setAddress("");
+						}
+						
+						if(row.getCell(8) != null){
+							String designation = getCellValueAsString(row.getCell(8), fileName);
+							candidateImport.setDesignation(designation);
+						}else{
+							candidateImport.setDesignation("");
+						}
+						
+						if(row.getCell(9) != null){
+							String designationType = getCellValueAsString(row.getCell(9), fileName);
+							candidateImport.setDesignationType(designationType);
+						}else{
+							candidateImport.setDesignationType("");
+						}
+						
+						if(row.getCell(10) != null){
+							String experienceYears = getCellValueAsString(row.getCell(10), fileName);
+							candidateImport.setExperienceYears(experienceYears);
+						}else{
+							candidateImport.setExperienceYears("");
+						}
+
+						
+						if(row.getCell(11) != null){
+							String experienceMonths = getCellValueAsString(row.getCell(11), fileName);
+							candidateImport.setExperienceMonths(experienceMonths);
+						}else{
+							candidateImport.setExperienceMonths("");
+						}
+						if(row.getCell(12) != null){
+							String expectedRate = getCellValueAsString(row.getCell(12), fileName);
+							candidateImport.setExpectedRate(expectedRate);
+						}else{
+							candidateImport.setExpectedRate("");
+						}
+						
+						if(row.getCell(13) != null){
+							String expectedRateType = getCellValueAsString(row.getCell(13), fileName);
+							candidateImport.setExpectedRateType(expectedRateType);
+						}else{
+							candidateImport.setExpectedRateType("");
+						}
+						
+						if(row.getCell(14) != null){
+							String skillsName = getCellValueAsString(row.getCell(14), fileName);
+							candidateImport.setSkillsName(skillsName);
+						}else{
+							candidateImport.setSkillsName("");
+						}
+						
+						if(row.getCell(15) != null){
+							String education = getCellValueAsString(row.getCell(15), fileName);
+							candidateImport.setEducation(education);
+						}else{
+							candidateImport.setEducation("");
+						}
+						
+						if(row.getCell(16) != null){
+							String employers = getCellValueAsString(row.getCell(16), fileName);
+							candidateImport.setEmployers(employers);
+						}else{
+							candidateImport.setEmployers("");
+						}
+					
+					   saveBulkCandidates(candidateImport,orgLocations, user, isMailChecked);
+						 
+					}
+			}else{
+				if (row.getRowNum() > 0) {
+					count++;
+					createCandidateErrorFile(row, createExcelsheet, count,candidateImport,fileName,org,orgLocations);
+				}
+			}
+			
+			}
+			if (!isValidated || isUserFound) {
+				FileOutputStream fos = null;
+				if(!fileName.endsWith("xlsx")){
+					fos = new FileOutputStream("CandidateError.xls");
+				}else{
+					 fos = new FileOutputStream("CandidateError.xlsx");
+				}
+				
+				createExcelworkbook.write(fos);
+				fos.close();
+			}
+			if(count > 0){
+				if(!fileName.endsWith("xlsx")){
+				isFileCreated = "CandidateError.xls";
+				}else{
+					isFileCreated = "CandidateError.xlsx";
+				}
+			}else{
+				isFileCreated = "success";
+			}
+		}
+		fis.close();
+	} catch (IOException e) {
+		 logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	}
+	return isFileCreated;
+}
+
+
+
+private void createCandidateErrorFile(Row row, Sheet createExcelsheet, int rowIndex, CandidatesImport candidateImport, String fileName, Org org, OrgLocations orgLocations) {
+	
+	Row writeRow = createExcelsheet.createRow(rowIndex);
+	if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
+		String firstName = getCellValueAsString(row.getCell(0), fileName);
+		writeRow.createCell(0).setCellValue(firstName);
+	} else {
+		writeRow.createCell(0).setCellValue("");
+	}
+	
+	if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
+		String lastName = getCellValueAsString(row.getCell(1), fileName);
+		writeRow.createCell(1).setCellValue(lastName);
+	} else {
+		writeRow.createCell(1).setCellValue("");
+	}
+	
+	if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
+		String emailId = getCellValueAsString(row.getCell(2), fileName);
+		writeRow.createCell(2).setCellValue(emailId);
+	} else {
+		writeRow.createCell(2).setCellValue("");
+	}
+	
+	if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
+		String mobileNumber = getCellValueAsString(row.getCell(3), fileName);
+		writeRow.createCell(3).setCellValue(mobileNumber);
+	} else {
+		writeRow.createCell(3).setCellValue("");
+	}
+	
+	if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())) {
+		String country = getCellValueAsString(row.getCell(4), fileName);
+		writeRow.createCell(4).setCellValue(country);
+	} else {
+		writeRow.createCell(4).setCellValue("");
+	}
+	
+	if (row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())) {
+		String state = getCellValueAsString(row.getCell(5), fileName);
+		writeRow.createCell(5).setCellValue(state);
+	} else {
+		writeRow.createCell(5).setCellValue("");
+	}
+	
+	if (row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())) {
+		String city = getCellValueAsString(row.getCell(6), fileName);
+		writeRow.createCell(6).setCellValue(city);
+	} else {
+		writeRow.createCell(6).setCellValue("");
+	}
+	
+	if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
+		String address = getCellValueAsString(row.getCell(7), fileName);
+		writeRow.createCell(7).setCellValue(address);
+	} else {
+		writeRow.createCell(7).setCellValue("");
+	}
+	
+	if (row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())) {
+		String designation = getCellValueAsString(row.getCell(8), fileName);
+		writeRow.createCell(8).setCellValue(designation);
+	} else {
+		writeRow.createCell(8).setCellValue("");
+	}
+	
+	if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
+		String designationType = getCellValueAsString(row.getCell(9), fileName);
+		writeRow.createCell(9).setCellValue(designationType);
+	} else {
+		writeRow.createCell(9).setCellValue("");
+	}
+	
+	if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
+		String experienceYears = getCellValueAsString(row.getCell(10), fileName);
+		writeRow.createCell(10).setCellValue(experienceYears);
+	} else {
+		writeRow.createCell(10).setCellValue("");
+	}
+	
+	if (row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())) {
+		String experienceMonths = getCellValueAsString(row.getCell(11), fileName);
+		writeRow.createCell(11).setCellValue(experienceMonths);
+	} else {
+		writeRow.createCell(11).setCellValue("");
+	}
+	
+	if (row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())) {
+		String expectedRate = getCellValueAsString(row.getCell(12), fileName);
+		writeRow.createCell(12).setCellValue(expectedRate);
+	} else {
+		writeRow.createCell(12).setCellValue("");
+	}
+	
+	if (row.getCell(13) != null && !"".equalsIgnoreCase(row.getCell(13).toString())) {
+		String expectedRateType = getCellValueAsString(row.getCell(13), fileName);
+		writeRow.createCell(13).setCellValue(expectedRateType);
+	} else {
+		writeRow.createCell(13).setCellValue("");
+	}
+	
+	
+	if (row.getCell(14) != null && !"".equalsIgnoreCase(row.getCell(14).toString())) {
+		String skillsName = getCellValueAsString(row.getCell(14), fileName);
+		writeRow.createCell(14).setCellValue(skillsName);
+	} else {
+		writeRow.createCell(14).setCellValue("");
+	}
+	
+	if (row.getCell(15) != null && !"".equalsIgnoreCase(row.getCell(15).toString())) {
+		String education = getCellValueAsString(row.getCell(15), fileName);
+		writeRow.createCell(15).setCellValue(education);
+	} else {
+		writeRow.createCell(15).setCellValue("");
+	}
+	
+	if (row.getCell(16) != null && !"".equalsIgnoreCase(row.getCell(16).toString())) {
+		String employers = getCellValueAsString(row.getCell(16), fileName);
+		writeRow.createCell(16).setCellValue(employers);
+	} else {
+		writeRow.createCell(16).setCellValue("");
+	}
+	
+		writeRow.createCell(17).setCellValue(candidateImport.getReason());
+	
+	
+}
+
+private boolean validateCandidateExeclData(Row row, CandidatesImport candidateImport, String fileName, OrgLocations orgLocations) throws Exception {
+
+//	boolean isValidated; 
+	if (row.getRowNum() > 0) { // Excluding column names
+
+		if (row.getCell(0) == null || "".equalsIgnoreCase(row.getCell(0).toString())) {
+			candidateImport.setReason("Required fields mandatory");
+			return false;
+		}
+		if(row.getCell(2) == null || "".equalsIgnoreCase(row.getCell(2).toString())){
+			candidateImport.setReason("Required fields mandatory");
+			return false;
+		}else if(row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString()) && !validateEmail(row.getCell(2).toString())){
+			candidateImport.setReason("Invalid Email");
+			return false;
+		}else if(row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())){
+			Candidate candidate = candidateService.findByCandidateEmail(row.getCell(2).toString(),orgLocations.getId());
+		   if(candidate !=null){
+			   candidateImport.setReason("Candidate already exist.!");
+			   return false;   
+		   }
+		}
+		if (row.getCell(3) != null || !"".equalsIgnoreCase(row.getCell(3).toString())) {
+			String mobileNumber = getCellValueAsString(row.getCell(3), fileName);
+			if (mobileNumber != null && !"".equalsIgnoreCase(mobileNumber)) {
+				boolean isValidated = isMobileNumberValid(mobileNumber);
+				if (isValidated == false) {
+					candidateImport.setReason("Invalid MobileNumber");
+					return isValidated;
+				}	
+			}
+		}
+	}
+	
+	return true;
+}
+
+/**
+ * Handles bulk candidate savings
+ * @param userImport
+ * @param orgLocations
+ * @param loginUser 
+ * @param isMailChecked 
+ * @param fileName 
+ * @throws Exception
+ */
+	private void saveBulkCandidates(CandidatesImport candidatesImport,OrgLocations orgLocations, User user, String isMailChecked) throws Exception {
+		
+		JSONObject jsonObj = populateJsonObject(candidatesImport,orgLocations);
+		candidateService.storeCandidate(jsonObj, orgLocations, user, null);
+
+}
+
+private JSONObject populateJsonObject(CandidatesImport candidate,OrgLocations orgLocations) throws JSONException {
+	JSONObject jsonObj = new JSONObject();
+	jsonObj.put("firstName", candidate.getFirstName());
+	
+	if(null != candidate.getLastName()){
+	jsonObj.put("lastName", candidate.getLastName());
+	}
+	
+	jsonObj.put("email", candidate.getEmailId());
+	
+	if(null != candidate.getMobileNumber()){
+	jsonObj.put("mobilePhone", candidate.getMobileNumber());
+	}
+	
+	if(null != candidate.getCountry()){
+	jsonObj.put("country", candidate.getCountry());
+	}
+	
+	if(null != candidate.getState()){
+	jsonObj.put("state", candidate.getState());
+	}
+	
+	if(null != candidate.getCity()){
+	jsonObj.put("city", candidate.getCity());
+	}
+	
+	if(null != candidate.getAddress()){
+	jsonObj.put("address", candidate.getAddress());
+	}
+	
+	if(null != candidate.getDesignation()){
+	jsonObj.put("designation", candidate.getDesignation());
+	}
+	
+	if(null != candidate.getDesignationType() && !"".equals(candidate.getDesignationType())){
+	jsonObj.put("designationType", candidate.getDesignationType());
+	}else{
+		jsonObj.put("designationType", "C2C");
+	}
+	
+	if(null != candidate.getExperienceYears()){
+	jsonObj.put("experienceYears", candidate.getExperienceYears());
+	}
+	
+	if(null != candidate.getExperienceMonths()){
+	jsonObj.put("experienceMonths", candidate.getExperienceMonths());
+	}
+	
+	if(null != candidate.getExpectedRate()){
+	String rate = getExpectedRate(candidate.getExpectedRate());
+		if(null != rate){
+			jsonObj.put("expectedRate", rate);	
+		}
+	}
+	
+	if(null != candidate.getExpectedRateType() && !"".equals(candidate.getExpectedRateType())){
+			jsonObj.put("rateType", candidate.getExpectedRateType());
+	}else{
+		jsonObj.put("rateType", "Hourly");
+	}
+	
+		
+		if("India".equals(orgLocations.getCountry())){
+			
+			jsonObj.put("expectedRateCurrencey", "INR");
+			
+		}else if("Australia".equals(orgLocations.getCountry())){
+			
+			jsonObj.put("expectedRateCurrencey", "AUD");
+			
+		}else if("United States".equals(orgLocations.getCountry())){
+			
+			jsonObj.put("expectedRateCurrencey", "USD");
+			
+		}else if("Singapore".equals(orgLocations.getCountry())){
+			
+			jsonObj.put("expectedRateCurrencey", "SGD");
+			
+		}else if("United Kingdom".equals(orgLocations.getCountry())){
+			
+			jsonObj.put("expectedRateCurrencey", "GBP");
+			
+		}else if("France".equals(orgLocations.getCountry())){
+			
+			jsonObj.put("expectedRateCurrencey", "EUR");
+		}
+	
+	if(null != candidate.getSkillsName()){
+	jsonObj.put("candidateSkills", candidate.getSkillsName());
+	}
+	return jsonObj;
+}
+
+private String getExpectedRate(String expectedRate) {
+
+	String[] Res = expectedRate.split("[\\p{Punct}\\s]+");
+	for (String s:Res){
+		if(isNumeric(s)){
+			return s;
+		}
+	}
+	return null;
+}
+
+	/**
+	 * Check given string is numeric or not
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static boolean isNumeric(String str) {
+		return str.matches("-?\\d+(\\.\\d+)?");
+	}
+	
+	
+	private String getCellValueAsString(Cell cell, String fileName) {
+	String cellValue = "";
+	if(fileName.toLowerCase().endsWith("xls")){
+			HSSFCell hssfCell = (HSSFCell) cell;
+			if (hssfCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+				hssfCell.setCellType(Cell.CELL_TYPE_STRING);
+				String hssfCellValue = hssfCell.getStringCellValue();
+				if (hssfCellValue != null || !"".equalsIgnoreCase(hssfCellValue)) {
+					cellValue = hssfCellValue;
+				} 
+			}else{
+				cellValue = cell.getStringCellValue();
+			}
+		}else{
+			XSSFCell xssfCell = (XSSFCell) cell;
+			if (xssfCell.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
+				xssfCell.setCellType(Cell.CELL_TYPE_STRING);
+				String xssfCellValue = xssfCell.getStringCellValue();
+				if (xssfCellValue != null || !"".equalsIgnoreCase(xssfCellValue)) {
+					cellValue = xssfCellValue;
+				} 
+			}else{
+				cellValue = cell.getStringCellValue();
+			}
+		}
+		return cellValue;
+	}
+	
+	/**
+	 * Handles Mobile number valid or not
+	 * @param mobileNmber
+	 * @return
+	 */
+		private boolean isMobileNumberValid(String mobileNmber){
+			String regex = "([\\.\\-\\s+\\/()]*[0-9][\\.\\-\\s+\\/()]*){8,15}";
+			boolean flag;
+			if(mobileNmber.length() > 9 && mobileNmber.length() <= 20){
+				flag = mobileNmber.matches(regex);
+			}else{
+				flag=false;
+			}
+			return flag;
+		}
+	
+	/**
+	 * preparing excel headers (column names)
+	 * @param createExcelsheet
+	 * @return Sheet
+	 */
+	private Sheet setCandidateExcelHeader(Sheet createExcelsheet) {
+
+		Row excelHeader = createExcelsheet.createRow(0);
+		excelHeader.createCell(0).setCellValue(Constants.CANDIDATE_FIRST_NAME);
+		excelHeader.createCell(1).setCellValue(Constants.CANDIDATE_LAST_NAME);
+		excelHeader.createCell(2).setCellValue(Constants.CANDIDATE_EAMIL);
+		excelHeader.createCell(3).setCellValue(Constants.CANDIDATE_PHONE_NUMBER);
+		excelHeader.createCell(4).setCellValue(Constants.CANDIDATE_COUNTRY);
+		excelHeader.createCell(5).setCellValue(Constants.CANDIDATE_STATE);
+		excelHeader.createCell(6).setCellValue(Constants.CANDIDATE_CITY);
+		excelHeader.createCell(7).setCellValue(Constants.CANDIDATE_ADDRESS);
+		excelHeader.createCell(8).setCellValue(Constants.CANDIDATE_DESIGNATION);
+		excelHeader.createCell(9).setCellValue(Constants.CANDIDATE_TYPE);
+		excelHeader.createCell(10).setCellValue(Constants.CANDIDATE_EXPERIENCE_YEARS);
+		excelHeader.createCell(11).setCellValue(Constants.CANDIDATE_EXPERIENCE_MONTHS);
+		excelHeader.createCell(12).setCellValue(Constants.CANDIDATE_EXPECTED_RATE);
+		excelHeader.createCell(13).setCellValue(Constants.CANDIDATE_EXPECTED_RATE_TYPE);
+		excelHeader.createCell(14).setCellValue(Constants.CANDIDATE_SKILLS_NAME);
+		excelHeader.createCell(15).setCellValue(Constants.CANDIDATE_EDUCATION);
+		excelHeader.createCell(16).setCellValue(Constants.CANDIDATE_EMPLOERS);
+		excelHeader.createCell(17).setCellValue(Constants.FAILED_REASON);
+		
+		return createExcelsheet;
+	}
+	
+	/**
+	 * validate email
+	 * @param email
+	 * @return boolean
+	 */
+		private boolean validateEmail(String email) {
+			Pattern pattern = Pattern.compile(
+					"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+			Matcher matcher = pattern.matcher(email);
+			return matcher.matches();
+		}
+}
