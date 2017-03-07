@@ -417,7 +417,7 @@ private boolean validateCandidateExeclData(Row row, CandidatesImport candidateIm
 			   return false;   
 		   }
 		}
-		if (row.getCell(3) != null || !"".equalsIgnoreCase(row.getCell(3).toString())) {
+		if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
 			String mobileNumber = getCellValueAsString(row.getCell(3), fileName);
 			if (mobileNumber != null && !"".equalsIgnoreCase(mobileNumber)) {
 				boolean isValidated = isMobileNumberValid(mobileNumber);
