@@ -955,6 +955,55 @@ public class CrowdSourcingRequirementsRestController {
 
 		}
 		
+		
+		
+		
+		@PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+		@RequestMapping(value = "/getJobSummaryDoNutChart", method = RequestMethod.GET)
+		public String getJobSummaryDoNutChart(HttpServletRequest request) throws Exception {
+			String resultJson = null;
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+			
+			List<RequirementRefer> referList = new ArrayList<RequirementRefer>();
+			RequirementRefer refer = new RequirementRefer();
+			
+			Calendar c = Calendar.getInstance();   
+    	    c.set(Calendar.DAY_OF_MONTH, 1);
+    	    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    	    String startDate = df.format(c.getTime());
+    	    
+    	    int lastDate = c.getActualMaximum(Calendar.DATE);
+    	    c.set(Calendar.DATE, lastDate);	
+    	    String endDate = df.format(c.getTime());
+    		
+    		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    		
+			try{
+				Date thisMonthStartdate = sdf.parse(startDate);
+				Date thisMonthEnddate = sdf.parse(endDate);
+				
+				Integer appliedJobs = requirementSubmissionService.getProfessionalJobAppliedCount(candidateId, thisMonthStartdate, thisMonthEnddate);
+				refer.setAppliedJobs(appliedJobs);
+				
+				Integer referToMe = requirementReferService.getReferJobsByReferType(user.getId(), "referToMe", thisMonthStartdate, thisMonthEnddate);
+				refer.setReferToMeJobs(referToMe);
+				
+				Integer referByMe = requirementReferService.getReferJobsByReferType(user.getId(), "referByMe", thisMonthStartdate, thisMonthEnddate);
+				refer.setReferByMeJobs(referByMe);
+				
+			}catch (ParseException e) {
+				e.printStackTrace();
+			}
+			
+			resultJson = commonUtil.toJSON(refer);
+			return resultJson;
+
+		}
+		
+		
+		
 		public String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
 	            public HierarchicalStreamWriter createWriter(Writer writer) {
