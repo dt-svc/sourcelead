@@ -3054,4 +3054,12 @@ background-size:260px; margin: 0px 15px;
 	width: 190px !important;
 }
 
+.noMailImg {
+	background-image:url(../images/no-mails.jpg); background-repeat:no-repeat; background-position:center; width: 100px; height: 100px;
+	display: block; margin: 0px auto;
+}
+
+.modal-body {
+	padding: 0px 15px;
+}
 

@@ -50,7 +50,10 @@ public class Candidate implements Serializable{
    	@JoinColumn(name = "ORG_ID", nullable = false)
    	private Org orgId;
 	
-	
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="RECRUITER_USER_ID")        
+    private User recruiterUserId;
+    
 	@Column(name = "CANDIDATE_TYPE")
 	private String candidateType;
 	
@@ -922,6 +925,17 @@ public class Candidate implements Serializable{
 	public void setOrgId(Org orgId) {
 		this.orgId = orgId;
 	}
+
+	
+	public User getRecruiterUserId() {
+		return recruiterUserId;
+	}
+
+
+	public void setRecruiterUserId(User recruiterUserId) {
+		this.recruiterUserId = recruiterUserId;
+	}
+
 
 	public String getSkillsName() {
 		return skillsName;

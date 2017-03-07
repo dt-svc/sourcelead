@@ -76,34 +76,41 @@ public class RequirementReportRestController {
 			if(null != reportType && !"".equals(reportType)){
 				if("today".equals(reportType)){
 					String startDate = outputFormatter.print(zoned);
-					String startDateString = CommonUtil.convertTimeZones("UTC",timezone.getTimeZoneId(), startDate);
-					filterDate = CommonUtil.convertTimeZones("UTC",timezone.getTimeZoneId(), startDate);
+					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),"UTC", startDate);
+					filterDate = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),"UTC", startDate);
 					startDateUTC = TZ_DF_TS.parse(startDateString);
 				}else if("yesterday".equals(reportType)){
 					DateTime yesterDayZoned = zoned.minusDays(1);
 					String yesterDayDate = outputFormatter.print(yesterDayZoned);
 					String startDateString = CommonUtil.convertTimeZones("UTC",timezone.getTimeZoneId(), yesterDayDate);
-					Date YesterDateDateUTC = TZ_DF_TS.parse(startDateString);
+					startDateUTC = TZ_DF_TS.parse(startDateString);
 					
 				}else if("week".equals(reportType)){
-					DateTime weekZoned = zoned.minusDays(7);
-					filterDate = outputFormatter.print(weekZoned);
+					DateTime yesterDayZoned = zoned.minusDays(7);
+					String yesterDayDate = outputFormatter.print(yesterDayZoned);
+					String startDateString = CommonUtil.convertTimeZones("UTC",timezone.getTimeZoneId(), yesterDayDate);
+					startDateUTC = TZ_DF_TS.parse(startDateString);
 				}else if("twoweeks".equals(reportType)){
-					DateTime twoWeekZoned = zoned.minusDays(14);
-					filterDate = outputFormatter.print(twoWeekZoned);
+					DateTime yesterDayZoned = zoned.minusDays(14);
+					String yesterDayDate = outputFormatter.print(yesterDayZoned);
+					String startDateString = CommonUtil.convertTimeZones("UTC",timezone.getTimeZoneId(), yesterDayDate);
+					startDateUTC = TZ_DF_TS.parse(startDateString);
 				}else if("month".equals(reportType)){
-					DateTime month = zoned.minusDays(30);
-					filterDate = outputFormatter.print(month);
+					DateTime yesterDayZoned = zoned.minusDays(30);
+					String yesterDayDate = outputFormatter.print(yesterDayZoned);
+					String startDateString = CommonUtil.convertTimeZones("UTC",timezone.getTimeZoneId(), yesterDayDate);
+					startDateUTC = TZ_DF_TS.parse(startDateString);
 				}else if("twomonths".equals(reportType)){
-					DateTime month = zoned.minusDays(60);
-					filterDate = outputFormatter.print(month);
+					DateTime yesterDayZoned = zoned.minusDays(60);
+					String yesterDayDate = outputFormatter.print(yesterDayZoned);
+					String startDateString = CommonUtil.convertTimeZones("UTC",timezone.getTimeZoneId(), yesterDayDate);
+					startDateUTC = TZ_DF_TS.parse(startDateString);
 				}else{
 					
 				}
 			}
 			
-			List<Requirement> requirementList = requirementReportService.getRequirementReports(userRoleName,orgLocation,user,filterDate,startDateUTC,endDateUTC,reportType);
-		   
+			List<Requirement> requirementList = requirementReportService.getRequirementReports(userRoleName,orgLocation,user,filterDate,startDateUTC,endDateUTC);
 			for(Requirement requirement : requirementList){
 				String postedDate = new SimpleDateFormat("yyyy-MM-dd").format(requirement.getCreatedDate());
 				requirement.setPostedDateStr(postedDate);
