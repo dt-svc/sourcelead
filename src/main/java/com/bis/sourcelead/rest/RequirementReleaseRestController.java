@@ -527,6 +527,8 @@ public class RequirementReleaseRestController {
 	 	if(jsonObj.has("isPublic") && !isNullOrEmpty(jsonObj.getString("isPublic")) && jsonObj.getString("isPublic").equalsIgnoreCase("Y")){
 	 		requirement.setIsPublic(jsonObj.getString("isPublic"));
 	 		requirement.setPostedOrgName(org.getOrgName());
+	 	}else{
+	 		requirement.setIsPublic(jsonObj.getString("isPublic"));
 	 	}
 	 	
 	 	if(jsonObj.has("isCrowdScourcing") && !isNullOrEmpty("isCrowdScourcing") && jsonObj.getString("isCrowdScourcing").equalsIgnoreCase("Y")){
@@ -534,19 +536,29 @@ public class RequirementReleaseRestController {
 	 		requirement.setPostedOrgName(org.getOrgName());
 	 		
 	 		if(jsonObj.has("rewardType") && !isNullOrEmpty("rewardType") && jsonObj.getString("rewardType").equalsIgnoreCase("Percentage")){
-	 			requirement.setRewardPercentage(jsonObj.getString("percentageReward"));
+	 			if(jsonObj.has("percentageReward")){
+	 				requirement.setRewardPercentage(jsonObj.getString("percentageReward"));
+	 			}
 	 			requirement.setRewardType(jsonObj.getString("rewardType"));
 	 		}
 	 		
 	 		if(jsonObj.has("rewardType") && !isNullOrEmpty("rewardType") && jsonObj.getString("rewardType").equalsIgnoreCase("Flat")){
-	 			requirement.setRewardFlat(jsonObj.getString("flatReward"));
-	 			requirement.setRewardFlatRateType(jsonObj.getString("flatRateType"));
+	 			
+	 			if(jsonObj.has("flatReward")){
+	 				requirement.setRewardFlat(jsonObj.getString("flatReward"));
+	 			}
+	 			
+	 			if(jsonObj.has("flatRateType")){
+	 				requirement.setRewardFlatRateType(jsonObj.getString("flatRateType"));
+	 			}
 	 			requirement.setRewardType(jsonObj.getString("rewardType"));
 	 		}
 	 		
 	 		if(jsonObj.has("guaranteePeriod") && !isNullOrEmpty(jsonObj.getString("guaranteePeriod"))){
 	 			requirement.setRewardGuaranteePeriod(jsonObj.getString("guaranteePeriod"));
 	 		}
+	 	}else{
+	 		requirement.setIsCrowdSourcing(jsonObj.getString("isCrowdScourcing"));
 	 	}
 	 	 
 		if(null == requirement.getReleasedBy()){

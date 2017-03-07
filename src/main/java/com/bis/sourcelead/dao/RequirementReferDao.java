@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.RequirementRefer;
@@ -23,5 +24,7 @@ public interface RequirementReferDao {
 	RequirementRefer getRequirementReferById(Long referId) throws Exception;
 	
 	RequirementRefer getAppliedRequirementReferByRequirementIdAndUserId(Long requirementId,Long userId) throws Exception;
+	
+	Integer getReferJobsByReferType(Long userId,String referType,Date startDate,Date endDate) throws Exception;
 
 }
