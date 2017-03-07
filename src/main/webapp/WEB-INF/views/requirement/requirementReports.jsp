@@ -172,11 +172,15 @@ function requirementReportPagination(){
 				$("#ExportEndDate").datepicker("option", "minDate", dt);
 				addValidClass();
 			}
+		
 		});
 		
 		$('#ExportEndDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
+			beforeShow: function(){
+		           this.value='';
+		     },
 			onSelect : function(selected) {
 				var dt = new Date(selected);
 				dt.setDate(dt.getDate() - 1);
@@ -509,6 +513,8 @@ $(".reminder").click(function(){
 	function flushCustomDates() {
 		$('#ExportStartDate').val('');
 		$('#ExportEndDate').val('');
+		$.datepicker._clearDate('#ExportStartDate');
+		$.datepicker._clearDate('#ExportEndDate');
 	}
 	</script>
 <script>
