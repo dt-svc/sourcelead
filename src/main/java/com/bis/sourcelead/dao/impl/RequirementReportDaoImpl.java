@@ -29,12 +29,10 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 	public List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String filterDate,Date startDateUTC, Date endDateUTC) {
 		 
 		Session session = this.sessionFactory.getCurrentSession();
-		//User user = userDao.getUserById(userId);
-		
-//		UserRole userRole1 = userRoleDao.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
-				
 		Map<String, Object> params = new HashMap<String,Object>();
-		String dateSubQuery = " and requirement.createdDate between :startDateUTC AND :endDateUTC";
+		String dateSubQuery = " and requirement.createdDate >= :startDateUTC and requirement.createdDate <= :endDateUTC";
+		params.put("startDateUTC",startDateUTC);
+		params.put("endDateUTC",endDateUTC);
 		
 		String from = "from Requirement requirement  left join fetch requirement.parentRequirement  left join fetch requirement.clientId left join fetch requirement.spocId left join fetch requirement.submissionTemplateId left join fetch requirement.clientSubmissionTemplateId left join fetch requirement.parentRequirement"; 
 		String subQuery = "";
@@ -78,10 +76,6 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
         {
 			if(str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("approverUserId") || str.equalsIgnoreCase("managerUserId")){
 				query.setLong(str, (long) params.get( str ));
-			}if( str.equalsIgnoreCase("startDateUTC")){
-				query.setDate("startDateUTC", startDateUTC);
-			}if(str.equalsIgnoreCase("endDateUTC")){
-				query.setDate("endDateUTC", endDateUTC);
 			}
 			if(str.equalsIgnoreCase("level") || str.equalsIgnoreCase("level1") || str.equalsIgnoreCase("level2")){
 				query.setInteger(str, (int) params.get( str ));

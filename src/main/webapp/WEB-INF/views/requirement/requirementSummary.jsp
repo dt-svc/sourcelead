@@ -139,7 +139,6 @@ float: left !important;
 .require_wrap_details_cta.require_uploadfile .glyphicon-download-alt {
 color:blue;
 }
-
 </style>
  
 <script>
@@ -826,7 +825,7 @@ function sideBar(requirementId){
 				            
 				            result = result +' <li ><a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>';
 				            result = result +'<div class="action-pop">';
-				            result = result +'	<span>';
+				            result = result +'	<span class="width175">';
 				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
 				            	result = result +'	<a href="javascript:void(0)" title="" onclick="getAddApplicant('+requirementId+');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>';
 				            '</sec:authorize>';
@@ -837,10 +836,10 @@ function sideBar(requirementId){
 				            	result = result + submitToClient;
 				            '</sec:authorize>';
 				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">';
-				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a>';
+				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Schedule interview</a>';
 				            '</sec:authorize>';
 				            '<sec:authorize access="hasAnyRole(\'ROLE_CREAE_OFFER\')">';
-				            	result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a>';
+				            	result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Generate offer</a>';
 				            '</sec:authorize>';
 				            result = result +'    </span>';
 				            result = result +' </div>';	
@@ -1272,6 +1271,7 @@ function requirementDetails(requirementId){
 }
 </script>
 
+
 <%-- 
      @author : sarath kumar.
      this script is for update Requirement.
@@ -1326,6 +1326,15 @@ function updateReuqirementStatus(status){
 }
 </script>
 
+<script type="text/javascript">
+function cancelAlert12(){ 
+	$("#rejectRequirementAlert").empty();
+	$(".project_inn_mask").fadeOut(200);
+	$(".remove_user_pop").hide();
+	
+}
+</script>
+
 <%-- 
      @author : Venkat Kesav
      this script is for close alert popup.
@@ -1338,7 +1347,7 @@ function rejectRequirementAlertMessage(status){
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
 	result = result +"	<div id='reasonDiv'/>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='updateReuqirementStatus(\""+ status+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='updateReuqirementStatus(\""+ status+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert12();'></b>";
 	result = result +"	</div>";
 	result = result +"	</div>";
 	$("#rejectRequirementAlert").append(result);
@@ -1353,12 +1362,7 @@ function rejectRequirementAlertMessage(status){
      this script is for Delete Candidate alert
      1.usage     : used in saveOrCancel() / alertMessage removeAlertMessage()
 --%>
-<script type="text/javascript">
-function cancelAlert(){ 
-	$("#rejectRequirementAlert").empty();
-	$(".project_inn_mask").fadeOut(200);
-}
-</script>
+
 
 
 <%-- 
@@ -3176,8 +3180,8 @@ function requirementPipelineRejected(requirementId,submissionType){
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	   } 
 						           result = result + '<td><div class="tblwidth-150"><span>'+report.upDatedStr+'</span>';
-						           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
-						        	   result = result + '<td><div class="tblwidth-150"><span>'+report.createdUser+'</span>';
+						           if(report.updatedUser != null && report.updatedUser != '' && report.updatedUser != 'undefined'){
+						        	   result = result + '<td><div class="tblwidth-150"><span>'+report.updatedUser+'</span>';
 						           }
 					        	  /*  result = result + '<td><div class="tblwidth-150"><span>'+report.previousSubmissionStatus+'</span>'; */
 					        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
@@ -3258,6 +3262,7 @@ function documentpaginationRejected(){
 <div id="customizePopUp"></div>
 <script>
 function rejectApplicant(submissionId,requirementId,submissionType){
+	alert
 	$("#reasonForApplicantDiv").empty()
 	var subId = submissionId;
 	var reqId = requirementId;
@@ -3622,7 +3627,8 @@ function requirementRecommendations(requirementId){
 		    result = result +'<div class="col-md-6 paddingRight">';
 		    result = result +'<label>Skills</label>';
 		    result = result +'<div class="progress">';
-		    result = result +'<div class="progress-bar progress-bar-success" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+report.skillPercentage+'%"> '+report.skillPercentage+'%';
+		    var skillGraph = (100 * report.skillPercentage)/report.totalSkillPercentage;
+		    result = result +'<div class="progress-bar progress-bar-success" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+skillGraph+'%"> '+report.skillPercentage+'%';
    	        result = result +'</div>';
    	        result = result +'</div>';
 		    result = result +' </div>';
@@ -3630,7 +3636,8 @@ function requirementRecommendations(requirementId){
 		    result = result +'<div class="col-md-6 paddingLeft">';
 		    result = result +'<label>Location</label>';
 		    result = result +'<div class="progress">';
-		    result = result +'<div class="progress-bar progress-bar-warning" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+report.locationPercentage+'%"> '+report.locationPercentage+'% ';
+		    var locationGraph = (100 * report.locationPercentage)/report.totalLocationPercentage;
+		    result = result +'<div class="progress-bar progress-bar-warning" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+locationGraph+'%"> '+report.locationPercentage+'% ';
 		    result = result +'</div>';
 		    result = result +'</div>';
 		    result = result +' </div>';
@@ -3643,7 +3650,8 @@ function requirementRecommendations(requirementId){
 		    result = result +'<div class="col-md-6 paddingRight">';
 		    result = result +'<label>Experience</label>';
 		    result = result +'<div class="progress">';
-		    result = result +'<div class="progress-bar progress-bar-info" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+report.expPercentage+'%"> '+report.expPercentage+'% ';
+		    var exGraph = (100 * report.expPercentage)/report.totalExpPercentage;
+		    result = result +'<div class="progress-bar progress-bar-info" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+exGraph+'%"> '+report.expPercentage+'% ';
    	        result = result +'</div>';
 		    result = result +' </div>';
 		    result = result +' </div>';
@@ -3651,7 +3659,8 @@ function requirementRecommendations(requirementId){
 		    result = result +'<div class="col-md-6 paddingLeft">';
 		    result = result +'<label>Rate</label>';
 		    result = result +'<div class="progress">';
-		    result = result +'<div class="progress-bar progress-bar-warning" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+report.ratePercentage+'%"> '+report.ratePercentage+'% ';
+		    var rateGraph =  (100 * report.ratePercentage)/report.totalRatePercentage;
+		    result = result +'<div class="progress-bar progress-bar-warning" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+rateGraph+'%"> '+report.ratePercentage+'% ';
    	        result = result +'</div>';
 		    result = result +' </div>';
 		    result = result +' </div>';
@@ -3663,7 +3672,8 @@ function requirementRecommendations(requirementId){
 		    result = result +'<div class="col-md-6 paddingRight">';
 		    result = result +'<label>NoticePeriod</label>';
 		    result = result +'<div class="progress">';
-		    result = result +'<div class="progress-bar progress-bar-danger" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+report.noticePeriodPercentage+'%"> '+report.noticePeriodPercentage+'% ';
+		    var noticePeriodGraph = (100 * report.noticePeriodPercentage)/report.totalNoticePeriodPercentage;
+		    result = result +'<div class="progress-bar progress-bar-danger" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+noticePeriodGraph+'%"> '+report.noticePeriodPercentage+'% ';
    	        result = result +'</div>';
 		    result = result +' </div>';
 		    result = result +' </div>';
@@ -3671,7 +3681,8 @@ function requirementRecommendations(requirementId){
 		    result = result +'<div class="col-md-6 paddingLeft">';
 		    result = result +'<label>KeyWord</label>';
 		    result = result +'<div class="progress">';
-		    result = result +'<div class="progress-bar progress-bar-primary" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+report.totalKeyWordPerPercentage+'%"> '+report.totalKeyWordPerPercentage+'% ';
+		    var keywordGraph = (100 * report.totalKeyWordPerPercentage)/report.keyWordPerPercentage;
+		    result = result +'<div class="progress-bar progress-bar-primary" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+keywordGraph+'%"> '+report.totalKeyWordPerPercentage+'% ';
    	        result = result +'</div>';
 		    result = result +' </div>';
 		    result = result +' </div>';

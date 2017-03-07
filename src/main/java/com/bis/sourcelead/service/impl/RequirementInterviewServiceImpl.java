@@ -371,7 +371,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 
 		 if(endTime!=null){
 			  StringBuilder sb=new StringBuilder();
-			  time=sb.append(time).append(" - ").append(endTime).toString();
+			  time=sb.append(time).append(" - ").append(endTime).append(" UTC ").toString();
 		 }
 		 StringBuilder dateOfInterviewSB=new StringBuilder();
 		 dateOfInterviewValue = dateOfInterviewSB.append(dateOfInterviewValue).append(" ").append(time).toString();
@@ -455,7 +455,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 
 		 if(endTime!=null){
 			 StringBuilder timeBuilder=new StringBuilder();
-			  time=timeBuilder.append(time).append(" - ").append(endTime).toString();
+			  time=timeBuilder.append(time).append(" - ").append(endTime).append(" UTC ").toString();
 		 }
 		 String interviewTypeValue="--";
 		 if(requirementInterview.getInterviewType() !=null){
@@ -667,7 +667,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 
 		 if(endTime!=null){
 			 StringBuilder endTimeBuilder=new StringBuilder();
-			  time=endTimeBuilder.append(time).append(" - ").append(endTime).toString();
+			  time=endTimeBuilder.append(time).append(" - ").append(endTime).append(" UTC ").toString();
 		 }
 		 
 		 
@@ -910,6 +910,11 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	public List<RequirementInterview> getRequirementInterviewsHistoryBySubmissionIdAndOrgLocationsId(Long submissionId,
 			Long orgLocationsId) throws Exception {
 		return requirementInterviewDao.getRequirementInterviewsHistoryBySubmissionIdAndOrgLocationsId(submissionId,orgLocationsId);
+	}
+	@Override
+	public Integer getInterviewCountByCandidateId(Long candidateId, String submissionStatus, Date startDate,
+			Date endDate) throws Exception {
+		return requirementInterviewDao.getInterviewCountByCandidateId(candidateId, submissionStatus, startDate, endDate);
 	}
 	
 	/*@Override

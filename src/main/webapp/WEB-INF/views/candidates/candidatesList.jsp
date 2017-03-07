@@ -44,7 +44,7 @@
 <jsp:include page="candidatesEducation.jsp"></jsp:include>
 <jsp:include page="candidatesCertificates.jsp"></jsp:include>
 <jsp:include page="requirementHistory.jsp"></jsp:include>
- <sec:authorize access="hasRole(\'ROLE_POST_COMMENTS\')">
+ <sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">
 <jsp:include page="candidatesCommentsList.jsp"></jsp:include>
  </sec:authorize>
  
@@ -211,7 +211,7 @@ else{
 	              result = result +"<tr>";
 	              result = result +"<td style='width : 25px;'>";
 	              result = result +"<div class='star-rating "+isFavClass+"' id='favourite"+opt.candidateId+"'>";
-	              '<sec:authorize access="hasRole(\'ROLE_ADD_CANDIDATE_HOTLIST\')">'; 
+	              '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_HOTLIST\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
 	              result = result +"<input type='checkbox' id='fav"+opt.candidateId+"' "+isFavourite+" onclick='addFavourite("+opt.candidateId+")'></input>";
 	              '</sec:authorize>';
 	             
@@ -220,11 +220,11 @@ else{
 	              result = result +"</td>";
 	
 	             
-	              '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\')">'; 
+	              '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
 	                result = result +"  <td><div class='proj_show divmax-width' onclick='candidateSideBar("+opt.candidateId+");'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
 	              '</sec:authorize>';
 	              
-	              '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\')">'; 
+	              '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
 	               result = result +"  <td><div class='proj_show' onclick='#'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span></div></td>";
 	              '</sec:authorize>';
 	            
@@ -578,7 +578,7 @@ function candidateSideBar(candidateId){
 			             
 			            /* New comments div creation Nov 8th, 2016 */ 
 			            if(json.status == '1' ){
-			            '<sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\')">'; 
+			            '<sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
 			            result = result+'<div class="comments-div clearfix" id="latestMessage">';
 			            result = result+'    <div class="commentsimg">';
 			            result = result+'    <i class="fa fa-comments"></i>';
@@ -617,27 +617,27 @@ function candidateSideBar(candidateId){
 			             result = result+'   <div class="project_side_wrap_inn_tabs">';
 			             result = result+'     <ul class="project-tabs-menu">'; 
 			             
-			             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\')">';
+			             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 			              result = result+'<li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+');">Profile</a></li>';
 			             '</sec:authorize>';
 			             
-			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_RESUMES\',\'ROLE_VIEW_CANDIDATE_RESUMES\',\'ROLE_VIEW_EDIT_CANDIDATE_RESUMES\',\'ROLE_VIEW_DELETE_CANDIDATE_RESUMES\')">';
+			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_RESUMES\',\'ROLE_VIEW_CANDIDATE_RESUMES\',\'ROLE_VIEW_EDIT_CANDIDATE_RESUMES\',\'ROLE_VIEW_DELETE_CANDIDATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 			               result = result+'<li id="candidateResumeTab"><a href="#tab-2" onclick="candidateResumesList('+candidateId+'); candidateResume('+candidateId+','+json.status+');" >Resume</a></li>';
 			             '</sec:authorize>';
 			             
-			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_EMPLOYEER\',\'ROLE_VIEW_EMPLOYEER\',\'ROLE_VIEW_EDIT_EMPLOYEER\',\'ROLE_VIEW_DELETE_EMPLOYEER\')">';
+			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_EMPLOYEER\',\'ROLE_VIEW_EMPLOYEER\',\'ROLE_VIEW_EDIT_EMPLOYEER\',\'ROLE_VIEW_DELETE_EMPLOYEER\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 			               result = result+'<li id="candidateEmployersTab"><a href="#tab-3" onclick="candidateExperience('+candidateId+');">Employers</a></li>';
 			             '</sec:authorize>';
 			             
-			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_EDUCATION\',\'ROLE_VIEW_CANDIDATE_EDUCATION\',\'ROLE_VIEW_EDIT_CANDIDATE_EDUCATION\',\'ROLE_DELETE_CANDIDATE_EDUCATION\')">';
+			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_EDUCATION\',\'ROLE_VIEW_CANDIDATE_EDUCATION\',\'ROLE_VIEW_EDIT_CANDIDATE_EDUCATION\',\'ROLE_DELETE_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 			              result = result+'<li id="candidateEducationTab"><a href="#tab-4" onclick="candidateEducation('+candidateId+');">Education</a></li>';
 			             '</sec:authorize>';
 			             
-			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION\')">';
+			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 			               result = result+'<li id="candidateCertificationsTab"><a href="#tab-5" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
 			             '</sec:authorize>';
 			             
-			             '<sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\')">';
+			             '<sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 			                result = result+'<li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateId+');">Comments</a></li>';
 			              '</sec:authorize>';
 			              
@@ -1006,9 +1006,8 @@ function cancel(candidateId){
 			  <i class="fa fa-search"></i>
 			  </a> 
 			  <form:form id="candidatelist_form" name="candidatelist_form"  enctype='multipart/form-data' >
-				  <div class="cand-advsrch-popup candAdvsrch-popup" >
+				  <div class="cand-advsrch-popup" >
 					  <a href="javascript:void(0)" class="close-div" onclick="closePop();"><i class="fa fa-close"></i></a>
-					  <div class="candAdvsrch-inner">
 					  <div class="row">
 						  <div class="col-md-4">
 							  <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
@@ -1049,7 +1048,7 @@ function cancel(candidateId){
 							<div class="row">
 								<div class="col-md-6">
 									<label>Rate</label>
-									 <div class="input-group error-field ratetype">
+									 <div class="input-group error-field">
 										<div id="currencyDiv" class="input-group-btn selp-custom-min custommin">
 										    <select class="selectpicker" name="currency" id="currency" field-name="Currency"  >
 										        <option value="">Currency</option>
@@ -1068,7 +1067,10 @@ function cancel(candidateId){
 								</div> 
 							<div class="col-md-6">
 								<label>&nbsp;</label> 
-								<div class="input-group error-field ratetype">
+								<div class="input-group error-field">
+								    <div id="maxRateDiv">
+									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
+									</div>
 									<div id="rateTypeDiv" class="input-group-btn selp-custom-min custommin">
 									      <select class="selectpicker" name="rateType" id="rateType" field-name="Rate Type"  >
 									            <option value="">Rate Type</option>
@@ -1080,9 +1082,6 @@ function cancel(candidateId){
 												<option value="Bi-Monthly">Bi-Monthly</option>
 												<option value="Yearly">Yearly</option>
 				                            </select> 
-									</div>
-									<div id="maxRateDiv">
-									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
 									</div>
 								</div>
 							</div>
@@ -1244,8 +1243,7 @@ function cancel(candidateId){
 							  </div>
 						    </div>
 					  </div>
-					</div>
-					  <div class="form-footer clearfix">
+					  <div class="row form-footer mt">
 						  <div class="pull-right mr">
 							   <input type="button" value="Search" id="search_candidate" onclick="searchCandidate();" class="btn btn-sm btn-primary"/>
                                <input type="button"  value="Clear"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-default ml10"/>
@@ -1279,6 +1277,7 @@ function cancel(candidateId){
                   </div>                	
           </li>
           
+          <sec:authorize access="!hasRole('ROLE_CROWDSOURCING_CANDIDATES')">
           <li id="filter3ApprovePop"><i class="fa fa-filter"></i><span id="typeDiv"> Type </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter3ApprovedPop" class="approved_pop">
                   	<ul>
@@ -1288,6 +1287,7 @@ function cancel(candidateId){
                     </ul>
                   </div>                	
           </li>
+          </sec:authorize>
           
             <li id="filter1ApprovePop"><i class="fa fa-filter"></i><span id="candidateUpdiv">Updated</span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter1ApprovedPop" class="approved_pop">
@@ -1305,7 +1305,7 @@ function cancel(candidateId){
           <li><b id="addmore"><i class="fa fa-plus"></i>&nbsp;<span>Add</span>&nbsp;<i class="glyphicon glyphicon-play"></i></b>
           <div id="addmorepop" class="approved_pop">
            <ul>
-             <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE')">
+             <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')">
               <li><a  onClick="addCandidate();" ><i class="fa fa-plus"></i>Add Candidate</a></li>
            </sec:authorize>
            

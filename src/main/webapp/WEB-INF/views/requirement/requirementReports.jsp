@@ -7,8 +7,8 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="resources/js/formvalidator.js"></script>
-<script src="resources/js/jquery.dataTables.min.js"></script>
+<!-- <script src="resources/js/formvalidator.js"></script>
+<script src="resources/js/jquery.dataTables.min.js"></script> -->
 <!-- <link href="resources/css/dataTablePagination.css" rel="stylesheet" type="text/css"> -->
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
@@ -139,6 +139,7 @@ function prepareReportDataDiv(data){
     }
 	result = result + '	</tbody>';
 	result = result + '</table>';
+	  $("#requirementReportsDiv12").empty();
     $("#requirementReportsDiv12").append(result);
     requirementReportPagination();
 }
@@ -160,7 +161,36 @@ function requirementReportPagination(){
 }
 
 </script>
-
+<script>
+	$(function() {
+		$('#ExportStartDate').datepicker({
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				var dt = new Date(selected);
+				dt.setDate(dt.getDate() + 1);
+				$("#ExportEndDate").datepicker("option", "minDate", dt);
+				addValidClass();
+			}
+		
+		});
+		
+		$('#ExportEndDate').datepicker({
+			changeMonth: true,
+			changeYear: true, 
+			beforeShow: function(){
+		           this.value='';
+		     },
+			onSelect : function(selected) {
+				var dt = new Date(selected);
+				dt.setDate(dt.getDate() - 1);
+				$("#ExportStartDate").datepicker("option", "maxDate", dt);
+				addValidClass();
+			}
+		});
+		
+	});
+</script>	
 
 <section class="content-wraper">
   <section class="content-header clearfix">
@@ -170,13 +200,14 @@ function requirementReportPagination(){
 			<a title="Reports"><i class="fa fa-pie-chart"></i>Requirements Posted</a>
 			<div class="RePop">
 				<ul>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Requirements Posted</a></li>
+					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Client Requirements</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Applicants Received</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Applicants</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Short  listed</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Interview</a></li>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Offer</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Offer</a></li> 
+					<li><a href="reports.html"><i class="fa fa-user"></i>Custom</a></li> 
 				</ul>
 			</div>
 		</div>
@@ -190,7 +221,7 @@ function requirementReportPagination(){
 
 <div class="pull-left reportBtns">
 	  <div class="reportBtn">
-		<select class="form-control select-bg" id="reportTypeId" onChange="getDayWiseReports()">
+		<select class="form-control select-bg" id="reportTypeId" onChange="flushCustomDates(); getDayWiseReports(); custDates();">
 		 <option value="">select</option>
 		  <option value="today">Today</option>
 		  <option value="yesterday">Yesterday</option>
@@ -198,11 +229,20 @@ function requirementReportPagination(){
 		  <option value="twoweeks">2 weeks</option>
 		  <option value="month">1 month</option>
 		  <option value="twomonths">2 months</option>
-		  <option value="custom">Custom</option>
+		   <option value="custom">Custom</option> 
 		</select>
 	 </div>	
-	 <span class="dashboard-datepkr"><input type="text" class="input-sm hasDatepicker" id="datepicker"><i class="fa fa-calendar"></i></span>
-	 <span class="dashboard-datepkr"><input type="text" class="input-sm hasDatepicker" id="datepicker1"><i class="fa fa-calendar"></i></span>			
+	 <!-- <span class="dashboard-datepkr"><input type="text" class="input-sm hasDatepicker" id="datepicker"><i class="fa fa-calendar"></i></span>
+	 <span class="dashboard-datepkr"><input type="text" class="input-sm hasDatepicker" id="datepicker1"><i class="fa fa-calendar"></i></span>	 -->
+	 <span class="dashboard-datepkr cusShow">
+	 <input type="text" class="form-control" value="" id="ExportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
+	 <p id="reportStartDate" class="ReError"></p>
+	 </span>
+	<span class="dashboard-datepkr cusShow">
+	<input type="text"  class="form-control" value="" id="ExportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
+	<p id="reportEndDate" class="ReError"></p>
+	</span>
+	<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
 </div>
                      
         <ul style="padding: 2px 220px 2px 0px;">
@@ -272,41 +312,8 @@ function requirementReportPagination(){
   <textarea placeholder="Enter message"></textarea>
   <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
 
-<!--   Error Message   --> 
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
-<script src="js/moment.min.js"></script>
-<script src="js/bootstrap-datetimepicker.min.js"></script>
-<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
-<script src="js/masterHeaderAction.js"></script> 
-<script src="js/bootstrap-select.min.js"></script> 
-<script src="js/chosen.jquery.min.js"></script>  -->
 
-<script type="text/javascript">
-            $(function () {
-                $('#datetimepicker3').datetimepicker({
-                    format: 'LT'
-                });
-            });
-        </script> 
-<script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-
-});
- 		</script> 
 <script>
 
 // Error pop
@@ -493,13 +500,6 @@ $(".reminder").click(function(){
    
    
 </script>
-<script type="text/javascript">
-            $(function () {
-                $('#datetimepicker5').datetimepicker({
-					locale: 'ru'
-                });
-            });
-        </script>
       <script>
 	// Close Advanced Search
 		function closePop(){
@@ -510,22 +510,83 @@ $(".reminder").click(function(){
 		}
 	</script> 
 
-
+<script type="text/javascript">
+	function flushCustomDates() {
+		$('#ExportStartDate').val('');
+		$('#ExportEndDate').val('');
+		$.datepicker._clearDate('#ExportStartDate');
+		$.datepicker._clearDate('#ExportEndDate');
+	}
+	</script>
 <script>
 function getDayWiseReports(){
+	$('#reportStartDate').empty();
+	$('#reportEndDate').empty(); 
 	var reportType = $("#reportTypeId").val();
+	var startDate = $("#ExportStartDate").val();
+	var endDate = $("#ExportEndDate").val();
 	var sourceleadUrl ='${sourceleadUrl}';
-	
+	if(reportType!="custom"){
 	$.ajax({
          type : "POST",
-          url: sourceleadUrl+"/getRequirementReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType,    
+         url: sourceleadUrl+"/getRequirementReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
           success :function(data) {
         	 prepareReportDataDiv(data);
          },
           
      });  
+	}
 	
 }
 
 </script>
- 
+<script>
+function custDates(){
+	var reportType = $("#reportTypeId").val();
+	if(reportType=="custom"){
+	    $(".cusShow").show();
+	}
+	if(reportType!="custom"){
+	    $(".cusShow").hide();
+	}
+}
+</script>
+
+<script>
+function getCustomReports(){
+	var reportType = $("#reportTypeId").val();
+	var startDate = $("#ExportStartDate").val();
+	var endDate = $("#ExportEndDate").val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(startDate == null || startDate == '' || startDate == 'undefined'){
+		$("#reportStartDate").empty().append("Start Date is Required") ; 
+	}
+	if(endDate == null || endDate == '' || endDate == 'undefined'){
+		$("#reportEndDate").empty().append("End Date is Required") ; 
+	}
+	else{
+		$.ajax({
+	         type : "POST",
+	          url: sourceleadUrl+"/getRequirementReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,    
+	          success :function(data) {
+	        	 prepareReportDataDiv(data);
+	         },
+	          
+	     }); 
+	}
+	 
+}
+</script>
+<script type="text/javascript"> 
+	function addValidClass(){
+		 var StartDate = document.getElementById("ExportStartDate").value;
+		 if(StartDate){
+			 $('#reportStartDate').empty() 
+		 }
+		 
+		 var EndDate = document.getElementById("ExportEndDate").value;
+		 if(EndDate){
+			 $('#reportEndDate').empty(); 
+		 }
+}
+</script>

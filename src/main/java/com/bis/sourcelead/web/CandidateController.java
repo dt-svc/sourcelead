@@ -64,7 +64,7 @@ public class CandidateController {
 	
 	//Note this method is ResumeParsing Candidate method
 	
-	 @PreAuthorize("hasRole('ROLE_CREATE_CANDIDATE')")
+	 @PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
 	 @RequestMapping(value = "/candidate")
 		public ModelAndView candidate(HttpServletRequest request) throws Exception {
 		 	logger.debug("Display the candiade page");
@@ -92,7 +92,7 @@ public class CandidateController {
 	 
 	   //Note this method is ResumeParsing Candidate method
 		
-		 @PreAuthorize("hasRole('ROLE_CREATE_CANDIDATE')")
+		 @PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
 		 @RequestMapping(value = "/addCandidate")
 			public ModelAndView addCandidate(HttpServletRequest request) throws Exception {
 			 	logger.debug("Display the candiade page");

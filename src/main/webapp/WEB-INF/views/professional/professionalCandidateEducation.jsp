@@ -81,27 +81,8 @@ function candidateEducationList(candidateId){
           type : "POST",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
           success :function(data) {
-               if(data != null && data != 'undefined' && data != "" && data != '[]'){
-             		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-             		 else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		 }
-             		 else{
+               
              			var json = JSON.parse(data);
-             			/* for (var i = 0; i < 1; i++) {
-                            var val= json[i];
-                            var opt = "";
-                                    if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
-                                            opt  = opt + '<div class="success_pop" id="selector4" style="display: block;">';
-                                            opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
-                                            opt  = opt + '</div>';
-                                            }
-                                    $("#msgDiv1").empty();
-                                    $("#msgDiv1").append(opt);
-                            } */
-             			 
 	                	 $("#candidateEducationList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='candidateEducationPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -182,22 +163,6 @@ function candidateEducationList(candidateId){
 	                     result = result +"</table>";
 	                     $("#candidateEducationList").append(result); 
 	                     educationPagination(); 
-			    	} 
-               }else{
-	    	         var result ="";
-		    	     result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Candidate Educations Found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> "; 
-					$("#candidateEducationList").empty();
-				    $("#candidateEducationList").append(result); 
-               }
         },
           
      }); 
@@ -219,7 +184,8 @@ function educationPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		"sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -281,7 +247,7 @@ function addEducation(candidateId) {
 	result = result  +'                                                                                                                                                       ';
 	
 	result  = result + '                 <div class="clearfix mb10">';
-	result = result  +'	                     <div class="col-md-4" positionRelative>';
+	result = result  +'	                     <div class="col-md-5" positionRelative>';
 	result = result  +'	                     <select class="chosen-select"  name="gradeType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 	result = result  +'	                       <option value="Percentage">%</option>';
@@ -289,7 +255,7 @@ function addEducation(candidateId) {
 	result = result  +'	                       <option value="GRADE">GRADE</option>';
 	result = result  +'	                      </select>';
 	result = result  +'	                   </div>';
-	result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
+	result  = result + '                   <div class="col-md-7" positionRelative id="candidateScoreDiv">';
 	result  = result + '                     <input type="text" class="form-control input-sm" value="" name="grade" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();"';
 	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 	result  = result + '                 	 </div>';

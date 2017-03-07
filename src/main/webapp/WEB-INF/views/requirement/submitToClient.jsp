@@ -120,17 +120,16 @@ function submitToClient(requirementId){
 				    	   result = result + '<td><div><input type="text" class="form-control quantity" maxlength="10" onkeypress="validateRate(event,'+report.id+')" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value=""></div></td>';
 			    	     }
 						
-						result = result + '<td><select class="selct-picker" id="submissionRateType'+report.id+'" name="submissionRateType" field-name="Rate Type" data-validation-optional="true">';
-						result = result + '<option value="">Rate Per</option>';
-						result = result + '<option value="Hourly">Hourly</option>';
-						result = result + '<option value="Weekly">Weekly</option>';
-						result = result + '<option value="Bi-weekly">Bi-weekly</option>';
-						result = result + '<option value="Semi-Monthly">Semi-Monthly</option>';
-						result = result + '<option value="Monthly">Monthly</option>';
-						result = result + '<option value="Bi-Monthly">Bi-Monthly</option>';
-						result = result + '<option value="Yearly">Yearly</option>';
-						result = result + ' </select></td>';
-			           
+							result = result + '<td><select class="selct-picker" id="submissionRateType'+report.id+'" name="submissionRateType" field-name="Rate Type" data-validation-optional="true">';
+							result = result + '<option value="">Rate Per</option>';
+							result = result + ' <option '+(report.finalizedRateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
+							result = result + '<option  '+(report.finalizedRateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
+							result = result + '<option  '+(report.finalizedRateType == "Bi-weekly" ? "selected" : '') +'>Bi-weekly</option>';
+							result = result + '<option  '+(report.finalizedRateType == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
+							result = result + '<option  '+(report.finalizedRateType == "Monthly" ? "selected" : '') +'>Monthly</option>';
+							result = result + '<option  '+(report.finalizedRateType == "Bi-Monthly" ? "selected" : '') +'>Bi-Monthly</option>';
+							result = result + '<option  '+(report.finalizedRateType == "Yearly" ? "selected" : '') +'>Yearly</option>';
+							result = result + ' </select></td>';
 			           
 			           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
 			        	   result = result + '<td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
@@ -490,7 +489,7 @@ function addEmailtemplate(requirementId){
 	$("#pipeline_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
  }
-		 S
+		 
  }else{
 	    var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
@@ -620,7 +619,9 @@ function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate,sel
 					url : sourceleadUrl+"/submitToClient?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&selectedIds="+selectedIds+"&requirementId="+requirementId+"&selectedShortlistsRate="+selectedShortlistsRate+"&selectedShortlistsRatePer="+selectedShortlistsRatePer,
 					success : function(result) {
 						cancelSubmit();
-                        requirementPipeline(requirementId,allApplicants); 
+						var allApplicants = 'all';
+			    		requirementPipeline(requirementId,allApplicants); 
+			    		pipelineList(requirementId);
 					},
 				}); 
 	 }

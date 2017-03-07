@@ -88,6 +88,8 @@ public class Constants {
 	public static String REJECT_CLIENT = "Reject Client";
 	public static String REJECT_VENDOR = "Reject Vendor";
 	
+	public static String SHORTLISTMAILFROMCLIENT_TO_VENDOR = "ShortlistMailFromClient_To_Vendor";
+	
 	public static String OFFER_MAIL_TO_VENDORS="Client to Vendor Acceptence";
 	public static String APPLICANT_INTERVIEW = "Applicant Interview";
 	public static String INTERVIEWER_INVITATION = "Interviewer Invitation";
@@ -338,6 +340,8 @@ public class Constants {
 	public static String OFFERMADE = "OFFERMADE";
 	public static String CLIENT_OFFERMADE = "CLIENT_OFFERMADE";
 	
+	public static String REFER_JOB_APPLIED = "Applied";
+	
 	
 	public static String REQUIREMENT_STATUS = "Draft";
 	
@@ -539,7 +543,8 @@ public class Constants {
     public static String CANDIDATE_EMPLOERS = "Employer's";
     
     
-    
+    public static String CUSTOM_REPORTS =  "custom";
+    public static String UTC_TIMEZONE =  "UTC";
     
     
     
