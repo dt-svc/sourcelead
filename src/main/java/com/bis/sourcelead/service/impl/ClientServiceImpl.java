@@ -646,6 +646,12 @@ public class ClientServiceImpl implements ClientService{
 			
 			saveOrUpdateClientVendorElkDocument(orgForElk,orgLocationForELk,null,null,orgRelationsForElk,null);
 
+		      //  This to update  the client/vendor details in ELK
+			
+					List<OrgSpoc>  updateOrgSpockDetails =   orgSpocService.getOrgSpocByOrgRelationId(orgRelationsForElk.getId());
+					if(updateOrgSpockDetails.size() > 0 && null != updateOrgSpockDetails){
+						 updatingClientVendorDetails(updateOrgSpockDetails);
+					}
 			
 		}
 
@@ -730,6 +736,13 @@ public class ClientServiceImpl implements ClientService{
 
 			
 			saveOrUpdateClientVendorElkDocument(orgForElk,orgLocationsForElk,null,null,orgRelationsForElk,null);
+			
+		//  This to update  the client/vendor details in ELK
+			
+			List<OrgSpoc>  updateOrgSpockDetails =   orgSpocService.getOrgSpocByOrgRelationId(orgRelationsForElk.getId());
+			if(updateOrgSpockDetails.size() > 0 && null != updateOrgSpockDetails){
+				 updatingClientVendorDetails(updateOrgSpockDetails);
+			}
 
 		}
 		
@@ -817,6 +830,8 @@ public class ClientServiceImpl implements ClientService{
 						orgSpoc.setOwnerUser(spocUser);
 					}
 					OrgSpoc orSpocElk = orgSpocService.addOrgSpoc(orgSpoc);
+
+					
 					if(null != orgSpoc.getTempOwnerId() && orgSpoc.getTempOwnerId().longValue() != orgSpoc.getClientUser().getId().longValue()){
 						user= userService.getUserById(Long.parseLong(jsonObj.getString(owner)));
 						sendEmailToClientContact(user,editUser,orgLocation,loginUser);
@@ -827,6 +842,8 @@ public class ClientServiceImpl implements ClientService{
 				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));
 				throw new SourceLeadObjectNotFoundException(message.toString());
 			}
+			
+			
 			return orgSpoc;
 
 		}
@@ -1214,7 +1231,13 @@ public class ClientServiceImpl implements ClientService{
 				return searchList;
 		}
 
-
+		void updatingClientVendorDetails(List<OrgSpoc>  updateOrgSpockDetails) throws Exception{
+			if(updateOrgSpockDetails.size() >0 && null != updateOrgSpockDetails){
+				for(OrgSpoc orgSpock :updateOrgSpockDetails){
+					orgSpocService.addOrgSpoc(orgSpock);
+				}
+			}
+		}
 		
 	
 }
