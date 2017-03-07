@@ -3318,5 +3318,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			throws Exception {
 		return requirementSubmissionDao.getProfessionalJobAppliedCount(candidateId, startDate, endDate);
 	}
+
+	@Override
+	public Integer getProfessionalJobSubmisssionsCountBySubmissionType(Long candidateId, String submissionStatus,
+			Date startDate, Date endDate) throws Exception {
+		return requirementSubmissionDao.getProfessionalJobSubmisssionsCountBySubmissionType(candidateId, submissionStatus, startDate, endDate);
+	}
 }
 

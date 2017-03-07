@@ -182,5 +182,7 @@ public interface RequirementSubmissionService {
 			User user) throws Exception;
 	
 	Integer getProfessionalJobAppliedCount(Long candidateId,Date startDate,Date endDate) throws Exception;
+	
+	Integer getProfessionalJobSubmisssionsCountBySubmissionType(Long candidateId,String submissionStatus,Date startDate,Date endDate) throws Exception;
 
 }

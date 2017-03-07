@@ -1571,7 +1571,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			
 			 Session session = this.sessionFactory.getCurrentSession();
 		     
-			 String query = "select count(*) from RequirementSubmission rs where rs.candidate.id = :candidateId and (rs.createdDate BETWEEN :startDate and :endDate))";
+			 String query = "select count(distinct rs.requirement) from RequirementSubmission rs where rs.candidate.id = :candidateId and (rs.createdDate BETWEEN :startDate and :endDate))";
 		     
 		     List<Long> appliedCount = session.createQuery(query).setLong("candidateId", candidateId)
 		    		   .setDate("startDate", startDate)
@@ -1582,6 +1582,29 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					count = appliedCount.get(0).intValue();
 			 }
 			return count;
+		}
+
+		@Override
+		@Transactional
+		public Integer getProfessionalJobSubmisssionsCountBySubmissionType(Long candidateId, String submissionStatus,
+				Date startDate, Date endDate) throws Exception {
+			
+			 Session session = this.sessionFactory.getCurrentSession();
+		     
+			 String query = "select count(distinct rs.requirement) from RequirementSubmission rs where rs.candidate.id = :candidateId and "
+			 		+ "rs.submissionStatus = :submissionStatus and (rs.createdDate BETWEEN :startDate and :endDate))";
+		     
+		     List<Long> submissionsCount = session.createQuery(query).setLong("candidateId", candidateId)
+		    		   .setString("submissionStatus", submissionStatus)
+		    		   .setDate("startDate", startDate)
+					   .setDate("endDate", endDate).setCacheable(true).list();
+			 Integer count= 0;
+			 
+			 if(submissionsCount != null && !submissionsCount.isEmpty()){
+					count = submissionsCount.get(0).intValue();
+			 }
+			return count;
+			
 		}
 
   }

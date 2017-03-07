@@ -82,6 +82,23 @@ public class RequirementRefer implements Serializable {
 	@Transient
 	private Integer referByMeJobs;
 	
+	@Transient
+	private Integer shortlistJobs;
+	
+	@Transient
+	private Integer offeredJobs;
+	
+	@Transient
+	private Integer hiredJobs;
+	
+	@Transient
+	private Integer rejectedJobs;
+	
+	@Transient
+	private Integer interviews;
+	
+	
+	
 	
 	
 
@@ -211,6 +228,47 @@ public class RequirementRefer implements Serializable {
 
 	public void setReferByMeJobs(Integer referByMeJobs) {
 		this.referByMeJobs = referByMeJobs;
+	}
+
+	public Integer getShortlistJobs() {
+		return shortlistJobs;
+	}
+
+	public void setShortlistJobs(Integer shortlistJobs) {
+		this.shortlistJobs = shortlistJobs;
+	}
+
+	public Integer getOfferedJobs() {
+		return offeredJobs;
+	}
+
+	public void setOfferedJobs(Integer offeredJobs) {
+		this.offeredJobs = offeredJobs;
+	}
+
+
+	public Integer getHiredJobs() {
+		return hiredJobs;
+	}
+
+	public void setHiredJobs(Integer hiredJobs) {
+		this.hiredJobs = hiredJobs;
+	}
+
+	public Integer getRejectedJobs() {
+		return rejectedJobs;
+	}
+
+	public void setRejectedJobs(Integer rejectedJobs) {
+		this.rejectedJobs = rejectedJobs;
+	}
+
+	public Integer getInterviews() {
+		return interviews;
+	}
+
+	public void setInterviews(Integer interviews) {
+		this.interviews = interviews;
 	}
 	
 	

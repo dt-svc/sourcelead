@@ -13,21 +13,28 @@
 <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" /> --> 
 
 
+<style>
+.dataTables_empty {
+    height: 285px !important;
+}
+</style>
+
 <script type="text/javascript">
 $(document).ready(function(){
 	getJobSummaryDoNutChart();
-	setInterval(function() {getJobSummaryDoNutChart(); }, 300000);
+	getJobPortlets();
 });
 </script>
 
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Jobs Update</h2>
+        <h2>Jobs Summary</h2>
       </div>
       <div class="pull-right brud-crum">Home &raquo; Vendor &raquo; Add Client</div>
     </section>
-    <div class="content-new clearfix">
+    <div class="content-new clearfix"></div>
+    
       <div class="row">
           <div class="col-md-7 paddingRight">
               <div id="chartdiv" style="width: 100%;">
@@ -36,83 +43,45 @@ $(document).ready(function(){
           </div>
 
           <div class="col-md-5 text-center paddingLeft">
-              <div id="jobSummary">
-              
-                  </div>
+            
+          <div class="col-md-10">
+				    <div class="row">
+					  <div class="col-md-5">
+					     <input type="text" value="" placeholder="From Date" class="form-control input-sm calendar" id="dpfromdate" name="From Date">
+					  </div>
+			  		  <div class="col-md-5">
+					     <input type="text" value="" placeholder="To Date" class="form-control input-sm calendar" id="dptodate" name="To Date">
+					  </div>
+					  <div class="col-md-2">
+						  <button type="button" class="btn btn-sm btn-primary" onclick="getJobSummaryDoNutChart();"><i class="fa fa-search"></i>&nbsp;&nbsp;Search</button>
+					  </div>
+				  </div>
+ 		   </div>
+ 		   <div class="content-new clearfix">
+             <div id="jobSummary">
+         
+             </div>
           </div>
       </div>
       <div class="clearfix"></div>
-      <div class="row mt25 activeJobs">
-          <div class="col-sm-6 col-md-3">
-            <div class="content_widget jobs-graphview buttonView">
-                 <span class="label label-primary">Active Jobs</span>
-                <img src="resources/images/active_jobs.png" title="Active Jobs" alt="Active Jobs">
-                <span class="count">
-                    100
-                </span>
-              </div>
-          </div>
-          <div class="col-sm-6 col-md-3">
-            <div class="content_widget jobs-graphview buttonView">
-                <span class="label label-warning">Referrals</span>
-                    <img src="resources/images/refer-icon.png" title="Referrals" alt="Referrals">
-                
-                <span class="count">100</span>
-            </div>
-          </div>
-          <div class="col-sm-6 col-md-3">
-                          <div class="content_widget jobs-graphview buttonView">
-                <span class="label label-success">Applied</span>
-                              
-                    <img src="resources/images/applied_icon.png" title="Applied" alt="Applied">
-                <span class="count">100</span>
-            </div>
-
-          </div>
-          <div class="col-sm-6 col-md-3">
-                          <div class="content_widget jobs-graphview buttonView">
-                <span class="label label-info">Shortlisted</span>
-                              <img src="resources/images/short_listed.png" title="Shortlisted" alt="Shortlisted">
-                <span class="count">100</span>
-            </div>
-
-          </div>
-          <div class="col-sm-6 col-md-3">
-                          <div class="content_widget jobs-graphview buttonView">
-                <span class="label label-success">Interviews</span>
-                              
-                    <img src="resources/images/interview_icons.png" title="Interviews" alt="Interviews">
-                <span class="count">100</span>
-            </div>
-
-          </div>
-          <div class="col-sm-6 col-md-3">
-                          <div class="content_widget jobs-graphview buttonView">
-                <span class="label label-info">Offered</span>
-                              
-                    <img src="resources/images/offered_icon.png" title="Offered" alt="Offered">
-                <span class="count">100</span>
-            </div>
-
-          </div>
-          <div class="col-sm-6 col-md-3">
-                          <div class="content_widget jobs-graphview buttonView">
-                <span class="label label-primary">Hired</span>
-                    <img src="resources/images/hired_icon.png" title="Hired" alt="Hired">
-                <span class="count">100</span>
-            </div>
-
-          </div>
-          <div class="col-sm-6 col-md-3">
-                          <div class="content_widget jobs-graphview buttonView">
-                <span class="label label-danger">              Rejected
-</span>
-                    
-                              <img src="resources/images/reject_icon.png" title="Rejected" alt="Rejected">
-                <span class="count">100</span>
-            </div>
-
-          </div>
+      <div class="dashboard-widget">
+      
+      <div class="row">
+      <div class="col-md-10">
+				    <div class="row">
+					  <div class="col-md-3 paddingRight">
+					     <input type="text" value="" placeholder="From Date" class="form-control input-sm calendar" id="portletfromdate" name="From Date">
+					  </div>
+			  		  <div class="col-md-3 paddingLeft paddingRight">
+					     <input type="text" value="" placeholder="To Date" class="form-control input-sm calendar" id="portlettodate" name="To Date">
+					  </div>
+					  <div class="col-md-2 paddingLeft">
+						  <button type="button" class="btn btn-sm btn-primary" onclick="getJobPortlets();"><i class="fa fa-search"></i>&nbsp;&nbsp;Search</button>
+					  </div>
+				  </div>
+ 		   </div>
+      <div id="jobPortletsDiv" class="activeJobs"></div>
+      </div>
       </div>
 
       </div>
@@ -121,11 +90,113 @@ $(document).ready(function(){
   
   
   <script>
-  function getJobSummaryDoNutChart(){
-	var sourceleadUrl = '${sourceleadUrl}';
+  function getJobPortlets(){
+	  
+    var sourceleadUrl = '${sourceleadUrl}';
+	
+	var startDate = document.getElementById("portletfromdate").value; 
+	var endDate = document.getElementById("portlettodate").value; 
+	  
 	$.ajax({ 
 		   	type: "GET",
-		   	url: sourceleadUrl+"/getJobSummaryDoNutChart?${_csrf.parameterName}=${_csrf.token}",
+		   	url: sourceleadUrl+"/getJobSummaryPortlets?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,
+		    success: function(data) {
+	    	 var json = JSON.parse(data);
+		    	
+	    	  var result = ''
+			  result = result +'<div class="col-sm-6 col-md-3">';
+			  result = result +'<div class="content_widget jobs-graphview buttonView">';
+			  result = result +'<span class="label label-primary">Active Jobs</span>';
+			  result = result +' <img src="resources/images/active_jobs.png" title="Active Jobs" alt="Active Jobs">';
+			  result = result +'<span class="count">';
+			  result = result +'100';
+              result = result +'</span>';
+              result = result +'</div>';
+              result = result +' </div>';
+              result = result +'<div class="col-sm-6 col-md-3">';
+              result = result +'<div class="content_widget jobs-graphview buttonView">';
+              result = result +'<span class="label label-warning">Referrals</span>';
+              result = result +'<img src="resources/images/refer-icon.png" title="Referrals" alt="Referrals">';
+          
+              result = result +'<span class="count">100</span>';
+              result = result +'</div>';
+              result = result +' </div>';
+              result = result +'<div class="col-sm-6 col-md-3">';
+              result = result +'<div class="content_widget jobs-graphview buttonView">';
+              result = result +'<span class="label label-success">Applied</span>';
+                        
+              result = result +'<img src="resources/images/applied_icon.png" title="Applied" alt="Applied">';
+              result = result +'<span class="count">'+json['appliedJobs']+'</span>';
+              result = result +'</div>';
+
+              result = result +'</div>';
+              result = result +'<div class="col-sm-6 col-md-3">';
+              result = result +'<div class="content_widget jobs-graphview buttonView">';
+              result = result +'<span class="label label-info">Shortlisted</span>';
+              result = result +'<img src="resources/images/short_listed.png" title="Shortlisted" alt="Shortlisted">';
+              result = result +'<span class="count">'+json['shortlistJobs']+'</span>';
+              result = result +'</div>';
+
+              result = result +'</div>';
+              result = result +'<div class="col-sm-6 col-md-3">';
+              result = result +'<div class="content_widget jobs-graphview buttonView">';
+              result = result +'<span class="label label-success">Interviews</span>';
+                        
+              result = result +'<img src="resources/images/interview_icons.png" title="Interviews" alt="Interviews">';
+              result = result +'<span class="count">'+json['interviews']+'</span>';
+              result = result +'</div>';
+
+              result = result +'</div>';
+              result = result +'<div class="col-sm-6 col-md-3">';
+              result = result +'<div class="content_widget jobs-graphview buttonView">';
+              result = result +'<span class="label label-info">Offered</span>';
+                        
+              result = result +'<img src="resources/images/offered_icon.png" title="Offered" alt="Offered">';
+              result = result +'<span class="count">'+json['offeredJobs']+'</span>';
+              result = result +'</div>';
+
+              result = result +'</div>';
+              result = result +'<div class="col-sm-6 col-md-3">';
+              result = result +'<div class="content_widget jobs-graphview buttonView">';
+              result = result +'<span class="label label-primary">Hired</span>';
+              
+              result = result +'<img src="resources/images/hired_icon.png" title="Hired" alt="Hired">';
+              result = result +'<span class="count">'+json['hiredJobs']+'</span>';
+              result = result +'</div>';
+
+              result = result +'</div>';
+              result = result +'<div class="col-sm-6 col-md-3">';
+              result = result +'<div class="content_widget jobs-graphview buttonView">';
+              result = result +'<span class="label label-danger">Rejected';
+              result = result +'</span>';
+              
+              result = result +'<img src="resources/images/reject_icon.png" title="Rejected" alt="Rejected">';
+              result = result +'<span class="count">'+json['rejectedJobs']+'</span>';
+              result = result +'</div>';
+
+              result = result +'</div>';
+              
+              $("#jobPortletsDiv").empty(); 
+              $("#jobPortletsDiv").append(result); 
+		    },
+	        error: function(e){
+	        }
+	 });
+  }
+  
+  </script>
+  
+  
+  <script>
+  function getJobSummaryDoNutChart(){
+	var sourceleadUrl = '${sourceleadUrl}';
+	
+	var startDate = document.getElementById("dpfromdate").value; 
+	var endDate = document.getElementById("dptodate").value; 
+	
+	$.ajax({ 
+		   	type: "GET",
+		   	url: sourceleadUrl+"/getJobSummaryDoNutChart?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,
 		    success: function(data) {
 	        	var json = JSON.parse(data);
 	        	
@@ -143,30 +214,44 @@ $(document).ready(function(){
   <!-- For donut chart -->
 <script>
 function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
-	 var chart = AmCharts.makeChart( "jobSummary", {
-	  "type": "pie",
-	  "theme": "light",
-	  "dataProvider": [ {
-	    "title": "Refered To Me ("+referToMeJobs+")",
-	    "value": referToMeJobs
-	  }, {
-	    "title": "Refered By Me ("+referByMeJobs+")",
-	    "value": referByMeJobs
-	  }, {
-	    "title": "Applied ("+appliedJobs+")",
-	    "value": appliedJobs
-	  } ],
-	  "titleField": "title",
-	  "valueField": "value",
-	  "labelRadius": 5,
-	
-	  "radius": "35%",
-	  "innerRadius": "40%",
-	  "labelText": "[[title]]",
-	  "export": {
-	    "enabled": true
-	  }
-	} );
+	if(appliedJobs == 0 && referToMeJobs == 0 && referByMeJobs == 0){
+		
+	    var result ="";
+        result = result+"<div class='dataTables_empty mt'>"; 
+	    result = result+"</div> "; 
+		$("#jobSummary").empty();
+	    $("#jobSummary").append(result); 
+	    
+	    /* $("#dpfromdate").val('');
+	    $("#dptodate").val(''); */
+		
+	}else{
+		var chart = AmCharts.makeChart( "jobSummary", {
+			  "type": "pie",
+			  "theme": "light",
+			  "dataProvider": [ {
+			    "title": "Refered To Me ("+referToMeJobs+")",
+			    "value": referToMeJobs
+			  }, {
+			    "title": "Refered By Me ("+referByMeJobs+")",
+			    "value": referByMeJobs
+			  }, {
+			    "title": "Applied ("+appliedJobs+")",
+			    "value": appliedJobs
+			  } ],
+			  "titleField": "title",
+			  "valueField": "value",
+			  "labelRadius": 5,
+			
+			  "radius": "35%",
+			  "innerRadius": "40%",
+			  "labelText": "[[title]]",
+			  "export": {
+			    "enabled": true
+			  }
+			} );
+			 
+	}
  
 }
     
@@ -413,6 +498,26 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
   </script>
     
     
+ <script type="text/javascript">
+  $( function() {
+	  
+	  
+	  $('#dpfromdate,#portletfromdate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
+	      //minDate: 0  this line for to restrict selection of previous dates
+	  });
+	  
+	  $('#dptodate,#portlettodate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
+	      //minDate: 0  this line for to restrict selection of previous dates
+	  });
+      
+  });
+</script>
 
  
 
