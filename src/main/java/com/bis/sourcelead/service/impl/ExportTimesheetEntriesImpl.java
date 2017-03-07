@@ -846,7 +846,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		    	    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
 		    	    	  }
 						if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()) {
-							totalHours = totalHours + sah.getWeekTotals().get(entry.getKey());
+							totalHours = CommonUtil.getCombinedHours(totalHours, sah.getWeekTotals().get(entry.getKey()));
 							timeSheetApprovalArray[count] = (sah.getWeekTotals().get(entry.getKey()).toString()) + "/"+weekTotal;
 						} else {
 							timeSheetApprovalArray[count] = "0/"+weekTotal;
@@ -855,16 +855,8 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 					}
 				}
 			}
-		 float tsHours = totalHours;
-	     float tsHoursValue = (int) tsHours;
-	     float tsMinutesValue = tsHours - tsHoursValue;
-	     float totalMinutes = (tsHoursValue* 60)+(tsMinutesValue*100);
-	     
-	     float actualHours = (int) (totalMinutes / 60); 
-	     float actualMinutes = (totalMinutes % 60)/100;
-	     String actualTimeString = String.format("%.2f", (actualHours+actualMinutes));
-	     if(actualTimeString != null && !"".equalsIgnoreCase(actualTimeString.toString())){
-	    	 timeSheetApprovalArray[count]   = actualTimeString+"/"+estimatedTotalHours;
+	     if(totalHours != null && !"".equalsIgnoreCase(totalHours.toString())){
+	    	 timeSheetApprovalArray[count]   = totalHours+"/"+estimatedTotalHours;
 	     }else{
 	    	 timeSheetApprovalArray[count] = "0.0/"+estimatedTotalHours;
 	     }
@@ -1044,7 +1036,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 			    	    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
 			    	    	  }
 							if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()) {
-								totalHours = totalHours + sah.getWeekTotals().get(entry.getKey());
+							   totalHours = CommonUtil.getCombinedHours(totalHours, sah.getWeekTotals().get(entry.getKey()));
 								writeRow.createCell(count).setCellValue(sah.getWeekTotals().get(entry.getKey()).toString() + "/"+weekTotal);
 							} else {
 								writeRow.createCell(count).setCellValue( "0/"+weekTotal);
@@ -1053,16 +1045,9 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 						}
 					}
 				}
-				 float tsHours = totalHours;
-			     float tsHoursValue = (int) tsHours;
-			     float tsMinutesValue = tsHours - tsHoursValue;
-			     float totalMinutes = (tsHoursValue* 60)+(tsMinutesValue*100);
-			     
-			     float actualHours = (int) (totalMinutes / 60); 
-			     float actualMinutes = (totalMinutes % 60)/100;
-			     String actualTimeString = String.format("%.2f", (actualHours+actualMinutes));
-				 if(actualTimeString != null && !"".equalsIgnoreCase(actualTimeString.toString())){
-					 writeRow.createCell(count).setCellValue( actualTimeString.toString()+"/"+estimatedTotalHours);
+				
+				 if(totalHours != null && !"".equalsIgnoreCase(totalHours.toString())){
+					 writeRow.createCell(count).setCellValue( totalHours.toString()+"/"+estimatedTotalHours);
 			     }else{
 			    	 writeRow.createCell(count).setCellValue( "0.0/"+estimatedTotalHours);
 			     }
