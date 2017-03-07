@@ -127,9 +127,7 @@ function interviews(dateRange){
      	        		$("#upcoming").empty();
      	        		$("#previous").empty();
 	 	    	        var result ="";
-						result = result+"			<div class='blank-pages'>";
-						result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-						result = result+"			        <p>No Interviews Found</p>";
+						result = result+"			<div class='dataTables_empty'>";
 						result = result+"			 </div>";
 					    $("#today").append(result); 
 	               }

@@ -63,7 +63,7 @@
 	                   <li class="${sessionData.nav == 'Candidates' ? 'side-nav-active' : ''}"><a href="<c:url value='/candidatesList'/>" title="Candidates"><span><i class="fa fa-user"></i></span>Candidates</a></li>
 	                 </c:if>
 	                 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-	                   <li class="${sessionData.nav == 'Candidates' ? 'side-nav-active' : ''}"><a href="<c:url value='/recruiterCandidates'/>" title="Candidates"><span><i class="fa fa-user"></i></span>Candidates</a></li>
+	                   <li class="${sessionData.nav == 'Candidates' ? 'side-nav-active' : ''}"><a href="<c:url value='/candidatesList'/>" title="Candidates"><span><i class="fa fa-user"></i></span>Candidates</a></li>
 	                 </c:if>
 	                </c:if> 
                 

@@ -197,13 +197,13 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			    	    <c:if test="${isManager == true || isAdmin == true}">
 			    	   		result = result + '<ul class="list-unstyled list-inline">';
 			    	   		result = result + '<span id="statusDiv">';
-			    	    	if(json.submissionRateStatus != 'ACCEPTED' && json.submissionRateStatus != 'REJECTED'){   
+			    	    	if(json.submissionRateStatus != 'ACCEPTED' && json.submissionRateStatus != 'REJECTED' && json.submissionStatus != 'REJECTED' && json.submissionStatus != 'SHORTLIST' && json.submissionStatus != 'OFFERMADE'){   
 								result = result + '	<li><i class="fa fa-check labelsuccess" title="Accept Applicant Authorization" onClick="acceptCandidate(\''+submissionId+'\',\'accept\');"></i>';
 								result = result + '		<div class="acceptreject-pop" id="accpet-div">';
 								result = result + '		</div>';
 								result = result + '	</li>';
 								
-								result = result + '	<li><i class="fa fa-close labeldanger" title="Reject Applicant Authorization" onClick="rejectFun('+submissionId+');"></i>';
+								result = result + '	<li><i class="fa fa-close labeldanger" title="Reject Applicant Authorization" onClick="rejectFun('+submissionId+','+requirementId+');"></i>';
 								result = result + '		<div class="acceptreject-pop" id="reject">';
 								result = result + '		</div>';
 								result = result + '	</li>';
@@ -267,7 +267,9 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 									}
 						   }else{
 							   <c:if test="${isTeamMember == true && isManager == false && isAdmin == false}">
+							   if(json.submissionStatus != 'REJECTED' && json.submissionStatus != 'SHORTLIST' && json.submissionStatus != 'OFFERMADE'){
 									result = result + '	<li><i class="fa fa-check labelsuccess" title="Request" onClick="requestFun('+submissionId+');"></i>';
+							   }
 									result = result + '		<div class="acceptreject-pop" id="request">';
 									result = result + '		</div>';
 									result = result + '	</li>';
@@ -1223,7 +1225,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 	$("html").click(function(e){
 		 $('#accpet-div').fadeOut();
 	 }); */
-	function rejectFun(submissionId){
+	function rejectFun(submissionId,requirementId){
 		$('#reject').empty();
 		$('#accpet-div').empty();
 		var result = "";
@@ -1234,7 +1236,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		result = result + '				</div>';
 		result = result + '			</div>';
 		result = result + '			<div class="row">';
-		result = result + '				<div class="col-md-12"><input type="button" id="reject_candidate" value="Submit" title="Sibmit" class="pull-right btn btn-primary mt10 btn-sm ml10" onclick="rejectCandidate(\''+submissionId+'\',\'reject\');">';
+		result = result + '				<div class="col-md-12"><input type="button" id="reject_candidate" value="Submit" title="Sibmit" class="pull-right btn btn-primary mt10 btn-sm ml10" onclick="rejectCandidate(\''+submissionId+'\',\'reject\','+requirementId+');">';
 		result = result + '				</div>';
 		result = result + '			</div>';
 		result = result + '	        </form>';
@@ -1432,8 +1434,8 @@ function attachmentValidationFun(){
 
 
 <script type="text/javascript">
-	function rejectCandidate(submissionId, decision){
-			var validationSettings = {
+	function rejectCandidate(submissionId, decision,requirementId){
+		var validationSettings = {
 			        errorMessagePosition : 'element',
 			        borderColorOnError : '',
 					scrollToTopOnError : true,
@@ -1474,8 +1476,10 @@ function attachmentValidationFun(){
 		            			 
 		            			 $("#statusDiv").empty();
 		            			 $("#statusDiv").append("REJECTED");
+		            			 
 		            				
 		            		 }
+							 pipelineList(requirementId);
 						},
 					});
 					return true;
