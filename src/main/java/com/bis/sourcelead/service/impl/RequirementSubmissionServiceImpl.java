@@ -2,7 +2,10 @@ package com.bis.sourcelead.service.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -15,7 +18,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 
+import org.apache.commons.compress.utils.IOUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -32,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -82,6 +89,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.healthmarketscience.jackcess.complex.Attachment;
 
 /**
  * 
@@ -3138,12 +3146,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	public void shortListedMailToVendorFromClient(Requirement req, String submissionsList,OrgLocations orgLocations, User user) throws Exception {
 		String[] submissionId = submissionsList.split(",");
 		StringBuilder shortlistTable = null;
+		File file = null;
 		EmailMessage emailMessage = new EmailMessage();
 		List<Long> vendorIds = new ArrayList<>();
 			for (int i = 0; i < submissionId.length; i++) {
 				StringBuilder linkBuild = new StringBuilder();
 				RequirementSubmission reqsub = requirementSubmissionDao.getRequirementSubmissionById(Long.parseLong(submissionId[i]));
-				
+				List<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
 				if(null != reqsub.getVendorLocationId()){
 					if(vendorIds.size()>=0 && !vendorIds.contains(reqsub.getVendorLocationId().getId())){
 						User userVendor = userService.getUserByUserCode(reqsub.getCreatedBy());
@@ -3151,8 +3160,18 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 						int candidateCount = getShortlistedCount(submissionId,reqsub.getVendorLocationId().getId());
 							if(candidateCount <= 5){
 							shortlistTable = buildShortlistedApplicantTable(submissionId,reqsub.getVendorLocationId().getId());
+							}else{
+							file = getShortListCandidateExcelEmailAttachmentForVendors(submissionId,reqsub.getVendorLocationId().getId(),candidateCount,reqsub);
+							 //FileInputStream input = new FileInputStream(file);
+							   // MultipartFile multipartFile = new MockMultipartFile("file",file.getName(), "text/plain", IOUtils.toByteArray(input));
+							  byte[] data = FileUtils.readFileToByteArray(file);
+							  EmailAttachment emailAttachment = new EmailAttachment();
+								emailAttachment.setName(file.getName());
+								emailAttachment.setDocFile(data);
+								emailAttachment.setType("text/plain");
+								attachmentList.add(emailAttachment);
 							}
-						/*if(null != reqsub.getSourceSubmission()){
+							/*if(null != reqsub.getSourceSubmission()){
 							if (reqsub.getSourceSubmission().getRequirement().getId().longValue() == childReq.getId().longValue()) {*/
 								
 								 emailMessage.setFirstName(userVendor.getFirstName());
@@ -3198,6 +3217,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 								 
 								 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 								 
+						 
 								 //setting the Recipient information
 								 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 								 EmailRecipient emailRecipient = new EmailRecipient();
@@ -3224,7 +3244,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 								 emailMessage.setMessageBody(emailTemplate);
 								 
 								 //calling the sendEmail method of emailScenerioUtil
-								 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+								 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,attachmentList);
 								 
 								String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 								notificationScenario.setBody(notificationBody);
@@ -3242,6 +3262,91 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	
+	private File getShortListCandidateExcelEmailAttachmentForVendors(String[] submissionId, Long vendorLocationId, int candidateCount, RequirementSubmission reqsub) throws IOException {
+		File file = null;
+			Workbook createExcelworkbook = new XSSFWorkbook();
+			StringBuilder tempFileBuilder = new StringBuilder();
+			StringBuilder excelStringBuilder=new StringBuilder();
+			Sheet createExcelsheet = createExcelworkbook.createSheet(excelStringBuilder.append("shortListed Candidates List").toString());
+			Date date = new Date();
+			String formatedDate = Constants.DMY.format(date);
+			Row writeRow = null;
+			createExcelsheet = getExcelSheetWithHeaderForShortListCandidates(createExcelsheet, writeRow, createExcelworkbook,candidateCount,reqsub);
+			int column = 2;
+			for(int i=0;i<submissionId.length;i++){
+				List<RequirementSubmissionTemplateFields> requirementSubmissionTemplate = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsIdAndOrgLocationId(Long.parseLong(submissionId[i]), vendorLocationId);
+				for(RequirementSubmissionTemplateFields requirementSubmissionTemplateFields:requirementSubmissionTemplate){
+					writeRow = createExcelsheet.createRow(column + 2);
+					createExcelsheet = createXlsSheetSubmitClient(createExcelsheet, writeRow, requirementSubmissionTemplateFields);
+					column++;
+				}
+			}
+				 file = File.createTempFile(tempFileBuilder.append("ShortList Candidate List").append(formatedDate).toString(),".xls");
+					file.setReadable(true);
+
+					FileOutputStream fos = new FileOutputStream(file);
+					try {
+						createExcelworkbook.write(fos);
+						fos.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				return file;
+	}
+
+	private Sheet createXlsSheetSubmitClient(Sheet createExcelsheet, Row writeRow,RequirementSubmissionTemplateFields requirementSubmissionTemplateFields) {
+		StringBuilder sb = new StringBuilder();
+		if(requirementSubmissionTemplateFields.getLastName() != null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
+			writeRow.createCell(0).setCellValue(sb.append(requirementSubmissionTemplateFields.getFirstName()).append("-").append(requirementSubmissionTemplateFields.getLastName()).toString());
+		}else if(requirementSubmissionTemplateFields.getFirstName() != null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getFirstName())){
+			writeRow.createCell(0).setCellValue(sb.append(requirementSubmissionTemplateFields.getFirstName()).toString());
+		}
+
+		if(requirementSubmissionTemplateFields.getPhoneNumber() != null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getPhoneNumber())){
+			writeRow.createCell(1).setCellValue(requirementSubmissionTemplateFields.getPhoneNumber());
+		}
+		if(requirementSubmissionTemplateFields.getWorkExperience() != null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getWorkExperience())){
+			writeRow.createCell(2).setCellValue(requirementSubmissionTemplateFields.getWorkExperience());
+		}
+			writeRow.createCell(3).setCellValue("Shortlisted");
+		
+		return createExcelsheet;
+	}
+
+	private Sheet getExcelSheetWithHeaderForShortListCandidates(Sheet createExcelsheet, Row writeRow,Workbook createExcelworkbook, int candidateCount, RequirementSubmission reqsub) {
+		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
+		prepareHeaders(writeRow, createExcelsheet, style,Constants.SHORTLIST_CANDIDATE_COUNT, candidateCount,reqsub);
+		String headers[] = Constants.SHORTLIST_CANDIDATE_FROM_CLIENT_TO_VENDOR_HEADER;
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style, headers, 3);
+		return createExcelsheet;
+	}
+
+	private void prepareHeaders(Row writeRow, Sheet createExcelsheet, CellStyle style, String shortlist_candidate_count,int candidateCount, RequirementSubmission reqsub) {
+		writeRow = createExcelsheet.createRow(1);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell1 = writeRow.createCell(0);
+		cell1.setCellValue("Requirement Name :");
+		cell1.setCellStyle(style);
+		Cell cell2 = writeRow.createCell(1);
+		cell2.setCellValue(reqsub.getRequirement().getJobTitle());
+		cell2.setCellStyle(style);
+		
+		writeRow = createExcelsheet.createRow(2);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell3 = writeRow.createCell(0);
+		cell3.setCellValue(shortlist_candidate_count);
+		cell3.setCellStyle(style);
+		Cell cell4 = writeRow.createCell(1);
+		cell4.setCellValue(candidateCount);
+		cell4.setCellStyle(style);
+
+
+	}
+
 	private int getShortlistedCount(String[] submissionId, Long vendorLocationId) {
 		int count = 0;
 		 for(int i=0;i<submissionId.length;i++){
