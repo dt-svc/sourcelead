@@ -241,12 +241,19 @@ public class TimesheetRestController {
 			     }
 			    SubmissionApproverHierarchy isSah = submissionApproverHierarchyService.isThereAnyApproverChangesStatusForProjectMember(projectMemberId, frequencyStartDate, frequencyEndDate, "APPROVED");
 			    boolean isSahApproved = false;
-			    if(isSah == null &&from.equalsIgnoreCase("user") && isModifyMyTimeSheet && !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
+			    if((isSah == null &&from.equalsIgnoreCase("user") && isModifyMyTimeSheet && !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())))
+			       || (!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()) && from.equalsIgnoreCase("approver") && StringUtils.isEmpty( sah.getReopenReason())) ){
+			        if(isSah == null)
 			    	isSahApproved = true;
 			    	styleWidth = "style='width:244px;'";
 				   innerStyleWidth = "style='width:40%;'";
 				   statusDivWidth = "244";
 			     }
+			    
+			    if(!isNullOrEmpty(submissionStatusStr)  && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()) && from.equalsIgnoreCase("approver") && StringUtils.isNotEmpty(sah.getReopenReason())){
+					   styleWidth = "style='width:300px;'";
+					   innerStyleWidth = "style='width:40%;'";
+				   }
 			    
 			    boolean isSahReopened = false;
 			    if(null != isSah && from.equalsIgnoreCase("approver") && null != isSah.getReopenReason() && !"".equalsIgnoreCase(isSah.getReopenReason()) /*&& null != isSah.getReopenRejectedReason() && !"".equalsIgnoreCase(isSah.getReopenRejectedReason())*/){
@@ -432,10 +439,17 @@ public class TimesheetRestController {
 		   }
 		   SubmissionApproverHierarchy isSah = submissionApproverHierarchyService.isThereAnyApproverChangesStatusForProjectMember(projectMemberId, frequencyStartDate, frequencyEndDate, "APPROVED");
 		   boolean isSahApproved = false;
-		   if(isSah == null &&from.equalsIgnoreCase("user") && isModifyMyTimeSheet && !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
-			 isSahApproved = true;
+		   if((isSah == null &&from.equalsIgnoreCase("user") && isModifyMyTimeSheet && !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())))
+			  || (!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()) && from.equalsIgnoreCase("approver") && StringUtils.isEmpty(sah.getReopenReason())) ){
+			  if(isSah == null)
+			  isSahApproved = true;
 			 styleWidth = "style='width:244px;'";
 			 innerStyleWidth = "style='width:40%;'";
+		   }
+		   
+		   if(!isNullOrEmpty(submissionStatusStr)   && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()) && from.equalsIgnoreCase("approver") && StringUtils.isNotEmpty(sah.getReopenReason())){
+			   styleWidth = "style='width:300px;'";
+			   innerStyleWidth = "style='width:40%;'";
 		   }
 		   
 		   boolean isSahReopened = false;
@@ -571,6 +585,8 @@ public class TimesheetRestController {
 		   Boolean isModifyMyTimeSheet = commonUtil.hasRole("ROLE_MODIFY_MY_TIMESHEETS");
 		   
 		    timesheetEntriesDiv.append("<input type='hidden' name='timesheetSubmissionStatus'  id='timesheetSubmissionStatus' value='"+submissionStatusStr+"' >");
+		    timesheetEntriesDiv.append("<input type='hidden' name='isSuperUser'  id='isSuperUser' value='"+isSuperUser+"' >");
+		    
 			if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
 		    	timesheetEntriesDiv.append("<b class='proj_new "+pullRightClass+"'>").append(submissionStatus).append("</b>");
 	        }
@@ -590,40 +606,39 @@ public class TimesheetRestController {
 	        	}
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
-	        	timesheetEntriesDiv.append("<b class='proj_active "+pullRightClass+"'>").append(submissionStatus).append("</b>");
-	        	
 	        	timesheetEntriesDiv.append("<div id='reopenTimeSheetId'>");
-	        	if(from.equalsIgnoreCase("approver") && null == sah.getReopenReason()){
+	        	if(from.equalsIgnoreCase("approver") && StringUtils.isEmpty(sah.getReopenReason())){
 	        		//to show re-open rejected reason
-	        		if(null != sah.getReopenRejectedReason()){
+	        		if(StringUtils.isNotEmpty(sah.getReopenRejectedReason())){
 	        			timesheetEntriesDiv.append(" <i class='glyphicon glyphicon-comment rejectedHover'>");
 	        			timesheetEntriesDiv.append(" <div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>").append(sah.getReopenRejectedReason()).append("</div>");
 		        		timesheetEntriesDiv.append(" </i>");
 	        		}
-	        		timesheetEntriesDiv.append("<div>&nbsp;&nbsp;<a  href='#' onClick='reOpenMyTimesheet(\""+projectMemberId+"\",\""+weekStartDate+"To"+weekEndDate+"\");' >Re-Open</a></div>");
+	        		timesheetEntriesDiv.append("<b  "+innerStyleWidth+" class='proj_withdraw "+pullRightClass+" ml'  onClick='reOpenMyTimesheet(\""+projectMemberId+"\",\""+weekStartDate+"To"+weekEndDate+"\");' >Re-Open</b>");
 	        	}
-	        	else if(from.equalsIgnoreCase("approver") && !isSuperUser && null != sah.getReopenRejectedReason() && isSahReopened){
+	        	else if(from.equalsIgnoreCase("approver") && !isSuperUser && StringUtils.isNotEmpty(sah.getReopenReason()) && isSahReopened){
 	        		//to show re-open reason
-	        		if(null != sah.getReopenReason()){
-	        			timesheetEntriesDiv.append(" <i class='glyphicon glyphicon-comment rejectedHover'>");
+	        		if(StringUtils.isNotEmpty(sah.getReopenReason())){
+	        			timesheetEntriesDiv.append(" <i class='pull-right glyphicon glyphicon-comment rejectedHover'>");
 	        			timesheetEntriesDiv.append(" <div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>").append(sah.getReopenReason()).append("</div>");
 		        		timesheetEntriesDiv.append(" </i>");
 	        		}
-	        		timesheetEntriesDiv.append("<div>&nbsp;&nbsp;Request sent</div>");
+	        		timesheetEntriesDiv.append("<p class='pull-right ml' style='width: 87px;'>Re-Open Request sent</p>");
 		        }
 	        	else if(from.equalsIgnoreCase("approver") && isSahReopened && isSuperUser && null != sah.getReopenedUser()){
 	        		//to show re-open reason
-	        		if(null != sah.getReopenReason()){
-	        			timesheetEntriesDiv.append(" <i class='glyphicon glyphicon-comment rejectedHover'>");
+	        		if(StringUtils.isNotEmpty(sah.getReopenReason())){
+	        			timesheetEntriesDiv.append(" <i class='pull-right  glyphicon glyphicon-comment rejectedHover'>");
 	        			timesheetEntriesDiv.append(" <div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>").append(sah.getReopenReason()).append("</div>");
 		        		timesheetEntriesDiv.append(" </i>");
 	        		}
-	        		 timesheetEntriesDiv.append("<div class='sm text-center'>").append("<i class='fa fa-check' alt='Approve'  onclick='acceptReopenTimeSheetBySuperUser(\"")
+	        		 timesheetEntriesDiv.append("<div class='pull-right  sm text-center reopen'>").append(" <label class='clearfix reopen-label'>RE-OPEN</label><i class='reopen-text-success fa fa-check' title='Accept' alt='Accept'  onclick='acceptReopenTimeSheetBySuperUser(\"")
 	                .append(projectMemberId).append("\",\"").append(sah.getReopenedUser().getId()).append("\",\"").append(weekStartDate+"To"+weekEndDate)
-	                .append("\");'></i>|<i class='fa fa-times' alt='Rejected' onclick='rejectReopenTimeSheetBySuperUser(\"")
+	                .append("\");'></i>|<i class='reopen-text-danger fa fa-times' title='Reject' alt='Reject' onclick='rejectReopenTimeSheetBySuperUser(\"")
 	                .append(projectMemberId).append("\",\"").append(sah.getReopenedUser().getId()).append("\",\"").append(weekStartDate+"To"+weekEndDate)
 	                .append("\");'></i></div>");
 	        	}
+	        	timesheetEntriesDiv.append("&nbsp;&nbsp;<b  "+innerStyleWidth+" class='proj_active "+pullRightClass+"'>").append(submissionStatus).append("</b>");
 	        	timesheetEntriesDiv.append("</div>");
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
