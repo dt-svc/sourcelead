@@ -197,7 +197,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			    	    <c:if test="${isManager == true || isAdmin == true}">
 			    	   		result = result + '<ul class="list-unstyled list-inline">';
 			    	   		result = result + '<span id="statusDiv">';
-			    	    	if(json.submissionRateStatus != 'ACCEPTED' && json.submissionRateStatus != 'REJECTED'){   
+			    	    	if(json.submissionRateStatus != 'ACCEPTED' && json.submissionRateStatus != 'REJECTED' && json.submissionStatus != 'REJECTED' && json.submissionStatus != 'SHORTLIST' && json.submissionStatus != 'OFFERMADE'){   
 								result = result + '	<li><i class="fa fa-check labelsuccess" title="Accept Applicant Authorization" onClick="acceptCandidate(\''+submissionId+'\',\'accept\');"></i>';
 								result = result + '		<div class="acceptreject-pop" id="accpet-div">';
 								result = result + '		</div>';
@@ -267,7 +267,9 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 									}
 						   }else{
 							   <c:if test="${isTeamMember == true && isManager == false && isAdmin == false}">
+							   if(json.submissionStatus != 'REJECTED' && json.submissionStatus != 'SHORTLIST' && json.submissionStatus != 'OFFERMADE'){
 									result = result + '	<li><i class="fa fa-check labelsuccess" title="Request" onClick="requestFun('+submissionId+');"></i>';
+							   }
 									result = result + '		<div class="acceptreject-pop" id="request">';
 									result = result + '		</div>';
 									result = result + '	</li>';
