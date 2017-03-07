@@ -602,7 +602,7 @@ public class TimesheetRestController {
 	        		}
 	        		timesheetEntriesDiv.append("<div>&nbsp;&nbsp;<a  href='#' onClick='reOpenMyTimesheet(\""+projectMemberId+"\",\""+weekStartDate+"To"+weekEndDate+"\");' >Re-Open</a></div>");
 	        	}
-	        	else if(from.equalsIgnoreCase("approver") && !isSuperUser && null == sah.getReopenRejectedReason() && isSahReopened){
+	        	else if(from.equalsIgnoreCase("approver") && !isSuperUser && null != sah.getReopenRejectedReason() && isSahReopened){
 	        		//to show re-open reason
 	        		if(null != sah.getReopenReason()){
 	        			timesheetEntriesDiv.append(" <i class='glyphicon glyphicon-comment rejectedHover'>");

@@ -410,7 +410,7 @@ public class TimesheetApprovalRestController {
 				     timesheetApprovalDiv.append(" <option  ").append(StringUtils.isNotEmpty(stage) ? (stage.equalsIgnoreCase("submitted for approval") ? "selected='selected'" : "") : "").append("  value='submitted for approval'>SUBMITTED FOR APPROVAL");
 				     timesheetApprovalDiv.append(" <option  ").append(StringUtils.isNotEmpty(stage) ? (stage.equalsIgnoreCase("approved") ? "selected='selected'" : "") : "").append("  value='approved'>APPROVED</option>");
 				     timesheetApprovalDiv.append(" <option  ").append(StringUtils.isNotEmpty(stage) ? (stage.equalsIgnoreCase("rejected") ? "selected='selected'" : "") : "").append("  value='rejected'>REJECTED</option>");
-				     timesheetApprovalDiv.append(" <option  ").append(StringUtils.isNotEmpty(stage) ? (stage.equalsIgnoreCase("reopened") ? "selected='selected'" : "") : "").append("  value='reopened'>REOPENED</option>");
+				    // timesheetApprovalDiv.append(" <option  ").append(StringUtils.isNotEmpty(stage) ? (stage.equalsIgnoreCase("reopened") ? "selected='selected'" : "") : "").append("  value='reopened'>REOPENED</option>");
 			timesheetApprovalDiv.append("	                </select>");
 			timesheetApprovalDiv.append("	            </div>   ");  
 			
@@ -504,7 +504,7 @@ public class TimesheetApprovalRestController {
 			  	    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
 			  	    	  }
 			  	    	 if(sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty() && sah.getWeekTotals().get(entry.getKey()) != null){
-			  	    		 totalHours = totalHours+sah.getWeekTotals().get(entry.getKey());
+			  	    		 totalHours = CommonUtil.getCombinedHours(totalHours, sah.getWeekTotals().get(entry.getKey()));
 			  	    		 timesheetApprovalDiv.append("<td><div class='sm'>").append(sah.getWeekTotals().get(entry.getKey())).append("/").append(weekTotal).append("</div></td>");
 			  	    	 }
 			  	    	 else{
@@ -512,19 +512,10 @@ public class TimesheetApprovalRestController {
 			  	    	 }
 	    	   }
 	     }
-	     
 
-	     float tsHours = totalHours;
-	     float tsHoursValue = (int) tsHours;
-	     float tsMinutesValue = tsHours - tsHoursValue;
-	     float totalMinutes = (tsHoursValue* 60)+(tsMinutesValue*100);
-	     
-	     float actualHours = (int) (totalMinutes / 60); 
-	     float actualMinutes = (totalMinutes % 60)/100;
-	     String actualTimeString = String.format("%.2f", (actualHours+actualMinutes));
 	
 	    /*timesheetApprovalDiv.append("<td><div class='sm'><a href='javascript:void(0)'>").append(totalHours).append("/40</a></div></td>");*/
-	     timesheetApprovalDiv.append("<td><div class='sm'><a href='#' onClick='timesheetApprovalPopUpByProjectMemberId(\""+startDate+"To"+endDate+"\" ,\""+projectMember.getId()+"\",\"approver\" );'>").append(actualTimeString).append("/").append(estimatedTotalHours).append("</a></div></td>");
+	     timesheetApprovalDiv.append("<td><div class='sm'><a href='#' onClick='timesheetApprovalPopUpByProjectMemberId(\""+startDate+"To"+endDate+"\" ,\""+projectMember.getId()+"\",\"approver\" );'>").append(totalHours).append("/").append(estimatedTotalHours).append("</a></div></td>");
 	    timesheetApprovalDiv.append("<td><div class='sm' id='status").append(projectMember.getId()).append("'>").append(sah.getSubmissionApprovalStatus()).append("</div></td>");
 	    timesheetApprovalDiv.append("<td>");
 	     if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){
@@ -685,7 +676,7 @@ public class TimesheetApprovalRestController {
 					    	    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
 					    	    	  }
 					    	    	 if(sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty() && sah.getWeekTotals().get(entry.getKey()) != null){
-					    	    		 totalHours = totalHours+sah.getWeekTotals().get(entry.getKey());
+					    	    		 totalHours = CommonUtil.getCombinedHours(totalHours, sah.getWeekTotals().get(entry.getKey()));
 					    	    		 timesheetApprovalDiv.append("<td><div class='sm'>").append(sah.getWeekTotals().get(entry.getKey())).append("/").append(weekTotal).append("</div></td>");
 					    	    	 }
 					    	    	 else{
@@ -694,22 +685,12 @@ public class TimesheetApprovalRestController {
 					    	    	
 					    	     }
 					     }
-					
 					     
 					     
-					     float tsHours = totalHours;
-					     float tsHoursValue = (int) tsHours;
-					     float tsMinutesValue = tsHours - tsHoursValue;
-					     float totalMinutes = (tsHoursValue* 60)+(tsMinutesValue*100);
 					     
-					     float actualHours = (int) (totalMinutes / 60); 
-					     float actualMinutes = (totalMinutes % 60)/100;
-					     String actualTimeString = String.format("%.2f", (actualHours+actualMinutes));
-					     
-					     timesheetApprovalDiv.append("<input type='hidden' name='totalHours'  id='totalHours' value='"+actualTimeString+"' >");
-					     
+					     timesheetApprovalDiv.append("<input type='hidden' name='totalHours'  id='totalHours' value='"+totalHours+"' >");
 					    /*timesheetApprovalDiv.append("<td><div class='sm'><a href='javascript:void(0)'>").append(totalHours).append("/40</a></div></td>");*/
-					    timesheetApprovalDiv.append("<td><div class='sm'><a href='#' onClick='timesheetApprovalPopUpByProjectMemberId(\""+startDate+"To"+endDate+"\" ,\""+projectMember.getId()+"\",\"approver\");'>").append(actualTimeString).append("/").append(estimatedTotalHours).append("</a></div></td>");
+					    timesheetApprovalDiv.append("<td><div class='sm'><a href='#' onClick='timesheetApprovalPopUpByProjectMemberId(\""+startDate+"To"+endDate+"\" ,\""+projectMember.getId()+"\",\"approver\");'>").append(totalHours).append("/").append(estimatedTotalHours).append("</a></div></td>");
 					    timesheetApprovalDiv.append("<td><div class='sm' id='status").append(projectMember.getId()).append("'>").append(sah.getSubmissionApprovalStatus()).append("</div></td>");
 					    timesheetApprovalDiv.append("<td>");
 					     if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){
