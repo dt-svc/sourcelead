@@ -67,15 +67,15 @@ $(document).ready(function() {
 	        		    	   }else{
 				    	    	    $("#timesheetEntriesDiv").removeAttr("style");
 				    	    	    var result ="";
-						    	     result = result+"   <div class='row'>"; 
-									 result = result+"	<div class='col-lg-12'>"; 
+						    	     result = result+"   <div class='dataTables_empty'>"; 
+									 /* result = result+"	<div class='col-lg-12'>"; 
 									 result = result+"		<div class='content-area clearfix'>"; 
 									 result = result+"			<div class='blank-pages'>";
 									 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
 									 result = result+"			        <p>No Timesheets Found</p>";
 									 result = result+"			 </div>";
 									 result = result+"		</div>"; 
-									 result = result+"	</div>"; 
+									 result = result+"	</div>";  */
 									 result = result+"  </div> "; 
 									$("#timesheetEntriesDiv").empty();
 								    $("#timesheetEntriesDiv").append(result); 

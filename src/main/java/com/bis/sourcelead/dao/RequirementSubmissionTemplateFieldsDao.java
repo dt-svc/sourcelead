@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dao;
 
+import java.util.List;
+
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 
 /**
@@ -14,5 +16,8 @@ public interface RequirementSubmissionTemplateFieldsDao {
 
 	RequirementSubmissionTemplateFields getSubmissionsTemplateFieldsByRequirementSubmissionsId(
 			Long requirementSubmissionsId);
+
+	List<RequirementSubmissionTemplateFields> getSubmissionsTemplateFieldsByRequirementSubmissionsIdAndOrgLocationId(
+			long submissionId, Long orgLocationId);
 	
 }
