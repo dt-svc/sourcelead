@@ -120,7 +120,6 @@ function submitToClient(requirementId){
 				    	   result = result + '<td><div><input type="text" class="form-control quantity" maxlength="10" onkeypress="validateRate(event,'+report.id+')" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value=""></div></td>';
 			    	     }
 						
-			           if(report.finalizedRateType != null && report.finalizedRateType != '' && report.finalizedRateType != 'undefined'){
 							result = result + '<td><select class="selct-picker" id="submissionRateType'+report.id+'" name="submissionRateType" field-name="Rate Type" data-validation-optional="true">';
 							result = result + '<option value="">Rate Per</option>';
 							result = result + ' <option '+(report.finalizedRateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
@@ -131,7 +130,6 @@ function submitToClient(requirementId){
 							result = result + '<option  '+(report.finalizedRateType == "Bi-Monthly" ? "selected" : '') +'>Bi-Monthly</option>';
 							result = result + '<option  '+(report.finalizedRateType == "Yearly" ? "selected" : '') +'>Yearly</option>';
 							result = result + ' </select></td>';
-			           }
 			           
 			           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
 			        	   result = result + '<td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
