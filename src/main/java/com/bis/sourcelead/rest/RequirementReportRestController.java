@@ -128,8 +128,14 @@ public class RequirementReportRestController {
 			
 			List<Requirement> requirementList = requirementReportService.getRequirementReports(userRoleName,orgLocation,user,filterDate,startDateUTC,endDateUTC);
 			for(Requirement requirement : requirementList){
-				String postedDate = new SimpleDateFormat("yyyy-MM-dd").format(requirement.getCreatedDate());
-				requirement.setPostedDateStr(postedDate);
+				//String postedDate = new SimpleDateFormat("yyyy-MM-dd").format(requirement.getCreatedDate());
+				//requirement.setPostedDateStr(postedDate);
+				 DateFormat standardFormat = new SimpleDateFormat ("yyyy-MM-dd");
+				String currentTimeStr = Constants.TZ_DF.format(requirement.getCreatedDate());  
+				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+				currentDateInTimezone = standardFormat.format(converteDate);
+				requirement.setPostedDateStr(currentDateInTimezone);
 			}
 		    String reportsList = commonUtil.toJSON(requirementList);
 			return reportsList;
