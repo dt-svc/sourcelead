@@ -96,20 +96,20 @@
                 <div class="row">
                   <div class="form-group clearfix toggle-button-lbl">
                     <label class="col-md-5">Public</label>
-                    <input type="hidden" id="isPublicGlobel" value="">
+                    <input type="hidden" name="isPublic" id="isPublicGlobel" value="N">
                     <div class="col-md-7 toggle-button">
                       <label class="switch">
-                      <input type="checkbox" name="isPublic" id="isPublicId"  value="N" onclick="ispublic();">
+                      <input type="checkbox" id="isPublicId"  value="N" onclick="ispublic();">
                       <div class="slider round"></div>
                       </label>
                     </div>
                   </div>
                   <div class="form-group clearfix toggle-button-lbl">
                     <label class="col-md-5">Crowd Sourcing</label>
-                    <input type="hidden" id="isCrowdScourcingGlobel" value="">
+                    <input type="hidden" name="isCrowdScourcing" id="isCrowdScourcingGlobel" value="N">
                     <div class="col-md-7 toggle-button">
                       <label class="switch">
-                      <input type="checkbox" name="isCrowdScourcing" value="N" id="isCrowdScourcingId" onclick="isCrowd();" >
+                      <input type="checkbox"  value="N" id="isCrowdScourcingId" onclick="isCrowd();" >
                       <div class="slider round"></div>
                       </label>
                     </div>
@@ -795,8 +795,10 @@ $(document).ready(function() {
 function ispublic(){
 	 if(document.getElementById('isPublicId').checked) {
 	        $("#isPublicId").val('Y');
+	        $("#isPublicGlobel").val('Y');
 	    }else{
 	        $("#isPublicId").val('N');
+	        $("#isPublicGlobel").val('N');
 	    }
 }
 </script>
@@ -805,6 +807,8 @@ function ispublic(){
 function isCrowd(){
 	 if(document.getElementById('isCrowdScourcingId').checked) {
 	        $("#isCrowdScourcingId").val('Y');
+	        $("#isCrowdScourcingGlobel").val('Y');
+	        
 	        document.getElementById("crowd_rate").style.display="";
 	        
 	        var rewardType = '${rewardType}';
@@ -816,6 +820,7 @@ function isCrowd(){
 	       
 	    }else{
 	        $("#isCrowdScourcingId").val('N');
+	        $("#isCrowdScourcingGlobel").val('N');
 	        document.getElementById("crowd_rate").style.display="none";
 	    }
 }
@@ -871,6 +876,10 @@ function opennetwork(){
       		    }
    		      $("#isPublicGlobel").val(json.isPublic);
    		      $("#isCrowdScourcingGlobel").val(json.isCrowdSourcing);
+   		      if(json.isCrowdSourcing == 'Y'){
+   		    	$("#isCrowdScourcingId").attr("disabled", "disabled");
+   		    	
+   		      }
    		    }
 	  });
 	  
