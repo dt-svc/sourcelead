@@ -737,6 +737,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 				    searchListForAll.add(searchListForProjects) ;
 				    searchListForAll.add(searchListForUsers) ;
 				    searchListForAll.add(searchListForRequirement);
+				    searchListForAll.add(searchListForCandidates);
 				    
 					return searchListForAll;
 	}

@@ -155,10 +155,7 @@
                  }else{
                 	 $("#candidateList").removeAttr("style");
   	    	         var result ="";
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Candidates Found</p>";
-					 result = result+"			 </div>";
+					 result = result+"			<div class='dataTables_empty'></div>";
 					$("#noCandidates").val("nocandidate");
 					$("#candFilter").empty();
 					$("#candidateList").empty();

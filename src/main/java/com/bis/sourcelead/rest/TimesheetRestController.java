@@ -297,16 +297,13 @@ public class TimesheetRestController {
 			if(projectMembersList != null && !projectMembersList.isEmpty()){
 				long count = 1;
 				for(ProjectMembers pm :projectMembersList){
-					if(count == 1 && !"0".equalsIgnoreCase(pm.getStatus())){
+					if(count == 1){
 						isSelected.setLength(0);
 						isSelected.append("selected='selected'");
 						initialProjectMemberId = pm.getId();
-						 count++;
+						
 					}
-					else if(count>1){
-						isSelected.setLength(0);
-						 count++;
-					}
+					 count++;
 					timesheetEntriesDiv.append("		                  <option  "+isSelected.toString()+" value='"+pm.getId()+"'>"+pm.getProjects().getProjectName()+"</option>");
 				   
 				}
