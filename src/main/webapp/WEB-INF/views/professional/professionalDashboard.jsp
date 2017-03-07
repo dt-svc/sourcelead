@@ -33,7 +33,7 @@ $(document).ready(function(){
       </div>
       <div class="pull-right brud-crum">Home &raquo; Vendor &raquo; Add Client</div>
     </section>
-    <div class="content-new clearfix"></div>
+    <div class="content-new clearfix mt25"></div>
     
       <div class="row">
           <div class="col-md-7 paddingRight">
