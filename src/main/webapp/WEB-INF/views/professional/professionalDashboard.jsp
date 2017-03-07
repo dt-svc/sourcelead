@@ -56,7 +56,7 @@ $(document).ready(function(){
 					  </div>
 				  </div>
  		   </div>
- 		   <div class="content-new clearfix">
+ 		   <div class="content-new clearfix mt25">
              <div id="jobSummary">
          
              </div>
