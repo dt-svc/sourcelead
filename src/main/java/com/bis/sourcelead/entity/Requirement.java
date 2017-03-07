@@ -139,6 +139,22 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String postedOrgName;
 	
 	
+	@Column(name = "REWARD_PERCENTAGE")
+	private String rewardPercentage;
+	
+	@Column(name = "REWARD_FLAT")
+	private String rewardFlat;
+	
+	@Column(name = "REWARD_FLAT_RATE_TYPE")
+	private String rewardFlatRateType;
+	
+	@Column(name = "REWARD_GUARANTEE_PERIOD")
+	private String rewardGuaranteePeriod;
+	
+	
+	@Column(name = "REWARD_TYPE")
+	private String rewardType;
+	
 	@ManyToOne
     @JoinColumn(name="SUBMISSION_TEMPLATE_ID" )        
     private SubmissionTemplate submissionTemplateId;
@@ -187,10 +203,12 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Type(type="text")
 	private String appliedProfessionals;
 	
-//	@Column(name = “myColumn”, nullable = false, columnDefinition = “int default 100")
+	@Column(name="APPLIED_RECRUITERS")
+	@Type(type="text")
+	private String appliedRecruiters;
+
 	@Column(name = "TOTAL_APPLICANTS",nullable = false,columnDefinition = "INT NULL DEFAULT 0")
 	private Integer totalApplicants;
-	
 	
 	@Column(name="PRIORITY")
 	private String priority;
@@ -1132,6 +1150,46 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.approvalMechanismType = approvalMechanismType;
 	}
 
+	public String getRewardPercentage() {
+		return rewardPercentage;
+	}
+
+	public void setRewardPercentage(String rewardPercentage) {
+		this.rewardPercentage = rewardPercentage;
+	}
+
+	public String getRewardFlat() {
+		return rewardFlat;
+	}
+
+	public void setRewardFlat(String rewardFlat) {
+		this.rewardFlat = rewardFlat;
+	}
+
+	public String getRewardFlatRateType() {
+		return rewardFlatRateType;
+	}
+
+	public void setRewardFlatRateType(String rewardFlatRateType) {
+		this.rewardFlatRateType = rewardFlatRateType;
+	}
+
+	public String getRewardGuaranteePeriod() {
+		return rewardGuaranteePeriod;
+	}
+
+	public void setRewardGuaranteePeriod(String rewardGuaranteePeriod) {
+		this.rewardGuaranteePeriod = rewardGuaranteePeriod;
+	}
+
+	public String getRewardType() {
+		return rewardType;
+	}
+
+	public void setRewardType(String rewardType) {
+		this.rewardType = rewardType;
+	}
+	
 	public String getPostedDateStr() {
 		return postedDateStr;
 	}
@@ -1140,6 +1198,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.postedDateStr = postedDateStr;
 	}
 
+	public String getAppliedRecruiters() {
+		return appliedRecruiters;
+	}
+
+	public void setAppliedRecruiters(String appliedRecruiters) {
+		this.appliedRecruiters = appliedRecruiters;
+	}
+	
 	public Integer getTotalApplicants() {
 		return totalApplicants;
 	}
