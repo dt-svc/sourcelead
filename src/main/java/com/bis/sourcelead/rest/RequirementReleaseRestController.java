@@ -6,6 +6,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -68,6 +69,12 @@ public class RequirementReleaseRestController {
 	
 	@Autowired
 	RecommendedCustomizeScoreService recommendedCustomizeScoreService;
+	
+	protected boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
+	
+
 	/**
 	 * @author Venkat Kesav
 	 * this is method is using contacts List
@@ -335,8 +342,6 @@ public class RequirementReleaseRestController {
 	public String releaseJobsToClientsOrVendors(@RequestParam(value = "requirementId", required = false) Long requirementId,
 												@RequestParam(value = "contactsIds", required = false) String contactsIds,
 			                                    @RequestParam(value="vendorIds", required=false) String vendorIds,
-			                                    @RequestParam(value = "isPublic", required = false) String isPublics,
-			                                    @RequestParam(value="isCrowdScourcing", required=false) String isCrowdScourcing,
 			                                    HttpServletRequest request) throws Exception {
 			
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -384,14 +389,14 @@ public class RequirementReleaseRestController {
 				}
 			}
 			
-			if(null != isPublics && !"".equalsIgnoreCase(isPublics) && "undefined" == isPublics){
+			/*if(null != isPublics && !"".equalsIgnoreCase(isPublics) && "undefined" == isPublics){
 				parentRequirement.setIsPublic(isPublics);
 				parentRequirement.setPostedOrgName(org.getOrgName());
 			}
 			if(null != isCrowdScourcing && !"".equalsIgnoreCase(isCrowdScourcing) && "undefined" == isCrowdScourcing){
 				parentRequirement.setIsCrowdSourcing(isCrowdScourcing);
 				parentRequirement.setPostedOrgName(org.getOrgName());
-			}
+			}*/
 			
 			if(null == parentRequirement.getReleasedBy()){
 				parentRequirement.setReleasedBy(loginUser.getId().toString());
@@ -502,4 +507,65 @@ public class RequirementReleaseRestController {
 	   RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScoreService.saveCustomizeScore(req);
 
 	}
+	
+	
+	 @PreAuthorize("hasRole('ROLE_RELEASE_REQUIREMENT')")
+	 @RequestMapping(value = "/releaseToCrowdSourcingNetwork" , method = RequestMethod.POST)
+	 public  String releaseToCrowdSourcingNetwork(@RequestParam(value="json", required=false) String json,
+			 @RequestParam(value = "requirementId", required = false) Long requirementId,
+			 HttpServletRequest request) throws Exception {
+		 	
+		 json = "{"+json+"}";
+		 
+		 JSONObject jsonObj = new JSONObject(json);
+		 	
+	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 	 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+	 	 
+	 	Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+	 	
+	 	if(jsonObj.has("isPublic") && !isNullOrEmpty(jsonObj.getString("isPublic")) && jsonObj.getString("isPublic").equalsIgnoreCase("Y")){
+	 		requirement.setIsPublic(jsonObj.getString("isPublic"));
+	 		requirement.setPostedOrgName(org.getOrgName());
+	 	}
+	 	
+	 	if(jsonObj.has("isCrowdScourcing") && !isNullOrEmpty("isCrowdScourcing") && jsonObj.getString("isCrowdScourcing").equalsIgnoreCase("Y")){
+	 		requirement.setIsCrowdSourcing(jsonObj.getString("isCrowdScourcing"));
+	 		requirement.setPostedOrgName(org.getOrgName());
+	 		
+	 		if(jsonObj.has("rewardType") && !isNullOrEmpty("rewardType") && jsonObj.getString("rewardType").equalsIgnoreCase("Percentage")){
+	 			requirement.setRewardPercentage(jsonObj.getString("percentageReward"));
+	 			requirement.setRewardType(jsonObj.getString("rewardType"));
+	 		}
+	 		
+	 		if(jsonObj.has("rewardType") && !isNullOrEmpty("rewardType") && jsonObj.getString("rewardType").equalsIgnoreCase("Flat")){
+	 			requirement.setRewardFlat(jsonObj.getString("flatReward"));
+	 			requirement.setRewardFlatRateType(jsonObj.getString("flatRateType"));
+	 			requirement.setRewardType(jsonObj.getString("rewardType"));
+	 		}
+	 		
+	 		if(jsonObj.has("guaranteePeriod") && !isNullOrEmpty(jsonObj.getString("guaranteePeriod"))){
+	 			requirement.setRewardGuaranteePeriod(jsonObj.getString("guaranteePeriod"));
+	 		}
+	 	}
+	 	 
+		if(null == requirement.getReleasedBy()){
+			requirement.setReleasedBy(user.getId().toString());
+		}else{
+			List<Long> userId = new ArrayList<Long>();
+			for (String s : requirement.getReleasedBy().split(",")){
+				userId.add(Long.parseLong(s));
+			 }
+			boolean flag = userId.contains(user.getId());
+  		if(flag == false){
+  			StringBuilder releasedUser = new StringBuilder();
+				releasedUser = releasedUser.append(",").append(user.getId().toString());
+				requirement.setReleasedBy(requirement.getReleasedBy()+releasedUser.toString());
+  		}
+		}
+		requirement.setUpdatedDate(new Date());
+		requirementService.addRequirement(requirement);
+	 	
+		 return "success";
+	   }
 }

@@ -2391,6 +2391,18 @@ margin-bottom:15px !important;
 .timesheetNewTabs .project-tabs-menu li a {
     padding:6px 25px; text-decoration:none; font-size:15px; color:#666; display:block;
     }
+.timesheetNewTabs .project-tabs-menu li.subColor {
+    position:relative; background-color:#dedede; z-index:5; border-top:3px solid #f1f1f1; top: 1px;
+    }
+.timesheetNewTabs .project-tabs-menu .subColor a{
+    color:#454545;
+    }
+.subColor {
+	position:relative;
+}
+.subColor i {
+	position:absolute; top: 10px; right: 7px; color: #ff6600; font-size: 11px;
+}
 .timesheetNewTabs .project-tabs-menu li.current {
     position:relative; background-color:#fff; z-index:5; border-top:2px solid #368ee0; top: 1px;
     }
@@ -2398,12 +2410,6 @@ margin-bottom:15px !important;
     color:#1d6cb5;
     }
 
-.timesheetNewTabs .project-tabs-menu li.subColor {
-    position:relative; background-color:#fff; z-index:5; border-top:2px solid #ff6600; top: 1px;
-    }
-.timesheetNewTabs .project-tabs-menu .subColor a{
-    color:#ff6600;
-    }
 
 .timesheetNewTabs .project_tabs {
     border:none; padding: 7px 0px 0px 0px; border-top: 1px solid #dedede;
@@ -2768,10 +2774,10 @@ padding-right:10px;
 }
 
 .noRecords {
-	padding: 50px 0px; background-color: #fff; box-shadow: 0px 0px 2px rgba(0,0,0,0.3); border-radius: 3px; text-align: center;
+	padding: 35px 0px; background-color: #fff; box-shadow: 0px 0px 2px rgba(0,0,0,0.3); border-radius: 3px; text-align: center;
 }
 .noRecords img {
-	width: 400px;
+	width: 320px;
 }
 
 
@@ -3044,4 +3050,21 @@ background-size:260px; margin: 0px 15px;
 }
 
 
+
+#searchList .search-result-widget {
+	background-color:#fff;
+}
+
+
+.width175 {
+	width: 190px !important;
+}
+.noMailImg {
+	background-image:url(../images/no-mails.jpg); background-repeat:no-repeat; background-position:center; width: 100px; height: 100px;
+	display: block; margin: 0px auto;
+}
+
+.modal-body {
+	padding: 0px 15px;
+}
 

@@ -118,23 +118,9 @@ overflow-x: auto;
 		     		<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 		     		<jsp:include page="dashboardApplicants.jsp"></jsp:include>
 		     		</sec:authorize>
-		     </div>
+		     <!-- </div> -->
 	    
-	   			 <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_INTERVIEW')">
-	   				  <div class='row'>
-						<div class='col-lg-12'> 
-						<div class='content-area clearfix'>
-							<div class='blank-pages'>
-							        <p><i class='fa fa-5x fa-bar-chart'></i></p>
-						        	<p>No Records Found</p>
-							 </div>
-						</div>
-						</div>
-					  </div> 
-				 </sec:authorize> 
-				 
-	    
-	    <div class="row clearfix">
+	    <!-- <div class="row clearfix"> -->
 	    <div class="col-md-6 mb">
 
         <div class="clients_wrap_table dashboard-widget overflow_inherint"  id="assignTaskListDiv" style="display: none;">
@@ -157,11 +143,21 @@ overflow-x: auto;
         <!-- Pagenation Ends --> 
       </div>
       </div>
+       <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_INTERVIEW')">
+	   				  <div class='row'>
+						<div class='col-lg-12'> 
+						<div class='content-area clearfix'>
+							<div class='blank-pages'>
+							        <p><i class='fa fa-5x fa-bar-chart'></i></p>
+						        	<p>No Records Found</p>
+							 </div>
+						</div>
+						</div>
+					  </div> 
+				 </sec:authorize> 
 	    
 	    <div class="clearfix"></div> 
-	    <div class="clearfix row mb"> 
-	    </div>
-
+	  
 </section>
 
 

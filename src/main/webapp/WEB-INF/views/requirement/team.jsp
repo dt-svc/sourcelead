@@ -181,7 +181,7 @@ function sideBar(teamId){
 		$("body").css('overflow-y', 'hidden');
 		$("#tab-1").show();
 		projectMemberList(teamId);
-		
+		teamEditDetails(teamId);
 }
 </script>
 

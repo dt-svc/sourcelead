@@ -3417,7 +3417,7 @@ ul.addTasUl li .fa{
 .addTask-widget .nav li a:hover {
 	 color:#424242;
 }
-.addTask-widget table tr th {
+addTask-widget table tr th {
 	background:#c86636 !important;
 	border-right:1px solid #ad572d !important;
 }
