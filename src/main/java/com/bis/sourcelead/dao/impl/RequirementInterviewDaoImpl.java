@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -197,6 +198,28 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 		List<RequirementInterview> interviewsHistoryList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
 		
 		return interviewsHistoryList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getInterviewCountByCandidateId(Long candidateId, String submissionStatus, Date startDate,
+			Date endDate) throws Exception {
+		
+		 Session session = this.sessionFactory.getCurrentSession();
+	     
+		 String query = "select count(*) from RequirementInterview interview where interview.submissionId.candidate.id = :candidateId and "
+		 		+ "interview.submissionId.submissionStatus = :submissionStatus and (interview.createdDate BETWEEN :startDate and :endDate))";
+	     
+	     List<Long> interviewCount = session.createQuery(query).setLong("candidateId", candidateId)
+	    		   .setString("submissionStatus", submissionStatus)
+	    		   .setDate("startDate", startDate)
+				   .setDate("endDate", endDate).setCacheable(true).list();
+		 Integer count= 0;
+		 
+		 if(interviewCount != null && !interviewCount.isEmpty()){
+				count = interviewCount.get(0).intValue();
+		 }
+		return count;
 	}
 
 	/*@Override

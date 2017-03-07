@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1562,6 +1563,48 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					count = requirementPerCandidateCount.get(0).intValue();
 			}
 			return count;
+		}
+
+		@Override
+		@Transactional
+		public Integer getProfessionalJobAppliedCount(Long candidateId, Date startDate,Date endDate) throws Exception {
+			
+			 Session session = this.sessionFactory.getCurrentSession();
+		     
+			 String query = "select count(distinct rs.requirement) from RequirementSubmission rs where rs.candidate.id = :candidateId and (rs.createdDate BETWEEN :startDate and :endDate))";
+		     
+		     List<Long> appliedCount = session.createQuery(query).setLong("candidateId", candidateId)
+		    		   .setDate("startDate", startDate)
+					   .setDate("endDate", endDate).setCacheable(true).list();
+			 Integer count= 0;
+			 
+			 if(appliedCount != null && !appliedCount.isEmpty()){
+					count = appliedCount.get(0).intValue();
+			 }
+			return count;
+		}
+
+		@Override
+		@Transactional
+		public Integer getProfessionalJobSubmisssionsCountBySubmissionType(Long candidateId, String submissionStatus,
+				Date startDate, Date endDate) throws Exception {
+			
+			 Session session = this.sessionFactory.getCurrentSession();
+		     
+			 String query = "select count(distinct rs.requirement) from RequirementSubmission rs where rs.candidate.id = :candidateId and "
+			 		+ "rs.submissionStatus = :submissionStatus and (rs.createdDate BETWEEN :startDate and :endDate))";
+		     
+		     List<Long> submissionsCount = session.createQuery(query).setLong("candidateId", candidateId)
+		    		   .setString("submissionStatus", submissionStatus)
+		    		   .setDate("startDate", startDate)
+					   .setDate("endDate", endDate).setCacheable(true).list();
+			 Integer count= 0;
+			 
+			 if(submissionsCount != null && !submissionsCount.isEmpty()){
+					count = submissionsCount.get(0).intValue();
+			 }
+			return count;
+			
 		}
 
   }
