@@ -501,14 +501,29 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
   $( function() {
 	  
 	  
-	  $('#dpfromdate,#portletfromdate').datepicker({
+	  $('#dpfromdate').datepicker({
 	      dateFormat: 'yy-mm-dd',
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      //minDate: 0  this line for to restrict selection of previous dates
 	  });
 	  
-	  $('#dptodate,#portlettodate').datepicker({
+	  $('#dptodate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
+	      //minDate: 0  this line for to restrict selection of previous dates
+	  });
+	  
+
+	  $('#portletfromdate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
+	      //minDate: 0  this line for to restrict selection of previous dates
+	  });
+	  
+	  $('#portlettodate').datepicker({
 	      dateFormat: 'yy-mm-dd',
 	      changeMonth: true,
 	  	  changeYear: true, 
