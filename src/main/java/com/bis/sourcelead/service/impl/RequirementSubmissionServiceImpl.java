@@ -3246,7 +3246,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 								 emailMessage.setMessageBody(emailTemplate);
 								 
 								 //calling the sendEmail method of emailScenerioUtil
-								 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+								 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,attachmentList);
 								 
 								String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 								notificationScenario.setBody(notificationBody);
