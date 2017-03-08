@@ -573,8 +573,10 @@ public class TimesheetApprovalRestController {
 		        	
 		        	if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Bi-Weekly")){
 			        	for(ProjectMembers pm :projectMembers){
-			        		Date biweeklyCurrentStartMonDayDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(pm.getProjects());
-			        	    if(CalendarUtil.getNumberOfDays(biweeklyCurrentStartMonDayDate, actualStartDate)%14==0){
+			        		Date biweeklyCurrentStartMonDayDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndEmployeeStartDate(pm.getProjects(),pm.getProjects().getStartDate());
+			        	    System.out.println("TimesheetApproval Rest Controller >>>>>>>>> Day Difference>>>>>>>>>:"+CalendarUtil.getNumberOfDays(biweeklyCurrentStartMonDayDate, actualStartDate));
+			        	    System.out.println("TimesheetApproval Rest Controller >>>>>>>>>>> Remainder>>>>>>>>>:"+CalendarUtil.getNumberOfDays(biweeklyCurrentStartMonDayDate, actualStartDate)%14);
+			        		if(CalendarUtil.getNumberOfDays(biweeklyCurrentStartMonDayDate, actualStartDate)%14==0){
 			        	    	freshProjectMembers.add(pm);
 			        	    }
 			        	
