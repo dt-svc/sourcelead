@@ -642,8 +642,11 @@ public class CandidateListRestController {
 				can.setCurrentRateCurrency(can.getCurrentRateCurrency());
 				can.setCurrentRateCurrency(can.getExpectedRateCurrencey());
 			}else{
+				 if(null != countries && !countries.getCurrency().equalsIgnoreCase("")){
 				can.setCurrentRateCurrency(countries.getCurrency());	
+				
 				can.setExpectedRateCurrencey(countries.getCurrency());
+				 }
 			}
 			
 			resultJson = commonUtil.toJSON(can);
