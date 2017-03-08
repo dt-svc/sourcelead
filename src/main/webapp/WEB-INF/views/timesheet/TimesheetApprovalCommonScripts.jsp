@@ -526,6 +526,7 @@ $('body').on('blur', '#timesheet_form', function() {
 function deleteSubmissionDocument(submissionDocumentId){  
     var sourceleadUrl ='${sourceleadUrl}';
     var projectExistingValue = $("#dbIsTimesheetAttachmentRequired").val();
+    var strongTagCount = document.getElementById('timesheetDocumentsId').getElementsByTagName('strong').length;
     /*  var startdate; */
 	var navigation;
     $.ajax({
@@ -533,7 +534,8 @@ function deleteSubmissionDocument(submissionDocumentId){
       	  url: sourceleadUrl+"/deleteSubmissionDocument?${_csrf.parameterName}=${_csrf.token}&submissionDocumentId="+submissionDocumentId,		
 	      success :function(result) {
 	    	  $("#"+submissionDocumentId+"document").remove();
-	    	  if(projectExistingValue != null && projectExistingValue != "" && projectExistingValue !="undefined" && projectExistingValue == "1"){
+	    	  if(projectExistingValue != null && projectExistingValue != "" && projectExistingValue !="undefined" && projectExistingValue == "1"
+	    		  && strongTagCount != null && strongTagCount != "" && strongTagCount !="undefined" && strongTagCount == 1){
 	    		  $("#isTimesheetAttachmentRequired").val('Y');
 	    	  }
 	      }
