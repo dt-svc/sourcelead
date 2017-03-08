@@ -34,11 +34,15 @@
 
           <div class="content clearfix">
             <div class="vendor_wrap">
-              <div class="col-md-2 custom-selectpicker mt10 mb10">
-                <select class="form-control selectpicker"  id="sele-rel"  onchange="listChange(this);">
+              <div class="col-md-7 radioInline">
+                <!-- <select class="form-control selectpicker"  id="sele-rel"  onchange="listChange(this);">
                   <option id="cont" value ="releaseByContact">Release By Contact</option>
-                  <option id="ven"  value ="releaseByVendors" selected="selected">Release By  Vendors</option>
-                </select>
+                  <option id="ven"  value ="releaseByVendors" selected="selected">Release By Vendors</option>
+                </select> -->
+                <div class="pull-left mt10">
+                	<label class="mr"><input class="myCheckbox valid" type="radio" name="group1" id="ven" onchange="listChange(this);" value="releaseByVendors" checked> Release By Vendors</label>
+                	<label class="mr"><input class="myCheckbox valid" type="radio" name="group1" id="cont" onchange="listChange(this);" value="releaseByContact"> Release By Contact</label>
+              	</div>
               </div>
               <div class="timesheet_head">
                 <ul>
@@ -242,17 +246,34 @@ $(document).ready(function(){
 
 <script>
 function releaseTo(){
-	    var contactsIds = new Array();
+		var contactsIds = new Array();
+		var contactsTable = $('#candidatePagination').DataTable();
+		var contactsRowcollection =  contactsTable.$(".contactscheckbox:checked", {"page": "all"});
+		contactsRowcollection.each(function()		
+		{
+			contactsIds.push($(this).attr('id'));
+		});
+	
+	   /*  var contactsIds = new Array();
 	    $('input:checkbox[name=contactscheckbox]:checked').each(function() 
 	    {
 	    	contactsIds.push($(this).attr('id'));
-	    });
+	    }); */
 	    
 	    var vendorIds = new Array();
+	    var vendorTable = $('#vendorPagination').DataTable();
+		var vendorRowcollection =  vendorTable.$(".vendorcheckbox:checked", {"page": "all"});
+		vendorRowcollection.each(function()		
+		{
+			vendorIds.push($(this).attr('id'));
+		});
+	    
+	    /* var vendorIds = new Array();
 	    $('input:checkbox[name=vendorcheckbox]:checked').each(function() 
 	    {
 	    	vendorIds.push($(this).attr('id'));
-	    });
+	    }); */
+	    
 	    var isPublic = $("#isPublicId").val();
 	    var isCrowdScourcing = $("#isCrowdScourcingId").val();
 	    
@@ -426,7 +447,7 @@ function getContactsLists(){
 				   	        			result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
 				   	        		}
 				   	        		if(report.releasedRequirement =="false"){
-				   	        			result = result +'  <td><input name="contactscheckbox" type="checkbox" id="'+report.id+'"/></td>';
+				   	        			result = result +'  <td><input class="contactscheckbox" name="contactscheckbox" type="checkbox" id="'+report.id+'"/></td>';
 				   	        		}
 					        			result = result +'<td>';
 					        			result = result +'<div title="'+report.spocName+'"><span>'+report.spocName+'</span></div>';
@@ -590,7 +611,7 @@ function getVendorLists(){
 	           	        	 	if(report.noOfNonReleasedContacts == 0){
 	           	        	 		result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
 	        	        		}else{
-	        	        			result = result +'  <td><input name="vendorcheckbox" type="checkbox" id="'+report.id+'" /></td>';
+	        	        			result = result +'  <td><input class = "vendorcheckbox" name="vendorcheckbox" type="checkbox" id="'+report.id+'" /></td>';
 	        	        		}
 	           	        	 
 	           	        		if( report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
