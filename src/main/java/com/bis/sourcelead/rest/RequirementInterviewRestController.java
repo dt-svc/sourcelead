@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,11 +24,13 @@ import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -61,12 +64,24 @@ public class RequirementInterviewRestController {
 	@Autowired
 	RequirementInterviewHistoryService requirementInterviewHistoryService;
 	
+	@Autowired
+	private UserRoleService UserRoleService;
+	
 	@RequestMapping(value = "/getAllInterviewers")
 	public @ResponseBody String getAllApprovers(HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String resultJson = null;
+		
+		List<User> interviewersNewList = new ArrayList<>();
+		
 		List<User> interviewersList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
-		resultJson = commonUtil.toJSON(interviewersList);
+		for(User userList:interviewersList){
+			UserRole user = UserRoleService.getUserRoleByUserIdAndLocationId(userList.getId(), orgLocations.getId());
+			if(!Constants.EMPLOYEE.equals(user.getUserType())){
+				interviewersNewList.add(userList);
+			}
+		}
+		resultJson = commonUtil.toJSON(interviewersNewList);
 		return resultJson;
 
 	}

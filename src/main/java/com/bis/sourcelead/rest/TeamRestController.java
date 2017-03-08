@@ -219,7 +219,7 @@ public class TeamRestController {
 		List<User> newUserList = new ArrayList<>();
 		List<User> userList = userService.getUserListExceptExistedTeamMembersList(ids, loginOrgLocation.getId());
 		for(User user :userList){
-			 UserRole userRole = userRoleService.getUserRoleByUserId(user.getId());
+			 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), loginOrgLocation.getId());
 			 if(!Constants.EMPLOYEE.equals(userRole.getUserType())){
 				 newUserList.add(user);
 			 }
