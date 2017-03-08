@@ -398,6 +398,10 @@ public class Constants {
     
     public static String[] VENDOR_CONTACTS_EXCEL_HEADERS = {"Vendor Name","Name","Emailid","Phone Number","Owner","Role","Status"};
     
+    public static String[] SHORTLIST_CANDIDATE_FROM_CLIENT_TO_VENDOR_HEADER={"CandidateName","PhoneNumber","Work Experience","status"};
+    
+    public static String SHORTLIST_CANDIDATE_COUNT= "shortlist_candidate :";
+	
     public static String VENDOR = "Vendor";
     
     public static String CLIENT = "Client";
