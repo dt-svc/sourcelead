@@ -267,12 +267,14 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 									}
 						   }else{
 							   <c:if test="${isTeamMember == true && isManager == false && isAdmin == false}">
+							   		result = result +'<span id= "requestsDiv">';
 							   if(json.submissionStatus != 'REJECTED' && json.submissionStatus != 'SHORTLIST' && json.submissionStatus != 'OFFERMADE'){
 									result = result + '	<li><i class="fa fa-check labelsuccess" title="Request" onClick="requestFun('+submissionId+');"></i>';
 							   }
 									result = result + '		<div class="acceptreject-pop" id="request">';
 									result = result + '		</div>';
 									result = result + '	</li>';
+									result = result + '	</span>';
 								</c:if>		
 						   }
 						result = result + '</ul>';
@@ -1418,6 +1420,8 @@ function attachmentValidationFun(){
 		            			 $('#accpet-div').fadeOut();
 		            			 $('#reject').fadeOut();
 		            			 $('#request').fadeOut();
+		            			 $("#requestsDiv").empty();
+		            			 $("#requestsDiv").append("Request Sent");
 		            		 }
 						},
 					});

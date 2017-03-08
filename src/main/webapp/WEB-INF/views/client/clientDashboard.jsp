@@ -400,27 +400,29 @@ window.onload = function () {
 <script type="text/javascript">
 function clientOnLoad(clientSearchResult,clientKeyword,responderLocationId,orgRelationId,orgName){
 	if(clientSearchResult =="clientSearchResult"){
-		getClientUniversalSearchList("${searchValue}");
-	}
-	if(clientKeyword=="clientSearch"){
-		clientSideBar(responderLocationId,orgRelationId,orgName);
-		getVendorContactListsELK();
+		getClientUniversalSearchList("${searchValue}","${searchType}");
+	}else{
+		if(clientKeyword=="clientSearch"){
+			clientSideBar(responderLocationId,orgRelationId,orgName);
+			getVendorContactListsELK();
+		}
+		
+		/* getVendorContactLists(); */
+		else{
+			getVendorContactListsELK();
+		}
+		 listChange("listbyContact");
+		document.getElementById('listOfVendors').value = 'listbyContact';
 	}
 	
-	/* getVendorContactLists(); */
-	else{
-		getVendorContactListsELK();
-	}
-	 listChange("listbyContact");
-	document.getElementById('listOfVendors').value = 'listbyContact';
 }
 </script>
 <script type="text/javascript">
-function getClientUniversalSearchList(searchValue){
+function getClientUniversalSearchList(searchValue,searchType){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getUniversalClientList?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue,       
+         url: sourceleadUrl+"/getUniversalClientList?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue+"&searchType="+searchType,       
          success :function(data) {
         	 preparedClientListFromElk(data);
         },

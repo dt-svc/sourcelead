@@ -716,7 +716,7 @@ public class VendorRestController {
 									  }
 									}
 								  if(!responderType.isEmpty() &&  Constants.VENDOR.equalsIgnoreCase(responderType)){
-									  if(!clientVendor.getCreatedBy().isEmpty()){
+									  if(null != clientVendor.getCreatedBy() && !clientVendor.getCreatedBy().isEmpty()){
 										  clientVendor.setCreatedBy(clientVendor.getCreatedBy());
 									  }
 									 
