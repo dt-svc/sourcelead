@@ -245,14 +245,23 @@ public class RequirementListController {
 			return resultJson;
 		}
 	 /*
-	  * 
+	  * author Prasanna vadla
+	  * redirect to requirementReports page
 	  */
 	 @RequestMapping(value = "/requirementListForReports")
 		public ModelAndView requirementListForReports(@RequestParam(value="serachValue", required=false)String serachValue) throws Exception {
-		 logger.info("checkkkkk");
 		 ModelAndView model = new ModelAndView();
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 model.setViewName("requirement/requirementReports");
+		 return model;
+			
+	 }	 
+	 
+	 @RequestMapping(value = "/applicantsListForReports")
+		public ModelAndView applicantsListForReports() throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("requirement/applicantsReport");
 		 return model;
 			
 	 }	 

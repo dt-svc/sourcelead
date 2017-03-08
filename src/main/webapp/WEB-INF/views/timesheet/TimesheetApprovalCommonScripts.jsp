@@ -1351,11 +1351,23 @@ function notifyReopenTimeSheet(projectMemberId,timesheetFrequency,totalHours){
 		    	$("#reOpenPopup").empty();
    			 	$(".project_inn_mask").fadeOut(200);
    			 	
-   			 	 timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMemberId,"approver");
-   			 	
-   			    timesheetDivByFrequency();
-	    	    $("html").trigger('click');
-	    	    maskme();
+   			    var startDate = $("#tabStartDate").val();
+   			    var endDate = $("#tabEndDate").val();
+   			    var isSuperUser = $("#isSuperUser").val();
+   			    if(startDate != null && startDate != '' && startDate != 'undefined' && 
+   					  endDate != null && endDate != '' && endDate != 'undefined'){
+   			    	 if(isSuperUser){
+   			    		 timesheetDivAfterSaving(startDate,endDate,"draft");
+   			    	 }
+   			    	 else{
+   			    		timesheetDivAfterSaving(startDate,endDate,"submitted");
+   			    	 }
+   			    }
+   			    else{
+   			    	timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMemberId,"approver");
+   			    }
+   			   
+   			    
 		    }
 	   });
 	}else{
