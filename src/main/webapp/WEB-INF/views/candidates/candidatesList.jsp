@@ -1265,7 +1265,7 @@ function cancel(candidateId){
           </li>
           </sec:authorize>
           
-           <!--  <li><a href="uploadCandidateForm"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>  -->
+             <li><a href="uploadCandidateForm"><i class="fa fa-upload"></i>&nbsp;Imports</a></li> 
 	      
            <li id="filter2ApprovePop"><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter2ApprovedPop" class="approved_pop">

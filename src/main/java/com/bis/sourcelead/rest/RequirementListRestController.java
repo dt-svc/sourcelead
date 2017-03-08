@@ -638,8 +638,12 @@ public class RequirementListRestController {
 											String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
 											DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 											Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-											currentDateInTimezone = Constants.DMY.format(converteDate);
-											requirementSubmission.setCreatedDateStr(currentDateInTimezone);	
+											currentDateInTimezone = Constants.DF_STD_DMY.format(converteDate);
+											requirementSubmission.setCreatedDateStr(currentDateInTimezone);
+											
+											SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
+									        String time = localDateFormat.format(converteDate);
+									        requirementSubmission.setCreatedTimeStr(time);
 										}
 								    }
 									if(requirementSubmission.getUpdatedDate() != null){
@@ -648,7 +652,7 @@ public class RequirementListRestController {
 											String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
 											DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 											Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-											currentDateInTimezone = Constants.DMY.format(converteDate);
+											currentDateInTimezone = Constants.DF_STD_DMY.format(converteDate);
 											requirementSubmission.setUpDatedStr(currentDateInTimezone);
 										}
 										

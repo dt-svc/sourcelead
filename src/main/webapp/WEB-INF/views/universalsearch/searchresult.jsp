@@ -749,7 +749,7 @@ function getSearchResultsForAll(searchType,searchValue){
 								    	
 								    	if(opt.length>5 && j==4){
 							                result = result+'  <div class="clearfix">';
-									    	result = result+'      <a href="/sourcelead/requirementList" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+									    	result = result+'      <a href="#" onClick="loadVendor();" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
 									    	result = result+'  </div>';
 							             }
 				            	 }
@@ -837,7 +837,8 @@ function loadProjects(){
 function vendorSearchSideBar(responderLocationId,orgRelationId,orgName){
 	var vendorKeyword = "vendorSearch";
 	var sourceleadUrl = '${sourceleadUrl}';
-	window.location.href = sourceleadUrl + "/vendorsList?&responderLocationId="+responderLocationId+"&orgRelationId="+orgRelationId+"&orgName="+orgName+"&vendorKeyword="+vendorKeyword;
+	var org = encodeURIComponent(orgName);
+	window.location.href = sourceleadUrl + "/vendorsList?&responderLocationId="+responderLocationId+"&orgRelationId="+orgRelationId+"&orgName="+org+"&vendorKeyword="+vendorKeyword;
 
 }
 </script>
@@ -847,7 +848,8 @@ function vendorSearchSideBar(responderLocationId,orgRelationId,orgName){
 function clientSearchSideBar(responderLocationId,orgRelationId,orgName){
 	var clientKeyword = "clientSearch";
 	var sourceleadUrl = '${sourceleadUrl}';
-	window.location.href = sourceleadUrl + "/clientDashboard?&responderLocationId="+responderLocationId+"&orgRelationId="+orgRelationId+"&orgName="+orgName+"&clientKeyword="+clientKeyword;
+	var org = encodeURIComponent(orgName);
+	window.location.href = sourceleadUrl + "/clientDashboard?&responderLocationId="+responderLocationId+"&orgRelationId="+orgRelationId+"&orgName="+org+"&clientKeyword="+clientKeyword;
 }
 </script>
 
