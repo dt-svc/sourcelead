@@ -87,11 +87,14 @@ public class RequirementListController {
 		model.addObject("educationsList", educationsList);
 		
 		Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
-		for(OrgRelations ocl :orgClientList){
-			ocl.setOrgName(ocl.getResponderLocationId().getOrg().getOrgName());
-			ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
-		 }
-	    model.addObject("add_clientList", orgClientList);
+		if(null != orgClientList && orgClientList.size() > 0){
+			for(OrgRelations ocl :orgClientList){
+				ocl.setOrgName(ocl.getResponderLocationId().getOrg().getOrgName());
+				ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
+			 }
+		    model.addObject("add_clientList", orgClientList);
+		}
+		
 	    model.addObject("loginOrgLocId", orgLocations.getId());
 	    
 	    List<Countries> countryList = countriesService.getAllCountries();
@@ -180,6 +183,26 @@ public class RequirementListController {
 			model.addObject("vendor_list", vendorsList);
 	        model.addObject(vendorsList);
 	        model.addObject("requirementId",requirement.getId());
+
+	        model.addObject("requirementUUID",requirementUUID);
+	       
+	        if(!isNullOrEmpty(requirement.getJobType())){
+	        	model.addObject("requirementType",requirement.getJobType());
+	        }
+	       
+	        if(null != requirement.getRate()){
+	        	 model.addObject("jobRate",requirement.getCurrencyCode()+" "+requirement.getRate()+" / "+requirement.getRateType());	
+	        }
+	        
+	        if(null != requirement.getRewardType()){
+	        	model.addObject("rewardType", requirement.getRewardType());
+	        	model.addObject("rewardPercentage", requirement.getRewardPercentage());
+	        	model.addObject("rewardFlat", requirement.getRewardFlat());
+	        	model.addObject("rewardFlatRateType", requirement.getRewardFlatRateType());
+	        	model.addObject("rewardGauranteePeriod", requirement.getRewardGuaranteePeriod());
+	        }
+	       
+
 	        model.addObject("jobTitle",requirement.getJobTitle());
 			
 			request.getSession().setAttribute("sessionData",sessionData);
@@ -222,14 +245,23 @@ public class RequirementListController {
 			return resultJson;
 		}
 	 /*
-	  * 
+	  * author Prasanna vadla
+	  * redirect to requirementReports page
 	  */
 	 @RequestMapping(value = "/requirementListForReports")
 		public ModelAndView requirementListForReports(@RequestParam(value="serachValue", required=false)String serachValue) throws Exception {
-		 logger.info("checkkkkk");
 		 ModelAndView model = new ModelAndView();
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 model.setViewName("requirement/requirementReports");
+		 return model;
+			
+	 }	 
+	 
+	 @RequestMapping(value = "/applicantsListForReports")
+		public ModelAndView applicantsListForReports() throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("requirement/applicantsReport");
 		 return model;
 			
 	 }	 

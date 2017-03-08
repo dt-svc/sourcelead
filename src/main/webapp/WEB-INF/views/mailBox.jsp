@@ -262,7 +262,7 @@
 	           		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter">'; 
 	           		result = result +'<table class="table table-hover table-striped">';
 	           		result = result +'           <thead>';
-	           		result = result +'           <p class="text-center text-muted"><i class="fa fa-envelope fa-3x"></i><br/><br/>No Mails In Your '+type+' </p>';
+	           		result = result +'           <p class="text-center text-muted"><i class="noMailImg"></i><br/>No Mails In Your '+type+' </p>';
 	           		result = result +'           </thead>';
 	        		result = result +'           </table>';
 	        		result = result +'     </div>';

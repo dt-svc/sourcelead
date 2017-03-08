@@ -20,18 +20,20 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
-import com.bis.sourcelead.entity.Notifications;
-import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.CrowdSourcingUserBankAccounts;
+import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.CrowdSourcingUserBankAccountsService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.ReferContactsService;
+import com.bis.sourcelead.service.RequirementReferService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.StatesService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -56,6 +58,89 @@ public class ProfessionalRequirementsController {
 	
 	@Autowired
 	LookUpDataService lookUpDataService;
+	
+	@Autowired
+	RequirementReferService requirementReferService;
+	
+	@Autowired
+	ReferContactsService referContactsService;
+	
+	@Autowired
+	UserService userService;
+	
+	@Autowired
+	CrowdSourcingUserBankAccountsService crowdSourcingUserBankAccountsService;
+	
+	
+	protected boolean isNullOrEmpty(String str) {
+		return str == null || "".equals(str.trim());
+	}
+	
+	
+	 @RequestMapping(value = "/register")
+	 	public ModelAndView register(@RequestParam(value = "contactUUID", required = false) String contactUUID) throws Exception {
+	 			ModelAndView model = new ModelAndView();
+	 			model.addObject("sourceleadUrl", sourceleadUrl);
+	 			if(!isNullOrEmpty(contactUUID)){
+	 				ReferContacts referContacts = referContactsService.getReferContactsByUUID(contactUUID);
+	 				if(null == referContacts.getContactUser()){
+	 					model.addObject("firstName",referContacts.getFirstName());
+		 				model.addObject("lastName",referContacts.getLastName());
+		 				model.addObject("email",referContacts.getContactUserEmail());
+		 				model.addObject("contactUUID", contactUUID);
+		 				model.setViewName("registration");
+	 				}else{
+	 					User user = userService.getUserById(referContacts.getContactUser().getId());
+	 					if(null == user.getPassword()){
+	 						model.addObject("userName", user.getUserName());
+			 				model.setViewName("resetloginCredentials");
+	 					}else{
+	 						model.setViewName("login");
+	 					}
+	 				}
+	 				
+	 			}else{
+	 				model.setViewName("registration");
+	 			}
+	 			
+	 			return model;
+	 	}
+	 
+	 @RequestMapping(value = "/resetloginCredentials")
+	 	public ModelAndView resetloginCredentials(HttpServletRequest request) {
+	 			ModelAndView model = new ModelAndView();
+	 			model.setViewName("resetloginCredentials");
+	 			model.addObject("sourceleadUrl", sourceleadUrl);
+	 			
+	 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg");
+	  			if(!isNullOrEmpty(msg)){
+	  				model.addObject("msg", msg);
+	  				SourceLeadSessionManager.removeSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg");
+	  			}
+	 			return model;
+	 	}
+	 
+	    @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+	    @RequestMapping(value = "/bankAccountDetails")
+	 	public ModelAndView bankAccountDetails(HttpServletRequest request) throws Exception {
+	    	
+	    	    User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+	    	
+	 			ModelAndView model = new ModelAndView();
+	 			model.setViewName("professional/bankAccountDetails");
+	 			model.addObject("sourceleadUrl", sourceleadUrl);
+	 			
+	 			CrowdSourcingUserBankAccounts bankAccounts = crowdSourcingUserBankAccountsService.getUserBankAccountByUserId(user.getId());
+	 			if(null != bankAccounts){
+	 				model.addObject("bankAccounts", bankAccounts);
+	 			}
+	 			
+	 			return model;
+	 	}
+	
+	
+	 
+	 
 	
 	 @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
 	 @RequestMapping(value = "/professionalRequirements")
@@ -90,8 +175,12 @@ public class ProfessionalRequirementsController {
 			        model.addObject("statesList", statesList);
 				}
 				
-				List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+				/*List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+				model.addObject("skillsList", skillsList);*/
+				
+				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 				model.addObject("skillsList", skillsList);
+				
 			    
 				
 				model.setViewName("professional/professionalRequirements");
@@ -146,9 +235,8 @@ public class ProfessionalRequirementsController {
 
 		}
 	 
-	 @RequestMapping(value = "/getRequirementProfessionalProfileDetails" , method = RequestMethod.GET)
-	 @ResponseBody
-		public String getRequirementProfessionalProfileDetails(@RequestParam(value="requirementUUID", required=false) String  requirementUUID,HttpServletRequest request) throws Exception {
+	    @RequestMapping(value = "/getRequirementProfessionalProfileDetails" , method = RequestMethod.GET)
+		public  @ResponseBody String getRequirementProfessionalProfileDetails(@RequestParam(value="requirementUUID", required=false) String  requirementUUID,HttpServletRequest request) throws Exception {
 		        String resultJson;
 		        User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		        Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
@@ -160,7 +248,7 @@ public class ProfessionalRequirementsController {
 		        	}
 		        }
 		        
-		        if(null !=  requirement.getAppliedProfessionals()){
+		        if(null !=  requirement.getAppliedProfessionals() && null != user){
 	    			  List<Long> userId = new ArrayList<Long>();
 	    			  String[] appliedProfessionals = requirement.getAppliedProfessionals().split(",");
 	 					for (int i=0; i < appliedProfessionals.length; i++){
@@ -194,5 +282,40 @@ public class ProfessionalRequirementsController {
 		 return model;
 			
 		}
+	 
+		
+	 @RequestMapping(value = "/referRequirementList")
+	 public ModelAndView referRequirementList(HttpServletRequest request) {
+		ModelAndView model = new ModelAndView();
+		commonUtil.highLightMenu(Constants.OrgSettings, request);
+		model.setViewName("professional/referRequiremnetList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+		}
+			 
+	 @RequestMapping(value = "/validateReferedEmail",  method = RequestMethod.GET)
+	   public @ResponseBody String validateReferedEmail(@RequestParam(value="email", required=false) String email,
+	   		@RequestParam(value="requirementId", required=false) Long requirementId,
+	   		HttpServletRequest request) throws Exception {
+		  
+		  User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		  
+		  if(!user.getEmail().equalsIgnoreCase(email)){
+			  boolean isRefer = requirementReferService.isReferToRequirement(email, requirementId);
+			  if(isRefer == true){
+				  return "Invalid"; 
+			  }else{
+				  boolean flag = requirementReferService.isProfessionalReferToRequirement(email, requirementId, user.getId());
+				  if(flag == true){
+					  return "Invalid";
+				  }else{
+					  return "Success";
+				  }
+			  } 
+		  }else{
+			  return "Invalid Email";
+		  }
+		  
+	   }
 	 
 }

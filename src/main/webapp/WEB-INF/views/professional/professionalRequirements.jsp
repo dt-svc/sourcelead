@@ -14,7 +14,13 @@
 <script type="text/javascript">
 window.onload = function () {
 	requirementsList(0);
-	document.getElementById('requirementType').value = 'OpenJobs';
+	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+	if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
+		document.getElementById('requirementType').value = 'OpenJobs';
+	}else{
+		document.getElementById('requirementType').value = 'CrowdSourcingJobs';
+	}
+	
  };
 </script>
 
@@ -24,13 +30,15 @@ window.onload = function () {
       <div class="pull-left">
         <h2>Requirements<span class="select-fild">
           <select id="requirementType" onchange="requirementsList('0');">
+           	<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
            	<option value="OpenJobs">Open Jobs</option>
+           	</c:if>
             <option value="CrowdSourcingJobs">CrowdSourcing Jobs</option>
             <option value="AppliedJobs">Applied Jobs</option>
           </select>
           </span>
 			<div class="timeNewSe timeNewSe_h" id="referredJobType" style="display: none;">
-                <select class="form-control chosen-select">
+                <select class="form-control chosen-select" id="referJobType" onchange="requirementsList('0');">
                   <option selected="selected" disabled="disabled" value="">Select Job Type</option>
                   <option value="ReferredToMe">Referred to me</option>
                   <option value="ReferredByMe">Referred by me</option>
@@ -257,11 +265,15 @@ window.onload = function () {
 	    <input type="hidden" name="requirementSearchOffset" id="requirementSearchOffset" value="0"/>
 	  <div id="requirementsList"></div> 
 	  <a href="#" id="loadMoreSection" style="display: none;"><section class="loadJob" onclick="getViewMoreRecords();"><i id="viewMoreLoading"></i><span id="viewMore">View more</span></section></a>
+	   <a href="#" id="noMoreRecordsSection" style="display: none;"><section class="loadJob"><span id="viewMore">No Records Found</span></section></a>
 	  <a href="#" id="loadMoreSearchSection" style="display: none;"><section class="loadJob" onclick="getViewMoreSearchRecords();"><i id="viewMoreSearchLoading"></i><span id="viewSearchMore">View more</span></section></a>
 	  
 	 <div class="side_mask"><div class="proj_close"></div></div>
 	 <div class="new_side_wrap">
+	 <div class="new_side_wrap_inn">
+	<div class="new_side_wrap_cta">
 		<div id="applytoJobDiv"></div>
+		</div></div>
 	 </div> 
 	 
             
@@ -509,6 +521,8 @@ function requirementsList(offset){
 	var postedOn = document.getElementById('postedOn').value;
 	var jobTitleSearch = document.getElementById('jobTitleSearch').value;
 	var jobLocationSearch = document.getElementById('jobLocationSearch').value;
+	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+	
     loadChosenRequirementScripts();
 	
 	
@@ -525,8 +539,15 @@ function requirementsList(offset){
 	else if(requirementType == "OpenJobs"){
 		document.getElementById("referredJobType").style.display="none";
 		document.getElementById("advancedSearch").style.display="";
+		 $("#referJobType").val('').trigger("chosen:updated");
 	}else{
 		document.getElementById("referredJobType").style.display="none";
+		document.getElementById("advancedSearch").style.display="none";
+		 $("#referJobType").val('').trigger("chosen:updated");
+	}
+	
+	var referJobType = document.getElementById("referJobType").value;
+	if(null != referJobType && referJobType != '' && referJobType != 'undefined'){
 		document.getElementById("advancedSearch").style.display="none";
 	}
 	
@@ -536,7 +557,7 @@ function requirementsList(offset){
 	
 	 $.ajax({ 
 	   	type: "POST",
-	   	url: sourceleadUrl+"/getCrowdSourcingRequirements?${_csrf.parameterName}=${_csrf.token}&requirementType="+requirementType+"&offset="+offset+"&postedOn="+postedOn+"&jobTitleSearch="+jobTitleSearch+"&jobLocationSearch="+jobLocationSearch,
+	   	url: sourceleadUrl+"/getCrowdSourcingRequirements?${_csrf.parameterName}=${_csrf.token}&requirementType="+requirementType+"&offset="+offset+"&postedOn="+postedOn+"&jobTitleSearch="+jobTitleSearch+"&jobLocationSearch="+jobLocationSearch+"&referJobType="+referJobType,
 	   			
 	    success: function(data) {
        	 var json = JSON.parse(data);
@@ -616,6 +637,27 @@ function requirementsList(offset){
 			 				result = result +'</ul>';
 			 				result = result +'<div class="clearfix"></div>';
 			 				result = result +'</h5>';
+			 				
+			 				if(requirementType != "OpenJobs" && requirements.isCrowdSourcingJob == 'Y'){
+			 				result = result +'<div class="disCount">';
+			 				result = result +'<div class="disCountTop">';
+			 				result = result +'<span>You will get</span>';
+			 				if(requirements.rewardType == 'Percentage'){
+			 					result = result +'<b>'+requirements.rewardPercentage+'%</b>';
+			 				}
+			 				
+			 				if(requirements.rewardType == 'Flat'){
+			 					result = result +'<strong>'+requirements.rewardFlatRateType+'</strong>';
+			 					result = result +' <b class="inr">'+requirements.rewardFlat+'</b>';
+			 				}
+			 				
+			 				result = result +'<span>on base salary</span>';
+			 				result = result +'</div>';
+			 				
+			 				result = result +'<p>Referral reward guarantee period '+requirements.rewardGuaranteePeriod+' ';
+			 				result = result +'</p>';
+			 				result = result +'</div>';
+			 				}
 			 		  
 			 				result = result +'</div>';
 			 				
@@ -632,28 +674,48 @@ function requirementsList(offset){
 				 				result = result +'<div class="openPostBtns">';
 				 				
 				 				if((requirementType == "OpenJobs")|| (requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'N')){
-				 					result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob('+requirements.requirementId+');"  class="jobApply">Apply</a>';
+				 					result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob('+requirements.requirementId+','+requirements.referId+');"  class="jobApply">Apply</a>';
 				 				}
 				 				
 				 				if(requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'Y'){
-				 					result = result +'<a href="javascript:void(0)" class="jobApply">Applied</a>';
+				 					if(requirements.isReferedRequiremetnApplied == 'Y'){
+				 						result = result +'<a href="javascript:void(0)" class="jobApply appliedJob">Applied</a>';
+				 					}else{
+				 						result = result +'<a href="javascript:void(0)" class="jobApply">Applied</a>';
+				 					}
+				 					
 				 				}
 				 				
 				 				
 				 				if(requirementType == "CrowdSourcingJobs"){
-				 					result = result +'<a class="refer" onclick="referToJob('+requirements.requirementId+')" href="javascript:void(0)">Refer</a>';
-				 					result = result +'<div class="referWrap" id="refer'+requirements.requirementId+'">';
-					 				result = result +'<div class="referWrapInn">';
-					 				result = result +'<div id="refertoJobDiv'+requirements.requirementId+'"></div>';  
-					 				result = result +'</div>';
-					 				result = result +'</div>';
+				 					if(referJobType == '' || referJobType == null || referJobType == 'undefined' || referJobType != 'ReferredToMe'){
+					 					result = result +'<a class="refer" onclick="referToJob('+requirements.requirementId+','+requirements.referId+')" href="javascript:void(0)">Refer</a>';
+					 					result = result +'<div class="referWrap" id="refer'+requirements.requirementId+'">';
+						 				result = result +'<div class="referWrapInn">';
+						 				result = result +'<div id="refertoJobDiv'+requirements.requirementId+'"></div>';  
+						 				result = result +'</div>';
+						 				result = result +'</div>';
+				 					}else if(referJobType == 'ReferredToMe'){
+				 						result = result +'<a class="refer" onclick="referToJob('+requirements.requirementId+','+requirements.referId+')" href="javascript:void(0)">Refer</a>';
+					 					result = result +'<div class="referWrap" id="refer'+requirements.referId+'">';
+						 				result = result +'<div class="referWrapInn">';
+						 				result = result +'<div id="refertoJobDiv'+requirements.referId+'"></div>';  
+						 				result = result +'</div>';
+						 				result = result +'</div>';
+				 					}
 				 				}
 				 				
 				 				result = result +'</div>';
 				 				result = result +'<div class="openPostDate">';
 				 				result = result +'Posted :';
 				 				result = result +'<b><i class="fa fa-clock-o"></i> '+requirements.calDays+'</b>';
-				 				result = result +'</div>';			  
+				 				result = result +'</div>';
+				 				if(referJobType == 'ReferredToMe'){
+				 					result = result +'<div class="applShare Refer">';
+					 				result = result +'Referred by : '+requirements.referedUser+'';
+					 				result = result +'</div>';
+				 				}
+				 				
 				 				result = result +'</div>';
 			 				}
 			 				else if(requirementType == "AppliedJobs"){
@@ -662,8 +724,19 @@ function requirementsList(offset){
 			 					result = result +'<div class="appliedWrap">';
 			 					result = result +'<i class="fa fa-check-circle"></i>';
 			 					result = result +'<div class="openPostDate">';
-			 					result = result +'<i class="fa fa-clock-o"></i> Applied on : <b>'+requirements.requirementAppliedDate+'</b>';
+			 					
+			 					if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
+			 						result = result +'<i class="fa fa-clock-o"></i> Applied on : <b>'+requirements.requirementAppliedDate+'</b>';
+			 					}else{
+			 						result = result +'<i class="fa fa-user-circle"></i> Submissions Count : <b>'+requirements.recruiterSubmissionsCount+'</b>';
+			 					}
+			 					
 			 					result = result +'</div>';
+			 					if(requirements.referedUser != '' && requirements.referedUser != null && requirements.referedUser != 'undefined'){
+				 					result = result +'<div class="applShare Refer">';
+					 				result = result +'Referred by : '+requirements.referedUser+'';
+					 				result = result +'</div>';
+				 				}
 			 					result = result +'</div>';
 			 					result = result +'</div>';
 			 				  
@@ -673,32 +746,33 @@ function requirementsList(offset){
 			 				
 			       	    	$('#requirementsList').append(result);
 			       	    	document.getElementById("viewMoreLoading").removeAttribute("class");
-			       	    	document.getElementById("loadMoreSection").style.display="";
+			       	    	
+			       	    	if(requirements.noOfSearchHits >= 10){
+			       	    		document.getElementById("loadMoreSection").style.display="";
+			       	    	}else{
+			       	    		document.getElementById("loadMoreSection").style.display="none";
+			       	    		document.getElementById("noMoreRecordsSection").style.display="";
+			       	    	}
+			       	    	
 			       	    	document.getElementById("loadMoreSearchSection").style.display="none";
 		            		
 				   }
 	   		    }
           }else if(offset == 0){
 	   		     var result ="";
-	    	     result = result+"   <div class='row'>"; 
-	    	     result = result +'<div class="clearfix"></div>';
-				 result = result+"	<div class='col-lg-12'>"; 
-				 result = result+"		<div class='content-area clearfix'>"; 
-				 result = result+"			<div class='blank-pages'>";
-				 result = result+"			        <p><i class='fa fa-5x fa-briefcase'></i></p>";
-				 result = result+"			        <p>No Requirements Found</p>";
-				 result = result+"			 </div>";
-				 result = result+"		</div>"; 
-				 result = result+"	</div>"; 
+	    	     result = result+"   <div class='dataTables_empty'>"; 
 				 result = result+"  </div> "; 
 				$("#requirementsList").empty();
 			    $("#requirementsList").append(result); 
 			    document.getElementById("loadMoreSection").style.display="none";
 			    document.getElementById("loadMoreSearchSection").style.display="none";
+			    document.getElementById("noMoreRecordsSection").style.display="none";
    		    }else{
    		    	
-   		    	$('#viewMore').html("No Records Found");
    		    	document.getElementById("viewMoreLoading").removeAttribute("class");
+   		    	document.getElementById("loadMoreSection").style.display="none";
+   		    	document.getElementById("noMoreRecordsSection").style.display="";
+   		    	
    		    }
    	
 		 },
@@ -830,11 +904,32 @@ function searchRequirement(offset){
 									 				result = result +'</ul>';
 									 				result = result +'<div class="clearfix"></div>';
 									 				result = result +'</h5>';
+									 				
+									 				if(requirementType != "OpenJobs" && requirements.isCrowdSourcingJob == 'Y'){
+										 				result = result +'<div class="disCount">';
+										 				result = result +'<div class="disCountTop">';
+										 				result = result +'<span>You will get</span>';
+										 				if(requirements.rewardType == 'Percentage'){
+										 					result = result +'<b>'+requirements.rewardPercentage+'%</b>';
+										 				}
+										 				
+										 				if(requirements.rewardType == 'Flat'){
+										 					result = result +'<strong>'+requirements.rewardFlatRateType+'</strong>';
+										 					result = result +' <b class="inr">'+requirements.rewardFlat+'</b>';
+										 				}
+										 				
+										 				result = result +'<span>on base salary</span>';
+										 				result = result +'</div>';
+										 				
+										 				result = result +'<p>Referral reward guarantee period '+requirements.rewardGuaranteePeriod+' ';
+										 				result = result +'</p>';
+										 				result = result +'</div>';
+										 				}
 									 		  
 									 				result = result +'</div>';
 									 				
 									 				
-									 				if(requirementType != "AppliedJobs"){
+									 				if(requirementType != "AppliedJobs" && requirements.isCrowdSourcingJob == 'Y'){
 									 					result = result +'<div class="openCtaRight">';
 										 				/* result = result +'<p>Share Requirement</p>';
 										 				result = result +'<span>';
@@ -875,31 +970,31 @@ function searchRequirement(offset){
 									 				result = result +'</section>';
 									       	     $('#requirementsList').append(result);
 									       	     document.getElementById("loadMoreSection").style.display="none";
-									       	     document.getElementById("loadMoreSearchSection").style.display="";
+									       	     
+									       	    if(requirements.noOfSearchHits >= 10){
+								       	    		document.getElementById("loadMoreSearchSection").style.display="";
+								       	    	}else{
+								       	    		document.getElementById("loadMoreSearchSection").style.display="none";
+								       	    		document.getElementById("noMoreRecordsSection").style.display="";
+								       	    	}
+									       	  
 									       	     document.getElementById("viewMoreSearchLoading").removeAttribute("class");
 								            		
 										   }
 							   		    }
 						          }else if(offset == 0){
 				                	 var result ="";
-				    	    	     result = result+"   <div class='row'>"; 
-				    	    	     result = result +'<div class="clearfix"></div>';
-				    				 result = result+"	<div class='col-lg-12'>"; 
-				    				 result = result+"		<div class='content-area clearfix'>"; 
-				    				 result = result+"			<div class='blank-pages'>";
-				    				 result = result+"			        <p><i class='fa fa-5x fa-briefcase'></i></p>";
-				    				 result = result+"			        <p>No Requirements Found</p>";
-				    				 result = result+"			 </div>";
-				    				 result = result+"		</div>"; 
-				    				 result = result+"	</div>"; 
+				    	    	     result = result+"   <div class='dataTables_empty'>"; 
 				    				 result = result+"  </div> "; 
 				    				$("#requirementsList").empty();
 				    			    $("#requirementsList").append(result); 
 				    			    document.getElementById("loadMoreSection").style.display="none";
 				    			    document.getElementById("loadMoreSearchSection").style.display="none";
+				    			    document.getElementById("noMoreRecordsSection").style.display="";
 		               		 }else{
-		               			$('#viewSearchMore').html("No Records Found");
 		           		    	document.getElementById("viewMoreSearchLoading").removeAttribute("class");
+		           		    	document.getElementById("noMoreRecordsSection").style.display="none";
+		           		    	document.getElementById("noMoreRecordsSection").style.display="none";
 		               		 }
 						},
 					});  
@@ -916,8 +1011,8 @@ $('body').on('blur', '#professional_requirement_search_form', function() {
 
 
 <script>
-function referToJob(requirementId){
-	   appendReferToJob(requirementId); 
+function referToJob(requirementId,referId){
+	   appendReferToJob(requirementId,referId); 
 	   removeReferPopUp();
 	    
 	   var result = ''
@@ -925,6 +1020,11 @@ function referToJob(requirementId){
 	    result = result + '<form id="referToJob_form" name="referToJob_form" method="post">';
 		result = result +'<div class="form-group col-md-6">';
 		result = result +'<input type="hidden" name="referRequirementId" id="referRequirementId" value='+requirementId+' >';
+		
+		if(referId != null && referId != 'undefined' && referId != ''){
+			result = result +'<input type="hidden" name="referId" id="referId" value='+referId+' >';
+		}
+		
 		result = result +'<label class="col-md-12" for="Project Id">First Name *</label>';
 		result = result +'<div class="col-md-12">';
 		result = result +'<input type="text" class="form-control" name="firstName" id="firstName" field-name="First Name" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">';
@@ -936,10 +1036,10 @@ function referToJob(requirementId){
 		result = result +'<input type="text" class="form-control" name="lastName" id="lastName" field-name="Last Name" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">';
 		result = result +'</div>';
 		result = result +'</div>'; 
-		result = result +'<div class="form-group col-md-6">';
+		result = result +'<div class="form-group col-md-6" id="emailDiv">';
 		result = result +'<label class="col-md-12" for="Project Id">Email Id *</label>';
 		result = result +'<div class="col-md-12">';
-		result = result +'<input type="text" class="form-control" name="email" id="email" field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">';
+		result = result +'<input type="text" class="form-control" name="email" id="email" onblur="validateProfessionalEmail('+requirementId+')"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">';
 		result = result +'<span class="hidden">Enter Project Id</span> </div>';
 		result = result +'</div>'; 
 		result = result +'<div class="form-group col-md-6">';
@@ -951,29 +1051,46 @@ function referToJob(requirementId){
 		result = result +'<div class="col-md-12 mt5 clearfix">';            
 		result = result +'<div class="pull-right">';
 		result = result +'<input type="submit" value="Refer" id="submit_refer"  class="btn btn-primary">';
-		result = result +'<input type="button" value="Cancel" onclick="cancelReferPopUp('+requirementId+')" class="btn btn-default ml10 canBtn">';
+		result = result +'<input type="button" value="Cancel" onclick="cancelReferPopUp('+requirementId+','+referId+')" class="btn btn-default ml10 canBtn">';
 		result = result +'</div>';    
 		result = result +'</div>'; 
 		result = result +'<div class="clearfix"></div>'; 
 		result = result + '</form>';
 		
-		$("#refertoJobDiv"+requirementId+"").empty(); 
-	    $("#refertoJobDiv"+requirementId+"").append(result); 
+		if(referId == null || referId == '' || referId =='undefined'){
+			$("#refertoJobDiv"+requirementId+"").empty(); 
+		    $("#refertoJobDiv"+requirementId+"").append(result); 
+		}else{
+			$("#refertoJobDiv"+referId+"").empty(); 
+		    $("#refertoJobDiv"+referId+"").append(result); 
+		}
+		
 }
 </script>
 
 
 <script>	
-function appendReferToJob(requirementId){
+function appendReferToJob(requirementId,referId){
+	if(referId == null || referId == '' || referId =='undefined'){
 		$("#refer"+requirementId+"").toggleClass("referWrapActive");
+	}else{
+		$("#refer"+referId+"").toggleClass("referWrapActive");
+	}
+		
 		
 }
 </script> 
 
 <script>
-function cancelReferPopUp(requirementId){
+function cancelReferPopUp(requirementId,referId){
 	$("#refer"+requirementId+"").removeClass("referWrapActive");
 	$("#refertoJobDiv"+requirementId+"").empty(); 
+	
+	if(referId != null && referId != '' && referId !='undefined'){
+		$("#refer"+referId+"").removeClass("referWrapActive");
+		$("#refertoJobDiv"+referId+"").empty(); 
+	}
+	
 	
 }
 </script>
@@ -981,9 +1098,16 @@ function cancelReferPopUp(requirementId){
  <script type="text/javascript">
 		function removeReferPopUp(){
 			var referRequirementId = document.getElementById('referRequirementId'); 
+			var referId = document.getElementById('referId');
+			
 			if(referRequirementId != null) {
 				$("#refertoJobDiv"+referRequirementId.value+"").empty(); 
 				$("#refer"+referRequirementId.value+"").removeClass("referWrapActive"); 
+			} 
+			
+			if(referId != null) {
+				$("#refertoJobDiv"+referId.value+"").empty(); 
+				$("#refer"+referId.value+"").removeClass("referWrapActive"); 
 			} 
 			
 		 }
@@ -1106,4 +1230,52 @@ $('body').on('submit', '#referToJob_form', function(e){
 		$("#referToJob_form").validateOnBlur(false, validationSettings);
 	});
   </script>
+  
+  
+  <script>
+  function validateProfessionalEmail(requirementId){
+	  
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  var email = document.getElementById('email').value; 
+	  if(email != null && email != ''){
+		  $("#submit_refer").attr("disabled", "disabled");
+		$.ajax({
+		   	type: "GET",
+		       url: sourceleadUrl+"/validateReferedEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&requirementId="+requirementId,
+		       success: function(data) {
+		    		if(data != null && data != ''){
+					     if(data == 'Invalid'){
+					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+					    	    $("input#email").after("<p class='jquery_form_error_message'>"+email+" is already refered</span>");
+			    				$('input#email').attr('record-exist','yes');
+			    				$('input#email').attr('record-exist-errorMsg',email+' is already refered'); 
+					     } 
+					     
+					     else if(data == 'Invalid Email'){
+					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+					    	    $("input#email").after("<p class='jquery_form_error_message'> you can't refer user self</span>");
+			    				$('input#email').attr('record-exist','yes');
+			    				$('input#email').attr('record-exist-errorMsg'," you can't refer user self"); 
+					     } 
+					     
+				       	else{
+				       		 $("#submit_refer").removeAttr("disabled");
+							 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+							 $( "#submit_refer" ).removeAttr("style");
+							 $( "#submit_refer" ).click(function() {
+							 if ($(this).validate(false, validationSettings)){
+							 }
+							});
+				       	}
+			       	}
+		    	   
+		      },
+		       
+		}); 
+	   }
+  }
+  
+  </script>
+  
 

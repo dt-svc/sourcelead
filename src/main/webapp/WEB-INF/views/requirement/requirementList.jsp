@@ -421,7 +421,8 @@ function prepareRequirementData(data){
 
 			result = result +" </select>";	
            result = result +" </td>";
-        if(((orgATS == 'Y' && orgVMS == 'Y') || orgATS != 'Y') && (opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN')){
+       
+       /*  if(((orgATS == 'Y' && orgVMS == 'Y') || orgATS != 'Y') && (opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN')){
        	 '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
        	 if(opt.isRequirementReleasedByuser == 'Y'){
        		 result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success'></i></a></div></td>"; 
@@ -432,9 +433,24 @@ function prepareRequirementData(data){
        	 '<sec:authorize access="!hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
        	 	result = result +"<td><div><i class='fa fa-bullhorn'></i></div></td>";
        	 '</sec:authorize>';
+       	 
         }else{
             result = result +"<td><div>--</div></td>";
-        }
+        } */
+        
+        if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN'){
+        	'<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
+	        	if(opt.isRequirementReleasedByuser == 'Y'){
+		   		 	result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success'></i></a></div></td>"; 
+			   	 }else{	
+			   	 	result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
+			   	 }
+       	 '</sec:authorize>';
+       }else{
+           result = result +"<td><div>--</div></td>";
+       }
+        
+        
         result = result +"</tr>";
         result = result +"</tr>";
        
@@ -1227,14 +1243,13 @@ function requirementPipeline(requirementId){
 			<a title="Reports"><i class="fa fa-pie-chart"></i>Reports</a>
 			<div class="RePop">
 				<ul>
-				 <li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
-					<!-- <li><a href="reports.html"><i class="fa fa-user"></i>Requirements Posted</a></li>
+					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Client Requirements</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Applicants Received</a></li>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Applicants</a></li>
+				 <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Short listed</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Interview</a></li>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Offer</a></li> -->
+					<li><a href="reports.html"><i class="fa fa-user"></i>Offer</a></li> 
 				</ul>
 			</div>
 		</div>  

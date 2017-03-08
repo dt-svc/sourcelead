@@ -64,7 +64,7 @@ public class CandidateController {
 	
 	//Note this method is ResumeParsing Candidate method
 	
-	 @PreAuthorize("hasRole('ROLE_CREATE_CANDIDATE')")
+	 @PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
 	 @RequestMapping(value = "/candidate")
 		public ModelAndView candidate(HttpServletRequest request) throws Exception {
 		 	logger.debug("Display the candiade page");
@@ -92,7 +92,7 @@ public class CandidateController {
 	 
 	   //Note this method is ResumeParsing Candidate method
 		
-		 @PreAuthorize("hasRole('ROLE_CREATE_CANDIDATE')")
+		 @PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
 		 @RequestMapping(value = "/addCandidate")
 			public ModelAndView addCandidate(HttpServletRequest request) throws Exception {
 			 	logger.debug("Display the candiade page");
@@ -267,6 +267,23 @@ public class CandidateController {
 		
 	}
 	
+	 //uploadCandidateForm
+	 @RequestMapping(value = "/uploadCandidateForm")
+		public ModelAndView uploadCandidateForm(HttpServletRequest request) {
+		 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			
+			request.getSession().setAttribute("sessionData",sessionData);
+			ModelAndView model = new ModelAndView();
+			model.setViewName("upload/uploadCandidateForm");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			sessionData.setNav(Constants.Candidates);
+			return model;
+
+		}
 
 	private boolean isNullOrEmpty(String msg) {
 		// TODO Auto-generated method stub

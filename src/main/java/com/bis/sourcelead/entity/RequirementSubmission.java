@@ -146,8 +146,11 @@ public class RequirementSubmission implements Serializable{
     @Column(name = "UPDATED_USER")
 	@Type(type="text")
 	private String updatedUser;
-	
     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="RECRUITER_USER_ID")        
+    private User recruiterUserId;
+	
     @Transient
 	private String userName;
     
@@ -172,6 +175,11 @@ public class RequirementSubmission implements Serializable{
     @Transient
    	private String upDatedStr;
     
+    @Transient
+   	private String createdTimeStr;
+    
+    @Transient
+   	private String updatedTimeStr;
     
     @Transient
 	private String skillsList;
@@ -302,6 +310,9 @@ public class RequirementSubmission implements Serializable{
 	
 	@Transient
 	private String loginOrgLOcationName;
+	
+	@Transient
+	private String submitToClientRateType;
 	
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
@@ -809,6 +820,22 @@ public class RequirementSubmission implements Serializable{
 		this.upDatedStr = upDatedStr;
 	}
 
+	public String getCreatedTimeStr() {
+		return createdTimeStr;
+	}
+
+	public void setCreatedTimeStr(String createdTimeStr) {
+		this.createdTimeStr = createdTimeStr;
+	}
+
+	public String getUpdatedTimeStr() {
+		return updatedTimeStr;
+	}
+
+	public void setUpdatedTimeStr(String updatedTimeStr) {
+		this.updatedTimeStr = updatedTimeStr;
+	}
+
 	public int getNumofrequestsent() {
 		return numofrequestsent;
 	}
@@ -971,6 +998,14 @@ public class RequirementSubmission implements Serializable{
 		this.requirementUUID = requirementUUID;
 	}
 
+	public User getRecruiterUserId() {
+		return recruiterUserId;
+	}
+
+	public void setRecruiterUserId(User recruiterUserId) {
+		this.recruiterUserId = recruiterUserId;
+	}
+
 	public String getLoginOrgLOcationName() {
 		return loginOrgLOcationName;
 	}
@@ -978,5 +1013,13 @@ public class RequirementSubmission implements Serializable{
 	public void setLoginOrgLOcationName(String loginOrgLOcationName) {
 		this.loginOrgLOcationName = loginOrgLOcationName;
 	}
-	
+
+	public String getSubmitToClientRateType() {
+		return submitToClientRateType;
+	}
+
+	public void setSubmitToClientRateType(String submitToClientRateType) {
+		this.submitToClientRateType = submitToClientRateType;
+	}
+
 }

@@ -43,6 +43,13 @@ public class CandidateIndexHelper {
 			candidateIndex.setSummary(candidate.getSummary());
 			candidateIndex.setCandidateType(candidate.getCandidateType());
 			
+						
+			if(null != candidate.getRecruiterUserId()){
+				candidateIndex.setRecruiterUserId(candidate.getRecruiterUserId().getId());
+			}else{
+				candidateIndex.setRecruiterUserId(0L);
+			}
+			
 			if(null != candidate.getSkillsName() && !candidate.getSkillsName().isEmpty()){
 				candidateIndex.setSkillsName(candidate.getSkillsName());
 			}

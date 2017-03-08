@@ -205,6 +205,8 @@ function getSearchResults(searchType,searchValue){
 	    		result = result+'   <h4>Clients</h4>';
 	    		for (var i = 0; i < checkSize; i++) {
 		             var report= json[i];
+		             var pattern = new RegExp(/["'"]/g);
+			    	 var orgName = (report.orgName).replace(pattern, "\\'");
 		             var name_location = "";
 		                result = result+'  <div class="srchresult clearfix">';
 		                
@@ -212,10 +214,12 @@ function getSearchResults(searchType,searchValue){
 		                result = result+' <figure class="image_parent">';
 				    	result = result+' <i class="fa fa-user-plus fa-2x"></i>';
 				    	result = result+' </figure>';
-		                
+				    	
+				    	
+			    		
 				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 				    	if(report.orgName !=null && report.orgName != '' && report.orgName !="undefined"){
-				    		result = result+'<p><label><strong><a href="#" onclick="clientSearchSideBar('+report.responderLocationId+','+report.orgRelationId+',\''+report.orgName+'\')">'+report.orgName+'</a></strong></label></p>';	
+				    		result = result+'<p><label><strong><a href="#" onclick="clientSearchSideBar('+report.responderLocationId+','+report.orgRelationId+',\''+orgName+'\')">'+report.orgName+'</a></strong></label></p>';	
 
 				    		//name_location = name_location + report.orgName+",";
 				    	}
@@ -255,16 +259,18 @@ function getSearchResults(searchType,searchValue){
 	    		result = result+'   <h4>Vendors</h4>';
 	    		for (var i = 0; i < checkSize; i++) {
 		             var report= json[i];
+		             var pattern = new RegExp(/["'"]/g);
+			    	 var orgName = (report.orgName).replace(pattern, "\\'");
 		             var name_location = "";
 		                result = result+'  <div class="srchresult clearfix">';
 		                
 		                result = result+' <figure class="image_parent">';
 				    	result = result+' <i class="fa fa-suitcase fa-2x"></i>';
 				    	result = result+' </figure>';
-		                
+			    		
 				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 				    	if(report.orgName !=null && report.orgName != '' && report.orgName !="undefined"){
-				    		result = result+'<p><label><strong><a href="#" onclick="vendorSearchSideBar('+report.responderLocationId+','+report.orgRelationId+',\''+report.orgName+'\')">'+report.orgName+'</a></strong></label></p>';	
+				    		result = result+'<p><label><strong><a href="#" onclick="vendorSearchSideBar('+report.responderLocationId+','+report.orgRelationId+',\''+orgName+'\')">'+report.orgName+'</a></strong></label></p>';	
 				    	//	name_location = name_location + report.orgName+",";
 				    	}
 				    	if(report.city !=null && report.city != '' && report.city !="undefined"){
@@ -662,6 +668,8 @@ function getSearchResultsForAll(searchType,searchValue){
 										 result = result+'   <h4>Clients</h4>';
 										 result = result+'  </div>';
 						            	 }
+									 var pattern = new RegExp(/["'"]/g);
+							    	 var orgName = (report.orgName).replace(pattern, "\\'");
 									 var name_location = "";
 								    	result = result+'  <div class="srchresult clearfix">';
 								    	
@@ -672,7 +680,7 @@ function getSearchResultsForAll(searchType,searchValue){
 								    	
 								    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 								    	if(report.orgName !=null && report.orgName != '' && report.orgName !="undefined"){
-								    		result = result+'<p><label><strong><a href="#" onclick="clientSearchSideBar('+report.responderLocationId+','+report.orgRelationId+',\''+report.orgName+'\')">'+report.orgName+'</a></strong></label></p>';
+								    		result = result+'<p><label><strong><a href="#" onclick="clientSearchSideBar('+report.responderLocationId+','+report.orgRelationId+',\''+orgName+'\')">'+report.orgName+'</a></strong></label></p>';
 								    		//name_location = name_location + report.orgName+",";
 								    	}
 								    	if(report.city !=null && report.city != '' && report.city !="undefined"){
@@ -707,6 +715,8 @@ function getSearchResultsForAll(searchType,searchValue){
 										 result = result+'   <h4>Vendor</h4>';
 										 result = result+'  </div>';
 						            	 }
+									 var pattern = new RegExp(/["'"]/g);
+							    	 var orgName = (report.orgName).replace(pattern, "\\'");
 									 var name_location = "";
 								    	result = result+'  <div class="srchresult clearfix">';
 								    	
@@ -717,7 +727,7 @@ function getSearchResultsForAll(searchType,searchValue){
 								    	
 								    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 								    	if(report.orgName !=null && report.orgName != '' && report.orgName !="undefined"){
-								    		result = result+'<p><label><strong><a href="#" onclick="vendorSearchSideBar('+report.responderLocationId+','+report.orgRelationId+',\''+report.orgName+'\')">'+report.orgName+'</a></strong></label></p>';
+								    		result = result+'<p><label><strong><a href="#" onclick="vendorSearchSideBar('+report.responderLocationId+','+report.orgRelationId+',\''+orgName+'\')">'+report.orgName+'</a></strong></label></p>';
 								    		//name_location = name_location + report.orgName+",";
 								    	}
 								    	if(report.city !=null && report.city != '' && report.city !="undefined"){
@@ -739,7 +749,7 @@ function getSearchResultsForAll(searchType,searchValue){
 								    	
 								    	if(opt.length>5 && j==4){
 							                result = result+'  <div class="clearfix">';
-									    	result = result+'      <a href="/sourcelead/requirementList" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+									    	result = result+'      <a href="#" onClick="loadVendor();" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
 									    	result = result+'  </div>';
 							             }
 				            	 }
@@ -827,7 +837,8 @@ function loadProjects(){
 function vendorSearchSideBar(responderLocationId,orgRelationId,orgName){
 	var vendorKeyword = "vendorSearch";
 	var sourceleadUrl = '${sourceleadUrl}';
-	window.location.href = sourceleadUrl + "/vendorsList?&responderLocationId="+responderLocationId+"&orgRelationId="+orgRelationId+"&orgName="+orgName+"&vendorKeyword="+vendorKeyword;
+	var org = encodeURIComponent(orgName);
+	window.location.href = sourceleadUrl + "/vendorsList?&responderLocationId="+responderLocationId+"&orgRelationId="+orgRelationId+"&orgName="+org+"&vendorKeyword="+vendorKeyword;
 
 }
 </script>
@@ -837,7 +848,8 @@ function vendorSearchSideBar(responderLocationId,orgRelationId,orgName){
 function clientSearchSideBar(responderLocationId,orgRelationId,orgName){
 	var clientKeyword = "clientSearch";
 	var sourceleadUrl = '${sourceleadUrl}';
-	window.location.href = sourceleadUrl + "/clientDashboard?&responderLocationId="+responderLocationId+"&orgRelationId="+orgRelationId+"&orgName="+orgName+"&clientKeyword="+clientKeyword;
+	var org = encodeURIComponent(orgName);
+	window.location.href = sourceleadUrl + "/clientDashboard?&responderLocationId="+responderLocationId+"&orgRelationId="+orgRelationId+"&orgName="+org+"&clientKeyword="+clientKeyword;
 }
 </script>
 

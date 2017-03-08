@@ -911,6 +911,11 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			Long orgLocationsId) throws Exception {
 		return requirementInterviewDao.getRequirementInterviewsHistoryBySubmissionIdAndOrgLocationsId(submissionId,orgLocationsId);
 	}
+	@Override
+	public Integer getInterviewCountByCandidateId(Long candidateId, String submissionStatus, Date startDate,
+			Date endDate) throws Exception {
+		return requirementInterviewDao.getInterviewCountByCandidateId(candidateId, submissionStatus, startDate, endDate);
+	}
 	
 	/*@Override
 	public List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime) {

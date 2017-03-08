@@ -37,7 +37,7 @@ function addOffer(requirementId){
 				result = result + '<input type="hidden" id="isFlushCandidateRequired" name="isFlushCandidateRequired">';
 				
 				/* result= result + '	            <div class="add_inter_head"> <span>Add Offer</span><a href="javascript:void(0)" onClick="addOfferRow(this);"><i class="fa fa-plus"></i> Add row</a>'; */
-				result= result + '	            <div class="add_inter_head"> <span>Add Offer</span><span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="selectedOfferApplicantsCount">0</b></span>';
+				result= result + '	            <div class="add_inter_head"> <span>Generate offer</span><span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="selectedOfferApplicantsCount">0</b></span>';
 				result= result + '	              <div class="clearfix"></div>';
 				result= result + '	            </div>';
 				
@@ -169,6 +169,7 @@ function selectOfferApplicants(){
 	                 <option value="Bi-weekly">Bi-weekly</option>
 	                 <option value="Monthly">Monthly</option>
 	                 <option value="Bi-Monthly">Bi-Monthly</option>
+	                 <option value="Semi-Monthly">Semi-Monthly</option>
 	                 <option value="Yearly">Yearly</option>
            </select>
      </div>

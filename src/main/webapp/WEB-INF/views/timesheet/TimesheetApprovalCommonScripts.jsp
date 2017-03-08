@@ -526,6 +526,7 @@ $('body').on('blur', '#timesheet_form', function() {
 function deleteSubmissionDocument(submissionDocumentId){  
     var sourceleadUrl ='${sourceleadUrl}';
     var projectExistingValue = $("#dbIsTimesheetAttachmentRequired").val();
+    var strongTagCount = document.getElementById('timesheetDocumentsId').getElementsByTagName('strong').length;
     /*  var startdate; */
 	var navigation;
     $.ajax({
@@ -533,7 +534,8 @@ function deleteSubmissionDocument(submissionDocumentId){
       	  url: sourceleadUrl+"/deleteSubmissionDocument?${_csrf.parameterName}=${_csrf.token}&submissionDocumentId="+submissionDocumentId,		
 	      success :function(result) {
 	    	  $("#"+submissionDocumentId+"document").remove();
-	    	  if(projectExistingValue != null && projectExistingValue != "" && projectExistingValue !="undefined" && projectExistingValue == "1"){
+	    	  if(projectExistingValue != null && projectExistingValue != "" && projectExistingValue !="undefined" && projectExistingValue == "1"
+	    		  && strongTagCount != null && strongTagCount != "" && strongTagCount !="undefined" && strongTagCount == 1){
 	    		  $("#isTimesheetAttachmentRequired").val('Y');
 	    	  }
 	      }
@@ -1351,11 +1353,23 @@ function notifyReopenTimeSheet(projectMemberId,timesheetFrequency,totalHours){
 		    	$("#reOpenPopup").empty();
    			 	$(".project_inn_mask").fadeOut(200);
    			 	
-   			 	 timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMemberId,"approver");
-   			 	
-   			    timesheetDivByFrequency();
-	    	    $("html").trigger('click');
-	    	    maskme();
+   			    var startDate = $("#tabStartDate").val();
+   			    var endDate = $("#tabEndDate").val();
+   			    var isSuperUser = $("#isSuperUser").val();
+   			    if(startDate != null && startDate != '' && startDate != 'undefined' && 
+   					  endDate != null && endDate != '' && endDate != 'undefined'){
+   			    	 if(isSuperUser){
+   			    		 timesheetDivAfterSaving(startDate,endDate,"draft");
+   			    	 }
+   			    	 else{
+   			    		timesheetDivAfterSaving(startDate,endDate,"submitted");
+   			    	 }
+   			    }
+   			    else{
+   			    	timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMemberId,"approver");
+   			    }
+   			   
+   			    
 		    }
 	   });
 	}else{
@@ -1488,7 +1502,8 @@ function dropDown(){
 <script>
 function timesheetEntriesExport(startDate,endDate,projectMemberId,exportType,submissionStatus){
 	var sourceleadUrl ='${sourceleadUrl}';
-	if(submissionStatus != 'NEW'){
+	var status = $("#timesheetSubmissionStatus").val();
+	if(status != 'NEW'){
 		window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&projectMemberId="+projectMemberId;
 	}else{
 		alert("Please Fill the TimeSheets..");

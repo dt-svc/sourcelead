@@ -328,7 +328,7 @@ function addResume(candidateId) {
 					           		result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span></div></td>';
 					           		result = result+'<td><div><span title="'+description+'">'+description+'</span></div></td>';
 					           		result = result+'<td><div><span>'+createdBy+'</span></div></td>';
-					           		result = result+'<td><div class="tblicons"> <a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+opt.id+'\"></a>';
+					           		result = result+'<td><div class="tblicons"> <a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+opt.resumeUUID+'\"></a>';
 					           		if(window.candidateStatusGlobal == 0){
 					           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 						           		result = result+'<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
@@ -348,17 +348,7 @@ function addResume(candidateId) {
 					$("#resumesList").empty();
 					$("#resumesList").append(result);
 				}else{
-				result = result + "   <div class='row'>";
-				result = result + "	<div class='col-lg-12'>";
-				result = result + "		<div class='content-area clearfix'>";
-				result = result + "			<div class='blank-pages'>";
-				result = result
-						+ "			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-				result = result
-						+ "			        <p>No resumes Found</p>";
-				result = result + "			 </div>";
-				result = result + "		</div>";
-				result = result + "	</div>";
+				result = result + "   <div class='dataTables_empty'>";
 				result = result + "  </div> ";
 				$("#resumesList").empty();
 				$("#resumesList").append(result);
