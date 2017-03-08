@@ -216,8 +216,15 @@ public class TeamRestController {
 			ids.add(Long.parseLong(id));
 		}
 		}
+		List<User> newUserList = new ArrayList<>();
 		List<User> userList = userService.getUserListExceptExistedTeamMembersList(ids, loginOrgLocation.getId());
-		resultJson = commonUtil.toJSON(userList);
+		for(User user :userList){
+			 UserRole userRole = userRoleService.getUserRoleByUserId(user.getId());
+			 if(!Constants.EMPLOYEE.equals(userRole.getUserType())){
+				 newUserList.add(user);
+			 }
+		}
+		resultJson = commonUtil.toJSON(newUserList);
 		return resultJson;
 	 } 
 	  
