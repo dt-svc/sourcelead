@@ -822,7 +822,7 @@ function flushProjectTasks(){
 									var projectEndDate = $("#EndDate").val();
 									
 									$('#startDate'+opt.id).datepicker({
-										dateFormat : 'yy-mm-dd',
+										dateFormat : 'dd/mm/yy',
 										changeMonth: true,
 										changeYear: true, 
 										minDate:projectStartDate,
@@ -838,7 +838,7 @@ function flushProjectTasks(){
 									});
 		
 									$('#endDate'+opt.id).datepicker({
-										dateFormat : 'yy-mm-dd',
+										dateFormat : 'dd/mm/yy',
 										changeMonth: true,
 										changeYear: true, 
 										maxDate:projectEndDate,
@@ -942,7 +942,7 @@ function assignEmployeeCancel(){
 	$(function() {
 
 		$('#StartDate').datepicker({
-			dateFormat : 'yy-mm-dd',
+			dateFormat : 'dd/mm/yy',
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
@@ -954,7 +954,7 @@ function assignEmployeeCancel(){
 		});
 
 		$('#EndDate').datepicker({
-			dateFormat : 'yy-mm-dd',
+			dateFormat : 'dd/mm/yy',
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
