@@ -485,14 +485,14 @@ public class TimesheetRestController {
 			    DateFormat shortormat = Constants.SHORT_DF_STD_DM;
 			    StringBuilder isActive = new StringBuilder("");
 			    
-			   /* SubmissionApproverHierarchy sahForActive =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(startDate, endDate, projectMemberId);
+			    SubmissionApproverHierarchy sahForActive =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(startDate, endDate, projectMemberId);
 			    Submission_Status submission_Status = sahForActive.getSubmissionStatus();
-				String status = submission_Status.getValue();*/
+				String status = submission_Status.getValue();
 			    
 			    if(CalendarUtil.isCurrentDateBetweenDateRange(weekStartDate, weekEndDate)){  
 			    	if(CalendarUtil.isCurrentDateBetweenDateRange(key, value)){
 			    		   isActive.append("class='current'");
-			    		   if(!isNullOrEmpty(submissionStatusStr) && (!submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
+			    		   if(!isNullOrEmpty(status) && (!status.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
 			    			    isActive.delete(0, isActive.length());
 					    		isActive.append("");
 				    			isActive.append("class='current subColor'");
@@ -503,7 +503,7 @@ public class TimesheetRestController {
 			    	else{
 			    		isActive.delete(0, isActive.length());
 			    		isActive.append("");
-			    		if(!isNullOrEmpty(submissionStatusStr) && (!submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
+			    		if(!isNullOrEmpty(status) && (!status.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
 			    			isActive.append("class='subColor'");
 					    }
 			    	}
@@ -519,7 +519,7 @@ public class TimesheetRestController {
 			    else{
 				    	if(count == 1){
 				    		   isActive.append("class='current'");
-				    		   if(!isNullOrEmpty(submissionStatusStr) && (!submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
+				    		   if(!isNullOrEmpty(status) && (!status.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
 				    			    isActive.delete(0, isActive.length());
 						    		isActive.append("");
 					    			isActive.append("class='current subColor'");
@@ -530,7 +530,7 @@ public class TimesheetRestController {
 				    	else{
 				    		isActive.delete(0, isActive.length());
 				    		isActive.append("");
-				    		if(!isNullOrEmpty(submissionStatusStr) && (!submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
+				    		if(!isNullOrEmpty(status) && (!status.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
 				    			isActive.append("class='subColor'");
 						    }
 				    	}
