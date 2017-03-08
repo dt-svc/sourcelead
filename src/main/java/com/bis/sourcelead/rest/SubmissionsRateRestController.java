@@ -361,14 +361,19 @@ public class SubmissionsRateRestController {
 			if(requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.CANDIDATE){
 				if(null != requirementSubmissionTemplateFields.getLastName() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
 					StringBuilder candiSB = new StringBuilder();
-					requirementRateSubmissionNegotiation.setProposeByName(candiSB.append(requirementSubmissionTemplateFields.getFirstName()).append(requirementSubmissionTemplateFields.getLastName()).toString());
+					requirementRateSubmissionNegotiation.setProposeByName(candiSB.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
 				}else{
 					requirementRateSubmissionNegotiation.setProposeByName(requirementSubmissionTemplateFields.getFirstName());
 				}
 				
 			}else if(requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.CLIENT || requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.VENDOR || requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.ORG){
 				User proposedUser = userService.getUserDetailsByUserCode(requirementRateSubmissionNegotiation.getCreatedBy());
-				requirementRateSubmissionNegotiation.setProposeByName(proposedUser.getFirstName());
+				if(null != proposedUser && null != proposedUser.getLastName() && !"".equalsIgnoreCase(proposedUser.getLastName())){
+					StringBuilder proposedSB = new StringBuilder();
+					requirementRateSubmissionNegotiation.setProposeByName(proposedSB.append(proposedUser.getFirstName()).append(" ").append(proposedUser.getLastName()).toString());
+				}else{
+					requirementRateSubmissionNegotiation.setProposeByName(proposedUser.getFirstName());
+				}
 			}
 			
 			requirementRateSubmissionNegotiation.setInitiatorOrgLocationIdStr(requirementRateSubmissionNegotiation.getInitiatorOrgLocationId().getId().toString());

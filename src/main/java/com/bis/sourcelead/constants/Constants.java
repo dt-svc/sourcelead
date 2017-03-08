@@ -375,11 +375,6 @@ public class Constants {
     public static String[] REQUIREMENT_PIPELINE_REQUEST_SENT_HEADERS={"Name","Email","PhoneNumber","Resume","Applied On","Rate","Source","Score","Experience","Status"};
 	
     public static String[] REQUIREMENT_PIPELINE_SUBMIT_TO_CLIENT_EXCEL_HEADERS={"Name","Email","PhoneNumber","Resume","Applied On","Applicant Rate","Submission Rate","Source","Score","Experience","Status","Submitted On","Submitted By","Client Contact"};
-    
-    public static String[] SHORTLIST_CANDIDATE_FROM_CLIENT_TO_VENDOR_HEADER={"CandidateName","PhoneNumber","Work Experience","status"};
-    
-    public static String SHORTLIST_CANDIDATE_COUNT= "shortlist_candidate :";
-    
 
     public static String[] REQUIREMENT_PIPELINE_SHORTLISTED_EXCEL_HEADERS ={"Name","Email","PhoneNumber","Resume","Applied On","Rate","Source","Score","Experience","Status","ShortListed By","ShortListed On"};
     
@@ -403,6 +398,10 @@ public class Constants {
     
     public static String[] VENDOR_CONTACTS_EXCEL_HEADERS = {"Vendor Name","Name","Emailid","Phone Number","Owner","Role","Status"};
     
+	public static String[] SHORTLIST_CANDIDATE_FROM_CLIENT_TO_VENDOR_HEADER={"CandidateName","PhoneNumber","Work Experience","status"};
+    
+    public static String SHORTLIST_CANDIDATE_COUNT= "shortlist_candidate :";
+	
     public static String VENDOR = "Vendor";
     
     public static String CLIENT = "Client";
@@ -548,7 +547,8 @@ public class Constants {
     public static String CANDIDATE_EMPLOERS = "Employer's";
     
     
-    
+    public static String CUSTOM_REPORTS =  "custom";
+    public static String UTC_TIMEZONE =  "UTC";
     
     
     

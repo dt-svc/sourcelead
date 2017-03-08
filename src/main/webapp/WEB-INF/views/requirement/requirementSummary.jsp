@@ -1705,7 +1705,7 @@ function requirementPipelineDA(requirementId,submissionType){
 					         }
  */					       result = result + '<th>Source</th>';
 		        		   result = result + '<th>Score</th>';
-				           result = result + '<th>Exp</th>';
+				           /* result = result + '<th>Exp</th>'; */
 				           result = result + '<th>Status</th>';
 				           result = result + '         </tr>';
 				           result = result + '       </thead>';
@@ -1750,7 +1750,7 @@ function requirementPipelineDA(requirementId,submissionType){
 						           
 						        	   
 					        	   if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.createdDateStr+'</span></div></td>';
+						        	   result = result + '         <td><div class="tbldata-dotdot-sm">'+report.createdDateStr+', '+report.createdTimeStr+'</div></td>';
 							           }
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
@@ -1823,12 +1823,12 @@ function requirementPipelineDA(requirementId,submissionType){
 							    	   result = result + '         <td><div><span>--</span></div></td>';
 						    	     }
 						           
-						           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
+						           /* if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
 						        	   result = result + '         <td><div><span>'+report.workExperience+'</span></div></td>';
 							           }
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
+						    	     } */
 						           
 							           if(report.submissionStatus == 'REJECTED'){
 							        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
