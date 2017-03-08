@@ -8,7 +8,8 @@ body{
     text-shadow:none;
 }
 .main-header span.logo{
-	height:50px;
+	height:51px;
+	transistion:all 0.3s linear;
 }
 .main-header{
 	background: #fff;
@@ -23,6 +24,7 @@ body{
 }
 .main-header .navbar .fa-bars:hover{
 	background:rgba(0, 0, 0, 0.2);
+	line-height: 51px;
 }
 .main-header .navbar .custom-navbar .search-area .form-control {
     background: rgba(0, 0, 0, 0.2) 0 0 no-repeat !important;
@@ -121,21 +123,9 @@ ul.timesheet-menu li a:hover{
 ul.timesheet-menu li a:hover{
 	color:#333;
 }
-.content-wraper{
-	margin-left:230px;
-}
-.side-bar.side-bar-active{
-    width: 55px;
-}
-.side-bar{
-	 width:230px;
-}
 .main-header .navbar a{
 	color:#333;
 	text-shadow:none;
-}
-.side-bar .user-panel.user-panel-active {
-    width: 55px;
 }
 .side-bar .user-panel.user-panel-active .image img {
     width: 100%;
@@ -145,9 +135,6 @@ ul.timesheet-menu li a:hover{
 }
 .bell {
     color: #333;
-}
-.content-wraper.content-wraper-active{
-	margin-left:55px;
 }
 .side-bar .user-panel .image img {
     display: block;
@@ -163,13 +150,6 @@ ul.timesheet-menu li a:hover{
 }
 .form-footer .btn-primary:hover{
 	background:#0cc2aa;
-}
-
-.footer-area{
-	margin-left:225px;
-}
-.footer-area.footer-area-active{
-		margin-left:55px;
 }
 .side-bar .side-nav ul li.side-nav-active {
 	background: #dedede;
@@ -225,7 +205,6 @@ btn-default {
     padding-right: 30px;
     height: 32px;
     border-radius: 0 20px 20px 0;
-    width: 300px;
     border: 1px solid #bdbdbd;
     border-left: none;
 }
@@ -300,7 +279,7 @@ btn-default {
 }
 .main-header span.logo:hover
 {
-	background-color: #55435a;
+	background: rgba(0, 0, 0, 0.5);
 }
 .main-header span.logo:hover h1
 {
@@ -357,3 +336,16 @@ btn-default {
 	border-top: 4px solid #73537d;
 }
 /* add Task theme color */
+@media (max-width: 1024px){
+	.content-wraper, .footer-area {
+	margin-left: 0;
+	}
+}
+@media (max-width: 1160px){
+.main-header span.logo {
+	background: rgba(0, 0, 0, 0.2);
+}
+.main-header span.logo:hover {
+	background: rgba(0, 0, 0, 0.4);
+}
+}

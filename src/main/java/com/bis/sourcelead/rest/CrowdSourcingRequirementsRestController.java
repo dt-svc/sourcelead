@@ -342,6 +342,7 @@ public class CrowdSourcingRequirementsRestController {
     					  requirementIndex.setRewardFlat(refer.getRequirementId().getRewardFlat());
     					  requirementIndex.setRewardFlatRateType(refer.getRequirementId().getRewardFlatRateType());
     					  requirementIndex.setRewardGuaranteePeriod(refer.getRequirementId().getRewardGuaranteePeriod());
+						  requirementIndex.setRequirementUUID(refer.getRequirementId().getRequirementUUID());
     					 
     					 requirementList.add(requirementIndex);
 	    			 } 

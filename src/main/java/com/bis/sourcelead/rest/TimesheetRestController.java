@@ -310,6 +310,9 @@ public class TimesheetRestController {
 						initialProjectMemberId = pm.getId();
 						
 					}
+					else{
+						isSelected.setLength(0);
+					}
 					 count++;
 					timesheetEntriesDiv.append("		                  <option  "+isSelected.toString()+" value='"+pm.getId()+"'>"+pm.getProjects().getProjectName()+"</option>");
 				   
@@ -1263,7 +1266,7 @@ public class TimesheetRestController {
 			List<TimesheetSubmissionsDocuments> timesheetSubmissionsDocumentsList = null;
 			StringBuilder documentBuffer = new StringBuilder();	
 			documentBuffer.append("<input type='hidden' name='attcahmentMaxRowNumber'  id='attcahmentMaxRowNumber' value='1' />");
-			documentBuffer.append("<div class='timesheetDocs'>"); 
+			documentBuffer.append("<div id='timesheetDocumentsId' class='timesheetDocs'>"); 
 			if(ts != null){
 				timesheetSubmissionsDocumentsList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(ts.getId());
 				if(timesheetSubmissionsDocumentsList != null && !timesheetSubmissionsDocumentsList.isEmpty()){
