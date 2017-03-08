@@ -485,14 +485,12 @@ public class TimesheetRestController {
 			    DateFormat shortormat = Constants.SHORT_DF_STD_DM;
 			    StringBuilder isActive = new StringBuilder("");
 			    
-			    SubmissionApproverHierarchy sahForActive =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(startDate, endDate, projectMemberId);
-			    Submission_Status submission_Status = sahForActive.getSubmissionStatus();
-				String status = submission_Status.getValue();
+			    TimesheetSubmissions ts =timesheetSubmissionsService.getAllEmployeeTimesheetSubmissionsByProjectMemberId(startDate, endDate, projectMemberId);
 			    
 			    if(CalendarUtil.isCurrentDateBetweenDateRange(weekStartDate, weekEndDate)){  
 			    	if(CalendarUtil.isCurrentDateBetweenDateRange(key, value)){
 			    		   isActive.append("class='current'");
-			    		   if(!isNullOrEmpty(status) && (!status.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
+			    		   if(ts != null){
 			    			    isActive.delete(0, isActive.length());
 					    		isActive.append("");
 				    			isActive.append("class='current subColor'");
@@ -503,7 +501,7 @@ public class TimesheetRestController {
 			    	else{
 			    		isActive.delete(0, isActive.length());
 			    		isActive.append("");
-			    		if(!isNullOrEmpty(status) && (!status.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
+			    		if(ts != null){
 			    			isActive.append("class='subColor'");
 					    }
 			    	}
@@ -519,7 +517,7 @@ public class TimesheetRestController {
 			    else{
 				    	if(count == 1){
 				    		   isActive.append("class='current'");
-				    		   if(!isNullOrEmpty(status) && (!status.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
+				    		   if(ts != null){
 				    			    isActive.delete(0, isActive.length());
 						    		isActive.append("");
 					    			isActive.append("class='current subColor'");
@@ -530,7 +528,7 @@ public class TimesheetRestController {
 				    	else{
 				    		isActive.delete(0, isActive.length());
 				    		isActive.append("");
-				    		if(!isNullOrEmpty(status) && (!status.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
+				    		if(ts != null){
 				    			isActive.append("class='subColor'");
 						    }
 				    	}
