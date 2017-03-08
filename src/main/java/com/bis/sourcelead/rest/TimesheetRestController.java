@@ -1662,8 +1662,12 @@ public class TimesheetRestController {
 						
 						//send mail to assigned manager at time sheet submission
 						if(!actualTimeString.equalsIgnoreCase("0.0")){
-							if(!"Draft".equalsIgnoreCase(status)){
-								sendEmailToManagerAtTimesheetSubmissions(timesheetSubmissions,loginUser,loginOrgLocation,loginOrgCode);
+							if(!"Draft".equalsIgnoreCase(status) 
+									&& projectMember != null 
+									&&  projectMember.getProjects() != null
+									&& frequencyStartDate != null
+									&& frequencyEndDate != null ){
+								sendEmailToManagerAtTimesheetSubmissions(projectMember.getProjects().getId(),frequencyStartDate,frequencyEndDate,loginUser,loginOrgLocation,loginOrgCode);
 							}
 						}
 					}
@@ -1733,12 +1737,12 @@ public class TimesheetRestController {
 	 * @param loginOrgCode
 	 * @throws Exception
 	 */
-	private void sendEmailToManagerAtTimesheetSubmissions(TimesheetSubmissions timesheetSubmissions, User loginUser, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
-		List<ProjectApproverHierarchy> approverHierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(timesheetSubmissions.getProjectMembers().getProjects().getId());
+	private void sendEmailToManagerAtTimesheetSubmissions(Long projectId,Date frequencyStartDate,Date frequencyEndDate, User loginUser, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
+		List<ProjectApproverHierarchy> approverHierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
 		
 		for(ProjectApproverHierarchy approver : approverHierarchyList){
 				
-			if(!loginUser.getUserCode().equalsIgnoreCase(approver.getApproverUserId().getUserCode()) && (approver.getLevel() == Constants.LEVEL1)  ){
+			if(!loginUser.getUserCode().equalsIgnoreCase(approver.getApproverUserId().getUserCode())){
 				
 			 User projectManager = userService.getUserById(approver.getApproverUserId().getId());
 			 //Employees emp = employeesService.getEmployeeByUserId(loginUser.getId());
@@ -1753,8 +1757,8 @@ public class TimesheetRestController {
 			 
 			 String pattern = "dd-MM-yyyy";
 	         SimpleDateFormat format = new SimpleDateFormat(pattern);
-	         String startDateStr = format.format(timesheetSubmissions.getStartDate());
-	         String endDateStr = format.format(timesheetSubmissions.getEndDate());
+	         String startDateStr = format.format(frequencyStartDate);
+	         String endDateStr = format.format(frequencyEndDate);
 
 			 //setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();

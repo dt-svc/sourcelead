@@ -358,6 +358,8 @@ function addResume(candidateId) {
 					if(resumesCount>4){
 						$("#addCandidateResume").hide();
 						closeResumePopup();
+					}else if(resumesCount<=4){
+						$("#addCandidateResume").show();
 					}
 					$("#resumesList").empty();
 					$("#resumesList").append(result);
