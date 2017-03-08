@@ -192,8 +192,12 @@ public class CandidateListRestController {
 			    	for (SearchHit hit : searchHits) {
 			    		StringBuilder json = new StringBuilder(hit.getSourceAsString());
 			    	    CandidateIndex candidateIndex = mapper.readValue(json.toString(), CandidateIndex.class);
-			    	    if(candidateIndex.getUpdatedDate() != null){
-			    	    	candidateIndex.setCandidateUpdateDateToString(candidateIndex.getUpdatedDate());
+			    	    if(null !=candidateIndex.getUpdatedDate() && !candidateIndex.getUpdatedDate().isEmpty()){
+			    	    	String pattern = Constants.DATE_DD_MM_YYYY;
+			    	        SimpleDateFormat format = new SimpleDateFormat(pattern);
+			    	    	Date updatedDate = format.parse(candidateIndex.getUpdatedDate());
+			    	    	candidateIndex.setCandidateUpdateDateToString( Constants.DF_DMY.format(updatedDate));
+			    	        
 			   			}
 			    	    candidatesList.add(candidateIndex);
 			    	}
@@ -521,7 +525,11 @@ public class CandidateListRestController {
 				    		StringBuilder json1 = new StringBuilder(hit.getSourceAsString());
 				    	    CandidateIndex candidateIndex = mapper.readValue(json1.toString(), CandidateIndex.class);
 				    	    if(candidateIndex.getUpdatedDate() != null){
-				    	    	candidateIndex.setCandidateUpdateDateToString(candidateIndex.getUpdatedDate());
+				    	    	
+				    	    	String pattern = Constants.DATE_DD_MM_YYYY;
+				    	        SimpleDateFormat format = new SimpleDateFormat(pattern);
+				    	    	Date updatedDate = format.parse(candidateIndex.getUpdatedDate());
+				    	    	candidateIndex.setCandidateUpdateDateToString( Constants.DF_DMY.format(updatedDate));
 				   			}
 				    	    candidatesList.add(candidateIndex);
 				    	}

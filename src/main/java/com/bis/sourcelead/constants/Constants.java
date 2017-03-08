@@ -546,6 +546,8 @@ public class Constants {
     public static String CUSTOM_REPORTS =  "custom";
     public static String UTC_TIMEZONE =  "UTC";
     
+    public static String DATE_DD_MM_YYYY ="dd-MM-yyyy";
+    
     
     
     
