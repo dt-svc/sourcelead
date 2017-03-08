@@ -138,6 +138,9 @@ function editCandidate(candidateId){
             			 	if(json.summary != null && json.summary != '' && json.summary != 'undefined'){
             			 		summary = json.summary;            			 		
             			 	}
+            			 	
+            			 	
+            			 	
 							var result ='';
 							result = result + '		    <div class="edit-details col-md-8 edit-candaite canprofile-popright"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
 							result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
@@ -227,7 +230,7 @@ function editCandidate(candidateId){
 							
                             result = result + '<div class="col-md-6 custom-fields">';
 							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
-							result = result + '<select class="form-control" id="designationType" name="designationType" field-name="Designation Type" onchange="updateDesignationType(this);">';
+							result = result + '<select class="form-control" id="designationType1" name="designationType" field-name="Designation Type"  onchange="updateDesignationOtherType(this);">';
 							result = result + '<option value="">--Select Employment Type--</option>';
 							result = result + ' <option '+(json.designationType == "C2C" ? "selected" : '') +'>C2C</option>';
 							result = result + '<option  '+ (json.designationType == "W-2" ? "selected" : '') +'>W-2</option>';
@@ -241,7 +244,7 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							 
 							result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv" style="display:none">';
-							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType" value="'+designationOtherType+'" placeholder="Employment Other Type" field-name="Employment Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
+							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType1" value="'+designationOtherType+'" placeholder="Employment Other Type" field-name="Employment Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
 							result = result + '</div>';
 						
 							result = result + '</div>';
@@ -387,8 +390,7 @@ function editCandidate(candidateId){
 							
 							$("#profileEditPopup").empty(); 
 							$("#profileEditPopup").append(result); 
-							
-							updateDesignationType();
+							/* updateDesignationType(json.designationType); */
 							getAllCandidateCountries();
 							 getAllCandidateStates();
 							$(".edit-details").toggleClass("edit-details-active");
@@ -589,8 +591,17 @@ function getCandidateCities(){
 
 <script>
 function deleteCandidate(candidateId){
+	
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var reason = document.getElementById("rejectReason").value;
+	  
+	  if(reason == null || reason == '' || reason == 'undefined'){
+		      
+		      $(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
+	    	  $(".rejectErrorMsgs").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
+	    	  
+	  }else{
+		  $(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/deleteCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&reason="+reason,        
@@ -600,6 +611,7 @@ function deleteCandidate(candidateId){
                 }
                  },
               }); 
+	  }
 }
 </script>
 
@@ -628,10 +640,11 @@ function cancelAlert(){
 function removeCandidateAlertMessage(candidateId){
 	$("#profileEditPopup").fadeOut();
 	var result = "";
+	
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
-	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"		<div class='rejectErrorMsgs'/>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteCandidate("+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
 	result = result +"	</div>";
 	$("#removeCandidateAlert").append(result);
@@ -699,7 +712,7 @@ function candidateProfile(candidateId){
 								result = result + '<div class="project_tabs_inn_head mt10"><div class="anchor-inline"><a href="#" class="positionRelative showInfo"><i class="glyphicon glyphicon-info-sign"></i>Terminated<span class="infoContent col-xs-12 col-md-5"> '+json.terminateReason+' </span></a><a href="javascript:void(0)" onClick="reActivateCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>ReActivate</a> </div>';
 								'</sec:authorize>';
 							}else{
-								   result = result + '<div class="project_tabs_inn_head mt10"> <div class="anchor-inline"> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> <a href="#" onClick="editCandidate('+candidateId+');" onChange="updateDesignationType(this);" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a></sec:authorize> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> </sec:authorize></div>';
+								   result = result + '<div class="project_tabs_inn_head mt10"> <div class="anchor-inline"> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a></sec:authorize> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> </sec:authorize></div>';
 							}
 							result = result + '<div id="profileEditPopup"></div>';
 							result = result +'<div class="require_wrap_details candidate_wrap_details">';	 
@@ -1498,19 +1511,21 @@ $('.selectpicker').selectpicker('refresh');
  }
 </script>
   
-  
+<!-- Employment Type equals Other then Text Box will Open script here -->
 <script>
-function updateDesignationType(){
+function updateDesignationOtherType(typeVal){
+	 var candidateType = $('#designationType1').val(); 
 	
-	if(designationType.value == 'Other'){
+	if(candidateType == 'Other' &&  candidateType != '' && candidateType !='undefined'){
 		  document.getElementById("designationTypeDiv").style.display="block";
 		  $("#designationOtherType").attr("data-validation-optional", "true");
 		  $("#designationOtherType").attr("data-validation", "validate_Space validate_length length2-250");
 	}else{
-		document.getElementById("designationTypeDiv").style.display="none";
+		   document.getElementById("designationTypeDiv").style.display="none";
 		  $("#designationOtherType").attr("data-validation-optional", "true");
 		  $("#designationTypeDiv").find('p.jquery_form_error_message').remove();
-	}
+	} 
+	 
 }
 </script>
 

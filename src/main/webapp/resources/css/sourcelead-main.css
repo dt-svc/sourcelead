@@ -88,7 +88,7 @@ textarea {
 	box-sizing: border-box;
 	height: 50px;
 	float: left;
-	/*transition: all 0.5s ease-in-out 0s;*/
+	transition: all 0.5s ease-in-out 0s;
 }
 .main-header span.logo:hover {
 	background: #2b72b3;
@@ -613,7 +613,7 @@ ul.timesheet-menu li a, .backoffice-menu li a {
 }
 ul.timesheet-menu li a::before, .backoffice-menu li a::before {
 	color: #f0ad4e;
-	content: "";
+	content: "ïˆ­";
 	font-family: fontawesome;
 	padding-right: 5px;
 }
@@ -861,7 +861,8 @@ ul.timesheet-menu li a:hover, ul.backoffice-menu li a:hover {
 
 /* content Area Styels */
 .content-wraper {
-	background: #f1f2f7;
+	/* background: #f1f2f7; */
+	background:#e9e9e9;
 	min-height: 620px;
 	margin-left: 230px;
 	padding: 0 30px 30px;
@@ -6399,11 +6400,11 @@ margin: 5px 0 5px 8px !important;
 	margin: 5px 0px 5px 5px;
 }
 .content_widget {
-background: #fff;box-shadow: 0 1px 1px rgba(0,0,0,0.1);border-radius: 5px;min-height: 50px;
+background: #fff;box-shadow: 2px 2px 0px rgba(0,0,0,0.1);border-radius: 5px;min-height: 50px;
 max-height: 125px;padding: 10px;position: relative;
 }
 .activeJobs div[class*="col-md-"] {
-    margin-bottom: 15px;
+    margin-top: 25px;
 }
 .searchArea_mrgn{
    margin-left: 10%;
@@ -6414,6 +6415,18 @@ max-height: 125px;padding: 10px;position: relative;
 .overflow_inherint{
 	overflow: inherit !important;
 }
+.overflow_auto {
+	overflow: auto !important;
+}
+.filter_position .dataTables_filter {
+  position: relative !important;
+  top: 0 !important;
+}
+.hdrPosition h4 {
+	left: 0;
+	float: left;
+	margin-bottom: -30px;
+}
 .jobs-graphview .label {
 position: absolute; top: -8px; width: 55%; right:10px; min-height: 20px; line-height: 16px; font-size: 14px; color: #fff;
 }
@@ -6421,21 +6434,43 @@ position: absolute; top: -8px; width: 55%; right:10px; min-height: 20px; line-he
     position: relative;top: 5px;color: #fff;opacity: 0.5;
 }
 .buttonView{
-    background: #5C6BC0;
+    background: #e9e9e9;
 }
-.jobs-graphview .label-info {
-    background-color: #3F51B5;
+jobs-graphview .label-info {
+    background-color: #909090;
 }
 .jobs-graphview .count{
-    min-width: 50px;
-    min-height: 50px;
-    padding:10px 15px;
-    border-radius: 50%;
-    background: #fff;
-    position: absolute;
-    right: 10px;
-    bottom: 15px;
+    width: 85px;
+height: 55px;
+padding: 5px 15px;
+border-radius: 5%;
+background: #e0e0e0;
+position: absolute;
+right: 10px;
+bottom: 10px;
+font-weight: 600;
+line-height: 45px;
+font-size: 20px;
+color: #505050;
+text-align: center;
+-webkit-box-shadow: 0 8px 6px -6px rgba(0,0,0,0.2);
+-moz-box-shadow: 0 8px 6px -6px rgba(0,0,0,0.2);
+box-shadow: 0 8px 6px -6px rgba(0,0,0,0.2);
+/*    -moz-box-shadow:    inset 0 0 10px rgba(0,0,0,0.5);
+   -webkit-box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+   box-shadow:         inset 0 0 10px rgba(0,0,0,0.5);*/
 }
+#chartdiv {
+	width	: 100%;
+	min-height: 350px;
+}
+#jobSummary {
+	width:100%;
+	min-height:350px;
+}
+.height400px{
+	min-height: 400px !important;
+}	
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
@@ -6479,9 +6514,15 @@ div.pages-404.width {
 	-ms-transform: translateX(40px) ;
 	-webkit-transform: translateX(40px);
 }
+.hdrPosition h4 {
+	margin-bottom: 0;
+}
 }
 
 @media only screen and (min-width:321px) and (max-width: 475px) {
+	.hdrPosition h4 {
+	margin-bottom: 0;
+}
 	#alert:hover .alert-area {
 	transform: translateX(40px);
 	-ms-transform: translateX(40px) ;

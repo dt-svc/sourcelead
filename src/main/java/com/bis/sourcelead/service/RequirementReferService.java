@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -29,5 +30,9 @@ public interface RequirementReferService {
 	RequirementRefer getRequirementReferById(Long referId) throws Exception;
 	
 	RequirementRefer getAppliedRequirementReferByRequirementIdAndUserId(Long requirementId,Long userId) throws Exception;
+	
+	Integer getReferJobsByReferType(Long userId,String referType,Date startDate,Date endDate) throws Exception;
+	
+	Integer getReferJobsByReferTypeByReferedDate(Long userId,String referType,Date referedDate) throws Exception;
 
 }

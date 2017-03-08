@@ -834,7 +834,13 @@ function preparedVendorsListFromElk(data){
 			   		result = result +'<td><div>---</div></td>';
 			   	}
 				result = result +' <td><div id="releasedJobsCount'+report.orgRelationId+'">---</div></td>';
-				result = result +'<td><div >'+report.noContacts+'</div></td>';
+				
+				if(null != report.noContacts && report.noContacts  != '' && report.noContacts  != 'undefined'){
+					result = result +'<td><div >'+report.noContacts+'</div></td>';
+				}else{
+					result = result +'<td><div >---</div></td>';
+				}
+				
 				/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		result = result +'</tr>';
 				}
@@ -960,7 +966,7 @@ function getVendorLists(){
 		    url: sourceleadUrl+"/getVendorFilterLists?${_csrf.parameterName}=${_csrf.token}&values="+values, 	   
    		    success: function(data) {
    		    	//preparedVendorsLists(data);
-   		    	preparedVendorsLists(data);
+   		    	preparedVendorsListFromElk(data);
    		    }
 	 });
 	
@@ -2401,13 +2407,15 @@ function vendorListCheck(searchValue,universalvendorSearchList,searchType,respon
          },
           
      }); 
+  }else{
+	  if(vendorKeyword == "vendorSearch" && vendorKeyword != null && vendorKeyword !="" && vendorKeyword != 'undefined'){
+	    	vendorSideBar(responderLocationId,orgRelationId,orgName);
+	    	getVendorContactListsELK();
+	    }
+	else{
+		getVendorContactListsELK();
+		}
   }
-    if(vendorKeyword == "vendorSearch" && vendorKeyword != null && vendorKeyword !="" && vendorKeyword != 'undefined'){
-    	vendorSideBar(responderLocationId,orgRelationId,orgName);
-    	getVendorContactListsELK();
-    }
-else{
-	getVendorContactListsELK();
-	}
+    
   }
   </script>

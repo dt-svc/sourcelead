@@ -239,4 +239,16 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		return requirementReferDao.getAppliedRequirementReferByRequirementIdAndUserId(requirementId, userId);
 	}
 
+	@Override
+	public Integer getReferJobsByReferType(Long userId, String referType, Date startDate, Date endDate)
+			throws Exception {
+		return requirementReferDao.getReferJobsByReferType(userId, referType, startDate, endDate);
+	}
+
+	@Override
+	public Integer getReferJobsByReferTypeByReferedDate(Long userId, String referType, Date referedDate)
+			throws Exception {
+		return requirementReferDao.getReferJobsByReferTypeByReferedDate(userId, referType, referedDate);
+	}
+
 }

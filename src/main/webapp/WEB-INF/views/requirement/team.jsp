@@ -216,7 +216,7 @@ function teamEditDetails(teamId){
 	        	outPut = outPut+ '                </div>';
 	        	outPut = outPut+ '                <div class="col-md-1">';
 	        	outPut = outPut+ '                <label class="col-md-12">&nbsp;</label>';
-	        	outPut = outPut+ '<button type="button" id="edit_team" class="btn btn-primary btn-sm btn-block" onclick="storeEditedTeam();">Add</button>';
+	        	outPut = outPut+ '<button type="button" id="edit_team" class="btn btn-primary btn-sm btn-block" onclick="storeEditedTeam(\''+teamId+'\');">Add</button>';
 	        	outPut = outPut+ '              </div>';
 	        	outPut = outPut+ '              </div>';
 	        	outPut = outPut+ '              </div> ';
@@ -295,8 +295,8 @@ var validationSettings = {
 </script>
 
 <script>
-function storeEditedTeam(){
-	var teamId = $("#teamId").val();
+function storeEditedTeam(teamId){
+	//var teamId = $("#teamId").val();
 	  /*  var validationSettings = {
 	        errorMessagePosition : 'element',
 	       borderColorOnError : '',
@@ -487,7 +487,6 @@ function addMember(teamId){
 
 <script>
 function projectMemberList(teamId){
-	    
 	    var sourceleadUrl ='${sourceleadUrl}';
 		  $("#projectMemberList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		  $.ajax({

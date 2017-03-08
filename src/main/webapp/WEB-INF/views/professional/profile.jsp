@@ -23,9 +23,9 @@ $(document).ready(function(){
         
      <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Profile</h2>
+        <h2>Update Profile</h2>
       </div>
-      <div class="pull-right brud-crum">Home » Profile</div>
+      <!-- <div class="pull-right brud-crum">Home » Profile</div> -->
     </section>
     
   <!-- Profile Content Start-->
@@ -70,6 +70,13 @@ function getProfessionalInfo(){
 		    	 }else{
 		    		 designationType = "";
 		    	 }
+		    	 
+		    	 if(json.designationOtherType != null && json.designationOtherType != '' && json.designationOtherType !='undefined'){
+		    		 designationOtherType = ' : '+json.designationOtherType;
+		    	 }else{
+		    		 designationOtherType = "";
+		    	 }
+		    	 
 		    	 if(json.email != null && json.email != '' && json.email !='undefined'){
 		    		 email = json.email;
 		    	 }else{
@@ -80,11 +87,31 @@ function getProfessionalInfo(){
 		    	 }else{
 		    		 mobilePhone = "";
 		    	 }
+		    	 
+		    	 if(json.alternateMobilePhone != null && json.alternateMobilePhone != '' && json.alternateMobilePhone !='undefined'){
+		    		 alternateMobilePhone = ' , '+json.alternateMobilePhone;
+		    	 }else{
+		    		 alternateMobilePhone = "";
+		    	 }
+		    	 
 		    	 if(json.country != null && json.country != '' && json.country !='undefined'){
 		    		 country = json.country;
 		    	 }else{
 		    		 country = "";
 		    	 }
+		    	 
+		    	 if(json.state != null && json.state != '' && json.state !='undefined'){
+		    		 state = ' , '+json.state;
+		    	 }else{
+		    		 state = "";
+		    	 }
+		    	 
+		    	 if(json.city != null && json.city != '' && json.city !='undefined'){
+		    		 city = ' , '+json.city;
+		    	 }else{
+		    		 city = "";
+		    	 }
+		    	 
 		    	 
 		    	 if(json.skillsName != null  && json.skillsName != '' && json.skillsName != 'undefiend'){
 		    		 skillsName = json.skillsName;
@@ -135,6 +162,17 @@ function getProfessionalInfo(){
 		    		 currentRateType = "";
 		    	 }
 		    	 
+		    	 if(json.currentRateCurrency != null  && json.currentRateCurrency != '' && json.currentRateCurrency != 'undefiend'){
+		    		 currentRateCurrency = ' / '+json.currentRateCurrency;
+		    	 }else{
+		    		 currentRateCurrency = "";
+		    	 }
+		    	 
+		    	 if(json.expectedRateCurrencey != null  && json.expectedRateCurrencey != '' && json.expectedRateCurrencey != 'undefiend'){
+		    		 expectedRateCurrencey = ' / '+json.expectedRateCurrencey;
+		    	 }else{
+		    		 expectedRateCurrencey = "";
+		    	 }
 		    	 if(json.expectedRate != null  && json.expectedRate != '' && json.expectedRate != 'undefiend'){
 		    		 expectedRate = json.expectedRate;
 		    	 }else{
@@ -159,14 +197,15 @@ function getProfessionalInfo(){
 				 result = result +'	        </span>';
 				 result = result +'	        </div>';
 				 result = result +'	        <ul class="list-unstyled professional-details">';
-				 result = result +'	            <li><i class="fa fa-magnet" title="Designation Type"></i><strong>'+designation+' <span class="text-muted">'+designationType+'</span></strong></li>';
+				 result = result +'	            <li><i class="fa fa-magnet" ></i><strong>'+designation+'</strong></li>';
+				 result = result +'	            <li><i class="fa fa-magnet" ></i><span class="text-muted">'+designationType+' '+designationOtherType+'</strong></li>';
 				 result = result +'	            <li><i class="fa fa-history" title="Experience"></i>'+experienceYears+' &nbsp; '+experienceMonths+'</li>';
 				 result = result +'	            <li><i class="fa fa-calendar" title="Notice Period"></i>'+noticePeriod+'</li>';
-				 result = result +'	            <li> <i class="fa fa-money" title="Current"></i>';
-				 result = result +'	                <span>Current: '+currentRate+'&nbsp;<strong>'+currentRateType+'</strong></span>';
+				 result = result +'	            <li> <i class="fa fa-money" title="Current Rate"></i>';
+				 result = result +'	                <span><strong>Current Rate: </strong>'+currentRate+'&nbsp;'+currentRateType+' '+currentRateCurrency+'</span>';
 				 result = result +'	            </li>';
 				 result = result +'	            <li> <i class="fa fa-money" title="Expected Rate"></i>';
-				 result = result +'	                <span>Expected: '+expectedRate+' &nbsp;<strong>'+rateType+'</strong></span>';
+				 result = result +'	                <span><strong>Expected Rate:</strong> '+expectedRate+' &nbsp;'+rateType+' '+expectedRateCurrencey+'</span>';
 				 result = result +'	            </li>';
 				 result = result +'	        </ul>';
 				 result = result +'	    </div>';
@@ -180,13 +219,13 @@ function getProfessionalInfo(){
 				 result = result +'	        </ul>';
 				 result = result +'	        <div class="reachout">';
 				 result = result +'	        <p><i class="fa fa-at" title="Mail me"></i>'+email+'</p>';
-				 result = result +'	        <p><i class="fa fa-phone" title="Call us"></i>'+mobilePhone+'</p>';
-				 result = result +'	        <p><i class="fa fa-map-marker" title="Location"></i>'+country+'</p>';
+				 result = result +'	        <p><i class="fa fa-phone" title="Call us"></i>'+mobilePhone+' '+alternateMobilePhone+'</p>';
+				 result = result +'	        <p><i class="fa fa-map-marker" title="Location"></i>'+country+' '+state+' '+city+'</p>';
 				 result = result +'	        </div>';
 				 result = result +'	    </div>';
 				 result = result +'	    <div class="col-md-4">';
 				 result = result +'	        <h5>Skills</h5>';
-				 result = result +'	        <div class="skills text-center mt25">';
+				 result = result +'	        <div class="skills mt25">';
 				 result = result +'	            <p><strong>';
 				 result = result +'	        '+skillsName+'</strong>';
 				 result = result +'	        </p>';
