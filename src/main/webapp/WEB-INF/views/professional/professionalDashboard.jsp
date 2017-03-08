@@ -139,7 +139,11 @@ $(document).ready(function(){
               result = result +'<span class="label label-success">Applied</span>';
                         
               result = result +'<img src="resources/images/applied_icon.png" title="Applied" alt="Applied">';
-              result = result +'<span class="count">'+json['appliedJobs']+'</span>';
+              if(json['appliedJobs'] > 0){
+            	  result = result +'<a href="#" onClick="getProtletList(\''+startDate+'\',\''+endDate+'\',\'\');"><span class="count text-primary">'+json['appliedJobs']+'</span></a>';  
+              }else{
+            	  result = result +'<span class="count text-primary">0</span>';
+              }
               result = result +'</div>';
 
               result = result +'</div>';
@@ -147,16 +151,25 @@ $(document).ready(function(){
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-info">Shortlisted</span>';
               result = result +'<img src="resources/images/short_listed.png" title="Shortlisted" alt="Shortlisted">';
-              result = result +'<span class="count">'+json['shortlistJobs']+'</span>';
+              if(json['shortlistJobs'] > 0){
+            	  result = result +'<a href="#" onClick="getProtletList(\''+startDate+'\',\''+endDate+'\',\'SHORTLIST\');"><span class="count text-primary">'+json['shortlistJobs']+'</span></a>';  
+              }else{
+            	  result = result +'<span class="count">0</span>';
+              }
+              
               result = result +'</div>';
 
               result = result +'</div>';
               result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-success">Interviews</span>';
-                        
               result = result +'<img src="resources/images/interview_icons.png" title="Interviews" alt="Interviews">';
-              result = result +'<span class="count">'+json['interviews']+'</span>';
+              if(json['interviews'] > 0){
+            	  result = result +'<a href="#" onClick="getProtletList(\''+startDate+'\',\''+endDate+'\',\'INTERVIEW\');"><span class="count text-primary">'+json['interviews']+'</span></a>';  
+              }else{
+            	  result = result +'<span class="count">0</span>';
+              }
+              
               result = result +'</div>';
 
               result = result +'</div>';
@@ -165,17 +178,22 @@ $(document).ready(function(){
               result = result +'<span class="label label-info">Offered</span>';
                         
               result = result +'<img src="resources/images/offered_icon.png" title="Offered" alt="Offered">';
-              result = result +'<span class="count">'+json['offeredJobs']+'</span>';
+              if(json['offeredJobs'] > 0){
+            	  result = result +'<a href="#" onClick="getProtletList(\''+startDate+'\',\''+endDate+'\',\'OFFERMADE\');"><span class="count text-primary">'+json['offeredJobs']+'</span></a>';  
+              }else{
+            	  result = result +'<span class="count">0</span>';
+              }
+              
               result = result +'</div>';
 
               result = result +'</div>';
-              result = result +'<div class="col-sm-6 col-md-3">';
+              /* result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-primary">Hired</span>';
               
               result = result +'<img src="resources/images/hired_icon.png" title="Hired" alt="Hired">';
-              result = result +'<span class="count">'+json['hiredJobs']+'</span>';
-              result = result +'</div>';
+              result = result +'<a href="#" onClick="getProtletList(\''+startDate+'\',\''+endDate+'\',\'OFFERHIRED\');"><span class="count">'+json['hiredJobs']+'</span></a>';
+              result = result +'</div>'; */
 
               result = result +'</div>';
               result = result +'<div class="col-sm-6 col-md-3">';
@@ -184,7 +202,12 @@ $(document).ready(function(){
               result = result +'</span>';
               
               result = result +'<img src="resources/images/reject_icon.png" title="Rejected" alt="Rejected">';
-              result = result +'<span class="count">'+json['rejectedJobs']+'</span>';
+              if(json['rejectedJobs'] > 0){
+            	  result = result +'<a href="#" onClick="getProtletList(\''+startDate+'\',\''+endDate+'\',\'REJECTED\');"><span class="count text-primary">'+json['rejectedJobs']+'</span></a>';
+              }else{
+            	  result = result +'<span class="count">0</span>';
+              }
+             
               result = result +'</div>';
 
               result = result +'</div>';
@@ -198,7 +221,12 @@ $(document).ready(function(){
   }
   
   </script>
-  
+  <script>
+function getProtletList(startDate,endDate,status){
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl + '/professionalDashboardPortletList?${_csrf.parameterName}=${_csrf.token}&startDate='+startDate+'&endDate='+endDate+'&requirementStatus='+status;
+}
+</script>
   
   <script>
   function getJobSummaryDoNutChart(){
