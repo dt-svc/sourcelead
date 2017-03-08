@@ -117,15 +117,6 @@ ul.timesheet-menu li a:hover{
 ul.timesheet-menu li a:hover{
 	color:#333;
 }
-.content-wraper{
-	margin-left:230px;
-}
-.side-bar.side-bar-active{
-    width: 55px;
-}
-.side-bar{
-	 width:230px;
-}
 .main-header .navbar a{
 	color:#333;
 	text-shadow:none;
@@ -135,17 +126,8 @@ ul.timesheet-menu li a:hover{
 .bell {
     color: #333;
 }
-.side-bar .user-panel.user-panel-active {
-    width: 55px;
-}
-.side-bar .user-panel.user-panel-active .image img {
-    width: 100%;
-}
 .side-bar .user-panel {
     color: #fff;
-}
-.content-wraper.content-wraper-active{
-	margin-left:55px;
 }
 .side-bar .user-panel .image img {
     display: block;
@@ -306,5 +288,18 @@ background-color: #629794;
 }
 .addTask-widget {
     background: #629794;
+}
+@media (max-width: 1024px){
+	.content-wraper, .footer-area {
+	margin-left: 0;
+	}
+}
+@media (max-width: 1160px){
+.main-header span.logo {
+	background: #5B908D;
+}
+.main-header span.logo:hover {
+	background: #629794;
+}
 }
 

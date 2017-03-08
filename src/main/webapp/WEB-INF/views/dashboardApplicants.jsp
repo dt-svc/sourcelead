@@ -4,13 +4,13 @@
           <h4 class="clearfix">Applicant Authorization
           </h4>
           <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
-          <div class="clearfix require_wrap_table dashboard-data clients_wrap_table">
+          <div class="clearfix require_wrap_table dashboard-data filter_position">
             <ul class="nav nav-tabs">
               <li class="active" id="acceptedTab"><a data-toggle="tab" href="javascript:void(0)" onclick="flushDate(); ApplicantAuthorization('requestSent')">Request Sent</a></li>
               <li id="requestSentTab"><a data-toggle="tab" href="javascript:void(0)" onclick="flushDate(); ApplicantAuthorization('accepted')">Accepted</a></li>
             </ul>
             
-            <div class="tab-content clearfix mt custom-datatble">
+            <div class="tab-content clearfix mt">
               <div id="accepted" class="tab-pane fade in active"></div>
               <div id="requestSent" class="tab-pane fade"></div>
             </div> 
@@ -40,7 +40,7 @@ function ApplicantAuthorization(status){
 	              			$("#accepted").removeAttr("style");
 	              			//if(json.length > 0){
 	              				resultToday = resultToday+'<div id="rejectApplicantAlert" ></div>  ';
-	              				resultToday = resultToday+'	<table id="applicantsPagination" class="display" cellspacing="0" width="100%">';
+	              				resultToday = resultToday+'	<table id="applicantsPagination" class="display" cellspacing="0" width="99.5%">';
 	            				resultToday = resultToday+'	<thead>';
 	            				resultToday = resultToday+'	  <tr>';
 	            				resultToday = resultToday+'	    <th>Applicant</th>';
