@@ -485,14 +485,12 @@ public class TimesheetRestController {
 			    DateFormat shortormat = Constants.SHORT_DF_STD_DM;
 			    StringBuilder isActive = new StringBuilder("");
 			    
-			    SubmissionApproverHierarchy sahForActive =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(startDate, endDate, projectMemberId);
-			    Submission_Status submission_Status = sahForActive.getSubmissionStatus();
-				String status = submission_Status.getValue();
+			    TimesheetSubmissions ts =timesheetSubmissionsService.getAllEmployeeTimesheetSubmissionsByProjectMemberId(startDate, endDate, projectMemberId);
 			    
 			    if(CalendarUtil.isCurrentDateBetweenDateRange(weekStartDate, weekEndDate)){  
 			    	if(CalendarUtil.isCurrentDateBetweenDateRange(key, value)){
 			    		   isActive.append("class='current'");
-			    		   if(!isNullOrEmpty(status) && (!status.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
+			    		   if(ts != null){
 			    			    isActive.delete(0, isActive.length());
 					    		isActive.append("");
 				    			isActive.append("class='current subColor'");
@@ -503,7 +501,7 @@ public class TimesheetRestController {
 			    	else{
 			    		isActive.delete(0, isActive.length());
 			    		isActive.append("");
-			    		if(!isNullOrEmpty(status) && (!status.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
+			    		if(ts != null){
 			    			isActive.append("class='subColor'");
 					    }
 			    	}
@@ -519,7 +517,7 @@ public class TimesheetRestController {
 			    else{
 				    	if(count == 1){
 				    		   isActive.append("class='current'");
-				    		   if(!isNullOrEmpty(status) && (!status.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
+				    		   if(ts != null){
 				    			    isActive.delete(0, isActive.length());
 						    		isActive.append("");
 					    			isActive.append("class='current subColor'");
@@ -530,7 +528,7 @@ public class TimesheetRestController {
 				    	else{
 				    		isActive.delete(0, isActive.length());
 				    		isActive.append("");
-				    		if(!isNullOrEmpty(status) && (!status.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
+				    		if(ts != null){
 				    			isActive.append("class='subColor'");
 						    }
 				    	}
@@ -1664,8 +1662,12 @@ public class TimesheetRestController {
 						
 						//send mail to assigned manager at time sheet submission
 						if(!actualTimeString.equalsIgnoreCase("0.0")){
-							if(!"Draft".equalsIgnoreCase(status)){
-								sendEmailToManagerAtTimesheetSubmissions(timesheetSubmissions,loginUser,loginOrgLocation,loginOrgCode);
+							if(!"Draft".equalsIgnoreCase(status) 
+									&& projectMember != null 
+									&&  projectMember.getProjects() != null
+									&& frequencyStartDate != null
+									&& frequencyEndDate != null ){
+								sendEmailToManagerAtTimesheetSubmissions(projectMember.getProjects().getId(),frequencyStartDate,frequencyEndDate,loginUser,loginOrgLocation,loginOrgCode);
 							}
 						}
 					}
@@ -1735,12 +1737,12 @@ public class TimesheetRestController {
 	 * @param loginOrgCode
 	 * @throws Exception
 	 */
-	private void sendEmailToManagerAtTimesheetSubmissions(TimesheetSubmissions timesheetSubmissions, User loginUser, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
-		List<ProjectApproverHierarchy> approverHierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(timesheetSubmissions.getProjectMembers().getProjects().getId());
+	private void sendEmailToManagerAtTimesheetSubmissions(Long projectId,Date frequencyStartDate,Date frequencyEndDate, User loginUser, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
+		List<ProjectApproverHierarchy> approverHierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(projectId);
 		
 		for(ProjectApproverHierarchy approver : approverHierarchyList){
 				
-			if(!loginUser.getUserCode().equalsIgnoreCase(approver.getApproverUserId().getUserCode()) && (approver.getLevel() == Constants.LEVEL1)  ){
+			if(!loginUser.getUserCode().equalsIgnoreCase(approver.getApproverUserId().getUserCode())){
 				
 			 User projectManager = userService.getUserById(approver.getApproverUserId().getId());
 			 //Employees emp = employeesService.getEmployeeByUserId(loginUser.getId());
@@ -1755,8 +1757,8 @@ public class TimesheetRestController {
 			 
 			 String pattern = "dd-MM-yyyy";
 	         SimpleDateFormat format = new SimpleDateFormat(pattern);
-	         String startDateStr = format.format(timesheetSubmissions.getStartDate());
-	         String endDateStr = format.format(timesheetSubmissions.getEndDate());
+	         String startDateStr = format.format(frequencyStartDate);
+	         String endDateStr = format.format(frequencyEndDate);
 
 			 //setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();

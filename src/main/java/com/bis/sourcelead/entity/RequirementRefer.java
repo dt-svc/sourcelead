@@ -97,6 +97,9 @@ public class RequirementRefer implements Serializable {
 	@Transient
 	private Integer interviews;
 	
+	@Transient
+	private String dateString;
+	
 	
 	
 	
@@ -269,6 +272,14 @@ public class RequirementRefer implements Serializable {
 
 	public void setInterviews(Integer interviews) {
 		this.interviews = interviews;
+	}
+
+	public String getDateString() {
+		return dateString;
+	}
+
+	public void setDateString(String dateString) {
+		this.dateString = dateString;
 	}
 	
 	

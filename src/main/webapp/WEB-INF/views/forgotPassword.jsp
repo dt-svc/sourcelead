@@ -29,8 +29,8 @@
             <form:form class="login-form clearfix"  id="forgetPassword_form"  name="forgetPassword_form" method="post" >
 	            <div id="forgotPasswordDiv">
 	            <span>
-	            	<label>Email/User Name</label>
-	                <i class="fa fa-envelope"></i>
+	            	<label>User Name</label>
+	                <i class="fa fa-user"></i>
 	                <input type="text" name="email" value="${email}" id="email" class="signin_fild" required />
 	            </span>
 	            </div>
