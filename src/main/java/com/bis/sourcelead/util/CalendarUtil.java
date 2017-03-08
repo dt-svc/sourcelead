@@ -629,9 +629,7 @@ public  class CalendarUtil {
 	}
 	
 	public static long getNumberOfDays(Date date1, Date date2){
-		    long diff = date2.getTime() - date1.getTime();
-		    long  numberofDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-		    return numberofDays;
+		return (int)( (date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24));
 		
 	}
 	public static int getDayOfTheDate(Date date){

@@ -111,21 +111,9 @@ ul.timesheet-menu li a:hover{
 ul.timesheet-menu li a:hover{
 	color:#333;
 }
-.content-wraper{
-	margin-left:230px;
-}
-.side-bar.side-bar-active{
-    width: 55px;
-}
-.side-bar{
-	 width:230px;
-}
 .main-header .navbar a{
 	color:#333;
 	text-shadow:none;
-}
-.side-bar .user-panel.user-panel-active {
-    width: 55px;
 }
 .side-bar .user-panel.user-panel-active .image img {
     width: 100%;
@@ -135,9 +123,6 @@ ul.timesheet-menu li a:hover{
 }
 .bell {
     color: #333;
-}
-.content-wraper.content-wraper-active{
-	margin-left:55px;
 }
 .side-bar .user-panel .image img {
     display: block;
@@ -327,4 +312,8 @@ background-color: #78909C;
 .header-widget {
 	border-top: 4px solid #78909C;
 }
-
+@media (max-width: 1024px){
+	.content-wraper, .footer-area {
+	margin-left: 0;
+	}
+}

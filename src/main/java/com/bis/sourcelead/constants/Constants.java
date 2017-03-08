@@ -527,8 +527,8 @@ public class Constants {
     public static String CANDIDATE_DESIGNATION = "Designation";
     public static String CANDIDATE_TYPE = "Type";
     
-    public static String CANDIDATE_EXPERIENCE_YEARS = "Experince (Years)";
-    public static String CANDIDATE_EXPERIENCE_MONTHS = "Experince (Months)";
+    public static String CANDIDATE_EXPERIENCE_YEARS = "Experience (Years)";
+    public static String CANDIDATE_EXPERIENCE_MONTHS = "Experience (Months)";
     
     public static String CANDIDATE_CURRENT_RATE = "Current Rate";
     public static String CANDIDATE_CURRENT_RATE_TYPE = "Current Rate Type";
