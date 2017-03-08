@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +67,7 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 								  *
 							      *
 							    */
-								 Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+								 Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 								 cal.setLenient(false);
 								 cal.setTime(commonUtil.currentDate());
 								 Date previousMonthStartDate = CalendarUtil.getMonthStartDateByGivenDate(cal.getTime(),Constants.PREVIOUS_MONTH).get("STARTDATE");
@@ -114,7 +115,7 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 								  *
 							      *
 							    */
-								 Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+								 Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 								 cal.setLenient(false);
 								 cal.setTime(commonUtil.currentDate());
 								 Date previousMonthStartDate = CalendarUtil.getMonthStartDateByGivenDate(cal.getTime(),Constants.PREVIOUS_MONTH).get("STARTDATE");
@@ -191,7 +192,7 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 							      *
 							    */
 						    	Date biweeklyCurrentStartMonDayDate =  getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(project);
-						    	Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+						    	Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 								cal.setLenient(false);
 								cal.setTime(biweeklyCurrentStartMonDayDate);
 								Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
@@ -229,17 +230,17 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 								  }
 								
 						    
-								    Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+								    Calendar startCal = Calendar.getInstance(TimeZone.getDefault());
 									 startCal.setLenient(false);
 									 startCal.setTime(empBiweeklyStartDate);
 									 Calendar empStartMonday = CalendarUtil.getCurrentWeekDayByCalendar(startCal, "MON");
 									 
-									 Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+									 Calendar endCal = Calendar.getInstance(TimeZone.getDefault());
 									 endCal.setLenient(false);
 									 endCal.setTime(employeeBiweeklyEndDate);
 									 Calendar empEndMonday = CalendarUtil.getNextWeekDayByCalendar(endCal, "MON");
 									  int totalWeeks = 0; 
-									  Calendar tsCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+									  Calendar tsCal = Calendar.getInstance(TimeZone.getDefault());
 									  tsCal.setLenient(false);
 									  
 									  Date tsStartDate = null;
@@ -258,7 +259,7 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 										    timesheetFrequencyList.put(format.format(tsStartDate), format.format(tsEndDate));
 										    
 										    tsStartDate = CalendarUtil.getDateIncrementByincrement(tsCal, 14).getTime();
-										    Calendar tsEndCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+										    Calendar tsEndCal = Calendar.getInstance(TimeZone.getDefault());
 										    tsEndCal.setLenient(false);
 										    tsEndCal.setTime(tsStartDate);
 											tsEndDate = CalendarUtil.getDateIncrementByincrement(tsEndCal, 13).getTime();
@@ -279,7 +280,7 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 								  *
 							      *
 							    */
-								Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+								Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 								cal.setLenient(false);
 								cal.setTime(CommonUtil.currentDate());
 								Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
@@ -291,14 +292,14 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 								Date nextSundayDate = nextSunday.getTime();
 								
 								
-								/*Calendar startcal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+								/*Calendar startcal = Calendar.getInstance(TimeZone.getDefault());
 								startcal.setLenient(false);
 								startcal.setTime(empStartDate);
 								@SuppressWarnings("unused")
 								Date employeeStartDate = CalendarUtil.getCurrentWeekDayByCalendar(startcal, "MON").getTime();
 								Date employeeEndDate = null;
 								if(empEndDate != null){
-									Calendar endcal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+									Calendar endcal = Calendar.getInstance(TimeZone.getDefault());
 									endcal.setLenient(false);
 									endcal.setTime(empEndDate);
 									employeeEndDate = CalendarUtil.getCurrentWeekDayByCalendar(endcal, "SUN").getTime();
@@ -319,18 +320,18 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 									  empEndDate = nextSundayDate;
 								  }
 								
-								 Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+								 Calendar startCal = Calendar.getInstance(TimeZone.getDefault());
 								 startCal.setLenient(false);
 								 startCal.setTime(empStartDate);
 								 Calendar empStartMonday = CalendarUtil.getCurrentWeekDayByCalendar(startCal, "MON");
 								 
-								 Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+								 Calendar endCal = Calendar.getInstance(TimeZone.getDefault());
 								 endCal.setLenient(false);
 								 endCal.setTime(empEndDate);
 								 Calendar empEndMonday = CalendarUtil.getNextWeekDayByCalendar(endCal, "MON");
 									
 								  int totalWeeks = 0; 
-								  Calendar tsCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+								  Calendar tsCal = Calendar.getInstance(TimeZone.getDefault());
 								  tsCal.setLenient(false);
 								  
 								  Date tsStartDate = null;
@@ -375,12 +376,12 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 		            Date stDate = format.parse(startDate);
 		            Date enDate = format.parse(endDate);
 		            
-		             Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+		             Calendar startCal = Calendar.getInstance(TimeZone.getDefault());
 					 startCal.setLenient(false);
 					 startCal.setTime(stDate);
 					 Calendar empStartMonday = CalendarUtil.getCurrentWeekDayByCalendar(startCal, "MON");
 								
-					  Calendar tsCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+					  Calendar tsCal = Calendar.getInstance(TimeZone.getDefault());
 					  tsCal.setLenient(false);
 					  tsCal.setTime(stDate);
 					  
@@ -435,12 +436,12 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 	}
 	public Date getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(Projects projects) throws Exception{
 		Date biWeeklyStartMondayDate = null;
-		Calendar projCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+		Calendar projCal = Calendar.getInstance(TimeZone.getDefault());
 		projCal.setLenient(false);
 		projCal.setTime(projects.getStartDate());
 		Calendar projectStartMonday = CalendarUtil.getCurrentWeekDayByCalendar(projCal, "MON");
 		
-		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+		Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 		cal.setLenient(false);
 		cal.setTime(CommonUtil.currentDate());
 		Calendar currentMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
@@ -462,12 +463,12 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 
 	public Date getBiweeklyStartMonDayDateByUsingProjectStartDateAndEmployeeStartDate(Projects projects,Date employeeStartDate) throws Exception{
 		Date biWeeklyStartMondayDate = null;
-		Calendar projCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+		Calendar projCal = Calendar.getInstance(TimeZone.getDefault());
 		projCal.setLenient(false);
 		projCal.setTime(projects.getStartDate());
 		Calendar projectStartMonday = CalendarUtil.getCurrentWeekDayByCalendar(projCal, "MON");
 		
-		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+		Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 		cal.setLenient(false);
 		cal.setTime(employeeStartDate);
 		Calendar empStartMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
@@ -485,12 +486,12 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 	
 	private Date getBiweeklyEndSunDayDateByUsingProjectStartDateAndEmployeeEndDate(Projects projects,Date employeeEndDate) throws Exception{
 		Date biWeeklyEndSundayDate = null;
-		Calendar projCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+		Calendar projCal = Calendar.getInstance(TimeZone.getDefault());
 		projCal.setLenient(false);
 		projCal.setTime(projects.getStartDate());
 		Calendar projectStartMonday = CalendarUtil.getCurrentWeekDayByCalendar(projCal, "MON");
 		
-		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+		Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 		cal.setLenient(false);
 		cal.setTime(employeeEndDate);
 		Calendar empEndSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SUN");
