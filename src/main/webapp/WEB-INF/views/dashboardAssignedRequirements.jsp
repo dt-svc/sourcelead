@@ -52,8 +52,10 @@ function requirementList(){
 	                	 result = result +"<table id='requirementPagination' class='display' cellspacing='0' width='99.9%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
-	                     result = result +"    <th>ID-Title</th>"; 
-	                     result = result +"    <th>Client</th>"; 
+	                     result = result +"    <th>ID-Title</th>";
+	                     if(orgATS == 'Y'){
+	                     result = result +"    <th>Client</th>";
+	                     }
 	                     result = result +"    <th>Rate</th>"; 
 	                     result = result +"    <th>Priority</th>"; 
 	                     result = result +"    <th>Applicants</th>"; 
@@ -75,13 +77,13 @@ function requirementList(){
 	                    	 }else{
 		                    	 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
 		                     }
-		                     
-		                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
-		                    	 result = result +"<td><div><span title='"+opt.clientName+"'>"+opt.clientName+"</span></div></td>";
-		                     }else{
-		                    	 result = result +"<td><div>-----</div></td>";
+		                     if(orgATS == 'Y'){
+			                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
+			                    	 result = result +"<td><div><span title='"+opt.clientName+"'>"+opt.clientName+"</span></div></td>";
+			                     }else{
+			                    	 result = result +"<td><div>-----</div></td>";
+			                     }
 		                     }
-		                    
 		                     if(opt.rate != null && opt.rate != '' && opt.rate != 'undefined'){
 			                     result = result +"<td><div><span><span>"+opt.rate+"</span></span></div></td>";
 		                     }else{

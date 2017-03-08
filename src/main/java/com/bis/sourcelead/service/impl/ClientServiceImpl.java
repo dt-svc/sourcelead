@@ -16,6 +16,7 @@ import java.util.TimeZone;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -66,6 +67,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -646,6 +648,12 @@ public class ClientServiceImpl implements ClientService{
 			
 			saveOrUpdateClientVendorElkDocument(orgForElk,orgLocationForELk,null,null,orgRelationsForElk,null);
 
+		      //  This to update  the client/vendor details in ELK
+			
+					List<OrgSpoc>  updateOrgSpockDetails =   orgSpocService.getOrgSpocByOrgRelationId(orgRelationsForElk.getId());
+					if(updateOrgSpockDetails.size() > 0 && null != updateOrgSpockDetails){
+						 updatingClientVendorDetails(updateOrgSpockDetails);
+					}
 			
 		}
 
@@ -730,6 +738,13 @@ public class ClientServiceImpl implements ClientService{
 
 			
 			saveOrUpdateClientVendorElkDocument(orgForElk,orgLocationsForElk,null,null,orgRelationsForElk,null);
+			
+		//  This to update  the client/vendor details in ELK
+			
+			List<OrgSpoc>  updateOrgSpockDetails =   orgSpocService.getOrgSpocByOrgRelationId(orgRelationsForElk.getId());
+			if(updateOrgSpockDetails.size() > 0 && null != updateOrgSpockDetails){
+				 updatingClientVendorDetails(updateOrgSpockDetails);
+			}
 
 		}
 		
@@ -817,6 +832,8 @@ public class ClientServiceImpl implements ClientService{
 						orgSpoc.setOwnerUser(spocUser);
 					}
 					OrgSpoc orSpocElk = orgSpocService.addOrgSpoc(orgSpoc);
+
+					
 					if(null != orgSpoc.getTempOwnerId() && orgSpoc.getTempOwnerId().longValue() != orgSpoc.getClientUser().getId().longValue()){
 						user= userService.getUserById(Long.parseLong(jsonObj.getString(owner)));
 						sendEmailToClientContact(user,editUser,orgLocation,loginUser);
@@ -827,6 +844,8 @@ public class ClientServiceImpl implements ClientService{
 				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));
 				throw new SourceLeadObjectNotFoundException(message.toString());
 			}
+			
+			
 			return orgSpoc;
 
 		}
@@ -1082,7 +1101,7 @@ public class ClientServiceImpl implements ClientService{
 								if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == orgLocation.getId().longValue()){
 									
 								    StringBuilder website=new StringBuilder();
-								    clientVendor.setWebsite(website.append("www.").append(clientVendor.getResponderWebSite()).toString());
+								    clientVendor.setWebsite(clientVendor.getResponderWebSite());
 									clientVendor.setOrgName(clientVendor.getResponderOrgName());
 									clientVendor.setCountry(clientVendor.getResponderCountry());
 									clientVendor.setState(clientVendor.getResponderState());
@@ -1095,7 +1114,7 @@ public class ClientServiceImpl implements ClientService{
 							  if(null != clientVendor.getResponderLocationId()  && clientVendor.getResponderLocationId().longValue() == orgLocation.getId().longValue()){
 								 
 								  StringBuilder website=new StringBuilder();
-								  clientVendor.setWebsite(website.append("www.").append(clientVendor.getInitiatorWebSite()).toString());
+								  clientVendor.setWebsite(clientVendor.getInitiatorWebSite());
 								  clientVendor.setOrgName(clientVendor.getInitiatorOrgName());
 								  clientVendor.setCountry(clientVendor.getInitiatorCountry());
 								  clientVendor.setState(clientVendor.getInitiatorState());
@@ -1122,6 +1141,8 @@ public class ClientServiceImpl implements ClientService{
 		public List<Object> getAllUniversalSearchClientList(OrgLocations orgLocations, String serachValue,String searchType)throws Exception {
 				List<Object>   searchList = new ArrayList<>();
 //				 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(orgLocations.getId(),"Client");
+				BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+				BoolQueryBuilder combinedQueryBuilder = QueryBuilders.boolQuery();
 				
 				String responderType = null;
 				if("Vendor".equalsIgnoreCase(searchType)){
@@ -1129,8 +1150,6 @@ public class ClientServiceImpl implements ClientService{
 				 }else if("Client".equalsIgnoreCase(searchType)){
 					 responderType = "Vendor"; 
 				 }
-				
-				 BoolQueryBuilder combinedQueryBuilder = QueryBuilders.boolQuery();
 				 
 				 BoolQueryBuilder initiatorQueryBuilder = QueryBuilders.boolQuery();
 				 initiatorQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
@@ -1143,78 +1162,94 @@ public class ClientServiceImpl implements ClientService{
 				 combinedQueryBuilder.should(initiatorQueryBuilder);
 				 combinedQueryBuilder.should(responderQueryBuilder);
 				 
-				 combinedQueryBuilder.must(combinedQueryBuilder);
-				
-				ArrayList<String> anyKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(serachValue);
-					BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-					 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
-						if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
-							 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
-							 for(String keywd : anyKeyWordArray){
-								 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-								ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForClientVendor(keywd);
-								if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-									for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-										anyBoolSubQueryBuilder.should(matchQueryBuilder);
-									}
-									anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
-								}
-							}
-							 boolQueryBuilder.must(anyBoolQueryBuilder);
-						}
-					
+				 boolQueryBuilder.must(combinedQueryBuilder);
+				 
+			   	 
+				 // to   get the number of contacts 
 					Long maxResults = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,0,boolQueryBuilder).getTotalHits();
+					
+					//Any Keyword
+					ArrayList<String> anyKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(serachValue);
+					if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+						 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+						 for(String keywd : anyKeyWordArray){
+							 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+//							ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
+								ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForClientVendor(keywd);
+							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+									anyBoolSubQueryBuilder.should(matchQueryBuilder);
+								}
+								anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+							}
+						}
+						 boolQueryBuilder.must(anyBoolQueryBuilder);
+					}
+					
 					DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					df.setTimeZone(TimeZone.getTimeZone("GMT"));
-					
 					SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
-					    if(null != searchHits && searchHits.length >0){
-							ObjectMapper mapper = new ObjectMapper();
-							for (SearchHit hit : searchHits) {
-										String json = hit.getSourceAsString();
-										mapper.setDateFormat(df);
-										ClientVendorIndex clientVendor = mapper.readValue(json, ClientVendorIndex.class);
+					if(searchHits != null && searchHits.length >0){
+						ObjectMapper mapper = new ObjectMapper();
+						for (SearchHit hit : searchHits) {
+									String json = hit.getSourceAsString();
+									mapper.setDateFormat(df);
+									ClientVendorIndex clientVendor = mapper.readValue(json, ClientVendorIndex.class);
+									
+									
+									 
+								//  This is to get the number of Contacts based  on Org Relation Id
+									 BoolQueryBuilder forNumberOfContacts= QueryBuilders.boolQuery();
+									 forNumberOfContacts.must(QueryBuilders.matchQuery("orgRelationId", clientVendor.getOrgRelationId()));
+									 
+									 Long numberOfContacts = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,0,0,forNumberOfContacts).getTotalHits();
+									 clientVendor.setNoContacts(numberOfContacts);
+									 
+									if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == orgLocations.getId().longValue()){
 										
-										if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == orgLocations.getId().longValue()){
-											
-										    StringBuilder website=new StringBuilder();
-										    clientVendor.setWebsite(website.append("www.").append(clientVendor.getResponderWebSite()).toString());
-											clientVendor.setOrgName(clientVendor.getResponderOrgName());
-											clientVendor.setCountry(clientVendor.getResponderCountry());
-											clientVendor.setState(clientVendor.getResponderState());
-											clientVendor.setCity(clientVendor.getResponderCity());
-											
-											if(clientVendor.getInitiatorLevel()!=null){
-												clientVendor.setInitiatorLevel(clientVendor.getInitiatorLevel());
-											}
+									    clientVendor.setWebsite(clientVendor.getResponderWebSite());
+										clientVendor.setOrgName(clientVendor.getResponderOrgName());
+										clientVendor.setCountry(clientVendor.getResponderCountry());
+										clientVendor.setState(clientVendor.getResponderState());
+										clientVendor.setCity(clientVendor.getResponderCity());
+										
+										if(clientVendor.getInitiatorLevel()!=null){
+											clientVendor.setInitiatorLevel(clientVendor.getInitiatorLevel());
 										}
-									  if(null != clientVendor.getResponderLocationId()  && clientVendor.getResponderLocationId().longValue() == orgLocations.getId().longValue()){
-										 
-										  StringBuilder website=new StringBuilder();
-										  clientVendor.setWebsite(website.append("www.").append(clientVendor.getInitiatorWebSite()).toString());
-										  clientVendor.setOrgName(clientVendor.getInitiatorOrgName());
-										  clientVendor.setCountry(clientVendor.getInitiatorCountry());
-										  clientVendor.setState(clientVendor.getInitiatorState());
-										  clientVendor.setCity(clientVendor.getInitiatorCity());
-										  
-										  if(clientVendor.getResponderLevel()!=null){
-											  clientVendor.setInitiatorLevel(clientVendor.getResponderLevel());
-										  }
-										}
-									  if(!responderType.isEmpty() &&  Constants.VENDOR.equalsIgnoreCase(responderType)){
-										  if(!clientVendor.getCreatedBy().isEmpty()){
-											  clientVendor.setCreatedBy(clientVendor.getCreatedBy());
-										  }
-										 
-									  }
+									}
+								  if(null != clientVendor.getResponderLocationId()  && clientVendor.getResponderLocationId().longValue() == orgLocations.getId().longValue()){
+									 
+									  clientVendor.setWebsite(clientVendor.getInitiatorWebSite());
+									  clientVendor.setOrgName(clientVendor.getInitiatorOrgName());
+									  clientVendor.setCountry(clientVendor.getInitiatorCountry());
+									  clientVendor.setState(clientVendor.getInitiatorState());
+									  clientVendor.setCity(clientVendor.getInitiatorCity());
 									  
-									  searchList.add(clientVendor);
-							}	
-						}
+									  if(clientVendor.getResponderLevel()!=null){
+										  clientVendor.setInitiatorLevel(clientVendor.getResponderLevel());
+									  }
+									}
+								  if(!responderType.isEmpty() &&  Constants.VENDOR.equalsIgnoreCase(responderType)){
+									  if(null != clientVendor.getCreatedBy() && !clientVendor.getCreatedBy().isEmpty()){
+										  clientVendor.setCreatedBy(clientVendor.getCreatedBy());
+									  }
+									 
+								  }
+								  
+								  searchList.add(clientVendor);
+
+						}	
+					}
 				return searchList;
 		}
 
-
+		void updatingClientVendorDetails(List<OrgSpoc>  updateOrgSpockDetails) throws Exception{
+			if(updateOrgSpockDetails.size() >0 && null != updateOrgSpockDetails){
+				for(OrgSpoc orgSpock :updateOrgSpockDetails){
+					orgSpocService.addOrgSpoc(orgSpock);
+				}
+			}
+		}
 		
 	
 }

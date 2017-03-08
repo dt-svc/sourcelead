@@ -55,6 +55,8 @@ public interface RequirementInterviewService {
 			Org loginOrg, RequirementInterview requirementInterview) throws Exception;
 	
 	void sendEmailToInterviewrs(Candidate candidate, User interviewerUser,RequirementSubmission requirementSubmission, User loginUser,Org org,RequirementInterview requirementInterview,OrgLocations orgLocations)	throws Exception;
+	
+	Integer getInterviewCountByCandidateId(Long candidateId,String submissionStatus,Date startDate,Date endDate) throws Exception;
 
 
 	//List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime);

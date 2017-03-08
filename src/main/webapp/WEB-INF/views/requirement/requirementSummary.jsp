@@ -1271,6 +1271,7 @@ function requirementDetails(requirementId){
 }
 </script>
 
+
 <%-- 
      @author : sarath kumar.
      this script is for update Requirement.
@@ -1325,6 +1326,15 @@ function updateReuqirementStatus(status){
 }
 </script>
 
+<script type="text/javascript">
+function cancelAlert12(){ 
+	$("#rejectRequirementAlert").empty();
+	$(".project_inn_mask").fadeOut(200);
+	$(".remove_user_pop").hide();
+	
+}
+</script>
+
 <%-- 
      @author : Venkat Kesav
      this script is for close alert popup.
@@ -1337,7 +1347,7 @@ function rejectRequirementAlertMessage(status){
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
 	result = result +"	<div id='reasonDiv'/>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='updateReuqirementStatus(\""+ status+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='updateReuqirementStatus(\""+ status+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert12();'></b>";
 	result = result +"	</div>";
 	result = result +"	</div>";
 	$("#rejectRequirementAlert").append(result);
@@ -1352,12 +1362,7 @@ function rejectRequirementAlertMessage(status){
      this script is for Delete Candidate alert
      1.usage     : used in saveOrCancel() / alertMessage removeAlertMessage()
 --%>
-<script type="text/javascript">
-function cancelAlert(){ 
-	$("#rejectRequirementAlert").empty();
-	$(".project_inn_mask").fadeOut(200);
-}
-</script>
+
 
 
 <%-- 
@@ -1700,7 +1705,7 @@ function requirementPipelineDA(requirementId,submissionType){
 					         }
  */					       result = result + '<th>Source</th>';
 		        		   result = result + '<th>Score</th>';
-				           result = result + '<th>Exp</th>';
+				           /* result = result + '<th>Exp</th>'; */
 				           result = result + '<th>Status</th>';
 				           result = result + '         </tr>';
 				           result = result + '       </thead>';
@@ -1745,7 +1750,7 @@ function requirementPipelineDA(requirementId,submissionType){
 						           
 						        	   
 					        	   if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.createdDateStr+'</span></div></td>';
+						        	   result = result + '         <td><div class="tbldata-dotdot-sm">'+report.createdDateStr+', '+report.createdTimeStr+'</div></td>';
 							           }
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
@@ -1818,12 +1823,12 @@ function requirementPipelineDA(requirementId,submissionType){
 							    	   result = result + '         <td><div><span>--</span></div></td>';
 						    	     }
 						           
-						           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
+						           /* if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
 						        	   result = result + '         <td><div><span>'+report.workExperience+'</span></div></td>';
 							           }
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
-						    	     }
+						    	     } */
 						           
 							           if(report.submissionStatus == 'REJECTED'){
 							        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
