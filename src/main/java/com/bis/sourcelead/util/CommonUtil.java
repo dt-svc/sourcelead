@@ -785,4 +785,26 @@ public class CommonUtil {
 		        = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").withZone(toTimeZone);
 		    return outputFormatter.print(dateTime);
 		}
+		
+		
+		public static Float getCombinedHours(Float hours1,Float hours2){
+			float cthHours = hours1;
+			float cthHoursValue = (int) cthHours;
+			float cthMinutesValue = cthHours - cthHoursValue;
+			float totalCthMinutes = (cthHoursValue* 60)+(cthMinutesValue*100);
+
+			float wthHours = hours2;
+			float wthHoursValue = (int) wthHours;
+			float wthMinutesValue = wthHours - wthHoursValue;
+			float totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
+
+			float totalMinutes = totalCthMinutes+totalWthMinutes;
+
+			float actualHours = (int) (totalMinutes / 60); //since both are ints, you get an int
+			float actualMinutes = (totalMinutes % 60)/100;
+
+			String actualTimeString = String.format("%.2f", (actualHours+actualMinutes));
+			
+			return Float.parseFloat(actualTimeString);
+		}
 }

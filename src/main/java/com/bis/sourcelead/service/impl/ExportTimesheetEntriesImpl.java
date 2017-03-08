@@ -156,10 +156,9 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		//int lastRow = 0;
 	     Map<String,String> tabFrequency = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(frequencyStartDate, frequencyEndDate);
 		 if(tabFrequency != null && !tabFrequency.isEmpty()){
-			 Double billableHours = 0d;
-			 Double nonBillableHours =  0d;
-			 Double grandTotalHours = 0d;
-			 
+			 Float billableHours = 0f;
+			 Float nonBillableHours =  0f;
+			 Long grandTotalHours = 0l;
 			for (Map.Entry<String, String> entry : tabFrequency.entrySet()) {
 				 String key = entry.getKey();
 			     String value = entry.getValue();
@@ -172,14 +171,23 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 				 TimesheetSubmissions ts = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissionsByProjectMemberId(weekStartDate, weekEndDate, projectMember.getId());
 				 if(null != ts){
 					 if(null != ts.getBillableHours()){
-						 billableHours = billableHours+(Double.parseDouble(ts.getBillableHours())*60);
+						 Float weekBillable = Float.parseFloat(ts.getBillableHours());
+						 float tsHours = weekBillable;
+					     float tsHoursValue = (int) tsHours;
+					     float tsMinutesValue = tsHours - tsHoursValue;
+					     billableHours = billableHours + (tsHoursValue* 60)+(tsMinutesValue*100);
 					 }
 					 if(null != ts.getNonBillableHours()){
-						 nonBillableHours = nonBillableHours+(Double.parseDouble(ts.getNonBillableHours())*60);
+						 
+						 Float weekNonBillable = Float.parseFloat(ts.getNonBillableHours());
+						 float tsHours = weekNonBillable;
+					     float tsHoursValue = (int) tsHours;
+					     float tsMinutesValue = tsHours - tsHoursValue;
+					     nonBillableHours = nonBillableHours + (tsHoursValue* 60)+(tsMinutesValue*100);
 					 }
-					 if(null != ts.getTotalHours()){
+					 /*if(null != ts.getTotalHours()){
 						 grandTotalHours = grandTotalHours+(Double.parseDouble(ts.getTotalHours())*60);
-					 }
+					 }*/
 				 
 				 int column = 0;
 	    		// lastRow = count;
@@ -252,6 +260,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		    		count = count+1;
 		    		//Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasksByProjectId(ts.getProjectMembers().getProjects().getId());
 		    		Collection<TimesheetEntries>  timesheetEntriesList =   getAllTimesheetEntriesBySubmissionId(ts.getId());
+		    		Long  totalHours =0l;
 					if(timesheetEntriesList != null && !timesheetEntriesList.isEmpty()){
 						    
 								Integer maxCount = timesheetEntriesList.size();
@@ -344,7 +353,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 							            	  
 							            	  count++;
 								            }
-								        Long totalHours = monTotHours+tueTotHours+wedTotHours+thuTotHours+friTotHours+satTotHours+sunTotHours;
+								        totalHours = monTotHours+tueTotHours+wedTotHours+thuTotHours+friTotHours+satTotHours+sunTotHours;
 										writeRow = sheet.createRow(count);
 										Cell cell1 = writeRow.createCell(0);
 										cell1.setCellValue("Total Hours");
@@ -363,11 +372,11 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 										count++;
 						          }
 			                 
-			
+						 grandTotalHours = grandTotalHours + totalHours;
 						 StringBuilder fileName=new StringBuilder();
 						 String billable = getTotalHours(billableHours.longValue());
 						 String nonBillable = getTotalHours(nonBillableHours.longValue());
-						 String grandtotal = getTotalHours(grandTotalHours.longValue());
+						 String grandtotal = getTotalHours(grandTotalHours);
 						 sheet = getExcelSheetWithHeader(sheet, writeRow, wb,frequencyStartDate,frequencyEndDate,projectMember.getEmployee().getUser(),grandtotal,projectMember.getProjects().getProjectName(),submissionStatusStr,billable,nonBillable);
 						file = new File(fileName.append(projectMember.getEmployee().getUser().getFirstName()).append("_").append(frequencyStartDate).append(" to ").append(frequencyEndDate).append(".xls").toString());
 						FileOutputStream fos = new FileOutputStream(file);
@@ -837,7 +846,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		    	    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
 		    	    	  }
 						if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()) {
-							totalHours = totalHours + sah.getWeekTotals().get(entry.getKey());
+							totalHours = CommonUtil.getCombinedHours(totalHours, sah.getWeekTotals().get(entry.getKey()));
 							timeSheetApprovalArray[count] = (sah.getWeekTotals().get(entry.getKey()).toString()) + "/"+weekTotal;
 						} else {
 							timeSheetApprovalArray[count] = "0/"+weekTotal;
@@ -846,16 +855,8 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 					}
 				}
 			}
-		 float tsHours = totalHours;
-	     float tsHoursValue = (int) tsHours;
-	     float tsMinutesValue = tsHours - tsHoursValue;
-	     float totalMinutes = (tsHoursValue* 60)+(tsMinutesValue*100);
-	     
-	     float actualHours = (int) (totalMinutes / 60); 
-	     float actualMinutes = (totalMinutes % 60)/100;
-	     String actualTimeString = String.format("%.2f", (actualHours+actualMinutes));
-	     if(actualTimeString != null && !"".equalsIgnoreCase(actualTimeString.toString())){
-	    	 timeSheetApprovalArray[count]   = actualTimeString+"/"+estimatedTotalHours;
+	     if(totalHours != null && !"".equalsIgnoreCase(totalHours.toString())){
+	    	 timeSheetApprovalArray[count]   = totalHours+"/"+estimatedTotalHours;
 	     }else{
 	    	 timeSheetApprovalArray[count] = "0.0/"+estimatedTotalHours;
 	     }
@@ -1035,7 +1036,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 			    	    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
 			    	    	  }
 							if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()) {
-								totalHours = totalHours + sah.getWeekTotals().get(entry.getKey());
+							   totalHours = CommonUtil.getCombinedHours(totalHours, sah.getWeekTotals().get(entry.getKey()));
 								writeRow.createCell(count).setCellValue(sah.getWeekTotals().get(entry.getKey()).toString() + "/"+weekTotal);
 							} else {
 								writeRow.createCell(count).setCellValue( "0/"+weekTotal);
@@ -1044,16 +1045,9 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 						}
 					}
 				}
-				 float tsHours = totalHours;
-			     float tsHoursValue = (int) tsHours;
-			     float tsMinutesValue = tsHours - tsHoursValue;
-			     float totalMinutes = (tsHoursValue* 60)+(tsMinutesValue*100);
-			     
-			     float actualHours = (int) (totalMinutes / 60); 
-			     float actualMinutes = (totalMinutes % 60)/100;
-			     String actualTimeString = String.format("%.2f", (actualHours+actualMinutes));
-				 if(actualTimeString != null && !"".equalsIgnoreCase(actualTimeString.toString())){
-					 writeRow.createCell(count).setCellValue( actualTimeString.toString()+"/"+estimatedTotalHours);
+				
+				 if(totalHours != null && !"".equalsIgnoreCase(totalHours.toString())){
+					 writeRow.createCell(count).setCellValue( totalHours.toString()+"/"+estimatedTotalHours);
 			     }else{
 			    	 writeRow.createCell(count).setCellValue( "0.0/"+estimatedTotalHours);
 			     }

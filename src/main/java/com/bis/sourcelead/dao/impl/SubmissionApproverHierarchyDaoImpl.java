@@ -472,10 +472,16 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
             	 	sah.setSubmissionStatus(Submission_Status.REJECTED);
             	 	sah.setActionPerformedBy(""+loginUser.getFullName());
             	 	sah.setRejectedReason(rejectedReason);
+            	 	sah.setReopenReason(null);
+            	    sah.setReopenedUser(null);
+            	    sah.setReopenRejectedReason(null);
             	 	
 	             }else if(status!=null && status.equalsIgnoreCase("APPROVED")){
 	            	 sah.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
 	            	 sah.setSubmissionStatus(Submission_Status.APPROVED);
+	            	 sah.setReopenReason(null);
+	            	 sah.setReopenedUser(null);
+	            	 sah.setReopenRejectedReason(null);
 	            	 sah.setActionPerformedBy(""+loginUser.getFullName());
 	             }
 	    		 try {
@@ -499,12 +505,18 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
                 				approver.setSubmissionStatus(Submission_Status.REJECTED);
                 				approver.setActionPerformedBy(" "+loginUser.getFullName());
                 				approver.setRejectedReason(rejectedReason);
-                        	 	
+                				approver.setReopenReason("");
+                				approver.setReopenedUser(null);
+                				approver.setReopenRejectedReason("");
+                        	  	
             	              }
                 			 else if(sah.getHeirarchyId().getLevel()==(maxLevel) && (status!=null && status.equalsIgnoreCase("APPROVED"))){
 		            	            	 approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
 		            	            	 approver.setSubmissionStatus(Submission_Status.APPROVED);
 		            	            	 approver.setActionPerformedBy(" "+loginUser.getFullName());
+		            	            	 approver.setReopenReason("");
+		                 				 approver.setReopenedUser(null);
+		                 				 approver.setReopenRejectedReason("");
 	                		  }
                 	        try {
                 	        	updateSubmissionApproverHierarchy(approver);
