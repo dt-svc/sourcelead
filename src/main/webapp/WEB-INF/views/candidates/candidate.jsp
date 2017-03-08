@@ -616,7 +616,6 @@ function getCities(){
 		            select.find(option).prop('selected', true);
 		          //to doesn't allow duplicates
                     $("#candidateSkills option").each(function(){
-                    	alert("hi");
                           $(this).siblings("[value='"+ this.value+"']").remove();
                     });
                     //end
