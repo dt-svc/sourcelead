@@ -245,9 +245,10 @@ $(document).ready(function(){
 			        			 var jobs = json[i];
 			        			    chartData.push( {
 			        			      day: jobs.dateString,
-			        			      applied: jobs.appliedJobs,
+			        			      referedToMe:jobs.referToMeJobs,
 			        			      referedByMe:jobs.referByMeJobs,
-			        			      referedToMe:jobs.referToMeJobs
+			        			      applied: jobs.appliedJobs
+			        			     
 			        			    } );
 			        			  }
 			        	
@@ -333,10 +334,10 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	    }],
 	    "startDuration": 0.5,
 	    "graphs": [{
-	        "balloonText": "Applied: [[value]]",
+	        "balloonText": "Refered To Me: [[value]]",
 	        "bullet": "round",
-	        "title": "Applied",
-	        "valueField": "applied",
+	        "title": "Refered To Me",
+	        "valueField": "referedToMe",
 			"fillAlphas": 0
 	    }, {
 	        "balloonText": "Refered By Me: [[value]]",
@@ -345,10 +346,10 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	        "valueField": "referedByMe",
 			"fillAlphas": 0
 	    },{
-	        "balloonText": "Refered To Me: [[value]]",
+	        "balloonText": "Applied: [[value]]",
 	        "bullet": "round",
-	        "title": "Refered To Me",
-	        "valueField": "referedToMe",
+	        "title": "Applied",
+	        "valueField": "applied",
 			"fillAlphas": 0
 	    }],
 	    "chartCursor": {
