@@ -310,6 +310,9 @@ public class TimesheetRestController {
 						initialProjectMemberId = pm.getId();
 						
 					}
+					else{
+						isSelected.setLength(0);
+					}
 					 count++;
 					timesheetEntriesDiv.append("		                  <option  "+isSelected.toString()+" value='"+pm.getId()+"'>"+pm.getProjects().getProjectName()+"</option>");
 				   
