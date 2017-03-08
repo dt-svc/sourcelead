@@ -169,6 +169,7 @@ function selectOfferApplicants(){
 	                 <option value="Bi-weekly">Bi-weekly</option>
 	                 <option value="Monthly">Monthly</option>
 	                 <option value="Bi-Monthly">Bi-Monthly</option>
+	                 <option value="Semi-Monthly">Semi-Monthly</option>
 	                 <option value="Yearly">Yearly</option>
            </select>
      </div>
