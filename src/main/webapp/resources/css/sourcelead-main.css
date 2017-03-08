@@ -6405,6 +6405,9 @@ max-height: 125px;padding: 10px;position: relative;
 .activeJobs div[class*="col-md-"] {
     margin-top: 25px;
 }
+.activeJobs .text-primary {
+	color:#337ab7 !important;
+}
 .searchArea_mrgn{
    margin-left: 10%;
 }
@@ -6454,7 +6457,21 @@ box-shadow: 0 8px 6px -6px rgba(0,0,0,0.2);
 #jobSummary {
 	width:100%;
 	min-height:350px;
-}	
+}
+.referred_pop input[type=checkbox], .referred_pop input[type=radio] {
+	margin: 1px 0;
+    line-height: normal;
+    margin-right: 5px;
+}
+.zIndex {
+	z-index:999 !important;
+	position: relative;
+}
+/*border Top*/
+.referred_pop:after {
+    bottom: 100%; left: 85%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
+    border-color: rgba(136, 183, 213, 0); border-bottom-color: #ccc; border-width: 10px; margin-left: -10px;
+  }	
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
