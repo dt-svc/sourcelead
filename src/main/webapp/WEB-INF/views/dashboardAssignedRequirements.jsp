@@ -5,14 +5,14 @@
 
 <div class="content-dashboard clearfix" id="assignedRequirementsDiv" style="display: none;"> 
       <!-- Assigned Requirements -->
-      <div class="clearfix dashboard-widget mb col-md-12">
+      <div class="clearfix dashboard-widget mb col-md-12 hdrPosition">
         <h4 class="clearfix">
         Assigned Requirements
         &nbsp;&nbsp;<!-- <span title="Calendar"><i aria-hidden="true" class="fa fa-calendar" id="datepicker"></i>
         </span> -->
         </h4>
       <!-- <a href="#" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
-        <div class="clearfix require_wrap_table dashboard-data overflow_inherint"> 
+        <div class="clearfix require_wrap_table dashboard-data filter_position"> 
         		 <div id="requirementList"></div>
         </div>
       </div>
@@ -49,7 +49,7 @@ function requirementList(){
 			    	     $("#requirementList").removeAttr("style");
 	                	 $("#requirementList").empty();
 	                	 var result = "";
-	                	 result = result +"<table id='requirementPagination' class='display' cellspacing='0' width='100%' >"; 
+	                	 result = result +"<table id='requirementPagination' class='display' cellspacing='0' width='99.9%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
 	                     result = result +"    <th>ID-Title</th>"; 
@@ -143,7 +143,6 @@ function requirementList(){
 function pagination(){ 
     $('#requirementPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
     	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
