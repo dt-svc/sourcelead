@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -1571,7 +1572,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			
 			 Session session = this.sessionFactory.getCurrentSession();
 		     
-			 String query = "select count(distinct rs.requirement) from RequirementSubmission rs where rs.candidate.id = :candidateId and (rs.createdDate BETWEEN :startDate and :endDate))";
+			 String query = "select count(distinct rs.requirement) from RequirementSubmission rs where rs.candidate.id = :candidateId and (rs.createdDate BETWEEN :startDate and :endDate)";
 		     
 		     List<Long> appliedCount = session.createQuery(query).setLong("candidateId", candidateId)
 		    		   .setDate("startDate", startDate)
@@ -1592,7 +1593,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			 Session session = this.sessionFactory.getCurrentSession();
 		     
 			 String query = "select count(distinct rs.requirement) from RequirementSubmission rs where rs.candidate.id = :candidateId and "
-			 		+ "rs.submissionStatus = :submissionStatus and (rs.createdDate BETWEEN :startDate and :endDate))";
+			 		+ "rs.submissionStatus = :submissionStatus and (rs.createdDate BETWEEN :startDate and :endDate)";
 		     
 		     List<Long> submissionsCount = session.createQuery(query).setLong("candidateId", candidateId)
 		    		   .setString("submissionStatus", submissionStatus)
@@ -1628,6 +1629,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			 return submissionsCountList;  
 		}
 
+
 		
 		@SuppressWarnings("unchecked")
 		@Override
@@ -1639,6 +1641,28 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					   .setDate("endDate", endDate).setCacheable(true).list();
 			return appliedCountList;
 		}
+
+		@Override
+		@Transactional
+		public Integer getProfessionalJobAppliedCountByappliedDate(Long candidateId, Date appliedDate)
+				throws Exception {
+			
+			 Session session = this.sessionFactory.getCurrentSession();
+			 
+			 java.sql.Date ourJavaDateObject = new java.sql.Date(appliedDate.getTime());
+		     
+			 String query = "select count(distinct rs.requirement) from RequirementSubmission rs where rs.candidate.id = :candidateId and DATE(rs.createdDate) = :appliedDate ";
+		     
+		     List<Long> appliedCount = session.createQuery(query).setLong("candidateId", candidateId).setDate("appliedDate", ourJavaDateObject).setCacheable(true).list();
+			 Integer count= 0;
+			 
+			 if(appliedCount != null && !appliedCount.isEmpty()){
+					count = appliedCount.get(0).intValue();
+			 }
+			return count;
+		}
+
+
   }
 
 

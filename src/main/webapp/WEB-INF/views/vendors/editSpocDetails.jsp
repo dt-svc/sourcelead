@@ -326,9 +326,10 @@
 			   	type: "POST",
 			    url: sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&type=Vendor", 	   
 	   		    success: function(data) {
+	   		    	var newOwner = data;
 	   		    	$("#spocDetailsId").removeAttr("onClick")
-	   		    	$("#spocDetailsId").attr("onclick","vendorDetailsbySpocId('"+spocId+"', '"+ownerId+"', '"+spocUserId+"', '"+ownerId+"')");
-	   		    	vendorDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId);
+	   		    	$("#spocDetailsId").attr("onclick","vendorDetailsbySpocId('"+spocId+"', '"+newOwner+"', '"+spocUserId+"', '"+ownerId+"')");
+	   		    	vendorDetailsbySpocId(spocId,newOwner,spocUserId,tempOwnerId);
 	   		    	getVendorContactLists();
 	   		    }
 		 }); 

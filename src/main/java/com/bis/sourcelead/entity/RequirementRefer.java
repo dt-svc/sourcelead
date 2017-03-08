@@ -100,9 +100,11 @@ public class RequirementRefer implements Serializable {
 	
 	@Transient
 	private List<RequirementSubmission> crowdSourcingPortLetList;
+   
+   @Transient
+	private String dateString;
 	
-
-	public Long getId() {
+		public Long getId() {
 		return id;
 	}
 
@@ -278,4 +280,12 @@ public class RequirementRefer implements Serializable {
 	public void setCrowdSourcingPortLetList(List<RequirementSubmission> crowdSourcingPortLetList) {
 		this.crowdSourcingPortLetList = crowdSourcingPortLetList;
 	}
-}
+
+	public String getDateString() {
+		return dateString;
+	}
+
+	public void setDateString(String dateString) {
+		this.dateString = dateString;
+	}
+	}

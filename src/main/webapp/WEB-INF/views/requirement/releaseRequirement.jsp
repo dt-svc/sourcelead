@@ -34,11 +34,15 @@
 
           <div class="content clearfix">
             <div class="vendor_wrap">
-              <div class="col-md-2 custom-selectpicker mt10 mb10">
-                <select class="form-control selectpicker"  id="sele-rel"  onchange="listChange(this);">
+              <div class="col-md-7 radioInline">
+                <!-- <select class="form-control selectpicker"  id="sele-rel"  onchange="listChange(this);">
                   <option id="cont" value ="releaseByContact">Release By Contact</option>
-                  <option id="ven"  value ="releaseByVendors" selected="selected">Release By  Vendors</option>
-                </select>
+                  <option id="ven"  value ="releaseByVendors" selected="selected">Release By Vendors</option>
+                </select> -->
+                <div class="pull-left mt10">
+                	<label class="mr"><input class="myCheckbox valid" type="radio" name="group1" id="ven" onchange="listChange(this);" value="releaseByVendors" checked> Release By Vendors</label>
+                	<label class="mr"><input class="myCheckbox valid" type="radio" name="group1" id="cont" onchange="listChange(this);" value="releaseByContact"> Release By Contact</label>
+              	</div>
               </div>
               <div class="timesheet_head">
                 <ul>
@@ -96,20 +100,20 @@
                 <div class="row">
                   <div class="form-group clearfix toggle-button-lbl">
                     <label class="col-md-5">Public</label>
-                    <input type="hidden" id="isPublicGlobel" value="">
+                    <input type="hidden" name="isPublic" id="isPublicGlobel" value="N">
                     <div class="col-md-7 toggle-button">
                       <label class="switch">
-                      <input type="checkbox" name="isPublic" id="isPublicId"  value="N" onclick="ispublic();">
+                      <input type="checkbox" id="isPublicId"  value="N" onclick="ispublic();">
                       <div class="slider round"></div>
                       </label>
                     </div>
                   </div>
                   <div class="form-group clearfix toggle-button-lbl">
                     <label class="col-md-5">Crowd Sourcing</label>
-                    <input type="hidden" id="isCrowdScourcingGlobel" value="">
+                    <input type="hidden" name="isCrowdScourcing" id="isCrowdScourcingGlobel" value="N">
                     <div class="col-md-7 toggle-button">
                       <label class="switch">
-                      <input type="checkbox" name="isCrowdScourcing" value="N" id="isCrowdScourcingId" onclick="isCrowd();" >
+                      <input type="checkbox"  value="N" id="isCrowdScourcingId" onclick="isCrowd();" >
                       <div class="slider round"></div>
                       </label>
                     </div>
@@ -242,17 +246,34 @@ $(document).ready(function(){
 
 <script>
 function releaseTo(){
-	    var contactsIds = new Array();
+		var contactsIds = new Array();
+		var contactsTable = $('#candidatePagination').DataTable();
+		var contactsRowcollection =  contactsTable.$(".contactscheckbox:checked", {"page": "all"});
+		contactsRowcollection.each(function()		
+		{
+			contactsIds.push($(this).attr('id'));
+		});
+	
+	   /*  var contactsIds = new Array();
 	    $('input:checkbox[name=contactscheckbox]:checked').each(function() 
 	    {
 	    	contactsIds.push($(this).attr('id'));
-	    });
+	    }); */
 	    
 	    var vendorIds = new Array();
+	    var vendorTable = $('#vendorPagination').DataTable();
+		var vendorRowcollection =  vendorTable.$(".vendorcheckbox:checked", {"page": "all"});
+		vendorRowcollection.each(function()		
+		{
+			vendorIds.push($(this).attr('id'));
+		});
+	    
+	    /* var vendorIds = new Array();
 	    $('input:checkbox[name=vendorcheckbox]:checked').each(function() 
 	    {
 	    	vendorIds.push($(this).attr('id'));
-	    });
+	    }); */
+	    
 	    var isPublic = $("#isPublicId").val();
 	    var isCrowdScourcing = $("#isCrowdScourcingId").val();
 	    
@@ -426,7 +447,7 @@ function getContactsLists(){
 				   	        			result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
 				   	        		}
 				   	        		if(report.releasedRequirement =="false"){
-				   	        			result = result +'  <td><input name="contactscheckbox" type="checkbox" id="'+report.id+'"/></td>';
+				   	        			result = result +'  <td><input class="contactscheckbox" name="contactscheckbox" type="checkbox" id="'+report.id+'"/></td>';
 				   	        		}
 					        			result = result +'<td>';
 					        			result = result +'<div title="'+report.spocName+'"><span>'+report.spocName+'</span></div>';
@@ -590,7 +611,7 @@ function getVendorLists(){
 	           	        	 	if(report.noOfNonReleasedContacts == 0){
 	           	        	 		result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
 	        	        		}else{
-	        	        			result = result +'  <td><input name="vendorcheckbox" type="checkbox" id="'+report.id+'" /></td>';
+	        	        			result = result +'  <td><input class = "vendorcheckbox" name="vendorcheckbox" type="checkbox" id="'+report.id+'" /></td>';
 	        	        		}
 	           	        	 
 	           	        		if( report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
@@ -795,8 +816,10 @@ $(document).ready(function() {
 function ispublic(){
 	 if(document.getElementById('isPublicId').checked) {
 	        $("#isPublicId").val('Y');
+	        $("#isPublicGlobel").val('Y');
 	    }else{
 	        $("#isPublicId").val('N');
+	        $("#isPublicGlobel").val('N');
 	    }
 }
 </script>
@@ -805,6 +828,8 @@ function ispublic(){
 function isCrowd(){
 	 if(document.getElementById('isCrowdScourcingId').checked) {
 	        $("#isCrowdScourcingId").val('Y');
+	        $("#isCrowdScourcingGlobel").val('Y');
+	        
 	        document.getElementById("crowd_rate").style.display="";
 	        
 	        var rewardType = '${rewardType}';
@@ -816,6 +841,7 @@ function isCrowd(){
 	       
 	    }else{
 	        $("#isCrowdScourcingId").val('N');
+	        $("#isCrowdScourcingGlobel").val('N');
 	        document.getElementById("crowd_rate").style.display="none";
 	    }
 }
@@ -871,6 +897,10 @@ function opennetwork(){
       		    }
    		      $("#isPublicGlobel").val(json.isPublic);
    		      $("#isCrowdScourcingGlobel").val(json.isCrowdSourcing);
+   		      if(json.isCrowdSourcing == 'Y'){
+   		    	$("#isCrowdScourcingId").attr("disabled", "disabled");
+   		    	
+   		      }
    		    }
 	  });
 	  

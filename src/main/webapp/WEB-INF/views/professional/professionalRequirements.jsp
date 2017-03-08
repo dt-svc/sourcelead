@@ -265,7 +265,7 @@ window.onload = function () {
 	    <input type="hidden" name="requirementSearchOffset" id="requirementSearchOffset" value="0"/>
 	  <div id="requirementsList"></div> 
 	  <a href="#" id="loadMoreSection" style="display: none;"><section class="loadJob" onclick="getViewMoreRecords();"><i id="viewMoreLoading"></i><span id="viewMore">View more</span></section></a>
-	   <a href="#" id="noMoreRecordsSection" style="display: none;"><section class="loadJob"><span id="viewMore">No Records Found</span></section></a>
+	   <a href="#" id="noMoreRecordsSection" style="display: none;"><section class="loadJob"><span id="viewMore">No More Records</span></section></a>
 	  <a href="#" id="loadMoreSearchSection" style="display: none;"><section class="loadJob" onclick="getViewMoreSearchRecords();"><i id="viewMoreSearchLoading"></i><span id="viewSearchMore">View more</span></section></a>
 	  
 	 <div class="side_mask"><div class="proj_close"></div></div>
@@ -642,7 +642,7 @@ function requirementsList(offset){
 			 				result = result +'<div class="clearfix"></div>';
 			 				result = result +'</h5>';
 			 				
-			 				if(requirementType != "OpenJobs"){
+			 				if(requirementType != "OpenJobs" && requirements.isCrowdSourcingJob == 'Y'){
 			 				result = result +'<div class="disCount">';
 			 				result = result +'<div class="disCountTop">';
 			 				result = result +'<span>You will get</span>';
@@ -909,7 +909,7 @@ function searchRequirement(offset){
 									 				result = result +'<div class="clearfix"></div>';
 									 				result = result +'</h5>';
 									 				
-									 				if(requirementType != "OpenJobs"){
+									 				if(requirementType != "OpenJobs" && requirements.isCrowdSourcingJob == 'Y'){
 										 				result = result +'<div class="disCount">';
 										 				result = result +'<div class="disCountTop">';
 										 				result = result +'<span>You will get</span>';
@@ -933,7 +933,7 @@ function searchRequirement(offset){
 									 				result = result +'</div>';
 									 				
 									 				
-									 				if(requirementType != "AppliedJobs"){
+									 				if(requirementType != "AppliedJobs" && requirements.isCrowdSourcingJob == 'Y'){
 									 					result = result +'<div class="openCtaRight">';
 										 				/* result = result +'<p>Share Requirement</p>';
 										 				result = result +'<span>';

@@ -267,12 +267,14 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 									}
 						   }else{
 							   <c:if test="${isTeamMember == true && isManager == false && isAdmin == false}">
+							   		result = result +'<span id= "requestsDiv">';
 							   if(json.submissionStatus != 'REJECTED' && json.submissionStatus != 'SHORTLIST' && json.submissionStatus != 'OFFERMADE'){
 									result = result + '	<li><i class="fa fa-check labelsuccess" title="Request" onClick="requestFun('+submissionId+');"></i>';
 							   }
 									result = result + '		<div class="acceptreject-pop" id="request">';
 									result = result + '		</div>';
 									result = result + '	</li>';
+									result = result + '	</span>';
 								</c:if>		
 						   }
 						result = result + '</ul>';
@@ -516,9 +518,9 @@ function getInternalInterviewsList(submissionId){
 	                    	 
 	   					     result = result + '<div id="accordion-sl" class="release-jobs positionRelative">';
 	   					  if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
-	   					     if(report.feedbackStartTime == "feedbackStartTime" || report.feedbackEndTime == "feedbackEndTime" ){
+	   					     //if(report.feedbackStartTime == "feedbackStartTime" || report.feedbackEndTime == "feedbackEndTime" ){
 	   					    	result = result + '<i class="fa fa-handshake-o pull-right" title="FeedBack" onclick="interviewFeedback('+report.interviewId.id+',\''+report.interviewTemplateid+'\',\''+report.id+'\');"></i>';	 
-	   					     }
+	   					    // }
 	   					  }
 	   					     result = result + '<h2>Interview: <span>'+interviewTypeHeader+' '+report.interviewTimezoneDateStr+' '+report.interviewTimeZoneStartTimeStr+' </span></h2>';
 	                    	result = result + '<div class="content clearfix">';
@@ -1418,6 +1420,8 @@ function attachmentValidationFun(){
 		            			 $('#accpet-div').fadeOut();
 		            			 $('#reject').fadeOut();
 		            			 $('#request').fadeOut();
+		            			 $("#requestsDiv").empty();
+		            			 $("#requestsDiv").append("Request Sent");
 		            		 }
 						},
 					});

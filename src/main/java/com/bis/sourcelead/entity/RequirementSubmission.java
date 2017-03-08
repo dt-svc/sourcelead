@@ -175,6 +175,11 @@ public class RequirementSubmission implements Serializable{
     @Transient
    	private String upDatedStr;
     
+    @Transient
+   	private String createdTimeStr;
+    
+    @Transient
+   	private String updatedTimeStr;
     
     @Transient
 	private String skillsList;
@@ -311,6 +316,10 @@ public class RequirementSubmission implements Serializable{
 	
 	@Transient
 	private String requirementJobId;
+
+	@Transient
+	private String submitToClientRateType;
+
 	
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
@@ -818,6 +827,22 @@ public class RequirementSubmission implements Serializable{
 		this.upDatedStr = upDatedStr;
 	}
 
+	public String getCreatedTimeStr() {
+		return createdTimeStr;
+	}
+
+	public void setCreatedTimeStr(String createdTimeStr) {
+		this.createdTimeStr = createdTimeStr;
+	}
+
+	public String getUpdatedTimeStr() {
+		return updatedTimeStr;
+	}
+
+	public void setUpdatedTimeStr(String updatedTimeStr) {
+		this.updatedTimeStr = updatedTimeStr;
+	}
+
 	public int getNumofrequestsent() {
 		return numofrequestsent;
 	}
@@ -1010,5 +1035,13 @@ public class RequirementSubmission implements Serializable{
 
 	public void setRequirementJobId(String requirementJobId) {
 		this.requirementJobId = requirementJobId;
+	}
+
+	public String getSubmitToClientRateType() {
+		return submitToClientRateType;
+	}
+
+	public void setSubmitToClientRateType(String submitToClientRateType) {
+		this.submitToClientRateType = submitToClientRateType;
 	}
 }
