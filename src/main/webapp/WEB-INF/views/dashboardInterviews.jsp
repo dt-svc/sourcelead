@@ -35,6 +35,7 @@ function flushDate(){
 <script>
 window.onload = interviews('today');
 function interviews(dateRange){
+	var orgATS = '${SourceLeadWeb_ats}';
 	var resultToday ="";
 	var sourceleadUrl = '${sourceleadUrl}';
 	//$("#today").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
@@ -56,7 +57,9 @@ function interviews(dateRange){
 	            				resultToday = resultToday+'	    <th>Applicant</th>';
 	            				resultToday = resultToday+'	    <th>Requirement</th>';
 	            				resultToday = resultToday+'	    <th>Date &amp; Time</th>';
+	            				if(orgATS == 'Y'){
 	            				resultToday = resultToday+'	    <th>Client</th>';
+	            				}
 	            				//resultToday = resultToday+'	    <th>Action</th>';
 	            				resultToday = resultToday+'	  </tr>';
 	            				resultToday = resultToday+'	</thead>';
@@ -73,7 +76,9 @@ function interviews(dateRange){
 	            						resultToday = resultToday+'	   <td><div><span title="'+report.candidateName+'">'+report.candidateName+'</span></div></td>';
 	            						resultToday = resultToday+'	   <td><div class="tbldata-dotdot-vsm"> <a href="'+sourceleadUrl+'/requirementSummary?requirementUUID='+report.requirementUUID+'"><span title ="'+report.requirementTitle+'">'+report.requirementTitle+'</span></a></div></td>';
 	            						resultToday = resultToday+'	   <td><div class="tblminwidth-150"><span title="'+report.interviewStartDateTimeStr+'">'+report.interviewStartDateTimeStr+'</span></div></td>';
-	            						resultToday = resultToday+'	   <td><div><span title="'+clientName+'">'+clientName+'</span></div></td>';
+	            						if(orgATS == 'Y'){
+	            							resultToday = resultToday+'	   <td><div><span title="'+clientName+'">'+clientName+'</span></div></td>';
+	            						}
 
 	            						//resultToday = resultToday+'	 <td><a class="btn btn-sm btn-primary fa fa-handshake-o" href="'+sourceleadUrl+'/'+'publicInterviewFeedBackTemplate?requirementInterviewid='+report.id+'"></a></td>';
 	            						resultToday = resultToday+'	 </tr>';

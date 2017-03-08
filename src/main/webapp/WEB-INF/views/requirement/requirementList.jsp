@@ -1243,11 +1243,10 @@ function requirementPipeline(requirementId){
 			<a title="Reports"><i class="fa fa-pie-chart"></i>Reports</a>
 			<div class="RePop">
 				<ul>
-				 <li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
-					 <li><a href="reports.html"><i class="fa fa-user"></i>Requirements Posted</a></li>
+					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Client Requirements</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Applicants Received</a></li>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Applicants</a></li>
+				 <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Short listed</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Interview</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Offer</a></li> 
