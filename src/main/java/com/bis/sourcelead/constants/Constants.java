@@ -1,3112 +1,553 @@
-body {
-    font-family: 'Roboto', Arial, Helvetica, sans-serif; font-weight:400; font-size:14px; margin:0px 0px; padding:0px 0px;
-    background-color: #FFF; overflow-x:hidden; line-height:normal;
-    }
-:focus, a:focus {
-    outline:none;
-    }      
- 
-a { cursor:pointer;}
-  
-.timesheet_out {
-    width:auto; padding:0px 0px 0px 0px; position:relative;
-    }
-.timesheet_wrap {
-    background-color:#f5f5f5; padding:0px 0px; box-shadow:0px 0px 3px rgba(0,0,0,0.3); border-radius:3px; min-height:300px;
-    }
-.timesheet_head {
-    height:auto;
-    }
-.timesheet_head ul {
-    margin:0px 0px; padding: 2px 245px 2px 0px; float:right; height:auto;
-    }
-.timesheet_head ul.no_search {
-    padding: 2px 15px 2px 0px;
-    }  
-.timesheet_head ul li {
-    list-style-type:none; float:right; padding:5px 5px; margin:5px 0px 5px 10px; position:relative;
-    font-weight:500; color:#999; cursor: pointer;
-    }
-.timesheet_head ul li span {
-    display:inline-block; font-size:14px; font-weight:500; color:#333; padding:0px 37px 0px 0px;
-    }  
-.timesheet_head ul li span b {
-    position:relative; display:inline-block; background-color:#3081cb; padding:1px 5px; border-radius:3px; margin:0px 0px 0px 7px;
-    font-size:10px; font-weight:600; color:#FFF; line-height:15px; top:-2px; text-shadow:0px 1px 1px rgba(0,0,0,0.5);
-    }  
-.timesheet_head .glyphicon-play {
-    -ms-transform: rotate(90deg); -webkit-transform: rotate(90deg); transform: rotate(90deg); font-size:10px; color:#666;
-    position:absolute; top:11px; right:25px; cursor:pointer;
-    }
-.timesheet_head .glyphicon-print {
-    font-size:17px; color:#545454; cursor:pointer;
-    }
-.timesheet_head .glyphicon-export {
-    font-size:15px; color:#545454; padding:0px 10px 0px 0px;
-    }
-.timesheet_head .fa-filter {
-    font-size:18px; color:#545454; padding:0px 10px 0px 0px;
-    }
-.timesheet_head .fa-calendar {
-    font-size:17px; color:#545454; padding:0px 8px 0px 0px;
-    }
-.timesheet_head .glyphicon-chevron-right {
-    font-size:12px; color:#545454; font-weight:300; cursor:pointer; position:relative; right:20px;
-    }
-.timesheet_head .glyphicon-chevron-left {
-    font-size:12px; color:#545454; font-weight:300; cursor:pointer; position:relative; right:20px;
-    }
-.export_pop, .approved_pop, .export_pipline, #exportPop {
-    position:absolute; z-index:100; width:150px; top:35px; right:2px; display:none;
-    }
-.export_pipline ul {
- width:100px !important;
- }
- .export_pipline ul li:first-child{
- padding:3px 10px !important;
- }
-.export_pop, .export_pipline {
-    width:100px; right:12px;
-    }  
-.export_pop ul, .approved_pop ul, .export_pipline ul, #exportPop ul {
-    position:relative; margin:0px 0px; background-color:#FFF; box-shadow:0px 0px 5px rgba(0,0,0,0.3); padding:5px 0px !important;
-    border-radius:4px; max-height: 150px; overflow-y: auto; width:180px !important;
-    }
-.export_pop ul:after, .approved_pop ul:after, .export_pipline ul:after, #exportPop ul:after {
-    bottom: 100%; left: 80%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
-    border-color: rgba(136, 183, 213, 0); border-bottom-color: #fff; border-width: 8px; margin-left: -8px;
-     
-    }  
-.export_pop ul li, .approved_pop ul li, .export_pipline ul li, #exportPop ul li {
-    list-style-type:none; padding:3px 10px; margin:0px 0px; width:100%; position:relative;
-    font-size:13px; font-weight:500; color:#454545; display:inline-flex;
-    }
-.export_pop ul li, .export_pipline ul li { cursor:pointer;}   
-.approved_pop ul li input[type="checkbox"]{
-    margin:0px; width:15px; height:15px; background-color:#FFF;
-    }
-.approved_pop ul li label {
-    margin:0px; position:relative; top:-3px; left:5px; font-weight:500; float:left;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 120px;
-    }  
-     
-.approved_pop ul li b {
-    position:absolute; background-color:#3081cb; padding:1px 3px; border-radius:3px; margin:0px 0px 0px 7px; right:10px;
-    font-size:10px; font-weight:600; color:#FFF; line-height:13px; top:5px; text-shadow:0px 1px 1px rgba(0,0,0,0.5);
-    }
-.export_pop ul li i {
-    display:inline-block; float:right; font-size:14px; font-weight:500; color:#368ee0; padding:2px 0px 0px 0px;
-    }
-.export_pop ul li i.fa-file-pdf-o, #exportPop ul li .fa-file-pdf-o { color:#f31113;}
-.export_pop ul li i.fa-file-word-o{ color:#454545;}       
-.export_pop ul li:hover, .approved_pop ul li:hover {
-    background-color:#efefef;
-    }
-  
-     
-         
-.timesheet_table {
-    width:100%; font-size:14px; font-weight:400; max-height:430px; overflow-y:auto;
-    }
-.timesheet_table table {
-    width:100%; font-size:14px; font-weight:400; border:1px solid #CCC;
-    }
-.timesheet_table table tr:nth-child(even) {background: #fff;}
-.timesheet_table table tr:nth-child(odd) {background: #fff;}       
-.timesheet_table table tr.last_child {
-    background-color:#dadada;
-    }
-.timesheet_table table tr.last_child td {
-    background-color:#dadada; font-weight:500; font-size:14px; border-bottom:none;
-    }  
-.timesheet_table table tr.total_field {
-    border:none;
-    }      
-.timesheet_table table tr th {
-    background-color:#375d81 !important; font-weight:400; color:#FFF; text-align:center; padding:0px; height:40px;
-    }
-.timesheet_table table tr th i {
-    display:block; font-style:normal; font-size:12px; line-height:14px;
-    }
-.timesheet_table table tr td {
-    color:#333; padding:0px; border-left:1px solid #eae6e6;
-    }  
-.timesheet_table table tr td:first-child {
-    width:18%; padding:2px 10px; border-bottom:1px solid #dedede;
-    }  
-.timesheet_table table table {
-    border:none;
-    }
-.timesheet_table table table tr th {
-    width:10%; padding:4px 6px; border-left:1px solid #557fa7;
-    }
-.timesheet_table table table tr th:first-child {
-    width:13%; border:none; border-left:1px solid #557fa7;
-    }      
-.timesheet_table table table tr td {
-    width:10%; padding:8px 5px; border-top:1px solid #dadada;
-    }
-.timesheet_table table tr td b {
-    font-weight:400; display: inline-block; padding:3px 0px; color:#FFF; font-size:11px; border-radius:3px; background-color:#3186d6;
-    text-align:center; width:75px; margin:1.5px 0px;
-    }  
-.timesheet_table table tr td b.proj_active { background-color:#34c244;}
-.timesheet_table table tr td b.proj_closed { background-color:#d94747;}
-.timesheet_table table tr td b.proj_process { background-color:#ff9800;}
-.timesheet_table table tr td b.proj_draft { background-color:#656565;} 
-.timesheet_table table tr td b.proj_withdraw { background-color:#8c1fde; cursor:pointer;}
-  
-.pname {
-    border-top:1px solid #ededed; padding:0px 5px !important;
-    }
-     
-.timesheet_table table table tr td:first-child {
-    width:13%; border:none; padding:6px 5px; border-top:1px solid #dadada;
-    }
-.addtaskfield {
-    border:0px; background-color:transparent; background-image:url(../images/addtask.png); background-repeat:no-repeat; background-position:center; margin: 0px 0px 0px 5px;
-    background-size:14px; width:12px; height:12px; position:relative; top:2px;
-    }
-.addtaskfield.removetaskfield {
- 	-moz-transform: rotate(-45deg); -webkit-transform: rotate(-45deg); -o-transform: rotate(-45deg); transform: rotate(-45deg);
-	top: 8px; color: #FF3F42 !important; background-image:url(../images/addtask1.png);
-    }
-.timesheet_table table table select {
-    appearance:none; -webkit-appearance:none; width:75%; padding:2px 18px 2px 3px; font-size:13px;
-    font-weight:500; background-image:url(../images/arrow-d-g.png); background-repeat:no-repeat; background-position: 94% center;
-    background-size:10px; border:1px solid #CCC; position:relative; top:-2px; white-space:nowrap; overflow:hidden;
-    text-overflow:ellipsis;
-    }
-.timesheet_table table table p {
-    margin:0px 0px; padding:0px 0px; font-size:13px; font-weight:500; color:#454545; width:65%; display:inline-block;
-    }      
-.inline_field {
-    width:58px !important; width:60%; padding:2px 5px; font-size:13px; border:none; overflow: hidden; background-color:transparent;
-    font-weight:500; color:#454545;
-    }
-.inline_field:focus {
-    width:58px !important; width:60%; padding:1px 5px; font-size:13px; border:1px solid #dedede; overflow: hidden; background-color:#fff;
-    }
-/*<!--.inline_field::-webkit-input-placeholder { color: #333; }
-.inline_field::-moz-placeholder { color: #333; }
-.inline_field:-ms-input-placeholder { color: #333; }
-.inline_field:placeholder { color: #333; }
-input.inline_field::-moz-placeholder { color: #333; }-->*/
-  
-             
-.timesheet_table table table div {
-    position:relative;
-    }
-.timesheet_comm {
-    position:relative; display:inline-block;
-    }
-.timesheet_comm i {
-    cursor:pointer; font-size:11px; color:#666; padding:0px 3px 0px 3px;
-    }
-.timesheet_comm i.com_active {
-    color:#368ee0;
-    }  
-.timesheet_comm span {
-    position:absolute; z-index:1000; right:-25px; top:25px; display:none;
-    }
-.timesheet_comm span textarea {
-    position:relative; width:200px; height:80px; resize:none; border:1px solid #dedede; box-shadow:0px 0px 5px rgba(0,0,0,0.1);
-    padding:5px; font-size:13px; font-weight:500; color:#333;
-    }
-.timesheet_comm span:after {
-    bottom: 100%; left: 83%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
-    border-color: rgba(136, 183, 213, 0); border-bottom-color: #999; border-width: 8px; margin-left: -8px;
-    }
-/*.timesheet_table table table div:hover .timesheet_comm {
-    visibility:visible;
-    }*/
-     
-.timesheet_bot {
-    padding:15px; border-top: 1px solid #f1f1f1;
-    }
-.timesheet_week_comm {
-    }      
-.commentTime {
-	float:right; width:50%;
-	}	
-.timesheet_week_comm textarea {
-    width:100%; font-size:13px; font-weight:500; color:#333; padding:5px 10px; resize:none; border-radius:3px;
-    background-color:#fff; border:1px solid #a2d1fc;display:inline-block; float:left; margin:0px 10px 0px 0px; height:50px;
-    }
-.timesheet_week_comm textarea:focus {
-    border:1px solid #a2d1fc; box-shadow:0px 0px 5px #a2d1fc;
-    }  
-.timesheet_week_comm strong {
-    position:relative; display:inline-block; float:left; width:27%;
-    }
-.timesheet_week_comm strong input {
-    width:100%; opacity:1; position:relative; z-index:11; cursor:pointer; height:35px; text-indent:28px; overflow:hidden;
-    background-color:#368ee0; border:none; border-radius:2px; padding:0px 5px 0px 0px; box-sizing:border-box !important; color:#FFF;
-    font-weight:400; font-size:13px; white-space: nowrap; text-overflow: ellipsis;
-    }
-.timesheet_week_comm strong input.dele {
-    width:18%; text-align:center; font-size:20px; color:red; border:none; text-indent:0px; background-color:transparent;
-    padding:0px 0px 0px 0px; margin:0px 0px 0px 5px;  background-image:url(../images/delete.png);
-    background-position:center; background-repeat:no-repeat; background-size:13px;
-}
-.timesheet_week_comm strong a { position:relative; display:block;} 
-.timesheet_week_comm strong i {
-    position:absolute; left:9px; z-index:1000; top:11px; color:#FFF;
-}
-.commentFile {
-	width:50%; float:left;
-	}
-.timesheet_week_comm span {
-	padding:0px 0px 12px 0px; display:inline-block; width:100%;
-    }
-.timesheet_week_comm span input {
-	width:60%; display:inline-block; background-color:#367fa9; border:1px solid #1f6791; padding:4px 6px;
-	border-radius:2px; color:#fff;
-    }
-.timesheet_week_comm span i {
-	display:inline-block; font-size:20px; padding:0px 0px 0px 10px; color:#454545; cursor:pointer;
-	}
-.timesheet_week_comm span .fa-times {
-	color:#ef3d3d;
-	}		
-.timesheet_week_comm label {
-    position:absolute; top:0px; left:0px; width:100%; background-color:#3081cb; padding:7px 12px 7px; z-index:10; margin:0px;
-    color:#FFF; font-size:13px; border-radius:3px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; cursor:pointer;
-    }
-.timesheet_week_comm label i {
-    display:inline-block; padding:0px 6px 0px 0px;
-    }                      
-.timesheet_sub_other {
-    float:left; font-size:13px; font-weight:500; color:#454545; padding:6px 0px 0px 30px;
-    }
-.timesheet_sub_other a {
-    margin:0px 0px 0px 10px; display:inline-block; color:#3081cb;
-    }  
-.timesheet_sub_other i {
-    padding:0px 6px 0px 2px;
-    }      
-.timesheet_button {
-	text-align:right; padding:0px 0px; position: relative; min-height: 40px;
-    }  
-.time_btn {
-    border-radius:2px; padding:5px 15px; border:1px solid #367fa9; background-color:#3c8dbc; font-size:14px; font-weight:500; color:#FFF;
-    cursor:pointer; transition:all 0.2s ease-in-out; -webkit-transition:all 0.2s ease-in-out; -moz-transition:all 0.2s ease-in-out;
-    }
-.time_btn.time_dra {
-    border:1px solid #f6710e; background-color:#ff872e;
-    }
-.time_btn.time_cancel {
-    border:1px solid #646464; background-color:#7d7d7d;
-    }
-.time_btn.time_cancel:hover {
-    background-color:#646464;
-    }  
-.time_btn.time_dra:hover {
-    background-color:#f6710e;
-    }      
-.time_btn:hover {
-    background-color:#367fa9;
-    }
-  
-    /*    Responsive Code    */
-     
-.timesheet_table_res {
-    display:none;
-    }
-#accordion {
-    }
-#accordion h2 {
-    cursor:pointer; margin:0px 0px; padding:11px 15px; background-color:#375d81; color:#e6e6e6; text-shadow:0px 1px 0px rgba(0,0,0,0.2);
-    font-size:14px; font-weight:500; border-bottom:1px solid #23496d;
-    background-image:url(../images/accor-arrow-up.png); background-repeat:no-repeat; background-position:97% center; background-size:13px;
-    }  
-#accordion h2.res-active {
-    background-image:url(../images/accor-arrow.png);
-    }
-.time_cont_res {
-    }
-.time_cont_res table {
-    width:100%; font-size:14px; font-weight:500; color:#333;
-    }
-.time_cont_res table tr:nth-child(even) {background: #fff;}
-.time_cont_res table tr:nth-child(odd) {background: #eef1fc;}      
-.time_cont_res table th {
-    padding:8px 15px; background-color:#d4d4d4; font-weight:600;
-    }
-.time_cont_res table th:first-child + th {
-    text-align:right;
-    }
-.time_cont_res table th div {
-    position:relative;
-    }
-.time_cont_res table th div input {
-    position:absolute; right:-4px; height:27px; width:60px; top:-4px; opacity:0; -webkit-opacity:0; -moz-opacity:0;
-    }
-.time_cont_res table th div i {
-    display:inline-block; padding:0px 7px 0px 0px;
-    }              
-.time_cont_res table td {
-    padding:7px 15px;
-    }
-.time_cont_res table td:first-child + td {
-    text-align:right;
-    }
-.time_cont_res table span {
-    right:-15px;
-    }
-.time_cont_res table span:after {
-    left:88%; border-width: 6px; margin-left: -6px;
-    }
-.res_total_hours {
-    display:none; margin-top:10px;
-    padding:15px; background-color:#FFF; text-align:center;
-    }
-.res_total_hours i {
-    width:30px; height:40px; background:url(../images/total-arr.png) no-repeat center; background-size:30px; display:inline-block;
-    }
-.res_total_hours p {
-    padding:0px 0px; margin:0px 0px; font-size:18px; font-weight:500; color:#666;
-    }
-.res_total_hours h2 {
-    padding:20px 0px 0px 0px; margin:0px 0px; font-size:50px; font-weight:400; color:#368ee0;
-    }
-.res_total_hours span {
-    font-size:13px; font-weight:500; color:#333; display:block; padding-bottom:10px;
-    }  
-     
-    /*    Timesheet approval Css    */
-.timesheet_appr_wrap {
-    background-color: #f5f5f5; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
-    }
-.timesheet_status_wrap {
-    background-color: #f5f5f5; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
-    }  
-.timesheet_appr_wrap .timesheet_head {
-    padding: 2px 0px; height:auto; 
-    }
-.timesheet_appr_wrap .timesheet_head ul {
-    padding:0px;
-    }
-.timesheet_appr_wrap .approved_pop ul {
-    padding:5px 0px;
-    }  
-.timesheet_appr_wrap .timesheet_head ul li {
-    float:left; margin:5px 0px 5px 5px;
-    }
-.timesheet_appr_wrap .timesheet_head ul li span {
-    padding:0px 30px 0px 0px; display:inline-block;
-    }
-.timesheet_appr_wrap .timesheet_head .glyphicon-play {
-    right:20px; opacity:1;
-    }
-.timesheet_appr_wrap .export_pop {
-    right:6px;
-    }
-.timesheet_appr_wrap .approved_pop {
-    right:-4px;
-    }  
-.timesheet_appr_wrap .export_pop ul li, .timesheet_appr_wrap .approved_pop ul li { margin:0px;}
-  
-  
-  
-.timesheet_appr_table {
-    width:100%;
-}  
-.timesheet_appr_table table {
-    width:100%; font-size:14px; font-weight:400; border:none; border-top:none;
-    }
-.timesheet_appr_table table tr:nth-child(even) {background: #eef1fc;}
-.timesheet_appr_table table tr:nth-child(odd) {background: #fff;}          
-.timesheet_appr_table table tr th {
-    background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 15px; height:40px;
-    border-right:1px solid #4576a4;
-    }
-.timesheet_appr_table table tr th:last-child { text-align:center; border-left:none; }  
-.timesheet_appr_table table tr td {
-    color:#333; padding:7px 8px; border-left:1px solid #eae6e6; height:35px; font-weight:500; text-align:center;
-    }
-.timesheet_appr_table table tr td:last-child {
-    width:120px; text-align:left; padding:7px 5px;
-    }  
-.timesheet_appr_table div input {
-    width:95px; padding: 7px 10px; font-size: 13px; border: none; overflow: hidden; background-color: transparent;
-    color: #454545; font-weight: 500; box-sizing:border-box;
-    }
-.timesheet_appr_table div input:focus {
-    border: 1px solid #dedede; background-color: #fff; padding: 6px 9px;   
-    }
-.timesheet_appr_table div a {
-    display:inline-block; background-color:#368ee0; border-radius:3px; color:#FFF; padding:3px 10px;
-    }
-.timesheet_appr_table .fa {
-    font-size:16px; padding:2px 3px; cursor:pointer; margin:0px 3px; color:#30c453;
-    }
-.timesheet_appr_table .fa.fa-times {
-    color:#f04d4d;
-    }
-.timesheet_appr_table table tr td div h3, .timesheet_appr_table ul li h3 {
-    font-weight: 400; display: inline-block; padding: 5px 2px; color: #FFF; font-size: 13px; border-radius: 3px; background-color: #30c453;
-    margin:0px; text-align:center; width:78px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
-    }
-.timesheet_appr_table table tr td div h3.reje_color{
-    background-color: #d94747;
-}
-.timesheet_appr_table ul li h3.reje_color {
-     background-color: #d94747;
-}  
-.timesheet_appr_table .glyphicon {
-    font-size:12px; padding:2px; cursor:pointer; margin:0px 2px; color:#368ee0; position:relative; top:0px;
-    }
-.timesheet_appr_table .glyphicon strong {
-    position:absolute; right:-10px; top:25px; display:none; z-index:100;
-    }
-.timesheet_appr_table .glyphicon p {
-    background-color:#FFF; padding:10px 15px; width:200px; text-align:left; position:relative; box-shadow:0px 0px 3px rgba(0,0,0,0.3);
-    color:#333; font-size:13px; font-weight:500; font-family:roboto; margin:0px; min-height:100px;
-    }
-.timesheet_appr_table .glyphicon p:after {
-    bottom: 100%; right: 12px; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
-    border-color: rgba(136, 183, 213, 0); border-bottom-color: #adadad; border-width: 7px; margin-left: -7px;
-}  
-.time_appr_user {
-    text-align:left;
-    }
-.time_appr_user img {
-    float:left; width:38px; height:38px; border-radius:50%;
-    }
-.time_appr_user span {
-    float:left; padding:0px 0px 0px 10px; width:70%;
-    }
-.time_appr_user span b {
-    display:block; font-weight:500; padding:0px 0px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    }
-.mask_time {
-    position:fixed; width:100%; height:100%; background:rgba(0,0,0,0.4); left:0px; top:0px; z-index:1500; display:none;
-}  
-.time_appr_rejct_pop {
-    position:absolute; width:400px; left:0px; right:0px; margin:0px auto; display:none;
-    background-color:#FFF; box-shadow:0px 0px 5px rgba(0,0,0,0.3); z-index:2000; top:30%;
-    }
-.time_appr_rejct_pop textarea {
-    width:100%; resize:none; border:none; padding:10px; font-size:14px; font-weight:400; height:90px;
-    }  
-.time_appr_rejct_pop a {
-    display:inline-block; width:50%; background-color:#375d81; padding:7px 0px; text-align:center; color:#FFF;
-    font-size:14px; font-weight:500;
-    }
-.time_appr_rejct_pop a.close_color {
-    background-color:#ff4b4b;
-    }
-.time_appr_side_wrap {
-    width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
-    transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
-    z-index:10000; max-height:100%; min-height:100%; padding-top:10px; overflow:auto;
-    }
-.time_appr_side_wrap.time_appr_side_wrap_active {
-    right:0px;
-    }
-.time_appr_side_wrap_inn {
-    position:relative; padding:10px;
-    }
-.time_appr_side_wrap .timesheet_bot {
-    padding:15px;
-    }  
-/*.time_appr_side_wrap .time_dra {
-    border: 1px solid #13aa37; background-color: #30c453;
-    }
-.time_appr_side_wrap .time_dra:hover {background-color: #13aa37;}  */
-     
-    /*    Timesheet approval Css    */
-  
-.timesheet_status_wrap .timesheet_head ul   {
-    padding:2px 0px;
-    }
-.timesheet_status_wrap .timesheet_appr_table div a {
-    background:none; color:#333;
-    }
-.timesheet_status_wrap .timesheet_appr_table div a:hover {
-    color:#368ee0;
-    }
-.timesheet_appr_wrap nav ul, .timesheet_status_wrap nav ul {
-    padding:10px; margin:0px; float:right;
-    }
-.time_newhead {
-    padding:0px 0px 10px 0px;
-    }
-.time_newhead h1 {
-    padding:0px 5px; margin:0px 0px; font-size: 20px; font-weight: 500;
-    }
-.time_newhead h2 {
-    padding:5px 5px 0px; margin:0px 0px; font-size: 14px; font-weight: 500; color:#666; cursor:pointer;
-    }  
-.time_newhead_pop {
-    position:absolute; top:62px; left:10px; z-index:100; display:none;
-    }
-.time_newhead_pop ul {
-    position:relative; width:400px; background-color:#FFF; box-shadow:0px 0px 10px rgba(0,0,0,0.5);
-    border-top:3px solid #368ee0;
-    }  
-.time_newhead_pop ul:after {
-    bottom: 100%; left: 15%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute; border-color: rgba(136, 183, 213, 0);
-    border-bottom-color: #368ee0; border-width: 12px; margin-left: -15px;
-    }
-.time_newhead_pop_inn {
-    max-height:360px; overflow:auto;
-    }  
-.time_newhead_pop_inn li {
-    border-bottom:1px dotted #ccc; padding:10px 15px; list-style-type:none;
-    }
-.time_newhead_pop_inn li span {
-    width:40px; height:40px; float:left; margin:0px 15px 0px 0px;
-    }          
-.time_newhead_pop_inn li span img {
-    width:100%; max-width:40px; max-height:40px; border-radius:50%; border:1px solid #368ee0;
-    }
-.time_newhead_pop_inn li p {
-    float:left; width:80%; padding:0px 0px; margin:0px 0px; font-size:14px; font-weight:500; color:#333;
-    }
-.time_newhead_pop_inn li p b {
-    display:block; font-weight:400; color:#666; font-size:12px;
-    }                      
-  
-     
-    /*    Project Css    */
-  
-.project_wrap {
-    background-color: #f5f5f5; padding: 0px 0px; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
-    }
-.project_wrap .timesheet_head ul li {
-    float:left; margin: 5px 0px 5px 5px;
-    }
-.project_wrap .timesheet_head ul li a {
-    font-size: 14px; font-weight: 500; color: #333;
-    }
-.project_wrap .timesheet_head ul li a .fa-plus {
-    font-size:15px; padding:0px 10px 0px 0px;
-    }
-.project_wrap .timesheet_head ul li a:hover {
-    color:#368ee0;
-    }
-.project_wrap .approved_pop ul li {
-    margin:0px;
-    }
-.project-date {
-    font-size:14px; font-weight:500; color:#333; width:90px; margin:0px 20px 0px 0px; border:none;
-    background:transparent; height:20px; border-bottom:1px solid #f5f5f5; position:relative;
-    }
-.project-date:focus {
-    border-bottom:1px solid #368ee0;
-    }  
-.project_wrap_table {
-    width:100%;
-}  
-.project_wrap_table table {
-    width:100%; font-size:14px; font-weight:400; border-bottom:1px solid #CCC; border:none;
-    }
-.project_wrap_table table tr:nth-child(even) {background: #fff;}
-.project_wrap_table table tr:nth-child(odd) {background: #eef1fc;}         
-.project_wrap_table table tr th {
-    background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 15px; height:40px;
-    border-right:1px solid #4576a4 !important; -moz-border-right:1px solid #4576a4;
-    }
-.project_wrap_table table tr th:last-child { text-align:center;}   
-.project_wrap_table table tr td {
-    color:#333; padding:0px 15px; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; height:35px; font-weight:400;
-    }
-.project_wrap_table table tr td:last-child {
-    width:100px; padding:0px 10px; text-align:center;
-    }  
-.project_wrap_table table tr td div {
-    position:relative;
-    }
-.project_wrap_table table tr td div b {
-    font-weight:400; display:block; padding:2px 0px; color:#FFF; font-size:13px; border-radius:3px; background-color:#3186d6;
-    }  
-.project_wrap_table span {
-    display:inline-block; max-width:175px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;
-    }  
-.project_wrap_table table tr td div b.proj_active { background-color:#34c244;}
-.project_wrap_table table tr td div b.proj_deactivate { background-color:#ef4c4c;}
-.project_wrap_table table tr td div b.proj_process { background-color:#d98f47;}
-  
-.proj_show { cursor: pointer; color:#333;}                 
-.proj_show i {
-    font-size:12px; color:#375d81; float:right; padding:4px 0px 0px 0px; visibility:hidden; opacity:0;
-    }
-.project_wrap_table table tr:hover .proj_show i {
-    visibility:visible; opacity:1;
-    }
-.clients_wrap_table table tr:hover .proj_show i {
-    visibility:visible; opacity:1;
-    }  
-  
-.project_side_wrap {
-    width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
-    transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
-    z-index:10000; max-height:100%; min-height:100%; overflow-y:auto;
-    }
-.project_side_wrap.project_side_wrap_active {
-    right:0px;
-    }  
-.project_side_wrap_inn {
-    position:relative; padding:10px;
-    }
-     
-     
-.project_inn_mask {
-    position:absolute; width:100%; height:100%; background-color:rgba(0,0,0,0.4); left:0px; top:0px; z-index:15000; display:none;
-    }
-.project_error {
-    width:50%; position:absolute; left:0px; right:0px; margin:0px auto; top:25%; z-index:20000;
-    background-color:#FFF; box-shadow:0px 0px 8px rgba(0,0,0,0.7); border-radius:5px; display:none;
-    }
-.project_error textarea {  
-    width: 100%; resize: none; border: none; padding: 10px; font-size: 14px; font-weight: 400; height: 90px;
-}  
-.project_error p {
-    padding:20px 15px; margin:0px; font-size:13px; font-weight:500; color:#333; text-align:center; display:block;
-    }
-.project_error b {
-    padding:5px 15px; margin:0px; font-size:12px; font-weight:500; color:#ff4b4b; display:block;
-    }  
-.project_error a {
-    display:inline-block; width:50%; background-color:#375d81; padding:7px 0px; text-align:center; color:#FFF;
-    font-size:14px; font-weight:500;
-    }
-.project_error a.close_color {
-    background-color:#ff4b4b;
-    }  
-.proj_close {
-    width:60px; height:60px; background-color:#fff; box-shadow:0px 0px 3px rgba(0,0,0,0.4); left:-100px; top:40px; position:absolute; text-align:center;
-    cursor:pointer; border-radius:50%; background-image:url(../images/cancel.png); background-repeat:no-repeat; background-position:center;
-    background-size:20px;
-    }      
-.project_side_wrap_inn h1 {
-    margin:0px 0px; font-size:18px; font-weight:500; padding:15px;
-    }  
-.project-tabs-menu, .canreq-tabs-menu {
-    margin:0px 0px; padding:0px 0px 0px 10px; position:relative; top:1px;
-    }
-.project-tabs-menu li, .canreq-tabs-menu li {
-    float:left; margin-right:-1px; background-color:#eef1fc; border:1px solid #d4d4d1; border-bottom:none; list-style-type:none;
-    border-radius:10px 10px 0px 0px; border-top:2px solid #d4d4d1;
-    }
-.project-tabs-menu li.current, .canreq-tabs-menu li.current {
-    position:relative; background-color:#fff; z-index:5; border-top:2px solid #368ee0;
-    }
-.project-tabs-menu li a, .canreq-tabs-menu li a {
-    padding:7px 25px; text-decoration:none; font-size:15px; color:#666; display:block;
-    }
-.project-tabs-menu .current a, .canreq-tabs-menu .current a {
-    color:#1d6cb5;
-    }
-.project_tabs {
-    border:1px solid #d4d4d1; background-color:#fff; width:100%; box-sizing:border-box;
-    }
-.project_tabs_inn, .canreq-tabs-menu_inn {
-    padding:0px; display:none; position: relative;
-    }
-.project_tabs_inn_head, .canreq-tabs-menu_inn_head {
-    padding:5px 10px; text-align:right;
-    }  
-.project_tabs_inn_head a, .canreq-tabs-menu_inn_head a{
-    padding:5px; font-size:13.5px; font-weight:500; color:#666; display:inline-block; margin:0px 0px 0px 10px;
-    }
-.project_tabs_inn_head a i, .canreq-tabs-menu_inn_head a i {
-    padding:0px 5px 0px 0px;
-    }
-.project_tabs_inn_head a:hover, .canreq-tabs-menu_inn_head a:hover {
-    color:#375d81; text-decoration:none;
-    }
-.project_tabs_inn_table {
-	text-align: left;
-}  
-.project_tabs_inn_table.project_tabs_inn_table_a {}
-.project_tabs_inn_table table {
-    width:100%; font-size:14px; font-weight:400; border:none;
-    }
-.project_tabs_inn_table table tr:nth-child(even) {background: #fff;}
-.project_tabs_inn_table table tr:nth-child(odd) {background: #eef1fc;}         
-.project_tabs_inn_table table tr th {
-    background-color:#375d81 !important; font-weight:500; color:#FFF; padding:0px 10px; text-align:left; height:40px;
-    border-right:1px solid #4576a4; font-size:14px;
-    }
-.project_tabs_inn_table table tr th:last-child { text-align:center;}
-.project_tabs_inn_table.project_tabs_inn_table_a table tr th:last-child { text-align:left;}
-.project_tabs_inn_table table tr td {
-    color:#333; padding:0px 10px; border-left:1px solid #eae6e6; height:40px; font-weight:400;
-    }
-.project_tabs_inn_table table tr td:last-child {
-    width:50px; padding:0px 10px; text-align:center;
-    }
-.project_tabs_inn_table.project_tabs_inn_table_a table tr td:last-child {
-    color:#333; padding:0px 10px; border-left:1px solid #eae6e6; height:40px; font-weight:400; width:50%;
-    }  
-.project_tabs_inn_table table tr td div {
-    position:relative;
-    }
-.project_tabs_inn_table table tr td div i {
-    cursor:pointer; font-size:13px; color:#fe4556;
-    }
-.project_inline_field {
-    width:100%; padding:3px 2px; font-size:13px; border:none; overflow: hidden; background-color:transparent;
-    font-weight:500; color:#454545;
-    }
-.project_inline_field.project_inline_field_enddate {
-    width:75px;
-    }  
-.project_inline_field.project_inline_field_time {
-    width:55px; text-align:center;
-    }  
-.project_inline_field:focus {
-    font-size:13px; overflow: hidden; background-color:#fff; box-shadow:0px 0px 1px rgba(0,0,0,0.5);
-    }
-.project_details {
-    padding:20px; position:relative; min-height:480px;
-    }
-.project_details p {
-    padding:0px; width:120px; float:left; text-align:right; margin:10px 20px 10px 0px; font-weight:500;
-    }
-.project_details p i {
-    font-size:13px; color:#666; display:inline-block; padding:0px 0px 0px 10px;
-    }
-.project_details textarea {
-    font-size:13px; font-weight:500; color:#454545; width:75%; resize:none; border:none;
-    margin:5px 0px 0px 0px; height:140px; padding:5px;
-    }
-.project_details textarea:focus {
-    box-shadow:0px 0px 1px rgba(0,0,0,0.5);
-    }  
-.project_details_cta {
-    width:50%; float:left; font-size:14px; font-weight:400; color:#333; padding:7px 0px;
-    }
-.project_details_cta strong {
-    width:120px; text-align:right; display:inline-block; margin:0px 20px 0px 0px; float:left;
-    font-weight:500; padding:1px 0px;
-    }  
-.project_details_cta span {
-    display:inline-block; float:left; width:60%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;
-    font-weight:500;
-    }
-.project_details_cta span i {
-    font-size:13px; color:#666; display:inline-block; padding:0px 0px 0px 10px; cursor:pointer; position:relative;
-    }
-.project_details_cta ul {
-    position:absolute; right:-4px; top:20px; width:150px; background-color:#FFF; box-shadow:0px 0px 5px rgba(0,0,0,0.3);
-    z-index:100; margin:0px; display:none; padding:2px 0px;
-    }
-.project_details_cta ul li {
-    list-style-type:none; font-size:13px; font-weight:500; color:#454545; padding:7px 15px;
-    }
-.project_details_cta ul li:hover {
-    background-color:#f5f5f5;
-    }  
-.project_details_cta span b {
-    font-weight:400; display:inline-block; padding:3px 15px; color:#FFF; font-size:12px; border-radius:3px; background-color:#34c244;
-    cursor:pointer; margin-bottom:10px;
-    }  
-.project_details_cta span b.proj_option { background-color:#3186d6;}
-.project_details_cta span b.proj_deactivate { background-color:#d94747;}
-.project_details_cta span b.proj_process { background-color:#d98f47;}      
-     
-.project_detfield {
-    width:100%; padding:1px 5px; font-size:13px; border:none; overflow: hidden; background-color:transparent;
-    font-weight:500; color:#454545;
-    }  
-.project_detfield:focus {
-    font-size:13px; overflow: hidden; background-color:#fff; box-shadow:0px 0px 1px rgba(0,0,0,0.5); width:150px;
-    }
-.project_table_res {
-    display:none;
-    }
-.project_table_res table {
-    width:100%; font-size:14px; font-weight:400; border:1px solid #CCC; border-top:none;
-    }
-.project_table_res table tr:nth-child(even) {background: #fff;}
-.project_table_res table tr:nth-child(odd) {background: #eef1fc;}          
-.project_table_res table tr th {
-    background-color:#375d81 !important; font-weight:500; color:#FFF; padding:0px 15px; text-align:left; height:40px;
-    border-right:1px solid #4576a4;
-    }  
-.project_table_res table tr td {
-    color:#333; padding:0px 15px; border-left:1px solid #eae6e6; height:38px; font-weight:400;
-    }
-.project_tabs nav {
-    border-top:1px solid #dedede; background-color:#f5f5f5;
-}  
-.project_tabs nav ul {
-    float:right; margin:0px 0px; padding:8px 10px;
-}
-  
-.project_wrap nav ul {
-    padding:10px; margin:0px; float:right;
-}
-  
-  
-::-webkit-scrollbar {
-    width: 6px; height: 6px; border-radius:2px;
-}
-::-webkit-scrollbar-button {
-    background: #ccc
-}
-::-webkit-scrollbar-track-piece {
-    background: #fff
-}
-::-webkit-scrollbar-thumb {
-    background: #368ee0
-}
-     
-  
-    /*    Clients Css    */
-  
-.clients_wrap {
-    background-color: #f5f5f5; padding: 0px 0px; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
-    }
-.clients_wrap .timesheet_head ul li {
-    float:left;
-    }
-.clients_wrap .timesheet_head ul li a {
-    font-size: 14px; font-weight: 500; color: #333;
-    }
-.clients_wrap .timesheet_head ul li a:hover {
-    color:#368ee0;
-    }
-.clients_wrap .timesheet_head ul li a .fa-plus {
-    font-size:15px; padding:0px 10px 0px 0px;
-    }
-.clients_wrap_table {
-    width:100%;
-    }  
-.clients_wrap_table table {
-    width:100%; font-size:14px; font-weight:400; border-bottom:1px solid #CCC; border:none;
-    }
-.clients_wrap_table table tr:nth-child(even) {background: #fff;}
-.clients_wrap_table table tr:nth-child(odd) {background: #eef1fc;}         
-.clients_wrap_table table tr th {
-    background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 12px; height:40px;
-    border-right:1px solid #4576a4 !important; -moz-border-right:1px solid #4576a4;
-    }
-.clients_wrap_table table tr th:last-child {
-    width: auto;
-    }  
-.clients_wrap_table table tr td {
-    color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; height:35px; font-weight:400;
-    }
-.clients_wrap_table table tr td:last-child {
-    width: auto; text-align:center;
-    }  
-.clients_wrap_table table tr td div {
-    position:relative;
-    }
-.clients_wrap_table span {
-    display:inline-block; max-width:175px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;
-    }
-.clients_wrap_table .glyphicon {
-    color:#368ee0; cursor:pointer;
-    }  
-.td_overflow {
-    display:inline-block; max-width:175px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;
-    }      
-.client_show { cursor: pointer;}                   
-.client_show i {
-    font-size:12px; color:#375d81; float:right; padding:2px 0px 0px 0px; visibility:hidden; opacity:0;
-    }  
-.clients_wrap_table table tr:hover .client_show i {
-    visibility:visible; opacity:1;
-    }
-.clients_side_wrap {
-    width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
-    transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
-    z-index:10000; max-height:100%; min-height:100%; overflow-y:auto;
-    }
-.clients_side_wrap.clients_side_wrap_active {
-    right:0px;
-    }  
-.clients_side_wrap_inn {
-    position:relative; padding:10px;
-    }
-.clients_side_wrap_inn h1 {
-    margin:0px 0px; font-size:18px; font-weight:500; padding:15px;
-    }  
-.clients_side_wrap .project_detfield {
-    padding:4px 5px; width:100%;
-    }
-.clients_side_wrap .project_inline_field {
-    width:100px;
-    }
-.clients_side_wrap select {
-    appearance:none; -webkit-appearance:none; border:none; padding:3px 20px 3px 0px; width:auto;
-background:url("../images/arrow-d-g.png") no-repeat right center; background-size:10px;
-    }
-.clients_side_wrap .project_tabs_inn_table table tr th:last-child {
-    text-align:left;
-}  
-.clients_side_wrap .project_tabs_inn_table table tr td:last-child {
-    text-align:left; width:130px;
-    }
-.clients_side_wrap table tr td div b {
-    font-weight:400; display: inline-block; padding:3px 0px; color:#FFF; font-size:13px; border-radius:3px; background-color:#3186d6;
-    text-align:center; width:85px;
-    }  
-.clients_side_wrap table tr td div b.proj_active { background-color:#34c244;}
-.clients_side_wrap table tr td div b.proj_closed { background-color:#d94747;}
-.clients_side_wrap table tr td div b.proj_process { background-color:#d98f47;}
-.clients_side_wrap .fa-edit {
-    padding:0px 0px 0px 7px; color:#333;
-    }      
-.clients_side_wrap table a {
-    color:#333;
-}
-.clients_side_wrap table a .fa-edit { padding:0px;}
-  
-.clients_wrap nav ul {
-    padding:10px 10px; margin:0px; float:right;
-}
-  
-     
-        /*    Clients Css    */
-  
-        /*    User summary css    */ 
-  
-.user_summ_wrap {  
-    }
-.user_summ_wrap .project-tabs-menu {
-    margin:0px; padding:0px;
-    }
-.user_summ_wrap .project-tabs-menu li   {
-    margin-right: 1px; border-top:2px solid #eef1fc;
-    }
-.user_summ_wrap .project-tabs-menu li.current {
-    border-top:2px solid #368ee0;
-    }  
-.user_summ_wrap .project-tabs-menu li a {
-    margin-right: 1px; padding:8px 30px;
-    }
-.user_summ_wrap .timesheet_head ul li {
-    float:left; font-size: 14px; font-weight: 500; color: #454545;
-    }
-.user_summ_wrap .timesheet_head ul li a {
-    color:#454545;
-    }
-.user_summ_wrap .timesheet_head ul li a .fa-plus {
-    padding:0px 10px 0px 0px; display:inline-block;
-    }
-.user_summ_wrap .project_inline_field {
-    width:100px;
-    }
-.user_summ_wrap .project_error {
-    width:400px; z-index:1500;
-    }
-.user_summ_wrap .project_inn_mask {
-    z-index:1200;
-    }
-.user_details_cta {
-    width:65%; float:left; padding:0px 0px 0px 5%; position:relative; min-height:430px;
-}
-.user_details_cta_img {
-    width:250px; float:left; background-color:#eef1fc;
-}
-.user_details_cta_img span {
-    font-size:15px; font-weight:500; display:block; padding:6px 5px 5px 5px; text-align:center; overflow: hidden;
-    text-overflow: ellipsis; white-space: nowrap; background-color:#368ee0; color:#FFF;
-}
-.user_details_cta_img b {
-    font-size:13px; font-weight:500; display:block; padding:3px 5px 0px 5px; text-align:center; overflow: hidden;
-    text-overflow: ellipsis; white-space: nowrap;
-}
-.user_change_img {
-    position:relative; overflow:hidden; text-align:center;
-}
-.user_change_img img {
-    width:130px; border:4px solid #e1e6fa; max-width:130px; border-radius:50%; margin:12px 0px;
-}
-.user_change_img input {
-    position:absolute; width:100%; height:100%; top:0px; left:0px; cursor:pointer; z-index:10;
-    opacity:0;
-}
-.user_change_img a {
-    position:absolute; z-index:8; bottom:-50%; left:0px; width:100%; background-color:rgba(54,142,224,0.8); display:block;
-    color:#FFF; margin:0px auto; right:0px; text-align:center; padding:5px 0px; font-weight:500;
-    transition:all 0.2s ease-in-out; -webkit-transition:all 0.2s ease-in-out;
-}
-.user_change_img:hover a {
-    bottom:0px;
-}
-  
-.user_details_cta .project_details_cta {
-    width:100%; float:none;
-}  
-.user_summ_wrap .project_details     {
-    padding:20px 30px 40px;
-}
-.user_summ_wrap .project_details_cta {
-    padding:7px 0px;
-}
-.user_summ_wrap .project_detfield {
-    font-size:14px; padding:3px 5px; width:80%; position:relative; top:-2px;
-}
-.user_summ_wrap .project_detfield:focus {
-    box-shadow: 0px 0px 2px rgba(54,142,224,1);
-}
-.user_summ_wrap .project_detfield.hours {
-    width:50px;
-}
-.fix {
-    padding:0px 0px 0px 5px;
-}
-.user_summ_wrap u {
-    text-decoration:none; display:inline-block; padding:0px 0px 0px 15px; cursor:pointer;
-}
-.user_role {
-    padding:10px 0px 0px 0px; display:none;
-}
-.user_role select{
-    appearance: none; -webkit-appearance: none; border: none; padding: 3px 30px 3px 10px; box-shadow: 0px 0px 1px rgba(0,0,0,0.5);
-    width: 120px; background: url("../images/arrow-d-g.png") no-repeat 90% center; background-size: 10px;
-}
-.user_role select:focus {box-shadow: 0px 0px 2px rgba(54,142,224,1);}
-  
-  
-.timesheet_status_wrap .approved_pop { right:23px;}
-  
-        /*    User summary css    */ 
-  
-  
-.user_summ_wrap_table {
-    width:100%; max-height:440px; overflow-y:auto;
-}
-.user_summ_wrap_table a {
-    cursor:pointer;
-    }  
-.user_summ_wrap_table table {
-    width:100%; font-size:14px; font-weight:400; border:none;
-    }
-.user_summ_wrap_table table tr:nth-child(even) {background: #fff;}
-.user_summ_wrap_table table tr:nth-child(odd) {background: #eef1fc;}           
-.user_summ_wrap_table table tr th {
-    background-color:#375d81 !important; font-weight:500; color:#FFF; padding:0px 10px; text-align:left; height:35px;
-    border-right:1px solid #4576a4; font-size:14px;
-    }
-.user_summ_wrap_table table tr th:last-child { text-align:center;} 
-.user_summ_wrap_table table tr td {
-    color:#333; padding:0px 10px; border-left:1px solid #eae6e6; height:40px; font-weight:400;
-    }
-.user_summ_wrap_table table tr td:last-child {
-    width:50px; padding:0px 10px; text-align:center;
-    }  
-.user_summ_wrap_table table tr td div {
-    position:relative;
-    }
-.user_summ_wrap_table table tr td div i {
-    cursor:pointer; font-size:13px; color:#fe4556;
-    }
-.user_summ_wrap_table {
-    width:100%; font-size:13px; border:none; overflow: hidden; background-color:transparent;
-    font-weight:500; color:#454545; overflow-y: auto;
-    }  
-.user_summ_wrap_table:focus {
-    font-size:13px; overflow: hidden; background-color:#fff; box-shadow:0px 0px 1px rgba(0,0,0,0.5);
-    }
-     
-.user_summ_wrap nav ul {padding:10px 10px; margin:0px; float:right;}
-.user_summ_wrap .project_tabs_inn_table { max-height:none; border:none; overflow:hidden;}  
-  
-  
-.useredit { text-align:right; padding-bottom:10px;}
-.useredit a { font-size:13px; font-weight:500; color:#454545; padding:2px; margin:0px 0px 0px 15px;}
-.useredit a i { padding:0px 6px 0px 0px;}
-  
-  
-.user_summary_edit {
-    position:absolute; width:100%; height:100%; background-color:#FFF; box-sizing:border-box; left:40px; top:0px;
-    padding:10px 10px; display:none; box-shadow:0px 0px 3px rgba(0,0,0,0.3);
-}
-.user_summary_edit_cta {
-    float:left; width:46%; margin:0.5% 2%; position:relative; padding-bottom:8px;
-}
-.user_summary_edit_cta label {
-    width:100%; margin:0px; padding:0px 0px 5px 0px; font-size:13px; font-weight:500; color:#454545;
-}
-.user_summary_edit_cta input {
-    width:100%; box-shadow:0px 0px 1px rgba(0,0,0,0.4); height:32px; border:none; padding:0px 10px; border-radius:2px;
-    box-sizing:border-box;
-}
-.user_summary_edit_cta input.rate_filed {
-    width:47% !important;
-}
-.user_summary_edit_cta select {
-    width:100%; box-shadow:0px 0px 1px rgba(0,0,0,0.4); height:32px; border:none; padding:0px 10px; border-radius:2px;
-    box-sizing:border-box; -webkit-appearance:none; appearance:none; background: url("../images/down-arrow.png") no-repeat 95% center;
-    background-size: 10px; -moz-appearance:none;
-}
-.user_summary_edit_cta select::-ms-expand{
-  display:none;
-}
-.user_summary_edit_cta select.rate_sele {
-    width:50%; margin:0px 0px 0px 1%;
-}
-.user_summary_edit_cta input:focus, .user_summary_edit_cta select:focus {
-    box-shadow:0px 0px 2px rgba(48,129,203,0.9); outline:none; width:100%;
-}
-.user_summary_edit_cta p {
-    width:100%; margin:0px 0px; padding:0px 0px !important; text-align:left; font-size:11px; color:red; position:absolute; left:0px;
-    bottom:-7px; font-weight:400;
-}
-.user_summary_edit_cta select.rate_sele:focus {
-    width:50%; margin:0px 0px 0px 1%;
-}
-  
-.remove_user_pop  {
-    position:absolute !important; background-color:#f9f9f9; box-shadow:0px 0px 5px rgba(0,0,0,0.3); width:250px; right:20px; top:50px;
-    z-index:100; display:none;
-}
-.remove_user_pop.remove_user_pop_a  {
-    right:0px; top:25%; left:0px; margin:0px auto; z-index:15500; width:300px;
-     
-}
-.remove_user_pop  p {
-    padding:5px 15px; margin:0px; width:auto; float:none; text-align:left; font-size:13px; color:#666;
-}
-.remove_user_pop  b {display:block; text-align:center;}
-.remove_user_pop input {
-    width:50%; border:none; height:30px; font-size:14px; font-weight:500; color:#FFF; background-color:#ff4b4b;
-}
-.remove_user_pop input.u_can_color {
-    background-color:#375d81;
-}
-.remove_user_pop textarea {
-    width:92%; margin:3px 4% 4%; padding:5px 10px; height:100px;
-}
-  
-.user_summary_edit_cta input.us-btn {
-    width:49%; background-color:#375d81; margin-top:10px; font-size:14px; font-weight:500; color:#fff; box-shadow:0px 0px 0px #000;
-    }
-.user_summary_edit_cta input.us-btn:focus {
-    box-shadow:0px 0px 0px #000;
-}  
-.user_summary_edit_cta input.us-btn.us-btn_a {background-color:#ff4b4b;}
-  
-  
-.time_pop {
-    position:absolute !important; bottom:35px; left:0px; display:none; margin:0px auto; width:310px; right:0px;
-    z-index:800; top:80px; text-align:right; max-height:90px;
-}
-.time_pop.time_pop_a {
-    z-index: 20000; top: 0px; max-height: 60px;
-}
-.time_pop p {
-    position:relative; background-color:#FFF; width:100% !important; padding:15px 15px 15px 15px!important; font-weight:400;
-    color:#333 !important; font-size:14px !important; box-shadow:0px 0px 5px rgba(0,0,0,0.5); text-align:left;
-}
-.time_pop.time_pop_a p {
-    padding:13px 15px 13px 15px!important;
-    }
-.time_pop p:after {
-    top: 100%; left: 50%; border: solid transparent; content: " ";height: 0; width: 0; position: absolute;
-    border-color: rgba(136, 183, 213, 0); border-top-color:#FFF; border-width: 10px;
-    margin-left: -10px;
-}
-.time_pop p b {
-    cursor:pointer; display:inline-block; padding:2px; margin:0px 0px 0px 5px; color:red; position:absolute; right:10px;
-    top:2px;
-}
-  
-/*.data_loading {
-    position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;
-    background-image:url("../images/loading.gif"); background-position:center; background-repeat:no-repeat;
-    background-size:50px;
-}*/
-  
-    /*   Timesheet approval div   */
-  
-.timesheet_appr_table ul {
-    background-color:#FFF; margin:0px 0px; padding:0px 0px; width:100%;
-}
-.timesheet_appr_table ul li {
-    padding:7px 15px; float:left; list-style-type:none; width:23%; text-align:center;
-    border-right: 1px solid #eae6e6;
-}
-.timesheet_appr_table ul li + li {
-    width:30%;
-}
-.timesheet_appr_table ul li + li + li {
-    width:14%;
-}
-.timesheet_appr_table ul li + li + li + li {
-    width:21%;
-}
-.timesheet_appr_table ul li + li + li + li + li {
-    width:12%; float:right; padding:7px 10px; text-align:leftl;
-}      
-.timesheet_appr_table ul.table_head {
-    background-color:#375d81;
-}
-.timesheet_appr_table ul.table_head  li {
-    text-align:center; font-weight: 500; color: #FFF; border-right: 1px solid #4576a4; padding:12px 15px;
-}  
-.timesheet_appr_table ul.table_details {
-    background-color:#eef1fc;
-}
-.timesheet_appr_table ul.table_details.table_details_a {
-    background-color:#fff;
-}
-.timesheet_appr_table ul.table_details li + li {
-    padding:12px 0px;
-}
-.timesheet_appr_table ul.table_details li + li + li {
-    padding:15px 0px;
-}
-  
-.success_pop {
-    position:fixed; text-align:left; margin:0px auto; left:0px; right:0px; top:54px; display:none;
-    background-color:#34c244; z-index:10000; padding:3px 15px; width:450px; border-radius:4px; font-size:15px; font-weight:500;
-    color:#FFF; box-shadow:0px 0px 5px rgba(0,0,0,0.3); word-wrap: break-word;
-    }
-.success_pop i {
-    display:inline-block; padding:0px 10px 0px 0px; font-size:40px;
-}  
-.success_pop span {
-    position:relative; top:-9px;
-}
-.remove_pop {
-    position:fixed; text-align:left; margin:0px auto; left:0px; right:0px; top:54px; display:none;
-    background-color:#ef4c4c; z-index:10000; padding:6px 15px; width:350px; border-radius:4px; font-size:15px; font-weight:500;
-    color:#FFF; box-shadow:0px 0px 5px rgba(0,0,0,0.3);
-    }
-.remove_pop i {
-    display:inline-block; padding:0px 10px 0px 0px; font-size:34px;
-}  
-.remove_pop span {
-    position:relative; top:-6px;
-}
-     
-.table_nodata {
-    width:100%; background-color:#FFF; padding:30px 0px; text-align:center; border-top:1px solid #dedede;
-    }
-.table_nodata_inn {
-    width:450px; margin:0px auto;
-    }
-.table_nodata_inn img {
-    float:left;
-    }
-.table_nodata_inn span {
-    float:left; font-size:28px; font-weight:400 !important; color:#666; font-family:'Roboto'; padding:60px 0px 0px 10px;
-    }
-.table_nodata_inn span b {
-    display:block; font-size:15px; font-weight:500; padding:10px 0px 0px 0px;
-    }
-.downicon { display:inline-block !important; width:78%; float:left; clear:both;}                           
-  
-  
-/********************* Back To Top *******************/
-  
-.backtotop {
-    width:30px; position:fixed; bottom:20px; right:10px; cursor:pointer; display: none; outline:none !important; z-index:30; text-align:center;
-}
-.backtotop img { width:100%;}
-  
-.user_badg {
-    background-color:#FFF; padding:8px 0px 0px 0px;
-    }
-.user_badg p {
-    margin:0px 0px; padding:4px 5px; position:relative; text-align:left; float:none; display:block; width:100%; box-sizing:border-box;
-    }
-.user_badg p strong {
-    float:right; margin-top:2px;
-    }
-     
-.app_error_mes {
-    width:300px; background-color:#FFF; border-radius:3px; position:fixed; z-index:1000; margin: 0px auto; left: 0px; right: 0px;
-    padding:15px 20px; box-shadow:0px 0px 8px rgba(0,0,0,0.5); font-size:14px; border:1px solid #368ee0; top: 30%;
-    transition:0.2s all ease-in-out; -webkit-transition:0.2s all ease-in-out; -moz-transition:0.2s all ease-in-out;
-	min-height: 100px; display: none; opacity: 0;
-    }
-.app_error_mes.app_error_mes_active {
-    display: block; opacity: 1;
-    }          
-         
-.side_mask {
-    position:fixed; width:100%; height:100%; background-color:rgba(0,0,0,0.6); top:0px; left:0px; z-index:9999; display:none;
-    background-image:"../images/cancel.png"; background-repeat:no-repeat; background-position:10% 40px;
-    }      
-     
-.modal-backdrop { z-index:10400;}
-.modal { z-index:10500;}
-  
-  
-  
-    /*    Vendors Css    */
-  
-.vendor_wrap {
-    background-color: #f5f5f5; padding: 0px 0px; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
-    }
-.vendor_wrap .timesheet_head ul li {
-    float:left; cursor: pointer;
-    }
-.vendor_wrap .timesheet_head ul li.li-vendor {
-    text-align:right; padding:0px;
-    }  
-.vendor_wrap .timesheet_head ul li a {
-    font-size: 14px; font-weight: 500; color: #333;
-    }
-.vendor_wrap .timesheet_head ul li a:hover {
-    color:#368ee0;
-    }
-.vendor_wrap .timesheet_head ul li a .fa-plus {
-    font-size:15px; padding:0px 10px 0px 0px;
-    }
-.vendor_wrap nav ul {
-    padding: 10px 10px;
-    margin: 0px;
-    float: right;
-    }  
-.project_tabs_inn_table.vendor_wrap_inn_table {}
-.project_tabs_inn_table.vendor_wrap_inn_table tr td:last-child {
-    text-align: left; width: auto !important;
-    }
-.project_tabs_inn_table.vendor_wrap_inn_table tr th {
-    text-align: center;
-    }
-  
-.vendorfild {
-    border:none; border-bottom:1px solid #bdbdbd; background-color: transparent; padding:3px 5px; width:55px;
-    transition:0.3s all ease-in-out; -webkit-transition:0.3s all ease-in-out; -moz-transition:0.3s all ease-in-out;
-    font-size:14px; font-weight:500; color:#333;
-    }
-.vendorfild:focus {
-    border-color:#368ee0; width:200px;
-    }      
-.vendor_wrap .fa-search {
-    font-size:17px; color:#545454; position:relative; top:3px; padding:0px 18px 0px 5px; display:inline-block;
-    }
-.project_tabs_inn_head .fa-search {
-    font-size:17px; color:#545454; position:relative; top:3px; padding:0px 15px 0px 5px; display:inline-block;
-    }  
-.vendor_wrap .clients_wrap_table table tr td div .glyphicon-trash {
-    cursor: pointer;
-    font-size: 13px;
-    color: #fe4556;
-    }
-.vendor_wrap .clients_wrap_table table tr th:last-child {
-    width:70px; padding:0px;
-    }  
-.vendor_wrap .clients_wrap_table table tr td:last-child {
-    width:70px;
-    }      
-.vendor_wrap_mask {
-    position:fixed; width:100%; height:100%; background-color:rgba(0,0,0,0.5); left:0px; top:0px; z-index:15000; display:none;
-    }
-.vendor_error {
-    width:400px; position:absolute; left:0px; right:0px; margin:0px auto; top:25%; z-index:20000;
-    background-color:#FFF; box-shadow:0px 0px 8px rgba(0,0,0,0.7); border-radius:5px; display:none;
-    }
-.vendor_error textarea {   
-    width: 100%; resize: none; border: none; padding: 10px; font-size: 14px; font-weight: 400; height: 90px;
-}  
-.vendor_error p {
-    padding:20px 15px; margin:0px; font-size:13px; font-weight:500; color:#333; text-align:center; display:block;
-    }
-.vendor_error b {
-    padding:5px 15px; margin:0px; font-size:12px; font-weight:500; color:#ff4b4b; display:block;
-    }  
-.vendor_error a {
-    display:inline-block; width:50%; background-color:#375d81; padding:7px 0px; text-align:center; color:#FFF;
-    font-size:14px; font-weight:500;
-    }
-.vendor_error a.close_color {
-    background-color:#ff4b4b;
-    }          
-.project_tabs_inn_table.vendor_wrap_inn_table div span {
-    max-width:250px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;
-    }  
-.project_tabs_inn_table.vendor_wrap_inn_table div span.mid-span {
-    max-width:300px;
-    }  
-.vendor_wrap_inn_table table tr th:last-child {
-    text-align: center !important; width:70px;
-    }
-.vendor_wrap_inn_table table tr td:last-child {
-    text-align: center !important; width:70px;
-    }  
-.vendor_wrap_inn_table table tr td div a {
-    padding:0px 5px 0px 0px; display:inline-block; color:#368ee0;
-    }
-.vendor_wrap_inn_table table tr td div .glyphicon-eye-open {
-    display:inline-block; color:#368ee0; padding:0px 10px 0px 0px;
-    }
-.vendor_wrap_inn_table table tr td div .fa-pencil {
-    display:inline-block; color:#368ee0; padding:0px 10px 0px 0px; font-size:16px;
-    }  
-     
-.side_mask .proj_close {
-    width:60px; height:60px; background-color:#fff; box-shadow:0px 0px 3px rgba(0,0,0,0.4); text-align:center; position:relative;
-    cursor:pointer; border-radius:50%; background-image:url(../images/cancel.png); background-repeat:no-repeat; background-position:center;
-    background-size:20px; left:11%;
-    }  
-         
-    /*    Candidate Css    */
-     
-     
-.candidate_wrap_table {
-    width:100%;
-    }  
-.candidate_wrap_table table {
-    width:100%; font-size:14px; font-weight:400; border-bottom:1px solid #CCC; border:none;
-    }
-.candidate_wrap_table table tr:nth-child(even) {background: #fff;}
-.candidate_wrap_table table tr:nth-child(odd) {background: #eef1fc;}           
-.candidate_wrap_table table tr th {
-    background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 12px; height:40px;
-    border-right:1px solid #4576a4 !important; -moz-border-right:1px solid #4576a4;
-    }  
-.candidate_wrap_table table tr td {
-    color:#333; padding:0px 12px !important; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; font-weight:400; height:35px;
-    }  
-.candidate_wrap_table table tr td div {
-    position:relative;
-    }
-.candidate_wrap_table table tr td div b {
-    display:block; font-size:12px; font-weight:500; color:#454545;
-    }  
-.candidate_wrap_table table tr th:last-child {
-    width:100px; padding:0px 5px;
-    }  
-.candidate_wrap_table table tr td:first-child {
-    width:40px; padding:0px; text-align:center;
-    }
-.candidate_wrap_table table tr td:last-child {
-    width:100px; padding:5px 5px;
-    }      
-.candidate_wrap_table span {
-    display:inline-block; max-width:140px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;
-    }  
-.candidate_wrap_table tr:hover .proj_show i {
-    visibility:visible; opacity:1;
-    }          
-     
-     
-/*    Requirement Css    */
-     
-     
-.require_wrap_table {
-    width:100%; overflow-y:auto;
-    }
-.require_wrap_table.recommend_table {}    
-.require_wrap_table table {
-    width:100%; font-size:14px; font-weight:400; border-bottom:1px solid #CCC; border:none;
-    }
-.require_wrap_table table tr:nth-child(even) {background: #fff;}
-.require_wrap_table table tr:nth-child(odd) {background: #eef1fc;}         
-.require_wrap_table table tr th {
-    background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 9px !important; height:40px; border-right:1px solid #4576a4 !important; -moz-border-right:1px solid #4576a4;
-    }  
-.require_wrap_table table tr td {
-    color:#333; padding:0px 10px !important; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; font-weight:400; height:35px;
-    }  
-.require_wrap_table table tr td div {
-    /*position:relative;*/
-    }
-.require_wrap_table table tr td div b {
-    display:block; font-size:12px; font-weight:500; color:#454545;
-    }      
-.require_wrap_table table tr td:first-child {
-    width:35px; padding:0px 5px; text-align:center;
-    }
-.require_wrap_table table tr th:last-child {
-    width:70px; padding:5px 5px; text-align:center;
-    }
-.require_wrap_table table tr td:last-child {
-    width:70px; padding:5px 5px; text-align:center;
-    } 
-.require_wrap_table.recommend_table table tr td:first-child {
-    width: auto; padding:0px 10px; text-align:left;
-    }
-.require_wrap_table.recommend_table table tr th:last-child {
-    width: 150px; padding:5px 5px; text-align:center;
-    }
-.require_wrap_table.recommend_table table tr td:last-child {
-    width:auto; padding:5px 5px;
-    }   
-              
-.require_wrap_table span {
-    display:inline-block; max-width:125px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;
-    }  
-.require_wrap_table tr:hover .proj_show i {
-    visibility:visible; opacity:1;
-    }
-.require_wrap_table select {
-    appearance:none; -webkit-appearance:none; border:none; padding:3px 5px 3px 0px; width:100px;
-background:url("../images/arrow-d-g.png") no-repeat right center; background-size:10px;
-    }
-.require_wrap_table table tr td div b {
-    font-weight:400; display: inline-block; padding:3px 0px; color:#FFF; font-size:13px; border-radius:3px; background-color:#3186d6;
-    text-align:center; width:85px;
-    }  
-.require_wrap_table table tr td div b.proj_active { background-color:#34c244;}
-.require_wrap_table table tr td div b.proj_closed { background-color:#d94747;}
-.require_wrap_table table tr td div b.proj_process { background-color:#d98f47;}    
-.require_wrap_table .fa-bullhorn {
-    font-size:16px; color:#545454;
-    }
-.require_wrap_table table tr:hover .fa-bullhorn {
-    color:#368ee0;
-    }
-.require_wrap_table .glyphicon {
-	cursor: pointer;
-}
-.require_wrap_table .glyphicon:hover { color:#f15a29;}     
-.require_wrap_table .fa-edit { cursor:pointer; display: inline-block; padding: 0px 0px 0px 5px;}
-     
-.pipeline_graf {
-    display:none; text-align:center; padding:0px 10px 10px; background-color:#ededed;
-    }
-.pipeline_graf img {
-    width:100%;
-    }  
-.graf_icon {
-    background-color:#ededed; padding:6px 15px; cursor:pointer; font-size:15px; font-weight:500; color:#454545;
-    background-image:url("../images/arrow-d-g.png"); background-repeat:no-repeat; background-position:98% center; background-size:11px;
-    }
-.graf_icon i {
-    display:inline-block; padding:0px 8px 0px 0px; color:#454545; font-size:18px;
-    }  
-     
-.require_wrap_details {
-    padding:20px; min-height:450px;
-    }
-.require_wrap_details h1, .require_wrap_details h2 {
-    margin:0px 0px; padding:0px 0px 6px 0px; font-size:15px; font-weight:500; color:#333;
-    }  
-.require_wrap_details h2 {
-    padding:15px 0px 6px;
-    }
-.require_wrap_details a {
-    float:right; font-size:13px; color:#454545;
-    }  
-.require_wrap_details a i {
-    display:inline-block; padding:0px 0px 0px 6px;
-    }      
-.require_wrap_details textarea  {
-    width:100%; padding:10px; background-color:#f8f8f8; border:none; font-size:13px; height:85px;
-    }
-.require_wrap_details_cta {
-    width:50%; float:left; padding:8px 0px; position:relative;
-    }
-.require_wrap_details_cta b {
-    display:block; width:150px; float:left; font-size:14px; font-weight:600;
-    }
-.require_wrap_details_cta span  {
-    display:block; width:60%; float:left; font-weight:500; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
-    }
-.require_one {
-    padding:10px; background-color:#f8f8f8; position:relative;
-    }
-.require_one .glyphicon-save {
-    font-size:15px; display:inline-block; padding:0px 0px 0px 10px; color:#368ee0; cursor:pointer;
-    }
-.require_one .fa-edit {
-    cursor:pointer; color:#368ee0;
-    }
-.require_one .fa-edit {
-    cursor:pointer; color:#368ee0;
-    }
-.require_one .fa-inr {
-    cursor:pointer; color:#368ee0; padding:0px 5px 0px 0px; font-size:15px;
-    }  
-     
-.user_summary_edit.user_summary_edit_a  {
-    z-index:11000; left:0px; top:40px; height: auto; min-height:91.5%;
-    }  
-.useredit.useredit_a {
-    padding:0px 0px 0px 0px;
-    }
-.useredit.useredit_a a {
-    position:relative; top:-8px;
-    }
-.edit_desc {
-    width:100% !important; box-shadow: 0px 0px 1px rgba(0,0,0,0.4); margin:0px !important; height:60px !important;
-    }  
-.user_summary_edit.user_summary_edit_a .us-btn {
-    margin:0px 0px !important;
-    }
-.calendar {
-    background-image:url("../images/calendar.png"); background-repeat:no-repeat; background-position:96% center; background-size:18px;
-    }          
-     
-.client_summary_edit {
-    left:0px; height:auto;
-    }          
-     
-.last_td {
-    border-bottom:1px solid #dedede; padding:1px 4px !important; width:105px; text-align:center;
-    }
-.last_td .glyphicon {
-    font-size: 12px; padding: 0px 0px 0px 4px; cursor: pointer; margin: 0px 1px; color: #368ee0; position: relative; top: 3px;
-    }  
-     
-.select-fild {
-    display:inline-block; padding:0px 0px 0px 10px;
-    }
-.select-fild select {
-    font-size:14px; padding:0px 26px 0px 10px; border:none; background-color:#0cc2aa; color:#FFF; border-radius:3px; appearance:none;
-    -webkit-appearance:none; -moz-appearance:none; -ms-appearance:none; -o-appearance:none; font-weight:500; height:31px; cursor:pointer; width:155px; box-sizing:border-box;
-    background-image:url("../images/arrow-w.png"); background-repeat:no-repeat; background-position:92% center; background-size:10px;
-    }
-.select-fild select option {
-    background-color:#FFF; color:#333; font-size:13px; height:20px;
-    }
-     
-.remove_search {
-    position:absolute; right:10px; top:10px;
-    }  
-     
-.remove_search input {
-    margin: 0px; border: none; border-bottom: 1px solid #bdbdbd; padding: 3px 25px 3px 5px; background-color: transparent;
-    width: 210px; background-image: url("../images/search-icon.png"); background-repeat: no-repeat; background-position: 98% center;
-    background-size: 16px;         
-    }
-.remove_search input:focus {
-    border-bottom: 1px solid #368ee0;
-    }
-  
-.clients_wrap_table {
-width: 100%;
-    }  
-.clients_wrap_table table tr td div b {
-    font-weight:400; display: inline-block; padding:3px 0px; color:#FFF; font-size:13px; border-radius:3px; background-color:#3186d6;
-    text-align:center; width:85px;
-    }  
-.clients_wrap_table table tr td div b.proj_active { background-color:#34c244;}
-.clients_wrap_table table tr td div b.proj_closed { background-color:#d94747;}
-.clients_wrap_table table tr td div b.proj_process { background-color:#d98f47;}
-.clients_wrap_table select {
-    appearance: none; -webkit-appearance: none; border: none; padding: 3px 20px 3px 0px; width: auto;
-    background: url("../images/arrow-d-g.png") no-repeat right center; background-size: 10px;
-    }
-.clients_wrap_table .fa-edit {
-    padding: 0px 0px 0px 7px; color: #333; cursor:pointer;
-    }
-.clients_wrap_table .proj_show {
-    padding:0px 15px 0px 0px;
-    }  
-.clients_wrap_table .proj_show i {
-    position: absolute; right: 0px;
-    }
-.cbox {
-    width:35px;
-    }
-.clients_wrap_table table tr td div a {
-    padding: 0px 5px 0px 0px; display: inline-block; color: #368ee0;
-    }
-.clients_wrap_table table tr td div a .fa-edit { padding:0px;}         
-     
-         
-     
-@media screen and (max-width: 1100px){
-.timesheet_table table table tr td {padding: 8px 2px;} 
-.timesheet_out { padding: 0px 0px 30px 0px;}
-.time_appr_side_wrap { width:85%; top:155px;}
-.clients_side_wrap { width:85%; top:155px;}
-.project_side_wrap { width:85%; top:155px;}
-.timesheet_table, .project_tabs_inn_table { width:auto; overflow-x:auto;}
-.timesheet_table table, .project_tabs_inn_table table { min-width:850px;}
-  
-     
-}  
-  
-@media screen and (max-width: 1023px){
-.timesheet_wrap {
-    padding:0px; margin:0px 0px; box-shadow:0px 0px 3px rgba(0,0,0,0.4); position: relative;
-    }
-.timesheet_head .glyphicon-print { padding:0px 10px 0px 0px;}  
-.timesheet_head { padding:5px 0px 2px 0px; height:auto;}           
-.timesheet_bot { padding:10px;}
-.timesheet_week_comm textarea {width:70%;}
-.timesheet_week_comm span { width:27%;}
-.res_total_hours { display:block;}
-  
-.project_field { width:60%;}   
-.proj_show i {
-    visibility: visible; opacity:1;
-    }  
-.timesheet_appr_table, .project_wrap_table, .user_summ_wrap_table { overflow:auto; width:auto;}
-.timesheet_appr_table table, .project_wrap_table table, .user_summ_wrap_table table { min-width:850px;}
-.clients_wrap_table { overflow:auto; width:auto;}  
-.clients_wrap_table table { min-width:900px;}
-.project_details_cta { width:100%;}
-  
-.project_details textarea { width:100%;}
-.user_details_cta { width:62%;}
-  
-  
-}
-  
-@media screen and (max-width: 766px){
-.timesheet_week_comm { width:100%; float:none; padding-bottom:12px;}
-.timesheet_button { width:100%; text-align:right; float:none;}
-.timesheet_week_comm textarea {width:68%; margin:0px 2% 0px 0px;}
-.timesheet_week_comm span { width:30%; text-align:center;} 
-.timesheet_week_comm label { padding:7px 5px;}
-.timesheet_week_comm label i { display:block; padding:1px 0px 5px 0px; font-size:20px;}
-.pullRight { display:none;}
-.content-wraper .content-header { padding:6px 0px 15px 0px;}
-.content-wraper .content-header h2 {font-size:20px;}
-  
-.user_summ_wrap .project_details { padding:20px 15px;}
-.user_details_cta { width:100%; padding:20px 0px 0px 0px; box-shadow:0px 0px 3px rgba(0,0,0,0.2);}
-.user_details_cta_img { width:268px; margin:10px auto 15px; float:none;}
-.user_summary_edit {
-    position:fixed; left:0px; right:0px; z-index:10000; top:0px; padding:20px 10px 20px 10px; max-height:100%; overflow-y:auto;
-    }
-.footer-area { height:auto; font-size:12px;}   
-  
-  
-}
-  
-@media screen and (max-width: 598px){
-.timesheet_head { padding:2px 0px;}
-.timesheet_head ul { width: 100%; float:right;}
-.timesheet_head ul li:first-child + li + li + li { width:100%; margin:0px 0px 5px 0px; }
-.timesheet_head ul li:first-child + li + li + li span {
-    display:block; width:120px; padding:0px; margin:0px auto;
-    }      
-.timesheet_head .glyphicon-chevron-left, .timesheet_head .glyphicon-chevron-right {
-    position:absolute; font-size:15px; top:8px; right:16%;
-    }
-.timesheet_head .glyphicon-chevron-left { left:12%;}       
-.timesheet_head abbr { display:none;}  
-.timesheet_head ul li span { display:none;}
-.timesheet_head .glyphicon-play { font-size:22px; padding:3px; top:1px; right: 16px; opacity:0; -webkit-opacity:0; -moz-opacity:0;}
-.timesheet_head .glyphicon-export, .timesheet_head .fa-filter { padding:0px 16px 0px 0px;}
-.project_field { width:80%;}   
-.time_appr_rejct_pop { width:85%;}
-.project_details { padding:10px;}
-.project_details_cta { width:350px; float:none;}
-.project_details_cta span { width:52%;}
-  
-.project-tabs-menu { padding:0px;}
-.project-tabs-menu li { margin:0px 2px 0px 0px;}
-.project-tabs-menu li a { padding:7px 10px;}
-  
-.clients_wrap .timesheet_head ul li span { display: inline-block;}
-.clients_wrap .timesheet_head ul, .user_summ_wrap .timesheet_head ul, .project_wrap .timesheet_head ul { width:auto;}
-.clients_wrap .timesheet_head .glyphicon-play { opacity:1; top:7px; font-size:11px;}
-  
-.timesheet_status_wrap .timesheet_head ul li span {display:inline-block;}
-.timesheet_status_wrap .timesheet_head .glyphicon-play { opacity:1; top:7px; font-size:11px;}
-  
-.user_summ_wrap .timesheet_head ul li span {display:inline-block;}
-.user_summ_wrap .timesheet_head .glyphicon-play { opacity:1; top:7px; font-size:11px;}
-  
-.pagination > li > a, .pagination > li > span { padding:6px 9px;}
-.user_summ_wrap .project_details_cta strong { width:100px;}
-.timesheet_appr_wrap .timesheet_head .glyphicon-play {
-    right:13px; font-size:10px; top:6px;
-}
-.project_wrap .timesheet_head .glyphicon-play {
-    right:13px; font-size:10px; top:6px; opacity:1;
-}
-.timesheet_appr_wrap .timesheet_head ul li:first-child + li + li + li span { display:inline-block; width:auto;}
-.timesheet_appr_wrap .timesheet_head ul li:first-child + li + li + li { width:auto; margin: 5px 0px 5px 5px;}
-.project_wrap .timesheet_head ul li:first-child + li + li + li span { display:inline-block; width:auto;}
-.project_wrap .timesheet_head ul li:first-child + li + li + li { width:auto; margin: 5px 0px 5px 5px;}
-  
-.project_wrap  .timesheet_head ul li span {display:inline-block;}
-  
-.user_summary_edit_cta { width:94%; margin: 0.5% 3%;}
-  
-}
-  
-  
-  
-    /*   pagination styles   */
-     
-.dataTables_info {
-    font-size: 14px; padding: 15px 0px 0px 15px !important; color: #666 !important;
-    }  
-#example_filter {
-    position:absolute !important; right:0px !important; margin:0px 0px; top:-35px !important; padding: 0px 15px 0px 0px !important;
-    } 
-.dataTables_filter {
-    position:absolute !important; right:0px !important; margin:0px 0px; top:-35px !important; padding: 0px 15px 0px 0px !important;
-    }     
-.dataTables_wrapper .dataTables_filter input {
-    margin: 0px; border: none; border-bottom: 1px solid #bdbdbd; padding: 3px 25px 3px 5px; background-color: transparent; width:210px;
-    background-image:url("../images/search-icon.png"); background-repeat:no-repeat; background-position:98% center; background-size:16px;
-    }
-.dataTables_filter input:focus {
-    border-bottom: 1px solid #368ee0;
-    }  
-.paginate_button {
-    padding: 6px 12px !important; height: auto !important; min-width: inherit !important; margin: 0px !important; border: 1px solid #ccc !important;
-    color: #337ab7 !important; background-color: #FFF !important; border-radius: 0px !important; margin-left: -1px !important;     
-    }
-.paginate_button:hover {
-    background:#eeeeee !important; color: #337ab7 !important;
-    }  
-.paginate_button.current {
-    padding: 6px 12px !important; height: auto !important; min-width: inherit !important; margin: 0px !important; border: 1px solid #ccc !important;
-    color: #337ab7 !important; background: #3186d6 !important; border-radius: 0px !important; margin-left: -1px !important;
-    }
-    .dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover{
-    color:#fff !important;
-    }
-    .dataTables_wrapper .dataTables_paginate .paginate_button:hover{
-    color: #337ab7 !important;
-    }
-.paginate_button.previous {
-    padding: 6px 12px !important; height: auto !important; min-width: inherit !important; margin: 0px !important; border: 1px solid #ccc !important;
-    color: #337ab7 !important; background-color: #FFF !important; margin-left: -1px !important; position: relative !important; top:0px !important;
-    border-radius: 5px 0px 0px 5px !important;
-    }
-.paginate_button.next {
-    padding: 6px 12px !important; height: auto !important; min-width: inherit !important; margin: 0px !important; border: 1px solid #ccc !important;
-    color: #337ab7 !important; background-color: #FFF !important;
-    margin-left: -1px !important; position: relative !important; top:0px !important; border-radius: 0px 5px 5px 0px !important;
-    }
-.dataTables_wrapper .dataTables_paginate {
-    color: #333 !important; padding: 8px 15px 8px 0px !important;
-    }  
-     
-     
-.clients_wrap_table .fa-check, .vendor_wrap_inn_table .fa-check  {
-    font-size:16px; padding:2px 3px; cursor:pointer; margin:0px 3px; color:#30c453;
-    }
-.clients_wrap_table .fa-times, .vendor_wrap_inn_table .fa-times {
-    font-size:16px; padding:2px 3px; cursor:pointer; margin:0px 3px; color:#f04d4d;
-    }
-     
-.project_tabs_inn_head.team_search {
-    padding:5px 245px 5px 10px;
-    }
-.team_search .edit-details {
-    right: 280px;
-    }  
-     
-.new-tabs {
-    margin:0px 0px; padding:0px 0px 0px 10px; position:relative; top:1px;
-    }
-.new-tabs li {
-    float:left; margin-right:-1px; background-color:#eef1fc; border:1px solid #d4d4d1; border-bottom:none; list-style-type:none;
-    border-radius:10px 10px 0px 0px; border-top:2px solid #d4d4d1;
-    }
-.new-tabs li.current {
-    position:relative; background-color:#fff; z-index:5; border-top:2px solid #368ee0;
-    }
-.new-tabs li a {
-    padding:7px 25px; text-decoration:none; font-size:15px; color:#666; display:block;
-    }
-.new-tabs .current a {
-    color:#1d6cb5;
-    }  
-.new-tabs_inn {
-    padding:0px; display:none;
-    }
-.new-tabs_inn_head {
-    padding:5px 10px; text-align:right;
-    }  
-.new-tabs_inn_head a{
-    padding:5px; font-size:13.5px; font-weight:500; color:#666; display:inline-block; margin:0px 0px 0px 10px;
-    }
-.new-tabs_inn_head a i {
-    padding:0px 5px 0px 0px;
-    }
-.new-tabs_inn_head a:hover {
-    color:#375d81; text-decoration:none;
-    }
-.new_show { cursor: pointer;}                  
-.new_show i {
-    font-size:12px; color:#375d81; float:right; padding:4px 0px 0px 0px; visibility:hidden; opacity:0;
-    }
-.require_wrap_table table tr:hover .new_show i {
-    visibility:visible; opacity:1;
-    }                              
-     
-.project_side_wrap_inn_tabs {
-    position:relative;
-    }
-.req_hide {
-    background-color:#fff; display: block; box-shadow:0px 0px 3px rgba(0,0,0,0.2);
-    }
-.req_hide_back {
-    cursor:pointer; padding:15px 20px; background-color:#f1f1f1; font-size:15px; font-weight:500; color:#454545;
-    }  
-.req_hide_back i {
-    display:inline-block; padding:0px 10px 0px 0px;
-    }
-.req_hide_back:hover {
-    color:#3081cb;
-    }      
-.req_hide .profile_details {
-    border:none; box-shadow:0px 0px 0px rgba(0,0,0,0); border-radius:none;
-    }  
-.profile_details h4 {
-    font-size: 18px; margin:0px; color: #3081cb; display:block; cursor:pointer; width: 250px;
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding:0px 15px 0px 15px;
-    }
-.profile_details h4 i {
-    display:inline-block; float:right; width:20px; height:20px; background:url(../images/arrow-up1.png) no-repeat center;
-    background-size:14px; position:relative; top:-22px;
-    }
-.icon-add {
-    background:url(../images/arrow-up.png) no-repeat center !important; background-size:14px !important;
-    }      
-.hide-row {
-    display:none; padding:0px 0px 10px 0px;
-    }  
-.no_pad {
-    padding:0px;
-    }  
-     
-.rec_head { height:40px;}      
-  
-  
-.add_inter {
-    width:100%; padding:5px; z-index:10000; box-sizing:border-box;
-    }
-.add_inter_head {
-    padding:5px 10px 10px 5px; font-size:15px; font-weight:500; color:#333; position:relative;
-    }  
-.add_inter_head span {
-    float:left;
-    }
-.add_inter_head a {
-    float:right; font-size:14px; font-weight:500; color:#333;
-    }
-.add_inter_head a i {
-    display:inline-block; padding:0px 5px 0px 5px;
-    }   
-.add_inter_head a:hover {
-    color:#3081cb;
-    }           
-.add_inter table {
-    width:100%; font-size:14px; font-weight:400; border-right:1px solid #eae6e6; border-bottom:1px solid #eae6e6;
-    }
-.add_inter table tr:nth-child(even) {background: #fff;}
-.add_inter table tr:nth-child(odd) {background: #f5f5f5;}      
-         
-.add_inter table tr th {
-    background-color:#375d81 !important; font-weight:400; color:#FFF; text-align:center; padding:0px; height:40px; border-right:1px solid #4a77a3;
-    }
-.add_inter table tr td {
-    color:#333; padding:5px 10px; border-left:1px solid #eae6e6; vertical-align: top;
-    }
-.add_inter table tr td.one {
-    width:150px;
-    }  
-.add_inter .positionRelative {
-    display:inline-block; width:90px;
-    }
-.add_inter .chosen-container {
-    width:220px !important;
-    }
-.add_inter .form-control {
-    height:auto;
-    }
-.add_inter.search-field  {
-    margin-top: 0px !important;
-    }
-.wi1 {
-    width:100px;
-    }   
-.add_inter .btn-group {
-    width:auto;
-    }   
-.add_inter table .btn {
-    max-width:120px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; padding:4px 25px 4px 10px !important;
-    }   
-.add_inter table .caret {
-    right:8px;
-    }
-.add_inter .chosen-results {
-    float:none;
-    }
-.re-one {
-    width:100%;  visibility:visible; opacity:1; position:static;
-    }
-.pad1 {
-    padding:10px; text-align:right;
-    }
-.pad2 {
-    padding:0px 15px 0px 10px; 
-    }           
-.add_inter .candidateHead ul li:first-child {margin-top: 0px !important;}
- 
-.ne-ch {
-    display:inline-block; padding:0px 0px 0px 10px;
-    }
-.ne-ch label {
-    display:inline-block; padding:0px 10px;
-    }
-.ne-ch input { position:relative; top:2px; display:inline-block; padding:0px 5px 0px 0px;}  
-.ne-ch b {
-    font-weight:400; display:inline-block; padding:0px 0px 0px 5px;
-    }   
- 
-.new_side_wrap {
-    width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
-    transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
-    z-index:10000; max-height:100%; min-height:100%; overflow-y:auto;
-    }
-.new_side_wrap.new_side_wrap_active {
-    right:0px;
-    } 
-.new_side_wrap_inn {
-    position:relative; margin:15px; background-color:#fff; box-sizing:border-box; border-radius:3px; box-shadow:0px 0px 3px rgba(0,0,0,0.2);
-    }
-.new_side_wrap_cta {
-    width:100%; padding:15px; box-sizing:border-box;
-    }
-.add_inter_wrap {
-    width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
-    transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
-    z-index:10000; max-height:100%; min-height:100%; overflow-y:auto;
-    }
-.add_inter_wrap.add_inter_wrap_active {
-    right:0px;
-    }
-.new_side_wrap_inn .input-groupAddon {
-    right:0px; height:30px;
-    }
-     
-.add_offer_wrap {
-    width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
-    transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
-    z-index:10000; max-height:100%; min-height:100%; overflow-y:auto;
-    }
-.add_offer_wrap.add_offer_wrap_active {
-    right:0px;
-    }
-.add_offer_wrap .input-groupAddon {
-    right:0px;
-    }
-.block {
-    display:block !important;
-    }   
-.add_offer_wrap .input-group { width:200px;}
-.add_offer_wrap .input-group span { padding: 5px 25px 5px 10px !important;} 
-.file1 { padding: 5px 12px !important; width:100px !important;}
-.file-btn { width:100px !important;}    
-.float { float:left; margin:0px 3px;}
- 
-.action-pop {
-    position:absolute; right:0px; top:30px; z-index:1000; display:none;
-    }
-.action-pop span {
-    background-color:#fff; padding:5px 0px !important; box-shadow:0px 0px 5px rgba(0,0,0,0.5); border-radius:5px; position:relative; display:block;
-    width:150px;
-    }   
-.action-pop span:after {
-    bottom: 100%; left: 85%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
-    border-color: rgba(136, 183, 213, 0); border-bottom-color: #ccc; border-width: 10px; margin-left: -10px;
-    }   
-.action-pop a {
-    display:block; font-size:13.5px; padding:5px 12px; border-bottom:1px dotted #f1f1f1; color:#454545;
-    }
-.action-pop a i {
-    display:inline-block; padding:0px 5px 0px 0px;
-    }
-.action {
-    }
-.action i {
-    display:inline-block; padding:0px 5px 0px 8px !important; color:#454545;
-    }   
-     
-     
-.shortlist-wrap {
-    width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
-    transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
-    z-index:10000; max-height:100%; min-height:100%; overflow-y:auto;
-    }
-.shortlist-wrap.shortlist-wrap_active {
-    right:0px;
-    }
-     
-.submitnew-wrap {
-    width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
-    transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
-    z-index:10000; max-height:100%; min-height:100%; overflow-y:auto;
-    }
-.submitnew-wrap.submitnew-wrap_active {
-    right:0px;
-    }
-     
-.sub-btn1 {
-    position:absolute; background-color:#3186d6; color:#fff !important; right:0px; padding:4px 20px; border-radius:2px; top:1px;
-    border:1px solid #2677c4;
-    }               
-.sub-btn1:hover {
-    background-color:#2677c4;
-    }   
-     
-.pras {}
-.pras p {
-    position: absolute; left:0px;
-}
-.pad-sea {
-    display: inline-block; padding: 1px 280px 2px 0; min-height: 30px;
-}           
+package com.bis.sourcelead.constants;
 
-.pname .jquery_form_error_message{
-padding: 0px !important;
-font-size: 11px !important;
-color: red !important;
-display: block !important;
-width: 100% !important;
-}
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
-.timesheetAttachment {
-border: none !important;
-width: 100% !important;
-background-color: transparent !important;
-margin-bottom:15px !important;
-}
-.timesheetAttachment tr {
-	background-color: transparent !important;
-	height: 38px;
-}
-.timesheetAttachment td {
-	padding: 0px !important;
-	border: none !important;
-	width: 100% !important;
-	background-color: transparent !important;
-}
-.timesheetDocs{
-	width: 40%; float: left;
-}
-.timesheetDocs strong {
-	float: none; width: 100%; margin-bottom:2px;
-	}
-.timesheetDocs .commentFile	{
-	width: 100%;
-}
-#assignEmployeePagination_paginate { display: none !important;}	
-#assignEmployeePagination_info { display: none !important;}	
-.wrap_employeeTable  { height: 380px !important; overflow-y:scroll !important; overflow-x:hidden !important;}		 	
-#assignEmployeePagination_wrapper .dataTables_filter {position: fixed !important; top: 69px !important; right: 3px !important;}	
-#assignTeam .modal-footer { border-top: none;}	
+/**
+ * 
+ * @author Rajashekar
+ * @date 6th July 2016
+ *
+ */
 
+public class Constants {
+	public static final String[] FILE_HEADER_MAPPING = { "Employee ID", "First Name", "Last Name", "Email id",
+			"Phone Number", "Rate", "Rate Per", "Date of Join (dd/mm/yyyy)", "Role", "Invoice Frequency", "Day Hours" };
+	
+	public static final String[] AMEX_FILE_HEADER_MAPPING = { "Date", "Description", "Amount" };
+	
+	public static final String[] COMERICA_FILE_HEADER_MAPPING = { "Date", "No.", "Description", "Debit", "Credit" };
+	
+	public static final String[] CHASE_FILE_HEADER_MAPPING = { "Details", "Posting Date", "Description", "Amount", "Type", "Balance", "Check Or Slip#" };
 
-.floatNon a {
-	float:none !important;
-	}
+	
+	public static final String[] FONT_FAMILY = { "Arial", "Comisc", "Comic Sans MS", "Courier New", "Georgia", "Monotype", "Tahoma", "Times New Roman", "Trebuchet MS", "Verdana", "Impace" };
+	
+	public static final String[] FONT_SIZE = { "8px", "9px", "10px", "11px", "12px", "13px", "14px", "15px", "16px", "17px", "18px", "19px", "20px", "21px", "221px", "23px", "24px" };
+	
+	public static final String EMPLOYEE_ID = "Employee ID";
+	public static final String FIRST_NAME = "First Name*";
+	public static final String LAST_NAME = "Last Name";
+	public static final String EMAIL_ID = "Email id*";
+	public static final String PHONE_NUMBER = "Phone Number";
+	public static final String RATE = "Rate";
+	public static final String RATEPER = "Rate Per";
+	public static final String DATEOFJOIN = "Date of Join (mm/dd/yyyy)";
+	public static final String ROLE = "Role*";
+	public static final String INVOICE_FREQUENCY = "Invoice Frequency";
+	public static final String DAY_HOURS = "Day Hours";
+	public static final String FAILED_REASON = "Reason";
+	public static final String EMAIL = "Email*";
+	public static final String CLIENT_NAME = "Client Name*";
+	public static final String PHONE = "Phone";
+	public static final String STATUS = "Status";
+	public static final String OWNER = "Owner";
+	public static final String WEBSITE = "Website";
+	public static final String COUNTRY = "Country*";
+	public static final String SATATE = "State";
+	public static final String CITY = "City";
+	public static final String LEVEL = "Tier";
+	public static final String VENDOR_NAME = "Vendor Name*";
+	public static final String JOB_OTHER = "Other";
 
-.reqPop {
-	position: absolute; width: 100%; min-height: 100%; max-height: 100%; overflow: hidden; overflow-y: auto;
-	background-color:#fff; left: 0px; top: 0px; display: none; z-index: 100;
-}
-.reqPopInn {
-	position: relative; padding: 20px; min-height: 200px;
-}
-.ReqClick {
-	cursor: pointer; text-decoration: underline; color: blue;
-}
-.reqClose {
-	display: block; font-size: 15px; font-weight: 500; color: #ff4848; padding: 0px 15px 10px 10px; text-align: left;
-}
-.reqClose span {
-	cursor:pointer;
-}
-.reqClose b {
-	position:relative; float: right; cursor: pointer; font-size: 20px; top: -20px; color: #666;
-}
-.reqClose b:hover {
-	color:#ff4848;
-}
-.reqPopInn h3 {
-	margin: 0px 0px 5px 0px; font-size: 17px; font-weight: 500; background-color: #eef1fc;
-	border-radius: 3px; text-align: left; padding: 0px;
-}
-.reqPopInn h3 a {
-	display: inline-block; padding:12px 20px; margin: 0px; color: #3081cb; width: 100px;
-}
-.reqPopInn h3 span {
-	display: inline-block; padding:12px 20px; margin: 0px; color: #3081cb; float: right; text-decoration: underline;  cursor: pointer; font-size: 16px; font-size: 500;
-}
-.reqPopInn ul {
-	margin: 0px 0px; padding: 0px 0px;
-}
-.reqPopInn ul li {
-	list-style-type: none; font-size: 14px; font-weight: 500; color: #666; padding: 10px 15px;
-	border-bottom: 1px solid #f1f1f1; display: inline-table; width: 100%;
-}
-.reqPopInn ul li img {
-	width: 38px; height: 38px; border: 2px solid #ccc; display: block; margin: 0px 15px 0px 0px; float: left;
-}
-.reqPopInn ul li span {
-	font-size: 14px; font-weight: 400; color: #333; display: block !important; max-width: 80% !important; overflow: visible !important;
-	text-overflow:unset !important; white-space:normal !important; float: left; padding: 0px 5px 0px 0px; width: 80%;
-}
-.reqPopInn ul li b {
-	font-size: 13px; font-weight: 400; color: #787878; display: inline-block; padding: 0px 0px 0px 3px;
-}
-.reqPopInn ul li h6 {
-	font-size: 13px; font-weight: 400; color: #787878; display: block; padding: 2px 0px 0px 0px; margin: 0px 0px;
-}
-.reqPopInn ul li h7 {
-	font-size: 13px; font-weight: 400; color: #787878; display: block; padding: 2px 0px 0px 0px; margin: 0px 0px;
-}
-.reqPopInn ul li a {
-	font-size: 18px; color: #5CB85C; display: inline-block; float: right; padding: 5px 0px 0px 0px; cursor: pointer;
-}
-.reqPopInn ul li i {
-	font-size: 18px; color: #5CB85C; display: inline-block;
-}
-.reqPopInn .ratepop {
-	position: absolute; right: 130px !important; top: 7%; left:auto; min-height: 300px; width: 800px;
-	background-color: #f1f1f1; box-shadow:0px 0px 5px rgba(0,0,0,0.3); padding: 15px 25px; 
-}
-.reqPopInn .ratepop:after{
-	top:20%;
-	left:100%;
-	border: solid transparent;
-	content: " ";
-	height: 0;
-	width: 0;
-	position: absolute;
-	pointer-events: none;
-	border-color: rgba(255, 255, 255, 0);
-	border-width: 15px;
-	margin-top: -20px;
-	border-left-color:#ccc;
-}
-.reqPopInn .ratepop section.tbl-scroll {
-	height: 235px;
-}
-.reqPopInn .blank-data {
-	min-height: 220px;
-}
+	public static final Integer RECORD_ACTIVE = 1;
+	public static final Integer RECORD_INACTIVE = 0;
+	
+	
+	public static final Integer LEVEL1 = 1;
+	
+	public static final Integer LEVEL2 = 2;
+	   
+	public static transient DateFormat DMY = new SimpleDateFormat("dd-MM-yyyy");
+	public static transient DateFormat DF = new SimpleDateFormat("yyyy/MM/dd");
+	public static DateFormat DF_STD = new SimpleDateFormat("yyyy/MM/dd");
+	public static DateFormat DF_YMD = new SimpleDateFormat("yyyy-MM-dd");
+	public static DateFormat DF_STD_FORMAT = new SimpleDateFormat("MM/dd/yyyy");
+	
+	public static transient DateFormat MY = new SimpleDateFormat("MMMM-yyyy");
+	
+	public static DateFormat DF_DMY = new SimpleDateFormat("dd-MM-yyyy");
+	public static DateFormat DF_STD_DMY = new SimpleDateFormat("dd/MM/yyyy");
+	public static DateFormat SHORT_DF_STD_DM = new SimpleDateFormat("dd/MM");
+	
+	public static final DateFormat TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'HH:mm:ss");
+	/*public static final DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");*/
+	
+	public static String MAIL_TEAM_MEMBERS = "Mail To Team Members";
+	public static String INVITE_USER = "Invite User";
+	public static String INVITE_CLIENT = "Invite Client";
+	public static String INVITE_VENDOR = "Invite Vendor";
+	
+	public static String ACCEPT_CLIENT_INVITATION = "Accept Client Invitation";
+	public static String ACCEPT_VENDOR_INVITATION = "Accept Vendor Invitation";
+	
+	public static String ACCEPT_CLIENT = "Accept Client";
+	public static String ACCEPT_VENDOR = "Accept Vendor";
+	
+	public static String REJECT_CLIENT = "Reject Client";
+	public static String REJECT_VENDOR = "Reject Vendor";
+	
+	public static String SHORTLISTMAILFROMCLIENT_TO_VENDOR = "ShortlistMailFromClient_To_Vendor";
+	
+	public static String OFFER_MAIL_TO_VENDORS="Client to Vendor Acceptence";
+	public static String APPLICANT_INTERVIEW = "Applicant Interview";
+	public static String INTERVIEWER_INVITATION = "Interviewer Invitation";
+	public static String INTERVIEWER_TEMPLATE = "Interviewer Template";
+	
+	public static String HOT_LIST_CAMPAIGN = "HotListCampaign";
+	public static String EMAIL_TO_USERS = "EmailToUsers";
+	public static String EMAIL_CAMPAIGN = "EmailCampaign";
+	
+	public static String CLIENTORVENDORMAIL = "ClientOrVendorMail";
+	
+	public static String CUSTOM_USER_EMAIL = "customUserEmail";
+	
+	public static String SUBMIT_TO_CLIENT = "Submit To Client";
+	public static String ADD_OFFER_MAIL ="Forward the Mail";
 
-.cusScore {}
-.cusScore .cand-advsrch {
-	margin: 8px 15px;
-}
+	public static String VENDOR_INTERVIEW = "Vendors Interview";
+	public static String VENDOR_INVITATION = "Vendor Invitation";
+	
+	public static String EDIT_CLIENTCONTACT = "Edit SpocContact";
+	
+	public static String SHORTLIST_APPLICANTS = "ShortList Applicants";
+	
+	public static String MAIL_PROJECT_MANAGER_TIMESHEET = "Mail To Manager At Timesheet Submission";
+	public static String MAIL_TEAM_MEMBERS_APPROVED_TIMESHEET = "Timesheet Approved By Approver";
+	public static String MAIL_TEAM_MEMBERS_REJECTED_TIMESHEET = "Timesheet Rejected By Approver";
+	
+	public static String ENTITY_TYPE_EMAIL = "Email";
+	public static String ENTITY_TYPE_NOTIFICATION = "Notification";
+	public static String ENTITY_TYPE_TEMPLATE = "Notification";
+	
+	public static String CLIENT_INTERVIEW = "CLIENT_INTERVIEW";
+	public static String INTERVIEW = "INTERVIEW";
+	
+	public static String MAIL_REOPEN_TIMESHEET = "ReopenTimeSheet";
+	public static String MAIL_ACCEPT_REOPEN_TIMESHEET = "AcceptReopenTimeSheet";
+	public static String MAIL_REJECT_REOPEN_TIMESHEET = "RejectReopenTimeSheet";
+	
+	
+	public static String MAIL_BOX_SENT = "Sent";
+	public static String MAIL_BOX_INBOX = "Inbox";
+	
 
-.recPop {
-	width: 600px;
-}
+	public static String TASK_STATUS_OPEN = "Open";
+	public static String TASK_STATUS_CLOSE = "Closed";
+	public static String TASK_STATUS_MYTASK = "myTask";
+	public static String TASK_STATUS_ASSIGNTASK = "assignedTasks";
+	public static String TASK_STATUS_CLOSEDTASK = "closedTasks";
 
-/*  New timesheet */
+	public static String TASK_MECHANISM_EMAIL ="Task Mechanism";
+    public static String TASK_MECHANISM_NOTIFICATION="Task Mechanism";
+	
+	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
+	
+	public static String loginUserAsAdmin =":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = ts.projectMembers.projects.orgLocationsId.id)";
+	
+	public static String loginUserAsAdminWithMaxHeirarchyLevel ="(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pm.projects.orgLocationsId.id) and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectId.id = pm.projects.id))";
+	
+	
+	public static String loginUserAsAdminForProjects =":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = projects.orgLocationsId.id)";
+	
+	
+	/** projectMember  constants**/
+	public static String MEMBER_ACTIVE = "1";
+	public static String  MEMBER_IN_ACTIVE= "0";
+	
+	public static int CANDIDATE_ALL = 2;
+	public static int CANDIDATE_ACTIVE = 1;
+	public static int  CANDIDATE_IN_ACTIVE= 0;
+	
+	/** Candidate Skill  constants**/
+	public static int CANDIDATE_SKILL_ACTIVE = 1;
+	public static int CANDIDATE_SKILL_IN_ACTIVE= 0;
+	
+	public static String ACTIVE = "Active";
+	public static String INACTIVE = "In-Active";
 
-.timesheet_tableNew {
-    width:100%; font-size:14px; font-weight:400; max-height:400px; overflow-y:auto;
-    }
-.timesheet_tableNew table {
-    width:100%; font-size:14px; font-weight:400; border:none;
-    }   
-.timesheet_tableNew table tr.last_child {
-    background-color:#dadada;
-    }
-.timesheet_tableNew table tr.last_child td {
-    background-color:#dadada; font-weight:500; font-size:14px;
-    }  
-.timesheet_tableNew table tr.total_field {
-    border:none;
-    }      
-.timesheet_tableNew table tr th {
-    background-color:#375d81 !important; font-weight:400; color:#FFF; text-align:center;
-	width:10%; padding:4px 10px; border-left: 1px solid #447eb4;
-    }
-.timesheet_tableNew table tr th:first-child {
-    width:17%; border-left: none; text-align: left;
-    }
-.timesheet_tableNew table tr th i {
-    display:block; font-style:normal; font-size:12px; line-height:14px;
-    }
-.timesheet_tableNew table tr td {
-    width:10%; border-left: 1px solid #e8e8e8; padding:6px 10px; border-bottom: 1px solid #e8e8e8;
-    }
-.timesheet_tableNew table tr td:first-child {
-    border-left: none; width:17%; border-top: none;
-    }
-.timesheet_tableNew table tr:nth-child(even) {background: #f5f5f5;}
-.timesheet_tableNew table tr:nth-child(odd) {background: #fff;}    
-.timesheet_tableNew table tr td b {
-    font-weight:400; display: inline-block; padding:3px 0px; color:#FFF; font-size:11px; border-radius:3px; background-color:#3186d6;
-    text-align:center; width:75px; margin:1.5px 0px;
-    } 
-.timesheet_tableNew table select {
-	width:140px; padding: 4px 8px; border:1px solid #ccc; border-radius: 2px;
-}
+	/** projectMemberHistory constants**/
+	public static String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
+	public static String  PROJECT_MEMBER_HISTORY_CLOSED= "CLOSED";
+	public static String REQUIREMENT_EMAIL_NOTIFICATION = "Approval Mechanism";
+	
+	public static String REQUIREMENT_SEQUENTIAL_EMAIL_NOTIFICATION = "Approval Mechanism Sequential";
+	public static String APPROVED_EMAIL_NOTIFICATION = "Approved Requirement";
+	public static String REJECTED_EMAIL_NOTIFICATION ="Rejected Mail About The Requirement";
+	public static String RELEASEMECHANISM_EMAIL_NOTIFICATION="Release Mechanism";
+	public static String MAILREQUIREMENTTOMANAGER = "Requirement Posting";
+	public static String ASSIGNTEAMMEMBERSFORREQUIREMENT = "AssignToTeamMembers";
+	public static String  WEEK_TIME_SHEET_SUBMISSION= "Week Time Sheet Submission";
+	public static String TIMESHEET_EMAIL_NOTIFICATION = "Timesheet Scheduler";
+	public static String TIMESHEET_MANAGER_NOTIFICATION = "Timesheet Scheduler Level1 Manager";
+	
 
-.timesheetNewHead {
-	padding:8px 10px 5px;
-}
-.timeNewSe {
-	float: left; width: 170px; margin: 0px 10px 0px 0px; position: relative;
-}
-.timeNewSe.timeNewSe_a {
-	width:240px;
-}
-.timeNewSe .chosen-container-single .chosen-single span {
-	font-size: 14px; line-height: 29px;
-}
-.timeNewSe .chosen-container-single .chosen-single b {
-	border:none;
-}
-.timeNewSe .chosen-container-single .chosen-single {
-	height: 32px !important; line-height: 32px !important; border-radius: 3px;
-}
-.timeNewSe b {
-    font-weight:400; display:inline-block; padding:5px 0px 0px; color:#FFF; font-size:14px; border-radius:3px;
-	background-color:#3186d6; width: 60%; border: 1px solid #216fb9; text-align: center; height: 31px;
-	text-transform: uppercase;
-    }  
-.timeNewSe b.proj_active { background-color:#34c244; border: 1px solid #3c9a13;}
-.timeNewSe b.proj_deactivate { background-color:#ef4c4c; border: 1px solid #d72b2b;}
-.timeNewSe b.proj_process { background-color:#d98f47; border: 1px solid #c3762b;}
-.timeNewSe b.proj_withdraw { background-color:#0f9fa1; border: 1px solid  #0f9fa1; cursor:pointer;}
+	public static String OFFERREJECT_EMAIL = "Vendor Offer Reject";
+	
+	public static String OFFERACCEPT_EMAIL = "VendorAcceptedOffer";
+	
+	public static String APPLICANT_RECEIVE_MAILABOUT_REQUIREMENT_EMAIL = "ApplicantReceiveMailAboutRequirement";
+	
+	public static String APPLICANT_RECEIVE_MAILABOUT_REQUIREMENT_NOTIFICATION = "ApplicantReceiveMailAboutRequirement";
+	public static String APPLICANT_ACCEPT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION = "ApplicantAcceptRequirement";
+	public static String APPLICANT_REJECT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION = "ApplicantRejectanceRequirement";
+	
+	public static String APPLICANT_NEGOTIATE_REQUIREMENT = "ApplicantNegotiateRequirement";
+	public static String USER_RATE_NEGOTIATION = "UserRateNegotiation";
+	public static String CLIENT_RATE_NEGOTIATION = "ClientRateNegotiation";
+	public static String VENDOR_RATE_NEGOTIATION = "VendorRateNegotiation";
+	public static String USER_ACCEPT_RATE_NEGOTIATION = "UserAcceptRateNegotiation";
+	public static String USER_REJECT_RATE_NEGOTIATION = "UserRejectRateNegotiation";
+	public static String CLIENT_ACCEPT_RATE_NEGOTIATION = "ClientAcceptRateNegotiation";
+	public static String VENDOR_ACCEPT_RATE_NEGOTIATION = "VendorAcceptRateNegotiation";
+	public static String CLIENT_REJECT_RATE_NEGOTIATION = "ClientRejectRateNegotiation";
+	public static String VENDOR_REJECT_RATE_NEGOTIATION = "VendorRejectRateNegotiation";
 
-.timeNewSe i {
-	font-size: 15px; color: #666; display: inline-block; padding: 5px 5px; margin: 0px 0px 0px 5px;
-	cursor: pointer; position: relative;
-}
-.timeNewSeMess {
-	position: absolute; width: 220px; z-index: 100; right: -50px; top: 37px; visibility: hidden; opacity: 0;
-	transition:0.2s all; -webkit-transition:0.2s all; -moz-transition:0.2s all;
-}
-.timeNewSeMess p {
-	position: relative; background: #fff; padding: 14px; box-shadow: 0px 0px 4px rgba(0,0,0,0.3);
-	border-radius: 3px; font-size: 14px; font-weight: 400; color: #666; font-family: roboto;
-	line-height: 20px;
-}
-.timeNewSeMess p:after {
-	bottom: 100%; left: 72%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
-	border-color: rgba(136, 183, 213, 0); border-bottom-color: #999; border-width: 10px; margin-left: -10px;
-}
-.timeNewSe i:hover div {
-	visibility: visible; opacity: 1;
-}
+	public static String ROLE_NAME_PROFESSIONAL = "ROLE_CROWDSOURCING_PROFESSIONAL";
+	public static String ROLE_NAME_INDEPENDENT_RECRUITER = "ROLE_CROWDSOURCING_RECRUITER";
+	
+	public static String PROFESSIONAL = "Professional";
+	public static String INDIVIDUAL_RECRUITER = "Recruiter";
+	public static String INVITE_PROFESSIONAL = "Professional Invitation";
+	public static String INVITE_INDIVIDUAL_RECRUITER = "Individual Recruiter Invitation";
 
-.timesheetNewTabs .project-tabs-menu {
-    margin:0px 0px; padding:4px 0px 0px 10px; position:relative; top:1px;
-    }
-.timesheetNewTabs .project-tabs-menu li {
-    float:left; margin-right:4px; background-color:#dedede; border:none; list-style-type:none;
-    border-radius:10px 10px 0px 0px; border-top:3px solid #f1f1f1; cursor: pointer;
-    }
-.timesheetNewTabs .project-tabs-menu li a {
-    padding:6px 25px; text-decoration:none; font-size:15px; color:#666; display:block;
-    }
-.timesheetNewTabs .project-tabs-menu li.subColor {
-    position:relative; background-color:#dedede; z-index:5; border-top:3px solid #f1f1f1; top: 1px;
-    }
-.timesheetNewTabs .project-tabs-menu .subColor a{
-    color:#454545;
-    }
-.subColor {
-	position:relative;
-}
-.subColor i {
-	position:absolute; top: 10px; right: 7px; color: #ff6600; font-size: 11px;
-}
-.timesheetNewTabs .project-tabs-menu li.current {
-    position:relative; background-color:#fff; z-index:5; border-top:2px solid #368ee0; top: 1px;
-    }
-.timesheetNewTabs .project-tabs-menu .current a{
-    color:#1d6cb5;
-    }
-
-
-.timesheetNewTabs .project_tabs {
-    border:none; padding: 7px 0px 0px 0px; border-top: 1px solid #dedede;
-    }
-.export {
-	display: inline-block; float: right; position: relative;
-}
-.export p {
-	padding:0px 0px; margin: 6px 10px 0px 0px; font-size: 14px; font-weight: 400; color: #666; cursor: pointer;
-}
-.export p i {
-	font-size: 14px; display: inline-block; padding: 0px 10px;
-}
-.export ul {
-	position: absolute; width: 180px; right: 5px; background: #fff; z-index: 100; padding: 5px;
-	border-radius: 2px; box-shadow:0px 0px 5px rgba(0,0,0,0.2); top: 30px; display: none;
-}
-.export ul li {
-	float: none; width: 100%; background: #fff !important; border: none !important; padding: 4px 8px;
-	border-radius: 0px !important;
-}
-.export ul li i {
-	display:inline-block; padding: 0px 0px 0px 10px;
-}
-.export ul li:hover {
-	background: #f1f1f1 !important;
-}
-
-   .project_details_cta.project_details_view span {
-   display:inline; float:left; width:60%; text-overflow: inherit; white-space: normal; overflow: visible;
-   font-weight:500; word-wrap: break-word;
-   }
-
-.require_wrap_details_cta.require_wrap_details_view span  {
-   display: inline; float: left; width: 60%; text-overflow: inherit; white-space: normal; overflow: visible;
-       font-weight: 500; word-wrap: break-word;
-   }
-
-.addicon .chosen-drop ul li:before{
-font-family: Fontawesome;
-content: '\f073';
-padding-right:10px;
-} 
-
-.timesheet_appr_table {
-	overflow-x: auto;
-}
-
-.timesheet_appr_table table tr td div {
-	min-width: 150px;
-}
-.timesheet_appr_table table tr td div.sm {
-	min-width: 105px;
-}
-.timesheet_appr_table table tr td div.xs {
-	min-width: 80px;
-}
-
-#freewha {
-    display: none !important;
-}
-
-
-.loadTime {
-	position:absolute; width: 100%; height: 100%; background-color: rgba(255,255,255,0.7); left: 0px; top: 0px;
-	text-align: center; background-image: url(../images/load1.svg); background-repeat: no-repeat; background-position: center;
-}
-.totalText {
-	position: absolute; top: 15px;
-}
-.totalText span {
-	font-size: 15px; font-weight: 500; /*color: #666;*/ display: inline-block; padding: 0px 10px 0px 0px; position: relative;
-	top: -3px;
-}
-.totalText input {
-	background-color: transparent; border: none; font-size: 25px;width:35%;
-}
+	public static String APPLICANT_ACCEPT_RATE = "ApplicantAcceptRate";
+	public static String APPLIED_TO_REQUIREMENT = "Applied To Requirement";
+	public static String REFER_REQUIREMENT_TO_PROFESSIONAL = "Refer Requirment To Professional";
+	
+	
+	public static final DateFormat TMS = new SimpleDateFormat ("hh:mm a");
 
 
 
 
-.openJobsWrap {}
-.openJobsWrap .select-fild select {
-	width: 200px;
-}
-.openJobsHead {
-	width: auto; border-radius: 3px; padding: 0px 0px; position: relative;
-} 
-.openJobsHead .cand-advsrch {
-	margin: 0px 10px; float: left;
-}
-.openJobsHead .cand-advsrch a {
-	padding: 6px 10px;
-}
-.openCta {
-	width: auto; background-color: #fff; box-shadow: 0px 0px 3px rgba(0,0,0,0.2); border-radius: 3px;
-	margin-top: 12px; position: relative;
-}
-.openCtaRight {
-	padding:15px 25px 20px; background-color: #f2f8ff; width: 28%; right:0px; top: 0px; position: absolute; height: 100%;
-}
-.openCtaRight p {
-	font-size:14px; font-weight: 400; color: #454545; margin: 0px 0px 1px 0px;
-}
-.openCtaRight span {
-	display:block; font-size: 23px; color: #1686b0;
-}
-.openCtaRight span a {
-	border:none; display: inline-block; padding: 0px 0px; margin: 0px 5px 0px 0px;
-}
-.openCtaRight .fa-linkedin-square {
-	color:#1686b0;
-}
-.openCtaRight .fa-facebook-square {
-	color:#4e71a8;
-}
-.openCtaRight .fa-twitter-square {
-	color:#1cb7eb;
-}
-.openCtaRight .fa-envelope-square {
-	color:#ca3737;
-}
-.openPostDate {
-	display: inline-block; padding: 0px 0px; margin: 10px 0px 0px 0px; color: #607080; font-size: 13px;
-}
-.openPostDate b {
-	font-weight:400; display: inline-block; font-size: 13px; padding: 0px 0px 0px 5px; color: #454545;
-}
-.openPostBtns {
-	padding: 5px 0px 0px 0px;  position: relative;
-}
-.openPostBtns a {
-	display:inline-block; padding: 4px 20px; background-color: #368ee0; font-size: 14px; font-weight: 500;
-	color: #fff; border-radius: 3px; text-transform: uppercase; margin: 0px 5px 0px 0px;
-}
-.openPostBtns a.refer {
-	background-color:#375d81;
-}
-.openPostBtns a:hover, .openPostBtns a.appliedJob {
-	background-color:#0cc2aa; color: #FFF;
-}
-.OpenJob {
-	padding:15px 20px; width: 70%; float: left; position: relative;
-}
-.OpenJob h3 {
-	margin:0px 0px; padding: 3px 0px 0px; font-size: 15px; font-weight: 500; color: #1686b0;
-}
-.OpenJob h4 {
-	margin:0px 0px; padding: 8px 0px 2px 0px; font-size: 15px; font-weight: 400; color: #454545;
-}
-.OpenJob span {
-	display: block; border-top:none; border-bottom: none; margin: 5px 0px 0px 0px;
-}
-.OpenJob span b {
-	display:inline-block; font-size: 14px; font-weight: 400; color: #343434; border-right: none;
-	padding: 6px 25px 6px 0px; 
-}
-.OpenJob span b i {
-	padding: 0px 10px 0px 0px; font-size: 15px; color: #f15a29;
-}
+	public static String YES = "Y";
+	public static String NO  = "N";
+	public static String WAIT  = "W";
+	public static String REJECT  = "R";
+	public static String REJECTED  = "REJECTED";
+	public static String TEMP    = "T";
+	public static transient DateFormat STDF = new SimpleDateFormat("MM-dd-yyyy");
+	public static transient DateFormat DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd");
+	public static DateFormat DF_TM = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+	
+	public static int MAX_RESULTS_FIVE = 5;
+	public static int MAX_RESULTS_TEN = 10;
+	public static int MAX_RESULTS_TWENTY = 20;
+	public static int MAX_RESULTS_THIRTY = 30;
+	public static int MAX_RESULTS_FIFTY = 50;
+	public static int MAX_RESULTS_200 = 200;
+	public static int PAGES_INCREMENT = 10;
+	public static int PAGES_DECREMENT = -10;
+	
+	public static int MODULE_ATS = 2;
+	public static int MODULE_VMS = 3;
+	public static int MODULE_TIMESHEET = 4;
+	
+	public static String MODULE_ATS_STR = "2";
+	public static String MODULE_VMS_STR = "3";
+	public static String MODULE_TIMESHEET_STR = "4";
+	
+	public static int TAB_VENDOR = 9;
+	public static int TAB_CLIENT = 7;
+	public static int TAB_MY_TIMESHEET = 5;
+	public static int TAB_TIMESHEET_APPROVAL = 6;
+	public static int TAB_REQUIREMENT = 8;
+	public static int TAB_USER = 2;
+	public static int TAB_PROJECTS = 3;
+	
+	public static  String Dashboard = "Dashboard";
+	public static  String Users = "Users";
+	public static  String Projects = "Projects";
+	public static  String Clients = "Clients";
+	public static  String TimeSheet = "TimeSheet";
+	public static  String TimeSheetApproval = "TimeSheetApproval";
+	public static  String OrgSettings = "OrgSettings";
+	public static  String BackOffice = "BackOffice";
+	public static  String Finance = "Finance";
+	public static  String AssetManagement = "AssetManagement";
+	public static  String Profile = "Profile";
+	
+	
+	public static  String TimeSheet_Approval = "Timesheet Approval";
+	
+	public static  String Requirement = "Requirement";
+	public static  String Vendors = "Vendors";
+	public static  String Candidates = "Candidates";
+	
+	public static String SOURCELEAD_ORGCODE = "sourcelead.com";
+	public static String SOURCELEAD_LOCATIONCODE_IN = "in.sourcelead.com";
+	
+	/**Constants values for unique emails and notification **/
+	
+	public static String ORG_REGISTRATION = "Org Registration";
+	public static String FORGOT_PASSWORD = "Forgot Password";
+	public static String UPDATE_PASSWORD = "Update Password";
+	public static String MAIL_PROJECT_MANAGER = "Mail To Project Manager";
+	
+	public static String REJECTMAILFROMCLIENT_TO_VENDOR = "RejectMailFromClient_To_Vendor";
 
-.OpenJob h5 {
-	margin:0px 0px; padding: 4px 0px; font-size: 14px; font-weight: 400; color: #454545;
-}
-.OpenJob h5 strong {
-	font-weight:400; float: left; width: 50px; padding: 5px 0px 0px;
-}
-.OpenJob h5 strong.desc {
-	width:85px; padding: 0px;
-}
-.OpenJob h5 ul {
-	padding: 0px 0px; margin: 0px 0px; float: left; width: 85%;
-}
-.OpenJob h5 ul li {
-	float: left; list-style-type: none; padding: 3px 3px; font-size: 13px; color: #333;
-	margin: 2px; border-radius: 2px;
-}
-/*.OpenJob h5 ul li:nth-child(odd) {
-    background: #368ee0;
-}
-
-.OpenJob h5 ul li:nth-child(even) {
-    background: #0cc2aa;
-}
-.OpenJob h5 ul li:hover {
-	background-color:#375d81;
-}*/
-.OpenJob h5 p {
-	float: left; width: 85%; padding: 0px 0px 0px; font-size: 13px; line-height: 18px; color: #666;
-	text-overflow: ellipsis; white-space: nowrap; overflow: hidden; margin: 0px;
-}
-
-.OpenJob_a span {
-	display: block; border-top:none; border-bottom: none; margin: 5px 0px 0px 0px;
-}
-.OpenJob_a span b {
-	display:inline-block; font-size: 14px; font-weight: 400; color: #343434; border-right: none;
-	padding: 6px 25px 6px 0px; 
-}
-.OpenJob_a span b i {
-	padding: 0px 10px 0px 0px; font-size: 15px; color: #f15a29;
-}
-
-.loadJob {
-	background-color: #fff; box-shadow: 0px 0px 3px rgba(0,0,0,0.2); border-radius: 3px; text-align: center;
-	padding: 8px 0px; margin-top: 12px; font-size: 15px;
-}
-.loadJob i {
-	display:inline-block; margin: 0px 10px 0px 0px;
-}
-
-.appliedWrap {}
-.appliedWrap .fa-check-circle {
-	display: block; font-size: 50px; color: #0cc2aa; padding: 2px 0px 0px 0px;
-}
-.appliedWrap .openPostDate {
-	margin: 6px 0px 0px 0px;
-}
-.applShare {
-	padding: 6px 0px 0px 0px; font-size: 13px; color: #454545;
-}
-.applShare a {
-	font-size: 18px; margin: 0px 0px 0px 4px;
-}
-
-.time_appr_user {
-	width:180px;
-}
-.font13 {
-	font-size: 13px;
-}
-
-.requirement_details_a {
-	margin: 0px !important; border: 1px solid #d4d4d1 !important; border-radius: 5px 5px 0px 0px !important;
-	border-bottom: none !important; position: relative;
-}
-.shareJ {
-	font-size: 14px; font-weight: 500; color: #666; text-transform: uppercase; padding: 10px 0px 5px 0px;
-}
-.shareJ span {
-	display:inline-block; color: #1686b0; font-size: 22px; padding: 0px 0px 0px 10px;
-}
-.shareJ span a {
-	display:inline-block; margin: 0px 5px 0px 0px;
-}
-.shareJ .fa-facebook-square {
-	color:#4e71a8;
-}
-.shareJ .fa-twitter-square {
-	color:#1cb7eb;
-}
-.shareJ .fa-envelope-square {
-	color:#ca3737;
-}
-
-.referWrap {
-	position:absolute; width: 450px; left: 250px; background-color: #fff; top: 45px; z-index: 100;
-	box-shadow: 0px 0px 5px rgba(0,0,0,0.2); border-top: 3px solid #0cc2aa; border-radius: 5px; opacity: 0; visibility: hidden;
-	transition:0.2s; -webkit-transition:0.2s; -moz-transition:0.2s;
-}
-.referWrap.referWrapActive {
-	left: -275px; opacity: 1; visibility: visible;
-}
-.referWrapInn {
-	position: relative; padding: 10px 10px 15px;
-}
-.referWrapInn:after {
-	bottom: 100%; left: 90%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
-	border-color: rgba(136, 183, 213, 0); border-bottom-color: #0cc2aa; border-width: 13px; margin-left: -13px;
-}
-.referWrap .form-group {
-	margin:0px; padding: 0px 0px 8px; position: relative; height: 60px;
-}
-.referWrap .jquery_form_error_message {
-	padding: 0px 0px 0px 15px !important; margin: 0px; font-size: 11px; color: #f12929; font-weight: 500;
-}
-.referWrap .form-group label {
-	text-transform: capitalize; font-size: 13px; font-weight: 500; color: #545454; margin-bottom: 1px;
-}
-.referWrap .form-control {
-	height:30px;
-}
-.referWrap .btn {
-	padding: 4px 12px;
-}
-.referWrap .pull-right {
-	margin:5px 0px 0px 0px;
-}
-.vendor_wrap_inn_table .glyphicon-edit {
-	color: #333; display: inline-block; margin: 0px 8px 0px 0px;
-}
-
-.timesheet_head .referWrap {
-	top: 30px;
-}
-.timesheet_head .referWrap.referWrapActive {
-	left: -335px;
-}
-
-.settPop {
-	position: fixed; left: 0px; right: 0px; width: 550px; border-radius: 5px; top: 15%;
-	background-color: #fff; z-index: 16000; margin: 0px auto; box-shadow: 0px 0px 5px rgba(0,0,0,0.5); display: none;
-}
-.settPopInn {
-	padding: 0px 10px 25px;
-}
-.settPop .form-group {
-	padding: 0px;
-}
-.settPop .form-group {
-	margin:0px; padding: 0px 0px 8px;
-}
-.settPop .form-group label {
-	text-transform: capitalize; font-size: 13px; font-weight: 500; color: #545454; margin-bottom: 1px;
-}
-.settPop .form-control {
-	height:30px;
-}
-.settPop .btn {
-	padding: 4px 12px;
-}
-.settPop .pull-right {
-	margin:5px 0px 0px 0px;
-}
-.settPop h3 {
-	padding: 10px 25px; margin: 0px 0px 10px; background-color: #f1f1f1; font-size: 17px; color: #666;
-	border-radius: 5px 5px 0px 0px; position: relative;
-}
-.settPop h3 i {
-	position: absolute; right: 10px; top: 6px; cursor: pointer; padding: 3px;
-}
-.settPop h3 i:hover {color:#d94747;}
-.timeNewSe.timeNewSe_h {
-	float:right; margin: 0px 0px 0px 15px;
-}
-
-.openJobsHead span {
-	display: block; position: relative; padding: 0px 0px; margin: 0px 0px; float: left;
-}
-.openJobsHead span i {
-	position: absolute; font-size: 18px; left: 10px; top: 10px; color: #666;
-}
-.openJobsHead span i.fa-search {
-	font-size:15px; top: 11px;
-}
-.searchJob {
-	width: 260px; height: 38px; border:none; padding: 0px 10px 0px 35px; border-radius:2px; box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
-	font-size: 15px;
-}
-.searchJobLo {
-	margin: 0px 0px 0px 0px; width: 160px;
-}
-.jobBtn {
-	height: 38px; border:none; padding: 0px 20px; border-radius:2px; box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
-	font-size: 15px; font-weight: 500; text-transform: uppercase; color: #fff; background-color: #368ee0; margin: 0px 0px 0px 10px;
-}
-.AdSer {
-	font-size: 14px; font-weight: 500; color: #454545; padding: 5px !important; margin: 3px 0px 0px 0px; display: inline-block;
-}
-.openJobsHead .cand-advsrch-popup {
-	left: inherit; right: -250px; top: 38px; z-index: 200000;
-}
-
-.noRecords {
-	padding: 35px 0px; background-color: #fff; box-shadow: 0px 0px 2px rgba(0,0,0,0.3); border-radius: 3px; text-align: center;
-}
-.noRecords img {
-	width: 320px;
-}
+	public static String CONTACTS = "CONTACTS";
+	public static String VENDORSTYPE = "VENDORS";
+	/**Constants values for notifications **/
+	
+	public static String NOTIFICATION_UNREAD = "unread";
+	public static String NOTIFICATION_READ = "read";
+	public static String  NOTIFICATION_DELETED= "0";
+	public static String  NOTIFICATION_NOT_DELETED= "1";
+	
+	
+	public static String  TIME_SHEET_SUBMISSION= "Time Sheet Submission";
+	
 
 
+	/** for user roles**/
+	public static String ROLE_ADMIN = "ROLE_ADMIN";
+	public static String ROLE_APPROVER = "ROLE_APPROVER";
+	public static String ROLE_USER = "ROLE_USER";
+	public static String SOURCELEAD_ADMIN = "ROLE_SOURCELEAD_ADMIN";
+	
+	public static String HR_MANAGER = "ROLE_HR_MANAGER";
+	public static String ACCOUNT_MANAGER = "ROLE_ACCOUNT_MANAGER";
+	public static String SALES_MANAGER = "ROLE_SALES_MANAGER";
+	public static String RECRUITER = "ROLE_RECRUITER";
+	public static String ROLE_MANAGER = "ROLE_MANAGER";
+	
+	public static String Applicant_Acceptance_By_Manager_Of_Requirement = "ApplicantAcceptanceByManagerOfRequirement";
+	public static String Applicant_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager = "ApplicantWillReceiveMailAboutTheAcceptanceOfRequirementByManager";
+	
+	public static String[] RATEPER_LIST = {"Daily","Hourly","Weekly","Bi-Weekly","Semi-Monthly","Monthly","Yearly"};
+	
+	public static String[] ROLE_LIST = {"Admin","Employee","Project Manager","Team Lead"};
+	
+	public static String[] INVOICE_FREQUENCY_LIST = {"Weekly","Bi-Weekly","Semi-Monthly","Monthly"};
+	
 
-.timeNewSe.timeNewSe_month {
-    width:125px;
-}
-.timeNewSe.timeNewSe_week {
-    width:110px;
-}
+	/**  For LookUpData (Eductions,Skills) **/
+	
+	public static String EDUCATIONS = "Educations";
+	public static String SKILLS = "Skills";
+	
+	public static String ADMIN = "Admin";
+	
 
-
-.timeNewSe.timeNewSe_week_date {
-    width:196px;
-}
-.timeNewSe.timeNewSe_client {
-    width:120px;
-}
-.timeNewSe.timeNewSe_stage {
-    width:160px;
-}
-
-.export.dropexport{
-	float: left;
-}
-.export.dropexport p{
-margin: 6px 0px 0px 0px;
-	}
-
-
-/*  Modified  */
-.timeNewSe b.proj_closed { background-color:#d94747;  border: 1px solid #c3762b;}
-.timeNewSe b.proj_draft { background-color:#656565; border: 1px solid  #333;}
-
-
-/*.app_error_mes {
-    width:300px; background-color:#FFF; border-radius:3px; position:absolute; left: 0px;  top:23px; z-index:1000;
-    padding:15px 20px; box-shadow:0px 0px 8px rgba(0,0,0,0.5); font-size:14px; border:1px solid #368ee0;
-    transition:0.3s all ease-in-out; -webkit-transition:0.3s all ease-in-out; -moz-transition:0.3s all ease-in-out;
-     display:none;
-    }
+	public static String MAIL_SENT = "Sent";
+	public static String MAIL_NEW = "New";
+	public static String MAIL_RESEND = "Resend";
+	public static String MAIL_ACCEPTED = "Accepted";
+	public static String MAIL_REJECTED = "Rejected";
+	public static String OFFERMADE = "OFFERMADE";
+	public static String CLIENT_OFFERMADE = "CLIENT_OFFERMADE";
+	
+	public static String REFER_JOB_APPLIED = "Applied";
+	
+	
+	public static String REQUIREMENT_STATUS = "Draft";
+	
+	public static String TEAM_ACTIVE = "1";
+	public static String TEAM_IN_ACTIVE = "0";
+	
+	public static Integer DEFAULT_CATEGORY = 0;
+	
+	public static String WEEKLY = "Weekly";
+	public static String BI_WEEKLY = "Bi-Weekly";
+	public static String SEMI_MONTHLY = "Semi-Monthly";
+	public static String MONTHLY = "Monthly";
+	
+	
+	public static String[] ROLE_DROPDOWN = {"Admin","Project Manager","HR Manager","Recruiter"};
+	
+	public static String[] STATUS_DROPDOWN = {"Active","In-Active","New","Negotiation","Contracted"};
+	
+	public static String[] COUNTRY_DROPDOWN = {"India","Australia","France","Singapore","United Kingdom","United States"};
+	
+	public static String[] LEVEL_DROPDOWN = {"Tier-1","Tier-2","Tier-3","Tier-4","Tier-5"};
+	
+	public static String[] USER_EXCEL_HEADERS = { "Employee Id", "First Name", "Last Name", "Email-id", "Phone Number",
+			"Date Of Join", "Rate", "Location", "Role", "Manager", "status" };
+	public static String[] CANDIDATE_EXCEL_HEADERS = {"Firstname","Last name","Email id","Phone Number","Location","Designation","Education","Experience","Skills","Rate"};
+   
+	public static String[] REQUIREMENT_EXCEL_HEADERS = {"Requirement id","Requirement Title","Experience","Rate","Location","Skills","Manager","Priority","Application Form Name","Client Name","Client Contact Name","Client Contact Email"};
     
-.app_error_mes.app_error_mes_active {
-     right:160px; 
-    display:block;
-    }*/
+    public static String[] REQUIREMENT_PIPELINE_EXCEL_HEADERS={"Name","Email","PhoneNumber","Resume","Applied On","Rate","Source","Score","Experience","Status","Submitted On","Submitted By"};
+    
+    public static String[] REQUIREMENT_PIPELINE_REQUEST_SENT_HEADERS={"Name","Email","PhoneNumber","Resume","Applied On","Rate","Source","Score","Experience","Status"};
+	
+    public static String[] REQUIREMENT_PIPELINE_SUBMIT_TO_CLIENT_EXCEL_HEADERS={"Name","Email","PhoneNumber","Resume","Applied On","Applicant Rate","Submission Rate","Source","Score","Experience","Status","Submitted On","Submitted By","Client Contact"};
 
-.ts_app_error_mes {
-    width: 300px; background-color: #FFF; border-radius: 3px;position: absolute;right: 0px; top: 15px;z-index: 1000;
-    padding: 15px 20px; box-shadow: 0px 0px 8px rgba(0,0,0,0.5);font-size: 14px; border: 1px solid #368ee0;transition: 0.3s all ease-in-out;
-    -webkit-transition: 0.3s all ease-in-out;-moz-transition: 0.3s all ease-in-out;
-    display: none; text-align: inherit; max-height: 200px;overflow-y: scroll;
-}  
- .ts_app_error_mes.app_error_mes_active {
-    display:block;
-  }  
+    public static String[] REQUIREMENT_PIPELINE_SHORTLISTED_EXCEL_HEADERS ={"Name","Email","PhoneNumber","Resume","Applied On","Rate","Source","Score","Experience","Status","ShortListed By","ShortListed On"};
+    
+    public static String[] REQUIREMENT_PIPELINE_INTERVIEW_EXCEL_HEADERS={"Name","Email","Phone No","Experience","DateOfInterview","TimeOfInterview","Location"};
+    
+    public static String[] REQUIREMENT_PIPELINE_OFFERMADE_EXCEL_HEADERS={"Name","Email","Phone No","Experience","OfferDateJoining","Position","Offer Rate","Offerd Date","Attachment"};
+    
+    public static String[] REQUIREMENT_PIPELINE_REJECTED_EXCEL_HEADERS={"Name","Email","PhoneNumber","Resume","Applied On","Rate","Source","Rejected On","Rejected By","Rejected Stage","Status"};
+    
+    public static String[] TIMESHEET_EXCEL_HEADERS = {"Tasks","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Total"};
+    public static String[] TIMESHEET_EXCEL_HEADERS2 = {"Tasks","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Total"};
+    public static String[] TIMESHEET_EXCEL_HEADERS3 = {"Status"};
+    
+    public static String[] TIMESHEET_APPROVAL_MECHANISM_HEADER={"Employee Name","Email id","Phone Number","Client","projectName","Total","Stage","approved By"};
+   
+    public static String[] CLIENT_EXCEL_HEADERS = {"Client Name","Website","Location","Tiers","Number of Contacts"};
+    
+    public static String[] CLIENT_CONTACTS_EXCEL_HEADERS = {"Client Name","Name","Emailid","Phone Number","Owner","Role","Status"};
+    
+    public static String[] VENDOR_EXCEL_HEADERS = {"VendorName","Website","Location","Level","Number of Contacts"};
+    
+    public static String[] VENDOR_CONTACTS_EXCEL_HEADERS = {"Vendor Name","Name","Emailid","Phone Number","Owner","Role","Status"};
+    
+    public static String VENDOR = "Vendor";
+    
+    public static String CLIENT = "Client";
+    
+    public static String ELK_PROJECT_INDEX = "projects";
+	
+    public static String ELK_PROJECT_TYPE = "project";
+    
+    public static String ELK_CANDIDATE_INDEX = "candidates";
+    
+    public static String ELK_USER_INDEX = "users";
+    		
+    public static String ELK_CANDIDATE_TYPE = "candidate";
+    
+    public static String ELK_USER_TYPE = "user";
 
-.Refer {
-	font-size: 13px; font-weight: 500; color: #666;
-}
+    public static String ELK_REQUIREMENT_INDEX = "requirement";
+	
+    public static String ELK_REQUIREMENT_TYPE = "requirement";
+    
+    public static String ELK_CANDIDATE_ID_PREFIX = "CND";
+    
+    public static String ELK_CLIENTVENDOR_INDEX = "clientvendor";
+        
+    public static String ELK_CLIENTVENDOR_TYPE = "clientvendors";
+    
+    public static String ELK_CLIENTVENDOR_CONTACT_INDEX = "clientvendorcontacts";
+    
+    public static String ELK_CLIENTVENDOR_CONTACT_TYPE = "clientvendorcontacts";
 
+    
+    public static String ELK_CAMPAIGN_INDEX = "campaigns";
+	
+    public static String ELK_CAMPAIGN_TYPE = "campaign";
+    
+    public static String ELK_CAMPAIGN_ID_PREFIX = "CAMPAIGN";
+    
+    public static String CANDIDATE = "Candidate"; 
+    
+    public static String CONSULTANT = "Consultant";
+    
+    
+    public static String MAIL_TRASH = "Trash";
+    public static String MAIL_DELETE = "Deleted";
+    public static String MAIL_REQUESTED = "Requested";
+    
+    
+    public static String[] PROJECT_ASSIGNED_EMPLOYEES = {"Employee","Email id","Project Start Date","Project End Date","Approved Hours","Rejected Hours","Wiating for Approval","Saved Hours"};	
 
+    public static String[] VENDOR_CONTACTS_HEADERS = {"Vendor Name*","First Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
+    public static String[] CLIENT_CONTACTS_HEADERS = {"Client Name*","First Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
+    
+    public static String[] VENDOR_CONTACTS_STATUS_DROPDOWN = {"New","Active","In-Active","Negotiation","Contracted"};
+    public static String[] CLIENT_CONTACTS_STATUS_DROPDOWN = {"New","Active","In-Active","Negotiation","Contracted"};
+    
+    public static int level1 =1;
+    public static int level2 =2;
+    
+    public static int PREVIOUS_MONTH =-1;
+    public static int NEXT_MONTH =1;
+    public static int CURRENT_MONTH =0;
+    
+    public static String SHORTLIST_COUNT= "Shortlisted Applicants:";
+    public static String INTERVIEW_COUNT= "Interview Applicants: ";
+    public static String OFFER_COUNT= "Offer Applicants:";
+    public static String REJECTED_COUNT= "Rejected Applicants :";
+    public static String SUBMITTED_APPLICANTS_COUNT= "Submitted Applicants :";
+    public static String REQUEST_SENT_COUNT= "Request Sent Applicants :";
+    public static String SUBMIT_TO_CLIENT_COUNT= "Submit to Client Applicants :";
+    
+    public static String All_APPLICANTS = "all";
+    public static String DUPLICATE_APPLICANTS = "DUPLICATE_APPLICANTS";
+    
+    public static String REQ_SEARCHTYPE = "Requirement";
 
-.totalWrap {
-	float: left;
-}
-.totalWrap ul {
-	margin: 0px 0px; padding: 0px 0px;
-}
-.totalWrap ul li {
-	list-style-type: none; float: left; background-color:#0f9fa1; position: relative;
-	width: 150px; text-align: right; height: 42px; margin: 0px 1px 0px 0px; border-radius: 2px; 
-}
-.totalWrap ul li:first-child + li {
-	background-color:#e58339;
-}
-.totalWrap ul li:first-child + li + li {
-	background-color:#18a245;
-}
-.totalWrap ul li span {
-	position: absolute; text-align: left; display: block; width: 100%; font-size: 12px; color: #fff; padding: 2px 0px 0px 5px
-}
-.totalWrap ul li input {
-	background-color: transparent; border: none; width: 100%; display: block; text-align: right;
-	font-size: 20px; color: #fff; padding: 15px 15px 0px 0px;
-}
-.Rname {
-	font-size: 12px; display: block; font-weight: 500; width: 100px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
-	text-align: center;
-}
-#timesheetPopUp {
-	min-height: 400px;
-}
-.user_exp {
-right: -35px !important;
-}
-ul.ul_padding li {
-padding: 2px 10px !important;
-}
+    public static String ONE_DAY_AGO ="1 Day Ago";
+    public static String THREE_DAY_AGO ="3 Days Ago";
+    public static String ONE_WEEK_AGO ="1 Week Ago";
+    public static String TWO_WEEK_AGO ="2 Weeks Ago";
+    public static String ONE_MONTH_AGO ="1 Month Ago";
+    public static String THREE_MONTH_AGO ="3 Months Ago";
+    public static String ALL_RECORDS ="All";
+    
 
+    public static String SCORE_20 = "20";
+    public static String SCORE_10 = "10";
+    
+    public static String NOTICE_PERIOD_15DAYS = "15 Days";
+    public static String NOTICE_PERIOD_1MONTH = "1 Month";
+    public static String NOTICE_PERIOD_2MONTH = "2 Month";
+    public static String NOTICE_PERIOD_3MONTH = "3 Month";
+    public static String NOTICE_PERIOD_IMMEDIATELY = "Immediately available";
+    
+    public static Integer EXPERIENCE_26YEARS = 26;
+    public static String RATE_TYPE_HOURLY = "Hourly";
+    public static String RATE_TYPE_WEEKLY = "Weekly";
+    public static String RATE_TYPE_BI_WEEKLY = "Bi-weekly";
+    public static String RATE_TYPE_SEMI_MONTHLY = "Semi-Monthly";
+    public static String RATE_TYPE_MONTHLY = "Monthly";
+    public static String RATE_TYPE_BI_MONTHLY = "Bi-Monthly";
+   
+    public static String PROJECT = "Projects";
+    public static String USER = "User"; 
+    public static String REQUIREMENT = "Requirement";
+    public static String USERS = "Users"; 
 
-	/*    Reports CSS    */
-
-.reportsH {
-	padding: 0px 0px 0px 10px; position: relative;
-}
-.reportsH a {
-	font-size:15px; color: #454545; font-weight: 500; padding: 3px; display: inline-block;
-}
-.reportsH a .fa-pie-chart {
-	display:inline-block; padding: 0px 5px 0px 0px; color: #d94747;
-}
-.RePop {
-	position:absolute; z-index: 1000; right: -60px; top:30px; visibility: hidden; opacity: 0;
-	-webkit-transition: 0.2s all; -moz-transition: 0.2s all; transition: 0.2s all;
-}
-.RePop ul {
-	background-color: #fff; width: 220px; padding: 8px 15px; border-radius: 2px; position: relative;
-	box-shadow: 0px 2px 5px rgba(0,0,0,0.2); border: 1px solid #368ee0;
-}
-.RePop ul:after {
-	bottom: 100%; left: 70%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
-	border-color: rgba(136, 183, 213, 0); border-bottom-color: #368ee0; border-width: 8px; margin-left: -8px;
-}
-.RePop ul li {
-	list-style-type:none; display: inline-block; width: 100%;
-}
-.RePop ul li a {
-	font-size:14px; font-weight: 500; color: #545454; display: block; padding: 4px 0px;
-}
-.RePop ul li a i {
-	display:inline-block; padding: 0px 8px 0px 0px;
-}
-.RePop ul li a:hover{
-	color:#375d81 !important;
-}
-.reportsH:hover .RePop {
-	visibility: visible; opacity: 1; right: -30px;
-}
-
-.reportBtns {
-	width:50%; margin: 0px 10px;
-}
-.reportBtn {
-	width:30%; padding: 5px 0px; float: left;
-}
-
-.reportBtns .dashboard-datepkr {
-	float:left; padding: 5px 0px;
-}
-.reportBtns .dashboard-datepkr input {
-	height:34px; margin: 0px 0px 0px 10px; width: 140px;
-}
-.reportBtns .dashboard-datepkr .fa-calendar {
-	right:0px; top: 13px;
-}
-
-.reportsCount {
-	border-top: 1px solid #dedede;
-}
-.reportsCount ul {
-	margin:0px 0px; padding: 0px 0px;
-}
-.reportsCount ul li {
-	width:16.66666%; float: left; background-color:#fff; list-style-type: none; text-align: center; padding: 14px 0px;
-}
-.reportsCount ul li.colorTwo {
-	background-color:#f4f4f4; 
-}
-.reportsCount ul li span {
-	width:45px; height: 45px; background-color:#368ee0; display: inline-block; border-radius: 50%; color: #fff;
-}
-.reportsCount ul li span i {
-	display:inline-block; font-size: 23px; position: relative; top: 10px; 
-} 
-.reportsCount ul li span i.glyphicon-trash { 
-	font-size:20px; top: 12px;
-}
-.reportsCount ul li span i.glyphicon-send { 
-	left: -3px;
-}
-.reportsCount ul li span img {
-	width:28px; display: inline-block; position: relative; top: 5px; left: 2px;
-}
-.reportsCount ul li b {
-	position:relative; border-radius: 2px; border: 1px solid #878787; display: inline-block; padding: 5px 10px; color: #454545;
-	font-size: 14px; font-weight: 500px; margin: 0px 0px 0px 15px; top: 8px;
-}
-.reportsCount ul li b:after {
-	right: 100%; top: 50%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
-	border-color: rgba(136, 183, 213, 0); border-right-color: #878787; border-width: 10px; margin-top: -10px;
-}
-
-.reportsCount ul li:first-child + li span {
-	background-color:#CB4042;
-}
-.reportsCount ul li:first-child + li + li span {
-	background-color:#40cb91;
-}
-.reportsCount ul li:first-child + li + li + li span {
-	background-color:#c5427f;
-}
-.reportsCount ul li:first-child + li + li + li + li span {
-	background-color:#3C2E87;
-}
-.reportsCount ul li:first-child + li + li + li + li + li span {
-	background-color:#da3838;
-}
-
-	/*    Reports CSS    */
-
-
-
-.disCount {
-	position:absolute; right: -10px; top: -4px; width: 110px;
-}
-.disCount p {
-	font-size:10px; color: #666; padding: 6px 0px 0px 0px; display: block; text-align: center; cursor: pointer; position: relative;
-}
-.disCountTop {
-	width: 75px; height: 91px; background-image: url(../images/Dis.png); background-position: center; background-repeat: no-repeat;
-	background-size: cover; font-size: 10px; color: #fff; padding: 8px 4px 0px 4px; margin: 0px auto;
-}
-.disCountTop span {
-	display:block; margin: 0px 0px; padding: 0px 0px; text-align: center;
-}
-.disCountTop strong {
-	display:block; margin: 0px 0px; padding:2px 0px 0px; font-size: 12px; text-align: center;
-}
-.disCountTop b {
-	font-size: 23px; line-height: 27px; font-weight: 500; text-align: center; display: block;
-}
-.disCountTop b.inr {
-	font-size:18px; line-height: 20px; text-align: center;
-}
-.hover {
-	position:absolute; top: 1px; width: 100%; background-color: #fff; left: 0px; box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-	padding: 2px 5px; font-style: normal; font-size: 11px; height: 100%; opacity: 0; visibility: hidden;
-	transition:0.1s all; -webkit-transition:0.1s all; -moz-transition:0.1s all;
-}
-.disCount p:hover .hover {
-	opacity: 1; visibility: visible;
-}
-
-
-
-
-.chosen-choices {
-    max-height: 250px !important; overflow-y: auto !important;
-}
-
-.dataTables_empty{
-background-color: #fff; height: 200px !important; background-image:url(../images/norecords.jpg); background-repeat:no-repeat; background-position:center;
-background-size:260px;
-}
-
-.loadMoreDiv {
-background-color: #fff; height: 200px !important; background-image:url(../images/norecords.jpg); background-repeat:no-repeat; background-position:center;
-background-size:260px; margin: 0px 15px;
-}
-
-
-
-.user-panel .image {
-	min-height: 60px; max-height: 60px; background-color: #fff;
-}
-
-.user-panel .image img {
-	padding: 5px; max-width: 200px; width: 100%; max-height: 60px;
-}
-
-
-
-#searchList .search-result-widget {
-	background-color:#fff;
-}
-
-
-.width175 {
-	width: 190px !important;
-}
-.noMailImg {
-	background-image:url(../images/no-mails.jpg); background-repeat:no-repeat; background-position:center; width: 100px; height: 100px;
-	display: block; margin: 0px auto;
-}
-.modal-body {
-	padding: 0px 15px;
-}
-
-.cusShow {
-    min-width: 80px; display: none;
-}
-.repBtn {
-    position: relative; top: 5px; left:9px; padding: 5px 10px 6px;
-}
-
-.repoPositi {
-    position: relative;
-}
-
-.repoPositi .dt-buttons {
-    position: absolute !important; width: 90px; left: inherit; right: 220px !important; top:-116px;
-}
-.repoPositi .dt-buttons a {
-    font-size: 18px; padding: 5px 9px !important; border: 1px solid #BCBCBC !important;
-}
-.repoPositi .buttons-excel::before, .repoPositi .buttons-pdf::before {
-    top: 0px; left: 0px;
-}
-.repoPositi .dt-buttons a span {
-    display: none;
-}
-.repoPositi .dataTables_filter {
-    top: -113px !important;
-}
-.reopen-label {
-border-bottom: 1px solid #ddd;
-padding: 5px;
-margin-bottom: 0;
-color: #3032b1;
-}
-.reopen {
-margin: 0px 5px;
-border: 1px solid rgb(204, 204, 204);
-
-}
-.reopen-text-success {
-    color: #3c763d !important
-}
-.reopen-text-danger {
-    color: #a94442 !important
-}
+    public static String CLIENTS_CONTACTS_IMPORT_XLS = "clients_contacts_Import.xls";
+    public static String CLIENTS_CONTACTS_IMPORT_XLSX = "clients_contacts_Import.xlsx";
+    public static String CLIENTS_IMPORT_TEMPLATE_XLS = "clients_import_template.xls";
+    public static String CLIENTS_IMPORT_TEMPLATE_XLSX = "clients_import_template.xlsx";
+    
+    public static String VENDORS_CONTACTS_IMPORT_XLS = "vendors_contacts_Import.xls";
+    public static String VENDORS_CONTACTS_IMPORT_XLSX = "vendors_contacts_Import.xlsx";
+    public static String VENDORS_IMPORT_TEMPLATE_XLS = "vendors_import_template.xls";
+    public static String VENDORS_IMPORT_TEMPLATE_XLSX = "vendors_import_template.xlsx";
+    
+    
+    public static String CANDIDATE_FIRST_NAME = "First Name*";
+    public static String CANDIDATE_LAST_NAME = "Last Name";
+    public static String CANDIDATE_EAMIL = "Email id*";
+    public static String CANDIDATE_PHONE_NUMBER = "Phone Number";
+    public static String CANDIDATE_COUNTRY = "Country";
+    public static String CANDIDATE_STATE = "State";
+    public static String CANDIDATE_CITY = "City";
+    
+    public static String CANDIDATE_ADDRESS = "Address";
+    public static String CANDIDATE_DESIGNATION = "Designation";
+    public static String CANDIDATE_TYPE = "Type";
+    
+    public static String CANDIDATE_EXPERIENCE_YEARS = "Experience (Years)";
+    public static String CANDIDATE_EXPERIENCE_MONTHS = "Experience (Months)";
+    
+    public static String CANDIDATE_CURRENT_RATE = "Current Rate";
+    public static String CANDIDATE_CURRENT_RATE_TYPE = "Current Rate Type";
+    public static String CANDIDATE_CURRENT_RATE_CURRENCY = "Current Rate Currency";
+    
+    public static String CANDIDATE_EXPECTED_RATE = "Expected Rate";
+    public static String CANDIDATE_EXPECTED_RATE_TYPE = "Expected Rate Type";
+    public static String CANDIDATE_EXPECTED_RATE_CURRENCY = "Expected Rate Currency";
+    
+    public static String CANDIDATE_SKILLS_NAME = "Skills Name";
+    public static String CANDIDATE_EDUCATION = "Education";
+    public static String CANDIDATE_EMPLOERS = "Employer's";
+    
+    
+    public static String CUSTOM_REPORTS =  "custom";
+    public static String UTC_TIMEZONE =  "UTC";
+    
+    
+    
+    
+   
+}	
