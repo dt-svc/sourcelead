@@ -3067,4 +3067,25 @@ background-size:260px; margin: 0px 15px;
 .modal-body {
 	padding: 0px 15px;
 }
+.reopen-label {
+border-bottom: 1px solid #ddd;
+padding: 5px;
+margin-bottom: 0;
+color: #3032b1;
+}
+.reopen {
+margin: 0px 5px;
+border: 1px solid rgb(204, 204, 204);
+
+}
+
+.reopen-text-success {
+	color: #3c763d !important
+}
+.reopen-text-danger {
+	color: #a94442 !important
+}
+
+
+
 
