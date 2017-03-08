@@ -227,7 +227,7 @@ function editCandidate(candidateId){
 							
                             result = result + '<div class="col-md-6 custom-fields">';
 							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
-							result = result + '<select class="form-control" id="designationType" name="designationType" field-name="Designation Type" onchange="updateDesignationType(this);">';
+							result = result + '<select class="form-control" id="designationType1" name="designationType" field-name="Designation Type" onchange="updateDesignationType('+json.designationType+');">';
 							result = result + '<option value="">--Select Employment Type--</option>';
 							result = result + ' <option '+(json.designationType == "C2C" ? "selected" : '') +'>C2C</option>';
 							result = result + '<option  '+ (json.designationType == "W-2" ? "selected" : '') +'>W-2</option>';
@@ -387,8 +387,8 @@ function editCandidate(candidateId){
 							
 							$("#profileEditPopup").empty(); 
 							$("#profileEditPopup").append(result); 
-							
 							updateDesignationType();
+							
 							getAllCandidateCountries();
 							 getAllCandidateStates();
 							$(".edit-details").toggleClass("edit-details-active");
@@ -1502,7 +1502,8 @@ $('.selectpicker').selectpicker('refresh');
 <script>
 function updateDesignationType(){
 	
-	if(designationType.value == 'Other'){
+	var typeVal = $('#designationType1').val(); 
+	 if(typeVal == 'Other'){
 		  document.getElementById("designationTypeDiv").style.display="block";
 		  $("#designationOtherType").attr("data-validation-optional", "true");
 		  $("#designationOtherType").attr("data-validation", "validate_Space validate_length length2-250");
@@ -1510,7 +1511,7 @@ function updateDesignationType(){
 		document.getElementById("designationTypeDiv").style.display="none";
 		  $("#designationOtherType").attr("data-validation-optional", "true");
 		  $("#designationTypeDiv").find('p.jquery_form_error_message').remove();
-	}
+	} 
 }
 </script>
 

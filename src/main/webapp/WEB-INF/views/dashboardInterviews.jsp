@@ -4,19 +4,19 @@
 
 
  <!-- Inteviews -->
-      <div class="col-md-6">
-        <div class="dashboard-widget">
+      <div class="col-md-6 mb" >
+        <div class="dashboard-widget height400px">
           <h4 class="clearfix">Interviews
         <b class="dashboard-datepkr"><input type="text" class="input-sm" id="datepicker-int" readonly="readonly"><i class="fa fa-calendar"></i></b>  
           </h4>
           <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
-          <div class="clearfix require_wrap_table dashboard-data clients_wrap_table">
+          <div class="clearfix require_wrap_table dashboard-data filter_position">
             <ul class="nav nav-tabs">
               <li class="active" id="todayTab"><a data-toggle="tab" onclick="flushDate(); interviews('today')">Today</a></li>
               <li id="upcomingTab"><a data-toggle="tab" onclick="flushDate(); interviews('upcoming')">Upcoming</a></li>
               <li id="previousTab"><a data-toggle="tab" onclick="flushDate(); interviews('previous')">Previous</a></li>
             </ul>
-            <div class="tab-content clearfix mt custom-datatble">
+            <div class="tab-content clearfix">
               <div id="today" class="tab-pane fade in active"></div>
               <div id="upcoming" class="tab-pane fade"></div>
            	  <div id="previous" class="tab-pane fade"></div>
@@ -51,7 +51,7 @@ function interviews(dateRange){
 	        	        	$("#today").empty();
 	              			$("#today").removeAttr("style");
 	              			//if(json.length > 0){
-	            				resultToday = resultToday+'	<table id="requirementInterviewsPagination" class="display" cellspacing="0" width="100%">';
+	            				resultToday = resultToday+'	<table id="requirementInterviewsPagination" class="display" cellspacing="0" width="99.5%">';
 	            				resultToday = resultToday+'	<thead>';
 	            				resultToday = resultToday+'	  <tr>';
 	            				resultToday = resultToday+'	    <th>Applicant</th>';
@@ -129,6 +129,10 @@ function interviews(dateRange){
 </script>
 
 <script>
+$('#requirementInterviewsPagination').DataTable( {
+	"scrollX": true,
+	"autoWidth": false,
+});
 function requirementInterviewsPagination(){
     $('#requirementInterviewsPagination').DataTable( {
     	"scrollCollapse": false,
