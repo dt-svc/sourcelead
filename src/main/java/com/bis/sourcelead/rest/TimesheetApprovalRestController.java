@@ -573,11 +573,16 @@ public class TimesheetApprovalRestController {
 		        	
 		        	if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Bi-Weekly")){
 			        	for(ProjectMembers pm :projectMembers){
-			        		 Date biweeklyStrDateForEmpStartDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndEmployeeStartDate(pm.getProjects(),pm.getProjects().getStartDate());
-			        		 Date biweeklyStrDateForProjStartDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(pm.getProjects());
-			        		if((CalendarUtil.getNumberOfDays(biweeklyStrDateForEmpStartDate, actualStartDate)%14==0) || (CalendarUtil.getNumberOfDays(biweeklyStrDateForProjStartDate, actualStartDate)%14==0)){
-			        	    	freshProjectMembers.add(pm);
-			        	    }
+			        		 Date biweeklyStrDate = null;
+			        		 if(actualStartDate.before(CommonUtil.currentDate()) || actualStartDate == CommonUtil.currentDate()){
+			        			 biweeklyStrDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndEmployeeStartDate(pm.getProjects(),pm.getProjects().getStartDate());
+			        		 }
+			        		 else{
+			        			 biweeklyStrDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(pm.getProjects());
+			        		 }
+			        		 if(CalendarUtil.getNumberOfDays(biweeklyStrDate, actualStartDate)%14==0){
+			        	    	 freshProjectMembers.add(pm);
+			        	     }
 			        	
 			        	}
 		        	}
