@@ -629,17 +629,9 @@ public  class CalendarUtil {
 	}
 	
 	public static long getNumberOfDays(Date date1, Date date2){
-		  Calendar startCal = Calendar.getInstance(TimeZone.getDefault());
-		  startCal.setLenient(false);
-		  startCal.setTime(date1);
-		
-		  Calendar endCal = Calendar.getInstance(TimeZone.getDefault());
-		  endCal.setLenient(false);
-		  endCal.setTime(date2);
-		  
-	      long diff = (startCal.getTime()).getTime() - (endCal.getTime()).getTime();
-	     long  numberofDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-	     return numberofDays;
+		    long diff = date2.getTime() - date1.getTime();
+		    long  numberofDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+		    return numberofDays;
 		
 	}
 	public static int getDayOfTheDate(Date date){
