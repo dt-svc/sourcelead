@@ -67,6 +67,7 @@ import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.SubmissionXls;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -493,7 +494,11 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 
 		 if(jsonObj.has("WorkExperience") && !isNullOrEmpty(jsonObj.getString("WorkExperience"))){
 			 StringBuilder sb = new StringBuilder();
-			 templateFields.setWorkExperience(sb.append(jsonObj.getString("WorkExperience")).append(".").append(jsonObj.getString("monthExp")).toString());
+			 if(jsonObj.has("monthExp") && !isNullOrEmpty(jsonObj.getString("monthExp"))){
+				 templateFields.setWorkExperience(sb.append(jsonObj.getString("WorkExperience")).append(".").append(jsonObj.getString("monthExp")).toString());
+			 }else{
+				 templateFields.setWorkExperience(sb.append(jsonObj.getString("WorkExperience")).toString());
+			 }
 		 }
 		 
 		 if(jsonObj.has("Education") && !isNullOrEmpty(jsonObj.getString("Education"))){
@@ -1420,6 +1425,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				sendEmailtoApplicant(loginOrg, user,requirementSubmission,loginOrgLocation);
 			}
 			else if(StringUtils.equalsIgnoreCase(decision, "reject")){
+				
+				ApplicantSubmissionStatus previousStatus = requirementSubmission.getSubmissionStatus();
+				 
+				requirementSubmission.setPreviousSubmissionStatus(previousStatus);
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
 				if(jsonObj.has("comment")){
