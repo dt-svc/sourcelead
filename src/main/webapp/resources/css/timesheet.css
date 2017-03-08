@@ -2410,7 +2410,15 @@ margin-bottom:15px !important;
     color:#1d6cb5;
     }
 
-
+ .timesheetNewTabs .project-tabs-menu li.subColor:after{
+        color: #f60;
+		content: "\f005";
+		font-family: fontawesome;
+		padding-right: 5px;
+		position: absolute;
+		top: 5px;
+		right: 2px;
+    }
 .timesheetNewTabs .project_tabs {
     border:none; padding: 7px 0px 0px 0px; border-top: 1px solid #dedede;
     }

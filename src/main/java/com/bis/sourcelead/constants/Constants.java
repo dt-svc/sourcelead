@@ -70,6 +70,7 @@ public class Constants {
 	public static DateFormat DF_DMY = new SimpleDateFormat("dd-MM-yyyy");
 	public static DateFormat DF_STD_DMY = new SimpleDateFormat("dd/MM/yyyy");
 	public static DateFormat SHORT_DF_STD_DM = new SimpleDateFormat("dd/MM");
+	public static DateFormat SHORT_DF_MM_DD = new SimpleDateFormat("MMM-dd");
 	
 	public static final DateFormat TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'HH:mm:ss");
 	/*public static final DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");*/
@@ -398,6 +399,10 @@ public class Constants {
     
     public static String[] VENDOR_CONTACTS_EXCEL_HEADERS = {"Vendor Name","Name","Emailid","Phone Number","Owner","Role","Status"};
     
+    public static String[] SHORTLIST_CANDIDATE_FROM_CLIENT_TO_VENDOR_HEADER={"CandidateName","PhoneNumber","Work Experience","status"};
+    
+    public static String SHORTLIST_CANDIDATE_COUNT= "shortlist_candidate :";
+	
     public static String VENDOR = "Vendor";
     
     public static String CLIENT = "Client";
@@ -527,8 +532,8 @@ public class Constants {
     public static String CANDIDATE_DESIGNATION = "Designation";
     public static String CANDIDATE_TYPE = "Type";
     
-    public static String CANDIDATE_EXPERIENCE_YEARS = "Experince (Years)";
-    public static String CANDIDATE_EXPERIENCE_MONTHS = "Experince (Months)";
+    public static String CANDIDATE_EXPERIENCE_YEARS = "Experience (Years)";
+    public static String CANDIDATE_EXPERIENCE_MONTHS = "Experience (Months)";
     
     public static String CANDIDATE_CURRENT_RATE = "Current Rate";
     public static String CANDIDATE_CURRENT_RATE_TYPE = "Current Rate Type";
@@ -546,7 +551,7 @@ public class Constants {
     public static String CUSTOM_REPORTS =  "custom";
     public static String UTC_TIMEZONE =  "UTC";
     
-    
+    public static String DATE_DD_MM_YYYY ="dd-MM-yyyy";
     
     
    
