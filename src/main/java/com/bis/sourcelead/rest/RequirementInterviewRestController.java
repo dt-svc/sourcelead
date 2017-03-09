@@ -65,7 +65,7 @@ public class RequirementInterviewRestController {
 	RequirementInterviewHistoryService requirementInterviewHistoryService;
 	
 	@Autowired
-	private UserRoleService UserRoleService;
+	private UserRoleService userRoleService;
 	
 	@RequestMapping(value = "/getAllInterviewers")
 	public @ResponseBody String getAllApprovers(HttpServletRequest request) throws Exception {
@@ -76,7 +76,7 @@ public class RequirementInterviewRestController {
 		
 		List<User> interviewersList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
 		for(User userList:interviewersList){
-			UserRole user = UserRoleService.getUserRoleByUserIdAndLocationId(userList.getId(), orgLocations.getId());
+			UserRole user = userRoleService.getUserRoleByUserIdAndLocationId(userList.getId(), orgLocations.getId());
 			if(!Constants.EMPLOYEE.equals(user.getUserType())){
 				interviewersNewList.add(userList);
 			}
