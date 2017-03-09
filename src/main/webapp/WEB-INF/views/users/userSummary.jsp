@@ -58,7 +58,7 @@ $(document).ready(function(){
 	 getUserSummaryDetails(userId);
 	 $('body').on('focus', '#DateofJoin', function() {
 		 $('#DateofJoin').datepicker({
-			 dateFormat: 'yy-mm-dd',
+			 dateFormat: 'dd/mm/yy',
 			 changeMonth: true,
 			 changeYear: true, 
 			});
@@ -1241,7 +1241,7 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Date of join</label>';
 					if(json.hireDateStr != null && json.hireDateStr != "" && json.hireDateStr != "undefined"){
-						result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" readonly="readonly">';
+						result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" readonly="readonly">';
 					}else{
 						result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" readonly="readonly">';
 					}
