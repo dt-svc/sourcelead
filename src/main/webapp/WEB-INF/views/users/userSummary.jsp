@@ -58,7 +58,7 @@ $(document).ready(function(){
 	 getUserSummaryDetails(userId);
 	 $('body').on('focus', '#DateofJoin', function() {
 		 $('#DateofJoin').datepicker({
-			 dateFormat: 'dd/mm/yy',
+			 dateFormat: 'dd-mm-yy',
 			 changeMonth: true,
 			 changeYear: true, 
 			});

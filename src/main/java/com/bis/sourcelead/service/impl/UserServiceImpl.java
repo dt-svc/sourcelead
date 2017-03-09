@@ -417,7 +417,7 @@ public class UserServiceImpl implements UserService {
 		
 		if(jsonObj.has("dateofJoin") && !isNullOrEmpty(jsonObj.getString("dateofJoin"))){
 			try {
-				   SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+				   SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 				   employees.setHireDate(sdf.parse(jsonObj.getString("dateofJoin")));
 				} catch (Exception e) {
 				  e.printStackTrace();

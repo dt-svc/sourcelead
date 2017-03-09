@@ -379,7 +379,7 @@
   $( function() {
 	  
 	  $('#DateofJoin').datepicker({
-	      dateFormat: 'dd/mm/yy',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      //minDate: 0  this line for to restrict selection of previous dates
