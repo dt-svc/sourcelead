@@ -269,31 +269,14 @@ public class RequirementServiceImpl implements RequirementService {
 					location.append("--").append(".");
 				}
 			}if(jsonObj.has("maxExp")){
-				if(!"".equalsIgnoreCase(jsonObj.getString("maxExp"))){
 					requirement.setMaxExp(jsonObj.getString("maxExp"));
-				}else{
-					requirement.setMaxExp("");
-				}
 			}if(jsonObj.has("minExp")){
-				if(!"".equalsIgnoreCase(jsonObj.getString("minExp"))){
 					requirement.setMinExp(jsonObj.getString("minExp"));
-				}else{
-					requirement.setMinExp("");
-				}
 			}if(jsonObj.has("rate")){
-				if(!"".equalsIgnoreCase(jsonObj.getString("rate"))){
 					requirement.setRate(jsonObj.getString("rate"));
-				}else{
-					requirement.setRate("");
-				}
 			}if(jsonObj.has("rateType")){
-				if(!"".equalsIgnoreCase(jsonObj.getString("rateType"))){
 					requirement.setRateType(jsonObj.getString("rateType"));
-				}else{
-					requirement.setRateType("");
-				}
-			}
-			if(jsonObj.has("description")){
+			}if(jsonObj.has("description")){
 					//requirement.setDescription(java.net.URLDecoder.decode(jsonObj.getString("description"), "utf-8"));
 					requirement.setDescription(jsonObj.getString("description"));	
 			}if(jsonObj.has("currencyCode")){

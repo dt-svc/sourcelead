@@ -50,7 +50,7 @@ $(document).ready(function() {
 	 if(requirementStatus == "" || requirementStatus =='undefined'  || requirementStatus == null){
 		  applicantStatus = "Applied";
 	 }
-	 $("#applicantStatus").append(applicantStatus); 
+	 $(".applicantStatus").append(applicantStatus); 
 	 
 });	
 </script>
@@ -60,12 +60,13 @@ $(document).ready(function() {
     <div class="pull-left">
       <h2>Referred To Me</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='professionalDashboard'/>">Home</a> » <span id="applicantStatus"></span>&nbsp; List </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='professionalDashboard'/>">Home</a> » <span class="applicantStatus"></span>&nbsp; List </div>
   </section>
   <section class="clearfix">
   <div class="timesheet_out timesheet_background crowdDash_btn">
-	<div class="timesheet_head pull-right zIndex">
-  	      <ul><div id ="statusDropDown"></div> </ul>
+	<div class="timesheet_head pull-left zIndex col-md-8 paddingBtm">
+  	      <h4 class="pull-left"> <span class="applicantStatus"></span> List</h4>
+  	      <div id ="statusDropDown" class="pull-right mt10"></div>
   	</div>
   	<div id="professionalDashboardPortletList"></div>
   </div>
@@ -75,7 +76,7 @@ function myFunction(){
 	var startDate = '${startDate}'; 
 	 var endDate = '${endDate}'; 
 	 var requirementStatus = $("#navyOp").val();
-	 $("#applicantStatus").empty('');
+	 $(".applicantStatus").empty('');
 	 var applicantStatus = "";
 	 if(requirementStatus == "SHORTLIST"){
 		 applicantStatus ="Shortlist";
@@ -92,7 +93,8 @@ function myFunction(){
 	 if(requirementStatus == "" || requirementStatus =='undefined'  || requirementStatus == null){
 		  applicantStatus = "Applied";
 	 }
-	 $("#applicantStatus").append(applicantStatus); 
+	 $(".applicantStatus").append(applicantStatus); 
+	 
 	
     professionalDashboardPortletList(startDate,endDate,requirementStatus);
 }
@@ -121,18 +123,15 @@ function portletListFilter(requirementStatus){
 		    success: function(data) {
 	    	 var json = JSON.parse(data);
 	    	 var result ='';
-	    	 result =result +'<li class="select-field"><i class="fa fa-filter"></i>';
+	    	 result =result +'<span class="select-field"><i class="fa fa-filter"></i>';
 	    	 result =result +'<select name = "navyOp" id="navyOp" onChange="myFunction(this);">'; 
 	    	 result =result +'<option '+ (requirementStatus == "" ? "selected" : '') +' value = "">Applied ('+json.appliedJobs+')</span></option>';
 	    	 result =result +'<option '+ (requirementStatus == "SHORTLIST" ? "selected" : '') +' value = "SHORTLIST">Short Listed ('+json.shortlistJobs+')</option>';
 	    	 result =result +'<option '+ (requirementStatus == "INTERVIEW" ? "selected" : '') +' value = "INTERVIEW">Interviews ('+json.interviews+') </option>';
 	    	 result =result +'<option '+ (requirementStatus == "OFFERMADE" ? "selected" : '') +' value = "OFFERMADE">Offered ('+json.offeredJobs+') </option>';
 	    	 result =result +'<option '+ (requirementStatus == "REJECTED" ? "selected" : '') +' value = "REJECTED">Rejected ('+json.rejectedJobs+') </option>';
-	    	 
-	    	 
-	    	 
 	    	 result =result +'</select>';
-	    	 result =result +'</li>';
+	    	 result =result +'</span>';
 	    	   $("#statusDropDown").empty();
 	           $("#statusDropDown").append(result);
 		    }

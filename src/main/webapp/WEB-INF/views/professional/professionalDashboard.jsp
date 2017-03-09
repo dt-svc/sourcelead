@@ -84,6 +84,7 @@ $(document).ready(function(){
       <div class="col-md-12">
 		<div class="dashboard-widget clearfix">
 				    <div class="row">
+					  <div style="visibility:hidden" id="customDate">
 					  <div class="col-md-3 paddingRight">
 					     <input type="text" value="" placeholder="From Date" class="form-control input-sm calendar" id="portletfromdate" name="From Date" readonly="readonly">
 					  </div>
@@ -92,6 +93,13 @@ $(document).ready(function(){
 					  </div>
 					  <div class="col-md-2 paddingLeft">
 						  <button type="button" class="btn btn-sm btn-primary" onclick="getJobPortlets();"><i class="fa fa-search"></i>&nbsp;&nbsp;Search</button>
+					  </div>
+					  </div>
+					  <div class="col-md-2  col-md-offset-2 select-field">
+					   <select class="form-control active" id="refertomeChangeMonth" onchange="refertomeChangeMonth(this)">
+					   		<option selected value="currentMonth">Current Month</option>
+					   		<option value="customize">Customize</option>
+					   </select>
 					  </div>
 				  </div>
       <div id="jobPortletsDiv" class="activeJobs row"></div>
@@ -122,7 +130,16 @@ $(document).ready(function(){
 	       </section> 
 	       
   </section>
-  
+  <script>
+  function refertomeChangeMonth(){
+	  var refertomeChangeMonth = $("#refertomeChangeMonth").val();
+	  if(refertomeChangeMonth == "customize"){
+		  document.getElementById("customDate").style.visibility='visible';
+	  }else{
+		  document.getElementById("customDate").style.visibility='hidden';
+	  }
+  }
+  </script>
 <script>
 function flushDate(){
 	$("#datepicker-int").val('');
