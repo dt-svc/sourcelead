@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.RequirementReportDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
 
 @Repository
@@ -30,9 +31,13 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		 
 		Session session = this.sessionFactory.getCurrentSession();
 		Map<String, Object> params = new HashMap<String,Object>();
-		String dateSubQuery = " and requirement.createdDate >= :startDateUTC and requirement.createdDate <= :endDateUTC";
-		params.put("startDateUTC",startDateUTC);
-		params.put("endDateUTC",endDateUTC);
+		String dateSubQuery = "";
+		if(null != startDateUTC && null != endDateUTC){
+			 dateSubQuery = " and requirement.createdDate >= :startDateUTC and requirement.createdDate <= :endDateUTC";
+			params.put("startDateUTC",startDateUTC);
+			params.put("endDateUTC",endDateUTC);
+		}
+		
 		
 		String from = "from Requirement requirement  left join fetch requirement.parentRequirement  left join fetch requirement.clientId left join fetch requirement.spocId left join fetch requirement.submissionTemplateId left join fetch requirement.clientSubmissionTemplateId left join fetch requirement.parentRequirement"; 
 		String subQuery = "";
@@ -88,5 +93,35 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		
 		return query.setCacheable(true).list();
 	}
+
+	@Override
+	public List<RequirementSubmissionHistory> getApplicantsReports(String userRoleName, OrgLocations orgLocation,
+			User user, Date startDateUTC, Date endDateUTC) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmissionHistory> getRequirementReports(Long requirementId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		//String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId requirementSubmission left join fetch requirementSubmission.requirement req where req.id = :requirementId";
+		String query = "from RequirementSubmissionHistory rsh "
+				+ " left join fetch rsh.submissionId rs left join fetch rsh.submissionId.requirement requirement where requirement.id = :requirementId";
+				/*+ ""
+				+ ""
+				+ "rs.id left join rs.requirement r on rs.requirement.id = r.id where rs.requirement.id = :requirementId";*/
+		return  session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
+	}
+
+//	@Override
+//	@Transactional(rollbackFor = { Exception.class })
+//	public List<RequirementSubmissionHistory> getApplicantsReports(String userRoleName, OrgLocations orgLocation,
+//			User user, Date startDateUTC, Date endDateUTC) {
+//		Long orglocationId = orgLocation.getId();
+//		Session session = this.sessionFactory.getCurrentSession();
+//		String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId requirementSubmission left join fetch requirementSubmission.requirement where requirementSubmission.orgLocations.id = :orglocationId";
+//		return  session.createQuery(query).setLong("orglocationId", orglocationId).setCacheable(true).list();
+//	}
 
 }
