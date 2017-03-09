@@ -522,7 +522,15 @@ public class SubmissionsRestController {
 				i++;
 			}
 		}
-		
+		User  submittedSourceUser = userService.getUserByUserCode(submission.getCreatedBy());
+		// This is to show the Requested User for Applicant AUthorization
+		if(null != submittedSourceUser.getLastName() && !" ".equalsIgnoreCase(submittedSourceUser.getLastName())){
+            StringBuilder sub = new  StringBuilder();
+            submission.setSubmittedBy(sub.append(submittedSourceUser.getFirstName()).append(" ").append(submittedSourceUser.getLastName()).toString() );
+		}else{
+			submission.setSubmittedBy(submittedSourceUser.getFirstName());
+
+		}
 		submission.setSkillsList(skillsList.toString());
 		submission.setRequirementSubmissionTemplateFields(requirementSubmissionTemplateFields);
 		resultJson = toJSON(submission);
