@@ -26,5 +26,9 @@ public class RequirementReportServiceImpl implements RequirementReportService{
 	public List<RequirementSubmissionHistory> getApplicantsCountsPerReq(Long requirementId) {
 		return requirementReportDao.getRequirementReports(requirementId);
 	}
+	@Override
+	public Integer getApplicantsCountsForReports(Long orgLocationID,String applicantStatus) throws Exception {
+		return requirementReportDao.getApplicantsCountsForReports(orgLocationID,applicantStatus) ;	
+	}
 
 }
