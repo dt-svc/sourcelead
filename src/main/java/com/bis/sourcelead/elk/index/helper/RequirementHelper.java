@@ -189,8 +189,9 @@ public class RequirementHelper {
 					sb.append(requirement1.getSpocId().getClientUser().getFirstName());
 				}
 				requirementIndex.setClientContactName(sb.toString());
+				requirementIndex.setClientContactEmail(requirement1.getSpocId().getClientUser().getEmail());
 			}
-			requirementIndex.setClientContactEmail(requirement1.getClientId().getLocationId().getUser().getEmail());
+			//requirementIndex.setClientContactEmail(requirement1.getClientId().getLocationId().getUser().getEmail());
 		}
 				
 			// requirementIndex.setClient(requirement.getClientName());
