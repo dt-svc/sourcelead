@@ -2386,11 +2386,23 @@ margin-bottom:15px !important;
     }
 .timesheetNewTabs .project-tabs-menu li {
     float:left; margin-right:4px; background-color:#dedede; border:none; list-style-type:none;
-    border-radius:10px 10px 0px 0px; border-top:3px solid #f1f1f1;
+    border-radius:10px 10px 0px 0px; border-top:3px solid #f1f1f1; cursor: pointer;
     }
 .timesheetNewTabs .project-tabs-menu li a {
     padding:6px 25px; text-decoration:none; font-size:15px; color:#666; display:block;
     }
+.timesheetNewTabs .project-tabs-menu li.subColor {
+    position:relative; background-color:#dedede; z-index:5; border-top:3px solid #f1f1f1; top: 1px;
+    }
+.timesheetNewTabs .project-tabs-menu .subColor a{
+    color:#454545;
+    }
+.subColor {
+	position:relative;
+}
+.subColor i {
+	position:absolute; top: 10px; right: 7px; color: #ff6600; font-size: 11px;
+}
 .timesheetNewTabs .project-tabs-menu li.current {
     position:relative; background-color:#fff; z-index:5; border-top:2px solid #368ee0; top: 1px;
     }
@@ -2398,13 +2410,15 @@ margin-bottom:15px !important;
     color:#1d6cb5;
     }
 
-.timesheetNewTabs .project-tabs-menu li.subColor {
-    position:relative; background-color:#fff; z-index:5; border-top:2px solid #ff6600; top: 1px;
+ .timesheetNewTabs .project-tabs-menu li.subColor:after{
+        color: #f60;
+		content: "\f005";
+		font-family: fontawesome;
+		padding-right: 5px;
+		position: absolute;
+		top: 5px;
+		right: 2px;
     }
-.timesheetNewTabs .project-tabs-menu .subColor a{
-    color:#ff6600;
-    }
-
 .timesheetNewTabs .project_tabs {
     border:none; padding: 7px 0px 0px 0px; border-top: 1px solid #dedede;
     }
@@ -3053,15 +3067,54 @@ background-size:260px; margin: 0px 15px;
 .width175 {
 	width: 190px !important;
 }
-
+.noMailImg {
+	background-image:url(../images/no-mails.jpg); background-repeat:no-repeat; background-position:center; width: 100px; height: 100px;
+	display: block; margin: 0px auto;
+}
+.modal-body {
+	padding: 0px 15px;
+}
 
 .cusShow {
-	min-width: 80px; display: none;
+    min-width: 80px; display: none;
 }
 .repBtn {
-	position: relative; top: 5px; left:9px; padding: 5px 10px 6px;
+    position: relative; top: 5px; left:9px; padding: 5px 10px 6px;
 }
 
-.ReError {
-	font-size: 12px; color: #DA3838; padding: 1px 0px 0px 12px; margin: 0px 0px;
+.repoPositi {
+    position: relative;
+}
+
+.repoPositi .dt-buttons {
+    position: absolute !important; width: 90px; left: inherit; right: 220px !important; top:-116px;
+}
+.repoPositi .dt-buttons a {
+    font-size: 18px; padding: 5px 9px !important; border: 1px solid #BCBCBC !important;
+}
+.repoPositi .buttons-excel::before, .repoPositi .buttons-pdf::before {
+    top: 0px; left: 0px;
+}
+.repoPositi .dt-buttons a span {
+    display: none;
+}
+.repoPositi .dataTables_filter {
+    top: -113px !important;
+}
+.reopen-label {
+border-bottom: 1px solid #ddd;
+padding: 5px;
+margin-bottom: 0;
+color: #3032b1;
+}
+.reopen {
+margin: 0px 5px;
+border: 1px solid rgb(204, 204, 204);
+
+}
+.reopen-text-success {
+    color: #3c763d !important
+}
+.reopen-text-danger {
+    color: #a94442 !important
 }
