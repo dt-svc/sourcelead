@@ -12,6 +12,8 @@ public interface RequirementReportService {
 
 	List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String filterDate, Date startDateUTC, Date endDateUTC);
 
-	List<RequirementSubmissionHistory> getApplicantsCountsPerReq(Long requirementId);
+	List<RequirementSubmissionHistory> getApplicantsCountsPerReq(Long requirementId)throws Exception;
+
+	Integer getApplicantsCountsForReports(Long id, String applicantStatus)throws Exception;
 
 }

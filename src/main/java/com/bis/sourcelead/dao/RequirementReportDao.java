@@ -16,4 +16,6 @@ public interface RequirementReportDao {
 
 	List<RequirementSubmissionHistory> getRequirementReports(Long requirementId);
 
+	Integer getApplicantsCountsForReports(Long orgLocationID, String applicantStatus)throws Exception;
+
 }
