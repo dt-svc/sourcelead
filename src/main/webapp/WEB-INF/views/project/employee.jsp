@@ -339,7 +339,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
  		             }
  		             
 					 $('#endDate'+jsonData.id).datepicker({
-			    		      dateFormat: 'dd/mm/yy',
+			    		      dateFormat: 'dd-mm-yy',
 			    		      minDate: dt,
 			    		      maxDate: endDate,
 			    		      onClose: function() {
@@ -511,7 +511,7 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 						var opt = json[i];
 						if(endDateStr !=  null && endDateStr != '' && endDateStr != 'undefined'){
 							$('#startDate'+opt.id).datepicker({
-								dateFormat : 'dd/mm/yy',
+								dateFormat : 'dd-mm-yy',
 								changeMonth: true,
 								changeYear: true, 
 								minDate:startDateStr,
@@ -527,7 +527,7 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 							});
 
 							$('#endDate'+opt.id).datepicker({
-								dateFormat : 'dd/mm/yy',
+								dateFormat : 'dd-mm-yy',
 								changeMonth: true,
 								changeYear: true, 
 								maxDate:endDateStr,
@@ -543,7 +543,7 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 							
 						}else{
 							$('#startDate'+opt.id).datepicker({
-								dateFormat : 'dd/mm/yy',
+								dateFormat : 'dd-mm-yy',
 								changeMonth: true,
 								changeYear: true, 
 								minDate:startDateStr,
@@ -558,7 +558,7 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 							});
 
 							$('#endDate'+opt.id).datepicker({
-								dateFormat : 'dd/mm/yy',
+								dateFormat : 'dd-mm-yy',
 								changeMonth: true,
 								changeYear: true, 
 								minDate:startDateStr,
@@ -783,7 +783,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
   var reStatertDate = $('#Re-StartDate').val()
   if(projectEndDateStr != null && projectEndDateStr != "" && projectEndDateStr != 'undefined'){
 	  $('#Re-StartDate').datepicker({
-	      dateFormat: 'dd/mm/yy',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 		  minDate:endDate,
@@ -798,7 +798,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	  });
 	  
 	  $('#Re-EndDate').datepicker({
-	      dateFormat: 'dd/mm/yy',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      minDate:endDate,
@@ -812,7 +812,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
   }
   else{
 	  $('#Re-StartDate').datepicker({
-	      dateFormat: 'dd/mm/yy',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 		  minDate:endDate,
@@ -827,7 +827,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	  
 	
 	  $('#Re-EndDate').datepicker({
-	      dateFormat: 'dd/mm/yy',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      minDate:endDate,

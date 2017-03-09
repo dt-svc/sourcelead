@@ -293,7 +293,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-	 	String pattern = "dd/MM/yyyy";
+	 	String pattern = "dd-MM-yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
 	 	
     	Projects projects = new Projects();
@@ -489,11 +489,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 		logger.debug("In ProjectsServiceImpl class getProjectsBasedOnClientsAndStatusSelectionInFilters method...");
     	List<Projects> projectList = projectsDao.getProjectsBasedOnClientsAndStatusSelectionInFilters(userId,clients,status,orgLocationsId);
 		 for (Projects projects :projectList ){
-	    	    projects.setStartDateStr(Constants.DF_STD_DMY.format(projects.getStartDate()));
-	    	    projects.setEmployeeStartDateStr(Constants.DF_STD_DMY.format(projects.getStartDate()));
+	    	    projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
+	    	    projects.setEmployeeStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
 			    if(projects.getEndDate() != null){
-			    	 projects.setEndDateStr(Constants.DF_STD_DMY.format(projects.getEndDate()));
-			    	 projects.setEmployeeEndDateStr(Constants.DF_STD_DMY.format(projects.getEndDate()));
+			    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
+			    	 projects.setEmployeeEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
 			    }
 			    
 			    if(null != projects.getOrgRelationId()){
@@ -719,14 +719,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 		String resultJson =null;
 		
 		if(projects.getCreatedDate() != null){
-			projects.setCreatedDateStr(Constants.DF_STD_DMY.format(projects.getCreatedDate()));	
+			projects.setCreatedDateStr(Constants.DF_DMY.format(projects.getCreatedDate()));	
 		}
-	    projects.setStartDateStr(Constants.DF_STD_DMY.format(projects.getStartDate()));
+	    projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
 	    if(projects.getEndDate() != null){
-	    	 projects.setEndDateStr(Constants.DF_STD_DMY.format(projects.getEndDate()));
+	    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
 	    }
 	    if(projects.getUpdatedDate() != null){
-	    	projects.setUpdatedDateStr(Constants.DF_STD_DMY.format(projects.getUpdatedDate()));
+	    	projects.setUpdatedDateStr(Constants.DF_DMY.format(projects.getUpdatedDate()));
 	    }
 	    if(projects.getProjectSequeneNumber() != null){
 	    	projects.setProjectSequeneNumber(projects.getProjectSequeneNumber());
@@ -869,7 +869,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		    	projects.setProjectStatus(Project_Status.getNameByValue(jsonObj.getString("projectStatusId")));
 		    	
 		    		if(jsonObj.has("endDateStr1")){
-			    		String pattern = "dd/MM/yyyy";
+			    		String pattern = "dd-MM-yyyy";
 			    	     SimpleDateFormat format = new SimpleDateFormat(pattern);
 			    	     if(!jsonObj.getString("endDateStr1").isEmpty() && jsonObj.getString("endDateStr1") != null && !"NO DATA".equalsIgnoreCase(jsonObj.getString("endDateStr1"))){
 					    		previousEndDate = projects.getEndDate();
@@ -1034,9 +1034,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	    /**
 	    	     * To use onclick parameters for emp tab and task tab
 	    	     */
-	    	    projects.setStartDateStr(Constants.DF_STD_DMY.format(projects.getStartDate()));
+	    	    projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
 			    if(projects.getEndDate() != null){
-			    	 projects.setEndDateStr(Constants.DF_STD_DMY.format(projects.getEndDate()));
+			    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
 			    }
 				
 				 /*
@@ -1242,14 +1242,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 				 pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(pm.getId());
 			 }
 			 if(pmh != null && pmh.getProjectAssignedDate()!=null){
-				 pm.setProjectAssignedDateStr(Constants.DF_STD_DMY.format(pmh.getProjectAssignedDate()));
+				 pm.setProjectAssignedDateStr(Constants.DF_DMY.format(pmh.getProjectAssignedDate()));
             }
 	       	 if(pmh != null && pmh.getProjectTerminationDate()!=null){
-	       		pm.setProjectEndDateStr(Constants.DF_STD_DMY.format(pmh.getProjectTerminationDate()));
+	       		pm.setProjectEndDateStr(Constants.DF_DMY.format(pmh.getProjectTerminationDate()));
 	       	 }
 	       	 //to set actual project end date
 	       	 if(pm.getProjects().getEndDate() != null){
-	        		pm.setEndDate(Constants.DF_STD_DMY.format(pm.getProjects().getEndDate()));
+	        		pm.setEndDate(Constants.DF_DMY.format(pm.getProjects().getEndDate()));
 	        	 }
 	       	 if(pm.getEmployee() != null && pm.getEmployee().getUser() != null && pm.getEmployee().getUser().getId() != null){
 	          		pm.setUserId(pm.getEmployee().getUser().getId().toString());

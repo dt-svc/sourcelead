@@ -201,10 +201,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				 pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMembers.getId());
 			 }
 			 if(pmh != null && pmh.getProjectAssignedDate()!=null){
-				 projectMembers.setStartDate(Constants.DF_STD_DMY.format(pmh.getProjectAssignedDate()));
+				 projectMembers.setStartDate(Constants.DF_DMY.format(pmh.getProjectAssignedDate()));
              }
         	 if(pmh != null && pmh.getProjectTerminationDate()!=null){
-        		 projectMembers.setEndDate(Constants.DF_STD_DMY.format(pmh.getProjectTerminationDate()));
+        		 projectMembers.setEndDate(Constants.DF_DMY.format(pmh.getProjectTerminationDate()));
         	 }
         	 
         	 /*projectMembers.setStartDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectAssignedDate()));
@@ -212,7 +212,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectEndDate()));
 			}*/
 			if (projectMembers.getProjects().getEndDate() != null) {
-				projectMembers.setProjectEndDateStr(com.bis.sourcelead.constants.Constants.DF_STD_DMY.format(projectMembers.getProjects().getEndDate()));
+				projectMembers.setProjectEndDateStr(com.bis.sourcelead.constants.Constants.DF_DMY.format(projectMembers.getProjects().getEndDate()));
 			}
 	        Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId, projectMembers.getProjects().getId(), "DRAFT");
 	        Float draftTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(userId, projectMembers.getProjects().getId(), "DRAFT");
@@ -297,7 +297,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				Employees emp = employeesService.getEmployee(employeeId.toString());
 			 	pm.setEmployee(emp);
 				pm.setProjects(projects);
-				String pattern = "dd/MM/yyyy";
+				String pattern = "dd-MM-yyyy";
 	            SimpleDateFormat format = new SimpleDateFormat(pattern);
 	            
 	            HashSet<ProjectMembersHistory> pmhList = new HashSet<ProjectMembersHistory>();
@@ -361,7 +361,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		String teamMembersList = "";
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		String pattern = "dd/MM/yyyy";
+		String pattern = "dd-MM-yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
 		if (jsonObj.has("employeeMaxCount")){
 			String employeeMaxCount = jsonObj.getString("employeeMaxCount");
@@ -462,7 +462,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	* @since   2016-07-25
 	*/
 	public ProjectMembers saveManagersAsProjectMembers(JSONObject jsonObj,Projects projects, User user, String levelManager){
-			String pattern = "dd/MM/yyyy";
+			String pattern = "dd-MM-yyyy";
 	        SimpleDateFormat format = new SimpleDateFormat(pattern);
 		
 			ProjectMembers pm = new ProjectMembers();
