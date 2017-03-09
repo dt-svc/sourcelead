@@ -869,7 +869,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		    	projects.setProjectStatus(Project_Status.getNameByValue(jsonObj.getString("projectStatusId")));
 		    	
 		    		if(jsonObj.has("endDateStr1")){
-			    		String pattern = "dd-MM-yyyy";
+			    		String pattern = "dd/MM/yyyy";
 			    	     SimpleDateFormat format = new SimpleDateFormat(pattern);
 			    	     if(!jsonObj.getString("endDateStr1").isEmpty() && jsonObj.getString("endDateStr1") != null && !"NO DATA".equalsIgnoreCase(jsonObj.getString("endDateStr1"))){
 					    		previousEndDate = projects.getEndDate();
