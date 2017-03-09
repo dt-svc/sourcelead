@@ -1221,6 +1221,7 @@ public class CrowdSourcingRequirementsRestController {
 					rs.setRequirementSubmissionStatus(rs.getRequirement().getRequirementSubmissionStatus().toString());
 					rs.setRequirementJobId(rs.getRequirement().getJobId());
 					rs.setRequirementName(rs.getRequirement().getJobTitle());
+					rs.setRequirementUUID(rs.getRequirement().getRequirementUUID());
 				}
 				refer.setCrowdSourcingPortLetList(crowdSourcingPortLetList);
 			}catch (ParseException e) {

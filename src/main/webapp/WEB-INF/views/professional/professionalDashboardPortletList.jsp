@@ -3,9 +3,26 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
+
+<!-- these files for export -->
+<link href="https://cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css" rel="stylesheet">
+<script src="//code.jquery.com/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.flash.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js" type="text/javascript" charset="utf-8"></script>
+<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.print.min.js" type="text/javascript" charset="utf-8"></script>
+
+
  <style type="text/css">
  .require_wrap_details_cta b {
     width: 110px;
+}
+.top_o{
+top:0 !important;
 }
  </style>
 
@@ -14,51 +31,118 @@ $(document).ready(function() {
 	 var startDate = '${startDate}'; 
 	 var endDate = '${endDate}'; 
 	 var requirementStatus = '${requirementStatus}'; 
-	 
+	 professionalDashboardPortletListCounts(startDate,endDate,requirementStatus);
 	 professionalDashboardPortletList(startDate,endDate,requirementStatus);
+	 
+	 var applicantStatus = "";
+	 if(requirementStatus == "SHORTLIST"){
+		 applicantStatus ="Shortlist";
+	 }
+	 if(requirementStatus == "OFFERMADE"){
+		  applicantStatus = "Offered";
+	 }
+	 if(requirementStatus == "INTERVIEW"){
+		  applicantStatus = "Interviews";
+	 }
+	 if(requirementStatus == "REJECTED"){
+		  applicantStatus = "Rejected";
+	 }
+	 if(requirementStatus == "" || requirementStatus =='undefined'  || requirementStatus == null){
+		  applicantStatus = "Applied";
+	 }
+	 $("#applicantStatus").append(applicantStatus); 
+	 
 });	
 </script>
 
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
-      <h2>Portlet Details</h2>
+      <h2>Referred To Me</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='professionalDashboard'/>">Home</a> » Portlet List</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='professionalDashboard'/>">Home</a> » <span id="applicantStatus"></span>&nbsp; List </div>
   </section>
   <section class="clearfix">
-  <div class="timesheet_out timesheet_background">
+  <div class="timesheet_out timesheet_background crowdDash_btn">
 	<div class="timesheet_head pull-right zIndex">
-  	
-  	<ul>
-                <li id='referred_pop'><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i>|
-                	<div id="exportPop" class="referred_pop">
-                    	<ul>
-                        	<li><input id="c5" type="radio" name="referred"  onclick="portletListFilter('');"><label for="c5">Applied</label></li>
-							<li><input id="c6" type="radio" name="referred"  onclick="portletListFilter('SHORTLIST');"><label for="c6">Short Listed</label></li>
-							<li><input id="c7" name="referred" type="radio"  onclick="portletListFilter('INTERVIEW');"><label for="c7">Interviews</label></li>
-							<li><input id="c8" type="radio" name="referred"  onclick="portletListFilter('OFFERMADE');"><label for="c8">Offered</label></li>
-               				<li><input id="c9" type="radio" name="referred"  onclick="portletListFilter('REJECTED');"><label for="c8">Rejected</label></li>
-                        </ul>
-                    </div>                	
-                </li>
-                <div class="clearfix"></div>
-            </ul>
-  	
-  	
-  	
+  	      <ul><div id ="statusDropDown"></div> </ul>
   	</div>
-  	<div id="rejectList"></div>
+  	<div id="professionalDashboardPortletList"></div>
   </div>
   </section>
+<script>
+function myFunction(){
+	var startDate = '${startDate}'; 
+	 var endDate = '${endDate}'; 
+	 var requirementStatus = $("#navyOp").val();
+	 $("#applicantStatus").empty('');
+	 var applicantStatus = "";
+	 if(requirementStatus == "SHORTLIST"){
+		 applicantStatus ="Shortlist";
+	 }
+	 if(requirementStatus == "OFFERMADE"){
+		  applicantStatus = "Offered";
+	 }
+	 if(requirementStatus == "INTERVIEW"){
+		  applicantStatus = "Interviews";
+	 }
+	 if(requirementStatus == "REJECTED"){
+		  applicantStatus = "Rejected";
+	 }
+	 if(requirementStatus == "" || requirementStatus =='undefined'  || requirementStatus == null){
+		  applicantStatus = "Applied";
+	 }
+	 $("#applicantStatus").append(applicantStatus); 
+	
+    professionalDashboardPortletList(startDate,endDate,requirementStatus);
+}
+
+</script>  
 <script>
 function portletListFilter(requirementStatus){
 	 var startDate = '${startDate}'; 
 	 var endDate = '${endDate}'; 
+	
 	professionalDashboardPortletList(startDate,endDate,requirementStatus);
+  
 }
 
 </script>	
+   
+   
+   
+   
+<script type="text/javascript">
+  function professionalDashboardPortletListCounts(startDate,endDate,requirementStatus){
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  $.ajax({ 
+		   	type: "GET",
+			url: sourceleadUrl+"/getJobSummaryPortlets?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,
+		    success: function(data) {
+	    	 var json = JSON.parse(data);
+	    	 var result ='';
+	    	 result =result +'<li class="select-field"><i class="fa fa-filter"></i>';
+	    	 result =result +'<select name = "navyOp" id="navyOp" onChange="myFunction(this);">'; 
+	    	 result =result +'<option '+ (requirementStatus == "" ? "selected" : '') +' value = "">Applied ('+json.appliedJobs+')</span></option>';
+	    	 result =result +'<option '+ (requirementStatus == "SHORTLIST" ? "selected" : '') +' value = "SHORTLIST">Short Listed ('+json.shortlistJobs+')</option>';
+	    	 result =result +'<option '+ (requirementStatus == "INTERVIEW" ? "selected" : '') +' value = "INTERVIEW">Interviews ('+json.interviews+') </option>';
+	    	 result =result +'<option '+ (requirementStatus == "OFFERMADE" ? "selected" : '') +' value = "OFFERMADE">Offered ('+json.offeredJobs+') </option>';
+	    	 result =result +'<option '+ (requirementStatus == "REJECTED" ? "selected" : '') +' value = "REJECTED">Rejected ('+json.rejectedJobs+') </option>';
+	    	 
+	    	 
+	    	 
+	    	 result =result +'</select>';
+	    	 result =result +'</li>';
+	    	   $("#statusDropDown").empty();
+	           $("#statusDropDown").append(result);
+		    }
+	  });
+	 
+  }
+  </script>
+   
+   
+   
             
   <script type="text/javascript">
   function professionalDashboardPortletList(startDate,endDate,requirementStatus){
@@ -71,7 +155,7 @@ function portletListFilter(requirementStatus){
 	    	 var result =""; 
 	    	   result = result + '<div class="require_wrap_table overflow-data filter-position">';
 	    	   result = result + '<div class="clerfix">';
-	    	   result = result + '<table id="rejectedPagenation" class="display" cellspacing="0" width="100%"">';
+	    	   result = result + '<table id="professionalDashboardPortletPagenation" class="display" cellspacing="0" width="100%"">';
 	           result = result + '<thead>';
 	           result = result + '<tr>';
 	           result = result + '<th>Name</th>';
@@ -88,16 +172,16 @@ function portletListFilter(requirementStatus){
   				{
 	        	   var report = json.crowdSourcingPortLetList[i];
 	        	   
-	        	   if(report.requirementId != null && report.requirementId != '' && report.requirementId != 'undefined'){
-	        		   requirementId = report.requirementId +' - ';
+	        	   if(report.requirementJobId != null && report.requirementJobId != '' && report.requirementJobId != 'undefined'){
+	        		   requirementJobId = report.requirementJobId +' - ';
 	        	   }else{
-	        		   requirementId = "";
+	        		   requirementJobId = "";
 	        	   }
 	        	   result = result +'         <tr>';
 	        	   result = result +'         <td><div class="tbldata-dotdot">'+report.candidateName+'</div></td>';
 	        	   result = result +'         <td><div class="tbldata-dotdot-vsm">'+report.candidateEmail+'</div></td>';
 	        	   result = result +'         <td><div class="tbldata-dotdot-100">'+report.phoneNumber+'</div></td>';
-	        	   result = result +'         <td><div class="tbldata-dotdot-sm">'+requirementId+' '+report.requirementName+'</div></td>';
+	        	   result = result +'         <td><a href="<c:url value="/requirementProfile/'+report.requirementUUID+'"/>"><div class="tbldata-dotdot-sm">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
 	        	   result = result +'         <td><div class="tblminwidth-50">'+report.requirementSubmissionStatus+'</div></td>';
 	        	   result = result +'         <td><div class="tblminwidth-50">'+report.createdDateStr+'</div></td>';
 	        	   result = result +'         <td><div class="tblminwidth-50">'+report.submissionStatus+'</div></td>';
@@ -108,8 +192,8 @@ function portletListFilter(requirementStatus){
 	           result = result + '       </tbody>';
 	           result = result + '     </table>';
 	           result = result + '   </div>';
-	           $("#rejectList").empty();
-	           $("#rejectList").append(result);
+	           $("#professionalDashboardPortletList").empty();
+	           $("#professionalDashboardPortletList").append(result);
 	    	 rejectedPagenatio();
 		    }
 	  });
@@ -121,7 +205,11 @@ function portletListFilter(requirementStatus){
 
 <script>
 function rejectedPagenatio(){  
-    $('#rejectedPagenation').DataTable( { 
+    $('#professionalDashboardPortletPagenation').DataTable( { 
+    	dom: 'Bfrtip',
+        buttons: [
+            'excel', 'pdf'
+        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,

@@ -14,7 +14,7 @@
 
 
 <style>
-.dataTables_empty {
+dataTables_empty {
     height: 285px !important;
 }
 </style>
@@ -24,6 +24,7 @@ $(document).ready(function(){
 	getJobSummarySerialChart();
 	getJobSummaryDoNutChart();
 	getJobPortlets();
+	interviews('today');
 });
 </script>
 
@@ -33,17 +34,18 @@ $(document).ready(function(){
         <h2>Jobs Summary</h2>
       </div>
     </section>
-    <div class="content-new clearfix mt25"></div>
+    <div class="content-new clearfix"></div>
     
       <div class="row">
-          <div class="col-md-7 paddingRight">
+          <div class="col-md-7">
+          <div class="chartArea">
           <div class="col-md-10">
 				    <div class="row">
 					  <div class="col-md-5 paddingRight">
-					     <input type="text" value="" placeholder="From Date" class="form-control input-sm calendar" id="serialfromdate" name="From Date">
+					     <input type="text" value="" placeholder="From Date" class="form-control input-sm calendar" id="serialfromdate" name="From Date" readonly="readonly">
 					  </div>
 			  		  <div class="col-md-5 paddingRight paddingLeft">
-					     <input type="text" value="" placeholder="To Date" class="form-control input-sm calendar" id="serialtodate" name="To Date">
+					     <input type="text" value="" placeholder="To Date" class="form-control input-sm calendar" id="serialtodate" name="To Date" readonly="readonly">
 					  </div>
 					  <div class="col-md-2 paddingLeft">
 						  <button type="button" class="btn btn-sm btn-primary" onclick="getJobSummarySerialChart();"><i class="fa fa-search"></i>&nbsp;&nbsp;Search</button>
@@ -54,16 +56,17 @@ $(document).ready(function(){
               
               </div>
           </div>
+          </div>
 
-          <div class="col-md-5 text-center paddingLeft">
-            
+          <div class="col-md-5 text-center">
+            <div class="chartArea">
           <div class="col-md-10">
 				    <div class="row">
 					  <div class="col-md-5 paddingRight">
-					     <input type="text" value="" placeholder="From Date" class="form-control input-sm calendar" id="dpfromdate" name="From Date">
+					     <input type="text" value="" placeholder="From Date" class="form-control input-sm calendar" id="dpfromdate" name="From Date" readonly="readonly">
 					  </div>
 			  		  <div class="col-md-5 paddingLeft paddingRight">
-					     <input type="text" value="" placeholder="To Date" class="form-control input-sm calendar" id="dptodate" name="To Date">
+					     <input type="text" value="" placeholder="To Date" class="form-control input-sm calendar" id="dptodate" name="To Date" readonly="readonly">
 					  </div>
 					  <div class="col-md-2 paddingLeft">
 						  <button type="button" class="btn btn-sm btn-primary" onclick="getJobSummaryDoNutChart();"><i class="fa fa-search"></i>&nbsp;&nbsp;Search</button>
@@ -75,33 +78,169 @@ $(document).ready(function(){
          
              </div>
           </div>
-      </div>
+      </div></div>
       <div class="clearfix"></div>
-      <div class="dashboard-widget">
       
-      <div class="row">
-      <div class="col-md-10">
+      <div class="col-md-12">
+		<div class="dashboard-widget clearfix">
 				    <div class="row">
 					  <div class="col-md-3 paddingRight">
-					     <input type="text" value="" placeholder="From Date" class="form-control input-sm calendar" id="portletfromdate" name="From Date">
+					     <input type="text" value="" placeholder="From Date" class="form-control input-sm calendar" id="portletfromdate" name="From Date" readonly="readonly">
 					  </div>
 			  		  <div class="col-md-3 paddingLeft paddingRight">
-					     <input type="text" value="" placeholder="To Date" class="form-control input-sm calendar" id="portlettodate" name="To Date">
+					     <input type="text" value="" placeholder="To Date" class="form-control input-sm calendar" id="portlettodate" name="To Date" readonly="readonly">
 					  </div>
 					  <div class="col-md-2 paddingLeft">
 						  <button type="button" class="btn btn-sm btn-primary" onclick="getJobPortlets();"><i class="fa fa-search"></i>&nbsp;&nbsp;Search</button>
 					  </div>
 				  </div>
- 		   </div>
-      <div id="jobPortletsDiv" class="activeJobs"></div>
+      <div id="jobPortletsDiv" class="activeJobs row"></div>
       </div>
       </div>
 
       </div>
+      
+      <section class="row mt">
+				        <div class="col-md-12">
+				          <div class="dashboard-widget crowd_dashboard">
+				            <h4 class="pull-left">Interviews <span class="dashboard-datepkr dashboarddatepkr dashboarddatepkr">
+				            <input type="text" class="input-sm" id="professionalInterviewdate" readonly="readonly">
+				            <i class="fa fa-calendar"></i></span></h4>
+				            <ul class="nav nav-tabs ml">
+				              <li class="active" id="todayTab"><a data-toggle="tab" href="javascript:void(0)" onclick="flushDate(); interviews('today')">Today</a></li>
+				              <li id="upcomingTab"><a data-toggle="tab" href="javascript:void(0)" onclick="flushDate(); interviews('upcoming')">Upcoming</a></li>
+				              <li id="previousTab"><a data-toggle="tab" href="javascript:void(0)" onclick="flushDate(); interviews('previous')">Previous</a></li>
+				            </ul>
+				            <div class="clearfix"></div>
+				           <div class="tab-content clearfix require_wrap_table overflow_inherint">
+				               <div id="today" class="tab-pane fade in active"> </div>
+	                		   <div id="upcoming" class="tab-pane fade in"> </div>
+                			   <div id="previous" class="tab-pane fade in"> </div>
+	           				</div>
+	          			</div>
+	               </div>
+	       </section> 
+	       
   </section>
   
+<script>
+function flushDate(){
+	$("#datepicker-int").val('');
+}
+</script>
+
+<script>
+	function interviews(dateRange){
+		var resultToday ="";
+		var sourceleadUrl = '${sourceleadUrl}';
+			$.ajax({
+				type : "GET",
+				url : sourceleadUrl+"/getProfessionalInterviews?dateRange="+dateRange,
+				success : function(data) {
+					var json = JSON.parse(data);
+		              			$("#today").empty();
+		        	        	$("#upcoming").empty();
+		        	        	$("#previous").empty();
+		              			$("#today").removeAttr("style");
+		            				resultToday = resultToday+'	<table id="requirementInterviewsPagination" class="display" cellspacing="0" width="100%">';
+		            				resultToday = resultToday+'	<thead>';
+		            				resultToday = resultToday+'	  <tr>';
+		            				resultToday = resultToday+'	    <th>Requirement Title </th>';
+		            				resultToday = resultToday+'	    <th>Company Name</th>';
+		            				resultToday = resultToday+'	    <th>Date &amp; Time</th>';
+		            				resultToday = resultToday+'	    <th>Type</th>';
+		            				resultToday = resultToday+'	    <th>Location</th>';
+		            				resultToday = resultToday+'	  </tr>';
+		            				resultToday = resultToday+'	</thead>';
+		            				resultToday = resultToday+'	<tbody>';
+		            				
+		            				for (var i=0; i<json.length; i++){
+		            		       		var report = json[i];
+		            		       		var location ="";
+		            		       		var interviewType = "";
+		            		       		if(report.location != null && report.location != '' && report.location != 'undefined'){
+		            		       			location = report.location
+		            		       		}else{
+		            		       			location = "--";
+		            		       		}
+		            		       		if(report.interviewType != null && report.interviewType != "" && report.interviewType != 'undefined'){
+		            		       			interviewType = report.interviewType;
+		            		       		}else{
+		            		       			interviewType = "--";
+		            		       		}
+		            		       		
+		            						resultToday = resultToday+'	  <tr>';
+		            						resultToday = resultToday+'	   <td><div class="tbldata-dotdot-vsm"> <a href="'+sourceleadUrl+'/requirementProfile/'+report.requirementUUID+'"><span title ="'+report.requirementTitle+'">'+report.requirementTitle+'</span></a></div></td>';
+		            						resultToday = resultToday+'	   <td><div><span title="'+report.companyName+'">'+report.companyName+'</span></div></td>';
+		            						resultToday = resultToday+'	   <td><div class="tblminwidth-150">'+report.interviewStartDateTimeStr+'</div></td>';
+		            						resultToday = resultToday+'	   <td><div><span title="'+interviewType+'">'+interviewType+'</span></div></td>';
+		            						resultToday = resultToday+'	   <td><div><span title="'+location+'">'+location+'</span></div></td>';
+		            						resultToday = resultToday+'	 </tr>';
+		            					}
+		            					resultToday = resultToday+'	 </tbody>';
+		            					resultToday = resultToday+'	</table>';											
+		            	        if(dateRange == 'today'){
+		            	            $("#today").append(resultToday);
+		            	            requirementInterviewsPagination();
+		            	            $("#today").addClass("tab-pane fade in active");
+		            				$("#upcoming").removeClass("tab-pane fade in active");
+		            				$("#previous").removeClass("tab-pane fade in active");
+		            	        }else if(dateRange == 'previous'){
+		            				$("#previous").append(resultToday);
+		            				requirementInterviewsPagination();
+		            				$("#today").removeClass("tab-pane fade in active");
+		            				$("#upcoming").removeClass("tab-pane fade in active");
+		            				$("#previous").addClass("tab-pane fade in active");
+		            	        }else if(dateRange == 'upcoming'){
+		            				$("#upcoming").append(resultToday);
+		            				requirementInterviewsPagination();
+		            				$("#today").removeClass("tab-pane fade in active");
+		            				$("#previous").removeClass("tab-pane fade in active");
+		            				$("#upcoming").addClass("tab-pane fade in active");
+		            	        }else{
+		            	        	$("#today").append(resultToday);
+		            	            requirementInterviewsPagination();
+		            	            $("#todayTab").removeClass("active");
+		            				$("#upcomingTab").removeClass("active");
+		            				$("#previousTab").removeClass("active");
+		            	        }
+						
+				},
+		});
+		return true;
+	}
+</script>
   
-  
+<script>
+	function requirementInterviewsPagination(){
+	    $('#requirementInterviewsPagination').DataTable( {
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
+	    	"bLengthChange": false,
+	    	"bDestroy": true,
+	    	"ordering": false,
+	    	"oLanguage": {
+	            "sSearch": "",
+	            "sZeroRecords": "", "sEmptyTable": ""
+	       }
+	    } );
+	}
+</script>
+	
+<script>
+	$(function() {
+	   $( "#professionalInterviewdate" ).datepicker({
+	     changeMonth: true,
+	     changeYear: true,
+	     dateFormat: 'yy-mm-dd',
+	     onSelect: function(){
+	    	    var dt = $(this).val();
+	    	    interviews(dt);
+	   		}
+	   });
+	 });
+</script>
+	 
   <script>
   function getJobPortlets(){
 	  
@@ -415,6 +554,11 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	      dateFormat: 'yy-mm-dd',
 	      changeMonth: true,
 	  	  changeYear: true, 
+	  	  onSelect : function(selected) {
+				var dt = new Date(selected);
+				dt.setDate(dt.getDate() + 1);
+				$("#dptodate").datepicker("option", "minDate", dt);
+			}
 	      //minDate: 0  this line for to restrict selection of previous dates
 	  });
 	  
@@ -422,6 +566,11 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	      dateFormat: 'yy-mm-dd',
 	      changeMonth: true,
 	  	  changeYear: true, 
+	  	   onSelect : function(selected) {
+			var dt = new Date(selected);
+			dt.setDate(dt.getDate() - 1);
+			$("#dpfromdate").datepicker("option", "maxDate", dt);
+	  	}
 	      //minDate: 0  this line for to restrict selection of previous dates
 	  });
 	  
@@ -430,6 +579,11 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	      dateFormat: 'yy-mm-dd',
 	      changeMonth: true,
 	  	  changeYear: true, 
+	  	  onSelect : function(selected) {
+				var dt = new Date(selected);
+				dt.setDate(dt.getDate() + 1);
+				$("#portlettodate").datepicker("option", "minDate", dt);
+			}
 	      //minDate: 0  this line for to restrict selection of previous dates
 	  });
 	  
@@ -437,6 +591,11 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	      dateFormat: 'yy-mm-dd',
 	      changeMonth: true,
 	  	  changeYear: true, 
+		  onSelect : function(selected) {
+				var dt = new Date(selected);
+				dt.setDate(dt.getDate() - 1);
+				$("#portletfromdate").datepicker("option", "maxDate", dt);
+		  	}
 	      //minDate: 0  this line for to restrict selection of previous dates
 	  });
 	  
@@ -444,6 +603,11 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	      dateFormat: 'yy-mm-dd',
 	      changeMonth: true,
 	  	  changeYear: true, 
+		  onSelect : function(selected) {
+				var dt = new Date(selected);
+				dt.setDate(dt.getDate() + 1);
+				$("#serialtodate").datepicker("option", "minDate", dt);
+			}
 	      //minDate: 0  this line for to restrict selection of previous dates
 	  });
 	  
@@ -451,6 +615,11 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	      dateFormat: 'yy-mm-dd',
 	      changeMonth: true,
 	  	  changeYear: true, 
+	  	  onSelect : function(selected) {
+			var dt = new Date(selected);
+			dt.setDate(dt.getDate() - 1);
+			$("#serialfromdate").datepicker("option", "maxDate", dt);
+	  	}
 	      //minDate: 0  this line for to restrict selection of previous dates
 	  });
 	  
