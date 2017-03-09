@@ -69,7 +69,7 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		}
 		
 		
-		String pattern = "yyyy-MM-dd";
+		String pattern = "dd/MM/yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         
         orgDocuments.setSourceType(sourceType);
@@ -147,10 +147,10 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
         
 		for(OrgDocuments documents :documentsList){
 			if(documents.getStartDate() != null){
-			    documents.setStartDateStr(Constants.DF_YMD.format(documents.getStartDate()));
+			    documents.setStartDateStr(Constants.DF_STD_DMY.format(documents.getStartDate()));
 			}
 			if(documents.getEndDate() != null){
-			   documents.setEndDateStr(Constants.DF_YMD.format(documents.getEndDate()));
+			   documents.setEndDateStr(Constants.DF_STD_DMY.format(documents.getEndDate()));
 			}
 			if(documents.getSpocUser() != null){
 				StringBuilder docSB=new StringBuilder();
@@ -171,10 +171,10 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		 List<OrgDocuments> documentsList = orgDocumentsDao.getclientDocumentsListByResponderLocationIdAndSpocUserIdOrgLocationID(responderLocationId, orgLocationId,spocUserId);
 		 for(OrgDocuments documents :documentsList){
 				if(documents.getStartDate() != null){
-				    documents.setStartDateStr(Constants.DF_YMD.format(documents.getStartDate()));
+				    documents.setStartDateStr(Constants.DF_STD_DMY.format(documents.getStartDate()));
 				}
 				if(documents.getEndDate() != null){
-				   documents.setEndDateStr(Constants.DF_YMD.format(documents.getEndDate()));
+				   documents.setEndDateStr(Constants.DF_STD_DMY.format(documents.getEndDate()));
 				}
 				if(documents.getSpocUser() != null){
 					StringBuilder spocNameSB=new StringBuilder();
