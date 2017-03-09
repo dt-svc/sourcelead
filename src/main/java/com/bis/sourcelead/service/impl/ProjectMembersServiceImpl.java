@@ -586,10 +586,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		 emailMessage.setFirstName(emp.getUser().getFirstName());
 		 emailMessage.setLastName(emp.getUser().getLastName());
 		 emailMessage.setToEmail(emp.getUser().getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setFromName(fromNameSB.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 //setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());

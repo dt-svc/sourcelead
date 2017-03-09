@@ -717,7 +717,6 @@ public class UserServiceImpl implements UserService {
 		 StringBuilder emailMsgBuilder = new StringBuilder();
 		 emailMessage.setFromName(emailMsgBuilder.append(ownerUser.getFirstName()).append(" ").append(ownerUser.getLastName()).toString());
 		 OrgLocations loginOrgLocation = orglocationsDao.getOrgLocationByOrgId(loginOrg.getId());
-		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 String UUID = SourceLeadRandomCodeHelper.generateUUID();

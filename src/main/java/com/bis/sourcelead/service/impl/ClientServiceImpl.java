@@ -855,12 +855,11 @@ public class ClientServiceImpl implements ClientService{
 			 emailMessage.setFirstName(editUser.getFirstName());
 			 emailMessage.setLastName(editUser.getLastName());
 			 emailMessage.setToEmail(editUser.getEmail());
-			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+			 emailMessage.setFromEmail(loginUser.getEmail());
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 StringBuilder fromName=new StringBuilder();
 			 emailMessage.setFromName(fromName.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-			 
-			 
+			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
 				 globalVarsMap.put("clientFirstName", emailMessage.getFirstName());
