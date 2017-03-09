@@ -32,9 +32,18 @@
 <!-- Content Area -->
 <script type="text/javascript">
 window.onload = function() { 
-	getDayWiseReports();
+	getAllApplicantReports();
 	}
 </script>
+
+<script type="text/javascript">
+function getAllApplicantReports(){
+	getDayWiseReports();
+}
+
+
+</script>
+
 
 <!-- <script>
 function getRequirementList(){
@@ -117,6 +126,7 @@ function prepareReportDataDiv(data){
 	  $("#requirementReportsDiv12").empty();
     $("#requirementReportsDiv12").append(result);
     requirementReportPagination();
+    getAllCounts();
 }
 
 </script>
@@ -201,7 +211,7 @@ function requirementReportPagination(){
 
 <div class="pull-left reportBtns">
 	  <div class="reportBtn">
-		<select class="form-control select-bg" id="reportTypeId" onChange="flushCustomDates(); getDayWiseReports(); custDates();">
+		<select class="form-control select-bg" id="reportTypeId" onChange="getDayWiseReports(); custDates(); flushCustomDates();">
 		 <option value="">select</option>
 		  <option value="today">Today</option>
 		  <option value="yesterday">Yesterday</option>
@@ -506,7 +516,7 @@ function getDayWiseReports(){
          url: sourceleadUrl+"/getApplicantsReport?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
           success :function(data) {
         	 prepareReportDataDiv(data);
-        	 getAllCounts();
+        	// getAllCounts();
          },
           
      });  
@@ -644,7 +654,6 @@ function getCustomReports(){
 	          url: sourceleadUrl+"/getApplicantsReport?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,
 	          success :function(data) {
 	        	 prepareReportDataDiv(data);
-	        	 getAllCounts();
 	         },
 	          
 	     }); 
