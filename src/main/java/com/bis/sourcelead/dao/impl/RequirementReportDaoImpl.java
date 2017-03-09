@@ -105,23 +105,22 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementSubmissionHistory> getRequirementReports(Long requirementId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		//String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId requirementSubmission left join fetch requirementSubmission.requirement req where req.id = :requirementId";
 		String query = "from RequirementSubmissionHistory rsh "
 				+ " left join fetch rsh.submissionId rs left join fetch rsh.submissionId.requirement requirement where requirement.id = :requirementId";
-				/*+ ""
-				+ ""
-				+ "rs.id left join rs.requirement r on rs.requirement.id = r.id where rs.requirement.id = :requirementId";*/
 		return  session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
 	}
 
-//	@Override
-//	@Transactional(rollbackFor = { Exception.class })
-//	public List<RequirementSubmissionHistory> getApplicantsReports(String userRoleName, OrgLocations orgLocation,
-//			User user, Date startDateUTC, Date endDateUTC) {
-//		Long orglocationId = orgLocation.getId();
-//		Session session = this.sessionFactory.getCurrentSession();
-//		String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId requirementSubmission left join fetch requirementSubmission.requirement where requirementSubmission.orgLocations.id = :orglocationId";
-//		return  session.createQuery(query).setLong("orglocationId", orglocationId).setCacheable(true).list();
-//	}
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getApplicantsCountsForReports(Long orgLocationId,String applicantStatus) throws Exception {
+		int totalCount = 0;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementSubmissionHistory rsh  left join fetch rsh.submissionId rs where rs.orgLocations = :orgLocationsId and rsh.toStage = :applicantStatus";
+	List<RequirementSubmissionHistory> rshList = session.createQuery(query).setLong("orgLocationsId",orgLocationId).setString("applicantStatus", applicantStatus).setCacheable(true).list();
+	if(null != rshList){
+		totalCount = rshList.size();
+	}
+	return totalCount;
+	}
 
 }

@@ -243,23 +243,28 @@ function requirementReportPagination(){
       
 	<div class="reportsCount">
 		<ul>
-			<li title="Applicants">
-				<span><i class="fa fa-users"></i></span><b>100</b>
+		
+
+
+
+
+			<li title="Applicants" id="applicantsli">
+				<span><i class="fa fa-users"></i></span><b id="applicantCount">0</b>
 			</li>
-			<li title="Shortlisted" class="colorTwo">
-				<span><i class="fa fa-file-text"></i></span><b>100</b>
+			<li title="Shortlisted" id="shortlistedli" class="colorTwo">
+				<span><i class="fa fa-file-text"></i></span><b id="shortlistedCount">0</b>
 			</li>
-			<li title="Submit to Client">
-				<span><i class="glyphicon glyphicon-send"></i></span><b>100</b>
+			<li title="Submit to Client" id="submittoclientli">
+				<span><i class="glyphicon glyphicon-send"></i></span><b id="submitToClientCount">0</b>
 			</li>
-			<li title="Interviews" class="colorTwo">
-				<span><img src="images/interview1.png" alt=""/></span><b>100</b>
+			<li title="Interviews" id="interviewli" class="colorTwo">
+				<span><img src="images/interview1.png" alt=""/></span><b id="interviewCount">0</b>
 			</li>
-			<li title="Offers">
-				<span><i class="fa fa-tags"></i></span><b>100</b>
+			<li title="Offers" id="offermadeli">
+				<span><i class="fa fa-tags"></i></span><b id="offerCount">0</b>
 			</li>
-			<li title="Rejected" class="colorTwo">
-				<span><i class="glyphicon glyphicon-trash"></i></span><b>100</b>
+			<li title="Rejected" id="rejectedli" class="colorTwo">
+				<span><i class="glyphicon glyphicon-trash"></i></span><b id="rejectedCount">0</b>
 			</li>
 					<div class="clearfix"></div>
 		</ul>
@@ -501,6 +506,7 @@ function getDayWiseReports(){
          url: sourceleadUrl+"/getApplicantsReport?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
           success :function(data) {
         	 prepareReportDataDiv(data);
+        	 getAllCounts();
          },
           
      });  
@@ -509,6 +515,104 @@ function getDayWiseReports(){
 }
 
 </script>
+
+
+<script>
+function getAllCounts(){
+	 $('#applicantsli').load(allApplicantsCount()); 
+	 $('#shortlistedli').load(allShortlistedCount());
+	 $('#submittoclientli').load(allSubmitToClientCount());
+	 $('#interviewli').load(allInterviewCount());
+	 $('#offermadeli').load(allOffersCount());
+	 $('#rejectedli').load(allRejectedCount());
+}
+</script>
+
+<script>
+function allApplicantsCount(){
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+       type : "POST",
+        url: sourceleadUrl+"/getApplicantsCountForReports?${_csrf.parameterName}=${_csrf.token}&applicantStatus=submission",        
+        success :function(data) { 
+       	 var json = JSON.parse(data);
+       	 $("#applicantCount").html(json); 
+        },
+	  });
+}
+</script>
+
+<script>
+function allShortlistedCount(){
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+       type : "POST",
+        url: sourceleadUrl+"/getApplicantsCountForReports?${_csrf.parameterName}=${_csrf.token}&applicantStatus=shortList",        
+        success :function(data) { 
+       	 var json = JSON.parse(data);
+       	 $("#shortlistedCount").html(json); 
+        },
+	  });
+}
+</script>
+
+<script>
+function allSubmitToClientCount(){
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+       type : "POST",
+        url: sourceleadUrl+"/getApplicantsCountForReports?${_csrf.parameterName}=${_csrf.token}&applicantStatus=submit_to_client",        
+        success :function(data) { 
+       	 var json = JSON.parse(data);
+       	 $("#submitToClientCount").html(json); 
+        },
+	  });
+}
+</script>
+
+<script>
+function allInterviewCount(){
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+       type : "POST",
+        url: sourceleadUrl+"/getApplicantsCountForReports?${_csrf.parameterName}=${_csrf.token}&applicantStatus=interview",        
+        success :function(data) { 
+       	 var json = JSON.parse(data);
+       	 $("#interviewCount").html(json); 
+        },
+	  });
+}
+</script>
+
+<script>
+function allOffersCount(){
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+       type : "POST",
+        url: sourceleadUrl+"/getApplicantsCountForReports?${_csrf.parameterName}=${_csrf.token}&applicantStatus=offer_made",        
+        success :function(data) { 
+       	 var json = JSON.parse(data);
+       	 $("#offerCount").html(json); 
+        },
+	  });
+}
+</script>
+
+<script>
+function allRejectedCount(){
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+       type : "POST",
+        url: sourceleadUrl+"/getApplicantsCountForReports?${_csrf.parameterName}=${_csrf.token}&applicantStatus=rejected",        
+        success :function(data) { 
+       	 var json = JSON.parse(data);
+       	 $("#rejectedCount").html(json); 
+        },
+	  });
+}
+</script>
+
+
 <script>
 function custDates(){
 	var reportType = $("#reportTypeId").val();
@@ -540,6 +644,7 @@ function getCustomReports(){
 	          url: sourceleadUrl+"/getApplicantsReport?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,
 	          success :function(data) {
 	        	 prepareReportDataDiv(data);
+	        	 getAllCounts();
 	         },
 	          
 	     }); 
