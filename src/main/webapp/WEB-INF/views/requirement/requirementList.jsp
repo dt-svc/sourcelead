@@ -439,14 +439,12 @@ function prepareRequirementData(data){
         } */
         
         if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN'){
-        	'<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
 	        	if(opt.isRequirementReleasedByuser == 'Y'){
 		   		 	result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success'></i></a></div></td>"; 
 			   	 }else{	
 			   	 	result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
 			   	 }
-       	 '</sec:authorize>';
-       }else{
+        }else{
            result = result +"<td><div>--</div></td>";
        }
         
