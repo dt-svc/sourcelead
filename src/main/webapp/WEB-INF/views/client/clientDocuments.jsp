@@ -305,7 +305,7 @@ function addDocument(clientLocationId,orgRelationId) {
 	}
 	
 	$('#startDate').datepicker({
-	      dateFormat: 'dd/mm/yy',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      onSelect: function (selected) {
@@ -316,7 +316,7 @@ function addDocument(clientLocationId,orgRelationId) {
 	  });
 	  
 	  $('#endDate').datepicker({
-	      dateFormat: 'dd/mm/yy',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true,  
 	        onSelect: function (selected) {
