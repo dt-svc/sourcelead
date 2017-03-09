@@ -341,6 +341,7 @@ public class CandidateListRestController {
 				if(jsonObj.has("city")  && StringUtils.isNotEmpty(jsonObj.getString("city"))){
 					boolQueryBuilder.must(QueryBuilders.matchQuery("city", jsonObj.getString("city")));
 			    }
+				
 				//minExpYears && maxExpYears
 			    if(StringUtils.isNotEmpty(jsonObj.getString("minExpYears")) && StringUtils.isNotEmpty(jsonObj.getString("maxExpYears"))){
 			    	String minYears= jsonObj.getString("minExpYears").replaceAll("[^0-9\\.]+", "");
