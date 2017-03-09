@@ -115,5 +115,7 @@ public interface RequirementService {
 
 	public Requirement updateRequirement(Requirement requirement) throws Exception;
 
+	public List<Requirement> getAllRequirementsByOrglocationId(Long orgLocationId)throws Exception;
+
 
 }

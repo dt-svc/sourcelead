@@ -837,7 +837,8 @@ function loadProjects(){
 function vendorSearchSideBar(responderLocationId,orgRelationId,orgName){
 	var vendorKeyword = "vendorSearch";
 	var sourceleadUrl = '${sourceleadUrl}';
-	window.location.href = sourceleadUrl + "/vendorsList?&responderLocationId="+responderLocationId+"&orgRelationId="+orgRelationId+"&orgName="+orgName+"&vendorKeyword="+vendorKeyword;
+	var org = encodeURIComponent(orgName);
+	window.location.href = sourceleadUrl + "/vendorsList?&responderLocationId="+responderLocationId+"&orgRelationId="+orgRelationId+"&orgName="+org+"&vendorKeyword="+vendorKeyword;
 
 }
 </script>
@@ -847,7 +848,8 @@ function vendorSearchSideBar(responderLocationId,orgRelationId,orgName){
 function clientSearchSideBar(responderLocationId,orgRelationId,orgName){
 	var clientKeyword = "clientSearch";
 	var sourceleadUrl = '${sourceleadUrl}';
-	window.location.href = sourceleadUrl + "/clientDashboard?&responderLocationId="+responderLocationId+"&orgRelationId="+orgRelationId+"&orgName="+orgName+"&clientKeyword="+clientKeyword;
+	var org = encodeURIComponent(orgName);
+	window.location.href = sourceleadUrl + "/clientDashboard?&responderLocationId="+responderLocationId+"&orgRelationId="+orgRelationId+"&orgName="+org+"&clientKeyword="+clientKeyword;
 }
 </script>
 
