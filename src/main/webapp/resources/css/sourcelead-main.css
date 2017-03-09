@@ -6471,7 +6471,32 @@ box-shadow: 0 8px 6px -6px rgba(0,0,0,0.2);
 .referred_pop:after {
     bottom: 100%; left: 85%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
     border-color: rgba(136, 183, 213, 0); border-bottom-color: #ccc; border-width: 10px; margin-left: -10px;
-  }	
+  }
+#statusDropDown .select-field select {
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+#statusDropDown li{
+	margin-bottom: 0;
+}
+.crowdDash_btn .dt-buttons {
+top:0px !important;
+left: auto;right:225px;
+}
+.chartArea {
+	background: #fff;
+	box-sizing:border-box;
+	padding: 10px;
+	border-radius:5px;
+	margin-bottom: 15px;
+	box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+}
+.paddingBtm {
+	padding-bottom: 8px;
+}	
+#statusDropDown {
+	position: relative; top:5px;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
