@@ -518,9 +518,9 @@ function getInternalInterviewsList(submissionId){
 	                    	 
 	   					     result = result + '<div id="accordion-sl" class="release-jobs positionRelative">';
 	   					  if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
-	   					     if(report.feedbackStartTime == "feedbackStartTime" || report.feedbackEndTime == "feedbackEndTime" ){
+	   					     //if(report.feedbackStartTime == "feedbackStartTime" || report.feedbackEndTime == "feedbackEndTime" ){
 	   					    	result = result + '<i class="fa fa-handshake-o pull-right" title="FeedBack" onclick="interviewFeedback('+report.interviewId.id+',\''+report.interviewTemplateid+'\',\''+report.id+'\');"></i>';	 
-	   					     }
+	   					    // }
 	   					  }
 	   					     result = result + '<h2>Interview: <span>'+interviewTypeHeader+' '+report.interviewTimezoneDateStr+' '+report.interviewTimeZoneStartTimeStr+' </span></h2>';
 	                    	result = result + '<div class="content clearfix">';
