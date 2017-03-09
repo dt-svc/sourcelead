@@ -311,6 +311,9 @@ public class RequirementSubmission implements Serializable{
 	@Transient
 	private String loginOrgLOcationName;
 	
+	@Transient
+	private String submitToClientRateType;
+	
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
 	}
@@ -1009,6 +1012,14 @@ public class RequirementSubmission implements Serializable{
 
 	public void setLoginOrgLOcationName(String loginOrgLOcationName) {
 		this.loginOrgLOcationName = loginOrgLOcationName;
+	}
+
+	public String getSubmitToClientRateType() {
+		return submitToClientRateType;
+	}
+
+	public void setSubmitToClientRateType(String submitToClientRateType) {
+		this.submitToClientRateType = submitToClientRateType;
 	}
 
 }

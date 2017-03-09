@@ -418,6 +418,12 @@ public class SubmissionsRestController {
 				requirementSubmission.setSubmitToClientRate(requirementSubmissionTemplateFields.getExpectedCTC());
 			}
 			
+			if(StringUtils.isNotEmpty(requirementSubmission.getFinalizedRateType())){
+				requirementSubmission.setSubmitToClientRateType(requirementSubmission.getFinalizedRateType());
+			}else{
+				requirementSubmission.setSubmitToClientRateType(requirementSubmissionTemplateFields.getExpectedRatePer());
+			}
+			
 			if(requirementSubmission.getVendorLocationId() != null){
 				requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrg().getOrgName());
 			}

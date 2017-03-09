@@ -225,10 +225,10 @@ window.onload = function () {
                      <select class="chosen-select"  id="skills" name="skills" multiple data-placeholder="Select Skills">
                       <c:forEach var="skill" items="${skillsList}">
              				 <c:if test="${fn:contains(requirement.reqSkillsListString, skill)}">
-	                		  	 <option  selected value="${skill}">${skill}</option>
+	                		  	 <option  selected value="${skill.name}">${skill.name}</option>
 	                		 </c:if>
 	                		 <c:if test="${!fn:contains(requirement.reqSkillsListString, skill)}">
-	                		  	 <option  value="${skill}">${skill}</option>
+	                		  	 <option  value="${skill.name}">${skill.name}</option>
 	                		 </c:if>
                     </c:forEach>
                     </select>
@@ -265,7 +265,7 @@ window.onload = function () {
 	    <input type="hidden" name="requirementSearchOffset" id="requirementSearchOffset" value="0"/>
 	  <div id="requirementsList"></div> 
 	  <a href="#" id="loadMoreSection" style="display: none;"><section class="loadJob" onclick="getViewMoreRecords();"><i id="viewMoreLoading"></i><span id="viewMore">View more</span></section></a>
-	   <a href="#" id="noMoreRecordsSection" style="display: none;"><section class="loadJob"><span id="viewMore">No Records Found</span></section></a>
+	   <a href="#" id="noMoreRecordsSection" style="display: none;"><section class="loadJob"><span id="viewMore">No More Records</span></section></a>
 	  <a href="#" id="loadMoreSearchSection" style="display: none;"><section class="loadJob" onclick="getViewMoreSearchRecords();"><i id="viewMoreSearchLoading"></i><span id="viewSearchMore">View more</span></section></a>
 	  
 	 <div class="side_mask"><div class="proj_close"></div></div>
