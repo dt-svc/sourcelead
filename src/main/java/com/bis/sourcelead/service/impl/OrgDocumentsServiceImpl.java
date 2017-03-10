@@ -193,10 +193,10 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
         logger.debug("In OrgDocumentsServiceImpl class getOrgDocumentsById method...");
         OrgDocuments documents = orgDocumentsDao.getOrgDocumentsById(Id);
         if(documents.getStartDate() != null){
-            documents.setStartDateStr(Constants.DF_YMD.format(documents.getStartDate()));
+            documents.setStartDateStr(Constants.DF_DMY.format(documents.getStartDate()));
         }
         if(documents.getEndDate() != null){
-           documents.setEndDateStr(Constants.DF_YMD.format(documents.getEndDate()));
+           documents.setEndDateStr(Constants.DF_DMY.format(documents.getEndDate()));
         }        
         if(documents.getOwnerUser() != null){
         	documents.setOwnerId(documents.getOwnerUser().getId());
@@ -216,10 +216,10 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		logger.debug("In OrgDocumentsServiceImpl class getOrgDocumentsById method...");
         OrgDocuments documents = orgDocumentsDao.getOrgDocumentsByIdAndSpocId(docId,userId);
         if(documents.getStartDate() != null){
-            documents.setStartDateStr(Constants.DF_YMD.format(documents.getStartDate()));
+            documents.setStartDateStr(Constants.DF_DMY.format(documents.getStartDate()));
         }
         if(documents.getEndDate() != null){
-           documents.setEndDateStr(Constants.DF_YMD.format(documents.getEndDate()));
+           documents.setEndDateStr(Constants.DF_DMY.format(documents.getEndDate()));
         }        
         if(documents.getOwnerUser() != null){
         	documents.setOwnerId(documents.getOwnerUser().getId());
