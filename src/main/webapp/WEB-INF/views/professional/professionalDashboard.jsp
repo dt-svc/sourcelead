@@ -59,7 +59,7 @@ $(document).ready(function(){
           </div>
           </div>
 
-          <div class="col-md-5 text-center">
+          <div class="col-md-5 text-center paddingLeft">
             <div class="chartArea">
           <div class="col-md-10">
 				    <div class="row">
@@ -161,8 +161,18 @@ $(document).ready(function(){
 	       </section> 
 	       
   </section>
+  
+  
+<jsp:include page="../masterFooter.jsp" />
+<div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div> 
+
+
   <script>
   function refertomeChangeMonth(){
+	  
+	    $("#portletfromdate").val('');
+	    $("#portlettodate").val(''); 
+	    
 	  var refertomeChangeMonth = $("#refertomeChangeMonth").val();
 	  if(refertomeChangeMonth == "customize"){
 		  document.getElementById("customDate").style.visibility='visible';
@@ -176,6 +186,9 @@ $(document).ready(function(){
   
   <script>
   function referbymeChangeMonth(){
+	  $("#portletreferByMefromdate").val('');
+	  $("#portletreferByMetodate").val(''); 
+	    
 	  var referbymeChangeMonth = $("#referbymeChangeMonth").val();
 	  if(referbymeChangeMonth == "customize"){
 		  document.getElementById("customReferByMeDate").style.visibility='visible';
@@ -531,20 +544,6 @@ function flushDate(){
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   <script>
 function getProtletList(startDate,endDate,status){
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -725,11 +724,6 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
  }
   </script> 
   
-  
-  
-  
-    
-    
     
  <script type="text/javascript">
   $( function() {
@@ -838,6 +832,17 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
   });
 </script>
 
- 
-
-<jsp:include page="../masterFooter.jsp" />
+<script>
+// Back To Top 
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 200) {
+            $('.backtotop').fadeIn('slow');
+        } else {
+            $('.backtotop').fadeOut('slow');
+        }
+    });
+    $('.backtotop').click(function() {
+        $("html, body").animate({scrollTop: 0}, 500);
+        return false;
+    });
+</script>
