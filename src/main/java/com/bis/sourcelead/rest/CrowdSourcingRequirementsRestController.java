@@ -1141,6 +1141,9 @@ public class CrowdSourcingRequirementsRestController {
     		
 			try{
 				
+				Integer referedToMeJobs = requirementReferService.getReferJobsByReferType(user.getId(),"referToMe",jobPortletsStartDate, jobPortletsEndDate);
+				refer.setReferToMeJobs(referedToMeJobs);
+				
 				Integer appliedJobs = requirementSubmissionService.getProfessionalJobAppliedCount(candidateId, jobPortletsStartDate, jobPortletsEndDate);
 				refer.setAppliedJobs(appliedJobs);
 				
@@ -1150,13 +1153,10 @@ public class CrowdSourcingRequirementsRestController {
 				Integer offeredCount = requirementSubmissionService.getProfessionalJobSubmisssionsCountBySubmissionType(candidateId,"OFFERMADE",jobPortletsStartDate, jobPortletsEndDate);
 				refer.setOfferedJobs(offeredCount);
 				
-				Integer hiredCount = requirementSubmissionService.getProfessionalJobSubmisssionsCountBySubmissionType(candidateId,"OFFERHIRED",jobPortletsStartDate, jobPortletsEndDate);
-				refer.setHiredJobs(hiredCount);
-				
 				Integer rejectedCount = requirementSubmissionService.getProfessionalJobSubmisssionsCountBySubmissionType(candidateId,"REJECTED",jobPortletsStartDate, jobPortletsEndDate);
 				refer.setRejectedJobs(rejectedCount);
 				
-				Integer interviewsCount = requirementInterviewService.getInterviewCountByCandidateId(candidateId, "INTERVIEW", jobPortletsStartDate, jobPortletsEndDate);
+				Integer interviewsCount = requirementSubmissionService.getProfessionalJobSubmisssionsCountBySubmissionType(candidateId,"INTERVIEW",jobPortletsStartDate, jobPortletsEndDate);
 				refer.setInterviews(interviewsCount);
 				
 			}catch (ParseException e) {
@@ -1167,6 +1167,142 @@ public class CrowdSourcingRequirementsRestController {
 			return resultJson;
 
 		}
+		
+		
+		
+		@PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+		@RequestMapping(value = "/getReferByMeJobSummaryPortlets", method = RequestMethod.GET)
+		public String getReferByMeJobSummaryPortlets(@RequestParam(value = "startDate", required = false) String startDate,
+				@RequestParam(value = "endDate", required = false) String endDate,HttpServletRequest request) throws Exception {
+			String resultJson = null;
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+			
+			RequirementRefer refer = new RequirementRefer();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			Date jobPortletsStartDate = null;
+			Date jobPortletsEndDate = null;
+			
+			if(!isNullOrEmpty(startDate) && !isNullOrEmpty(endDate)){
+				//Custom StartDate and EndDate
+				
+				jobPortletsStartDate =  sdf.parse(startDate);
+				jobPortletsEndDate =  sdf.parse(endDate);
+			
+			}else{
+				
+				//For This Month
+				
+				Calendar c = Calendar.getInstance();   
+	    	    c.set(Calendar.DAY_OF_MONTH, 1);
+	    	    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+	    	    startDate = df.format(c.getTime());
+	    	    
+	    	    int lastDate = c.getActualMaximum(Calendar.DATE);
+	    	    c.set(Calendar.DATE, lastDate);	
+	    	    endDate = df.format(c.getTime());
+	    	    
+	    	    jobPortletsStartDate =  sdf.parse(startDate);
+	    	    jobPortletsEndDate =  sdf.parse(endDate);
+			}
+			
+    		
+			try{
+				
+				Integer referedByMeJobs = requirementReferService.getReferJobsByReferType(user.getId(),"referByMe",jobPortletsStartDate, jobPortletsEndDate);
+				refer.setReferByMeJobs(referedByMeJobs);
+				
+				Integer appliedJobs = requirementSubmissionService.getReferByMeJobAppliedCount(user.getId(), jobPortletsStartDate, jobPortletsEndDate);
+				refer.setAppliedJobs(appliedJobs);
+				
+				Integer shortlistCount = requirementSubmissionService.getReferByMeProfessionalJobSubmisssionsCountBySubmissionType(user.getId(),"SHORTLIST",jobPortletsStartDate, jobPortletsEndDate);
+				refer.setShortlistJobs(shortlistCount);
+				
+				Integer offeredCount = requirementSubmissionService.getReferByMeProfessionalJobSubmisssionsCountBySubmissionType(user.getId(),"OFFERMADE",jobPortletsStartDate, jobPortletsEndDate);
+				refer.setOfferedJobs(offeredCount);
+				
+				Integer rejectedCount = requirementSubmissionService.getReferByMeProfessionalJobSubmisssionsCountBySubmissionType(user.getId(),"REJECTED",jobPortletsStartDate, jobPortletsEndDate);
+				refer.setRejectedJobs(rejectedCount);
+				
+				Integer interviewsCount = requirementSubmissionService.getReferByMeProfessionalJobSubmisssionsCountBySubmissionType(user.getId(),"INTERVIEW",jobPortletsStartDate, jobPortletsEndDate);
+				refer.setInterviews(interviewsCount);
+				
+			}catch (ParseException e) {
+				e.printStackTrace();
+			}
+			
+			resultJson = commonUtil.toJSON(refer);
+			return resultJson;
+
+		}
+		
+		
+		
+		@PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+		@RequestMapping(value = "/getJobSummaryPortletsList", method = RequestMethod.GET)
+		public String getJobSummaryPortletsList(@RequestParam(value = "startDate", required = false) String startDate,
+				@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "requirementStatus", required = false) String status,HttpServletRequest request) throws Exception {
+			String resultJson = null;
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+			
+			RequirementRefer refer = new RequirementRefer();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			Date jobPortletsStartDate = null;
+			Date jobPortletsEndDate = null;
+			
+			if(!isNullOrEmpty(startDate) && !isNullOrEmpty(endDate)){
+				//Custom StartDate and EndDate
+				
+				jobPortletsStartDate =  sdf.parse(startDate);
+				jobPortletsEndDate =  sdf.parse(endDate);
+			
+			}else{
+				
+				//For This Month
+				
+				Calendar c = Calendar.getInstance();   
+	    	    c.set(Calendar.DAY_OF_MONTH, 1);
+	    	    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+	    	    startDate = df.format(c.getTime());
+	    	    
+	    	    int lastDate = c.getActualMaximum(Calendar.DATE);
+	    	    c.set(Calendar.DATE, lastDate);	
+	    	    endDate = df.format(c.getTime());
+	    	    
+	    	    jobPortletsStartDate =  sdf.parse(startDate);
+	    	    jobPortletsEndDate =  sdf.parse(endDate);
+			}
+			try{
+				List<RequirementSubmission> crowdSourcingPortLetList = requirementSubmissionService.getProfessionalJobSubmisssionsCountListBySubmissionType(candidateId,status,jobPortletsStartDate, jobPortletsEndDate);
+				for(RequirementSubmission rs:crowdSourcingPortLetList){
+					StringBuilder candidateName = new StringBuilder();
+					if(null != rs.getCandidate().getLastName()){
+						rs.setCandidateName(candidateName.append(rs.getCandidate().getFirstName()).append(" ").append(rs.getCandidate().getLastName()).toString());	
+					}else{
+						rs.setCandidateName(candidateName.append(rs.getCandidate().getLastName()).toString());
+					}
+					rs.setCandidateEmail(rs.getCandidate().getEmail());
+					rs.setPhoneNumber(rs.getCandidate().getMobilePhone());
+					rs.setCreatedDateStr(Constants.DF_DMY.format(rs.getCreatedDate()));
+					rs.setSubmissionStatus(rs.getSubmissionStatus());
+					rs.setRequirementSubmissionStatus(rs.getRequirement().getRequirementSubmissionStatus().toString());
+					rs.setRequirementJobId(rs.getRequirement().getJobId());
+					rs.setRequirementName(rs.getRequirement().getJobTitle());
+					rs.setRequirementUUID(rs.getRequirement().getRequirementUUID());
+				}
+				refer.setCrowdSourcingPortLetList(crowdSourcingPortLetList);
+			}catch (ParseException e) {
+				e.printStackTrace();
+			}
+			
+			resultJson = commonUtil.toJSON(refer);
+			return resultJson;
+
+		}
+		
 		
 		
 		

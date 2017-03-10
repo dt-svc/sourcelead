@@ -40,7 +40,9 @@ display: none;
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-primary small">To</label>
           <div class="col-md-10 positionRelative disable-choosen-dropdown">
+
             <select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" name="Toemails">
+
             </select>
             <span class="select-multiple" data-target="#multiplemail" onclick="listChange();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
             <!-- Modal content Multiple mail -->
@@ -928,9 +930,7 @@ function getCheckedCandidates(){
 		    	
 		    });
 		    
-		    
-		    
-		    
+
 		    var selectone, chosenone;
 		    selectone = $("#emailsList");
 		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Email:' });
@@ -960,6 +960,7 @@ function getCheckedCandidates(){
 		    });
 		    
 		    
+
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
 			}
