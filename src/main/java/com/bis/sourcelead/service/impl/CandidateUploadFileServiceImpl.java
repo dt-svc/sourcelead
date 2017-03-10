@@ -139,7 +139,7 @@ private String parseCandidatesXlsxandXlsData(MultipartFile multipartFile, OrgLoc
 							String country = getCellValueAsString(row.getCell(4),fileName);
 							candidateImport.setCountry(country);;
 						} else {
-							candidateImport.setCountry("");
+							candidateImport.setCountry(orgLocations.getCountry());
 						}
 						
 						if(row.getCell(5) != null){
@@ -499,41 +499,40 @@ private JSONObject populateJsonObject(CandidatesImport candidate,OrgLocations or
 	if(null != candidate.getExpectedRate()){
 	String rate = getExpectedRate(candidate.getExpectedRate());
 		if(null != rate){
-			jsonObj.put("expectedRate", rate);	
+			jsonObj.put("expectedRate", rate);
+			
+			if(null != candidate.getExpectedRateType() && !"".equals(candidate.getExpectedRateType())){
+				jsonObj.put("rateType", candidate.getExpectedRateType());
+			}else{
+			jsonObj.put("rateType", "Hourly");
+			}
+			
+			if("India".equals(orgLocations.getCountry())){
+				
+				jsonObj.put("expectedRateCurrencey", "INR");
+				
+			}else if("Australia".equals(orgLocations.getCountry())){
+				
+				jsonObj.put("expectedRateCurrencey", "AUD");
+				
+			}else if("United States".equals(orgLocations.getCountry())){
+				
+				jsonObj.put("expectedRateCurrencey", "USD");
+				
+			}else if("Singapore".equals(orgLocations.getCountry())){
+				
+				jsonObj.put("expectedRateCurrencey", "SGD");
+				
+			}else if("United Kingdom".equals(orgLocations.getCountry())){
+				
+				jsonObj.put("expectedRateCurrencey", "GBP");
+				
+			}else if("France".equals(orgLocations.getCountry())){
+				
+				jsonObj.put("expectedRateCurrencey", "EUR");
+			}
 		}
 	}
-	
-	if(null != candidate.getExpectedRateType() && !"".equals(candidate.getExpectedRateType())){
-			jsonObj.put("rateType", candidate.getExpectedRateType());
-	}else{
-		jsonObj.put("rateType", "Hourly");
-	}
-	
-		
-		if("India".equals(orgLocations.getCountry())){
-			
-			jsonObj.put("expectedRateCurrencey", "INR");
-			
-		}else if("Australia".equals(orgLocations.getCountry())){
-			
-			jsonObj.put("expectedRateCurrencey", "AUD");
-			
-		}else if("United States".equals(orgLocations.getCountry())){
-			
-			jsonObj.put("expectedRateCurrencey", "USD");
-			
-		}else if("Singapore".equals(orgLocations.getCountry())){
-			
-			jsonObj.put("expectedRateCurrencey", "SGD");
-			
-		}else if("United Kingdom".equals(orgLocations.getCountry())){
-			
-			jsonObj.put("expectedRateCurrencey", "GBP");
-			
-		}else if("France".equals(orgLocations.getCountry())){
-			
-			jsonObj.put("expectedRateCurrencey", "EUR");
-		}
 	
 	if(null != candidate.getSkillsName()){
 	jsonObj.put("candidateSkills", candidate.getSkillsName());

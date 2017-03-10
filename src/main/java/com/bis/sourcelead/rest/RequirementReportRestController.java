@@ -17,9 +17,11 @@ import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.beans.ApplicantReport;
@@ -148,9 +150,6 @@ public class RequirementReportRestController {
 	 }
 	 
 	 
-//	 /getApplicantsReport
-	 
-	 
 	 @RequestMapping(value = "/getApplicantsReport")
 	 public String getApplicantsReport(@RequestParam(value="reportType", required=false) String reportType,
 			 @RequestParam(value="startDate", required=false) String customStartDate,
@@ -275,7 +274,40 @@ public class RequirementReportRestController {
 			return reportsList;
 	 }
 
-		/**
+		
+	 
+	/**
+	 * returns applicants counts based on stage status
+	 * 
+	 * @param applicantStatus
+	 * @param request
+	 * @return json
+	 * @throws Exception
+	 */
+	@Async
+	@RequestMapping(value = "/getApplicantsCountForReports", method = RequestMethod.POST)
+	@ResponseBody
+	String getApplicantsCountForReports(
+			@RequestParam(value = "applicantStatus", required = false) String applicantStatus,
+			HttpServletRequest request) throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Integer count = requirementReportService.getApplicantsCountsForReports(orgLocation.getId(), applicantStatus);
+		return commonUtil.toJSON(count);
+
+	}
+				
+		 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 /**
 		 * Returns date format as string
 		 * @param date
 		 * @param timezone

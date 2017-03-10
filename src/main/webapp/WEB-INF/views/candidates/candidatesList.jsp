@@ -1147,8 +1147,9 @@ function cancel(candidateId){
 							  <label>Country</label>
 							  <div class="clearfix">
 								 <select class="chosen-select" name="country" id="country" field-name="Country"  >
+								    <option value="">--Select country--</option>
 								     <c:forEach var="cntry" items="${countryList}">
-							                     <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
+							                     <option value="${cntry.name}">${cntry.name}</option>
 						                </c:forEach>
 				                 </select>
 							  </div>
@@ -1224,7 +1225,7 @@ function cancel(candidateId){
 							  <div class="clearfix">
 								   <select class="chosen-select" name="applicantType" id="applicantType" field-name="Applicant Type"  >
 								      <option value="">---select Applicant Type---</option>
-								      <option value="candidate">Candiate</option>
+								      <option value="candidate">Candidate</option>
 									  <option value="consultant">Consultant</option> 
 				                   </select>
 							  </div>
@@ -1805,7 +1806,7 @@ function getCities(){
 	    $('#currency').val(''); 
 	    $('#rateType').val(''); 
 	    
-	    $('#country').val('${loginCountryName}'); 
+	    $('#country').val(''); 
 	    $('#state').val(''); 
 	    $('#city').val(''); 
 	    $('#rateType').val(''); 
@@ -2293,7 +2294,7 @@ function minMaxExperience(){
 	     $("#maxExpYears").val(''); 
 	     $('#expId').find('p.jquery_form_error_message').remove();
 	     
-	     $("#noticePeriod").empty(); 
+	     $("#noticePeriod").val(''); 
 	     
 	     $("#country").val(''); 
 	     $("#state").val(''); 
