@@ -1310,21 +1310,37 @@ public class CrowdSourcingRequirementsRestController {
 			}
 			try{
 				List<RequirementSubmission> crowdSourcingPortLetList = requirementSubmissionService.getProfessionalJobSubmisssionsCountListBySubmissionType(candidateId,status,jobPortletsStartDate, jobPortletsEndDate);
-				for(RequirementSubmission rs:crowdSourcingPortLetList){
+				for(RequirementSubmission rs : crowdSourcingPortLetList){
 					StringBuilder candidateName = new StringBuilder();
 					if(null != rs.getCandidate().getLastName()){
 						rs.setCandidateName(candidateName.append(rs.getCandidate().getFirstName()).append(" ").append(rs.getCandidate().getLastName()).toString());	
 					}else{
 						rs.setCandidateName(candidateName.append(rs.getCandidate().getLastName()).toString());
 					}
-					rs.setCandidateEmail(rs.getCandidate().getEmail());
-					rs.setPhoneNumber(rs.getCandidate().getMobilePhone());
-					rs.setCreatedDateStr(Constants.DF_DMY.format(rs.getCreatedDate()));
+					
+					rs.setRequirementName(rs.getRequirement().getJobTitle());
+					rs.setRequirementJobId(rs.getRequirement().getJobId());
+					rs.setRequirementUUID(rs.getRequirement().getRequirementUUID());
+					rs.setOrgName(rs.getRequirement().getOrgLocationId().getOrg().getOrgName());
+					rs.setEmployeeType(rs.getRequirement().getJobType());
+					rs.setCountry(rs.getRequirement().getCountry());
+					rs.setState(rs.getRequirement().getState());
+					rs.setCity(rs.getRequirement().getCity());
+					rs.setRate(rs.getRequirement().getRate());
+					rs.setRateType(rs.getRequirement().getRateType());
 					rs.setSubmissionStatus(rs.getSubmissionStatus());
 					rs.setRequirementSubmissionStatus(rs.getRequirement().getRequirementSubmissionStatus().toString());
-					rs.setRequirementJobId(rs.getRequirement().getJobId());
-					rs.setRequirementName(rs.getRequirement().getJobTitle());
-					rs.setRequirementUUID(rs.getRequirement().getRequirementUUID());
+					RequirementRefer requirementRefer = requirementReferService.getAppliedRequirementReferByRequirementIdAndUserId(rs.getRequirement().getId(), user.getId());
+					if(null != requirementRefer){
+						StringBuilder referredUser = new StringBuilder();
+						if(null != requirementRefer.getReferFromUser().getLastName()){
+							rs.setReferredBy(referredUser.append(requirementRefer.getReferFromUser().getFirstName()).append(" ").append(requirementRefer.getReferFromUser().getLastName()).toString());	
+						}else{
+							rs.setReferredBy(referredUser.append(requirementRefer.getReferFromUser().getLastName()).toString());
+						}
+						rs.setReferredOn(Constants.DF_DMY.format(requirementRefer.getCreatedDate()));
+					}
+					
 				}
 				refer.setCrowdSourcingPortLetList(crowdSourcingPortLetList);
 			}catch (ParseException e) {
