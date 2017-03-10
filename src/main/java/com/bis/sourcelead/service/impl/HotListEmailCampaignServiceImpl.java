@@ -1,14 +1,14 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import javax.mail.internet.InternetAddress;
-
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -104,6 +105,11 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	    	  if(null != emails){
 	    		  emails = emails.replaceAll("\\[", "").replaceAll("\\]","");
 	    		  emails = emails.replaceAll("\"", "");
+		  	      String[] toEmails = emails.split(",");
+		  	       recipantsList.addAll(Arrays.asList(toEmails)) ;
+		    	 /* for (String toEmail : toEmails) {
+		    		  recipantsList.add(toEmail);
+		    	  } */
 	    	  }
 	    	 
 		}
@@ -117,6 +123,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	    	  catch(JSONException e){
 	    		  otherEmails= jsonObj.getString("otherEmails");
 	    	  }
+
 			 if(null != otherEmails){
 				 otherEmails = otherEmails.replaceAll("\\[", "").replaceAll("\\]","");
 				 otherEmails = otherEmails.replaceAll("\"", "");
@@ -124,6 +131,26 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		}
 		StringBuilder tomaillBuilder = new StringBuilder();
 		iAdressArray = InternetAddress.parse(tomaillBuilder.append(emails).append(",").append(otherEmails).toString());
+
+			 if(othmails != null){
+				 othmails = othmails.replaceAll("\\[", "").replaceAll("\\]","");
+				 othmails = othmails.replaceAll("\"", "");
+		  	      String[] otherEmails = othmails.split(",");
+		  	       recipantsList.addAll(Arrays.asList(otherEmails)) ;
+		    	  /*for (String otherEmail : otherEmails) {
+		    		  recipantsList.add(otherEmail);
+		    	  }*/
+			 }
+		}
+		
+		for(String email : recipantsList){
+			 if(StringUtils.isEmpty(email.trim()))
+				 continue;
+			 EmailRecipient emailRecipient = new EmailRecipient();
+			 emailRecipient.setEmail(email.trim());
+			 emailRecipientList.add(emailRecipient);
+		}
+
 		
 		 emailMessage.setCreatedBy(user.getUserCode());
 		 emailMessage.setFromEmail(user.getEmail());
