@@ -1607,6 +1607,40 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			return count;
 			
 		}
+		
+		@SuppressWarnings("unchecked")
+		@Override
+		@Transactional
+		public List<RequirementSubmission> getProfessionalJobSubmisssionsCountListBySubmissionType(Long candidateId,
+				String submissionStatus, Date startDate, Date endDate) throws Exception {
+				Session session = this.sessionFactory.getCurrentSession();
+				String query;
+				List<RequirementSubmission>  submissionsCountList = null ;
+				if(null != submissionStatus && !"".equalsIgnoreCase(submissionStatus) && submissionStatus != "undefined"){
+					 query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate where rs.candidate.id = :candidateId and rs.submissionStatus = :submissionStatus and (rs.createdDate BETWEEN :startDate and :endDate))";
+					 submissionsCountList = session.createQuery(query).setLong("candidateId", candidateId) .setString("submissionStatus", submissionStatus)
+				    		   .setDate("startDate", startDate) .setDate("endDate", endDate).setCacheable(true).list();
+				}else{
+					 query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate where rs.candidate.id = :candidateId and (rs.createdDate BETWEEN :startDate and :endDate))";
+					 submissionsCountList = session.createQuery(query).setLong("candidateId", candidateId) .setDate("startDate", startDate)
+							   .setDate("endDate", endDate).setCacheable(true).list();
+				}
+			  
+			 return submissionsCountList;  
+		}
+
+
+		
+		@SuppressWarnings("unchecked")
+		@Override
+		@Transactional
+		public List<RequirementSubmission> getProfessionalJobAppliedCountList(Long candidateId, Date startDate, Date endDate) throws Exception {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from RequirementSubmission rs where rs.candidate.id = :candidateId and (rs.createdDate BETWEEN :startDate and :endDate))";
+			List<RequirementSubmission> appliedCountList = session.createQuery(query).setLong("candidateId", candidateId) .setDate("startDate", startDate)
+					   .setDate("endDate", endDate).setCacheable(true).list();
+			return appliedCountList;
+		}
 
 		@Override
 		@Transactional
@@ -1627,6 +1661,56 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			 }
 			return count;
 		}
+
+		@Override
+		@Transactional
+		public Integer getReferByMeJobAppliedCount(Long userId, Date startDate, Date endDate) throws Exception {
+			
+			 Session session = this.sessionFactory.getCurrentSession();
+		     
+			 String query = "select count(distinct rs.requirement) from RequirementSubmission rs where "
+			 		+ "rs.candidate.consultantUser.id IN (select refer.referToUser from RequirementRefer refer where refer.referFromUser = :userId and refer.referStatus = 'Applied' and (refer.createdDate BETWEEN :startDate and :endDate)) and "
+			 		+ "rs.requirement.id IN (select refer.requirementId from RequirementRefer refer where refer.referFromUser = :userId and refer.referStatus = 'Applied' and (refer.createdDate BETWEEN :startDate and :endDate))";
+		     
+		     List<Long> appliedCount = session.createQuery(query).setLong("userId", userId)
+		    		   .setDate("startDate", startDate)
+					   .setDate("endDate", endDate).setCacheable(true).list();
+			 Integer count= 0;
+			 
+			 if(appliedCount != null && !appliedCount.isEmpty()){
+					count = appliedCount.get(0).intValue();
+			 }
+			return count;
+		
+		}
+
+		@Override
+		@Transactional
+		public Integer getReferByMeProfessionalJobSubmisssionsCountBySubmissionType(Long userId,
+				String submissionStatus, Date startDate, Date endDate) throws Exception {
+			
+			
+			Session session = this.sessionFactory.getCurrentSession();
+		     
+			String query = "select count(distinct rs.requirement) from RequirementSubmission rs where "
+			 		+ "rs.candidate.consultantUser.id IN (select refer.referToUser from RequirementRefer refer where refer.referFromUser = :userId and refer.referStatus = 'Applied' and (refer.createdDate BETWEEN :startDate and :endDate)) and "
+			 		+ "rs.requirement.id IN (select refer.requirementId from RequirementRefer refer where refer.referFromUser = :userId and refer.referStatus = 'Applied' and (refer.createdDate BETWEEN :startDate and :endDate)) and "
+			 		+ "rs.submissionStatus = :submissionStatus";
+		      
+		     
+		     List<Long> submissionsCount = session.createQuery(query).setLong("userId", userId)
+		    		   .setString("submissionStatus", submissionStatus)
+		    		   .setDate("startDate", startDate)
+					   .setDate("endDate", endDate).setCacheable(true).list();
+			 Integer count= 0;
+			 
+			 if(submissionsCount != null && !submissionsCount.isEmpty()){
+					count = submissionsCount.get(0).intValue();
+			 }
+			return count;
+			
+		}
+
 
   }
 

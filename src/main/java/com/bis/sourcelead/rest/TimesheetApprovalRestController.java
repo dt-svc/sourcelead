@@ -593,7 +593,7 @@ public class TimesheetApprovalRestController {
 		        
 		        if(freshProjectMembers != null && !freshProjectMembers.isEmpty()){
 		        	int tdSpanLength = 6;
-		        	timesheetApprovalDiv.append("			<div class='timesheet_appr_table'>");
+		        	timesheetApprovalDiv.append("			<div class='timesheet_appr_table overflow_inherint'>");
 					timesheetApprovalDiv.append("	    	<table id='example' style='width:100%'>");
 					timesheetApprovalDiv.append("				<thead>");   
 					timesheetApprovalDiv.append("	            	<tr>");

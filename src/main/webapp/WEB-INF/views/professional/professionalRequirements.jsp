@@ -605,9 +605,13 @@ function requirementsList(offset){
 			 				}
 			 				
 			 				if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined'){
-			 					rate = requirements.rate+" / "+requirements.rateType;
+			 					rate = requirements.rate+" "+requirements.rateType +' / ';
+			 				}
+			 				
+			 				if(requirements.currentRateCurrency != null && requirements.currentRateCurrency != '' && requirements.currentRateCurrency != 'undefined'){
+			 					currentRateCurrency = requirements.currentRateCurrency;
 			 				}else{
-			 					rate = 'No Data';
+			 					currentRateCurrency = 'No Data';
 			 				}
 			 				
 			 				result = '<section class="openCta">';
@@ -618,7 +622,7 @@ function requirementsList(offset){
 			 				result = result +'<b><i class="fa fa-clock-o"></i>'+jobType+'</b>';
 			 				result = result +'<b><i class="fa fa-briefcase"></i>'+experience+'</b>';
 			 				result = result +'<b><i class="fa fa-map-marker"></i>'+location+'</b>';
-			 				result = result +'<b><i class="fa fa-money"></i>'+rate+'</b>';
+			 				result = result +'<b><i class="fa fa-money"></i>'+rate+' '+currentRateCurrency+'</b>';
 			 				result = result +'</span>';
 			 				result = result +'<h5>';
 			 				result = result +'<strong>Skills :</strong>';

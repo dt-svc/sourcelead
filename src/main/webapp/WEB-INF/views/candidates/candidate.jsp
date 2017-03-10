@@ -200,7 +200,7 @@
              <div class="col-xs-6 col-md-6">
              		<select class="form-control selectpicker" id="experienceYears" name="experienceYears" onchange="disableMonths();">
              		  <option value="">Years</option>
-             		  <c:forEach begin="0" end="24" varStatus="loop">
+             		  <c:forEach begin="0" end="25" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
              		     <option>25+</option>
@@ -709,7 +709,7 @@ function getCities(){
  <script type="text/javascript">
  function disableMonths() {
      $("#experienceYears").change(function() {
-         if ($("#experienceYears").val() == '25+'){
+         if ($("#experienceYears").val() == '25'){
         	 $("#experienceMonths").val('');  
         	 $('#experienceMonths').selectpicker('refresh');
         	 $('#experienceMonths').attr("disabled", true);
