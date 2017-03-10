@@ -54,10 +54,13 @@ public class RequirementHelper {
 			requirementIndex.setJobTitle(requirement.getJobTitle());
 			requirementIndex.setJobType(requirement.getJobType());
 			requirementIndex.setOtherJobType(requirement.getOtherJobType());
-			if (null != requirement.getRate()) {
+			if (null != requirement.getRate() && !"".equals(requirement.getRate())) {
 				requirementIndex.setRate(Float.parseFloat(requirement.getRate()));
 			}
-			requirementIndex.setRateType(requirement.getRateType());
+			if (null != requirement.getRateType() && !"".equals(requirement.getRateType())) {
+				requirementIndex.setRateType(requirement.getRateType());	
+			}
+			
 			if (null != requirement.getMinExp()) {
 				requirementIndex.setMinExperience(requirement.getMinExp());
 			}
