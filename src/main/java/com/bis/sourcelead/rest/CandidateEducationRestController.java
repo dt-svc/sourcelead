@@ -160,10 +160,10 @@ public class CandidateEducationRestController {
 		 CandidateEducation  candidatesEducationList = candidateEducationService.getCandidateEducationBycandidateIdandEducationId(candidateId, candidateEducationId);
 		
 		 if(candidatesEducationList.getStartDate() != null){
-			 candidatesEducationList.setStartDateStr(Constants.DF_YMD.format(candidatesEducationList.getStartDate())); 
+			 candidatesEducationList.setStartDateStr(Constants.DF_DMY.format(candidatesEducationList.getStartDate())); 
 			 }
 			 if(candidatesEducationList.getEndDate() != null){
-				 candidatesEducationList.setEndDateStr(Constants.DF_YMD.format(candidatesEducationList.getEndDate())); 
+				 candidatesEducationList.setEndDateStr(Constants.DF_DMY.format(candidatesEducationList.getEndDate())); 
 			 }
 			 List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS); 
 			 candidatesEducationList.setEducationList(educationsList);
