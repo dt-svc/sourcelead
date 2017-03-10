@@ -490,7 +490,7 @@ public class TimesheetRestController {
 			    if(CalendarUtil.isCurrentDateBetweenDateRange(weekStartDate, weekEndDate)){  
 			    	if(CalendarUtil.isCurrentDateBetweenDateRange(key, value)){
 			    		   isActive.append("class='current'");
-			    		   if(ts != null){
+			    		   if(ts != null && !isNullOrEmpty(submissionStatusStr) && !submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue())){
 			    			    isActive.delete(0, isActive.length());
 					    		isActive.append("");
 				    			isActive.append("class='current subColor'");
@@ -501,7 +501,7 @@ public class TimesheetRestController {
 			    	else{
 			    		isActive.delete(0, isActive.length());
 			    		isActive.append("");
-			    		if(ts != null){
+			    		if(ts != null && !isNullOrEmpty(submissionStatusStr) && !submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue())){
 			    			isActive.append("class='subColor'");
 					    }
 			    	}
@@ -517,7 +517,7 @@ public class TimesheetRestController {
 			    else{
 				    	if(count == 1){
 				    		   isActive.append("class='current'");
-				    		   if(ts != null){
+				    		   if(ts != null && !isNullOrEmpty(submissionStatusStr) && !submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue())){
 				    			    isActive.delete(0, isActive.length());
 						    		isActive.append("");
 					    			isActive.append("class='current subColor'");
@@ -528,7 +528,7 @@ public class TimesheetRestController {
 				    	else{
 				    		isActive.delete(0, isActive.length());
 				    		isActive.append("");
-				    		if(ts != null){
+				    		if(ts != null && !isNullOrEmpty(submissionStatusStr) && !submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue())){
 				    			isActive.append("class='subColor'");
 						    }
 				    	}
