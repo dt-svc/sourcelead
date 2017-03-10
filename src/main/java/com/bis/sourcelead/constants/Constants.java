@@ -547,6 +547,7 @@ public class Constants {
     public static String CANDIDATE_EDUCATION = "Education";
     public static String CANDIDATE_EMPLOERS = "Employer's";
     
+    public static String EMPLOYEE = "Employee";
     
     public static String CUSTOM_REPORTS =  "custom";
     public static String UTC_TIMEZONE =  "UTC";
