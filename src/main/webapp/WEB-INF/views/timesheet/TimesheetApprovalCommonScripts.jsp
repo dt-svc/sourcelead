@@ -1502,7 +1502,8 @@ function dropDown(){
 <script>
 function timesheetEntriesExport(startDate,endDate,projectMemberId,exportType,submissionStatus){
 	var sourceleadUrl ='${sourceleadUrl}';
-	if(submissionStatus != 'NEW'){
+	var status = $("#timesheetSubmissionStatus").val();
+	if(status != 'NEW'){
 		window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&projectMemberId="+projectMemberId;
 	}else{
 		alert("Please Fill the TimeSheets..");

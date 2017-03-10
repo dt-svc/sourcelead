@@ -2780,4 +2780,9 @@ public class RequirementServiceImpl implements RequirementService {
 		return requirementDao.storeRequirement(requirement);	
 	}
 
+	@Override
+	public List<Requirement> getAllRequirementsByOrglocationId(Long orgLocationId) throws Exception {
+		return requirementDao.getAllRequirementsByOrglocationId(orgLocationId);
+	}
+
 }

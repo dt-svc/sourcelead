@@ -270,4 +270,33 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 		 }
 		return count;
 	}
+
+
+	@Override
+	@Transactional
+	public Integer getReferJobsByReferTypeByReferedDate(Long userId, String referType, Date referedDate)
+			throws Exception {
+		
+		 Session session = this.sessionFactory.getCurrentSession();
+		 String subQuery = "";
+		 
+		 if(referType.equalsIgnoreCase("referToMe")){
+			 subQuery = "refer.referToUser.id = :userId ";
+		 }else if(referType.equalsIgnoreCase("referByMe")){
+			 subQuery = "refer.referFromUser.id = :userId ";
+		 }
+		 
+		 java.sql.Date ourJavaDateObject = new java.sql.Date(referedDate.getTime());
+	     
+		 String query = "select  count(distinct refer.requirementId) from RequirementRefer refer where "+subQuery+" and DATE(refer.createdDate) = :referedDate ";
+	     
+	     List<Long> referCount = session.createQuery(query).setLong("userId", userId)
+				   .setDate("referedDate", ourJavaDateObject).setCacheable(true).list();
+		 Integer count= 0;
+		 
+		 if(referCount != null && !referCount.isEmpty()){
+				count = referCount.get(0).intValue();
+		 }
+		return count;
+	}
 }

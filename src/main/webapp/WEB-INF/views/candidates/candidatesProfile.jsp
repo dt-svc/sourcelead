@@ -591,8 +591,17 @@ function getCandidateCities(){
 
 <script>
 function deleteCandidate(candidateId){
+	
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var reason = document.getElementById("rejectReason").value;
+	  
+	  if(reason == null || reason == '' || reason == 'undefined'){
+		      
+		      $(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
+	    	  $(".rejectErrorMsgs").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
+	    	  
+	  }else{
+		  $(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/deleteCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&reason="+reason,        
@@ -602,6 +611,7 @@ function deleteCandidate(candidateId){
                 }
                  },
               }); 
+	  }
 }
 </script>
 
@@ -630,10 +640,11 @@ function cancelAlert(){
 function removeCandidateAlertMessage(candidateId){
 	$("#profileEditPopup").fadeOut();
 	var result = "";
+	
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
-	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"		<div class='rejectErrorMsgs'/>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteCandidate("+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
 	result = result +"	</div>";
 	$("#removeCandidateAlert").append(result);
