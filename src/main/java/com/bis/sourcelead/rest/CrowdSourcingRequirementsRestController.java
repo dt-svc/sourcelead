@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.TimeZone;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
@@ -42,6 +44,7 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CrowdSourcingUserBankAccounts;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ReferContacts;
@@ -926,6 +929,36 @@ public class CrowdSourcingRequirementsRestController {
 			resultJson = toJSON(candidatesList);
 			return resultJson;
 		}
+	 
+	 
+	 
+	 @RequestMapping(value = "/storeProfessionalParseCandidate", method = RequestMethod.POST)
+		public @ResponseBody String storeCandidate(@RequestParam(value = "json", required = false) String json,
+				@RequestParam(value = "candidateId", required = false) Long candidateId,MultipartHttpServletRequest request) throws Exception {
+			
+			MultipartFile multiFile = null;
+			Iterator<String> itrator = request.getFileNames();
+			if(itrator.hasNext()){
+		        multiFile = request.getFile(itrator.next());
+			}
+			String jsonc = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(jsonc);
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Candidate candidate = candidateService.storeProfessionalParseCandidate(jsonObj,orgLocation,user,multiFile,candidateId);
+			
+			if(candidate.getCandidateType().equalsIgnoreCase("Candidate")){
+				StringBuilder candidateCreateMsg = new StringBuilder();
+			    SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", candidateCreateMsg.append("Success !! ").append(candidate.getFirstName()).append(" Candidate Added").toString());
+			}
+			else{
+				StringBuilder consultantCreateMsg = new StringBuilder();
+				SourceLeadSessionManager.setSessionAttribute(request, "consultantCreateMsg", consultantCreateMsg.append("Success !! ").append(candidate.getFirstName()).append(" Consultant Added").toString());
+			}
+			return "success";
+		}
+	 
 	 
 	 
 		@RequestMapping(value = "/getRefercontactList", method = RequestMethod.POST)
