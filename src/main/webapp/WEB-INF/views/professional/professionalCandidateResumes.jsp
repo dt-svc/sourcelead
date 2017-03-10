@@ -385,7 +385,9 @@ function deleteResume(candidateId, resumeId){
          			 $("#selector2").css({ display: "block" });
          			 $("#resMsgDiv").html("Resume deleted");
         			 $("#popUpDivResume").removeClass("edit-details-active");
-        		     candidateResumesList(candidateId);
+        			 location.replace(sourceleadUrl+"/professionalProfile");
+        		    /*  candidateResumesList(candidateId);
+        		     getProfessionalInfo(); */
         		     resMsgFadein();
    		    	}
    		    },

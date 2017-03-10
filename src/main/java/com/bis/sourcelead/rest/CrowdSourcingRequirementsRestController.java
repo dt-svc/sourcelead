@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.TimeZone;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
@@ -42,6 +44,7 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CrowdSourcingUserBankAccounts;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ReferContacts;
@@ -928,6 +931,36 @@ public class CrowdSourcingRequirementsRestController {
 		}
 	 
 	 
+	 
+	 @RequestMapping(value = "/storeProfessionalParseCandidate", method = RequestMethod.POST)
+		public @ResponseBody String storeCandidate(@RequestParam(value = "json", required = false) String json,
+				@RequestParam(value = "candidateId", required = false) Long candidateId,MultipartHttpServletRequest request) throws Exception {
+			
+			MultipartFile multiFile = null;
+			Iterator<String> itrator = request.getFileNames();
+			if(itrator.hasNext()){
+		        multiFile = request.getFile(itrator.next());
+			}
+			String jsonc = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(jsonc);
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Candidate candidate = candidateService.storeProfessionalParseCandidate(jsonObj,orgLocation,user,multiFile,candidateId);
+			
+			if(candidate.getCandidateType().equalsIgnoreCase("Candidate")){
+				StringBuilder candidateCreateMsg = new StringBuilder();
+			    SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", candidateCreateMsg.append("Success !! ").append(candidate.getFirstName()).append(" Candidate Added").toString());
+			}
+			else{
+				StringBuilder consultantCreateMsg = new StringBuilder();
+				SourceLeadSessionManager.setSessionAttribute(request, "consultantCreateMsg", consultantCreateMsg.append("Success !! ").append(candidate.getFirstName()).append(" Consultant Added").toString());
+			}
+			return "success";
+		}
+	 
+	 
+	 
 		@RequestMapping(value = "/getRefercontactList", method = RequestMethod.POST)
 		public String getRefercontactList(HttpServletRequest request,HttpServletResponse response) throws Exception {
 			String resultJson = null;
@@ -1277,21 +1310,37 @@ public class CrowdSourcingRequirementsRestController {
 			}
 			try{
 				List<RequirementSubmission> crowdSourcingPortLetList = requirementSubmissionService.getProfessionalJobSubmisssionsCountListBySubmissionType(candidateId,status,jobPortletsStartDate, jobPortletsEndDate);
-				for(RequirementSubmission rs:crowdSourcingPortLetList){
+				for(RequirementSubmission rs : crowdSourcingPortLetList){
 					StringBuilder candidateName = new StringBuilder();
 					if(null != rs.getCandidate().getLastName()){
 						rs.setCandidateName(candidateName.append(rs.getCandidate().getFirstName()).append(" ").append(rs.getCandidate().getLastName()).toString());	
 					}else{
 						rs.setCandidateName(candidateName.append(rs.getCandidate().getLastName()).toString());
 					}
-					rs.setCandidateEmail(rs.getCandidate().getEmail());
-					rs.setPhoneNumber(rs.getCandidate().getMobilePhone());
-					rs.setCreatedDateStr(Constants.DF_DMY.format(rs.getCreatedDate()));
+					
+					rs.setRequirementName(rs.getRequirement().getJobTitle());
+					rs.setRequirementJobId(rs.getRequirement().getJobId());
+					rs.setRequirementUUID(rs.getRequirement().getRequirementUUID());
+					rs.setOrgName(rs.getRequirement().getOrgLocationId().getOrg().getOrgName());
+					rs.setEmployeeType(rs.getRequirement().getJobType());
+					rs.setCountry(rs.getRequirement().getCountry());
+					rs.setState(rs.getRequirement().getState());
+					rs.setCity(rs.getRequirement().getCity());
+					rs.setRate(rs.getRequirement().getRate());
+					rs.setRateType(rs.getRequirement().getRateType());
 					rs.setSubmissionStatus(rs.getSubmissionStatus());
 					rs.setRequirementSubmissionStatus(rs.getRequirement().getRequirementSubmissionStatus().toString());
-					rs.setRequirementJobId(rs.getRequirement().getJobId());
-					rs.setRequirementName(rs.getRequirement().getJobTitle());
-					rs.setRequirementUUID(rs.getRequirement().getRequirementUUID());
+					RequirementRefer requirementRefer = requirementReferService.getAppliedRequirementReferByRequirementIdAndUserId(rs.getRequirement().getId(), user.getId());
+					if(null != requirementRefer){
+						StringBuilder referredUser = new StringBuilder();
+						if(null != requirementRefer.getReferFromUser().getLastName()){
+							rs.setReferredBy(referredUser.append(requirementRefer.getReferFromUser().getFirstName()).append(" ").append(requirementRefer.getReferFromUser().getLastName()).toString());	
+						}else{
+							rs.setReferredBy(referredUser.append(requirementRefer.getReferFromUser().getLastName()).toString());
+						}
+						rs.setReferredOn(Constants.DF_DMY.format(requirementRefer.getCreatedDate()));
+					}
+					
 				}
 				refer.setCrowdSourcingPortLetList(crowdSourcingPortLetList);
 			}catch (ParseException e) {
