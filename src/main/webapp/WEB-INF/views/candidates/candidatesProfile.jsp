@@ -335,17 +335,17 @@ function editCandidate(candidateId){
 								result = result  +'<option value="${i}" '  + (json.experienceYears == "${i}" ? "selected" : '') +  '>${i}</option>';
 							</c:forEach>
 							
-							if(json.experienceYears == "25+"){
-								result = result  +'<option value="25+" '+ (json.experienceYears == "25+" ? "selected" : '') +'>25+</option>';
+							if(json.experienceYears == "25"){
+								result = result  +'<option value="25" '+ (json.experienceYears == "25" ? "selected" : '') +'>25</option>';
 							}else{
-								result = result  +'<option>25+</option>';
+								result = result  +'<option>25</option>';
 							}
 							
 							result = result + '</select>';
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
-							if(json.experienceYears == "25+"){
+							if(json.experienceYears == "25"){
 							result = result + '<select  class="input-sm form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths" disabled="disabled">';
 							result = result + '<option  value="">Select Months</option>';
 							
@@ -1505,7 +1505,7 @@ $('.selectpicker').selectpicker('refresh');
 <script>
  function disableMonths() {
 	
-         if ($("#experienceYears").val() == "25+"){
+         if ($("#experienceYears").val() == "25"){
              $("#experienceMonths").attr("disabled", true);
              $("#experienceMonths").val("disabled", true);
          }else{
