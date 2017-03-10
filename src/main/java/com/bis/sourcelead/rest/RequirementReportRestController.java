@@ -150,9 +150,6 @@ public class RequirementReportRestController {
 	 }
 	 
 	 
-//	 /getApplicantsReport
-	 
-	 
 	 @RequestMapping(value = "/getApplicantsReport")
 	 public String getApplicantsReport(@RequestParam(value="reportType", required=false) String reportType,
 			 @RequestParam(value="startDate", required=false) String customStartDate,
