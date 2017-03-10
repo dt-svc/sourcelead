@@ -523,7 +523,7 @@ public class UserRestController {
 
 					ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
 					
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 					if (endDate != null && !"".equals(endDate) && !endDate.equalsIgnoreCase("--")) {
 						ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
 						if(pmh == null){
@@ -582,7 +582,7 @@ public class UserRestController {
 					  
 					  pmh.setProjectMemberId(projectMembers);
 			  		  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
-			  		  String pattern = "yyyy-MM-dd";
+			  		  String pattern = "dd-MM-yyyy";
 		    	      SimpleDateFormat format = new SimpleDateFormat(pattern);
 		    	      if(jsonObj.has("Re-StartDate") && !isNullOrEmpty(jsonObj.getString("Re-StartDate"))){
 		    	    	  Date startDate = format.parse(jsonObj.getString("Re-StartDate"));

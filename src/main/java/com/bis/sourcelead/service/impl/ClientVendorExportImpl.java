@@ -314,7 +314,7 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 		if(!"pdf".equalsIgnoreCase(exportType)){
 			Workbook wb = new XSSFWorkbook();
 			CellStyle style = commonUtil.getCellStyle(wb);
-			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+			DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 			StringBuilder projName=new StringBuilder();
 			Sheet sheet = wb.createSheet(projName.append(projectName).append("_").append(dateFormat.format(new Date())).toString());
 			Row writeRow = null;
@@ -357,6 +357,7 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 
 	private void setExcelTitle(Sheet sheet, String projectName, Projects project, Workbook wb, Row writeRow, String projectManager) {
 		
+		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 		CellStyle style = wb.createCellStyle();
 	     style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
 	     style.setFillPattern(CellStyle.SOLID_FOREGROUND);
@@ -399,9 +400,12 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 		 Cell cell6 = writeRow.createCell(1);
 		 StringBuilder value=new StringBuilder();
 		 if(project.getStartDate()!=null && project.getEndDate() !=null){
-			 cell6.setCellValue(value.append(project.getStartDate()).append(" to ").append(project.getEndDate()).toString()); 
+			 String convertedStartDate = dateFormat.format(project.getStartDate());
+			 String convertedEndDate = dateFormat.format(project.getEndDate());
+			 cell6.setCellValue(value.append(convertedStartDate).append(" to ").append(convertedEndDate).toString()); 
 		 }else{
-			 cell6.setCellValue(value.append(project.getStartDate()).append(" to ").append("--").toString()); 
+			 String convertedStartDate = dateFormat.format(project.getStartDate());
+			 cell6.setCellValue(value.append(convertedStartDate).append(" to ").append("--").toString()); 
 		 }
 		 cell6.setCellStyle(style);
 	}

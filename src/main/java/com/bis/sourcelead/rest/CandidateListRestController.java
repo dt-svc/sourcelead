@@ -641,7 +641,7 @@ public class CandidateListRestController {
 			Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
 			if(null != can.getCurrentRateCurrency() && null != can.getExpectedRateCurrencey()){
 				can.setCurrentRateCurrency(can.getCurrentRateCurrency());
-				can.setCurrentRateCurrency(can.getExpectedRateCurrencey());
+				can.setExpectedRateCurrencey(can.getExpectedRateCurrencey());
 			}else{
 				 if(null != countries && !countries.getCurrency().equalsIgnoreCase("")){
 				can.setCurrentRateCurrency(countries.getCurrency());	
