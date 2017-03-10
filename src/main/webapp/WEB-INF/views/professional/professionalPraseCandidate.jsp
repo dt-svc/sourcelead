@@ -92,35 +92,25 @@
         <div class="form-group">
           <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="firstName" name="firstName" value="${firstName}"  field-name="First Name" data-validation="required validate_AlphaNumber validate_Space validate_length length1-100" value="">
-            <div class="input-group hidden">
-              <div class="input-group-btn">
-                <button type="button" class="btn btn-danger dropdown-toggle"
-                                	data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Action <span class="caret"></span> </button>
-                <ul class="dropdown-menu">
-                  <li><a href="#">Action</a></li>
-                  <li><a href="#">Another action</a></li>
-                  <li><a href="#">Something else here</a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a href="#">Separated link</a></li>
-                </ul>
-              </div>
-              <!-- /btn-group -->
-              <input type="text" class="form-control" aria-label="...">
-            </div>
-            <!-- /input-group --> 
+            <input type="text" class="form-control" id="firstName" name="firstName" readonly="readonly" value="${SourceLeadWeb_user.firstName}"  field-name="First Name" data-validation="required validate_AlphaNumber validate_Space validate_length length1-100" >
           </div>
         </div>
         <div class="form-group">
           <label class="col-md-3">Last Name</label>
           <div class="col-md-9">
-           <input type="text" class="form-control" id="lastName" name="lastName" value="${lastName}"  field-name="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true" value="">
+          <c:if test="${!empty SourceLeadWeb_user.lastName}">
+           <input type="text" class="form-control" readonly="readonly" value="${SourceLeadWeb_user.lastName}" field-name="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">
+          </c:if>
+          
+          <c:if test="${empty SourceLeadWeb_user.lastName}">
+           <input type="text" class="form-control" id="lastName" name="lastName" value="${SourceLeadWeb_user.lastName}"  field-name="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">
+          </c:if>
           </div>
         </div>
         <div class="form-group" id="emailDiv">
           <label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="email" name="email" value="${email}"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateCandidateEmail();" onmouseout="validateCandidateEmail();" value="">
+            <input type="text" class="form-control" id="email" name="email" readonly="readonly" value="${SourceLeadWeb_user.email}"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateCandidateEmail();" onmouseout="validateCandidateEmail();" value="">
           <span class="hidden">Valid Email</span>
           </div>
         </div>
@@ -766,9 +756,6 @@ function getCities(){
 	     							 }
 	     						}
 	     						
-	     						$("#firstName").val(firstName);
-	     						$("#lastName").val(lastName);
-	     						$("#email").val(json.email);
 	     						$("#mobilePhone").val(json.phoneNumbers);
 	     						validateCandidateEmail();
 	     						$("#candidateSkills").empty();
