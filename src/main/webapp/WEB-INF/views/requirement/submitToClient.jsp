@@ -119,18 +119,16 @@ function submitToClient(requirementId){
 				       else{
 				    	   result = result + '<td><div><input type="text" class="form-control quantity" maxlength="10" onkeypress="validateRate(event,'+report.id+')" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value=""></div></td>';
 			    	     }
-						
-						result = result + '<td><select class="selct-picker" id="submissionRateType'+report.id+'" name="submissionRateType" field-name="Rate Type" data-validation-optional="true">';
-						result = result + '<option value="">Rate Per</option>';
-						result = result + '<option value="Hourly">Hourly</option>';
-						result = result + '<option value="Weekly">Weekly</option>';
-						result = result + '<option value="Bi-weekly">Bi-weekly</option>';
-						result = result + '<option value="Semi-Monthly">Semi-Monthly</option>';
-						result = result + '<option value="Monthly">Monthly</option>';
-						result = result + '<option value="Bi-Monthly">Bi-Monthly</option>';
-						result = result + '<option value="Yearly">Yearly</option>';
-						result = result + ' </select></td>';
-			           
+							result = result + '<td><select class="selct-picker" id="submissionRateType'+report.id+'" name="submissionRateType" field-name="Rate Type" data-validation-optional="true">';
+							result = result + '<option value="">Rate Per</option>';
+							result = result + ' <option '+(report.submitToClientRateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
+							result = result + '<option  '+(report.submitToClientRateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
+							result = result + '<option  '+(report.submitToClientRateType == "Bi-weekly" ? "selected" : '') +'>Bi-weekly</option>';
+							result = result + '<option  '+(report.submitToClientRateType == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
+							result = result + '<option  '+(report.submitToClientRateType == "Monthly" ? "selected" : '') +'>Monthly</option>';
+							result = result + '<option  '+(report.submitToClientRateType == "Bi-Monthly" ? "selected" : '') +'>Bi-Monthly</option>';
+							result = result + '<option  '+(report.submitToClientRateType == "Yearly" ? "selected" : '') +'>Yearly</option>';
+							result = result + ' </select></td>';
 			           
 			           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
 			        	   result = result + '<td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';

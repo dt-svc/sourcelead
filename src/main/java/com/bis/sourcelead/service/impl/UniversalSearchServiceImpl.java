@@ -292,7 +292,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 								  }
 								}
 							  if(!responderType.isEmpty() &&  Constants.VENDOR.equalsIgnoreCase(responderType)){
-								  if(!clientVendor.getCreatedBy().isEmpty()){
+								  if(null !=clientVendor.getCreatedBy() && !clientVendor.getCreatedBy().isEmpty()){
 									  clientVendor.setCreatedBy(clientVendor.getCreatedBy());
 								  }
 								 
@@ -737,6 +737,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 				    searchListForAll.add(searchListForProjects) ;
 				    searchListForAll.add(searchListForUsers) ;
 				    searchListForAll.add(searchListForRequirement);
+				    searchListForAll.add(searchListForCandidates);
 				    
 					return searchListForAll;
 	}
@@ -829,7 +830,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 								  }
 								}
 							  if(!responderType.isEmpty() &&  Constants.VENDOR.equalsIgnoreCase(responderType)){
-								  if(!clientVendor.getCreatedBy().isEmpty()){
+								  if(null != clientVendor.getCreatedBy() && !clientVendor.getCreatedBy().isEmpty()){
 									  clientVendor.setCreatedBy(clientVendor.getCreatedBy());
 								  }
 								 

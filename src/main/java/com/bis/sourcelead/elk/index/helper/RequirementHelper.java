@@ -40,6 +40,11 @@ public class RequirementHelper {
 		 * @return RequirementIndex
 		 * @throws Exception
 		 */
+	
+	protected boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
+	
 	public RequirementIndex populateRequirementIndex(Requirement requirement, JSONObject jsonObj) throws Exception {
 		RequirementIndex requirementIndex = new RequirementIndex();
 		
@@ -184,8 +189,9 @@ public class RequirementHelper {
 					sb.append(requirement1.getSpocId().getClientUser().getFirstName());
 				}
 				requirementIndex.setClientContactName(sb.toString());
+				requirementIndex.setClientContactEmail(requirement1.getSpocId().getClientUser().getEmail());
 			}
-			requirementIndex.setClientContactEmail(requirement1.getClientId().getLocationId().getUser().getEmail());
+			//requirementIndex.setClientContactEmail(requirement1.getClientId().getLocationId().getUser().getEmail());
 		}
 				
 			// requirementIndex.setClient(requirement.getClientName());
@@ -225,12 +231,40 @@ public class RequirementHelper {
 				String[] appliedProfessionals = requirement.getAppliedProfessionals().split(",");
 				requirementIndex.setAppliedProfessionals(appliedProfessionals);
 			}
+			
+			
+			if (null != requirement.getAppliedRecruiters() && !"".equalsIgnoreCase(requirement.getAppliedRecruiters())) {
+				String[] appliedRecruiters = requirement.getAppliedRecruiters().split(",");
+				requirementIndex.setAppliedRecruiters(appliedRecruiters);
+			}
+			
 			if(null != requirement.getReqlevel1ApproverStatus() && !"".equalsIgnoreCase(requirement.getReqlevel1ApproverStatus())){
 				requirementIndex.setReqLevel1ApproverStatus(requirement.getReqlevel1ApproverStatus());	
 			}
 			if(null != requirement.getReqlevel2ApproverStatus() && !"".equalsIgnoreCase(requirement.getReqlevel1ApproverStatus())){
 				requirementIndex.setReqLevel2ApproverStatus(requirement.getReqlevel2ApproverStatus());	
 			}
+			
+			if(!isNullOrEmpty(requirement.getRewardType())){
+				requirementIndex.setRewardType(requirement.getRewardType());
+			}
+			
+			if(!isNullOrEmpty(requirement.getRewardPercentage())){
+				requirementIndex.setRewardPercentage(requirement.getRewardPercentage());
+			}
+			
+			if(!isNullOrEmpty(requirement.getRewardFlat())){
+				requirementIndex.setRewardFlat(requirement.getRewardFlat());
+			}
+			
+			if(!isNullOrEmpty(requirement.getRewardFlatRateType())){
+				requirementIndex.setRewardFlatRateType(requirement.getRewardFlatRateType());
+			}
+			
+			if(!isNullOrEmpty(requirement.getRewardGuaranteePeriod())){
+				requirementIndex.setRewardGuaranteePeriod(requirement.getRewardGuaranteePeriod());
+			}
+			
 
 		}
 		return requirementIndex;

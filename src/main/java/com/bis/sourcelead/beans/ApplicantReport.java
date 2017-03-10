@@ -1,0 +1,95 @@
+package com.bis.sourcelead.beans;
+
+public class ApplicantReport {
+	
+	private String requirementTitle;
+	
+	private String postedOn;
+	
+	private int applicantsCount;
+	
+	private int requestSentCount;
+	
+	private int shortlisted;
+	
+	private int submitToClientCount;
+	
+	private int interviewCount;
+	
+	private int offeredCount;
+	
+	private int rejectedCount;
+
+	public String getRequirementTitle() {
+		return requirementTitle;
+	}
+
+	public void setRequirementTitle(String requirementTitle) {
+		this.requirementTitle = requirementTitle;
+	}
+
+	public String getPostedOn() {
+		return postedOn;
+	}
+
+	public void setPostedOn(String postedOn) {
+		this.postedOn = postedOn;
+	}
+
+	public int getApplicantsCount() {
+		return applicantsCount;
+	}
+
+	public void setApplicantsCount(int applicantsCount) {
+		this.applicantsCount = applicantsCount;
+	}
+
+	public int getRequestSentCount() {
+		return requestSentCount;
+	}
+
+	public void setRequestSentCount(int requestSentCount) {
+		this.requestSentCount = requestSentCount;
+	}
+
+	public int getShortlisted() {
+		return shortlisted;
+	}
+
+	public void setShortlisted(int shortlisted) {
+		this.shortlisted = shortlisted;
+	}
+
+	public int getSubmitToClientCount() {
+		return submitToClientCount;
+	}
+
+	public void setSubmitToClientCount(int submitToClientCount) {
+		this.submitToClientCount = submitToClientCount;
+	}
+
+	public int getInterviewCount() {
+		return interviewCount;
+	}
+
+	public void setInterviewCount(int interviewCount) {
+		this.interviewCount = interviewCount;
+	}
+
+	public int getOfferedCount() {
+		return offeredCount;
+	}
+
+	public void setOfferedCount(int offeredCount) {
+		this.offeredCount = offeredCount;
+	}
+
+	public int getRejectedCount() {
+		return rejectedCount;
+	}
+
+	public void setRejectedCount(int rejectedCount) {
+		this.rejectedCount = rejectedCount;
+	}
+
+}

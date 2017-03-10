@@ -2,7 +2,9 @@ package com.bis.sourcelead.service.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -16,6 +18,7 @@ import java.util.zip.ZipOutputStream;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -46,6 +49,7 @@ import com.bis.sourcelead.dao.RequirementSubmissionTemplateFieldsDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
+import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
@@ -166,6 +170,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	@Autowired
 	RequirementService requirementService;
 	 
+	@Autowired
+	RequirementElkUtil requirementElkUtil;
+	
 	@Override
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
 		return requirementSubmissionDao.getRequirementSubmissionById(submissionId);
@@ -195,7 +202,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 
 
 	@Override
-	public RequirementSubmission saveRequirementSubmission(JSONObject jsonObj,User user,OrgLocations orgLocations,String jsonStringvalues,MultipartFile multiFile) throws Exception {
+	public RequirementSubmission saveRequirementSubmission(JSONObject jsonObj,User user,OrgLocations orgLocations,String jsonStringvalues,MultipartFile multiFile,String loginUserRole) throws Exception {
 		
 		 Requirement requirement = null;;
 		 RequirementSubmission requirementSubmission = new RequirementSubmission();
@@ -214,10 +221,11 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 			 candidate.setId(Long.parseLong(jsonObj.getString("candidateId")));
 			 requirementSubmission.setCandidate(candidate);
 		 }else if(candidate == null && jsonObj.has("EmailId") && !isNullOrEmpty(jsonObj.getString("EmailId"))){
-			 candidate = candidateDao.findByCandidateEmail(jsonObj.getString("EmailId"),orgLocations.getId());
-			 if(candidate != null){
-				 requirementSubmission.setCandidate(candidate);
-			 }
+				if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+					 candidate = candidateDao.getCandidateByEmailAndRecruiterUserId(jsonObj.getString("EmailId"), user.getId());
+				}else{
+					 candidate = candidateDao.findByCandidateEmail(jsonObj.getString("EmailId"),orgLocations.getId());
+				}
 		 }if(candidate == null){
 			       candidate = new Candidate();
 			       candidate.setOrgLocationId(orgLocations);
@@ -295,6 +303,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					candidate.setCreatedDate(new Date());
 					candidate.setUpdatedDate(new Date());
 					candidate.setStatus(Constants.CANDIDATE_ACTIVE);
+					if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+						candidate.setRecruiterUserId(user);
+					}
 					
 					 
 					 if(jsonObj.has("candidateSkills") && !isNullOrEmpty(jsonObj.getString("candidateSkills"))){
@@ -422,6 +433,13 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 requirementSubmission.setCreatedUser(userName.toString());
 		 requirementSubmission.setUpdatedUser(userName.toString());
 		 
+		 if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+			 requirementSubmission.setRecruiterUserId(user);
+			 requirementSubmission.setOrgLocations(requirement.getOrgLocationId());
+		 }else{
+			 requirementSubmission.setOrgLocations(orgLocations);
+		 }
+		 
 		 requirementSubmission = requirementSubmissionDao.storeRequirementSubmission(requirementSubmission);
 		
 		 RequirementSubmissionTemplateFields templateFields = new RequirementSubmissionTemplateFields();
@@ -478,7 +496,11 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 
 		 if(jsonObj.has("WorkExperience") && !isNullOrEmpty(jsonObj.getString("WorkExperience"))){
 			 StringBuilder sb = new StringBuilder();
-			 templateFields.setWorkExperience(sb.append(jsonObj.getString("WorkExperience")).append(".").append(jsonObj.getString("monthExp")).toString());
+			 if(jsonObj.has("monthExp") && !isNullOrEmpty(jsonObj.getString("monthExp"))){
+				 templateFields.setWorkExperience(sb.append(jsonObj.getString("WorkExperience")).append(".").append(jsonObj.getString("monthExp")).toString());
+			 }else{
+				 templateFields.setWorkExperience(sb.append(jsonObj.getString("WorkExperience")).toString());
+			 }
 		 }
 		 
 		 if(jsonObj.has("Education") && !isNullOrEmpty(jsonObj.getString("Education"))){
@@ -513,6 +535,24 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 templateFields.setCreatedDate(new Date());
 		 templateFields.setUpdatedDate(commonUtil.currentDate());
 		 requirementSubmissionTemplateFieldsDao.storeRequirementSubmissionTemplateFields(templateFields);
+		 
+		 if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+				if(null == requirement.getAppliedRecruiters()){
+					requirement.setAppliedRecruiters(user.getId().toString());
+				}else{
+					List<Long> userId = new ArrayList<Long>();
+					for (String s : requirement.getAppliedRecruiters().split(",")){
+						userId.add(Long.parseLong(s));
+					 }
+					boolean flag = userId.contains(user.getId());
+	         		if(flag == false){
+	         			StringBuilder appliedUser = new StringBuilder();
+	         			appliedUser = appliedUser.append(",").append(user.getId().toString());
+	    				requirement.setAppliedRecruiters(requirement.getAppliedRecruiters()+appliedUser.toString());
+	         		}
+				}
+				requirementDao.storeRequirement(requirement);
+		 }
 		 
 		 if("Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit())){
 			 applicantReceiveMailAboutRequirement(requirementSubmission.getId(),requirement,candidate,user,orgLocations);
@@ -1387,6 +1427,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				sendEmailtoApplicant(loginOrg, user,requirementSubmission,loginOrgLocation);
 			}
 			else if(StringUtils.equalsIgnoreCase(decision, "reject")){
+				
+				ApplicantSubmissionStatus previousStatus = requirementSubmission.getSubmissionStatus();
+				 
+				requirementSubmission.setPreviousSubmissionStatus(previousStatus);
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
 				if(jsonObj.has("comment")){
@@ -2820,22 +2864,35 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 requirementSubmissionTemplateFieldsDao.storeRequirementSubmissionTemplateFields(templateFields);
 		 
 		 
-			if(null == requirement.getAppliedProfessionals()){
-				requirement.setAppliedProfessionals(user.getId().toString());
-			}else{
-				List<Long> userId = new ArrayList<Long>();
-				for (String s : requirement.getAppliedProfessionals().split(",")){
-					userId.add(Long.parseLong(s));
-				 }
-				boolean flag = userId.contains(user.getId());
-         		if(flag == false){
-         			StringBuilder appliedUser = new StringBuilder();
-         			appliedUser = appliedUser.append(",").append(user.getId().toString());
-    				requirement.setAppliedProfessionals(requirement.getAppliedProfessionals()+appliedUser.toString());
-         		}
+		 if(null != requirement){
+				
+				if(null == requirement.getAppliedProfessionals()){
+					requirement.setAppliedProfessionals(user.getId().toString());
+				}else{
+					List<Long> userId = new ArrayList<Long>();
+					for (String s : requirement.getAppliedProfessionals().split(",")){
+						userId.add(Long.parseLong(s));
+					 }
+					boolean flag = userId.contains(user.getId());
+	         		if(flag == false){
+	         			StringBuilder appliedUser = new StringBuilder();
+	         			appliedUser = appliedUser.append(",").append(user.getId().toString());
+	    				requirement.setAppliedProfessionals(requirement.getAppliedProfessionals()+appliedUser.toString());
+	         		}
+				}
+				
+				Integer totalApplicatsCountForRequirement = 0;
+				totalApplicatsCountForRequirement = requirementSubmissionDao.getNumberOfApplicantsForRequirement(requirement.getOrgLocationId().getId(), requirement.getId());
+				if(totalApplicatsCountForRequirement > 0){
+					requirement.setTotalApplicants(totalApplicatsCountForRequirement); 
+				}else{
+					requirement.setTotalApplicants(0); 
+				}
+				
+				requirement.setUpdatedDate(new Date());
+				requirementService.updateRequirement(requirement);
+				requirementElkUtil.saveElkRequirement(requirement,new JSONObject());	
 			}
-			requirement.setUpdatedDate(new Date());
-			requirementDao.storeRequirement(requirement);
 			
 			
 			sendEmailToProfessionalForAppliedJob(user, requirement);
@@ -3092,12 +3149,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	public void shortListedMailToVendorFromClient(Requirement req, String submissionsList,OrgLocations orgLocations, User user) throws Exception {
 		String[] submissionId = submissionsList.split(",");
 		StringBuilder shortlistTable = null;
+		File file;
 		EmailMessage emailMessage = new EmailMessage();
 		List<Long> vendorIds = new ArrayList<>();
 			for (int i = 0; i < submissionId.length; i++) {
 				StringBuilder linkBuild = new StringBuilder();
 				RequirementSubmission reqsub = requirementSubmissionDao.getRequirementSubmissionById(Long.parseLong(submissionId[i]));
-				
+				List<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
 				if(null != reqsub.getVendorLocationId()){
 					if(vendorIds.size()>=0 && !vendorIds.contains(reqsub.getVendorLocationId().getId())){
 						User userVendor = userService.getUserByUserCode(reqsub.getCreatedBy());
@@ -3105,7 +3163,17 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 						int candidateCount = getShortlistedCount(submissionId,reqsub.getVendorLocationId().getId());
 							if(candidateCount <= 5){
 							shortlistTable = buildShortlistedApplicantTable(submissionId,reqsub.getVendorLocationId().getId());
-							}
+							}else{
+								file = getShortListCandidateExcelEmailAttachmentForVendors(submissionId,reqsub.getVendorLocationId().getId(),candidateCount,reqsub);
+								 //FileInputStream input = new FileInputStream(file);
+								   // MultipartFile multipartFile = new MockMultipartFile("file",file.getName(), "text/plain", IOUtils.toByteArray(input));
+								  byte[] data = FileUtils.readFileToByteArray(file);
+								  EmailAttachment emailAttachment = new EmailAttachment();
+									emailAttachment.setName(file.getName());
+									emailAttachment.setDocFile(data);
+									emailAttachment.setType("text/plain");
+									attachmentList.add(emailAttachment);
+								}
 						/*if(null != reqsub.getSourceSubmission()){
 							if (reqsub.getSourceSubmission().getRequirement().getId().longValue() == childReq.getId().longValue()) {*/
 								
@@ -3178,7 +3246,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 								 emailMessage.setMessageBody(emailTemplate);
 								 
 								 //calling the sendEmail method of emailScenerioUtil
-								 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+								 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,attachmentList);
 								 
 								String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 								notificationScenario.setBody(notificationBody);
@@ -3196,6 +3264,92 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	
+	private File getShortListCandidateExcelEmailAttachmentForVendors(String[] submissionId, Long vendorLocationId, int candidateCount,RequirementSubmission reqsub) throws IOException {
+		File file = null;
+		Workbook createExcelworkbook = new XSSFWorkbook();
+		StringBuilder tempFileBuilder = new StringBuilder();
+		StringBuilder excelStringBuilder=new StringBuilder();
+		Sheet createExcelsheet = createExcelworkbook.createSheet(excelStringBuilder.append("shortListed Candidates List").toString());
+		Date date = new Date();
+		String formatedDate = Constants.DMY.format(date);
+		Row writeRow = null;
+		createExcelsheet = getExcelSheetWithHeaderForShortListCandidates(createExcelsheet, writeRow, createExcelworkbook,candidateCount,reqsub);
+		int column = 2;
+		for(int i=0;i<submissionId.length;i++){
+			List<RequirementSubmissionTemplateFields> requirementSubmissionTemplate = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsIdAndOrgLocationId(Long.parseLong(submissionId[i]), vendorLocationId);
+			for(RequirementSubmissionTemplateFields requirementSubmissionTemplateFields:requirementSubmissionTemplate){
+				writeRow = createExcelsheet.createRow(column + 2);
+				createExcelsheet = createXlsSheetSubmitClient(createExcelsheet, writeRow, requirementSubmissionTemplateFields);
+				column++;
+			}
+		}
+			 file = File.createTempFile(tempFileBuilder.append("ShortList Candidate List").append(formatedDate).toString(),".xls");
+				file.setReadable(true);
+
+				FileOutputStream fos = new FileOutputStream(file);
+				try {
+					createExcelworkbook.write(fos);
+					fos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			return file;
+	}
+
+	private Sheet createXlsSheetSubmitClient(Sheet createExcelsheet, Row writeRow,
+			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields) {
+		StringBuilder sb = new StringBuilder();
+		if(requirementSubmissionTemplateFields.getLastName() != null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
+			writeRow.createCell(0).setCellValue(sb.append(requirementSubmissionTemplateFields.getFirstName()).append("-").append(requirementSubmissionTemplateFields.getLastName()).toString());
+		}else if(requirementSubmissionTemplateFields.getFirstName() != null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getFirstName())){
+			writeRow.createCell(0).setCellValue(sb.append(requirementSubmissionTemplateFields.getFirstName()).toString());
+		}
+
+		if(requirementSubmissionTemplateFields.getPhoneNumber() != null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getPhoneNumber())){
+			writeRow.createCell(1).setCellValue(requirementSubmissionTemplateFields.getPhoneNumber());
+		}
+		if(requirementSubmissionTemplateFields.getWorkExperience() != null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getWorkExperience())){
+			writeRow.createCell(2).setCellValue(requirementSubmissionTemplateFields.getWorkExperience());
+		}
+			writeRow.createCell(3).setCellValue("Shortlisted");
+		
+		return createExcelsheet;
+	}
+
+	private Sheet getExcelSheetWithHeaderForShortListCandidates(Sheet createExcelsheet, Row writeRow,
+			Workbook createExcelworkbook, int candidateCount, RequirementSubmission reqsub) {
+		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
+		prepareHeaders(writeRow, createExcelsheet, style,Constants.SHORTLIST_CANDIDATE_COUNT, candidateCount,reqsub);
+		String headers[] = Constants.SHORTLIST_CANDIDATE_FROM_CLIENT_TO_VENDOR_HEADER;
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style, headers, 3);
+		return createExcelsheet;
+	}
+
+	private void prepareHeaders(Row writeRow, Sheet createExcelsheet, CellStyle style, String shortlist_candidate_count,
+			int candidateCount, RequirementSubmission reqsub) {
+		writeRow = createExcelsheet.createRow(1);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell1 = writeRow.createCell(0);
+		cell1.setCellValue("Requirement Name :");
+		cell1.setCellStyle(style);
+		Cell cell2 = writeRow.createCell(1);
+		cell2.setCellValue(reqsub.getRequirement().getJobTitle());
+		cell2.setCellStyle(style);
+		
+		writeRow = createExcelsheet.createRow(2);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell3 = writeRow.createCell(0);
+		cell3.setCellValue(shortlist_candidate_count);
+		cell3.setCellStyle(style);
+		Cell cell4 = writeRow.createCell(1);
+		cell4.setCellValue(candidateCount);
+		cell4.setCellStyle(style);
+	}
+
 	private int getShortlistedCount(String[] submissionId, Long vendorLocationId) {
 		int count = 0;
 		 for(int i=0;i<submissionId.length;i++){
@@ -3253,5 +3407,34 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		}
 		return tempHTML;
 	}
-}
 
+	@Override
+	public RequirementSubmission validateRequirementByRecruiterCandidateEmail(String email, Long requirementId,
+			Long recruiterUserId) throws Exception {
+		return requirementSubmissionDao.validateRequirementByRecruiterCandidateEmail(email, requirementId, recruiterUserId);
+	}
+	
+
+	@Override
+	public Integer getRecruiterSubmissionsCountByRecruiterIdAndRequirementId(Long requirementId, Long userId)
+			throws Exception {
+		return requirementSubmissionDao.getRecruiterSubmissionsCountByRecruiterIdAndRequirementId(requirementId, userId);
+	}
+
+	@Override
+	public Integer getProfessionalJobAppliedCount(Long candidateId, Date startDate, Date endDate)
+			throws Exception {
+		return requirementSubmissionDao.getProfessionalJobAppliedCount(candidateId, startDate, endDate);
+	}
+
+	@Override
+	public Integer getProfessionalJobSubmisssionsCountBySubmissionType(Long candidateId, String submissionStatus,
+			Date startDate, Date endDate) throws Exception {
+		return requirementSubmissionDao.getProfessionalJobSubmisssionsCountBySubmissionType(candidateId, submissionStatus, startDate, endDate);
+	}
+
+	@Override
+	public Integer getProfessionalJobAppliedCountByappliedDate(Long candidateId, Date appliedDate) throws Exception {
+		return requirementSubmissionDao.getProfessionalJobAppliedCountByappliedDate(candidateId, appliedDate);
+	}
+}

@@ -46,12 +46,12 @@ function candidateResume(candidateId){
 	result = result +' <div id="msgDiv3" ></div>';
 	
 	if(window.candidateStatusGlobal == '0'){
-		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_RESUMES\')">'; 
+		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
 		  result = result+'<a href="javascript:void(0)" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Resume</a>';
 		'</sec:authorize>';
 		
 	}else{
-		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_RESUMES\')">';
+		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 		   result = result+'<a href="javascript:void(0)" onClick="refreshResumeList('+candidateId+'); addResume('+candidateId+');" class="addUser-org" id="addCandidateResume"><i class="glyphicon glyphicon-plus"></i>Add Resume</a>';
 		'</sec:authorize>';
 	}
@@ -347,8 +347,8 @@ function addResume(candidateId) {
 					           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 						           		result = result+'<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
 					           		}else{
-					           			result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_RESUMES\')">  <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addResume('+candidateId+'); getResume('+candidateId+', '+opt.id+');"></a></sec:authorize>';
-						           		result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_RESUMES\')"><i class="glyphicon glyphicon-trash" onclick="deleteResume('+candidateId+','+opt.id+');"></i></sec:authorize>';
+					           			result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\')">  <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addResume('+candidateId+'); getResume('+candidateId+', '+opt.id+');"></a></sec:authorize>';
+						           		result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><i class="glyphicon glyphicon-trash" onclick="deleteResume('+candidateId+','+opt.id+');"></i></sec:authorize>';
 					           		}
 					           		result = result+'</div></td>';
 					           		result = result+'</tr>';
@@ -358,6 +358,8 @@ function addResume(candidateId) {
 					if(resumesCount>4){
 						$("#addCandidateResume").hide();
 						closeResumePopup();
+					}else if(resumesCount<=4){
+						$("#addCandidateResume").show();
 					}
 					$("#resumesList").empty();
 					$("#resumesList").append(result);

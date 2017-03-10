@@ -205,6 +205,7 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 				if(projectMembersHistoryList.size() == 1 &&  pmh.getProjectTerminationDate() != null){
 					endDate = pmh.getProjectTerminationDate();
 				}
+				count++;
 			}
 			dateList.put("STARTDATE", startDate);
 			dateList.put("ENDDATE", endDate);
