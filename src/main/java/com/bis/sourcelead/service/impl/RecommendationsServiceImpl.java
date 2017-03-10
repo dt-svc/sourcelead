@@ -1,9 +1,12 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,6 +33,7 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.itextpdf.text.log.SysoLogger;
 
 @Service
 public class RecommendationsServiceImpl implements RecommendationsService{
@@ -700,6 +704,11 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					candidateIndex.setKeyWordPerPercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeKeywordsScore()));
 					
 					candidateIndex.setIsCandidateAdedd(isCandidateAdded);
+					if(null != candidateIndex.getUpdatedDate()){
+						Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(candidateIndex.getUpdatedDate());
+						String  strDate = new SimpleDateFormat("dd-MM-yyyy").format(date1);
+						candidateIndex.setUpdatedDate(strDate);	
+					}
 					
 					if(skillPercentage !=0 && totalPercentage !=0 ){
 						CandidateListcopy.add(candidateIndex);
