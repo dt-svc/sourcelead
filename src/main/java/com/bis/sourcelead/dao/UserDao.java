@@ -1,12 +1,11 @@
 package com.bis.sourcelead.dao;
 
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 
 public interface UserDao {
@@ -68,6 +67,8 @@ public interface UserDao {
 	//Prasad Salina to get managers list baded on role type and except current user
 	List<User> getManagersByUserIdAndUserRolesAndOrgLocationId(Long userId,Long roleId , Long orgLocationsId) throws Exception;
 	
+	List<User> getManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(Long userId, Long roleId, Long orgLocationsId, Long tabId) throws Exception;
+	
 	public List<User>  getUserListExceptExistedUsersList(List<Long> userIds,Long orgLocationId, Long tabId)throws Exception;
 
 	User getUserDetailsByUserCode(String userCode);
@@ -92,13 +93,24 @@ public interface UserDao {
 
 	List<User> getUsersByTeamType(Long id, String teamType)throws Exception;
 	
-	List<User> getUsersByTeamTypeAndTabId(Long id, String teamType, Long tabId)throws Exception;
+	LinkedHashSet<User> getUsersByTeamTypeAndTabId(Long id, String teamType, Long tabId)throws Exception;
 
 	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId,Long orgLocationsId);
 
 	public List<User>  getUserListExceptExistedTeamMembersList(List<Long> teamMembersId,Long orgLocationId)throws Exception;
 	
 	public List<User> getTabAccessOwnersByOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
+	
+	/**
+	 * @author Prasad salina
+	 * @param currentApproverId
+	 * @param orgLocationsId
+	 * @param tabId
+	 * @return
+	 * @throws Exception
+	 * @Purpose to get level2 managers
+	 */
+	public List<User> getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long currentApproverId, Long orgLocationsId,Long tabId)throws Exception;
 	
 	public List<User> getUsersForAddAsConsultant(Org org,Long orgLocationsId) throws Exception;
 	
@@ -107,4 +119,13 @@ public interface UserDao {
 	public List<User> getTabAccessUsersByOrgLocationIdAndTabIdAndUsersIds(Long orgLocationsId,List<Long> userIds,Long tabId) throws Exception;
 	
 	public List<User> getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(Long orgLocationsId,Long userId,Long tabId) throws Exception;
+	
+	public List<User> getUsersListByOrglocationId(Long orgLocationId) throws Exception;
+	
+	User getUserByEmailAndUserType(String email,String userType) throws Exception;
+	
+	User getUserByUserName(String userName) throws Exception;
+
+	List<User> getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(Long orgLocationsId, Long tabId,
+			List<Long> ownersList);
 }

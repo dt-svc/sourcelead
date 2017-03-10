@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.internet.InternetAddress;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,7 +26,6 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -172,7 +173,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		  StringBuilder startDateBuilder = new StringBuilder();
 		  StringBuilder endDateBuilder = new StringBuilder();
 		 
-		 String pattern = "dd-MM-yyyy";
+		  String pattern = "dd-MM-yyyy";
           SimpleDateFormat format = new SimpleDateFormat(pattern);
           Date currentStartDate = null;
           Date currentEndDate = null;
@@ -220,7 +221,10 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
          sb1.append("<th>Thu<i>").append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"THU").getTime())).append("</i></th>"); 
          sb1.append("<th>Fri<i>").append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"FRI").getTime())).append("</i></th>"); 
          sb1.append("<th>Sat<i>").append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SAT").getTime())).append("</i></th>"); 
-         sb1.append("<th>Sun<i>").append(endDateBuilder).append("</i></th>"); 
+         sb1.append("<th>Sun<i>").append(endDateBuilder).append("</i></th>");
+         
+         
+         
          timesheetSubmissionsList = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissions(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime(), user.getId());
          currentStartDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime();
          currentEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime();
@@ -1455,7 +1459,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 					    		
 				                SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionLowLevelApproverHierarchyForEmployee(timesheetSubmissions.getId());
 				                if(sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("draft"))  || sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("new")) || sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("rejected")) || (sah.getSubmissionStatus().equals(Submission_Status.getNameByValue("submitted")) && "approver".equalsIgnoreCase(savingType)  ) ){
-				                submissionApproverHierarchyService.updateSubmissionStatus(Long.parseLong(submissionId), status);	
+				                //submissionApproverHierarchyService.updateSubmissionStatus(Long.parseLong(submissionId), status);	
 					    		timesheetSubmissions.setWeekcomments(jsonObj.getString("weekComment"));
 								
 						    	timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
@@ -1739,7 +1743,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	 */
 	@Override
 	public TimesheetEntries updateTimesheetEntries(TimesheetEntries timesheetEntries) throws Exception {
-		// TODO Auto-generated method stub
+		timesheetEntries.setUpdatedDate(commonUtil.currentDate());
 		return timesheetEntriesDao.updateTimesheetEntries(timesheetEntries);
 	}
 	
@@ -1895,11 +1899,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
 			 
 			 //setting the Recipient information
-			 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-			 EmailRecipient emailRecipient = new EmailRecipient();
-			 emailRecipient.setEmail(emailMessage.getToEmail());
-			 emailRecipient.setName(emailMessage.getFirstName()+" "+emailMessage.getLastName());
-			 emailRecipientList.add(emailRecipient);
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			 
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
 			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_PROJECT_MANAGER_TIMESHEET,Constants.ENTITY_TYPE_EMAIL);
@@ -1916,7 +1916,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			 emailMessage.setMessageBody(emailTemplate);
 			 
 			 //calling the sendEmail method of emailScenerioUtil
-			 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+			 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 			 
 			 
 			//calling the sendNotification method of emailScenerioUtil

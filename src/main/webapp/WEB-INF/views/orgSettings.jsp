@@ -82,7 +82,7 @@ function alertMessage(message){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancelOrgImg();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelOrgImg();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -239,6 +239,26 @@ function cancelOrgImg(){
 							</div>
 							</div>
 							
+							<div class="form-group">
+				            <label class="col-md-3">Time Zone<span class="text-danger">&nbsp;*</span></label>
+				            <div class="col-md-9">
+								 <select class="chosen-select form-control" data-placeholder="Time Zone" field-name="Timezone" data-validation="required" id="timeZone" name="timeZone">
+									 <option value="" >Select Timezone</option>
+									 <c:forEach items="${timezoneList}" var="timezone">
+			                            <c:choose>
+			                                <c:when test="${timezone.timeZoneId eq orgLocations.timezone.timeZoneId}">
+			                                    <option value= "${timezone.id}" selected="selected">${timezone.timeZoneId}</option>
+			                                </c:when>
+			                                <c:otherwise>
+			                                    <option value="${timezone.id}">${timezone.timeZoneId}</option>
+			                                </c:otherwise>
+			                            </c:choose>
+			                         </c:forEach>
+			                     </select>
+			                     <span class="hidden">Time Zone</span>
+							</div>
+							</div>
+							
 							<input type="hidden" id="existingCity" value="${SourceLeadWeb_orgLocations.city}" >
 				   </div>
 				
@@ -252,13 +272,13 @@ function cancelOrgImg(){
 						<div class="form-group mt">
 							<label class="col-md-3">Phone</label>
 							<div class="col-md-9">
-							<input type="text"  class="form-control" name="phone" field-name="phone" data-validation="validate_int validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.phone}" />
+							<input type="text"  class="form-control" name="phone" field-name="phone" data-validation="validate_phone validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.phone}" />
 							</div>
 						</div>
 						<div class="form-group mt">
 							<label class="col-md-3">Fax</label>
 							<div class="col-md-9">
-							<input type="text"  class="form-control" name="fax" field-name="fax" data-validation="validate_int validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.fax}" />
+							<input type="text"  class="form-control" name="fax" field-name="fax" data-validation="validate_phone validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.fax}" />
 							</div>
 						</div>
 						
@@ -715,9 +735,10 @@ function loadSignature(){
 								
 							}
 							
+							
 							else if(opt.labelName == 'Company Name'){
-								if('${SourceLeadWeb_orgName}' != null){
-									labelText = '${SourceLeadWeb_orgName}';
+								if("${SourceLeadWeb_orgName}" != null){
+									labelText = "${SourceLeadWeb_orgName}";
 								}
 								
 							}

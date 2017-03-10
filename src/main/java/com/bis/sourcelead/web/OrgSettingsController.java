@@ -22,9 +22,11 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -48,12 +50,19 @@ public class OrgSettingsController {
 	@Autowired
 	RoleHierarchyService roleHierarchyService;
 	
+	@Autowired
+	TimeZoneService timeZoneService;
+	
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_ORG_SETTINGS','ROLE_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/orgSettings")
- 	public ModelAndView orgSettings(HttpServletRequest request) {
+ 	public ModelAndView orgSettings(HttpServletRequest request) throws Exception {
 		logger.debug("Org settings");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		    ModelAndView model = new ModelAndView();
  			commonUtil.highLightMenu(Constants.OrgSettings, request);
+ 			List<Timezone> timezoneList= timeZoneService.getAllTimeZones();
+			model.addObject("timezoneList", timezoneList);
+			model.addObject("orgLocations", orgLocations);
  			model.setViewName("orgSettings");
  			model.addObject("sourceleadUrl", sourceleadUrl);
  			return model;
@@ -83,6 +92,35 @@ public class OrgSettingsController {
 			}
  			model.addObject("hierarchyList", hierarchyList);
  			model.setViewName("orgRolesList");
+ 			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			return model;
+ 	}
+	
+	
+	
+	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
+	@RequestMapping(value = "/roleHierarchy")
+ 	public ModelAndView roleHierarchy(HttpServletRequest request) throws Exception {
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
+		    ModelAndView model = new ModelAndView();
+ 			commonUtil.highLightMenu(Constants.OrgSettings, request);
+ 			
+ 			
+ 			List<RoleHierarchy> hierarchyList = roleHierarchyService.getRoleHierarchyByOrgLocationId(orgLocations.getId());
+ 			List<RoleHierarchy> rolesHierarchyList = new ArrayList<RoleHierarchy>();
+ 			
+ 			if(null != hierarchyList){
+ 				for(RoleHierarchy hierarchy : hierarchyList){
+ 					List<Roles> rolesList = rolesService.getUserRolesListByRoleHierarchyIdAndOrgLocationId(orgLocations.getId(), hierarchy.getId(),org.getOrgCode());
+ 					hierarchy.setRolesList(rolesList);
+ 					rolesHierarchyList.add(hierarchy);
+ 				}
+ 			}
+ 			
+ 			model.addObject("rolesHierarchyList", rolesHierarchyList);
+ 			
+ 			model.setViewName("roleHierarchy");
  			model.addObject("sourceleadUrl", sourceleadUrl);
  			return model;
  	}

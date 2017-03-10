@@ -1,16 +1,17 @@
 package com.bis.sourcelead.web;
 
+
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -38,6 +38,7 @@ import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.SubmissionTemplate;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
@@ -53,9 +54,12 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
+import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+//import org.apache.commons.collections.ListUtils;
 
 @Controller
 public class RequirementController {
@@ -70,11 +74,17 @@ public class RequirementController {
 	@Autowired
 	LookUpDataService lookUpDataService;
 	
+	/*@Autowired
+	RequirementDao requirementDao;*/
+	
 	@Autowired
 	RequirementService requirementService;
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	UserRoleService userRoleService;
 	
 	@Autowired
 	OrgSpocService orgSpocService;
@@ -109,17 +119,24 @@ public class RequirementController {
 	@Autowired
 	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	
+	@Autowired
+	TimeZoneService timeZoneService;
+	
+	@SuppressWarnings("unchecked")
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT', 'ROLE_VIEW_REQUIREMENT', 'ROLE_VIEW_EDIT_REQUIREMENT')")
 	@RequestMapping(value = "/requirement")
-	public ModelAndView newRequirement(HttpServletRequest request,@RequestParam(value="requirementId", required=false)String requirementId) throws Exception {
+	public ModelAndView newRequirement(HttpServletRequest request,@RequestParam(value="requirementUUID", required=false)String requirementUUID) throws Exception {
 		Requirement requirement ;
 		ModelAndView model = new ModelAndView();
 		
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		if(null != requirementId && !requirementId.isEmpty()){
-			requirement = this.requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
+		if(null != requirementUUID && !requirementUUID.isEmpty()){
+			requirement = this.requirementService.getRequirementByRequirementUUID(requirementUUID);
+			
+			if(requirement != null && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
+			
 			if(null != requirement.getEducation()){
 					String[] educationList = requirement.getEducation().split(",");
 					requirement.setReqEducationList(educationList);
@@ -133,7 +150,7 @@ public class RequirementController {
 			}
 			String requirementAssignedIds = "";
 			if(null != requirement.getRequirementAssignTo()){
-				List<RequirementAssignTo> requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(requirementId));
+				List<RequirementAssignTo> requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(requirement.getId());
 				for(RequirementAssignTo rat : requirementAssignToList){
 					if(null != requirementAssignedIds && !requirementAssignedIds.isEmpty()  && "" != requirementAssignedIds ){
 						StringBuilder assignUserIdsSB = new StringBuilder();
@@ -146,25 +163,36 @@ public class RequirementController {
 			}
 			model.addObject("requirementAssignedIds",requirementAssignedIds);
 			model.addObject("requirement",requirement);
-			model.addObject("requirementId",requirementId);
+			model.addObject("requirementId",requirement.getId());
 			if(null != requirement.getClientId()){
-				List<OrgSpoc> clientContactList  = orgSpocService.getAllSpocsByOrgRelationId(requirement.getClientId().getId(), loginUser.getId(),orgLocations.getId());
-				if(null != clientContactList){
+				List<OrgSpoc> clientContactList  = orgSpocService.getAllSpocsByOrgRelationId(requirement.getClientId().getId(), loginUser.getId(),orgLocations.getId(),"Client");
+				/*commented by Prasad salina, here no need to iterate list, because in service impl we already itarated the list.
+				 * if(null != clientContactList){
 					for(OrgSpoc orgSpoc : clientContactList){
 						orgSpoc.setOwnerName(orgSpoc.getOwnerUser().getFirstName());
 					}
+				}*/
+				if(clientContactList.size() == 0 && null != requirement.getSpocId()){
+				OrgSpoc clientContactOrgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
+				StringBuilder clientContactWithOwner = new StringBuilder();
+				if(null != clientContactOrgSpoc.getClientUser().getLastName() && !"".contentEquals(clientContactOrgSpoc.getClientUser().getLastName())){
+				    clientContactWithOwner.append(clientContactOrgSpoc.getClientUser().getFirstName()).append(clientContactOrgSpoc.getClientUser().getLastName()).append("(").append(clientContactOrgSpoc.getVendorUser().getFirstName()).append(")");
+				}else{
+					clientContactWithOwner.append(clientContactOrgSpoc.getClientUser().getFirstName()).append("(").append(clientContactOrgSpoc.getVendorUser().getFirstName()).append(")");
 				}
-			    model.addObject("clientContactList", clientContactList);
+				model.addObject("clientContactWithOwner", clientContactWithOwner);
+			   }
+				model.addObject("clientContactList", clientContactList);
 			}
 		    
 		    
 		    //for requirement approvaers
-			List<RequirementApproverHierarchy> requirementApproverHierarchyList =	requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(Long.parseLong(requirementId));
+			List<RequirementApproverHierarchy> requirementApproverHierarchyList =	requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirement.getId());
 			String approverMode = "noApprovers";
 			Long sequentialApprover1 = null;
 			Long sequentialApprover2 = null;
 			String parallelApproverIds = null ;
-			Integer maxLevel =  requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(Long.parseLong(requirementId));
+			Integer maxLevel =  requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirement.getId());
 			if(null != maxLevel && maxLevel >1){
 				approverMode = "Sequential";
 				if(null != requirementApproverHierarchyList && !requirementApproverHierarchyList.isEmpty()){
@@ -197,6 +225,10 @@ public class RequirementController {
 			model.addObject("sequentialApprover1",sequentialApprover1);
 			model.addObject("sequentialApprover2",sequentialApprover2);
 			
+			}else{
+				model.setViewName("registration/persmissionDenied");
+			}
+			
 		}else{
 			requirement = new Requirement();
 		}
@@ -214,6 +246,27 @@ public class RequirementController {
 	        
 		}*/
         
+		
+		if(requirement != null && requirement.getId() != null){
+
+			List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirement.getId());
+				List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+				List<String> totSkils = new ArrayList<String>();
+				if(!allReqSkills.contains(null)){
+					totSkils.addAll(skillsList);
+					totSkils.addAll(allReqSkills);
+					model.addObject("skillsList", totSkils);
+				}else{
+					model.addObject("skillsList", skillsList);
+				}
+
+		}else{
+			//List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+			model.addObject("skillsList", skillsList);
+		}
+		 
+		
         List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		model.addObject("educationsList", educationsList);
 		
@@ -224,8 +277,7 @@ public class RequirementController {
 		List<User> allusersList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
 		model.addObject("all_users_List", allusersList);
 		
-		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
-		model.addObject("skillsList", skillsList);
+		
 		
 		List<Requirement> jobsTemplateList = requirementService.getJobTitleByJobTemplateStatusAndOrgLocationId(orgLocations.getId());
 		model.addObject("jobsTemplateList", jobsTemplateList);	
@@ -282,64 +334,80 @@ public class RequirementController {
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_REQUIREMENT')")
 	@RequestMapping(value = "/requirementSummary")
-	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementId", required=false)Long requirementId) throws Exception {
+	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementUUID", required=false)String requirementUUID) throws Exception {
 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		
-		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-		
 		ModelAndView model = new ModelAndView();
-		model.setViewName("requirement/requirementSummary");
-		model.addObject("requirementId",requirementId);
-		
-		Boolean isTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
-		model.addObject("isTeamMember",isTeamMember);
-		
-		Boolean isManager = requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirementId, loginUser.getId());
-		model.addObject("isManager",isManager);
-
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		
-		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
-		model.addObject("skillsList", skillsList);
-
-		// This code is commented as not in use 
-
-		//to get time zone list
-		/*Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-		if(countries != null){
-			String[] timezonesList = com.ibm.icu.util.TimeZone.getAvailableIDs(countries.getCode2());
-			model.addObject("timezonesList", timezonesList);
-		}*/
-		
-		if(null != requirement.getIsClientJob() && requirement.getIsClientJob().equalsIgnoreCase("Y")){
-			model.addObject("clientSubmissions","Y");
-		}else{
-			model.addObject("clientSubmissions","N");
-		}
-		
-		Requirement parentRequirement = requirementService.getRequirementByParentRequirementId(requirementId);
-        if(null != parentRequirement){
-            model.addObject("parentRequirement","Y");
-        }else{
-            model.addObject("parentRequirement","N");
-        }
-        
-        if(null != requirement.getSpocId() && null != requirement.getSpocId().getId()){
-			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
-			if(null != orgSpoc && null != orgSpoc.getSpocStatus() && "In-Active".equalsIgnoreCase(orgSpoc.getSpocStatus())){
-				model.addObject("isSpocActive", Constants.NO);
+		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
+		if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
+			Long requirementId = requirement.getId();
+			
+			model.setViewName("requirement/requirementSummary");
+			model.addObject("requirementId",requirementId);
+			
+			model.addObject("requirement",requirement);
+			
+			model.addObject("timezone",timezone.getTimeZoneId());
+			
+			Boolean isTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
+			model.addObject("isTeamMember",isTeamMember);
+			
+			Boolean isManager = requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirementId, loginUser.getId());
+			model.addObject("isManager",isManager);
+			
+			Boolean isAdmin = userRoleService.isUserAdminByOrgLocationId(loginUser.getId(),orgLocations.getId());
+			model.addObject("isAdmin",isAdmin);
+	
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			
+			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			model.addObject("skillsList", skillsList);
+			
+			List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+			model.addObject("educationsList", educationsList);
+	
+			// This code is commented as not in use 
+	
+			//to get time zone list
+			/*Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			if(countries != null){
+				String[] timezonesList = com.ibm.icu.util.TimeZone.getAvailableIDs(countries.getCode2());
+				model.addObject("timezonesList", timezonesList);
+			}*/
+			
+			if(null != requirement.getIsClientJob() && requirement.getIsClientJob().equalsIgnoreCase("Y")){
+				model.addObject("clientSubmissions","Y");
 			}else{
-				model.addObject("isSpocActive", Constants.YES);
+				model.addObject("clientSubmissions","N");
 			}
-		}
-		
-		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqsummaryMsg");
-		if(!isNullOrEmpty(msg)){
-			model.addObject("msg", msg);
-			SourceLeadSessionManager.removeSessionAttribute(request, "reqsummaryMsg");
+			
+			Requirement parentRequirement = requirementService.getRequirementByParentRequirementId(requirementId);
+	        if(null != parentRequirement){
+	            model.addObject("parentRequirement","Y");
+	        }else{
+	            model.addObject("parentRequirement","N");
+	        }
+	        
+	        if(null != requirement.getSpocId() && null != requirement.getSpocId().getId()){
+				OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
+				if(null != orgSpoc && null != orgSpoc.getSpocStatus() && "In-Active".equalsIgnoreCase(orgSpoc.getSpocStatus())){
+					model.addObject("isSpocActive", Constants.NO);
+				}else{
+					model.addObject("isSpocActive", Constants.YES);
+				}
+			}
+			
+			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqsummaryMsg");
+			if(!isNullOrEmpty(msg)){
+				model.addObject("msg", msg);
+				SourceLeadSessionManager.removeSessionAttribute(request, "reqsummaryMsg");
+			}
+			model.addObject("requirementUUID",requirementUUID);
+		}else{
+			model.setViewName("registration/persmissionDenied");
 		}
 		return model;
 	}
@@ -423,8 +491,30 @@ public class RequirementController {
 		    List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 			model.addObject("educationsList", educationsList);
 			
-			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
-			model.addObject("skillsList", skillsList);
+			/*List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			model.addObject("skillsList", skillsList);*/
+			
+			
+			
+			if(requirement != null && requirement.getId() != null){
+
+				List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirement.getId());
+					List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+					List<String> totSkils = new ArrayList<String>();
+					if(!allReqSkills.contains(null)){
+						totSkils.addAll(skillsList);
+						totSkils.addAll(allReqSkills);
+						model.addObject("skillsList", totSkils);
+					}else{
+						model.addObject("skillsList", skillsList);
+					}
+
+			}else{
+				//List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+				List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+				model.addObject("skillsList", skillsList);
+			}
+			
 			
 		
 		   return model;

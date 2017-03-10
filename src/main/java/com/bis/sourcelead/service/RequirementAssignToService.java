@@ -20,5 +20,7 @@ public interface RequirementAssignToService {
 	Boolean checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(Long requirementId,Long userId)  throws Exception;
 
 	public List<RequirementAssignTo> getAssignedToMembersByRequirementIdAndOrgLocationId(Long requirementId,Long orgLocation) throws Exception;
+
+	public RequirementAssignTo getRequirementAssignToByRequirementIdandAssignedUserId(Long assignedUserId, Long requirementId) throws Exception;
 	
 }

@@ -55,6 +55,7 @@ function candidateResume(candidateId){
     $("#tab-14").empty();  
     $("#tab-15").empty();  
     $("#tab-16").empty();  
+    $("#history").empty();
     $("#tab-12").append(result); 
     $("#tab-12").show(); 
 }
@@ -308,13 +309,13 @@ function addResume(candidateId) {
 					           		result = result+'	            <td><div><span>'+opt.fileName+'</span></div></td>';
 					           		result = result+'	            <td><div><span title="'+description+'">'+description+'</span></div></td>';
 					           		result = result+'	            <td><div><span>'+createdBy+'</span></div></td>';
-					           		result = result+'	            <td><div class="tblicons"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+opt.id+'\"></a>';
+					           		result = result+'	            <td><div class="tblicons"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+opt.resumeUUID+'\"></a>';
 					           		if(window.candidateStatusGlobal == 0){
 					           			result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 						           		result = result+'	            <i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
 					           		}else{
 					           			result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addResume('+candidateId+'); getResume('+candidateId+', '+opt.id+');"></a>';
-						           		result = result+'	            <i class="glyphicon glyphicon-trash" onclick="deleteResume('+candidateId+','+opt.id+');"></i>';
+						           		result = result+'	            <i class="glyphicon glyphicon-trash" style="color:#f51515 !important;" onclick="deleteResume('+candidateId+','+opt.id+');"></i>';
 					           		}
 					           		result = result+'	            </div></td>';
 					           		result = result+'	          </tr>';

@@ -1,11 +1,11 @@
 package com.bis.sourcelead.web;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +13,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
@@ -21,19 +23,23 @@ import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.entity.SourceleadActions;
-import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.ActionRolesService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -76,6 +82,20 @@ public class RegistrationController {
 	 @Autowired
 	 RolesService rolesService;
 	 
+	 @Autowired
+	 UserService userService;
+	 
+	 @Autowired
+	 UserRoleService userRoleService;
+	 
+	 @Autowired
+	 RolesService roleService;
+	 
+	 @Autowired
+	 OrgSpocService orgSpocService;
+	 
+	 @Autowired
+	 TimeZoneService timeZoneService;
 	 
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	 @RequestMapping(value = "/enrolledOrgsList")
@@ -107,6 +127,9 @@ public class RegistrationController {
 				 modulesList = modulesService.getSourceLeadModules();
 				 model.addObject("modulesList", modulesList);
 				 
+				 List<Timezone> timezoneList= timeZoneService.getAllTimeZones();
+				 model.addObject("timezoneList", timezoneList);
+				 
 				 requirementSubModulesList = moduleService.getRequirementSubModules();
 				 model.addObject("requirementSubModulesList", requirementSubModulesList);
 				 
@@ -125,19 +148,22 @@ public class RegistrationController {
 	 
 	 
 	 /**
-	  * @author Venkat I
+	  * @author Venkat I and Prasad salina(Modified)
 	  * This method calls when client or vendor accept the invitation or accept the notification.
 	  * @param respondingOrgType
 	  * @param actionLink
 	  * @param respondingPartyOrgLocationId
 	  * @return
+	 * @throws Exception 
 	  */
 	 
 	 @RequestMapping(value = "/acceptClientOrVendorInvitation")
-		public String acceptClientOrVendorInvitation(@RequestParam(value = "respondingOrgType", required = false) String respondingOrgType,
+		public void acceptClientOrVendorInvitation(@RequestParam(value = "respondingOrgType", required = false) String respondingOrgType,
 				@RequestParam(value = "actionLink", required = false) String actionLink,
 				@RequestParam(value = "UUID", required = false) String UUID,
-				@RequestParam(value = "respondingPartyOrgLocationId", required = false) Long respondingPartyOrgLocationId) {
+				@RequestParam(value = "respondingPartyOrgLocationId", required = false) Long respondingPartyOrgLocationId,
+				@RequestParam(value = "initiatingPartyOrgLocationId", required = false) Long initiatingPartyOrgLocationId,
+				@RequestParam(value = "spocUUID", required = false) String spocUUID,HttpServletResponse response) throws Exception {
 			
 		    Org org = null;
 		    OrgLocations orgLocations = null;
@@ -179,12 +205,6 @@ public class RegistrationController {
 			    	org.setModulesId(modules);
 			    	org.setStatus(Status.ACTIVE);
 					orgService.updateOrg(org);
-					
-					 Notifications notifications = notificationsService.getNotificationsByUUID(UUID);
-					 if(null != notifications){
-						 notifications.setUserNotificationStatus("Accepted");
-						 notificationsService.saveNotification(notifications);
-					 }
 		    	}
 				 
 				
@@ -194,11 +214,38 @@ public class RegistrationController {
 		    
 		    
 			if(null == actionLink){
-				return "redirect:/login";
+				StringBuilder redirectUrl = new StringBuilder();
+				response.sendRedirect(redirectUrl.append("/sourcelead/Inlogin?spocUUID=").append(spocUUID).append("&UUID=").append(UUID).toString());
 			}else{
 				 StringBuilder redirectUrl = new StringBuilder();
-				//return "redirect:/dashboard/"+respondingPartyOrgLocationId+"";
-				 return redirectUrl.append("redirect:/dashboard/").append(respondingPartyOrgLocationId).toString();
+				 if("acceptNotification".equalsIgnoreCase(actionLink)){
+					 Notifications notifications = notificationsService.getNotificationsByUUID(UUID);
+					 if(null != notifications){
+						 notifications.setUserNotificationStatus("Accepted");
+						 notificationsService.saveNotification(notifications);
+					 }
+					 
+					 OrgSpoc orgSpoc = orgSpocService.getSpocBySpocUUID(spocUUID);
+					 if(null != orgSpoc ){
+						 orgSpoc.setInvitationStatus(Constants.MAIL_ACCEPTED);
+						 orgSpocService.addOrgSpoc(orgSpoc);
+					 }
+				 }else if("rejectNotification".equalsIgnoreCase(actionLink)){
+					 Notifications notifications = notificationsService.getNotificationsByUUID(UUID);
+					 if(null != notifications){
+						 notifications.setUserNotificationStatus("Rejected");
+						 notificationsService.saveNotification(notifications);
+					 }
+					 
+					 OrgSpoc orgSpoc = orgSpocService.getSpocBySpocUUID(spocUUID);
+					 if(null != orgSpoc ){
+						 orgSpoc.setInvitationStatus(Constants.MAIL_REJECTED);
+						 orgSpoc.setSpocStatus("In-Active");
+						 orgSpocService.addOrgSpoc(orgSpoc);
+					 }
+				 }
+				 
+				 response.sendRedirect(redirectUrl.append("/sourcelead/dashboard/").append(respondingPartyOrgLocationId).toString());
 			}
 			
 		}
@@ -250,14 +297,98 @@ public class RegistrationController {
 				}
 				
 				model.addObject("orgloc",orgLocations);
+				model.addObject("registeredOrgLocationId",orgLocations.getId());
 				model.addObject("orgId",orgId);
 				model.setViewName("registration/enrolledOrgSummary");
-				model.addObject("sourceleadUrl", sourceleadUrl);
 				
+				if(null != orgLocations.getUser()){
+					UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(orgLocations.getUser().getId(), orgLocations.getId());
+					model.addObject("userState",userRole.getUserState());
+				}
+				
+				model.addObject("sourceleadUrl", sourceleadUrl);
 			
 			return model;
 
 		}
+	 
+	 
+		@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+		@RequestMapping(value = "/getOrgRegisteredUsers")
+		public @ResponseBody String getOrgRegisteredUsers(@RequestParam(value = "orgId", required = false) Long orgId,
+				HttpServletRequest request) throws Exception {
+
+		    String resultJson;
+		    OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(orgId);
+
+			List<User> usersList = userService.getUsersListByOrglocationId(orgLocations.getId());
+			List<User> orgUsersList = new ArrayList<User>(); 
+			if(null != usersList){
+				for(User user : usersList){
+					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+					user.setUserState(userRole.getUserState());
+					user.setRole(userRole.getRoles().getDisplayName());
+					
+					if(null != userRole.getOrgLocations().getUser() && user.getId().equals(userRole.getOrgLocations().getUser().getId())){
+						user.setIsPrimaryAdmin("Y");
+					}
+					
+					orgUsersList.add(user);
+				}
+			}
+		    resultJson = commonUtil.toJSON(orgUsersList);
+			return resultJson;
+		}
+		
+		
+		@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+		@RequestMapping(value = "/getRegisteredOrgRoles", method = RequestMethod.POST)
+		public @ResponseBody String getReportingManager(
+				@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request) throws Exception {
+			String resultJson = null;
+			List<Roles> rolesList = roleService.getRoles(orgLocationId);
+			resultJson = commonUtil.toJSON(rolesList);
+			return resultJson;
+		}
+		
+		@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+		@RequestMapping(value = "/validateRegisteredUserEmail" , method = RequestMethod.POST)
+		 public @ResponseBody  String validateUserEmail(@RequestParam(value="emailId", required=false) String emailId,
+				 @RequestParam(value="orgLocationId", required=false) Long orgLocationId,HttpServletRequest request) throws Exception {
+			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 	String result = null;
+			 	User user = userService.findByEmailAndOrgLocationsId(emailId,orgLocationId);
+			 	
+			 	if (user != null) {
+					result = "true";
+				}else{
+					result = "false";
+				}
+				return result;
+		   }
+		
+		
+		 @RequestMapping(value = "/validateOrgPrimaryUserEmail",  method = RequestMethod.GET)
+		    public @ResponseBody String validateOrgPrimaryUserEmail(@RequestParam(value="email", required=false) String email,
+		    		@RequestParam(value="orgLocationId", required=false) Long orgLocationId,
+		    		@RequestParam(value="json", required=false) String json) throws Exception {
+				
+			    String result = null;
+			    User user = null;
+			 	user = userService.findByEmailAndOrgLocationsId(email,orgLocationId);
+			 	if (null != user) {
+					result = "success";
+				}else{
+					user = userService.findByEmail(email);
+					if(null == user){
+						result = "success";
+					}else{
+						result = "Existed Email";
+					}
+				}
+				return result;
+			}
+		   
 		
 	
 	 public void saveUserRoleActions(Long moduleId,Long tabId,OrgLocations orgLocations) throws Exception{
@@ -295,6 +426,56 @@ public class RegistrationController {
 		    managerrole.setActionId(managerids);
 			rolesService.storeRoles(managerrole);
 	 }
+	 
+	 
+	 
+	  @RequestMapping(value = "/validateCrowdSourcingEmail",  method = RequestMethod.GET)
+	   public @ResponseBody String validateCrowdSourcingEmail(@RequestParam(value="email", required=false) String email,
+	   		@RequestParam(value="type", required=false) String type) throws Exception {
+		  
+		  User user = userService.getUserByEmailAndUserType(email, type);
+		  if(null == user){
+			  return "Success";
+		  }else{
+			  return "Invalid";
+		  }
+	   }
+	  
+	  
+	  @RequestMapping(value = "/validateCrowdSourcingUserName",  method = RequestMethod.GET)
+	   public @ResponseBody String validateCrowdSourcingUserName(@RequestParam(value="userName", required=false) String userName) throws Exception {
+		  
+		  User user = userService.getUserByUserName(userName);
+		  if(null != user){
+			  return "Success";
+		  }else{
+			  return "Invalid";
+		  }
+	   }
+	  
+	  @RequestMapping(value = "/validateCrowdSourcingResetUserName",  method = RequestMethod.GET)
+	   public @ResponseBody String validateCrowdSourcingResetUserName(@RequestParam(value="userName", required=false) String userName,
+			   @RequestParam(value="resetUserName", required=false) String resetUserName) throws Exception {
+		  
+		  User user = null;
+		  user = userService.getUserByUserName(userName);
+		  if(null != user){
+			  if(user.getEmail().equalsIgnoreCase(resetUserName)){
+				  return "Invalid";
+			  }else{
+				  user = userService.findByUserName(resetUserName); 
+				  if(null == user){
+					  return "Success";
+				  }else{
+					  return "Invalid";
+				  }
+			  }
+			  
+		  }else{
+			  return "Invalid";
+		  }
+	   }
+	  
 	 
 	 /**	 
 	  * checks if string is null or empty

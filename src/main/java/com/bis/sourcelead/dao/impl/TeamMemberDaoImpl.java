@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.TeamMemberDao;
+import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
@@ -140,5 +141,18 @@ public class TeamMemberDaoImpl  implements TeamMemberDao{
 				+ "where team.orgLocationsId.id = :orgLocationId and tm.memberUserId.id = :userId and tm.status = '1'";
 		return session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	}
-
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean isUserBelongsCurrentTeamByUserIdAndTeamId(Long userId, Long teamId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from TeamMembers teamMember where teamMember.teamId.id = :teamId and teamMember.memberUserId.id = :userId and teamMember.status = '1'  or teamMember.teamId.id IN ( select team.id from Team team where team.ownerUserId.id =:userId and team.id =:teamId)";
+		List<TeamMembers> teamMembersList = session.createQuery(query.toString()).setLong("userId", userId).setLong("teamId", teamId).setCacheable(true).list();
+	     boolean isMemberFound = false;
+		if (teamMembersList != null && !teamMembersList.isEmpty()) {
+			isMemberFound = true;
+	     }
+	     return isMemberFound;
+	}
+	
 }

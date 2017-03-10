@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
@@ -20,18 +22,18 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-
-import opennlp.tools.parser.Cons;
 /**
  * Handles requests for the Client service.
  * 
@@ -69,7 +71,8 @@ public class ClientController {
 	@Autowired
 	CountriesService countriesService;
 
-	
+	@Autowired
+	StatesService statesService;
 	
 	/**
 	 * Handles to display client jsp
@@ -82,7 +85,6 @@ public class ClientController {
 		 	logger.debug("Display the client page");
 			ModelAndView model = new ModelAndView();
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			
 			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT));
 			model.addObject("userList", userList);
 			model.setViewName("client/client");
@@ -102,12 +104,30 @@ public class ClientController {
 	
 	/* This method is used for landing page of clients tab. So, who has client tab access they can see clients list. No preAuthorize for this method */
 	 @RequestMapping(value = "/clientDashboard")
-		public ModelAndView clientDashboard(HttpServletRequest request) throws Exception {
+		public ModelAndView clientDashboard(HttpServletRequest request,@RequestParam(value = "searchResult", required = false) String searchResult,@RequestParam(value = "searchValue", required = false) String searchValue,
+				@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
+				@RequestParam(value = "orgRelationId", required = false) String orgRelationId,
+				@RequestParam(value = "orgName", required = false) String orgName,
+				@RequestParam(value = "clientKeyword", required = false) String clientKeyword) throws Exception {
 		 
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    ModelAndView model = new ModelAndView();
 			model.setViewName("client/clientDashboard");
+			
+			if(null != searchResult && !searchResult.equalsIgnoreCase("") && searchResult.equals("clientSearchResult")){
+				model.addObject("clientSearchResult","clientSearchResult");
+				model.addObject("searchValue",searchValue);
+				model.addObject("searchType","Client");
+			}
+			
+			if(null != clientKeyword && !clientKeyword.equalsIgnoreCase("") && clientKeyword.equals("clientSearch")){
+				model.addObject("responderLocationId",responderLocationId);
+				model.addObject("clientKeyword",clientKeyword);
+				model.addObject("orgRelationId",orgRelationId);
+				model.addObject("orgName",orgName);
+			}
+			
 			List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
 			for (OrgRelations orgRelation : clientsList) {
 				if(null != orgRelation.getLocationId() && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
@@ -127,7 +147,7 @@ public class ClientController {
 					StringBuilder userNameSB = new StringBuilder();
 					orgRelation.setVendorCreateduserName(userNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 				}
-				List<OrgSpoc> orgSpocs = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(), loginUser.getId(),orgLocations.getId());
+				List<OrgSpoc> orgSpocs = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(), loginUser.getId(),orgLocations.getId(),"");
 
 				orgRelation.setNoOfContatcs(orgSpocs.size());
 
@@ -142,11 +162,19 @@ public class ClientController {
 			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT));
 			model.addObject("userList", userList);
 			
-			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-			if(countries != null){
-				model.addObject("loginCountryName", countries.getName());
+			List<Countries> countryList = countriesService.getAllCountries();
+			model.addObject("countryList", countryList);
+			
+			if(null != orgLocations && StringUtils.isNotEmpty(orgLocations.getCountry())){
+				
+				Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+				if(null != countries){
+				   model.addObject("loginCountryName", countries.getName());
+				}
+		        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
+		        model.addObject("statesList", statesList);
 			}
-		
+			
 			commonUtil.highLightMenu(Constants.Clients, request);
 			String msg = "";
 			msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "clientCreateMsg");

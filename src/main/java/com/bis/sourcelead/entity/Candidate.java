@@ -24,6 +24,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "CANDIDATE", catalog = "sourcelead")
@@ -41,11 +42,18 @@ public class Candidate implements Serializable{
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="CONSULTANT_USER_ID")        
     private User consultantUser;
 	
+    @ManyToOne(fetch = FetchType.LAZY)
+   	@JoinColumn(name = "ORG_ID", nullable = false)
+   	private Org orgId;
 	
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="RECRUITER_USER_ID")        
+    private User recruiterUserId;
+    
 	@Column(name = "CANDIDATE_TYPE")
 	private String candidateType;
 	
@@ -94,6 +102,9 @@ public class Candidate implements Serializable{
 	@Column(name = "DESIGNATION_TYPE")
 	private String designationType;
 	
+	@Column(name = "DESIGNATION_OTHER_TYPE")
+	private String designationOtherType;
+	
 	@Column(name = "CURRENT_RATE")
 	private String currentRate;
 	
@@ -131,6 +142,13 @@ public class Candidate implements Serializable{
 	@Column(name="STATUS")
 	private Integer status;
 	
+	@ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="TEAM_ID")        
+    private Team teamId;
+	
+	@Column(name="IS_FAVOURITE")
+	private Integer isFavourite;
+	
 	@Column(name="TERMINATE_REASON")
 	private String terminateReason;
 
@@ -158,13 +176,19 @@ public class Candidate implements Serializable{
 	@Transient
 	private String candidateName;
 	
+	@Transient
+	private String candidateLocation;
+	
+	@Column(name = "SKILLS_NAME", columnDefinition = "TEXT default NULL")
+	private String skillsName ;
+	
 	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateEducation> candidateEducation = new HashSet<CandidateEducation>(0);
 	
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	/*@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
-	private Set<CandidateSkills> candidateSkills = new HashSet<CandidateSkills>(0);
+	private Set<CandidateSkills> candidateSkills = new HashSet<CandidateSkills>(0);*/
 	
 	
 	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
@@ -205,9 +229,38 @@ public class Candidate implements Serializable{
 	 private String reqSubmissionId;
 	 
 	 @Transient
-	 private String isFavourite;
+	 private float skillPercentage;
 	 
+	 @Transient
+	 private float expPercentage;
 	 
+	 @Transient
+	 private float locationPercentage;
+	 
+	 @Transient
+	 private float ratePercentage;
+	 
+	 @Transient
+	 private float noticePeriodPercentage;
+	 
+	 @Transient
+	 private float totalKeyWordPerPercentage;
+	 
+	 @Transient
+	 private Long currentResumeId;
+	 
+	 @Transient
+	 private String linkedIn;
+		
+	 @Transient
+	 private String facebook;
+		
+	 @Transient
+	 private String twitter;
+		
+	 @Transient
+	 private String googlePlus;
+		
 	 
 	 @Transient
 	 private List<RequirementSubmission> requirementSubmisstions;
@@ -372,6 +425,16 @@ public class Candidate implements Serializable{
 		this.designationType = designationType;
 	}
 
+	
+	public String getDesignationOtherType() {
+		return designationOtherType;
+	}
+
+
+	public void setDesignationOtherType(String designationOtherType) {
+		this.designationOtherType = designationOtherType;
+	}
+
 
 	public String getCurrentRate() {
 		return currentRate;
@@ -533,7 +596,7 @@ public class Candidate implements Serializable{
 	}
 
 
-	public Set<CandidateSkills> getCandidateSkills() {
+	/*public Set<CandidateSkills> getCandidateSkills() {
 		return candidateSkills;
 	}
 
@@ -541,7 +604,7 @@ public class Candidate implements Serializable{
 	public void setCandidateSkills(Set<CandidateSkills> candidateSkills) {
 		this.candidateSkills = candidateSkills;
 	}
-
+*/
 
 	public Set<CandidateResumes> getCandidateResumes() {
 		return candidateResumes;
@@ -699,12 +762,22 @@ public class Candidate implements Serializable{
 	}
 
 
-	public String getIsFavourite() {
+	public Team getTeamId() {
+		return teamId;
+	}
+
+
+	public void setTeamId(Team teamId) {
+		this.teamId = teamId;
+	}
+
+
+	public Integer getIsFavourite() {
 		return isFavourite;
 	}
 
 
-	public void setIsFavourite(String isFavourite) {
+	public void setIsFavourite(Integer isFavourite) {
 		this.isFavourite = isFavourite;
 	}
 
@@ -762,6 +835,154 @@ public class Candidate implements Serializable{
 	public void setCandidateAdedd(boolean isCandidateAdedd) {
 		this.isCandidateAdedd = isCandidateAdedd;
 	}
+
+
+	public String getCandidateLocation() {
+		return candidateLocation;
+	}
+
+
+	public void setCandidateLocation(String candidateLocation) {
+		this.candidateLocation = candidateLocation;
+	}
+
+
+	public float getSkillPercentage() {
+		return skillPercentage;
+	}
+
+
+	public void setSkillPercentage(float skillPercentage) {
+		this.skillPercentage = skillPercentage;
+	}
+
+
+	public float getExpPercentage() {
+		return expPercentage;
+	}
+
+
+	public void setExpPercentage(float expPercentage) {
+		this.expPercentage = expPercentage;
+	}
+
+
+	public float getLocationPercentage() {
+		return locationPercentage;
+	}
+
+
+	public void setLocationPercentage(float locationPercentage) {
+		this.locationPercentage = locationPercentage;
+	}
+
+
+	public float getRatePercentage() {
+		return ratePercentage;
+	}
+
+
+	public void setRatePercentage(float ratePercentage) {
+		this.ratePercentage = ratePercentage;
+	}
+
+
+	public float getNoticePeriodPercentage() {
+		return noticePeriodPercentage;
+	}
+
+
+	public void setNoticePeriodPercentage(float noticePeriodPercentage) {
+		this.noticePeriodPercentage = noticePeriodPercentage;
+	}
+
+
+	public float getTotalKeyWordPerPercentage() {
+		return totalKeyWordPerPercentage;
+	}
+
+
+	public void setTotalKeyWordPerPercentage(float totalKeyWordPerPercentage) {
+		this.totalKeyWordPerPercentage = totalKeyWordPerPercentage;
+	}
+
+
+	public Long getCurrentResumeId() {
+		return currentResumeId;
+	}
+
+
+	public void setCurrentResumeId(Long currentResumeId) {
+		this.currentResumeId = currentResumeId;
+	}
+
+
+	public Org getOrgId() {
+		return orgId;
+	}
+
+
+	public void setOrgId(Org orgId) {
+		this.orgId = orgId;
+	}
+
 	
-	
+	public User getRecruiterUserId() {
+		return recruiterUserId;
+	}
+
+
+	public void setRecruiterUserId(User recruiterUserId) {
+		this.recruiterUserId = recruiterUserId;
+	}
+
+
+	public String getSkillsName() {
+		return skillsName;
+	}
+
+
+	public void setSkillsName(String skillsName) {
+		this.skillsName = skillsName;
+	}
+
+
+	public String getLinkedIn() {
+		return linkedIn;
+	}
+
+
+	public void setLinkedIn(String linkedIn) {
+		this.linkedIn = linkedIn;
+	}
+
+
+	public String getFacebook() {
+		return facebook;
+	}
+
+
+	public void setFacebook(String facebook) {
+		this.facebook = facebook;
+	}
+
+
+	public String getTwitter() {
+		return twitter;
+	}
+
+
+	public void setTwitter(String twitter) {
+		this.twitter = twitter;
+	}
+
+
+	public String getGooglePlus() {
+		return googlePlus;
+	}
+
+
+	public void setGooglePlus(String googlePlus) {
+		this.googlePlus = googlePlus;
+	}
 }

@@ -27,4 +27,6 @@ public interface NotificationsService {
 	
 	Notifications getNotificationsByUUID(String UUID) throws Exception;
 
+	Notifications getNotificationBySpocUUID(String spocUUID) throws Exception;
+
 }

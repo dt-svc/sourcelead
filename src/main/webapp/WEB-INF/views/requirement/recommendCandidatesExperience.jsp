@@ -1,6 +1,5 @@
 
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
+ 
 <%-- 
      @author : David Sammeta.
      this script is for upDate Candidate Details .
@@ -29,6 +28,7 @@
 		$("#tab-14").empty();
 		$("#tab-15").empty();
 		$("#tab-16").empty();
+		$("#history").empty();
 		$("#tab-13").append(result);
 		 $("#tab-13").show(); 
 		candidateEmployersList(candidateId);
@@ -505,7 +505,7 @@ function closeCertificatePopup(){
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="
 							+ candidateId,
 					success : function(data) {
-						if (data != null && data != 'undefined' && data != "" && data != '[]') {
+						/* if (data != null && data != 'undefined' && data != "" && data != '[]') { */
 							if (data.indexOf('Sign In') >= 0) {
 								location.replace(sourceleadUrl);
 							} else if (data.indexOf('exception') >= 0) {
@@ -565,7 +565,7 @@ function closeCertificatePopup(){
 									}if(window.candidateStatusGlobal == '0'){
 										result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
 									}else{
-										result = result+'<i class="glyphicon glyphicon-trash" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ');"></i></div></td>';
+										result = result+'<i class="glyphicon glyphicon-trash" style="color:#f51515 !important;" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ');"></i></div></td>';
 									}
 									result = result + '</tr>';
 								}
@@ -574,7 +574,7 @@ function closeCertificatePopup(){
 								$("#candidateEmployersList").append(result);
 								employeePagination();
 							}
-						} else {
+						/* } else {
 							var result = "";
 							result = result + "   <div class='row'>";
 							result = result + "	<div class='col-lg-12'>";
@@ -591,7 +591,7 @@ function closeCertificatePopup(){
 							result = result + "  </div> ";
 							$("#candidateEmployersList").empty();
 							$("#candidateEmployersList").append(result);
-						}
+						} */
 					},
 
 				});
@@ -603,15 +603,16 @@ function closeCertificatePopup(){
 function employeePagination(){  
     $('#candidateEmployersPagination').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
- 
  }
 </script>
 

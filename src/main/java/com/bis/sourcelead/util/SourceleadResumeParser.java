@@ -65,6 +65,7 @@ public  String getCandidateDetailsFromResume(byte[] source,HttpServletRequest re
 			HashSet<String> skillsList = skillFinderFromParsedTextFile(parsedString,request);
 			if(skillsList != null && !skillsList.isEmpty()){
 				String skills = String.join(", ", skillsList);
+				skills = skills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]","");
 				jsonUtil.setSkills(skills);
 			}
 		    return toJSON(jsonUtil);

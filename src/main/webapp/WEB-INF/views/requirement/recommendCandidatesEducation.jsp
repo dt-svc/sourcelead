@@ -1,7 +1,3 @@
-<script src="resources/js/chosen.jquery.min.js"></script> 
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
 
 <!-- these files for autocomplete with tagit -->
 
@@ -41,6 +37,7 @@ function candidateEducation(candidateId){
     $("#tab-14").empty();  
     $("#tab-15").empty();  
     $("#tab-16").empty();  
+    $("#history").empty();
     $("#tab-14").append(result);  
     $("#tab-14").show();  
 	
@@ -59,11 +56,12 @@ function candidateEducation(candidateId){
 <script>
 function candidateEducationList(candidateId){
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
           success :function(data) {
-               if(data != null && data != 'undefined' && data != "" && data != '[]'){
+               /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
              		 if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
 			    	 }
@@ -93,12 +91,12 @@ function candidateEducationList(candidateId){
 	                    	 var opt = json[i];  
 	                    	 result  = result + '         <tr>';
 	                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
-	                    	 result  = result + '<td><div><span>'+opt.name+'</span></div></td>';
+	                    	 result  = result + '<td><div><span title = "'+opt.name+'">'+opt.name+'</span></div></td>';
 	                    	    }else{
 	                    	    	 result  = result + ' <td><div><span>----</span></div></td>';
 	                    	    }
 	                    	 if(opt.specialization != null && opt.specialization != '' && opt.specialization != 'undefined'){
-	                    	 result  = result + ' <td><div><span>'+opt.specialization+'</span></div></td>';
+	                    	 result  = result + ' <td><div><span title = "'+opt.specialization+'">'+opt.specialization+'</span></div></td>';
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>----</span></div></td>';
 	                    	 }
@@ -123,12 +121,12 @@ function candidateEducationList(candidateId){
 			                 result  = result + '<td><div><span>----</span></div></td>'; 
 			                 }
 	                    	 if(opt.institute != null && opt.institute != '' && opt.institute != 'undefined'){
-	                    	 result  = result + '<td><div><span>'+opt.institute+'</span></div></td>';
+	                    	 result  = result + '<td><div><span title="'+opt.institute+'">'+opt.institute+'</span></div></td>';
 	                    	 }else{
 	                    		 result  = result + '<td><div><span>----</span></div></td>';
 	                    	 }
 	                    	 if(opt.address != null && opt.address != '' && opt.address != 'undefined'){
-	                    	 result  = result + ' <td><div><span>'+opt.address+'</span></div></td>';
+	                    	 result  = result + ' <td><div><span title="'+opt.address+'">'+opt.address+'</span></div></td>';
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>----</span></div></td>';
 	                    	 }
@@ -142,7 +140,7 @@ function candidateEducationList(candidateId){
 	                    		 if(window.candidateStatusGlobal == '0'){
 									result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
 	                    		 }else{
-	                    			 result = result+'<i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');"></i></div></td>'; 
+	                    			 result = result+'<i class="glyphicon glyphicon-trash" style="color:#f51515 !important;" onclick="removeEducation('+opt.id+','+candidateId+');"></i></div></td>'; 
 	                    		 }
 	                    	}
 	                    	 result  = result + '</tr>';
@@ -152,7 +150,7 @@ function candidateEducationList(candidateId){
 	                     $("#candidateEducationList").append(result); 
 	                     educationPagination(); 
 			    	} 
-               }else{
+               /* }else{
 	    	         var result ="";
 		    	     result = result+"   <div class='row'>"; 
 					 result = result+"	<div class='col-lg-12'>"; 
@@ -166,7 +164,7 @@ function candidateEducationList(candidateId){
 					 result = result+"  </div> "; 
 					$("#candidateEducationList").empty();
 				    $("#candidateEducationList").append(result); 
-               }
+               } */
         },
           
      }); 
@@ -183,12 +181,14 @@ function candidateEducationList(candidateId){
 function educationPagination(){  
     $('#candidateEducationPagination').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -221,8 +221,8 @@ function addEducation(candidateId) {
 	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
-	result = result  +'                  <div class="clearfix mb10"> ';
-	result = result  +'						<select label=" " class="chosen-select form-control" field-name="Education " name="name" id="name" data-validation=" required">';
+	result = result  +'                  <div class="clearfix mb10 col-md-12" id="chosen-educationMsg"> ';
+	result = result  +'						<select label=" " class="chosen-select form-control" field-name="Education" data-placeholder = "Select Education" name="name" id="name" data-validation=" required" onchange="validateEduname('+candidateId+');">';
 	
 											 <c:forEach var="edu" items="${educationsList}">
     result = result  +'	                        <option value="" disabled selected></option>';										 
@@ -250,7 +250,7 @@ function addEducation(candidateId) {
 	result = result  +'                                                                                                                                                       ';
 	
 	result  = result + '                 <div class="clearfix mb10">';
-	result = result  +'	                     <div class="col-md-4" positionRelative>';
+	result = result  +'	                     <div class="col-md-5" positionRelative>';
 	result = result  +'	                     <select class="chosen-select"  name="gradeType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 	result = result  +'	                       <option value="Percentage">%</option>';
@@ -258,8 +258,8 @@ function addEducation(candidateId) {
 	result = result  +'	                       <option value="GRADE">GRADE</option>';
 	result = result  +'	                      </select>';
 	result = result  +'	                   </div>';
-	result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
-	result  = result + '                     <input type="text" class="form-control input-sm" value="" name="grade" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();"';
+	result  = result + '                   <div class="col-md-7" positionRelative id="candidateScoreDiv">';
+	result  = result + '                     <input type="text" class="form-control" value="" name="grade" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();"';
 	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 	result  = result + '                 	 </div>';
 	result = result  +'	                   </div>';
@@ -273,7 +273,7 @@ function addEducation(candidateId) {
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 	result = result  +'                    <div class="col-md-12">                                                                                                            ';
-	result = result  +'                      <input type="text" field-name="institute" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" name="address" class="form-control input-sm" value="" placeholder="Address">                                                 ';
+	result = result  +'                      <input type="text" field-name="Address" data-validation="required validate_Space validate_length length2-250" data-validation-optional="true" name="address" class="form-control input-sm" value="" placeholder="Address">                                                 ';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
@@ -382,7 +382,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
 	result = result  +'                  <div class="clearfix mb10"> ';
-	result = result + "<select  class='chosen-select form-control' name='name' id='name' data-validation='validate_Space' data-validation-optional='true'>";
+	result = result + "<select  class='chosen-select form-control' name='name' id='name' data-validation='validate_Space' data-validation-optional='true' onchange='validateEduname("+candidateId+");'>";
 	                 for (var j = 0; j < json.educationList.length; j++) {
 							var education = json.educationList[j];
 							   if(education.name == json.name){
@@ -768,3 +768,41 @@ function clearSearchKey() {
 				});
 	}
 </script>
+
+
+
+<script type="text/javascript">
+ function validateEduname(candidateId) {
+	  var name = document.getElementById("name").value; 
+ 	  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateEduname?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&name="+name, 
+		        success: function(data) {
+		        	if(data == true){
+		        		  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
+		        		  /* document.getElementById("name").setAttribute('record-exist','yes');
+						  document.getElementById("name").setAttribute('record-exist-errorMsg',name+' is Already Existed'); 
+						   */
+						   $('#chosen-educationMsg').find('p.jquery_form_error_message').remove();
+						   $("#name").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+						  $("#save_button").attr('disabled','disabled');
+						 // return false;
+		        	}
+		        	else{
+		        		 $('#nameIdDiv').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#nameIdDiv').find('p.jquery_form_error_message').remove();
+		        		 $('#chosen-educationMsg').find('p.jquery_form_error_message').remove();
+                         $("#save_button").removeAttr("disabled");
+		        	}
+		        },
+		    });
+ }
+ </script>     
+ 
+
+
+
+
+

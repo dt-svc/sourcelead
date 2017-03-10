@@ -1,26 +1,10 @@
-<%-- <jsp:include page="../masterHeader.jsp" />
-<jsp:include page="../masterSideNav.jsp" />
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@ page trimDirectiveWhitespaces="true" %>
-
-<script type="text/javascript" src="jquery-1.2.6.min.js"></script>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<script src="resources/js/formvalidator.js"></script>
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> --%>
-
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
 <style type="text/css">
 .center-div{
@@ -99,6 +83,7 @@ margin:10px 220px 0;
 			<!-- <p class="text-danger text-center mt hidden">Please Select the file &hellip;</p> -->
 			<p class="text-danger text-center mt" id="fileExist"><form:errors path="file" /></p>
 			<p class="text-danger text-center mt" id="success">${msg}</p> 
+			<div><span class="text-danger"><strong>${fileNameWrong}</strong></span></div>
 		   	 
 		   	 <!--  Downloaded File show here -->
 		   	   <div class="col-xs-3 alert alert-success fade in hidden" style="position:absolute; top:10px;" id="fileAttached">
@@ -117,7 +102,7 @@ margin:10px 220px 0;
 			  According this template, the Users need to <span class="text-danger"><strong>Import Required Fields</strong></span></p>
 			  </p>
 			  <p>
-			  <label><i class="fa fa-user"></i>&nbsp;&nbsp;Client Name</label>
+			  <label><i class="fa fa-user"></i>&nbsp;&nbsp;Vendor Name</label>
 			  <!-- <label><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</label>
 			  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Role</label> -->
 			  </p>
@@ -249,7 +234,7 @@ function uploadSave() {
                     return false;
                   return false;
                 }
-                	if (fsize < 5120 || fsize > 5120000)
+                	if (fsize < 4000 || fsize > 5120000)
                     {
                    	   $("input#uploadBtn").after("<p class='jquery_form_error_message'>");
                			document.getElementById("uploadBtn").setAttribute('record-exist', 'yes');

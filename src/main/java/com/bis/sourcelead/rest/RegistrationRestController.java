@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.SourceleadAuthenticationProvider;
+import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -77,6 +79,9 @@ public class RegistrationRestController {
 	 @Autowired
 	 OrgLocationService orgLocationService;
 	 
+	 @Autowired
+		private SourceleadPasswordEncoder sourceleadPasswordEncoder;
+	 
 	 @RequestMapping(value = "/getOrgsList")
 		public @ResponseBody String getUsersList(HttpServletRequest request,
 				@RequestParam(value="searchByName", required=false) String searchByName,
@@ -97,9 +102,14 @@ public class RegistrationRestController {
 					regOrg.setUserState(regOrg.getUser().getUserState());
 					regOrg.setMobilePhone(regOrg.getUser().getMobilePhone());
 					UserRole userRole = userRoleService.getUserByUserId(regOrg.getUser().getId());
-					regOrg.setUserState(userRole.getUserState());
+					if(null != userRole){
+						regOrg.setUserState(userRole.getUserState());
+					}
 				}
-				
+				OrgLocations orglocations = orgLocationService.getOrgLocationByOrgId(regOrg.getId());
+				if(null != orglocations){
+					regOrg.setLocation(orglocations.getCountry());
+				}
 				regOrgsList.add(regOrg);
 			}
 		} catch (Exception e) {
@@ -109,6 +119,8 @@ public class RegistrationRestController {
 		return resultJson;
 
 	}
+	 
+	@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	@RequestMapping(value = "/companyRegistration" , method = RequestMethod.POST)
 	   public String addCompanyRegistration(
 				@RequestParam(value="json", required=false) String json ,
@@ -143,7 +155,141 @@ public class RegistrationRestController {
 	     
 	   }
 	
-	   
+	
+	
+	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	 @RequestMapping(value = "/createUesrBySourceleadAdmin" , method = RequestMethod.POST)
+	 public  String createUser(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+		 	
+		 json = "{"+json+"}";
+		 
+		 JSONObject jsonObj = new JSONObject(json);
+		 	
+	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 	 registrationService.addUserBySourcelead(user, jsonObj);
+	 	
+		 return "success";
+	   }
+	 
+	 
+	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	 @RequestMapping(value = "/changePrimaryAdmin" , method = RequestMethod.POST)
+	 public  String changePrimaryAdmin(@RequestParam(value="userId", required=false) Long userId,
+			 @RequestParam(value="orgLocationId", required=false) Long orgLocationId,HttpServletRequest request) throws Exception {
+		 	
+		 OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		 User user = new User();
+		 user.setId(userId);
+		 
+		 orgLocations.setUser(user);
+		 
+		 Org org = orgLocations.getOrg();
+		 org.setUser(user);
+		 
+		 orgLocationService.updateOrgLocations(orgLocations);
+		 orgService.addOrganization(org);
+		 	
+		 return "success";
+	   }
+	 
+	 
+	 
+	 
+	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	 @RequestMapping(value = "/editOrgPrimaryUser" , method = RequestMethod.POST)
+	 public  String editOrgPrimaryUser(@RequestParam(value="json", required=false) String json, 
+			 @RequestParam(value="userId", required=false) Long userId ,HttpServletRequest request) throws Exception {
+		 	
+		 json = "{"+json+"}";
+		 
+		 JSONObject jsonObj = new JSONObject(json);
+		 	
+	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 	 OrgLocations orgLocations= (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	 
+	 	 User primaryUser = userService.getUserById(userId);
+	 	 if(null != primaryUser){
+	 		 if(!isNullOrEmpty(jsonObj.getString("primaryUserFirstName"))){
+	 			primaryUser.setFirstName(jsonObj.getString("primaryUserFirstName"));
+	 		 }
+	 		 
+	 		 if(!isNullOrEmpty(jsonObj.getString("primaryUserLastName"))){
+		 			primaryUser.setLastName(jsonObj.getString("primaryUserLastName"));
+	 		 }
+	 		 
+	 		 if(!isNullOrEmpty(jsonObj.getString("primaryUserEmail"))){
+		 			primaryUser.setEmail(jsonObj.getString("primaryUserEmail"));
+		 			primaryUser.setUserName(jsonObj.getString("primaryUserEmail"));
+	 		 }
+	 		 
+	 		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
+	 		primaryUser.setPassword(sourceleadPasswordEncoder.encode(password));
+	 		userService.addUser(primaryUser);
+	 		
+	 		userService.sendEmail(primaryUser, user, password,orgLocations.getId());
+	 		
+	 	 }
+	 	
+		 return "success";
+	   }
+	
+	
+	 @RequestMapping(value = "/registerAsProfessional" , method = RequestMethod.POST)
+	 public  String registerAsProfessional(@RequestParam(value="json", required=false) String json,
+			 @RequestParam(value="contactUUID", required=false) String contactUUID,
+			 HttpServletRequest request) throws Exception {
+		 	
+		 json = "{"+json+"}";
+		 
+		 JSONObject jsonObj = new JSONObject(json);
+		 	
+		 registrationService.saveProfessional(jsonObj,contactUUID);
+		 
+		 SourceLeadSessionManager.setSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg",
+					"Username sent to your mail.");
+	 	
+	 	
+		 return "success";
+	   }
+	 
+	 @RequestMapping(value = "/registerAsIndividualRecruiter" , method = RequestMethod.POST)
+	 public  String registerAsIndividualRecruiter(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+		 	
+		 json = "{"+json+"}";
+		 
+		 JSONObject jsonObj = new JSONObject(json);
+		 	
+		 registrationService.saveIndividualRecruiter(jsonObj);
+		 
+		 SourceLeadSessionManager.setSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg",
+					"Username sent to your mail.");
+	 	
+	 	
+		 return "success";
+	   }
+	 
+	 
+	 
+	 @RequestMapping(value = "/resetCredentials" , method = RequestMethod.POST)
+	 public  String resetCredentials(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+		 	
+		 json = "{"+json+"}";
+		 
+		 JSONObject jsonObj = new JSONObject(json);
+		 User user = userService.getUserByUserName(jsonObj.getString("userName"));
+		 if(null != user){
+			 user.setUserName(jsonObj.getString("resetUserName"));
+			 user.setPassword(sourceleadPasswordEncoder.encode(jsonObj.getString("password")));
+			 userService.addUser(user);
+		 }
+	 	
+	 	
+		 return "success";
+	   }
+	 
+	 
+	
+	  @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	   @RequestMapping(value = "/updateOrgModules" , method = RequestMethod.POST)
 	   public String updateOrgModules(@RequestParam(value="orgId", required=false) Long orgId,
 				@RequestParam(value="modulesList", required=false) String modulesList ,
@@ -156,6 +302,7 @@ public class RegistrationRestController {
 			 String orgModules = "";
 			 StringBuilder strbul = null; 
 			 StringBuilder strbul2 = null; 
+			 StringBuilder strbul3 = null; 
 			 
 			 if(!isNullOrEmpty(submodulesList)){
 					String[] registeredSubModules =  submodulesList.split(",");
@@ -224,6 +371,7 @@ public class RegistrationRestController {
 							Long myTimeSheetTabId = (long) Constants.TAB_MY_TIMESHEET;
 							Long timeSheetApprovalTabId = (long) Constants.TAB_TIMESHEET_APPROVAL;
 							Long tabId = (long) Constants.TAB_CLIENT;
+							Long projectsTabId = (long) Constants.TAB_PROJECTS;
 							
 							actionsList = sourceleadActionsService.getSourceLeadTimeSheetActionsByModuleIdAndTabId(moduleId, myTimeSheetTabId, timeSheetApprovalTabId);
 							
@@ -251,6 +399,18 @@ public class RegistrationRestController {
 						     }
 						        strbul2.toString();
 						        
+						        strbul3 = new StringBuilder();
+							     List<Long> projectsActionsList = sourceleadActionsService.getSourceLeadActionsByTabId(projectsTabId);
+							     Iterator<Long> iter3 = projectsActionsList.iterator();
+							     while(iter3.hasNext())
+							     {
+							    	 strbul3.append(iter3.next());
+							        if(iter3.hasNext()){
+							        	strbul3.append(",");
+							        }
+							     }
+							        strbul3.toString();
+						        
 						        Roles adminrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_ADMIN, orgLocations.getId());
 						        String adminids = null;
 						        List<Long> adminRoleActonList = new ArrayList<Long>();
@@ -261,9 +421,9 @@ public class RegistrationRestController {
 								 adminRoleActonList.retainAll(clientActionsList);
 								
 								 if(adminRoleActonList.size() == 0){
-									 adminids = adminrole.getActionId()+","+strbul+","+strbul2;
+									 adminids = adminrole.getActionId()+","+strbul+","+strbul3+","+strbul2;
 								 }else{
-									 adminids = adminrole.getActionId()+","+strbul;
+									 adminids = adminrole.getActionId()+","+strbul+","+strbul3;
 								 }
 						        
 								adminrole.setActionId(adminids);
@@ -280,9 +440,9 @@ public class RegistrationRestController {
 								 managerRoleActonList.retainAll(clientActionsList);
 								
 								 if(managerRoleActonList.size() == 0){
-									 managerids = managerrole.getActionId()+","+strbul+","+strbul2;
+									 managerids = managerrole.getActionId()+","+strbul+","+strbul3+","+strbul2;
 								 }else{
-									 managerids = managerrole.getActionId()+","+strbul;
+									 managerids = managerrole.getActionId()+","+strbul+","+strbul3;
 								 }
 								
 								managerrole.setActionId(managerids);
@@ -315,10 +475,12 @@ public class RegistrationRestController {
 					}
 				}
 				
-				
-				orgModules = orgModules.substring(0, orgModules.length()-1);
-				orgModules = org.getModulesId()+","+orgModules;
-				org.setModulesId(orgModules);
+				if("" != orgModules){
+					orgModules = orgModules.substring(0, orgModules.length()-1);
+					StringBuilder orgModulesstr = new StringBuilder();
+					orgModules = orgModulesstr.append(org.getModulesId()).append(",").append(orgModules).toString();
+					org.setModulesId(orgModules);
+				}
 			    orgService.addOrganization(org);
 		   
 		return "success";

@@ -6,16 +6,8 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="resources/js/InterViewFormBuilder.js" type="text/javascript" ></script>
 <script src="resources/js/interViewForm-html-generator.js" type="text/javWascript" ></script> 
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
-<script src="resources/js/bootstrap-select.min.js"></script>
-<script src="resources/js/chosen.jquery.min.js"></script> 	
-<script src="resources/js/jquery-ui.min.js" ></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
 <link rel="stylesheet" href="resources/css/style.css" />
 <script type="text/javascript">
 
@@ -32,6 +24,31 @@ float: left; min-height: 36px; margin-bottom: 15px;
 }
 .viewTemplate .sjfb-field textarea {
 max-height: 65px;
+}
+.viewTemplate .sjfb-field  {
+width: 80%;
+margin: 0 0 10px 15px;
+}
+.viewTemplate .sjfb-field:nth-child(2n+2) {
+    margin-left: 15px;
+}
+.viewTemplate .sjfb-field label {
+float: left; width: 30%;
+}
+.sjfb-radio .choices-radio, .sjfb-checkbox .choices-checkbox {
+float: left; width: 70%;
+}
+.sjfb-radio .choices-radio label, .sjfb-checkbox .choices-checkbox label {
+	min-width: 50%;
+	max-width: 100%;
+	position:relative;
+	padding-right: 10px;
+	padding-left: 30px;
+}
+.choices input[type="checkbox"], .choices input[type="radio"] {
+float: left;
+position: absolute;
+left:0;
 }
 </style>
 
@@ -130,7 +147,8 @@ function templatepagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -353,6 +371,7 @@ function cancelPop(){
         var jsonStringData = encodeURIComponent(con2);
         if( myArray.length > 0){
             if(submitTemplate){
+            	$("#save_button").attr("disabled", "disabled");
             	$( "#save_button" ).addClass('button').val('Processing..');
             	  $.ajax({
           	    	type: "POST",
@@ -398,7 +417,7 @@ function cancel(){
 
 <script type="text/javascript">
 function validateTemplateName(){
-	var templateName = document.getElementById("templateName").value; 
+	var templateName = document.getElementById("templateName").value.trim(); 
 	var templateId = $("#templateId").val();
 	if(templateId == 'undefined' || templateId == null){
 		templateId = '';
@@ -473,7 +492,7 @@ function validateTemplateName(){
 	      <div class="timesheet_head timesheet_head_11"  id="addTemplate" style="min-height:35px">
 	        <ul>
 	        <sec:authorize access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE')">
-	          <li><a onClick="addSubmissionTemplateFields();" id="add-tm"><i class="fa fa-plus"></i>Add Template</a></li>
+	          <li><a onClick="addSubmissionTemplateFields();" id="add-tm"><i class="fa fa-plus"></i>Add Interview Template</a></li>
 	        </sec:authorize>
 	          <div class="clearfix"></div>
 	        </ul>

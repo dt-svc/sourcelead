@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UploadedFile;
@@ -111,7 +112,9 @@ public class ClientUploadController {
 		
 		MultipartFile multipartFile = uploadedFile.getFile();
 		if(multipartFile != null){
-			String fileName = multipartFile.getOriginalFilename();
+			String fn = multipartFile.getOriginalFilename();//clients_contacts_Import  clients_import_template.xls
+			String fileName = getFileName(fn);
+			if(!fileName.equals(Constants.VENDORS_CONTACTS_IMPORT_XLS) && !fileName.equals(Constants.VENDORS_CONTACTS_IMPORT_XLSX) && !fileName.equals(Constants.VENDORS_IMPORT_TEMPLATE_XLS) && !fileName.equals(Constants.VENDORS_IMPORT_TEMPLATE_XLSX)){
 			String isFileCreated = clientImportsService.clientBulkSaving(multipartFile,user,orgLocation,org,uploadedFile.getEmail(),responderType);
 
 			if (fileName.equalsIgnoreCase(isFileCreated)) {
@@ -122,11 +125,17 @@ public class ClientUploadController {
 				model.addAttribute("errorMessage", "Please download Error file here");
 	            model.addAttribute("fileName", "xls");
 				return "upload/uploadClientForm";
-			}else if("worngFileName".equalsIgnoreCase(isFileCreated)){
+			}*/else if("worngFileName".equalsIgnoreCase(isFileCreated)){
 				model.addAttribute("fileNameWrong", "File name should follow as clients_contacts_Import/clients_import_template with .xls or .xlsx");
 	            model.addAttribute("fileName", "xls");
 				return "upload/uploadClientForm";
-			}*/
+			}
+		}else{
+			model.addAttribute("fileNameWrong", "Oops.! It's not client template");
+            model.addAttribute("fileName", "xls");
+			return "upload/uploadClientForm";
+		}
+			
 		}else{
 			return "upload/uploadClientForm";
 		}
@@ -135,6 +144,25 @@ public class ClientUploadController {
 		
 	}
 	
+	/**	
+	 * removing special charactes from file name
+	 * @param file
+	 * @return String
+	 */
+	private String getFileName(String file) {
+		String finalName;
+		if(file.contains("(")){
+				StringBuilder sb = new StringBuilder();
+			    String fileArray [] = file.split("\\.");
+			    String fileName1 = fileArray[0].substring(0, fileArray[0].indexOf("("));
+			    sb.append(fileName1).append(".").append(fileArray[1]);
+			    finalName = sb.toString().replaceAll("\\s", "");
+		}else{
+			finalName = file;
+		}
+		return finalName; 
+		
+	}
 	/**
 	 * Handles download templates for vendor and  contacts
 	 * @author Rajashekar
@@ -184,17 +212,17 @@ public class ClientUploadController {
 	public void downloadFile(@PathVariable String fileName,HttpServletResponse response) throws IOException {
 		
 			File file;
-//			clients_contacts_Import.xls
-//			clients_import_template.xls
-			if("clients_import_template.xls".equalsIgnoreCase(fileName)){
-				 file = new File("clients_import_template.xls");
-			}else if("clients_contacts_Import.xls".equalsIgnoreCase(fileName)){
-				 file = new File("clients_contacts_Import.xls");
-			}else if("clients_import_template.xlsx".equalsIgnoreCase(fileName)){
-				file = new File("clients_import_template.xlsx");
-			}else{
-				file = new File("clients_contacts_Import.xlsx");
-			}
+			
+				String fn = getFileName(fileName);
+				if(Constants.CLIENTS_IMPORT_TEMPLATE_XLS.equalsIgnoreCase(fn)){
+					 file = new File("clients_import_template.xls");
+				}else if(Constants.CLIENTS_CONTACTS_IMPORT_XLS.equalsIgnoreCase(fn)){
+					 file = new File("clients_contacts_Import.xls");
+				}else if(Constants.CLIENTS_IMPORT_TEMPLATE_XLSX.equalsIgnoreCase(fn)){
+					file = new File("clients_import_template.xlsx");
+				}else{
+					file = new File("clients_import_template.xlsx");
+				}
 			
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {

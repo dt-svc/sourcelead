@@ -24,7 +24,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
  <script src="resources/js/formvalidator.js"></script>
- <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+ <script src="resources/js/jquery.dataTables.min.js"></script>
 <script>
 		$(document).ready(function() { 
 			var rateStatus = '${param.rateStatus}';
@@ -72,24 +72,24 @@ width: auto;
   <section class="container">
 		<div class="row">
 		  		<div id="accept" style="display:none">
-					          <%-- <c:choose>
-							    <c:when test="${permission=='YES'}"> --%>
+					          <c:choose>
+							    <c:when test="${permission=='YES'}">
 								    <div class="col-md-8 col-md-offset-2 inner-widget success-user">
 						          		<i class="fa fa-check-circle fa-3x"></i>
 							        	<p class="reason-msg">You Have accepted the Requirement for <B>${requirementSubmission.requirement.jobTitle}</B></p>
 							 			<p class="reason-msg"><center><h3>Thank You !!!</h3></center></p>
-							    <%-- </c:when>    
-							    <c:otherwise> --%>
-							   <%--  	<div class="col-md-8 col-md-offset-2 inner-widget pending-user">
+							    </c:when>    
+							    <c:otherwise>
+							    	<div class="col-md-8 col-md-offset-2 inner-widget pending-user">
 						          		<i class="fa fa-clock-o fa-3x"></i>
 							        	<p class="reason-msg">Your decision is already submitted for the Requirement<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
 							    </c:otherwise>
-							  </c:choose> --%>
+							  </c:choose>
 						  </div>
 		  		</div>
 		  		<div id="reject" style="display:none">
-			  		<%-- <c:choose>
-					    <c:when test="${permission=='YES'}"> --%>
+			  		<c:choose>
+					    <c:when test="${permission=='YES'}">
 						    <form id="reject_form" name="reject_form" method="post" >
 					          <div class="col-md-8 col-md-offset-2 inner-widget reject-user">
 								  <div class="col-md-6">
@@ -101,23 +101,23 @@ width: auto;
 										  <label>Reason for Reject</label>
 										  <textarea class="form-control" rows="2" placeholder="Reason" id="rejectId"></textarea>	
 									  </div>
-									  <div class="col-md-12 mt10"><button type="button" class="btn btn-sm btn-danger pull-right" onclick="storeReject();">Submit</button></div>
+									  <div class="col-md-12 mt10"><button type="button" id="reject_Rate" class="btn btn-sm btn-danger pull-right" onclick="storeReject();">Submit</button></div>
 								  	
 								  </div>
 							  </div>
 							</form>
-					    <%-- </c:when>    
-					    <c:otherwise> --%>
-					    	<%-- <div class="col-md-8 col-md-offset-2 inner-widget pending-user">
+					    </c:when>    
+					    <c:otherwise>
+					    	<div class="col-md-8 col-md-offset-2 inner-widget pending-user">
 				          		<i class="fa fa-clock-o fa-3x"></i>
 					        	<p class="reason-msg">Your decision is already submitted for the Requirement<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
-					        </div> --%>
-					    <%-- </c:otherwise>
-					  </c:choose> --%>
+					        </div>
+					    </c:otherwise>
+					  </c:choose>
 		  		</div>
 		  		<div id="negotiation" style="display:none">
-		  			 <%-- <c:choose>
-					    <c:when test="${permission=='YES'}"> --%>
+		  			 <c:choose>
+					    <c:when test="${permission=='YES'}">
 						    <form id="negotiation_form" name="negotiation_form" method="post" >
 						          <div class="col-md-8 rate-negotiation project_wrap_table" id="negotiationDivId">
 									  <div class="clearfix">
@@ -132,7 +132,7 @@ width: auto;
 										   <div class="clearfix">
 										  <div class="row">
 										  <div class="col-md-3">
-										  <input type="text" class="form-control input-sm" field-name=" ApplicantRate rate" placeholder="rate" id="rateProposal" name="rateProposal" data-validation="required validate_Space validate_float validate_length length1-10">
+										  <input type="text" class="form-control input-sm" field-name=" ApplicantRate rate" placeholder="Rate" id="rateProposal" name="rateProposal" data-validation="required validate_Space validate_float validate_length length1-10">
 										  </div> 
 										  <input type="hidden" name="candidateId" id="candidateId" value="${requirementSubmission.candidate.id}"/> 
 										  <div class="col-md-3 select-field">
@@ -153,21 +153,18 @@ width: auto;
 										  </div>
 										  </div>
 										  </div>
-										 <!--  <div class="col-md-12 mb10">
-											  <textarea row="1" class="form-control" placeholder="Comments" name="comments"></textarea>
-										  </div> -->
 										  <div class="col-md-6 mt10"><input type="button" class="btn btn-sm btn-primary pull-right" id="negotiationButtonId" onclick="storeNegotiation();" value="Submit"></div>
 									  </div>
 								 </div>
 							</form>
-					    <%-- </c:when>    
+					    </c:when>    
 					    <c:otherwise>
 					    	<div class="col-md-8 col-md-offset-2 inner-widget pending-user">
 				          		<i class="fa fa-clock-o fa-3x"></i>
 					        	<p class="reason-msg">Your decision is already submitted for the Requirement<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
 					        </div>
 					    </c:otherwise>
-					  </c:choose> --%>
+					  </c:choose>
 		  		</div>
 		 <div>
   </section>
@@ -185,6 +182,7 @@ width: auto;
 
 <script type="text/javascript">
 	function storeReject() {
+		$('#reject_Rate').attr("disabled", true);
 			var sourceleadUrl = '${sourceleadUrl}';
 			var submissionId = '${submissionId}';
 			var type = '${type}';
@@ -275,7 +273,13 @@ width: auto;
 			                     result = result +"</thead>";
 			                     result = result +"<tbody>"; 
 			                     for (var i = 0; i < json.length; i++) { 
-			                    	 var opt = json[i];  
+			                    	 var opt = json[i]; 
+			                    	 if(opt.expectedRatePer != null && opt.expectedRatePer != '' && opt.expectedRatePer != 'undefined'){
+			                    		 expectedRatePer = opt.expectedRatePer;
+			                    	 }else{
+			                    		 expectedRatePer ="";
+			                    	 }
+			                    	 
 			                    	 if(i==0){
 			                    		 result  = result + '<input type="hidden" id="lastProposedBy" value='+opt.previouslyProposedBy+'>';
 			                    	 }
@@ -286,7 +290,7 @@ width: auto;
 		                    	    	 result  = result + ' <td><div><span>--</span></div></td>';
 		                    	     }
 			                    	 if(opt.expectedRate != null && opt.expectedRate != '' && opt.expectedRate != 'undefined' && opt.expectedRateType != null && opt.expectedRateType != '' && opt.expectedRateType != 'undefined'){
-			                    	 result  = result + ' <td><div><span>'+opt.expectedRate+'/'+opt.expectedRateType+'</span></div></td>';
+			                    	 result  = result + ' <td><div><span>'+opt.expectedRate+' '+expectedRatePer+'/'+opt.expectedRateType+' </span></div></td>';
 			                    	 }else if(opt.expectedRate != null && opt.expectedRate != '' && opt.expectedRate != 'undefined'){
 			                    		 result  = result + ' <td><div><span>'+opt.expectedRate+'</span></div></td>';
 			                    	 }else{
@@ -331,7 +335,8 @@ function pagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }

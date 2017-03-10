@@ -5,19 +5,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script
-	src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-
-
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-
-<script src="resources/js/jquery-fun.js"></script>
-
-<script src="resources/js/chosen.jquery.min.js"></script>
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
@@ -34,11 +21,17 @@ bottom:-14px;
 </style>
 
 
+<script>
+	$(document).ready(function() {
+		document.getElementById("requirementtemplate_form").reset();
+	});
+</script>
+
 <!-- Content Area -->
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Template Details</h2>
+			<h2>Requirement Template</h2>
 		</div>
 		<div class="pull-right brud-crum">
 			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
@@ -59,7 +52,6 @@ bottom:-14px;
 						<div class="form-group" id="jobTitleDiv">
 							<label class="col-md-3">Title<span class="text-danger">*</span></label>
 							<div class="col-md-9">
-								<div class="input-group">
 									<input type="text" id="jobTitle" name="jobTitle"
 										value="${requirement.jobTitle}" field-name="Job Title"
 										data-validation="required validate_Space validate_length length2-250"
@@ -67,35 +59,12 @@ bottom:-14px;
                                      <input type="hidden" value="${requirement.id}" name="requirementId">
                                       <input type="hidden" value="Y" name="isTemplate">
 									<div class="input-group-btn selp-custom-min">
-										<select class="selectpicker" id="jobType" name="jobType" onChange="getJobType(this);">
-											<option value="">Select</option>
-											<option ${requirement.jobType  == "C2C" ? 'selected' : ''}><a href="#">C2C</a></option>
-											<option ${requirement.jobType  == "W-2" ? 'selected' : ''}><a href="#">W-2</a></option>
-											<option ${requirement.jobType  == "C2H" ? 'selected' : ''}><a href="#">C2H</a></option>
-											<option ${requirement.jobType  == "Contract" ? 'selected' : ''}><a href="#">Contract</a></option>
-											<option ${requirement.jobType  == "Part Time" ? 'selected' : ''}><a href="#">Part Time</a></option>
-											<option ${requirement.jobType  == "Full Time" ? 'selected' : ''}><a href="#">Full Time</a></option>
-											<option ${requirement.jobType  == "Other" ? 'selected' : ''}><a href="#">Other</a></option>
-										</select>
 									</div>
-								</div>
 							</div>
 						</div>
-
-
-
-
-						<div class="form-group" id="jobTypeDiv" style="display: none">
-							<label class="col-md-3">Job Type</label>
-							<div class="col-md-9">
-								<input type="text" class="form-control" id="jobOtherType"
-									name="jobOtherType" value="${requirement.otherJobType}"
-									field-name="Job Type" value="">
-							</div>
-						</div>
-
-
-						<div class="form-group">
+	
+	                       
+	                       <div class="form-group">
 							<label class="col-md-3">Education</label>
 							<div class="col-md-9">
 								<select multiple class="chosen-select form-control"
@@ -116,35 +85,7 @@ bottom:-14px;
 							</div>
 						</div>
 
-						<div class="form-group">
-							<label class="col-md-3">Experience</label>
-							<div class="col-md-9">
-								<div class="row">
-									<div class="col-md-6">
-										<input type="text" class="form-control" placeholder="minExp"
-											id="minExp" name="minExp" value="${requirement.minExp}"
-											field-name="MinExp"
-											data-validation="validate_Space validate_length length1-5 validate_float"
-											data-validation-optional="true" onblur="minMaxExperience();"
-											value="">
-									</div>
-									<div class="col-md-6">
-										<input type="text" class="form-control" id="maxExp"
-											name="maxExp" placeholder="maxExp"
-											value="${requirement.maxExp}" field-name="MaxExp"
-											data-validation="validate_Space validate_length length1-5 validate_float"
-											data-validation-optional="true" onblur="minMaxExperience();"
-											value="">
-									</div>
-								</div>
-								<div class="row" id="expId">
-									<input type="hidden" name="expValidation" id="expValidation">
-								</div>
-
-							</div>
-						</div>
-
-						<div class="form-group">
+                     <%-- <div class="form-group">
 							<label class="col-md-3">Skills</label>
 							<div class="col-md-9">
 								<select multiple class="chosen-select form-control"
@@ -159,7 +100,83 @@ bottom:-14px;
 									</c:forEach>
 								</select>
 							</div>
+						</div>  --%>
+						
+						 <div class="form-group">
+			              <label class="col-md-3">Skills</label>
+			              <div class="col-md-9">
+			                <select multiple class="chosen-select form-control" name="skills" id="skills" data-validation-optional="true">
+			               <c:forEach var="skill" items="${skillsList}">
+			               		<c:set var = "NUM" value = "${0}"/>
+			               		<c:forEach var="existedSkill" items="${requirement.reqSkillsListString}">
+								    <c:if test="${existedSkill eq skill}">
+								    	<c:set var = "NUM" value = "${1}"/>
+								    	<option selected value="${skill}">${skill}</option>
+								    </c:if>
+								</c:forEach>
+								<c:if test="${NUM == 0}">
+									<option  value="${skill}">${skill}</option>
+								</c:if>
+			                </c:forEach>
+			                </select>
+			              </div>
+			            </div> 
+	                       
+							<div class="form-group">
+								<label class="col-md-3">Employment Type</label>
+									<div class="col-md-9">
+										<select class="selectpicker form-control" id="jobType" name="jobType" onChange="getJobType(this);">
+											<option value="">Select</option>
+											<option ${requirement.jobType  == "C2C" ? 'selected' : ''}><a href="#">C2C</a></option>
+											<option ${requirement.jobType  == "W-2" ? 'selected' : ''}><a href="#">W-2</a></option>
+											<option ${requirement.jobType  == "C2H" ? 'selected' : ''}><a href="#">C2H</a></option>
+											<option ${requirement.jobType  == "Contract" ? 'selected' : ''}><a href="#">Contract</a></option>
+											<option ${requirement.jobType  == "Part Time" ? 'selected' : ''}><a href="#">Part Time</a></option>
+											<option ${requirement.jobType  == "Full Time" ? 'selected' : ''}><a href="#">Full Time</a></option>
+											<option ${requirement.jobType  == "Other" ? 'selected' : ''}><a href="#">Other</a></option>
+										</select>
+								</div>
+							</div>
+
+						<div class="form-group" id="jobTypeDiv" style="display: none">
+							<label class="col-md-3">Employment Type</label>
+								<div class="col-md-9">
+									<input type="text" class="form-control" id="jobOtherType" name="jobOtherType" value="${requirement.otherJobType}" field-name="Job Type" value="">
+								</div>
 						</div>
+					
+					
+
+
+						<div class="form-group">
+							<label class="col-md-3">Experience</label>
+							<div class="col-md-9">
+								<div class="row">
+									<div class="col-md-6">
+										<input type="text" class="form-control" placeholder="minExp"
+											id="minExp" name="minExp" value="${requirement.minExp}"
+											field-name="MinExp"
+											data-validation="validate_Space validate_float validate_length length1-5"
+											data-validation-optional="true" onblur="minMaxExperience();"
+											value="">
+									</div>
+									<div class="col-md-6">
+										<input type="text" class="form-control" id="maxExp"
+											name="maxExp" placeholder="maxExp"
+											value="${requirement.maxExp}" field-name="MaxExp"
+											data-validation="validate_Space validate_float validate_length length1-5"
+											data-validation-optional="true" onblur="minMaxExperience();"
+											value="">
+									</div>
+								</div>
+								<div class="row" id="expId">
+									<input type="hidden" name="expValidation" id="expValidation">
+								</div>
+
+							</div>
+						</div>
+
+						
 
 						<div class="form-group">
 							<label class="col-md-3">Description</label>
@@ -182,7 +199,7 @@ bottom:-14px;
 			<div class="form-footer clearfix">
 				<div class="col-lg-12">
 					<div class="pull-right">
-						<input type="button" value="Save" id="save"
+						<input type="button" value="Save" id="store_RequirementTemplate"
 							onclick="storeRequiremetTemplate();" class="btn btn-primary ml">
 						<input type="button" value="Cancel"
 							onClick="javascript:location.href = '<c:url value='/template'/>'"
@@ -197,16 +214,19 @@ bottom:-14px;
 
 </section>
 
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
 
+        
+</script> 
 <script type="text/javascript">
 	function storeRequiremetTemplate() {
 		
-		var validationSettings = {
-				errorMessagePosition : 'element',
-				borderColorOnError : '',
-				scrollToTopOnError : true,
-				dateFormat : 'yyyy/mm/dd'
-			};
 		
 		 if ($('#requirementtemplate_form').validate(false, validationSettings)){ 
 			
@@ -220,6 +240,7 @@ bottom:-14px;
 			//It will escape all the special characters
 			$("#store_RequirementTemplate").attr("disabled", "disabled");
 			$("#store_RequirementTemplate").addClass('button').val('Processing..');
+			
 
 			$.ajax({
 						type : "POST",
@@ -267,6 +288,21 @@ bottom:-14px;
 	})(jQuery);
 </script>
 
+<script type="text/javascript">
+		window.onload = function () {
+			var jobType = '${requirement.jobType}';
+			if(null != jobType && jobType != "" && jobType != "undefined" && jobType == 'Other'){
+				  document.getElementById("jobTypeDiv").style.display="block";
+				  $("#jobOtherType").attr("data-validation-optional", "true");
+				  $("#jobOtherType").attr("data-validation", "validate_Space validate_length length2-250");
+			}else{
+				document.getElementById("jobTypeDiv").style.display="none";
+				  $("#jobOtherType").attr("data-validation-optional", "true");
+				  $("#jobTypeDiv").find('p.jquery_form_error_message').remove();
+				  $("#jobOtherType").val('');
+			}
+		 };
+</script> 
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
 <script type="text/javascript">
 			var config = {
@@ -347,7 +383,7 @@ function minMaxExperience(){
     var maxExp = ($('#maxExp').val());
     var minExp = ($('#minExp').val());
     
-    if (parseFloat(maxExp) < parseFloat(minExp)){
+    if (parseFloat(maxExp) <= parseFloat(minExp)){
         $('#expId').find('p.jquery_form_error_message').remove(); 
 		$('input#expValidation').attr('class','error signin_fild');
 		$("input#expValidation").after("<p class='jquery_form_error_message'>Max Experience is greater than Min Experience</p>");
@@ -366,7 +402,8 @@ function getJobType(jobType){
 	var existingJobType = '${requirement.jobType}';
 	if(jobType.value == 'Other'){
 		  document.getElementById("jobTypeDiv").style.display="";
-		  $("#jobOtherType").attr("data-validation", "required validate_Space validate_length length2-250");
+		  $("#jobOtherType").attr("data-validation-optional", "true");
+		  $("#jobOtherType").attr("data-validation", "validate_Space validate_length length2-250");
 	}else{
 		document.getElementById("jobTypeDiv").style.display="none";
 		  $("#jobOtherType").attr("data-validation-optional", "true");

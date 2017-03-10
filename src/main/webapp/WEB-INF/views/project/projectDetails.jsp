@@ -1,12 +1,9 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
- <link href="resources/css/jquery-ui.css" rel="stylesheet">
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
 
 <!-- this script is for Project Details functionality at Projects screen -->
 <script>
@@ -22,6 +19,15 @@
 						var clientName = "";
 						var projectSequeneNumber = "";
 						var invoiceFrequency = "";
+						var isTimesheetAttachmentRequired = "";
+						
+						
+						if (json.isTimesheetAttachmentRequired != null && json.isTimesheetAttachmentRequired != '' && json.isTimesheetAttachmentRequired != 'undefined'
+								&& json.isTimesheetAttachmentRequired == '1') {
+							isTimesheetAttachmentRequired = "YES";
+					     } else {
+					    	 isTimesheetAttachmentRequired = "NO";
+					    }
 						
 						if (json.endDateStr != null && json.endDateStr != ''
 								&& json.endDateStr != 'undefined') {
@@ -56,6 +62,7 @@
 							clientName = "--";
 						}
 						
+						
 					
 						
 						var result = "";
@@ -76,6 +83,7 @@
 						result = result + json.projectStatus;
 						result = result + '	</i></span>';
 						result = result	+ '</div></span><div class="clearfix"></div>';
+						result = result + '<input type="hidden" name="dbProjectStatus" id="dbProjectStatus" value="'+json.projectStatus+'" >';
 
 						result = result + '<div class="clearfix"></div>';
 						result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
@@ -138,7 +146,7 @@
 						result = result + '<div class="clearfix"></div>';
 
 						result = result	+ '<div class="project_details_cta">';
-						result = result	+ '<strong>Created By:</strong><span title="'+json.createdBy+'">'+json.createdBy+'</span><div class="clearfix"></div>';
+						result = result	+ '<strong>Created By:</strong><span title="'+json.createdByName+'">'+json.createdByName+'</span><div class="clearfix"></div>';
 						result = result + '</div>';
 						result = result	+ '<div class="project_details_cta">';
 						result = result	+ '<strong>Created date:</strong><span title="'+json.createdDateStr+'">'+json.createdDateStr+'</span><div class="clearfix"></div>';
@@ -155,6 +163,12 @@
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Invoice Frequencey:</strong>';
 						result = result + '<span title="'+invoiceFrequency+'">'+invoiceFrequency+'</span><div class="clearfix"></div>';
+						result = result + '<div class="clearfix"></div>';
+						result = result + '</div>';
+						
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Timesheet Attachment Required:</strong>';
+						result = result + '<span>'+isTimesheetAttachmentRequired+'</span><div class="clearfix"></div>';
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 						
@@ -203,6 +217,17 @@
 						var invoiceFrequency = "";
 						
 						var projectSequeneNumber = "";
+						
+                        var isTimesheetAttachmentRequired = "";
+						
+						
+						if (json.isTimesheetAttachmentRequired != null && json.isTimesheetAttachmentRequired != '' && json.isTimesheetAttachmentRequired != 'undefined'
+								&& json.isTimesheetAttachmentRequired == '1') {
+							isTimesheetAttachmentRequired = "Y";
+					     } else {
+					    	 isTimesheetAttachmentRequired = "N";
+					    }
+						
 						if (json.endDateStr != null && json.endDateStr != ''
 								&& json.endDateStr != 'undefined') {
 							endDateStr = json.endDateStr;
@@ -239,17 +264,17 @@
 
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '	<label>Status</label>';
-						result = result	+ '<select id="projectStatusId" name="projectStatusId">';
+						result = result	+ '<select id="projectStatusId" name="projectStatusId" onchange="projectStatus();">';
 						if (json.projectStatus == 'STARTED') {
 							result = result	+ '<option selected >Started</option>';
 						} else {
-							result = result + '<option onclick="projectStatus();">Started</option>';
+							result = result + '<option>Started</option>';
 						}
 
 						if (json.projectStatus == 'INPROGRESS') {
 							result = result	+ '<option selected>In-Progress</option>';
 						} else {
-							result = result + '<option onclick="projectStatus();">In-Progress</option>';
+							result = result + '<option>In-Progress</option>';
 						}
 
 						if (json.projectStatus == 'COMPLETED') {
@@ -261,7 +286,7 @@
 						if (json.projectStatus == 'ONHOLD') {
 							result = result	+ '<option selected>On-Hold</option>';
 						} else {
-							result = result + '<option onclick="projectStatus();">On-Hold</option>';
+							result = result + '<option>On-Hold</option>';
 						}
 
 						result = result + '</select>';
@@ -271,58 +296,54 @@
 						result = result	+ '		<span><input type="text" id="projectName" name="projectName" value="'+json.projectName+'" placeholder="Project name" class="project_detfield" data-validation="required validate_Space validate_length length2-100" field-name="Project Name" ></span><span id=fname_msg></span><div class="clearfix"></div>';
 						result = result + '</div>';
 						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '	<label>Manager 1</label>';
+						result = result + '	<label>Manager 1 <span class="text-danger">*</span></label>';
 						result = result + '<div class="row">';
-						/* if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") {  */
+						 if ((json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") ||
+								 (json.managerLevel1UserType != null && json.mamanagerLevel1UserTypenager2 != "" && json.managerLevel1UserType != "undefined" 
+								 &&  json.managerLevel1UserType == "Admin")) {  
 							result = result + '<div class="col-md-12" id="levelone-select">';
-						/* }else{
+						 }else{
 							result = result + '<div class="col-md-9" id="levelone-select">';	
-						} */
+						} 
 						result = result	+ '<select onchange="getLevel2Approvers('+json.manager2+ ');" id="level1Manager" name="level1Manager" >';
 						for (var j = 0; j < json.managersList.length; j++) {
 							var manager = json.managersList[j];
 							if (json.manager1 == manager.id) {
 								selected = 'selected';
-								result = result	+ "<option value="+manager.id+" "+selected+" >"	+ manager.firstName + " "+ manager.lastName + "</option>";
+								result = result	+ "<option value="+manager.id+","+manager.userType+" "+selected+" >"	+ manager.firstName + " "+ manager.lastName + "</option>";
 							} else {
-								result = result	+ "<option value="+manager.id+" >"+ manager.firstName + " "+ manager.lastName + "</option>";
+								result = result	+ "<option value="+manager.id+","+manager.userType+" >"+ manager.firstName + " "+ manager.lastName + "</option>";
 							}
 						}
 						result = result + '</select>';
 						result = result + '</div>';
-					/* 	if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") { 
-						result = result + '<div class="col-md-2" id="leveltwo-btn" style="display:none">';
-						result = result + '<span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers();">Add Level-II</span>';
-						result = result + '</div>';
+						
+						if (json.managerLevel1UserType != null && json.mamanagerLevel1UserTypenager2 != "" && json.managerLevel1UserType != "undefined" &&  json.managerLevel1UserType != "Admin") { 
+							if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") { 
+								result = result + '<div class="col-md-2" id="level2Toggle" style="display:none">';
+								result = result + '<span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers(); showLevel2Div();">Add Level-II</span>';
+								result = result + '</div>';
+								} else{
+									result = result + '<div class="col-md-2" id="level2Toggle" style="display:block">';
+									result = result + '<span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers(); showLevel2Div();">Add Level-II</span>';
+									result = result + '</div>';
+								} 
 						}else{
-							result = result + '<div class="col-md-2" id="leveltwo-btn" style="display:block">';
-							result = result + '<span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers();">Add Level-II</span>';
+							result = result + '<div class="col-md-2" id="level2Toggle" style="display:none">';
+							result = result + '<span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers(); showLevel2Div();">Add Level-II</span>';
 							result = result + '</div>';
-						} */
+						}
+						result = result	+ '<input type="hidden" id="level2Div">';
 						result = result + '</div>';
 						
 						result = result + '</div>';
 
-						 if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") { 
-							result = result+ '<div class="user_summary_edit_cta">';
-							result = result + '<label> Manager 2: </label>';
-							result = result	+ '<select id="level2Manager" name="level2Manager">';
-							for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
-								var manager = json.managersListwithoutManager1[j];
-								if (json.manager2 == manager.id) {
-									selected = 'selected';
-									result = result	+ "<option value="+manager.id+" "+selected+" >"+ manager.firstName + " "+ manager.lastName + "</option>";
-								} else {
-
-									result = result	+ "<option value="+manager.id+" >"+ manager.firstName + " "+ manager.lastName + "</option>";
-								}
-							}
-							result = result + '</select>';
-							result = result + '</div>';
-
-						}/* else{
+						if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") { 
+							result = result+ '<div class="user_summary_edit_cta" id="demo" >';
+						}else{
 							result = result+ '<div class="user_summary_edit_cta" style="display:none;" id="demo">';
-							result = result + '<label> Manager 2: </label>';
+						}
+							result = result + '<label> Manager 2 </label>';
 							result = result	+ '<select id="level2Manager" name="level2Manager">';
 							for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
 								var manager = json.managersListwithoutManager1[j];
@@ -336,8 +357,6 @@
 							}
 							result = result + '</select>';
 							result = result + '</div>';
-
-						} */
 
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '	<label>Client</label>';
@@ -350,18 +369,15 @@
 						result = result + "<option value=''>Select</option>";
 						for (var i = 0; i < json.clientName.length; i++) {
 							var managers = json.clientName[i];
-							var projrctmanager = managers.split('&');
+							var projrctmanager = managers.split(',');
 							var name = projrctmanager[0];
 							var id = projrctmanager[1];
 							var selected = '';
 							if (json.relationId == id) {
 								selected = 'selected';
-								result = result
-										+ "<option value="+id+" "+selected+" >"
-										+ name + "</option>";
+								result = result + "<option value="+id+" "+selected+" >"+name+ "</option>";
 							} else {
-								result = result + "<option value="+id+" >"
-										+ name + "</option>";
+								result = result + "<option value="+id+" >"+name+ "</option>";
 							}
 
 						}
@@ -375,29 +391,29 @@
 						result = result + '</div>';
 
 						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '	<label>Start date</label>';
+						result = result + '	<label>Start date <span class="text-danger">*</span></label>';
 						result = result
 								+ '	<input class="calendar" value='+json.startDateStr+' type="text" disabled="disabled">';
 						result = result + '</div>	';
 						
 						
-						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<label>Invoice Frequency</label>';
+						/* result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<label>Invoice Frequency <span class="text-danger">*</span></label>';
 						result = result  +'	<select   name="invoiceFrequency" id="invoiceFrequency" class="input-sm form-control">';
-							
 						result = result  +' <option '+(json.invoiceFrequency == "Weekly" ? "selected" : '') +'>Weekly</option>';
 						result = result  +'	 <option '+(json.invoiceFrequency == "Bi-Weekly" ? "selected" : '') +'>Bi-Weekly</option>';
 						result = result  +'	 <option '+(json.invoiceFrequency == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
 						result = result  +'	<option '+(json.invoiceFrequency == "Monthly" ? "selected" : '') +'>Monthly</option>';
 						result = result  +'	</select>';
-											
-						result = result + '</div>';
+						result = result + '</div>'; */
+						
 						result = result + '<div class="clearfix"></div>';
 
-						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<label>End date</label>';
+						result = result + '<div class="user_summary_edit_cta" id="endDateDiv">';
+						result = result + '<label>End date <span class="text-danger" id="endDateSpan" style="display: none; ">*</span></label>';
 						result = result
-								+ '	<input class="calendar" type="text" placeholder="DD/MM/YY" value="'+endDateStr+'" id="endDateStr1" name="endDateStr1" >';
+								+ '	<input class="calendar" type="text" placeholder="DD/MM/YY" value="'+endDateStr+'" id="endDateStr1" name="endDateStr1" field-name="End Date" readonly="readonly">';
+						result = result + '<input type="hidden" name="dbEndDateStr" id="dbEndDateStr" value="'+endDateStr+'" >';
 						result = result + '</div>';
 						
 						
@@ -406,11 +422,19 @@
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '<label>Description </label>';
 						result = result
-								+ '<textarea class="edit_desc" placeholder="Enter Description" id="description" name="description">'
+								+ '<textarea class="edit_desc" placeholder="Enter Description" id="description" data-validation-optional="true" data-validation="validate_length length10-5000" name="description">'
 								+ description + '</textarea>';
 						result = result + '</div>       ';
 						result = result + '<div class="clearfix"></div>';
 						
+						result = result + '<div class="form-group">';
+						result = result + '<div class="col-md-9">';
+						result = result + '<div class="checkbox">';
+						result = result + '<label> <input type="checkbox" value="Y" '+(isTimesheetAttachmentRequired == "Y" ? "checked" : '')+'  name="isTimesheetAttachmentRequired"> Timesheet Attachment Required</label>';
+						result = result + '</div>';
+						result = result + '</div>';
+						result = result + '</div>';
+					result = result + '<div class="clearfix"></div>';
 						
 						result = result + '<div class="user_summary_edit_cta">';
 						
@@ -432,8 +456,13 @@
 						var projectEndDate = json.endDateStr;
 						$('#endDateStr1').datepicker({
 							dateFormat : 'yy-mm-dd',
+							changeMonth: true,
+							changeYear: true, 
 							minDate : dt,
 							onClose : function() {
+							},
+							onSelect : function(selected) {
+								addValidClass();
 							}
 						});
 
@@ -446,13 +475,36 @@
 <script>
 function projectStatus(){
 	var projectStatus = $("#projectStatusId").val();
-	var projectEnddateString = $("#endDateStr1").val();
-	if(projectStatus == "Started" || projectStatus == "In-Progress" || projectStatus == "On-Hold"){
+	var dbProjectStatus = $("#dbProjectStatus").val();
+	var dbEndDateStr = $("#dbEndDateStr").val();
+	if((projectStatus == "Started" || projectStatus == "In-Progress" || projectStatus == "On-Hold") && dbProjectStatus == "COMPLETED"){
 		 $("#endDateStr1").val('');
+	}else{
+		$("#endDateStr1").val(dbEndDateStr);
 	}
+	
+	$('#endDateDiv').find('p.jquery_form_error_message').remove(); 
+	if(projectStatus != null && projectStatus != "" && projectStatus != "undefined" && projectStatus == "Completed"){
+		 $("#endDateSpan" ).show(); 
+		 $('#endDateStr1').removeAttr('data-validation-optional');
+		 $('#endDateStr1').attr("data-validation","required"); 
+	 }else{
+		 $("#endDateSpan" ).hide();
+		 $('#endDateStr1').removeAttr('data-validation');
+		 $('#endDateStr1').attr("data-validation-optional","true"); 
+	 } 
 }
-
 </script>
+
+<script type="text/javascript"> 
+	function addValidClass(){
+		 var EndDate = document.getElementById("endDateStr1").value;
+		 if(EndDate){
+			 $('#endDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+}
+</script>
+
 <script type="text/javascript">
 	function updateProjectDetails(projectId) {
 		if ($('#editProject_form').validate(false, validationSettings)) {
@@ -471,6 +523,13 @@ function projectStatus(){
 	            			$("#docMsgDiv2").html("Success!! Project details updated");
 							projectDetails(projectId);
 							docMsgFadein();
+							
+							var json = JSON.parse(data);
+							$("#empTab").removeAttr("onClick");
+			   		    	$("#empTab").attr("onclick","projectEmployee('"+projectId+"', '"+json.startDateStr+"', '"+json.endDateStr+"', '"+json.projectStatus+"', '"+json.projectName+"')");
+			   		    	
+			   		    	$("#taskTab").removeAttr("onClick");
+			   		    	$("#taskTab").attr("onclick","projectTask('"+projectId+"', '"+json.projectStatus+"')");
 						}
 					});
 			return true;
@@ -612,12 +671,43 @@ function projectStatus(){
 	}
 </script>
 
+<script type="text/javascript">
+function showLevel2Div(){
+	var currentApproverId = document.getElementById("level1Manager").value;
+	var currentUser = currentApproverId.split(',');
+	var currentUserType = currentUser[1];
+	if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType != 'Admin'){
+	    $("#demo").show();  
+	}else if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType == 'Admin'){
+	    $("#demo").hide();  
+	}
+}
+
+</script>
 
 <script type="text/javascript">
 	function getLevel2Approvers(manager2) {
-		//$("#demo").toggle();
 		var currentApproverId = document.getElementById("level1Manager").value;
-		getChildLevel1Approvers(currentApproverId, manager2);
+		var currentUser = currentApproverId.split(',');
+		var currentUserId = currentUser[0];
+		var currentUserType = currentUser[1];
+		$("#level2Manager").empty();    
+		$('#level2Manager').val('');
+		if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType != 'Admin'){
+		    if(manager2 == null || manager2 == "" || manager2 == "undefined"){
+		    	$("#level2Toggle").show();
+		    	$("#levelone-select").removeClass('col-md-12');
+			    $("#levelone-select").addClass('col-md-9');  
+		    }else{
+		    	$("#demo").show();
+		    }
+		    getChildLevel1Approvers(currentUserId, manager2);
+		}else if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType == 'Admin'){
+		    $("#level2Toggle").hide();   
+		    $("#levelone-select").removeClass('col-md-9');
+		    $("#levelone-select").addClass('col-md-12');  
+		    $("#demo").hide();  
+		}
 	}
 </script>
 <script type="text/javascript">

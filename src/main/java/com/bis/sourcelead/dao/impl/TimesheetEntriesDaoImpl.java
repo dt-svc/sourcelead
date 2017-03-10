@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -17,15 +16,20 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
+import com.bis.sourcelead.dao.TimesheetHistoryDao;
 import com.bis.sourcelead.entity.TimesheetEntries;
-import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.TimesheetHistory;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
 public class TimesheetEntriesDaoImpl implements TimesheetEntriesDao {
 
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	TimesheetHistoryDao timesheetHistoryDao;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -46,6 +50,10 @@ public class TimesheetEntriesDaoImpl implements TimesheetEntriesDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			session.saveOrUpdate(timesheetEntries);
+			TimesheetHistory timesheetHistory = getHistoryRecordFromTimesheetEntries(timesheetEntries);
+			if(timesheetHistory != null){
+				timesheetHistoryDao.saveTimesheetHistory(timesheetHistory);
+			}
 		}
 		catch(HibernateException exception)	{
 			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"TIMESHEET_ENTRIES"));
@@ -61,6 +69,10 @@ public class TimesheetEntriesDaoImpl implements TimesheetEntriesDao {
 		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
 	    session.saveOrUpdate(timesheetEntries);
+	    TimesheetHistory timesheetHistory = getHistoryRecordFromTimesheetEntries(timesheetEntries);
+		if(timesheetHistory != null){
+			timesheetHistoryDao.saveTimesheetHistory(timesheetHistory);
+		}
 	    return timesheetEntries;
 		
 	}
@@ -81,8 +93,7 @@ public class TimesheetEntriesDaoImpl implements TimesheetEntriesDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		TimesheetEntries timesheetEntries = (TimesheetEntries)session.get(TimesheetEntries.class, Long.valueOf(id));
 		timesheetEntries.setStatus("1");
-        System.out.println("in timesheetEntriesdddddd "+timesheetEntries.getId());        
-		session.saveOrUpdate(timesheetEntries);
+        session.saveOrUpdate(timesheetEntries);
 		logger.info("Successfully deleted !!!");
 		return null;
 		/*Query query = session.createQuery("delete Cities where id = :ID");
@@ -113,7 +124,40 @@ public class TimesheetEntriesDaoImpl implements TimesheetEntriesDao {
 		return timesheetEntriesList;
 	}
 
-	
+	private TimesheetHistory  getHistoryRecordFromTimesheetEntries(TimesheetEntries timesheetEntries){
+		TimesheetHistory timesheetHistory = null;
+		if(timesheetEntries != null){
+			timesheetHistory = new TimesheetHistory();
+			timesheetHistory.setTimesheetEntries(timesheetEntries);
+			timesheetHistory.setTimesheetSubmissions(timesheetEntries.getTimesheetSubmissions());
+			timesheetHistory.setStartDate(timesheetEntries.getStartDate());
+			timesheetHistory.setEndDate(timesheetEntries.getEndDate());
+			timesheetHistory.setProjectTask(timesheetEntries.getProjectTask());
+			timesheetHistory.setMonHours(timesheetEntries.getMonHours());
+			timesheetHistory.setTueHours(timesheetEntries.getTueHours());
+			timesheetHistory.setWedHours(timesheetEntries.getWedHours());
+			timesheetHistory.setThuHours(timesheetEntries.getThuHours());
+			timesheetHistory.setFriHours(timesheetEntries.getFriHours());
+			timesheetHistory.setSatHours(timesheetEntries.getSatHours());
+			timesheetHistory.setSunHours(timesheetEntries.getSunHours());
+			
+			timesheetHistory.setMoncomments(timesheetEntries.getMoncomments());
+			timesheetHistory.setTuecomments(timesheetEntries.getTuecomments());
+			timesheetHistory.setWedcomments(timesheetEntries.getWedcomments());
+			timesheetHistory.setThucomments(timesheetEntries.getThucomments());
+			timesheetHistory.setFricomments(timesheetEntries.getFricomments());
+			timesheetHistory.setSatcomments(timesheetEntries.getSatcomments());
+			timesheetHistory.setSuncomments(timesheetEntries.getSuncomments());
+			
+			timesheetHistory.setCreatedBy(timesheetEntries.getUpdatedBy());
+			timesheetHistory.setCreatedDate(timesheetEntries.getCreatedDate());
+			timesheetHistory.setUpdatedBy(timesheetEntries.getUpdatedBy());
+			timesheetHistory.setUpdatedDate(timesheetEntries.getUpdatedDate());
+		}
+		
+		
+		return timesheetHistory;
+	}
 	
 
 }

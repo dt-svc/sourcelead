@@ -2,14 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
- <link href="resources/css/bootstrap-select.min.css" rel="stylesheet">
- <link href="resources/css/jquery-ui.css" rel="stylesheet">
- <script src="resources/js/bootstrap-select.min.js"></script>
 <script src="resources/js/formvalidator.js"></script>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/chosen.jquery.min.js"></script> 
 
 <!-- <script src="resources/js/masklist.js" type="text/javascript"></script>
 <script src="resources/js/jquery.inputmask.js" type="text/javascript"></script> 
@@ -67,14 +60,14 @@
                 <div class="form-group" id="FirstNameDiv">
                   <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="FirstName" name="firstName" value="" field-name="First Name" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
+                    <input type="text" class="form-control" id="FirstName" name="firstName" value="" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label class="col-md-3">Last Name</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="lastName" name="lastName" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true" value="">
+                    <input type="text" class="form-control" id="lastName" name="lastName" data-validation="validate_Space validate_AlphaNumber validate_length length1-100" data-validation-optional="true" value="">
                   </div>
                 </div>
                 
@@ -90,7 +83,7 @@
                 
                 <div class="form-group">
                   <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
-                  <div class="col-md-9">
+                  <div class="col-md-9" id="chosen-role">
                          <select class="form-control select-bg" id="role" name="roleType" field-name="Role" onchange="getReportingManager()" data-validation="required" >
 		                        <option value="">-Select Role-</option>
 		                        <c:forEach var="option" items="${rolesList}">
@@ -119,11 +112,11 @@
                      <div class="col-md-9">
                          <div class="row">
 		                        <div class="col-md-6">
-				                    <input type="text" class="form-control" id="Rate"  name="rate" value="" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">
+				                    <input type="text" class="form-control" id="Rate" field-name="Rate" name="rate" value="" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">
 				                    <span class="hidden">Rate</span>
 		                        </div>
 		                        <div class="col-md-6">
-				                     <select class="form-control select-bg" id="RatePer" name="ratePer" field-name="Rate Per">
+				                     <select class="form-control selectpicker" id="RatePer" name="ratePer" field-name="Rate Per">
 				                        <option value="">-Rate Per-</option>
 				                        <option>Hourly</option>
 				                        <option>Daily</option>
@@ -196,13 +189,21 @@
 <script type="text/javascript">
  function createUser() {
 	 var Rate = document.getElementById("Rate").value; 
+	 var RatePer = document.getElementById("RatePer").value; 
 	 if(Rate != null && Rate != ""){
 		 $('#RatePer').removeAttr('data-validation-optional');
 		 $('#RatePer').attr("data-validation","required"); 
 	 }else{
 		 $('#RatePer').removeAttr('data-validation');
 		 $('#RatePer').attr("data-validation-optional","true"); 
+	 } if(RatePer != null && RatePer != ""){
+		 $('#Rate').removeAttr('data-validation-optional');
+		 $('#Rate').attr("data-validation","required"); 
+	 }else{
+		 $('#Rate').removeAttr('data-validation');
+		 $('#Rate').attr("data-validation-optional","true"); 
 	 }
+	 
 	 
 	   if ($('#createUser_form').validate(false, validationSettings)){ 
 		    var frm = $('#createUser_form').serializeFormJSON();
@@ -255,33 +256,35 @@
 
 <script type="text/javascript">
  function validateEmployeeId() {
-	 var EmployeeId = document.getElementById("EmployeeId").value; 
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove();
-	 if(EmployeeId != null && EmployeeId != ""){
-		 $("#create_user").attr("disabled", "disabled");
+     var EmpId = document.getElementById("EmployeeId").value;
+     var sourceleadUrl ='${sourceleadUrl}';
+     $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove();
+     var con = document.getElementById("EmployeeId").value;
+     var EmployeeId = encodeURIComponent(con);
+     if(EmployeeId != null && EmployeeId != ""){
+         $("#create_user").attr("disabled", "disabled");
         // $("#create_user" ).addClass('button').val('Processing..');
-		 $.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/validateEmployeeId?${_csrf.parameterName}=${_csrf.token}&EmployeeId="+EmployeeId, 
-		        success: function(data) {
-		        	if(data == true){
-		        		  $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove();
-						  $("input#EmployeeId").after("<p class='jquery_form_error_message'>"+EmployeeId+" is Already Existed</span>");
-						  document.getElementById("EmployeeId").setAttribute('record-exist','yes');
-						  document.getElementById("EmployeeId").setAttribute('record-exist-errorMsg',EmployeeId+' is Already Existed'); 
-		        	}
-		        	else{
-		        		 $('input#EmployeeId').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove(); 
-		        		 $("#create_user" ).addClass('us-btn').val('Save');
+         $.ajax({
+                type: "POST",
+                url: sourceleadUrl+"/validateEmployeeId?${_csrf.parameterName}=${_csrf.token}&EmployeeId="+EmployeeId,
+                success: function(data) {
+                    if(data == true){
+                          $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove();
+                          $("input#EmployeeId").after("<p class='jquery_form_error_message'>"+EmpId+" is Already Existed</span>");
+                          document.getElementById("EmployeeId").setAttribute('record-exist','yes');
+                          document.getElementById("EmployeeId").setAttribute('record-exist-errorMsg',EmpId+' is Already Existed');
+                    }
+                    else{
+                         $('input#EmployeeId').removeAttr( "record-exist record-exist-errormsg");
+                         $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove();
+                         $("#create_user" ).addClass('us-btn').val('Save');
                          $("#create_user").removeAttr("disabled");
-		        	} 
-		        },
-		    });
-	 }
+                    }
+                },
+            });
+     }
  }
- </script>  
+ </script> 
  
 <script type="text/javascript">
  function validateUserEmail() {
@@ -377,6 +380,8 @@
 	  
 	  $('#DateofJoin').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
 	      //minDate: 0  this line for to restrict selection of previous dates
 	  });
 	  
@@ -387,6 +392,7 @@
  
 <script type="text/javascript">
  function getReportingManager() {
+	 $('#chosen-role').find('p.jquery_form_error_message').remove();
 	 var role = document.getElementById("role").value; 
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(role != null && role != "" && role != 'undefined'){
@@ -417,7 +423,6 @@
 	
  }
 </script>
-
 <script type="text/javascript">
 $(function(){
 	       var config = {

@@ -97,6 +97,18 @@ public class RequirementRateSubmissionNegotiation {
 	@Transient
 	private String requirementRate;
 	
+	@Transient
+	private String submissionRateStatus;
+	
+	@Transient
+	private String isNeedApplicantPermit;
+	
+	@Transient
+	private String submissionStatus;
+	
+	@Transient
+	private String expectedRatePer;
+	
 
 	public Long getId() {
 		return id;
@@ -120,6 +132,31 @@ public class RequirementRateSubmissionNegotiation {
 
 	public void setRateInitiatorType(SubmissionRateStatus rateInitiatorType) {
 		this.rateInitiatorType = rateInitiatorType;
+	}
+
+	public String getIsNeedApplicantPermit() {
+		return isNeedApplicantPermit;
+	}
+
+	public void setIsNeedApplicantPermit(String isNeedApplicantPermit) {
+		this.isNeedApplicantPermit = isNeedApplicantPermit;
+	}
+
+	public String getSubmissionStatus() {
+		return submissionStatus;
+	}
+
+	public void setSubmissionStatus(String submissionStatus) {
+		this.submissionStatus = submissionStatus;
+	}
+
+
+	public String getExpectedRatePer() {
+		return expectedRatePer;
+	}
+
+	public void setExpectedRatePer(String expectedRatePer) {
+		this.expectedRatePer = expectedRatePer;
 	}
 
 	public OrgLocations getInitiatorOrgLocationId() {
@@ -272,6 +309,14 @@ public class RequirementRateSubmissionNegotiation {
 
 	public void setRequirementRate(String requirementRate) {
 		this.requirementRate = requirementRate;
+	}
+
+	public String getSubmissionRateStatus() {
+		return submissionRateStatus;
+	}
+
+	public void setSubmissionRateStatus(String submissionRateStatus) {
+		this.submissionRateStatus = submissionRateStatus;
 	}
 	
 }

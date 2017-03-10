@@ -66,7 +66,6 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 	@Override
 	public TeamMembers saveOrUpdateTeamMembers(TeamMembers teamMembers) throws Exception {
 		
-		teamMembers.setCreatedDate(commonUtil.currentDate());
 		teamMembers.setUpdatedDate(commonUtil.currentDate());
 		
 		return teamMemberDao.saveOrUpdateTeamMembers(teamMembers);
@@ -97,6 +96,8 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 		  	     }
 		}
 		
+		if(null != userList){
+		
 		userList = userList.replaceAll("\\[", "").replaceAll("\\]","");
 		userList = userList.replaceAll("\"", "");
 		String[] usersIds = userList.split(",");
@@ -122,7 +123,7 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 	        teamMemberDao.saveOrUpdateTeamMembers(teamMembers);
 		}
 	   
-	
+		}
 }
 
 	@Override
@@ -153,6 +154,11 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 	@Override
 	public List<TeamMembers> getTeamMembersListByUserIdAndLocationId(Long userId,Long orgLocationId) throws Exception {
 		return teamMemberDao.getTeamMembersListByUserIdAndLocationId(userId,orgLocationId);
+	}
+	
+	@Override
+	public Boolean isUserBelongsCurrentTeamByUserIdAndTeamId(Long userId,Long teamId) throws Exception {
+		return teamMemberDao.isUserBelongsCurrentTeamByUserIdAndTeamId(userId, teamId);
 	}
 	 
 }

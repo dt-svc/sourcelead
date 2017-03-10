@@ -1,8 +1,4 @@
 
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="resources/js/jquery-1.11.3.min.js"></script> 
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 
 <script>
 function educationSubmissionDetails(candidateId){
@@ -32,7 +28,7 @@ function educationSubmissionDetailsList(candidateId){
           type : "POST",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
           success :function(data) {
-               if(data != null && data != 'undefined' && data != "" && data != '[]'){
+               /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
              		 if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
 			    	 }
@@ -108,7 +104,7 @@ function educationSubmissionDetailsList(candidateId){
 	                     $("#educationSubmissionDetailsList").append(result); 
 	                     educationSubmissionPagination(); 
 			    	} 
-               }else{
+               /* }else{
 	    	         var result ="";
 		    	     result = result+"   <div class='row'>"; 
 					 result = result+"	<div class='col-lg-12'>"; 
@@ -122,7 +118,7 @@ function educationSubmissionDetailsList(candidateId){
 					 result = result+"  </div> "; 
 					$("#educationSubmissionDetailsList").empty();
 				    $("#educationSubmissionDetailsList").append(result); 
-               }
+               } */
         },
           
      }); 
@@ -138,9 +134,9 @@ function educationSubmissionPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
- 
  }
 </script>

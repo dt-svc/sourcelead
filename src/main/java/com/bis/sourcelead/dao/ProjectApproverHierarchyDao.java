@@ -14,6 +14,8 @@ public interface ProjectApproverHierarchyDao {
 	
 	public ProjectApproverHierarchy updateProjectApproverHierarchy(ProjectApproverHierarchy projectApproverHierarchy) throws Exception;
 
+	public List<ProjectApproverHierarchy> getAllApproverUsersByProjectIdList(List<Long> projectIds) throws Exception;
+	
 	public List<ProjectApproverHierarchy> getApproverUsersByProjectId(long Id) throws Exception;
 	
 	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectId(long Id,long userId) throws Exception;
@@ -21,6 +23,8 @@ public interface ProjectApproverHierarchyDao {
 	public List<ProjectApproverHierarchy> getProjectHierarchyListByLoginUserId(Long userId);
 	
 	public List<Long> getProjectIdsByLoginUserId(Long userId);
+	
+	public void deleteProjectApproverHierarchy(ProjectApproverHierarchy projectApproverHierarchyS) throws Exception;
 
 	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectIdForManager(Long projectId,
 			Long userId, int managerLevel)throws Exception;
@@ -32,5 +36,17 @@ public interface ProjectApproverHierarchyDao {
 	List<ProjectApproverHierarchy> getProjectApproversListByUserIdAndOrgLocationId(Long userId,Long orgLocationId)throws Exception;
 	
 	List<ProjectApproverHierarchy> getProjectsHierarchyListByProjectIdAndOrgLocationId(Long projectId,Long orgLocationId)throws Exception;
+	
+	/**
+	 * @author Prasad salina
+	 * @param orgLocationId
+	 * @param invoiceFrequency
+	 * @param managerLevel
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ProjectApproverHierarchy> getApproverUserIdsByOrgLocationIdAndLevelAndFrequency(Long orgLocationId, String invoiceFrequency, int managerLevel)throws Exception;
+	
+	public ProjectApproverHierarchy getProjectApproverByProjectId(Long ProjectId) throws Exception;
 	
 }

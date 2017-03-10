@@ -6,8 +6,6 @@
 <script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
 <style type="text/css">
 .center-div{
@@ -237,7 +235,7 @@ function uploadSave() {
                     return false;
                   return false;
                 }
-                	if (fsize < 5120 || fsize > 5120000)
+                	if (fsize < 4000 || fsize > 5120000)
                     {
                    	   $("input#uploadBtn").after("<p class='jquery_form_error_message'>");
                			document.getElementById("uploadBtn").setAttribute('record-exist', 'yes');

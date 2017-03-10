@@ -18,6 +18,8 @@ public interface ProjectsDao {
 	
 	List<Projects> getProjectByOrgLocationsIdAndEndDateGraterthanCurrentDate(Long orgLocationsId, Long loginUserId) throws Exception;
 	
+	List<Projects> getAllProjectsEndDateGraterthanCurrentDate() throws Exception;
+	
 	Projects getPrimaryProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
 	
 	public Boolean deleteProjectById(Long id) throws Exception;
@@ -44,7 +46,8 @@ public interface ProjectsDao {
 	
 	public List<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId);
 	
-
+	public List<Projects> getProjectsByOrgLocationsIdAndApproverUserId(Long id, Long userId);
+	
 	public Projects getProjectByIdAndLoginOrgId(Long projectId,Long orgLocationId) throws Exception;
 
 	public Integer getUserAssignedProjectsCount(Long userId,Long orgLocationId);
@@ -60,5 +63,13 @@ public interface ProjectsDao {
 	//public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek();
 	
 	Integer getProjectApproversCountByUserIdAndOrgLocationId(Long userId,Long orgLocationId)throws Exception;
+	
+	List<Projects> getProjectBasedClientsByOrgLocationsIdAndApproverUserId(Long orgLocationsId, Long userId) throws Exception;
+
+	List<Long> getProjectIdsByOrgLocationsId(Long orgLocationsId) throws Exception;
+	
+	Integer getProjectCountByOrgLocationId(Long orgLocationId)throws Exception;
+	
+	Boolean validateTasksName(String taskname, Long projectId) throws Exception;
 
 }

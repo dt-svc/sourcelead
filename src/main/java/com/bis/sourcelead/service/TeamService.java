@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Team;
 
@@ -28,5 +29,13 @@ public interface TeamService {
 	public Team saveTeam(Team team)throws Exception;
 	
 	public List<Team> getUserAssignedTeamListByOrgLocationId(Long userId,Long orgLocationId) throws Exception;
+	
+	public List<Long> getTeamIdsListByOrgLocationID(Long orgLocationId) throws Exception;
+	
+	public List<Long> getUserAssignedTeamIdsListByOrgLocationId(Long userId,Long orgLocationId) throws Exception;
+	
+	public Team findByTeamName(String name,Long orgLocationId) throws Exception;
+	
+	
 	
 }

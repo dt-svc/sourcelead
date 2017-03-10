@@ -1,17 +1,10 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
- <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
 
 <script src="resources/js/formvalidator.js"></script>
-
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/chosen.jquery.min.js"></script> 
-
 
 
 <script>
@@ -40,7 +33,7 @@
            	
            	
           
-          <li id="candFilter"><i class="fa fa-filter"></i><span id="typeDiv"> Type </span><i class="glyphicon glyphicon-play" id="filter3ApprovePop"></i>|
+          <li id="filter3ApprovePop"><i class="fa fa-filter"></i><span id="typeDiv"> Type </span><i class="glyphicon glyphicon-play" id="candFilter" ></i>
               	<div id="filter3ApprovedPop" class="approved_pop">
                   	<ul>
 	                    <li><input id="candidateTypeAll" type="radio" name="candidateType" checked value ="All" onclick="hotListCandidates();"  ><label for="c5">All</label></li>
@@ -83,13 +76,7 @@
             url: sourceleadUrl+"/getHotListCandidates?${_csrf.parameterName}=${_csrf.token}&candidateType="+candidateType,       
             success :function(data) {
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
-               		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-               		 else if (data.indexOf('exception') >= 0) {
-               			 location.replace(sourceleadUrl+"/errorPage");
-               		 }
-               		 else{
+               		
 			    	     $("#candidateList").removeAttr("style");
 	                	 $("#candidateList").empty();
 	                	 var result = "";
@@ -165,14 +152,10 @@
 	                     $("#noCandidates").val('');
 	                     $("#candidateList").append(result);
 	                     cpagination(); 
-			    	} 
                  }else{
                 	 $("#candidateList").removeAttr("style");
   	    	         var result ="";
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Candidates Found</p>";
-					 result = result+"			 </div>";
+					 result = result+"			<div class='dataTables_empty'></div>";
 					$("#noCandidates").val("nocandidate");
 					$("#candFilter").empty();
 					$("#candidateList").empty();
@@ -188,12 +171,13 @@
 function cpagination(){ 
     $('#candidatePagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -306,7 +290,9 @@ function assignHotListToTeam(){
 					if(result == "success"){
 						
 						for (i = 0; i < hotlist.length; i++) { 
+							$("#loading"+hotlist[i]).removeAttr("style");
 							document.getElementById("hotList"+hotlist[i]).remove();
+							
 							
 						}
 						selectedHotList();

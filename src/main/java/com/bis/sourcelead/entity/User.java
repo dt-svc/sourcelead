@@ -21,6 +21,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
@@ -120,6 +121,9 @@ public class User implements Serializable{
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "USER_UUID")
+	private String userUUID;
+	
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<UserRole> userRole = new HashSet<UserRole>(0);
@@ -146,9 +150,20 @@ public class User implements Serializable{
 	@Enumerated(EnumType.STRING)
 	private Status previousUserState;
 	
+	@Column(name = "COUNTRY")
+	private String country;
+	
+	@Transient
+	private String isPrimaryAdmin;
+
+	@Transient
+    private String tempPwd;
 	
 	@Transient
     private int assignJobCount;
+	
+	@Transient
+	private String role;
 
 	public Status getPreviousUserState() {
 		return previousUserState;
@@ -363,8 +378,29 @@ public class User implements Serializable{
 		this.location = location;
 	}
 
+	public String getTempPwd() {
+		return tempPwd;
+	}
+
+	public void setTempPwd(String tempPwd) {
+		this.tempPwd = tempPwd;
+	}
+
 	public String getFullName() {
-		return fullName;
+		if(StringUtils.isNotEmpty(fullName))
+			return fullName;
+		else{
+			if(StringUtils.isNotEmpty(firstName) && StringUtils.isEmpty(lastName)){
+				fullName = firstName;
+			}
+			else if(StringUtils.isEmpty(firstName) && StringUtils.isNotEmpty(lastName)){
+				fullName = lastName;
+			}
+			else if(StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName)){
+				fullName = firstName+" "+lastName;
+			}
+			return fullName;
+		}
 	}
 
 	public void setFullName(String fullName) {
@@ -418,5 +454,36 @@ public class User implements Serializable{
 	public void setGooglePlus(String googlePlus) {
 		this.googlePlus = googlePlus;
 	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String getUserUUID() {
+		return userUUID;
+	}
+
+	public void setUserUUID(String userUUID) {
+		this.userUUID = userUUID;
+	}
 	
+	public String getIsPrimaryAdmin() {
+		return isPrimaryAdmin;
+	}
+
+	public void setIsPrimaryAdmin(String isPrimaryAdmin) {
+		this.isPrimaryAdmin = isPrimaryAdmin;
+	}
 }

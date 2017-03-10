@@ -32,8 +32,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateSkills;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
@@ -41,7 +39,6 @@ import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.UserSignature;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.EmailService;
 import com.bis.sourcelead.service.HotListEmailCampaignService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -80,8 +77,8 @@ public class MailBoxRestController {
 	@Autowired
 	private CommonUtil commonUtil;
 	
-	@Autowired
-	CandidateSkillsService candidateSkillsService;
+	/*@Autowired
+	CandidateSkillsService candidateSkillsService;*/
 	
 	@Autowired
 	UserService userService;
@@ -112,14 +109,13 @@ public class MailBoxRestController {
 		for(int i=0 ; i < relationsId.length; i++){
 			List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(Long.valueOf(relationsId[i]));
 			for(OrgSpoc orgSpoc :orgSpocList){
-				emails.append(orgSpoc.getSpocUser().getEmail()).append(",");
+				emails.append(orgSpoc.getClientUser().getEmail()).append(",");
 			}
 		}
 		emails.toString();
 		
 		 String spocEmails =  emails.substring(0,emails.length()-1);
-		 System.out.println(spocEmails);
-		
+		 
 		return commonUtil.toJSON(spocEmails);
 	}
 	
@@ -222,6 +218,7 @@ public class MailBoxRestController {
 			}
 			
 			userMailBoxService.saveUserMailBox(mailBox);
+			userMailBoxService.saveOrUpdateUserMailBoxELK(mailBox);
 		}
 		
 		return "success";
@@ -250,6 +247,7 @@ public class MailBoxRestController {
 				userMailBox.setUpdatedBy(user.getCreatedBy());
 				userMailBox.setUpdatedDate(new Date());
 				userMailBoxService.saveUserMailBox(userMailBox);
+				userMailBoxService.saveOrUpdateUserMailBoxELK(userMailBox);
 			}
 		}
 		
@@ -302,6 +300,8 @@ public class MailBoxRestController {
 						
 						 if(!isNullOrEmpty(candidate.getExperienceYears())){
 							 experienceInYears = candidate.getExperienceYears();
+						 }else{
+							 experienceInYears = "0";
 						 }
 						 
 						 if(!isNullOrEmpty(candidate.getExperienceMonths())){
@@ -327,12 +327,14 @@ public class MailBoxRestController {
 	    	
 		    	userMailbox.setIsMailRead(1);
 				userMailBoxService.saveUserMailBox(userMailbox);
+				userMailBoxService.saveOrUpdateUserMailBoxELK(userMailbox);
 				
 				Integer inboxUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocation.getId(), "Inbox");
 				Integer requestedUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocation.getId(), "Requested");
 				userMailbox.setUnreadInboxCount(inboxUnreadMailsCount);
 				userMailbox.setUnreadRequestedCount(requestedUnreadMailsCount);
 				userMailbox.setTotalUnReadMailsCount(inboxUnreadMailsCount+requestedUnreadMailsCount);
+				SourceLeadSessionManager.setSessionAttribute(request, "unReadMailsCount", inboxUnreadMailsCount+requestedUnreadMailsCount);
 				userMailbox.setCandidatesList(reqCandidatesList);
 				if(null != nextMail){
 					userMailbox.setNextMailUUID(nextMail.getUuid());
@@ -457,14 +459,22 @@ public class MailBoxRestController {
 				for(Candidate candidate : candidatesList){
 					StringBuilder skills = new StringBuilder();
 					String candidateSkills = null;
-					List<CandidateSkills> skillsList = candidateSkillsService.getCandidateSkillsByCandidateId(candidate.getId().toString());
-					 if(skillsList.size() > 0){
-						 for(CandidateSkills skill : skillsList){
-							 skills.append(skill.getName()).append(", ");
+//					List<CandidateSkills> skillsList = candidateSkillsService.getCandidateSkillsByCandidateId(candidate.getId().toString());
+					String  skillsNames = candidate.getSkillsName();
+					if(null != skillsNames){
+						//List<String> skillsList = new ArrayList<String>(Arrays.asList(skillsNames.split(",")));
+						String [] skillsList = skillsNames.split(",");
+						if(skillsList.length > 0){
+							 for(String skill : skillsList){
+								 skills.append(skill).append(", ");
+							 }
+							 skills.toString();
+							 candidateSkills =  skills.substring(0,skills.length()-2);
 						 }
-						 skills.toString();
-						 candidateSkills =  skills.substring(0,skills.length()-2);
-					 }
+					
+					
+					}
+					
 					 
 					
 					 

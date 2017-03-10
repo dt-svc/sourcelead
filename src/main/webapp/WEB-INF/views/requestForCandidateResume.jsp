@@ -3,8 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link rel="icon" type="image/png" href="resources/images/fav.png" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Welcome to Source Lead :: Account List</title>
+<title>Welcome to Source Lead :: The Recruitment Application</title>
 <!-- Bootstrap -->
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/font-awesome.min.css" rel="stylesheet">
@@ -18,11 +19,14 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
  <script src="resources/js/formvalidator.js"></script>
- <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+ <script src="resources/js/jquery.dataTables.min.js"></script>
 <script>
 		$(document).ready(function() { 
 			var UUID = '${UUID}';
 			getCandidates(UUID)
+			
+			$('#email').tooltip({'trigger':'hover', 'title': 'Enter Your Mail Receiver Id'});
+			
 		});
 </script>
 
@@ -311,7 +315,8 @@ function pagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }

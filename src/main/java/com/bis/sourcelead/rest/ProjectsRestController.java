@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,11 +17,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.ProjectsIndex;
+import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -86,6 +92,15 @@ public class ProjectsRestController {
 	 @Autowired
 	 CommonUtil commonUtil;
 	 
+	 @Autowired
+	 ProjectsIndexHelper projectsIndexHelper;
+	 
+	 @Autowired
+	 SourceleadELKBaseIndexer<ProjectsIndex> sourceleadELKBaseIndexer;
+	 
+	 @Autowired
+	 ProjectTasksService projectTasksService;
+	 
 	 /**
 	  * This method for save the  project by json
 	  * @param json
@@ -146,7 +161,20 @@ public class ProjectsRestController {
 			return resultJson;
 	    }
 		
-
+  //to validate Task Name
+	 @RequestMapping(value = "/taskNameValidation" , method = RequestMethod.GET)
+	 public @ResponseBody  Boolean taskNameValidation(@RequestParam(value="TaskName", required=false) String TaskName,@RequestParam(value="ProjectId", required=false) Long projectId,
+			 @RequestParam(value="taskId", required=false) Long taskId,HttpServletRequest request) throws Exception {
+		    ProjectTasks projectTasks = null;
+	       if(null != projectId){
+	    	   projectTasks = projectTasksService.validateTaskNameByTaskId(taskId, TaskName, projectId);
+	       }
+	       Boolean flag = false;
+	       if(null == projectTasks){
+	    	   flag = projectsService.validateTasksName(TaskName,projectId);
+	       }
+			return flag;
+	   }
 
 	@RequestMapping(value = "/sourceLeadTasks")
 	public String sourceLeadTasks() throws Exception {
@@ -210,6 +238,35 @@ public class ProjectsRestController {
 		    return  commonUtil.toJSON(employeList);
 			
 	  }
+	  
+	  
+	  /**
+		 * @author Venkat Kesav
+		 * Assign Employee to project by  project id in ELK 
+		 * @param projectId
+		 * @param request
+		 * @return Json
+		 * @throws Exception
+		 */
+		
+		 @PreAuthorize("hasRole('ROLE_ASSIGN_EMPLOYEE_TO_PROJECT')")
+		 @RequestMapping(value = "/storeAssignEmployeeIntoELK",  method = RequestMethod.POST)
+			 public @ResponseBody  String storeAssignEmployeeIntoELK(
+					@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception {
+			 	
+				 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
+				 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				 	
+				 	if(projectId != null){
+						Projects projects = projectsService.getProjectById(projectId);
+						Collection<ProjectMembers> projectMembers = projectMembersService.getAllProjectMembersByProjectId(projects.getId());
+						ProjectsIndex projectsIndex = projectsIndexHelper.getProjectsIndexFromProjects(projects, null, projectMembers);
+						//Elastic Search Document Saving
+						sourceleadELKBaseIndexer.saveOrUpdateElkDocument(projectsIndex, Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,projects.getId().toString());
+				 	}
+				 	return "success";
+			}
 	 
  
 	/* @RequestMapping(value = "/notification", method = RequestMethod.GET,headers="Accept=application/json")
@@ -264,6 +321,15 @@ public class ProjectsRestController {
             }
 	    return status;
 	   }
+	 
+	 
+	 
+	//to validate Task Name
+	 @RequestMapping(value = "/validateTasksNameById" , method = RequestMethod.GET)
+	 public @ResponseBody  Boolean validateTasksNameById(@RequestParam(value="TaskName", required=false) String TaskName,@RequestParam(value="ProjectId", required=false) Long projectId, HttpServletRequest request) throws Exception {
+		    return projectsService.validateTasksName(TaskName,projectId);
+	   }
+	 
 	   protected static boolean isNullOrEmpty(String str) {
 			return str == null || "".equals(str.trim());
 		}

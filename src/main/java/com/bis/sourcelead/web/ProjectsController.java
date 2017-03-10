@@ -73,14 +73,18 @@ public class ProjectsController {
 				
 				Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId(), loginUser.getId());
 				for(OrgRelations ocl :orgClientList){
-					
-					if(null != ocl.getResponderLocationId()){
-						ocl.setOrgName(ocl.getResponderLocationId().getOrg().getOrgName());
+					if(null != ocl.getLocationId() && ocl.getLocationId().getId() != null && ocl.getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
+						if(ocl.getResponderLocationId() != null){
+							ocl.setOrgName(ocl.getResponderLocationId().getOrg().getOrgName());
+							ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
+						}
 					}
-					if(null != ocl.getLocationId()){
-						ocl.setOrgName(ocl.getLocationId().getOrg().getOrgName());
+					if(null != ocl.getResponderLocationId() && null != ocl.getResponderLocationId().getId() && ocl.getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
+						if(ocl.getLocationId() != null){
+							ocl.setOrgName(ocl.getLocationId().getOrg().getOrgName());
+							ocl.setOrgid(ocl.getLocationId().getOrg().getId());
+						}
 					}
-					ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
 				 }
 			    model.addObject("add_clientList", orgClientList);
 			    

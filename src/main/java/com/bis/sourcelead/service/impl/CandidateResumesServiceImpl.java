@@ -24,6 +24,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 /**
  * @author Ajith Matta
@@ -98,6 +99,7 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 				candidateResume.setOrgLocationId(orgLocations);
 			}
 			candidateResume.setStatus(Constants.CANDIDATE_ACTIVE);
+			candidateResume.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			candidateResume.setCreatedDate(commonUtil.currentDate());
 			candidateResume.setUpdatedBy(user.getUserCode());
 			candidateResume.setCreatedBy(user.getUserCode());
@@ -144,6 +146,7 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 				 candidateResumes.setFileName(multiFile.getOriginalFilename());
 				 candidateResumes.setFileContentType(multiFile.getContentType());
 				 candidateResumes.setStatus(Constants.CANDIDATE_ACTIVE);
+				 candidateResumes.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 				 candidateResumes.setCreatedDate(new Date());
 				 candidateResumes.setCreatedBy(userCode);
 				 candidateResumes.setUpdatedBy(userCode);
@@ -197,6 +200,7 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	@Override
 	public CandidateResumes updateCandidateResume(CandidateResumes candidateResumes) throws Exception {
 		logger.debug("In CandidateResumeServiceImpl class updateCandidateResume method...");
+		candidateResumes.setUpdatedDate(commonUtil.currentDate());
 		candidateResumes = candidateResumesDao.updateCandidateResume(candidateResumes);
 				
 		 /*
@@ -247,6 +251,11 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 			}
 			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
 		}
+	}
+
+	@Override
+	public CandidateResumes getCandidateResumeByResumeUUID(String resumeUUID) throws Exception {
+		return candidateResumesDao.getCandidateResumeByResumeUUID(resumeUUID);
 	}
 
 }

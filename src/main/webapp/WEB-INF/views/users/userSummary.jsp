@@ -5,26 +5,24 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <link rel="icon" type="resources/image/png"
 	href="resources/images/fav.png" />
-<link
+<%-- <link
 	href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900"
 	rel="stylesheet" type="text/css">
 <link rel="stylesheet"
 	href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+ <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+ --%>
 <script src="resources/js/formvalidator.js"></script>
+<!-- <link href="resources/css/bootstrap.min.css" rel="stylesheet">
+<link href="resources/css/register-style.css" rel="stylesheet">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 <script src="resources/js/chosen.jquery.min.js"></script> 
-
+ -->
 <style>
 .user_summary_edit_cta p{
     margin: -5px 15px;
@@ -61,6 +59,8 @@ $(document).ready(function(){
 	 $('body').on('focus', '#DateofJoin', function() {
 		 $('#DateofJoin').datepicker({
 			 dateFormat: 'yy-mm-dd',
+			 changeMonth: true,
+			 changeYear: true, 
 			});
 	 });
 });
@@ -78,6 +78,9 @@ $(document).ready(function(){
 	 
 	 result = result + ' <div class="user_summ_wrap">';
 	 result = result + '<div class="project_side_wrap_inn_tabs">';
+	 result  = result + '<div class="success_pop" id="selectoruser" style="display: none;">';
+	 result  = result + '<i class="fa fa-check-circle"></i><span id="userMsgDiv"></span>';
+	 result  = result + '</div>';
 	 result = result + '    <ul class="project-tabs-menu">';
 	 result = result + '       <li class="current"><a href="#tab-1" onClick="userDetails('+userId+');" >Details</a></li>';
 	/*  if(timesheet == 'Y' && (loginUserRole == 'ROLE_ADMIN' || loginUserRole == 'SOURCELEAD_ADMIN')){
@@ -123,8 +126,14 @@ $(document).ready(function(){
 	  	userDetails(userId);
  }
 </script>
+<script>
+	function userMsgFadein() {
+		$("#selectoruser").fadeIn(200);
+        $('#selectoruser').delay(2000).fadeOut('slow');
+	}
+</script> 
 
-		<script>
+<script>
  function userDetails(userId){    
 	
 	 var isTimeSheetEnrolled = '${SourceLeadWeb_timesheet}';
@@ -143,9 +152,7 @@ $(document).ready(function(){
 	    	type: "POST",
 	        url: sourceleadUrl+"/getUserDetailsById?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
 	        success: function(data) {
-	        	
 			    var json = JSON.parse(data);
-			     
 			    var result = "";
 			    var submissionCountsResult = "";
 			    
@@ -194,7 +201,7 @@ $(document).ready(function(){
 				if(json.userState != null && json.userState != "" && json.userState != 'INACTIVE'){
 				    result = result + ' <div class="useredit">';
 				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_USER\')">'
-				    result = result + ' <a id="edit-userRole" onclick="getRoles('+json.roles.id+');" href="javascript:editUserRole();"><i class="fa fa-edit"></i>Edit Role</a>';
+				    result = result + ' <a id="edit-userRole" onclick="getRoles('+json.roles.id+');removeErrorMsg();" href="javascript:editUserRole();"><i class="fa fa-edit"></i>Edit Role</a>';
 				    '</sec:authorize>';
 				    
 				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_USER\')">'
@@ -370,6 +377,13 @@ $(document).ready(function(){
 	});
  }
 </script>
+
+<script type="text/javascript">
+function removeErrorMsg(){
+	$("editRole_form").validate().resetForm();
+}
+</script>
+
 
 <!--  Script for First Name displaying right corner  -->
 <script type="text/javascript">
@@ -738,7 +752,7 @@ function getChangeRole(userId,userRoleId){
 	</div> -->
 
  <div class="remove_pop" style="display: none;">
-	<i class="fa fa-trash"></i><span>User successfully terminated</span>
+	<i class="fa fa-trash"></i><span>User successfully Removed</span>
 </div> 
 
 <div id="popUp"></div>
@@ -790,8 +804,11 @@ function getChangeRole(userId,userRoleId){
  function validateEmployeeId(id,userId) {
 	 $('input#EmployeeId').removeAttr( "record-exist record-exist-errormsg");
 	 $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove(); 
-	 var EmployeeId = document.getElementById("EmployeeId").value; 
+	 var EmpId = document.getElementById("EmployeeId").value; 
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var con = document.getElementById("EmployeeId").value;
+	 var EmployeeId = encodeURIComponent(con);
+	 
         if(EmployeeId!=null&&EmployeeId!=""){
         	$("#update_user").attr("disabled", "disabled");
             $( "#update_user" ).addClass('button').val('Processing..');
@@ -800,9 +817,9 @@ function getChangeRole(userId,userRoleId){
 		        url: sourceleadUrl+"/validateExistingEmployeeId?${_csrf.parameterName}=${_csrf.token}&id="+id+"&userId="+userId+"&EmployeeId="+EmployeeId, 
 		        success: function(data) {
 		        	if(data == true){
-						  $("input#EmployeeId").after("<p class='jquery_form_error_message'>"+EmployeeId+" is Already Existed</span>");
+						  $("input#EmployeeId").after("<p class='jquery_form_error_message'>"+EmpId+" is Already Existed</span>");
 						  document.getElementById("EmployeeId").setAttribute('record-exist','yes');
-						  document.getElementById("EmployeeId").setAttribute('record-exist-errorMsg',EmployeeId+' is Already Existed'); 
+						  document.getElementById("EmployeeId").setAttribute('record-exist-errorMsg',EmpId+' is Already Existed'); 
 		        	}
 		        	else{
 		        		 $('input#EmployeeId').removeAttr( "record-exist record-exist-errormsg");
@@ -825,6 +842,16 @@ function getChangeRole(userId,userRoleId){
      var EmployeeId = document.getElementById("EmployeeId").value;
      var EmailId = document.getElementById("EmailId").value;
      var sourceleadUrl ='${sourceleadUrl}';
+     var RatePer = document.getElementById("RatePer").value;
+	 if(RatePer != null && RatePer != ""){
+		 $('#Rate').removeAttr('data-validation-optional');
+		 $('#Rate').attr("data-validation","required"); 
+	 }else{
+		 $('#Rate').removeAttr('data-validation');
+	 	 $('#Rate').attr("data-validation-optional","true"); 
+		 $('#RatePer').removeAttr('data-validation');
+	 	 $('#RatePer').attr("data-validation-optional","true"); 
+	 }
      var Rate = document.getElementById("Rate").value;
      if(Rate != null && Rate != ""){
          $('#RatePer').removeAttr('data-validation-optional');
@@ -833,6 +860,7 @@ function getChangeRole(userId,userRoleId){
          $('#RatePer').removeAttr('data-validation');
          $('#RatePer').attr("data-validation-optional","true");
      }
+     
       if ($('#editUser_form').validate(false, validationSettings)){
     	  if(EmployeeId!=null&&EmployeeId!="" && empId != EmployeeId){
           $.ajax({
@@ -858,7 +886,11 @@ function getChangeRole(userId,userRoleId){
                             type: "POST",
                             url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId+"&emailId="+emailId,
                             success: function(result) {
-                                userDetails(userId);
+                            	 $("#selectoruser").removeAttr("style");
+	                       		  $("#selectoruser").css({ display: "block" });
+	                       		  $("#userMsgDiv").html("Success!! User Details Updated");
+                               userDetails(userId);
+                               userMsgFadein();
                                 
                             },
                         });
@@ -891,7 +923,11 @@ function getChangeRole(userId,userRoleId){
                                   type: "POST",
                                   url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId+"&emailId="+emailId,
                                   success: function(result) {
+                                	  $("#selectoruser").removeAttr("style");
+                            		  $("#selectoruser").css({ display: "block" });
+                            		  $("#userMsgDiv").html("Success!! User Details Updated");
                                       userDetails(userId);
+                                      userMsgFadein();
                                       
                                   },
                               });
@@ -913,7 +949,11 @@ function getChangeRole(userId,userRoleId){
                       type: "POST",
                       url: sourceleadUrl+"/updateUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&userId="+userId+"&emailId="+emailId,
                       success: function(result) {
+                    	  $("#selectoruser").removeAttr("style");
+                		  $("#selectoruser").css({ display: "block" });
+                		  $("#userMsgDiv").html("Success!! User Details Updated");
                           userDetails(userId);
+                          userMsgFadein();
                           
                       },
                   });
@@ -960,7 +1000,11 @@ function getChangeRole(userId,userRoleId){
              url: sourceleadUrl+"/terminateUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&json="+jsonData,
              success: function(data) {
                  if(data == "success"){
-                	 location.replace(sourceleadUrl+"/usersList");
+                	 $("#selectoruser").removeAttr("style");
+          			 $("#selectoruser").css({ display: "block" });
+          			 $("#userMsgDiv").html("Success!! User Removed");
+                 	 location.replace(sourceleadUrl+"/usersList");
+                 	 userMsgFadein();
                  }
                  
              }
@@ -1007,7 +1051,11 @@ function getChangeRole(userId,userRoleId){
              url: sourceleadUrl+"/editUserRole?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&json="+jsonData,
              success: function(data) {
                  if(data == "success"){
-                	 location.replace(sourceleadUrl+"/usersList");
+                	 $("#selectoruser").removeAttr("style");
+           			 $("#selectoruser").css({ display: "block" });
+           			 $("#userMsgDiv").html("Success!! Updated User Role");
+                 	 location.replace(sourceleadUrl+"/usersList");
+                 	 userMsgFadein();
                  }
                  
              }
@@ -1120,13 +1168,17 @@ $("#editRoleDetailsList").empty();
 				result = result + ' <form id="editUser_form"  name="editUser_form" method="post">';
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>First name<span class="text-danger">&nbsp; *</span></label>';
-					result = result + ' <input type="text" value="'+json.user.firstName+'" name="FirstName" field-name="First Name" data-validation="required validate_Space validate_length length2-100"/>';
+					result = result + ' <input type="text" value="'+json.user.firstName+'" name="FirstName" field-name="First Name" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100"/>';
 					result = result + ' </div>';
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Last name</label>';
-					result = result + ' <input type="text" value="'+lastName+'" name="LastName" data-validation="validate_Space validate_length length2-100" data-validation-optional="true">';
+					result = result + ' <input type="text" value="'+lastName+'" name="LastName" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true">';
 					result = result + ' </div>';
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + '<strong>Role:</strong><span class="fix">'+json.roles.displayName+'</span></div>';
+					result = result + ' </div>'; 
 					
 					result = result + ' <div class="user_summary_edit_cta" id="EmployeeIdDiv">';
 					result = result + ' <label>Employee Id</label>';
@@ -1141,7 +1193,7 @@ $("#editRoleDetailsList").empty();
 					if(json.userState == "NOT_LOGGEDIN"){
 						
 						result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
-						result = result + ' <label>Emaild Id<span class="text-danger">&nbsp; *</span></label>';
+						result = result + ' <label>Email Id<span class="text-danger">&nbsp; *</span></label>';
 						result = result + ' <input type="text" value="'+json.user.email+'"  id="EmailId" name="EmailId" field-name="EmailId" data-validation="required validate_Space validate_length length2-100 validate_email"/>';
 						result = result + ' </div>';
 					
@@ -1173,7 +1225,7 @@ $("#editRoleDetailsList").empty();
 		 	     	
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Rate</label>';
-					result = result + ' <input type="text" class="rate_filed" value="'+rate+'" id="Rate"  name="Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
+					result = result + ' <input type="text" class="rate_filed" value="'+rate+'" id="Rate" field-name="Rate" name="Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
 					result = result + ' <select class="rate_sele" id="RatePer" name="RatePer" field-name="Rate Per">';
 					result = result + ' <option value="">-Rate Per-</option>';
 					result = result + ' <option '+selected1+'>Hourly</option>';
@@ -1430,7 +1482,7 @@ function removeUser(userId){
 							
 					result = result + '<div class="clearfix mb10 mt">';
 					  result = result + '<div class="col-md-12" id="reasonDiv">';
-						  result = result + '<textarea rows="3" class="form-control input-sm" name="reason" id="reason" data-validation="required" field-name="Reason" placeholder="Terminate Reason"></textarea>';
+						  result = result + '<textarea rows="3" class="form-control input-sm" name="reason" id="reason" data-validation="required validate_length length2-250" field-name="Reason" placeholder="Terminate Reason"></textarea>';
 						  	result = result + '</div>';
 						  result = result + '</div>';
 					  result = result + '<div class="clearfix"></div>';
@@ -1487,6 +1539,7 @@ function cancelUser(){
 <script>
 function cancelEditRole(){
 	$("#edit_role_pop").slideToggle(100);
+	location.reload(); 
 }
 </script>
 
@@ -1870,6 +1923,10 @@ function reActiveUser(userId){
                type: "POST",
             url: sourceleadUrl+"/reActiveUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId,        
                success: function(data) {
+            	   $("#selectoruser").removeAttr("style");
+        		   $("#selectoruser").css({ display: "block" });
+        		   $("#userMsgDiv").html("Success!! User reactivated for sourcelead");
+               	   location.replace(sourceleadUrl+"/usersList");
             	   userDetails(userId);
                }
        });

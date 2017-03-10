@@ -1,7 +1,3 @@
-<script src="resources/js/chosen.jquery.min.js"></script> 
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -89,7 +85,6 @@ function clientDocumentsList(clientLocationId,orgRelationId){
           type : "POST",
           url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+clientLocationId+"&sourceType=Client",        
           success :function(data) {
-               if(data != null && data != 'undefined' && data != "" && data != '[]'){
              			var json = JSON.parse(data);
              			/* for (var i = 0; i < 1; i++) { 
              				var val= json[i];
@@ -189,36 +184,6 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                     $("#clientDocumentsList").append(result); 
 	                     documentpagination(); 
 	                     //msgFadein();
-               }else{
-            	   
-            	    var val= "${SourceLeadWeb_deleteDocument}";
-    				var opt = "";
-    					if(val != null && val != '' && val != 'undefined'){
-        					opt  = opt + '<div class="success_pop" id="selector1" style="display: block;">';
-        					opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val+'</span>';
-        					opt  = opt + '</div>';
-    						}
-    					$("#msgDiv").empty();
-    					$("#msgDiv").append(opt);
-    					<%
-    					session.removeAttribute( "deleteDocument" );
-    			         %>
-            	   
-	    	         var result ="";
-		    	     result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Documents Found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> "; 
-					$("#clientDocumentsList").empty();
-				    $("#clientDocumentsList").append(result); 
-				    msgFadein();
-               }
         },
           
      }); 
@@ -234,7 +199,8 @@ function documentpagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -313,7 +279,7 @@ function addDocument(clientLocationId,orgRelationId) {
 	
 	result = result+'	                  <div class="clearfix mb10">';
 	result = result+'	                    <div class="col-md-12">';
-	result = result+'	                      <textarea rows="2" placeholder="Description" value="" id="description" name="description" data-validation="validate_length length2-500" data-validation-optional="true" field-name="Description" class="form-control"></textarea>';
+	result = result+'	                      <textarea rows="2" placeholder="Description" id="docDescription" name="description" data-validation="validate_length length2-500" data-validation-optional="true" field-name="Description" class="form-control"></textarea>';
 	result = result+'	                    </div>';
 	result = result+'	                  </div>';
 	
@@ -340,6 +306,8 @@ function addDocument(clientLocationId,orgRelationId) {
 	
 	$('#startDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
 	      onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() + 1);
@@ -349,6 +317,8 @@ function addDocument(clientLocationId,orgRelationId) {
 	  
 	  $('#endDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true,  
 	        onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() - 1);
@@ -473,7 +443,7 @@ function getSpocsList(orgRelationId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
     	type: "POST",
-        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId, 
+        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&type=Client", 
         success: function(data) {
         	var json = JSON.parse(data);
         	var output = "";
@@ -500,7 +470,7 @@ function getClientDocument(clientLocationId,orgRelationId,docId){
 	var sourceLeadUserId = '${SourceLeadWeb_userId}';
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/getOrgDocument?${_csrf.parameterName}=${_csrf.token}&docId="+docId+"&orgRelationId="+orgRelationId, 	   
+	    url: sourceleadUrl+"/getOrgDocument?${_csrf.parameterName}=${_csrf.token}&docId="+docId+"&orgRelationId="+orgRelationId+"&type=Client", 	   
 		    success: function(data) {
 		    	var json = JSON.parse(data);
 		    	var spoc = "";
@@ -526,7 +496,7 @@ function getClientDocument(clientLocationId,orgRelationId,docId){
     		         $('#spoc').append('<option value="">Client Contact</option>');
     		            for(var i=0; i<json.orgSpocsList.length; i++){
     		            	 spoc = json.orgSpocsList[i];
-	    		 	    	  if(json.spocUser != null && json.spocUser != "" && json.spocUser != 'undefined' && json.spocUser.id == spoc.spocUser.id){
+	    		 	    	  if(json.spocUser != null && json.spocUser != "" && json.spocUser != 'undefined' && json.spocUser.id == spoc.clientUser.id){
 	    		 	    		 $('#spoc').append('<option value="'+spoc.spocUserId+'" selected>'+spoc.spocName+'</option>');
 	    		 	    	  }else{
 	    		 	    		 $('#spoc').append('<option value="'+spoc.spocUserId+'">'+spoc.spocName+'</option>');
@@ -563,9 +533,8 @@ function getClientDocument(clientLocationId,orgRelationId,docId){
     				 document.getElementById("endDate").value = json.endDateStr;
     			 }
     			 
-    			 
     			 if(json.description != null && json.description != "undefined" && json.description != ""){
-    				 document.getElementById("description").value = json.description;
+    				 document.getElementById("docDescription").value = json.description;
     			 }
     			 
     			 $("#update_doc").attr("onclick", "storeClientDocument("+clientLocationId+","+orgRelationId+","+json.id+");");
@@ -635,7 +604,7 @@ function deleteClientDocument(clientLocationId,orgRelationId,docId,docName){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>User delete message here</p>";
+	result = result +"		<p>Document delete message here</p>";
 	result = result +"		<textarea  id='terminateReason' name='terminateReason'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="terminateReasonDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReasonForDoc("+clientLocationId+","+orgRelationId+","+docId+",\""+docName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDocTermination();'></b>";

@@ -1,17 +1,22 @@
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+
+
  <!-- Inteviews -->
-      <div class="col-md-6">
-        <div class="dashboard-widget">
+      <div class="col-md-6 mb" >
+        <div class="dashboard-widget height400px">
           <h4 class="clearfix">Interviews
         <b class="dashboard-datepkr"><input type="text" class="input-sm" id="datepicker-int" readonly="readonly"><i class="fa fa-calendar"></i></b>  
           </h4>
           <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
-          <div class="clearfix require_wrap_table dashboard-data clients_wrap_table">
+          <div class="clearfix require_wrap_table dashboard-data filter_position">
             <ul class="nav nav-tabs">
-              <li class="active" id="todayTab"><a data-toggle="tab" href="javascript:void(0)" onclick="flushDate(); interviews('today')">Today</a></li>
-              <li id="upcomingTab"><a data-toggle="tab" href="javascript:void(0)" onclick="flushDate(); interviews('upcoming')">Upcoming</a></li>
-              <li id="previousTab"><a data-toggle="tab" href="javascript:void(0)" onclick="flushDate(); interviews('previous')">Previous</a></li>
+              <li class="active" id="todayTab"><a data-toggle="tab" onclick="flushDate(); interviews('today')">Today</a></li>
+              <li id="upcomingTab"><a data-toggle="tab" onclick="flushDate(); interviews('upcoming')">Upcoming</a></li>
+              <li id="previousTab"><a data-toggle="tab" onclick="flushDate(); interviews('previous')">Previous</a></li>
             </ul>
-            <div class="tab-content clearfix mt custom-datatble">
+            <div class="tab-content clearfix">
               <div id="today" class="tab-pane fade in active"></div>
               <div id="upcoming" class="tab-pane fade"></div>
            	  <div id="previous" class="tab-pane fade"></div>
@@ -30,28 +35,31 @@ function flushDate(){
 <script>
 window.onload = interviews('today');
 function interviews(dateRange){
+	var orgATS = '${SourceLeadWeb_ats}';
 	var resultToday ="";
 	var sourceleadUrl = '${sourceleadUrl}';
-	$("#today").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	//$("#today").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 			type : "GET",
 			url : sourceleadUrl+"/getInterviews?dateRange="+dateRange,
 			success : function(data) {
 				var json = JSON.parse(data);
-				if(data != null && data != 'undefined' && data != "" && data != '[]'){
+				/* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
               
-	              			$("#today").empty();
 	        	        	$("#upcoming").empty();
 	        	        	$("#previous").empty();
+	        	        	$("#today").empty();
 	              			$("#today").removeAttr("style");
-	              			if(json.length > 0){
-	            				resultToday = resultToday+'	<table id="requirementInterviewsPagination" class="display" cellspacing="0" width="100%">';
+	              			//if(json.length > 0){
+	            				resultToday = resultToday+'	<table id="requirementInterviewsPagination" class="display" cellspacing="0" width="99.5%">';
 	            				resultToday = resultToday+'	<thead>';
 	            				resultToday = resultToday+'	  <tr>';
 	            				resultToday = resultToday+'	    <th>Applicant</th>';
 	            				resultToday = resultToday+'	    <th>Requirement</th>';
 	            				resultToday = resultToday+'	    <th>Date &amp; Time</th>';
+	            				if(orgATS == 'Y'){
 	            				resultToday = resultToday+'	    <th>Client</th>';
+	            				}
 	            				//resultToday = resultToday+'	    <th>Action</th>';
 	            				resultToday = resultToday+'	  </tr>';
 	            				resultToday = resultToday+'	</thead>';
@@ -64,42 +72,46 @@ function interviews(dateRange){
 	            		       			clientName = report.clientName;
 	            		       		}
 	            						resultToday = resultToday+'	  <tr>';
-	            						resultToday = resultToday+'	   <td><div><span title='+report.candidateName+'>'+report.candidateName+'</span></div></td>';
-	            						resultToday = resultToday+'	   <td><div class="tbldata-dotdot-vsm"> <a href="'+sourceleadUrl+'/requirementSummary?requirementId='+report.requirementId+'"><span title='+report.requirementTitle+'>'+report.requirementTitle+'</span></a></div></td>';
-	            						resultToday = resultToday+'	   <td><div class="tblminwidth-150">'+report.interviewStartDateTimeStr+'</div></td>';
-	            						resultToday = resultToday+'	   <td><div><span title='+clientName+'>'+clientName+'</span></div></td>';
+
+	            						resultToday = resultToday+'	   <td><div><span title="'+report.candidateName+'">'+report.candidateName+'</span></div></td>';
+	            						resultToday = resultToday+'	   <td><div class="tbldata-dotdot-vsm"> <a href="'+sourceleadUrl+'/requirementSummary?requirementUUID='+report.requirementUUID+'"><span title ="'+report.requirementTitle+'">'+report.requirementTitle+'</span></a></div></td>';
+	            						resultToday = resultToday+'	   <td><div class="tblminwidth-150"><span title="'+report.interviewStartDateTimeStr+'">'+report.interviewStartDateTimeStr+'</span></div></td>';
+	            						if(orgATS == 'Y'){
+	            							resultToday = resultToday+'	   <td><div><span title="'+clientName+'">'+clientName+'</span></div></td>';
+	            						}
+
 	            						//resultToday = resultToday+'	 <td><a class="btn btn-sm btn-primary fa fa-handshake-o" href="'+sourceleadUrl+'/'+'publicInterviewFeedBackTemplate?requirementInterviewid='+report.id+'"></a></td>';
 	            						resultToday = resultToday+'	 </tr>';
 	            					}
 	            					resultToday = resultToday+'	 </tbody>';
 	            					resultToday = resultToday+'	</table>';											
-	            			}
+	            			//}
 	            	        if(dateRange == 'today'){
+	            	        	$("#today").addClass("tab-pane fade in active");
+	            				$("#upcoming").removeClass("tab-pane fade in active");
+	            				$("#previous").removeClass("tab-pane fade in active");
 	            	            $("#today").append(resultToday);
 	            	            requirementInterviewsPagination();
-	            	            $("#today").addClass("tab-pane fade in active");
-	            				$("#upcoming").removeClass("tab-pane fade in active");
-	            				$("#previous").removeClass("tab-pane fade in active");
 	            	        }else if(dateRange == 'previous'){
-	            				$("#previous").append(resultToday);
-	            				requirementInterviewsPagination();
-	            				$("#today").removeClass("tab-pane fade in active");
+	            	        	$("#today").removeClass("tab-pane fade in active");
 	            				$("#upcoming").removeClass("tab-pane fade in active");
 	            				$("#previous").addClass("tab-pane fade in active");
-	            	        }else if(dateRange == 'upcoming'){
-	            				$("#upcoming").append(resultToday);
+	            				$("#previous").append(resultToday);
 	            				requirementInterviewsPagination();
-	            				$("#today").removeClass("tab-pane fade in active");
+	            	        }else if(dateRange == 'upcoming'){
+	            	        	$("#today").removeClass("tab-pane fade in active");
 	            				$("#previous").removeClass("tab-pane fade in active");
 	            				$("#upcoming").addClass("tab-pane fade in active");
+	            				$("#upcoming").append(resultToday);
+	            				requirementInterviewsPagination();
 	            	        }else{
-	            	        	$("#today").append(resultToday);
-	            	            requirementInterviewsPagination();
-	            	            $("#todayTab").removeClass("active");
+	            	        	$("#todayTab").removeClass("active");
 	            				$("#upcomingTab").removeClass("active");
 	            				$("#previousTab").removeClass("active");
+	            	        	$("#today").append(resultToday);
+	            	            requirementInterviewsPagination();
 	            	        }
-					}else{
+					/* }else{
 	               	 	$("#today").removeAttr("style");
 	               	 	$("#today").empty();
      	        		$("#upcoming").empty();
@@ -110,14 +122,17 @@ function interviews(dateRange){
 						result = result+"			        <p>No Interviews Found</p>";
 						result = result+"			 </div>";
 					    $("#today").append(result); 
-	               }
+	               } */
 			},
 	});
-	return true;
 }
 </script>
 
 <script>
+$('#requirementInterviewsPagination').DataTable( {
+	"scrollX": true,
+	"autoWidth": false,
+});
 function requirementInterviewsPagination(){
     $('#requirementInterviewsPagination').DataTable( {
     	"scrollCollapse": false,
@@ -126,7 +141,8 @@ function requirementInterviewsPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-            "sSearch": ""
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
        }
     } );
 }
@@ -136,7 +152,6 @@ $(function() {
    $( "#datepicker-int" ).datepicker({
      changeMonth: true,
      changeYear: true,
-     dateFormat: 'yy-mm-dd',
      onSelect: function(){
     	    var dt = $(this).val();
     	    interviews(dt);
@@ -144,5 +159,3 @@ $(function() {
    });
  });
  </script>
-
-      

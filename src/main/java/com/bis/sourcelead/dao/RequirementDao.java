@@ -2,6 +2,8 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
+import org.json.JSONObject;
+
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -12,7 +14,7 @@ public interface RequirementDao {
 	
 	public Requirement storeRequirement(Requirement requirement) throws Exception;
 	
-	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,Long  userId) throws Exception;
+	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,User user, String userRoleName) throws Exception;
 	
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception;
 	
@@ -25,6 +27,8 @@ public interface RequirementDao {
 	public List<RequirementAssignTo> getUserAssignJobCount(Long userId)throws Exception;
 	
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode) throws Exception;
+	
+	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(Long orgLocationId, String userType, Long userId, String userCode) throws Exception;
 	
 	public List<Requirement> getApproverRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode,String statusType) throws Exception;
 	
@@ -59,7 +63,13 @@ public interface RequirementDao {
 	
     public Requirement getRequirementByRequirementIdOrgLocationsId(String id,Long requirementId, Long orgLocationsId) throws Exception;
 	
+    public Requirement getRequirementByRequirementUUID(String requirementUUID) throws Exception;
+    
 	public Boolean validateJobid(String id, Long orgLocationsId) throws Exception;
+
+	public Long getRequirementListByOrgLocationID(Long orgLocationId) throws Exception;
+	
+	List<String> getAllRequirementSkillsByRequirementI(Long requirementId)throws Exception;
 
 
 }

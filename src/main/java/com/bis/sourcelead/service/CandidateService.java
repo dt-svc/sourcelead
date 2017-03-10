@@ -8,7 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 
 /**
@@ -82,16 +81,32 @@ public interface CandidateService {
 	
 	public List<Candidate> getHotListCandidatesListByOrgLocationID(Long orgLocationId,String candidateType) throws Exception;
 
-	public List<Candidate> getAllActiveCandidatesForCampaignByLocation(Long orgLocationId,String type)throws Exception;
-	
-	public List<Candidate> getAllCandidatesForCampaignByTeam(List<Team> teamId,String type)throws Exception;
 	
 	public List<Candidate> getAllRequestedCandidatesForCampaign(List<Long> candidateId)throws Exception;
 	
 	public void saveOrUpdateCandidateElkDocument(Candidate candidate) throws Exception;
 	
-	public Long getCandidatesCountByOrgLocationID(Long orgLocationId);
+	public Long getCandidatesCountByOrgLocationID(Long orgLocationId, String candidateStatus);
 	
-	public List<Candidate> getAllHotlistCandidatesAndNotAssignedToTeamByLocation(Long orgLocationId)throws Exception;
+	
+	public Integer getHotlistCandidatesCountByTeamIdAndOrgLocationId(Long teamId,Long orgLocationId) throws Exception;
+	
+	public List<Candidate> getHotListCandidatesByTeamAndOrgLocationId(Long teamId,Long orgLocationId)throws Exception;
+	
+	public Integer getAllActiveCandidatesCountForCampaignByLocation(Long orgLocationId,String type)throws Exception;
+	
+	public Integer getAllHotlistCandidatesCountNotAssignedToTeamByLocation(Long orgLocationId)throws Exception;
+	
+	public Integer getAllCandidatesCountForCampaignByTeam(List<Long> teamId,String type,Long orgLocationId)throws Exception;
+
+	public List<Candidate> getAllCandidatesForHotListingWhoAreTerminating(Long orgLocationId,Integer datRange)throws Exception;
+
+	List<Object> getAllUniversalSearchCandidateList(OrgLocations orgLocation, String searchValue) throws Exception;
+
+	Candidate getProfessionalInfoByLoginUserIdAndCandidateType(Long userId,String candidateType) throws Exception;
+	
+	Candidate getCandidateByEmailAndRecruiterUserId(String email,Long recruiterUserId) throws Exception;
+	
+	public List<Candidate> getCandidatesByOrgLocationIDAndSearchText(Long orgLocationId,Long requirementId, String candidateType,String searchApplicant) throws Exception;
 
 }

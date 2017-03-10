@@ -30,6 +30,8 @@ public interface CandidateEducationDao {
 	public CandidateEducation getCandidateEducationByCandidateId(Long candidateId) throws Exception;
 
 	public Boolean validateEducationName(Long candidateId, String candidateEducation) throws Exception;
+	
+	public List<String> getCandidateEducationNamesByCandidateId(Long candidateId) throws Exception;
 
 
 }

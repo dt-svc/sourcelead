@@ -36,5 +36,9 @@ public interface RolesDao {
 	public List<Roles> getTabAccessRolesListByOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
 	
 	List<Roles> getRolesListExpcetCurrentUserRole(Long roleId,Long orgLocationId) throws Exception;
+	
+	List<Roles> getUserRolesListByRoleHierarchyIdAndOrgLocationId(Long orgLocationId,Long hierarchyId,String orgCode) throws Exception;
+	
+	Roles getRolesByRoleNameAndOrgId(String roleName,Long orgId) throws Exception;
 
 }

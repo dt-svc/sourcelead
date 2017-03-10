@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -27,13 +27,14 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.RequirementIndex;
+import com.bis.sourcelead.elk.index.helper.RequirementHelper;
+import com.bis.sourcelead.elk.setup.RequirementElkUtil;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateResumes;
-import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -45,6 +46,7 @@ import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
@@ -113,9 +115,17 @@ public class SubmissionsRestController {
 
 	@Autowired
 	RequirementInterviewService requirementInterviewService;
+	
+	@Autowired
+	RequirementElkUtil requirementElkUtil;
+	
+	 @Autowired
+	 private SourceleadELKBaseIndexer<RequirementIndex> sourceleadELKBaseIndexer;
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	
 
 	@RequestMapping(value = "/getCandidateResumes")
 	public String getCandidateResumes(@RequestParam(value = "candidateId", required = false) Long candidateId,
@@ -135,9 +145,14 @@ public class SubmissionsRestController {
 
 		String resultJson = null;
 		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-		CandidateEducation education = candidateEducationService.getCandidateEducationByCandidateId(candidateId);
-		if (education != null) {
-			candidate.setCandidateEdu(education.getName());
+		List<String> educationList = candidateEducationService.getCandidateEducationNamesByCandidateId(candidateId);
+		StringBuilder education = new StringBuilder();
+		if (educationList != null && educationList.size() > 0) {
+			for(String educationName : educationList){
+				education.append(educationName).append(", ");
+			}
+			
+			candidate.setCandidateEdu(education.substring(0,education.length()-2).toString());
 		}
 		resultJson = toJSON(candidate);
 		return resultJson;
@@ -164,8 +179,25 @@ public class SubmissionsRestController {
 			}
 			return result;
 	   }
+	 
+	 
+	 @RequestMapping(value = "/validateRequirementRecruiterCandidateEmail" , method = RequestMethod.POST)
+	 public @ResponseBody  String validateRequirementRecruiterCandidateEmail(@RequestParam(value="email", required=false) String email,@RequestParam(value="requirementId", required=false) Long requirementId,HttpServletRequest request) throws Exception {
+		 	
+		 	String result = null;
+		 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 	RequirementSubmission requirementSubmission = requirementSubmissionService.validateRequirementByRecruiterCandidateEmail(email, requirementId, user.getId());
+		 	
+		 	if (requirementSubmission != null) {
+				result = "true";
+			}else{
+				result = "false";
+			}
+			return result;
+	   }
 
-	@PreAuthorize("hasAnyRole('ROLE_VIEW_SUBMISSION_TEMPLATE','ROLE_ADD_APPLICANT')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_SUBMISSION_TEMPLATE','ROLE_ADD_APPLICANT','ROLE_CROWDSOURCING_REQUIREMENTS')")
 	@RequestMapping(value = "/getRequirmentOrgSubmissionTemplate", method = RequestMethod.GET)
 	public String getRequirmentOrgSubmissionTemplate(
 			@RequestParam(value = "requirementId", required = false) Long requirementId) throws Exception {
@@ -183,7 +215,7 @@ public class SubmissionsRestController {
 		return st.getJsonString();
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADD_APPLICANT')")
+	@PreAuthorize("hasAnyRole('ROLE_ADD_APPLICANT','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/saveAddApplicant", method = RequestMethod.POST)
 	public String saveAddApplicant(@RequestParam(value = "jsonData", required = false) String json,
 			@RequestParam(value = "con", required = false) String con, MultipartHttpServletRequest request,
@@ -208,15 +240,31 @@ public class SubmissionsRestController {
 		}
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(jsonObj,
-				user, orgLocations, con, multiFile);
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+
+		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(jsonObj,user, orgLocations, con, multiFile,loginUserRole);
+
 		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
 		requirementSubmissionHistory.setFromStage("NEW");
 //		requirementSubmission.get
 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+		Requirement requirement = requirementSubmission.getRequirement();
+		
+		if(null != requirement){
+			Integer totalApplicatsCountForRequirement = 0;
+		   //updating total number of applicants for requrement
+			totalApplicatsCountForRequirement = requirementSubmissionService.getNumberOfApplicantsForRequirement(requirement.getOrgLocationId().getId(), requirement.getId());
+//			totalApplicatsCountForRequirement = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(orgLocations,requirement.getId(),user,userRoleName);
+			if(totalApplicatsCountForRequirement > 0){
+				requirement.setTotalApplicants(totalApplicatsCountForRequirement); 
+				requirementService.updateRequirement(requirement);
+			}else{
+				requirement.setTotalApplicants(0); 
+			}
+			requirementElkUtil.saveElkRequirement(requirement,new JSONObject());	
+		}
 		return "success";
 
 	}
@@ -253,7 +301,7 @@ public class SubmissionsRestController {
 				submissionTemplate = new SubmissionTemplate();
 			}
 
-			submissionTemplate.setTemplateName(jsonObj.getString("templateName"));
+			submissionTemplate.setTemplateName(jsonObj.getString("templateName").trim());
 			submissionTemplate.setDescription(jsonObj.getString("description"));
 			submissionTemplate.setOrgLocationId(orgLocations);
 			submissionTemplate.setJsonString(jsonStringData);
@@ -289,10 +337,9 @@ public class SubmissionsRestController {
 		ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
 
 		for (RequirementSubmission requirementSubmission : shortlistedList) {
-			CandidateResumes candidateResumes = candidateResumesService.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService
 					.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
-			if (requirementSubmissionTemplateFields.getLastName() != null) {
+			if (null != requirementSubmissionTemplateFields.getLastName()) {
 				StringBuilder canNameSB = new StringBuilder();
 				requirementSubmission.setCandidateName(canNameSB.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
 			} else {
@@ -303,6 +350,8 @@ public class SubmissionsRestController {
 			RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
 			if(pastRequirementRateSubmissionNegotiation != null){
 				requirementSubmission.setExpectedCTC(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+			}else{
+				requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
 			}
 			
 			requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
@@ -316,10 +365,6 @@ public class SubmissionsRestController {
 				requirementSubmission
 						.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
 			}
-			User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
-			StringBuilder userNameSB = new StringBuilder();
-			requirementSubmission.setUserName(userNameSB.append(userVal.getFirstName()).append(" ").append(userVal.getLastName()).toString());
-			requirementSubmission.setResumeName(candidateResumes.getFileName());
 			candidatesList.add(requirementSubmission);
 		}
 		resultJson = toJSON(candidatesList);
@@ -333,6 +378,18 @@ public class SubmissionsRestController {
 			HttpServletRequest request) throws Exception {
 
 		String resultJson = null;
+		boolean submitToClient = true;
+		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+		
+		if(null != requirement){
+			if(null != requirement.getParentRequirement() && requirement.getIsClientJob().equalsIgnoreCase("Y")){
+				if(!requirement.getParentRequirement().getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.OPEN)){
+					submitToClient = false;
+				}
+			}
+		}
+		
+		if(submitToClient){
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		List<RequirementSubmission> shortlistedList = requirementSubmissionService
@@ -340,8 +397,7 @@ public class SubmissionsRestController {
 		ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
 
 		for (RequirementSubmission requirementSubmission : shortlistedList) {
-			CandidateResumes candidateResumes = candidateResumesService
-					.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
+			
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService
 					.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
 			if (requirementSubmissionTemplateFields.getLastName() != null) {
@@ -362,6 +418,12 @@ public class SubmissionsRestController {
 				requirementSubmission.setSubmitToClientRate(requirementSubmissionTemplateFields.getExpectedCTC());
 			}
 			
+			if(StringUtils.isNotEmpty(requirementSubmission.getFinalizedRateType())){
+				requirementSubmission.setSubmitToClientRateType(requirementSubmission.getFinalizedRateType());
+			}else{
+				requirementSubmission.setSubmitToClientRateType(requirementSubmissionTemplateFields.getExpectedRatePer());
+			}
+			
 			if(requirementSubmission.getVendorLocationId() != null){
 				requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrg().getOrgName());
 			}
@@ -370,14 +432,13 @@ public class SubmissionsRestController {
 				requirementSubmission
 						.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
 			}
-			User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
-			StringBuilder userNameSB = new StringBuilder();
-			requirementSubmission.setUserName(userNameSB.append(userVal.getFirstName()).append(" ").append(userVal.getLastName()).toString());
-			requirementSubmission.setResumeName(candidateResumes.getFileName());
 			candidatesList.add(requirementSubmission);
 		}
 		resultJson = toJSON(candidatesList);
 		return resultJson;
+		}else{
+			return "failed";
+		}
 
 	}
 
@@ -407,7 +468,7 @@ public class SubmissionsRestController {
 				"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-
+		int  count = 0;
 		String[] submissionId = submissionsList.split(",");
 
 		for (int i = 0; i < submissionId.length; i++) {
@@ -417,6 +478,9 @@ public class SubmissionsRestController {
 			requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
 			submission.setSubmissionStatus(ApplicantSubmissionStatus.SHORTLIST);
 			submission.setUpdatedBy(user.getUserCode());
+			if(null != submission.getSourceSubmission()){
+				count = count + 1;
+			}
 			submission.setUpdatedDate(new Date());
 			RequirementSubmission requirementSubmission = requirementSubmissionService
 					.storeRequirementSubmission(submission);
@@ -428,6 +492,9 @@ public class SubmissionsRestController {
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 		if (requirement.getManagerUserId().getEmail() != null) {
 			sendEmailToManages(requirement, orgLocations, user, shotListCount, loginOrg);
+		}
+		if(count>0){
+			requirementSubmissionService.shortListedMailToVendorFromClient(requirement,submissionsList,orgLocations,user);
 		}
 		return "success";
 	}
@@ -442,18 +509,20 @@ public class SubmissionsRestController {
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 		RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 		StringBuilder skillsList = new StringBuilder();
-		Set<CandidateSkills> candidateSkills = submission.getCandidate().getCandidateSkills();
-		int i = 0;
-		for (CandidateSkills skilss : candidateSkills) {
-			if (i <= 5) {
-				skillsList = skillsList.append(skilss.getName());
-				if (i != candidateSkills.size() - 1) {
-					skillsList = skillsList.append(",");
+		if(null != submission.getCandidate().getSkillsName()){
+			String[] candidateSkills = submission.getCandidate().getSkillsName().split(",");
+			int i = 0;
+			for (String skill : candidateSkills) {
+				if (i <= 5) {
+					skillsList = skillsList.append(skill);
+					if (i != candidateSkills.length - 1) {
+						skillsList = skillsList.append(",");
+					}
 				}
+				i++;
 			}
-			i++;
 		}
-
+		
 		submission.setSkillsList(skillsList.toString());
 		submission.setRequirementSubmissionTemplateFields(requirementSubmissionTemplateFields);
 		resultJson = toJSON(submission);
@@ -490,8 +559,11 @@ public class SubmissionsRestController {
 		requirementSubmission.setRejectedReason(reason);
 		requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
 		requirementSubmission.setUpdatedBy(user.getUserCode());
+		StringBuilder sb = new StringBuilder();
+		requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		requirementSubmission.setUpdatedDate(new Date());
 		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+		requirementSubmissionService.sendRejectionMailToVendorContact(user,reason,submissionId,orgLocations);
 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,
 				requirementSubmissionHistory);
 
@@ -555,12 +627,7 @@ public class SubmissionsRestController {
 		globalVarsMap.put("LoginURL", loginURLBuilder.append("<a href='").append(sourceleadUrl).append("/").append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		
 		// setting the Recipient information
-		ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		EmailRecipient emailRecipient = new EmailRecipient();
-		emailRecipient.setEmail(emailMessage.getToEmail());
-		StringBuilder nameSB = new StringBuilder();
-		emailRecipient.setName(nameSB.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		emailRecipientList.add(emailRecipient);
+		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
@@ -581,7 +648,7 @@ public class SubmissionsRestController {
 		emailMessage.setMessageBody(emailTemplate);
 
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocations.getId(), emailRecipientList,
+		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocations.getId(), iAdressArray,
 				new ArrayList<EmailAttachment>());
 
 	}
@@ -602,6 +669,7 @@ public class SubmissionsRestController {
 			@RequestParam(value = "selectedIds", required = false) String submissionsList,
 			@RequestParam(value = "requirementId", required = false) Long requirementId,
 			@RequestParam(value = "selectedShortlistsRate", required = false) String selectedShortlistsRate,
+			@RequestParam(value = "selectedShortlistsRatePer", required = false) String selectedShortlistsRatePer,
 			MultipartHttpServletRequest multPartrequest) throws Exception {
 		String jsonc = "{" + jsonData + "}";
 		JSONObject jsonObj = new JSONObject(jsonc);
@@ -612,7 +680,7 @@ public class SubmissionsRestController {
 		final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) multPartrequest;
 		final Map<String, MultipartFile> files = multiRequest.getFileMap();
 		requirementSubmissionService.storeClientSubmissionWithEmailPreview(requirementId, user, orgLocations,
-				submissionsList, org, jsonObj, files,selectedShortlistsRate);
+				submissionsList, org, jsonObj, files,selectedShortlistsRate,selectedShortlistsRatePer);
 		return "success";
 	}
 
@@ -657,14 +725,13 @@ public class SubmissionsRestController {
 		StringBuilder sb = new StringBuilder();
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 		requirement.setSubmitToClientFromMailId(user.getEmail());
-		
-		if(requirement.getSpocId().getInitiatorLocationId().getId().longValue() == orgLocations.getId().longValue() ){
-			
-				requirement.setSubmitToClientToMailId(requirement.getSpocId().getSpocUser().getEmail());
+		requirement.setSubmitToClientToMailId(requirement.getSpocId().getClientUser().getEmail());
+		/*if(requirement.getSpocId().getInitiatorLocationId().getId().longValue() == orgLocations.getId().longValue() ){
+				requirement.setSubmitToClientToMailId(requirement.getSpocId().getClientUser().getEmail());
 		 }
 		if(requirement.getSpocId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 			requirement.setSubmitToClientToMailId(requirement.getSpocId().getOwnerUser().getEmail());
-		}
+		}*/
 		StringBuilder subjectSB = new StringBuilder();
 		requirement.setSubmitToClientMailSubject(subjectSB.append("New applicants received for the").append(" ").append(requirement.getJobTitle()).toString());
 
@@ -680,11 +747,17 @@ public class SubmissionsRestController {
 				requirement.setMailBody(sb.toString());
 			}
 		}else{
-			if(requirement.getSpocId()!= null){
-				if(requirement.getSpocId().getSpocUser()!= null){
-					sb.append("<p>").append("Hi,").append(" ").append(requirement.getSpocId().getSpocUser().getFirstName()).append(" ")
-					.append(requirement.getSpocId().getSpocUser().getLastName()).append("</p>").append("\n")
-					.append("<p>").append(fullName).append(" submitted the applicants for the").append(" ").append(requirement.getJobTitle()).append("</p>")
+			if(null != requirement.getSpocId()){
+				if(null != requirement.getSpocId().getClientUser()){
+					sb.append("<p>").append("Hi,");
+					if(user.getId().longValue() == requirement.getSpocId().getClientUser().getId().longValue()){
+						sb.append(" ").append(requirement.getSpocId().getOwnerUser().getFirstName()).append(" ")
+						.append(requirement.getSpocId().getOwnerUser().getLastName()).append("</p>").append("\n");
+					}else{
+						sb.append(" ").append(requirement.getSpocId().getClientUser().getFirstName()).append(" ")
+						.append(requirement.getSpocId().getClientUser().getLastName()).append("</p>").append("\n");
+					}
+					sb.append("<p>").append(fullName).append(" submitted the applicants for the").append(" ").append(requirement.getJobTitle()).append("</p>")
 					.append("<p>").append("Total no.of submitted applicants :").append(submissions.length).append("</p>")
 					.append("<p>").append("Best Regards,").append("</p>")
 					.append("<p>").append(fullName).append("</p>");
@@ -694,6 +767,41 @@ public class SubmissionsRestController {
 		}
 		resultJson = toJSON(requirement);
 		return resultJson;
+	}
+	
+	/**
+	 * author : Pavan Jampana
+	 * desc : This method is used to Reactivate the Rejected Applicant
+	 * from Requirement Pipeline List from any Stage.
+	 */
+
+	@RequestMapping(value = "/reActivateRejectedApplicant")
+	public @ResponseBody String reActivateApplicant(
+			@RequestParam(value = "submissionId", required = false) Long submissionId,HttpServletRequest request)
+			throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+
+		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+
+		// to update submission history
+		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+		requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.REJECTED.getValue());
+		if(requirementSubmission.getPreviousSubmissionStatus()!=null){
+		requirementSubmissionHistory.setToStage(requirementSubmission.getPreviousSubmissionStatus().getValue());
+		}
+
+		// to update Submission status
+		requirementSubmission.setSubmissionStatus(requirementSubmission.getPreviousSubmissionStatus());
+		requirementSubmission.setSubmissionRateStatus(null);
+		requirementSubmission.setPreviousSubmissionStatus(null);
+		requirementSubmission.setUpdatedBy(user.getUserCode());
+		requirementSubmission.setUpdatedDate(new Date());
+		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,
+				requirementSubmissionHistory);
+
+		return "success";
 	}
 
 }

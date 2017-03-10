@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -7,7 +8,6 @@ import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
@@ -35,7 +35,7 @@ public interface RequirementSubmissionService {
 
 	List<RequirementSubmission> getSubmissionsByRequirementId(Long requirementId, User user, OrgLocations loginOrgLocation) throws Exception;
 
-	RequirementSubmission saveRequirementSubmission(JSONObject jsonObj,User user,OrgLocations orgLocations,String jsonStringvalues,MultipartFile multiFile) throws Exception;
+	RequirementSubmission saveRequirementSubmission(JSONObject jsonObj,User user,OrgLocations orgLocations,String jsonStringvalues,MultipartFile multiFile,String userRole) throws Exception;
 	
 	List<RequirementSubmission> getAllSubmissionListByRequirementIdAndSubmissionStage(OrgLocations loginOrgLocation, Long requirementId,String submissionStatus,User user,String loginUserRole) throws Exception;
 	
@@ -96,6 +96,8 @@ public interface RequirementSubmissionService {
 	
 	Integer getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(OrgLocations orgLocations,Long requirementId,User user,String loginUserRole) throws Exception;
 	
+	Integer getNumberOfApplicantsForRequirement(Long orgLocationId,Long requirementId) throws Exception;
+	
 	public Integer getApplicantCountByrequirementIdandAssignedUsercode(Long requirementId, String userCode) throws Exception;
 	
 	/*public void applicantReceiveMailAboutRequirement(Requirement requirement, User loginUser, Candidate candidate,
@@ -105,7 +107,7 @@ public interface RequirementSubmissionService {
 			OrgLocations orgLocations) throws Exception;
 	
 	public void applicantRejectMailAboutRequirement(Requirement requirement, User loginUser, Candidate candidate,
-			OrgLocations orgLocations, String rejectreason, StringBuilder tempHTML) throws Exception;
+			OrgLocations orgLocations, String rejectreason, StringBuilder tempHTML, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation, Long submissionId) throws Exception;
 	
 
 	RequirementSubmission acceptRejectCandidate(JSONObject jsonObj, User user, RequirementSubmission requirementSubmission, String decision, MultipartFile multiFile,Org loginOrg,OrgLocations loginOrgLocation) throws Exception;
@@ -125,20 +127,20 @@ public interface RequirementSubmissionService {
 			RequirementRateSubmissionNegotiation neogtation, StringBuilder tempHTML) throws Exception;
 
 
-	void sendEmailtoClient(Org loginOrg, User users, User pastUser, Requirement requirement, Candidate candidate,
+	void sendEmailtoClient(Org loginOrg, User users, User pastUser, RequirementSubmission requirementSubmission, Candidate candidate,
 			StringBuilder tempHTML, OrgLocations loginOrgLocation)throws Exception;
 
 
 	//void storeClientSubmissionWithEmailPreview(Long requirementId, User user, OrgLocations orgLocations,String submissionsList, Org org, JSONObject jsonObj, Map files)throws Exception;
 	
 
-	void storeClientSubmissionWithEmailPreview(Long requirementId, User user, OrgLocations orgLocations,String submissionsList, Org org, JSONObject jsonObj, Map files, String selectedShortlistsRate)throws Exception;
+	void storeClientSubmissionWithEmailPreview(Long requirementId, User user, OrgLocations orgLocations,String submissionsList, Org org, JSONObject jsonObj, Map files, String selectedShortlistsRate, String selectedShortlistsRatePer)throws Exception;
 
 	List<RequirementSubmission> duplicateCandidateCountList(Long requirementId, User user,
 			OrgLocations loginOrgLocation)throws Exception;
 
 	
-	List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, String status) throws Exception;
+	List<RequirementSubmission> getApplicantsByStatus(Long orgLocationsId, User user,String status) throws Exception;
 	
 	public void sendEmailtoRequirementManager(Org loginOrg, User users,RequirementSubmission requirementSubmission,
 			 OrgLocations loginOrgLocation) throws Exception;
@@ -147,12 +149,42 @@ public interface RequirementSubmissionService {
 			 OrgLocations loginOrgLocation) throws Exception;
 		
 
-	void userAcceptRateNegotiation(Requirement requirement, User user, Candidate candidate, OrgLocations orgLocations, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation) throws Exception;
+	void userAcceptRateNegotiation(Requirement requirement, User user, Candidate candidate, OrgLocations orgLocations, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation, StringBuilder tempHtml) throws Exception;
 
-	void sendEmailtoVendor(Org loginOrg, User users, User pastUser, Requirement requirement, Candidate candidate,
+	void sendEmailtoVendor(Org loginOrg, User users, User pastUser, RequirementSubmission requirementSubmission, Candidate candidate,
 			StringBuilder tempHTML, OrgLocations orgLocations) throws Exception;
 
 	void userRejectRateNegotiation(Requirement requirement, User user, Candidate candidate, OrgLocations orgLocations,
 			RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation, String rejectreason, StringBuilder tempHTML) throws Exception;
+
+	void clientOrVendorAcceptOrRejectRateNegotiation(Org loginOrg, User users, User pastUser,
+			RequirementSubmission requirementSubmission, Candidate candidate, StringBuilder tempHTML,
+			OrgLocations loginOrgLocation,String type, String status) throws Exception;
+	
+	List<Long> getSubmittedCandidateIdsByRequirementId(Long requirementId) throws Exception;
+	
+	Integer getRequirementPerCandidateCount(Long candudateId,Long orgLocationId) throws Exception;
+	
+	Integer getRecruiterSubmissionsCountByRecruiterIdAndRequirementId(Long requirementId,Long userId) throws Exception;
+	
+	RequirementSubmission saveRequirementSubmissionFromCrowdSourcing(JSONObject jsonObj,User user,String jsonStringvalues) throws Exception;
+
+	void applicantAcceptMailAboutRateNegotiation(Requirement requirement, User initiatorUser, RequirementSubmission requirementSubmission,
+			OrgLocations orgLocations,StringBuilder tempHTML) throws Exception;
+	
+	RequirementSubmission getRequirementSubmissionByRequirementIdAndCandidateId(Long requirementId,Long candidateId) throws Exception;
+
+	void sendRejectionMailToVendorContact(User user, String reason, Long submissionId, OrgLocations orgLocations) throws Exception;
+
+	RequirementSubmission validateRequirementByRecruiterCandidateEmail(String email, Long requirementId, Long recruiterUserId) throws Exception;
+
+	void shortListedMailToVendorFromClient(Requirement requirement, String submissionsList, OrgLocations orgLocations,
+			User user) throws Exception;
+	
+	Integer getProfessionalJobAppliedCount(Long candidateId,Date startDate,Date endDate) throws Exception;
+	
+	Integer getProfessionalJobAppliedCountByappliedDate(Long candidateId,Date appliedDate) throws Exception;
+	
+	Integer getProfessionalJobSubmisssionsCountBySubmissionType(Long candidateId,String submissionStatus,Date startDate,Date endDate) throws Exception;
 
 }

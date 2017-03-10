@@ -1,0 +1,79 @@
+package com.bis.sourcelead.elk.index.helper;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
+import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.UserService;
+
+@Component
+public class ClientVendorContactsIndexHelper {
+	
+	
+	@Autowired
+	private UserService userService;
+	
+	
+	public ClientVendorContactsIndex getClientVendorContactIndexFromSpoc(OrgSpoc orgSpoc) throws Exception{
+		
+		ClientVendorContactsIndex clientVendorContactsIndex = new ClientVendorContactsIndex();
+		
+		if(null != orgSpoc){
+			
+			clientVendorContactsIndex.setId(orgSpoc.getId());
+			clientVendorContactsIndex.setVendorLocationId(orgSpoc.getVendorLocationId().getId());
+			clientVendorContactsIndex.setOrgRelationId(orgSpoc.getOrgRelations().getId());
+			clientVendorContactsIndex.setOrgName(orgSpoc.getClientLocationId().getOrg().getOrgName());
+			//clientVendorContactsIndex.setSpocEmail(orgSpoc.getSpocUser().getEmail());
+			//clientVendorContactsIndex.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+			clientVendorContactsIndex.setInvitationStatus(orgSpoc.getInvitationStatus());
+			clientVendorContactsIndex.setSpocStatus(orgSpoc.getSpocStatus());
+			clientVendorContactsIndex.setSpocUserId(orgSpoc.getClientUser().getId());
+			clientVendorContactsIndex.setStatus(orgSpoc.getStatus());
+			User ownerUser = userService.getUserById(orgSpoc.getVendorUser().getId());
+			
+			clientVendorContactsIndex.setCreatedDate(Constants.DF_YMD.format(orgSpoc.getCreatedDate()));
+			clientVendorContactsIndex.setUpdatedDate(Constants.DF_YMD.format(orgSpoc.getUpdatedDate()));
+			
+			
+			if(null != ownerUser){
+				
+				clientVendorContactsIndex.setVendorUserFirstName(ownerUser.getFirstName());
+				clientVendorContactsIndex.setVendorUserLastName(ownerUser.getLastName());
+				clientVendorContactsIndex.setVendorUserId(orgSpoc.getVendorUser().getId());
+				clientVendorContactsIndex.setVendorUserEmail(ownerUser.getEmail());
+				clientVendorContactsIndex.setVendorUserPhNo(ownerUser.getMobilePhone());
+			}
+			clientVendorContactsIndex.setClientLocationId(orgSpoc.getClientLocationId().getId());
+			
+			//clientVendorContactsIndex.setSpocName(orgSpoc.getSpocUser().getFirstName());
+			//clientVendorContactsIndex.setTempOwnerId(orgSpoc.getSpocUser().getId());
+			//clientVendorContactsIndex.setUserId(orgSpoc.getOwnerUser().getId());
+			
+			
+			//  Storing the value of OrgRelations InitiatorType and ResponderType
+			clientVendorContactsIndex.setInitiatorType(orgSpoc.getOrgRelations().getInitiatorType());
+			clientVendorContactsIndex.setResponderType(orgSpoc.getOrgRelations().getResponderType());
+			User spockUser = userService.getUserById(orgSpoc.getClientUser().getId());
+			
+            if(null != spockUser){
+            	
+            	clientVendorContactsIndex.setClientUserFirstName(spockUser.getFirstName());
+    			clientVendorContactsIndex.setClientUserLastName(spockUser.getLastName());
+    			clientVendorContactsIndex.setClientUserEmail(spockUser.getEmail());
+    			clientVendorContactsIndex.setClientUserPhNo(spockUser.getMobilePhone());
+    			clientVendorContactsIndex.setClientUserId(orgSpoc.getClientUser().getId());
+            	
+            }
+            clientVendorContactsIndex.setOwnerUserId(orgSpoc.getOwnerUser().getId());
+			clientVendorContactsIndex.setVendorOrgName(orgSpoc.getVendorLocationId().getOrg().getOrgName());
+			clientVendorContactsIndex.setClientOrgName(orgSpoc.getClientLocationId().getOrg().getOrgName());
+		
+		}
+		return clientVendorContactsIndex;
+	}
+	
+}

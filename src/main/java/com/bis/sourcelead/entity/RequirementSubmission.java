@@ -20,6 +20,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
@@ -122,6 +123,9 @@ public class RequirementSubmission implements Serializable{
 	@Column(name = "STATUS")
     private Integer status;
 	
+	@Column(name = "SCORE")
+    private String candidateScore;
+	
     @Column(name = "CREATED_DATE")
     private Date createdDate;
     
@@ -134,6 +138,19 @@ public class RequirementSubmission implements Serializable{
     @Column(name = "UPDATED_BY")
     private String updatedBy;
     
+    @Column(name = "CREATED_USER")
+	@Type(type="text")
+	private String createdUser;
+	
+    
+    @Column(name = "UPDATED_USER")
+	@Type(type="text")
+	private String updatedUser;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="RECRUITER_USER_ID")        
+    private User recruiterUserId;
+	
     @Transient
 	private String userName;
     
@@ -158,6 +175,11 @@ public class RequirementSubmission implements Serializable{
     @Transient
    	private String upDatedStr;
     
+    @Transient
+   	private String createdTimeStr;
+    
+    @Transient
+   	private String updatedTimeStr;
     
     @Transient
 	private String skillsList;
@@ -173,6 +195,10 @@ public class RequirementSubmission implements Serializable{
     
     @Transient
    	private Long resumeId;
+    
+    @Transient
+   	private String resumeUUID;
+    
     
     @Transient
    	private ApplicantSubmissionStatus requirementStage;
@@ -278,6 +304,15 @@ public class RequirementSubmission implements Serializable{
 	
 	@Transient
 	private RequirementSubmissionTemplateFields requirementSubmissionTemplateFields;
+	
+	@Transient
+	private String requirementUUID;
+	
+	@Transient
+	private String loginOrgLOcationName;
+	
+	@Transient
+	private String submitToClientRateType;
 	
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
@@ -785,6 +820,22 @@ public class RequirementSubmission implements Serializable{
 		this.upDatedStr = upDatedStr;
 	}
 
+	public String getCreatedTimeStr() {
+		return createdTimeStr;
+	}
+
+	public void setCreatedTimeStr(String createdTimeStr) {
+		this.createdTimeStr = createdTimeStr;
+	}
+
+	public String getUpdatedTimeStr() {
+		return updatedTimeStr;
+	}
+
+	public void setUpdatedTimeStr(String updatedTimeStr) {
+		this.updatedTimeStr = updatedTimeStr;
+	}
+
 	public int getNumofrequestsent() {
 		return numofrequestsent;
 	}
@@ -906,4 +957,69 @@ public class RequirementSubmission implements Serializable{
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields) {
 		this.requirementSubmissionTemplateFields = requirementSubmissionTemplateFields;
 	}
+
+	public String getCandidateScore() {
+		return candidateScore;
+	}
+
+	public void setCandidateScore(String candidateScore) {
+		this.candidateScore = candidateScore;
+	}
+
+	public String getCreatedUser() {
+		return createdUser;
+	}
+
+	public void setCreatedUser(String createdUser) {
+		this.createdUser = createdUser;
+	}
+
+	public String getUpdatedUser() {
+		return updatedUser;
+	}
+
+	public void setUpdatedUser(String updatedUser) {
+		this.updatedUser = updatedUser;
+	}
+
+	public String getResumeUUID() {
+		return resumeUUID;
+	}
+
+	public void setResumeUUID(String resumeUUID) {
+		this.resumeUUID = resumeUUID;
+	}
+
+	public String getRequirementUUID() {
+		return requirementUUID;
+	}
+
+	public void setRequirementUUID(String requirementUUID) {
+		this.requirementUUID = requirementUUID;
+	}
+
+	public User getRecruiterUserId() {
+		return recruiterUserId;
+	}
+
+	public void setRecruiterUserId(User recruiterUserId) {
+		this.recruiterUserId = recruiterUserId;
+	}
+
+	public String getLoginOrgLOcationName() {
+		return loginOrgLOcationName;
+	}
+
+	public void setLoginOrgLOcationName(String loginOrgLOcationName) {
+		this.loginOrgLOcationName = loginOrgLOcationName;
+	}
+
+	public String getSubmitToClientRateType() {
+		return submitToClientRateType;
+	}
+
+	public void setSubmitToClientRateType(String submitToClientRateType) {
+		this.submitToClientRateType = submitToClientRateType;
+	}
+
 }

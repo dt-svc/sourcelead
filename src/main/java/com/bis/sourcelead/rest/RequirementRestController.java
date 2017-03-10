@@ -3,10 +3,15 @@ package com.bis.sourcelead.rest;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,14 +27,20 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.RequirementIndex;
+import com.bis.sourcelead.elk.index.helper.RequirementHelper;
+import com.bis.sourcelead.elk.setup.RequirementElkUtil;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.CombinedList;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
@@ -37,11 +48,14 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RecommendationsService;
+import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.TeamService;
@@ -105,6 +119,21 @@ public class RequirementRestController {
 	 
 	 @Autowired
 	 private RequirementAssignToService requirementAssignToService;
+	 
+	 @Autowired
+	 private LookUpDataService lookUpDataService;
+
+	 @Autowired
+	 RecommendedCustomizeScoreService recommendedCustomizeScoreService;
+	 
+	 @Autowired
+	 RequirementSubmissionService requirementSubmissionService;
+	 
+	 @Autowired
+	 private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	 
+	 @Autowired
+	 private RequirementElkUtil requirementElkUtil;
 	 
 	/**
 	 * @author prasad k
@@ -231,9 +260,6 @@ public class RequirementRestController {
 
 		RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirementId, loginUser.getId());
 	    
-		
-		
-		
 		// requirement created user
 					User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
 
@@ -303,12 +329,11 @@ public class RequirementRestController {
 						}
 						
 					}
-
+					requirementElkUtil.saveElkRequirement(requirement,new JSONObject());
 			
 					return "success";
 	}
 					
-			
 		// Old Code			
 		/*// to get  RequirementApproverHierarchy with maximum Level
 
@@ -457,7 +482,7 @@ public class RequirementRestController {
 	    // This is made static as requirment action id is 146
 		
 		ArrayList<User> mynewList =  new ArrayList<User>();
-		List<User> usersList = userService.getUsersByTeamTypeAndTabId(orgLocation.getId(),teamType, Long.valueOf(Constants.TAB_REQUIREMENT));
+		LinkedHashSet<User> usersList = userService.getUsersByTeamTypeAndTabId(orgLocation.getId(),teamType, Long.valueOf(Constants.TAB_REQUIREMENT));
        
 		//   Commented because Team Lead not required to show in team Members List By Default he is added in to the  RequirementAssignTo
 		
@@ -542,20 +567,20 @@ public class RequirementRestController {
 				org);
 
 		List<OrgSpoc> orgSpocsList = orgSpocService.getAllSpocsByOrgRelationId(Long.parseLong(orgRelationId),
-				user.getId(), orgLocations.getId());
+				user.getId(), orgLocations.getId(),"Client");
 		for (OrgSpoc orgSpoc : orgSpocsList) {
 			String ownerLastName = "";
-			if (null != orgSpoc.getOwnerUser() && null != orgSpoc.getOwnerUser().getLastName()) {
-				ownerLastName = orgSpoc.getOwnerUser().getLastName();
+			if (null != orgSpoc.getVendorUser() && null != orgSpoc.getVendorUser().getLastName()) {
+				ownerLastName = orgSpoc.getVendorUser().getLastName();
 			}
 			StringBuilder spocNameSB = new StringBuilder();
 			StringBuilder ownerNameSB = new StringBuilder();
-			orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getSpocUser().getFirstName()).append(" ").append(orgSpoc.getSpocUser().getLastName()).toString());
-			orgSpoc.setSpocEmail(orgSpoc.getSpocUser().getEmail());
-			orgSpoc.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
+			orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()).toString());
+			orgSpoc.setSpocEmail(orgSpoc.getClientUser().getEmail());
+			orgSpoc.setSpocMobilePhone(orgSpoc.getClientUser().getMobilePhone());
 			orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(ownerLastName).toString());
-			orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
-			orgSpoc.setSpocUserId(orgSpoc.getSpocUser().getId());
+			orgSpoc.setOwnerUserId(orgSpoc.getVendorUser().getId().toString());
+			orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
 		}
 		return commonUtil.toJSON(orgSpocsList);
 	}
@@ -573,15 +598,28 @@ public class RequirementRestController {
 	 * @throws NullPointer
 	 */
 	@RequestMapping(value = "/getTeamsList", method = RequestMethod.POST)
-	public @ResponseBody String getTeamsList(HttpServletRequest request) throws Exception {
+	public @ResponseBody String getTeamsList(@RequestParam(value = "reqId", required = false) Long reqId, HttpServletRequest request) throws Exception {
 		String resultJson;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		CombinedList combinedList = new CombinedList();
+		
+		List<RequirementAssignTo> requirementAssignTo = null;
+		if(!Objects.isNull(reqId)){
+			requirementAssignTo = requirementAssignToService.getAssignedToMembersByRequirementIdAndOrgLocationId(reqId, orgLocation.getId());
+		}
 
 		Boolean isTeamViewAccess = commonUtil.hasRole("ROLE_VIEW_TEAM");
 		if (isTeamViewAccess) {
 			List<Team> teamsList = teamService.getTeamListByOrgLocationID(orgLocation.getId());
 			if (null != teamsList) {
+				for(Team team : teamsList){
+					
+					if(null != requirementAssignTo){
+						if (requirementAssignTo.stream().anyMatch(t -> t.getTeamId() != null && t.getTeamId().getId().equals(team.getId()))) {
+							team.setIsTeamAssigned("Y");
+						}
+					}
+				}
 				combinedList.setTeams(teamsList);
 			}
 		}
@@ -589,8 +627,18 @@ public class RequirementRestController {
 		List<Roles> rolesList = roleService.getTabAccessRolesListByOrgLocationIdAndTabId(orgLocation.getId(),
 				Long.valueOf(Constants.TAB_REQUIREMENT));
 		if (null != rolesList) {
+			for(Roles role : rolesList){
+				if(null != requirementAssignTo){
+					if (requirementAssignTo.stream().anyMatch(t -> t.getTeamId() == null && t.getRoleId() != null && t.getRoleId().getId().equals(role.getId()))) {
+						role.setIsRoleAssigned("Y");
+					}
+				}
+			}
 			combinedList.setRoles(rolesList);
 		}
+		
+		
+		
 
 		resultJson = commonUtil.toJSON(combinedList);
 		return resultJson;
@@ -607,22 +655,41 @@ public class RequirementRestController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/getRequirementRecommendationsByRequirementId", method = RequestMethod.POST)
 	public @ResponseBody String getRequirementRecommendationsByRequirementId(
-			@RequestParam(value = "requirementId", required = false) Long requirementId, HttpServletRequest request)
+			@RequestParam(value = "requirementId", required = false) Long requirementId,@RequestParam(value = "count", required = false) Long offset, HttpServletRequest request)
 			throws Exception {
 		String resultJson;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
-       // List<Candidate> candidateList = recommendationsService.getAllCandidatesByLocation(orgLocation.getId());
-		
-		Requirement requirement = recommendationsService.getRequirementByRequirementId(requirementId);
-		
-		List<Candidate> candidateListCopy = recommendationsService.getRecommendationsWithScoreByUsingElk(orgLocation.getId(),requirement);
-
+		List<CandidateIndex> candidateListCopy = null;
+		RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirementId);
+	    if(null != recommendedCustomizeScore){ 
+		//candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocation.getId(), recommendedCustomizeScore,offset);
+	    	candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocation.getId(), recommendedCustomizeScore);
+	    }
 		resultJson = commonUtil.toJSON(candidateListCopy);
 		return resultJson;
 
 	}
 
+	
+	@PreAuthorize("hasAnyRole('ROLE_RECOMMENDATIONS')")
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/getRecommendationsCountBasedOnRequirementId", method = RequestMethod.POST)
+	public @ResponseBody String getRecommendationsCountBasedOnRequirementId(
+			@RequestParam(value = "requirementId", required = false) Long requirementId, HttpServletRequest request)
+			throws Exception {
+		 String resultJson;
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocation.getId(),null);
+		 BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+		 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
+		 boolQueryBuilder.must(QueryBuilders.matchQuery("status",1));
+		 Long counts = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getTotalHits();
+		resultJson = commonUtil.toJSON(counts);
+		return resultJson;
+
+	}
+	
+	
 	/**
 	 * @David Raju Sammeta
 	 * 
@@ -661,7 +728,10 @@ public class RequirementRestController {
 	    public @ResponseBody Boolean validateJobId(@RequestParam(value="jobId", required=false) String jobId,
 	    		@RequestParam(value="requirementid", required=false) Long requirementid,HttpServletRequest request) throws Exception {
 		       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		       	Requirement requirement  = requirementService.getRequirementByRequirementIdOrgLocationsId(jobId, requirementid, orgLocation.getId());
+		       Requirement requirement = null;
+		       if(null != requirementid){
+		    	   requirement  = requirementService.getRequirementByRequirementIdOrgLocationsId(jobId, requirementid, orgLocation.getId());
+		       }
 		        Boolean flag = false;
 			    if(requirement == null){
 			    	flag = requirementService.validateJobid(jobId, orgLocation.getId());
@@ -693,5 +763,39 @@ public class RequirementRestController {
 				Boolean validatejobName = requirementService.validateRequirementTitle(templateName,orgLocation.getId());
 				return validatejobName.toString();
 		    }
+	 
+	 
+	    @RequestMapping(value = "/getRequirementAndLookUpSkills",  method = RequestMethod.POST)
+	    public @ResponseBody String getRequirementAndLookUpSkills(@RequestParam(value="requirementid", required=false) Long requirementid) throws Exception {
+	    	
+	    	List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirementid);		
+		  	List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+			if(null != allReqSkills  && !allReqSkills.isEmpty() && !allReqSkills.contains(null) && !allReqSkills.contains("")){
+						String[] skills = allReqSkills.get(0).split(","); 
+						for(String skill : skills){ 
+							if(!skillsList.contains(skill)){
+									skillsList.add(skill);
+							}
+						}  
+					}
+ 	
+	    	String resultJson; 
+		  	resultJson = commonUtil.toJSON(skillsList);
+			return resultJson;
+		    }
 
+	    
+	    @RequestMapping(value = "/getCandidateHistoryList", method = RequestMethod.POST)
+		public @ResponseBody String getCandidateHistoryList(
+				@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request)
+				throws Exception {
+			String resultJson = null;
+			List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidateId);
+			for(RequirementSubmission reqSubmission : reqList){
+				reqSubmission.setRequirementName(reqSubmission.getRequirement().getJobTitle());
+				reqSubmission.setRequirementStage(reqSubmission.getSubmissionStatus());
+			}
+			resultJson = toJSON(reqList);
+			return resultJson;
+		}
 }

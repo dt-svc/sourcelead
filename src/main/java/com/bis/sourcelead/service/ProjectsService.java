@@ -29,6 +29,8 @@ public interface ProjectsService {
 	
 		List<Projects> getProjectByOrgLocationsIdAndEndDateGraterthanCurrentDate(Long orgLocationsId, Long loginUserId) throws Exception;
 		
+		List<Projects> getAllProjectsEndDateGraterthanCurrentDate() throws Exception;
+		
 	    Projects getPrimaryProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
 		
 		Boolean deleteProjectById(Long id) throws Exception;
@@ -54,20 +56,27 @@ public interface ProjectsService {
 		List<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId,String clients,String status,Long orgLocationId) throws Exception;
 		
 		List<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId);
+		
+		List<Projects> getProjectsByOrgLocationsIdAndApproverUserId(Long id, Long approverUserId);
+		
+	    List<Long> getProjectIdsByOrgLocationsId(Long orgLocationsId) throws Exception;   
 	
+		Projects getProjectDetailsUpdateByProjectId(Long projectId,User user,JSONObject jsonObj) throws Exception ;
+		
+		List<Projects> getProjectBasedClientsByOrgLocationsIdAndApproverUserId(Long orgLocationsId, Long userId) throws Exception;
+
 		Projects getProjectByIdAndLoginOrgId(Long projectId,Long orgLocationId) throws Exception;
 	
 		Integer getUserAssignedProjectsCount(Long userId,Long orgLocationId);
 		
 		//HashSet<User> getAllUserTimeSheetSubmissionStatus() throws Exception;
 		
-		void  userEmailNotificationForTimeSheetSubmission(User user,Long locationsId, HashSet<TimesheetSubmissions> timesheetSubmissions,String level) throws Exception;
+		void  userEmailNotificationForTimeSheetSubmission(User user,Long locationsId, Map<String, String> timesheetFrequencyMap,Projects projects, String level) throws Exception;
 		
 		//HashSet<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
 		
 		String getProjectDetailsByProjectIdAndLoginOrgId(Long projectId,User user,String loginOrgLocation) throws Exception ;
 	
-		String getProjectDetailsUpdateByProjectId(Long projectId,User user,JSONObject jsonObj) throws Exception ;
 	
 		String storeEmployeeInProjectDashboard(OrgLocations loginOrgLocation,User users,JSONObject jsonObj) throws Exception ;
 		 
@@ -90,6 +99,12 @@ public interface ProjectsService {
 		
 		void tereminateAsProjectApprover(JSONObject jsonObj,User user,Long userId,OrgLocations orgLocations) throws Exception;
 		
+		void saveOrUpdateProjectElkDocument(Projects projects) throws Exception;
 		
+		Integer getProjectCountByOrgLocationId(Long orgLocationId)throws Exception;
+
+		List<Object> getAllUniversalSearchProjectsList(OrgLocations orgLocations, String searchValue) throws Exception;
+		
+		Boolean validateTasksName(String taskname, Long projectId) throws Exception;
 		
 }

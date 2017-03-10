@@ -1,5 +1,3 @@
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <style>
 .clsDatePicker {
@@ -20,20 +18,23 @@ function closeCertificatePopup(){
 function candidateCertificate(candidateId){
 	 
 	var result = "";
-	result  = result + '   <div class="project_tabs_inn_head addUser-org"> ';
-	
+	if(window.candidateStatusGlobal == '0'){
+		result  = result + '   <div class="project_tabs_inn_head addUser-org overflow_inherint mt25"> ';
+	}else{
+		result  = result + '   <div class="project_tabs_inn_head addUser-org overflow_inherint mt10"> ';
+	}
 	result  = result + '<div class="success_pop" id="selector5" style="display: none;">';
     result  = result + '<i class="fa fa-check-circle"></i><span id="cerMsgDiv"></span>';
     result  = result + '</div>';
     
 	result = result +'<div id="msgDiv"></div>';
 	if(window.candidateStatusGlobal == '0'){
-		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\')"> ';
-		 result  = result + '   	<a href="javascript:void(0)" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a> ';
+		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
+		 result  = result + '   	<a href="javascript:void(0)" class="addUser-org"></a> ';
 		 result = result +' </sec:authorize>';
 	}
 	else{
-	  	 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\')"> ';
+	  	 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
 		 result  = result + '   	<span class="pad-sea"> <a href="javascript:void(0)" id="newCandidate" onClick="addCertification('+candidateId+');flushCandiadate();" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a></span> ';
 		 result = result +' </sec:authorize>';
 	}
@@ -185,16 +186,10 @@ function candidateCertificateList(candidateId){
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
           success :function(data) {
-               if(data != null && data != 'undefined' && data != "" && data != '[]'){
-             		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-             		 else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		 }
-             		 else{
+        	  var json = JSON.parse(data);
+               /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
              			 
-             			var json = JSON.parse(data);
+             			/* var json = JSON.parse(data);
 	                      for (var i = 0; i < 1; i++) {
 	                             var val= json[i];
 	                             var opt = "";
@@ -205,7 +200,7 @@ function candidateCertificateList(candidateId){
 	                                             }
 	                                     $("#msgDiv").empty();
 	                                     $("#msgDiv").append(opt);
-	                             }
+	                             } */
 	                      
 	                	 $("#candidateCertificateList").empty();
 	                	 var result = "";
@@ -269,21 +264,21 @@ function candidateCertificateList(candidateId){
 	                    	 result  = result + '           <td><div class="tblicons tblminwidth-75">';
 	                    	 
 	                    	 if(window.candidateStatusGlobal == '0'){
-	                    		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\')"> ';
+	                    		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
 	                    		 result = result  +'	            <a href="javascript:void(0)" disabled="disabled" class="glyphicon glyphicon-pencil" id="editCandidateCertificate"></a>';
 	                    		 result = result +' </sec:authorize>';
 	                    	 }else{
-	                    		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\')"> ';
+	                    		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
 	                    		result = result  +'	            <a href="javascript:void(0)" class="glyphicon glyphicon-pencil" id="editCandidateCertificate" href="javascript:void(0)" onClick="editCertification('+ opt.id+ ','+ candidateId+ ');"></a>';
 	                    		result = result +' </sec:authorize>';
 	                    	 }
 	                    	 
 	                    	 if(window.candidateStatusGlobal == '0'){
-	                    		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION\')"> ';
+	                    		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
 	                    		 result = result  +'<i class="glyphicon glyphicon-trash"></i>';
 	                    		 result = result +' </sec:authorize>';
 	                    	}else{
-	                    		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\')"> ';
+	                    		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
 	                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate"></i>';
 	                    		 result = result +' </sec:authorize>';
 	                    	}
@@ -295,8 +290,7 @@ function candidateCertificateList(candidateId){
 	                     $("#candidateCertificateList").append(result); 
 	                     certificationPagination(); 
 	                     msgFadein(); 
-			    	} 
-               }else{
+             /*   }else{
 	    	         var result ="";
 		    	     result = result+"   <div class='row'>"; 
 					 result = result+"	<div class='col-lg-12'>"; 
@@ -313,7 +307,7 @@ function candidateCertificateList(candidateId){
 				    
 				    $("#popUpDivEmp").empty();
 					$("#popUpDivEmp").append(result);
-               }
+               } */
         },
           
      }); 
@@ -329,10 +323,10 @@ function certificationPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
- 
  }
 </script>
 
@@ -397,7 +391,7 @@ function addCertification(candidateId) {
 		result  = result + '                   </div>';
 		result  = result + '                 </div>';
 		result  = result + '                 <div class="clearfix mr">';
-		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\')"> ';
+		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
 		result  = result + '                   <button type="button" class="btn btn-sm btn-primary pull-right" id="addCandidate"  onclick="storeCertificate('+candidateId+');"  >Add</button>';
 		result = result +' </sec:authorize>';
 		result  = result + '                 </div>';
@@ -434,6 +428,8 @@ function addCertification(candidateId) {
 
 	  $('#StartDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
 	      onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() + 1);
@@ -443,6 +439,8 @@ function addCertification(candidateId) {
 	  
 	  $('#EndDate').datepicker({
 	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
 	        onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() - 1);
@@ -603,6 +601,8 @@ function addCertification(candidateId) {
 
 							  $('#StartDateEdit').datepicker({
 							      dateFormat: 'yy-mm-dd',
+							      changeMonth: true,
+							  	  changeYear: true, 
 							      onSelect: function (selected) {
 							            var dt = new Date(selected);
 							            dt.setDate(dt.getDate() + 1);
@@ -612,7 +612,9 @@ function addCertification(candidateId) {
 							  
 							  $('#EndDateEdit').datepicker({
 							      dateFormat: 'yy-mm-dd',
-							        onSelect: function (selected) {
+							      changeMonth: true,
+							  	  changeYear: true, 
+							      onSelect: function (selected) {
 							            var dt = new Date(selected);
 							            dt.setDate(dt.getDate() - 1);
 							            $("#StartDateEdit").datepicker("option", "maxDate", dt);

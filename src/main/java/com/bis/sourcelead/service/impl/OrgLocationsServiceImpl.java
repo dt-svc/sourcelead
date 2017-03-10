@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Service
@@ -23,6 +25,8 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	@Autowired
 	OrgLocationsDao orgLocationsDao;
 	
+	@Autowired
+	TimeZoneService timeZoneService;
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -34,6 +38,7 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 
 	@Override
 	public OrgLocations updateOrgLocations(OrgLocations orgLocations) throws Exception {
+		orgLocations.setUpdatedDate(commonUtil.currentDate());
 		return orgLocationsDao.updateOrgLocations(orgLocations);
 	}
 
@@ -46,6 +51,11 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	public Boolean deleteOrgLocations(Long id) throws Exception {
 		return orgLocationsDao.deleteOrgLocations(id);
 		
+	}
+	
+	@Override
+	public Boolean isLoginUserIsSuperUser(Long userId) throws Exception {
+		return orgLocationsDao.isLoginUserIsSuperUser(userId);
 	}
 
 	@Override
@@ -74,12 +84,13 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 
 	@Override
 	public OrgLocations saveOrgLocations(OrgSettings orgSettings, OrgLocations orgLocations) throws Exception {
-		
+		Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgSettings.getTimeZone()));
 		orgLocations.setState(orgSettings.getState());
 		orgLocations.setCity(orgSettings.getCity());
 		orgLocations.setZipCode(orgSettings.getZipcode());
 		orgLocations.setPhone(orgSettings.getPhone());
 		orgLocations.setFax(orgSettings.getFax());
+		orgLocations.setTimezone(timezone);
 		orgLocationsDao.updateOrgLocations(orgLocations);
 		
 		return orgLocations;
@@ -101,6 +112,7 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	@Override
 	public OrgLocations orgLocationsListByJson(JSONObject jsonObj, Org addOrg, OrgLocations orgLocations, String loginUserCode,String responderType) throws Exception {
 		String locationCode = orgLocations.getLocationCode();
+		Timezone timezone = null;
 		OrgLocations clientOrgLocations = new OrgLocations();
 			clientOrgLocations.setOrg(addOrg);
 			if(jsonObj.has("phone")){
@@ -126,6 +138,29 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 			}else if(jsonObj.has("orgCity") && !isNullOrEmpty(jsonObj.getString("orgCity"))){
 				clientOrgLocations.setCity(jsonObj.getString("orgCity"));
 			}
+			
+			if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
+				if("Australia".equalsIgnoreCase(jsonObj.getString("country"))){
+					timezone = timeZoneService.getTimezone(298l);
+					clientOrgLocations.setTimezone(timezone);
+				}else if("India".equalsIgnoreCase(jsonObj.getString("country"))){
+					timezone = timeZoneService.getTimezone(246l);
+					clientOrgLocations.setTimezone(timezone);
+				}else if("France".equalsIgnoreCase(jsonObj.getString("country"))){
+					timezone = timeZoneService.getTimezone(342l);
+					clientOrgLocations.setTimezone(timezone);
+				}else if("Singapore".equalsIgnoreCase(jsonObj.getString("country"))){
+					timezone = timeZoneService.getTimezone(272l);
+					clientOrgLocations.setTimezone(timezone);
+				}else if("United Kingdom".equalsIgnoreCase(jsonObj.getString("country"))){
+					timezone = timeZoneService.getTimezone(333l);
+					clientOrgLocations.setTimezone(timezone);
+				}else if("United States".equalsIgnoreCase(jsonObj.getString("country"))){
+					timezone = timeZoneService.getTimezone(87l);
+					clientOrgLocations.setTimezone(timezone);
+				}
+			}
+			
 			String clientCountry = locationCode.substring(Math.max(locationCode.length() - 2, 0));
 			clientOrgLocations.setLocationCode(addOrg.getOrgCode() + clientCountry);
 			clientOrgLocations.setCreatedDate(commonUtil.currentDate());
@@ -145,6 +180,11 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
+	}
+	
+	@Override
+	public List<OrgLocations> getAllOrgLocationsByOrgId(Long orgId)throws Exception {
+		return orgLocationsDao.getAllOrgLocationsByOrgId(orgId);
 	}
 
 	@Override

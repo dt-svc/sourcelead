@@ -8,13 +8,19 @@ import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,11 +37,13 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
-import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementInterviewer;
@@ -48,12 +56,12 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
+import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TeamService;
@@ -89,9 +97,9 @@ public class CandidateRestController {
 	@Autowired
 	private CandidateResumesService  candidateResumesService;
 	
-	@Autowired
+	/*@Autowired
 	private CandidateSkillsService candidateSkillsService;
-	
+	*/
 	@Autowired
 	private UserService userService;
 	
@@ -128,6 +136,15 @@ public class CandidateRestController {
 	@Autowired
 	private SourceleadResumeParser sourceleadResumeParser;
 	
+    @Autowired
+    private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+    
+    @Autowired
+    RequirementService requirementService;
+    
+    protected boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
 
 	/**
 	 * @author prasad k
@@ -152,7 +169,7 @@ public class CandidateRestController {
 	 * @throws NullPointer
 	*/
 	
-	@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_VIEW_CANDIDATE','ROLE_VIEW_EDIT_CANDIDATE_EDUCATION')") 
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_VIEW_CANDIDATE','ROLE_VIEW_EDIT_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_CANDIDATES')") 
 	@RequestMapping(value = "/storeCandidate", method = RequestMethod.POST)
 	public @ResponseBody String storeCandidate(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
 		
@@ -201,13 +218,13 @@ public class CandidateRestController {
 	  * @throws Exception
 	  */
 	 @RequestMapping(value = "/validateCandidateEmail" , method = RequestMethod.POST)
-	 public @ResponseBody  String validateCandidateEmail(@RequestParam(value="email", required=false) String email,HttpServletRequest request) throws Exception {
+	 public @ResponseBody  String validateCandidateEmail(@RequestParam(value="email", required=false) String email,@RequestParam(value="candidateType", required=false) String candidateType,HttpServletRequest request) throws Exception {
 		 	
 		 	String result = null;
 		 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	Candidate candidate = candidateService.findByCandidateEmail(email,orgLocation.getId());
 		 	
-		 	if (null != candidate) {
+		 	if (null != candidate && candidateType.equalsIgnoreCase(candidate.getCandidateType())) {
 				result = "true";
 			}else{
 				result = "false";
@@ -215,7 +232,7 @@ public class CandidateRestController {
 			return result;
 	   }
 	 
-	 @RequestMapping(value = "/validateSkillName" , method = RequestMethod.POST)
+	/* @RequestMapping(value = "/validateSkillName" , method = RequestMethod.POST)
 	 public @ResponseBody  Boolean validateSkillName(@RequestParam(value="skillName", required=false) String skillName, @RequestParam(value="candidateId", required=false) String candidateId, HttpServletRequest request) throws Exception {
 		 	Boolean flag = false;
 		 	CandidateSkills candidateSkills = candidateSkillsService.getSkillsByCandidateIdSkillName(candidateId,skillName);
@@ -223,7 +240,7 @@ public class CandidateRestController {
 		    	flag = candidateSkillsService.validateSkillName(skillName);
 		    }
 			return flag;
-	   }
+	   }*/
 	 
 	 
 	 @RequestMapping(value = "/getCandidatesList", method = RequestMethod.POST)
@@ -231,9 +248,57 @@ public class CandidateRestController {
 				@RequestParam(value = "requirementId", required = false) Long requirementId,
 				@RequestParam(value = "candidateType", required = false) String candidateType, HttpServletRequest request) throws Exception {
 			String resultJson = null;
+			String candidateStatus = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			
-			List<Candidate> candidatesList = candidateService.getCandidatesByOrgLocationID(orgLocations.getId(),requirementId,candidateType);
+			//List<Candidate> candidatesList = candidateService.getCandidatesByOrgLocationID(orgLocations.getId(),requirementId,candidateType);
+			
+			List<Long> candidateIdsList = requirementSubmissionService.getSubmittedCandidateIdsByRequirementId(requirementId);
+			Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+			
+			    List<CandidateIndex> candidatesList = new ArrayList<CandidateIndex>();
+			    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			    df.setTimeZone(TimeZone.getTimeZone("GMT"));
+		        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+		        boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
+		        boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", candidateType));
+		        boolQueryBuilder.must(QueryBuilders.matchQuery("status", 1));
+		        
+		        //Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocations.getId(),candidateStatus);
+			
+			if(null != candidateIdsList && candidateIdsList.size() > 0){
+				BoolQueryBuilder candidateBoolQueryBuilder = QueryBuilders.boolQuery();
+				for(Long candidateId : candidateIdsList){
+					candidateBoolQueryBuilder.should(QueryBuilders.matchQuery("candidateId", candidateId));
+				}
+				boolQueryBuilder.mustNot(candidateBoolQueryBuilder);
+			}
+			
+			if(null != requirement && !isNullOrEmpty(requirement.getSkills())){
+				String[] skills = requirement.getSkills().split(",");
+				BoolQueryBuilder skillsBoolQuery = QueryBuilders.boolQuery();
+				for(int i=0; i < skills.length; i++){
+					skillsBoolQuery.should(QueryBuilders.matchQuery("skillsName", skills[i]));
+				}
+				boolQueryBuilder.must(skillsBoolQuery);
+			}
+			
+	        try {
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,Constants.MAX_RESULTS_200,boolQueryBuilder).getHits();
+				    if(null != searchHits && searchHits.length >0){
+				    	ObjectMapper mapper = new ObjectMapper();
+				    	for (SearchHit hit : searchHits) {
+				    		String json = hit.getSourceAsString();
+				    		mapper.setDateFormat(df);
+				    	    CandidateIndex candidateIndex = mapper.readValue(json, CandidateIndex.class);
+				    	    
+				    	    candidatesList.add(candidateIndex);
+				    	}
+				    	
+				    }
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			
 			resultJson = toJSON(candidatesList);
 			return resultJson;
@@ -392,6 +457,39 @@ public class CandidateRestController {
 			
 		}
 	 
+	 
+	 @RequestMapping(value = "/getCandidatesListByCandidateType", method = RequestMethod.POST)
+		public @ResponseBody String getCandidatesListByCandidateType(
+				@RequestParam(value = "requirementId", required = false) Long requirementId,
+				@RequestParam(value = "candidateType", required = false) String candidateType,
+				@RequestParam(value = "applicantSearch", required = false) String applicantSearch,HttpServletRequest request) throws Exception {
+			
+			List<Candidate> candidatesList = null;
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			
+			HashMap<String, Long> hm = new HashMap<String, Long>();	
+			try {
+				candidatesList = candidateService.getCandidatesByOrgLocationIDAndSearchText(orgLocations.getId(),requirementId,candidateType,applicantSearch);
+			} catch (Exception e) {
+				logger.error(ExceptionUtils.getFullStackTrace(e)); 
+			}
+			if(candidatesList != null)
+			{
+				for(Candidate candidate: candidatesList){
+					StringBuilder candidateName = new StringBuilder();
+					
+					if(!isNullOrEmpty(candidate.getLastName())){
+						candidateName = candidateName.append(candidate.getFirstName()).append(" ").append(candidate.getLastName());
+					}else{
+						candidateName = candidateName.append(candidate.getFirstName());
+					}
+					hm.put(candidateName.toString(), candidate.getId());
+				}
+			}
+			return commonUtil.toJSON(hm);
+		}
+	 
+	 
 	 @PreAuthorize("hasRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')")
 	 @RequestMapping(value = "/getTeams", method = RequestMethod.POST)
 		public @ResponseBody String getTeams(HttpServletRequest request) throws Exception {
@@ -430,10 +528,10 @@ public class CandidateRestController {
 			 }
 			
 			 if(null != req.getRequirement().getSpocId()){
-				 if(!"".equalsIgnoreCase(req.getRequirement().getSpocId().getSpocUser().getLastName()) && null != req.getRequirement().getSpocId().getSpocUser().getLastName() ){
-					 req.setClientName(req.getRequirement().getSpocId().getSpocUser().getFirstName() +""+req.getRequirement().getSpocId().getSpocUser().getLastName());
+				 if(!"".equalsIgnoreCase(req.getRequirement().getSpocId().getClientUser().getLastName()) && null != req.getRequirement().getSpocId().getClientUser().getLastName() ){
+					 req.setClientName(req.getRequirement().getSpocId().getClientUser().getFirstName() +""+req.getRequirement().getSpocId().getClientUser().getLastName());
 				 }else{
-					 req.setClientName(req.getRequirement().getSpocId().getSpocUser().getFirstName());
+					 req.setClientName(req.getRequirement().getSpocId().getClientUser().getFirstName());
 				 }
 			 }
 			
@@ -466,7 +564,7 @@ public class CandidateRestController {
 				 rsh.setOfferResumeid(ros.getId());
 			 }
 			 if(null != rsh.getSubmissionId().getCandidateResumes()){
-				 rsh.setResumeid(rsh.getSubmissionId().getCandidateResumes().getId());
+				 rsh.setResumeid(rsh.getSubmissionId().getCandidateResumes().getResumeUUID());
 				 rsh.setFileName(rsh.getSubmissionId().getCandidateResumes().getFileName());
 			 }
 			 if(!"".equalsIgnoreCase(rsh.getSubmissionId().getOrgLocations().getOrg().toString()) && null != rsh.getSubmissionId().getOrgLocations().getOrg()){

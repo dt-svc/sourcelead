@@ -5,10 +5,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
+import javax.mail.internet.InternetAddress;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,14 +22,12 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.CandidateSkillsService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.HotListEmailCampaignService;
 import com.bis.sourcelead.service.SourceleadSignatureService;
@@ -46,8 +43,8 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
-	@Autowired
-    CandidateSkillsService candidateSkillsService;
+	/*@Autowired
+    CandidateSkillsService candidateSkillsService;*/
 	
 	@Autowired
 	CandidateService candidateService;
@@ -87,10 +84,9 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	 String signature = "";
 	 String candidates = null;
 	 String emails = null;
-	 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-	 Set<String> recipantsList = new HashSet<String>();
 	 
-	 
+	 String otherEmails = "";
+	 InternetAddress[] iAdressArray = null;
 	   	 if(!isNullOrEmpty(user.getLastName())){
 	   		 fullName = user.getFirstName()+" "+user.getLastName();
 	   	 }else{
@@ -106,7 +102,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	    	  catch(JSONException e){
 	    		  emails= jsonObj.getString("Toemails");
 	    	  }
-	    	  if(emails != null){
+	    	  if(null != emails){
 	    		  emails = emails.replaceAll("\\[", "").replaceAll("\\]","");
 	    		  emails = emails.replaceAll("\"", "");
 		  	      String[] toEmails = emails.split(",");
@@ -120,14 +116,22 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		
 		
 		if(jsonObj.has("otherEmails") && !isNullOrEmpty(jsonObj.getString("otherEmails"))){
-			 String othmails = null;
 			 try{
 	    		   JSONArray jsonArray = jsonObj.getJSONArray("otherEmails");
-	    		   othmails = jsonArray.toString();
+	    		   otherEmails = jsonArray.toString();
 	    	  }
 	    	  catch(JSONException e){
-	    		  othmails= jsonObj.getString("otherEmails");
+	    		  otherEmails= jsonObj.getString("otherEmails");
 	    	  }
+
+			 if(null != otherEmails){
+				 otherEmails = otherEmails.replaceAll("\\[", "").replaceAll("\\]","");
+				 otherEmails = otherEmails.replaceAll("\"", "");
+			 }
+		}
+		StringBuilder tomaillBuilder = new StringBuilder();
+		iAdressArray = InternetAddress.parse(tomaillBuilder.append(emails).append(",").append(otherEmails).toString());
+
 			 if(othmails != null){
 				 othmails = othmails.replaceAll("\\[", "").replaceAll("\\]","");
 				 othmails = othmails.replaceAll("\"", "");
@@ -146,6 +150,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 			 emailRecipient.setEmail(email.trim());
 			 emailRecipientList.add(emailRecipient);
 		}
+
 		
 		 emailMessage.setCreatedBy(user.getUserCode());
 		 emailMessage.setFromEmail(user.getEmail());
@@ -160,7 +165,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		    	  catch(JSONException e){
 		    		  candidates= jsonObj.getString("hotlistcandidates");
 		    	  }
-				 if(candidates != null){
+				 if(null != candidates){
 					 candidates = candidates.replaceAll("\\[", "").replaceAll("\\]","");
 					 candidates = candidates.replaceAll("\"", "");
 			  	      hotlistedCandidates = candidates.split(",");
@@ -212,26 +217,33 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),emailRecipientList,attachmentList);
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,attachmentList);
 		 
-		 saveUserMailBox(user,orgLocation,emailRecipientList,candidates,subject,table,UUID,jsonObj.getString("bodytext"),signature,jsonObj.getString("namefield"),multiFile);
+		 saveUserMailBox(user,orgLocation,iAdressArray,candidates,subject,table,UUID,jsonObj.getString("bodytext"),signature,jsonObj.getString("namefield"),multiFile);
 		
 	}
 	
 	
-private void saveUserMailBox(User user,OrgLocations orgLocation,ArrayList<EmailRecipient> emailRecipientList,String candidates,String subject,String table,String UUID,String body,String signature,String nameFields,MultipartFile multiFile) throws Exception{
+private void saveUserMailBox(User user,OrgLocations orgLocation,InternetAddress[] iAdressArray,String candidates,String subject,String table,String UUID,String body,String signature,String nameFields,MultipartFile multiFile) throws Exception{
 	
 	UserMailBox userMailBox = new UserMailBox();
-	StringBuilder toEmails = new StringBuilder();
-	for (EmailRecipient recipient : emailRecipientList) {
-		toEmails.append(recipient.getEmail()).append(",");
-	 }
-	toEmails.toString();
+	
+	if(null != iAdressArray && iAdressArray.length >0){
+		StringBuilder recipients = new StringBuilder("");
+		int count = 1;
+		for(InternetAddress address :iAdressArray){
+			if(count >1){
+				recipients.append(",");
+			}
+			count++;
+			recipients.append(address.getAddress());
+		}
+		userMailBox.setToMail(recipients.toString());
+	}
 	
 	userMailBox.setUserId(user);
 	userMailBox.setOrgLocationId(orgLocation);
 	userMailBox.setFromMail(user.getEmail());
-	userMailBox.setToMail(toEmails.substring(0,toEmails.length()-1));
 	userMailBox.setMailStatus(Constants.MAIL_BOX_SENT);
 	userMailBox.setCandidateId(candidates);
 	userMailBox.setSubject(subject);
@@ -263,6 +275,8 @@ private void saveUserMailBox(User user,OrgLocations orgLocation,ArrayList<EmailR
 	
 	userMailBoxService.saveUserMailBox(userMailBox);
 	
+	userMailBoxService.saveOrUpdateUserMailBoxELK(userMailBox);
+	
 }
 
 
@@ -287,7 +301,7 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 		 }
 		 
 		 for(String email : candidateEmailsList){
-			 StringBuilder skills = new StringBuilder();
+			/* StringBuilder skills = new StringBuilder();
 			 StringBuilder candidateSkills = new StringBuilder();
 			 List<CandidateSkills> skillsList = candidateSkillsService.getCandidateSkillsByCandidateId(email);
 			 if(skillsList.size() > 0){
@@ -297,7 +311,7 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 				 candidateSkills.append(skills);
 			 }else{
 				 candidateSkills.append("-----");
-			 }
+			 }*/
 			 
 			 
 			 
@@ -369,12 +383,17 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 			 }else{
 				 rate = rateBuilder.append("-----");
 			 }
-			 
+			 String skills;
+			 if(null != candidate.getSkillsName()){
+				 skills = candidate.getSkillsName();
+			 }else{
+				 skills = "-----";
+			 }
 			 tempHTML = tempHTML+"<tr align='center'>";
 			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+candidateName.toString()+"</td>";
 			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+totalExp.toString()+"</td>";
 			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+rate.toString()+"</td>";
-			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+candidateSkills.toString()+"</td>";
+			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+skills+"</td>";
 			 
 			 tempHTML = tempHTML+"</tr>";
 			 

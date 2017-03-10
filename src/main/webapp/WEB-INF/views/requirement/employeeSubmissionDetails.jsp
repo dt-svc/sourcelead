@@ -1,8 +1,4 @@
 
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="resources/js/jquery-1.11.3.min.js"></script> 
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script>
 	function employeeSubmissionDetails(candidateId){
 		var result = "";
@@ -36,7 +32,7 @@
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="
 							+ candidateId,
 					success : function(data) {
-						if (data != null && data != 'undefined' && data != "" && data != '[]') {
+						/* if (data != null && data != 'undefined' && data != "" && data != '[]') { */
 							if (data.indexOf('Sign In') >= 0) {
 								location.replace(sourceleadUrl);
 							} else if (data.indexOf('exception') >= 0) {
@@ -71,20 +67,19 @@
 										result = result	+ '<td><div><span>----</span></div></td>';
 									}
 									if (opt.address != null && opt.address	&& opt.address != 'undefined') {
-										result = result + '<td><div><span>'								+ opt.address
-												+ '</span></div></td>';
+										result = result + '<td><div><span>'+ opt.address+'</span></div></td>';
 									} else {
 										result = result	+ '<td><div><span>----</span></div></td>';
 									}
 
 									if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined') {
-										result = result + '<td><div><span>'	+ opt.startMonth + ' -'	+ opt.startYear	+ '</span></div></td>';
+										result = result + '<td><div><span>'+ opt.startYear+'</span></div></td>';
 									} else {
 										result = result		+ '<td><div><span>----</span></div></td>';
 									}
 
 									if (opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
-										result = result + ' <td><div><span>'+ opt.endMonth + '-'+ opt.endYear+ '</span></div></td>';
+										result = result + ' <td><div><span>'+opt.endYear+'</span></div></td>';
 									} else {
 										result = result	+ '<td><div><span>----</span></div></td>';
 									}
@@ -95,7 +90,7 @@
 								$("#employeeSubmissionDetailsList").append(result);
 								employeeSubmittionPagination();
 							}
-						} else {
+						/* } else {
 							var result = "";
 							result = result + "   <div class='row'>";
 							result = result + "	<div class='col-lg-12'>";
@@ -112,7 +107,7 @@
 							result = result + "  </div> ";
 							$("#employeeSubmissionDetailsList").empty();
 							$("#employeeSubmissionDetailsList").append(result);
-						}
+						} */
 					},
 
 				});
@@ -128,10 +123,10 @@ function employeeSubmittionPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
- 
  }
 </script>
 

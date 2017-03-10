@@ -13,12 +13,12 @@ import java.util.Set;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
-import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -26,8 +26,8 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.UserRoleService;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
@@ -53,6 +53,10 @@ import com.itextpdf.text.pdf.PdfWriter;
  */
 @Component
 public class PdfUtil {
+	
+	@Autowired
+	UserRoleService userRoleService ;
+	
 	private static final Logger logger = LoggerFactory.getLogger(PdfUtil.class);
 	public File createPdfTable(java.util.List<UserRole> activeList,
 			java.util.List<UserRole> inactiveList, java.util.List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,
@@ -381,11 +385,14 @@ public class PdfUtil {
 				}
 			}
 		}
-		if(candidate.getCandidateSkills() !=null && candidate.getCandidateSkills().size() >0){
+		if(candidate.getSkillsName() !=null){
 			StringBuilder skills = new StringBuilder();
-			Set<CandidateSkills> candidateSkillsList = candidate.getCandidateSkills();
-		    for(CandidateSkills candidateSkills : candidateSkillsList){
-		    	skills.append(candidateSkills.getName()).append(",");
+			
+		//	Set<CandidateSkills> candidateSkillsList = candidate.getCandidateSkills();
+			
+			String [] candidateSkillsList = candidate.getSkillsName().split(",");
+		    for(String skill : candidateSkillsList){
+		    	skills.append(skill).append(",");
 		    }
 		    candidateArray[8] = skills.toString().substring(0, skills.length()-1);
 		}else{
@@ -678,7 +685,7 @@ public class PdfUtil {
 		}
 		return table;
 	}
-	public File getClientVendorContactsPdfFile(java.util.List<OrgSpoc> vandorsContactList, String orgName,String vendorType, String[] headers) throws DocumentException, IOException {
+	public File getClientVendorContactsPdfFile(java.util.List<OrgSpoc> vandorsContactList, String orgName,String vendorType, String[] headers) throws Exception {
 		Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 
@@ -737,7 +744,7 @@ public class PdfUtil {
     }
 		return file;	
 	}
-	private String[] prepareContactsArray(OrgSpoc orgSpoc, String[] headers) {
+	private String[] prepareContactsArray(OrgSpoc orgSpoc, String[] headers) throws Exception {
 		String contactsArray[] = new String[headers.length];
 		if (orgSpoc.getOrgName() != null && !"".equalsIgnoreCase(orgSpoc.getOrgName())) {
 			contactsArray[0] = orgSpoc.getOrgName();
@@ -764,8 +771,13 @@ public class PdfUtil {
 		}else{
 			contactsArray[4] = "--";
 		}
-		if (orgSpoc.getOwnerUser().getUserType() != null && !"".equalsIgnoreCase(orgSpoc.getOwnerUser().getUserType())) {
-			contactsArray[5] = orgSpoc.getOwnerUser().getUserType();
+		
+		UserRole userRole = userRoleService.getUserRoleByUserId(orgSpoc.getVendorUser().getId());
+		
+		if(null != userRole){
+		if (userRole.getRoles().getDisplayName() != null && !"".equalsIgnoreCase(userRole.getRoles().getDisplayName())) {
+			contactsArray[5] = userRole.getRoles().getDisplayName();
+		}
 		}else{
 			contactsArray[5] = "--";
 		}

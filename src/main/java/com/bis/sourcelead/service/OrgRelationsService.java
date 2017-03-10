@@ -1,11 +1,8 @@
 package com.bis.sourcelead.service;
 
 
-import java.util.Collection;
-import java.util.Set;
-
 import java.util.List;
-
+import java.util.Set;
 
 import org.json.JSONObject;
 
@@ -49,12 +46,19 @@ public interface OrgRelationsService {
 	
 	List<OrgRelations> getAllClientsFilterByOrgLocationId(Long orgLocationId,String status, Long loginUserId) throws Exception;
 	
-	List<OrgRelations> getAllVendorsFilterByOrgLocationId(Long id,String status) throws Exception;
+	List<OrgRelations> getAllVendorsFilterByOrgLocationId(Long id,String status, String vendorsRelationId) throws Exception;
 
 	List<OrgSpoc> getAllVendorsContactFilterListByOrgLocationId(Long id, Long orgLocationId, String relationType,String vendorStatus,String vendorIds,String vendorInvitationStatus) throws Exception;
+	
+	List<OrgSpoc> getAllVendorsContactFilterListByOrgLocationIdAndTabAccess(Long id, Long orgLocationId, String relationType,String vendorStatus,String vendorIds,String vendorInvitationStatus, List<Long> vendorOrgLocationsIds) throws Exception;
 	
 	List<OrgRelations> getAllClientsByOrgLocationId(Long orgLocationId,Long loginUserId) throws Exception;
 	
 	List<OrgRelations> getClientOrVendorListByOrgLocationId(Long orgLocationId,String type);
+
+	public Integer getAllClientsCountByOrgLocationId(Long orgLocationId) throws Exception;
+	
+	public Integer getAllVendorsCountByOrgLocationId(Long orgLocationId,String type) throws Exception;
+
 
 }

@@ -18,6 +18,8 @@ public interface OrgLocationService {
 	public OrgLocations getOrgLocations(Long id) throws Exception;
 
 	public Boolean deleteOrgLocations(Long id) throws Exception;
+	
+	public Boolean isLoginUserIsSuperUser(Long userId) throws Exception;
 
 	public List<OrgLocations> getAllOrgLocations() throws Exception;
 
@@ -32,6 +34,8 @@ public interface OrgLocationService {
 	OrgLocations orgLocationsListByJson(JSONObject jsonObj, Org addOrg, OrgLocations orgLocations,String loginUserCode,String responderType) throws Exception;
 	
 	public List<OrgLocations> getOrgsListForClientAndVendorOrgSearch(String orgCode) throws Exception;
+	
+	public List<OrgLocations> getAllOrgLocationsByOrgId(Long orgId) throws Exception;
 	
 	public OrgLocations getOrgLocationByOrgId(Long orgId) throws Exception;
 

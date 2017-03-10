@@ -71,7 +71,7 @@ public class CandidateEmployersRestController {
 	 * @throws NullPointer
 	 */
 	
-	@PreAuthorize("hasRole('ROLE_ADD_EMPLOYEER')")
+	@PreAuthorize("hasAnyRole('ROLE_ADD_EMPLOYEER','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/storeCandidateEmployers", method = RequestMethod.POST)
 	public @ResponseBody String storeCandidateEmployers(@RequestParam(value = "json", required = false) String json,@RequestParam(value="candidateId", required=false) Long candidateId ,HttpServletRequest request) throws Exception {
 
@@ -142,7 +142,7 @@ public class CandidateEmployersRestController {
 	 * @throws Exception
 	 */
 	
-	@PreAuthorize("hasRole('ROLE_VIEW_DELETE_EMPLOYEER')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_EMPLOYEER','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/removeCandidateEmployerBycandidateIdandCandidateEmployerID")
 	public String removeCandidateEmployerBycandidateIdandCandidateEmployerID(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateemployerId", required = false) Long candidateemployerId,HttpServletRequest request) throws Exception {
 
@@ -169,7 +169,7 @@ public class CandidateEmployersRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_EMPLOYEER')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_EMPLOYEER','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId")
 	public String getCandidateEmployerByCandidateIdAndCandidateEmpoyerId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateEmpId", required = false) Long candidateEmpId,HttpServletRequest request) throws Exception {
 

@@ -9,14 +9,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -53,19 +54,15 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateHotList;
-import com.bis.sourcelead.entity.CandidateSkills;
-import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.CandidateSkillsService;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
-import com.bis.sourcelead.service.OrgLocationService;
-import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -85,12 +82,6 @@ public class CandidateListRestController {
 	 @Value("${sourceleadUrl}")
 	 private String sourceleadUrl;
 		
-	 
-	 @Autowired
-	 private OrgService orgService;
-	 
-	 @Autowired
-	 private OrgLocationService orgLocationService;
 	
 	 @Autowired
 	 CommonUtil commonUtil;
@@ -100,14 +91,17 @@ public class CandidateListRestController {
 	 CandidateService candidateService;
 	 
 	 
-	 @Autowired
-	 CandidateSkillsService candidateSkillsService;
+	/* @Autowired
+	 CandidateSkillsService candidateSkillsService;*/
 	 
 	 @Autowired	
 	 LookUpDataService lookUpDataService;
 	
 	  @Autowired
 	  CandidateHotListService candidateHotListService;
+	  
+	  @Autowired
+	  CountriesService countriesService;
 	  
 	  @Autowired
 	  private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
@@ -134,27 +128,103 @@ public class CandidateListRestController {
 			 HttpServletRequest request) throws Exception {
 
 		String resultJson;
+		
+		Integer candiStatus  =candidateStatus;
+		
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		List<Candidate> candList = new ArrayList<Candidate>();
-		List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange,candidateType);
+		//List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange,candidateType);
 		
-		if(null != candidatesList){
-			for(Candidate candidate : candidatesList){
-				boolean flag = candidateHotListService.isCandidateIsFavourite(candidate.getId(), loginOrgLocation.getId());
-				if(flag == true){
-					candidate.setIsFavourite(Constants.YES);
-				}else{
-					candidate.setIsFavourite(Constants.NO);
-				}
-				candList.add(candidate);
+		
+		    List<CandidateIndex> candidatesList = new ArrayList<CandidateIndex>();
+		//    int maxResults = Constants.MAX_RESULTS_200;
+		    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		    df.setTimeZone(TimeZone.getTimeZone("GMT"));
+		    
+		    BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+			boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
+			
+			if(candiStatus.intValue() == (Constants.CANDIDATE_ACTIVE)){
+				  boolQueryBuilder.must(QueryBuilders.matchQuery("status", 1));
+			}else if(candiStatus.intValue() ==(Constants.CANDIDATE_IN_ACTIVE)){
+				  boolQueryBuilder.must(QueryBuilders.matchQuery("status", 0));
 			}
-		}
+			
+			if(null != userRole && !userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+				if(null != candidateType && !candidateType.isEmpty() && !candidateType.equalsIgnoreCase("All")){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", candidateType));
+				}
+			}
+			
+			
+			if(null != userRole && userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("recruiterUserId", user.getId()));
+			}else{
+				boolQueryBuilder.must(QueryBuilders.matchQuery("recruiterUserId", 0));
+			}
+			
+			if(StringUtils.isNotEmpty(updatedDateRange) && !"null".equalsIgnoreCase(updatedDateRange)   && !updatedDateRange.equalsIgnoreCase("0")  && !updatedDateRange.equalsIgnoreCase("undefined")){
+				
+				// This Code is for  getting the sql enddate based on range
+		    	 Calendar c = Calendar.getInstance();
+			     c.setTime(new Date()); // Now use today date.
+			     Integer dateRange  = Integer.parseInt(updatedDateRange);
+		         c.add(Calendar.DATE, -dateRange); // Subtracting dateRange days
+		         String updatedDate = df.format(c.getTime());
+		         Date parsed = df.parse(updatedDate);
+		         java.sql.Date endDate = new java.sql.Date(parsed.getTime());
+		         
+		         boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").gte(endDate));
+	   	    	
+			}
+			
+//			 maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId(), candidateStatus.toString());
+			 
+			try {
+				
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,Constants.MAX_RESULTS_200,boolQueryBuilder).getHits();
+			    if(null != searchHits && searchHits.length >0){
+			    	ObjectMapper mapper = new ObjectMapper();
+			    	mapper.setDateFormat(df);
+			    	for (SearchHit hit : searchHits) {
+			    		StringBuilder json = new StringBuilder(hit.getSourceAsString());
+			    	    CandidateIndex candidateIndex = mapper.readValue(json.toString(), CandidateIndex.class);
+			    	    if(null !=candidateIndex.getUpdatedDate() && !candidateIndex.getUpdatedDate().isEmpty()){
+			    	    	String pattern = Constants.DATE_DD_MM_YYYY;
+			    	        SimpleDateFormat format = new SimpleDateFormat(pattern);
+			    	    	Date updatedDate = format.parse(candidateIndex.getUpdatedDate());
+			    	    	candidateIndex.setCandidateUpdateDateToString( Constants.DF_DMY.format(updatedDate));
+			    	        
+			   			}
+			    	    candidatesList.add(candidateIndex);
+			    	}
+			    	
+			    }
+			    
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			 
+			 
 		
-		resultJson = commonUtil.toJSON(candList);
+		resultJson = commonUtil.toJSON(candidatesList);
 		return resultJson;
 	 }
 	 
+	 
+	 
+	 @RequestMapping(value = "/getUniversalCandidatesListByOrgLocationID")
+	 public String getUniversalCandidatesListByOrgLocationID(@RequestParam(value="serachValue", required=false) String  serachValue,
+			 HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String resultJson;
+		List<Object> uniCandidateList =	candidateService.getAllUniversalSearchCandidateList(orgLocations, serachValue);
+		resultJson = commonUtil.toJSON(uniCandidateList);
+		return resultJson;
+	 }
 	 
 	  /**
 	   * @author Naresh Bolisetty
@@ -167,7 +237,7 @@ public class CandidateListRestController {
 	   * @throws NullPointer
 	   */
 	 @RequestMapping(value = "/searchCandidate", method = RequestMethod.POST)
-	 public String searchCandidate(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
+	 public String searchCandidate(@RequestParam(value = "json", required = false) String json,@RequestParam(value="candidateStatus", required=false)Integer  candidateStatus,MultipartHttpServletRequest request) throws Exception {
 
 		    MultipartFile multiFile = null;
 			Iterator<String> itrator = request.getFileNames();
@@ -176,6 +246,8 @@ public class CandidateListRestController {
 			}
 			String jsonc = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(jsonc);
+			// Long maxResults =null;
+
 			
 			 Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -184,7 +256,14 @@ public class CandidateListRestController {
 			 
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
 			 
-			 Long maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId());
+			 
+			/*if(null != candidateStatus){
+				  maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId(),candidateStatus.toString());
+			 }else{
+				  maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId(),null);
+
+			 }*/
+			 
 		   	 //Exclude Keyword
 			 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
 			 if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
@@ -328,6 +407,22 @@ public class CandidateListRestController {
 					boolQueryBuilder.must(QueryBuilders.matchQuery("rateType", jsonObj.getString("rateType")));
 			    }
 				
+				//Designation Type
+				if(jsonObj.has("designationType") && StringUtils.isNotEmpty(jsonObj.getString("designationType"))){
+					
+					if(jsonObj.getString("designationType").equalsIgnoreCase("Part Time")){
+						boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("designationType", "Part Time"));
+						boolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("designationType", "Full Time"));
+					}else if(jsonObj.getString("designationType").equalsIgnoreCase("Full Time")){
+						boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("designationType", "Full Time"));
+						boolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("designationType", "Part Time"));
+					}else{
+						boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("designationType", jsonObj.getString("designationType")));
+					}
+					
+					//boolQueryBuilder.must(QueryBuilders.matchQuery("designationType", jsonObj.getString("designationType")));
+			    }
+				
 				//updatedOn
 				if(jsonObj.has("updatedOn") && StringUtils.isNotEmpty(jsonObj.getString("updatedOn"))){
 					try{
@@ -397,31 +492,55 @@ public class CandidateListRestController {
 				
 				
 				//CandidateSkills
-				ArrayList<String> candidateSkillsArray = getSearchKeywordsFromChosenSelectField(jsonObj, "candidateSkills");
+				/*ArrayList<String> candidateSkillsArray = getSearchKeywordsFromChosenSelectField(jsonObj, "candidateSkills");
 				if(candidateSkillsArray != null && !candidateSkillsArray.isEmpty()){
 					BoolQueryBuilder skillBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : candidateSkillsArray){
 						skillBoolQueryBuilder.should(QueryBuilders.matchQuery("skills", keywd));
 					}
 					boolQueryBuilder.must(skillBoolQueryBuilder);
-				} 
+				} */
 				
-				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
-				ArrayList<Candidate>   candList = new ArrayList<>();
-				if(searchHits != null && searchHits.length >0){
-					for (SearchHit hit : searchHits) {
-						Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(hit.getId()));
-						boolean flag = candidateHotListService.isCandidateIsFavourite(candidate.getId(), loginOrgLocation.getId());
-						if(flag == true){
-							candidate.setIsFavourite(Constants.YES);
-						}else{
-							candidate.setIsFavourite(Constants.NO);
-						}
-						candList.add(candidate);
+				ArrayList<String> candidateSkillsArray = getSearchKeywordsFromChosenSelectField(jsonObj, "candidateSkills");
+				if(candidateSkillsArray != null && !candidateSkillsArray.isEmpty()){
+					BoolQueryBuilder skillBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : candidateSkillsArray){
+						skillBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("skillsName", keywd));
 					}
+					boolQueryBuilder.must(skillBoolQueryBuilder);
 				}
+				
+				
+				List<CandidateIndex> candidatesList = new ArrayList<CandidateIndex>();
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				df.setTimeZone(TimeZone.getTimeZone("GMT"));
+				
+				try {
+				
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,Constants.MAX_RESULTS_200,boolQueryBuilder).getHits();
+				    if(null != searchHits && searchHits.length >0){
+				    	ObjectMapper mapper = new ObjectMapper();
+				    	mapper.setDateFormat(df);
+				    	for (SearchHit hit : searchHits) {
+				    		StringBuilder json1 = new StringBuilder(hit.getSourceAsString());
+				    	    CandidateIndex candidateIndex = mapper.readValue(json1.toString(), CandidateIndex.class);
+				    	    if(candidateIndex.getUpdatedDate() != null){
+				    	    	
+				    	    	String pattern = Constants.DATE_DD_MM_YYYY;
+				    	        SimpleDateFormat format = new SimpleDateFormat(pattern);
+				    	    	Date updatedDate = format.parse(candidateIndex.getUpdatedDate());
+				    	    	candidateIndex.setCandidateUpdateDateToString( Constants.DF_DMY.format(updatedDate));
+				   			}
+				    	    candidatesList.add(candidateIndex);
+				    	}
+				    	
+				    }
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
 			 String resultJson;
-			 resultJson = commonUtil.toJSON(candList);
+			 resultJson = commonUtil.toJSON(candidatesList);
 			 return resultJson;
 	 }
 	 
@@ -464,13 +583,15 @@ public class CandidateListRestController {
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("expectedRateCurrencey", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("summary", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("skillsName", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("employer", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("certifications", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("candidateType", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("noticePriod", keywd));
 			//matchQueryBuilderList.add(QueryBuilders.matchQuery("currentResumeName", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("resumeContent", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("alternateMobilePhone", keywd));
 			
 			
 			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
@@ -521,21 +642,21 @@ public class CandidateListRestController {
 	   */
 	 @RequestMapping(value = "/getCandidateById" , method = RequestMethod.POST)
 	 public @ResponseBody  String getCandidateById(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
-			String resultJson;
+			String resultJson ="" ;
+			 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Countries countries = countriesService.getCountriesByCountryName(loginUser.getCountry());
 			Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
-			StringBuilder skillsList = new StringBuilder();
-			List<CandidateSkills> candidateSkills = candidateSkillsService.getCandidateSkillsByCandidateId(candidateId);
-			int i = 0;
-			for(CandidateSkills skilss: candidateSkills){
-				if(i <= 5){
-					skillsList = skillsList.append(skilss.getName());
-					if(i != candidateSkills.size()-1){
-						skillsList = skillsList.append(",");
-					}
-				}
-				i++;
+			if(null != can.getCurrentRateCurrency() && null != can.getExpectedRateCurrencey()){
+				can.setCurrentRateCurrency(can.getCurrentRateCurrency());
+				can.setCurrentRateCurrency(can.getExpectedRateCurrencey());
+			}else{
+				 if(null != countries && !countries.getCurrency().equalsIgnoreCase("")){
+				can.setCurrentRateCurrency(countries.getCurrency());	
+				
+				can.setExpectedRateCurrencey(countries.getCurrency());
+				 }
 			}
-			can.setSkillsList(skillsList.toString());
+			
 			resultJson = commonUtil.toJSON(can);
 			return resultJson;
      }
@@ -578,7 +699,12 @@ public class CandidateListRestController {
 		* 
 		* @throws NullPointerException
 		*/
-	  @RequestMapping(value = "/getCandidatesSkillsBycandidateID")
+	 
+	 
+	 // Skills Save In Candidates table Not In CandidateSkills Table
+	 
+	 
+	 /* @RequestMapping(value = "/getCandidatesSkillsBycandidateID")
 	  public String getCandidatesSkillsBycandidateID(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
 	
 			String resultJson;
@@ -607,35 +733,27 @@ public class CandidateListRestController {
 	   public String saveSkilsBycandidateID(@RequestParam(value="candidateId", required=false) String  candidateId,@RequestParam(value="skillName", required=false) String  skillName,HttpServletRequest request) throws Exception {
 
 		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			String resultJson;
 			
-			String[] skills = skillName.split(",");
+			Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
 			
-   
-			//skills = new HashSet<String>(Arrays.asList(skills)).toArray(new String[0]);
-			
-			
-			for(String skill   : skills){
-				
-				CandidateSkills candidateSkills2 = candidateSkillsService.getSkillsByCandidateIdSkillName(candidateId, skill);
-			    if(candidateSkills2 == null ){
-						CandidateSkills cs = new CandidateSkills();
-						Candidate  candidate =  candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
-						cs.setCandidateId(candidate);
-						cs.setStatus(Constants.CANDIDATE_SKILL_ACTIVE);
-						cs.setOrgLocationID(loginOrgLocation);
-						cs.setName(skill);
-						List<String> skillList = Arrays.asList(skills);
-						lookUpDataService.getSkillsBySkillsName(skillList);
-						candidateSkillsService.storeCandidateSkills(cs);
-				 }
+			if(null != can && null != can.getSkillsName()){
+				StringBuilder candidateSkill = new StringBuilder();
+				can.setSkillsName(candidateSkill.append(can.getSkillsName()).append(",").append(skillName).toString());
+				candidateService.saveOrUpdateCandidate(can);
+				candidateService.saveOrUpdateCandidateElkDocument(can);
+			}else if(null != can){
+				can.setSkillsName(skillName);
+				candidateService.saveOrUpdateCandidate(can);
+				candidateService.saveOrUpdateCandidateElkDocument(can);
 			}
 			return "success";
-			
 		 }
 	   
+	   // Skills Save In Candidates table Not In CandidateSkills Table
 	   
-	   @RequestMapping(value = "/getSkillsExcludeExistingSkills")
+	   /*@RequestMapping(value = "/getSkillsExcludeExistingSkills")
 	   public String getSkillsExcludeExistingSkills(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
 
 		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -645,7 +763,7 @@ public class CandidateListRestController {
 				List<LookUpData> skills = lookUpDataService.getSkillsBySkillsName(candidateSkillNames);
 				resultJson = commonUtil.toJSON(skills);
 				return resultJson;
-		 }
+		 }*/
 	   
 	   
 	   /**
@@ -659,7 +777,9 @@ public class CandidateListRestController {
 		 * 
 		 * @throws NullPointerException
 		 */
-	   @RequestMapping(value = "/removeSkillBySkillId")
+	   // Skills Save In Candidates table Not In CandidateSkills Table
+	   
+	   /*@RequestMapping(value = "/removeSkillBySkillId")
 	   public String removeSkillBySkillId(@RequestParam(value="skillId", required=false) String  skillId,HttpServletRequest request) throws Exception {
 		  
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -673,7 +793,7 @@ public class CandidateListRestController {
 		    }else{
 				return "exception";
 			}
-		 }
+		 }*/
 	   
 	   
 	   /**
@@ -811,7 +931,10 @@ public class CandidateListRestController {
 				
 				candidate.setUpdatedBy(user.getUserCode());
 				candidate.setUpdatedDate(commonUtil.currentDate());
+				candidate.setIsFavourite(0);
+				candidate.setTeamId(null);
 				candidateService.saveOrUpdateCandidate(candidate);
+				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 				StringBuilder candidateRemoveMsg = new StringBuilder();
 				SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", candidateRemoveMsg.append("").append(candidate.getFirstName()).append(" Removed").toString());
 	
@@ -822,37 +945,25 @@ public class CandidateListRestController {
 	   
 	   
 	   
-	   @PreAuthorize("hasRole('ROLE_ADD_CANDIDATE_HOTLIST')")
+	   @PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_HOTLIST','ROLE_CROWDSOURCING_CANDIDATES')")
 	   @RequestMapping(value = "/saveCandidateAsFavourite", method = RequestMethod.POST)
 		public @ResponseBody String saveCandidateAsFavourite(@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			Candidate candidate = new Candidate();
-			candidate.setId(candidateId);
+			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 			
-			CandidateHotList hotList = candidateHotListService.getCandidateHotListByCandidateIdAndOrgLocationId(candidateId, orgLocation.getId());
-			if(null != hotList){
-				if(hotList.getStatus().equals(1)){
-					hotList.setStatus(0);
+			if(null != candidate){
+				if(null == candidate.getIsFavourite() || candidate.getIsFavourite().equals(Constants.RECORD_ACTIVE)){
+					candidate.setIsFavourite(Constants.RECORD_INACTIVE);
 				}else{
-					hotList.setStatus(1);
+					candidate.setIsFavourite(Constants.RECORD_ACTIVE);
 				}
-				hotList.setTeamId(null);
-				hotList.setUpdatedBy(user.getUserCode());
-				hotList.setUpdatedDate(new Date());
-				candidateHotListService.saveCandidateHotList(hotList);
 				
-			}else{
-				hotList = new CandidateHotList();
-				hotList.setCandidateId(candidate);
-				hotList.setOrgLocationId(orgLocation);
-				hotList.setStatus(1);
-				hotList.setCreatedBy(user.getUserCode());
-				hotList.setCreatedDate(new Date());
-				hotList.setUpdatedBy(user.getUserCode());
-				hotList.setUpdatedDate(new Date());
-				candidateHotListService.saveCandidateHotList(hotList);
+				candidate.setTeamId(null);
+				candidateService.saveOrUpdateCandidate(candidate);
+				candidateService.saveOrUpdateCandidateElkDocument(candidate);
+				
 			}
 			
 			
@@ -870,16 +981,15 @@ public class CandidateListRestController {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			
 			String[] candidateIds = hotlist.split(",");
-			Team team =new Team();
+			Team team = new Team();
 			team.setId(teamId);
 			
 			for(int i = 0; i < candidateIds.length; i++){
 				
-				CandidateHotList hotList = candidateHotListService.getCandidateHotListByCandidateIdAndOrgLocationId(Long.valueOf(candidateIds[i]), orgLocation.getId());
-				hotList.setTeamId(team);
-				hotList.setUpdatedBy(user.getUserCode());
-				hotList.setUpdatedDate(new Date());
-				candidateHotListService.saveCandidateHotList(hotList);
+				Candidate candidate = candidateService.getCandidateByCandidateId(Long.valueOf(candidateIds[i]));
+				candidate.setTeamId(team);
+				candidateService.saveOrUpdateCandidate(candidate);
+				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			}
 			
 			
@@ -913,6 +1023,7 @@ public class CandidateListRestController {
 				candidate.setUpdatedBy(user.getUserCode());
 				candidate.setUpdatedDate(commonUtil.currentDate());
 				candidateService.saveOrUpdateCandidate(candidate);
+				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			}
 			return "success";
 		 }
@@ -931,7 +1042,10 @@ public class CandidateListRestController {
  		 * 
  		 * @throws NullPointerException
  		 */ 
-	 	 @RequestMapping(value = "/fieldUpdateCandidate")
+	   
+	   // Skills Save In Candidates table Not In CandidateSkills Table
+	 	 
+	   /*@RequestMapping(value = "/fieldUpdateCandidate")
 	 	 public String fieldUpdateCandidate(@RequestParam(value="candidateSkillId", required=false) String  candidateSkillId,@RequestParam(value="name", required=false) String  name,@RequestParam(value="value", required=false) String  value,HttpServletRequest request) throws Exception {
 	 		       
 	 		 	CandidateSkills candidateSkills =  candidateSkillsService.getCandidateSkillBySkillId(Long.parseLong(candidateSkillId));
@@ -944,7 +1058,7 @@ public class CandidateListRestController {
 	 		 	candidateSkillsService.storeCandidateSkills(candidateSkills);
 	 			return "success";
 	 			
-	 	 }
+	 	 }*/
 	 		 /**
 	 		  * @author Rajashekar
 	 		  * get candidate data to export excel and pdf
@@ -987,4 +1101,32 @@ public class CandidateListRestController {
 				file.delete();
 			}
 		 }
+	 	 
+	 	 
+	 	 /**
+			 *  This Method is for saving Skils into Candidate table By candidateID
+			 *  
+			 * @author : venkat kesav
+			 * @param candidateId This is the first parameter to saveSkilsBycandidateID method
+			 * @param skillName   This is the second parameter to saveSkilsBycandidateID method
+			 * @param request     This is the third parameter to saveSkilsBycandidateID method
+			 * 
+			 * @return String
+			 * 
+			 * @throws NullPointerException
+			 */
+		   @RequestMapping(value = "/saveOrUpdateOnlySkillBycandidateId")
+		   public String saveOrUpdateOnlySkillBycandidateId(@RequestParam(value="candidateId", required=false) String  candidateId,@RequestParam(value="skillName", required=false) String  skillName, HttpServletRequest request) throws Exception {
+			   Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
+				
+				if(null != can && StringUtils.isNotEmpty(skillName)){
+					can.setSkillsName("");
+					can.setSkillsName(skillName);
+					candidateService.saveOrUpdateCandidate(can);
+					candidateService.saveOrUpdateCandidateElkDocument(can);
+					return "success";
+				}else{
+					return "failed";
+				}
+			 }
 	}

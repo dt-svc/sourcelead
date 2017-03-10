@@ -11,16 +11,8 @@
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <meta charset="utf-8">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-<link href="resources/css/font-awesome.min.css" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css" rel="stylesheet">
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
- <script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
- <script src="resources/js/bootstrap.min.js"></script>
- <script src="resources/js/jquery-fun.js"></script> 
  <script src="resources/js/formvalidator.js"></script>
     
 <script>
@@ -120,7 +112,7 @@
 						  <div class="form-group">
 							<label class="col-md-4">Phone</label>
 							<div class="col-md-8">
-							  <input type="text" name="mobilePhone" field-name="Mobile Phone" value="${SourceLeadWeb_user.mobilePhone}" class="form-control" data-validation-optional="true" data-validation="validate_int validate_length length9-20" />
+							  <input type="text" name="mobilePhone" field-name="Mobile Phone" value="${SourceLeadWeb_user.mobilePhone}" class="form-control" data-validation-optional="true" data-validation="validate_Space validate_length length9-20 validate_phone" />
 							</div>
 						  </div>
 						  <div class="form-group">

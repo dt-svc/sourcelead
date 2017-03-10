@@ -6,16 +6,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
-<script src="resources/js/bootstrap-select.min.js"></script>
-<script src="resources/js/chosen.jquery.min.js"></script> 	
-<script src="resources/js/jquery-ui.min.js" ></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
 
 <script src="resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
@@ -118,7 +109,8 @@ function templatepagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -393,7 +385,7 @@ function cancel(){
 
 <script type="text/javascript">
 function validateTemplateName(){
-	var templateName = document.getElementById("templateName").value; 
+	var templateName = document.getElementById("templateName").value.trim(); 
 	var templateId = $("#templateId").val();
 	if(templateId == 'undefined' || templateId == null){
 		templateId = '';

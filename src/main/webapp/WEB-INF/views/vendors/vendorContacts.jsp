@@ -2,14 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
-<script src="resources/js/bootstrap-select.min.js"></script>
-<script src="resources/js/chosen.jquery.min.js"></script> 	
 <style type="text/css">
 .collapse-div-adduser select{
 width: 100% !important;
@@ -70,7 +63,7 @@ function vendorContacts(orgRelationID,clientLocationId){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID, 
+	    	url : sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor", 
 	        success: function(data) {
 	        	
 	        	var json = JSON.parse(data);
@@ -147,13 +140,18 @@ function vendorContacts(orgRelationID,clientLocationId){
 				                result = result + '	     <td><div><span title="'+opt.ownerName+'">'+opt.ownerName+'</span></div></td>';
 				                
 				                result = result + ' <td><div>';
-								result = result + ' <select id="spocStatus'+json[i].id+'" name="spocStatus" onChange="changeSpocStatus('+json[i].id+'\,'+vendorLocationId+');">';
-								result = result + ' <option '+selected1+'>Active</option>';
-								result = result + ' <option '+selected2+'>In-Active</option>';
-								result = result + ' <option '+selected3+'>New</option>';
-								result = result + ' <option '+selected4+'>Negotiation</option>';
-								result = result + ' <option '+selected5+'>Contracted</option>';
-								result = result + ' </select>';
+				                
+				                if(opt.invitationStatus == 'Rejected'){
+				        			result = result + '<span>'+opt.spocStatus+'</span>';
+				        		}else{
+									result = result + ' <select id="spocStatus'+json[i].id+'" name="spocStatus" onChange="changeSpocStatus('+json[i].id+'\,'+vendorLocationId+');">';
+									result = result + ' <option '+selected1+'>Active</option>';
+									result = result + ' <option '+selected2+'>In-Active</option>';
+									result = result + ' <option '+selected3+'>New</option>';
+									result = result + ' <option '+selected4+'>Negotiation</option>';
+									result = result + ' <option '+selected5+'>Contracted</option>';
+									result = result + ' </select>';
+				        		}
 								result = result + ' </div></td>';
 				                
 				                result = result +'<td data-title="Invitation Status"><div>';
@@ -267,6 +265,7 @@ function saveReasonForVendorSpocTermination(spocId, orgRelationID,vendorLocation
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
 	if(reason.match(/^[^\s-](.*)*$/) != null){
+		 reason = encodeURIComponent(reason);
 		$("#reasonForSpocDiv").empty();
 		$.ajax({
 		   	type: "POST",
@@ -326,7 +325,8 @@ function contactPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
 		
     } );
@@ -344,7 +344,7 @@ function addContact(orgRelationID,clientLocationId) {
 	
 	result = result  +'	 <div class="clearfix mb10" id="EmailIdDiv">';
 	result = result  +'	  <div class="col-md-12">';
-	result = result  +'	    <input type="text" class="form-control input-sm" name="email" id="EmailId" value=""  onblur=" validateEmail('+orgRelationID+'); getSpocUserDetails('+clientLocationId+','+orgRelationID+');" field-name="Email" placeholder="Email Id *" data-validation="required">';
+	result = result  +'	    <input type="text" class="form-control input-sm" name="email" id="EmailId" value=""  onblur=" validateEmail('+orgRelationID+'); getSpocUserDetails('+clientLocationId+','+orgRelationID+');" field-name="Email" placeholder="Email Id *" data-validation="required validate_Space validate_length length2-100 validate_email">';
 	result = result  +'	   </div>';
 	result = result  +'	 </div>';
 	

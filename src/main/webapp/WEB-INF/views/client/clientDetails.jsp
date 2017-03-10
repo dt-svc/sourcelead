@@ -276,11 +276,11 @@
 				            $("#city").chosen();
 				            
 				            $("#country").on('change', function (e) {
-				         	   getStates();
+				         	   getAllStates();
 				            });
 				           
 				            $("#state").on('change', function (e) {
-				         	   getCities();
+				         	   getAllCities();
 				            });
 				           
 				            $('.chosen-select').each(function() {
@@ -445,7 +445,7 @@ function getAllCountries(){
 	            }
 	            
 	            $('#country').trigger("chosen:updated");
-	            getStates();
+	            getAllStates();
 	        },
 	        error: function(e){
 	        }
@@ -456,11 +456,12 @@ function getAllCountries(){
 
 
 <script>
-function getStates(){
+function getAllStates(){
 	var countryName = $("#country").val();
 	
 	//to set existing state value(Auto populate)
 	var stateName = $("#state").val();
+
 	if(stateName == null || stateName == 'undefined' || stateName == ''){
 		stateName = document.getElementById("existingState").value;
 	}
@@ -484,7 +485,7 @@ function getStates(){
 	            	} 
 	            }
 	            $('#state').trigger("chosen:updated");
-	            getCities();
+	            getAllCities();
 	        },
 	        error: function(e){
 	        }
@@ -502,10 +503,9 @@ function getStates(){
 
 
 <script>
-function getCities(){
+function getAllCities(){
 	var countryName = $("#country").val();
 	var stateName = $("#state").val();
-	
 	//to set existing city value(Auto populate)
 	var cityName = $("#city").val();
 	if(cityName == null || cityName == 'undefined' || cityName == ''){

@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao.impl;
 import java.text.MessageFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -95,26 +96,34 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 			sqlEndDate = new java.sql.Date(endDate.getTime());
 		}
 		
-		Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId where pmh.projectMemberId.id = :projectMemberId and (( pmh.projectTerminationDate IS NOT NULL and :startDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR ( pmh.projectTerminationDate IS NOT NULL and  :endDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR (pmh.projectTerminationDate IS NULL and :endDate >= pmh.projectAssignedDate))");
+		Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId where pmh.projectMemberId.id = :projectMemberId and (( pmh.projectTerminationDate IS NOT NULL and :startDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR (pmh.projectTerminationDate IS NOT NULL and  (pmh.projectTerminationDate between :startDate and :endDate))  OR ( pmh.projectTerminationDate IS NOT NULL and  :endDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR (pmh.projectTerminationDate IS NULL and :endDate >= pmh.projectAssignedDate))");
 		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectMemberId", projectMemberId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setCacheable(true).list();
 		HashSet<Date> dateList = new HashSet<Date>();
 		if(projectMembersHistoryList != null && !projectMembersHistoryList.isEmpty()){
 			for(ProjectMembersHistory pmh :projectMembersHistoryList){
 				
-				
+				     Date hStartDate = null;
+				     Date hEndDate = null;
 					 if(pmh.getProjectAssignedDate().after(startDate)){
-						startDate = pmh.getProjectAssignedDate();	
-					 } 
+						 hStartDate = pmh.getProjectAssignedDate();	
+					 }
+					 else{
+						 hStartDate = startDate;
+					 }
+					 
 					 if(pmh.getProjectTerminationDate()!= null && pmh.getProjectTerminationDate().before(endDate)){
-						 endDate = pmh.getProjectTerminationDate();
+						 hEndDate = pmh.getProjectTerminationDate();
+					 }
+					 else{
+						 hEndDate = endDate;
 					 }
 					 
 					 
 					   Calendar calendar = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 					    calendar.setLenient(false);
-					    calendar.setTime(startDate);
+					    calendar.setTime(hStartDate);
 
-					    while (calendar.getTime().before(endDate) || calendar.getTime().equals(endDate))
+					    while (calendar.getTime().before(hEndDate) || calendar.getTime().equals(hEndDate))
 					    {
 					        Date result = calendar.getTime();
 					        dateList.add(result);
@@ -171,6 +180,37 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 		}
 		
 		return pmh;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public HashMap<String, Date> getProjectMembersStartDateAndEndDateByProjectMemberId(Long projectMemberId) throws Exception {
+		logger.debug("In ProjectMembersHistory getProjectMembersStartDateAndEndDateByProjectMemberId method");
+        Session session = this.sessionFactory.getCurrentSession();
+        Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId where pmh.projectMemberId.id = :projectMemberId");
+		@SuppressWarnings("unchecked")
+		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectMemberId", projectMemberId).setCacheable(true).list();
+		HashMap<String,Date> dateList = new HashMap<String,Date>();
+		Date startDate = null; 
+		Date endDate  = null;
+		if(projectMembersHistoryList != null && !projectMembersHistoryList.isEmpty()){
+			int count = 1;
+			for(ProjectMembersHistory pmh :projectMembersHistoryList){
+				if(count == 1){
+					startDate = pmh.getProjectAssignedDate();
+				}
+				else{
+					endDate = pmh.getProjectTerminationDate();
+				}
+				if(projectMembersHistoryList.size() == 1 &&  pmh.getProjectTerminationDate() != null){
+					endDate = pmh.getProjectTerminationDate();
+				}
+				count++;
+			}
+			dateList.put("STARTDATE", startDate);
+			dateList.put("ENDDATE", endDate);
+		}
+		return dateList;
 	}
 
 }

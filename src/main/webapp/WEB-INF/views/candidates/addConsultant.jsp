@@ -3,16 +3,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/chosen.jquery.min.js"></script> 
-
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
@@ -143,7 +133,7 @@
         <div class="form-group">
           <label class="col-md-3">Last Name</label>
           <div class="col-md-9">
-           <input type="text" class="form-control" id="lastName" name="lastName" value="${lastName}"  field-name="Last Name" data-validation="validate_Space validate_length length1-100" data-validation-optional="true" value="">
+           <input type="text" class="form-control" id="lastName" name="lastName" value="${lastName}"  field-name="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true" value="">
           </div>
         </div>
         
@@ -162,6 +152,12 @@
           </div>
         </div>
         
+         <div class="form-group">
+          <label class="col-md-3">Alternative Number</label>
+          <div class="col-md-9">
+            <input type="text" class="form-control" id="alternateMobilePhone" name="alternateMobilePhone"   field-name="Alternative Number" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true" value="">
+          </div>
+        </div>
         
         <div class="form-group">
 				<label class="col-md-3">Country</label>
@@ -194,32 +190,35 @@
           </div>
         </div>
         
-        <div class="form-group">
+         <div class="form-group">
          <label class="col-md-3">Designation</label>
-         <div class="col-md-9">
-          <div class="input-group ratetype">
+         <div class="col-md-9 ratetype">
              <input type="text" id="designation" name="designation" value="${designation}" field-name="Designation"  data-validation="validate_Space validate_Name validate_length length2-250" data-validation-optional="true"  value="" class="form-control">
-             <div class="input-group-btn selp-custom-min">
-             <select class="selectpicker" id="designationType" name="designationType">
-             <option value="">--Select--</option>
+         </div>
+       </div>
+       
+       <div class="form-group">
+         <label class="col-md-3">Employment type</label>
+         <div class="col-md-9">
+             <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getDesignationType(this);">
+                <option value="">--Select--</option>
                  <option>C2C</option>
                  <option>W-2</option>
+                 <option>C2H</option>
                  <option>Part Time</option>
                  <option>Full Time</option>
                  <option>Other</option>
              </select>
-             </div>
-           </div>
          </div>
        </div>
 
         <div class="form-group">
           <label class="col-md-3">Experience</label>
           <div class="col-md-9">
-            <div class="row">
+            <div class="row exp-drop">
              <div class="col-xs-6 col-md-6">
              		<select class="form-control selectpicker" id="experienceYears" name="experienceYears" onchange="disableMonths();">
-             		  <option selected disabled>Years</option>
+             		  <option value="" >Years</option>
              		  <c:forEach begin="0" end="24" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
@@ -227,9 +226,10 @@
              		</select>
              </div>
              
+             
              <div class="col-xs-6 col-md-6">
              		<select class="form-control selectpicker" id="experienceMonths" name="experienceMonths">
-             		<option selected disabled>Months</option>
+             		<option value="">Months</option>
              		 <c:forEach begin="0" end="11" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
@@ -239,28 +239,13 @@
           </div>
         </div>
        
-         <%-- <div class="form-group">
-         <label class="col-md-3">Current Rate</label>
-         <div class="col-md-9">
-           <div class="input-group ratetype">
-             <input type="text" id="currentRate" name="currentRate" value="${currentRate}" field-name="Current Rate"  data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control">
-             <div class="input-group-btn selp-custom-min">
-             <select class="selectpicker" id="currentRateCurrency" name="currentRateCurrency">
-                 
-                 <option ${currencyCode  == 'INR' ? 'selected' : ''}><a href="#">INR</a></option>
-                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}><a href="#">AUD</a></option>
-                 <option ${currencyCode  == 'USD' ? 'selected' : ''}><a href="#">USD</a></option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}><a href="#">GPB</a></option>
-                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}><a href="#">SGD</a></option>
-                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}><a href="#">EUR</a></option>
-                 
-             </select>
-             </div>
-           </div>
-         </div>
-       </div> --%>
-       
-       
+        <div class="form-group designationTypeDiv" id="designationTypeDiv" style="display:none">
+            <label class="col-md-3">Employment Type</label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" id="designationOtherType" name="designationOtherType" value="${candidate.designationOtherType}"  field-name="Job Type" value="">
+            </div>
+          </div>
+          
        <div class="form-group">
             <label class="col-md-3">Current Rate</label>
             <div class="col-md-9">
@@ -285,11 +270,11 @@
                     <option value="">Rate Per</option>
                     <option ${currentRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
                     <option ${currentRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-                    <option ${currentRateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
-                    <option ${currentRateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
+                    <option ${currentRateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+                    <option ${currentRateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
                     <option ${currentRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-                    <option ${currentRateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
-                    <option ${currentRateType  == 'others' ? 'selected' : ''}>Yearly</option>
+                    <option ${currentRateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+                    <option ${currentRateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
                   </select>
                 </div>
                  <div class="clearfix"></div> <div class="clearfix"></div>
@@ -323,11 +308,11 @@
                     <option value="">Rate Per</option>
                     <option ${rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
                     <option ${rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-                    <option ${rateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
-                    <option ${rateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
+                    <option ${rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+                    <option ${rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
                     <option ${rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-                    <option ${rateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
-                    <option ${rateType  == 'others' ? 'selected' : ''}>Yearly</option>
+                    <option ${rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+                    <option ${rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
                   </select>
                 </div>
                  <div class="clearfix"></div> <div class="clearfix"></div>
@@ -447,38 +432,11 @@
      2.parameter : csrf token,con.
      3.ajax url implementation in CandidateRestController.
     --%>
-<script type="text/javascript">
-        var validationSettings = {
-            errorMessagePosition : 'element',
-            borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd' 
-            };
-</script> 
+ 
 <script type="text/javascript">
 	function storeCandidate() {
 		
-		var expectedRate = document.getElementById("expectedRate").value; 
-		 if(expectedRate != null && expectedRate != ""){
-			
-			 $('#rateType').removeAttr('data-validation-optional');
-			 $('#rateType').attr("data-validation","required"); 
-		 }else{
-		 $('#rateType').removeAttr('data-validation');
-		 $('#rateType').attr("data-validation-optional","true"); 
-		 }
-		 
-		 
-		 var currentRate = document.getElementById("currentRate").value; 
-			 if(currentRate != null && currentRate != ""){
-				
-				 $('#currentRateType').removeAttr('data-validation-optional');
-				 $('#currentRateType').attr("data-validation","required"); 
-			 }else{
-			 $('#currentRateType').removeAttr('data-validation');
-			 $('#currentRateType').attr("data-validation-optional","true"); 
-			 }
-		 
+		rateValidations();
 		
 		var validationSettings = {
 				errorMessagePosition : 'element',
@@ -764,7 +722,7 @@ function getCities(){
 		
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email, 
+		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&candidateType=Consultant", 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
@@ -788,14 +746,19 @@ function getCities(){
  
  <!-- Experience Years and Months validation Script years greater than  20 the months dropdown disabled script here -->
  <script type="text/javascript">
+ 
  function disableMonths() {
      $("#experienceYears").change(function() {
-    	 
-         if ($(this).val() == '25+'){
-             $("#experienceMonths").attr("disabled", true);
-             $("#experienceMonths").val("disabled", true);
-         }else
+         if ($("#experienceYears").val() == '25+'){
+        	 $("#experienceMonths").val('');  
+        	 $('#experienceMonths').selectpicker('refresh');
+        	 $('#experienceMonths').attr("disabled", true);
+             $('#experienceMonths').val("disabled", true);
+         }else{
+        	 $("#experienceMonths").val('');  
+        	 $('#experienceMonths').selectpicker('refresh');
         	 $("#experienceMonths").attr("disabled", false); 
+         }
      });
  }
 	      var selectedFile = document.getElementById("uploadBtn");
@@ -989,12 +952,12 @@ function getUserDetails(){
 	        		
 	        		  $("#firstName").val(json[0]);
 	        		  
-	        		  if(json[1] != null && json[1] != '' && json[1] !='undefined'){
+	        		 /*  if(json[1] != null && json[1] != '' && json[1] !='undefined'){
 	        			  $("#lastName").val('');
 	        		  }else{
 	        			  $("#lastName").val(json[1]);
-	        		  }
-	        		  
+	        		  } */
+	        		  $("#lastName").val(json[1]);
 	        		  $("#email").val(json[2]);
 	        		  $("#mobilePhone").val(json[3]);
 	        		 
@@ -1036,3 +999,76 @@ document.getElementById("uploadFileBtn").onchange = function () {
 
 
 <!-- Experience Years and Months validation Script End here -->
+
+<script>
+function getDesignationType(designationType){
+	var existingDesignationType = '${requirement.designationType}';
+	if(designationType.value == 'Other'){
+		 document.getElementById("designationTypeDiv").style.display="block";
+		  $("#designationOtherType").attr("data-validation-optional", "true");
+		  $("#designationOtherType").attr("data-validation", "validate_Space validate_length length2-250");
+	}else{
+		document.getElementById("designationTypeDiv").style.display="none";
+		  $("#designationOtherType").attr("data-validation-optional", "true");
+		  $("#designationTypeDiv").find('p.jquery_form_error_message').remove();
+		  if(existingDesignationType ==null || existingDesignationType == "" || existingDesignationType == "undefined" || existingDesignationType != 'Other'){
+			  $("#designationOtherType").val('');
+		  }
+	}
+}
+</script>
+
+<!-- This script for Current Rate ,Rate Type,Expected Rate, Expected Rate Type validation checks -->
+<script>
+
+function rateValidations(){
+var rateType = document.getElementById("rateType").value; 
+if(rateType != null && rateType != ""){
+	 $('#expectedRate').removeAttr('data-validation-optional');
+	 $('#expectedRate').attr("data-validation","required"); 
+}else{
+	 $('#expectedRate').removeAttr('data-validation');
+	 $('#expectedRate').attr("data-validation-optional","true");
+	 $('#rateType').removeAttr('data-validation');
+	 $('#rateType').attr("data-validation-optional","true"); 
+} 
+
+var expectedRate = document.getElementById("expectedRate").value; 
+if(expectedRate != null && expectedRate != ""){
+	
+	 $('#rateType').removeAttr('data-validation-optional');
+	 $('#rateType').attr("data-validation","required"); 
+}else{
+$('#rateType').removeAttr('data-validation');
+$('#rateType').attr("data-validation-optional","true"); 
+}
+
+
+
+var currentRateType = document.getElementById("currentRateType").value; 
+	if(currentRateType != null && currentRateType != ""){
+		$('#currentRate').removeAttr('data-validation-optional');
+		$('#currentRate').attr("data-validation","required"); 
+	}else{
+		$('#currentRate').removeAttr('data-validation');
+	 	$('#currentRate').attr("data-validation-optional","true"); 
+		$('#currentRateType').removeAttr('data-validation');
+	 	$('#currentRateType').attr("data-validation-optional","true"); 
+	} 
+
+
+var currentRate = document.getElementById("currentRate").value; 
+	 if(currentRate != null && currentRate != ""){
+		
+		 $('#currentRateType').removeAttr('data-validation-optional');
+		 $('#currentRateType').attr("data-validation","required"); 
+		 
+	 }else{
+		 
+			 $('#currentRateType').removeAttr('data-validation');
+			 $('#currentRateType').attr("data-validation-optional","true"); 
+	 
+	 }
+	 
+}
+</script>

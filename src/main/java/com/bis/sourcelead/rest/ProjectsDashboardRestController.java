@@ -5,12 +5,25 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +36,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.ClientVendorIndex;
+import com.bis.sourcelead.elk.index.ProjectsIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -36,6 +55,7 @@ import com.bis.sourcelead.service.ClientVendorExport;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
@@ -48,6 +68,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * 
@@ -108,6 +129,12 @@ public class ProjectsDashboardRestController {
 	 @Autowired
 	 ClientVendorExport clientVendorExport;
 	 
+	 @Autowired
+	 OrgRelationsService orgRelationsService;
+	 
+	 @Autowired
+	 SourceleadELKBaseIndexer<ClientVendorIndex> sourceleadELKBaseIndexer;
+	 
 			
 		/**
 		 * to filter the projects based on client and project status
@@ -126,11 +153,6 @@ public class ProjectsDashboardRestController {
 				String resultJson;
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			    List<Projects> projectsList = projectsService.getProjectsBasedOnClientsAndStatusSelectionInFilters(user.getId(), clients, values,loginOrgLocations.getId());
-			   
-			    
-			    
-			    
-			    
 			    for(Projects ps : projectsList){
 			    	ps.setManagerLevel1(ps.getManagerLevel1());
 			    	if(ps.getManagerLevel2() != null){
@@ -171,40 +193,45 @@ public class ProjectsDashboardRestController {
 	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_PROJECT')")
 	 @RequestMapping(value = "/updateProjectByProjectId", method = RequestMethod.POST)
 	 public String updateProjectByProjectId(@RequestParam(value="json", required=false) String json,@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
-
+		 String resultJson;
 		 String json1 = "{"+json+"}";	
 		 JSONObject jsonObj = new JSONObject(json1);
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user"); 
-		 String ProjectDetailsUpdating = projectsService.getProjectDetailsUpdateByProjectId(projectId, user, jsonObj);
+		 Projects projects = projectsService.getProjectDetailsUpdateByProjectId(projectId, user, jsonObj);
 	
-		 return ProjectDetailsUpdating;
+		 resultJson = commonUtil.toJSON(projects);
+		 return resultJson;
 	 }
 	 
 
-	/**
-	 * update project task by task id	 
-	 * @author David Sammeta
-	 * @param taskId
-	 * @param fieldName
-	 * @param fieldValue
-	 * @return String
-	 * @throws Exception
-	 */
-	 
+	 /**
+	  * @author Laxman
+	  * update the tasks
+	  * @param json
+	  * @param taskId
+	  * @return success
+	  * @throws Exception
+	  */
 	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_PROJECT_TASKS')")
-	 @RequestMapping(value = "/updateProjectTaskById", method = RequestMethod.POST)
-	 public String updateProjectTaskById(@RequestParam(value="taskId", required=false) String taskId,@RequestParam(value="fieldName", required=false) String fieldName,@RequestParam(value="fieldValue", required=false) String fieldValue) throws Exception{ 
-		    
+	 @RequestMapping(value = "/updateEditProjectTask", method = RequestMethod.POST)
+	 public String updateEditProjectTask(@RequestParam(value="json", required=false) String json,
+			 @RequestParam(value="taskId", required=false) String taskId) throws Exception{ 
+		    String  json1 = "{"+json+"}";	
+		    JSONObject jsonObj = new JSONObject(json1);
 		    ProjectTasks projectTasks = tasksService.getTasksId(taskId);
-		    if("taskName".equalsIgnoreCase(fieldName)){  
-		    	projectTasks.setTaskName(fieldValue);
+		    if(jsonObj.has("taskName")){
+		    	projectTasks.setTaskName(jsonObj.getString("taskName"));
 		    }
-		    else if ("description".equalsIgnoreCase(fieldName)) {
-		    	projectTasks.setDescription(fieldValue);
-			}     
+		    if(jsonObj.has("description")){
+		    	projectTasks.setDescription(jsonObj.getString("description"));
+		    }
+		    if(jsonObj.has("billableType")){
+		    	projectTasks.setBillableType(jsonObj.getString("billableType"));	
+		    }
 		    tasksService.updateTasks(projectTasks);
-		    return null;
+		    return "success";
 	  }
+	 
 	 
 	 /**
 	  * save the projects task
@@ -242,6 +269,7 @@ public class ProjectsDashboardRestController {
 			 return resultJson;
 		 	
 	 }
+	 
 	/**
 	 * Get Employees list based on project id
 	 * @param projectId
@@ -363,5 +391,275 @@ public class ProjectsDashboardRestController {
 			}
 		
 	  }
+	
+	 
+	 /**
+	   * @author Venkat Kesav
+	   * @since  Jan 25 2017
+	   * @version 0.0.1
+	   * 
+	   *  
+	   * @return string 
+	   * 
+	   * @throws NullPointer
+	   */
+	 @RequestMapping(value = "/searchProject", method = RequestMethod.GET)
+	 public String searchProject(@RequestParam(value = "json", required = false) String json, HttpServletRequest request) throws Exception {
+
+			String jsonc = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(jsonc);
+			
+			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			
+			 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+			 
+			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
+			 
+			 //Integer maxResults = projectsService.getAllProjects().size();
+			 
+			 Integer maxResults = projectsService.getProjectCountByOrgLocationId(loginOrgLocation.getId());
+		   	 
+			 //Exclude Keyword
+			 /*ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
+			 if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
+			 	 BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
+				 for(String keywd : excludeKeyWordArray){
+					 BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
+					ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+					if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+						for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+							excludeBoolSubQueryBuilder.should(matchQueryBuilder);
+						}
+						excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
+					}
+				}
+				 boolQueryBuilder.mustNot(excludeBoolQueryBuilder);
+			  }*/
+				
+				//Any Keyword
+				/*ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "anyOfKeyword");
+				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : anyKeyWordArray){
+						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								anyBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+						}
+					}
+					 boolQueryBuilder.must(anyBoolQueryBuilder);
+				}*/
+				//All Keywords
+				/*ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
+					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : allKeyWordArray){
+						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								allBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+						}
+					}
+					 boolQueryBuilder.must(allBoolQueryBuilder);
+				}*/
+				
+				//project Id
+				ArrayList<String> projectIdArray = getSearchKeywordsFromChosenSelectField(jsonObj, "projectIdAdvanced");
+				if(projectIdArray != null && !projectIdArray.isEmpty()){
+					BoolQueryBuilder projectIdBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : projectIdArray){
+						projectIdBoolQueryBuilder.should(QueryBuilders.matchQuery("projectSequeneNumber", keywd));
+					}
+					boolQueryBuilder.must(projectIdBoolQueryBuilder);
+				}
+				
+				//project Name
+				ArrayList<String> projectNameArray = getSearchKeywordsFromChosenSelectField(jsonObj, "projectNameAdvanced");
+				if(projectNameArray != null && !projectNameArray.isEmpty()){
+					BoolQueryBuilder projectNameBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : projectNameArray){
+						projectNameBoolQueryBuilder.should(QueryBuilders.matchQuery("projectName", keywd));
+					}
+					boolQueryBuilder.must(projectNameBoolQueryBuilder);
+				}
+				
+				//project Manager
+				ArrayList<String> projectManagerArray = getSearchKeywordsFromChosenSelectField(jsonObj, "projectManagerAdvanced");
+				if(projectManagerArray != null && !projectManagerArray.isEmpty()){
+					BoolQueryBuilder projectManagerBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : projectManagerArray){
+						projectManagerBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("level1ManagerName", keywd));
+						projectManagerBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("level2ManagerName", keywd));
+					}
+					boolQueryBuilder.must(projectManagerBoolQueryBuilder);
+				}
+				
+				
+				//project Manager2
+				/*ArrayList<String> projectManager2Array = getSearchKeywordsFromChosenSelectField(jsonObj, "projectManagerAdvanced");
+				if(projectManager2Array != null && !projectManager2Array.isEmpty()){
+					BoolQueryBuilder projectManager2BoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : projectManager2Array){
+						projectManager2BoolQueryBuilder.should(QueryBuilders.matchQuery("level2ManagerName", keywd));
+					}
+					boolQueryBuilder.must(projectManager2BoolQueryBuilder);
+				}*/
+				
+				//invoice Frequency
+				ArrayList<String> invoiceFrequencyArray = getSearchKeywordsFromChosenSelectField(jsonObj, "invoiceFrequencyAdvanced");
+				if(invoiceFrequencyArray != null && !invoiceFrequencyArray.isEmpty()){
+					BoolQueryBuilder invoiceFrequencyBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : invoiceFrequencyArray){
+						if(keywd.equalsIgnoreCase("Weekly")){
+							invoiceFrequencyBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Weekly"));
+							invoiceFrequencyBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Bi-Weekly"));
+						}else if(keywd.equalsIgnoreCase("Monthly")){
+							invoiceFrequencyBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Monthly"));
+							invoiceFrequencyBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Semi-Monthly"));
+						}
+						else{
+							invoiceFrequencyBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", keywd));
+						}
+					}
+					boolQueryBuilder.must(invoiceFrequencyBoolQueryBuilder);
+				}
+				
+				//client Name
+				ArrayList<String> clientsArray = getSearchKeywordsFromChosenSelectField(jsonObj, "clientsAdvanced");
+				if(clientsArray != null && !clientsArray.isEmpty()){
+					BoolQueryBuilder clientsBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : clientsArray){
+						clientsBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("clientName", keywd));
+					}
+					boolQueryBuilder.must(clientsBoolQueryBuilder);
+				}
+				
+				//project Status
+				ArrayList<String> projectStatusArray = getSearchKeywordsFromChosenSelectField(jsonObj, "statusAdvanced");
+				if(projectStatusArray != null && !projectStatusArray.isEmpty()){
+					BoolQueryBuilder projectStatusBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : projectStatusArray){
+						projectStatusBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("projectStatus", keywd));
+					}
+					boolQueryBuilder.must(projectStatusBoolQueryBuilder);
+				}
+				
+				//project start Date
+				/*ArrayList<String> startDateArray = getSearchKeywordsFromChosenSelectField(jsonObj, "projectStartDateAdvanced");
+				if(startDateArray != null && !startDateArray.isEmpty()){
+					BoolQueryBuilder startDateBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : startDateArray){
+						startDateBoolQueryBuilder.should(QueryBuilders.matchQuery("startDate", keywd));
+					}
+					boolQueryBuilder.must(startDateBoolQueryBuilder);
+				}*/
+				String startDateKey = getSearchKeywordsFromTextField(jsonObj, "projectStartDateAdvanced");
+				if(startDateKey != null && !startDateKey.isEmpty()){
+					BoolQueryBuilder startDateBoolQueryBuilder = QueryBuilders.boolQuery();
+					startDateBoolQueryBuilder.must(QueryBuilders.matchPhraseQuery("startDate", startDateKey));
+					boolQueryBuilder.must(startDateBoolQueryBuilder);
+				}
+				
+				//project Members
+				ArrayList<String> projectMembersArray = getSearchKeywordsFromChosenSelectField(jsonObj, "employeeNameAdvanced");
+				if(projectMembersArray != null && !projectMembersArray.isEmpty()){
+					BoolQueryBuilder projectMembersBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : projectMembersArray){
+						projectMembersBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("projectMembers", keywd));
+					}
+					boolQueryBuilder.must(projectMembersBoolQueryBuilder);
+				}
+				
+				//project Member Email
+				ArrayList<String> projectMemberEmailArray = getSearchKeywordsFromChosenSelectField(jsonObj, "employeeEmailAdvanced");
+				if(projectMemberEmailArray != null && !projectMemberEmailArray.isEmpty()){
+					BoolQueryBuilder projectMemberEmailBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : projectMemberEmailArray){
+						projectMemberEmailBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("projectMemberEmail", keywd));
+					}
+					boolQueryBuilder.must(projectMemberEmailBoolQueryBuilder);
+				}
+				
+				List<ProjectsIndex> projectsList = new ArrayList<ProjectsIndex>();
+				try {
+					SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+					if(searchHits != null && searchHits.length >0){
+						ObjectMapper mapper = new ObjectMapper();
+						for (SearchHit hit : searchHits) {
+							json = hit.getSourceAsString();
+							ProjectsIndex projectsIndex = mapper.readValue(json, ProjectsIndex.class);
+							projectsList.add(projectsIndex);
+						}
+					}
+				
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			 String resultJson;
+			 resultJson = commonUtil.toJSON(projectsList);
+			 return resultJson;
+	 }
+	 
+	 private String getSearchKeywordsFromTextField(JSONObject jsonObj,String param) throws Exception{
+		 		String startDate = "";
+		 		if(jsonObj.has(param)){
+		 			startDate = jsonObj.getString("projectStartDateAdvanced");
+		 		}
+		 		return startDate;
+	 }
+	 
+	 private ArrayList<String> getSearchKeywordsFromChosenSelectField(JSONObject jsonObj,String param) throws Exception {
+		 ArrayList<String> keyWordList = null;
+		 if(jsonObj.has(param)){
+			 String searchKeywordString = null;
+			 try{
+	   		   JSONArray jsonArray = jsonObj.getJSONArray(param);
+	   		   searchKeywordString = jsonArray.toString();
+		   	  }
+		   	  catch(JSONException e){
+		   		  searchKeywordString= jsonObj.getString(param);
+		   	  }
+			 
+		     searchKeywordString = searchKeywordString.replaceAll("\\[", "").replaceAll("\\]","");
+		     keyWordList = new ArrayList<String>(Arrays.asList(searchKeywordString.split(",")));
+		 }
+		 else{
+			 keyWordList = new ArrayList<String>();
+		 }
+         return keyWordList;
+    }
+
+	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
+		    ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+		   
+		    //Project Search
+		    //matchQueryBuilderList.add(QueryBuilders.matchQuery("id", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("projectSequeneNumber", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("projectName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("level1ManagerName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("level2ManagerName", keywd));
+			//matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("startDate", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("invoiceFrequency", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("clientName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("projectStatus", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("projectMembers", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("projectMemberEmail", keywd));
+			return matchQueryBuilderList; 
+	 }
+	 
+	 @RequestMapping(value = "/getUniversalProjectsListByOrgLocationID")
+	 public String getUniversalProjectsListByOrgLocationID(@RequestParam(value="searchValue", required=false) String searchValue,HttpServletRequest request) throws Exception{
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 String resultJson;
+			List<Object> uniProjectsList =	projectsService.getAllUniversalSearchProjectsList(orgLocations, searchValue);
+			resultJson = commonUtil.toJSON(uniProjectsList);
+			return resultJson;
+	 }
 	
 }

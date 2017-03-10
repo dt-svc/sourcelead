@@ -11,6 +11,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,12 +33,14 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.UploadedFile;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ClientImportsService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -60,6 +63,9 @@ public class VendorController {
 	CountriesService countriesService;
 	
 	@Autowired
+	StatesService statesService;
+	
+	@Autowired
 	OrgSpocService orgSpocService;
 	
 	@Autowired
@@ -67,11 +73,16 @@ public class VendorController {
 
 	/* This method is used for landing page of vendors tab. So, who has vendors tab access they can see vendors list. No preAuthorize for this method */
 	@RequestMapping(value = "/vendorsList")
-	public ModelAndView vendorsList(HttpServletRequest request) throws Exception {
+	public ModelAndView vendorsList(HttpServletRequest request,@RequestParam(value="searchResult", required=false)String searchResult,
+			@RequestParam(value="searchValue", required=false)String searchValue,
+			@RequestParam(value="searchType", required=false)String searchType,
+			@RequestParam(value="responderLocationId", required=false)String responderLocationId,
+			@RequestParam(value="orgRelationId", required=false)String orgRelationId,
+			@RequestParam(value="orgName", required=false)String orgName,
+			@RequestParam(value="vendorKeyword", required=false)String vendorKeyword) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
 	
 	/*	for(OrgRelations orgRelation : vandorsListByOrgLocationId){
 			List<OrgSpoc> orgSpocs = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(), loginUser.getId(),orgLoc.getId());
@@ -85,10 +96,32 @@ public class VendorController {
 		model.addObject("loginOrgLocId",orgLoc.getId());
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("vendors/vendorsList");
-		Countries countries = countriesService.getCountriesByCountryName(orgLoc.getCountry());
-		if(countries != null){
-			model.addObject("loginCountryName", countries.getName());
+		List<Countries> countryList = countriesService.getAllCountries();
+		model.addObject("countryList", countryList);
+		
+		if(null != vendorKeyword && !"".equalsIgnoreCase(vendorKeyword) &&  vendorKeyword.equalsIgnoreCase("vendorSearch")){
+			model.addObject("vendorKeyword",vendorKeyword);
+			model.addObject("responderLocationId",responderLocationId);
+			model.addObject("orgRelationId",orgRelationId);
+			model.addObject("orgName",orgName);
 		}
+		if(searchResult != null && !searchResult.equalsIgnoreCase("undefined") && searchResult.equalsIgnoreCase("universalVendorList")){
+		    model.addObject("universalVendorList", "universalVendorList");
+		    model.addObject("searchValue",searchValue);
+		    model.addObject("searchType",searchType);
+		    model.addObject("searchType","Vendor");
+		}
+		
+		if(null != orgLoc && StringUtils.isNotEmpty(orgLoc.getCountry())){
+		
+			Countries countries = countriesService.getCountriesByCountryName(orgLoc.getCountry());
+			if(null != countries){
+			   model.addObject("loginCountryName", countries.getName());
+			}
+	        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
+	        model.addObject("statesList", statesList);
+		}
+		
 		List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLoc.getId());
 		for(OrgRelations orgRelation :vendorsList){
 			if(orgRelation.getLocationId() != null && null != orgRelation.getLocationId().getId() && orgRelation.getLocationId().getId().longValue() == orgLoc.getId().longValue()){
@@ -117,6 +150,13 @@ public class VendorController {
 			model.addObject("msg", msg);
 			SourceLeadSessionManager.removeSessionAttribute(request, "vendorContactCreateMsg");
 		}
+		
+		if(msg == null){
+			msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "vendorImport");
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "vendorImport");
+		}
+		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
@@ -140,7 +180,7 @@ public class VendorController {
 	@RequestMapping(value = "/addVendor")
 	public ModelAndView addVendor(HttpServletRequest request)  {
 		
-		ModelAndView model = new ModelAndView();
+		ModelAndView model = new ModelAndView();      
 		try{
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("vendors/vendor");
@@ -236,29 +276,35 @@ public class VendorController {
 			
 			MultipartFile multipartFile = uploadedFile.getFile();
 			if(multipartFile != null){
-				String fileName = multipartFile.getOriginalFilename();
-				
-				
-				String isFileCreated = clientImportsService.clientBulkSaving(multipartFile,user,orgLocation,org,uploadedFile.getEmail(),responderType);
-				
-				if (fileName.equalsIgnoreCase(isFileCreated)) {
-					model.addAttribute("errorMessage", "Please download Error file here");
-		             model.addAttribute("fileName", fileName);
-					return "upload/uploadVendorForm";
-				}/*else if("FailureUsersForCheck.xls".equalsIgnoreCase(isFileCreated)){
-					model.addAttribute("errorMessage", "Please download Error file here");
+				String fn = multipartFile.getOriginalFilename(); // vendors_contacts_Import vendors_import_template.xls
+				String fileName = getFileName(fn);
+				if(!fileName.contains(Constants.CLIENTS_CONTACTS_IMPORT_XLS) && !fileName.contains(Constants.CLIENTS_CONTACTS_IMPORT_XLSX) && !fileName.contains(Constants.CLIENTS_IMPORT_TEMPLATE_XLS) && !fileName.contains(Constants.CLIENTS_IMPORT_TEMPLATE_XLSX)){
+					String isFileCreated = clientImportsService.clientBulkSaving(multipartFile,user,orgLocation,org,uploadedFile.getEmail(),responderType);
+					
+					if (fileName.equalsIgnoreCase(isFileCreated)) {
+						model.addAttribute("errorMessage", "Please download Error file here");
+			             model.addAttribute("fileName", fileName);
+						return "upload/uploadVendorForm";
+					}/*else if("FailureUsersForCheck.xls".equalsIgnoreCase(isFileCreated)){
+						model.addAttribute("errorMessage", "Please download Error file here");
+			            model.addAttribute("fileName", "xls");
+						return "upload/uploadVendorForm";
+					}*/else if("worngFileName".equalsIgnoreCase(isFileCreated)){
+						model.addAttribute("fileNameWrong", "File name should follow as vendors_contacts_Import/vendors_import_template with .xls or .xlsx");
+			            model.addAttribute("fileName", "xls");
+						return "upload/uploadVendorForm";
+					}
+				}else{
+					model.addAttribute("fileNameWrong", "Oops.! It's Not Vendor template");
 		            model.addAttribute("fileName", "xls");
 					return "upload/uploadVendorForm";
-				}else if("worngFileName".equalsIgnoreCase(isFileCreated)){
-					model.addAttribute("fileNameWrong", "File name should follow as vendors_contacts_Import/vendors_import_template with .xls or .xlsx");
-		            model.addAttribute("fileName", "xls");
-					return "upload/uploadClientForm";
-				}*/
+				}
+				
 			}else{
-				return "upload/uploadClientForm";
+				return "upload/uploadVendorForm";
 			}
 			
-			
+			SourceLeadSessionManager.setSessionAttribute(request, "vendorImport", "Success!! New vendors created ");
 			return "redirect:/vendorsList";
 			
 		}
@@ -273,17 +319,16 @@ public class VendorController {
 		public void downloadFile(@PathVariable String fileName,HttpServletResponse response) throws IOException {
 			
 				File file;
-//				vendors_import_template.xls
-//				vendors_contacts_Import.xls
-				if("vendors_import_template.xls".equalsIgnoreCase(fileName)){
-					 file = new File("vendors_import_template.xls");
-				}else if("vendors_contacts_Import.xls".equalsIgnoreCase(fileName)){
-					 file = new File("vendors_contacts_Import.xls");
-				}else if("vendors_import_template.xlsx".equalsIgnoreCase(fileName)){
-					file = new File("vendors_import_template.xlsx");
-				}else{
-					file = new File("vendors_contacts_Import.xlsx");
-				}
+				String fn = getFileName(fileName);
+					if(Constants.VENDORS_IMPORT_TEMPLATE_XLS.equalsIgnoreCase(fn)){
+						 file = new File("vendors_import_template.xls");
+					}else if(Constants.VENDORS_CONTACTS_IMPORT_XLS.equalsIgnoreCase(fn)){
+						 file = new File("vendors_contacts_Import.xls");
+					}else if(Constants.VENDORS_IMPORT_TEMPLATE_XLSX.equalsIgnoreCase(fn)){
+						file = new File("vendors_import_template.xlsx");
+					}else{
+						file = new File("vendors_import_template.xlsx");
+					}
 				
 				String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 				if (mimeType == null) {
@@ -298,5 +343,24 @@ public class VendorController {
 				inputStream.close();
 				response.getOutputStream().close();
 				response.getOutputStream().flush();	
+		}
+	/**	
+	 * removing special charactes from file name
+	 * @param file
+	 * @return String
+	 */
+		private String getFileName(String file) {
+			String finalName;
+			if(file.contains("(")){
+					StringBuilder sb = new StringBuilder();
+				    String fileArray [] = file.split("\\.");
+				    String fileName1 = fileArray[0].substring(0, fileArray[0].indexOf("("));
+				    sb.append(fileName1).append(".").append(fileArray[1]);
+				    finalName = sb.toString().replaceAll("\\s", "");
+			}else{
+				finalName = file;
+			}
+			return finalName; 
+			
 		}
 }

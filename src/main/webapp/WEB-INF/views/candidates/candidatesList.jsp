@@ -3,15 +3,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/chosen.jquery.min.js"></script> 
-
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
@@ -19,7 +10,6 @@
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
-
 
 
 <%-- 
@@ -53,15 +43,15 @@
 <jsp:include page="candidatesExperience.jsp"></jsp:include>
 <jsp:include page="candidatesEducation.jsp"></jsp:include>
 <jsp:include page="candidatesCertificates.jsp"></jsp:include>
-<jsp:include page="candidatesActivities.jsp"></jsp:include>
 <jsp:include page="requirementHistory.jsp"></jsp:include>
- <sec:authorize access="hasRole(\'ROLE_POST_COMMENTS\')">
+ <sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">
 <jsp:include page="candidatesCommentsList.jsp"></jsp:include>
  </sec:authorize>
+ 
+ 
 <script>
  window.onload = function() {
- 	 candidateList();
- 	 $("#upcandidateStatus").val('');
+	 candidateListCheck("${serachValue}","${universalCanddateList}","${candidateKeyword}","${candidateIdSearchId}");
 };
 </script>
 
@@ -73,8 +63,30 @@
     padding-right: 5px;
 }
 </style>
-
-
+<script>
+function candidateListCheck(serachValue,universalCanddateSearchList,candidateKeyword,candidateIdSearchId){
+if(universalCanddateSearchList=="universalCanddateList")	 {
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+         type : "POST",
+          url: sourceleadUrl+"/getUniversalCandidatesListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&serachValue="+serachValue,       
+          success :function(data) {
+              	 prepareCandidateList(data);
+         },
+          
+     }); 
+  }
+  if(candidateKeyword == "candidateSearch"){
+	  candidateSideBar(candidateIdSearchId);
+	  candidateList();
+	  $("#upcandidateStatus").val('');
+  }
+else{
+	candidateList();
+	 	$("#upcandidateStatus").val('');
+	}
+  }
+  </script>
 
 <%-- 
      @author : sarath kumar.
@@ -124,7 +136,7 @@
 </script>
  <script>
   function prepareCandidateList(data){
-	  if(data != null && data != 'undefined' && data != "" && data != '[]'){
+	  /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
 	 	     $("#candidateList").removeAttr("style");
 	     	 $("#candidateList").empty();
 	     	 var result = "";
@@ -134,11 +146,10 @@
 	         /*  result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>";   */
 	          result = result +"    <th>&nbsp;</th>";
 	          result = result +"    <th>Name</th>"; 
-	          result = result +"    <th>Designation</th>"; 
+	          result = result +"    <th>Skills</th>"; 
 	          result = result +"    <th>Employment Type</th>"; 
 	          result = result +"    <th>Email</th>"; 
 	          result = result +"    <th>Mobile</th>"; 
-	          result = result +"    <th>Type</th>"; 
 	          result = result +"    <th>Location</th>"; 
 	          result = result +"    <th>Last Update</th>"; 
 	          result = result +"  </tr>"; 
@@ -152,17 +163,15 @@
 	         	 var address="";
 	         	 var isFavourite = "";
 	         	 var isFavClass = "";
+	         	 var designationType = "";
 	         	 var candidateUpdateDateToString ="";
 	         	        if(opt.mobilePhone != null && opt.mobilePhone != 'undefined' && opt.mobilePhone != ""){
 	         		       mobilePhone = opt.mobilePhone;
 		            	}else{
 		            		mobilePhone = "----";
 		            	}
-		            	if(opt.designation != null && opt.designation != 'undefined' && opt.designation != ""){
-		            		designation = opt.designation;
-		            	}else{
-		            		designation = "----";
-		            	}
+	         	        
+		            	
 		            	if(opt.address != null && opt.address != 'undefined' && opt.address != ""){
 		            		address = opt.address;
 		            	}else{
@@ -172,9 +181,11 @@
 		            		candidateUpdateDateToString = opt.candidateUpdateDateToString; 
 		            	}else{
 		            		candidateUpdateDateToString = "---";
-		            	}
+		            	} 
 		            	
-		            	if(opt.isFavourite == 'Y'){
+		            	
+		            	
+		            	if(opt.isFavourite == '1'){
 		            		isFavourite = "checked";
 		            		isFavClass = "activestar-rating";
 		            	}
@@ -188,21 +199,20 @@
 		            	if(opt.country != null && opt.country != "" && opt.country != 'undefined'){
 		            		location = opt.country;
 		            		if(opt.state != null && opt.state != "" && opt.state != 'undefined'){
-		            			location = location+", "+opt.state;
+		            			location = opt.state+", "+location;
 			            	}
 		            		if(opt.city != null && opt.city != "" &&  opt.city != 'undefined'){
-		            			location = location+", "+opt.city;
+		            			location = opt.city+", "+location;
 			            	}
 		            	}
 		            	
 		            	
 		            	
-		            	
 	              result = result +"<tr>";
 	              result = result +"<td style='width : 25px;'>";
-	              result = result +"<div class='star-rating "+isFavClass+"' id='favourite"+opt.id+"'>";
-	              '<sec:authorize access="hasRole(\'ROLE_ADD_CANDIDATE_HOTLIST\')">'; 
-	              result = result +"<input type='checkbox' id='fav"+opt.id+"' "+isFavourite+" onclick='addFavourite("+opt.id+")'></input>";
+	              result = result +"<div class='star-rating "+isFavClass+"' id='favourite"+opt.candidateId+"'>";
+	              '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_HOTLIST\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
+	              result = result +"<input type='checkbox' id='fav"+opt.candidateId+"' "+isFavourite+" onclick='addFavourite("+opt.candidateId+")'></input>";
 	              '</sec:authorize>';
 	             
 	              result = result +" <label></label>";
@@ -210,15 +220,22 @@
 	              result = result +"</td>";
 	
 	             
-	              '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\')">'; 
-	                result = result +"  <td><div class='proj_show divmax-width' onclick='candidateSideBar("+opt.id+");'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
+	              '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
+	                result = result +"  <td><div class='proj_show divmax-width' onclick='candidateSideBar("+opt.candidateId+");'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
 	              '</sec:authorize>';
 	              
-	              '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\')">'; 
+	              '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
 	               result = result +"  <td><div class='proj_show' onclick='#'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span></div></td>";
 	              '</sec:authorize>';
-	
-	              result = result +"  <td><div><span title="+designation+">"+designation+"</span></div></td>";
+	            
+	              if(opt.skillsName != null && opt.skillsName != '' && opt.skillsName != "undefined"){
+	            	  result = result +"  <td><div><span title='"+opt.skillsName+"'>"+opt.skillsName+"</span></div></td>";
+	              }else{
+	            	  
+	            	  result = result +"  <td><div>----</div></td>";
+	              }
+	             
+	              
 	              if(opt.designationType != null && opt.designationType != '' && opt.designationType != "undefined")
 	             	 {
 	                   result = result +"  <td><div>"+opt.designationType+"</div></td>";
@@ -227,11 +244,10 @@
 	             	 }
 	              result = result +"  <td><div ><span title='"+opt.email+"'>"+opt.email+"</span></div></td>";
 	              result = result +"  <td><div>"+mobilePhone+"</div></td>";
-	              result = result +"  <td><div>"+opt.candidateType+"</div></td>";
 	              
 	              result = result +"  <td><div><span title='"+location+"'>"+location+"</span></div></td>";
 	
-	              result = result +"  <td><div>"+candidateUpdateDateToString+"</div></td>";
+	              result = result +"  <td><div class='tblminwidth-75'>"+candidateUpdateDateToString+"</div></td>";
 	              result = result +"</tr>"; 
 	          }
 	          result = result +" </tbody>";
@@ -239,7 +255,7 @@
 	          $("#noCandidates").val('');
 	          $("#candidateList").append(result);
 	          cpagination(); 
-	  }
+	 /*  }
 	  else{
      	 $("#candidateList").removeAttr("style");
 	         var result ="";
@@ -250,7 +266,7 @@
 			$("#noCandidates").val("nocandidate");
 			$("#candidateList").empty();
 		    $("#candidateList").append(result); 
-      }
+      } */
   }
 </script>
 <%-- 
@@ -259,7 +275,7 @@
      1.usage     : used in candidateList() function.
 --%>
 
-<!-- <script>
+<!--  <script>
 function cpagination(){  
     $('#candidatePagination').DataTable( { 
     	"scrollCollapse": false,
@@ -272,6 +288,7 @@ function cpagination(){
      	}
     } );
 }
+
 </script>
  -->
 <script>
@@ -283,11 +300,12 @@ function cpagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
-</script>
+</script> 
 
 
 
@@ -305,6 +323,7 @@ var candidateStatusGlobal ="";
 function candidateSideBar(candidateId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var loginUserId = '${SourceLeadWeb_userId}';
+	  var lo
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -313,16 +332,20 @@ function candidateSideBar(candidateId){
                 	 var json = JSON.parse(data);
               			 candidateStatusGlobal = json.status;
 	                	 $("#candidateSideDiv").empty();
-	                	 var skillsList = json.skillsList;
-			             var skills = [];
-			             skills = skillsList.split(",");
-			             
+	                	 var skills = [];
+	                	 var skillsList ='';
+	                	 if(json.skillsList != null && json.skillsList != '' && json.skillsList != 'undefined'){
+	                		 skillsList = json.skillsList;
+				             skills = skillsList.split(",");
+	                	 }
 			            var experienceMonths = '';
 			            var designationType = '';
 			            var country = '';
 			            var state = '';
 			            var city = '';
+			            var currencyCodes = '';
 			            
+			            var currencyCode = '';
          			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
          			 		experienceMonths = json.experienceMonths+'-'+'Months';            			 		
          			 	}else{
@@ -349,13 +372,13 @@ function candidateSideBar(candidateId){
 
          			 	
          			 	if(json.country != null && json.country != '' && json.country != 'undefined'){
-         			 		country = ','+json.country;
+         			 		country =json.country;
              			 	}else{
              			 		country = '';
              			 	}
          			 	
          			 	if(json.state != null && json.state != '' && json.state != 'undefined'){
-         			 		state =json.state;
+         			 		state =json.state+',';
              			 	}else{
              			 		state = '';
              			 	}
@@ -389,10 +412,33 @@ function candidateSideBar(candidateId){
          			 	}else{
          			 		rateType = '';
          			 	}
+         			 	
+         			 	if(json.currentRateCurrency != null && json.currentRateCurrency != '' && json.currentRateCurrency != 'undefined'){
+         			 		currentRateCurrency = '/'+json.currentRateCurrency;
+         			 	}else{
+         			 		currentRateCurrency = '';
+         			 	}
+         			 	
+         			 	if(json.expectedRateCurrencey != null && json.expectedRateCurrencey != '' && json.expectedRateCurrencey != 'undefined'){
+         			 		expectedRateCurrencey = '/'+json.expectedRateCurrencey;
+         			 	}else{
+         			 		expectedRateCurrencey = '';
+         			 	}
+         			 	
+         			 	if(json.alternateMobilePhone != null && json.alternateMobilePhone != '' && json.alternateMobilePhone != 'undefined'){
+         			 		alternateMobilePhone = ' , ' +json.alternateMobilePhone;
+         			 	}else{
+         			 		alternateMobilePhone = '';
+         			 	}
+         			 	
+         			 	 if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
+         			 		mobilePhone =json.mobilePhone;
+         			 	 }else{
+         			 		 
+         			 		mobilePhone = '';
+         			 	 }
          			 	 
-         			 	currentRateType
 	                	 var result = "";
-	                	 
 	                	 result = result+'<div id="popUp" ></div>  ';
 	                	
 	                	 
@@ -491,6 +537,8 @@ function candidateSideBar(candidateId){
 			             } 
 			             }
 			             
+			             
+			             
 			             result = result+'</ul>';
 			             
 			             result = result+'</div>';
@@ -510,25 +558,27 @@ function candidateSideBar(candidateId){
 			             result = result+'               <div class="col-md-6">';
 			             result = result+'                 <ul class="list-unstyled can-perdt">';
 			             result = result+'                   <li><i class="fa fa-envelope-o"></i><a href="#" title="'+json.email+'">'+json.email+'</a></li>';
-			                                                  if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
-			             result = result+'                   <li><i class="fa fa-phone"></i>+'+json.mobilePhone+'</li>';
-			                                                  }else{
+			             result = result+'<li><i class="fa fa-phone"></i>'+mobilePhone+''+alternateMobilePhone+'</li>';
 			                                                	  
-			             result = result+'<li><i class="fa fa-phone"></i>----</li>';         	  
-			                                                  }
 			             result = result+' <li><i class="fa fa-location-arrow"></i>'+city+''+state+''+country+'</li>';
 			             
-			             result = result+'<li><i class="fa fa-rupee"></i><b>Current Rate:</b>  ';
+			             result = result+'<li><i class="fa fa-money"></i><b>Current Rate:</b>';
 			             
-			             	result = result+''+currentRate+' '+currentRateType+'';
-		             	 result = result+'				     <b>Expected:</b> ';
-			             	result = result+''+expectedRate+' '+rateType+'';
-			             result = result+'</li>'; 
-			             result = result+' </ul>';
+			             result = result+''+currentRate+' '+currentRateType+''+currentRateCurrency+'';
+			             
+			             result = result+'</li>';
+			             
+			             result = result+'<li><i class="fa fa-money"></i><b>Expected Rate:</b>';
+			             
+			             result = result+''+expectedRate+' '+rateType+''+expectedRateCurrencey+'';
+			             
+			             result = result+'</li>';
+			             
+			             result = result+'</ul>';
 			             
 			            /* New comments div creation Nov 8th, 2016 */ 
 			            if(json.status == '1' ){
-			            '<sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\')">'; 
+			            '<sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
 			            result = result+'<div class="comments-div clearfix" id="latestMessage">';
 			            result = result+'    <div class="commentsimg">';
 			            result = result+'    <i class="fa fa-comments"></i>';
@@ -567,27 +617,27 @@ function candidateSideBar(candidateId){
 			             result = result+'   <div class="project_side_wrap_inn_tabs">';
 			             result = result+'     <ul class="project-tabs-menu">'; 
 			             
-			             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\')">';
+			             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 			              result = result+'<li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+');">Profile</a></li>';
 			             '</sec:authorize>';
 			             
-			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_RESUMES\',\'ROLE_VIEW_CANDIDATE_RESUMES\',\'ROLE_VIEW_EDIT_CANDIDATE_RESUMES\',\'ROLE_VIEW_DELETE_CANDIDATE_RESUMES\')">';
+			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_RESUMES\',\'ROLE_VIEW_CANDIDATE_RESUMES\',\'ROLE_VIEW_EDIT_CANDIDATE_RESUMES\',\'ROLE_VIEW_DELETE_CANDIDATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 			               result = result+'<li id="candidateResumeTab"><a href="#tab-2" onclick="candidateResumesList('+candidateId+'); candidateResume('+candidateId+','+json.status+');" >Resume</a></li>';
 			             '</sec:authorize>';
 			             
-			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_EMPLOYEER\',\'ROLE_VIEW_EMPLOYEER\',\'ROLE_VIEW_EDIT_EMPLOYEER\',\'ROLE_VIEW_DELETE_EMPLOYEER\')">';
+			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_EMPLOYEER\',\'ROLE_VIEW_EMPLOYEER\',\'ROLE_VIEW_EDIT_EMPLOYEER\',\'ROLE_VIEW_DELETE_EMPLOYEER\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 			               result = result+'<li id="candidateEmployersTab"><a href="#tab-3" onclick="candidateExperience('+candidateId+');">Employers</a></li>';
 			             '</sec:authorize>';
 			             
-			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_EDUCATION\',\'ROLE_VIEW_CANDIDATE_EDUCATION\',\'ROLE_VIEW_EDIT_CANDIDATE_EDUCATION\',\'ROLE_DELETE_CANDIDATE_EDUCATION\')">';
+			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_EDUCATION\',\'ROLE_VIEW_CANDIDATE_EDUCATION\',\'ROLE_VIEW_EDIT_CANDIDATE_EDUCATION\',\'ROLE_DELETE_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 			              result = result+'<li id="candidateEducationTab"><a href="#tab-4" onclick="candidateEducation('+candidateId+');">Education</a></li>';
 			             '</sec:authorize>';
 			             
-			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION\')">';
+			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 			               result = result+'<li id="candidateCertificationsTab"><a href="#tab-5" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
 			             '</sec:authorize>';
 			             
-			             '<sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\')">';
+			             '<sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 			                result = result+'<li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateId+');">Comments</a></li>';
 			              '</sec:authorize>';
 			              
@@ -948,7 +998,7 @@ function cancel(candidateId){
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Candidate List</div>
   </section>
   <div class="timesheet_out">
-    <div class="vendor_wrap" style="overflow-x: auto;">
+    <div class="vendor_wrap" style="overflow-X:auto;">
     
      <div class="pull-left cand-advsrche">
 			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
@@ -957,7 +1007,7 @@ function cancel(candidateId){
 			  </a> 
 			  <form:form id="candidatelist_form" name="candidatelist_form"  enctype='multipart/form-data' >
 				  <div class="cand-advsrch-popup" >
-					  <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
+					  <a href="javascript:void(0)" class="close-div" onclick="closePop();"><i class="fa fa-close"></i></a>
 					  <div class="row">
 						  <div class="col-md-4">
 							  <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
@@ -1002,12 +1052,12 @@ function cancel(candidateId){
 										<div id="currencyDiv" class="input-group-btn selp-custom-min custommin">
 										    <select class="selectpicker" name="currency" id="currency" field-name="Currency"  >
 										        <option value="">Currency</option>
-										        <option value="INR">INR</option>
-											    <option value="AUD">AUD</option>
-												<option value="USD">USD</option>
-												<option value="GPB">GPB</option>
-												<option value="SGD">SGD</option>
-												<option value="EUR">EUR</option>
+										         <option ${currency  == 'INR' ? 'selected' : ''}>INR</option>
+								                 <option ${currency  == 'AUD' ? 'selected' : ''}>AUD</option>
+								                 <option ${currency  == 'USD' ? 'selected' : ''}>USD</option>
+								                 <option ${currency  == 'GPB' ? 'selected' : ''}>GPB</option>
+								                 <option ${currency  == 'SGD' ? 'selected' : ''}>SGD</option>
+								                 <option ${currency  == 'EUR' ? 'selected' : ''}>EUR</option>
 				                            </select>
 										</div>
 										 <div id="minRateDiv">
@@ -1043,23 +1093,28 @@ function cancel(candidateId){
 							  <label>Experience</label>
 							  <div class="clearfix row">
 							  <div class="col-md-6">
-								  <select class="chosen-select"  id="minExpYears" name="minExpYears" data-placeholder="Years">
-									  <option selected value="">Min Years</option>
+								  <select class="chosen-select"  id="minExpYears" name="minExpYears" data-placeholder="Years" onblur="minMaxExperience();">
+									  <option  selected value="">Min Years</option>
 									 <c:forEach begin="0" end="24" varStatus="loop">
 									    <option value="${loop.index}">${loop.index} Years</option>
 									</c:forEach>
 								  </select>
 							  </div>
 							  <div class="col-md-6">
-								  <select class="chosen-select" id="maxExpYears" name="maxExpYears" data-placeholder="Months">
-									  <option selected value="">Max Years</option>
-									  <c:forEach begin="0" end="24" varStatus="loop">
+								  <select class="chosen-select" id="maxExpYears" name="maxExpYears" data-placeholder="Months" onblur="minMaxExperience();">
+									  <option  value="">Max Years</option>
+									  <c:forEach begin="0" end="25" varStatus="loop">
 									    <option value="${loop.index}">${loop.index} Years</option>
 									</c:forEach>
 								  </select>
 							  </div>
 							  </div>
+							  <div class="row" id="expId">
+				                  <input type="hidden" name="expValidation" id="expValidation">
+				              </div>
+							  
 						  </div>
+						  
 						  <div class="col-md-4">
 							  <label>Notice Period</label>
 							  <div class="clearfix">
@@ -1072,19 +1127,19 @@ function cancel(candidateId){
 				                </select>
 							  </div>
 						  </div>
-						  <div class="col-md-4"> &nbsp;
-							<!--   <label>Updated On</label>
-							  <div class="clearfix">
-								  <select class="chosen-select" id="updatedOn" name="updatedOn" data-placeholder="Updated On">
-									  <option value="">All</option>
-									  <option value="1">1 Day Ago</option>
-									  <option value="3">3 Days Ago</option>
-									  <option value="7">1 Week Ago</option>
-									  <option value="14">2 Weeks Ago</option>
-									  <option value="30">1 Month Ago</option>
-									  <option value="90">3 Months Ago</option>
-								  </select>
-							  </div> -->
+						    <div class="col-md-4">
+						    <label>Employment Type</label>
+						     <div class="clearfix">
+						             <select class="chosen-select form-control" id="designationType" name="designationType">
+						                <option value="">--Select--</option>
+						                 <option>C2C</option>
+						                 <option>W-2</option>
+						                 <option>C2H</option>
+						                 <option>Part Time</option>
+						                 <option>Full Time</option>
+						                 <option>Other</option>
+						             </select>
+						    </div>
 						  </div>
 						  </div>
 						  <div class="clearfix">
@@ -1190,10 +1245,8 @@ function cancel(candidateId){
 					  </div>
 					  <div class="row form-footer mt">
 						  <div class="pull-right mr">
-							 <!--  <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary">Submit</a>
-							  <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10">Cancel</a> -->
 							   <input type="button" value="Search" id="search_candidate" onclick="searchCandidate();" class="btn btn-sm btn-primary"/>
-                               <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-default ml10"/>
+                               <input type="button"  value="Clear"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-default ml10"/>
 						  </div>
 					  </div>
 				  </div>
@@ -1202,7 +1255,7 @@ function cancel(candidateId){
       <div class="timesheet_head  customtimesheet-head hdr-styles pull-right">
         <ul>
           <sec:authorize access="hasAnyRole('ROLE_EXPORT_CANDIDATES')">
-          <li><i class="glyphicon glyphicon-export"></i><span>Export</span>&nbsp;<i class="glyphicon glyphicon-play" id="candidate-export"></i>
+          <li id="candidate-export"><i class="glyphicon glyphicon-export"></i><span>Export</span>&nbsp;<i class="glyphicon glyphicon-play" ></i>
             <div class="export_pop">
               <ul>
                 <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
@@ -1211,44 +1264,48 @@ function cancel(candidateId){
             </div>
           </li>
           </sec:authorize>
+          
+             <li><a href="uploadCandidateForm"><i class="fa fa-upload"></i>&nbsp;Imports</a></li> 
 	      
-           <li><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
+           <li id="filter2ApprovePop"><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter2ApprovedPop" class="approved_pop">
                   	<ul>
-	                    <li><input id="candidateAll" type="radio" name="candidateStatus" checked  value ="2" onclick="candidateList();"  ><label for="c5">All</label></li>
-						<li><input id="candidateActive" type="radio" name="candidateStatus" value ="1"  onclick="candidateList();"><label for="c6">Active</label></li>
-						<li><input id="candidateInActive" name="candidateStatus" type="radio" value ="0"  onclick="candidateList();"><label for="c7">In Active</label></li>
+	                    <li><input id="candidateAll" type="radio" name="candidateStatus" checked  value ="2" onclick="candidateList();"  ><label for="candidateAll">All</label></li>
+						<li><input id="candidateActive" type="radio" name="candidateStatus" value ="1"  onclick="candidateList();"><label for="candidateActive">Active</label></li>
+						<li><input id="candidateInActive" name="candidateStatus" type="radio" value ="0"  onclick="candidateList();"><label for="candidateInActive">In Active</label></li>
                     </ul>
                   </div>                	
           </li>
           
-          <li><i class="fa fa-filter"></i><span id="typeDiv"> Type </span><i class="glyphicon glyphicon-play" id="filter3ApprovePop"></i>|
+          <sec:authorize access="!hasRole('ROLE_CROWDSOURCING_CANDIDATES')">
+          <li id="filter3ApprovePop"><i class="fa fa-filter"></i><span id="typeDiv"> Type </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter3ApprovedPop" class="approved_pop">
                   	<ul>
-	                    <li><input id="candidateTypeAll" type="radio" name="candidateType" checked value ="All" onclick="candidateList();"  ><label for="c5">All</label></li>
-						<li><input id="onlycandidate" type="radio" name="candidateType" value ="Candidate"  onclick="candidateList();"><label for="c6">Candidates</label></li>
-						<li><input id="consultant" type="radio"  name="candidateType" value ="Consultant"  onclick="candidateList();"><label for="c7">Consultants</label></li>
+	                    <li><input id="candidateTypeAll" type="radio" name="candidateType" checked value ="All" onclick="candidateList();"  ><label for="candidateTypeAll">All</label></li>
+						<li><input id="onlycandidate" type="radio" name="candidateType" value ="Candidate"  onclick="candidateList();"><label for="onlycandidate">Candidates</label></li>
+						<li><input id="consultant" type="radio"  name="candidateType" value ="Consultant"  onclick="candidateList();"><label for="consultant">Consultants</label></li>
                     </ul>
                   </div>                	
           </li>
+          </sec:authorize>
           
-            <li><i class="fa fa-filter"></i><span id="candidateUpdiv">Updated</span><i class="glyphicon glyphicon-play" id="filter1ApprovePop"></i>|
+            <li id="filter1ApprovePop"><i class="fa fa-filter"></i><span id="candidateUpdiv">Updated</span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter1ApprovedPop" class="approved_pop">
                   	<ul>
-                         <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="0"  onclick="candidateList();"  ><label for="c5">All</label></li>
-                         <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1"  onclick="candidateList();"  ><label for="c5">1 Day ago</label></li>
-						<li><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3"  onclick="candidateList();"><label for="c6">3 Day ago</label></li>
-						<li><input id="candidate1WeekAgo" name="upcandidateStatus" type="radio" value ="7"  onclick="candidateList();"><label for="c7">1 Week ago</label></li>
-						<li><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="21"  onclick="candidateList();"><label for="c7">2 Week ago</label></li>
-						<li><input id="candidateMonthAgo" name="upcandidateStatus" type="radio" value ="30"  onclick="candidateList();"><label for="c7">Month ago</label></li>
-	                    <li><input id="candidate3Months"  name="upcandidateStatus" type="radio" value ="90"  onclick="candidateList();"><label for="c7">3 Months</label></li>
+                         <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="0"  onclick="candidateList();"  ><label for="candidateDayAgo">All</label></li>
+                         <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1"  onclick="candidateList();"  ><label for="candidateDayAgo">1 Day ago</label></li>
+						<li><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3"  onclick="candidateList();"><label for="candidate3DayAgo">3 Day ago</label></li>
+						<li><input id="candidate1WeekAgo" name="upcandidateStatus" type="radio" value ="7"  onclick="candidateList();"><label for="candidate1WeekAgo">1 Week ago</label></li>
+						<li><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="21"  onclick="candidateList();"><label for="candidate3WeekAgo">2 Week ago</label></li>
+						<li><input id="candidateMonthAgo" name="upcandidateStatus" type="radio" value ="30"  onclick="candidateList();"><label for="candidateMonthAgo">Month ago</label></li>
+	                    <li><input id="candidate3Months"  name="upcandidateStatus" type="radio" value ="90"  onclick="candidateList();"><label for="candidate3Months">3 Months</label></li>
                     </ul>
                   </div>                	
           </li>  
-          <li><i class="fa fa-plus"></i>&nbsp;<span>Add</span>&nbsp;<i class="glyphicon glyphicon-play" id="addmore"></i>
+          <li><b id="addmore"><i class="fa fa-plus"></i>&nbsp;<span>Add</span>&nbsp;<i class="glyphicon glyphicon-play"></i></b>
           <div id="addmorepop" class="approved_pop">
            <ul>
-             <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE')">
+             <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')">
               <li><a  onClick="addCandidate();" ><i class="fa fa-plus"></i>Add Candidate</a></li>
            </sec:authorize>
            
@@ -1664,11 +1721,12 @@ function savedCommentAndCount(candidateId){
     <script>
 	// Close Advanced Search
 		function closePop(){
-			$("div.cand-advsrch-popup").hide();
+			 $("div.cand-advsrch-popup").hide();
+			 clearCandidateSearchKeys();
+			 $('#expId').find('p.jquery_form_error_message').remove();
 		}
 		function openPop(){
 		  $("div.cand-advsrch-popup").toggle();
-		  
 		}
 	</script>
 <script>
@@ -1790,6 +1848,8 @@ function getCities(){
     				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
     				  '.chosen-select-width'     : {width:"95%"}
     	   }
+    	   
+    	   
 			//Adding Customized Any Of Keyword to the list 
 		    var select, chosen;
 		    select = $("#anyOfKeyword");
@@ -1967,6 +2027,16 @@ function getCities(){
 		       $("#state").on('change', function (e) {
 		    	   getCities();
 		       });
+		       
+		       // here call experience validation
+		       $("#maxExpYears").on('change', function (e) {
+		    	   minMaxExperience();
+		       });
+		       
+		       $("#minExpYears").on('change', function (e) {
+		    	   minMaxExperience();
+		       });
+		       
 				for (var selector in config) {
 				  $(selector).chosen(config[selector]);
 				}
@@ -2159,4 +2229,91 @@ function getCities(){
 		$("#candidatelist_form").validateOnBlur(false, validationSettings);
 	});
 </script>
+
+<script>
+//Function to validate if maxExpYears  value is more the minExpYears  value
+function minMaxExperience(){
+     var maxExpYears = ($('#maxExpYears').val());
+     var minExpYears = ($('#minExpYears').val());
+    
+    if (parseFloat(maxExpYears) <= parseFloat(minExpYears)){
+        $('#expId').find('p.jquery_form_error_message').remove(); 
+		$('input#expValidation').attr('class','error signin_fild');
+		$("input#expValidation").after("<p class='jquery_form_error_message'>Max Experience is greater than Min Experience</p>");
+		$('input#expValidation').attr('record-exist','yes');
+		$('input#expValidation').attr('record-exist-errorMsg','Max Experience is greater than Min Experience'); 
+    }  else{
+    	$('#expId').find('p.jquery_form_error_message').remove(); 
+    	$('input#expValidation').removeAttr( "class record-exist record-exist-errormsg");
+		$('#expId').find('p.jquery_form_error_message').remove();
+    } 
+}
+
+</script>
+
+<!-- This  clearCandidateSearchKeys() method for clear search data-->
+<script type="text/javascript">	
+	function clearCandidateSearchKeys(){
+		
+	    $("#anyOfKeyword").val('').trigger("chosen:updated");
+	    $("#allKeywords").val('').trigger("chosen:updated");
+	    $("#excludeKeyWord").val('').trigger("chosen:updated");
+	    $("#designation").val('').trigger("chosen:updated");
+	    $("#noticePeriod").val('').trigger("chosen:updated");
+	    $("#minExpYears").val('').trigger("chosen:updated");
+	    $("#maxExpYears").val('').trigger("chosen:updated");
+	    $("#country").val('').trigger("chosen:updated");
+	    $("#state").val('').trigger("chosen:updated");
+	    $("#city").val('').trigger("chosen:updated");
+	    $("#education").val('').trigger("chosen:updated");
+	    $("#excludeEducation").val('').trigger("chosen:updated");
+	    $("#certification").val('').trigger("chosen:updated");
+	    $("#employers").val('').trigger("chosen:updated");
+	    $("#excludeEmployers").val('').trigger("chosen:updated");
+	    $("#applicantType").val('').trigger("chosen:updated");
+	    $("#candidateSkills").val('').trigger("chosen:updated");
+	    $("#designationType").val('').trigger("chosen:updated");
+	    
+	    
+	     $("#anyOfKeyword").empty();
+	     $("#allKeywords").empty();
+	     $("#excludeKeyWord").empty();
+	     $("#designation").empty();
+	      $("#minRate").val(''); 
+	      
+	     $("#currency").val('');
+	     $('.selectpicker').selectpicker('refresh');
+	     
+	     $("#maxRate").val(''); 
+	     
+	     $("#rateType").val(''); 
+	     $('.selectpicker').selectpicker('refresh');
+	     
+	     $("#minExpYears").val(''); 
+	     $("#maxExpYears").val(''); 
+	     $('#expId').find('p.jquery_form_error_message').remove();
+	     
+	     $("#noticePeriod").empty(); 
+	     
+	     $("#country").val(''); 
+	     $("#state").val(''); 
+	     $("#city").val(''); 
+	     
+	     $("#designationType").val(''); 
+	     
+	     
+	     $("#education").val(''); 
+	     $("#excludeEducation").val('');
+	     $("#certification").val(''); 
+	     
+	     $("#employers").val(''); 
+	     $("#excludeEmployers").val(''); 
+	     $("#applicantType").val('');
+	     $("#candidateSkills").val('');
+	    
+	}
+</script>
+
+<!-- End  clearCandidateSearchKeys() method for clear search data-->
+
 <jsp:include page="../masterFooter.jsp" /> 

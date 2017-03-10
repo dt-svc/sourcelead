@@ -84,7 +84,7 @@ public class CandidateResumeRestController {
 	*/
 	
 	
-	@PreAuthorize("hasRole('ROLE_ADD_CANDIDATE_RESUMES')")
+	@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/saveCandidateResume", method = RequestMethod.POST)
 	public @ResponseBody String saveCandidateResume(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "candidateId", required = false) String candidateId,
 			@RequestParam(value = "resumeId", required = false) String resumeId,MultipartHttpServletRequest request) throws Exception {
@@ -157,7 +157,7 @@ public class CandidateResumeRestController {
 	* @throws Exception
 	*/
 	
-	 @PreAuthorize("hasRole('ROLE_VIEW_DELETE_CANDIDATE_RESUMES')")
+	 @PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/terminateResume", method = RequestMethod.POST)
 	public @ResponseBody String terminateResume(@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "resumeId", required = false) String resumeId, 
@@ -190,7 +190,7 @@ public class CandidateResumeRestController {
 	* @throws Exception
 	*/
 	
-	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_CANDIDATE_RESUMES')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/getResume", method = RequestMethod.POST)
 	public @ResponseBody String getResume(@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "resumeId", required = false) String resumeId, HttpServletRequest request) throws Exception {
@@ -216,31 +216,34 @@ public class CandidateResumeRestController {
 	* @throws Exception
 	*/
 	@RequestMapping(value = "/downloadResume", method = RequestMethod.GET)
-    public void downloadResume(@RequestParam(value="resumeId", required=false) String resumeId ,HttpServletResponse response) throws Exception {
+    public void downloadResume(@RequestParam(value="resumeUUID", required=false) String resumeUUID ,HttpServletResponse response) throws Exception {
 		
-			CandidateResumes candidateResume =  candidateResumesService.getCandidateResumeByResumeId(Long.parseLong(resumeId));
+			CandidateResumes candidateResume =  candidateResumesService.getCandidateResumeByResumeUUID(resumeUUID);
 		    
-		    response.setContentType("application/octet-stream");
-		    StringBuilder fileName = new StringBuilder();
-	        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(candidateResume.getFileName()).append("\"").toString());
+			if(null != candidateResume){
+				response.setContentType("application/octet-stream");
+			    StringBuilder fileName = new StringBuilder();
+		        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(candidateResume.getFileName()).append("\"").toString());
+			    
+				InputStream inputStream = new ByteArrayInputStream(candidateResume.getDocFile());
+				try {
+					OutputStream outStream = response.getOutputStream();
+
+					byte[] buffer = new byte[4096];
+					int bytesRead = -1;
+
+					while ((bytesRead = inputStream.read(buffer)) != -1) {
+						outStream.write(buffer, 0, bytesRead);
+					}
+
+					inputStream.close();
+					outStream.close();
+
+				} catch (FileNotFoundException e) {
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+				} 
+			}
 		    
-			InputStream inputStream = new ByteArrayInputStream(candidateResume.getDocFile());
-			try {
-				OutputStream outStream = response.getOutputStream();
-
-				byte[] buffer = new byte[4096];
-				int bytesRead = -1;
-
-				while ((bytesRead = inputStream.read(buffer)) != -1) {
-					outStream.write(buffer, 0, bytesRead);
-				}
-
-				inputStream.close();
-				outStream.close();
-
-			} catch (FileNotFoundException e) {
-				logger.error(ExceptionUtils.getFullStackTrace(e));
-			} 
 		}
 	
 	@RequestMapping(value = "/offerDownloadDocument", method = RequestMethod.GET)

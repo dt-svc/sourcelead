@@ -8,6 +8,7 @@ import org.elasticsearch.client.Requests;
 import org.elasticsearch.index.engine.DocumentMissingException;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.constants.Constants;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -40,7 +42,6 @@ public  class SourceleadELKBaseIndexer<T> {
 	 * @param id
 	 * @purpose : For To Save/Update  Elk Document Based On id
 	 */
-	@Async
 	public void saveOrUpdateElkDocument(T entityClass,String index,String type,String id) {
 		String entityInJson = null;
 		try {
@@ -83,6 +84,7 @@ public  class SourceleadELKBaseIndexer<T> {
 				                 
 				                 .setTypes(type)
 				                  .setQuery(query)
+				                  .addSort("updatedDate", SortOrder.DESC)
 				                 .setFrom(offset).setSize(maxResults)
 	                             .execute()
 	                             .actionGet();
@@ -90,6 +92,24 @@ public  class SourceleadELKBaseIndexer<T> {
 		 return response.getHits();
 
   }
+	
+	
+	public  SearchHits searchDocumentWithMaxResultsForCampaigns(String index,String type,int offset,int maxResults,BoolQueryBuilder query){
+		 SearchResponse response = sourceleadELKTransportClient.getClient().prepareSearch(index)
+				                 
+				                 .setTypes(type)
+				                  .setQuery(query)
+				                  .addSort("mailBoxId", SortOrder.DESC)
+				                 .setFrom(offset).setSize(maxResults)
+	                             .execute()
+	                             .actionGet();
+		 
+		 return response.getHits();
+
+ }
+	
+	
+	
 	public  SearchHits searchDocument(String index,String type,BoolQueryBuilder query){
 		 SearchResponse response = sourceleadELKTransportClient.getClient().prepareSearch(index).setTypes(type).setQuery(query)
 	                             .execute()

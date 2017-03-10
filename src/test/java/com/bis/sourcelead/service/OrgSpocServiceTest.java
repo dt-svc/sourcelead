@@ -77,17 +77,18 @@ public class OrgSpocServiceTest {
 		/*user.setUserState(Status.ACTIVE);
 		user.setUserType("employee");*/
 		user.setWorkPhone("1233467890");
-		orgSpoc.setSpocUser(user);
+		orgSpoc.setVendorUser(user);
 		
 		User ownerUser = userService.getUserById(3l);
 		orgSpoc.setOwnerUser(ownerUser);
+		orgSpoc.setClientUser(ownerUser);
 		
 		orgSpoc.setInvitationStatus("New");
 		
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(3L);
-		orgSpoc.setInitiatorLocationId(orgLocations);
+		orgSpoc.setVendorLocationId(orgLocations);
 		OrgLocations clientOrgLocations = orgLocationService.getOrgLocations(5L);
-		orgSpoc.setResponderLocationId(clientOrgLocations);
+		orgSpoc.setClientLocationId(clientOrgLocations);
 		orgSpoc.setSpocStatus("Active");
 		orgSpoc.setStatus("Active");
 		
@@ -113,7 +114,7 @@ public class OrgSpocServiceTest {
 	
 	@Test
 	public void getAllSpocsByOrgRelationId() throws Exception{
-		List<OrgSpoc> list = orgSpocService.getAllSpocsByOrgRelationId(3l, 3l, 3l);
+		List<OrgSpoc> list = orgSpocService.getAllSpocsByOrgRelationId(3l, 3l, 3l,"");
 		logger.info("retrieved sucessfully...."+list.size());
 	}
 	
@@ -142,8 +143,16 @@ public class OrgSpocServiceTest {
 	}
 	
 	@Test
-	public void getSpocUserByUserId() throws Exception{
-		OrgSpoc orgSpoc = orgSpocService.getSpocUserByUserId(4l);
+	public void getSpocByClientOrVendorUserId() throws Exception{
+		OrgSpoc orgSpoc = orgSpocService.getSpocByClientOrVendorUserId(4l);
 		logger.info("retrieved sucessfully...."+orgSpoc.getSpocStatus());
+	}
+
+	@Test
+	public void getAllVendorContactsCountbyOrgLocationId() throws Exception{
+		
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(3L);
+		Integer vendorContactsList = orgSpocService.getAllVendorContactsCountbyOrgLocationId(orgLocations.getId(),null,null);
+		logger.info("retrieved  sucessfully...."+vendorContactsList);
 	}
 }

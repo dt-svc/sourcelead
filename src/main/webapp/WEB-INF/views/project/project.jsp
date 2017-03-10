@@ -4,21 +4,13 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <link rel="icon" type="resources/image/png"
 	href="resources/images/fav.png" />
-<link
-	href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900"
-	rel="stylesheet" type="text/css">
-<link rel="stylesheet"
-	href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/register-style.css" rel="stylesheet">
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <link href="resources/css/register-style.css" rel="stylesheet">
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<!-- <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> -->
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
@@ -27,11 +19,31 @@
 	z-index: 100000 !important;
 }
 </style>
+<script>
+function validateTaskName(){
 
+		var Taskname= $("#taskName").val();
+		var checkMaxTsRowNum = $("#maxTsRowNum").val();
+		for(i = 1; i<checkMaxTsRowNum;i++){
+			var oldTaskname = $("#" + i + "taskName").val()
+			if(oldTaskname == Taskname){
+				$("#save_task").hide();			
+				$("input#taskName").after("<p class='jquery_form_error_message'>"+ Taskname+ " is Already Existed</span>");
+				document.getElementById("taskName").setAttribute('record-exist', 'yes');
+				document.getElementById("taskName").setAttribute('record-exist-errorMsg',Taskname+ ' is Already Existed');
+				break;
+			}else{
+				$("#save_task").show();
+				$('input#taskName').removeAttr("record-exist record-exist-errormsg");
+			}
+			
+		}
+}
+</script>
 
 <script type="text/javascript">
 	function validateProjectSequeneNumber() {
-		var ProjectSequeneNumber = document.getElementById("ProjectSequeneNumber").value;
+		var ProjectSequeneNumber = document.getElementById("ProjectSequeneNumber").value.trim();
 		 //space value  consider this condition 
 		if(ProjectSequeneNumber.match(/^[^\s-](.*)*$/) !== null){
 		var sourceleadUrl = '${sourceleadUrl}';
@@ -48,7 +60,6 @@
 								$('input#ProjectSequeneNumber').removeAttr( "record-exist record-exist-errorMsg");
 							} else {
 								$('input#ProjectSequeneNumber').removeAttr("record-exist record-exist-errormsg");
-								$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
 							}
 						},
 					});
@@ -93,7 +104,7 @@
 						<div class="form-group">
 							<label class="col-md-3"> Project Description </label>
 							<div class="col-md-9">
-								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length10-500"
+								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length10-5000"
 									data-validation-optional="true"></textarea>
 								<span class="hidden">Project Description</span>
 							</div>
@@ -106,8 +117,8 @@
 									<div class="col-lg-6 positionRelative" id="StartDateDiv">
 										<input type="text" class="form-control" value="" id="StartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly"> <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
 									</div>
-									<div class="col-lg-6 positionRelative">
-										<input type="text" class="form-control" value="" id="EndDate" name="EndDate" readonly="readonly"> <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
+									<div class="col-lg-6 positionRelative" id="endDateDiv">
+										<input type="text" class="form-control" value="" id="EndDate" name="EndDate" field-name="End Date" readonly="readonly"> <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
 									</div>
 									<span class="hidden">Enter Project Id</span>
 								</div>
@@ -122,7 +133,7 @@
 											<span class="badge" id="addTaskCount">0</span>
 										</button>
 										<sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT_TASKS')"> 
-											<button class="btn btn-primary" id="david" type="button" onclick="addSourceleadTasks();flushProjectTasks();" data-toggle="modal" data-target="#addTask">
+											<button class="btn btn-primary" id="taskButton" type="button" onclick="addSourceleadTasks();flushProjectTasks();" data-toggle="modal" data-target="#addTask">
 												<i class="fa fa-plus" title="Add Tasks"></i> &nbsp;&nbsp;View / Add Tasks 
 											</button>
 										</sec:authorize>
@@ -143,6 +154,7 @@
 												<table class="table table-bordered table-striped  clearfix" id="projectTaskTbl" cols="0">
 													<tr id="divTsRow0">
 														<th><input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />Task Name</th>
+														<th>Billable Type</th>
 														<th>Description</th>
 														<th class="tblminwidth-75">Action</th>
 													</tr>
@@ -154,13 +166,23 @@
 														<div class="form-group" id="taskNameDIV">
 															<label class="col-md-3">Task Name</label>
 															<div class="col-md-9">
-																<input type="text" value="" id="taskName" name="taskName" placeholder="Enter Task Name" class="form-control">
+																<input type="text" value="" id="taskName" name="taskName" onkeyup="validateTaskName();" placeholder="Enter Task Name" class="form-control">
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="col-md-3">Billable Type</label>
+															<div class="col-md-9">
+																<select id="taskBillableType" name="taskBillableType" class=" form-control selectpicker">
+																  <option value="Billable">Billable</option>
+																  <option value="Non-Billable">Non-Billable</option>
+																</select>
 															</div>
 														</div>
 														<div class="form-group" id="descriptionDiv">
 															<label class="col-md-3">Description</label>
 															<div class="col-md-9">
-																<textarea class="form-control" placeholder="Enter Task Description" id="taskDescription" name="taskDescription"></textarea>
+																<textarea class="form-control" placeholder="Enter Task Description" data-validation="validate_length length10-5000"
+									data-validation-optional="true" id="taskDescription" name="taskDescription"></textarea>
 															</div>
 														</div>
 													</div>
@@ -181,16 +203,28 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3"></label>
-							<div class="col-md-9">
+							<label class="col-md-3">Mail to </label>
+							<div class="col-md-5">
 								<div class="checkbox">
 									<label> <input type="checkbox" value="Y"  checked="checked" name="isMailToProjectManager"> 
-									Mail to Project Manager
+									Project Manager
 									</label>
 								</div>
 								<span class="hidden">Select Check Box</span>
 							</div>
-						</div>
+							
+						<sec:authorize access="hasAnyRole('ROLE_ASSIGN_EMPLOYEE_TO_PROJECT')"> 		
+							<div class="col-md-4">
+								<div class="checkbox">
+									<label> <input type="checkbox" value="Y"  checked="checked"
+										name="isMailToTeamMembers">Team Members
+									</label>
+								</div>
+							</div>
+					  </sec:authorize>
+					</div>
+					
+					
 					</div>
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 					 <c:if test="${empty user_List}">
@@ -200,30 +234,25 @@
 					 <c:if test="${not empty user_List}">
 						<div class="form-group">
 							<label class="col-md-3" for="Project Manager">Manager <span
-								class="text-danger">*</span></label>
+								class="text-danger">*&nbsp;<i class=" text-info fa fa-info-circle" title="Before Selecting The Manager Project Start Date is Mandatory"></i></span></label>
 							<div class="col-md-9">
-								<div class="form-icon-min">
+								<div class="form-icon-min" id="chosen-level1Manager">
 									<select class="form-control chosen-select" name="level1Manager" id="level1Manager" field-name="Select Manager" data-validation="required" onchange="getLevel2Approvers();">
 										<option value="">-- Select Manager --</option>
 										<c:forEach var="option" items="${user_List}">
-											<option value="${option.id}">${option.firstName}
+											<option value="${option.id},${option.userType}">${option.firstName}
 												${option.lastName}</option>
 										</c:forEach>
-									</select> <span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers();">Add
+									</select> <span class="btn btn-default formic1 addLevel" id="level2Toggle" onclick="getLevel2Approvers();">Add
 										Level-II</span>
 								</div>
 								<span class="hidden">Select Project Manager</span>
 							</div>
 						</div>
-						<div class="form-group level-second">
+						<div class="form-group level-second" id="level2Div">
 							<label class="col-md-3" for="Level-II">Level-II</label>
 							<div class="col-md-9">
 								<select class="form-control chosen-select" name="level2Manager" id="level2Manager">
-									<%-- <option value=''>-- Select Manager --</option>
-									<c:forEach var="option" items="${user_List}">
-										<option value="${option.id}">${option.firstName}
-											${option.lastName}</option>
-									</c:forEach> --%>
 								</select>
 							</div>
 						</div>
@@ -278,7 +307,7 @@
 												<button data-dismiss="modal" class="btn btn-primary"
 													type="button" onclick="assignEmployee();">Assign</button>
 												<button data-dismiss="modal" class="btn btn-default"
-													type="button" onclick="assignEmployee();">Cancel</button>
+													type="button" onclick="assignEmployeeCancel();">Cancel</button>
 											</div>
 										</div>
 									</div>
@@ -291,7 +320,7 @@
 						<div class="form-group">
 							<label class="col-md-3" for="Project Id">Status</label>
 							<div class="col-md-9 select-field">
-								<select class="form-control" name="Satatus" id="Satatus">
+								<select class="form-control" name="Satatus" id="Satatus" onchange="getStatus();">
 									<option>Started</option>
 									<option>In-Progress</option>
 									<option>Completed</option>
@@ -302,9 +331,9 @@
 						
 						
 						<div class="form-group">
-		                  <label class="col-md-3">Invoice Frequency</label>
-		                  <div class="col-md-9">
-		                         <select class="form-control chosen-select" id="invoiceFrequency" name="invoiceFrequency" field-name="Invoice Frequency">
+		                  <label class="col-md-3">Invoice Frequency <span class="text-danger">*</span></label>
+		                  <div class="col-md-9" id="chosen-frequency">
+		                         <select class="form-control chosen-select" id="invoiceFrequency" name="invoiceFrequency" onchange="removeFrequencyValidation();" field-name="Invoice Frequency" data-validation="required" >
 				                        <option value="">-Invoice Frequency-</option>
 						                <option value="Weekly">Weekly</option>
 						        	    <option value="Bi-Weekly">Bi-Weekly</option>
@@ -314,20 +343,16 @@
 		                  </div>
 		                </div>
 						
-						
-					 <sec:authorize access="hasAnyRole('ROLE_ASSIGN_EMPLOYEE_TO_PROJECT')"> 		
 						<div class="form-group">
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkbox">
-									<label> <input type="checkbox" value="Y"  checked="checked"
-										name="isMailToTeamMembers"> Mail to Team Members
+									<label> <input type="checkbox" value="Y"  
+										name="isTimesheetAttachmentRequired"> Timesheet Attachment Required
 									</label>
 								</div>
-								<span class="hidden">Select Check Box</span>
 							</div>
 						</div>
-					</sec:authorize>
 					</div>
 				</div>
 				<div class="form-footer clearfix row">
@@ -343,6 +368,25 @@
 	</div>
 </section>
 <!-- Content Area Ends-->
+<script>
+function removeFrequencyValidation(){
+	$('#chosen-frequency').find('p.jquery_form_error_message').remove();
+}
+</script>
+<script>
+function getStatus(){
+	$('#endDateDiv').find('p.jquery_form_error_message').remove(); 
+	var status = $("#Satatus").val();
+	if(status != null && status != "" && status != "undefined" && status == "Completed"){
+		 $('#EndDate').removeAttr('data-validation-optional');
+		 $('#EndDate').attr("data-validation","required"); 
+	 }else{
+		 $('#EndDate').removeAttr('data-validation');
+		 $('#EndDate').attr("data-validation-optional","true"); 
+	 }
+}
+
+</script>
 
 <!-- Add Client Model DialogBox ends-->
 
@@ -375,12 +419,20 @@
 		name="REPLACEROWIDtaskName" value="TASKNAMEVALUE" /><span
 		id="REPLACEROWIDtaskNameValue">TASKNAMEVALUE</span>
 </div>
+
 <div id="divTaskTd2" style="display: none; float: left;">
+	<input type="hidden" id="REPLACEROWIDtaskBillableType"
+		name="REPLACEROWIDtaskBillableType" value="TASKBILLABLETYPEVALUE" /><span
+		id="REPLACEROWIDtaskBillableTypeValue">TASKBILLABLETYPEVALUE</span>
+</div>
+
+<div id="divTaskTd3" style="display: none; float: left;">
 	<input type="hidden" id="REPLACEROWIDtaskDescription"
 		name="REPLACEROWIDtaskDescription" value="TASKDESCRIPTIONVALUE" /><span
 		id="REPLACEROWIDtaskDescriptionValue">TASKDESCRIPTIONVALUE</span>
 </div>
-<div id="divTaskTd3" style="display: none; float: left;">
+
+<div id="divTaskTd4" style="display: none; float: left;">
 	    <span><a title="Edit" href="javascript:void(0)" onclick="editTask(REPLACEROWID)"><i class="fa fa-edit"></i></a></span>&nbsp;&nbsp;&nbsp;
 	    <span><a title="Remove" href="javascript:void(0)" onclick="removeRow(REPLACEROWID)"><i class="fa fa-close"></i></a></span>
 </div>
@@ -388,7 +440,6 @@
 <!-- Add Task Script start -->
 <script type="text/javascript">
 	function addTasks() {
-
 		$('#taskNameDIV').find('p.jquery_form_error_message').remove();
 		$('#descriptionDiv').find('p.jquery_form_error_message').remove();
 		if ($('#taskName').val() == '' || $("#taskDescription").val().length > 200 || $("#taskName").val().length > 100) {
@@ -413,27 +464,37 @@
 
 		var taskName = $('#taskName').val();
 		var taskDescription = $('#taskDescription').val();
+		var taskBillableType = $('#taskBillableType').val();
 
 		var cell0 = row.insertCell(0);
 		var divTsTd1Str = document.getElementById("divTaskTd1").innerHTML;
 		divTsTd1Str = divTsTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
 		divTsTd1Str = divTsTd1Str.replace(/TASKNAMEVALUE/g, (taskName));
 		cell0.innerHTML = divTsTd1Str;
-
+		
 		var cell1 = row.insertCell(1);
 		var divTsTd2Str = document.getElementById("divTaskTd2").innerHTML;
 		divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
-		divTsTd2Str = divTsTd2Str.replace(/TASKDESCRIPTIONVALUE/g,
-				(taskDescription));
+		divTsTd2Str = divTsTd2Str.replace(/TASKBILLABLETYPEVALUE/g,
+				(taskBillableType));
 		cell1.innerHTML = divTsTd2Str;
 
 		var cell2 = row.insertCell(2);
 		var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
 		divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
+		divTsTd3Str = divTsTd3Str.replace(/TASKDESCRIPTIONVALUE/g,
+				(taskDescription));
 		cell2.innerHTML = divTsTd3Str;
+
+		var cell3 = row.insertCell(3);
+		var divTsTd4Str = document.getElementById("divTaskTd4").innerHTML;
+		divTsTd4Str = divTsTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
+		cell3.innerHTML = divTsTd4Str;
 
 		$("#taskName").val('');
 		$("#taskDescription").val('');
+		$("#taskBillableType").val('Billable');
+		$('#taskBillableType').selectpicker('refresh');
 		addtasksCountafterAddingTask();
 	}
 </script>
@@ -452,11 +513,16 @@
 	function editTask(rowId) {
 		var updateTaskName = $("#" + rowId + "taskName").val();
 		var updateTaskDescription = $("#" + rowId + "taskDescription").val();
+		var updateTaskBillableType = $("#" + rowId + "taskBillableType").val();
 		$("#taskName").val('');
 		$("#taskDescription").val('');
+		$("#taskBillableType").val('Billable');
+		$('#taskBillableType').selectpicker('refresh');
 		$("#addTaskText").html('Update Task');
 		$("#taskName").val(updateTaskName);
 		$("#taskDescription").val(updateTaskDescription);
+		$('#taskBillableType').val(updateTaskBillableType);
+		$('#taskBillableType').selectpicker('refresh');
 		$("#taskId").val(rowId);
 		$("#save_task").removeAttr('onclick');
 		$("#save_task").attr('onclick', 'updateTask(' + rowId + ');');
@@ -467,11 +533,16 @@
 	function updateTask(rowId) {
 		$("#" + rowId + "taskName").val($("#taskName").val());
 		$("#" + rowId + "taskDescription").val($("#taskDescription").val());
+		$("#" + rowId + "taskBillableType").val($("#taskBillableType").val());
+		
 		$("#" + rowId + "taskNameValue").html($("#taskName").val());
-		$("#" + rowId + "taskDescriptionValue").html(
-				$("#taskDescription").val());
+		$("#" + rowId + "taskDescriptionValue").html($("#taskDescription").val());
+		$("#" + rowId + "taskBillableTypeValue").html($("#taskBillableType").val());
+		
 		$("#taskName").val('');
 		$("#taskDescription").val('');
+		$("#taskBillableType").val('Billable');
+		$('#taskBillableType').selectpicker('refresh');
 		$("#addTaskText").html('Add Task');
 		$("#save_task").removeAttr('onclick');
 		$("#save_task").attr('onclick', 'addTasks();');
@@ -506,7 +577,7 @@
 							var json = JSON.parse(data);
 							var output = "";
 							for (var i = 0; i < json.length; i++) {
-								$('david[onclick]').removeAttr('onclick');
+								$('taskButton[onclick]').removeAttr('onclick');
 								var opt = json[i];
 								var row = tbl.insertRow(opt.Id);
 								row.setAttribute("id", "divTsRow" + opt.Id);
@@ -517,17 +588,23 @@
 								divTsTd1Str = divTsTd1Str.replace(/REPLACEROWID/g, (opt.Id));
 								divTsTd1Str = divTsTd1Str.replace(/TASKNAMEVALUE/g, (opt.taskName));
 								cell0.innerHTML = divTsTd1Str;
-
+								
 								var cell1 = row.insertCell(1);
 								var divTsTd2Str = document.getElementById("divTaskTd2").innerHTML;
 								divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (opt.Id));
-								divTsTd2Str = divTsTd2Str.replace(/TASKDESCRIPTIONVALUE/g,(opt.description));
+								divTsTd2Str = divTsTd2Str.replace(/TASKBILLABLETYPEVALUE/g,(opt.billableType));
 								cell1.innerHTML = divTsTd2Str;
-
+								
 								var cell2 = row.insertCell(2);
 								var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
 								divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (opt.Id));
+								divTsTd3Str = divTsTd3Str.replace(/TASKDESCRIPTIONVALUE/g,(opt.description));
 								cell2.innerHTML = divTsTd3Str;
+
+								var cell3 = row.insertCell(3);
+								var divTsTd4Str = document.getElementById("divTaskTd4").innerHTML;
+								divTsTd4Str = divTsTd4Str.replace(/REPLACEROWID/g, (opt.Id));
+								cell3.innerHTML = divTsTd4Str;
 
 							}
 
@@ -580,12 +657,14 @@
 <!-- Add Task Script Ends -->
 <script type="text/javascript">
 function flushProjectTasks(){
+	$("#taskName").val('');
 	$('#addTask').find('p.jquery_form_error_message').remove();	
 }
 </script>
 
 <script type="text/javascript">
 	function saveProject() {
+		validateProjectSequeneNumber();
 		var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
@@ -639,6 +718,9 @@ function flushProjectTasks(){
 <script type="text/javascript">
 	function getTeamMembers() {
 		var level1Manager = $("#level1Manager").val(); 
+		var level1ManagerArray = level1Manager.split(',');
+		level1Manager = level1ManagerArray[0];
+		
 		var level2Manager = $("#level2Manager").val();
 		var startDate     =    $("#StartDate").val();
 		var searchByName = $("#searchByName").val();
@@ -679,7 +761,10 @@ function flushProjectTasks(){
 							output = output + ' <tbody>';
 							for (var i = 0; i < json.length; i++) {
 								var projectStartDate = $('#StartDate').val();
-								// var projectEndDate = $('#EndDate').val();
+								var projectEndDate = $('#EndDate').val();
+								if(projectEndDate == null ||  projectEndDate == "" || projectEndDate == "undefined"){
+									projectEndDate = "";
+								}
 								var opt = json[i];
 								var role = '';
 								if (opt.userType != null
@@ -717,7 +802,7 @@ function flushProjectTasks(){
 									output = output+ "<input  id='startDate"+ opt.id+ "' type='text' name='Date' value='"+ projectStartDate+ "' class='form-control clsDatePicker' readonly='readonly'>";
 									output = output + "</div></span></td>";
 									output = output+ "<td><div class='input-group tblminwidth-150'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
-									output = output + "<input id='endDate" + opt.id + "'  type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>";
+									output = output + "<input id='endDate" + opt.id + "'  value='"+projectEndDate+"' type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>";
 									output = output + "</div></td>";
 									output = output + "</tr>";
 								}
@@ -738,6 +823,8 @@ function flushProjectTasks(){
 									
 									$('#startDate'+opt.id).datepicker({
 										dateFormat : 'yy-mm-dd',
+										changeMonth: true,
+										changeYear: true, 
 										minDate:projectStartDate,
 										maxDate:projectEndDate,
 										onSelect : function(selected) {
@@ -752,6 +839,8 @@ function flushProjectTasks(){
 		
 									$('#endDate'+opt.id).datepicker({
 										dateFormat : 'yy-mm-dd',
+										changeMonth: true,
+										changeYear: true, 
 										maxDate:projectEndDate,
 										minDate:projectStartDate,
 										onSelect : function(selected) {
@@ -794,7 +883,8 @@ function assignEmployeespagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
 		
     } );
@@ -841,12 +931,20 @@ function assignEmployeespagination(){
 		$('#newClient').find('p.jquery_form_error_message').remove();
 	}
 </script>
+<script>
+function assignEmployeeCancel(){
+	$('#assignEmployeePagination tbody input[type="checkbox"]').prop('checked', false);
+}
+</script>
+
 
 <script>
 	$(function() {
 
 		$('#StartDate').datepicker({
 			dateFormat : 'yy-mm-dd',
+			changeMonth: true,
+			changeYear: true, 
 			onSelect : function(selected) {
 				var dt = new Date(selected);
 				dt.setDate(dt.getDate() + 1);
@@ -857,11 +955,13 @@ function assignEmployeespagination(){
 
 		$('#EndDate').datepicker({
 			dateFormat : 'yy-mm-dd',
+			changeMonth: true,
+			changeYear: true, 
 			onSelect : function(selected) {
 				var dt = new Date(selected);
 				dt.setDate(dt.getDate() - 1);
 				$("#StartDate").datepicker("option", "maxDate", dt);
-				
+				addValidClass();
 				//this is section is for compare project end date with current date
 				//if project end date is less than current date, the project state should be COMPLETED
 				var dummyDate = $(this).val();
@@ -897,6 +997,11 @@ function assignEmployeespagination(){
 		 if(StartDate){
 			 $('#StartDateDiv').find('p.jquery_form_error_message').remove(); 
 		 }
+		 
+		 var EndDate = document.getElementById("EndDate").value;
+		 if(EndDate){
+			 $('#endDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
 }
 </script>
 
@@ -924,7 +1029,11 @@ function assignEmployeespagination(){
 </script>
 <script type="text/javascript">
 function getLevel2Approvers(){
+	$('#chosen-level1Manager').find('p.jquery_form_error_message').remove();
 	var currentApproverId = document.getElementById("level1Manager").value;
+	var currentUser = currentApproverId.split(',');
+	var currentUserId = currentUser[0];
+	var currentUserType = currentUser[1];
 	var count = 1;
 	$(".myCheckbox").each(
 					function() {
@@ -932,7 +1041,18 @@ function getLevel2Approvers(){
 						document.getElementById(localId).checked = false; 
 	});
 	$(".myCheckbox").val('');
-	getChildLevel1Approvers(currentApproverId);
+	
+	$("#level2Manager").empty();    
+	$('#level2Manager').val('').trigger('chosen:updated');
+	if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType != 'Admin'){
+	    $("#level2Toggle").show();
+		getChildLevel1Approvers(currentUserId);
+	}else if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType == 'Admin'){
+	    $("#level2Toggle").hide();   
+	    $("#level2Div").removeClass("level-second-active");
+	}
+	
+	
 } 
 </script>
 <script type="text/javascript">
@@ -974,7 +1094,7 @@ function getChildLevel1Approvers(currentApproverId){
 			dateFormat : 'yyyy/mm/dd' 
             };
 </script> 
-<script src="resources/js/chosen.jquery.min.js"></script> 
+<!-- <script src="resources/js/chosen.jquery.min.js"></script>  -->
 <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},

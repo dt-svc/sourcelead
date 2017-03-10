@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
@@ -69,13 +70,43 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public OrgLocations getOrgLocations(Long id) throws Exception {
-		Session session = this.sessionFactory.getCurrentSession();
+		/*Session session = this.sessionFactory.getCurrentSession();
 		OrgLocations orgLocations = session.get(OrgLocations.class, id);
-		return orgLocations;
-		
-		
+		return orgLocations;*/
+		   Session session = this.sessionFactory.getCurrentSession();
+	       String query = ("from OrgLocations orgLocations left join fetch orgLocations.org where orgLocations.id =:id");
+		  
+	       List<OrgLocations> orgLocations = session.createQuery(query.toString()).setLong("id", id).list();
+	       OrgLocations orgLocation = null;
+			if(orgLocations != null && !orgLocations.isEmpty())
+			{
+				orgLocation = (OrgLocations) orgLocations.iterator().next();
+			}
+			
+			return orgLocation;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean isLoginUserIsSuperUser(Long userId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean isSuperUser = false;
+		List<OrgLocations> orgLocations = new ArrayList<OrgLocations>();
+		try{
+			String query = ("from OrgLocations orgLocations where orgLocations.user.id = :userId");
+			orgLocations = session.createQuery(query.toString()).setLong("userId", userId).list();
+			if (null != orgLocations && !orgLocations.isEmpty() && orgLocations.size() > 0) {
+				isSuperUser = true;
+			} 
+		}catch(Exception e){
+			StringBuilder message= new StringBuilder(MessageFormat.format(statusDelete,"ORGLOCATIONS"));
+			throw new SourceLeadObjectNotFoundException(message.toString());	
+		}
+		
+		return isSuperUser;
+	}
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Boolean deleteOrgLocations(Long id) throws Exception
@@ -187,6 +218,18 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 		
 		List orgList = session.createQuery(query).setString("orgCode", orgCode).setCacheable(true).list();
 		return orgList;}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<OrgLocations> getAllOrgLocationsByOrgId(Long orgId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+
+		String query = "from OrgLocations orgLocations where orgLocations.org.id IN (select org.id from Org org where org.id = :orgId and org.orgCode != 'slead') ";
+		
+		List orgList = session.createQuery(query).setLong("orgId", orgId).setCacheable(true).list();
+		return orgList;
+	}
 
 	@Override
 	@Transactional

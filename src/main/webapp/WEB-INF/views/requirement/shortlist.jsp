@@ -4,16 +4,14 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 
 <script>
 function candidateShortList(requirementId){
-	
+	$('.action-pop').slideUp();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var result = "";
 	var status = "SUBMISSION";
-	result = result + '<div class="add_inter_head"> <span>Shortlist</span><a href="javascript:void(0)" onclick="shortlist('+requirementId+');" class="sub-btn1">Shortlist</a>';
+	result = result + '<div class="add_inter_head"> <span>Shortlist</span> <span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="checkedshortlistedCount">0</b></span><a href="javascript:void(0)" onclick="shortlist('+requirementId+');" class="sub-btn1">Shortlist</a>';
 	result = result + ' <div class="clearfix"></div>';
 	result = result + ' </div>';
 	
@@ -22,10 +20,12 @@ function candidateShortList(requirementId){
 	    	url: sourceleadUrl+"/getSubmissionCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status,
 	    			
 	    	success: function(data) {
+	    		
+	    	if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	    	   var json = JSON.parse(data);
 	           result = result + '     <div class="clearfix"></div>';
 	           result = result + '   </div>';
-	           result = result + '   <div class="require_wrap_table">';
+	           result = result + '   <div class="require_wrap_table scroll_table">';
 	           result = result + '     <table id="shortlistedPagination"  class="display" cellspacing="0" width="100%">';
 	           result = result + '       <thead>';
 	           result = result + '         <tr>';
@@ -37,7 +37,7 @@ function candidateShortList(requirementId){
 	           result = result + '           <th>Applied on</th>';
 	           result = result + '           <th>Rate</th>';
 	           result = result + '           <th>Source</th>';
-	           result = result + '           <th>Experince</th>';
+	           result = result + '           <th>Experience</th>';
 	           result = result + '         </tr>';
 	           result = result + '       </thead>';
 	           result = result + '       <tbody>';
@@ -54,7 +54,7 @@ function candidateShortList(requirementId){
 	   	        		}
 		    			
 	    			    result = result + '<tr>';
-	    			    result = result + '<td><input type="checkbox"  class="submissionsChecks" value='+report.id+' name="submissionList[]" ></td>';
+	    			    result = result + '<td><input type="checkbox"  class="submissionsChecks" value='+report.id+' onclick="getCheckedCandidatesCount();"  name="submissionList[]" ></td>';
 	    			    
 			            result = result + '<td><div><span>'+report.candidateName+'</span></div></td>';
 			           
@@ -72,8 +72,8 @@ function candidateShortList(requirementId){
 				        	result = result + '<td><div><span>--</span></div></td>';
 			    	     }
 			           
-			           if(report.resumeName != null && report.resumeName != '' && report.resumeName != 'undefined'){
-			        	   result = result + '<td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.candidateResumes.id+'\"></a>'+report.resumeName+'</span></div></td>';
+			           if(report.candidateResumes != null && report.candidateResumes != '' && report.candidateResumes != 'undefined'){
+			        	   result = result + '<td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.candidateResumes.id+'\"></a></span></div></td>';
 				           }
 				       else{
 				    	   result = result + '<td><div>--</div></td>';
@@ -86,14 +86,14 @@ function candidateShortList(requirementId){
 				        	result = result + '<td><div><span>--</span></div></td>';
 			    	     }
 			           
-			           if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-			        	   result = result + '<td><div><span>'+report.expectedCTC+'</span></div></td>';
+			           if(report.finalizedRate != null && report.finalizedRate != '' && report.finalizedRate != 'undefined'){
+			        	   result = result + '<td><div><span>'+report.finalizedRate+'</span></div></td>';
 				           }
 				       else{
-				        	result = result + '<td><div><span>--</span></div></td>';
+				    	   result = result + '<td><div><span>--</span></div></td>';
 			    	     }
-			           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
-			        	   result = result + '<td><div><span>'+report.userName+''+orgName+'</span></div></td>';
+			           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
+			        	   result = result + '<td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
 				           }
 				       else{
 				        	result = result + '<td><div><span>--</span></div></td>';
@@ -107,16 +107,16 @@ function candidateShortList(requirementId){
 			    	     }
 			           
 			           result = result + '       </tr>';
-			           
-			           result = result + '       </tbody>';
-			           
+		    		}
+		    		
+		    		   result = result + '       </tbody>';
+		    		   result = result + '       </table>';
 			           result = result + '</div><div id="popUp">';
 			           result = result + '</div><div id="loading">';
 		    			
 		    			$("#shortlistDiv").empty();
 		    			$("#shortlistDiv").append(result);
-		    			
-		    		}
+		   		}
 		   		}else{
 		    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-user'></i><h3>Submission List is Empty</h3></div>";
 		    		$('#shortlistDiv').empty();
@@ -139,7 +139,7 @@ function candidateShortList(requirementId){
 
 
 <script>
-function pagination(){  
+function pagination(){
     $('#shortlistedPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
@@ -147,7 +147,8 @@ function pagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     	"sSearch": ""
+     	"sSearch": "",
+     	 "sZeroRecords": "", "sEmptyTable": ""
      	}
 		
     } );
@@ -178,8 +179,29 @@ function selectAllShortlisted(){
                 this.checked = false;      
             });         
         } 
+	
+	 var selectedsubmissionslists = [];
+	 $("input[name='submissionList[]']:checked").each( function (i) {
+		 selectedsubmissionslists[i] = $(this).val();
+	});
+	 
+	$("#checkedshortlistedCount").html(selectedsubmissionslists.length);
+	 
 }
 </script> 
+
+
+<script>
+function getCheckedCandidatesCount(){
+	 var selectedsubmissionslists = [];
+	 $("input[name='submissionList[]']:checked").each( function (i) {
+		 selectedsubmissionslists[i] = $(this).val();
+	});
+	 
+	$("#checkedshortlistedCount").html(selectedsubmissionslists.length);
+	 
+}
+</script>
 
 
 <script>
@@ -191,18 +213,26 @@ function shortlist(requirementId){
 	});
 	 
 	  if(selectedsubmissionslists.length > 0){
-		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-		 $.ajax({ 
-		    	type: "POST",
-		    	url: sourceleadUrl+"/candidateShortList?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionsList="+selectedsubmissionslists,
-		        success: function(result) {
-		        	$(".shortlist-wrap").removeClass("shortlist-wrap_active");
-	        		$(".side_mask").fadeOut(200);
-	        		$("body").css('overflow-y', 'auto');
-	        		var allApplicants = 'all';
-		    		requirementPipeline(requirementId,allApplicants); 
-		        },
-		 }); 
+		  
+		  if(selectedsubmissionslists.length <= 50){
+				 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+				 $.ajax({ 
+				    	type: "POST",
+				    	url: sourceleadUrl+"/candidateShortList?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionsList="+selectedsubmissionslists,
+				        success: function(result) {
+				        	$(".shortlist-wrap").removeClass("shortlist-wrap_active");
+			        		$(".side_mask").fadeOut(200);
+			        		$("body").css('overflow-y', 'auto');
+			        		var allApplicants = 'all';
+				    		requirementPipeline(requirementId,allApplicants); 
+				    		pipelineList(requirementId);
+				        },
+				 });  
+		  }else{
+			  alertMessage("<b>Selected Candidates should not more than 50</b>");
+		  }
+		  
+	
 	 }else{
 		 alertMessage("<b>Select Candidate for Shortlist</b>");
 	 } 

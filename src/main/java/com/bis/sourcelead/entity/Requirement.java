@@ -21,11 +21,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.criteria.CriteriaBuilder.In;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
@@ -76,7 +78,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "RATE")
 	private String rate;
 	
-	@Column(name = "RATE_TYPE")
+	@Column(name = "RATE_TYPE") 
 	private String rateType;
 	
 	@Column(name = "COUNTRY")
@@ -107,6 +109,15 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "IS_CLIENT_JOB")
 	private String isClientJob;
 	
+	@Column(name = "IS_PUBLIC")
+	private String isPublic;
+	
+	@Column(name = "IS_CROWD_SOURCING")
+	private String isCrowdSourcing;
+	
+	@Column(name = "REQUIREMENT_UUID")
+	private String requirementUUID;
+	
 	@ManyToOne
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
     private OrgRelations clientId;
@@ -124,6 +135,25 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "CLIENT_RATE_TYPE")
 	private String clientRateType;
 	
+	@Column(name = "POSTED_ORG_NAME")
+	private String postedOrgName;
+	
+	
+	@Column(name = "REWARD_PERCENTAGE")
+	private String rewardPercentage;
+	
+	@Column(name = "REWARD_FLAT")
+	private String rewardFlat;
+	
+	@Column(name = "REWARD_FLAT_RATE_TYPE")
+	private String rewardFlatRateType;
+	
+	@Column(name = "REWARD_GUARANTEE_PERIOD")
+	private String rewardGuaranteePeriod;
+	
+	
+	@Column(name = "REWARD_TYPE")
+	private String rewardType;
 	
 	@ManyToOne
     @JoinColumn(name="SUBMISSION_TEMPLATE_ID" )        
@@ -165,6 +195,21 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
     @JoinColumn(name="PARENT_REQUIREMENT_ID")        
     private Requirement parentRequirement;
 	
+	@Column(name="RELEASED_BY")
+	@Type(type="text")
+	private String releasedBy;
+	
+	@Column(name="APPLIED_PROFESSIONALS")
+	@Type(type="text")
+	private String appliedProfessionals;
+	
+	@Column(name="APPLIED_RECRUITERS")
+	@Type(type="text")
+	private String appliedRecruiters;
+
+	@Column(name = "TOTAL_APPLICANTS",nullable = false,columnDefinition = "INT NULL DEFAULT 0")
+	private Integer totalApplicants;
+	
 	@Column(name="PRIORITY")
 	private String priority;
 	
@@ -190,6 +235,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private  Long  requirementId;
 	
 	@Transient
+	private String isJobApplied;
+	
+	@Transient
 	private String msg;
 	
 	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
@@ -200,6 +248,8 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementApproverHierarchy> requirementApprover = new HashSet<RequirementApproverHierarchy>(0);
 	
+	@Transient
+	private String searchType;;
 	
 	@Transient
 	private String clientName;
@@ -288,6 +338,49 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private String createdByName;
 	
+	@Transient
+    private String[] level1ApproverUserId;
+	
+	@Transient
+	private String[] level2ApproverUserId;
+	
+	@Transient
+	private String level1ApproverStatus;
+	
+	@Transient
+	private String level2ApproverStatus;
+	
+	@Transient
+	private String[] requirementAssignedToUsersId;
+	
+	@Transient
+	private String isRequirementReleasedByuser;
+	
+	@Transient
+	private String orgcode;
+
+	@Transient
+	private String reqlevel1ApproverStatus;
+	
+	@Transient
+	private String reqlevel2ApproverStatus;
+	
+	@Transient
+	private String rejectReasonForRequirement;
+	
+	@Transient
+	private String approvalMechanismType;
+	
+	@Transient
+	private String postedDateStr;
+
+	public String getSearchType() {
+		return searchType;
+	}
+
+	public void setSearchType(String searchType) {
+		this.searchType = searchType;
+	}
 
 	public String getRequirementCreatedDateToString() {
 		return requirementCreatedDateToString;
@@ -327,6 +420,16 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setJobType(String jobType) {
 		this.jobType = jobType;
+	}
+
+	
+
+	public String getRejectReasonForRequirement() {
+		return rejectReasonForRequirement;
+	}
+
+	public void setRejectReasonForRequirement(String rejectReasonForRequirement) {
+		this.rejectReasonForRequirement = rejectReasonForRequirement;
 	}
 
 	public String getClientSubmissionTemplate() {
@@ -396,6 +499,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	}
 
 
+
+	public String getIsJobApplied() {
+		return isJobApplied;
+	}
+
+	public void setIsJobApplied(String isJobApplied) {
+		this.isJobApplied = isJobApplied;
+	}
 
 	public String getClientName() {
 		return clientName;
@@ -910,5 +1021,198 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	public void setCreatedByName(String createdByName) {
 		this.createdByName = createdByName;
 	}
+
+	public String[] getLevel1ApproverUserId() {
+		return level1ApproverUserId;
+	}
+
+	public void setLevel1ApproverUserId(String[] level1ApproverUserId) {
+		this.level1ApproverUserId = level1ApproverUserId;
+	}
+
+	public String[] getLevel2ApproverUserId() {
+		return level2ApproverUserId;
+	}
+
+	public void setLevel2ApproverUserId(String[] level2ApproverUserId) {
+		this.level2ApproverUserId = level2ApproverUserId;
+	}
+
+	public String getLevel1ApproverStatus() {
+		return level1ApproverStatus;
+	}
+
+	public void setLevel1ApproverStatus(String level1ApproverStatus) {
+		this.level1ApproverStatus = level1ApproverStatus;
+	}
+
+	public String getLevel2ApproverStatus() {
+		return level2ApproverStatus;
+	}
+
+	public void setLevel2ApproverStatus(String level2ApproverStatus) {
+		this.level2ApproverStatus = level2ApproverStatus;
+	}
+
+	public String[] getRequirementAssignedToUsersId() {
+		return requirementAssignedToUsersId;
+	}
+
+	public void setRequirementAssignedToUsersId(String[] requirementAssignedToUsersId) {
+		this.requirementAssignedToUsersId = requirementAssignedToUsersId;
+	}
+
+	public String getReleasedBy() {
+		return releasedBy;
+	}
+
+	public void setReleasedBy(String releasedBy) {
+		this.releasedBy = releasedBy;
+	}
+
+	public String getIsRequirementReleasedByuser() {
+		return isRequirementReleasedByuser;
+	}
+
+	public void setIsRequirementReleasedByuser(String isRequirementReleasedByuser) {
+		this.isRequirementReleasedByuser = isRequirementReleasedByuser;
+	}
+
+	public String getIsPublic() {
+		return isPublic;
+	}
+
+	public void setIsPublic(String isPublic) {
+		this.isPublic = isPublic;
+	}
+
+	public String getIsCrowdSourcing() {
+		return isCrowdSourcing;
+	}
+
+	public void setIsCrowdSourcing(String isCrowdSourcing) {
+		this.isCrowdSourcing = isCrowdSourcing;
+	}
+
+	public String getRequirementUUID() {
+		return requirementUUID;
+	}
+
+	public void setRequirementUUID(String requirementUUID) {
+		this.requirementUUID = requirementUUID;
+	}
+
+	public String getPostedOrgName() {
+		return postedOrgName;
+	}
+
+	public void setPostedOrgName(String postedOrgName) {
+		this.postedOrgName = postedOrgName;
+	}
+
+	public String getAppliedProfessionals() {
+		return appliedProfessionals;
+	}
+
+	public void setAppliedProfessionals(String appliedProfessionals) {
+		this.appliedProfessionals = appliedProfessionals;
+	}
+
+	public String getOrgcode() {
+		return orgcode;
+	}
+
+	public void setOrgcode(String orgcode) {
+		this.orgcode = orgcode;
+	}
+	
+	public String getReqlevel1ApproverStatus() {
+		return reqlevel1ApproverStatus;
+	}
+
+	public void setReqlevel1ApproverStatus(String reqlevel1ApproverStatus) {
+		this.reqlevel1ApproverStatus = reqlevel1ApproverStatus;
+	}
+
+	public String getReqlevel2ApproverStatus() {
+		return reqlevel2ApproverStatus;
+	}
+
+	public void setReqlevel2ApproverStatus(String reqlevel2ApproverStatus) {
+		this.reqlevel2ApproverStatus = reqlevel2ApproverStatus;
+	}
+
+	public String getApprovalMechanismType() {
+		return approvalMechanismType;
+	}
+
+	public void setApprovalMechanismType(String approvalMechanismType) {
+		this.approvalMechanismType = approvalMechanismType;
+	}
+
+	public String getRewardPercentage() {
+		return rewardPercentage;
+	}
+
+	public void setRewardPercentage(String rewardPercentage) {
+		this.rewardPercentage = rewardPercentage;
+	}
+
+	public String getRewardFlat() {
+		return rewardFlat;
+	}
+
+	public void setRewardFlat(String rewardFlat) {
+		this.rewardFlat = rewardFlat;
+	}
+
+	public String getRewardFlatRateType() {
+		return rewardFlatRateType;
+	}
+
+	public void setRewardFlatRateType(String rewardFlatRateType) {
+		this.rewardFlatRateType = rewardFlatRateType;
+	}
+
+	public String getRewardGuaranteePeriod() {
+		return rewardGuaranteePeriod;
+	}
+
+	public void setRewardGuaranteePeriod(String rewardGuaranteePeriod) {
+		this.rewardGuaranteePeriod = rewardGuaranteePeriod;
+	}
+
+	public String getRewardType() {
+		return rewardType;
+	}
+
+	public void setRewardType(String rewardType) {
+		this.rewardType = rewardType;
+	}
+	
+	public String getPostedDateStr() {
+		return postedDateStr;
+	}
+
+	public void setPostedDateStr(String postedDateStr) {
+		this.postedDateStr = postedDateStr;
+	}
+
+	public String getAppliedRecruiters() {
+		return appliedRecruiters;
+	}
+
+	public void setAppliedRecruiters(String appliedRecruiters) {
+		this.appliedRecruiters = appliedRecruiters;
+	}
+	
+	public Integer getTotalApplicants() {
+		return totalApplicants;
+	}
+
+	public void setTotalApplicants(Integer totalApplicants) {
+		this.totalApplicants = totalApplicants;
+	}
+
 	
 }

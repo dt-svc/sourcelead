@@ -9,6 +9,8 @@ import java.util.List;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import com.bis.sourcelead.elk.index.UserIndex;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -41,6 +43,8 @@ public interface UserRoleService {
 	
 	public UserRole getUserByUserId(Long userId) throws Exception;
 	
+	public Long getUsersCountByOrgLocationID(Long orgLocationId) throws Exception;
+
 	/**To get user role by userid and locationId
 	 * @author Prasad salina
 	 * @param userId
@@ -57,6 +61,13 @@ public interface UserRoleService {
 	 * @throws Exception
 	 */
 	public boolean isUserActive(Long userId) throws Exception;
+	
+	
+	public Boolean isUserAdmin(Long userId);
+	
+	public Boolean isUserAdminByOrgLocationId(Long userId, Long orgLocationId);
+
+
 	
 	//Prasad Salina to get managers list baded on role type
 	/*List<UserRole> getManagersByUserRolesAndOrgLocationId(String roleType , Long orgLocationsId) throws Exception;
@@ -91,7 +102,11 @@ public interface UserRoleService {
 	 */
 	 public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
 	 
+	 public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatusByApproverUserId(String invoiceFrequency,Long approverUserId) throws Exception;
+	 
 	 public HashSet<UserRole> getAllUserTimeSheetSubmissionStatusCurrentWeek();
+	 
+	 public List<UserRole> getUsersListByUserId(Long userId) throws Exception;
 
 	 public HashSet<ProjectMembers> getAllUserPrevoiusFridayTimeSheetSubmissionStatus(String wEEKLY) throws Exception;
 
@@ -101,4 +116,6 @@ public interface UserRoleService {
 	 
 	 UserRole getChangeRolePermissions(List<Long> userRoletabIds,Long userId,Long orgLocationId) throws Exception;
 	
+	 List<UserRole> getAllUsersListByOrgLocationId(Long orgLocationId,Long loginUserId ) throws Exception;;
+
 }

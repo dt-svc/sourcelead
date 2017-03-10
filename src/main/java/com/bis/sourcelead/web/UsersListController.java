@@ -74,7 +74,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	 */
 	/* This method is used for landing page of user tab. So, who has user tab access they can see users list. No preAuthorize for this method */
 	@RequestMapping(value = "/usersList")
-	public ModelAndView usersList(HttpServletRequest request) {
+	public ModelAndView usersList(@RequestParam(value="searchResult",required = false) String searchResult,@RequestParam(value="searchValue",required = false) String searchValue,HttpServletRequest request) {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -83,6 +83,11 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		ModelAndView model = new ModelAndView();
 		model.setViewName("users/usersList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		if(searchResult !=null && searchValue !=null){
+			model.addObject("searchResult", searchResult);
+			model.addObject("searchValue", searchValue);
+			model.addObject("searchType", "Users");
+		}
 		
 		Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
 		

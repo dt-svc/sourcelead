@@ -15,6 +15,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
@@ -53,6 +54,10 @@ public class Notifications implements Serializable{
 	@Column(name="ACTION_LINK")
 	private String actionLink;
 	
+	@Column(name = "REJECT_ACTION_LINK")
+	@Type(type="text")
+	private String rejectActionLink;
+	
 	@Column(name="ORG_CODE")
 	private String orgCode;
 	
@@ -75,6 +80,9 @@ public class Notifications implements Serializable{
 	@Column(name="UUID")
 	private String UUID;
 	
+	@Column(name="SPOC_UUID")
+	private String spocUUID;
+	
 	//to get only time from datetime
 	@Transient
 	private String time;
@@ -85,7 +93,7 @@ public class Notifications implements Serializable{
 	
 	//to calculate days
 	@Transient
-	private Long calDays;
+	private String calDays;
 	
 	//to notification count
 	@Transient
@@ -112,14 +120,6 @@ public class Notifications implements Serializable{
 
 	public void setNotificationStatus(String notificationStatus) {
 		this.notificationStatus = notificationStatus;
-	}
-
-	public Long getCalDays() {
-		return calDays;
-	}
-
-	public void setCalDays(Long calDays) {
-		this.calDays = calDays;
 	}
 
 	public String getDateValue() {
@@ -202,6 +202,14 @@ public class Notifications implements Serializable{
 		this.actionLink = actionLink;
 	}
 
+	public String getRejectActionLink() {
+		return rejectActionLink;
+	}
+
+	public void setRejectActionLink(String rejectActionLink) {
+		this.rejectActionLink = rejectActionLink;
+	}
+
 	public String getOrgCode() {
 		return orgCode;
 	}
@@ -249,6 +257,14 @@ public class Notifications implements Serializable{
 	public void setUUID(String uUID) {
 		UUID = uUID;
 	}
+	
+	public String getSpocUUID() {
+		return spocUUID;
+	}
+
+	public void setSpocUUID(String spocUUID) {
+		this.spocUUID = spocUUID;
+	}
 
 	public String getNotificationFirstName() {
 		return notificationFirstName;
@@ -280,5 +296,13 @@ public class Notifications implements Serializable{
 
 	public void setNotificationFormId(String notificationFormId) {
 		this.notificationFormId = notificationFormId;
+	}
+
+	public String getCalDays() {
+		return calDays;
+	}
+
+	public void setCalDays(String calDays) {
+		this.calDays = calDays;
 	}
 }

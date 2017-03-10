@@ -21,5 +21,7 @@ public interface RequirementAssignToDao {
 	Boolean checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(Long requirementId,Long userId)  throws Exception;
 
 	public List<RequirementAssignTo> getAssignedToMembersByRequirementIdAndOrgLocationId(Long requirementId,Long orgLocationId);
+
+	public RequirementAssignTo getRequirementAssignToByRequirementIdandAssignedUserId(Long assignedUserId,Long requirementId)throws Exception;
 	
 }

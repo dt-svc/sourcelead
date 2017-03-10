@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.internet.InternetAddress;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -73,8 +75,8 @@ public class EmailScenerioUtil {
 		return emailTemplate ;
 	} 
 	
-	public void sendEmail(EmailMessage emailMessage,Long locationsId, ArrayList<EmailRecipient> emailRecipientList,List<EmailAttachment> attachmentList) throws Exception{
-			emailMessageService.sendEmail(emailMessage,locationsId,emailRecipientList,attachmentList);
+	public void sendEmail(EmailMessage emailMessage,Long locationsId, InternetAddress[] iAdressArray,List<EmailAttachment> attachmentList) throws Exception{
+			emailMessageService.sendEmail(emailMessage,locationsId,iAdressArray,attachmentList);
 		}
 	
 	
@@ -138,8 +140,34 @@ public void sendNotification(String actionLink,User loginUser,User toUser, OrgLo
 	
 	}
 
-public void sendWithAttachmentEmail(EmailMessage emailMessage, Long locationsId, ArrayList<EmailRecipient> emailRecipientList,List<EmailAttachment> attachmentList, String[] submissionIds) throws Exception{
-	emailMessageService.sendEmailWithAttachment(emailMessage,locationsId,emailRecipientList,attachmentList,submissionIds);
+public void sendNotificationToClientOrVendor(String actionLink,String rejectActionLink, User loginUser,User fromUser, User toUser, OrgLocations loginOrgLocation, EmailScenario emailScenario, String spocUUID) throws Exception{
+	
+	//new Notification logic
+	Notifications notification = new Notifications();
+	notification.setActionLink(actionLink);
+	notification.setRejectActionLink(rejectActionLink);
+	notification.setSpocUUID(spocUUID);
+	notification.setBody(emailScenario.getBody());
+	notification.setNotificationFrom(fromUser);
+	notification.setNotificationTo(toUser);
+	notification.setNotificationScenarioId(emailScenario);
+	notification.setMode(Constants.NOTIFICATION_UNREAD);
+	notification.setCreatedBy(loginUser.getUserCode());
+	notification.setCreatedDate(new Date());
+	notification.setLocationCode(loginOrgLocation.getLocationCode());
+	notification.setOrgCode(loginOrgLocation.getOrg().getOrgCode());
+	notification.setUserNotificationStatus("Sent");
+	notification.setNotificationStatus(Constants.NOTIFICATION_NOT_DELETED);
+	if(null != emailScenario.getUUID()  && !emailScenario.getUUID().isEmpty()){
+		notification.setUUID(emailScenario.getUUID());
+	}
+	
+	Notifications notification1 = notificationsService.saveNotification(notification);
+	
+	}
+
+public void sendWithAttachmentEmail(EmailMessage emailMessage, Long locationsId, InternetAddress[] iAdressArray,List<EmailAttachment> attachmentList, String[] submissionIds) throws Exception{
+	emailMessageService.sendEmailWithAttachment(emailMessage,locationsId,iAdressArray,attachmentList,submissionIds);
 	
 }
 

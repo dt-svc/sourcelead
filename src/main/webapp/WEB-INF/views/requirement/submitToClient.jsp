@@ -5,14 +5,8 @@
 <script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
 
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-
-
 <!-- newly added -->
 
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/bootstrap-select.min.js"></script>
 
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
@@ -21,31 +15,17 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 
 <link rel="stylesheet" href="resources/css/bootstrap3-wysihtml5.min.css">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<link rel="stylesheet" href="resources/css/jquery-ui.css">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<link href="resources/css/font-awesome.min.css" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css" rel="stylesheet">
-<link href="resources/css/timesheet.css" rel="stylesheet">
-
-
-<script src="resources/js/jquery-1.11.3.min.js"></script>
-  <script src="resources/js/bootstrap3-wysihtml5.all.min.js"></script> 
-  <script src="resources/js/bootstrap.min.js"></script> 
-  <script src="resources/js/masterHeaderAction.js"></script> 
-  <script src="resources/js/chosen.jquery.min.js"></script> 
+ <script src="resources/js/bootstrap3-wysihtml5.all.min.js"></script> 
 
 <!-- newly added end -->
 
 <script>
 function submitToClient(requirementId){
+	$('.action-pop').slideUp();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var result = "";
-	//var status = "SHORTLIST";
-	/* result = result + '<div class="add_inter_head"> <span>Submissions</span><a href="javascript:void(0)" onclick="clientSubmissions('+requirementId+');" class="sub-btn1">Submit to client</a>'; */
 	'<sec:authorize access="hasAnyRole(\'ROLE_SUBMIT_TO_CLIENT\')">';
-	result = result + '<div class="add_inter_head"> <span>Submissions</span><a href="javascript:void(0)" onclick="addEmailtemplate('+requirementId+');" class="sub-btn1">Submit to client</a>';
+	result = result + '<div class="add_inter_head"> <span>Submissions</span> <span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="checkedSubmitToClientCount">0</b></span> <a href="javascript:void(0)" onclick="addEmailtemplate('+requirementId+');" class="sub-btn1">Submit to client</a>';
 	'</sec:authorize>';
 	result = result + ' <div class="clearfix"></div>';
 	result = result + ' </div>';
@@ -55,12 +35,14 @@ function submitToClient(requirementId){
 	    	url: sourceleadUrl+"/getShortListedCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,
 	    			
 	    	success: function(data) {
+	    		
+	    		if(data != null && data != 'undefined' && data != "" && data != '[]' && data != 'failed'){
 		       
 	    	   var json = JSON.parse(data);
 		        
 	           result = result + '     <div class="clearfix"></div>';
 	           result = result + '   </div>';
-	           result = result + '   <div class="require_wrap_table">';
+	           result = result + '   <div class="require_wrap_table scroll_table">';
 	           result = result + '     <table id="shortlistedPagination"  class="display" cellspacing="0" width="100%">';
 	           result = result + '       <thead>';
 	           result = result + '         <tr>';
@@ -72,11 +54,13 @@ function submitToClient(requirementId){
 	           result = result + '           <th>Applied on</th>';
 	           result = result + '           <th>Rate</th>';
 	           result = result + '           <th>Submission Rate</th>';
+	           result = result + '           <th>Rate Per</th>';
 	           result = result + '           <th>Source</th>';
-	           result = result + '           <th>Experince</th>';
+	           result = result + '           <th>Experience</th>';
 	           result = result + '         </tr>';
 	           result = result + '       </thead>';
 	           result = result + '       <tbody>';
+	           
 		        
 		    	if(json.length > 0)
 		   		{
@@ -90,7 +74,7 @@ function submitToClient(requirementId){
 	   	        		}
 		    			
 	    			    result = result + '<tr>';
-	    			    result = result + '<td><input type="checkbox"  class="shortlistedChecks" value='+report.id+' name="shortlist[]" ></td>';
+	    			    result = result + '<td><input type="checkbox" onclick="getSubmitToClientCheckedCandidatesCount();"  class="shortlistedChecks" value='+report.id+' name="shortlist[]" ></td>';
 	    			    
 			            result = result + '<td><div><span>'+report.candidateName+'</span></div></td>';
 			           
@@ -108,9 +92,8 @@ function submitToClient(requirementId){
 				        	result = result + '<td><div><span>--</span></div></td>';
 			    	     }
 			           
-			           if(report.resumeName != null && report.resumeName != '' && report.resumeName != 'undefined'){
-/* 			        	   result = result + '<td><div><span><a href="javascript:void(0)"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.id+'\"></a>'+report.resumeName+'</span></div></td>';*/
- 			        	   result = result + '<td><div><span><a href="javascript:void(0)"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.candidateResumes.id+'\"></a>'+report.resumeName+'</span></div></td>';
+			           if(report.candidateResumes != null && report.candidateResumes != '' && report.candidateResumes != 'undefined'){
+ 			        	   result = result + '<td><div><span><a href="javascript:void(0)"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.candidateResumes.id+'\"></a></span></div></td>';
 				           }
 				       else{
 				    	   result = result + '<td><div>--</div></td>';
@@ -123,22 +106,32 @@ function submitToClient(requirementId){
 				        	result = result + '<td><div><span>--</span></div></td>';
 			    	     }
 			           
-			           if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-			        	   result = result + '<td><div><span>'+report.expectedCTC+'</span></div></td>';
+			           if(report.finalizedRate != null && report.finalizedRate != '' && report.finalizedRate != 'undefined'){
+			        	   result = result + '<td><div><span>'+report.finalizedRate+'</span></div></td>';
 				           }
 				       else{
 				        	result = result + '<td><div><span>--</span></div></td>';
 			    	     }
 			           
 			           if(report.submitToClientRate != null && report.submitToClientRate != '' && report.submitToClientRate != 'undefined'){
-			        	   result = result + '<td><div><input type="text" class="form-control" onkeypress="validateRate(event,'+report.id+')" data-validation="validate_length length1-10" data-validation-optional="true" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value="'+report.submitToClientRate+'"></div></td>';
+			        	   result = result + '<td><div><input type="text" class="form-control quantity" maxlength="10" onkeypress="validateRate(event,'+report.id+')" data-validation="validate_length length1-10" data-validation-optional="true" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value="'+report.submitToClientRate+'"></div></td>';
 				           }
 				       else{
-				    	   result = result + '<td><div><input type="text" class="form-control" onkeypress="validateRate(event,'+report.id+')" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value=""></div></td>';
+				    	   result = result + '<td><div><input type="text" class="form-control quantity" maxlength="10" onkeypress="validateRate(event,'+report.id+')" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value=""></div></td>';
 			    	     }
+							result = result + '<td><select class="selct-picker" id="submissionRateType'+report.id+'" name="submissionRateType" field-name="Rate Type" data-validation-optional="true">';
+							result = result + '<option value="">Rate Per</option>';
+							result = result + ' <option '+(report.submitToClientRateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
+							result = result + '<option  '+(report.submitToClientRateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
+							result = result + '<option  '+(report.submitToClientRateType == "Bi-weekly" ? "selected" : '') +'>Bi-weekly</option>';
+							result = result + '<option  '+(report.submitToClientRateType == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
+							result = result + '<option  '+(report.submitToClientRateType == "Monthly" ? "selected" : '') +'>Monthly</option>';
+							result = result + '<option  '+(report.submitToClientRateType == "Bi-Monthly" ? "selected" : '') +'>Bi-Monthly</option>';
+							result = result + '<option  '+(report.submitToClientRateType == "Yearly" ? "selected" : '') +'>Yearly</option>';
+							result = result + ' </select></td>';
 			           
-			           if(report.userName != null && report.userName != '' && report.userName != 'undefined'){
-			        	   result = result + '<td><div><span>'+report.userName+''+orgName+'</span></div></td>';
+			           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
+			        	   result = result + '<td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
 				           }
 				       else{
 				        	result = result + '<td><div><span>--</span></div></td>';
@@ -152,17 +145,23 @@ function submitToClient(requirementId){
 			    	     }
 			           
 			           result = result + '       </tr>';
-			           
+		    		}
+		    		
+
 			           result = result + '       </tbody>';
+			           result = result + '       </table>';
 			           result = result + '</div><div id="loading">';
 			           result = result + '</div><div id="popUp">';
 		    			
 		    			$("#submitToClientDiv").empty();
 		    			$("#submitToClientDiv").append(result);
-		    			
-		    		}
-		   		}else{
+		   		}
+		   		}else if(data != 'failed'){
 		    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-user'></i><h3>Shortlisted List is Empty</h3></div>";
+		    		$('#submitToClientDiv').empty();
+		    		$('#submitToClientDiv').append(result);
+		    	}else if(data == 'failed'){
+		    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-briefcase'></i><h3>Client requirement was Closed/Onhold/Canceled. </h3></div>";
 		    		$('#submitToClientDiv').empty();
 		    		$('#submitToClientDiv').append(result);
 		    	}
@@ -178,20 +177,31 @@ function submitToClient(requirementId){
 	
 }
 </script>
-
-<!-- this script is used for validate the rate, which accepts only numerics and upto 10 digits (Venkat Kesav) -->
 <script>
+$(document).on('keyup', '.quantity', function(event) {
+	   var v = this.value;
+	   if($.isNumeric(v) === false) {
+	        //chop off the last char entered
+	        this.value = this.value.slice(0,-1);
+	   }
+	   $('input.quantity').bind('cut copy paste', function (e) {
+		    e.preventDefault(); //disable cut,copy,paste
+		});
+	});
+</script>
+<!-- this script is used for validate the rate, which accepts only numerics and upto 10 digits (Venkat Kesav) -->
+<!-- <script>
 function validateRate(evt, rateId) {
   var theEvent = evt || window.event;
   var key = theEvent.keyCode || theEvent.which;
   key = String.fromCharCode( key );
   var regex = /[0-9]/;
   if( !regex.test(key) || $("#submissionRate"+rateId+"").val().length>9) {
+   if(theEvent.preventDefault) theEvent.preventDefault();
     theEvent.returnValue = false;
-    if(theEvent.preventDefault) theEvent.preventDefault();
   }
 }
-</script>
+</script> -->
 
 <script>
 function pagination(){  
@@ -202,7 +212,8 @@ function pagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     	"sSearch": ""
+     	"sSearch": "",
+     	 "sZeroRecords": "", "sEmptyTable": ""
      	}
 		
     } );
@@ -234,8 +245,27 @@ function selectAllSubmitToClient(){
                 this.checked = false;      
             });         
         } 
+	
+	 var selectedShortlists = [];
+	 $("input[name='shortlist[]']:checked").each( function (i) {
+		 selectedShortlists[i] = $(this).val();
+	 });
+	 
+	 $("#checkedSubmitToClientCount").html(selectedShortlists.length);
 }
 </script> 
+
+
+<script>
+function getSubmitToClientCheckedCandidatesCount(){
+	 var selectedShortlists = [];
+	 $("input[name='shortlist[]']:checked").each( function (i) {
+		 selectedShortlists[i] = $(this).val();
+	 });
+	 
+	 $("#checkedSubmitToClientCount").html(selectedShortlists.length);
+}
+</script>
 
 
 <script>
@@ -251,20 +281,26 @@ function clientSubmissions(requirementId){
 	 });
 	 
 	 if(selectedShortlists.length > 0){
-		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-		 $.ajax({ 
-		    	type: "POST",
-		    	url: sourceleadUrl+"/submitShortlistedToClient?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionsList="+selectedShortlists+"&selectedShortlistsRate="+selectedShortlistsRate,
-		        success: function(result) {
-		        	$(".submitnew-wrap").removeClass("submitnew-wrap_active");
-		    		$(".side_mask").fadeOut(200);
-		    		$("body").css('overflow-y', 'auto');
-		    		var allApplicants = 'all';
-		    		requirementPipeline(requirementId,allApplicants); 
-		        },
-		 }); 
+		 if(selectedShortlists.length <= 50){
+			 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			 $.ajax({ 
+			    	type: "POST",
+			    	url: sourceleadUrl+"/submitShortlistedToClient?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionsList="+selectedShortlists+"&selectedShortlistsRate="+selectedShortlistsRate,
+			        success: function(result) {
+			        	$(".submitnew-wrap").removeClass("submitnew-wrap_active");
+			    		$(".side_mask").fadeOut(200);
+			    		$("body").css('overflow-y', 'auto');
+			    		var allApplicants = 'all';
+			    		requirementPipeline(requirementId,allApplicants); 
+			    		pipelineList(requirementId);
+			        },
+			 }); 
+		 }else{
+			 alertMessage("<b>Select candidate for Client Submission</b>");
+		 }
+		
 	 }else{
-		 alertMessage("<b>Select candidate for Client Submission</b>");
+		 alertMessage("<b>Selected Candidates should not more than 50</b>");
 	 }
 	
 }
@@ -301,12 +337,23 @@ function addEmailtemplate(requirementId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 		 var selectedShortlists = [];
 		 var selectedShortlistsRate = [];
+		 var selectedShortlistsRatePer = [];
+		 var isCountinue = true;
 		 $("input[name='shortlist[]']:checked").each( function (i) {
 			 selectedShortlists[i] = $(this).val();
 			 var rateId = $(this).val();
 			 var selectedRate = $("#submissionRate"+rateId).val();
 			 selectedShortlistsRate[i] = selectedRate;
+			 var rateIdper = $(this).val();
+			 var selectedRatePer =  $("#submissionRateType"+rateIdper).val();
+			 selectedShortlistsRatePer[i] = selectedRatePer;
+			 
+			 if(selectedRate != '' && selectedRatePer == ''){
+				 isCountinue = false;
+			 }
 		});
+		 
+		 if(isCountinue){
 		 if(selectedShortlists.length >0){
 		 $.ajax({ 
 		    	type: "GET",
@@ -314,7 +361,7 @@ function addEmailtemplate(requirementId){
 		        success: function(data) {
 		        	 var json = JSON.parse(data);
 		        	result = result +'<section class="clearfix">';
-		        	result = result +'<div id="loading"></div>';
+		        	result = result +'<div id="loadingDiv"></div>';
 		        	result = result +'<form id="submitToClientMailTemplate" name="submitToClient" enctype="multipart/form-data">';
 		        	result = result +'<section class="content-header clearfix">';	
 					result = result +'  <div class="pull-left">';
@@ -396,7 +443,7 @@ function addEmailtemplate(requirementId){
 					result = result +'				<div class="col-md-6">';
 					result = result +'					<div class="pull-right">';
 					result = result +'						<button type="button" id="sendMail"';
-					result = result +'							class="btn btn-sm btn-success" onclick="submitToClientMail(\''+selectedShortlists+'\',\''+json.id+'\',\''+selectedShortlistsRate+'\');">';
+					result = result +'							class="btn btn-sm btn-success" onclick="submitToClientMail(\''+selectedShortlists+'\',\''+json.id+'\',\''+selectedShortlistsRate+'\',\''+selectedShortlistsRatePer+'\');">';
 					result = result +'							<i class="fa fa-envelope-o"></i>&nbsp;Send</button>';
 					result = result +'						<button type="button" class="btn btn-sm btn-default" onclick="cancelSubmit();">';
 					result = result +'							<i class="fa fa-times" ></i>&nbsp;Cancel';
@@ -419,11 +466,11 @@ function addEmailtemplate(requirementId){
                         ,placeholderText:"Enter emails"
                         ,allowDuplicates: false
                      	,afterTagAdded: function(evt, ui){
-                    	              checkEmails();
+                    	              checkEmailsForSubmitToClient();
                     	              return false;
                     	    }
                         ,afterTagRemoved: function(evt, ui){
-                           checkEmails();
+                           checkEmailsForSubmitToClient();
                            return false;
                       }
                     });
@@ -441,21 +488,34 @@ function addEmailtemplate(requirementId){
 	$("#pipeline_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
  }
+		 
+ }else{
+	    var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Rate Per is Required for given Rate</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#pipeline_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+ }
 }
 </script>
 
 <script language="javascript">
-function checkEmail(email) {
+function validateEmail(email) {
    var regExp = /^.+@.+\..{2,3}$/
    return regExp.test(email);
 }
 
-function checkEmails(){
+function checkEmailsForSubmitToClient(){
 	var emails = document.getElementById("othersMailId").value;
 	var emailArray = emails.split(",");
 	var invEmails = "";
 	for(i = 0; i <= (emailArray.length - 1); i++){
-		if(checkEmail(emailArray[i])){
+		if(validateEmail(emailArray[i])){
 			//Do what ever with the email.
 		}else{
 			invEmails += "'" +emailArray[i]+ "'"+ "\n";
@@ -536,7 +596,7 @@ function addAttachment(){
 
 
 <script>
-function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate){
+function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate,selectedShortlistsRatePer){
 	 if ($('#submitToClientMailTemplate').validate(false, validationSettings)){ 
 			var frm = $('#submitToClientMailTemplate').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -546,7 +606,7 @@ function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate){
     		var formData = new FormData(form); 
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#sendMail").addClass('button').val('Processing..');
-     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+     		$("#loadingDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 				$.ajax({
 					 type : "POST",
 					 data: formData,
@@ -555,15 +615,12 @@ function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate){
 	      	         processData: false,
 	      	         contentType:false,
 	          	     dataType : 'json',
-					url : sourceleadUrl+"/submitToClient?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&selectedIds="+selectedIds+"&requirementId="+requirementId+"&selectedShortlistsRate="+selectedShortlistsRate,
+					url : sourceleadUrl+"/submitToClient?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&selectedIds="+selectedIds+"&requirementId="+requirementId+"&selectedShortlistsRate="+selectedShortlistsRate+"&selectedShortlistsRatePer="+selectedShortlistsRatePer,
 					success : function(result) {
-
-						$(".submitnew-wrap").removeClass("submitnew-wrap_active");
-						$(".new_side_wrap").removeClass("new_side_wrap_active");
-                        $(".side_mask").fadeOut(200);
-                        $("body").css('overflow-y', 'auto');
-                        var allApplicants = 'all';
-                        requirementPipeline(requirementId,allApplicants); 
+						cancelSubmit();
+						var allApplicants = 'all';
+			    		requirementPipeline(requirementId,allApplicants); 
+			    		pipelineList(requirementId);
 					},
 				}); 
 	 }

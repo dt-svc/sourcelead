@@ -1,16 +1,5 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/formvalidator.js"></script>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<script src="resources/js/formvalidator.js"></script>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<script src="resources/js/formvalidator.js"></script>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<script src="resources/js/chosen.jquery.min.js"></script> 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!-- these files for autocomplete with tagit -->
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
@@ -23,7 +12,7 @@
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId,
+					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&type=Client",
 					success : function(data) {
 						
 						var json = JSON.parse(data);
@@ -131,7 +120,7 @@
 		var sourceleadUrl = '${sourceleadUrl}';
 		      $.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId,
+						url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&type=Client",
 						success : function(data) {
 						var json = JSON.parse(data);
 						var result = "";
@@ -146,7 +135,11 @@
 						}else{
 							spocMobilePhone = "";
 						}
-						
+						if(null != json.spocLastName && json.spocLastName != '' && json.spocLastName != 'undefined'){
+							spocLastName = json.spocLastName;
+						}else{
+							spocLastName = "";
+						}
 						if(json.spocStatus == 'Active'){
 							selected1 = 'selected';
 						} 
@@ -176,14 +169,10 @@
 							
 							result = result + '<div class="user_summary_edit_cta" id="vendorContactLastNameDiv">';
 							result = result + '<label>Last Name:</label>';
-							result = result + '<input type="text"  id="vendorContactLastName" name="vendorContactLastName" value="'+json.spocLastName+'" placeholder="Last name" field-name="Last name" readonly="readonly">';
+							result = result + '<input type="text"  id="vendorContactLastName" name="vendorContactLastName" value="'+spocLastName+'" placeholder="Last name" field-name="Last name" readonly="readonly">';
 							result = result + '</div>';
 							
-							result = result + '<div class="user_summary_edit_cta" id=" id="EmailIdDiv"">';
-							result = result + '<label>Email:</label>';
-							result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email" readonly="readonly">';
-							//result = result + '<input type="text"  id="emailId" name="emailId" value="'+json.spocUser.email+'" placeholder="EmailId" field-name="EmialId" onKeyUp="validateClientEmail('+spocId+');">';
-							result = result + '</div>';
+							
 							
 							result = result + '<div class="user_summary_edit_cta" id="mobilePhone">';
 							result = result + '<label>Phone No:</label>';
@@ -198,80 +187,56 @@
 							
 							result = result + '<div class="user_summary_edit_cta" id="vendorContactLastNameDiv">';
 							result = result + '<label>Last Name:</label>';
-							result = result + '<input type="text"  id="vendorContactLastName" name="vendorContactLastName" value="'+json.spocLastName+'" placeholder="Last name" field-name="Last name">';
+							result = result + '<input type="text"  id="vendorContactLastName" name="vendorContactLastName" value="'+spocLastName+'" placeholder="Last name" field-name="Last name">';
 							result = result + '</div>';
 							
-							result = result + '<div class="user_summary_edit_cta" id=" id="EmailIdDiv"">';
+							/* result = result + '<div class="user_summary_edit_cta" id=" id="EmailIdDiv"">';
 							result = result + '<label>Email:</label>';
 							result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail('+spocId+');">';
 							//result = result + '<input type="text"  id="emailId" name="emailId" value="'+json.spocUser.email+'" placeholder="EmailId" field-name="EmialId" onKeyUp="validateClientEmail('+spocId+');">';
-							result = result + '</div>';
+							result = result + '</div>'; */
 							
 							result = result + '<div class="user_summary_edit_cta" id="mobilePhone">';
 							result = result + '<label>Phone No:</label>';
 							result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone" data-validation-optional="true" data-validation="validate_int validate_length length9-20" >';
 							result = result + '</div>';
 					   }
+				     	result = result + '<div class="user_summary_edit_cta" id=" id="EmailIdDiv"">';
+						result = result + '<label>Email:</label>';
+						result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email" readonly="readonly">';
+						//result = result + '<input type="text"  id="emailId" name="emailId" value="'+json.spocUser.email+'" placeholder="EmailId" field-name="EmialId" onKeyUp="validateClientEmail('+spocId+');">';
+						result = result + '</div>';
 						
 				     	//to diffentiate temp spoc user
 						result = result + '<input type="hidden"  id="existingSpocUserId" name="existingSpocUserId" value="'+json.tempSpocId+'">';
 						
-						/* result = result + '<div class="user_summary_edit_cta" id="vendorContactFirstNameDiv">';
-						result = result + '<label>First Name:<span class="text-danger">*</span></label>';
-						result = result + '<input type="text"  id="vendorContactFirstName" name="vendorContactFirstName" value="'+json.spocFirstName+'" placeholder="First name" field-name="First name" data-validation="required validate_Space validate_length length2-250" >';
-						result = result + '</div>';
-						
-						result = result + '<div class="user_summary_edit_cta" id="vendorContactLastNameDiv">';
-						result = result + '<label>Last Name:</label>';
-						result = result + '<input type="text"  id="vendorContactLastName" name="vendorContactLastName" value="'+json.spocLastName+'" placeholder="Last name" field-name="Last name">';
-						result = result + '</div>';
-						
-						result = result + '<div class="user_summary_edit_cta" id=" id="EmailIdDiv"">';
-						result = result + '<label>Email:</label>';
-						result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email" onKeyUp="validateClientEmail('+spocId+');">';
-						//result = result + '<input type="text"  id="emailId" name="emailId" value="'+json.spocUser.email+'" placeholder="EmailId" field-name="EmialId" onKeyUp="validateClientEmail('+spocId+');">';
-						result = result + '</div>'; */
-						
 						result = result + ' <div class="user_summary_edit_cta" >';
 						result = result + '<label>Spoc Status :</label>';
-						result = result + ' <select id="spocStatus" name="spocStatus">';
-						result = result + ' <option '+selected1+'>Active</option>';
-						result = result + ' <option '+selected2+'>In-Active</option>';
-						result = result + ' <option '+selected3+'>New</option>';
-						result = result + ' <option '+selected4+'>Negotiation</option>';
-						result = result + ' <option '+selected5+'>Contracted</option>';
-						result = result + ' </select>';
+						if(json.invitationStatus == 'Rejected'){
+		        			result = result + '<span>'+json.spocStatus+'</span>';
+		        		}else{
+		        			result = result + ' <select id="spocStatus" name="spocStatus">';
+							result = result + ' <option '+selected1+'>Active</option>';
+							result = result + ' <option '+selected2+'>In-Active</option>';
+							result = result + ' <option '+selected3+'>New</option>';
+							result = result + ' <option '+selected4+'>Negotiation</option>';
+							result = result + ' <option '+selected5+'>Contracted</option>';
+							result = result + ' </select>';
+		        		}
 						result = result + ' </div>'
 						
-						/* result = result + '<div class="user_summary_edit_cta" id="owner">';
-						result = result + '<label>Owner :</label>';
-						result = result + '<input type="text"  id="owner" name="owner" value="'+json.ownerName+'" placeholder="Owner name" field-name="Owner name">';
-						result = result + '</div>'; */
-						
-						
-				 		/* result = result  +'	 <div class="clearfix mb10">';
-						result = result  +'	 <label class="col-md-12">Owner<span class="text-danger">&nbsp;*</span></label>';
-						result = result  +'	 <div class="col-md-12">';
-						result = result  +'	   <select multiple class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
-						result = result  +'	       <c:forEach var="user" items="${userList}">';
-						result = result  +'	           <option value="${user.id}" ${user.id  == ownerId ? "selected" : ''} > ${user.firstName} ${user.lastName}</option>';
-						result = result  +'	       </c:forEach>';
-					    result = result  +'	  </select>';
-					    result = result  +'	 </div>';
-					    result = result  +'	 </div>';  */
 						result = result  +'	 <div class="clearfix mb10">';
 						result = result  +'	 <label class="col-md-12">Owner<span class="text-danger">&nbsp;*</span></label>';
 						result = result  +'	 <div class="col-md-12">';
 						result = result  +'	   <select  class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
-						
 						for (var j = 0; j < json.userList.length; j++) {
 							var user = json.userList[j];
-							   if(user.id == tempOwnerId){
+							  if(user.id == tempOwnerId){
 								   selected = 'selected';
 								   result = result+"<option value="+user.id+" "+selected+" >"+user.firstName+" "+user.lastName+"</option>";
 							  }else{
 									  result = result+"<option value="+user.id+" >"+user.firstName+" "+user.lastName+"</option>";
-			   		 	    	 } 
+			   		 	    	 }  
 						}
 						
 						result = result  +'	  </select>';
@@ -357,14 +322,15 @@
              var sourceleadUrl ='${sourceleadUrl}';
 	 	 $.ajax({
 			   	type: "POST",
-			    url: sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId, 	   
+			    url: sourceleadUrl+"/vendorContactDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&type=Client", 	   
 	   		    success: function(data) {
 	   		        var ownerId = data;
 	   		    	
 	   		    	$("#spocDetailsId").removeAttr("onClick")
 	   		    	$("#spocDetailsId").attr("onclick","clientDetailsbySpocId('"+spocId+"', '"+ownerId+"', '"+spocUserId+"', '"+ownerId+"')");
 	   		    	clientDetailsbySpocId(spocId,ownerId,spocUserId,ownerId);
-	   		    	getVendorContactLists(); 
+	   		    	/* getVendorContactLists();  */
+	   		    	getVendorContactListsELK();
 	   		    }
 		 }); 
 	     	return true;

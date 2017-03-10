@@ -8,16 +8,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.internet.InternetAddress;
+
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.UserIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
@@ -25,16 +30,21 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.ReferContacts;
+import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.Registration;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -44,12 +54,16 @@ import com.bis.sourcelead.service.PasswordResetsSevice;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.service.RegistrationService;
+import com.bis.sourcelead.service.RequirementReferService;
+import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -120,6 +134,24 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Autowired
 	private SourceleadRolesService sourceleadRolesService;
 	
+	@Autowired
+    private SourceleadELKBaseIndexer<UserIndex> sourceleadELKBaseIndexer;
+	
+	@Autowired
+	private CandidateService candidateService;
+	
+	@Autowired
+	ReferContactsService referContactsService;
+	
+	@Autowired
+	RequirementReferService requirementReferService;
+	
+	@Autowired
+	private TimeZoneService timeZoneService;
+	
+	@Autowired
+	RequirementService requirementService;
+	
 	
 	protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -157,7 +189,6 @@ public class RegistrationServiceImpl implements RegistrationService{
 			e1.printStackTrace();
 		}
 		org.setUser(user);
-		org.setCreatedBy(user.getUserCode());
 		
 		try {
 			orgService.updateOrg(org);
@@ -167,6 +198,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		//For saving of orgLocation Details which location has choose in the registration
 		OrgLocations orgLocations = getOrgLocationsDetails(registration, org, user);
+		Timezone timeZone = timeZoneService.getTimezone(Long.parseLong(registration.getTimeZone()));
+		orgLocations.setTimezone(timeZone);
 		try {
 			orgLocationService.addOrgLocations(orgLocations);
 		} catch (Exception e) {
@@ -199,12 +232,20 @@ public class RegistrationServiceImpl implements RegistrationService{
 			 moduleIds.add(Integer.parseInt(s));
 		 }
 		 
+		 
+		/* 
+		  //commented by Prasad salina
 		  boolean flag = moduleIds.contains(Constants.MODULE_TIMESHEET);
 		  if(flag == true){
 			  saveProject(registration, orgLocations, user, employee);
- 		}
+ 		  }*/
 		
 		saveDefaultSubmissionTemplate(org,orgLocations,user);
+		
+		/*
+		 * Saving USER DB data as ElasticSearch Documents
+		 */
+		userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
 		
 		userService.sendEmail(user, loginUser, password,orgLocationsId);
 	
@@ -240,7 +281,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		orgModules = orgModules.substring(0, orgModules.length()-1);
 		org.setModulesId(orgModules);
-		
+		org.setCreatedBy("sladmin");
 		
 		org.setCreatedDate(new Date());
 		return org;
@@ -480,12 +521,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("loginURL",loginURLStringBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		 EmailRecipient emailRecipient = new EmailRecipient();
-		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 StringBuilder nameStringBuilder=new StringBuilder();
-		 emailRecipient.setName(nameStringBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ORG_REGISTRATION,Constants.ENTITY_TYPE_EMAIL);
@@ -502,7 +538,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,locationsId,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,locationsId,iAdressArray,new ArrayList<EmailAttachment>());
 		
 	}
 	
@@ -524,12 +560,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("resetPasswordURL",resetPasswordURLStringBuilder.append("<a href='").append(sourceleadUrl).append("/resetPassword").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reset Password</div></a>").toString());
 			
 		//setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		 EmailRecipient emailRecipient = new EmailRecipient();
-		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 StringBuilder nameStringBuilder=new StringBuilder();
-		 emailRecipient.setName(nameStringBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		//getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.FORGOT_PASSWORD,Constants.ENTITY_TYPE_EMAIL);
@@ -546,7 +577,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,locationsId,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,locationsId,iAdressArray,new ArrayList<EmailAttachment>());
 		
 	}
 	
@@ -566,12 +597,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("lastName",emailMessage.getLastName());
 			
 		//setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-		 EmailRecipient emailRecipient = new EmailRecipient();
-		 emailRecipient.setEmail(emailMessage.getToEmail());
-		 StringBuilder nameStringBuilder=new StringBuilder();
-		 emailRecipient.setName(nameStringBuilder.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		//getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATE_PASSWORD,Constants.ENTITY_TYPE_EMAIL);
@@ -588,7 +614,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		//calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,locationsId,emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,locationsId,iAdressArray,new ArrayList<EmailAttachment>());
 		
 		
 	}
@@ -631,6 +657,426 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Override
 	public void deletePasswordResets(PasswordResets passwordResets) throws Exception {
 		passwordResetsSevice.deletePasswordResets(passwordResets);
+	}
+
+	@Override
+	public void addUserBySourcelead(User user, JSONObject jsonObj) throws Exception {
+		
+		User orgUser = userService.findByEmail(jsonObj.getString("userEmail"));
+		UserRole userRole = new UserRole();
+		String password = null;
+		if(null == orgUser){
+			orgUser = new User();
+			orgUser.setFirstName(jsonObj.getString("firstName"));
+			
+			if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
+				orgUser.setLastName(jsonObj.getString("lastName"));
+			}
+			
+			orgUser.setEmail(jsonObj.getString("userEmail"));
+			orgUser.setCreatedBy(user.getUserCode());
+			orgUser.setCreatedDate(new Date());
+			orgUser.setUpdatedBy(user.getUserCode());
+			orgUser.setUserName(jsonObj.getString("userEmail"));
+			password = SourceLeadRandomCodeHelper.generateRandomPassword();
+			orgUser.setPassword(sourceleadPasswordEncoder.encode(password));
+			orgUser.setIsMailSent(Status.Y);
+			orgUser.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
+			orgUser.setUpdatedDate(new Date());
+			userService.addUser(orgUser);
+			userRole.setIsPrimary(1);
+		}else{
+			userRole.setIsPrimary(0);
+		}
+		
+		
+		
+		userRole.setUser(orgUser);
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.valueOf(jsonObj.getString("registeredOrgLocationId")));
+		userRole.setOrgLocations(orgLocations);
+		Roles roles = rolesService.getRolesById(Long.valueOf(jsonObj.getString("userRole")));
+		userRole.setRoles(roles);
+		userRole.setUserState(Status.NOT_LOGGEDIN);
+		userRole.setUserType(roles.getDisplayName());
+		
+		userRole.setCreatedBy(user.getUserCode());
+		userRole.setCreatedDate(new Date());
+		userRole.setUpdatedBy(user.getUserCode());
+		userRole.setUpdatedDate(new Date());
+		userRoleService.addUserRole(userRole);
+		
+		
+		Employees employees = new Employees();
+		employees.setUser(orgUser);
+		employees.setOrgLocations(orgLocations);
+		employees.setCreatedBy(user.getUserCode());
+		employees.setCreatedDate(new Date());
+		employees.setUpdatedBy(user.getUserCode());
+		employees.setUpdatedDate(new Date());
+		employeesService.addEmployee(employees);
+		
+		if(null == orgLocations.getUser()){
+			Org org = orgLocations.getOrg();
+			if(roles.getRoleName().equalsIgnoreCase("ROLE_ADMIN")){
+				orgLocations.setUser(orgUser);
+				orgLocationService.updateOrgLocations(orgLocations);
+				org.setUser(orgUser);
+			}	
+			
+			if(org.getOrgType().equalsIgnoreCase("Guest")){
+				org.setOrgType("Company");
+				org.setStatus(Status.ACTIVE);
+			}
+			orgService.addOrganization(org);
+		}
+		/*
+		 * Saving USER DB data as ElasticSearch Documents
+		 */
+		userService.saveOrUpdateUserElkDocument(userRole,employees,orgUser.getUserCode());
+		sendEmail(orgUser,user,password,orgLocations.getId());
+		
+		
+		
+	}
+	
+	
+	public void sendEmail(User user, User loginUser, String password, Long locationId) throws Exception {
+		
+		 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), locationId);
+		 if(userRole == null){
+		    userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		 }
+		 
+		 boolean isUserActive = false;
+		 isUserActive = userRoleService.isUserActive(user.getId());
+		 
+		 StringBuilder sb = new StringBuilder();
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(user.getFirstName());
+		 emailMessage.setLastName(user.getLastName());
+		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
+		 emailMessage.setOrgLocationId(locationId);
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("firstName", emailMessage.getFirstName());
+		 globalVarsMap.put("lastName",emailMessage.getLastName());
+		 globalVarsMap.put("administratorFirstName", loginUser.getFirstName());
+		 globalVarsMap.put("administratorLastName",loginUser.getLastName());
+		 globalVarsMap.put("role",userRole.getUserType());
+		 StringBuilder loginBuilder = new StringBuilder();
+		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 globalVarsMap.put("userEmailId",user.getEmail());
+		 if(isUserActive == false){
+			 globalVarsMap.put("password",password);
+		 }else{
+			 globalVarsMap.put("password","Note : Login with your existing Sourcelead password");
+		 }
+		 
+		
+		 //setting the Recipient information
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_USER,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,locationId,iAdressArray,new ArrayList<EmailAttachment>());
+		
+	}
+
+	@Override
+	public void saveProfessional(JSONObject jsonObj,String contactUUID) throws Exception {
+		
+		User user = new User();
+		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
+			user.setFirstName(jsonObj.getString("firstName"));
+		}
+		
+		if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
+			user.setLastName(jsonObj.getString("lastName"));
+		}
+		
+		if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
+			user.setEmail(jsonObj.getString("email"));
+		}
+		
+		if(jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))){
+			user.setCountry(jsonObj.getString("location"));
+		}
+		
+		user.setUserName(SourceLeadRandomCodeHelper.generateRandomUniquUserName());
+		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
+		user.setUserType(Constants.PROFESSIONAL);
+		user.setCreatedBy("sladmin");
+		user.setCreatedDate(new Date());
+		user.setUpdatedDate(new Date());
+		
+		userService.addUser(user);
+		
+		Org org = new Org();
+		org.setId(1L);
+		
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(1L);
+				
+		
+		UserRole userRole = new UserRole();
+		Roles roles = rolesService.getRolesByRoleNameAndOrgId(Constants.ROLE_NAME_PROFESSIONAL, 1L);
+		userRole.setUser(user);
+		userRole.setRoles(roles);
+		userRole.setOrgId(org);
+		userRole.setOrgLocations(orgLocations);
+		userRole.setIsPrimary(1);
+		userRole.setCreatedBy("sladmin");
+		userRole.setCreatedDate(new Date());
+		userRole.setUpdatedDate(new Date());
+		userRole.setUserState(Status.NOT_LOGGEDIN);
+		userRole.setUserType(Constants.PROFESSIONAL);
+		userRoleService.addUserRole(userRole);
+		
+		Candidate candidate = new Candidate();
+		candidate.setConsultantUser(user);
+		candidate.setOrgId(org);
+		candidate.setOrgLocationId(orgLocations);
+		candidate.setCandidateType(Constants.PROFESSIONAL);
+		candidate.setCountry(jsonObj.getString("location"));
+		
+		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
+			candidate.setFirstName(jsonObj.getString("firstName"));
+		}
+		
+		if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
+			candidate.setLastName(jsonObj.getString("lastName"));
+		}
+		
+		if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
+			candidate.setEmail(jsonObj.getString("email"));
+		}
+		
+		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
+		candidate.setCreatedBy("sladmin");
+		candidate.setCreatedDate(new Date());
+		candidate.setUpdatedDate(new Date());
+		
+		candidateService.addCandidate(candidate);
+		
+		
+		if(!isNullOrEmpty(contactUUID)){
+			
+			ReferContacts referContacts = referContactsService.getReferContactsByUUID(contactUUID); 
+			String referToEmail = referContacts.getContactUserEmail();
+			referContacts.setFirstName(user.getFirstName());
+			referContacts.setLastName(user.getLastName());
+			referContacts.setContactUserEmail(user.getEmail());
+			referContacts.setContactUser(user);
+			referContactsService.addReferContacts(referContacts);
+			
+			List<RequirementRefer>  requirementReferList = requirementReferService.getRequirementReferListByEmail(referToEmail);
+			if(null != requirementReferList && requirementReferList.size() > 0){
+				for(RequirementRefer requirementRefer : requirementReferList){
+					requirementRefer.setReferToUser(user);
+					requirementRefer.setReferToEmail(referContacts.getContactUserEmail());
+					requirementReferService.addRequirementRefer(requirementRefer);
+					
+				}
+			}
+			
+			
+		}
+		
+		
+		sendEmailToProfessional(user);
+		
+	}
+	
+	
+	public void sendEmailToProfessional(User user) throws Exception {
+		
+		 
+		 StringBuilder sb = new StringBuilder();
+		 EmailMessage emailMessage = new EmailMessage();
+		 String professionalName = null;
+		 
+		 if(!isNullOrEmpty(user.getLastName())){
+			 professionalName = sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
+		 }else{
+			 professionalName = sb.append(user.getFirstName()).toString();
+		 }
+		 
+		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFromName("Sourcelead Admin");
+		 emailMessage.setCreatedBy("sladmin");
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("professionalName", professionalName);
+		 globalVarsMap.put("loginUserName", user.getUserName());
+		 StringBuilder loginBuilder = new StringBuilder();
+		 globalVarsMap.put("resetLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("resetloginCredentials").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 
+		
+		 //setting the Recipient information
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_PROFESSIONAL,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
+		
+	}
+
+	@Override
+	public void saveIndividualRecruiter(JSONObject jsonObj) throws Exception {
+		
+		User user = new User();
+		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
+			user.setFirstName(jsonObj.getString("firstName"));
+		}
+		
+		if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
+			user.setLastName(jsonObj.getString("lastName"));
+		}
+		
+		if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
+			user.setEmail(jsonObj.getString("email"));
+		}
+		
+		if(jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))){
+			user.setCountry(jsonObj.getString("location"));
+		}
+		
+		user.setUserName(SourceLeadRandomCodeHelper.generateRandomUniquUserName());
+		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
+		user.setUserType(Constants.INDIVIDUAL_RECRUITER);
+		user.setCreatedBy("sladmin");
+		user.setCreatedDate(new Date());
+		user.setUpdatedDate(new Date());
+		
+		userService.addUser(user);
+		
+		Org org = new Org();
+		org.setId(1L);
+		
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(1L);
+		
+		UserRole userRole = new UserRole();
+		Roles roles = rolesService.getRolesByRoleNameAndOrgId(Constants.ROLE_NAME_INDEPENDENT_RECRUITER, 1L);
+		userRole.setUser(user);
+		userRole.setRoles(roles);
+		userRole.setOrgId(org);
+		userRole.setOrgLocations(orgLocations);
+		userRole.setIsPrimary(1);
+		userRole.setCreatedBy("sladmin");
+		userRole.setCreatedDate(new Date());
+		userRole.setUpdatedDate(new Date());
+		userRole.setUserState(Status.NOT_LOGGEDIN);
+		userRole.setUserType(Constants.INDIVIDUAL_RECRUITER);
+		userRoleService.addUserRole(userRole);
+		
+		Candidate candidate = new Candidate();
+		candidate.setConsultantUser(user);
+		candidate.setOrgId(org);
+		candidate.setOrgLocationId(orgLocations);
+		candidate.setCountry(jsonObj.getString("location"));
+		candidate.setCandidateType(Constants.INDIVIDUAL_RECRUITER);
+		
+		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
+			candidate.setFirstName(jsonObj.getString("firstName"));
+		}
+		
+		if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
+			candidate.setLastName(jsonObj.getString("lastName"));
+		}
+		
+		if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
+			candidate.setEmail(jsonObj.getString("email"));
+		}
+		
+		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
+		candidate.setCreatedBy("sladmin");
+		candidate.setCreatedDate(new Date());
+		candidate.setUpdatedDate(new Date());
+		
+		candidateService.addCandidate(candidate);
+		
+		sendEmailToIndividualRecruiter(user);
+		
+	}
+	
+	
+	
+	public void sendEmailToIndividualRecruiter(User user) throws Exception {
+		
+		 
+		 StringBuilder sb = new StringBuilder();
+		 EmailMessage emailMessage = new EmailMessage();
+		 String professionalName = null;
+		 
+		 if(!isNullOrEmpty(user.getLastName())){
+			 professionalName = sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
+		 }else{
+			 professionalName = sb.append(user.getFirstName()).toString();
+		 }
+		 
+		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFromName("Sourcelead Admin");
+		 emailMessage.setCreatedBy("sladmin");
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("professionalName", professionalName);
+		 globalVarsMap.put("loginUserName", user.getUserName());
+		 StringBuilder loginBuilder = new StringBuilder();
+		 globalVarsMap.put("resetLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("resetloginCredentials").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 
+		
+		 //setting the Recipient information
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_INDIVIDUAL_RECRUITER,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
+		
 	}
 
 }

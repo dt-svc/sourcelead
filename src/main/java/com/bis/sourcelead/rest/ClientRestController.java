@@ -20,9 +20,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.util.FileCopyUtils;
-
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,8 +29,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.ClientVendorIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -41,6 +42,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.ClientVendorExport;
+import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
@@ -113,6 +115,12 @@ public class ClientRestController {
 	@Autowired
 	private ClientVendorExport clientVendorExport;
 	
+	@Autowired
+	NotificationsService notificationsService;
+	
+  
+	@Autowired
+	private SourceleadELKBaseIndexer<ClientVendorIndex> sourceleadELKBaseIndexer;
 	
 	/**
 	 * Handles to get Orgs
@@ -332,33 +340,11 @@ public class ClientRestController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_VENDOR_CONTACT','ROLE_VIEW_EDIT_VENDOR_CONTACT','ROLE_CREATE_REQUIREMENT')")
 	@RequestMapping(value = "/getOrgSpocsList", method = RequestMethod.POST)
-	@ResponseBody String getOrgSpocsList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
-		String msg = "";
+	@ResponseBody String getOrgSpocsList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,
+			                             @RequestParam(value = "type", required = false) String type) throws Exception {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, loginUser.getId(),orgLocations.getId());
-		if(orgSpocsList != null){
-			for(OrgSpoc orgSpoc : orgSpocsList){
-				msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "clientContactCreateMsg");
-				if(msg != null && msg != ""){
-					orgSpoc.setMsg(msg);
-					SourceLeadSessionManager.removeSessionAttribute(request, "clientContactCreateMsg");
-				}else{
-					msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "vendorContactCreateMsg");
-					if(msg != null){
-						orgSpoc.setMsg(msg);
-						SourceLeadSessionManager.removeSessionAttribute(request, "vendorContactCreateMsg");
-					}
-				}
-				String ownerLastName = "";
-				if(orgSpoc.getOwnerUser() != null && orgSpoc.getOwnerUser().getLastName() != null){
-					ownerLastName = orgSpoc.getOwnerUser().getLastName();
-				}
-				StringBuilder name = new StringBuilder();
-				orgSpoc.setOwnerName(name.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(ownerLastName).toString());
-			}
-		}
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, loginUser.getId(),orgLocations.getId(),type);
 		return commonUtil.toJSON(orgSpocsList);
 	}
 	
@@ -520,15 +506,32 @@ public class ClientRestController {
 	  */
 	 @RequestMapping(value = "/saveInvitationStatus", method = RequestMethod.POST)
 	 public  String saveInvitationStatus(@RequestParam(value="spocId", required=false) Long spocId,
-													@RequestParam(value="invitationStaus", required=false) String invitationStaus) throws Exception{
-										             
+													@RequestParam(value="invitationStaus", required=false) String invitationStaus,HttpServletRequest request) throws Exception{
+		 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");        
 	        OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
 	        if(orgSpoc !=  null){
+	        	
+	        	Notifications notifications = notificationsService.getNotificationBySpocUUID(orgSpoc.getUUID());
+	        	
 	        	if(invitationStaus != null && "Accepted".equals(invitationStaus)){
 	        		orgSpoc.setInvitationStatus(Constants.MAIL_ACCEPTED);
+	        		clientService.sendAcceptEmailToClientOrVendor(orgSpoc,loginUser,orgLocations);
+	        		
+	        		if(null != notifications){
+	        			 notifications.setUserNotificationStatus("Accepted");
+						 notificationsService.saveNotification(notifications);
+	        		}
+	        		
 	        		SourceLeadSessionManager.setSessionAttribute(request, "acceptContact","Success !! Accepted the invitation.");
 	        	}else if(invitationStaus != null && "Rejected".equals(invitationStaus)){
 	        		orgSpoc.setInvitationStatus(Constants.MAIL_REJECTED);
+	        		orgSpoc.setSpocStatus(Constants.INACTIVE);
+	        		clientService.sendRejectEmailToClientOrVendor(orgSpoc,loginUser,orgLocations);
+	        		if(null != notifications){
+	        			notifications.setUserNotificationStatus("Rejected");
+						notificationsService.saveNotification(notifications);
+	        		}
 	        		SourceLeadSessionManager.setSessionAttribute(request, "acceptContact","Rejected the invitation.");
 	        	}
 	        	orgSpocService.addOrgSpoc(orgSpoc);
@@ -546,14 +549,18 @@ public class ClientRestController {
 	  */
 	 @PreAuthorize("hasAnyRole('ROLE_VIEW_CLIENT_CONTACT','ROLE_VIEW_EDIT_CLIENT_CONTACT','ROLE_VIEW_VENDOR_CONTACT','ROLE_VIEW_EDIT_VENDOR_CONTACT')")
 	 @RequestMapping(value = "/getSpocAndOwnerDetailsById", method = RequestMethod.POST)
-	 @ResponseBody String getSpocAndOwnerDetailsById(@RequestParam(value = "spocId", required = false) Long spocId,@RequestParam(value = "ownerId", required = false) Long ownerId,@RequestParam(value = "spocUserId", required = false) Long spocUserId,@RequestParam(value = "tempOwnerId", required = false) Long tempOwnerId ) throws Exception{
+	 @ResponseBody String getSpocAndOwnerDetailsById(@RequestParam(value = "spocId", required = false) Long spocId,@RequestParam(value = "ownerId", required = false) Long ownerId,@RequestParam(value = "spocUserId", required = false) Long spocUserId,@RequestParam(value = "tempOwnerId", required = false) Long tempOwnerId 
+			                                        ,@RequestParam(value = "type", required = false) String type) throws Exception{
 		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	         OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 
-	         OrgSpoc orgSpoc =  orgSpocService.getSpocAndOwnerDetailsByIdAndOwnerId(spocId,ownerId,user.getId(),spocUserId,orgLoc.getId());
+	         OrgSpoc orgSpoc =  orgSpocService.getSpocAndOwnerDetailsByIdAndOwnerId(spocId,ownerId,user.getId(),spocUserId,orgLoc.getId(),type);
 		     List<Long> ownerListOfSpoc =  orgSpocService.getOwnerIdbySpocId(spocUserId,ownerId);
-		     List<User> userList = userService.getOwnersByOrgLocationIdAndNotExistedOwnerId(orgLoc.getId(),ownerId,ownerListOfSpoc);
-		     orgSpoc.setUserList(userList);
+		     //List<User> userList = userService.getOwnersByOrgLocationIdAndNotExistedOwnerId(orgLoc.getId(),ownerId,ownerListOfSpoc);
+		     List<User>  userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(orgLoc.getId(),Long.valueOf(Constants.TAB_CLIENT),ownerListOfSpoc);
+		     if(null != userList && !userList.isEmpty()){
+		    	  orgSpoc.setUserList(userList);
+		     }
 		     String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editSpocMsg");
 		     if(msg != null && msg != ""){
 		    	 orgSpoc.setMsg(msg);
@@ -739,16 +746,17 @@ public class ClientRestController {
 	@RequestMapping(value = "/vendorContactDetailsUpdateUsingId", method = RequestMethod.POST)
 	 String vendorContactDetailsUpdateUsingId(@RequestParam(value = "json", required = false) String json,
 			@RequestParam(value = "spocId", required = false) Long spocId,
-			@RequestParam(value = "ownerId", required = false) Long ownerId,@RequestParam(value = "spocUserId", required = false) Long spocUserId) throws Exception {
+			@RequestParam(value = "ownerId", required = false) Long ownerId,@RequestParam(value = "spocUserId", required = false) Long spocUserId,
+			@RequestParam(value = "type", required = false) String type) throws Exception {
 		
 	       String jsonVal = "{" + json + "}";
 	       JSONObject jsonObj = new JSONObject(jsonVal);
 	       User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	       OrgSpoc orgSpoc = clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId(),loginUser,ownerId,spocUserId,orgLocation);
+	       OrgSpoc orgSpoc = clientService.updateVendorContactDetails(jsonObj, spocId, orgLocation.getId(),loginUser,ownerId,spocUserId,orgLocation,type);
 	       
 	       StringBuilder editSpocMsg = new StringBuilder();
-		   SourceLeadSessionManager.setSessionAttribute(request, "editSpocMsg", editSpocMsg.append("Success !! ").append(orgSpoc.getSpocUser().getFirstName()).append(" details updated.").toString());
+		   //SourceLeadSessionManager.setSessionAttribute(request, "editSpocMsg", editSpocMsg.append("Success !! ").append(orgSpoc.getSpocUser().getFirstName()).append(" details updated.").toString());
 
 		return jsonObj.getString("owner");
 	}
@@ -789,7 +797,7 @@ public class ClientRestController {
 			tabType = Long.valueOf(Constants.TAB_CLIENT);
 		}
 		
-		List<Long> existingOwnerUserIds = orgSpocService.getOwnerUserIdsbySpocEmailAndOrgRelationId(email,orgRelationId);
+		List<Long> existingOwnerUserIds = orgSpocService.getOwnerUserIdsbySpocEmailAndOrgRelationId(email,orgRelationId,type);
 		List<User> userList = userService.getUserListExceptExistedUsersList(existingOwnerUserIds,orgLocations.getId(),tabType);
 		resultJson = commonUtil.toJSON(userList);
 		return resultJson;
@@ -819,7 +827,7 @@ public class ClientRestController {
 					submissionTemplate = new SubmissionTemplate();
 				}
 			   
-			   submissionTemplate.setTemplateName(jsonObj.getString("templateName"));
+			   submissionTemplate.setTemplateName(jsonObj.getString("templateName").trim());
 			   submissionTemplate.setDescription(jsonObj.getString("description"));
 			   OrgLocations clientOrgLocation = orgLocationService.getOrgLocations(clientLocationId);
 			   submissionTemplate.setClientLocationId(clientOrgLocation);
@@ -974,6 +982,44 @@ public class ClientRestController {
 			}
 	 }
 	
+	 @RequestMapping(value = "/getUniversalClientList")
+	 @ResponseBody
+	 public String getUniversalClientList(@RequestParam(value="searchValue", required=false) String  searchValue,
+			 @RequestParam(value="searchType", required=false) String  searchType,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String resultJson;
+		List<Object> uniClientList = clientService.getAllUniversalSearchClientList(orgLocations, searchValue,searchType);
+		resultJson = commonUtil.toJSON(uniClientList);
+		return resultJson;
+	 }
+	/**
+	 * to get owners list in addcontact 
+	 * @param email
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	 @RequestMapping(value = " /getOwnersList")
+	 @ResponseBody
+	 public String  getOwnersList(@RequestParam(value="email", required=false) String  email,@RequestParam(value="type", required=false) String  type,HttpServletRequest request) throws Exception {
+		String resultJson;
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<User> userList = null;
+		if(null != email && !"".equalsIgnoreCase(email)){
+			User user = userService.findByEmail(email);
+			if(null != user){
+				List<Long> ownersList= orgSpocService.getOwnerListByUserIdAndOrglocationId(user,orgLocations,type);
+				userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT),ownersList);
+			}
+			else{
+				userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT));
+			}
+		}else{
+			userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT));
+		}
+		resultJson = commonUtil.toJSON(userList);
+		return resultJson;
+	 }
 	/**
 	 * check given string empty or null
 	 * @param str

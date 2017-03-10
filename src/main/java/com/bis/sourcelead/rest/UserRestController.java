@@ -2,6 +2,7 @@ package com.bis.sourcelead.rest;
 
 import java.io.Writer;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.ProjectsIndex;
+import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -95,6 +99,12 @@ public class UserRestController {
 	
 	@Autowired
 	RolesService rolesService;
+	
+	@Autowired
+	 ProjectsIndexHelper projectsIndexHelper;
+	 
+	@Autowired
+	SourceleadELKBaseIndexer<ProjectsIndex> sourceleadELKBaseIndexer;
 	
 	
 	/**
@@ -277,8 +287,12 @@ public class UserRestController {
 			String resultJson = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
-			List<User> userList = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(currentApproverId,
-					orgLocations.getId());
+			/*List<User> userList = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(currentApproverId,
+					orgLocations.getId());*/
+			
+			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(currentApproverId,orgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+			
+			
 			resultJson = toJSON(userList);
 			return resultJson;
 		}
@@ -344,6 +358,16 @@ public class UserRestController {
 
 	 			userService.sendEmail(user,loginUser,password,orgLocations.getId());
 
+	 			/*
+				 * Update USER DB data as ElasticSearch Documents
+				 */
+	 			  UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+	 			  if(null != userRole){
+	 				 Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(), orgLocations.getId());
+	    			  if(null != employee){
+	    				  userService.saveOrUpdateUserElkDocument(userRole,employee,user.getUserCode());
+	    			  }
+	 			  }
 	 		}
 		
 	 	  return "success";
@@ -388,7 +412,7 @@ public class UserRestController {
 				ProjectMembers projectMembers = new ProjectMembers();
 				projectMembers.setEmployee(employee);
 				projectMembers.setProjects(projects);
-				projectMembers.setTimesheetFrequency("weekly");
+				//projectMembers.setTimesheetFrequency("weekly");
 				
 				User user = userService.getUserById(userId);
 				
@@ -430,7 +454,7 @@ public class UserRestController {
 				projectMembers.setMemberHistoryList(pmhList);
 				
 				projectMembersService.saveProjectMember(projectMembers);
-				commonUtil.storeTimesheetSubmissionRecords(user);
+				//commonUtil.storeTimesheetSubmissionRecords(user);
 				return "success";
 			}
 			/**
@@ -443,6 +467,7 @@ public class UserRestController {
 			@RequestMapping(value = "/saveReason", method = RequestMethod.POST)
 			@ResponseBody String saveReason(
 					@RequestParam(value = "projectMemberId", required = false) Long projectMemberId,
+					@RequestParam(value = "projectId", required = false) Long projectId,
 					@RequestParam(value = "reason", required = false) String reason,HttpServletRequest request) {
 				   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				   Integer updatedCount =  0;
@@ -453,6 +478,8 @@ public class UserRestController {
 					  	  projectMembers.setTerminateReason(reason);
 						  projectMembers.setUpdatedDate(new Date());
 						  projectMembers.setUpdatedBy(user.getUserCode());
+						  projectMembers.setStatus(status);
+						  projectMembersService.saveProjectMember(projectMembers);
 					  	  ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
 						  if(pmh != null){
 							  pmh.setProjectTerminationDate(new Date());
@@ -461,15 +488,21 @@ public class UserRestController {
 							  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
 							  pmh =  projectMembersHistoryService.updateProjectMembersHistory(pmh);
 						  }
-						  projectMembers.setStatus(status);
-						  projectMembersService.saveProjectMember(projectMembers);
+						  
 						  commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId,Primary.Yes);
 					      updatedCount = 1;
 				  	   }
-					
+					   if(null != projectId){
+							Projects projects = projectsService.getProjectById(projectId);
+							if(null != projects){
+								Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projectId);
+								ProjectsIndex projectsIndex = projectsIndexHelper.getProjectsIndexFromProjects(projects, null, projectMembersList);
+								//Elastic Search Document Saving
+								sourceleadELKBaseIndexer.saveOrUpdateElkDocument(projectsIndex, Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,projects.getId().toString());
+							}
+					   }
 				    } catch (Exception e) {
 				   }
-				
 				return "success";
 			}
 		 
@@ -551,11 +584,11 @@ public class UserRestController {
 			  		  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
 			  		  String pattern = "yyyy-MM-dd";
 		    	      SimpleDateFormat format = new SimpleDateFormat(pattern);
-		    	      if(jsonObj.has("Re-StartDate")){
+		    	      if(jsonObj.has("Re-StartDate") && !isNullOrEmpty(jsonObj.getString("Re-StartDate"))){
 		    	    	  Date startDate = format.parse(jsonObj.getString("Re-StartDate"));
 						  pmh.setProjectAssignedDate(startDate);
 		    	      }
-		    	      if(jsonObj.has("Re-EndDate")){
+		    	      if(jsonObj.has("Re-EndDate") && !isNullOrEmpty(jsonObj.getString("Re-EndDate"))){
 		    	    	  Date endDate = format.parse(jsonObj.getString("Re-EndDate"));
 						  pmh.setProjectTerminationDate(endDate);
 		    	      }
@@ -574,7 +607,7 @@ public class UserRestController {
 					  projectMembers.setStatus(status);
 					  projectMembers =  projectMembersService.saveProjectMember(projectMembers);
 					  projectMembers = projectMembersService.getProjectMemberById(projectMembers.getId());
-					  commonUtil.storeTimesheetSubmissionRecords(projectMembers.getEmployee().getUser());
+					  //commonUtil.storeTimesheetSubmissionRecords(projectMembers.getEmployee().getUser());
 			  	   }
 				
 			    } catch (Exception e) {
@@ -596,9 +629,12 @@ public class UserRestController {
         public String reActiveUser(@RequestParam(value = "userId", required = false) String userID, HttpServletRequest request) throws Exception {
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(Long.parseLong(userID), orgLocations.getId());
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				if(userRole != null){
 					userRole.setUserState(userRole.getPreviousUserState());
 					userRole.setPreviousUserState(userRole.getUserState());
+					userRole.setUpdatedBy(user.getUserCode());
+					userRole.setUpdatedDate(commonUtil.currentDate());
 					userRoleService.addUserRole(userRole);
 					
 					//to assign primary role to another user
@@ -607,6 +643,14 @@ public class UserRestController {
 						userRole.setIsPrimary(1);
 						userRoleService.addUserRole(userRole);
 					}
+
+					/*
+    				 * Saving USER DB data as ElasticSearch Documents
+    				 */
+        			  Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(), orgLocations.getId());
+        			  if(null != employee){
+        				  userService.saveOrUpdateUserElkDocument(userRole,employee,user.getUserCode());
+        			  }
 				}
                 return "updated";
          }

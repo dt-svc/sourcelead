@@ -82,6 +82,9 @@ public class Projects implements Serializable{
 	@Column(name = "IS_PRIMARY")
     private Integer isPrimary;
 	
+	@Column(name = "IS_TIMESHEET_ATTACHMENT_REQUIRED")
+	private Integer isTimesheetAttachmentRequired;
+	
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ORG_RELATION_ID")
@@ -188,6 +191,9 @@ public class Projects implements Serializable{
     
     @Transient
 	private Integer assignedEmpCount;
+    
+    @Transient
+    private String createdByName;
 
 	public Long getId() {
 		return id;
@@ -478,6 +484,14 @@ public class Projects implements Serializable{
 		this.relationId = relationId;
 	}
 
+	public Integer getIsTimesheetAttachmentRequired() {
+		return isTimesheetAttachmentRequired;
+	}
+
+	public void setIsTimesheetAttachmentRequired(Integer isTimesheetAttachmentRequired) {
+		this.isTimesheetAttachmentRequired = isTimesheetAttachmentRequired;
+	}
+
 	public Integer getAssignedEmpCount() {
 		return assignedEmpCount;
 	}
@@ -556,5 +570,13 @@ public class Projects implements Serializable{
 
 	public void setManagerLevel2UserType(String managerLevel2UserType) {
 		this.managerLevel2UserType = managerLevel2UserType;
+	}
+
+	public String getCreatedByName() {
+		return createdByName;
+	}
+
+	public void setCreatedByName(String createdByName) {
+		this.createdByName = createdByName;
 	}
 }

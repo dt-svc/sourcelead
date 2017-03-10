@@ -39,6 +39,7 @@
 						 var country = '';
 						 var state = '';
 						 var city = '';
+						 var website = '';
 						
 						if(json.country != null && json.country !='' && json.country !='undefined'){
 							country = json.country;
@@ -48,6 +49,9 @@
 						}
 						if(json.city != null && json.city !='' && json.city !='undefined'){
 							city = json.city;
+						}
+						if(json.webSite !=null && json.webSite !='' && json.webSite !='undefined'){
+							website = json.webSite;
 						}
 						
 						result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
@@ -85,7 +89,7 @@
 							
 							result = result + '<div class="user_summary_edit_cta" id="companyWebsiteDiv">';
 							result = result + '<label>Website</label>';
-							result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" field-name="Website" data-validation="required validate_Space validate_length length2-50 validate_domain" data-validation-optional="true"  value="'+json.webSite+'" placeholder="website" ></div>';
+							result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" field-name="Website" data-validation="required validate_Space validate_length length2-50 validate_domain" data-validation-optional="true"  value="'+website+'" placeholder="website" ></div>';
 							result = result + '</div>';
 							
 							
@@ -146,11 +150,11 @@
 				            $("#city").chosen();
 				            
 				            $("#country").on('change', function (e) {
-				         	   getStates();
+				         	   getAllStates();
 				            });
 				           
 				            $("#state").on('change', function (e) {
-				         	   getCities();
+				         	   getAllCities();
 				            });
 				           
 				            $('.chosen-select').each(function() {
@@ -186,6 +190,7 @@
 			    url: sourceleadUrl+"/vendorDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId, 	   
 	   		    success: function(data) {
 	   		    	vendorDetailsbyLocationId(vendorLocationId,orgRelationId);
+	   		    	getVendorListsElk();
 	   		    }
 		 }); 
 	     	return true;
@@ -332,7 +337,7 @@ function getAllCountries(){
 	            }
 	            
 	            $('#country').trigger("chosen:updated");
-	            getStates();
+	            getAllStates();
 	        },
 	        error: function(e){
 	        }
@@ -343,7 +348,7 @@ function getAllCountries(){
 
 
 <script>
-function getStates(){
+function getAllStates(){
 	var countryName = $("#country").val();
 	
 	//to set existing state value(Auto populate)
@@ -370,9 +375,8 @@ function getStates(){
 	            		$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            	} 
 	            }
-	            $('#state').append('<option value="">---select state---</option>');
 	            $('#state').trigger("chosen:updated");
-	            getCities();
+	            getAllCities();
 	        },
 	        error: function(e){
 	        }
@@ -390,7 +394,7 @@ function getStates(){
 
 
 <script>
-function getCities(){
+function getAllCities(){
 	var countryName = $("#country").val();
 	var stateName = $("#state").val();
 	

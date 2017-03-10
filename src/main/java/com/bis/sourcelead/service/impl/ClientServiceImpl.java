@@ -2,8 +2,8 @@ package com.bis.sourcelead.service.impl;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.MessageFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,7 +12,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
+import javax.mail.internet.InternetAddress;
+
+import org.apache.commons.lang.StringUtils;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,10 +29,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.ClientVendorIndex;
+import com.bis.sourcelead.elk.index.helper.ClientVendorIndexHelper;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -35,25 +46,30 @@ import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
-import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.util.UniversalSearchHelper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * 
@@ -110,6 +126,21 @@ public class ClientServiceImpl implements ClientService{
 	@Autowired
 	private SourceleadRolesService sourceleadRolesService;
 	
+	@Autowired
+	private UserRoleService userRoleService;
+	
+	@Autowired
+	private EmployeesService employeesService;
+
+	@Autowired
+	ClientVendorIndexHelper clientVendorIndexHelper;
+	
+	@Autowired
+    private SourceleadELKBaseIndexer<ClientVendorIndex> sourceleadELKBaseIndexer;
+	
+	@Autowired
+	private UniversalSearchHelper universalSearchHelper;
+	
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -122,7 +153,8 @@ public class ClientServiceImpl implements ClientService{
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
 	
-
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;	
 	
 	
 	/**
@@ -146,6 +178,7 @@ public class ClientServiceImpl implements ClientService{
 			Set<OrgRelations> orgRelationsList = null;
 			Org org = null;
 			User spocUser = null;
+			OrgSpoc orgSpoc =null;
 			SubmissionTemplate submissionTemplate = null;
 			SubmissionTemplate sourceLeadDefaultTemplate = null;
 			if(jsonObj.has("orgLocationId")){
@@ -214,35 +247,54 @@ public class ClientServiceImpl implements ClientService{
 				String[] owners = ownersId.split(",");
 				
 				for(int i=0 ;i<owners.length;i++ ){
-					OrgSpoc orgSpoc = new OrgSpoc();
+					 orgSpoc = new OrgSpoc();
 					for(OrgLocations orl :orgLocationsList){
 						Set<OrgRelations> orgr = orl.getOrgRelationsList();
 						for (OrgRelations orgRelations : orgr) {
 							orgSpoc.setOrgRelations(orgRelations);
 						}
 					}
-				
-				orgSpoc.setSpocUser(spocUser);
-				orgSpoc.setResponderLocationId(clientOrgLocations);
-				orgSpoc.setInitiatorLocationId(orgLocations);
-				User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
-				orgSpoc.setOwnerUser(ownerUser);
-				if(jsonObj.has("spocStatus")){
-					orgSpoc.setSpocStatus(jsonObj.getString("spocStatus"));
-				}else{
-					orgSpoc.setSpocStatus(Constants.ACTIVE);
-				}
-				if(jsonObj.has("isMailSent")){
-					orgSpoc.setInvitationStatus(Constants.MAIL_SENT);
-				}else{
-					orgSpoc.setInvitationStatus(Constants.MAIL_NEW);
-				}
-				orgSpoc.setStatus(Constants.MEMBER_ACTIVE);
-				orgSpoc.setCreatedDate(commonUtil.currentDate());
-				orgSpoc.setCreatedBy(user.getUserCode());
-				orgSpoc.setUpdatedDate(commonUtil.currentDate());
-				orgSpoc.setUpdatedBy(user.getUserCode());
-				orgSpocService.addOrgSpoc(orgSpoc);
+					
+					//to differentiate client and vendor in ORG_SPOC Table
+					User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));	
+					if(responderType.equalsIgnoreCase("Client")){
+						orgSpoc.setClientLocationId(clientOrgLocations);
+						orgSpoc.setVendorLocationId(orgLocations);
+						orgSpoc.setClientUser(spocUser);
+						orgSpoc.setVendorUser(ownerUser);
+						orgSpoc.setOwnerUser(ownerUser);
+					}else if(responderType.equalsIgnoreCase("Vendor")){
+						orgSpoc.setClientLocationId(orgLocations);
+						orgSpoc.setVendorLocationId(clientOrgLocations);
+						orgSpoc.setClientUser(ownerUser);
+						orgSpoc.setVendorUser(spocUser);
+						orgSpoc.setOwnerUser(ownerUser);
+					}
+					
+					if(jsonObj.has("spocStatus")){
+						orgSpoc.setSpocStatus(jsonObj.getString("spocStatus"));
+					}else{
+						orgSpoc.setSpocStatus(Constants.ACTIVE);
+					}
+					if(jsonObj.has("isMailSent")){
+						orgSpoc.setInvitationStatus(Constants.MAIL_SENT);
+					}else{
+						orgSpoc.setInvitationStatus(Constants.MAIL_NEW);
+					}
+					String UUID = SourceLeadRandomCodeHelper.generateUUID();
+					orgSpoc.setUUID(UUID);
+					orgSpoc.setStatus(Constants.MEMBER_ACTIVE);
+					orgSpoc.setCreatedDate(commonUtil.currentDate());
+					orgSpoc.setCreatedBy(user.getUserCode());
+					orgSpoc.setUpdatedDate(commonUtil.currentDate());
+					orgSpoc.setUpdatedBy(user.getUserCode());
+					orgSpocService.addOrgSpoc(orgSpoc);
+					
+					if((("Client".equals(responderType) || "Vendor".equals(responderType)) 
+							&& jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) 
+							&& ("Y".equals(jsonObj.getString("isMailSent")))){
+						userService.sendEmailToClientOrVendor(orgSpoc.getUUID(),spocUser,ownerUser,user,spocUser.getTempPwd(),responderType,loginOrg,clientOrgLocations.getOrg(),clientOrgLocations);
+					}
 				}
 			}
 			
@@ -286,6 +338,12 @@ public class ClientServiceImpl implements ClientService{
 				submissionTemplate.setUpdatedBy(user.getUserCode());
 				submissionTemplate.setUpdatedDate(new Date());
 				submissionTemplateService.addSubmissionTemplate(submissionTemplate);
+			}
+			
+			for(OrgRelations orgRelation :orgRelationsList){
+				
+				saveOrUpdateClientVendorElkDocument(org,clientOrgLocations,responderType,orgSpoc,orgRelation,submissionTemplate);
+
 			}
 		}
 	
@@ -519,6 +577,10 @@ public class ClientServiceImpl implements ClientService{
 			
 			OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(clientLocationId,orgRelationId);
 			String level = "level";
+			
+			OrgLocations orgLocationForELk = null;
+			Org orgForElk = null;
+			OrgRelations orgRelationsForElk =null;
 			if(null != orgRelation){
 				
 				 OrgLocations orgLocations = null;
@@ -536,32 +598,32 @@ public class ClientServiceImpl implements ClientService{
 							}
 					 }
 					
-				 orgRelationsService.addOrgRelations(orgRelation);
+					 orgRelationsForElk =	 orgRelationsService.addOrgRelations(orgRelation);
 				
 				
 				Org org = orgLocations.getOrg();
 				if(null != org){
-				if(jsonObj.getString("clientName") != null && !jsonObj.getString("clientName").isEmpty()){
+				if(jsonObj.has("clientName") && jsonObj.getString("clientName") != null && !jsonObj.getString("clientName").isEmpty()){
 					org.setOrgName(jsonObj.getString("clientName"));
 				}
 				
-				if(jsonObj.getString("companyWebsite") != null && !jsonObj.getString("companyWebsite").isEmpty()){
+				if(jsonObj.has("companyWebsite") && jsonObj.getString("companyWebsite") != null && !jsonObj.getString("companyWebsite").isEmpty()){
 					org.setWebSite(jsonObj.getString("companyWebsite"));
 				}
-				orgService.updateOrg(org);
+				orgForElk = orgService.updateOrg(org);
 				}	
-				if(jsonObj.getString("clientCity") != null && !jsonObj.getString("clientCity").isEmpty()){
+				if(jsonObj.has("clientCity") && jsonObj.getString("clientCity") != null && !jsonObj.getString("clientCity").isEmpty()){
 					orgLocations.setCity(jsonObj.getString("clientCity"));
 				}else{
 					orgLocations.setCity("");
 				}
-				if(jsonObj.getString("clientState") != null && !jsonObj.getString("clientState").isEmpty()){
+				if(jsonObj.has("clientState") && jsonObj.getString("clientState") != null && !jsonObj.getString("clientState").isEmpty()){
 					orgLocations.setState(jsonObj.getString("clientState"));
 				}else{
 					
 					orgLocations.setState("");
 				}
-				if(jsonObj.getString("clientCountry") != null && !jsonObj.getString("clientCountry").isEmpty()){
+				if(jsonObj.has("clientCountry") && jsonObj.getString("clientCountry") != null && !jsonObj.getString("clientCountry").isEmpty()){
 					orgLocations.setCountry(jsonObj.getString("clientCountry"));
 			     }else{
 			    	 
@@ -578,11 +640,20 @@ public class ClientServiceImpl implements ClientService{
 				}else{
 					orgLocations.setPhone("");
 				}*/
-				orgLocationService.updateOrgLocations(orgLocations);
+			orgLocationForELk = 	orgLocationService.updateOrgLocations(orgLocations);
 			}else{
 				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));
 				throw new SourceLeadObjectNotFoundException(message.toString());
 			}
+			
+			saveOrUpdateClientVendorElkDocument(orgForElk,orgLocationForELk,null,null,orgRelationsForElk,null);
+
+		      //  This to update  the client/vendor details in ELK
+			
+					List<OrgSpoc>  updateOrgSpockDetails =   orgSpocService.getOrgSpocByOrgRelationId(orgRelationsForElk.getId());
+					if(updateOrgSpockDetails.size() > 0 && null != updateOrgSpockDetails){
+						 updatingClientVendorDetails(updateOrgSpockDetails);
+					}
 			
 		}
 
@@ -596,6 +667,15 @@ public class ClientServiceImpl implements ClientService{
 			String vendorCity = "vendorCity";
 			String vendorState = "vendorState";
 			String vendorCountry = "vendorCountry" ;
+			
+			
+			//  This pojo's are for Storing the updated value in Elk 
+			
+			OrgRelations orgRelationsForElk  = null;
+			Org orgForElk  = null;
+			OrgLocations orgLocationsForElk  = null;
+			
+			
 			//String emailId = "EmailId";
 			String level = "level";
 			
@@ -615,7 +695,7 @@ public class ClientServiceImpl implements ClientService{
 						}
 				 }
 				//orgRelation.setLevel(jsonObj.getString(level));
-			 orgRelationsService.addOrgRelations(orgRelation);		
+			       orgRelationsForElk  = orgRelationsService.addOrgRelations(orgRelation);		
 				 
 				Org org = orgLocations.getOrg();
 				if(null != org){
@@ -623,23 +703,23 @@ public class ClientServiceImpl implements ClientService{
 						org.setOrgName(jsonObj.getString(vendorName));
 					}
 					
-					if(jsonObj.getString(companyWebsite) != null && !jsonObj.getString(companyWebsite).isEmpty()){
+					if(jsonObj.has("companyWebsite") &&   jsonObj.getString(companyWebsite) != null && !jsonObj.getString(companyWebsite).isEmpty()){
 						org.setWebSite(jsonObj.getString(companyWebsite));
 					}
-				orgService.updateOrg(org);
+				 orgForElk = orgService.updateOrg(org);
 				}	
-				if(jsonObj.getString(vendorCity) != null && !jsonObj.getString(vendorCity).isEmpty()){
+				if( jsonObj.has("vendorCity") && jsonObj.getString(vendorCity) != null && !jsonObj.getString(vendorCity).isEmpty()){
 					orgLocations.setCity(jsonObj.getString(vendorCity));
 				}else{
 					orgLocations.setCity("");
 				}
-				if(jsonObj.getString(vendorState) != null && !jsonObj.getString(vendorState).isEmpty()){
+				if(jsonObj.has("vendorState") &&  jsonObj.getString(vendorState) != null && !jsonObj.getString(vendorState).isEmpty()){
 					orgLocations.setState(jsonObj.getString(vendorState));
 				}else{
 					
 					orgLocations.setState("");
 				}
-				if(jsonObj.getString(vendorCountry) != null && !jsonObj.getString(vendorCountry).isEmpty()){
+				if(jsonObj.has("vendorCountry") && jsonObj.getString(vendorCountry) != null && !jsonObj.getString(vendorCountry).isEmpty()){
 					orgLocations.setCountry(jsonObj.getString(vendorCountry));
 			     }else{
 			    	 
@@ -650,16 +730,26 @@ public class ClientServiceImpl implements ClientService{
 				}else{
 					orgLocations.setEmail("");
 				}*/
-				orgLocationService.updateOrgLocations(orgLocations);
+				  orgLocationsForElk = orgLocationService.updateOrgLocations(orgLocations);
 			}else{
 				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));
 				throw new SourceLeadObjectNotFoundException(message.toString());
 			}
 
+			
+			saveOrUpdateClientVendorElkDocument(orgForElk,orgLocationsForElk,null,null,orgRelationsForElk,null);
+			
+		//  This to update  the client/vendor details in ELK
+			
+			List<OrgSpoc>  updateOrgSpockDetails =   orgSpocService.getOrgSpocByOrgRelationId(orgRelationsForElk.getId());
+			if(updateOrgSpockDetails.size() > 0 && null != updateOrgSpockDetails){
+				 updatingClientVendorDetails(updateOrgSpockDetails);
+			}
+
 		}
 		
 		@Override
-		public OrgSpoc updateVendorContactDetails(JSONObject jsonObj, Long spocId,Long loginOrgId, User loginUser ,Long ownerId, Long spocUserId,OrgLocations orgLocation) throws Exception {
+		public OrgSpoc updateVendorContactDetails(JSONObject jsonObj, Long spocId,Long loginOrgId, User loginUser ,Long ownerId, Long spocUserId,OrgLocations orgLocation,String type) throws Exception {
 			
 			//OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(vendorLocationId,orgRelationId);
 			
@@ -673,10 +763,11 @@ public class ClientServiceImpl implements ClientService{
 			String owner = "owner";
 			
 			if(null != orgSpoc){
-				/*User user = orgSpoc.getSpocUser();*/
 				User editUser =null;
 				if(jsonObj.getString("existingSpocUserId") != null && !jsonObj.getString("existingSpocUserId").isEmpty()){
 					User existingUser = userService.getUserById(Long.parseLong(jsonObj.getString("existingSpocUserId")));
+					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(loginUser.getId(), orgLocation.getId());
+
 					if(jsonObj.getString(vendorContactFirstName) != null && !jsonObj.getString(vendorContactFirstName).isEmpty()){
 						existingUser.setFirstName(jsonObj.getString(vendorContactFirstName));
 					}else{
@@ -699,61 +790,62 @@ public class ClientServiceImpl implements ClientService{
 						existingUser.setEmail("");
 					}
 					editUser = userService.addUser(existingUser);
+
+					Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(editUser.getId(), orgLocation.getId());
+					//Update the user details for Elk search
+					commonUtil.commonUserUpdate(editUser);
+					userService.saveOrUpdateUserElkDocument(userRole,employee, editUser.getUserCode());
+			
 				}
 				
-				if(jsonObj.getString(spocStatus) != null && !jsonObj.getString(spocStatus).isEmpty()){
+				if(jsonObj.has(spocStatus) && jsonObj.getString(spocStatus) != null && !jsonObj.getString(spocStatus).isEmpty()){
 					orgSpoc.setSpocStatus(jsonObj.getString(spocStatus));
 				}
 				
-				/*if(orgSpoc.getSpocUser().getId() == loginUser.getId()){
-					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
-						User spocUser = new User();
-						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
-						orgSpoc.setSpocUser(spocUser);
-					}
-				}
-				if(orgSpoc.getOwnerUser().getId() == loginUser.getId()){
-					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
-						User spocUser = new User();
-						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
-						orgSpoc.setOwnerUser(spocUser);
-					}
-				}*/
-				User user = orgSpoc.getSpocUser();
-				if(loginUser.getId().longValue()== spocUserId.longValue()){
-					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
-						User spocUser = new User();
-						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
-						orgSpoc.setSpocUser(spocUser);
-					}
-				}
 				
-				else if(loginUser.getId().longValue()== ownerId.longValue()){
+				if(null != type && !"".equalsIgnoreCase(type) && "Client".equalsIgnoreCase(type)){
+					User user = orgSpoc.getClientUser();
 					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
+						orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
 						User spocUser = new User();
 						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
+						orgSpoc.setVendorUser(spocUser);
+						//new owner filed updated when owner updated
 						orgSpoc.setOwnerUser(spocUser);
 					}
-				}
-				else{
+					
+					OrgSpoc orSpocElk = orgSpocService.addOrgSpoc(orgSpoc);
+					
+					
+					if(null != orgSpoc.getTempOwnerId() && orgSpoc.getTempOwnerId().longValue() != orgSpoc.getVendorUser().getId().longValue()){
+						user= userService.getUserById(Long.parseLong(jsonObj.getString(owner)));
+						sendEmailToClientContact(user,editUser,orgLocation,loginUser);
+					}
+				}else if(null != type && !"".equalsIgnoreCase(type) && "Vendor".equalsIgnoreCase(type)){
+					User user = orgSpoc.getVendorUser();
 					if(jsonObj.getString(owner) != null && !jsonObj.getString(owner).isEmpty()){
+						orgSpoc.setTempOwnerId(orgSpoc.getClientUser().getId());
 						User spocUser = new User();
 						spocUser.setId(Long.parseLong(jsonObj.getString(owner)));
-						orgSpoc.setTempOwnerId(orgSpoc.getOwnerUser().getId());
+						orgSpoc.setClientUser(spocUser);
+						//new owner filed updated when owner updated
 						orgSpoc.setOwnerUser(spocUser);
 					}
-				}
-				orgSpocService.addOrgSpoc(orgSpoc);
-				
-				if(orgSpoc.getTempOwnerId() != null && orgSpoc.getTempOwnerId().longValue() != orgSpoc.getOwnerUser().getId().longValue()){
-					user= userService.getUserById(Long.parseLong(jsonObj.getString(owner)));
-					sendEmailToClientContact(user,editUser,orgLocation,loginUser);
+					OrgSpoc orSpocElk = orgSpocService.addOrgSpoc(orgSpoc);
+
+					
+					if(null != orgSpoc.getTempOwnerId() && orgSpoc.getTempOwnerId().longValue() != orgSpoc.getClientUser().getId().longValue()){
+						user= userService.getUserById(Long.parseLong(jsonObj.getString(owner)));
+						sendEmailToClientContact(user,editUser,orgLocation,loginUser);
+					}
 				}
 				
 			}else{
 				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));
 				throw new SourceLeadObjectNotFoundException(message.toString());
 			}
+			
+			
 			return orgSpoc;
 
 		}
@@ -779,11 +871,7 @@ public class ClientServiceImpl implements ClientService{
 				 globalVarsMap.put("ownerEmail",user.getEmail());
 				 
 				 //setting the Recipient information
-				 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
-				 EmailRecipient emailRecipient = new EmailRecipient();
-				 emailRecipient.setEmail(emailMessage.getToEmail());
-				 emailRecipient.setName(fromName.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-				 emailRecipientList.add(emailRecipient);
+				 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
 			 EmailScenario  emailScenario = null;
@@ -802,17 +890,366 @@ public class ClientServiceImpl implements ClientService{
 			 
 			 
 			 //calling the sendEmail method of emailScenerioUtil
-			 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+			 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 			 
 			 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.EDIT_CLIENTCONTACT,Constants.ENTITY_TYPE_NOTIFICATION); 
 			 String actionLink = "";
-			 
+			 String rejectActionLink = "";
+			 String spocUUID = "";
 			 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
 			 noificationEmailScenario.setBody(notificationbody);
 			 
-			 emailScenerioUtil.sendNotification(actionLink, loginUser, editUser, orgLocation, noificationEmailScenario);
+			 emailScenerioUtil.sendNotificationToClientOrVendor(actionLink, rejectActionLink, loginUser,user, editUser, orgLocation, noificationEmailScenario,spocUUID);
 			
 		}
 		
 		
+		@Override
+		public void saveOrUpdateClientVendorElkDocument(Org org, OrgLocations clientOrgLocations,String responderType,OrgSpoc orgSpoc,OrgRelations orgRelation, SubmissionTemplate submissionTemplate) throws Exception{
+			
+			         //Elastic Search Document Saving
+			       ClientVendorIndex clientVendorIndex = clientVendorIndexHelper.getClientVendorIndexFromCandidate(org,clientOrgLocations,responderType,orgSpoc,orgRelation,submissionTemplate);
+			       sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorIndex, Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,orgRelation.getId().toString());
+
+		}
+
+
+
+
+		@Override
+		public void sendAcceptEmailToClientOrVendor(OrgSpoc orgSpoc,User loginUser,OrgLocations orgLocations) throws Exception {
+			 
+			 EmailMessage emailMessage = new EmailMessage();
+			 if(null != orgSpoc.getOwnerUser()){
+				 emailMessage.setFirstName(orgSpoc.getOwnerUser().getFirstName());
+				 emailMessage.setLastName(orgSpoc.getOwnerUser().getLastName());	 
+			 }
+			 emailMessage.setToEmail(orgSpoc.getOwnerUser().getEmail());
+			 emailMessage.setCreatedBy(loginUser.getUserCode());
+			 StringBuilder emailMsgBuilder = new StringBuilder();
+			 emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 
+			//setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 String UUID = SourceLeadRandomCodeHelper.generateUUID();
+			 if(Constants.CLIENT.equals(orgSpoc.getOrgRelations().getResponderType())){
+				 globalVarsMap.put("firstName", emailMessage.getFirstName());
+				 globalVarsMap.put("lastName",emailMessage.getLastName());
+				 globalVarsMap.put("vendorFirstName",orgSpoc.getVendorUser().getFirstName());
+				 globalVarsMap.put("vendorLastName",orgSpoc.getVendorUser().getLastName());
+				 globalVarsMap.put("vendorOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
+				  
+				 StringBuilder loginBuilder = new StringBuilder();
+				 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+				
+			 }else if(Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())){
+					 globalVarsMap.put("firstName", emailMessage.getFirstName());
+					 globalVarsMap.put("lastName",emailMessage.getLastName());
+					 globalVarsMap.put("clientFirstName", loginUser.getFirstName());
+					 globalVarsMap.put("clientLastName",loginUser.getLastName());
+					 globalVarsMap.put("clientOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
+					  
+					 StringBuilder loginBuilder = new StringBuilder();
+					 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			}
+
+			 // changed the logic of adding to emails in InetAddress Array
+
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+			
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+			 EmailScenario  emailScenario = null;
+			 
+			 if(Constants.CLIENT.equals(orgSpoc.getOrgRelations().getResponderType())){
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_CLIENT,Constants.ENTITY_TYPE_EMAIL);
+			 }else if(Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())){
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_VENDOR,Constants.ENTITY_TYPE_EMAIL);
+			 }
+			 
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			 String url = sourceleadUrl;
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 emailMessage.setOrgLocationId(orgLocations.getId());
+			 
+			 //calling the sendEmail method of emailScenerioUtil
+			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		
+		}
+
+		@Override
+		public void sendRejectEmailToClientOrVendor(OrgSpoc orgSpoc, User loginUser, OrgLocations orgLocations)throws Exception {
+			
+			EmailMessage emailMessage = new EmailMessage();
+			 if(null != orgSpoc.getOwnerUser()){
+				 emailMessage.setFirstName(orgSpoc.getOwnerUser().getFirstName());
+				 emailMessage.setLastName(orgSpoc.getOwnerUser().getLastName());	 
+			 }
+			 emailMessage.setToEmail(orgSpoc.getOwnerUser().getEmail());
+			 emailMessage.setCreatedBy(loginUser.getUserCode());
+			 StringBuilder emailMsgBuilder = new StringBuilder();
+			 emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 
+			//setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 String UUID = SourceLeadRandomCodeHelper.generateUUID();
+			 if(Constants.CLIENT.equals(orgSpoc.getOrgRelations().getResponderType())){
+				 globalVarsMap.put("firstName", emailMessage.getFirstName());
+				 globalVarsMap.put("lastName",emailMessage.getLastName());
+				 globalVarsMap.put("vendorFirstName",orgSpoc.getVendorUser().getFirstName());
+				 globalVarsMap.put("vendorLastName",orgSpoc.getVendorUser().getLastName());
+				 globalVarsMap.put("vendorOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
+				 
+			 }else if( Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())){
+					 globalVarsMap.put("firstName", emailMessage.getFirstName());
+					 globalVarsMap.put("lastName",emailMessage.getLastName());
+					 globalVarsMap.put("clientFirstName", loginUser.getFirstName());
+					 globalVarsMap.put("clientLastName",loginUser.getLastName());
+					 globalVarsMap.put("clientOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
+				}
+
+			 // changed the logic of adding to emails in InetAddress Array
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+			
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+			 EmailScenario  emailScenario = null;
+			 
+			 if(Constants.CLIENT.equals(orgSpoc.getOrgRelations().getResponderType())){
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_CLIENT,Constants.ENTITY_TYPE_EMAIL);
+			 }else if(Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())){
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_VENDOR,Constants.ENTITY_TYPE_EMAIL);
+			 }
+			 
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			 String url = "";
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 emailMessage.setOrgLocationId(orgLocations.getId());
+			 
+			 //calling the sendEmail method of emailScenerioUtil
+			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		}
+
+
+		@Override
+		public List<Object> getAllUniversalSearchVendorList(OrgLocations orgLocation, String searchValue,String searchType)
+				throws Exception {
+
+			BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+			String responderType = null;
+			if("Vendor".equalsIgnoreCase(searchType)){
+				 responderType = "Client";
+			 }else if("Client".equalsIgnoreCase(searchType)){
+				 responderType = "Vendor"; 
+			 }
+			 
+			 BoolQueryBuilder combinedQueryBuilder = QueryBuilders.boolQuery();
+			 
+			 BoolQueryBuilder initiatorQueryBuilder = QueryBuilders.boolQuery();
+			 initiatorQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
+			 initiatorQueryBuilder.must(QueryBuilders.matchQuery("initiatorType", responderType));
+			 
+			 BoolQueryBuilder responderQueryBuilder = QueryBuilders.boolQuery();
+			 responderQueryBuilder.must(QueryBuilders.matchQuery("responderLocationId", orgLocation.getId()));
+			 responderQueryBuilder.must(QueryBuilders.matchQuery("responderType", responderType));
+			 
+			 combinedQueryBuilder.should(initiatorQueryBuilder);
+			 combinedQueryBuilder.should(responderQueryBuilder);
+			 
+			 boolQueryBuilder.must(combinedQueryBuilder);
+			
+			 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(orgLocation.getId(),responderType);
+				//All Keywords
+			 ArrayList<String> anyKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(searchValue);
+			 if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+				 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+				 for(String keywd : anyKeyWordArray){
+					 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+					ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForClientVendor(keywd);
+					if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+						for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+							anyBoolSubQueryBuilder.should(matchQueryBuilder);
+						}
+						anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+					}
+				}
+				 boolQueryBuilder.must(anyBoolQueryBuilder);
+			}
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				df.setTimeZone(TimeZone.getTimeZone("GMT"));
+				List<Object>   searchList = new ArrayList<>();
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+				if(searchHits != null && searchHits.length >0){
+					ObjectMapper mapper = new ObjectMapper();
+					for (SearchHit hit : searchHits) {
+								String json = hit.getSourceAsString();
+								mapper.setDateFormat(df);
+								ClientVendorIndex clientVendor = mapper.readValue(json, ClientVendorIndex.class);
+								
+								if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == orgLocation.getId().longValue()){
+									
+								    StringBuilder website=new StringBuilder();
+								    clientVendor.setWebsite(clientVendor.getResponderWebSite());
+									clientVendor.setOrgName(clientVendor.getResponderOrgName());
+									clientVendor.setCountry(clientVendor.getResponderCountry());
+									clientVendor.setState(clientVendor.getResponderState());
+									clientVendor.setCity(clientVendor.getResponderCity());
+									
+									if(clientVendor.getInitiatorLevel()!=null){
+										clientVendor.setInitiatorLevel(clientVendor.getInitiatorLevel());
+									}
+								}
+							  if(null != clientVendor.getResponderLocationId()  && clientVendor.getResponderLocationId().longValue() == orgLocation.getId().longValue()){
+								 
+								  StringBuilder website=new StringBuilder();
+								  clientVendor.setWebsite(clientVendor.getInitiatorWebSite());
+								  clientVendor.setOrgName(clientVendor.getInitiatorOrgName());
+								  clientVendor.setCountry(clientVendor.getInitiatorCountry());
+								  clientVendor.setState(clientVendor.getInitiatorState());
+								  clientVendor.setCity(clientVendor.getInitiatorCity());
+								  
+								  if(clientVendor.getResponderLevel()!=null){
+									  clientVendor.setInitiatorLevel(clientVendor.getResponderLevel());
+								  }
+								}
+							  if(!responderType.isEmpty() &&  Constants.VENDOR.equalsIgnoreCase(responderType)){
+								  if(!clientVendor.getCreatedBy().isEmpty()){
+									  clientVendor.setCreatedBy(clientVendor.getCreatedBy());
+								  }
+								 
+							  }
+							  
+							  searchList.add(clientVendor);
+					}	
+				}
+			
+			return searchList;
+		}
+
+		public List<Object> getAllUniversalSearchClientList(OrgLocations orgLocations, String serachValue,String searchType)throws Exception {
+				List<Object>   searchList = new ArrayList<>();
+//				 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(orgLocations.getId(),"Client");
+				BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+				BoolQueryBuilder combinedQueryBuilder = QueryBuilders.boolQuery();
+				
+				String responderType = null;
+				if("Vendor".equalsIgnoreCase(searchType)){
+					 responderType = "Client";
+				 }else if("Client".equalsIgnoreCase(searchType)){
+					 responderType = "Vendor"; 
+				 }
+				 
+				 BoolQueryBuilder initiatorQueryBuilder = QueryBuilders.boolQuery();
+				 initiatorQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
+				 initiatorQueryBuilder.must(QueryBuilders.matchQuery("initiatorType", responderType));
+				 
+				 BoolQueryBuilder responderQueryBuilder = QueryBuilders.boolQuery();
+				 responderQueryBuilder.must(QueryBuilders.matchQuery("responderLocationId", orgLocations.getId()));
+				 responderQueryBuilder.must(QueryBuilders.matchQuery("responderType", responderType));
+				 
+				 combinedQueryBuilder.should(initiatorQueryBuilder);
+				 combinedQueryBuilder.should(responderQueryBuilder);
+				 
+				 boolQueryBuilder.must(combinedQueryBuilder);
+				 
+			   	 
+				 // to   get the number of contacts 
+					Long maxResults = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,0,boolQueryBuilder).getTotalHits();
+					
+					//Any Keyword
+					ArrayList<String> anyKeyWordArray = universalSearchHelper.getSearchValuesFromChosenSelectField(serachValue);
+					if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+						 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+						 for(String keywd : anyKeyWordArray){
+							 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+//							ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
+								ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForClientVendor(keywd);
+							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+									anyBoolSubQueryBuilder.should(matchQueryBuilder);
+								}
+								anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+							}
+						}
+						 boolQueryBuilder.must(anyBoolQueryBuilder);
+					}
+					
+					DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					df.setTimeZone(TimeZone.getTimeZone("GMT"));
+					SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+					if(searchHits != null && searchHits.length >0){
+						ObjectMapper mapper = new ObjectMapper();
+						for (SearchHit hit : searchHits) {
+									String json = hit.getSourceAsString();
+									mapper.setDateFormat(df);
+									ClientVendorIndex clientVendor = mapper.readValue(json, ClientVendorIndex.class);
+									
+									
+									 
+								//  This is to get the number of Contacts based  on Org Relation Id
+									 BoolQueryBuilder forNumberOfContacts= QueryBuilders.boolQuery();
+									 forNumberOfContacts.must(QueryBuilders.matchQuery("orgRelationId", clientVendor.getOrgRelationId()));
+									 
+									 Long numberOfContacts = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,0,0,forNumberOfContacts).getTotalHits();
+									 clientVendor.setNoContacts(numberOfContacts);
+									 
+									if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == orgLocations.getId().longValue()){
+										
+									    clientVendor.setWebsite(clientVendor.getResponderWebSite());
+										clientVendor.setOrgName(clientVendor.getResponderOrgName());
+										clientVendor.setCountry(clientVendor.getResponderCountry());
+										clientVendor.setState(clientVendor.getResponderState());
+										clientVendor.setCity(clientVendor.getResponderCity());
+										
+										if(clientVendor.getInitiatorLevel()!=null){
+											clientVendor.setInitiatorLevel(clientVendor.getInitiatorLevel());
+										}
+									}
+								  if(null != clientVendor.getResponderLocationId()  && clientVendor.getResponderLocationId().longValue() == orgLocations.getId().longValue()){
+									 
+									  clientVendor.setWebsite(clientVendor.getInitiatorWebSite());
+									  clientVendor.setOrgName(clientVendor.getInitiatorOrgName());
+									  clientVendor.setCountry(clientVendor.getInitiatorCountry());
+									  clientVendor.setState(clientVendor.getInitiatorState());
+									  clientVendor.setCity(clientVendor.getInitiatorCity());
+									  
+									  if(clientVendor.getResponderLevel()!=null){
+										  clientVendor.setInitiatorLevel(clientVendor.getResponderLevel());
+									  }
+									}
+								  if(!responderType.isEmpty() &&  Constants.VENDOR.equalsIgnoreCase(responderType)){
+									  if(null != clientVendor.getCreatedBy() && !clientVendor.getCreatedBy().isEmpty()){
+										  clientVendor.setCreatedBy(clientVendor.getCreatedBy());
+									  }
+									 
+								  }
+								  
+								  searchList.add(clientVendor);
+
+						}	
+					}
+				return searchList;
+		}
+
+		void updatingClientVendorDetails(List<OrgSpoc>  updateOrgSpockDetails) throws Exception{
+			if(updateOrgSpockDetails.size() >0 && null != updateOrgSpockDetails){
+				for(OrgSpoc orgSpock :updateOrgSpockDetails){
+					orgSpocService.addOrgSpoc(orgSpock);
+				}
+			}
+		}
+		
+	
 }

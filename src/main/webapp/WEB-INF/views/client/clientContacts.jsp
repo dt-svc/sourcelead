@@ -3,15 +3,6 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/formvalidator.js"></script>
-<script src="resources/js/bootstrap-select.min.js"></script>
-<script src="resources/js/chosen.jquery.min.js"></script> 	
 <style type="text/css">
 .collapse-div-adduser select{
 width: 100% !important;
@@ -62,7 +53,7 @@ function clientContacts(orgRelationID,clientLocationId){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID, 
+	    	url : sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Client", 
 	        success: function(data) {
 	        	
 	        var json = JSON.parse(data);
@@ -138,13 +129,19 @@ function clientContacts(orgRelationID,clientLocationId){
 	                result = result + '	     <td><div><span title='+opt.ownerName+'>'+opt.ownerName+'</span></div></td>';
 	                
 	                result = result + ' <td><div>';
-					result = result + ' <select id="spocStatus'+json[i].id+'" name="spocStatus" onChange="changeSpocStatus('+json[i].id+'\,'+clientLocationId+');">';
-					result = result + ' <option value="Active"  '+selected1+'>Active</option>';
-					result = result + ' <option value="In-Active"    '+selected2+'>In-Active</option>';
-					result = result + ' <option value="New" '+selected3+'>New</option>';
-					result = result + ' <option value="Negotiation" '+selected4+'>Negotiation</option>';
-					result = result + ' <option value="Contracted" '+selected5+'>Contracted</option>';
-					result = result + ' </select>';
+	                
+	                if(opt.invitationStatus == 'Rejected'){
+	        			result = result + '<span>'+opt.spocStatus+'</span>';
+	        		}else{
+	        			result = result + ' <select id="spocStatus'+json[i].id+'" name="spocStatus" onChange="changeSpocStatus('+json[i].id+'\,'+clientLocationId+');">';
+						result = result + ' <option value="Active"  '+selected1+'>Active</option>';
+						result = result + ' <option value="In-Active"    '+selected2+'>In-Active</option>';
+						result = result + ' <option value="New" '+selected3+'>New</option>';
+						result = result + ' <option value="Negotiation" '+selected4+'>Negotiation</option>';
+						result = result + ' <option value="Contracted" '+selected5+'>Contracted</option>';
+						result = result + ' </select>';
+	        		}
+					
 					result = result + ' </div></td>';
 	                
 	                result = result +'<td data-title="Invitation Status"><div>';
@@ -264,7 +261,8 @@ function contactPagination(){
         "bDestroy": true,
         "ordering": false,
         "oLanguage": {
-             "sSearch": ""
+             "sSearch": "",
+             "sZeroRecords": "", "sEmptyTable": ""
          }
        
     } );
@@ -324,6 +322,7 @@ function saveSpocTerminateReason(spocId, orgRelationID,clientLocationId,spocName
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
 	if(reason.match(/^[^\s-](.*)*$/) != null){
+		 reason = encodeURIComponent(reason);
 		$("#reasonForSpocDiv").empty();
 		$.ajax({
 		   	type: "POST",
@@ -496,9 +495,6 @@ function addContact(orgRelationID,clientLocationId) {
 	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 		 e.stopPropagation();
 	 });
-	 $('html').click(function(){
-		$(".edit-details").removeClass("edit-details-active");
-	   });	
 	 
 	 var config = {
 			  '.chosen-select'           : {},

@@ -1,13 +1,18 @@
 package com.bis.sourcelead.service;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
@@ -26,7 +31,7 @@ public interface RequirementService {
  
 	public Requirement addRequirement(Requirement requirement) throws Exception;
 	
-	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,Long  userId) throws Exception;
+	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,User  user, String userRoleName) throws Exception;
 	
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception;
 	
@@ -53,6 +58,8 @@ public interface RequirementService {
 	public Requirement getRequirementByParentRequirementId(Long requirementId) throws Exception;
 	
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode) throws Exception;
+	
+	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(Long orgLocationId, String userType, Long userId, String userCode) throws Exception;
 	
 	public List<Requirement> getApproverRequirementApproverListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode,String statusType) throws Exception;
 	
@@ -95,5 +102,18 @@ public interface RequirementService {
 	public Requirement getRequirementByRequirementIdOrgLocationsId(String id,Long requirementId, Long orgLocationsId) throws Exception;
 	
 	public Boolean validateJobid(String id, Long orgLocationsId) throws Exception;
+	
+	public Requirement getRequirementByRequirementUUID(String requirementUUID) throws Exception;
+	
+	List<String> getAllRequirementSkillsByRequirementI(Long requirementId) throws Exception;
+
+	public List<Requirement> searchRequirement(OrgLocations orgLocation, JSONObject jsonObj, Org org, String userRole, User user)throws Exception;
+
+	public Long getRequirementsListById(Long requirementId) throws Exception;
+	
+	public List<Object> getAllUniversalSearchRequirementList(OrgLocations orgLocations, String serachValue,String userRole, User user) throws Exception;
+
+	public Requirement updateRequirement(Requirement requirement) throws Exception;
+
 
 }

@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -14,6 +16,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -22,9 +28,17 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.search.SearchHit;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -34,23 +48,27 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementApproverHierarchyDao;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.SubmissionTemplateDao;
+import com.bis.sourcelead.elk.index.RequirementIndex;
+import com.bis.sourcelead.elk.index.helper.RequirementHelper;
+import com.bis.sourcelead.elk.setup.RequirementElkUtil;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
-import com.bis.sourcelead.entity.CandidateSkills;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Team;
+import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -58,20 +76,25 @@ import com.bis.sourcelead.enums.HIERARCHY_TYPE;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateResumesService;
-import com.bis.sourcelead.service.CandidateSkillsService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.PdfUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 /**
  * 
@@ -82,7 +105,8 @@ import com.bis.sourcelead.util.PdfUtil;
 
 @Service
 public class RequirementServiceImpl implements RequirementService {
-
+	
+	private static final Logger logger = LoggerFactory.getLogger(RequirementServiceImpl.class);
 
 	@Autowired
 	RequirementDao requirementDao;
@@ -92,6 +116,9 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@Autowired
 	private SubmissionTemplateDao submissionTemplateDao;
+	
+	@Autowired
+	CandidateService candidateService;
 	
 	@Autowired
 	private RequirementAssignToService requirementAssignToService;
@@ -123,13 +150,15 @@ public class RequirementServiceImpl implements RequirementService {
 	@Autowired
 	private UserRoleService userRoleService;
 	
+    @Autowired
+    private ProjectsService projectsService;
 	
 	
 	 @Autowired
 	 private  RequirementSubmissionService requirementSubmissionService;
 	 
-	 @Autowired
-	 private CandidateSkillsService candidateSkillsService;
+	 /*@Autowired
+	 private CandidateSkillsService candidateSkillsService;*/
 	 
 	 @Autowired
 	 private CandidateResumesService candidateResumeSerivce;
@@ -138,10 +167,25 @@ public class RequirementServiceImpl implements RequirementService {
 	 private OrgRelationsService orgRelationsService;
 	 
 	 @Autowired
+	 LookUpDataService lookUpDataService;
+	 
+	 @Autowired
 	 private PdfUtil pdfUtil;
+	 
+	 @Autowired
+	 private RequirementElkUtil requirementElkUtil;
+	 
+	 @Autowired
+	 private SourceleadELKBaseIndexer<RequirementIndex> sourceleadELKBaseIndexer;
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
+	
+	@Autowired
+	private RecommendedCustomizeScoreService recommendedCustomizeScoreService;
+	
+	@Autowired
+	private TeamMembersService teamMembersService;
 	
 	/**
 	 * @author prasad k
@@ -182,6 +226,7 @@ public class RequirementServiceImpl implements RequirementService {
 				requirement.setCreatedBy(user.getUserCode());
 				requirement.setUpdatedBy(user.getUserCode());
 				requirement.setUpdatedDate(commonUtil.currentDate());
+				requirement.setRequirementUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			}
 		    
 			if(orgLocations != null){
@@ -193,41 +238,21 @@ public class RequirementServiceImpl implements RequirementService {
 					requirement.setJobTitle(jsonObj.getString("jobTitle"));
 				}
 				
-			}
-			
-			
-			if(jsonObj.has("jobType") ){	
-				if(!"".equalsIgnoreCase(jsonObj.getString("jobType"))){
+			}if(jsonObj.has("jobType") ){	
 				requirement.setJobType(jsonObj.getString("jobType"));
-			   }
-			}	
-			
-			if(jsonObj.has("jobOtherType") && jsonObj.has("jobType") && "Other".equalsIgnoreCase(jsonObj.getString("jobType"))){
+			}if(jsonObj.has("jobOtherType") && jsonObj.has("jobType") && "Other".equalsIgnoreCase(jsonObj.getString("jobType"))){
 					requirement.setOtherJobType(jsonObj.getString("jobOtherType"));
 			}else{
 					requirement.setOtherJobType(null);
-			}
-						
-			if(jsonObj.has("jobId")){
-				if(!"".equalsIgnoreCase(jsonObj.getString("jobId"))){
+			}if(jsonObj.has("jobId")){
 					requirement.setJobId(jsonObj.getString("jobId"));
-				}
-			
-			}
-			
-			if(jsonObj.has("positions")){
-				if(!"".equalsIgnoreCase(jsonObj.getString("positions"))){
+			}if(jsonObj.has("positions")){
 					requirement.setPositions(jsonObj.getString("positions"));
-				}
-			
-			}
-			if(jsonObj.has("countryReq")){
+			}if(jsonObj.has("countryReq")){
 			requirement.setCountry(jsonObj.getString("countryReq"));
 			location.append(jsonObj.getString("countryReq"));
 			location.append(",");
-			}
-			
-			if(jsonObj.has("state")){
+			}if(jsonObj.has("state")){
 				if(!jsonObj.getString("state").isEmpty()){
 					requirement.setState(jsonObj.getString("state"));
 					location.append(jsonObj.getString("state"));
@@ -235,10 +260,7 @@ public class RequirementServiceImpl implements RequirementService {
 				}else{
 					location.append("--").append(",");
 				}
-			
-			}
-			
-			if (jsonObj.has("city")) {
+			}if (jsonObj.has("city")) {
 				if (!jsonObj.getString("state").isEmpty()) {
 					requirement.setCity(jsonObj.getString("city"));
 					location.append(jsonObj.getString("city"));
@@ -246,49 +268,23 @@ public class RequirementServiceImpl implements RequirementService {
 				} else {
 					location.append("--").append(".");
 				}
-			}
-			
-			if(jsonObj.has("maxExp")){
-				if(!"".equalsIgnoreCase(jsonObj.getString("maxExp"))){
+			}if(jsonObj.has("maxExp")){
 					requirement.setMaxExp(jsonObj.getString("maxExp"));
-				}
-			}
-			
-			if(jsonObj.has("minExp")){
-				if(!"".equalsIgnoreCase(jsonObj.getString("minExp"))){
+			}if(jsonObj.has("minExp")){
 					requirement.setMinExp(jsonObj.getString("minExp"));
-				}
-			}
-			
-			if(jsonObj.has("rate")){
-				if(!"".equalsIgnoreCase(jsonObj.getString("rate"))){
+			}if(jsonObj.has("rate")){
 					requirement.setRate(jsonObj.getString("rate"));
-				}
-			}
-			
-			if(jsonObj.has("rateType")){
-				if(!"".equalsIgnoreCase(jsonObj.getString("rateType"))){
+			}if(jsonObj.has("rateType")){
 					requirement.setRateType(jsonObj.getString("rateType"));
-				}
-			} 
-			
-			if(jsonObj.has("description")){
-				if(!"".equalsIgnoreCase(jsonObj.getString("description"))){
-					requirement.setDescription(java.net.URLDecoder.decode(jsonObj.getString("description"), "utf-8"));		
-				}
-			
-			}
-			
-			
-			if(jsonObj.has("currencyCode")){
+			}if(jsonObj.has("description")){
+					//requirement.setDescription(java.net.URLDecoder.decode(jsonObj.getString("description"), "utf-8"));
+					requirement.setDescription(jsonObj.getString("description"));	
+			}if(jsonObj.has("currencyCode")){
 				if(!"".equalsIgnoreCase(jsonObj.getString("currencyCode"))){
 					requirement.setCurrencyCode(jsonObj.getString("currencyCode"));
 				}
 			
-			}
-			
-			
-			if(jsonObj.has("priority")){
+			}if(jsonObj.has("priority")){
 				if(!"".equalsIgnoreCase(jsonObj.getString("priority"))){
 					requirement.setPriority(jsonObj.getString("priority"));
 				}
@@ -316,8 +312,8 @@ public class RequirementServiceImpl implements RequirementService {
 				
 				
 				skillId = skillId.replaceAll("\"", "");
-		  	   requirement.setSkills(skillId);
-			
+		  	    requirement.setSkills(skillId);
+		  	 
 			}
 			
 			if(jsonObj.has("education")){
@@ -333,7 +329,7 @@ public class RequirementServiceImpl implements RequirementService {
 				educationId = educationId.replaceAll("\\[", "").replaceAll("\\]","");
 				educationId = educationId.replaceAll("\"", "");
 				
-		  	  requirement.setEducation(educationId);
+		  	    requirement.setEducation(educationId);
 			
 			 }
 			
@@ -417,8 +413,9 @@ public class RequirementServiceImpl implements RequirementService {
 				}
 				if(jsonObj.getString("saveType").equalsIgnoreCase("submitForApproval")){
 					
-					if(requirement.getId() != null){
-							if(requirement.getRequirementSubmissionStatus().equals("OPEN")){
+					//if the Requirement is in Open Stage
+					if(null != requirement.getId() ){
+							if("OPEN".equalsIgnoreCase(requirement.getRequirementSubmissionStatus().getValue())){
 								requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
 							}else{
 								requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED);	
@@ -572,69 +569,91 @@ public class RequirementServiceImpl implements RequirementService {
 				  requirement.setPriority(jsonObj.getString("priority"));
 			} 
 			
+			//storing assigned team START (Venkat Kesav)
 			
-			if(requirement.getId() != null){
-				requirementAssignToService.deleteRequirementAssignToByRequirementId(requirement.getId());
+
+			List<RequirementAssignTo> oldAssigntoTeamList= null;
+			if(requirement.getId()!= null){
+			oldAssigntoTeamList = requirementAssignToService.getAssignedToMembersByRequirementIdAndOrgLocationId(requirement.getId(), orgLocations.getId());
 			}
+
+			
 			HashSet<RequirementAssignTo> requirementAssignToList = new HashSet<RequirementAssignTo>();
 			if (jsonObj.has("assignedToMaxCount")){
 				String assignedToMaxCount = jsonObj.getString("assignedToMaxCount");
-						Long teamId = 0L;
-						Team team = null;
-						if(jsonObj.has("assignedTeamId") && StringUtils.isNotEmpty(jsonObj.getString("assignedTeamId")) && !"undefined".equalsIgnoreCase(jsonObj.getString("assignedTeamId"))){
-							String assignedTeamId = jsonObj.getString("assignedTeamId");
-					    	if(!assignedTeamId.contains("role") && !assignedTeamId.contains("All")){
-					    		teamId = Long.parseLong(assignedTeamId);
-							    team = teamService.getTeamByTeamId(teamId);
-							    // Adding Team Owner as RequirementAssignTo
-							    RequirementAssignTo  requirementAssignTo = new RequirementAssignTo();
-									User assUser = userService.getUserById(team.getOwnerUserId().getId());
-									requirementAssignTo.setAssignUserId(assUser);
-									requirementAssignTo.setRequirementId(requirement);
-									requirementAssignTo.setTeamId(team);
-									UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assUser.getId(),orgLocations.getId());
-									requirementAssignTo.setRoleId(userRole.getRoles());
-									requirementAssignToList.add(requirementAssignTo);
-					    	}
-						}   
-					    // User roleUser = team.getOwnerUserId();
-						if(StringUtils.isNotEmpty(assignedToMaxCount)){
-						int MaxCount = Integer.parseInt(assignedToMaxCount);
-							for (int c = 1; c < MaxCount; c++) {
-								RequirementAssignTo  requirementAssignTo = new RequirementAssignTo();
+				int teamCount = 0;
+				ArrayList<String> assignedTeamId = new ArrayList<String>();
+				if(jsonObj.has("assignedTeamId") && StringUtils.isNotEmpty(jsonObj.getString("assignedTeamId")) && !"undefined".equalsIgnoreCase(jsonObj.getString("assignedTeamId"))){
+					String [] assignedTeamAndRoleIds = jsonObj.getString("assignedTeamId").split(",");
+					for(String assignedTeamOrRoleId : assignedTeamAndRoleIds){
+						if(!assignedTeamOrRoleId.contains("role") && !assignedTeamOrRoleId.contains("All")){
+							assignedTeamId.add(assignedTeamOrRoleId);
+							teamCount++;
+				    	}
+					}
+				}
+				
+				if(StringUtils.isNotEmpty(assignedToMaxCount)){
+					int MaxCount = Integer.parseInt(assignedToMaxCount);
+						for (int c = 1; c < MaxCount; c++) {
+							RequirementAssignTo  requirementAssignTo;
+							User assUser = userService.getUserById(Long.parseLong(jsonObj.getString("assignUserId"+c)));
+							if(requirement.getId() !=null){
+								 requirementAssignTo = requirementAssignToService.getRequirementAssignToByRequirementIdandAssignedUserId(requirement.getId(), assUser.getId());
+								if(requirementAssignTo == null){
+									requirementAssignTo = new RequirementAssignTo();
+								}
+							}else{
+								requirementAssignTo = new RequirementAssignTo();
+							}
+							
+								Team team = new Team();
+								Long teamId = 0L;
+								int teamReady = 0;
+								for(int count = teamCount; count > 0; count--){
+									teamId = Long.valueOf(assignedTeamId.get(count-1));
+									Boolean isUserHasInTeam;
+									if(teamReady == 0){
+										isUserHasInTeam = teamMembersService.isUserBelongsCurrentTeamByUserIdAndTeamId(assUser.getId(), teamId);
+										
+										if(isUserHasInTeam){
+											team.setId(teamId);
+											requirementAssignTo.setTeamId(team);
+											teamReady++;
+										}
+									}
+								}
 								
-		//						User assUser = new User();
-		//						assUser.setId(Long.parseLong(jsonObj.getString("assignUserId"+c)));
-								User assUser = userService.getUserById(Long.parseLong(jsonObj.getString("assignUserId"+c)));
 								requirementAssignTo.setAssignUserId(assUser);
-								
 								requirementAssignTo.setRequirementId(requirement);
-								
-								
-								requirementAssignTo.setTeamId(team);
-								
-								
 								UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assUser.getId(),orgLocations.getId());
 								requirementAssignTo.setRoleId(userRole.getRoles());
+								requirementAssignTo.setCreatedDate(commonUtil.currentDate());
+								requirementAssignTo.setCreatedBy(user.getUserCode());
+								requirementAssignTo.setUpdatedBy(user.getUserCode());
+								requirementAssignTo.setUpdatedDate(commonUtil.currentDate());
 								requirementAssignToList.add(requirementAssignTo);
-		
 							}
 						}
+				     
 			}
+			requirement.setTotalApplicants(0);
 			requirement.setRequirementAssignTo(requirementAssignToList);
-			
+			//storing assigned team END
 			
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
 		
+		//store recommended customizeScore
+		RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScoreService.saveCustomizeScore(requirement);
 	
 			       if(!requirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.DRAFT)){
 				 		
 					 mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
-					 if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
+					/*if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
 						  String approverNames = jsonObj.getString("sequentialApprover1");
 						  User approverUser = userService.getUserById(Long.parseLong(approverNames));
 						  approverEmailScenario(user, approverUser ,savedRequirement,location,orgLocations);
-				     }
+				     }*/
 			  
 					//send mail to sequential approver1 
 					if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
@@ -664,10 +683,40 @@ public class RequirementServiceImpl implements RequirementService {
 						    }
 					 }
 					
+					
+					/*shivayogi Kadagad/rakshith mahabal*/	
+					// this logic is for assigned to team members when new team user is added for requirement-edit and saved.	
+					if(null != savedRequirement.getId() && requirementAssignToList.size()!=0 && !savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())){
+						for (RequirementAssignTo newList : requirementAssignToList) {
+					       boolean found=false;
+
+					       if(null != oldAssigntoTeamList && oldAssigntoTeamList.size()!=0){
+					       for (RequirementAssignTo oldList : oldAssigntoTeamList) {
+					           if ((newList.getAssignUserId().getId().equals(oldList.getAssignUserId().getId()))) {
+					               found=true;
+					               break;
+					           }
+					         }
+					       }
+					       if(!found){
+					       	List<RequirementAssignTo> newlyAddedList = new ArrayList<RequirementAssignTo>();
+					       	newlyAddedList.add(newList);
+					       	for(RequirementAssignTo newly :newlyAddedList){
+					       		User newlyAddedUser = newly.getAssignUserId();
+					       		Set<RequirementAssignTo> updatedRequirementAssignToList = savedRequirement.getRequirementAssignTo();
+									if(updatedRequirementAssignToList != null  ){
+												AssignToTeamMembersEmail(user, newlyAddedUser, savedRequirement,location,orgLocations);
+											}
+										}
+									}
+					       	}
+					       }
+						
+					
 					//send mail to Assigned Team 
 					//condition : if login user as team member then mail not send
 					// this logic will execute when no approvers are selected for requirement.
-				  if(!savedRequirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED)){
+				  if(!savedRequirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED) && savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())){
 					Set<RequirementAssignTo> updatedRequirementAssignToList = savedRequirement.getRequirementAssignTo();
 					if(updatedRequirementAssignToList != null  ){
 						for(RequirementAssignTo requirementAssignTo : updatedRequirementAssignToList ){
@@ -682,14 +731,26 @@ public class RequirementServiceImpl implements RequirementService {
 					if(savedRequirement.getManagerUserId() != null && !user.getId().equals(savedRequirement.getManagerUserId().getId())){
 						mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
 					}
-		 }			
-		
+		 }		
+			       
+			       requirementElkUtil.saveElkRequirement(savedRequirement,jsonObj);
+			    
 		return savedRequirement;
 	}
 
+/*	private void saveElkRequirement(Requirement requirement, JSONObject jsonObj) throws Exception {
+		 
+		RequirementIndex requirementIndex = requirementHelper.populateRequirementIndex(requirement,jsonObj);
+		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(requirementIndex, Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,requirement.getId().toString());
+	}*/
+
 	@Override
 	public Requirement addRequirement(Requirement requirement) throws Exception {
-		return requirementDao.storeRequirement(requirement);
+
+		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
+		requirementElkUtil.saveElkRequirement(savedRequirement,new JSONObject());
+		return savedRequirement;
+
 	}
 
 
@@ -708,8 +769,8 @@ public class RequirementServiceImpl implements RequirementService {
 	*/
 
 	@Override
-	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,Long  userId) throws Exception {
-		return requirementDao.getRequirementListByOrgLocationID(orgLocationId,status,clients, userId);
+	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,User  user,String userRoleName) throws Exception {
+		return requirementDao.getRequirementListByOrgLocationID(orgLocationId,status,clients,user,userRoleName);
 	}
 
 	
@@ -867,13 +928,15 @@ public class RequirementServiceImpl implements RequirementService {
          }
 		 
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 /*ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
 		 StringBuilder recipBuild = new StringBuilder();
 		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 emailRecipientList.add(emailRecipient);*/
 		
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
@@ -896,7 +959,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 String actionLink="";
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, loginOrgLocation, notificationScenario);
-		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 	
 }
 	
@@ -953,12 +1016,14 @@ public class RequirementServiceImpl implements RequirementService {
 		 globalVarsMap.put("attachment",attachBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Attachment</div></a>").toString());
 
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 /*ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
 		 StringBuilder recipBuild = new StringBuilder();
 		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 emailRecipientList.add(emailRecipient);*/
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_SEQUENTIAL_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
@@ -980,7 +1045,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String actionLink="";
 		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, orgLocations, notificationScenario);
 
@@ -1036,13 +1101,15 @@ public class RequirementServiceImpl implements RequirementService {
 		 }
 		 
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 /*ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
 		 StringBuilder recipBuild = new StringBuilder();
 		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
-		
+		 emailRecipientList.add(emailRecipient);*/
+	
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPROVED_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPROVED_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
@@ -1062,7 +1129,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String actionLink="";
 		emailScenerioUtil.sendNotification(actionLink, loginUser,intiatorUser, orgLocations, notificationScenario);
 
@@ -1130,19 +1197,27 @@ public class RequirementServiceImpl implements RequirementService {
 		
 		for(Candidate candidate : candidateList){
 			int matchedSkillCount = 0;
-			List<CandidateSkills> candidateSkillList  = candidateSkillsService.getSkillByCandidateId(candidate.getId());
-			List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidate.getId());
-			CandidateResumes candidateResume = candidateResumeSerivce.getCandidateLatesResumes(candidate.getId(), 1);
-			if(candidateSkillList != null && candidateSkillList.size() >0){
-				for(CandidateSkills candidateSkills : candidateSkillList){
-					if(candidateSkills.getName() !=null && !"".equalsIgnoreCase(candidateSkills.getName())){
-						if(reqSkills.contains(candidateSkills.getName())){
+//			List<String> candidateSkillList  = null;
+			if(null != candidate.getSkillsName()){
+				String[] skills = candidate.getSkillsName().split(",");
+				
+				for(String skillName : skills){
+					if(skillName !=null && !"".equalsIgnoreCase(skillName)){
+						if(reqSkills.contains(skillName)){
 							matchedSkillCount++;
 						}
 						
 					}
 				}
+				//candidateSkillList = new ArrayList<String>(Arrays.asList(skills));
 			}
+			
+			List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidate.getId());
+			CandidateResumes candidateResume = candidateResumeSerivce.getCandidateLatesResumes(candidate.getId(), 1);
+//			if(candidateSkillList != null && candidateSkillList.size() >0){
+				
+				
+//			}
 			skillPercentage = matchedSkillCount*percentPerSkill;
 			if(candidate.getExperienceYears() != null && !"".equalsIgnoreCase(candidate.getExperienceYears()) && candidate.getExperienceMonths()!=null && !"".equalsIgnoreCase(candidate.getExperienceMonths())){
 				int  candidateExpMonths = Integer.parseInt(candidate.getExperienceYears())*12 + Integer.parseInt(candidate.getExperienceMonths());
@@ -1298,12 +1373,14 @@ public class RequirementServiceImpl implements RequirementService {
 
 
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 /*ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
 		 StringBuilder recipBuild = new StringBuilder();
 		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 emailRecipientList.add(emailRecipient);*/
+		 
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAILREQUIREMENTTOMANAGER,Constants.ENTITY_TYPE_EMAIL);
@@ -1326,7 +1403,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String actionLink="";
 		 emailScenerioUtil.sendNotification(actionLink, loginUser, managerUser, loginOrgLocation, notificationScenario);
 
@@ -1398,12 +1475,14 @@ public class RequirementServiceImpl implements RequirementService {
 
 
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 /*ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
 		 StringBuilder recipBuild = new StringBuilder();
 		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 emailRecipientList.add(emailRecipient);*/
+		 
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ASSIGNTEAMMEMBERSFORREQUIREMENT,Constants.ENTITY_TYPE_EMAIL);
@@ -1426,7 +1505,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		String actionLink="";
 		emailScenerioUtil.sendNotification(actionLink, loginUser,assUser, orgLocations, notificationScenario);
 
@@ -1458,22 +1537,33 @@ public class RequirementServiceImpl implements RequirementService {
 		} else {
 			globalVarsMap.put("loginUserName", "--");
 		}
-		if (loginUser.getFirstName() != null && loginUser.getLastName() != null
-				&& !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName()))  {
-			StringBuilder userBuild = new StringBuilder();
+		StringBuilder userBuild = new StringBuilder();
+		if (loginUser.getFirstName() != null && loginUser.getLastName() != null	&& !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName()))  {
 			globalVarsMap.put("approverName", userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		} else {
-			globalVarsMap.put("approverName", "--");
+		} else if(loginUser.getFirstName() != null && !"".equalsIgnoreCase(loginUser.getFirstName())) {
+			globalVarsMap.put("approverName", userBuild.append(loginUser.getFirstName()).toString());
+		}else{
+			globalVarsMap.put("approverName","--");
 		}
-		if (loginUser.getUserType() != null && !"".equalsIgnoreCase(loginUser.getUserType())) {
-			globalVarsMap.put("role", loginUser.getUserType());
-		} else {
+		
+		
+		UserRole userRole = userRoleService.getUserRoleByUserId(loginUser.getId());
+		if(null != userRole.getRoles()){
+		if (userRole.getRoles().getDisplayName() != null && !"".equalsIgnoreCase(userRole.getRoles().getDisplayName())) {
+			globalVarsMap.put("role", userRole.getRoles().getDisplayName());
+		} }else {
 			globalVarsMap.put("role", "--");
 		}
-		if (requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId())) {
-			globalVarsMap.put("requirementId-Name",requirement.getJobId()+"-"+requirement.getJobTitle());
-		} else {
-			globalVarsMap.put("requirementId-Name", "--");
+		
+		StringBuilder appendString = new StringBuilder();
+		if (requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId()) && (requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle()))) {
+			globalVarsMap.put("requirementId-Name",appendString.append(requirement.getJobId()).append("-").append(requirement.getJobTitle()).toString());
+		} else if(requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle())) {
+			globalVarsMap.put("requirementId-Name", requirement.getJobTitle());
+		}else if(requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId())){
+			globalVarsMap.put("requirementId-Name", requirement.getJobId());
+		}else{
+			globalVarsMap.put("requirementId-Name", requirement.getJobId());
 		}
 		if (loginUser.getUserName() != null && !"".equalsIgnoreCase(loginUser.getUserName()) ) {
 			globalVarsMap.put("jobInitiatorName", initiatorUser.getFirstName());
@@ -1487,12 +1577,14 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 
 		// setting the Recipient information
-		ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		/*ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		EmailRecipient emailRecipient = new EmailRecipient();
 		emailRecipient.setEmail(emailMessage.getToEmail());
 		StringBuilder recipBuild = new StringBuilder();
 		emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		emailRecipientList.add(emailRecipient);
+		emailRecipientList.add(emailRecipient);*/
+		
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
@@ -1516,7 +1608,7 @@ public class RequirementServiceImpl implements RequirementService {
 		emailMessage.setMessageBody(emailTemplate);
 
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(), emailRecipientList, new ArrayList<EmailAttachment>());
+		emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 		String actionLink="";
 		emailScenerioUtil.sendNotification(actionLink, loginUser, initiatorUser, loginOrgLocation, notificationScenario);
 	}
@@ -1526,10 +1618,10 @@ public class RequirementServiceImpl implements RequirementService {
 		User  vendorContactUser = null;
 		
 		if(releasetype.equalsIgnoreCase("VENDORS")){
-			vendorContactUser = userService.getUserById(orgSpoc.getSpocUser().getId());
+			vendorContactUser = userService.getUserById(orgSpoc.getVendorUser().getId());
 
 		}else if(releasetype.equalsIgnoreCase("CONTACTS")){
-			vendorContactUser = userService.getUserById(orgSpoc.getSpocUser().getId());
+			vendorContactUser = userService.getUserById(orgSpoc.getVendorUser().getId());
 		}
 	 
 		EmailMessage emailMessage = new EmailMessage();
@@ -1603,12 +1695,14 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 		
 		 //setting the Recipient information
-		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 /*ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
 		 EmailRecipient emailRecipient = new EmailRecipient();
 		 emailRecipient.setEmail(emailMessage.getToEmail());
 		 StringBuilder recipBuild = new StringBuilder();
 		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 emailRecipientList.add(emailRecipient);
+		 emailRecipientList.add(emailRecipient);*/
+		 
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.RELEASEMECHANISM_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
@@ -1625,7 +1719,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 notificationScenario.setBody(notificationbody);
 
 		 
-		 OrgLocations vendorOrgLoc = requirement.getSpocId().getResponderLocationId();
+		 OrgLocations vendorOrgLoc = requirement.getSpocId().getVendorLocationId();
 
 		 
 		 //construct HTML template using required data
@@ -1634,7 +1728,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),emailRecipientList,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String actionLink="";
 		emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario);
 
@@ -1652,6 +1746,15 @@ public class RequirementServiceImpl implements RequirementService {
 			throws Exception {
 		
 			return requirementDao.getAssignedRequirementListByOrgLocationIDAndUserId(orgLocationId, userType, userId, userCode);
+		
+	}
+	
+	
+	@Override
+	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(Long orgLocationId, String userType, Long userId, String userCode)
+			throws Exception {
+		
+			return requirementDao.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(orgLocationId, userType, userId, userCode);
 		
 	}
 	
@@ -1894,23 +1997,29 @@ public class RequirementServiceImpl implements RequirementService {
 			// bringing the old  requirementapprovalHierarachy  list based on the requirementID
 			
 			List<RequirementApproverHierarchy> requirementApproverHierarchies = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirement.getId());
-			for(RequirementApproverHierarchy rah :requirementApproverHierarchies){
-				oldApproversList.add(rah.getApproverUserId().getId().toString());
-			}
-			
-			// seperating the lists
-			for (String item : oldApproversList) {
-	    	    if (newApproversList.contains(item)) {
-	    	    	uniqueApproversList.add(item);
-	    	    } else {
-	    	    	removedApproversList.add(item);
-	    	    }
-	    	}
-			
-			
-			// Removing  the unselected approvals from  the RequirementApprovalHierarachy
-			for (String item : removedApproversList) {
-				requirementApproverHierarchyService.deleteTheRequirementApproverByRequirementIdAndApproverId(Long.parseLong(item),requirement.getId());
+			if(null != requirementApproverHierarchies){
+				for(RequirementApproverHierarchy rah :requirementApproverHierarchies){
+					oldApproversList.add(rah.getApproverUserId().getId().toString());
+				}
+				
+				// seperating the lists
+				if(null != oldApproversList){
+					for (String item : oldApproversList) {
+			    	    if (newApproversList.contains(item)) {
+			    	    	uniqueApproversList.add(item);
+			    	    } else {
+			    	    	removedApproversList.add(item);
+			    	    }
+			    	}
+					
+					
+					// Removing  the unselected approvals from  the RequirementApprovalHierarachy
+					if(null != removedApproversList){
+						for (String item : removedApproversList) {
+							requirementApproverHierarchyService.deleteTheRequirementApproverByRequirementIdAndApproverId(Long.parseLong(item),requirement.getId());
+						}
+					}
+				}
 			}
 		}
 		
@@ -2011,42 +2120,50 @@ public class RequirementServiceImpl implements RequirementService {
 			 reqTemplate.setOrgLocationId(orgLocations);
 			}
 		 
-		 if(jsonObj.has("jobTitle")){
+		 if(jsonObj.has("jobTitle") && !"".equalsIgnoreCase(jsonObj.getString("jobTitle"))){
 			 reqTemplate.setJobTitle(jsonObj.getString("jobTitle"));
+		}
+			
+		 if(jsonObj.has("jobType") && !"".equalsIgnoreCase(jsonObj.getString("jobType"))){	
+					reqTemplate.setJobType(jsonObj.getString("jobType"));
+			}	
+			
+			if(jsonObj.has("jobOtherType") &&  "Other".equalsIgnoreCase(jsonObj.getString("jobType"))){
+				reqTemplate.setOtherJobType(jsonObj.getString("jobOtherType"));
+			}else{
+				reqTemplate.setOtherJobType(null);
 			}
 			
-			if(!"".equalsIgnoreCase(jsonObj.getString("jobType"))){
-			if(jsonObj.has("jobType") ){				
-				reqTemplate.setJobType(jsonObj.getString("jobType"));
-			   }
-			}
-			
-			if(jsonObj.has("maxExp")){
+			if(jsonObj.has("maxExp") && !"".equalsIgnoreCase(jsonObj.getString("maxExp"))){
 				reqTemplate.setMaxExp(jsonObj.getString("maxExp"));
+				}else{
+					reqTemplate.setMaxExp(null);
 				}
 				
-				if(jsonObj.has("minExp")){
+				if(jsonObj.has("minExp") && !"".equalsIgnoreCase(jsonObj.getString("minExp"))){
 					reqTemplate.setMinExp(jsonObj.getString("minExp"));
+				}else{
+					reqTemplate.setMinExp(null);
 				}
 				
-				if(jsonObj.has("rate")){
+				if(jsonObj.has("rate") && !"".equalsIgnoreCase(jsonObj.getString("rate"))){
 					reqTemplate.setRate(jsonObj.getString("rate"));
 				}
 				
-				if(jsonObj.has("rateType")){
+				if(jsonObj.has("rateType") && !"".equalsIgnoreCase(jsonObj.getString("rateType"))){
 					reqTemplate.setRateType(jsonObj.getString("rateType"));
 				} 
 				
-				if(jsonObj.has("description")){
+				if(jsonObj.has("description") && !"".equalsIgnoreCase(jsonObj.getString("description"))){
 					reqTemplate.setDescription(jsonObj.getString("description"));
 				}
 				
 				
-				if(jsonObj.has("currencyCode")){
+				if(jsonObj.has("currencyCode") && !"".equalsIgnoreCase(jsonObj.getString("currencyCode"))){
 					reqTemplate.setCurrencyCode(jsonObj.getString("currencyCode"));
 				}
 				
-	             if(jsonObj.has("skills")){
+	             if(jsonObj.has("skills") && !"".equalsIgnoreCase(jsonObj.getString("skills"))){
 					
 					String skillId =null;
 					try{
@@ -2061,11 +2178,12 @@ public class RequirementServiceImpl implements RequirementService {
 					
 					skillId = skillId.replaceAll("\"", "");
 					reqTemplate.setSkills(skillId);
+					
 				}else{
 					reqTemplate.setSkills(null);	
 				}
 				
-				if(jsonObj.has("education")){
+				if(jsonObj.has("education") && !"".equalsIgnoreCase(jsonObj.getString("education"))){
 					
 	             String educationId =null;
 					try{
@@ -2079,6 +2197,7 @@ public class RequirementServiceImpl implements RequirementService {
 					educationId = educationId.replaceAll("\"", "");
 					
 					reqTemplate.setEducation(educationId);
+					
 				 }else{
 					 reqTemplate.setEducation(null);
 				 }
@@ -2137,6 +2256,528 @@ public class RequirementServiceImpl implements RequirementService {
 	public Boolean validateJobid(String id, Long orgLocationsId) throws Exception {
 		return requirementDao.validateJobid(id,orgLocationsId);
 	}
+	
+	@Override
+	public List<String> getAllRequirementSkillsByRequirementI(Long requirementId) throws Exception {
+		return requirementDao.getAllRequirementSkillsByRequirementI(requirementId);
+	}
+	
+
+/*	@Override
+	public List<String> getAllSkillsBySkillCategory() throws Exception{
+		return lookUpDataService.getAllSkillsBySkillCategory();
+		
+	}
+*/
+	@Override
+
+	public List<Requirement> searchRequirement(OrgLocations orgLocation, JSONObject jsonObj,Org org,String userRole,User user) throws Exception {
+		
+		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+		 
+		boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
+		 
+		 Long maxResults = requirementDao.getRequirementListByOrgLocationID(orgLocation.getId());
+	   	 //Exclude Keyword
+//		 if(jsonObj.has("excludeKeyWord") && !"".equalsIgnoreCase(jsonObj.getString("excludeKeyWord"))){
+//			 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
+//			 if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
+//			 	 BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
+//				 for(String keywd : excludeKeyWordArray){
+//					 BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
+//					ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
+//					if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+//						for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+//							excludeBoolSubQueryBuilder.should(matchQueryBuilder);
+//						}
+//						excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
+//					}
+//				}
+//				 boolQueryBuilder.mustNot(excludeBoolQueryBuilder);
+//			  } 
+//		 }
+			
+			//Any Keyword
+//		 if(jsonObj.has("anyKeyWord") && !"".equalsIgnoreCase(jsonObj.getString("anyKeyWord"))){
+//			 ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "anyKeyWord");
+//				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+//					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+//					 for(String keywd : anyKeyWordArray){
+//						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+//						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+//						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+//							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+//								anyBoolSubQueryBuilder.should(matchQueryBuilder);
+//							}
+//							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+//						}
+//					}
+//					 boolQueryBuilder.must(anyBoolQueryBuilder);
+//				} 
+//		 }
+		
+		//All Keywords
+//		 if(jsonObj.has("allKeyWord") && !"".equalsIgnoreCase(jsonObj.getString("allKeyWord"))){
+//				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeyWord");
+//				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
+//					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+//					 for(String keywd : allKeyWordArray){
+//						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+//						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+//						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+//							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+//								allBoolSubQueryBuilder.should(matchQueryBuilder);
+//							}
+//							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+//						}
+//					}
+//					 boolQueryBuilder.must(allBoolQueryBuilder);
+//				}
+//		 }
+			
+			
+			//Requirement Title
+			if(jsonObj.has("requirementTitle") && !"".equalsIgnoreCase(jsonObj.getString("requirementTitle"))){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("jobTitle", jsonObj.getString("requirementTitle")));
+		    }
+			// jobId
+			if(jsonObj.has("jobId") && !"".equalsIgnoreCase(jsonObj.getString("jobId"))){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("jobId", jsonObj.getString("jobId")));
+		    }
+		 //Country
+			if(jsonObj.has("country") && !"".equalsIgnoreCase(jsonObj.getString("country"))){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("country", jsonObj.getString("country")));
+		    }
+			 //State
+			if(jsonObj.has("state") && !"".equalsIgnoreCase(jsonObj.getString("state"))){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("state", jsonObj.getString("state")));
+		    }
+			//City
+			if(jsonObj.has("city")  && !"".equalsIgnoreCase(jsonObj.getString("city"))){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("city", jsonObj.getString("city")));
+		    }
+			
+			// currency
+//		    if(jsonObj.has("currencyCode") && !"".equalsIgnoreCase(jsonObj.getString("currencyCode"))){
+//				boolQueryBuilder.must(QueryBuilders.matchQuery("currentRateCurrency", jsonObj.getString("currencyCode")));
+//		    }
+		    
+		     //rate
+//		    if(jsonObj.has("rate") && !"".equalsIgnoreCase(jsonObj.getString("rate"))){
+//		    	String rate= jsonObj.getString("rate").replaceAll("[^0-9\\.]+", "");
+//		    	try{
+//		    		boolQueryBuilder.must(QueryBuilders.rangeQuery("rate").gte(new Float(rate)));
+//		    	}
+//		    	catch(NumberFormatException e){}
+//		    }
+			
+			
+		   //Rate Type
+//			if(jsonObj.has("rateType") && !"".equalsIgnoreCase(jsonObj.getString("rateType"))){
+//				boolQueryBuilder.must(QueryBuilders.matchQuery("rateType", jsonObj.getString("rateType")));
+//		    }
+			
+			
+			//minExpYears && maxExpYears
+//		    if(jsonObj.has("minExp") && !"".equalsIgnoreCase(jsonObj.getString("minExp")) && jsonObj.has("maxExp")  && !"".equalsIgnoreCase(jsonObj.getString("maxExp"))){
+//		    	String minYears= jsonObj.getString("minExp").replaceAll("[^0-9\\.]+", "");
+//		    	String maxYears= jsonObj.getString("maxExp").replaceAll("[^0-9\\.]+", "");
+//		    	try{
+//		    		boolQueryBuilder.must(QueryBuilders.rangeQuery("maxExperience").gte(new Integer(minYears)).lte(new Integer(maxYears)));
+//		    	}
+//		    	catch(NumberFormatException e){}
+//		    }
+			//minExpYears
+//		    else if(jsonObj.has("minExp") && !"".equalsIgnoreCase(jsonObj.getString("minExp"))){
+//		    	String minYears= jsonObj.getString("minExp").replaceAll("[^0-9\\.]+", "");
+//		    	try{
+//		    		boolQueryBuilder.must(QueryBuilders.rangeQuery("maxExperience").gte(new Integer(minYears)));
+//		    	}
+//		    	catch(NumberFormatException e){}
+//		    }
+		    //maxExpYears
+//		    else if(jsonObj.has("maxExp") && !"".equalsIgnoreCase(jsonObj.getString("maxExp"))){
+//           	String maxYears= jsonObj.getString("maxExp").replaceAll("[^0-9\\.]+", "");
+//           	try{
+//		    		boolQueryBuilder.must(QueryBuilders.rangeQuery("maxExperience").lte(new Integer(maxYears)));
+//		    	}
+//		    	catch(NumberFormatException e){}
+//		    }
+			
+		    //requirementStatu
+			if(jsonObj.has("requirementStatus") && !"".equalsIgnoreCase(jsonObj.getString("requirementStatus"))){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("requirementStatus", jsonObj.getString("requirementStatus")));
+		    }
+			
+			if(jsonObj.has("updatedOn") && !"".equalsIgnoreCase(jsonObj.getString("updatedOn"))){
+				String updatedOn =  jsonObj.getString("updatedOn");
+				String upOn = UpdateOnToDate(updatedOn);
+				if(!Constants.ALL_RECORDS.equalsIgnoreCase(upOn)){
+				 RangeQueryBuilder qb = QueryBuilders.rangeQuery("createdDate").gte(upOn);
+				boolQueryBuilder.must(qb);
+				}
+			}
+			//Educations
+//			if(jsonObj.has("education") && !"".equalsIgnoreCase(jsonObj.getString("education"))){
+//				ArrayList<String> educationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "education");
+//				if(educationArray != null && !educationArray.isEmpty()){
+//					BoolQueryBuilder edunBoolQueryBuilder = new BoolQueryBuilder();
+//					for(String keywd : educationArray){
+//						edunBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("education", keywd));
+//					}
+//					boolQueryBuilder.must(edunBoolQueryBuilder);
+//				} 
+//			}
+			
+			//client
+			if(jsonObj.has("client") && !"".equalsIgnoreCase(jsonObj.getString("client"))){
+				ArrayList<String> employerArray = getSearchKeywordsFromChosenSelectField(jsonObj, "client");
+				if(employerArray != null && !employerArray.isEmpty()){
+					BoolQueryBuilder employerBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : employerArray){
+						employerBoolQueryBuilder.should(QueryBuilders.matchQuery("client", keywd));
+					}
+					boolQueryBuilder.must(employerBoolQueryBuilder);
+				}
+			}
+			//Requirement Skills
+//			if(jsonObj.has("skills") && !"".equalsIgnoreCase(jsonObj.getString("skills"))){
+//				ArrayList<String> candidateSkillsArray = getSearchKeywordsFromChosenSelectField(jsonObj, "skills");
+//				if(candidateSkillsArray != null && !candidateSkillsArray.isEmpty()){
+//					BoolQueryBuilder skillBoolQueryBuilder = QueryBuilders.boolQuery();
+//					for(String keywd : candidateSkillsArray){
+//						skillBoolQueryBuilder.should(QueryBuilders.matchQuery("skills", keywd));
+//					}
+//					boolQueryBuilder.must(skillBoolQueryBuilder);
+//				} 	
+//			}
+			
+			SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+			List<Requirement>   reqList = new ArrayList<>();
+			if(searchHits != null && searchHits.length >0){
+				for (SearchHit hit : searchHits) {
+					String sourceAsString = hit.getSourceAsString();
+					ObjectMapper mapper = new ObjectMapper();
+					if (sourceAsString != null) {
+						Requirement requirement = null;
+						RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
+		            	if(userRole != null&&( "ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
+		            		requirement = getData(requirementIndex,user);
+		            	}
+		            	else if(requirementIndex.getReqCreatedBy().equalsIgnoreCase(user.getUserCode()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
+		            	{
+		            		requirement = getData(requirementIndex,user);
+		            	}
+		            	
+		            	else if((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+		            			||((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString()))
+		            			&& ("APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel1ApproverStatus()) || "OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()) || "SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+		            			)){
+		            		requirement = getData(requirementIndex,user);
+		            	}
+		            	else if(requirementIndex.getReqLevel2ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel2ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())
+		            			&&(requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&"APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel2ApproverStatus()))
+		            			|| (requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())
+		            			&&("APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel2ApproverStatus())||"OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()) || "SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+		            			)){
+		            		requirement = getData(requirementIndex,user);
+		            	}
+		            	
+		            	else if(requirementIndex.getManagerUserId().equalsIgnoreCase(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
+		            		requirement = getData(requirementIndex,user);
+		            	}
+		            	
+		            	else if(requirementIndex.getTeamOwnerUserId()!=null&&Arrays.asList(requirementIndex.getTeamOwnerUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
+		            		requirement = getData(requirementIndex,user);
+		            	}
+		            	else if(requirementIndex.getTeamAssignUserId()!=null&&Arrays.asList(requirementIndex.getTeamAssignUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
+		            		//&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())
+		            		requirement = getData(requirementIndex,user);
+		            	}
+		            	
+		            	
+		            	if(requirement !=null){
+		            		reqList.add(requirement);
+		            	}
+		            }
+				}
+			}
+		return reqList;
+		
+	}
+	 private Requirement getData(RequirementIndex requirementIndex, User user) throws Exception {
+		 Requirement requirement = new Requirement();
+		requirement.setId(requirementIndex.getRequirementId());
+     	requirement.setJobId(requirementIndex.getJobId());
+     	requirement.setJobType(requirementIndex.getJobType());
+     	requirement.setOtherJobType(requirementIndex.getOtherJobType());
+     	requirement.setJobTitle(requirementIndex.getJobTitle());
+     	if(requirementIndex.getMinExperience() !=null){
+     		requirement.setMinExp(requirementIndex.getMinExperience().toString());	
+     	}
+     	if(requirementIndex.getSkills() !=null){
+     		String skills = getReqSkills(requirementIndex.getSkills());
+     		requirement.setSkills(skills);
+     	}
+     	if(requirementIndex.getMaxExperience() !=null){
+     		requirement.setMaxExp(requirementIndex.getMaxExperience().toString());
+     	}
+     	requirement.setClientName(requirementIndex.getClient());
+     	requirement.setCountry(requirementIndex.getCountry());
+     	requirement.setState(requirementIndex.getState());
+     	requirement.setCity(requirementIndex.getCity());
+     	requirement.setSearchType("Requirement");
+     	requirement.setPositions(requirementIndex.getNumberOfPositions());
+     	if(null != requirementIndex.getNumberOfApplicants()){
+     		requirement.setTotalApplicants(Integer.parseInt(requirementIndex.getNumberOfApplicants()));
+     	}
+     	requirement.setManager(requirementIndex.getManager());
+     	if(requirementIndex.getRequirementStatus() !=null && !"".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
+         	requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.valueOf(requirementIndex.getRequirementStatus()));
+     	}
+     	Boolean isLoginUserAsTeamMember =  requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementIndex.getRequirementId(), user.getId());
+		requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
+
+       if(null != requirementIndex.getReleasedBy() && !"".equalsIgnoreCase(requirementIndex.getReleasedBy())){
+			List<Long> userId = new ArrayList<Long>();
+			for (String s : requirementIndex.getReleasedBy().split(",")){
+				userId.add(Long.parseLong(s));
+			 }
+			boolean flag = userId.contains(user.getId());
+     		if(flag == true){
+     			requirement.setIsRequirementReleasedByuser("Y");
+     		}else{
+     			requirement.setIsRequirementReleasedByuser("N");
+     		}
+		}
+       if(null != requirementIndex.getRequirementUUID()){
+   		requirement.setRequirementUUID(requirementIndex.getRequirementUUID());	
+   	   }
+     	return requirement;
+	}
+
+	private String getReqSkills(String[] skills) {
+		StringBuilder sb = new StringBuilder();
+		for(int i=0;i<skills.length;i++){
+			sb.append(skills[i]).append(",");
+		}
+		String str = sb.toString();
+		return str.substring(0, str.length()-1);
+	}
+
+	private ArrayList<String> getSearchKeywordsFromChosenSelectField(JSONObject jsonObj,String param) throws Exception {
+		 ArrayList<String> keyWordList = null;
+		 if(jsonObj.has(param)){
+			 String searchKeywordString = null;
+			 try{
+	   		   JSONArray jsonArray = jsonObj.getJSONArray(param);
+	   		   searchKeywordString = jsonArray.toString();
+		   	  }
+		   	  catch(JSONException e){
+		   		  searchKeywordString= jsonObj.getString(param);
+		   	  }
+			 
+		     searchKeywordString = searchKeywordString.replaceAll("\\[", "").replaceAll("\\]","");
+		     keyWordList = new ArrayList<String>(Arrays.asList(searchKeywordString.split(",")));
+		 }
+		 else{
+			 keyWordList = new ArrayList<String>();
+		 }
+         return keyWordList;
+     }
+	 
+	private ArrayList<String> getSearchValuesFromChosenSelectField(String searchValue) {
+		 ArrayList<String> keyWordList = null;
+		 if(searchValue !=null && !"".equalsIgnoreCase(searchValue)){
+			 String searchKeywordString = searchValue.replaceAll("\\[", "").replaceAll("\\]","");
+		     keyWordList = new ArrayList<String>(Arrays.asList(searchKeywordString.split(",")));
+		 }
+         return keyWordList;
+	}
+	
+	
+	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
+		   
+		   ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("client", keywd));
+			
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobId", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("clientContactName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("clientContactEmail", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("manager", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("priority", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("numberOfPositions", keywd));
+			
+			
+			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
+			if(matcher.find()){
+				Float expYears = Float.valueOf(matcher.group());
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
+			}
+
+				
+			return matchQueryBuilderList; 
+	 }
+
+
+	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForUniversalSearch(String keywd){
+		   
+		   ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("client", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("priority", keywd));
+			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
+			if(matcher.find()){
+				Float expYears = Float.valueOf(matcher.group());
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
+			}
+
+				
+			return matchQueryBuilderList; 
+	 }
+
+	 
+
+	 public String UpdateOnToDate(String updatedOn){
+		
+		 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	     Calendar cal = Calendar.getInstance();
+	     if((Constants.ONE_DAY_AGO).equalsIgnoreCase(updatedOn)){
+	        cal.add(Calendar.DATE, -1);    
+	        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.THREE_DAY_AGO).equalsIgnoreCase(updatedOn)){
+			 cal.add(Calendar.DATE, -3);    
+		        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.ONE_WEEK_AGO).equalsIgnoreCase(updatedOn)){
+			 cal.add(Calendar.DATE, -7);    
+		        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.TWO_WEEK_AGO).equalsIgnoreCase(updatedOn)){
+			 cal.add(Calendar.DATE, -14);    
+		        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.ONE_MONTH_AGO).equalsIgnoreCase(updatedOn)){
+			 cal.add(Calendar.DATE, -30);    
+		        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.THREE_MONTH_AGO).equalsIgnoreCase(updatedOn)){
+			 cal.add(Calendar.DATE, -90);    
+		        return  dateFormat.format(cal.getTime());
+		 }else{
+			 return updatedOn;
+		 }
+	 }
+ 
+	 
+
+	@Override
+	public List<Object> getAllUniversalSearchRequirementList(OrgLocations orgLocation, String searchValue,String userRole, User user) throws Exception {
+
+		List<Object>   searchList = new ArrayList<>();
+		 Long maxResults = requirementDao.getRequirementListByOrgLocationID(orgLocation.getId());
+		 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+		 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
+		 if(searchValue != null && !"".equalsIgnoreCase(searchValue)){
+			 ArrayList<String> anyKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
+				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+					 for(String keywd : anyKeyWordArray){
+						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderListForUniversalSearch(keywd);
+						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+								anyBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+						}
+					}
+					 boolQueryBuilder.must(anyBoolQueryBuilder);
+				} 
+		 }
+		 
+		 
+		 
+		 
+		 SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+			
+			if(searchHits != null && searchHits.length >0){
+				for (SearchHit hit : searchHits) {
+					String sourceAsString = hit.getSourceAsString();
+					ObjectMapper mapper = new ObjectMapper();
+					if (sourceAsString != null) {
+						Requirement requirement = null;
+						RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
+		            	if(userRole != null&&( "ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
+		            		requirement = getData(requirementIndex,user);
+		            	}
+		            	else if(requirementIndex.getReqCreatedBy().equalsIgnoreCase(user.getUserCode()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
+		            	{
+		            		requirement = getData(requirementIndex,user);
+		            	}
+		            	
+		            	else if((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+		            			||((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString()))
+		            			&& ("APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel1ApproverStatus()) || "OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+		            			)){
+		            		requirement = getData(requirementIndex,user);
+		            	}
+		            	else if(requirementIndex.getReqLevel2ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel2ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())
+		            			&&(requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&"APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel2ApproverStatus()))
+		            			|| (requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())
+		            			&&("APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel2ApproverStatus())||"OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
+		            			)){
+		            		requirement = getData(requirementIndex,user);
+		            	}
+		            	
+		            	else if(requirementIndex.getManagerUserId().equalsIgnoreCase(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
+		            		requirement = getData(requirementIndex,user);
+		            	}
+		            	
+		            	else if(requirementIndex.getTeamOwnerUserId()!=null&&Arrays.asList(requirementIndex.getTeamOwnerUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
+		            		requirement = getData(requirementIndex,user);
+		            	}
+		            	else if(requirementIndex.getTeamAssignUserId()!=null&&Arrays.asList(requirementIndex.getTeamAssignUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
+		            		requirement = getData(requirementIndex,user);
+		            	}
+		            	if(null != requirementIndex.getRequirementUUID()){
+		            		requirement.setRequirementUUID(requirementIndex.getRequirementUUID());
+		            	}
+		            	searchList.add(requirement);
+		            }
+				}
+			}
+			
+		return searchList;
+	
+	}
+
+	@Override
+	public Long getRequirementsListById(Long orgLocationId) throws Exception {
+		return requirementDao.getRequirementListByOrgLocationID(orgLocationId);
+	}
+
+	@Override
+	public Requirement getRequirementByRequirementUUID(String requirementUUID) throws Exception {
+		return requirementDao.getRequirementByRequirementUUID(requirementUUID);
+	}
+
+	@Override
+	public Requirement updateRequirement(Requirement requirement) throws Exception {
+		return requirementDao.storeRequirement(requirement);	
+	}
 
 }
-

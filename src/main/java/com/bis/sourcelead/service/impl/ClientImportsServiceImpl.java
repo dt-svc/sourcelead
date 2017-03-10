@@ -5,7 +5,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -33,11 +36,15 @@ import org.apache.poi.xssf.usermodel.XSSFDataValidationConstraint;
 import org.apache.poi.xssf.usermodel.XSSFDataValidationHelper;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.sis.internal.jaxb.gmd.Country;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -58,6 +65,7 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
 import com.fasterxml.jackson.core.sym.Name;
 /**
  * 
@@ -89,6 +97,11 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	@Autowired
 	private UserRoleService userRoleService;
 	
+	@Value("${sourceLeadBlockedSocialDomains}")
+	private String sourceLeadBlockedSocialDomains;
+	
+	@Autowired
+	UserService userService;
 	
 	@Override
 	public String clientBulkSaving(MultipartFile multipartFile,User user,OrgLocations orgLocation,Org  org,String isMailSent,String responderType) throws Exception {
@@ -97,7 +110,8 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		  boolean isUserFound = false;
 		  
 		  String isFileCreated = "failure";
-		  String fname = multipartFile.getOriginalFilename();
+		  String fn = multipartFile.getOriginalFilename();
+		  String fname = getFileName(fn);
 		  if(!fname.contains("clients_contacts_Import") && !fname.contains("vendors_contacts_Import") && !fname.contains("clients_import_template") && !fname.contains("vendors_import_template")){
 			  return "worngFileName";
 		  }
@@ -249,7 +263,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			       }
 			       if (!isValidated || isUserFound) {
 			    	   FileOutputStream fos = null;
-			    	   if(!fname.endsWith("xlsx")){
+			    	   if(!fname.endsWith("xls")){
 			    		   fos = new FileOutputStream(fname);
 			    	   }else{
 			    		   fos = new FileOutputStream(fname);
@@ -485,16 +499,24 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 				}else if(row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())){
 					OrgRelations  orgRelation = vandorsListByOrgLocationId.get(0);
 					 UserRole userRole = null;
-					  if(orgLocation.getId() == orgRelation.getLocationId().getId() ){
-						  userRole = userRoleService.getUserDetailsByEmailAndLocationId(row.getCell(3).toString(), orgRelation.getResponderLocationId().getId());
-					  }else{
-						  userRole =  userRoleService.getUserDetailsByEmailAndLocationId(row.getCell(3).toString(), orgRelation.getLocationId().getId());
-					  }
-					  
-					if(userRole !=null){
-						client.setReason("duplicate email");
-						return false;
-					}
+					
+					 userRole = userRoleService.getUserDetailsByEmailAndLocationId(row.getCell(3).toString(), orgLocation.getId());
+					 if(userRole == null){
+						 if(orgLocation.getId() == orgRelation.getLocationId().getId() ){
+							  userRole = userRoleService.getUserDetailsByEmailAndLocationId(row.getCell(3).toString(), orgRelation.getResponderLocationId().getId());
+						  }else{
+							  userRole =  userRoleService.getUserDetailsByEmailAndLocationId(row.getCell(3).toString(), orgRelation.getLocationId().getId());
+						  }
+						  
+						if(userRole !=null){
+							client.setReason("duplicate email");
+							return false;
+						} 
+					 }else{
+						   client.setReason(row.getCell(3).toString()+ "should not your org users email");
+							return false;
+					 }
+					
 				}
 			  
 			  if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())) {
@@ -730,6 +752,8 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 				}
 			
 				writeRow.createCell(5).setCellValue(row.getCell(5).toString());
+				
+			
 			} else {
 				if(!fname.endsWith("xlsx")){
 					createExcelsheet.addValidationData(getDropDownListForCell(Constants.STATUS_DROPDOWN,5));
@@ -747,6 +771,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 				writeRow.createCell(7).setCellValue(client.getReason());
 			} 
 		}
+	
 		
 		
 		/**
@@ -771,7 +796,16 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 				writeRow.createCell(1).setCellValue("");
 			}
 			if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
-			    writeRow.createCell(2).setCellValue(row.getCell(2).toString());
+				if(!fname.endsWith("xlsx")){
+					createExcelsheet.addValidationData(getDropDownListForCell(Constants.COUNTRY_DROPDOWN,2));
+				}else{
+					createExcelsheet.addValidationData(getXssfDropDownlist(Constants.COUNTRY_DROPDOWN,2,createExcelsheet));
+				}
+				
+				writeRow.createCell(2).setCellValue(row.getCell(2).toString());
+				
+				
+				writeRow.createCell(2).setCellValue(row.getCell(2).toString());
 			} else {
 				 writeRow.createCell(2).setCellValue("");
 			}
@@ -834,9 +868,42 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		 * @param domainName
 		 * @return
 		 */
-		private boolean isValidDomainName(String domainName){
-			Pattern pDomainNameOnly = Pattern.compile("^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\\.)+[A-Za-z]{2,6}$");
-			return pDomainNameOnly.matcher(domainName).find();
+		private boolean isValidDomainName(String webSite){
+	                  String flag = null;
+	                  boolean isValid = true;
+	                 if(!webSite.startsWith("http") && !webSite.startsWith("https")){
+	                        webSite = "http://" + webSite;
+	                    }    
+	                    URL netUrl = null;
+	                    try {
+	                        netUrl = new URL(webSite);
+	                    } catch (MalformedURLException e) {
+	                        e.printStackTrace();;
+	                    }
+	                    String host = netUrl.getHost();
+	                    if(host.startsWith("www.")){
+	                        if(host.length()>3){
+	                            host = host.substring("www".length()+1);
+	                        }else{
+	                            flag="Website Duplicated";
+	                        }
+	                    }else{
+	                        flag ="Invalid Website";
+	                    }
+	                   
+	                    //for Blocked Websites Domains
+	                    String[] SourceLead_BLOCKED_SOCIAL_DOMAINS = sourceLeadBlockedSocialDomains.split(",");
+	                    if(Arrays.asList(SourceLead_BLOCKED_SOCIAL_DOMAINS).contains(host)){
+	                    	 flag ="Invalid Website";
+	                    	 
+	                     }
+	                    
+	                    	 if ("Website Duplicated".equalsIgnoreCase(flag)) {
+	                             isValid = false;
+	                         }else if("Invalid Website".equalsIgnoreCase(flag)){
+	                        	  isValid = false;
+	                         }
+	        	    return isValid;
 		}
 		
 		
@@ -847,6 +914,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			realSheet = setCLirntTemplateHeaders(realSheet);
 			HSSFSheet hidden = workbook.createSheet("hidden");
 			String[] vendorsList = getClientList(orgLocationId);
+//			String[] ownersList = getOwnerList(orgLocationId,Long.valueOf(Constants.TAB_VENDOR));
 			for (int i = 0, length= vendorsList.length; i < length; i++) {
 			   String name = vendorsList[i];
 			   HSSFRow row = hidden.createRow(i);
@@ -855,13 +923,24 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			 }
 			 org.apache.poi.ss.usermodel.Name namedCell = workbook.createName();
 			 namedCell.setNameName("hidden");
-			 namedCell.setRefersToFormula("hidden!$A$1:$A$" + vendorsList.length);
-			 DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
-			 CellRangeAddressList addressList = new CellRangeAddressList(1,500,0,0);
-			 HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
-			 workbook.setSheetHidden(1, true);
-			 realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_CONTACTS_STATUS_DROPDOWN,5,"xls"));
-			 realSheet.addValidationData(validation);
+			 if(vendorsList.length > 0){
+				 namedCell.setRefersToFormula("hidden!$A$1:$A$" + vendorsList.length);
+				 DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
+				 CellRangeAddressList addressList = new CellRangeAddressList(1,500,0,0);
+				 HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
+				 workbook.setSheetHidden(1, true);
+				 realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_CONTACTS_STATUS_DROPDOWN,5,"xls"));
+				 realSheet.addValidationData(validation);
+			 }
+//			 if(ownersList.length > 0){
+////				 namedCell.setRefersToFormula("hidden!$G$1:$G$" + ownersList.length);	 
+////				 DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
+////				 CellRangeAddressList addressList = new CellRangeAddressList(1,500,0,0);
+////				 HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
+////				 workbook.setSheetHidden(1, true);
+//				 realSheet.addValidationData(getDropDownListForCell(ownersList,6,"xls"));
+////				 realSheet.addValidationData(validation);
+//			 }
 			 File file = new File("clients_contacts_Import.xls");
 			 FileOutputStream stream = new FileOutputStream(file);
 			 workbook.write(stream);
@@ -904,6 +983,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			realSheet = setTemplateHeaders(realSheet);
 			HSSFSheet hidden = workbook.createSheet("hidden");
 			String[] vendorsList = getVendorsList(orgLocationId);
+//			String[] ownersList = getOwnerList(orgLocationId,Long.valueOf(Constants.TAB_VENDOR));
 			for (int i = 0, length= vendorsList.length; i < length; i++) {
 			   String name = vendorsList[i];
 			   HSSFRow row = hidden.createRow(i);
@@ -912,19 +992,52 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			 }
 			 org.apache.poi.ss.usermodel.Name namedCell = workbook.createName();
 			 namedCell.setNameName("hidden");
-			 namedCell.setRefersToFormula("hidden!$A$1:$A$" + vendorsList.length);
-			 DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
-			 CellRangeAddressList addressList = new CellRangeAddressList(1,500,0,0);
-			 HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
-			 workbook.setSheetHidden(1, true);
-			 realSheet.addValidationData(getDropDownListForCell(Constants.VENDOR_CONTACTS_STATUS_DROPDOWN,5,"xls"));
-			 realSheet.addValidationData(validation);
+			 if(vendorsList.length > 0){
+				 namedCell.setRefersToFormula("hidden!$A$1:$A$" + vendorsList.length);	 
+				 DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
+				 CellRangeAddressList addressList = new CellRangeAddressList(1,500,0,0);
+				 HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
+				 workbook.setSheetHidden(1, true);
+				 realSheet.addValidationData(getDropDownListForCell(Constants.VENDOR_CONTACTS_STATUS_DROPDOWN,5,"xls"));
+				 realSheet.addValidationData(validation);
+			 }
+			 
+//			 for (int j = 0, length= ownersList.length; j < length; j++) {
+//				   String ownerName = ownersList[j];
+//				   System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++"+ownerName);
+//				   HSSFRow row1 = hidden.createRow(j);
+//				   HSSFCell cell1 = row1.createCell(6);
+//				   cell1.setCellValue(ownerName);
+//				 }
+			 
+//			 if(ownersList.length > 0){
+//				 namedCell.setRefersToFormula("hidden!$G$2:$G$" + ownersList.length);	 
+//				 DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
+//				 CellRangeAddressList addressList = new CellRangeAddressList(1,500,6,6);
+//				 HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
+//				 workbook.setSheetHidden(1, true);
+////				 realSheet.addValidationData(getDropDownListForCell(Constants.VENDOR_CONTACTS_STATUS_DROPDOWN,5,"xls"));
+//				 realSheet.addValidationData(validation);
+//			 }	
+
 			 File file = new File("vendors_contacts_Import.xls");
 			 FileOutputStream stream = new FileOutputStream(file);
 			 workbook.write(stream);
 			 stream.close();
 			 return file;
 		}
+		
+
+//		private String[] getOwnerList(Long orgLocationId, Long vendortab) throws Exception {
+//			List<String> ownerList = new ArrayList<>();
+//			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationId,vendortab);
+//			for(User usr : userList){
+//				ownerList.add(usr.getEmail());
+//			}
+//			String [] ownersList = ownerList.toArray(new String[ownerList.size()]);
+//			 return ownersList;
+//		}
+		
 		private HSSFSheet setTemplateHeaders(HSSFSheet sheet) {
 			String headers[] = Constants.VENDOR_CONTACTS_HEADERS;
 			Row excelHeader = sheet.createRow(0);
@@ -958,6 +1071,21 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			}
 			String [] roleList = list.toArray(new String[list.size()]);
 			 return roleList;
+		}
+		
+		private String getFileName(String file) {
+			String finalName;
+			if(file.contains("(")){
+					StringBuilder sb = new StringBuilder();
+				    String fileArray [] = file.split("\\.");
+				    String fileName1 = fileArray[0].substring(0, fileArray[0].indexOf("("));
+				    sb.append(fileName1).append(".").append(fileArray[1]);
+				    finalName = sb.toString().replaceAll("\\s", "");
+			}else{
+				finalName = file;
+			}
+			return finalName; 
+			
 		}
 		
 }

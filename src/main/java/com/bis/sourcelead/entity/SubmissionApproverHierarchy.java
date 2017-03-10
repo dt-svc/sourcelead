@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedHashMap;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,7 +29,7 @@ import com.bis.sourcelead.enums.Submission_Status;
 @Table(name = "SUBMISSION_APPROVER_HIERARCHY", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "submissionApproverHeirarchy")
 public class SubmissionApproverHierarchy implements  Serializable{
-	  
+	
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -53,6 +54,12 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	@Enumerated(EnumType.STRING)
 	private Submission_ApprovalStatus submissionApprovalStatus;
 	
+	@Column(name = "FREQUENCY_START_DATE")
+    private Date frequencyStartDate;
+	
+	@Column(name = "FREQUENCY_END_DATE")
+    private Date frequencyEndDate;
+	
 	@Column(name = "MECHANISM_TYPE")
 	@Enumerated(EnumType.STRING)
 	private Approval_Mechanism_Type mechanismType;
@@ -67,6 +74,18 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	
 	@Column(name = "STATUS")
 	private String status;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+   	@JoinColumn(name = "REOPENED_USER_ID", nullable = false)
+	private User reopenedUser;
+	
+	@Column(name = "REOPEN_REASON")
+	@Type(type="text")
+	private String reopenReason;
+	
+	@Column(name = "REOPEN_REJECTED_REASON")
+	@Type(type="text")
+	private String reopenRejectedReason;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -101,7 +120,8 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	@Transient
 	private Float totalHours;
 	
-	
+	@Transient
+	private LinkedHashMap<Date,Float> weekTotals;
 	
 
 	public Long getId() {
@@ -142,6 +162,22 @@ public class SubmissionApproverHierarchy implements  Serializable{
 
 	public void setSubmissionApprovalStatus(Submission_ApprovalStatus submissionApprovalStatus) {
 		this.submissionApprovalStatus = submissionApprovalStatus;
+	}
+	
+	public Date getFrequencyStartDate() {
+		return frequencyStartDate;
+	}
+
+	public void setFrequencyStartDate(Date frequencyStartDate) {
+		this.frequencyStartDate = frequencyStartDate;
+	}
+
+	public Date getFrequencyEndDate() {
+		return frequencyEndDate;
+	}
+
+	public void setFrequencyEndDate(Date frequencyEndDate) {
+		this.frequencyEndDate = frequencyEndDate;
 	}
 
 	public Approval_Mechanism_Type getMechanismType() {
@@ -190,6 +226,30 @@ public class SubmissionApproverHierarchy implements  Serializable{
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	
+	public User getReopenedUser() {
+		return reopenedUser;
+	}
+
+	public void setReopenedUser(User reopenedUser) {
+		this.reopenedUser = reopenedUser;
+	}
+
+	public String getReopenReason() {
+		return reopenReason;
+	}
+
+	public void setReopenReason(String reopenReason) {
+		this.reopenReason = reopenReason;
+	}
+
+	public String getReopenRejectedReason() {
+		return reopenRejectedReason;
+	}
+
+	public void setReopenRejectedReason(String reopenRejectedReason) {
+		this.reopenRejectedReason = reopenRejectedReason;
 	}
 
 	public String getRejectedReason() {
@@ -270,6 +330,14 @@ public class SubmissionApproverHierarchy implements  Serializable{
 
 	public void setTotalHours(Float totalHours) {
 		this.totalHours = totalHours;
+	}
+
+	public LinkedHashMap<Date, Float> getWeekTotals() {
+		return weekTotals;
+	}
+
+	public void setWeekTotals(LinkedHashMap<Date, Float> weekTotals) {
+		this.weekTotals = weekTotals;
 	}
 	
 	

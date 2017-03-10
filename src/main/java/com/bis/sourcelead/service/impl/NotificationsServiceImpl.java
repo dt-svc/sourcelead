@@ -15,7 +15,7 @@ public class NotificationsServiceImpl implements NotificationsService{
 	
 	@Autowired
 	NotificationsDao  notificationDao;
-
+	
 	@Override
 	public Notifications saveNotification(Notifications notification) throws Exception{
 		return notificationDao.saveNotification(notification);
@@ -54,6 +54,11 @@ public class NotificationsServiceImpl implements NotificationsService{
 	@Override
 	public Notifications getNotificationsByUUID(String UUID) throws Exception {
 		return notificationDao.getNotificationsByUUID(UUID);
+	}
+	
+	@Override
+	public Notifications getNotificationBySpocUUID(String spocUUID) throws Exception {
+		return notificationDao.getNotificationBySpocUUID(spocUUID);
 	}
 
 

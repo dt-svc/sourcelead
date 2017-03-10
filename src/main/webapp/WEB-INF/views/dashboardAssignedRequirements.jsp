@@ -1,19 +1,18 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> 
+<!-- <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> -->
 
 <div class="content-dashboard clearfix" id="assignedRequirementsDiv" style="display: none;"> 
       <!-- Assigned Requirements -->
-      <div class="clearfix dashboard-widget mb col-md-12">
+      <div class="clearfix dashboard-widget mb col-md-12 hdrPosition">
         <h4 class="clearfix">
         Assigned Requirements
         &nbsp;&nbsp;<!-- <span title="Calendar"><i aria-hidden="true" class="fa fa-calendar" id="datepicker"></i>
         </span> -->
         </h4>
       <!-- <a href="#" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
-        <div class="clearfix require_wrap_table dashboard-data"> 
+        <div class="clearfix require_wrap_table dashboard-data filter_position"> 
         		 <div id="requirementList"></div>
         </div>
       </div>
@@ -50,11 +49,13 @@ function requirementList(){
 			    	     $("#requirementList").removeAttr("style");
 	                	 $("#requirementList").empty();
 	                	 var result = "";
-	                	 result = result +"<table id='requirementPagination' class='display' cellspacing='0' width='100%' >"; 
+	                	 result = result +"<table id='requirementPagination' class='display' cellspacing='0' width='99.9%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
-	                     result = result +"    <th>ID-Title</th>"; 
-	                     result = result +"    <th>Client</th>"; 
+	                     result = result +"    <th>ID-Title</th>";
+	                     if(orgATS == 'Y'){
+	                     result = result +"    <th>Client</th>";
+	                     }
 	                     result = result +"    <th>Rate</th>"; 
 	                     result = result +"    <th>Priority</th>"; 
 	                     result = result +"    <th>Applicants</th>"; 
@@ -72,17 +73,17 @@ function requirementList(){
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
 	                    	 if(opt.jobId!=null && opt.jobId !='' && opt.jobId !='undefined'){
-	                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'><span title="+opt.jobId+"-"+opt.jobTitle+">"+opt.jobId+"-"+opt.jobTitle+"</span></a></div></td>";
-		                     }else{
-		                    	 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'><span title="+opt.jobTitle+">"+opt.jobTitle+"</span></a></div></td>";
+	                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobId+"-"+opt.jobTitle+"'>"+opt.jobId+"-"+opt.jobTitle+"</span></a></div></td>";
+	                    	 }else{
+		                    	 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
 		                     }
-		                     
-		                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
-		                    	 result = result +"<td><div><span title="+opt.clientName+">"+opt.clientName+"</span></div></td>";
-		                     }else{
-		                    	 result = result +"<td><div>-----</div></td>";
+		                     if(orgATS == 'Y'){
+			                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
+			                    	 result = result +"<td><div><span title='"+opt.clientName+"'>"+opt.clientName+"</span></div></td>";
+			                     }else{
+			                    	 result = result +"<td><div>-----</div></td>";
+			                     }
 		                     }
-		                    
 		                     if(opt.rate != null && opt.rate != '' && opt.rate != 'undefined'){
 			                     result = result +"<td><div><span><span>"+opt.rate+"</span></span></div></td>";
 		                     }else{
@@ -101,8 +102,13 @@ function requirementList(){
 		                     result = result +"<td><div>"+opt.noOfOfferedApplicants+"</div></td>";
 		                     if(((orgATS == 'Y' && orgVMS == 'Y') || orgATS != 'Y') && (opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN')){
 		                    	 '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
-		                    	 	result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementId="+opt.id+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
-		                    	 '</sec:authorize>';
+		                    	 	/* result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>"; */
+		                    	 if(opt.isRequirementReleasedByuser == 'Y'){
+		                       		 result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success'></i></a></div></td>"; 
+		                       	 }else{	
+		                       	 result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
+		                       	 }
+		                    	 	'</sec:authorize>';
 		                    	 '<sec:authorize access="!hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
 		                    	 	result = result +"<td><div><i class='fa fa-bullhorn'></i></div></td>";
 		                    	 '</sec:authorize>';
@@ -144,7 +150,8 @@ function pagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-            "sSearch": ""
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
        }
     } );
 }

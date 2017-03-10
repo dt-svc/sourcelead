@@ -49,6 +49,7 @@ public class Constants {
 	public static final String CITY = "City";
 	public static final String LEVEL = "Tier";
 	public static final String VENDOR_NAME = "Vendor Name*";
+	public static final String JOB_OTHER = "Other";
 
 	public static final Integer RECORD_ACTIVE = 1;
 	public static final Integer RECORD_INACTIVE = 0;
@@ -64,7 +65,15 @@ public class Constants {
 	public static DateFormat DF_YMD = new SimpleDateFormat("yyyy-MM-dd");
 	public static DateFormat DF_STD_FORMAT = new SimpleDateFormat("MM/dd/yyyy");
 	
+	public static transient DateFormat MY = new SimpleDateFormat("MMMM-yyyy");
+	
 	public static DateFormat DF_DMY = new SimpleDateFormat("dd-MM-yyyy");
+	public static DateFormat DF_STD_DMY = new SimpleDateFormat("dd/MM/yyyy");
+	public static DateFormat SHORT_DF_STD_DM = new SimpleDateFormat("dd/MM");
+	public static DateFormat SHORT_DF_MM_DD = new SimpleDateFormat("MMM-dd");
+	
+	public static final DateFormat TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'HH:mm:ss");
+	/*public static final DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");*/
 	
 	public static String MAIL_TEAM_MEMBERS = "Mail To Team Members";
 	public static String INVITE_USER = "Invite User";
@@ -73,6 +82,15 @@ public class Constants {
 	
 	public static String ACCEPT_CLIENT_INVITATION = "Accept Client Invitation";
 	public static String ACCEPT_VENDOR_INVITATION = "Accept Vendor Invitation";
+	
+	public static String ACCEPT_CLIENT = "Accept Client";
+	public static String ACCEPT_VENDOR = "Accept Vendor";
+	
+	public static String REJECT_CLIENT = "Reject Client";
+	public static String REJECT_VENDOR = "Reject Vendor";
+	
+	public static String SHORTLISTMAILFROMCLIENT_TO_VENDOR = "ShortlistMailFromClient_To_Vendor";
+	
 	public static String OFFER_MAIL_TO_VENDORS="Client to Vendor Acceptence";
 	public static String APPLICANT_INTERVIEW = "Applicant Interview";
 	public static String INTERVIEWER_INVITATION = "Interviewer Invitation";
@@ -81,6 +99,10 @@ public class Constants {
 	public static String HOT_LIST_CAMPAIGN = "HotListCampaign";
 	public static String EMAIL_TO_USERS = "EmailToUsers";
 	public static String EMAIL_CAMPAIGN = "EmailCampaign";
+	
+	public static String CLIENTORVENDORMAIL = "ClientOrVendorMail";
+	
+	public static String CUSTOM_USER_EMAIL = "customUserEmail";
 	
 	public static String SUBMIT_TO_CLIENT = "Submit To Client";
 	public static String ADD_OFFER_MAIL ="Forward the Mail";
@@ -103,16 +125,33 @@ public class Constants {
 	public static String CLIENT_INTERVIEW = "CLIENT_INTERVIEW";
 	public static String INTERVIEW = "INTERVIEW";
 	
+	public static String MAIL_REOPEN_TIMESHEET = "ReopenTimeSheet";
+	public static String MAIL_ACCEPT_REOPEN_TIMESHEET = "AcceptReopenTimeSheet";
+	public static String MAIL_REJECT_REOPEN_TIMESHEET = "RejectReopenTimeSheet";
+	
 	
 	public static String MAIL_BOX_SENT = "Sent";
 	public static String MAIL_BOX_INBOX = "Inbox";
 	
+
+	public static String TASK_STATUS_OPEN = "Open";
+	public static String TASK_STATUS_CLOSE = "Closed";
+	public static String TASK_STATUS_MYTASK = "myTask";
+	public static String TASK_STATUS_ASSIGNTASK = "assignedTasks";
+	public static String TASK_STATUS_CLOSEDTASK = "closedTasks";
+
+	public static String TASK_MECHANISM_EMAIL ="Task Mechanism";
+    public static String TASK_MECHANISM_NOTIFICATION="Task Mechanism";
 	
 	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
 	
 	public static String loginUserAsAdmin =":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = ts.projectMembers.projects.orgLocationsId.id)";
 	
 	public static String loginUserAsAdminWithMaxHeirarchyLevel ="(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pm.projects.orgLocationsId.id) and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectId.id = pm.projects.id))";
+	
+	
+	public static String loginUserAsAdminForProjects =":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = projects.orgLocationsId.id)";
+	
 	
 	/** projectMember  constants**/
 	public static String MEMBER_ACTIVE = "1";
@@ -127,6 +166,7 @@ public class Constants {
 	public static int CANDIDATE_SKILL_IN_ACTIVE= 0;
 	
 	public static String ACTIVE = "Active";
+	public static String INACTIVE = "In-Active";
 
 	/** projectMemberHistory constants**/
 	public static String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
@@ -160,6 +200,25 @@ public class Constants {
 	public static String VENDOR_RATE_NEGOTIATION = "VendorRateNegotiation";
 	public static String USER_ACCEPT_RATE_NEGOTIATION = "UserAcceptRateNegotiation";
 	public static String USER_REJECT_RATE_NEGOTIATION = "UserRejectRateNegotiation";
+	public static String CLIENT_ACCEPT_RATE_NEGOTIATION = "ClientAcceptRateNegotiation";
+	public static String VENDOR_ACCEPT_RATE_NEGOTIATION = "VendorAcceptRateNegotiation";
+	public static String CLIENT_REJECT_RATE_NEGOTIATION = "ClientRejectRateNegotiation";
+	public static String VENDOR_REJECT_RATE_NEGOTIATION = "VendorRejectRateNegotiation";
+
+	public static String ROLE_NAME_PROFESSIONAL = "ROLE_CROWDSOURCING_PROFESSIONAL";
+	public static String ROLE_NAME_INDEPENDENT_RECRUITER = "ROLE_CROWDSOURCING_RECRUITER";
+	
+	public static String PROFESSIONAL = "Professional";
+	public static String INDIVIDUAL_RECRUITER = "Recruiter";
+	public static String INVITE_PROFESSIONAL = "Professional Invitation";
+	public static String INVITE_INDIVIDUAL_RECRUITER = "Individual Recruiter Invitation";
+
+	public static String APPLICANT_ACCEPT_RATE = "ApplicantAcceptRate";
+	public static String APPLIED_TO_REQUIREMENT = "Applied To Requirement";
+	public static String REFER_REQUIREMENT_TO_PROFESSIONAL = "Refer Requirment To Professional";
+	
+	
+	public static final DateFormat TMS = new SimpleDateFormat ("hh:mm a");
 
 
 
@@ -168,6 +227,7 @@ public class Constants {
 	public static String NO  = "N";
 	public static String WAIT  = "W";
 	public static String REJECT  = "R";
+	public static String REJECTED  = "REJECTED";
 	public static String TEMP    = "T";
 	public static transient DateFormat STDF = new SimpleDateFormat("MM-dd-yyyy");
 	public static transient DateFormat DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd");
@@ -178,6 +238,7 @@ public class Constants {
 	public static int MAX_RESULTS_TWENTY = 20;
 	public static int MAX_RESULTS_THIRTY = 30;
 	public static int MAX_RESULTS_FIFTY = 50;
+	public static int MAX_RESULTS_200 = 200;
 	public static int PAGES_INCREMENT = 10;
 	public static int PAGES_DECREMENT = -10;
 	
@@ -195,6 +256,7 @@ public class Constants {
 	public static int TAB_TIMESHEET_APPROVAL = 6;
 	public static int TAB_REQUIREMENT = 8;
 	public static int TAB_USER = 2;
+	public static int TAB_PROJECTS = 3;
 	
 	public static  String Dashboard = "Dashboard";
 	public static  String Users = "Users";
@@ -206,6 +268,8 @@ public class Constants {
 	public static  String BackOffice = "BackOffice";
 	public static  String Finance = "Finance";
 	public static  String AssetManagement = "AssetManagement";
+	public static  String Profile = "Profile";
+	
 	
 	public static  String TimeSheet_Approval = "Timesheet Approval";
 	
@@ -223,7 +287,7 @@ public class Constants {
 	public static String UPDATE_PASSWORD = "Update Password";
 	public static String MAIL_PROJECT_MANAGER = "Mail To Project Manager";
 	
-
+	public static String REJECTMAILFROMCLIENT_TO_VENDOR = "RejectMailFromClient_To_Vendor";
 
 	public static String CONTACTS = "CONTACTS";
 	public static String VENDORSTYPE = "VENDORS";
@@ -277,6 +341,8 @@ public class Constants {
 	public static String OFFERMADE = "OFFERMADE";
 	public static String CLIENT_OFFERMADE = "CLIENT_OFFERMADE";
 	
+	public static String REFER_JOB_APPLIED = "Applied";
+	
 	
 	public static String REQUIREMENT_STATUS = "Draft";
 	
@@ -295,6 +361,8 @@ public class Constants {
 	
 	public static String[] STATUS_DROPDOWN = {"Active","In-Active","New","Negotiation","Contracted"};
 	
+	public static String[] COUNTRY_DROPDOWN = {"India","Australia","France","Singapore","United Kingdom","United States"};
+	
 	public static String[] LEVEL_DROPDOWN = {"Tier-1","Tier-2","Tier-3","Tier-4","Tier-5"};
 	
 	public static String[] USER_EXCEL_HEADERS = { "Employee Id", "First Name", "Last Name", "Email-id", "Phone Number",
@@ -311,15 +379,17 @@ public class Constants {
 
     public static String[] REQUIREMENT_PIPELINE_SHORTLISTED_EXCEL_HEADERS ={"Name","Email","PhoneNumber","Resume","Applied On","Rate","Source","Score","Experience","Status","ShortListed By","ShortListed On"};
     
-    public static String[] REQUIREMENT_PIPELINE_INTERVIEW_EXCEL_HEADERS={"Name","Email","Phone No","Experience"};
+    public static String[] REQUIREMENT_PIPELINE_INTERVIEW_EXCEL_HEADERS={"Name","Email","Phone No","Experience","DateOfInterview","TimeOfInterview","Location"};
     
     public static String[] REQUIREMENT_PIPELINE_OFFERMADE_EXCEL_HEADERS={"Name","Email","Phone No","Experience","OfferDateJoining","Position","Offer Rate","Offerd Date","Attachment"};
     
     public static String[] REQUIREMENT_PIPELINE_REJECTED_EXCEL_HEADERS={"Name","Email","PhoneNumber","Resume","Applied On","Rate","Source","Rejected On","Rejected By","Rejected Stage","Status"};
     
-    public static String[] TIMESHEET_EXCEL_HEADERS = {"Projects","Tasks","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Status"};
-    public static String[] TIMESHEET_EXCEL_HEADERS2 = {"Tasks","Mon","Tue","Wed","Thu","Fri","Sat","Sun"};
+    public static String[] TIMESHEET_EXCEL_HEADERS = {"Tasks","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Total"};
+    public static String[] TIMESHEET_EXCEL_HEADERS2 = {"Tasks","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Total"};
     public static String[] TIMESHEET_EXCEL_HEADERS3 = {"Status"};
+    
+    public static String[] TIMESHEET_APPROVAL_MECHANISM_HEADER={"Employee Name","Email id","Phone Number","Client","projectName","Total","Stage","approved By"};
    
     public static String[] CLIENT_EXCEL_HEADERS = {"Client Name","Website","Location","Tiers","Number of Contacts"};
     
@@ -329,15 +399,51 @@ public class Constants {
     
     public static String[] VENDOR_CONTACTS_EXCEL_HEADERS = {"Vendor Name","Name","Emailid","Phone Number","Owner","Role","Status"};
     
+    public static String[] SHORTLIST_CANDIDATE_FROM_CLIENT_TO_VENDOR_HEADER={"CandidateName","PhoneNumber","Work Experience","status"};
+    
+    public static String SHORTLIST_CANDIDATE_COUNT= "shortlist_candidate :";
+	
     public static String VENDOR = "Vendor";
     
     public static String CLIENT = "Client";
     
+    public static String ELK_PROJECT_INDEX = "projects";
+	
+    public static String ELK_PROJECT_TYPE = "project";
+    
     public static String ELK_CANDIDATE_INDEX = "candidates";
+    
+    public static String ELK_USER_INDEX = "users";
     		
     public static String ELK_CANDIDATE_TYPE = "candidate";
     
+    public static String ELK_USER_TYPE = "user";
+
+    public static String ELK_REQUIREMENT_INDEX = "requirement";
+	
+    public static String ELK_REQUIREMENT_TYPE = "requirement";
+    
     public static String ELK_CANDIDATE_ID_PREFIX = "CND";
+    
+    public static String ELK_CLIENTVENDOR_INDEX = "clientvendor";
+        
+    public static String ELK_CLIENTVENDOR_TYPE = "clientvendors";
+    
+    public static String ELK_CLIENTVENDOR_CONTACT_INDEX = "clientvendorcontacts";
+    
+    public static String ELK_CLIENTVENDOR_CONTACT_TYPE = "clientvendorcontacts";
+
+    
+    public static String ELK_CAMPAIGN_INDEX = "campaigns";
+	
+    public static String ELK_CAMPAIGN_TYPE = "campaign";
+    
+    public static String ELK_CAMPAIGN_ID_PREFIX = "CAMPAIGN";
+    
+    public static String CANDIDATE = "Candidate"; 
+    
+    public static String CONSULTANT = "Consultant";
+    
     
     public static String MAIL_TRASH = "Trash";
     public static String MAIL_DELETE = "Deleted";
@@ -355,6 +461,10 @@ public class Constants {
     public static int level1 =1;
     public static int level2 =2;
     
+    public static int PREVIOUS_MONTH =-1;
+    public static int NEXT_MONTH =1;
+    public static int CURRENT_MONTH =0;
+    
     public static String SHORTLIST_COUNT= "Shortlisted Applicants:";
     public static String INTERVIEW_COUNT= "Interview Applicants: ";
     public static String OFFER_COUNT= "Offer Applicants:";
@@ -365,11 +475,84 @@ public class Constants {
     
     public static String All_APPLICANTS = "all";
     public static String DUPLICATE_APPLICANTS = "DUPLICATE_APPLICANTS";
+    
+    public static String REQ_SEARCHTYPE = "Requirement";
 
+    public static String ONE_DAY_AGO ="1 Day Ago";
+    public static String THREE_DAY_AGO ="3 Days Ago";
+    public static String ONE_WEEK_AGO ="1 Week Ago";
+    public static String TWO_WEEK_AGO ="2 Weeks Ago";
+    public static String ONE_MONTH_AGO ="1 Month Ago";
+    public static String THREE_MONTH_AGO ="3 Months Ago";
+    public static String ALL_RECORDS ="All";
+    
 
+    public static String SCORE_20 = "20";
+    public static String SCORE_10 = "10";
     
+    public static String NOTICE_PERIOD_15DAYS = "15 Days";
+    public static String NOTICE_PERIOD_1MONTH = "1 Month";
+    public static String NOTICE_PERIOD_2MONTH = "2 Month";
+    public static String NOTICE_PERIOD_3MONTH = "3 Month";
+    public static String NOTICE_PERIOD_IMMEDIATELY = "Immediately available";
     
-    
-     
+    public static Integer EXPERIENCE_26YEARS = 26;
+    public static String RATE_TYPE_HOURLY = "Hourly";
+    public static String RATE_TYPE_WEEKLY = "Weekly";
+    public static String RATE_TYPE_BI_WEEKLY = "Bi-weekly";
+    public static String RATE_TYPE_SEMI_MONTHLY = "Semi-Monthly";
+    public static String RATE_TYPE_MONTHLY = "Monthly";
+    public static String RATE_TYPE_BI_MONTHLY = "Bi-Monthly";
    
-}
+    public static String PROJECT = "Projects";
+    public static String USER = "User"; 
+    public static String REQUIREMENT = "Requirement";
+    public static String USERS = "Users"; 
+
+    public static String CLIENTS_CONTACTS_IMPORT_XLS = "clients_contacts_Import.xls";
+    public static String CLIENTS_CONTACTS_IMPORT_XLSX = "clients_contacts_Import.xlsx";
+    public static String CLIENTS_IMPORT_TEMPLATE_XLS = "clients_import_template.xls";
+    public static String CLIENTS_IMPORT_TEMPLATE_XLSX = "clients_import_template.xlsx";
+    
+    public static String VENDORS_CONTACTS_IMPORT_XLS = "vendors_contacts_Import.xls";
+    public static String VENDORS_CONTACTS_IMPORT_XLSX = "vendors_contacts_Import.xlsx";
+    public static String VENDORS_IMPORT_TEMPLATE_XLS = "vendors_import_template.xls";
+    public static String VENDORS_IMPORT_TEMPLATE_XLSX = "vendors_import_template.xlsx";
+    
+    
+    public static String CANDIDATE_FIRST_NAME = "First Name*";
+    public static String CANDIDATE_LAST_NAME = "Last Name";
+    public static String CANDIDATE_EAMIL = "Email id*";
+    public static String CANDIDATE_PHONE_NUMBER = "Phone Number";
+    public static String CANDIDATE_COUNTRY = "Country";
+    public static String CANDIDATE_STATE = "State";
+    public static String CANDIDATE_CITY = "City";
+    
+    public static String CANDIDATE_ADDRESS = "Address";
+    public static String CANDIDATE_DESIGNATION = "Designation";
+    public static String CANDIDATE_TYPE = "Type";
+    
+    public static String CANDIDATE_EXPERIENCE_YEARS = "Experience (Years)";
+    public static String CANDIDATE_EXPERIENCE_MONTHS = "Experience (Months)";
+    
+    public static String CANDIDATE_CURRENT_RATE = "Current Rate";
+    public static String CANDIDATE_CURRENT_RATE_TYPE = "Current Rate Type";
+    public static String CANDIDATE_CURRENT_RATE_CURRENCY = "Current Rate Currency";
+    
+    public static String CANDIDATE_EXPECTED_RATE = "Expected Rate";
+    public static String CANDIDATE_EXPECTED_RATE_TYPE = "Expected Rate Type";
+    public static String CANDIDATE_EXPECTED_RATE_CURRENCY = "Expected Rate Currency";
+    
+    public static String CANDIDATE_SKILLS_NAME = "Skills Name";
+    public static String CANDIDATE_EDUCATION = "Education";
+    public static String CANDIDATE_EMPLOERS = "Employer's";
+    
+    
+    public static String CUSTOM_REPORTS =  "custom";
+    public static String UTC_TIMEZONE =  "UTC";
+    
+    public static String DATE_DD_MM_YYYY ="dd-MM-yyyy";
+    
+    
+   
+}	

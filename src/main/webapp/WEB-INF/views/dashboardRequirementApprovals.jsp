@@ -2,16 +2,16 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
  
  <div class="col-md-6 mb"  >
-        <div class="dashboard-widget">
+        <div class="dashboard-widget height400px">
           <h4 class="clearfix">Requirement Approvals &nbsp;&nbsp;<!-- <a href="#" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a> --></h4>
           <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
-          <div class="clearfix require_wrap_table dashboard-data" style="margin-top: 55px;">
+          <div class="clearfix require_wrap_table dashboard-data filter_position">
             <ul class="nav nav-tabs">
               <li class="active" id="waitingTab"><a data-toggle="tab" onclick="requirementApproverList('SUBMITTED');">Waiting </a></li>
               <li id="approvedTab"><a data-toggle="tab" onclick="requirementApproverList('APPROVED');">Approved </a></li>
               <li id="rejectedTab"><a data-toggle="tab" onclick="requirementApproverList('REJECTED');">Rejected</a></li>
             </ul>
-          		 <div id="requirementApproverList"></div>
+          		 <div id="requirementApproverList" class="mt"></div>
           </div>
         </div>
         <!-- Pagenation Ends --> 
@@ -28,9 +28,7 @@
 
   <script> 
 $(document).ready(function(){
-	
 	requirementApproverList('SUBMITTED');
-	
 });
 </script>
 
@@ -41,26 +39,28 @@ function requirementApproverList(statusType){
 	
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  
-	  $("#requirementApproverList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  //$("#requirementApproverList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
            type : "GET",
            url: sourceleadUrl+"/getApproverRequirementApproverListByOrgLocationIDAndUserId?statusType="+statusType,    
             success :function(data) {
-                 if(data != null && data != 'undefined' && data != "" && data != '[]'){  
+                 /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */  
                	
 			    	     $("#requirementApproverList").removeAttr("style");
 	                	 $("#requirementApproverList").empty();
 	                	 var result = "";
 	                	 result = result+'<div id="rejectRequirementAlert" ></div>  ';
-	                	 result = result +"<table id='requirementApproverPagination' class='display' cellspacing='0' width='100%' >"; 
+	                	 result = result +"<table id='requirementApproverPagination' class='display' cellspacing='0' width='99.5%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>";  
 	                     result = result +"    <th>ID-Title</th>"; 
 	                     result = result +"    <th>Rate</th>"; 
 	                     result = result +"    <th>Exp</th>"; 
 	                     
-	                     if(statusType == "APPROVED" || statusType == "REJECTED"){
-	                    	 result = result +"    <th>"+statusType+" By</th>";
+	                     if(statusType == "APPROVED"){
+	                    	 result = result +"    <th>Approved By</th>";
+	                     }else if( statusType == "REJECTED"){
+	                    	 result = result +"    <th>Rejected By</th>";
 	                     }else{
 	                    	 result = result +"    <th>Action</th>";
 	                     }
@@ -73,22 +73,32 @@ function requirementApproverList(statusType){
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
 	                    	 if(opt.jobId!=null && opt.jobId !='' && opt.jobId !='undefined'){
-		                    	 result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'><span title="+opt.jobId+"-"+opt.jobTitle+">"+opt.jobId+"-"+opt.jobTitle+"</span></a></div></td>";
+		                    	 result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title = '"+opt.jobId+"-"+opt.jobTitle+"'>"+opt.jobId+"-"+opt.jobTitle+"</span></a></div></td>";
 		                     }else{
-		                    	 result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementId="+opt.id+"'><span title="+opt.jobTitle+">"+opt.jobTitle+"</span></a></div></td>";
+		                    	 result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title = '"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
 		                     }
 	                    	 
 		                     if(opt.rate!=null && opt.rate !='' && opt.rate !='undefined'){
-		                    	 result = result +"<td><div>"+opt.rate+"&nbsp;"+opt.currencyCode+"</div></td>";
+		                    	 result = result +"<td><div><span title = '"+opt.rate+"-"+opt.currencyCode+"'>"+opt.rate+"&nbsp;"+opt.currencyCode+"</span></div></td>";
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
-	                    	  if(opt.minExp !=null && opt.minExp !='' && opt.minExp !='undefined'){
+		                     
+		                     var exp='';
+		                     
+		                     if(opt.maxExp !=null && opt.maxExp !='' && opt.maxExp !='undefined'){
+		                    	 exp =opt.maxExp;
+		                     }
+		                     
+		                     if(opt.minExp !=null && opt.minExp !='' && opt.minExp !='undefined'){
+		                    	 exp =opt.minExp; 
+		                     }
+		                     if(opt.maxExp !=null && opt.maxExp !='' && opt.maxExp !='undefined' &&  opt.minExp !=null && opt.minExp !='' && opt.minExp !='undefined'){
+		                    		 exp = opt.minExp+" - "+opt.maxExp;
+		                     } 
+		                     
                                   
-		                     result = result +"<td><div>"+opt.minExp+"</div></td>";
-                                  }else{
-                             result = result +"<td><div>-----</div></td>";
-                             }
+		                     result = result +"<td><div><span title='"+exp+"'>"+exp+"</span></div></td>";
 	                    	  
                              var APPROVED = "APPROVED";     
  				             var REJECTED = "REJECTED";
@@ -99,9 +109,10 @@ function requirementApproverList(statusType){
 		                    	 result = result + '<a  href="javascript:void(0)"  onClick="rejectRequirementAlertMessage(\''+ REJECTED+ '\','+opt.id+');"  ><i class="fa fa-close text-danger"></i></a>';
    				           	 
 				             }else if((opt.requirementApproverHierarchyStatus == 'APPROVED' ||  opt.requirementSubmissionStatus == 'OPEN')  || (opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null)){
-				            	 result = result +'<div  id="requirementStatus"  ><span title='+opt.approvedBy+'>'+opt.approvedBy+'</span></div>';
+				            	 result = result +'<div  id="requirementStatus"  ><span title ="'+opt.approvedBy+'">'+opt.approvedBy+'</span></div>';
     				         }else if( opt.requirementSubmissionStatus  !='DRAFT'  && opt.requirementApproverHierarchyStatus == 'REJECTED'  && opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null){
-    				        	 result = result +'<div  id="requirementStatus" ><span title='+opt.approvedBy+'>'+opt.approvedBy+'</span></div>';
+    				        	 result = result +'<div  id="requirementStatus" ><span title = "'+opt.approvedBy+'">'+opt.approvedBy+'</span></div>';
+
 		                     }else{
 		                    	 result = result +"<div>-----</div>";
 		                     }  
@@ -112,7 +123,7 @@ function requirementApproverList(statusType){
 	                     result = result +"</table>"; 
 	                     $("#requirementApproverList").append(result); 
 	                     requirementApprovalPagination(); 
-                 }else{
+                 /* } *//* else{
                 	 $("#requirementApproverList").removeAttr("style");
 					 $("#requirementApproverList").empty();
 					 $("#requirementApproverList").removeAttr("style");
@@ -127,7 +138,7 @@ function requirementApproverList(statusType){
 						result = result+"			        <p> No Records found in  "+statusType+" Stage</p>";
 						result = result+"			 </div>";
 				    $("#requirementApproverList").append(result); 
-                }
+                } */
           },
             
        }); 
@@ -143,7 +154,8 @@ function requirementApprovalPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-            "sSearch": ""
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
        }
     } );
 }
@@ -208,7 +220,7 @@ function rejectRequirementAlertMessage(status,requirementId){
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='updateReuqirementStatus(\""+ status+"\",\""+requirementId+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='updateReuqirementStatus(\""+ status+"\",\""+requirementId+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlertDashboard();'></b>";
 	result = result +"	</div>";
 	$("#rejectRequirementAlert").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -225,7 +237,7 @@ function rejectRequirementAlertMessage(status,requirementId){
      1.usage     : used in saveOrCancel() / alertMessage removeAlertMessage()
 --%>
 <script type="text/javascript">
-function cancelAlert(){ 
+function cancelAlertDashboard(){ 
 	$("#rejectRequirementAlert").empty();
 	$(".project_inn_mask").fadeOut(200);
 }

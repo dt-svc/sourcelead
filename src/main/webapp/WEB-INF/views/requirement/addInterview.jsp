@@ -2,20 +2,8 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<script src="resources/js/bootstrap-select.min.js"></script>
-
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
- 
-
-<link rel="stylesheet" href="resources/css/jquery.timepicker.css">
-<script src="resources/js/jquery.timepicker.js"></script> 
-
-
 <!--  No auto completes are used in addInterview -->
 
 <!-- these files for autocomplete with tagit -->
@@ -40,6 +28,7 @@ padding:0!important;
 
 <script>
 function addInterview(requirementId){
+	$('.action-pop').slideUp();
 	interviewTemplate();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var parentRequirement = '${parentRequirement}';
@@ -52,7 +41,7 @@ function addInterview(requirementId){
 	result = result + '<input type="hidden" id="isFlushRequired" name="isFlushRequired">';
 	
 	/* result = result + '<div class="add_inter_head"> <span>Add Interview</span><a href="javascript:void(0)" onClick="addInterviewRow();"><i class="fa fa-plus"></i> Add row</a>'; */
-	result = result + '<div class="add_inter_head"> <span>Add Interview</span>';
+	result = result + '<div class="add_inter_head"> <span> Schedule interview</span><span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="selectedInterviewApplicantsCount">0</b></span>';
 	result = result + '<div class="clearfix"></div>';
 	result = result + '</div>';
 	
@@ -67,9 +56,9 @@ function addInterview(requirementId){
 			result = result + '<th>Applicant</th>';
 			result = result + '<th>Inteview Type</th>';
 			result = result + '<th>Interview Date</th>';
-			result = result + '<th>Start Time/End Time</th>';
-			/* result = result + '<th>Time Zone</th>'; */
-			result = result + '<th>Location</th>';
+			result = result + '<th>Start Time/End Time</th>';	
+			result = result + '<th>Time Zone</th>';
+			result = result + '<th>Details</th>';
 			result = result + '<th>Interviewer</th>';
 			/* result = result + '<th>Action</th>'; */
 		result = result + '</tr>';
@@ -94,11 +83,11 @@ function addInterview(requirementId){
 	result = result + '</div>';
 	result = result + '</div>';
 	
-	result = result + '<div class="mb10 mt clearfix">';
+	result = result + '<div class="mb10 mt clearfix interview-form">';
 	
 	result = result + '<div id="emptyTemplate" style="dispaly:none">';
 	result = result + '<strong class="clearfix col-md-12">Interview Template</strong>';
-	result = result + '<div class="col-md-3">';
+	result = result + '<div class="col-md-3 select-field">';
 	result = result + '<select class="form-control mt10" id="interviewSubmissionTemplate" name="interviewSubmissionTemplate">';
 	result = result + '</select>';
 	result = result + '</div>';
@@ -106,7 +95,7 @@ function addInterview(requirementId){
 	
 	
 	result = result + '<strong class="clearfix col-md-12 mb">Reminder Before</strong>';
-	result = result + '<div class="col-md-3">';
+	result = result + '<div class="col-md-3 select-field">';
 	result = result + '<span>Hours</span>';
 	result = result + '<select class="form-control mt10" id="reminderHours" name="reminderHours">';
 	result = result + '<c:forEach begin="0" end="24" var="hour">';
@@ -118,7 +107,7 @@ function addInterview(requirementId){
 	result = result + '</div>';
 	
 	
-	result = result + '<div class="col-md-3">';
+	result = result + '<div class="col-md-3 select-field">';
 	result = result + '<span>Minutes</span>';
 	result = result + '<select class="form-control mt10" id="reminderMinutes" name="reminderMinutes">';
 	result = result + '<c:forEach begin="0" end="55" step="5" var="minute">';
@@ -143,7 +132,8 @@ function addInterview(requirementId){
 	result = result + '</div>';
 	result = result + '</div>';   
 	result = result + '</form>';
-	result = result + '<div id="loading"></div>';
+	result = result + '<div id="interviewLoading"></div>';
+	result = result + '</div><div id="interviewPopUp">';
 	
 				
 	$("#addInterviewDiv").empty();
@@ -224,38 +214,67 @@ function checkEmails(){
 }
 </script> 
 
+<script>
+function selectInterviewApplicants(){
+	var selectedInterviewApplicants =  $('#1applicant_chosen  span').size();
+	$("#selectedInterviewApplicantsCount").html(selectedInterviewApplicants);
+	$('#1applicant_chosen').next("p").remove();
+	
+	$('.search-choice-close').click(function() {
+		var interviewApplicants =  $('#1applicant_chosen  span').size();
+		if(interviewApplicants <1){
+			$('#1applicant_chosen').after('<p class="jquery_form_error_message">Applicant is Required</p>');
+		}
+		$("#selectedInterviewApplicantsCount").html(interviewApplicants);
+	});
+}
+</script>
+
+<script>
+function validateTimeZone(){
+	var timezoneVal = $("#1timeZone").val();
+	if(timezoneVal !=null && timezoneVal != '' && timezoneVal != 'undefined'){
+		$('#1timeZone_chosen').next("p").remove();
+	}
+	else{
+		$('#1timeZone_chosen').next("p").remove();
+		$('#1timeZone_chosen').after('<p class="jquery_form_error_message">Timezone is Required</p>');
+	}
+}
+</script>
+
+
+
 
 <div id="divTaskTd1" style="display: none; float: left;">
-       <select multiple data-placeholder="select applicants" class="chosen-select blminwidth-50" id="REPLACEROWIDapplicant" name="REPLACEROWIDapplicant" field-name="Applicant" data-validation="required" >
+       <select  multiple data-placeholder="select applicants" onchange="selectInterviewApplicants()" class="blminwidth-50" id="REPLACEROWIDapplicant" name="REPLACEROWIDapplicant" field-name="Applicant" data-validation="required" >
 			
 	  </select>
 </div>
 
 <div id="divTaskTd3" style="display: none; float: left;">
-   	 <select class="form-control block" id="REPLACEROWIDinterviewType" name="REPLACEROWIDinterviewType">
+   	 <select class="form-control input-sm"  id="REPLACEROWIDinterviewType" name="REPLACEROWIDinterviewType">
 		<option value="">--Select Type--</option>
 		<option value="F2F">F2F</option>
 		<option value="Telephonic">Telephonic</option>
 		<option value="Technical">Technical</option>
 		<option value="Screening">Screening</option>
+		<option value="Skype">Skype</option>
+		<option value="Webex/GoToMeeting">Webex/GoTo Meeting</option>
 	</select>
 </div>
 
-<%-- <div id="divTaskTd5" style="display: none; float: left;">
-   	 <select class="form-control block" id="REPLACEROWIDtimeZone" name="REPLACEROWIDtimeZone">
-		<option value="">--Select Time Zone--</option>
-		  <c:forEach var="timezone" items="${timezonesList}">
-				<option value="${timezone}">${timezone}</option>
-		 </c:forEach>
-	</select>
-</div> --%>
-
 <div id="divTaskTd5" style="display: none; float: left;">
-	  <input value="" type="text" id="REPLACEROWIDlocation" name="REPLACEROWIDlocation" class="form-control input-sm" placeholder="Location" field-name="Location" >
-</div> 
+   	 <select class="form-control" id="REPLACEROWIDtimeZone" name="REPLACEROWIDtimeZone" onchange="validateTimeZone()" field-name="Timezone" data-validation="required">
+	</select>
+</div>
 
 <div id="divTaskTd6" style="display: none; float: left;">
-		  <select multiple data-placeholder="select interviewer" class="chosen-select" id="REPLACEROWIDinterviewer" name="REPLACEROWIDinterviewer" field-name="Interviewer" >
+	  <input value="" type="text" id="REPLACEROWIDlocation" name="REPLACEROWIDlocation" class="form-control input-sm" placeholder="Details" field-name="Details" >
+</div> 
+
+<div id="divTaskTd7" style="display: none; float: left;">
+		  <select multiple data-placeholder="select interviewer" id="REPLACEROWIDinterviewer" name="REPLACEROWIDinterviewer" field-name="Interviewer" >
 			
 	  </select>
 </div> 
@@ -290,28 +309,44 @@ function checkEmails(){
 		divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
 		cell1.innerHTML = divTsTd3Str;
 		
+		var text = "";
 		var cell2 = row.insertCell(2);
 		/* cell2.innerHTML = "<div class='positionRelative date'><input class='form-control input-sm Datepicker' placeholder='Date' name='"+maxRowNum+"dateOfInterview' id='"+maxRowNum+"dateOfInterview'  readonly='readonly'  type='text' data-validation='required' field-name='Interview Date' > <span class='input-group-addon input-groupAddon'><i class='fa fa-calendar'></i></span> </div>"; */
-		cell2.innerHTML = "<div class='positionRelative date'><input class='form-control input-sm Datepicker' placeholder='Select Date' name='"+maxRowNum+"dateOfInterview' id='"+maxRowNum+"dateOfInterview'  readonly='readonly'  type='text' data-validation='required' field-name='Interview Date' ></div>";
+		text = text+"<div class='positionRelative date' id='inteviewDatePic'><input class='form-control input-sm Datepicker' placeholder='Select Date' name='"+maxRowNum+"dateOfInterview' id='"+maxRowNum+"dateOfInterview'  readonly='readonly'  type='text' data-validation='required' field-name='Interview Date'>";
+		text = text+"</div>";
+		
+		
+		//$("#timezoneid").trigger("chosen:updated");
+		
+		cell2.innerHTML = text;
 		//$(".Datepicker").datepicker();
 		$(".Datepicker").datepicker({
-		      minDate: 0  
+			 changeMonth: true,
+			 changeYear: true, 
+		      minDate: 0  ,
+		      onSelect : function(selected) {
+		    	  removeInterviewvalidation();
+		      }
 		});
-		
 		var cell3 = row.insertCell(3);
-		cell3.innerHTML = "<div class='pull-left mr' id='"+maxRowNum+"timeDiv'> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='Start Time' name='"+maxRowNum+"startTime' id='"+maxRowNum+"startTime' onBlur='validateEndTime("+maxRowNum+");' type='text' data-validation='required' field-name='Start Time'/><span class='input-group-addon input-groupAddon'><i class='fa fa-clock-o'></i></span></span> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='End Time' name='"+maxRowNum+"endTime' id='"+maxRowNum+"endTime' onBlur='validateEndTime("+maxRowNum+");' type='text' field-name='End Time' /><span class='input-group-addon input-groupAddon'><i class='fa fa-clock-o'></i></span></span> </div> ";
+		cell3.innerHTML = "<div class='pull-left timeZone' id='"+maxRowNum+"timeDiv'> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='Start Time' name='"+maxRowNum+"startTime' id='"+maxRowNum+"startTime' onBlur='validateEndTime("+maxRowNum+");' type='text' data-validation='required' field-name='Start Time'/></span> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='End Time' name='"+maxRowNum+"endTime' id='"+maxRowNum+"endTime' onBlur='validateEndTime("+maxRowNum+");' type='text' field-name='End Time' /></span> </div> ";
 		
 		$("#"+maxRowNum+"startTime").timepicker({
-			'showDuration': true
+			'showDuration': true,
+			'disableTextInput': true
 		}).on('changeTime', function() {
             $("#"+maxRowNum+"endTime").timepicker('option', 'minTime', $(this).val());
         });
 		
 		$("#"+maxRowNum+"endTime").timepicker({
-			'showDuration': true
+			'showDuration': true,
+			 'maxTime': '23:30:00',
+			'disableTextInput': true
 		}).on('changeTime', function() {
             $("#"+maxRowNum+"startTime").timepicker('option', 'maxTime', $(this).val());
         }); 
+		
+		
 		
 		var cell4 = row.insertCell(4);
 		var divTsTd5Str = document.getElementById("divTaskTd5").innerHTML;
@@ -324,18 +359,27 @@ function checkEmails(){
 		divTsTd6Str = divTsTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
 		cell5.innerHTML = divTsTd6Str;  
 		
-		/* var cell6 = row.insertCell(6);
+		var cell6 = row.insertCell(6);
+		var divTsTd7Str = document.getElementById("divTaskTd7").innerHTML;
+		divTsTd7Str = divTsTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
+		cell6.innerHTML = divTsTd7Str; 
+		
+		/* var cell7 = row.insertCell(7);
 		var divTsTd7Str = document.getElementById("divTaskTd7").innerHTML;
 		divTsTd7Str = divTsTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
 		cell6.innerHTML = divTsTd7Str; */
 		
 		getInterviewers(maxRowNum);
 		getShortListCandidates(maxRowNum);
-		
+		getTimezonesList(maxRowNum);
 
+		
 	    $("#"+maxRowNum+"applicant").chosen();
 	    $("#"+maxRowNum+"interviewer").chosen();
-		
+	    $("#"+maxRowNum+"timeZone").chosen();
+	    $("#"+maxRowNum+"timeZone").trigger('chosen:update');
+	    $("#"+maxRowNum+"interviewType").chosen();
+		$("#"+maxRowNum+"interviewType").trigger('chosen:update');
 		
 	   /*  $("#"+maxRowNum+"applicant").on('change', function (e) {
 	    	getUpdatedShortListCandidates();
@@ -345,7 +389,11 @@ function checkEmails(){
 				
 }		
 </script>
-
+<script>
+function removeInterviewvalidation(){
+	$('#inteviewDatePic').find('p.jquery_form_error_message').remove();	
+}
+</script>
 <script type="text/javascript">
 	function validateEndTime(maxRowNum) {
 		var rowId = $("#maxTsRowNum").val();
@@ -448,20 +496,29 @@ function cancelAddInterviewDiv(){
         var sourceleadUrl ='${sourceleadUrl}';
         var requirementId = '${requirementId}';
         
-        $("#add_interview").attr("disabled", "disabled");
- 		$("#add_interview" ).addClass('button').val('Processing..');
- 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-   	    $.ajax({
-	    	type: "POST",
-	        url: sourceleadUrl+"/saveInterview?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
-	        success: function(result) {
-	        	    $(".add_inter_wrap").removeClass("add_inter_wrap_active");
-	        		$(".side_mask").fadeOut(200);
-	        		$("body").css('overflow-y', 'auto');
-	        		var allApplicants = 'all';
-		    		requirementPipeline(requirementId,allApplicants); 
-	        },
-	    });   
+        var selectedInterviewApplicants =  $('#1applicant_chosen  span').size();
+        
+        if(selectedInterviewApplicants <= 50){
+	        $("#add_interview").attr("disabled", "disabled");
+	 		$("#add_interview" ).addClass('button').val('Processing..');
+	 		$("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	   	     $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/saveInterview?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
+		        success: function(result) {
+		        	    $(".add_inter_wrap").removeClass("add_inter_wrap_active");
+		        		$(".side_mask").fadeOut(200);
+		        		$("body").css('overflow-y', 'auto');
+		        		var allApplicants = 'all';
+			    		requirementPipeline(requirementId,allApplicants); 
+			    		pipelineList(requirementId);
+		        },
+		    });     
+        }else{
+        	alertInterviewMessage("<b>Selected Applicants should not more than 50</b>");
+        }
+   	    
+   	    
         return true;
       }
       else{
@@ -473,6 +530,29 @@ function cancelAddInterviewDiv(){
     $('#addInterview_form').validateOnBlur(false, validationSettings); 
   
   </script>
+  
+  <script type="text/javascript">
+function alertInterviewMessage(message){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>"+message+"</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancelInterviewPopup();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelInterviewPopup();'></b>";
+	result = result +"	</div>";
+	$("#interviewPopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancelInterviewPopup(){
+	$("#interviewPopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
   
 <script type="text/javascript">
  function getShortListCandidates(rowId) {
@@ -509,7 +589,12 @@ function cancelAddInterviewDiv(){
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+"</option>";
+			        		if(opt.createdUser !=null && opt.createdUser !='' && opt.createdUser != 'undefined'){
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+" ("+opt.createdUser+")</option>";	
+			        		}else{
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+"</option>";
+			        		}
+			        		
 					}
 		        	
 		        	var isFlushRequired = $("#isFlushRequired").val();
@@ -600,7 +685,12 @@ function cancelAddInterviewDiv(){
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		if(opt.lastName != 'undefined' && opt.lastName != null && opt.lastName!=""){
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		}else{
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+"</option>";
+			        		}
+			        		
 					}
 		        	$("#"+rowId+"interviewer").empty();
 		        	$("#"+rowId+"interviewer").append(output);
@@ -684,9 +774,45 @@ function interviewTemplate(){
 </script>
 
 <script>
+function getTimezonesList(rowId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var timezone = '${timezone}';
+	 $.ajax({
+	    	type: "POST",
+	    	url : sourceleadUrl+"/getTimezonesList?${_csrf.parameterName}=${_csrf.token}", 
+	        success: function(data) {
+	        var json = JSON.parse(data);
+	        var output = "";
+	        output = output + "<option value=''>--Select--</option>"; 
+	        	for (var i=0; i<json.length; i++){
+	        		var opt = json[i];
+	        		if(opt.timeZoneId == timezone){
+	        			output = output + "<option value='" +opt.id+ "' selected>"+opt.timeZoneId+"</option>";
+	        		}else{
+	        			output = output + "<option value='" +opt.id+ "'>"+opt.timeZoneId+"</option>";
+	        		}
+	        		
+				}
+	        	$("#"+rowId+"timeZone").empty();
+	        	$("#"+rowId+"timeZone").append(output);
+	        	$("#"+rowId+"timeZone").trigger("chosen:updated");
+	        }
+	 });
+}
+</script>
+
+
+<script>
 function myFunction(){
 	$("#isFlushRequired").val('Y');
 	getShortListCandidates();
 }
 </script>
-
+<script>
+function timezonePop(){
+	$('.timePop').show();
+}
+function timezoneClose(){
+	$('.timePop').hide();
+}
+</script>

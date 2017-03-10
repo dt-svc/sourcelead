@@ -27,8 +27,7 @@ import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.StatesService;
-import com.bis.sourcelead.service.TeamService;
-import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -50,14 +49,12 @@ public class CandidateController {
 	@Autowired
 	LookUpDataService lookUpDataService;
 	
-	@Autowired
-	private UserService userService;
 	
 	@Autowired
 	private RolesService roleService;
 	
 	@Autowired
-	private TeamService teamService;
+	CommonUtil commonUtil;
 	
 	/**
 	 * Handles to display candidate jsp
@@ -67,7 +64,7 @@ public class CandidateController {
 	
 	//Note this method is ResumeParsing Candidate method
 	
-	 @PreAuthorize("hasRole('ROLE_CREATE_CANDIDATE')")
+	 @PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
 	 @RequestMapping(value = "/candidate")
 		public ModelAndView candidate(HttpServletRequest request) throws Exception {
 		 	logger.debug("Display the candiade page");
@@ -95,7 +92,7 @@ public class CandidateController {
 	 
 	   //Note this method is ResumeParsing Candidate method
 		
-		 @PreAuthorize("hasRole('ROLE_CREATE_CANDIDATE')")
+		 @PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
 		 @RequestMapping(value = "/addCandidate")
 			public ModelAndView addCandidate(HttpServletRequest request) throws Exception {
 			 	logger.debug("Display the candiade page");
@@ -125,7 +122,12 @@ public class CandidateController {
 	
 	
 	@RequestMapping(value = "/candidatesList")
-	public ModelAndView usersList(@RequestParam(value="candidateStatus", required=false) String  candidateStatus,HttpServletRequest request) throws Exception {
+	public ModelAndView usersList(@RequestParam(value="candidateStatus", required=false) String  candidateStatus,
+			@RequestParam(value="searchResult", required=false)String  searchResult
+			,@RequestParam(value="searchValue", required=false)String searchValue,
+			HttpServletRequest request,
+			@RequestParam(value="candidateKeyword", required=false)String candidateKeyword,
+			@RequestParam(value="candidateIdSearchId", required=false)String candidateIdSearchId) throws Exception {
 		logger.debug("--------candidatesList------");
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -133,6 +135,17 @@ public class CandidateController {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("candidates/candidatesList");
+		
+		if(candidateKeyword != null && !candidateKeyword.equalsIgnoreCase("undefined") && candidateKeyword.equalsIgnoreCase("candidateSearch")){
+		    model.addObject("candidateKeyword", candidateKeyword);
+		    model.addObject("candidateIdSearchId",candidateIdSearchId);
+		}
+		
+		if(searchResult != null && !searchResult.equalsIgnoreCase("undefined") && searchResult.equalsIgnoreCase("universalCanddateList")){
+		    model.addObject("universalCanddateList", "universalCanddateList");
+		    model.addObject("serachValue",searchValue);
+		    model.addObject("searchType", "Candidate");
+		}
 		
 		List<Countries> countryList = countriesService.getAllCountries();
 		model.addObject("countryList", countryList);
@@ -142,6 +155,8 @@ public class CandidateController {
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 			if(null != countries){
 			   model.addObject("loginCountryName", countries.getName());
+			   model.addObject("currency", countries.getCurrency());
+			   
 			}
 	        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
 	        model.addObject("statesList", statesList);
@@ -222,10 +237,14 @@ public class CandidateController {
 		model.setViewName("candidates/addConsultant");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("type", type);
+	
+		/* Based on Country Currency code will be set into Rate field */
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		if(null != countries){
         model.addObject("loginCountryName", countries.getName());
+        model.addObject("currencyCode", countries.getCurrency());
 		}
+		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(null == sessionData)
 		{
@@ -248,6 +267,23 @@ public class CandidateController {
 		
 	}
 	
+	 //uploadCandidateForm
+	 @RequestMapping(value = "/uploadCandidateForm")
+		public ModelAndView uploadCandidateForm(HttpServletRequest request) {
+		 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			
+			request.getSession().setAttribute("sessionData",sessionData);
+			ModelAndView model = new ModelAndView();
+			model.setViewName("upload/uploadCandidateForm");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			sessionData.setNav(Constants.Candidates);
+			return model;
+
+		}
 
 	private boolean isNullOrEmpty(String msg) {
 		// TODO Auto-generated method stub

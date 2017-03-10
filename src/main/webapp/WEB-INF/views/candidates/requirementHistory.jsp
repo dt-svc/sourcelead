@@ -1,8 +1,3 @@
-<script src="resources/js/chosen.jquery.min.js"></script> 
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-
 <!-- these files for autocomplete with tagit -->
 
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
@@ -82,7 +77,7 @@ function requirementHistoryList(candidateId){
            		clientName = "--"
            	 }
 	           	result = result  +'	          <tr>';
-	    		result = result  +'	            <td><div><span class="mid-span ReqClick" onclick="requirementHistoryDetails('+candidateId+',\''+report.positionType+'\',\''+report.requirement.id+'\',\''+report.id+'\');">'+report.positionType+'</span></div></td>';
+	    		result = result  +'	            <td><div><span class="mid-span ReqClick" onclick="requirementHistoryDetails('+candidateId+',\''+report.positionType+'\',\''+report.requirement.id+'\',\''+report.requirement.requirementUUID+'\',\''+report.id+'\');">'+report.positionType+'</span></div></td>';
 	    		result = result  +'	            <td><div><span class="mid-span">'+jobType+'</span></div></td>';
 	    		result = result  +'	            <td><div><span class="mid-span">'+report.country+'</span></div></td>';
 	    		result = result  +'	            <td><div><span class="mid-span">'+rate+'</span></div></td>';
@@ -117,7 +112,8 @@ function requirementHistoryPagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -129,7 +125,7 @@ function requirementHistoryPagination(){
 </script>
 
 <script>
-function requirementHistoryDetails(candidateId,positionType,requirementId,submissionId){
+function requirementHistoryDetails(candidateId,positionType,requirementId,requirementUUID,submissionId){
 	var loginUserId = '${SourceLeadWeb_userId}';
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
@@ -139,11 +135,11 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,submis
         	var json = JSON.parse(data);
         	
         	var result = "";
-     		result = result  +'	<div class="reqPopInn">';
+     		result = result  +'	<div class="reqPopInn reqHistTitle">';
      		result = result  +'		<div class="reqClose">';
      		result = result  +'			<span><i class="fa fa-angle-double-left"></i>Go Back</span><b class="fa fa-close"></b>';
      		result = result  +'		</div>';
-     		result = result  +'		<h3><a href="'+sourceleadUrl+'/requirementSummary?requirementId='+requirementId+'">'+positionType+'</a><span onclick="getRateListDiv('+candidateId+',\''+submissionId+'\');">Rate</span><i class="ratepop" id="ratepop"></i><div class="clearfix"></div></h3>';
+     		result = result  +'		<h3 title="'+positionType+'"><a href="'+sourceleadUrl+'/requirementSummary?requirementUUID='+requirementUUID+'">'+positionType+'</a><span onclick="getRateListDiv('+candidateId+',\''+submissionId+'\');">Rate</span><i class="ratepop" id="ratepop"></i><div class="clearfix"></div></h3>';
      		result = result  +'		<ul>';
      		   
      		    var report2 = json[0];
@@ -196,7 +192,7 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,submis
 		        		result = result  +'	   <img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+loginUserId+'"/>';
 		        		if(report.toStage == "SUBMISSION"){
 			        		 result = result  +'<span>Added by  '+report.loginUserName+' <b>'+report.createdDateStr+'</b></span>';
-		        			 result = result  +'<a href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeid+'\"><i class="fa fa-paperclip"></i></a><div class="clearfix"></div>';
+		        			 result = result  +'<a href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeid+'\"><i class="fa fa-paperclip"></i></a><div class="clearfix"></div>';
 		        		}else if(report.toStage == "OFFERMADE"){
 		        			result = result  +'<span>Issued offer by '+report.loginUserName+' <b>'+report.createdDateStr+'</b></span>';
 		        			result = result  +'<a href=\"'+sourceleadUrl+'/offerDownloadDocument?resumeId='+report.offerResumeid+'\"><i class="fa fa-paperclip"></i></a><div class="clearfix"></div>';
@@ -206,7 +202,7 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,submis
 		        			result = result  +'<span>Shortlisted by  '+report.loginUserName+' <b>'+report.createdDateStr+'</b></span>';
 		        		} else if(report.toStage == "REQUEST_SENT"){
 		        			result = result  +'<span>Added & Request Sent by  '+report.loginUserName+' <b>'+report.createdDateStr+'</b></span>';
-		        			result = result  +'<a href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeid+'\"><i class="fa fa-paperclip"></i></a><div class="clearfix"></div>';
+		        			result = result  +'<a href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeid+'\"><i class="fa fa-paperclip"></i></a><div class="clearfix"></div>';
 		        		} else if(report.toStage == "REJECTED"){
 		        			 result = result  +'<span>Request Rejected By '+report.userName+' <b>'+report.createdDateStr+'</b><h7>Reject Reson : '+report.requirementReson+'</h7></span>';
 		        		} else if(report.toStage == "SUBMISSION_ACCEPT"){
@@ -225,7 +221,7 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,submis
 		        			result = result  +'<span>Feedback by '+report.interviewerName+' <b>'+report.createdDateStr+'</b></span>';
 		        		}else if(report.toStage == "SUBMIT_TO_CLIENT"){
 		        			result = result  +'<span>Submit to Client '+report.loginUserName+' <b>'+report.createdDateStr+'</b></span>';
-		        			result = result  +'<a href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.resumeid+'\"><i class="fa fa-paperclip"></i></a><div class="clearfix"></div>';
+		        			result = result  +'<a href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeid+'\"><i class="fa fa-paperclip"></i></a><div class="clearfix"></div>';
 		        		}else{
 		        			result = result  +'<div class="clearfix"></div>';
 		        		}
@@ -275,6 +271,7 @@ function getRateListDiv(candidateId,submissionId){
 	                     result = result + '        <th>Rate</th>';
 	                     result = result + '        <th>Comment</th>';
 	                     result = result + '        <th>Date</th>';
+	                     result = result + '        <th>Status</th>';
 	                     result = result + '      </tr>';
 	                     result = result + '    </thead>';
 	                     result = result + '    <tbody>';
@@ -291,11 +288,44 @@ function getRateListDiv(candidateId,submissionId){
 		                    		 isLastNegotiator = "false";
 		                    	 }
 	                    	 }
-		                     result = result + '      <tr>';
-		                     result = result + '        <td><div class="tbldata-dotdot-sm">'+report.proposeByName+'</div></td>';
-		                     result = result + '        <td><div class="tblminwidth-75">'+report.rateAndType+'</div></td>';
-		                     result = result + '        <td><div class="tbldata-dotdot">'+report.rateReason+'</div></td>';
-		                     result = result + '        <td><div class="tblminwidth-75">'+report.createdDateStr+'</div></td>';
+		                     result = result + '<tr>';
+		                     if(report.proposeByName != null && report.proposeByName != '' && report.proposeByName != 'undefined'){
+		                     result = result + '<td><div class="tbldata-dotdot-sm">'+report.proposeByName+'</div></td>';
+		                     }
+		                     else{
+		                    	 result = result + ' <td><div class="tbldata-dotdot-sm">----</div></td>'; 
+		                     }
+		                    
+		                     if(report.rateAndType != null && report.rateAndType != '' && report.rateAndType != 'undefined'){
+		                         result = result + '<td><div class="tblminwidth-75">'+report.rateAndType+'</div></td>';
+		                     } 
+		                     else{
+		                    	 result = result + ' <td><div class="tblminwidth-75">----</div></td>'; 
+		                     }
+		                     
+		                     if(report.rateReason != null && report.rateReason != '' && report.rateReason != 'undefined'){
+		                         result = result + '<td><div class="tbldata-dotdot">'+report.rateReason+'</div></td>';
+		                     }
+		                     else{
+		                         result = result + '<td><div class="tbldata-dotdot">----</div></td>';
+		                     }
+		                     
+		                     if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
+		                         result = result + '<td><div class="tblminwidth-75">'+report.createdDateStr+'</div></td>';
+		                     }
+		                     else{
+		                         result = result + '<td><div class="tblminwidth-75">----</div></td>'; 
+		                     }
+		                     
+		                     if(report.rateStage == 'ACCEPTED'){
+		                    	 result = result + ' <td><div class="tblminwidth-75">Accepted</div></td>';
+		                     	}else if(report.rateStage == 'REJECTED'){
+		                     		result = result + ' <td><div class="tblminwidth-75">Rejected</div></td>';
+		                     	}else{
+		                     		result = result + ' <td><div class="tblminwidth-75">----</div></td>';
+		                     	}
+		                     
+		                      
 		                     result = result + '      </tr>';
 			   				}
 	                     result = result + '    </tbody>';

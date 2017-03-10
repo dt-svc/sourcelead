@@ -4,22 +4,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> 
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-
-
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/chosen.jquery.min.js"></script> 
-
-<script src="resources/js/chosen.jquery.min.js"></script> 
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
+<script src="resources/js/formvalidator.js"></script>
 
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
@@ -145,7 +130,8 @@ function pagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -195,7 +181,7 @@ function sideBar(teamId){
 		$("body").css('overflow-y', 'hidden');
 		$("#tab-1").show();
 		projectMemberList(teamId);
-		
+		teamEditDetails(teamId);
 }
 </script>
 
@@ -216,10 +202,10 @@ function teamEditDetails(teamId){
 	        	outPut = outPut+'<form role="form"  id="edit_team_form" name="team_form" method="post" > ';
 	        	outPut = outPut+ '<div class="form-horizontal clearfix teamEditDetails">';
 	        	outPut = outPut+ '<div class="clearfix mb10">';
-	        	outPut = outPut+ '<div class="col-md-6">';
+	        	outPut = outPut+ '<div class="col-md-6" id="teamNameDiv">';
 	        	outPut = outPut +'<input type="hidden" class="form-control input-sm" name="teamId"  value="'+teamId+'">';
 	        	outPut = outPut+ '<label>Team Name<b class="text-danger">*</b> </label>';
-	        	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="'+json.name+'">';
+	        	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" id="name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="'+json.name+'"  onblur="validateTeamName();">';
 	        	outPut = outPut+ '                </div>';
 	        	
 	        	
@@ -230,7 +216,7 @@ function teamEditDetails(teamId){
 	        	outPut = outPut+ '                </div>';
 	        	outPut = outPut+ '                <div class="col-md-1">';
 	        	outPut = outPut+ '                <label class="col-md-12">&nbsp;</label>';
-	        	outPut = outPut+ '<button type="button" id="edit_team" class="btn btn-primary btn-sm btn-block" onclick="storeEditedTeam();">Add</button>';
+	        	outPut = outPut+ '<button type="button" id="edit_team" class="btn btn-primary btn-sm btn-block" onclick="storeEditedTeam(\''+teamId+'\');">Add</button>';
 	        	outPut = outPut+ '              </div>';
 	        	outPut = outPut+ '              </div>';
 	        	outPut = outPut+ '              </div> ';
@@ -309,8 +295,8 @@ var validationSettings = {
 </script>
 
 <script>
-function storeEditedTeam(){
-	
+function storeEditedTeam(teamId){
+	//var teamId = $("#teamId").val();
 	  /*  var validationSettings = {
 	        errorMessagePosition : 'element',
 	       borderColorOnError : '',
@@ -330,7 +316,8 @@ function storeEditedTeam(){
 					type : "POST",
 					url : sourceleadUrl+"/storeEditedTeam?${_csrf.parameterName}=${_csrf.token}&json="+con,
 					success :function(data) {  
-						location.replace(sourceleadUrl+"/team");
+						  sideBar(teamId);
+						//location.replace(sourceleadUrl+"/team");
 				      }, 
 		    });
 			return true; 
@@ -357,7 +344,7 @@ function addTeam(){
 	/* outPut = outPut + '<input type="hidden" class="form-control input-sm" name="teamId"  value="'+teamId+'">'; */
 	outPut = outPut+ '<div class="col-md-12">';
 	outPut = outPut+ '<label>Team Name<b class="text-danger">*</b> </label>';
-	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_length length2-100" field-name="Team Name" value="">';
+	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" id="name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_length length2-100" field-name="Team Name" value="" onblur="validateTeamName();">';
 	outPut = outPut+ '                </div>';
 	outPut = outPut+ '              </div>';
 	outPut = outPut+ '              <div class="clearfix mb10">';
@@ -500,7 +487,6 @@ function addMember(teamId){
 
 <script>
 function projectMemberList(teamId){
-	    
 	    var sourceleadUrl ='${sourceleadUrl}';
 		  $("#projectMemberList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		  $.ajax({
@@ -601,7 +587,9 @@ function removeProjectMemberAlertMessage(teamMemberId,teamId){
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"	<div id='reasonDiv'/>";
 	result = result +"		<b href='#'><input id='confirm-id' type='button' value='Ok' onclick='deleteTeamMember("+teamMemberId+","+teamId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
+	result = result +"	</div>";
 	result = result +"	</div>";
 	$("#removeCandidateAlert").append(result);
 	$("#remove_user_pop").slideDown(200); 
@@ -633,7 +621,9 @@ function cancelAlert(){
 function deleteTeamMember(teamMemberId,teamId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var reason = document.getElementById("rejectReason").value;
-	  $.ajax({
+	  if(reason.match(/^[^\s-](.*)*$/) != null){
+		 $('#reasonDiv').empty();
+		 $.ajax({
         type : "POST",
          url: sourceleadUrl+"/deleteTeamMemberByCandidateId?${_csrf.parameterName}=${_csrf.token}&teamMemberId="+teamMemberId+"&reason="+reason,        
          success :function(data) {
@@ -644,6 +634,13 @@ function deleteTeamMember(teamMemberId,teamId){
                 }
                  }, 
               }); 
+	  }else{
+			if(reason){
+				$("#reasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+			}else{
+				$("#reasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+			}
+		}
 }
 </script>
 
@@ -663,7 +660,8 @@ function TeamMemberpagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -764,8 +762,8 @@ function storeTeam(){
 		     var jsonData = encodeURIComponent(con);
 			
 			 var sourceleadUrl = '${sourceleadUrl}';
-			
-			 $("#add_team").attr("disabled", "disabled");
+			  $("#add_team").attr("disabled", "disabled");
+			 
 			
 			$.ajax({
 					type : "POST",
@@ -803,7 +801,11 @@ function getTeamOwners(){
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		var lastName= "";
+			        		if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
+			        			lastName = opt.lastName;
+			        		}
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+lastName+"</option>";
 					}
 		        	$("#ownerUserId").empty();
 			        $("#ownerUserId").append(output);
@@ -929,7 +931,8 @@ function storeTeamMembers(teamId){
 					type : "POST",
 					url : sourceleadUrl+"/storeTeamMembers?${_csrf.parameterName}=${_csrf.token}&json="+con+"&teamId="+teamId,
 					success :function(data) {  
-						location.replace(sourceleadUrl+"/team");
+						sideBar(teamId);
+						//location.replace(sourceleadUrl+"/team");
 				    }, 
 		    });
 			return true; 
@@ -1177,28 +1180,28 @@ function getCandidateListForTeam(teamId,teamName){
 		                    	 var candidateMobileNumber = "";
 		                    	 var candidateType = "";
 		                    	 var candidateLocation = "";
-		                    	 if(opt.candidateFullName != null && opt.candidateFullName != 'undefined' && opt.candidateFullName != ""){
-		                    		 candidateFullName = opt.candidateFullName;
+		                    	 if(opt.candidateName != null && opt.candidateName != 'undefined' && opt.candidateName != ""){
+		                    		 candidateFullName = opt.candidateName;
 					             }else{
 					            	 candidateFullName = "----";
 					             }
-		                    	 if(opt.candidateDesignation != null && opt.candidateDesignation != 'undefined' && opt.candidateDesignation != ""){
-		                    		 candidateDesignation = opt.candidateDesignation;
+		                    	 if(opt.designation != null && opt.designation != 'undefined' && opt.designation != ""){
+		                    		 candidateDesignation = opt.designation;
 					             }else{
 					            	 candidateDesignation = "----";
 					             }
-		                    	 if(opt.positionType != null && opt.positionType != 'undefined' && opt.positionType != ""){
-		                    		 positionType = opt.positionType;
+		                    	 if(opt.designationType != null && opt.designationType != 'undefined' && opt.designationType != ""){
+		                    		 positionType = opt.designationType;
 					             }else{
 					            	 positionType = "----";
 					             }
-		                    	 if(opt.candidateEmail != null && opt.candidateEmail != 'undefined' && opt.candidateEmail != ""){
-		                    		 candidateEmail = opt.candidateEmail;
+		                    	 if(opt.email != null && opt.email != 'undefined' && opt.email != ""){
+		                    		 candidateEmail = opt.email;
 					             }else{
 					            	 candidateEmail = "----";
 					             }
-		                    	 if(opt.candidateMobileNumber != null && opt.candidateMobileNumber != 'undefined' && opt.candidateMobileNumber != ""){
-		                    		 candidateMobileNumber = opt.candidateMobileNumber;
+		                    	 if(opt.mobilePhone != null && opt.mobilePhone != 'undefined' && opt.mobilePhone != ""){
+		                    		 candidateMobileNumber = opt.mobilePhone;
 					             }else{
 					            	 candidateMobileNumber = "----";
 					             }
@@ -1258,7 +1261,8 @@ function cpagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-     		"sSearch": ""
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -1292,5 +1296,39 @@ function removeFromTeam(id){
 		$("body").css('overflow-y', 'auto');
 	});	
 </script>
+
+
+<!-- Team Name validation script starts here -->
+
+<script type="text/javascript">
+ function validateTeamName() {
+	 var name = $('#name').val(); 
+	 $('#teamNameDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(name != null && name != ""){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateTeamName?${_csrf.parameterName}=${_csrf.token}&name="+name, 
+		        success: function(data) {
+		        	if(data == 'true'){
+						  
+		        		  $("input#name").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+						  $("#add_team").attr("disabled", "disabled");
+						  $("#add_team").addClass('button').val('Processing..');
+		        	}
+		        	else{
+		        		
+		        		 $('input#name').removeAttr("record-exist record-exist-errormsg");
+		        		 $('#teamNameDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#add_team" ).addClass('button').val('Save');
+                         $("#add_team").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 } 
+ }
+ </script>     
+ 
+ <!-- Team Name validation script ends here -->
 
 <jsp:include page="../masterFooter.jsp" />
