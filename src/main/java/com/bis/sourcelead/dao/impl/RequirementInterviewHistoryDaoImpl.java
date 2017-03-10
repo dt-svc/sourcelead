@@ -119,17 +119,17 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 		
 		String query = "";
         if(dateRange != null && "today".equals(dateRange)){
-            query = subQueryCommon+ "(DATE(rih.interviewId.dateOfInterview) = CURDATE()) and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime >= NOW()) "+ subQuery;
-            params.put("startDate",startUTCDate);
-        	params.put("endDate",endUTCDate);
-        }else if(dateRange != null && "previous".equals(dateRange)){
-            query = subQueryCommon+ " (DATE(rih.interviewId.dateOfInterview) <= CURDATE()) and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime < NOW())"+ subQuery;
-            params.put("startDate",startUTCDate);
-        	params.put("endDate",endUTCDate);
-        }else if(dateRange != null && "upcoming".equals(dateRange)){
-        	query = subQueryCommon+ " (DATE(rih.interviewId.dateOfInterview) > CURDATE())"+ subQuery;
+           // query = subQueryCommon+ "(DATE(rih.interviewId.dateOfInterview) = CURDATE()) and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime >= NOW()) "+ subQuery;
+        	query = subQueryCommon+ "( rih.interviewId.startTime >= :startDate and rih.interviewId.startTime <= :endDate) "+ subQuery;
         	params.put("startDate",startUTCDate);
         	params.put("endDate",endUTCDate);
+        }else if(dateRange != null && "previous".equals(dateRange)){
+           // query = subQueryCommon+ " (DATE(rih.interviewId.dateOfInterview) <= CURDATE()) and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime < NOW())"+ subQuery;
+        	query = subQueryCommon+ "( rih.interviewId.startTime < :startDate ) "+ subQuery;
+        	params.put("startDate",startUTCDate);
+        }else if(dateRange != null && "upcoming".equals(dateRange)){
+        	query = subQueryCommon+ " (DATE(rih.interviewId.startTime) > :startDate)"+ subQuery;
+        	params.put("startDate",startUTCDate);
         }else{
         	//query = subQueryCommon+ " (rih.interviewId.dateOfInterview between :startDate and :endDate)"; 
         	query = subQueryCommon+ "( rih.interviewId.startTime >= :startDate and rih.interviewId.startTime <= :endDate) ";

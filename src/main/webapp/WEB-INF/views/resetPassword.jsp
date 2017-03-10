@@ -2,6 +2,9 @@
 <html lang="en">
 
 <head>
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
