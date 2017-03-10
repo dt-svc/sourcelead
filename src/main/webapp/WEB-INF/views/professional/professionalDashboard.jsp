@@ -23,7 +23,8 @@ dataTables_empty {
 $(document).ready(function(){
 	getJobSummarySerialChart();
 	getJobSummaryDoNutChart();
-	getJobPortlets();
+	getReferToMeJobPortlets();
+	getReferByMeJobPortlets();
 	interviews('today');
 });
 </script>
@@ -80,7 +81,9 @@ $(document).ready(function(){
           </div>
       </div></div>
       <div class="clearfix"></div>
+      </div>
       
+     <div class="row">
       <div class="col-md-12">
 		<div class="dashboard-widget clearfix">
 				    <div class="row">
@@ -92,7 +95,7 @@ $(document).ready(function(){
 					     <input type="text" value="" placeholder="To Date" class="form-control input-sm calendar" id="portlettodate" name="To Date" readonly="readonly">
 					  </div>
 					  <div class="col-md-2 paddingLeft">
-						  <button type="button" class="btn btn-sm btn-primary" onclick="getJobPortlets();"><i class="fa fa-search"></i>&nbsp;&nbsp;Search</button>
+						  <button type="button" class="btn btn-sm btn-primary" onclick="getReferToMeJobPortlets();"><i class="fa fa-search"></i>&nbsp;&nbsp;Search</button>
 					  </div>
 					  </div>
 					  <div class="col-md-2  col-md-offset-2 select-field">
@@ -103,6 +106,34 @@ $(document).ready(function(){
 					  </div>
 				  </div>
       <div id="jobPortletsDiv" class="activeJobs row"></div>
+      </div>
+      </div>
+      <div class="clearfix"></div>
+      </div>
+      
+      <div class="row mt">
+      <div class="col-md-12">
+		<div class="dashboard-widget clearfix">
+				    <div class="row">
+					  <div style="visibility:hidden" id="customReferByMeDate">
+					  <div class="col-md-3 paddingRight">
+					     <input type="text" value="" placeholder="From Date" class="form-control input-sm calendar" id="portletreferByMefromdate" name="From Date" readonly="readonly">
+					  </div>
+			  		  <div class="col-md-3 paddingLeft paddingRight">
+					     <input type="text" value="" placeholder="To Date" class="form-control input-sm calendar" id="portletreferByMetodate" name="To Date" readonly="readonly">
+					  </div>
+					  <div class="col-md-2 paddingLeft">
+						  <button type="button" class="btn btn-sm btn-primary" onclick="getReferByMeJobPortlets();"><i class="fa fa-search"></i>&nbsp;&nbsp;Search</button>
+					  </div>
+					  </div>
+					  <div class="col-md-2  col-md-offset-2 select-field">
+					   <select class="form-control active" id="referbymeChangeMonth" onchange="referbymeChangeMonth(this)">
+					   		<option selected value="currentMonth">Current Month</option>
+					   		<option value="customize">Customize</option>
+					   </select>
+					  </div>
+				  </div>
+      <div id="referByMeJobPortletsDiv" class="activeJobs row"></div>
       </div>
       </div>
 
@@ -140,6 +171,20 @@ $(document).ready(function(){
 	  }
   }
   </script>
+  
+  
+  
+  <script>
+  function referbymeChangeMonth(){
+	  var referbymeChangeMonth = $("#referbymeChangeMonth").val();
+	  if(referbymeChangeMonth == "customize"){
+		  document.getElementById("customReferByMeDate").style.visibility='visible';
+	  }else{
+		  document.getElementById("customReferByMeDate").style.visibility='hidden';
+	  }
+  }
+  </script>
+  
 <script>
 function flushDate(){
 	$("#datepicker-int").val('');
@@ -259,7 +304,7 @@ function flushDate(){
 </script>
 	 
   <script>
-  function getJobPortlets(){
+  function getReferToMeJobPortlets(){
 	  
     var sourceleadUrl = '${sourceleadUrl}';
 	
@@ -273,21 +318,13 @@ function flushDate(){
 	    	 var json = JSON.parse(data);
 		    	
 	    	  var result = ''
-			  result = result +'<div class="col-sm-6 col-md-3">';
-			  result = result +'<div class="content_widget jobs-graphview buttonView">';
-			  result = result +'<span class="label label-primary">Active Jobs</span>';
-			  result = result +' <img src="resources/images/active_jobs.png" title="Active Jobs" alt="Active Jobs">';
-			  result = result +'<span class="count">';
-			  result = result +'100';
-              result = result +'</span>';
-              result = result +'</div>';
-              result = result +' </div>';
+			 
               result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
-              result = result +'<span class="label label-warning">Referrals</span>';
+              result = result +'<span class="label label-warning">Referred To Me</span>';
               result = result +'<img src="resources/images/refer-icon.png" title="Referrals" alt="Referrals">';
           
-              result = result +'<span class="count">100</span>';
+              result = result +'<span class="count">'+json['referToMeJobs']+'</span>';
               result = result +'</div>';
               result = result +' </div>';
               result = result +'<div class="col-sm-6 col-md-3">';
@@ -343,13 +380,13 @@ function flushDate(){
               result = result +'</div>';
 
               result = result +'</div>';
-              /* result = result +'<div class="col-sm-6 col-md-3">';
+              result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-primary">Hired</span>';
               
               result = result +'<img src="resources/images/hired_icon.png" title="Hired" alt="Hired">';
-              result = result +'<a href="#" onClick="getProtletList(\''+startDate+'\',\''+endDate+'\',\'OFFERHIRED\');"><span class="count">'+json['hiredJobs']+'</span></a>';
-              result = result +'</div>'; */
+              result = result +'<a href="#"><span class="count">0</span></a>';
+              result = result +'</div>';
 
               result = result +'</div>';
               result = result +'<div class="col-sm-6 col-md-3">';
@@ -377,6 +414,137 @@ function flushDate(){
   }
   
   </script>
+  
+  
+  
+  <script>
+  function getReferByMeJobPortlets(){
+	  
+    var sourceleadUrl = '${sourceleadUrl}';
+	
+	var startDate = document.getElementById("portletreferByMefromdate").value; 
+	var endDate = document.getElementById("portletreferByMetodate").value; 
+	  
+	$.ajax({ 
+		   	type: "GET",
+		   	url: sourceleadUrl+"/getReferByMeJobSummaryPortlets?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,
+		    success: function(data) {
+	    	 var json = JSON.parse(data);
+		    	
+	    	  var result = ''
+			 
+              result = result +'<div class="col-sm-6 col-md-3">';
+              result = result +'<div class="content_widget jobs-graphview buttonView">';
+              result = result +'<span class="label label-warning">Referred By Me</span>';
+              result = result +'<img src="resources/images/refer-icon.png" title="Referrals" alt="Referrals">';
+          
+              result = result +'<span class="count">'+json['referByMeJobs']+'</span>';
+              result = result +'</div>';
+              result = result +' </div>';
+              result = result +'<div class="col-sm-6 col-md-3">';
+              result = result +'<div class="content_widget jobs-graphview buttonView">';
+              result = result +'<span class="label label-success">Applied</span>';
+                        
+              result = result +'<img src="resources/images/applied_icon.png" title="Applied" alt="Applied">';
+              if(json['appliedJobs'] > 0){
+            	  result = result +'<a href="#"><span class="count text-primary">'+json['appliedJobs']+'</span></a>';  
+              }else{
+            	  result = result +'<span class="count text-primary">0</span>';
+              }
+              result = result +'</div>';
+
+              result = result +'</div>';
+              result = result +'<div class="col-sm-6 col-md-3">';
+              result = result +'<div class="content_widget jobs-graphview buttonView">';
+              result = result +'<span class="label label-info">Shortlisted</span>';
+              result = result +'<img src="resources/images/short_listed.png" title="Shortlisted" alt="Shortlisted">';
+              if(json['shortlistJobs'] > 0){
+            	  result = result +'<a href="#"><span class="count text-primary">'+json['shortlistJobs']+'</span></a>';  
+              }else{
+            	  result = result +'<span class="count">0</span>';
+              }
+              
+              result = result +'</div>';
+
+              result = result +'</div>';
+              result = result +'<div class="col-sm-6 col-md-3">';
+              result = result +'<div class="content_widget jobs-graphview buttonView">';
+              result = result +'<span class="label label-success">Interviews</span>';
+              result = result +'<img src="resources/images/interview_icons.png" title="Interviews" alt="Interviews">';
+              if(json['interviews'] > 0){
+            	  result = result +'<a href="#"><span class="count text-primary">'+json['interviews']+'</span></a>';  
+              }else{
+            	  result = result +'<span class="count">0</span>';
+              }
+              
+              result = result +'</div>';
+
+              result = result +'</div>';
+              result = result +'<div class="col-sm-6 col-md-3">';
+              result = result +'<div class="content_widget jobs-graphview buttonView">';
+              result = result +'<span class="label label-info">Offered</span>';
+                        
+              result = result +'<img src="resources/images/offered_icon.png" title="Offered" alt="Offered">';
+              if(json['offeredJobs'] > 0){
+            	  result = result +'<a href="#"><span class="count text-primary">'+json['offeredJobs']+'</span></a>';  
+              }else{
+            	  result = result +'<span class="count">0</span>';
+              }
+              
+              result = result +'</div>';
+
+              result = result +'</div>';
+              result = result +'<div class="col-sm-6 col-md-3">';
+              result = result +'<div class="content_widget jobs-graphview buttonView">';
+              result = result +'<span class="label label-primary">Hired</span>';
+              
+              result = result +'<img src="resources/images/hired_icon.png" title="Hired" alt="Hired">';
+              result = result +'<a href="#"><span class="count">0</span></a>';
+              result = result +'</div>';
+
+              result = result +'</div>';
+              result = result +'<div class="col-sm-6 col-md-3">';
+              result = result +'<div class="content_widget jobs-graphview buttonView">';
+              result = result +'<span class="label label-danger">Rejected';
+              result = result +'</span>';
+              
+              result = result +'<img src="resources/images/reject_icon.png" title="Rejected" alt="Rejected">';
+              if(json['rejectedJobs'] > 0){
+            	  result = result +'<a href="#"><span class="count text-primary">'+json['rejectedJobs']+'</span></a>';
+              }else{
+            	  result = result +'<span class="count">0</span>';
+              }
+             
+              result = result +'</div>';
+
+              result = result +'</div>';
+              
+              $("#referByMeJobPortletsDiv").empty(); 
+              $("#referByMeJobPortletsDiv").append(result); 
+		    },
+	        error: function(e){
+	        }
+	 });
+  }
+  
+  </script>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   <script>
 function getProtletList(startDate,endDate,status){
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -637,6 +805,31 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 			dt.setDate(dt.getDate() - 1);
 			$("#serialfromdate").datepicker("option", "maxDate", dt);
 	  	}
+	      //minDate: 0  this line for to restrict selection of previous dates
+	  });
+	  
+	  
+	  $('#portletreferByMefromdate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  	  onSelect : function(selected) {
+				var dt = new Date(selected);
+				dt.setDate(dt.getDate() + 1);
+				$("#portlettodate").datepicker("option", "minDate", dt);
+			}
+	      //minDate: 0  this line for to restrict selection of previous dates
+	  });
+	  
+	  $('#portletreferByMetodate').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	      changeMonth: true,
+	  	  changeYear: true, 
+		  onSelect : function(selected) {
+				var dt = new Date(selected);
+				dt.setDate(dt.getDate() - 1);
+				$("#portletfromdate").datepicker("option", "maxDate", dt);
+		  	}
 	      //minDate: 0  this line for to restrict selection of previous dates
 	  });
 	  

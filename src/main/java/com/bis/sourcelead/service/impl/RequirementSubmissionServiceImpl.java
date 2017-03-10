@@ -44,6 +44,7 @@ import com.bis.sourcelead.dao.CandidateEducationDao;
 import com.bis.sourcelead.dao.CandidateEmployersDao;
 import com.bis.sourcelead.dao.CandidateResumesDao;
 import com.bis.sourcelead.dao.RequirementDao;
+import com.bis.sourcelead.dao.RequirementReferDao;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.RequirementSubmissionTemplateFieldsDao;
 import com.bis.sourcelead.dao.UserDao;
@@ -64,6 +65,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
+import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
@@ -172,6 +174,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	 
 	@Autowired
 	RequirementElkUtil requirementElkUtil;
+	
+	@Autowired
+	RequirementReferDao requirementReferDao;
 	
 	@Override
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
@@ -2895,6 +2900,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			}
 			
 			
+			 if(jsonObj.has("referId") && !isNullOrEmpty(jsonObj.getString("referId"))){
+			    RequirementRefer refer = requirementReferDao.getRequirementReferById(Long.valueOf(jsonObj.getString("referId")));
+			    refer.setReferStatus("Applied");
+			    requirementReferDao.addRequirementRefer(refer);
+			 }
+		 
+		 
 			sendEmailToProfessionalForAppliedJob(user, requirement);
 		 
 		    return requirementSubmission;
@@ -3446,6 +3458,17 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	@Override
 	public Integer getProfessionalJobAppliedCountByappliedDate(Long candidateId, Date appliedDate) throws Exception {
 		return requirementSubmissionDao.getProfessionalJobAppliedCountByappliedDate(candidateId, appliedDate);
+	}
+
+	@Override
+	public Integer getReferByMeJobAppliedCount(Long userId, Date startDate, Date endDate) throws Exception {
+		return requirementSubmissionDao.getReferByMeJobAppliedCount(userId, startDate, endDate);
+	}
+
+	@Override
+	public Integer getReferByMeProfessionalJobSubmisssionsCountBySubmissionType(Long userId, String submissionStatus,
+			Date startDate, Date endDate) throws Exception {
+		return requirementSubmissionDao.getReferByMeProfessionalJobSubmisssionsCountBySubmissionType(userId, submissionStatus, startDate, endDate);
 	}
 
 }
