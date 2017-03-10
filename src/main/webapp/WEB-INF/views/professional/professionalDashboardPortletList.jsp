@@ -157,13 +157,15 @@ function portletListFilter(requirementStatus){
 	    	   result = result + '<table id="professionalDashboardPortletPagenation" class="display" cellspacing="0" width="100%"">';
 	           result = result + '<thead>';
 	           result = result + '<tr>';
-	           result = result + '<th>Name</th>';
-	           result = result + '<th>Email</th>';
-	           result = result + '<th>Ph</th>';
 	           result = result + '<th>Req. Name</th>';
+	           result = result + '<th>Company</th>';
+	           result = result + '<th>Emp. Type</th>';
+	           result = result + '<th>Location</th>';
+	           result = result + '<th>Rate</th>';
 	           result = result + '<th>Req. Status</th>';
-	           result = result + '<th>Referred on</th>';
-		       result = result + '<th>Applicant Status</th>';
+		       result = result + '<th>Stage</th>';
+		       result = result + '<th>Referred By</th>';
+		      /*  result = result + '<th>Referred On</th>'; */
 	           result = result + '</tr>';
 	           result = result + '</thead>';
 	           result = result + '<tbody>';
@@ -176,14 +178,55 @@ function portletListFilter(requirementStatus){
 	        	   }else{
 	        		   requirementJobId = "";
 	        	   }
+	        	   if(report.employeeType != null && report.employeeType != '' && report.employeeType != 'undefined'){
+	        		   employeeType = report.employeeType;
+	        	   }else{
+	        		   employeeType = "--"
+	        	   }
+	        	   
+	        	   if(report.state != null && report.state != '' && report.state != 'undefined'){
+	        		   report.state = ' , '+report.state;
+	        	   }else{
+	        		   state = "";
+	        	   }
+	        	   
+	        	   if(report.city != null && report.city != '' && report.city != 'undefined'){
+	        		   report.city = ' , '+report.city;
+	        	   }else{
+	        		   city = "";
+	        	   }
+	        	   
+	        	   if(report.rate != null && report.rate != '' && report.rate != 'undefined'){
+	        		   rate = report.rate;
+	        	   }else{
+	        		   rate = "--";
+	        	   }
+	        	   if(report.rateType != null && report.rateType != '' && report.rateType != 'undefined'){
+	        		   rateType =report.rateType;
+	        	   }else{
+	        		   rateType = "";
+	        	   }
+	        	   	        	
+	        	   if(report.referredBy != null && report.referredBy != '' && report.referredBy != 'undefined'){
+	        		   referredBy = report.referredBy;
+	        	   }else{
+	        		   referredBy= "--";
+	        	   }
+	        	  /*  if(report.referredOn != null && report.referredOn != '' && report.referredOn != 'undefined'){
+	        		   referredOn = report.referredOn;
+	        	   }else{
+	        		   referredOn= "--";
+	        	   } */
 	        	   result = result +'         <tr>';
-	        	   result = result +'         <td><div class="tbldata-dotdot">'+report.candidateName+'</div></td>';
-	        	   result = result +'         <td><div class="tbldata-dotdot-vsm">'+report.candidateEmail+'</div></td>';
-	        	   result = result +'         <td><div class="tbldata-dotdot-100">'+report.phoneNumber+'</div></td>';
 	        	   result = result +'         <td><a href="<c:url value="/requirementProfile/'+report.requirementUUID+'"/>"><div class="tbldata-dotdot-sm">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
+	        	   result = result +'         <td><div class="tbldata-dotdot">'+report.orgName+'</div></td>';
+	        	   result = result +'         <td><div class="tblminwidth-50">'+employeeType+'</div></td>';
+	        	   result = result +'         <td><div class="tbldata-dotdot-100">'+report.country+' '+state+' '+city+'</div></td>';
+	        	   result = result +'         <td><div class="tblminwidth-dotdot">'+rate+' '+rateType+'</div></td>';
 	        	   result = result +'         <td><div class="tblminwidth-50">'+report.requirementSubmissionStatus+'</div></td>';
-	        	   result = result +'         <td><div class="tblminwidth-50">'+report.createdDateStr+'</div></td>';
 	        	   result = result +'         <td><div class="tblminwidth-50">'+report.submissionStatus+'</div></td>';
+	        	   result = result +'         <td><div class="tblminwidth-dotdot">'+referredBy+'</div></td>';
+	        	  /*  result = result +'         <td><div class="tblminwidth-50">'+referredOn+'</div></td>'; */
 	        	   result = result +'         </tr>';
 	        	   
   				}

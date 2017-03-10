@@ -80,4 +80,7 @@ public interface CandidateResumesService {
 	
 	public CandidateResumes getCandidateResumeByResumeUUID(String resumeUUID) throws Exception;
 	
+	
+	Integer getCandidateResumeCountByResumeId(Long resumeId) throws Exception;
+	
 }
