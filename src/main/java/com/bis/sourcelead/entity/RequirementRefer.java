@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -98,14 +99,15 @@ public class RequirementRefer implements Serializable {
 	private Integer interviews;
 	
 	@Transient
+	private Integer referedToMeCount;
+	
+	@Transient
+	private List<RequirementSubmission> crowdSourcingPortLetList;
+   
+   @Transient
 	private String dateString;
 	
-	
-	
-	
-	
-
-	public Long getId() {
+		public Long getId() {
 		return id;
 	}
 
@@ -274,6 +276,14 @@ public class RequirementRefer implements Serializable {
 		this.interviews = interviews;
 	}
 
+	public List<RequirementSubmission> getCrowdSourcingPortLetList() {
+		return crowdSourcingPortLetList;
+	}
+
+	public void setCrowdSourcingPortLetList(List<RequirementSubmission> crowdSourcingPortLetList) {
+		this.crowdSourcingPortLetList = crowdSourcingPortLetList;
+	}
+
 	public String getDateString() {
 		return dateString;
 	}
@@ -281,7 +291,14 @@ public class RequirementRefer implements Serializable {
 	public void setDateString(String dateString) {
 		this.dateString = dateString;
 	}
+
+	public Integer getReferedToMeCount() {
+		return referedToMeCount;
+	}
+
+	public void setReferedToMeCount(Integer referedToMeCount) {
+		this.referedToMeCount = referedToMeCount;
+	}
 	
 	
-	
-}
+	}
