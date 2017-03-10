@@ -1336,7 +1336,7 @@ public class CrowdSourcingRequirementsRestController {
 						if(null != requirementRefer.getReferFromUser().getLastName()){
 							rs.setReferredBy(referredUser.append(requirementRefer.getReferFromUser().getFirstName()).append(" ").append(requirementRefer.getReferFromUser().getLastName()).toString());	
 						}else{
-							rs.setReferredBy(referredUser.append(requirementRefer.getReferFromUser().getLastName()).toString());
+							rs.setReferredBy(referredUser.append(requirementRefer.getReferFromUser().getFirstName()).toString());
 						}
 						rs.setReferredOn(Constants.DF_DMY.format(requirementRefer.getCreatedDate()));
 					}
