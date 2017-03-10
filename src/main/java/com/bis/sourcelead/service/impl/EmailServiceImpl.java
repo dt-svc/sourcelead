@@ -1,14 +1,14 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import javax.mail.internet.InternetAddress;
-
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -95,8 +95,25 @@ public class EmailServiceImpl implements EmailService {
 		    	 if(null != emails){
 		    		  emails = emails.replaceAll("\\[", "").replaceAll("\\]","");
 		    		  emails = emails.replaceAll("\"", "");
+
 		    	  }
 		    	  iAdressArray = InternetAddress.parse(emails);
+
+			  	      String[] toEmails = emails.split(",");
+			  	      recipantsList.addAll(Arrays.asList(toEmails));
+			    	 /* for (String toEmail : toEmails) {
+			    		  recipantsList.add(toEmail);
+			    	  } */
+		    	  }
+		    	  
+		    	  for(String email : recipantsList){
+		    		    if(StringUtils.isEmpty(email.trim()))
+		    		    	continue;
+						EmailRecipient emailRecipient = new EmailRecipient();
+						emailRecipient.setEmail(email.trim());
+						emailRecipientList.add(emailRecipient);
+					}
+
 		    	 
 			}
 			
