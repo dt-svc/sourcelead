@@ -336,8 +336,12 @@ function flushDate(){
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-warning">Referred To Me</span>';
               result = result +'<img src="resources/images/refer-icon.png" title="Referrals" alt="Referrals">';
-          
-              result = result +'<span class="count">'+json['referToMeJobs']+'</span>';
+              if(json['appliedJobs'] > 0){
+            	  result = result +'<a href="#" onClick="getProtletList(\''+startDate+'\',\''+endDate+'\',\'referToMe\');"><span class="count text-primary">'+json['referToMeJobs']+'</span></a>';
+              }else{
+            	  result = result +'<span class="count">0</span>';
+              }
+              
               result = result +'</div>';
               result = result +' </div>';
               result = result +'<div class="col-sm-6 col-md-3">';

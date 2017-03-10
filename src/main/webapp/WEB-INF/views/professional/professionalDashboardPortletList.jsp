@@ -47,6 +47,9 @@ $(document).ready(function() {
 	 if(requirementStatus == "REJECTED"){
 		  applicantStatus = "Rejected";
 	 }
+	 if(requirementStatus == "referToMe"){
+		  applicantStatus = "Referred To Me";
+	 }
 	 if(requirementStatus == "" || requirementStatus =='undefined'  || requirementStatus == null){
 		  applicantStatus = "Applied";
 	 }
@@ -90,6 +93,9 @@ function myFunction(){
 	 if(requirementStatus == "REJECTED"){
 		  applicantStatus = "Rejected";
 	 }
+	 if(requirementStatus == "referToMe"){
+		  applicantStatus = "Referred To Me";
+	 }
 	 if(requirementStatus == "" || requirementStatus =='undefined'  || requirementStatus == null){
 		  applicantStatus = "Applied";
 	 }
@@ -104,7 +110,6 @@ function myFunction(){
 function portletListFilter(requirementStatus){
 	 var startDate = '${startDate}'; 
 	 var endDate = '${endDate}'; 
-	
 	professionalDashboardPortletList(startDate,endDate,requirementStatus);
   
 }
@@ -124,7 +129,8 @@ function portletListFilter(requirementStatus){
 	    	 var json = JSON.parse(data);
 	    	 var result ='';
 	    	 result =result +'<span class="select-field"><i class="fa fa-filter"></i>';
-	    	 result =result +'<select name = "navyOp" id="navyOp" onChange="myFunction(this);">'; 
+	    	 result =result +'<select name = "navyOp" id="navyOp" onChange="myFunction();">'; 
+	    	 result =result +'<option '+ (requirementStatus == "" ? "selected" : 'referToMe') +' value = "referToMe">Refer To Me ('+json.referToMeJobs+')</span></option>';
 	    	 result =result +'<option '+ (requirementStatus == "" ? "selected" : '') +' value = "">Applied ('+json.appliedJobs+')</span></option>';
 	    	 result =result +'<option '+ (requirementStatus == "SHORTLIST" ? "selected" : '') +' value = "SHORTLIST">Short Listed ('+json.shortlistJobs+')</option>';
 	    	 result =result +'<option '+ (requirementStatus == "INTERVIEW" ? "selected" : '') +' value = "INTERVIEW">Interviews ('+json.interviews+') </option>';
@@ -169,67 +175,131 @@ function portletListFilter(requirementStatus){
 	           result = result + '</tr>';
 	           result = result + '</thead>';
 	           result = result + '<tbody>';
-	           for (var i=0; i<json.crowdSourcingPortLetList.length; i++)
-  				{
-	        	   var report = json.crowdSourcingPortLetList[i];
-	        	   
-	        	   if(report.requirementJobId != null && report.requirementJobId != '' && report.requirementJobId != 'undefined'){
-	        		   requirementJobId = report.requirementJobId +' - ';
-	        	   }else{
-	        		   requirementJobId = "";
-	        	   }
-	        	   if(report.employeeType != null && report.employeeType != '' && report.employeeType != 'undefined'){
-	        		   employeeType = report.employeeType;
-	        	   }else{
-	        		   employeeType = "--"
-	        	   }
-	        	   
-	        	   if(report.state != null && report.state != '' && report.state != 'undefined'){
-	        		   report.state = ' , '+report.state;
-	        	   }else{
-	        		   state = "";
-	        	   }
-	        	   
-	        	   if(report.city != null && report.city != '' && report.city != 'undefined'){
-	        		   report.city = ' , '+report.city;
-	        	   }else{
-	        		   city = "";
-	        	   }
-	        	   
-	        	   if(report.rate != null && report.rate != '' && report.rate != 'undefined'){
-	        		   rate = report.rate;
-	        	   }else{
-	        		   rate = "--";
-	        	   }
-	        	   if(report.rateType != null && report.rateType != '' && report.rateType != 'undefined'){
-	        		   rateType =report.rateType;
-	        	   }else{
-	        		   rateType = "";
-	        	   }
-	        	   	        	
-	        	   if(report.referredBy != null && report.referredBy != '' && report.referredBy != 'undefined'){
-	        		   referredBy = report.referredBy;
-	        	   }else{
-	        		   referredBy= "--";
-	        	   }
-	        	  /*  if(report.referredOn != null && report.referredOn != '' && report.referredOn != 'undefined'){
-	        		   referredOn = report.referredOn;
-	        	   }else{
-	        		   referredOn= "--";
-	        	   } */
-	        	   result = result +'         <tr>';
-	        	   result = result +'         <td><a href="<c:url value="/requirementProfile/'+report.requirementUUID+'"/>"><div class="tbldata-dotdot-sm">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
-	        	   result = result +'         <td><div class="tbldata-dotdot">'+report.orgName+'</div></td>';
-	        	   result = result +'         <td><div class="tblminwidth-50">'+employeeType+'</div></td>';
-	        	   result = result +'         <td><div class="tbldata-dotdot-100">'+report.country+' '+state+' '+city+'</div></td>';
-	        	   result = result +'         <td><div class="tblminwidth-dotdot">'+rate+' '+rateType+'</div></td>';
-	        	   result = result +'         <td><div class="tblminwidth-50">'+report.requirementSubmissionStatus+'</div></td>';
-	        	   result = result +'         <td><div class="tblminwidth-50">'+report.submissionStatus+'</div></td>';
-	        	   result = result +'         <td><div class="tblminwidth-dotdot">'+referredBy+'</div></td>';
-	        	  /*  result = result +'         <td><div class="tblminwidth-50">'+referredOn+'</div></td>'; */
-	        	   result = result +'         </tr>';
-	        	   
-  				}
+	           if(requirementStatus  != "referToMe"){
+	        	   for (var i=0; i<json.crowdSourcingPortLetList.length; i++)
+	  				{
+		        	   var report = json.crowdSourcingPortLetList[i];
+		        	   
+		        	   if(report.requirementJobId != null && report.requirementJobId != '' && report.requirementJobId != 'undefined'){
+		        		   requirementJobId = report.requirementJobId +' - ';
+		        	   }else{
+		        		   requirementJobId = "";
+		        	   }
+		        	   if(report.employeeType != null && report.employeeType != '' && report.employeeType != 'undefined'){
+		        		   employeeType = report.employeeType;
+		        	   }else{
+		        		   employeeType = "--"
+		        	   }
+		        	   
+		        	   if(report.state != null && report.state != '' && report.state != 'undefined'){
+		        		   state = ' , '+report.state;
+		        	   }else{
+		        		   state = "";
+		        	   }
+		        	   
+		        	   if(report.city != null && report.city != '' && report.city != 'undefined'){
+		        		   report.city = ' , '+report.city;
+		        	   }else{
+		        		   city = "";
+		        	   }
+		        	   
+		        	   if(report.rate != null && report.rate != '' && report.rate != 'undefined'){
+		        		   rate = report.rate;
+		        	   }else{
+		        		   rate = "--";
+		        	   }
+		        	   if(report.rateType != null && report.rateType != '' && report.rateType != 'undefined'){
+		        		   rateType =report.rateType;
+		        	   }else{
+		        		   rateType = "";
+		        	   }
+		        	   	        	
+		        	   if(report.referredBy != null && report.referredBy != '' && report.referredBy != 'undefined'){
+		        		   referredBy = report.referredBy;
+		        	   }else{
+		        		   referredBy= "--";
+		        	   }
+		        	  /*  if(report.referredOn != null && report.referredOn != '' && report.referredOn != 'undefined'){
+		        		   referredOn = report.referredOn;
+		        	   }else{
+		        		   referredOn= "--";
+		        	   } */
+		        	   result = result +'         <tr>';
+		        	   result = result +'         <td><a href="<c:url value="/requirementProfile/'+report.requirementUUID+'"/>"><div class="tbldata-dotdot-sm">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
+		        	   result = result +'         <td><div class="tbldata-dotdot">'+report.orgName+'</div></td>';
+		        	   result = result +'         <td><div class="tblminwidth-50">'+employeeType+'</div></td>';
+		        	   result = result +'         <td><div class="tbldata-dotdot-100">'+report.country+' '+state+' '+city+'</div></td>';
+		        	   result = result +'         <td><div class="tblminwidth-dotdot">'+rate+' '+rateType+'</div></td>';
+		        	   result = result +'         <td><div class="tblminwidth-50">'+report.requirementSubmissionStatus+'</div></td>';
+		        	   result = result +'         <td><div class="tblminwidth-50">'+report.submissionStatus+'</div></td>';
+		        	   result = result +'         <td><div class="tblminwidth-dotdot">'+referredBy+'</div></td>';
+		        	  /*  result = result +'         <td><div class="tblminwidth-50">'+referredOn+'</div></td>'; */
+		        	   result = result +'         </tr>';
+		        	   
+	  				}
+	           }else{
+	        	    for (var i=0; i<json.referToMeList.length; i++)
+	  				{ 
+		        	   var report = json.referToMeList[i];
+		        	   
+		        	   if(report.requirementJobId != null && report.requirementJobId != '' && report.requirementJobId != 'undefined'){
+		        		   requirementJobId = report.requirementJobId +' - ';
+		        	   }else{
+		        		   requirementJobId = "";
+		        	   }
+		        	   if(report.employeeType != null && report.employeeType != '' && report.employeeType != 'undefined'){
+		        		   employeeType = report.employeeType;
+		        	   }else{
+		        		   employeeType = "--"
+		        	   }
+		        	   
+		        	   if(report.requirementState != null && report.requirementState != '' && report.requirementState != 'undefined'){
+		        		   state = ' , '+report.requirementState;
+		        	   }else{
+		        		   state = "";
+		        	   }
+		        	   
+		        	   if(report.requirementCity != null && report.requirementCity != '' && report.requirementCity != 'undefined'){
+		        		   city = ' , '+report.requirementCity;
+		        	   }else{
+		        		   city = "";
+		        	   }
+		        	   
+		        	   if(report.requirementRat != null && report.requirementRat != '' && report.requirementRat != 'undefined'){
+		        		   rate = report.requirementRat;
+		        	   }else{
+		        		   rate = "--";
+		        	   }
+		        	   if(report.RequirementRateType != null && report.RequirementRateType != '' && report.RequirementRateType != 'undefined'){
+		        		   rateType =report.RequirementRateType;
+		        	   }else{
+		        		   rateType = "";
+		        	   }
+		        	   	        	
+		        	   if(report.referredBy != null && report.referredBy != '' && report.referredBy != 'undefined'){
+		        		   referredBy = report.referredBy;
+		        	   }else{
+		        		   referredBy= "--";
+		        	   }
+		        	  if(report.submissionStatus != null && report.submissionStatus != '' && report.submissionStatus != 'undefined'){
+		        		  submissionStatus = report.submissionStatus;
+		        	  }else{
+		        		  submissionStatus = "--"
+		        	  }
+		        	   result = result +'         <tr>';
+		        	   result = result +'         <td><a href="<c:url value="/requirementProfile/'+report.requirementUUID+'"/>"><div class="tbldata-dotdot-sm">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
+		        	   result = result +'         <td><div class="tbldata-dotdot">'+report.requirementOrgName+'</div></td>';
+		        	   result = result +'         <td><div class="tblminwidth-50">'+employeeType+'</div></td>';
+		        	   result = result +'         <td><div class="tbldata-dotdot-100">'+report.requirementCountry+' '+state+' '+city+'</div></td>';
+		        	   result = result +'         <td><div class="tblminwidth-dotdot">'+rate+' '+rateType+'</div></td>';
+		        	   result = result +'         <td><div class="tblminwidth-50">'+report.requirementSubmissionStatus+'</div></td>';
+		        	   result = result +'         <td><div class="tblminwidth-50">'+submissionStatus+'</div></td>';
+		        	   result = result +'         <td><div class="tblminwidth-dotdot">'+referredBy+'</div></td>';
+		        	   result = result +'         </tr>';
+		        	   
+	  				 } 
+	           }
+	          
 	    	 
 	           result = result + '       </tbody>';
 	           result = result + '     </table>';
