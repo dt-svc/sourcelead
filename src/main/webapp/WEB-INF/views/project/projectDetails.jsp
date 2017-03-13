@@ -458,7 +458,7 @@
 						//Main project end date
 						var projectEndDate = json.endDateStr;
 						$('#endDateStr1').datepicker({
-							dateFormat : 'yy-mm-dd',
+							dateFormat : 'dd-mm-yy',
 							changeMonth: true,
 							changeYear: true, 
 							minDate : dt,

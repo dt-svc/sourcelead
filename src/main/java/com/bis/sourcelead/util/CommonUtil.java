@@ -588,7 +588,7 @@ public class CommonUtil {
 	 * @return
 	 */
 	public  Date  getDateFormat(String dateString){
-		DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+		DateFormat df = new SimpleDateFormat("dd-MM-yyyy"); 
 	    Date date = null;
 	    try {
 	        date = df.parse(dateString);

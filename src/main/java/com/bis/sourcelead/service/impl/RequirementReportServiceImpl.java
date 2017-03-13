@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.dao.RequirementReportDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.RequirementReportService;
@@ -29,6 +30,14 @@ public class RequirementReportServiceImpl implements RequirementReportService{
 	@Override
 	public Integer getApplicantsCountsForReports(Long orgLocationID,String applicantStatus) throws Exception {
 		return requirementReportDao.getApplicantsCountsForReports(orgLocationID,applicantStatus) ;	
+	}
+	@Override
+	public List<RequirementSubmission> getReceivedApplicantsCountsPerReq(Long requirementId) {
+		return requirementReportDao.getReceivedApplicantsCountsPerReq(requirementId);
+	}
+	@Override
+	public List<RequirementSubmissionHistory> getReceivedApplicantsCountForReports(Long orgLocationId) {
+		return requirementReportDao.getReceivedApplicantsCountForReports(orgLocationId);
 	}
 
 }

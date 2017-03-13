@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
 
@@ -15,5 +16,9 @@ public interface RequirementReportService {
 	List<RequirementSubmissionHistory> getApplicantsCountsPerReq(Long requirementId)throws Exception;
 
 	Integer getApplicantsCountsForReports(Long id, String applicantStatus)throws Exception;
+
+	List<RequirementSubmission> getReceivedApplicantsCountsPerReq(Long requirementId);
+
+	List<RequirementSubmissionHistory> getReceivedApplicantsCountForReports(Long orgLocationId);
 
 }

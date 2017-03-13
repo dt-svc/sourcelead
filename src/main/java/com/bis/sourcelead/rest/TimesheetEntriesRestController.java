@@ -300,19 +300,20 @@ public class TimesheetEntriesRestController {
 			file = timeSheetPdfUtil.exportTimesheetPdf(projectMember,startDate,endDate,orgLocations);
 		}
 		
-		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-		if (mimeType == null) {
-			mimeType = "application/octet-stream";
+		if(file != null){
+			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			StringBuilder fileName = new StringBuilder();
+			response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();	
 		}
-		response.setContentType(mimeType);
-		StringBuilder fileName = new StringBuilder();
-		response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
-		response.setContentLength((int) file.length());
-		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-		FileCopyUtils.copy(inputStream, response.getOutputStream());
-		inputStream.close();
-		response.getOutputStream().close();
-		response.getOutputStream().flush();	
 	}
- 
 }
