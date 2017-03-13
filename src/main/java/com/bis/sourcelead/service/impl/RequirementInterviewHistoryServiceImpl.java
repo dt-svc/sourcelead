@@ -222,4 +222,10 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 		return list;
 
 			}
+
+	@Override
+	public List<RequirementInterviewHistory> getAllRecruiterSubmittedInterviews(String dateRange, Long userId) throws Exception {
+		List<RequirementInterviewHistory> list = requirementInterviewHistoryDao.getAllRecruiterSubmittedInterviews(dateRange, userId);
+		return list;
+	}
 }
