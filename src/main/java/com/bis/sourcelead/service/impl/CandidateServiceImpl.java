@@ -616,6 +616,130 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getCandidatesByOrgLocationIDAndSearchText(orgLocationId, requirementId, candidateType, searchApplicant);
 	}
 
+	@Override
+	public Candidate storeProfessionalParseCandidate(JSONObject jsonObj, OrgLocations orgLocations, User user,
+			MultipartFile multiFile, Long candidateId) throws Exception {
+		
+            Candidate  candidate = candidateDao.getCandidateByCandidateId(candidateId);
+			if(orgLocations != null){
+			candidate.setOrgLocationId(orgLocations);
+			}
+			candidate.setFirstName(candidate.getFirstName());
+			if(null != candidate.getLastName() && !"".equalsIgnoreCase(candidate.getLastName())){
+				candidate.setLastName(candidate.getLastName());	
+			}
+			candidate.setCountry(candidate.getCountry());
+			
+			if(jsonObj.has("state") && jsonObj.getString("state") !=null){
+			candidate.setState(jsonObj.getString("state"));
+			}
+			if(jsonObj.has("city") && jsonObj.getString("city") !=null){
+			candidate.setCity(jsonObj.getString("city"));
+			}
+			if(jsonObj.has("mobilePhone") && jsonObj.getString("mobilePhone") !=null){
+			candidate.setMobilePhone(jsonObj.getString("mobilePhone"));
+			}
+			if(jsonObj.has("alternateMobilePhone") && jsonObj.getString("alternateMobilePhone") !=null){
+				candidate.setAlternateMobilePhone(jsonObj.getString("alternateMobilePhone"));
+			}
+			
+			if(null != candidate.getEmail()){
+				candidate.setEmail(candidate.getEmail());	
+			}
+			
+
+			if(jsonObj.has("currentRate") && jsonObj.getString("currentRate") !=null){
+			candidate.setCurrentRate(jsonObj.getString("currentRate"));
+			}
+			
+			if(jsonObj.has("currentRateType") && jsonObj.getString("currentRateType") !=null){
+				candidate.setCurrentRateType(jsonObj.getString("currentRateType"));
+				}
+			
+			if(jsonObj.has("currentRateCurrency") && jsonObj.getString("currentRateCurrency") !=null){
+			candidate.setCurrentRateCurrency(jsonObj.getString("currentRateCurrency"));
+			}
+			if(jsonObj.has("designation") && jsonObj.getString("designation") !=null){
+			candidate.setDesignation(jsonObj.getString("designation"));
+			}
+			
+			if(jsonObj.has("designationOtherType") && jsonObj.has("designationType") && "Other".equalsIgnoreCase(jsonObj.getString("designationType"))){
+				candidate.setDesignationOtherType(jsonObj.getString("designationOtherType"));
+			}else{
+				candidate.setDesignationOtherType(null);
+			}
+			
+			if(jsonObj.has("expectedRate") && jsonObj.getString("expectedRate") !=null ){
+			candidate.setExpectedRate(jsonObj.getString("expectedRate"));
+			}
+			
+			if(jsonObj.has("rateType") && jsonObj.getString("rateType") !=null ){
+				candidate.setRateType(jsonObj.getString("rateType"));
+				}
+			
+			if(jsonObj.has("expectedRateCurrencey") && jsonObj.getString("expectedRateCurrencey") !=null ){
+				candidate.setExpectedRateCurrencey(jsonObj.getString("expectedRateCurrencey"));
+			}
+			if(jsonObj.has("summary") && jsonObj.getString("summary") !=null){
+			candidate.setSummary(jsonObj.getString("summary"));
+			}
+			if(jsonObj.has("designationType") && jsonObj.getString("designationType") !=null){
+			candidate.setDesignationType(jsonObj.getString("designationType"));
+			}
+			if(jsonObj.has("experienceYears") && jsonObj.getString("experienceYears") !=null){
+			candidate.setExperienceYears(jsonObj.getString("experienceYears"));
+			}
+			
+			
+			if(jsonObj.has("experienceMonths") && jsonObj.getString("experienceMonths") !=null){
+				candidate.setExperienceMonths(jsonObj.getString("experienceMonths"));	
+			}
+			
+			if(jsonObj.has("noticePeriod") && jsonObj.getString("noticePeriod") !=null){
+				candidate.setNoticePeriod(jsonObj.getString("noticePeriod"));	
+			}
+			
+			if(jsonObj.has("address") && jsonObj.getString("address") !=null){
+				candidate.setAddress(jsonObj.getString("address"));
+			}
+			
+			UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+			if(null != userRole && userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+				candidate.setRecruiterUserId(userRole.getUser());	
+			}
+			
+			if(jsonObj.has("candidateSkills") && jsonObj.getString("candidateSkills") !=null){
+				String candidateSkills = null;
+				try{
+		    		   JSONArray jsonArray = jsonObj.getJSONArray("candidateSkills");
+		    		   candidateSkills = jsonArray.toString();
+		    	  }
+		    	  catch(JSONException e){
+		    		  candidateSkills= jsonObj.getString("candidateSkills");
+		    	  }
+				candidateSkills = candidateSkills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]","");
+				
+				candidate.setSkillsName(candidateSkills);
+			}
+			
+			HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(jsonObj, orgLocations,candidate,user.getUserCode());
+			candidate.setCandidateEducation(candidateEducationList);
+			
+			HashSet<CandidateEmployers> candidateEmployersList = candidateEmployersService.getCandidateEmployersDetails(jsonObj,orgLocations,candidate,user.getUserCode());
+			candidate.setCandidateEmployers(candidateEmployersList);
+			
+			if(multiFile != null){
+			HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate,multiFile);
+			candidate.setCandidateResumes(candidateResumesList);
+			}
+			candidate.setUpdatedBy(user.getUserCode());
+			candidate.setUpdatedDate(commonUtil.currentDate());
+			candidate.setStatus(Constants.CANDIDATE_ACTIVE);
+			candidate.setIsFavourite(0);
+			Candidate savedCandidate = candidateDao.storeCandidate(candidate);
+			return savedCandidate;
+	}
+
 //	private ArrayList<String> getSearchValuesFromChosenSelectField(String searchValue) {
 //		 ArrayList<String> keyWordList = null;
 //		 if(searchValue !=null && !"".equalsIgnoreCase(searchValue)){
