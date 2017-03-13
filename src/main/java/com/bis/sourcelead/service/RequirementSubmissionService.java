@@ -194,5 +194,15 @@ public interface RequirementSubmissionService {
 	Integer getReferByMeJobAppliedCount(Long userId,Date startDate,Date endDate) throws Exception;
 	
 	Integer getReferByMeProfessionalJobSubmisssionsCountBySubmissionType(Long userId,String submissionStatus,Date startDate,Date endDate) throws Exception;
+	
+	Integer getReferByMeJobAppliedCountByappliedDate(Long userId,Date appliedDate) throws Exception;
+	
+	Integer getRecruiterSubmittedJobCountByappliedDate(Long userId,Date appliedDate) throws Exception;
+	
+	Integer getRequiterReferJobAppliedCount(Long userId,Date startDate,Date endDate) throws Exception;
+	
+	Integer getRecruiterSubmittedJobCountByStartDateAndEndDate(Long userId,Date startDate,Date endDate) throws Exception;
+	
+	Integer getRecruiterSubmittedJobsCountByStage(Long userId,String submissionStatus,Date startDate,Date endDate) throws Exception;
 
 }
