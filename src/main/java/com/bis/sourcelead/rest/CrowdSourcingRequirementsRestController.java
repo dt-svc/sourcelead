@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
@@ -791,21 +790,15 @@ public class CrowdSourcingRequirementsRestController {
 	 
 	 
 	 
-	 @PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_PROFILE')")
-		@RequestMapping(value = "/getProfessionalInterviews")
-		public String getProfessionalInterviews(String dateRange, HttpServletRequest request) throws Exception {
+	    @PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_CANDIDATES')")
+		@RequestMapping(value = "/getRecruiterSubmittiedInterviews")
+		public String getRecruiterSubmittiedInterviews(String dateRange, HttpServletRequest request) throws Exception {
 			String resultJson;
-			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
-		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			List<RequirementInterviewHistory> requirementInterviewList = null;
-			String currentTime = null;
-			String userType = null;
-			String userCode = user.getUserCode();
-			Long userId = user.getId();
 			
-		   requirementInterviewList = requirementInterviewHistoryService.getAllProfessinalInterviews(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode,candidateId);
+		   requirementInterviewList = requirementInterviewHistoryService.getAllRecruiterSubmittedInterviews(dateRange, user.getId());
 			
 			for(RequirementInterviewHistory interviewHistory : requirementInterviewList){
 				if(null != interviewHistory.getInterviewId()){
@@ -831,16 +824,59 @@ public class CrowdSourcingRequirementsRestController {
 				String commonDateFormat = standardFormat.format(interviewHistory.getInterviewId().getStartTime());
 				interviewHistory.setInterviewStartDateTimeStr(commonDateFormat.toString());
 				
-				
-				
-				
-				
 			}
-			
 			
 			resultJson = commonUtil.toJSON(requirementInterviewList);
 			return resultJson;
 		}
+	    
+	    
+	    
+	    @PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_PROFILE')")
+	  		@RequestMapping(value = "/getProfessionalInterviews")
+	  		public String getProfessionalInterviews(String dateRange, HttpServletRequest request) throws Exception {
+	  			String resultJson;
+	  			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	  			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+	  		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	  			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	  			List<RequirementInterviewHistory> requirementInterviewList = null;
+	  			String currentTime = null;
+	  			String userType = null;
+	  			String userCode = user.getUserCode();
+	  			Long userId = user.getId();
+	  			
+	  		   requirementInterviewList = requirementInterviewHistoryService.getAllProfessinalInterviews(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode,candidateId);
+	  			
+	  			for(RequirementInterviewHistory interviewHistory : requirementInterviewList){
+	  				if(null != interviewHistory.getInterviewId()){
+	  						interviewHistory.setInterviewType(interviewHistory.getInterviewId().getInterviewType());	
+	  						interviewHistory.setLocation(interviewHistory.getInterviewId().getLocation());	
+	  				 }
+	  				if(null != interviewHistory.getOrgLocationId()){
+	  					if(null != interviewHistory.getOrgLocationId().getOrg()){
+	  						if(null != interviewHistory.getOrgLocationId().getOrg().getOrgName()){
+	  							interviewHistory.setCompanyName(interviewHistory.getOrgLocationId().getOrg().getOrgName());
+	  						}
+	  					}
+	  				}
+	  				if(null != interviewHistory.getSubmissionId()){
+	  					if(null != interviewHistory.getSubmissionId().getRequirement()){
+	  						interviewHistory.setRequirementTitle(interviewHistory.getSubmissionId().getRequirement().getJobTitle());
+	  						interviewHistory.setRequirementUUID(interviewHistory.getSubmissionId().getRequirement().getRequirementUUID());
+	  					}
+	  				}
+	  				interviewHistory.setRequirementId(interviewHistory.getSubmissionId().getRequirement().getId().toString());
+	  				
+	  				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm aa");
+	  				String commonDateFormat = standardFormat.format(interviewHistory.getInterviewId().getStartTime());
+	  				interviewHistory.setInterviewStartDateTimeStr(commonDateFormat.toString());
+	  				
+	  			}
+	  			
+	  			resultJson = commonUtil.toJSON(requirementInterviewList);
+	  			return resultJson;
+	  		}
 	 
 	 
 	 
