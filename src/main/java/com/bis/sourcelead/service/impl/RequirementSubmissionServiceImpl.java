@@ -1013,11 +1013,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(loginUser.getFirstName());
 		 emailMessage.setLastName(loginUser.getLastName());
 		 emailMessage.setToEmail(requirementSubmissionTemplateFields.getEmailId());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 StringBuilder emailBuilder = new StringBuilder();
 		 emailMessage.setFromName(emailBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 
@@ -1138,7 +1138,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(initiatorUser.getFirstName());
 		 emailMessage.setLastName(initiatorUser.getLastName());
 		 emailMessage.setToEmail(initiatorUser.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(candidate.getEmail());
 		 emailMessage.setCreatedBy(initiatorUser.getUserCode());
 		
 		 if(candidate.getFirstName() != null && candidate.getLastName()!= null && !"".equalsIgnoreCase(candidate.getFirstName()) && !"".equalsIgnoreCase(candidate.getLastName())){
@@ -1147,6 +1147,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }else{
 			 emailMessage.setFromName(candidate.getFirstName());
 		 }
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 
@@ -1242,7 +1243,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(initiatorUser.getFirstName());
 		 emailMessage.setLastName(initiatorUser.getLastName());
 		 emailMessage.setToEmail(initiatorUser.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(requirementSubmissionTemplateFields.getEmailId());
 		 emailMessage.setCreatedBy(initiatorUser.getUserCode());
 		 if(requirementSubmissionTemplateFields.getFirstName() != null && requirementSubmissionTemplateFields.getLastName()!= null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getFirstName()) && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
 			 StringBuilder emailBuild = new StringBuilder();
@@ -1250,7 +1251,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }else{
 			 emailMessage.setFromName(requirementSubmissionTemplateFields.getFirstName());
 		 }
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1330,7 +1331,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(initiatorUser.getFirstName());
 		 emailMessage.setLastName(initiatorUser.getLastName());
 		 emailMessage.setToEmail(initiatorUser.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(requirementSubmissionTemplateFields.getEmailId());
 		 emailMessage.setCreatedBy(initiatorUser.getUserCode());
 		 if(null != requirementSubmissionTemplateFields.getFirstName() && null != requirementSubmissionTemplateFields.getLastName() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getFirstName()) && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
 			 StringBuilder msgBuild = new StringBuilder();
@@ -1338,7 +1339,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }else{
 			 emailMessage.setFromName(requirementSubmissionTemplateFields.getFirstName());
 		 }
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class field values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 
@@ -1982,7 +1983,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(requirementSubmissionTemplateFields.getFirstName());
 		 emailMessage.setLastName(requirementSubmissionTemplateFields.getLastName());
 		 emailMessage.setToEmail(requirementSubmissionTemplateFields.getEmailId());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(user.getEmail());
 		 emailMessage.setCreatedBy(user.getUserCode());
 		 if(null!= user.getFirstName() && !"".equalsIgnoreCase(user.getFirstName()) && null != user.getLastName() && !"".equalsIgnoreCase(user.getLastName())){
 			 StringBuilder msgBuild = new StringBuilder();
@@ -1990,7 +1991,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }else{
 			 emailMessage.setFromName(user.getFirstName());
 		 }
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 
@@ -2062,11 +2063,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(pastUser.getFirstName());
 		 emailMessage.setLastName(pastUser.getLastName());
 		 emailMessage.setToEmail(pastUser.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(users.getEmail());
 		 emailMessage.setCreatedBy(users.getUserCode());
 		 StringBuilder msgBuild = new StringBuilder();
 		 emailMessage.setFromName(msgBuild.append(users.getFirstName()).append(" ").append(users.getLastName()).toString());
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 
 		 
 		//setting the class filed values
@@ -2158,7 +2159,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(requirementSubmissionTemplateFields.getFirstName());
 		 emailMessage.setLastName(requirementSubmissionTemplateFields.getLastName());
 		 emailMessage.setToEmail(requirementSubmissionTemplateFields.getEmailId());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(user.getEmail());
 		 emailMessage.setCreatedBy(user.getUserCode());
 		 if(user.getFirstName()!= null && !"".equalsIgnoreCase(user.getFirstName()) && user.getLastName()!= null && !"".equalsIgnoreCase(user.getLastName())){
 			 StringBuilder msgBuild = new StringBuilder();
@@ -2166,8 +2167,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }else{
 			 emailMessage.setFromName(user.getFirstName());
 		 }
-		 
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 
@@ -2232,10 +2233,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(requirementSubmission.getRequirement().getManagerUserId().getFirstName());
 		 emailMessage.setLastName(requirementSubmission.getRequirement().getManagerUserId().getFirstName());
 		 emailMessage.setToEmail(requirementSubmission.getRequirement().getManagerUserId().getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(users.getEmail());
 		 emailMessage.setCreatedBy(users.getUserCode());
 		 emailMessage.setFromName(users.getFirstName()+" "+users.getLastName());
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 if(requirementSubmission.getCandidate().getFirstName()!= null && !"".equalsIgnoreCase(requirementSubmission.getCandidate().getFirstName()) && requirementSubmission.getCandidate().getLastName()!= null && !"".equalsIgnoreCase(requirementSubmission.getCandidate().getLastName())){
@@ -2283,10 +2285,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(requirementSubmission.getCandidate().getFirstName());
 		 emailMessage.setLastName(requirementSubmission.getCandidate().getLastName());
 		 emailMessage.setToEmail(requirementSubmission.getCandidate().getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(requirementSubmission.getRequirement().getManagerUserId().getEmail());
 		 emailMessage.setCreatedBy(users.getUserCode());
 		 emailMessage.setFromName(requirementSubmission.getRequirement().getManagerUserId().getFirstName()+" "+requirementSubmission.getRequirement().getManagerUserId().getLastName());
-		
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+
         // To get the RateNegatiotion of RequirementSubmission based on Submission Id
 		 
 		 RequirementRateSubmissionNegotiation reqRateNegotiation  = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
@@ -2402,12 +2405,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(pastUser.getFirstName());
 		 emailMessage.setLastName(pastUser.getLastName());
 		 emailMessage.setToEmail(pastUser.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(users.getEmail());
 		 emailMessage.setCreatedBy(users.getUserCode());
 		 StringBuilder msgBuild = new StringBuilder();
 		 emailMessage.setFromName(msgBuild.append(users.getFirstName()).append(" ").append(users.getLastName()).toString());
 		 
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -2484,7 +2488,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(requirementSubmissionTemplateFields.getFirstName());
 		 emailMessage.setLastName(requirementSubmissionTemplateFields.getLastName());
 		 emailMessage.setToEmail(requirementSubmissionTemplateFields.getEmailId());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(user.getEmail());
 		 emailMessage.setCreatedBy(user.getUserCode());
 		 if(user.getFirstName()!= null && !"".equalsIgnoreCase(user.getFirstName()) && user.getLastName()!= null && !"".equalsIgnoreCase(user.getLastName())){
 			 StringBuilder msgBuild = new StringBuilder();
@@ -2492,7 +2496,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }else{
 			 emailMessage.setFromName(user.getFirstName());
 		 }
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -2565,11 +2570,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(pastUser.getFirstName());
 		 emailMessage.setLastName(pastUser.getLastName());
 		 emailMessage.setToEmail(pastUser.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(users.getEmail());
 		 emailMessage.setCreatedBy(users.getUserCode());
 		 StringBuilder msgBuild = new StringBuilder();
 		 emailMessage.setFromName(msgBuild.append(users.getFirstName()).append(" ").append(users.getLastName()).toString());
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+
 		 
 		 
 		//setting the class filed values
@@ -2996,9 +3002,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(initiatorUser.getFirstName());
 		 emailMessage.setLastName(initiatorUser.getLastName());
 		 emailMessage.setToEmail(initiatorUser.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(requirementSubmissionTemplateFields.getEmailId());
 		 emailMessage.setCreatedBy(initiatorUser.getUserCode());
-		
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+
 		 if(requirementSubmissionTemplateFields.getFirstName() != null && requirementSubmissionTemplateFields.getLastName()!= null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getFirstName()) && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
 			 StringBuilder msgBuild = new StringBuilder();
 			 emailMessage.setFromName(msgBuild.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
@@ -3081,11 +3088,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(userVendor.getFirstName());
 		 emailMessage.setLastName(userVendor.getLastName());
 		 emailMessage.setToEmail(userVendor.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(userClient.getEmail());
 		 emailMessage.setCreatedBy(user.getUserCode());
 		 StringBuilder msgBuild = new StringBuilder();
 		 emailMessage.setFromName(msgBuild.append(userClient.getFirstName()).append(" ").append(userClient.getLastName()).toString());
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 if(null!= userVendor.getFirstName()  && !"".equalsIgnoreCase(userVendor.getFirstName())){
@@ -3192,11 +3200,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 								 emailMessage.setFirstName(userVendor.getFirstName());
 								 emailMessage.setLastName(userVendor.getLastName());
 								 emailMessage.setToEmail(userVendor.getEmail());
-								 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+								 emailMessage.setFromEmail(userClient.getEmail());
 								 emailMessage.setCreatedBy(user.getUserCode());
 								 StringBuilder msgBuild = new StringBuilder();
 								 emailMessage.setFromName(msgBuild.append(userClient.getFirstName()).append(" ").append(userClient.getLastName()).toString());
-								 
+								 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+
 								//setting the class filed values
 								 Map<String, String> globalVarsMap = new HashMap<String, String>();
 								 if(null!= userVendor.getFirstName()  && !"".equalsIgnoreCase(userVendor.getFirstName())){
