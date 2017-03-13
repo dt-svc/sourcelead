@@ -180,7 +180,7 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<RequirementInterviewHistory> getAllProfessinalInterviews(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode,Long candidateId)
+	public List<RequirementInterviewHistory> getAllProfessinalInterviews(String dateRange,Long candidateId)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQuery = "";
