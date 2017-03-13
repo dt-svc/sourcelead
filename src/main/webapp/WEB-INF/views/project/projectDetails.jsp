@@ -1,4 +1,7 @@
- <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -455,7 +458,7 @@
 						//Main project end date
 						var projectEndDate = json.endDateStr;
 						$('#endDateStr1').datepicker({
-							dateFormat : 'yy-mm-dd',
+							dateFormat : 'dd-mm-yy',
 							changeMonth: true,
 							changeYear: true, 
 							minDate : dt,

@@ -1,3 +1,6 @@
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
 <%-- 
      @author : Venkat Kesav
      this script is for get candidate resumes list.
@@ -382,7 +385,9 @@ function deleteResume(candidateId, resumeId){
          			 $("#selector2").css({ display: "block" });
          			 $("#resMsgDiv").html("Resume deleted");
         			 $("#popUpDivResume").removeClass("edit-details-active");
-        		     candidateResumesList(candidateId);
+        			 location.replace(sourceleadUrl+"/professionalProfile");
+        		    /*  candidateResumesList(candidateId);
+        		     getProfessionalInfo(); */
         		     resMsgFadein();
    		    	}
    		    },

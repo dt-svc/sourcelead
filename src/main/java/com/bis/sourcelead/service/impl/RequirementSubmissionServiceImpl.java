@@ -44,6 +44,7 @@ import com.bis.sourcelead.dao.CandidateEducationDao;
 import com.bis.sourcelead.dao.CandidateEmployersDao;
 import com.bis.sourcelead.dao.CandidateResumesDao;
 import com.bis.sourcelead.dao.RequirementDao;
+import com.bis.sourcelead.dao.RequirementReferDao;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.RequirementSubmissionTemplateFieldsDao;
 import com.bis.sourcelead.dao.UserDao;
@@ -64,6 +65,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
+import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
@@ -172,6 +174,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	 
 	@Autowired
 	RequirementElkUtil requirementElkUtil;
+	
+	@Autowired
+	RequirementReferDao requirementReferDao;
 	
 	@Override
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
@@ -844,9 +849,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		 }
     	
     	 emailMessage.setCreatedBy(user.getUserCode());
-		 emailMessage.setFromEmail(user.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setFromName(fullName);
-		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		 
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1008,14 +1013,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(loginUser.getFirstName());
 		 emailMessage.setLastName(loginUser.getLastName());
 		 emailMessage.setToEmail(requirementSubmissionTemplateFields.getEmailId());
-		 emailMessage.setFromEmail(loginUser.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 StringBuilder emailBuilder = new StringBuilder();
 		 emailMessage.setFromName(emailBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 
-		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-		
-		 //setting the class filed values
+		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 
 		 if(null!= requirement.getJobTitle() && !"".equalsIgnoreCase(requirement.getJobTitle())){
@@ -1135,7 +1138,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(initiatorUser.getFirstName());
 		 emailMessage.setLastName(initiatorUser.getLastName());
 		 emailMessage.setToEmail(initiatorUser.getEmail());
-		 emailMessage.setFromEmail(candidate.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(initiatorUser.getUserCode());
 		
 		 if(candidate.getFirstName() != null && candidate.getLastName()!= null && !"".equalsIgnoreCase(candidate.getFirstName()) && !"".equalsIgnoreCase(candidate.getLastName())){
@@ -1144,9 +1147,6 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }else{
 			 emailMessage.setFromName(candidate.getFirstName());
 		 }
-		 
-		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 
@@ -1242,7 +1242,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(initiatorUser.getFirstName());
 		 emailMessage.setLastName(initiatorUser.getLastName());
 		 emailMessage.setToEmail(initiatorUser.getEmail());
-		 emailMessage.setFromEmail(requirementSubmissionTemplateFields.getEmailId());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(initiatorUser.getUserCode());
 		 if(requirementSubmissionTemplateFields.getFirstName() != null && requirementSubmissionTemplateFields.getLastName()!= null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getFirstName()) && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
 			 StringBuilder emailBuild = new StringBuilder();
@@ -1250,7 +1250,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }else{
 			 emailMessage.setFromName(requirementSubmissionTemplateFields.getFirstName());
 		 }
-		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 
+		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 
@@ -1329,7 +1330,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(initiatorUser.getFirstName());
 		 emailMessage.setLastName(initiatorUser.getLastName());
 		 emailMessage.setToEmail(initiatorUser.getEmail());
-		 emailMessage.setFromEmail(requirementSubmissionTemplateFields.getEmailId());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(initiatorUser.getUserCode());
 		 if(null != requirementSubmissionTemplateFields.getFirstName() && null != requirementSubmissionTemplateFields.getLastName() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getFirstName()) && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
 			 StringBuilder msgBuild = new StringBuilder();
@@ -1337,7 +1338,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }else{
 			 emailMessage.setFromName(requirementSubmissionTemplateFields.getFirstName());
 		 }
-		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 
 		//setting the class field values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 
@@ -1981,7 +1982,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(requirementSubmissionTemplateFields.getFirstName());
 		 emailMessage.setLastName(requirementSubmissionTemplateFields.getLastName());
 		 emailMessage.setToEmail(requirementSubmissionTemplateFields.getEmailId());
-		 emailMessage.setFromEmail(user.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(user.getUserCode());
 		 if(null!= user.getFirstName() && !"".equalsIgnoreCase(user.getFirstName()) && null != user.getLastName() && !"".equalsIgnoreCase(user.getLastName())){
 			 StringBuilder msgBuild = new StringBuilder();
@@ -1989,7 +1990,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }else{
 			 emailMessage.setFromName(user.getFirstName());
 		 }
-		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 
@@ -2061,12 +2062,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(pastUser.getFirstName());
 		 emailMessage.setLastName(pastUser.getLastName());
 		 emailMessage.setToEmail(pastUser.getEmail());
-		 emailMessage.setFromEmail(users.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(users.getUserCode());
 		 StringBuilder msgBuild = new StringBuilder();
 		 emailMessage.setFromName(msgBuild.append(users.getFirstName()).append(" ").append(users.getLastName()).toString());
 		 
-		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -2157,7 +2158,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(requirementSubmissionTemplateFields.getFirstName());
 		 emailMessage.setLastName(requirementSubmissionTemplateFields.getLastName());
 		 emailMessage.setToEmail(requirementSubmissionTemplateFields.getEmailId());
-		 emailMessage.setFromEmail(user.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(user.getUserCode());
 		 if(user.getFirstName()!= null && !"".equalsIgnoreCase(user.getFirstName()) && user.getLastName()!= null && !"".equalsIgnoreCase(user.getLastName())){
 			 StringBuilder msgBuild = new StringBuilder();
@@ -2165,7 +2166,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }else{
 			 emailMessage.setFromName(user.getFirstName());
 		 }
-		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 
+		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 
@@ -2230,10 +2232,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(requirementSubmission.getRequirement().getManagerUserId().getFirstName());
 		 emailMessage.setLastName(requirementSubmission.getRequirement().getManagerUserId().getFirstName());
 		 emailMessage.setToEmail(requirementSubmission.getRequirement().getManagerUserId().getEmail());
-		 emailMessage.setFromEmail(users.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(users.getUserCode());
 		 emailMessage.setFromName(users.getFirstName()+" "+users.getLastName());
-		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 if(requirementSubmission.getCandidate().getFirstName()!= null && !"".equalsIgnoreCase(requirementSubmission.getCandidate().getFirstName()) && requirementSubmission.getCandidate().getLastName()!= null && !"".equalsIgnoreCase(requirementSubmission.getCandidate().getLastName())){
@@ -2281,10 +2283,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(requirementSubmission.getCandidate().getFirstName());
 		 emailMessage.setLastName(requirementSubmission.getCandidate().getLastName());
 		 emailMessage.setToEmail(requirementSubmission.getCandidate().getEmail());
-		 emailMessage.setFromEmail(requirementSubmission.getRequirement().getManagerUserId().getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(users.getUserCode());
 		 emailMessage.setFromName(requirementSubmission.getRequirement().getManagerUserId().getFirstName()+" "+requirementSubmission.getRequirement().getManagerUserId().getLastName());
-		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		
         // To get the RateNegatiotion of RequirementSubmission based on Submission Id
 		 
 		 RequirementRateSubmissionNegotiation reqRateNegotiation  = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
@@ -2400,11 +2402,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(pastUser.getFirstName());
 		 emailMessage.setLastName(pastUser.getLastName());
 		 emailMessage.setToEmail(pastUser.getEmail());
-		 emailMessage.setFromEmail(users.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(users.getUserCode());
 		 StringBuilder msgBuild = new StringBuilder();
 		 emailMessage.setFromName(msgBuild.append(users.getFirstName()).append(" ").append(users.getLastName()).toString());
-		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 
 		 
 		 
 		//setting the class filed values
@@ -2482,7 +2484,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(requirementSubmissionTemplateFields.getFirstName());
 		 emailMessage.setLastName(requirementSubmissionTemplateFields.getLastName());
 		 emailMessage.setToEmail(requirementSubmissionTemplateFields.getEmailId());
-		 emailMessage.setFromEmail(user.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(user.getUserCode());
 		 if(user.getFirstName()!= null && !"".equalsIgnoreCase(user.getFirstName()) && user.getLastName()!= null && !"".equalsIgnoreCase(user.getLastName())){
 			 StringBuilder msgBuild = new StringBuilder();
@@ -2490,7 +2492,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }else{
 			 emailMessage.setFromName(user.getFirstName());
 		 }
-		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -2563,12 +2565,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(pastUser.getFirstName());
 		 emailMessage.setLastName(pastUser.getLastName());
 		 emailMessage.setToEmail(pastUser.getEmail());
-		 emailMessage.setFromEmail(users.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(users.getUserCode());
 		 StringBuilder msgBuild = new StringBuilder();
 		 emailMessage.setFromName(msgBuild.append(users.getFirstName()).append(" ").append(users.getLastName()).toString());
 		 
-		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -2898,6 +2900,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			}
 			
 			
+			 if(jsonObj.has("referId") && !isNullOrEmpty(jsonObj.getString("referId"))){
+			    RequirementRefer refer = requirementReferDao.getRequirementReferById(Long.valueOf(jsonObj.getString("referId")));
+			    refer.setReferStatus("Applied");
+			    requirementReferDao.addRequirementRefer(refer);
+			 }
+		 
+		 
 			sendEmailToProfessionalForAppliedJob(user, requirement);
 		 
 		    return requirementSubmission;
@@ -2987,7 +2996,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(initiatorUser.getFirstName());
 		 emailMessage.setLastName(initiatorUser.getLastName());
 		 emailMessage.setToEmail(initiatorUser.getEmail());
-		 emailMessage.setFromEmail(requirementSubmissionTemplateFields.getEmailId());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(initiatorUser.getUserCode());
 		
 		 if(requirementSubmissionTemplateFields.getFirstName() != null && requirementSubmissionTemplateFields.getLastName()!= null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getFirstName()) && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
@@ -2996,9 +3005,6 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }else{
 			 emailMessage.setFromName(requirementSubmissionTemplateFields.getFirstName());
 		 }
-		 
-		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 
@@ -3075,11 +3081,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFirstName(userVendor.getFirstName());
 		 emailMessage.setLastName(userVendor.getLastName());
 		 emailMessage.setToEmail(userVendor.getEmail());
-		 emailMessage.setFromEmail(userClient.getEmail());
+		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 		 emailMessage.setCreatedBy(user.getUserCode());
 		 StringBuilder msgBuild = new StringBuilder();
 		 emailMessage.setFromName(msgBuild.append(userClient.getFirstName()).append(" ").append(userClient.getLastName()).toString());
-		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 if(null!= userVendor.getFirstName()  && !"".equalsIgnoreCase(userVendor.getFirstName())){
@@ -3186,11 +3192,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 								 emailMessage.setFirstName(userVendor.getFirstName());
 								 emailMessage.setLastName(userVendor.getLastName());
 								 emailMessage.setToEmail(userVendor.getEmail());
-								 emailMessage.setFromEmail(userClient.getEmail());
+								 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
 								 emailMessage.setCreatedBy(user.getUserCode());
 								 StringBuilder msgBuild = new StringBuilder();
 								 emailMessage.setFromName(msgBuild.append(userClient.getFirstName()).append(" ").append(userClient.getLastName()).toString());
-								 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+								 
 								//setting the class filed values
 								 Map<String, String> globalVarsMap = new HashMap<String, String>();
 								 if(null!= userVendor.getFirstName()  && !"".equalsIgnoreCase(userVendor.getFirstName())){
@@ -3439,8 +3445,58 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		return requirementSubmissionDao.getProfessionalJobSubmisssionsCountBySubmissionType(candidateId, submissionStatus, startDate, endDate);
 	}
 
+
+	@Override
+	public List<RequirementSubmission> getProfessionalJobSubmisssionsCountListBySubmissionType(Long candidateId, String submissionStatus, Date startDate, Date endDate) throws Exception {
+		return requirementSubmissionDao.getProfessionalJobSubmisssionsCountListBySubmissionType(candidateId, submissionStatus, startDate, endDate);
+	}
+
+	@Override
+	public List<RequirementSubmission> getProfessionalJobAppliedCountList(Long candidateId, Date startDate, Date endDate) throws Exception {
+		return requirementSubmissionDao.getProfessionalJobAppliedCountList(candidateId, startDate, endDate);
+	}
 	@Override
 	public Integer getProfessionalJobAppliedCountByappliedDate(Long candidateId, Date appliedDate) throws Exception {
 		return requirementSubmissionDao.getProfessionalJobAppliedCountByappliedDate(candidateId, appliedDate);
 	}
+
+	@Override
+	public Integer getReferByMeJobAppliedCount(Long userId, Date startDate, Date endDate) throws Exception {
+		return requirementSubmissionDao.getReferByMeJobAppliedCount(userId, startDate, endDate);
+	}
+
+	@Override
+	public Integer getReferByMeProfessionalJobSubmisssionsCountBySubmissionType(Long userId, String submissionStatus,
+			Date startDate, Date endDate) throws Exception {
+		return requirementSubmissionDao.getReferByMeProfessionalJobSubmisssionsCountBySubmissionType(userId, submissionStatus, startDate, endDate);
+	}
+
+	@Override
+	public Integer getReferByMeJobAppliedCountByappliedDate(Long userId, Date appliedDate) throws Exception {
+		return requirementSubmissionDao.getReferByMeJobAppliedCountByappliedDate(userId, appliedDate);
+	}
+
+	@Override
+	public Integer getRecruiterSubmittedJobCountByappliedDate(Long userId, Date appliedDate) throws Exception {
+		return requirementSubmissionDao.getRecruiterSubmittedJobCountByappliedDate(userId, appliedDate);
+	}
+
+	@Override
+	public Integer getRequiterReferJobAppliedCount(Long userId, Date startDate, Date endDate)
+			throws Exception {
+		return requirementSubmissionDao.getRequiterReferJobAppliedCount(userId, startDate, endDate);
+	}
+
+	@Override
+	public Integer getRecruiterSubmittedJobCountByStartDateAndEndDate(Long userId, Date startDate, Date endDate)
+			throws Exception {
+		return requirementSubmissionDao.getRecruiterSubmittedJobCountByStartDateAndEndDate(userId, startDate, endDate);
+	}
+
+	@Override
+	public Integer getRecruiterSubmittedJobsCountByStage(Long userId, String submissionStatus, Date startDate,
+			Date endDate) throws Exception {
+		return requirementSubmissionDao.getRecruiterSubmittedJobsCountByStage(userId, submissionStatus, startDate, endDate);
+	}
+
 }

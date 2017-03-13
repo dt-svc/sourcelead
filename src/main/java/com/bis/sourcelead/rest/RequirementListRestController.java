@@ -1304,13 +1304,8 @@ public class RequirementListRestController {
 							Candidate candidate = candidateService.getCandidateByCandidateId(requirementSubmission.getCandidate().getId());
 							List<Candidate> candidateList = new ArrayList<>();
 							candidateList.add(candidate);
-							List<Candidate> candidateListCopy = recommendationsService.getRecommendationsWithScore(candidateList,requirementSubmission.getRequirement());
-							if(candidateListCopy !=null && candidateListCopy.size() >0){
-								StringBuilder candidateScoreSB = new StringBuilder();
-								requirementSubmission.setScore(candidateScoreSB.append(candidateListCopy.get(0).getCandidateScore()).append("%").toString());
-							}else{
-								requirementSubmission.setScore("0 %");
-							}
+							requirementSubmission.setScore(requirementSubmission.getCandidateScore()+"%");
+							
 							}
 
 					}

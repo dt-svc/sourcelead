@@ -252,7 +252,7 @@ window.onload = function () {
                   <option value="1 Day Ago">1 day ago</option>
                   <option value="3 Days Ago">3 day ago</option>
                   <option value="1 Week Ago">1 week ago</option>
-                  <option value="2 Weeks Ago">2 weeks ago</option>
+                  <option selected="selected" value="2 Weeks Ago">2 weeks ago</option>
                   <option value="1 Month Ago">1 month ago</option>
                    <option value="3 Months Ago">3 Months Ago</option>
                 </select>
@@ -605,9 +605,13 @@ function requirementsList(offset){
 			 				}
 			 				
 			 				if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined'){
-			 					rate = requirements.rate+" / "+requirements.rateType;
+			 					rate = requirements.rate+" "+requirements.rateType +' / ';
+			 				}
+			 				
+			 				if(requirements.currentRateCurrency != null && requirements.currentRateCurrency != '' && requirements.currentRateCurrency != 'undefined'){
+			 					currentRateCurrency = requirements.currentRateCurrency;
 			 				}else{
-			 					rate = 'No Data';
+			 					currentRateCurrency = 'No Data';
 			 				}
 			 				
 			 				result = '<section class="openCta">';
@@ -618,7 +622,7 @@ function requirementsList(offset){
 			 				result = result +'<b><i class="fa fa-clock-o"></i>'+jobType+'</b>';
 			 				result = result +'<b><i class="fa fa-briefcase"></i>'+experience+'</b>';
 			 				result = result +'<b><i class="fa fa-map-marker"></i>'+location+'</b>';
-			 				result = result +'<b><i class="fa fa-money"></i>'+rate+'</b>';
+			 				result = result +'<b><i class="fa fa-money"></i>'+rate+' '+currentRateCurrency+'</b>';
 			 				result = result +'</span>';
 			 				result = result +'<h5>';
 			 				result = result +'<strong>Skills :</strong>';
