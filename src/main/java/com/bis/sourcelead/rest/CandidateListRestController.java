@@ -193,8 +193,8 @@ public class CandidateListRestController {
 			    		StringBuilder json = new StringBuilder(hit.getSourceAsString());
 			    	    CandidateIndex candidateIndex = mapper.readValue(json.toString(), CandidateIndex.class);
 			    	    if(candidateIndex.getUpdatedDate() != null){
-			    	    	Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(candidateIndex.getUpdatedDate());
-							String  updatedDate = new SimpleDateFormat("dd-MM-yyyy").format(date1);
+			    	    	Date date1 = Constants.DF_YMD.parse(candidateIndex.getUpdatedDate());
+							String  updatedDate = Constants.DF_DMY.format(date1);
 			    	    	candidateIndex.setCandidateUpdateDateToString(updatedDate);
 			   			}
 			    	    candidatesList.add(candidateIndex);
@@ -524,8 +524,8 @@ public class CandidateListRestController {
 				    		StringBuilder json1 = new StringBuilder(hit.getSourceAsString());
 				    	    CandidateIndex candidateIndex = mapper.readValue(json1.toString(), CandidateIndex.class);
 				    	    if(candidateIndex.getUpdatedDate() != null){
-				    	    	Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(candidateIndex.getUpdatedDate());
-								String  updatedDate = new SimpleDateFormat("dd-MM-yyyy").format(date1);
+				    	    	Date date1 = Constants.DF_YMD.parse(candidateIndex.getUpdatedDate());
+								String  updatedDate = Constants.DF_DMY.format(date1);
 				    	    	candidateIndex.setCandidateUpdateDateToString(updatedDate);
 				   			}
 				    	    candidatesList.add(candidateIndex);
