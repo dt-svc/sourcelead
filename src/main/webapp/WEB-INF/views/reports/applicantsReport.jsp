@@ -16,14 +16,34 @@
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
-
+<!-- these files for export -->
+<link href="https://cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css" rel="stylesheet">
+<script src="//code.jquery.com/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.flash.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js" type="text/javascript" charset="utf-8"></script>
+<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.print.min.js" type="text/javascript" charset="utf-8"></script>
+<!-- ends files of export -->
 
 <!-- Content Area -->
 <script type="text/javascript">
 window.onload = function() { 
-	getDayWiseReports();
+	getAllApplicantReports();
 	}
 </script>
+
+<script type="text/javascript">
+function getAllApplicantReports(){
+	getDayWiseReports();
+}
+
+
+</script>
+
 
 <!-- <script>
 function getRequirementList(){
@@ -106,12 +126,18 @@ function prepareReportDataDiv(data){
 	  $("#requirementReportsDiv12").empty();
     $("#requirementReportsDiv12").append(result);
     requirementReportPagination();
+    getAllCounts();
 }
 
 </script>
 <script>
 function requirementReportPagination(){
 	$('#requirementReportPagination').DataTable({ 
+		 dom: 'Bfrtip',
+	        buttons: [
+	            'excel', 'pdf'
+	        ],
+		
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
@@ -185,7 +211,7 @@ function requirementReportPagination(){
 
 <div class="pull-left reportBtns">
 	  <div class="reportBtn">
-		<select class="form-control select-bg" id="reportTypeId" onChange="flushCustomDates(); getDayWiseReports(); custDates();">
+		<select class="form-control select-bg" id="reportTypeId" onChange="getDayWiseReports(); custDates(); flushCustomDates();">
 		 <option value="">select</option>
 		  <option value="today">Today</option>
 		  <option value="yesterday">Yesterday</option>
@@ -209,7 +235,7 @@ function requirementReportPagination(){
 	<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
 </div>
                      
-        <ul style="padding: 2px 220px 2px 0px;">
+        <ul style="padding: 2px 300px 2px 0px;">
           <li><i class="fa fa-filter"></i><span>Fliter</span><i class="glyphicon glyphicon-play" id="status-pop"></i>|
             <div class="export_pop">
               <ul>
@@ -219,49 +245,43 @@ function requirementReportPagination(){
               </ul>
             </div>
           </li>
-          <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>
-            <div class="export_pop">
-              <ul>
-                <li>PDF<i class="fa fa-file-pdf-o"></i></li>
-                <li>Excel<i class="fa fa-file-excel-o"></i></li>
-                <li>Word<i class="fa fa-file-word-o"></i></li>
-              </ul>
-            </div>
-          </li>
+
           <div class="clearfix"></div>
         </ul>
         <div class="clearfix"></div>
-        <div class="remove_search">
-          <input type="text" placeholder="search" />
-        </div>
       </div>
       
 	<div class="reportsCount">
 		<ul>
-			<li title="Applicants">
-				<span><i class="fa fa-users"></i></span><b>100</b>
+		
+
+
+
+
+			<li title="Applicants" id="applicantsli">
+				<span><i class="fa fa-users"></i></span><b id="applicantCount">0</b>
 			</li>
-			<li title="Shortlisted" class="colorTwo">
-				<span><i class="fa fa-file-text"></i></span><b>100</b>
+			<li title="Shortlisted" id="shortlistedli" class="colorTwo">
+				<span><i class="fa fa-file-text"></i></span><b id="shortlistedCount">0</b>
 			</li>
-			<li title="Submit to Client">
-				<span><i class="glyphicon glyphicon-send"></i></span><b>100</b>
+			<li title="Submit to Client" id="submittoclientli">
+				<span><i class="glyphicon glyphicon-send"></i></span><b id="submitToClientCount">0</b>
 			</li>
-			<li title="Interviews" class="colorTwo">
-				<span><img src="images/interview1.png" alt=""/></span><b>100</b>
+			<li title="Interviews" id="interviewli" class="colorTwo">
+				<span><img src="resources/images/interview1.png" alt=""/></span><b id="interviewCount">0</b>
 			</li>
-			<li title="Offers">
-				<span><i class="fa fa-tags"></i></span><b>100</b>
+			<li title="Offers" id="offermadeli">
+				<span><i class="fa fa-tags"></i></span><b id="offerCount">0</b>
 			</li>
-			<li title="Rejected" class="colorTwo">
-				<span><i class="glyphicon glyphicon-trash"></i></span><b>100</b>
+			<li title="Rejected" id="rejectedli" class="colorTwo">
+				<span><i class="glyphicon glyphicon-trash"></i></span><b id="rejectedCount">0</b>
 			</li>
 					<div class="clearfix"></div>
 		</ul>
 	</div>
 
   <div class="project_tabs_inn_table vendor_wrap_inn_table">
-                 <div id="requirementReportsDiv12"></div>
+                 <div id="requirementReportsDiv12" class="repoPositi"></div>
                 </div>      
       
  </div>
@@ -496,6 +516,7 @@ function getDayWiseReports(){
          url: sourceleadUrl+"/getApplicantsReport?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
           success :function(data) {
         	 prepareReportDataDiv(data);
+        	// getAllCounts();
          },
           
      });  
@@ -504,6 +525,104 @@ function getDayWiseReports(){
 }
 
 </script>
+
+
+<script>
+function getAllCounts(){
+	 $('#applicantsli').load(allApplicantsCount()); 
+	 $('#shortlistedli').load(allShortlistedCount());
+	 $('#submittoclientli').load(allSubmitToClientCount());
+	 $('#interviewli').load(allInterviewCount());
+	 $('#offermadeli').load(allOffersCount());
+	 $('#rejectedli').load(allRejectedCount());
+}
+</script>
+
+<script>
+function allApplicantsCount(){
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+       type : "POST",
+        url: sourceleadUrl+"/getApplicantsCountForReports?${_csrf.parameterName}=${_csrf.token}&applicantStatus=submission",        
+        success :function(data) { 
+       	 var json = JSON.parse(data);
+       	 $("#applicantCount").html(json); 
+        },
+	  });
+}
+</script>
+
+<script>
+function allShortlistedCount(){
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+       type : "POST",
+        url: sourceleadUrl+"/getApplicantsCountForReports?${_csrf.parameterName}=${_csrf.token}&applicantStatus=shortList",        
+        success :function(data) { 
+       	 var json = JSON.parse(data);
+       	 $("#shortlistedCount").html(json); 
+        },
+	  });
+}
+</script>
+
+<script>
+function allSubmitToClientCount(){
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+       type : "POST",
+        url: sourceleadUrl+"/getApplicantsCountForReports?${_csrf.parameterName}=${_csrf.token}&applicantStatus=submit_to_client",        
+        success :function(data) { 
+       	 var json = JSON.parse(data);
+       	 $("#submitToClientCount").html(json); 
+        },
+	  });
+}
+</script>
+
+<script>
+function allInterviewCount(){
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+       type : "POST",
+        url: sourceleadUrl+"/getApplicantsCountForReports?${_csrf.parameterName}=${_csrf.token}&applicantStatus=interview",        
+        success :function(data) { 
+       	 var json = JSON.parse(data);
+       	 $("#interviewCount").html(json); 
+        },
+	  });
+}
+</script>
+
+<script>
+function allOffersCount(){
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+       type : "POST",
+        url: sourceleadUrl+"/getApplicantsCountForReports?${_csrf.parameterName}=${_csrf.token}&applicantStatus=offer_made",        
+        success :function(data) { 
+       	 var json = JSON.parse(data);
+       	 $("#offerCount").html(json); 
+        },
+	  });
+}
+</script>
+
+<script>
+function allRejectedCount(){
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+       type : "POST",
+        url: sourceleadUrl+"/getApplicantsCountForReports?${_csrf.parameterName}=${_csrf.token}&applicantStatus=rejected",        
+        success :function(data) { 
+       	 var json = JSON.parse(data);
+       	 $("#rejectedCount").html(json); 
+        },
+	  });
+}
+</script>
+
+
 <script>
 function custDates(){
 	var reportType = $("#reportTypeId").val();

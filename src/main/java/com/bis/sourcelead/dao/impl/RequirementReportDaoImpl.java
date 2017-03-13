@@ -15,8 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.RequirementReportDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 
 @Repository
 public class RequirementReportDaoImpl implements RequirementReportDao{
@@ -94,34 +96,42 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		return query.setCacheable(true).list();
 	}
 
-	@Override
-	public List<RequirementSubmissionHistory> getApplicantsReports(String userRoleName, OrgLocations orgLocation,
-			User user, Date startDateUTC, Date endDateUTC) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementSubmissionHistory> getRequirementReports(Long requirementId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		//String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId requirementSubmission left join fetch requirementSubmission.requirement req where req.id = :requirementId";
 		String query = "from RequirementSubmissionHistory rsh "
 				+ " left join fetch rsh.submissionId rs left join fetch rsh.submissionId.requirement requirement where requirement.id = :requirementId";
-				/*+ ""
-				+ ""
-				+ "rs.id left join rs.requirement r on rs.requirement.id = r.id where rs.requirement.id = :requirementId";*/
 		return  session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
 	}
 
-//	@Override
-//	@Transactional(rollbackFor = { Exception.class })
-//	public List<RequirementSubmissionHistory> getApplicantsReports(String userRoleName, OrgLocations orgLocation,
-//			User user, Date startDateUTC, Date endDateUTC) {
-//		Long orglocationId = orgLocation.getId();
-//		Session session = this.sessionFactory.getCurrentSession();
-//		String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId requirementSubmission left join fetch requirementSubmission.requirement where requirementSubmission.orgLocations.id = :orglocationId";
-//		return  session.createQuery(query).setLong("orglocationId", orglocationId).setCacheable(true).list();
-//	}
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getApplicantsCountsForReports(Long orgLocationId,String applicantStatus) throws Exception {
+		int totalCount = 0;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementSubmissionHistory rsh  left join fetch rsh.submissionId rs where rs.orgLocations = :orgLocationsId and rsh.toStage = :applicantStatus";
+	List<RequirementSubmissionHistory> rshList = session.createQuery(query).setLong("orgLocationsId",orgLocationId).setString("applicantStatus", applicantStatus).setCacheable(true).list();
+	if(null != rshList){
+		totalCount = rshList.size();
+	}
+	return totalCount;
+	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmission> getReceivedApplicantsCountsPerReq(Long requirementId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where requirement.id = :requirementId  and rs.vendorLocationId <> null ";
+		return  session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmissionHistory> getReceivedApplicantsCountForReports(Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId rs where rs.orgLocations.id = :orgLocationId and  rs.vendorLocationId <> null ";
+		return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	}
 }

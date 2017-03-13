@@ -312,7 +312,23 @@ public class RequirementSubmission implements Serializable{
 	private String loginOrgLOcationName;
 	
 	@Transient
+	private String requirementSubmissionStatus;
+	
+	@Transient
+	private String requirementJobId;
+
+	@Transient
 	private String submitToClientRateType;
+	
+	@Transient
+	private String rateType;
+	
+	@Transient
+	private String referredBy;
+	
+	@Transient
+	private String referredOn;
+
 	
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
@@ -1014,6 +1030,22 @@ public class RequirementSubmission implements Serializable{
 		this.loginOrgLOcationName = loginOrgLOcationName;
 	}
 
+	public String getRequirementSubmissionStatus() {
+		return requirementSubmissionStatus;
+	}
+
+	public void setRequirementSubmissionStatus(String requirementSubmissionStatus) {
+		this.requirementSubmissionStatus = requirementSubmissionStatus;
+	}
+
+	public String getRequirementJobId() {
+		return requirementJobId;
+	}
+
+	public void setRequirementJobId(String requirementJobId) {
+		this.requirementJobId = requirementJobId;
+	}
+
 	public String getSubmitToClientRateType() {
 		return submitToClientRateType;
 	}
@@ -1022,4 +1054,27 @@ public class RequirementSubmission implements Serializable{
 		this.submitToClientRateType = submitToClientRateType;
 	}
 
+	public String getRateType() {
+		return rateType;
+	}
+
+	public void setRateType(String rateType) {
+		this.rateType = rateType;
+	}
+
+	public String getReferredBy() {
+		return referredBy;
+	}
+
+	public void setReferredBy(String referredBy) {
+		this.referredBy = referredBy;
+	}
+
+	public String getReferredOn() {
+		return referredOn;
+	}
+
+	public void setReferredOn(String referredOn) {
+		this.referredOn = referredOn;
+	}
 }

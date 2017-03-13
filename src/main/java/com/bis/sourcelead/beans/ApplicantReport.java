@@ -19,6 +19,56 @@ public class ApplicantReport {
 	private int offeredCount;
 	
 	private int rejectedCount;
+	
+	private String applicantName;
+	
+	private String source ;
+	
+	private String receivedOn;
+	
+	private String stage; 
+
+	private String orgName; 
+
+	public String getOrgName() {
+		return orgName;
+	}
+
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
+
+	public String getApplicantName() {
+		return applicantName;
+	}
+
+	public void setApplicantName(String applicantName) {
+		this.applicantName = applicantName;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+	public String getReceivedOn() {
+		return receivedOn;
+	}
+
+	public void setReceivedOn(String receivedOn) {
+		this.receivedOn = receivedOn;
+	}
+
+	public String getStage() {
+		return stage;
+	}
+
+	public void setStage(String stage) {
+		this.stage = stage;
+	}
 
 	public String getRequirementTitle() {
 		return requirementTitle;

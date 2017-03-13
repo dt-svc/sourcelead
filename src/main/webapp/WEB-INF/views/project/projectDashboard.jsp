@@ -607,9 +607,9 @@ function filter(){
    		    		result = result +'</span></div>';
    		    		result = result +'</td>';
    		    		
-   		    		result = result +'<td data-title="Date"><div><span title="'+report.startDateStr+'">'+report.startDateStr+'</span>';
+   		    		result = result +'<td data-title="Date"><div><span title="'+report.startDateStr+' - '+report.endDateStr+'">'+report.startDateStr+'';
    		    		if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
-   	   		    		result = result +'- <span title="'+report.endDateStr+'">'+report.endDateStr+'</span> </div></td>';
+   	   		    		result = result +' - '+report.endDateStr+'</span> </div></td>';
    		    		}
    		    		if(report.client != null && report.client != '' && report.client != 'undefined'){
    		    			result = result +'<td data-title="Client"><div><span title="'+report.client+'">'+report.client+'</span></div></td>';  

@@ -1,3 +1,7 @@
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
+
  <!-- Applicant Authorization -->
       <div class="col-md-6">
         <div class="dashboard-widget">
