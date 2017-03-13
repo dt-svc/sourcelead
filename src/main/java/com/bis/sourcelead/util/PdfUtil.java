@@ -792,7 +792,7 @@ public class PdfUtil {
 			Projects project, String projectManager) throws DocumentException, IOException {
 		String[] headers = Constants.PROJECT_ASSIGNED_EMPLOYEES;
 	    Document document = new Document(PageSize.LETTER.rotate());
-	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+	    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
 	    /*File file = new File(projectName+"_"+dateFormat.format(new Date())+".pdf");*/
 	    StringBuilder sbpe = new StringBuilder();
@@ -829,9 +829,12 @@ public class PdfUtil {
 	        orderedList.add(new ListItem("Manager :"+projectManager));
 	        if(project.getStartDate()!=null && project.getEndDate() !=null){
 	        	StringBuilder dateSB = new StringBuilder();
-	        	orderedList.add(new ListItem("Date :"+dateSB.append(project.getStartDate()).append(" to ").append(project.getEndDate()).toString()));
+	        	String convertedStartDate = dateFormat.format(project.getStartDate());
+	        	String convertedEndDate = dateFormat.format(project.getEndDate());
+	        	orderedList.add(new ListItem("Date :"+dateSB.append(convertedStartDate).append(" to ").append(convertedEndDate).toString()));
 			 }else{
-				 orderedList.add(new ListItem("Date :"+project.getStartDate()));
+				 String convertedStartDate = dateFormat.format(project.getStartDate());
+				 orderedList.add(new ListItem("Date :"+convertedStartDate));
 			 }
 	        document.add(orderedList);
 	        // Create an instance of PdfPTable. After that we transform the header and

@@ -3504,7 +3504,7 @@ function assignedMemberList(requirementId){
 
 <script type="text/javascript">
 function requirementRecommendations(requirementId){
-	  var sourceleadUrl = '${sourceleadUrl}';
+	var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
          type : "POST",
           url: sourceleadUrl+"/getRecommendationsCountBasedOnRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,   

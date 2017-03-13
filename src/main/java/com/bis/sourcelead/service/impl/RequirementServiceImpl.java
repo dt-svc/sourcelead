@@ -209,7 +209,7 @@ public class RequirementServiceImpl implements RequirementService {
 	@Override
 	public Requirement storeRequirement(JSONObject jsonObj,OrgLocations orgLocations,User user,MultipartFile multiFile) throws Exception {
 		
-		    Requirement requirement = new Requirement();
+		    Requirement requirement = null;
 	        String client="";
 	        String requirementClient="";
 	        StringBuilder location = new StringBuilder();
@@ -222,6 +222,7 @@ public class RequirementServiceImpl implements RequirementService {
 				requirement.setUpdatedBy(user.getUserCode());
 				requirement.setUpdatedDate(commonUtil.currentDate());
 			}else{
+				requirement = new Requirement();
 				requirement.setCreatedDate(commonUtil.currentDate());
 				requirement.setCreatedBy(user.getUserCode());
 				requirement.setUpdatedBy(user.getUserCode());
@@ -2778,6 +2779,11 @@ public class RequirementServiceImpl implements RequirementService {
 	@Override
 	public Requirement updateRequirement(Requirement requirement) throws Exception {
 		return requirementDao.storeRequirement(requirement);	
+	}
+
+	@Override
+	public List<Requirement> getAllRequirementsByOrglocationId(Long orgLocationId) throws Exception {
+		return requirementDao.getAllRequirementsByOrglocationId(orgLocationId);
 	}
 
 }

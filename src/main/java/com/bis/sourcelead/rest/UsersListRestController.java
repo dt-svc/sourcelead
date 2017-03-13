@@ -508,7 +508,7 @@ public class UsersListRestController {
 			userRole.setRate(employee.getRate());
 			userRole.setRatePer(employee.getRatePer());
 			if (employee.getHireDate() != null) {
-				userRole.setHireDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(employee.getHireDate()));
+				userRole.setHireDateStr(com.bis.sourcelead.constants.Constants.DF_DMY.format(employee.getHireDate()));
 			} else {
 				userRole.setHireDateStr("");
 			}
@@ -1160,7 +1160,7 @@ public class UsersListRestController {
 			 */
 			if (jsonObj.has("DateofJoin") && !isNullOrEmpty(jsonObj.getString("DateofJoin"))) {
 				try {
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 					employees.setHireDate(sdf.parse(jsonObj.getString("DateofJoin")));
 				} catch (Exception e) {
 					e.printStackTrace();
