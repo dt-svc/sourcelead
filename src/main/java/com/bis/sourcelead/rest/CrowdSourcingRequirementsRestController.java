@@ -836,17 +836,12 @@ public class CrowdSourcingRequirementsRestController {
 	  		@RequestMapping(value = "/getProfessionalInterviews")
 	  		public String getProfessionalInterviews(String dateRange, HttpServletRequest request) throws Exception {
 	  			String resultJson;
-	  			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-	  			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
-	  		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	  			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	  			List<RequirementInterviewHistory> requirementInterviewList = null;
-	  			String currentTime = null;
-	  			String userType = null;
-	  			String userCode = user.getUserCode();
-	  			Long userId = user.getId();
+	  			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 	  			
-	  		   requirementInterviewList = requirementInterviewHistoryService.getAllProfessinalInterviews(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode,candidateId);
+	  			List<RequirementInterviewHistory> requirementInterviewList = null;
+	  			
+	  		    requirementInterviewList = requirementInterviewHistoryService.getAllProfessinalInterviews(dateRange,candidateId);
 	  			
 	  			for(RequirementInterviewHistory interviewHistory : requirementInterviewList){
 	  				if(null != interviewHistory.getInterviewId()){
