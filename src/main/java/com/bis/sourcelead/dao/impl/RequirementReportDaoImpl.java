@@ -134,4 +134,14 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId rs where rs.orgLocations.id = :orgLocationId and  rs.vendorLocationId <> null ";
 		return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmissionHistory> getApplicantsCountForChart(Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementSubmissionHistory rsh  left join fetch rsh.submissionId rs where rs.orgLocations = :orgLocationsId";
+	List<RequirementSubmissionHistory> rshList = session.createQuery(query).setLong("orgLocationsId",orgLocationId).setCacheable(true).list();
+	return rshList;
+	}
 }
