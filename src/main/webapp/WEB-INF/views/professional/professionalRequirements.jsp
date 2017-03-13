@@ -252,7 +252,7 @@ window.onload = function () {
                   <option value="1 Day Ago">1 day ago</option>
                   <option value="3 Days Ago">3 day ago</option>
                   <option value="1 Week Ago">1 week ago</option>
-                  <option value="2 Weeks Ago">2 weeks ago</option>
+                  <option selected="selected" value="2 Weeks Ago">2 weeks ago</option>
                   <option value="1 Month Ago">1 month ago</option>
                    <option value="3 Months Ago">3 Months Ago</option>
                 </select>

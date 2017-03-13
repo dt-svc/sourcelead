@@ -319,6 +319,15 @@ public class RequirementSubmission implements Serializable{
 
 	@Transient
 	private String submitToClientRateType;
+	
+	@Transient
+	private String rateType;
+	
+	@Transient
+	private String referredBy;
+	
+	@Transient
+	private String referredOn;
 
 	
 	public OrgLocations getVendorLocationId() {
@@ -1043,5 +1052,29 @@ public class RequirementSubmission implements Serializable{
 
 	public void setSubmitToClientRateType(String submitToClientRateType) {
 		this.submitToClientRateType = submitToClientRateType;
+	}
+
+	public String getRateType() {
+		return rateType;
+	}
+
+	public void setRateType(String rateType) {
+		this.rateType = rateType;
+	}
+
+	public String getReferredBy() {
+		return referredBy;
+	}
+
+	public void setReferredBy(String referredBy) {
+		this.referredBy = referredBy;
+	}
+
+	public String getReferredOn() {
+		return referredOn;
+	}
+
+	public void setReferredOn(String referredOn) {
+		this.referredOn = referredOn;
 	}
 }
