@@ -38,5 +38,8 @@ public interface RequirementInterviewHistoryService {
 	List<RequirementInterviewHistory> getAllProfessinalInterviews(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode,Long candidateId)throws Exception;
 	
 	Integer getRequirementInternalAndIsClientInterviewsCountBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception;
+	
+	
+	List<RequirementInterviewHistory> getAllRecruiterSubmittedInterviews(String dateRange, Long userId)throws Exception;
 
 }
