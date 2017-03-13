@@ -924,10 +924,12 @@ public class ClientServiceImpl implements ClientService{
 				 emailMessage.setLastName(orgSpoc.getOwnerUser().getLastName());	 
 			 }
 			 emailMessage.setToEmail(orgSpoc.getOwnerUser().getEmail());
+			 emailMessage.setFromEmail(loginUser.getEmail());
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 StringBuilder emailMsgBuilder = new StringBuilder();
 			 emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-			 
+			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
 			 String UUID = SourceLeadRandomCodeHelper.generateUUID();
@@ -991,10 +993,12 @@ public class ClientServiceImpl implements ClientService{
 				 emailMessage.setLastName(orgSpoc.getOwnerUser().getLastName());	 
 			 }
 			 emailMessage.setToEmail(orgSpoc.getOwnerUser().getEmail());
+			 emailMessage.setFromEmail(loginUser.getEmail());
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 StringBuilder emailMsgBuilder = new StringBuilder();
 			 emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-			 
+			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
 			 String UUID = SourceLeadRandomCodeHelper.generateUUID();
@@ -1008,8 +1012,8 @@ public class ClientServiceImpl implements ClientService{
 			 }else if( Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())){
 					 globalVarsMap.put("firstName", emailMessage.getFirstName());
 					 globalVarsMap.put("lastName",emailMessage.getLastName());
-					 globalVarsMap.put("clientFirstName", loginUser.getFirstName());
-					 globalVarsMap.put("clientLastName",loginUser.getLastName());
+					 globalVarsMap.put("clientFirstName", orgSpoc.getClientUser().getFirstName());
+					 globalVarsMap.put("clientLastName",orgSpoc.getClientUser().getLastName());
 					 globalVarsMap.put("clientOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
 				}
 
