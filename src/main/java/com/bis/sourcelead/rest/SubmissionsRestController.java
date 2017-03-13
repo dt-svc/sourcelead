@@ -363,7 +363,7 @@ public class SubmissionsRestController {
 			
 			if (requirementSubmission.getCreatedDate() != null) {
 				requirementSubmission
-						.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
+						.setCreatedDateStr(Constants.DF_DMY.format(requirementSubmission.getCreatedDate()));
 			}
 			candidatesList.add(requirementSubmission);
 		}
@@ -430,7 +430,7 @@ public class SubmissionsRestController {
 	
 			if (requirementSubmission.getCreatedDate() != null) {
 				requirementSubmission
-						.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
+						.setCreatedDateStr(Constants.DF_DMY.format(requirementSubmission.getCreatedDate()));
 			}
 			candidatesList.add(requirementSubmission);
 		}

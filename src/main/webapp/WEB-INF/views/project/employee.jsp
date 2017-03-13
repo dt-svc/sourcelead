@@ -1,3 +1,6 @@
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
  <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
@@ -339,7 +342,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
  		             }
  		             
 					 $('#endDate'+jsonData.id).datepicker({
-			    		      dateFormat: 'yy-mm-dd',
+			    		      dateFormat: 'dd-mm-yy',
 			    		      minDate: dt,
 			    		      maxDate: endDate,
 			    		      onClose: function() {
@@ -511,7 +514,7 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 						var opt = json[i];
 						if(endDateStr !=  null && endDateStr != '' && endDateStr != 'undefined'){
 							$('#startDate'+opt.id).datepicker({
-								dateFormat : 'yy-mm-dd',
+								dateFormat : 'dd-mm-yy',
 								changeMonth: true,
 								changeYear: true, 
 								minDate:startDateStr,
@@ -527,7 +530,7 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 							});
 
 							$('#endDate'+opt.id).datepicker({
-								dateFormat : 'yy-mm-dd',
+								dateFormat : 'dd-mm-yy',
 								changeMonth: true,
 								changeYear: true, 
 								maxDate:endDateStr,
@@ -543,7 +546,7 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 							
 						}else{
 							$('#startDate'+opt.id).datepicker({
-								dateFormat : 'yy-mm-dd',
+								dateFormat : 'dd-mm-yy',
 								changeMonth: true,
 								changeYear: true, 
 								minDate:startDateStr,
@@ -558,7 +561,7 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 							});
 
 							$('#endDate'+opt.id).datepicker({
-								dateFormat : 'yy-mm-dd',
+								dateFormat : 'dd-mm-yy',
 								changeMonth: true,
 								changeYear: true, 
 								minDate:startDateStr,
@@ -783,7 +786,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
   var reStatertDate = $('#Re-StartDate').val()
   if(projectEndDateStr != null && projectEndDateStr != "" && projectEndDateStr != 'undefined'){
 	  $('#Re-StartDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 		  minDate:endDate,
@@ -798,7 +801,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	  });
 	  
 	  $('#Re-EndDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      minDate:endDate,
@@ -812,7 +815,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
   }
   else{
 	  $('#Re-StartDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 		  minDate:endDate,
@@ -827,7 +830,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	  
 	
 	  $('#Re-EndDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      minDate:endDate,

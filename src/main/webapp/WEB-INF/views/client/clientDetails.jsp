@@ -1,3 +1,6 @@
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!-- client details View starts-->
 <script type="text/javascript">
