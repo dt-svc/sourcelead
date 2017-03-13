@@ -758,7 +758,7 @@ function getCandidateDetails(){
 	 
 	 $("input[name=EmailId]").attr('readonly', true);
 	 $("input[name=EmailId]").val('${SourceLeadWeb_user.email}');
-	 $("input[name=PhoneNumber]").val('${SourceLeadWeb_user.mobilePhone}');
+	 $("input[name=PhoneNumber]").val('${SourceLeadWeb_candidate.mobilePhone}');
 	 
 	 getAllSubmissionCandidateCountries();
 	 setRateTypesByLocation();
