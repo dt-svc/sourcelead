@@ -748,8 +748,6 @@ function getCustomReports(){
 	     }],
 	     "valueAxes": [{
 	     "axisAlpha": 0,
-	     "maximum": 50,
-	     "minimum": 1,
 	     "position": "left",
 	     "title": "Visitors from country"
 	     }],
