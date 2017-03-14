@@ -359,7 +359,7 @@ function getSubmissionDetails(requirementUUID){
 			        	   
 			        	   
 			        	   result = result +'         <tr>';
-			        	   result = result +'         <td><div class="tbldata-dotdot">'+report.candidateName+'</div></td>';
+			        	   result = result +'         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+report.requirementId+');" class="tbldata-dotdot proj_show">'+report.candidateName+'</div></td>';
 			        	   result = result +'         <td><div class="tbldata-dotdot">'+report.candidateEmail+'</div></td>';
 			        	   result = result +'         <td><div class="tblminwidth-50">'+report.phoneNumber+'</div></td>';
 			        	   result = result +'         <td><div class="tblminwidth-50">'+report.submissionStatus+'</div></td>';
