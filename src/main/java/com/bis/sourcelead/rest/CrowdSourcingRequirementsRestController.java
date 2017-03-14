@@ -52,7 +52,6 @@ import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
-import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CrowdSourcingUserBankAccountsService;
@@ -1656,7 +1655,7 @@ public class CrowdSourcingRequirementsRestController {
 					if(!isNullOrEmpty(refer.getReferStatus()) && refer.getReferStatus().equalsIgnoreCase("Applied")){
 						RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndUserId(refer.getRequirementId().getId(), refer.getReferToUser().getId());
 						if(null != submission){
-							refer.setRequirementSubmissionStatus(submission.getRequirementSubmissionStatus());
+							refer.setRequirementSubmissionStatus(submission.getSubmissionStatus().getValue());
 						}
 					}
 					requirementReferList.add(refer);
@@ -1671,6 +1670,39 @@ public class CrowdSourcingRequirementsRestController {
 		
 		
 		
+		@PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_CANDIDATES')")
+		@RequestMapping(value = "/getRecruiterRequirementSubmissionsList", method = RequestMethod.GET)
+		public String getRecruiterRequirementSubmissionsList(@RequestParam(value = "requirementUUID", required = false) String requirementUUID,
+				HttpServletRequest request) throws Exception {
+			String resultJson = null;
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
+			List<RequirementSubmission> reqSubmissionList = new ArrayList<RequirementSubmission>();
+			RequirementSubmission requirementSubmission = new RequirementSubmission();
+			
+			List<RequirementSubmission> submissionList = requirementSubmissionService.getRecruiterSubmittedCandidatesList(user.getId(), requirement.getId());
+			if(null != submissionList && submissionList.size() > 0){
+				for(RequirementSubmission submission : submissionList){
+					StringBuilder userName = new StringBuilder();
+					if(!isNullOrEmpty(submission.getCandidate().getLastName())){
+						userName = userName.append(submission.getCandidate().getFirstName()).append(" ").append(submission.getCandidate().getLastName());
+					}else{
+						userName = userName.append(submission.getCandidate().getFirstName());
+					}
+					submission.setCandidateName(userName.toString());
+					submission.setCandidateEmail(submission.getCandidate().getEmail());
+					submission.setPhoneNumber(submission.getCandidate().getMobilePhone());
+					
+					reqSubmissionList.add(submission);
+				}
+			}
+			requirementSubmission.setRequirementSubmissionList(reqSubmissionList);
+			
+			resultJson = commonUtil.toJSON(requirementSubmission);
+			return resultJson;
+
+		}
 		
 		
 		@PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
