@@ -126,7 +126,7 @@ function prepareReportDataDiv(data){
 	  $("#requirementReportsDiv12").empty();
     $("#requirementReportsDiv12").append(result);
     requirementReportPagination();
-    getAllCounts();
+    //getAllCounts();
 }
 
 </script>
@@ -211,7 +211,7 @@ function requirementReportPagination(){
 
 <div class="pull-left reportBtns">
 	  <div class="reportBtn">
-		<select class="form-control select-bg" id="reportTypeId" onChange="getDayWiseReports(); custDates(); flushCustomDates();">
+		<select class="form-control select-bg" id="reportTypeId" onChange="reportsCheck(); getDayWiseReports(); custDates(); flushCustomDates();">
 		 <option value="">select</option>
 		  <option value="today">Today</option>
 		  <option value="yesterday">Yesterday</option>
@@ -529,8 +529,8 @@ function getDayWiseReports(){
          type : "POST",
          url: sourceleadUrl+"/getApplicantsReport?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
           success :function(data) {
-        	 prepareReportDataDiv(data);
-        	// getAllCounts();
+        	  prepareReportDataDiv(data);
+        	 getAllCounts(reportType,startDate,endDate);
          },
           
      });  
@@ -542,100 +542,30 @@ function getDayWiseReports(){
 
 
 <script>
-function getAllCounts(){
-	 $('#applicantsli').load(allApplicantsCount()); 
-	 $('#shortlistedli').load(allShortlistedCount());
-	 $('#submittoclientli').load(allSubmitToClientCount());
-	 $('#interviewli').load(allInterviewCount());
-	 $('#offermadeli').load(allOffersCount());
-	 $('#rejectedli').load(allRejectedCount());
+function getAllCounts(reportType,startDate,endDate){
+	 $('#applicantsli').load(allApplicantsCount(reportType,startDate,endDate)); 
 }
 </script>
 
 <script>
-function allApplicantsCount(){
+function allApplicantsCount(reportType,startDate,endDate){
 	var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/getApplicantsCountForReports?${_csrf.parameterName}=${_csrf.token}&applicantStatus=submission",        
+        url: sourceleadUrl+"/getApplicantsTotalCounts?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,        
         success :function(data) { 
        	 var json = JSON.parse(data);
-       	 $("#applicantCount").html(json); 
+       	 $("#applicantCount").html(json.applicantsSum); 
+    	 $("#shortlistedCount").html(json.shortlistedSum);
+    	 $("#submitToClientCount").html(json.submitToClientSum);
+    	 $("#interviewCount").html(json.interviewsSum);
+    	 $("#offerCount").html(json.offeredSum); 
+       	$("#rejectedCount").html(json.rejectedSum); 
+   	
         },
 	  });
 }
 </script>
-
-<script>
-function allShortlistedCount(){
-	var sourceleadUrl = '${sourceleadUrl}';
-	 $.ajax({
-       type : "POST",
-        url: sourceleadUrl+"/getApplicantsCountForReports?${_csrf.parameterName}=${_csrf.token}&applicantStatus=shortList",        
-        success :function(data) { 
-       	 var json = JSON.parse(data);
-       	 $("#shortlistedCount").html(json); 
-        },
-	  });
-}
-</script>
-
-<script>
-function allSubmitToClientCount(){
-	var sourceleadUrl = '${sourceleadUrl}';
-	 $.ajax({
-       type : "POST",
-        url: sourceleadUrl+"/getApplicantsCountForReports?${_csrf.parameterName}=${_csrf.token}&applicantStatus=submit_to_client",        
-        success :function(data) { 
-       	 var json = JSON.parse(data);
-       	 $("#submitToClientCount").html(json); 
-        },
-	  });
-}
-</script>
-
-<script>
-function allInterviewCount(){
-	var sourceleadUrl = '${sourceleadUrl}';
-	 $.ajax({
-       type : "POST",
-        url: sourceleadUrl+"/getApplicantsCountForReports?${_csrf.parameterName}=${_csrf.token}&applicantStatus=interview",        
-        success :function(data) { 
-       	 var json = JSON.parse(data);
-       	 $("#interviewCount").html(json); 
-        },
-	  });
-}
-</script>
-
-<script>
-function allOffersCount(){
-	var sourceleadUrl = '${sourceleadUrl}';
-	 $.ajax({
-       type : "POST",
-        url: sourceleadUrl+"/getApplicantsCountForReports?${_csrf.parameterName}=${_csrf.token}&applicantStatus=offer_made",        
-        success :function(data) { 
-       	 var json = JSON.parse(data);
-       	 $("#offerCount").html(json); 
-        },
-	  });
-}
-</script>
-
-<script>
-function allRejectedCount(){
-	var sourceleadUrl = '${sourceleadUrl}';
-	 $.ajax({
-       type : "POST",
-        url: sourceleadUrl+"/getApplicantsCountForReports?${_csrf.parameterName}=${_csrf.token}&applicantStatus=rejected",        
-        success :function(data) { 
-       	 var json = JSON.parse(data);
-       	 $("#rejectedCount").html(json); 
-        },
-	  });
-}
-</script>
-
 
 <script>
 function custDates(){
@@ -689,6 +619,16 @@ function getCustomReports(){
 }
 </script>
 
+<script type="text/javascript"> 
+	function reportsCheck(){
+		 if($(".oneA" ).hasClass( "actRE" )){
+			 
+		}
+		if($(".oneB" ).hasClass( "actRE" )){
+			alert("ffdf222");
+		}	
+	}
+</script>
 <script>
 // Reports Active
 	$(".oneB").click(function(){
