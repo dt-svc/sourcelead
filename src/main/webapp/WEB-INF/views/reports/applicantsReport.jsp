@@ -229,13 +229,13 @@ function requirementReportPagination(){
 	 </span>
 	<span class="dashboard-datepkr cusShow">
 	<input type="text"  class="form-control" value="" id="ApplicantEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
-	<p id="ApplicantReportStartDate" class="ReError"></p>
+	<p id="ApplicantReportEndDate" class="ReError"></p>
 	</span>
 	<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
 	
 		<span class="repoBtns">
 		<a href="javascript:void(0)" class="oneA actRE"><i class="fa fa-list"></i></a>
-		<a href="javascript:void(0)" class="oneB" onclick="getDayWiseReports();"><i class="fa fa-pie-chart"></i></a>
+		<a href="javascript:void(0)" class="oneB" onclick="getDefaultChart();"><i class="fa fa-pie-chart"></i></a>
 	</span>	
 	
 </div>
@@ -518,11 +518,14 @@ $(".reminder").click(function(){
 <script>
 function getDayWiseReports(){
 	$('#ApplicantReportStartDate').empty();
-	$('#ApplicantReportStartDate').empty(); 
+	$('#ApplicantReportEndDate').empty(); 
 	var reportType = $("#reportTypeId").val();
 	var startDate = $("#ApplicantStartDate").val();
 	var endDate = $("#ApplicantEndDate").val();
 	var sourceleadUrl ='${sourceleadUrl}';
+	/* if(reportType=="custom"){
+		getCustomReports();
+	} */
 	if(reportType!="custom"){
 	$.ajax({
          type : "POST",
@@ -563,7 +566,7 @@ function allApplicantsCount(reportType,startDate,endDate){
           	$("#rejectedCount").html(json.rejectedSum);  
 		}
     	if($(".oneB" ).hasClass( "actRE" )){
-     	getApplicantBarChat(json.applicantsSum,json.shortlistedSum,json.interviewsSum,json.submitToClientCount,json.offeredSum,json.rejectedSum,json.requestSentSum);
+     		getApplicantBarChat(json.applicantsSum,json.shortlistedSum,json.interviewsSum,json.submitToClientCount,json.offeredSum,json.rejectedSum,json.requestSentSum);
        	 
     	}
    	
@@ -594,7 +597,7 @@ function getCustomReports(){
 		$("#ApplicantReportStartDate").empty().append("Start Date is Required") ; 
 	}
 	if(endDate == null || endDate == '' || endDate == 'undefined'){
-		$("#ApplicantReportStartDate").empty().append("End Date is Required") ; 
+		$("#ApplicantReportEndDate").empty().append("End Date is Required") ; 
 	}
 	else{
 		$.ajax({
@@ -620,7 +623,7 @@ function getCustomReports(){
 		 
 		 var EndDate = document.getElementById("ApplicantEndDate").value;
 		 if(EndDate){
-			 $('#ApplicantReportStartDate').empty(); 
+			 $('#ApplicantReportEndDate').empty(); 
 		 }
 }
 </script>
@@ -728,4 +731,15 @@ function allApplicantsCountForChart(){
 }
 </script>
 
+<script>
+function getDefaultChart(){
+	var reportType = $("#reportTypeId").val();
+	if(reportType=="custom"){
+		getCustomReports();
+	}
+	else{
+		getDayWiseReports();
+	}
+}
+</script>
 
