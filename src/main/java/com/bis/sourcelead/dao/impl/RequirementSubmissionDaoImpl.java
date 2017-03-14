@@ -1880,7 +1880,31 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				 if(appliedCount != null && !appliedCount.isEmpty()){
 						count = appliedCount.get(0).intValue();
 				 }
-				return count;}
+				return count;
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		@Transactional
+		public List<RequirementSubmission> getRecruiterSubmittedCandidatesCountListByStage(Long userId,
+				String submissionStatus, Date startDate, Date endDate) throws Exception {
+				 Session session = this.sessionFactory.getCurrentSession();
+				 List<RequirementSubmission>  submissionsCountList = null ;
+				 String query;
+				 if(null != submissionStatus && !"".equalsIgnoreCase(submissionStatus) && submissionStatus != "undefined"){
+					 query = "from RequirementSubmission rs left join fetch rs.candidate left join fetch rs.requirement where rs.recruiterUserId.id = :recruiterUserId "
+						 		+ "and (rs.createdDate BETWEEN :startDate and :endDate) and rs.submissionStatus = :submissionStatus ";
+					     submissionsCountList = session.createQuery(query).setLong("recruiterUserId", userId).setDate("startDate", startDate)
+								                                          .setDate("endDate", endDate).setString("submissionStatus", submissionStatus).setCacheable(true).list();
+				 }else{
+					 query = "from RequirementSubmission rs left join fetch rs.candidate  left join fetch rs.requirement where rs.recruiterUserId.id = :recruiterUserId and (rs.createdDate BETWEEN :startDate and :endDate) ";
+					 submissionsCountList = session.createQuery(query).setLong("recruiterUserId", userId).setDate("startDate", startDate)
+							                                           .setDate("endDate", endDate).setCacheable(true).list();
+				 }
+				 
+				
+				return submissionsCountList;
+		}
 
 		
 		@Override

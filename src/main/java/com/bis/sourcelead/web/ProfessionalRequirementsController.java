@@ -372,4 +372,24 @@ public class ProfessionalRequirementsController {
 
 		}
 	 
+	 @RequestMapping(value = "/recruiterSubmttedJobList")
+	 @ResponseBody
+		public ModelAndView recruiterSubmttedJobList(HttpServletRequest request,@RequestParam(value = "startDate", required = false) String startDate,
+				@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "requirementStatus", required = false) String requirementStatus) throws Exception {
+		 ModelAndView model = new ModelAndView();
+			  SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			 if(sessionData == null)
+			 {
+			 	sessionData = new SessionMaintainanceData();
+			 }
+			sessionData.setNav(Constants.Dashboard);
+			request.getSession().setAttribute("sessionData",sessionData);
+			model.setViewName("professional/recruiterSubmttedJobList");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.addObject("startDate", startDate);
+			model.addObject("endDate", endDate);
+			model.addObject("requirementStatus", requirementStatus);
+			return model;
+
+		}
 }

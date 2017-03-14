@@ -199,6 +199,8 @@ public class RequirementSubmission implements Serializable{
     @Transient
    	private String resumeUUID;
     
+    @Transient
+   	private String requirementJobType;
     
     @Transient
    	private ApplicantSubmissionStatus requirementStage;
@@ -661,6 +663,14 @@ public class RequirementSubmission implements Serializable{
 
 	public void setRequirementStage(ApplicantSubmissionStatus requirementStage) {
 		this.requirementStage = requirementStage;
+	}
+
+	public String getRequirementJobType() {
+		return requirementJobType;
+	}
+
+	public void setRequirementJobType(String requirementJobType) {
+		this.requirementJobType = requirementJobType;
 	}
 
 	public String getScore() {
