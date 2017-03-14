@@ -561,7 +561,7 @@ function allApplicantsCount(reportType,startDate,endDate){
           	$("#rejectedCount").html(json.rejectedSum);  
 		}
     	if($(".oneB" ).hasClass( "actRE" )){
-     	getApplicantBarChat(json.applicantsSum,json.shortlistedSum,json.interviewsSum,json.submitToClientCount,json.offeredSum,json.rejectedSum,0);
+     	getApplicantBarChat(json.applicantsSum,json.shortlistedSum,json.interviewsSum,json.submitToClientCount,json.offeredSum,json.rejectedSum,json.requestSentSum);
        	 
     	}
    	
