@@ -1412,19 +1412,19 @@ public class CrowdSourcingRequirementsRestController {
 			try{
 				
 				
-				Integer appliedJobs = requirementSubmissionService.getRecruiterSubmittedJobCountByStartDateAndEndDate(user.getId(), jobPortletsStartDate, jobPortletsEndDate);
-				refer.setAppliedJobs(appliedJobs);
+				Integer submittedByMe = requirementSubmissionService.getRecruiterSubmittedCandidateCountByStartDateAndEndDate(user.getId(), jobPortletsStartDate, jobPortletsEndDate);
+				refer.setSubmittedByMeJobs(submittedByMe);
 				
-				Integer shortlistCount = requirementSubmissionService.getRecruiterSubmittedJobsCountByStage(user.getId(),"SHORTLIST",jobPortletsStartDate, jobPortletsEndDate);
+				Integer shortlistCount = requirementSubmissionService.getRecruiterSubmittedCandidatesCountByStage(user.getId(),"SHORTLIST",jobPortletsStartDate, jobPortletsEndDate);
 				refer.setShortlistJobs(shortlistCount);
 				
-				Integer offeredCount = requirementSubmissionService.getRecruiterSubmittedJobsCountByStage(user.getId(),"OFFERMADE",jobPortletsStartDate, jobPortletsEndDate);
+				Integer offeredCount = requirementSubmissionService.getRecruiterSubmittedCandidatesCountByStage(user.getId(),"OFFERMADE",jobPortletsStartDate, jobPortletsEndDate);
 				refer.setOfferedJobs(offeredCount);
 				
-				Integer rejectedCount = requirementSubmissionService.getRecruiterSubmittedJobsCountByStage(user.getId(),"REJECTED",jobPortletsStartDate, jobPortletsEndDate);
+				Integer rejectedCount = requirementSubmissionService.getRecruiterSubmittedCandidatesCountByStage(user.getId(),"REJECTED",jobPortletsStartDate, jobPortletsEndDate);
 				refer.setRejectedJobs(rejectedCount);
 				
-				Integer interviewsCount = requirementSubmissionService.getRecruiterSubmittedJobsCountByStage(user.getId(),"INTERVIEW",jobPortletsStartDate, jobPortletsEndDate);
+				Integer interviewsCount = requirementSubmissionService.getRecruiterSubmittedCandidatesCountByStage(user.getId(),"INTERVIEW",jobPortletsStartDate, jobPortletsEndDate);
 				refer.setInterviews(interviewsCount);
 				
 			}catch (ParseException e) {
