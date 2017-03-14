@@ -1825,12 +1825,12 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 
 		@Override
 		@Transactional
-		public Integer getRecruiterSubmittedJobsCountByStage(Long userId, String submissionStatus, Date startDate,
+		public Integer getRecruiterSubmittedCandidatesCountByStage(Long userId, String submissionStatus, Date startDate,
 				Date endDate) throws Exception {
 			
 			 Session session = this.sessionFactory.getCurrentSession();
 			 
-			 String query = "select count(distinct rs.requirement) from RequirementSubmission rs where rs.recruiterUserId.id = :recruiterUserId "
+			 String query = "select count(*) from RequirementSubmission rs where rs.recruiterUserId.id = :recruiterUserId "
 			 		+ "and (rs.createdDate BETWEEN :startDate and :endDate) and rs.submissionStatus = :submissionStatus ";
 		     
 		     List<Long> appliedCount = session.createQuery(query).setLong("recruiterUserId", userId).setDate("startDate", startDate)
@@ -1864,6 +1864,22 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			 }
 			return count;
 		}
+
+		@Override
+		@Transactional
+		public Integer getRecruiterSubmittedCandidateCountByStartDateAndEndDate(Long userId, Date startDate,
+				Date endDate) throws Exception { Session session = this.sessionFactory.getCurrentSession();
+				 
+				 String query = "select count(*) from RequirementSubmission rs where rs.recruiterUserId.id = :recruiterUserId and (rs.createdDate BETWEEN :startDate and :endDate) ";
+			     
+			     List<Long> appliedCount = session.createQuery(query).setLong("recruiterUserId", userId).setDate("startDate", startDate)
+						   .setDate("endDate", endDate).setCacheable(true).list();
+				 Integer count= 0;
+				 
+				 if(appliedCount != null && !appliedCount.isEmpty()){
+						count = appliedCount.get(0).intValue();
+				 }
+				return count;}
 
 
 

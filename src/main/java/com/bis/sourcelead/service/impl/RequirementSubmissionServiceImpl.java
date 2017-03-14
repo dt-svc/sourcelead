@@ -3498,14 +3498,20 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public Integer getRecruiterSubmittedJobsCountByStage(Long userId, String submissionStatus, Date startDate,
+	public Integer getRecruiterSubmittedCandidatesCountByStage(Long userId, String submissionStatus, Date startDate,
 			Date endDate) throws Exception {
-		return requirementSubmissionDao.getRecruiterSubmittedJobsCountByStage(userId, submissionStatus, startDate, endDate);
+		return requirementSubmissionDao.getRecruiterSubmittedCandidatesCountByStage(userId, submissionStatus, startDate, endDate);
 	}
 
 	@Override
 	public Integer getReferByMeJobAppliedCandidateCount(Long userId, Date startDate, Date endDate) throws Exception {
 		return requirementSubmissionDao.getReferByMeJobAppliedCandidateCount(userId, startDate, endDate);
+	}
+
+	@Override
+	public Integer getRecruiterSubmittedCandidateCountByStartDateAndEndDate(Long userId, Date startDate, Date endDate)
+			throws Exception {
+		return requirementSubmissionDao.getRecruiterSubmittedCandidateCountByStartDateAndEndDate(userId, startDate, endDate);
 	}
 
 }
