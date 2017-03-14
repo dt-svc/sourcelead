@@ -168,12 +168,14 @@ function portletListFilter(requirementStatus){
 	           result = result + '<th>Phone</th>';
 	           result = result + '<th>Requirement</th>';
 	           result = result + '<th>Status</th>';
-		       result = result + '<th>Stage</th>';
+	           if(requirementStatus  != "referByMe"){ 
+	        	   result = result + '<th>Stage</th>';
+	           }
 		       result = result + '<th>Referred on</th>';
 	           result = result + '</tr>';
 	           result = result + '</thead>';
 	           result = result + '<tbody>';
-	         /*   if(requirementStatus  != "referToMe"){ */
+	           if(requirementStatus  != "referByMe"){ 
 	        	   for (var i=0; i<json.referredByMeList.length; i++)
 	  				{
 		        	   var report = json.referredByMeList[i];
@@ -218,68 +220,45 @@ function portletListFilter(requirementStatus){
 		        	   result = result +'         </tr>';
 		        	   
 	  				}
-	           /* }else{
-	        	    for (var i=0; i<json.referToMeList.length; i++)
+	            }else{
+	        	    for (var i=0; i<json.referByMeJobsList.length; i++)
 	  				{ 
-		        	   var report = json.referToMeList[i];
+		        	   var report = json.referByMeJobsList[i];
 		        	   
 		        	   if(report.requirementJobId != null && report.requirementJobId != '' && report.requirementJobId != 'undefined'){
 		        		   requirementJobId = report.requirementJobId +' - ';
 		        	   }else{
 		        		   requirementJobId = "";
 		        	   }
-		        	   if(report.employeeType != null && report.employeeType != '' && report.employeeType != 'undefined'){
-		        		   employeeType = report.employeeType;
+		        	   
+		        	   if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
+		        		   candidateEmail = report.candidateEmail;
 		        	   }else{
-		        		   employeeType = "--"
+		        		   candidateEmail= "--";
 		        	   }
 		        	   
-		        	   if(report.requirementState != null && report.requirementState != '' && report.requirementState != 'undefined'){
-		        		   state = ' , '+report.requirementState;
+		        	   if(report.phoneNumber != null && report.phoneNumber != '' && report.phoneNumber != 'undefined'){
+		        		   phoneNumber = report.phoneNumber;
 		        	   }else{
-		        		   state = "";
+		        		   phoneNumber= "--";
 		        	   }
-		        	   
-		        	   if(report.requirementCity != null && report.requirementCity != '' && report.requirementCity != 'undefined'){
-		        		   city = ' , '+report.requirementCity;
+		        	  
+		        	   if(report.referredOn != null && report.referredOn != '' && report.referredOn != 'undefined'){
+		        		   referredOn = report.referredOn;
 		        	   }else{
-		        		   city = "";
+		        		   referredOn= "--";
 		        	   }
-		        	   
-		        	   if(report.requirementRat != null && report.requirementRat != '' && report.requirementRat != 'undefined'){
-		        		   rate = report.requirementRat;
-		        	   }else{
-		        		   rate = "--";
-		        	   }
-		        	   if(report.RequirementRateType != null && report.RequirementRateType != '' && report.RequirementRateType != 'undefined'){
-		        		   rateType =report.RequirementRateType;
-		        	   }else{
-		        		   rateType = "";
-		        	   }
-		        	   	        	
-		        	   if(report.referredBy != null && report.referredBy != '' && report.referredBy != 'undefined'){
-		        		   referredBy = report.referredBy;
-		        	   }else{
-		        		   referredBy= "--";
-		        	   }
-		        	  if(report.submissionStatus != null && report.submissionStatus != '' && report.submissionStatus != 'undefined'){
-		        		  submissionStatus = report.submissionStatus;
-		        	  }else{
-		        		  submissionStatus = "--"
-		        	  }
 		        	   result = result +'         <tr>';
+		        	   result = result +'         <td><div class="tbldata-dotdot">'+report.candidateName+'</div></td>';
+		        	   result = result +'         <td><div class="tbldata-dotdot">'+candidateEmail+'</div></td>';
+		        	   result = result +'         <td><div class="tbldata-50">'+phoneNumber+'</div></td>';
 		        	   result = result +'         <td><a href="<c:url value="/requirementProfile/'+report.requirementUUID+'"/>"><div class="tbldata-dotdot-sm">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
-		        	   result = result +'         <td><div class="tbldata-dotdot">'+report.requirementOrgName+'</div></td>';
-		        	   result = result +'         <td><div class="tblminwidth-50">'+employeeType+'</div></td>';
-		        	   result = result +'         <td><div class="tbldata-dotdot-100">'+report.requirementCountry+' '+state+' '+city+'</div></td>';
-		        	   result = result +'         <td><div class="tblminwidth-dotdot">'+rate+' '+rateType+'</div></td>';
-		        	   result = result +'         <td><div class="tblminwidth-50">'+report.requirementSubmissionStatus+'</div></td>';
-		        	   result = result +'         <td><div class="tblminwidth-50">'+submissionStatus+'</div></td>';
-		        	   result = result +'         <td><div class="tblminwidth-dotdot">'+referredBy+'</div></td>';
+		        	   result = result +'         <td><div class="tblminwidth-50">'+report.requirementState+'</div></td>';
+		        	   result = result +'         <td><div class="tblminwidth-50">'+referredOn+'</div></td>';
 		        	   result = result +'         </tr>';
 		        	   
 	  				 } 
-	           } */
+	           } 
 	          
 	    	 
 	           result = result + '       </tbody>';

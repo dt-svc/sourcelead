@@ -266,5 +266,10 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		return requirementReferDao.getReferredByMeCountByStartDateAndEndDate(userId, startDate, endDate);
 	}
 	
+	@Override
+	public List<RequirementRefer> getReferredByMeCountListByStartDateAndEndDate(Long userId, Date startDate, Date endDate) throws Exception {
+		return requirementReferDao.getReferredByMeCountListByStartDateAndEndDate(userId, startDate, endDate);
+	}
+	
 
 }

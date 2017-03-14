@@ -1657,20 +1657,26 @@ public class CrowdSourcingRequirementsRestController {
     		
 			try{
 				if(status.equalsIgnoreCase("referByMe")){
-					List<RequirementRefer> referedByMeJobsList = requirementReferService.getReferJobsListByReferType(user.getId(),status,jobPortletsStartDate, jobPortletsEndDate); 
+					List<RequirementRefer> referedByMeJobsList = requirementReferService.getReferredByMeCountListByStartDateAndEndDate(user.getId(),jobPortletsStartDate, jobPortletsEndDate); 
 					for(RequirementRefer rr : referedByMeJobsList){
-						StringBuilder referToUser = new StringBuilder();
-						if(null != rr.getReferToUser().getLastName() && !"".equalsIgnoreCase(rr.getReferToUser().getLastName())){
-							rr.setCandidateName(referToUser.append(rr.getReferToUser().getFirstName()).append(" ").append(rr.getReferToUser().getLastName()).toString());	
-						}else{
-							rr.setCandidateName(referToUser.append(rr.getReferToUser().getFirstName()).toString());
+						if(null != rr.getReferToUser()){
+							StringBuilder referToUser = new StringBuilder();
+							if(null != rr.getReferToUser().getLastName() && !"".equalsIgnoreCase(rr.getReferToUser().getLastName())){
+								rr.setCandidateName(referToUser.append(rr.getReferToUser().getFirstName()).append(" ").append(rr.getReferToUser().getLastName()).toString());	
+							}else{
+								rr.setCandidateName(referToUser.append(rr.getReferToUser().getFirstName()).toString());
+							}
+							rr.setCandidateEmail(rr.getReferToUser().getEmail());
+							rr.setCandidatePhoneNumber(rr.getReferToUser().getMobilePhone());
 						}
-						rr.setCandidateEmail(rr.getReferToUser().getEmail());
-						rr.setCandidatePhoneNumber(rr.getReferToUser().getMobilePhone());
 						rr.setRequirementName(rr.getRequirementId().getJobTitle());
 						rr.setRequirementJobId(rr.getRequirementId().getJobId());
 						rr.setRequirementUUID(rr.getRequirementId().getRequirementUUID());
 						rr.setRequirementState(rr.getRequirementId().getRequirementSubmissionStatus().toString());
+						RequirementRefer requirementRefer = requirementReferService.getAppliedRequirementReferByRequirementIdAndUserId(rr.getRequirementId().getId(), user.getId());
+						if(null != requirementRefer){
+							rr.setReferredOn(Constants.DF_DMY.format(requirementRefer.getCreatedDate()));
+						}
 					}
 					refer.setReferByMeJobsList(referedByMeJobsList);
 					
@@ -1699,25 +1705,6 @@ public class CrowdSourcingRequirementsRestController {
 				}
 				refer.setReferredByMeList(referredByMeList);
 				}
-				
-				/*Integer referedByMeJobs = requirementReferService.getReferJobsByReferType(user.getId(),"referByMe",jobPortletsStartDate, jobPortletsEndDate);
-				refer.setReferByMeJobs(referedByMeJobs);
-				
-				Integer appliedJobs = requirementSubmissionService.getReferByMeJobAppliedCount(user.getId(), jobPortletsStartDate, jobPortletsEndDate);
-				refer.setAppliedJobs(appliedJobs);
-				
-				Integer shortlistCount = requirementSubmissionService.getReferByMeProfessionalJobSubmisssionsCountBySubmissionType(user.getId(),"SHORTLIST",jobPortletsStartDate, jobPortletsEndDate);
-				refer.setShortlistJobs(shortlistCount);
-				
-				Integer offeredCount = requirementSubmissionService.getReferByMeProfessionalJobSubmisssionsCountBySubmissionType(user.getId(),"OFFERMADE",jobPortletsStartDate, jobPortletsEndDate);
-				refer.setOfferedJobs(offeredCount);
-				
-				Integer rejectedCount = requirementSubmissionService.getReferByMeProfessionalJobSubmisssionsCountBySubmissionType(user.getId(),"REJECTED",jobPortletsStartDate, jobPortletsEndDate);
-				refer.setRejectedJobs(rejectedCount);
-				
-				Integer interviewsCount = requirementSubmissionService.getReferByMeProfessionalJobSubmisssionsCountBySubmissionType(user.getId(),"INTERVIEW",jobPortletsStartDate, jobPortletsEndDate);
-				refer.setInterviews(interviewsCount);*/
-				
 			}catch (ParseException e) {
 				e.printStackTrace();
 			}

@@ -334,10 +334,11 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 		 }else if(referType.equalsIgnoreCase("referByMe")){
 			 subQuery = "refer.referFromUser.id = :userId ";
 		 }
-		 String query = "from RequirementRefer refer where "+subQuery+" and (refer.createdDate BETWEEN :startDate and :endDate))";
+		 String query = "from RequirementRefer refer left join fetch refer.requirementId where "+subQuery+" and (refer.createdDate BETWEEN :startDate and :endDate))";
 		 List<RequirementRefer>  referCountList = session.createQuery(query).setLong("userId", userId) .setDate("startDate", startDate).setDate("endDate", endDate).setCacheable(true).list();
 		return referCountList;
-    
+	}
+	
 	@Override
 	@Transactional
 	public Integer getReferredByMeCountByStartDateAndEndDate(Long userId, Date startDate, Date endDate)
@@ -357,5 +358,15 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 		 }
 		return count;
 
+	}
+	
+	@Override
+	@Transactional
+	public List<RequirementRefer> getReferredByMeCountListByStartDateAndEndDate(Long userId, Date startDate, Date endDate) throws Exception {
+		 Session session = this.sessionFactory.getCurrentSession();
+		 String query = "from RequirementRefer refer left join fetch refer.requirementId left join fetch refer.referToUser left join fetch refer.referFromUser  where refer.referFromUser.id = :userId  and (refer.createdDate BETWEEN :startDate and :endDate))";
+		 List<RequirementRefer> referCountList = session.createQuery(query).setLong("userId", userId).setDate("startDate", startDate).setDate("endDate", endDate).setCacheable(true).list();
+		
+		return referCountList;
 	}
 }

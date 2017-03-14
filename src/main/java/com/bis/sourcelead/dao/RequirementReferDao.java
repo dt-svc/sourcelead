@@ -34,5 +34,7 @@ public interface RequirementReferDao {
 	List<RequirementRefer> getReferJobsListByReferType(Long userId,String referType,Date startDate,Date endDate) throws Exception;
 
 	Integer getReferredByMeCountByStartDateAndEndDate(Long userId,Date startDate,Date endDate) throws Exception;
+	
+	List<RequirementRefer> getReferredByMeCountListByStartDateAndEndDate(Long userId,Date startDate,Date endDate) throws Exception;
 
 }
