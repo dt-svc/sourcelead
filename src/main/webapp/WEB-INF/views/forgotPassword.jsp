@@ -31,7 +31,7 @@
 	            <span>
 	            	<label>User Name</label>
 	                <i class="fa fa-user"></i>
-	                <input type="text" name="User Name" value="${email}" id="email" class="signin_fild" required />
+	                <input type="text" name="email"  value="${email}" id="email" class="signin_fild" required />
 	            </span>
 	            </div>
 	            <input type="submit" value="Submit" id="submit_button" class="sign_btn sign_btn_for" />
