@@ -129,10 +129,10 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<RequirementSubmissionHistory> getReceivedApplicantsCountForReports(Long orgLocationId) {
+	public List<RequirementSubmissionHistory> getReceivedApplicantsCountForReports(Long orgLocationId,Long requirementId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId rs where rs.orgLocations.id = :orgLocationId and  rs.vendorLocationId <> null ";
-		return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId rs where rs.orgLocations.id = :orgLocationId and rs.requirement.id = :requirementId and  rs.vendorLocationId <> null ";
+		return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("requirementId", requirementId).setCacheable(true).list();
 	}
 
 
