@@ -1711,6 +1711,32 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			
 		}
 
+
+		@SuppressWarnings("unchecked")
+		@Override
+		@Transactional
+		public List<RequirementSubmission> getReferByMeProfessionalJobSubmisssionsCountListBySubmissionType(Long userId, String submissionStatus, Date startDate, Date endDate) throws Exception {
+			Session session = this.sessionFactory.getCurrentSession();
+			List<RequirementSubmission>  submissionsCountList = null ;
+			String query;
+			if(null != submissionStatus && !"".equalsIgnoreCase(submissionStatus) && submissionStatus != "undefined"){
+				 query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate where "
+				 		+ "rs.candidate.consultantUser.id IN (select refer.referToUser from RequirementRefer refer where refer.referFromUser = :userId and refer.referStatus = 'Applied' and (refer.createdDate BETWEEN :startDate and :endDate)) and "
+				 		+ "rs.requirement.id IN (select refer.requirementId from RequirementRefer refer where refer.referFromUser = :userId and refer.referStatus = 'Applied' and (refer.createdDate BETWEEN :startDate and :endDate)) and "
+				 		+ "rs.submissionStatus = :submissionStatus";
+				   submissionsCountList = session.createQuery(query).setLong("userId", userId).setString("submissionStatus", submissionStatus)
+			    		                                            .setDate("startDate", startDate).setDate("endDate", endDate).setCacheable(true).list();
+			}else{
+				 query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate where "
+				 		+ "rs.candidate.consultantUser.id IN (select refer.referToUser from RequirementRefer refer where refer.referFromUser = :userId and refer.referStatus = 'Applied' and (refer.createdDate BETWEEN :startDate and :endDate)) and "
+				 		+ "rs.requirement.id IN (select refer.requirementId from RequirementRefer refer where refer.referFromUser = :userId and refer.referStatus = 'Applied' and (refer.createdDate BETWEEN :startDate and :endDate))";
+			     
+				submissionsCountList = session.createQuery(query).setLong("userId", userId).setDate("startDate", startDate).setDate("endDate", endDate).setCacheable(true).list();
+			}
+			
+			return submissionsCountList;
+		}
+
 		
 		@Override
 		@Transactional
@@ -1854,6 +1880,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						count = appliedCount.get(0).intValue();
 				 }
 				return count;}
+
 
 
   }
