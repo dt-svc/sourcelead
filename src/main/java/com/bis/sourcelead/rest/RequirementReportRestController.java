@@ -309,48 +309,140 @@ public class RequirementReportRestController {
 	@Async
 	@RequestMapping(value = "/getReceivedApplicantsCountForReports", method = RequestMethod.POST)
 	@ResponseBody
-	String getReceivedApplicantsCountForReports(HttpServletRequest request) throws Exception {
+	String getReceivedApplicantsCountForReports(@RequestParam(value="reportType", required=false) String reportType,
+			 @RequestParam(value="startDate", required=false) String customStartDate,
+			 @RequestParam(value="endDate", required=false) String customEndDate,
+			 HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
-		ApplicantReport applicantReport = new ApplicantReport();
-		int applicantsCount = 0;
-		int requestSentCount = 0;
-		int shortlistedCount = 0;
-		int submitToClientCount = 0;
-		int interviewsCount = 0;
-		int offeredCount = 0;
-		int rejectedCount = 0;
-		
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
-		List<RequirementSubmissionHistory> rshList = requirementReportService.getReceivedApplicantsCountForReports(orgLocation.getId());
-		
-		for(RequirementSubmissionHistory rsh : rshList){
-			
-			if("submission".equals(rsh.getToStage())){
-				applicantsCount++;
-			}else if("shortList".equals(rsh.getToStage())){
-				shortlistedCount++;
-			}else if("interview".equals(rsh.getToStage())){
-				interviewsCount++;
-			}else if("offer_made".equals(rsh.getToStage())){
-				offeredCount++;
-			}else if("request_sent".equals(rsh.getToStage())){
-				requestSentCount++;
-			}else if("submit_to_client".equals(rsh.getToStage())){
-				submitToClientCount++;
-			}else{
-				rejectedCount++;
-			}
-		}
-		applicantReport.setApplicantsCount(applicantsCount);
-		applicantReport.setShortlisted(shortlistedCount);
-		applicantReport.setInterviewCount(interviewsCount);
-		applicantReport.setSubmitToClientCount(submitToClientCount);
-		applicantReport.setOfferedCount(offeredCount);
-		applicantReport.setRejectedCount(rejectedCount);
-		applicantReport.setRequestSentCount(requestSentCount);
-		return commonUtil.toJSON(applicantReport);
 
+		 String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		 String reportsList = null;
+
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+		 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+		 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+		 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+		 Date endDateUTC =null ;
+		 String filterDate = null;
+		 Date startDateUTC = null;
+		    int applicantsSum = 0;
+			int requestSentSum = 0;
+			int shortlistedSum = 0;
+			int submitToClientSum = 0;
+			int interviewsSum = 0;
+			int offeredSum = 0;
+			int rejectedSum = 0;
+		 ApplicantReport applicantReport = new ApplicantReport();
+		 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)){
+			 String endDate = outputFormatter1.print(zoned);
+			 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
+			 endDateUTC = TZ_DF_TS.parse(endDateString);
+		 }
+			
+			if(null != reportType && !"".equals(reportType)){
+				if("today".equals(reportType)){
+					String startDate = outputFormatter.print(zoned);
+					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
+					filterDate = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
+					startDateUTC = TZ_DF_TS.parse(startDateString);
+				}else if("yesterday".equals(reportType)){
+					DateTime yesterDayZoned = zoned.minusDays(1);
+					String yesterDayDate = outputFormatter.print(yesterDayZoned);
+					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
+					startDateUTC = TZ_DF_TS.parse(startDateString);
+					
+				}else if("week".equals(reportType)){
+					DateTime yesterDayZoned = zoned.minusDays(7);
+					String yesterDayDate = outputFormatter.print(yesterDayZoned);
+					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
+					startDateUTC = TZ_DF_TS.parse(startDateString);
+				}else if("twoweeks".equals(reportType)){
+					DateTime yesterDayZoned = zoned.minusDays(14);
+					String yesterDayDate = outputFormatter.print(yesterDayZoned);
+					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
+					startDateUTC = TZ_DF_TS.parse(startDateString);
+				}else if("month".equals(reportType)){
+					DateTime yesterDayZoned = zoned.minusDays(30);
+					String yesterDayDate = outputFormatter.print(yesterDayZoned);
+					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
+					startDateUTC = TZ_DF_TS.parse(startDateString);
+				}else if("twomonths".equals(reportType)){
+					DateTime yesterDayZoned = zoned.minusDays(60);
+					String yesterDayDate = outputFormatter.print(yesterDayZoned);
+					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
+					startDateUTC = TZ_DF_TS.parse(startDateString);
+				}else{
+					 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
+						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
+						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
+						Date startTime =  commonUtil.getDateFormat(customStartDate);
+						Date endTime =  commonUtil.getDateFormat(customEndDate);
+						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+						String customEndTimeStr = TZ_DF_CED.format(endTime);  
+						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
+						String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customEndTimeStr);
+						startDateUTC = TZ_DF_TS.parse(startDateString);
+						endDateUTC = TZ_DF_TS.parse(endDateString);
+					 }
+					
+				}
+			}
+			List<Requirement> requirementList = requirementReportService.getRequirementReports(userRoleName,orgLocation,user,filterDate,startDateUTC,endDateUTC);
+			List<ApplicantReport> applicantReportList = new ArrayList<>();
+			if(null != requirementList){
+				
+				for(Requirement requirement:requirementList){
+				int applicantsCount = 0;
+				int requestSentCount = 0;
+				int shortlistedCount = 0;
+				int submitToClientCount = 0;
+				int interviewsCount = 0;
+				int offeredCount = 0;
+				int rejectedCount = 0;
+				
+				List<RequirementSubmissionHistory> rshList = requirementReportService.getReceivedApplicantsCountForReports(orgLocation.getId(),requirement.getId());
+				
+				for(RequirementSubmissionHistory rsh : rshList){
+					
+					if("submission".equals(rsh.getToStage())){
+						applicantsCount++;
+					}else if("shortList".equals(rsh.getToStage())){
+						shortlistedCount++;
+					}else if("interview".equals(rsh.getToStage())){
+						interviewsCount++;
+					}else if("offer_made".equals(rsh.getToStage())){
+						offeredCount++;
+					}else if("request_sent".equals(rsh.getToStage())){
+						requestSentCount++;
+					}else if("submit_to_client".equals(rsh.getToStage())){
+						submitToClientCount++;
+					}else{
+						rejectedCount++;
+					}
+				}
+				 applicantsSum = applicantsSum+applicantsCount;
+				 requestSentSum = requestSentSum+requestSentCount;
+				 shortlistedSum = shortlistedSum+shortlistedCount;
+				 submitToClientSum = submitToClientSum+submitToClientCount;
+				 interviewsSum = interviewsSum+interviewsCount;
+				 offeredSum = offeredSum+offeredCount;
+				 rejectedSum = rejectedSum+rejectedCount;
+				}
+				applicantReport.setApplicantsSum(applicantsSum);
+				applicantReport.setShortlistedSum(shortlistedSum);
+				applicantReport.setSubmitToClientSum(submitToClientSum);
+				applicantReport.setInterviewsSum(interviewsSum);
+				applicantReport.setOfferedSum(offeredSum);
+				applicantReport.setRejectedSum(rejectedSum);
+				reportsList = commonUtil.toJSON(applicantReport);
+			}
+			else{
+				reportsList = commonUtil.toJSON("");
+			}
+			return reportsList;
 	}
 	
 	@RequestMapping(value = "/getApplicantReceivedReports")

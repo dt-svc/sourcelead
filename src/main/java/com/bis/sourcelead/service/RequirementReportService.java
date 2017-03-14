@@ -19,7 +19,7 @@ public interface RequirementReportService {
 
 	List<RequirementSubmission> getReceivedApplicantsCountsPerReq(Long requirementId);
 
-	List<RequirementSubmissionHistory> getReceivedApplicantsCountForReports(Long orgLocationId);
+	List<RequirementSubmissionHistory> getReceivedApplicantsCountForReports(Long orgLocationId, Long requirementId);
 
 	List<RequirementSubmissionHistory> getApplicantsCountForChart(Long orgLocationId);
 

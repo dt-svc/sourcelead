@@ -107,7 +107,6 @@ function prepareReportDataDiv(data){
 	  $("#requirementReportsDiv12").empty();
     $("#requirementReportsDiv12").append(result);
     requirementReportPagination();
-    getAllCounts(json.length);
 }
 
 </script>
@@ -278,9 +277,21 @@ function requirementReportPagination(){
   <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
 
 
+<script>
+function custDates(){
+	var reportType = $("#reportTypeId").val();
+	if(reportType=="custom"){
+	    $(".cusShow").show();
+	}
+	if(reportType!="custom"){
+	    $(".cusShow").hide();
+	}
+}
+</script>
+
+
 
 <script>
-
 // Error pop
 $(document).ready(function() {
     $(".glyphicon-trash").click(function(){
@@ -497,7 +508,8 @@ function getDayWiseReports(){
          url: sourceleadUrl+"/getApplicantReceivedReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
           success :function(data) {
         	 prepareReportDataDiv(data);
-        	// getAllCounts();
+        	 var json = JSON.parse(data);
+        	 getAllCounts(json.length,reportType,startDate,endDate);
          },
           
      });  
@@ -509,12 +521,27 @@ function getDayWiseReports(){
 
 
 <script>
-function getAllCounts(applicantConts){
-	 $('#applicantsli').load(allReceivedApplicantsCount(applicantConts)); 
+function getAllCounts(applicantConts,reportType,startDate,endDate){
+	// $('#applicantsli').load(allReceivedApplicantsCount(applicantConts)); 
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+      type : "POST",
+      url: sourceleadUrl+"/getReceivedApplicantsCountForReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate, 
+      //url: sourceleadUrl+"/getReceivedApplicantsCountForReports?${_csrf.parameterName}=${_csrf.token}",        
+       success :function(data) { 
+      	 var json = JSON.parse(data);
+      	 $("#applicantCount").html(applicantConts); 
+         $("#shortlistedCount").html(json.shortlistedSum); 
+  	     $("#submitToClientCount").html(0);
+  	     $("#offerCount").html(json.offeredSum); 
+ 	     $("#interviewCount").html(json.interviewsSum);
+	     $("#rejectedCount").html(json.rejectedSum);
+       },
+	  });
 }
 </script>
 
-<script>
+<!-- <script>
 function allReceivedApplicantsCount(applicantConts){
 	var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
@@ -531,7 +558,7 @@ function allReceivedApplicantsCount(applicantConts){
         },
 	  });
 }
-</script>
+</script> -->
 
 
 <script>
@@ -553,6 +580,8 @@ function getCustomReports(){
 	          url: sourceleadUrl+"/getApplicantsReport?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,
 	          success :function(data) {
 	        	 prepareReportDataDiv(data);
+	        	 var json = JSON.parse(data);
+	        	 getAllCounts(json.length,reportType,startDate,endDate);
 	         },
 	          
 	     }); 

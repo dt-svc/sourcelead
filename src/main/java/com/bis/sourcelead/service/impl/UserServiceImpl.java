@@ -417,7 +417,7 @@ public class UserServiceImpl implements UserService {
 		
 		if(jsonObj.has("dateofJoin") && !isNullOrEmpty(jsonObj.getString("dateofJoin"))){
 			try {
-				   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				   SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 				   employees.setHireDate(sdf.parse(jsonObj.getString("dateofJoin")));
 				} catch (Exception e) {
 				  e.printStackTrace();
@@ -485,7 +485,9 @@ public class UserServiceImpl implements UserService {
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setOrgLocationId(locationId);
 		 
@@ -717,7 +719,6 @@ public class UserServiceImpl implements UserService {
 		 StringBuilder emailMsgBuilder = new StringBuilder();
 		 emailMessage.setFromName(emailMsgBuilder.append(ownerUser.getFirstName()).append(" ").append(ownerUser.getLastName()).toString());
 		 OrgLocations loginOrgLocation = orglocationsDao.getOrgLocationByOrgId(loginOrg.getId());
-		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 String UUID = SourceLeadRandomCodeHelper.generateUUID();
