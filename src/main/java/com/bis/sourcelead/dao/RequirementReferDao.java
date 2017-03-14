@@ -29,6 +29,12 @@ public interface RequirementReferDao {
 	
 	Integer getReferJobsByReferTypeByReferedDate(Long userId,String referType,Date referedDate) throws Exception;
 	
+	List<RequirementRefer> getReferJobsListByReferTypeByReferedDate(Long userId,String referType,Date referedDate) throws Exception;
+	
+	List<RequirementRefer> getReferJobsListByReferType(Long userId,String referType,Date startDate,Date endDate) throws Exception;
+
 	Integer getReferredByMeCountByStartDateAndEndDate(Long userId,Date startDate,Date endDate) throws Exception;
+	
+	List<RequirementRefer> getReferredByMeCountListByStartDateAndEndDate(Long userId,Date startDate,Date endDate) throws Exception;
 
 }

@@ -106,7 +106,64 @@ public class RequirementRefer implements Serializable {
 	
 	@Transient
 	private List<RequirementSubmission> crowdSourcingPortLetList;
-   
+	
+	@Transient
+	private List<RequirementRefer> referToMeList;
+	
+	@Transient
+	private List<RequirementSubmission> referredByMeList;
+	
+	@Transient
+	private List<RequirementRefer> referByMeJobsList;
+	
+	@Transient
+	private String requirementName;
+	
+	@Transient
+	private String requirementJobId;
+	
+	@Transient
+	private String requirementUUID;
+	
+	@Transient
+	private String requirementOrgName;
+	
+	@Transient
+	private String requirementCountry;
+	
+	@Transient
+	private String requirementState;
+	
+	@Transient
+	private String requirementCity;
+	
+	@Transient
+	private String requirementRate;
+	
+	@Transient
+	private String requirementRateType;
+	
+	@Transient
+	private String requirementStatus;
+	
+	@Transient
+	private String requirementSubmissionStatus;
+	
+	@Transient
+	private String referredBy;
+	
+	@Transient
+	private String referredOn;
+	
+	@Transient
+	private String candidateName;
+	
+	@Transient
+	private String candidateEmail;
+	
+	@Transient
+	private String candidatePhoneNumber;
+	
    @Transient
 	private String dateString;
 	
@@ -303,6 +360,15 @@ public class RequirementRefer implements Serializable {
 		this.referedToMeCount = referedToMeCount;
 	}
 
+
+	public List<RequirementRefer> getReferToMeList() {
+		return referToMeList;
+	}
+
+	public void setReferToMeList(List<RequirementRefer> referToMeList) {
+		this.referToMeList = referToMeList;
+	}
+
 	public Integer getSubmittedByMeJobs() {
 		return submittedByMeJobs;
 	}
@@ -311,5 +377,147 @@ public class RequirementRefer implements Serializable {
 		this.submittedByMeJobs = submittedByMeJobs;
 	}
 	
-	
+	public List<RequirementSubmission> getReferredByMeList() {
+		return referredByMeList;
 	}
+
+	public void setReferredByMeList(List<RequirementSubmission> referredByMeList) {
+		this.referredByMeList = referredByMeList;
+	}
+
+	public List<RequirementRefer> getReferByMeJobsList() {
+		return referByMeJobsList;
+	}
+
+	public void setReferByMeJobsList(List<RequirementRefer> referByMeJobsList) {
+		this.referByMeJobsList = referByMeJobsList;
+	}
+
+	public String getRequirementName() {
+		return requirementName;
+	}
+
+	public void setRequirementName(String requirementName) {
+		this.requirementName = requirementName;
+	}
+
+	public String getRequirementJobId() {
+		return requirementJobId;
+	}
+
+	public void setRequirementJobId(String requirementJobId) {
+		this.requirementJobId = requirementJobId;
+	}
+
+	public String getRequirementUUID() {
+		return requirementUUID;
+	}
+
+	public void setRequirementUUID(String requirementUUID) {
+		this.requirementUUID = requirementUUID;
+	}
+
+	public String getRequirementOrgName() {
+		return requirementOrgName;
+	}
+
+	public void setRequirementOrgName(String requirementOrgName) {
+		this.requirementOrgName = requirementOrgName;
+	}
+
+	public String getRequirementCountry() {
+		return requirementCountry;
+	}
+
+	public void setRequirementCountry(String requirementCountry) {
+		this.requirementCountry = requirementCountry;
+	}
+
+	public String getRequirementState() {
+		return requirementState;
+	}
+
+	public void setRequirementState(String requirementState) {
+		this.requirementState = requirementState;
+	}
+
+	public String getRequirementCity() {
+		return requirementCity;
+	}
+
+	public void setRequirementCity(String requirementCity) {
+		this.requirementCity = requirementCity;
+	}
+
+	public String getRequirementRate() {
+		return requirementRate;
+	}
+
+	public void setRequirementRate(String requirementRate) {
+		this.requirementRate = requirementRate;
+	}
+
+	public String getRequirementRateType() {
+		return requirementRateType;
+	}
+
+	public void setRequirementRateType(String requirementRateType) {
+		this.requirementRateType = requirementRateType;
+	}
+
+	public String getRequirementStatus() {
+		return requirementStatus;
+	}
+
+	public void setRequirementStatus(String requirementStatus) {
+		this.requirementStatus = requirementStatus;
+	}
+
+	public String getRequirementSubmissionStatus() {
+		return requirementSubmissionStatus;
+	}
+
+	public void setRequirementSubmissionStatus(String requirementSubmissionStatus) {
+		this.requirementSubmissionStatus = requirementSubmissionStatus;
+	}
+
+	public String getReferredBy() {
+		return referredBy;
+	}
+
+	public void setReferredBy(String referredBy) {
+		this.referredBy = referredBy;
+	}
+
+	public String getReferredOn() {
+		return referredOn;
+	}
+
+	public void setReferredOn(String referredOn) {
+		this.referredOn = referredOn;
+	}
+
+	public String getCandidateName() {
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+
+	public String getCandidateEmail() {
+		return candidateEmail;
+	}
+
+	public void setCandidateEmail(String candidateEmail) {
+		this.candidateEmail = candidateEmail;
+	}
+
+	public String getCandidatePhoneNumber() {
+		return candidatePhoneNumber;
+	}
+
+	public void setCandidatePhoneNumber(String candidatePhoneNumber) {
+		this.candidatePhoneNumber = candidatePhoneNumber;
+	}
+}

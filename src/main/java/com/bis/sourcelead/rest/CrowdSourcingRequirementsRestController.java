@@ -1558,40 +1558,167 @@ public class CrowdSourcingRequirementsRestController {
 	    	    jobPortletsEndDate =  sdf.parse(endDate);
 			}
 			try{
-				List<RequirementSubmission> crowdSourcingPortLetList = requirementSubmissionService.getProfessionalJobSubmisssionsCountListBySubmissionType(candidateId,status,jobPortletsStartDate, jobPortletsEndDate);
-				for(RequirementSubmission rs : crowdSourcingPortLetList){
+				if(status.equalsIgnoreCase("referToMe")){
+					List<RequirementRefer>  referedToMeJobs = requirementReferService.getReferJobsListByReferType(user.getId(),status,jobPortletsStartDate, jobPortletsEndDate);
+					for(RequirementRefer rr: referedToMeJobs){
+						rr.setRequirementName(rr.getRequirementId().getJobTitle());
+						rr.setRequirementJobId(rr.getRequirementId().getJobId());
+						rr.setRequirementUUID(rr.getRequirementId().getRequirementUUID());
+						rr.setRequirementOrgName(rr.getRequirementId().getOrgLocationId().getOrg().getOrgName());
+						rr.setRequirementRateType(rr.getRequirementId().getJobType());
+						rr.setRequirementCountry(rr.getRequirementId().getCountry());
+						rr.setRequirementState(rr.getRequirementId().getState());
+						rr.setRequirementCity(rr.getRequirementId().getCity());
+						rr.setRequirementRate(rr.getRequirementId().getRate());
+						rr.setRequirementRateType(rr.getRequirementId().getRateType());
+						//rr.setSubmissionStatus(rs.getSubmissionStatus());
+						rr.setRequirementSubmissionStatus(rr.getRequirementId().getRequirementSubmissionStatus().toString());
+						RequirementRefer requirementRefer = requirementReferService.getAppliedRequirementReferByRequirementIdAndUserId(rr.getRequirementId().getId(), user.getId());
+						if(null != requirementRefer){
+							StringBuilder referredUser = new StringBuilder();
+							if(null != requirementRefer.getReferFromUser().getLastName()){
+								rr.setReferredBy(referredUser.append(requirementRefer.getReferFromUser().getFirstName()).append(" ").append(requirementRefer.getReferFromUser().getLastName()).toString());	
+							}else{
+								rr.setReferredBy(referredUser.append(requirementRefer.getReferFromUser().getFirstName()).toString());
+							}
+							rr.setReferredOn(Constants.DF_DMY.format(requirementRefer.getCreatedDate()));
+						}
+						
+					}
+					refer.setReferToMeList(referedToMeJobs);
+				}else{
+					List<RequirementSubmission> crowdSourcingPortLetList = requirementSubmissionService.getProfessionalJobSubmisssionsCountListBySubmissionType(candidateId,status,jobPortletsStartDate, jobPortletsEndDate);
+					for(RequirementSubmission rs : crowdSourcingPortLetList){
+						rs.setRequirementName(rs.getRequirement().getJobTitle());
+						rs.setRequirementJobId(rs.getRequirement().getJobId());
+						rs.setRequirementUUID(rs.getRequirement().getRequirementUUID());
+						rs.setOrgName(rs.getRequirement().getOrgLocationId().getOrg().getOrgName());
+						rs.setEmployeeType(rs.getRequirement().getJobType());
+						rs.setCountry(rs.getRequirement().getCountry());
+						rs.setState(rs.getRequirement().getState());
+						rs.setCity(rs.getRequirement().getCity());
+						rs.setRate(rs.getRequirement().getRate());
+						rs.setRateType(rs.getRequirement().getRateType());
+						rs.setSubmissionStatus(rs.getSubmissionStatus());
+						rs.setRequirementSubmissionStatus(rs.getRequirement().getRequirementSubmissionStatus().toString());
+						RequirementRefer requirementRefer = requirementReferService.getAppliedRequirementReferByRequirementIdAndUserId(rs.getRequirement().getId(), user.getId());
+						if(null != requirementRefer){
+							StringBuilder referredUser = new StringBuilder();
+							if(null != requirementRefer.getReferFromUser().getLastName()){
+								rs.setReferredBy(referredUser.append(requirementRefer.getReferFromUser().getFirstName()).append(" ").append(requirementRefer.getReferFromUser().getLastName()).toString());	
+							}else{
+								rs.setReferredBy(referredUser.append(requirementRefer.getReferFromUser().getFirstName()).toString());
+							}
+							rs.setReferredOn(Constants.DF_DMY.format(requirementRefer.getCreatedDate()));
+						}
+						
+					}
+					refer.setCrowdSourcingPortLetList(crowdSourcingPortLetList);
+				}
+				
+			}catch (ParseException e) {
+				e.printStackTrace();
+			}
+			
+			resultJson = commonUtil.toJSON(refer);
+			return resultJson;
+
+		}
+		
+		
+		
+		
+		
+		
+		
+		@PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+		@RequestMapping(value = "/getReferByMeJobSummaryPortletList", method = RequestMethod.GET)
+		public String getReferByMeJobSummaryPortletList(@RequestParam(value = "startDate", required = false) String startDate,
+				@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "requirementStatus", required = false) String status,HttpServletRequest request) throws Exception {
+			String resultJson = null;
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+			
+			RequirementRefer refer = new RequirementRefer();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			Date jobPortletsStartDate = null;
+			Date jobPortletsEndDate = null;
+			
+			if(!isNullOrEmpty(startDate) && !isNullOrEmpty(endDate)){
+				//Custom StartDate and EndDate
+				
+				jobPortletsStartDate =  sdf.parse(startDate);
+				jobPortletsEndDate =  sdf.parse(endDate);
+			
+			}else{
+				
+				//For This Month
+				
+				Calendar c = Calendar.getInstance();   
+	    	    c.set(Calendar.DAY_OF_MONTH, 1);
+	    	    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+	    	    startDate = df.format(c.getTime());
+	    	    
+	    	    int lastDate = c.getActualMaximum(Calendar.DATE);
+	    	    c.set(Calendar.DATE, lastDate);	
+	    	    endDate = df.format(c.getTime());
+	    	    
+	    	    jobPortletsStartDate =  sdf.parse(startDate);
+	    	    jobPortletsEndDate =  sdf.parse(endDate);
+			}
+			
+    		
+			try{
+				if(status.equalsIgnoreCase("referByMe")){
+					List<RequirementRefer> referedByMeJobsList = requirementReferService.getReferredByMeCountListByStartDateAndEndDate(user.getId(),jobPortletsStartDate, jobPortletsEndDate); 
+					for(RequirementRefer rr : referedByMeJobsList){
+						if(null != rr.getReferToUser()){
+							StringBuilder referToUser = new StringBuilder();
+							if(null != rr.getReferToUser().getLastName() && !"".equalsIgnoreCase(rr.getReferToUser().getLastName())){
+								rr.setCandidateName(referToUser.append(rr.getReferToUser().getFirstName()).append(" ").append(rr.getReferToUser().getLastName()).toString());	
+							}else{
+								rr.setCandidateName(referToUser.append(rr.getReferToUser().getFirstName()).toString());
+							}
+							rr.setCandidateEmail(rr.getReferToUser().getEmail());
+							rr.setCandidatePhoneNumber(rr.getReferToUser().getMobilePhone());
+						}
+						rr.setRequirementName(rr.getRequirementId().getJobTitle());
+						rr.setRequirementJobId(rr.getRequirementId().getJobId());
+						rr.setRequirementUUID(rr.getRequirementId().getRequirementUUID());
+						rr.setRequirementState(rr.getRequirementId().getRequirementSubmissionStatus().toString());
+						RequirementRefer requirementRefer = requirementReferService.getAppliedRequirementReferByRequirementIdAndUserId(rr.getRequirementId().getId(), user.getId());
+						if(null != requirementRefer){
+							rr.setReferredOn(Constants.DF_DMY.format(requirementRefer.getCreatedDate()));
+						}
+					}
+					refer.setReferByMeJobsList(referedByMeJobsList);
+					
+					
+				}else{
+				List<RequirementSubmission> referredByMeList =requirementSubmissionService.getReferByMeProfessionalJobSubmisssionsCountListBySubmissionType(user.getId(),status,jobPortletsStartDate, jobPortletsEndDate);
+				for(RequirementSubmission rs : referredByMeList){
 					StringBuilder candidateName = new StringBuilder();
 					if(null != rs.getCandidate().getLastName()){
 						rs.setCandidateName(candidateName.append(rs.getCandidate().getFirstName()).append(" ").append(rs.getCandidate().getLastName()).toString());	
 					}else{
-						rs.setCandidateName(candidateName.append(rs.getCandidate().getLastName()).toString());
+						rs.setCandidateName(candidateName.append(rs.getCandidate().getFirstName()).toString());
 					}
-					
+					rs.setCandidateEmail(rs.getCandidate().getEmail());
+					rs.setPhoneNumber(rs.getCandidate().getMobilePhone());
 					rs.setRequirementName(rs.getRequirement().getJobTitle());
 					rs.setRequirementJobId(rs.getRequirement().getJobId());
 					rs.setRequirementUUID(rs.getRequirement().getRequirementUUID());
-					rs.setOrgName(rs.getRequirement().getOrgLocationId().getOrg().getOrgName());
-					rs.setEmployeeType(rs.getRequirement().getJobType());
-					rs.setCountry(rs.getRequirement().getCountry());
-					rs.setState(rs.getRequirement().getState());
-					rs.setCity(rs.getRequirement().getCity());
-					rs.setRate(rs.getRequirement().getRate());
-					rs.setRateType(rs.getRequirement().getRateType());
-					rs.setSubmissionStatus(rs.getSubmissionStatus());
 					rs.setRequirementSubmissionStatus(rs.getRequirement().getRequirementSubmissionStatus().toString());
+					rs.setSubmissionStatus(rs.getSubmissionStatus());
 					RequirementRefer requirementRefer = requirementReferService.getAppliedRequirementReferByRequirementIdAndUserId(rs.getRequirement().getId(), user.getId());
 					if(null != requirementRefer){
-						StringBuilder referredUser = new StringBuilder();
-						if(null != requirementRefer.getReferFromUser().getLastName()){
-							rs.setReferredBy(referredUser.append(requirementRefer.getReferFromUser().getFirstName()).append(" ").append(requirementRefer.getReferFromUser().getLastName()).toString());	
-						}else{
-							rs.setReferredBy(referredUser.append(requirementRefer.getReferFromUser().getFirstName()).toString());
-						}
 						rs.setReferredOn(Constants.DF_DMY.format(requirementRefer.getCreatedDate()));
 					}
 					
 				}
-				refer.setCrowdSourcingPortLetList(crowdSourcingPortLetList);
+				refer.setReferredByMeList(referredByMeList);
+				}
 			}catch (ParseException e) {
 				e.printStackTrace();
 			}
@@ -1614,6 +1741,7 @@ public class CrowdSourcingRequirementsRestController {
 			return resultJson;
 
 		}
+		
 		
 		
 		public String toJSON(Object obj){
