@@ -299,4 +299,25 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 		 }
 		return count;
 	}
+
+
+	@Override
+	@Transactional
+	public Integer getReferredByMeCountByStartDateAndEndDate(Long userId, Date startDate, Date endDate)
+			throws Exception {
+		
+		 Session session = this.sessionFactory.getCurrentSession();
+		 	     
+		 String query = "select  count(*) from RequirementRefer refer where refer.referFromUser.id = :userId  and (refer.createdDate BETWEEN :startDate and :endDate))";
+	     
+	     List<Long> referCount = session.createQuery(query).setLong("userId", userId)
+	    		   .setDate("startDate", startDate)
+				   .setDate("endDate", endDate).setCacheable(true).list();
+		 Integer count= 0;
+		 
+		 if(referCount != null && !referCount.isEmpty()){
+				count = referCount.get(0).intValue();
+		 }
+		return count;
+	}
 }
