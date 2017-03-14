@@ -296,7 +296,7 @@ public class RequirementServiceTest {
 			Org org= new Org();
 			org.setOrgCode("12456");
 			orgLocations.setOrg(org);
-			requirementService.acceptEmailScenario(loginUser, approverUser, requirement, orgLocations);
+			requirementService.acceptEmailScenario(loginUser, approverUser, requirement,null, orgLocations);
 		}
 		
 		@Test

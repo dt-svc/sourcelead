@@ -90,7 +90,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		if(jsonObject.has("startDate") && !(jsonObject.getString("startDate").isEmpty()) && !" ".equals(jsonObject.get("startDate"))){
 			try {
 				
-				String pattern = "yyyy-MM-dd";
+				String pattern = "dd-MM-yyyy";
                 SimpleDateFormat format = new SimpleDateFormat(pattern);
                 Date startDate = format.parse(jsonObject.getString("startDate"));
                 candidateEducation.setStartDate(startDate);
@@ -101,7 +101,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		}
 		if (jsonObject.has("endDate") && !(jsonObject.getString("endDate").isEmpty()) && !" ".equals(jsonObject.get("endDate"))) {
 			try {
-				String pattern = "yyyy-MM-dd";
+				String pattern = "dd-MM-yyyy";
                 SimpleDateFormat format = new SimpleDateFormat(pattern);
                 Date validTo = format.parse(jsonObject.getString("endDate"));
                 candidateEducation.setEndDate(validTo);
@@ -158,10 +158,10 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		
 		for(CandidateEducation education :edulist){
 			if(education.getStartDate() != null){
-			education.setStartDateStr(Constants.DF_YMD.format(education.getStartDate()));
+			education.setStartDateStr(Constants.DF_DMY.format(education.getStartDate()));
 			}
 			if(education.getEndDate() != null){
-			education.setEndDateStr(Constants.DF_YMD.format(education.getEndDate()));
+			education.setEndDateStr(Constants.DF_DMY.format(education.getEndDate()));
 			}
 		}
 		return edulist;
