@@ -598,6 +598,7 @@ function getCustomReports(){
 	          url: sourceleadUrl+"/getApplicantsReport?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,
 	          success :function(data) {
 	        	 prepareReportDataDiv(data);
+	        	 getAllCounts(reportType,startDate,endDate);
 	         },
 	          
 	     }); 
