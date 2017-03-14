@@ -179,6 +179,7 @@ function requirementReportPagination(){
 		$('#ExportStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
+			dateFormat : 'dd-mm-yy',
 			onSelect : function(selected) {
 				var dt = new Date(selected);
 				dt.setDate(dt.getDate() + 1);
@@ -191,6 +192,7 @@ function requirementReportPagination(){
 		$('#ExportEndDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
+			dateFormat : 'dd-mm-yy',
 			beforeShow: function(){
 		           this.value='';
 		     },

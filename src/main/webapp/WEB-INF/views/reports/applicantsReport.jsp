@@ -155,6 +155,7 @@ function requirementReportPagination(){
 		$('#ApplicantStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
+			dateFormat : 'dd-mm-yy',
 			onSelect : function(selected) {
 				var dt = new Date(selected);
 				dt.setDate(dt.getDate() + 1);
@@ -167,6 +168,7 @@ function requirementReportPagination(){
 		$('#ApplicantEndDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
+			dateFormat : 'dd-mm-yy',
 			beforeShow: function(){
 		           this.value='';
 		     },
@@ -186,7 +188,7 @@ function requirementReportPagination(){
     <div class="pull-left">
       <h2 class="pull-left">Reports</h2>
 		<div class=" pull-left reportsH">
-			<a title="Reports"><i class="fa fa-pie-chart"></i>Requirements Posted</a>
+			<a title="Reports"><i class="fa fa-pie-chart"></i>Applicants</a>
 			<div class="RePop">
 				<ul>
 					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
