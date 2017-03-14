@@ -362,8 +362,8 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
               result = result +'<span class="label label-success">Submitted</span>';
                         
               result = result +'<img src="resources/images/applied_icon.png" title="Submitted" alt="Submitted">';
-              if(json['appliedJobs'] > 0){
-            	  result = result +'<a href="#"><span class="count text-primary">'+json['appliedJobs']+'</span></a>';  
+              if(json['submittedByMeJobs'] > 0){
+            	  result = result +'<a href="#"><span class="count text-primary">'+json['submittedByMeJobs']+'</span></a>';  
               }else{
             	  result = result +'<span class="count text-primary">0</span>';
               }

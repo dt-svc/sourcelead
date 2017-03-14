@@ -52,6 +52,7 @@ import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CrowdSourcingUserBankAccountsService;
@@ -227,6 +228,10 @@ public class CrowdSourcingRequirementsRestController {
 		 					boolean flag = userId.contains(user.getId());
 		 					if(flag == true){
 		 						requirementIndex.setIsJobApplied(Constants.YES);
+		 						 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+		 		 	    		   if(null != submission){
+		 		 	    			  requirementIndex.setSubmissionId(submission.getId());
+		 		 	    		   }
 		 					}else{
 		 						requirementIndex.setIsJobApplied(Constants.NO);
 		 					} 
@@ -241,6 +246,7 @@ public class CrowdSourcingRequirementsRestController {
 	 		    			 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
 	 		 	    		   if(null != submission){
 	 		 	    			  requirementIndex.setRequirementAppliedDate(Constants.DF_YMD.format(submission.getCreatedDate()));
+	 		 	    			  requirementIndex.setSubmissionId(submission.getId());
 	 		 	    		   }
 	 		    		 }else if(loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
 	 		    			 Integer submissionCount = requirementSubmissionService.getRecruiterSubmissionsCountByRecruiterIdAndRequirementId(requirementIndex.getRequirementId(), user.getId());
@@ -312,6 +318,10 @@ public class CrowdSourcingRequirementsRestController {
     		 					boolean flag = userId.contains(user.getId());
     		 					if(flag == true){
     		 						requirementIndex.setIsJobApplied(Constants.YES);
+    		 						 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+	  		 		 	    		   if(null != submission){
+	  		 		 	    			  requirementIndex.setSubmissionId(submission.getId());
+	  		 		 	    		   }
     		 					}else{
     		 						requirementIndex.setIsJobApplied(Constants.NO);
     		 					} 
@@ -536,6 +546,10 @@ public class CrowdSourcingRequirementsRestController {
 				 					boolean flag = userId.contains(user.getId());
 				 					if(flag == true){
 				 						requirementIndex.setIsJobApplied(Constants.YES);
+				 						 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+			 		 	    		     if(null != submission){
+			 		 	    			  requirementIndex.setSubmissionId(submission.getId());
+			 		 	    		     }
 				 					}else{
 				 						requirementIndex.setIsJobApplied(Constants.NO);
 				 					} 
@@ -1412,19 +1426,19 @@ public class CrowdSourcingRequirementsRestController {
 			try{
 				
 				
-				Integer appliedJobs = requirementSubmissionService.getRecruiterSubmittedJobCountByStartDateAndEndDate(user.getId(), jobPortletsStartDate, jobPortletsEndDate);
-				refer.setAppliedJobs(appliedJobs);
+				Integer submittedByMe = requirementSubmissionService.getRecruiterSubmittedCandidateCountByStartDateAndEndDate(user.getId(), jobPortletsStartDate, jobPortletsEndDate);
+				refer.setSubmittedByMeJobs(submittedByMe);
 				
-				Integer shortlistCount = requirementSubmissionService.getRecruiterSubmittedJobsCountByStage(user.getId(),"SHORTLIST",jobPortletsStartDate, jobPortletsEndDate);
+				Integer shortlistCount = requirementSubmissionService.getRecruiterSubmittedCandidatesCountByStage(user.getId(),"SHORTLIST",jobPortletsStartDate, jobPortletsEndDate);
 				refer.setShortlistJobs(shortlistCount);
 				
-				Integer offeredCount = requirementSubmissionService.getRecruiterSubmittedJobsCountByStage(user.getId(),"OFFERMADE",jobPortletsStartDate, jobPortletsEndDate);
+				Integer offeredCount = requirementSubmissionService.getRecruiterSubmittedCandidatesCountByStage(user.getId(),"OFFERMADE",jobPortletsStartDate, jobPortletsEndDate);
 				refer.setOfferedJobs(offeredCount);
 				
-				Integer rejectedCount = requirementSubmissionService.getRecruiterSubmittedJobsCountByStage(user.getId(),"REJECTED",jobPortletsStartDate, jobPortletsEndDate);
+				Integer rejectedCount = requirementSubmissionService.getRecruiterSubmittedCandidatesCountByStage(user.getId(),"REJECTED",jobPortletsStartDate, jobPortletsEndDate);
 				refer.setRejectedJobs(rejectedCount);
 				
-				Integer interviewsCount = requirementSubmissionService.getRecruiterSubmittedJobsCountByStage(user.getId(),"INTERVIEW",jobPortletsStartDate, jobPortletsEndDate);
+				Integer interviewsCount = requirementSubmissionService.getRecruiterSubmittedCandidatesCountByStage(user.getId(),"INTERVIEW",jobPortletsStartDate, jobPortletsEndDate);
 				refer.setInterviews(interviewsCount);
 				
 			}catch (ParseException e) {
@@ -1588,6 +1602,18 @@ public class CrowdSourcingRequirementsRestController {
 		}
 		
 		
+		@RequestMapping(value = "/getProfessionalSubmissionDetails", method = RequestMethod.POST)
+		public String getProfessionalSubmissionDetails(@RequestParam(value = "submissionId", required = false) Long submissionId,
+				HttpServletRequest request) throws Exception {
+
+			String resultJson = null;
+
+			RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+			
+			resultJson = toJSON(submission);
+			return resultJson;
+
+		}
 		
 		
 		public String toJSON(Object obj){
