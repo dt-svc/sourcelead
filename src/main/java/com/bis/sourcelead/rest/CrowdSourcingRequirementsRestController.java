@@ -52,6 +52,7 @@ import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CrowdSourcingUserBankAccountsService;
@@ -227,6 +228,10 @@ public class CrowdSourcingRequirementsRestController {
 		 					boolean flag = userId.contains(user.getId());
 		 					if(flag == true){
 		 						requirementIndex.setIsJobApplied(Constants.YES);
+		 						 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+		 		 	    		   if(null != submission){
+		 		 	    			  requirementIndex.setSubmissionId(submission.getId());
+		 		 	    		   }
 		 					}else{
 		 						requirementIndex.setIsJobApplied(Constants.NO);
 		 					} 
@@ -241,6 +246,7 @@ public class CrowdSourcingRequirementsRestController {
 	 		    			 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
 	 		 	    		   if(null != submission){
 	 		 	    			  requirementIndex.setRequirementAppliedDate(Constants.DF_YMD.format(submission.getCreatedDate()));
+	 		 	    			  requirementIndex.setSubmissionId(submission.getId());
 	 		 	    		   }
 	 		    		 }else if(loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
 	 		    			 Integer submissionCount = requirementSubmissionService.getRecruiterSubmissionsCountByRecruiterIdAndRequirementId(requirementIndex.getRequirementId(), user.getId());
@@ -312,6 +318,10 @@ public class CrowdSourcingRequirementsRestController {
     		 					boolean flag = userId.contains(user.getId());
     		 					if(flag == true){
     		 						requirementIndex.setIsJobApplied(Constants.YES);
+    		 						 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+	  		 		 	    		   if(null != submission){
+	  		 		 	    			  requirementIndex.setSubmissionId(submission.getId());
+	  		 		 	    		   }
     		 					}else{
     		 						requirementIndex.setIsJobApplied(Constants.NO);
     		 					} 
@@ -536,6 +546,10 @@ public class CrowdSourcingRequirementsRestController {
 				 					boolean flag = userId.contains(user.getId());
 				 					if(flag == true){
 				 						requirementIndex.setIsJobApplied(Constants.YES);
+				 						 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+			 		 	    		     if(null != submission){
+			 		 	    			  requirementIndex.setSubmissionId(submission.getId());
+			 		 	    		     }
 				 					}else{
 				 						requirementIndex.setIsJobApplied(Constants.NO);
 				 					} 
@@ -1588,6 +1602,18 @@ public class CrowdSourcingRequirementsRestController {
 		}
 		
 		
+		@RequestMapping(value = "/getProfessionalSubmissionDetails", method = RequestMethod.POST)
+		public String getProfessionalSubmissionDetails(@RequestParam(value = "submissionId", required = false) Long submissionId,
+				HttpServletRequest request) throws Exception {
+
+			String resultJson = null;
+
+			RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+			
+			resultJson = toJSON(submission);
+			return resultJson;
+
+		}
 		
 		
 		public String toJSON(Object obj){
