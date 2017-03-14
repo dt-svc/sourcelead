@@ -207,10 +207,10 @@ function portletListFilter(requirementStatus){
 		        	   }
 		        	   
 		        	   result = result +'         <tr>';
-		        	   result = result +'         <td><div class="tbldata-dotdot">'+report.candidateName+'</div></td>';
-		        	   result = result +'         <td><div class="tbldata-dotdot">'+candidateEmail+'</div></td>';
-		        	   result = result +'         <td><div class="tbldata-dotdot">'+phoneNumber+'</div></td>';
-		        	   result = result +'         <td><a href="<c:url value="/requirementProfile/'+report.requirementUUID+'"/>"><div class="tbldata-dotdot-sm">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
+		        	   result = result +'         <td><div class="tbldata-dotdot" title="'+report.candidateName+'">'+report.candidateName+'</div></td>';
+		        	   result = result +'         <td><div class="tbldata-dotdot" title="'+candidateEmail+'">'+candidateEmail+'</div></td>';
+		        	   result = result +'         <td><div class="tbldata-dotdot" title="'+phoneNumber+'">'+phoneNumber+'</div></td>';
+		        	   result = result +'         <td><a href="<c:url value="/requirementProfile/'+report.requirementUUID+'"/>"><div class="tbldata-dotdot-sm" title="'+requirementJobId+' '+report.requirementName+'">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
 		        	   result = result +'         <td><div class="tblminwidth-50">'+requirementSubmissionStatus+'</div></td>';
 		        	   result = result +'         <td><div class="tblminwidth-50">'+report.submissionStatus+'</div></td>';
 		        	   result = result +'         <td><div class="tblminwidth-50">'+createdDateStr+'</div></td>';
