@@ -251,7 +251,7 @@ public class RequirementReportRestController {
 								requestSentCount++;
 							}else if("submit_to_client".equals(rsh.getToStage())){
 								submitToClientCount++;
-							}else{
+							}else if("rejected".equals(rsh.getToStage())){
 								rejectedCount++;
 							}
 						}
@@ -419,7 +419,7 @@ public class RequirementReportRestController {
 						requestSentCount++;
 					}else if("submit_to_client".equals(rsh.getToStage())){
 						submitToClientCount++;
-					}else{
+					}else if("rejected".equals(rsh.getToStage())){
 						rejectedCount++;
 					}
 				}
@@ -599,7 +599,7 @@ public class RequirementReportRestController {
 				requestSentCount++;
 			}else if("submit_to_client".equals(rsh.getToStage())){
 				submitToClientCount++;
-			}else{
+			}else if("rejected".equals(rsh.getToStage())) {
 				rejectedCount++;
 			}
 		}
@@ -724,7 +724,7 @@ public class RequirementReportRestController {
 								requestSentCount++;
 							}else if("submit_to_client".equals(rsh.getToStage())){
 								submitToClientCount++;
-							}else{
+							}else if("rejected".equals(rsh.getToStage())){
 								rejectedCount++;
 							}
 						}
@@ -743,6 +743,7 @@ public class RequirementReportRestController {
 				applicantReport.setInterviewsSum(interviewsSum);
 				applicantReport.setOfferedSum(offeredSum);
 				applicantReport.setRejectedSum(rejectedSum);
+				applicantReport.setRequestSentSum(requestSentSum);
 				reportsList = commonUtil.toJSON(applicantReport);
 			}else{
 				reportsList = commonUtil.toJSON("");
