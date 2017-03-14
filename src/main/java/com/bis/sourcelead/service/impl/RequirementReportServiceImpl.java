@@ -39,5 +39,9 @@ public class RequirementReportServiceImpl implements RequirementReportService{
 	public List<RequirementSubmissionHistory> getReceivedApplicantsCountForReports(Long orgLocationId) {
 		return requirementReportDao.getReceivedApplicantsCountForReports(orgLocationId);
 	}
+	@Override
+	public List<RequirementSubmissionHistory> getApplicantsCountForChart(Long orgLocationId) {
+		return requirementReportDao.getApplicantsCountForChart(orgLocationId);
+	}
 
 }

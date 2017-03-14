@@ -256,10 +256,16 @@ function requirementReportPagination(){
 	<p id="reportEndDate" class="ReError"></p>
 	</span>
 	<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
+	
+		<span class="repoBtns">
+		<a href="javascript:void(0)" class="oneA actRE"><i class="fa fa-list"></i></a>
+		<a href="javascript:void(0)" class="oneB"><i class="fa fa-pie-chart"></i></a>
+	</span>
+	
 </div>
                      
         <ul style="padding: 2px 300px 2px 0px;">
-          <li><i class="fa fa-filter"></i><span>Fliter</span><i class="glyphicon glyphicon-play" id="status-pop"></i>|
+          <li><i class="fa fa-filter"></i><span class="padFil"></span><i class="glyphicon glyphicon-play" id="status-pop"></i>|
             <div class="export_pop">
               <ul>
                 <li>PDF<i class="fa fa-file-pdf-o"></i></li>
@@ -272,6 +278,8 @@ function requirementReportPagination(){
         </ul>
         <div class="clearfix"></div>
       </div>
+  
+ <div class="repTab1">  
       
 	<div class="reportsCount">
 		<ul>
@@ -300,6 +308,11 @@ function requirementReportPagination(){
   <div class="project_tabs_inn_table vendor_wrap_inn_table">
                  <div id="requirementReportsDiv12" class="repoPositi"></div>
                 </div>      
+</div>
+
+ <div class="repTab2">
+	  	Reports Chat here..
+	  </div>
       
  </div>
 
@@ -591,3 +604,18 @@ function getCustomReports(){
 		 }
 }
 </script>
+<script>
+// Reports Active
+	$(".oneB").click(function(){
+		$(".oneA").removeClass("actRE");
+		$(".oneB").addClass("actRE");
+		$(".repTab1").hide();
+		$(".repTab2").show();
+	});
+	$(".oneA").click(function(){
+		$(".oneB").removeClass("actRE");
+		$(".oneA").addClass("actRE");
+		$(".repTab2").hide();
+		$(".repTab1").show();
+	});		
+	</script>

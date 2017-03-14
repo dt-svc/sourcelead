@@ -21,4 +21,6 @@ public interface RequirementReportService {
 
 	List<RequirementSubmissionHistory> getReceivedApplicantsCountForReports(Long orgLocationId);
 
+	List<RequirementSubmissionHistory> getApplicantsCountForChart(Long orgLocationId);
+
 }

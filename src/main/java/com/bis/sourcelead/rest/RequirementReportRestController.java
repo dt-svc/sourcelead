@@ -453,12 +453,6 @@ public class RequirementReportRestController {
 	 }
 	 
 	 
-	 
-	 
-	 
-	 
-	 
-	 
 	 /**
 		 * Returns date format as string
 		 * @param date
@@ -474,5 +468,57 @@ public class RequirementReportRestController {
 		Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
 		return currentDateInTimezone = standardFormat.format(converteDate);
 		
+	}
+	
+	/**
+	 * returns applicants counts based on stage status
+	 * 
+	 * @param applicantStatus
+	 * @param request
+	 * @return json
+	 * @throws Exception
+	 */
+	@Async
+	@RequestMapping(value = "/getApplicantsCountForChart", method = RequestMethod.POST)
+	@ResponseBody
+	String getApplicantsCountForChart(HttpServletRequest request) throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ApplicantReport applicantReport = new ApplicantReport();
+		int applicantsCount = 0;
+		int requestSentCount = 0;
+		int shortlistedCount = 0;
+		int submitToClientCount = 0;
+		int interviewsCount = 0;
+		int offeredCount = 0;
+		int rejectedCount = 0;
+		
+		List<RequirementSubmissionHistory> rshList  = requirementReportService.getApplicantsCountForChart(orgLocation.getId());
+		for(RequirementSubmissionHistory rsh : rshList){
+			
+			if("submission".equals(rsh.getToStage())){
+				applicantsCount++;
+			}else if("shortList".equals(rsh.getToStage())){
+				shortlistedCount++;
+			}else if("interview".equals(rsh.getToStage())){
+				interviewsCount++;
+			}else if("offer_made".equals(rsh.getToStage())){
+				offeredCount++;
+			}else if("request_sent".equals(rsh.getToStage())){
+				requestSentCount++;
+			}else if("submit_to_client".equals(rsh.getToStage())){
+				submitToClientCount++;
+			}else{
+				rejectedCount++;
+			}
+		}
+		applicantReport.setApplicantsCount(applicantsCount);
+		applicantReport.setShortlisted(shortlistedCount);
+		applicantReport.setInterviewCount(interviewsCount);
+		applicantReport.setSubmitToClientCount(submitToClientCount);
+		applicantReport.setOfferedCount(offeredCount);
+		applicantReport.setRejectedCount(rejectedCount);
+		applicantReport.setRequestSentCount(requestSentCount);
+		return commonUtil.toJSON(applicantReport);
+
 	}
 }

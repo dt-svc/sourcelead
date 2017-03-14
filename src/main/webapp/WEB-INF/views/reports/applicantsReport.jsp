@@ -233,10 +233,16 @@ function requirementReportPagination(){
 	<p id="reportEndDate" class="ReError"></p>
 	</span>
 	<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
+	
+		<span class="repoBtns">
+		<a href="javascript:void(0)" class="oneA actRE"><i class="fa fa-list"></i></a>
+		<a href="javascript:void(0)" class="oneB" onclick="allApplicantsCountForChart();"><i class="fa fa-pie-chart"></i></a>
+	</span>	
+	
 </div>
                      
         <ul style="padding: 2px 300px 2px 0px;">
-          <li><i class="fa fa-filter"></i><span>Fliter</span><i class="glyphicon glyphicon-play" id="status-pop"></i>|
+          <li><i class="fa fa-filter"></i><span class="padFil"></span><i class="glyphicon glyphicon-play" id="status-pop"></i>|
             <div class="export_pop">
               <ul>
                 <li>PDF<i class="fa fa-file-pdf-o"></i></li>
@@ -250,6 +256,8 @@ function requirementReportPagination(){
         </ul>
         <div class="clearfix"></div>
       </div>
+ 
+  <div class="repTab1">  
       
 	<div class="reportsCount">
 		<ul>
@@ -282,7 +290,13 @@ function requirementReportPagination(){
 
   <div class="project_tabs_inn_table vendor_wrap_inn_table">
                  <div id="requirementReportsDiv12" class="repoPositi"></div>
-                </div>      
+                </div>   
+                
+</div>  
+
+  <div class="repTab2">
+  	<div id="chartdiv"></div>  
+  </div>                 
       
  </div>
 
@@ -674,3 +688,110 @@ function getCustomReports(){
 		 }
 }
 </script>
+
+<script>
+// Reports Active
+	$(".oneB").click(function(){
+		$(".oneA").removeClass("actRE");
+		$(".oneB").addClass("actRE");
+		$(".repTab1").hide();
+		$(".repTab2").show();
+	});
+	$(".oneA").click(function(){
+		$(".oneB").removeClass("actRE");
+		$(".oneA").addClass("actRE");
+		$(".repTab2").hide();
+		$(".repTab1").show();
+	});		
+	</script>
+
+<script src="resources/reports/amcharts.js"></script>
+<script src="resources/reports/pie.js"></script>
+<link rel="stylesheet" href="resources/reports/export.css" type="text/css" media="all" />
+<script src="resources/reports/light.js"></script>
+  
+     <script>
+     function getApplicantBarChat(applicantsCount,shortlisted,interviewCount,submitToClientCount,offeredCount,rejectedCount,requestSentCount){
+     var chart = AmCharts.makeChart("chartdiv", {
+	     "type": "serial",
+	     "theme": "light",
+	     "marginRight": 70,
+	     "dataProvider": [{
+	     "Stage": "Applicants",
+	     "StageCount": applicantsCount,
+	     "color": "#FF0F00"
+	     }, {
+	     "Stage": "Shortlisted",
+	     "StageCount": shortlisted,
+	     "color": "#FF6600"
+	     }, {
+	     "Stage": "Interview",
+	     "StageCount": interviewCount,
+	     "color": "#FF9E01"
+	     }, {
+	     "Stage": "Submit To Client",
+	     "StageCount": submitToClientCount,
+	     "color": "#FCD202"
+	     }, {
+	     "Stage": "Offered",
+	     "StageCount": offeredCount,
+	     "color": "#F8FF01"
+	     }, {
+	     "Stage": "Rejected",
+	     "StageCount": rejectedCount,
+	     "color": "#B0DE09"
+	
+	     }, {
+	     "Stage": "Request Sent",
+	     "StageCount": requestSentCount,
+	     "color": "#04D215"
+	     }],
+	     "valueAxes": [{
+	     "axisAlpha": 0,
+	     "maximum": 50,
+	     "minimum": 1,
+	     "position": "left",
+	     "title": "Visitors from country"
+	     }],
+	     "startDuration": 1,
+	     "graphs": [{
+	     "balloonText": "<b>[[category]]: [[value]]</b>",
+	     "fillColorsField": "color",
+	     "fillAlphas": 0.9,
+	     "lineAlpha": 0.2,
+	     "type": "column",
+	     "valueField": "StageCount"
+	     }],
+	     "chartCursor": {
+	     "categoryBalloonEnabled": false,
+	     "cursorAlpha": 0,
+	     "zoomable": false
+	     },
+	     "categoryField": "Stage",
+	     "categoryAxis": {
+	     "gridPosition": "start",
+	     "labelRotation": 45
+	     },
+	     "export": {
+	     "enabled": true
+	     }
+	
+	     });
+     }
+     </script> 
+<script>
+function allApplicantsCountForChart(){
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+       type : "POST",
+        url: sourceleadUrl+"/getApplicantsCountForChart?${_csrf.parameterName}=${_csrf.token}",        
+        success :function(data) { 
+       	 var json = JSON.parse(data);
+       	getApplicantBarChat(json.applicantsCount,json.shortlisted,json.interviewCount,json.submitToClientCount,json.offeredCount,json.rejectedCount,json.requestSentCount);
+       	 /* $("#applicantCount").html(json);  */
+        },
+	  });
+}
+</script>
+
+
