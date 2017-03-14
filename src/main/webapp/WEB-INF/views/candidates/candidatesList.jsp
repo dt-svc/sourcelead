@@ -1006,7 +1006,7 @@ function cancel(candidateId){
 			  <i class="fa fa-search"></i>
 			  </a> 
 			  <form:form id="candidatelist_form" name="candidatelist_form"  enctype='multipart/form-data' >
-				  <div class="cand-advsrch-popup">
+				  <div class="cand-advsrch-popup cand-advsrchPopup">
 					  <a href="javascript:void(0)" class="close-div" onclick="closePop();"><i class="fa fa-close"></i></a>
 					  <div class="candAdvsrchPop">
 					  <div class="row">
@@ -1037,6 +1037,20 @@ function cancel(candidateId){
 					  <div class="col-md-12">
 						  <h4>Details:</h4>
 					  </div>
+					  <div class="clearfix"></div>
+					<div class="clearfix mb">
+						<div class="col-md-12">
+						<label>Skills</label>
+							<div class="clearfix">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Skills" id="candidateSkills" name="candidateSkills">
+								<c:forEach var="skill" items="${skillsList}">
+								<option value="${skill.name}">${skill.name}</option>
+								</c:forEach>
+								</select>
+							 </div>
+						</div>
+					 </div>
+					  
 						<div class="clearfix">
 						  <div class="col-md-4">
 						    <label>Designation</label>
@@ -1231,21 +1245,9 @@ function cancel(candidateId){
 							  </div>
 						  </div>
 						  </div>
-						    <div class="clearfix">
-							    <div class="col-md-12">
-								  <label>Skills</label>
-								  <div class="clearfix">
-									 <select class="chosen-select form-control input-sm" multiple data-placeholder="Skills" id="candidateSkills" name="candidateSkills">
-                                          <c:forEach var="skill" items="${skillsList}">
-							                     <option value="${skill.name}">${skill.name}</option>
-						                </c:forEach>
-                                     </select>
-								  </div>
-							  </div>
-						    </div>
 					  </div>
 					  </div>
-					  <div class="row form-footer mt">
+					  <div class="form-footer">
 						  <div class="pull-right mr">
 							   <input type="button" value="Search" id="search_candidate" onclick="searchCandidate();" class="btn btn-sm btn-primary"/>
                                <input type="button"  value="Clear"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-default ml10"/>
