@@ -7,18 +7,17 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<!-- <script src="resources/js/formvalidator.js"></script>
-<script src="resources/js/jquery.dataTables.min.js"></script> -->
-<!-- <link href="resources/css/dataTablePagination.css" rel="stylesheet" type="text/css"> -->
+
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
+
 <!-- these files for export -->
 <link href="https://cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css" rel="stylesheet">
-<script src="//code.jquery.com/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
+<!-- <script src="//code.jquery.com/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script> -->
 <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.flash.min.js" type="text/javascript" charset="utf-8"></script>
@@ -153,19 +152,19 @@ function requirementReportPagination(){
 </script>
 <script>
 	$(function() {
-		$('#ExportStartDate').datepicker({
+		$('#ApplicantStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
 				var dt = new Date(selected);
 				dt.setDate(dt.getDate() + 1);
-				$("#ExportEndDate").datepicker("option", "minDate", dt);
+				$("#ApplicantEndDate").datepicker("option", "minDate", dt);
 				addValidClass();
 			}
 		
 		});
 		
-		$('#ExportEndDate').datepicker({
+		$('#ApplicantEndDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
 			beforeShow: function(){
@@ -174,7 +173,7 @@ function requirementReportPagination(){
 			onSelect : function(selected) {
 				var dt = new Date(selected);
 				dt.setDate(dt.getDate() - 1);
-				$("#ExportStartDate").datepicker("option", "maxDate", dt);
+				$("#ApplicantStartDate").datepicker("option", "maxDate", dt);
 				addValidClass();
 			}
 		});
@@ -192,7 +191,7 @@ function requirementReportPagination(){
 				<ul>
 					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Client Requirements</a></li>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Applicants Received</a></li>
+					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li>
 					<li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Short  listed</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Interview</a></li>
@@ -211,7 +210,7 @@ function requirementReportPagination(){
 
 <div class="pull-left reportBtns">
 	  <div class="reportBtn">
-		<select class="form-control select-bg" id="reportTypeId" onChange="reportsCheck(); getDayWiseReports(); custDates(); flushCustomDates();">
+		<select class="form-control select-bg" id="reportTypeId" onChange="getDayWiseReports(); custDates(); flushCustomDates();">
 		 <option value="">select</option>
 		  <option value="today">Today</option>
 		  <option value="yesterday">Yesterday</option>
@@ -222,21 +221,19 @@ function requirementReportPagination(){
 		   <option value="custom">Custom</option> 
 		</select>
 	 </div>	
-	 <!-- <span class="dashboard-datepkr"><input type="text" class="input-sm hasDatepicker" id="datepicker"><i class="fa fa-calendar"></i></span>
-	 <span class="dashboard-datepkr"><input type="text" class="input-sm hasDatepicker" id="datepicker1"><i class="fa fa-calendar"></i></span>	 -->
 	 <span class="dashboard-datepkr cusShow">
-	 <input type="text" class="form-control" value="" id="ExportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
-	 <p id="reportStartDate" class="ReError"></p>
+	 <input type="text" class="form-control" value="" id="ApplicantStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
+	 <p id="ApplicantReportStartDate" class="ReError"></p>
 	 </span>
 	<span class="dashboard-datepkr cusShow">
-	<input type="text"  class="form-control" value="" id="ExportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
-	<p id="reportEndDate" class="ReError"></p>
+	<input type="text"  class="form-control" value="" id="ApplicantEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
+	<p id="ApplicantReportStartDate" class="ReError"></p>
 	</span>
 	<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
 	
 		<span class="repoBtns">
 		<a href="javascript:void(0)" class="oneA actRE"><i class="fa fa-list"></i></a>
-		<a href="javascript:void(0)" class="oneB" onclick="allApplicantsCountForChart();"><i class="fa fa-pie-chart"></i></a>
+		<a href="javascript:void(0)" class="oneB" onclick="getDayWiseReports();"><i class="fa fa-pie-chart"></i></a>
 	</span>	
 	
 </div>
@@ -510,19 +507,19 @@ $(".reminder").click(function(){
 
 <script type="text/javascript">
 	function flushCustomDates() {
-		$('#ExportStartDate').val('');
-		$('#ExportEndDate').val('');
-		$.datepicker._clearDate('#ExportStartDate');
-		$.datepicker._clearDate('#ExportEndDate');
+		$('#ApplicantStartDate').val('');
+		$('#ApplicantEndDate').val('');
+		$.datepicker._clearDate('#ApplicantStartDate');
+		$.datepicker._clearDate('#ApplicantEndDate');
 	}
 	</script>
 <script>
 function getDayWiseReports(){
-	$('#reportStartDate').empty();
-	$('#reportEndDate').empty(); 
+	$('#ApplicantReportStartDate').empty();
+	$('#ApplicantReportStartDate').empty(); 
 	var reportType = $("#reportTypeId").val();
-	var startDate = $("#ExportStartDate").val();
-	var endDate = $("#ExportEndDate").val();
+	var startDate = $("#ApplicantStartDate").val();
+	var endDate = $("#ApplicantEndDate").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(reportType!="custom"){
 	$.ajax({
@@ -555,12 +552,18 @@ function allApplicantsCount(reportType,startDate,endDate){
         url: sourceleadUrl+"/getApplicantsTotalCounts?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,        
         success :function(data) { 
        	 var json = JSON.parse(data);
-       	 $("#applicantCount").html(json.applicantsSum); 
-    	 $("#shortlistedCount").html(json.shortlistedSum);
-    	 $("#submitToClientCount").html(json.submitToClientSum);
-    	 $("#interviewCount").html(json.interviewsSum);
-    	 $("#offerCount").html(json.offeredSum); 
-       	$("#rejectedCount").html(json.rejectedSum); 
+       	if($(".oneA" ).hasClass( "actRE" )){
+       		$("#applicantCount").html(json.applicantsSum); 
+       		 $("#shortlistedCount").html(json.shortlistedSum);
+       	 	$("#submitToClientCount").html(json.submitToClientSum);
+       		 $("#interviewCount").html(json.interviewsSum);
+       		 $("#offerCount").html(json.offeredSum); 
+          	$("#rejectedCount").html(json.rejectedSum);  
+		}
+    	if($(".oneB" ).hasClass( "actRE" )){
+     	getApplicantBarChat(json.applicantsSum,json.shortlistedSum,json.interviewsSum,json.submitToClientCount,json.offeredSum,json.rejectedSum,0);
+       	 
+    	}
    	
         },
 	  });
@@ -582,14 +585,14 @@ function custDates(){
 <script>
 function getCustomReports(){
 	var reportType = $("#reportTypeId").val();
-	var startDate = $("#ExportStartDate").val();
-	var endDate = $("#ExportEndDate").val();
+	var startDate = $("#ApplicantStartDate").val();
+	var endDate = $("#ApplicantEndDate").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(startDate == null || startDate == '' || startDate == 'undefined'){
-		$("#reportStartDate").empty().append("Start Date is Required") ; 
+		$("#ApplicantReportStartDate").empty().append("Start Date is Required") ; 
 	}
 	if(endDate == null || endDate == '' || endDate == 'undefined'){
-		$("#reportEndDate").empty().append("End Date is Required") ; 
+		$("#ApplicantReportStartDate").empty().append("End Date is Required") ; 
 	}
 	else{
 		$.ajax({
@@ -608,28 +611,18 @@ function getCustomReports(){
 </script>
 <script type="text/javascript"> 
 	function addValidClass(){
-		 var StartDate = document.getElementById("ExportStartDate").value;
+		 var StartDate = document.getElementById("ApplicantStartDate").value;
 		 if(StartDate){
-			 $('#reportStartDate').empty() 
+			 $('#ApplicantReportStartDate').empty() 
 		 }
 		 
-		 var EndDate = document.getElementById("ExportEndDate").value;
+		 var EndDate = document.getElementById("ApplicantEndDate").value;
 		 if(EndDate){
-			 $('#reportEndDate').empty(); 
+			 $('#ApplicantReportStartDate').empty(); 
 		 }
 }
 </script>
 
-<script type="text/javascript"> 
-	function reportsCheck(){
-		 if($(".oneA" ).hasClass( "actRE" )){
-			 
-		}
-		if($(".oneB" ).hasClass( "actRE" )){
-			alert("ffdf222");
-		}	
-	}
-</script>
 <script>
 // Reports Active
 	$(".oneB").click(function(){
