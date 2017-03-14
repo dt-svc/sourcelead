@@ -34,8 +34,9 @@ $(document).ready(function() {
 		</div></div>
 	 </div>   
             
-   <div id="requirementDetailsDiv"></div>
-  <div id="professionalRequirementProfileDiv"></div>
+    <div id="requirementDetailsDiv"></div>
+    <div id="professionalRequirementProfileDiv"></div> 
+  
 
   </section>
 <script>
@@ -213,7 +214,7 @@ function requirementDetails(requirementUUID){
 		    	var result = "";
 		    
 		    	 result = result +'      <div class="project_side_wrap_inn_tabs" id="new-id">';
-				 result = result +'        <div class="project_tabs">';
+				 result = result +'        <div class="timesheetHead">';
 				 result = result +'          <div id="tab-1" class="project_tabs_inn" style="display: block;">';
 				 result = result +'            <div class="require_wrap_details"> ';
 				 result = result +'              <h2>Descriptions:</h2>';
@@ -261,8 +262,8 @@ function getReferalDetails(requirementUUID){
 		    	 var json = JSON.parse(data);
 		    	 var result =""; 
 		    	 
-		    	   result = result + '<div class="require_wrap_table overflow-data filter-position mt25">';
-		    	   result = result + '<div class="clerfix">';
+		    	   result = result + '<div class="require_wrap_table overflow-data filter-position mt25 timesheetHead">';
+		    	   result = result + '<div class="clerfix mt">';
 		    	   result = result + '<table id="referListPagenation" class="display" cellspacing="0" width="100%"">';
 		           result = result + '<thead>';
 		           result = result + '<tr>';
@@ -304,10 +305,10 @@ function getReferalDetails(requirementUUID){
 			        	  
 			        	   
 			        	   result = result +'         <tr>';
-			        	   result = result +'         <td><div class="tbldata-dotdot">'+userName+'</div></td>';
-			        	   result = result +'         <td><div class="tbldata-dotdot">'+report.referToEmail+'</div></td>';
-			        	   result = result +'         <td><div class="tblminwidth-50">'+phoneNumber+'</div></td>';
-			        	   result = result +'         <td><div class="tblminwidth-50">'+requirementSubmissionStatus+'</div></td>';
+			        	   result = result +'         <td><div class="tbldata-dotdot-big">'+userName+'</div></td>';
+			        	   result = result +'         <td><div class="tbldata-dotdot-me">'+report.referToEmail+'</div></td>';
+			        	   result = result +'         <td><div class="tbldata-dotdot">'+phoneNumber+'</div></td>';
+			        	   result = result +'         <td><div class="tbldata-dotdot-vsm">'+requirementSubmissionStatus+'</div></td>';
 			        	   result = result +'         </tr>';
 			        	   
 		  				}
@@ -339,8 +340,8 @@ function getSubmissionDetails(requirementUUID){
 		    	 var json = JSON.parse(data);
 		    	 var result =""; 
 		    	 
-		    	   result = result + '<div class="require_wrap_table overflow-data filter-position mt25">';
-		    	   result = result + '<div class="clerfix">';
+		    	   result = result + '<div class="require_wrap_table overflow-data filter-position mt25 timesheetHead">';
+		    	   result = result + '<div class="clerfix mt">';
 		    	   result = result + '<table id="submissionListPagenation" class="display" cellspacing="0" width="100%"">';
 		           result = result + '<thead>';
 		           result = result + '<tr>';
@@ -359,10 +360,10 @@ function getSubmissionDetails(requirementUUID){
 			        	   
 			        	   
 			        	   result = result +'         <tr>';
-			        	   result = result +'         <td><div onclick="cancelReferPopUp();getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+report.requirementId+');" class="tbldata-dotdot proj_show">'+report.candidateName+'</div></td>';
-			        	   result = result +'         <td><div class="tbldata-dotdot">'+report.candidateEmail+'</div></td>';
-			        	   result = result +'         <td><div class="tblminwidth-50">'+report.phoneNumber+'</div></td>';
-			        	   result = result +'         <td><div class="tblminwidth-50">'+report.submissionStatus+'</div></td>';
+			        	   result = result +'         <td><div class="tbldata-dotdot-big proj_show"><div onclick="cancelReferPopUp();getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+report.requirementId+');" class="tbldata-dotdot-me pull-left">'+report.candidateName+'</div><i class="fa fa-binoculars pull-right"></i></div></td>';
+			        	   result = result +'         <td><div class="tbldata-dotdot-me">'+report.candidateEmail+'</div></td>';
+			        	   result = result +'         <td><div class="tbldata-dotdot-vsm">'+report.phoneNumber+'</div></td>';
+			        	   result = result +'         <td><div class="tbldata-dotdot-100">'+report.submissionStatus+'</div></td>';
 			        	   result = result +'         </tr>';
 			        	   
 		  				}
