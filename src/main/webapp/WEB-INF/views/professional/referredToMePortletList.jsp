@@ -225,8 +225,8 @@ function portletListFilter(requirementStatus){
 		        		   referredOn= "--";
 		        	   } */
 		        	   result = result +'         <tr>';
-		        	   result = result +'         <td><a href="<c:url value="/requirementProfile/'+report.requirementUUID+'"/>"><div class="tbldata-dotdot-sm">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
-		        	   result = result +'         <td><div class="tbldata-dotdot">'+report.orgName+'</div></td>';
+		        	   result = result +'         <td><a href="<c:url value="/requirementProfile/'+report.requirementUUID+'"/>"><div class="tbldata-dotdot-sm" title="'+requirementJobId+' '+report.requirementName+'">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
+		        	   result = result +'         <td><div class="tbldata-dotdot" title="'+report.orgName+'">'+report.orgName+'</div></td>';
 		        	   result = result +'         <td><div class="tblminwidth-50">'+employeeType+'</div></td>';
 		        	   result = result +'         <td><div class="tbldata-dotdot-100">'+report.country+' '+state+' '+city+'</div></td>';
 		        	   result = result +'         <td><div class="tblminwidth-dotdot">'+rate+' '+rateType+'</div></td>';
@@ -287,8 +287,8 @@ function portletListFilter(requirementStatus){
 		        		  submissionStatus = "--"
 		        	  }
 		        	   result = result +'         <tr>';
-		        	   result = result +'         <td><a href="<c:url value="/requirementProfile/'+report.requirementUUID+'"/>"><div class="tbldata-dotdot-sm">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
-		        	   result = result +'         <td><div class="tbldata-dotdot">'+report.requirementOrgName+'</div></td>';
+		        	   result = result +'         <td><a href="<c:url value="/requirementProfile/'+report.requirementUUID+'"/>"><div class="tbldata-dotdot-sm" title="'+requirementJobId+' '+report.requirementName+'">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
+		        	   result = result +'         <td><div class="tbldata-dotdot" title="'+report.requirementOrgName+'">'+report.requirementOrgName+'</div></td>';
 		        	   result = result +'         <td><div class="tblminwidth-50">'+employeeType+'</div></td>';
 		        	   result = result +'         <td><div class="tbldata-dotdot-100">'+report.requirementCountry+' '+state+' '+city+'</div></td>';
 		        	   result = result +'         <td><div class="tblminwidth-dotdot">'+rate+' '+rateType+'</div></td>';
