@@ -1626,6 +1626,48 @@ public class CrowdSourcingRequirementsRestController {
 		}
 		
 		
+		@PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+		@RequestMapping(value = "/getReferalListByRequirementId", method = RequestMethod.GET)
+		public String getReferalListByRequirementId(@RequestParam(value = "requirementUUID", required = false) String requirementUUID,
+				HttpServletRequest request) throws Exception {
+			String resultJson = null;
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
+			List<RequirementRefer> requirementReferList = new ArrayList<RequirementRefer>();
+			RequirementRefer requirementRefer = new RequirementRefer();
+			
+			List<RequirementRefer> referList = requirementReferService.getLoginUserReferredListByUserId(user.getId(), requirement.getId());
+			if(null != referList && referList.size() > 0){
+				for(RequirementRefer refer : referList){
+					
+					if(null != refer.getReferToUser()){
+						StringBuilder userName = new StringBuilder();
+						if(!isNullOrEmpty(refer.getReferToUser().getLastName())){
+							userName = userName.append(refer.getReferToUser().getFirstName()).append(" ").append(refer.getReferToUser().getLastName());
+						}else{
+							userName = userName.append(refer.getReferToUser().getFirstName());
+						}
+						refer.setUserName(userName.toString());
+						refer.setReferToEmail(refer.getReferToUser().getEmail());
+						
+					}
+					
+					if(!isNullOrEmpty(refer.getReferStatus()) && refer.getReferStatus().equalsIgnoreCase("Applied")){
+						RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndUserId(refer.getRequirementId().getId(), refer.getReferToUser().getId());
+						if(null != submission){
+							refer.setRequirementSubmissionStatus(submission.getRequirementSubmissionStatus());
+						}
+					}
+					requirementReferList.add(refer);
+				}
+			}
+			requirementRefer.setReferByMeJobsList(requirementReferList);
+			
+			resultJson = commonUtil.toJSON(requirementRefer);
+			return resultJson;
+
+		}
 		
 		
 		

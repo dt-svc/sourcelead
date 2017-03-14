@@ -3514,4 +3514,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		return requirementSubmissionDao.getRecruiterSubmittedCandidateCountByStartDateAndEndDate(userId, startDate, endDate);
 	}
 
+	@Override
+	public RequirementSubmission getRequirementSubmissionByRequirementIdAndUserId(Long requirementId, Long userId)
+			throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
