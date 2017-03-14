@@ -601,7 +601,7 @@ function notificationStatusAsRead(){
 
 <script type="text/javascript">
 $('#taskDatpicker').datepicker({
-	//dateFormat : 'dd-mm-yy',
+	dateFormat : 'dd-mm-yy',
 	 changeMonth: true,
 	changeYear: true, 
 	minDate : 0,

@@ -164,7 +164,7 @@ overflow-x: auto;
 <jsp:include page="masterFooter.jsp" />
 <script type="text/javascript">
 $('#dasboardTaskDatpicker').datepicker({
-//	dateFormat : 'dd-mm-yy',
+	dateFormat : 'dd-mm-yy',
 	changeMonth: true,
 	changeYear: true, 
 	onSelect : function(selected) {

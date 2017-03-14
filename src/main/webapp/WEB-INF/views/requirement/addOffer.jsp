@@ -253,6 +253,7 @@ function selectOfferApplicants(){
 		$("#"+maxRowNum+"applicantId").chosen();
 		
 		$('.Datepicker').datepicker({
+			dateFormat : 'dd-mm-yy',
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {

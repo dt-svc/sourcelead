@@ -317,6 +317,7 @@ function storeEditedTeam(teamId){
 					url : sourceleadUrl+"/storeEditedTeam?${_csrf.parameterName}=${_csrf.token}&json="+con,
 					success :function(data) {  
 						  sideBar(teamId);
+						  teamList();
 						//location.replace(sourceleadUrl+"/team");
 				      }, 
 		    });
@@ -932,6 +933,7 @@ function storeTeamMembers(teamId){
 					url : sourceleadUrl+"/storeTeamMembers?${_csrf.parameterName}=${_csrf.token}&json="+con+"&teamId="+teamId,
 					success :function(data) {  
 						sideBar(teamId);
+						teamList();
 						//location.replace(sourceleadUrl+"/team");
 				    }, 
 		    });
