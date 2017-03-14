@@ -563,10 +563,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(user.getEmail());
 		 StringBuilder fromNameSB = new StringBuilder();
 		 emailMessage.setFromName(fromNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("firstName", emailMessage.getFirstName());
@@ -1541,10 +1541,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 				 emailMessage.setFirstName(projectManager.getFirstName());
 				 emailMessage.setLastName(projectManager.getLastName());
 				 emailMessage.setToEmail(projectManager.getEmail());
-				 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+				 emailMessage.setFromEmail(loginUser.getEmail());
 				 emailMessage.setCreatedBy(loginUser.getUserCode());
 				 emailMessage.setFromName(fromNameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-
+				 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 				 //setting the class filed values
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
 				 globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
@@ -1603,10 +1603,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 					 emailMessage.setFirstName(emp.getUser().getFirstName());
 					 emailMessage.setLastName(emp.getUser().getLastName());
 					 emailMessage.setToEmail(emp.getUser().getEmail());
-					 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+					 emailMessage.setFromEmail(loginUser.getEmail());
 					 emailMessage.setCreatedBy(loginUser.getUserCode());
 					 emailMessage.setFromName(fromNameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-
+					 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 					 //setting the class filed values
 					 Map<String, String> globalVarsMap = new HashMap<String, String>();
 					 globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
@@ -1749,9 +1749,9 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			 emailMessage.setFirstName(user.getFirstName());
 			 emailMessage.setLastName(user.getLastName());
 			 emailMessage.setToEmail(user.getEmail());
-			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+			 emailMessage.setFromEmail(user.getEmail());
 			 emailMessage.setFromName(fNameStringBuilder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-			 
+			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
 			 globalVarsMap.put("firstName", emailMessage.getFirstName());

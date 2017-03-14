@@ -154,9 +154,10 @@ function requirementInterviewsPagination(){
 <script>
 $(function() {
    $( "#datepicker-int" ).datepicker({
-     changeMonth: true,
-     changeYear: true,
-     onSelect: function(){
+	   dateFormat : 'dd-mm-yy',
+	   changeMonth: true,
+       changeYear: true,
+       onSelect: function(){
     	    var dt = $(this).val();
     	    interviews(dt);
    		}

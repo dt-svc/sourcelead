@@ -324,7 +324,8 @@ function validateTimeZone(){
 		cell2.innerHTML = text;
 		//$(".Datepicker").datepicker();
 		$(".Datepicker").datepicker({
-			 changeMonth: true,
+			dateFormat : 'dd-mm-yy',
+			changeMonth: true,
 			 changeYear: true, 
 		      minDate: 0  ,
 		      onSelect : function(selected) {
