@@ -333,7 +333,7 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 		 }else if(referType.equalsIgnoreCase("referByMe")){
 			 subQuery = "refer.referFromUser.id = :userId ";
 		 }
-		 String query = "from RequirementRefer refer  left join fetch refer.requirementId  where "+subQuery+" and (refer.createdDate BETWEEN :startDate and :endDate))";
+		 String query = "from RequirementRefer refer where "+subQuery+" and (refer.createdDate BETWEEN :startDate and :endDate))";
 		 List<RequirementRefer>  referCountList = session.createQuery(query).setLong("userId", userId) .setDate("startDate", startDate).setDate("endDate", endDate).setCacheable(true).list();
 		return referCountList;
 	}

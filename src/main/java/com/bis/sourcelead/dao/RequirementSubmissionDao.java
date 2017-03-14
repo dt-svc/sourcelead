@@ -130,5 +130,6 @@ public interface RequirementSubmissionDao {
 	
 	Integer getReferByMeProfessionalJobSubmisssionsCountBySubmissionType(Long userId,String submissionStatus,Date startDate,Date endDate) throws Exception;
 	
+	List<RequirementSubmission> getReferByMeProfessionalJobSubmisssionsCountListBySubmissionType(Long userId,String submissionStatus,Date startDate,Date endDate) throws Exception;
 	
 }

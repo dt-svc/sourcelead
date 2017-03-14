@@ -3471,4 +3471,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		return requirementSubmissionDao.getReferByMeProfessionalJobSubmisssionsCountBySubmissionType(userId, submissionStatus, startDate, endDate);
 	}
 
+	@Override
+	public List<RequirementSubmission> getReferByMeProfessionalJobSubmisssionsCountListBySubmissionType(Long userId, String submissionStatus, Date startDate, Date endDate) throws Exception {
+		return requirementSubmissionDao.getReferByMeProfessionalJobSubmisssionsCountListBySubmissionType(userId, submissionStatus, startDate, endDate);
+	}
+
 }

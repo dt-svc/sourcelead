@@ -1379,6 +1379,123 @@ public class CrowdSourcingRequirementsRestController {
 		
 		
 		
+		
+		
+		
+		@PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+		@RequestMapping(value = "/getReferByMeJobSummaryPortletList", method = RequestMethod.GET)
+		public String getReferByMeJobSummaryPortletList(@RequestParam(value = "startDate", required = false) String startDate,
+				@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "requirementStatus", required = false) String status,HttpServletRequest request) throws Exception {
+			String resultJson = null;
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+			
+			RequirementRefer refer = new RequirementRefer();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			Date jobPortletsStartDate = null;
+			Date jobPortletsEndDate = null;
+			
+			if(!isNullOrEmpty(startDate) && !isNullOrEmpty(endDate)){
+				//Custom StartDate and EndDate
+				
+				jobPortletsStartDate =  sdf.parse(startDate);
+				jobPortletsEndDate =  sdf.parse(endDate);
+			
+			}else{
+				
+				//For This Month
+				
+				Calendar c = Calendar.getInstance();   
+	    	    c.set(Calendar.DAY_OF_MONTH, 1);
+	    	    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+	    	    startDate = df.format(c.getTime());
+	    	    
+	    	    int lastDate = c.getActualMaximum(Calendar.DATE);
+	    	    c.set(Calendar.DATE, lastDate);	
+	    	    endDate = df.format(c.getTime());
+	    	    
+	    	    jobPortletsStartDate =  sdf.parse(startDate);
+	    	    jobPortletsEndDate =  sdf.parse(endDate);
+			}
+			
+    		
+			try{
+				if(status.equalsIgnoreCase("referByMe")){
+					List<RequirementRefer> referedByMeJobsList = requirementReferService.getReferJobsListByReferType(user.getId(),status,jobPortletsStartDate, jobPortletsEndDate); 
+					for(RequirementRefer rr : referedByMeJobsList){
+						StringBuilder referToUser = new StringBuilder();
+						if(null != rr.getReferToUser().getLastName() && !"".equalsIgnoreCase(rr.getReferToUser().getLastName())){
+							rr.setCandidateName(referToUser.append(rr.getReferToUser().getFirstName()).append(" ").append(rr.getReferToUser().getLastName()).toString());	
+						}else{
+							rr.setCandidateName(referToUser.append(rr.getReferToUser().getFirstName()).toString());
+						}
+						rr.setCandidateEmail(rr.getReferToUser().getEmail());
+						rr.setCandidatePhoneNumber(rr.getReferToUser().getMobilePhone());
+						rr.setRequirementName(rr.getRequirementId().getJobTitle());
+						rr.setRequirementJobId(rr.getRequirementId().getJobId());
+						rr.setRequirementUUID(rr.getRequirementId().getRequirementUUID());
+						rr.setRequirementState(rr.getRequirementId().getRequirementSubmissionStatus().toString());
+					}
+					refer.setReferByMeJobsList(referedByMeJobsList);
+					
+					
+				}else{
+				List<RequirementSubmission> referredByMeList =requirementSubmissionService.getReferByMeProfessionalJobSubmisssionsCountListBySubmissionType(user.getId(),status,jobPortletsStartDate, jobPortletsEndDate);
+				for(RequirementSubmission rs : referredByMeList){
+					StringBuilder candidateName = new StringBuilder();
+					if(null != rs.getCandidate().getLastName()){
+						rs.setCandidateName(candidateName.append(rs.getCandidate().getFirstName()).append(" ").append(rs.getCandidate().getLastName()).toString());	
+					}else{
+						rs.setCandidateName(candidateName.append(rs.getCandidate().getFirstName()).toString());
+					}
+					rs.setCandidateEmail(rs.getCandidate().getEmail());
+					rs.setPhoneNumber(rs.getCandidate().getMobilePhone());
+					rs.setRequirementName(rs.getRequirement().getJobTitle());
+					rs.setRequirementJobId(rs.getRequirement().getJobId());
+					rs.setRequirementUUID(rs.getRequirement().getRequirementUUID());
+					rs.setRequirementSubmissionStatus(rs.getRequirement().getRequirementSubmissionStatus().toString());
+					rs.setSubmissionStatus(rs.getSubmissionStatus());
+					RequirementRefer requirementRefer = requirementReferService.getAppliedRequirementReferByRequirementIdAndUserId(rs.getRequirement().getId(), user.getId());
+					if(null != requirementRefer){
+						rs.setReferredOn(Constants.DF_DMY.format(requirementRefer.getCreatedDate()));
+					}
+					
+				}
+				refer.setReferredByMeList(referredByMeList);
+				}
+				
+				/*Integer referedByMeJobs = requirementReferService.getReferJobsByReferType(user.getId(),"referByMe",jobPortletsStartDate, jobPortletsEndDate);
+				refer.setReferByMeJobs(referedByMeJobs);
+				
+				Integer appliedJobs = requirementSubmissionService.getReferByMeJobAppliedCount(user.getId(), jobPortletsStartDate, jobPortletsEndDate);
+				refer.setAppliedJobs(appliedJobs);
+				
+				Integer shortlistCount = requirementSubmissionService.getReferByMeProfessionalJobSubmisssionsCountBySubmissionType(user.getId(),"SHORTLIST",jobPortletsStartDate, jobPortletsEndDate);
+				refer.setShortlistJobs(shortlistCount);
+				
+				Integer offeredCount = requirementSubmissionService.getReferByMeProfessionalJobSubmisssionsCountBySubmissionType(user.getId(),"OFFERMADE",jobPortletsStartDate, jobPortletsEndDate);
+				refer.setOfferedJobs(offeredCount);
+				
+				Integer rejectedCount = requirementSubmissionService.getReferByMeProfessionalJobSubmisssionsCountBySubmissionType(user.getId(),"REJECTED",jobPortletsStartDate, jobPortletsEndDate);
+				refer.setRejectedJobs(rejectedCount);
+				
+				Integer interviewsCount = requirementSubmissionService.getReferByMeProfessionalJobSubmisssionsCountBySubmissionType(user.getId(),"INTERVIEW",jobPortletsStartDate, jobPortletsEndDate);
+				refer.setInterviews(interviewsCount);*/
+				
+			}catch (ParseException e) {
+				e.printStackTrace();
+			}
+			
+			resultJson = commonUtil.toJSON(refer);
+			return resultJson;
+
+		}
+		
+		
+		
+		
+		
 		public String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
 	            public HierarchicalStreamWriter createWriter(Writer writer) {

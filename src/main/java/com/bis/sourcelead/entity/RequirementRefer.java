@@ -108,6 +108,12 @@ public class RequirementRefer implements Serializable {
 	private List<RequirementRefer> referToMeList;
 	
 	@Transient
+	private List<RequirementSubmission> referredByMeList;
+	
+	@Transient
+	private List<RequirementRefer> referByMeJobsList;
+	
+	@Transient
 	private String requirementName;
 	
 	@Transient
@@ -145,6 +151,15 @@ public class RequirementRefer implements Serializable {
 	
 	@Transient
 	private String referredOn;
+	
+	@Transient
+	private String candidateName;
+	
+	@Transient
+	private String candidateEmail;
+	
+	@Transient
+	private String candidatePhoneNumber;
 	
    @Transient
 	private String dateString;
@@ -350,6 +365,23 @@ public class RequirementRefer implements Serializable {
 		this.referToMeList = referToMeList;
 	}
 
+	
+	public List<RequirementSubmission> getReferredByMeList() {
+		return referredByMeList;
+	}
+
+	public void setReferredByMeList(List<RequirementSubmission> referredByMeList) {
+		this.referredByMeList = referredByMeList;
+	}
+
+	public List<RequirementRefer> getReferByMeJobsList() {
+		return referByMeJobsList;
+	}
+
+	public void setReferByMeJobsList(List<RequirementRefer> referByMeJobsList) {
+		this.referByMeJobsList = referByMeJobsList;
+	}
+
 	public String getRequirementName() {
 		return requirementName;
 	}
@@ -453,5 +485,28 @@ public class RequirementRefer implements Serializable {
 	public void setReferredOn(String referredOn) {
 		this.referredOn = referredOn;
 	}
-	
+
+	public String getCandidateName() {
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+
+	public String getCandidateEmail() {
+		return candidateEmail;
+	}
+
+	public void setCandidateEmail(String candidateEmail) {
+		this.candidateEmail = candidateEmail;
+	}
+
+	public String getCandidatePhoneNumber() {
+		return candidatePhoneNumber;
+	}
+
+	public void setCandidatePhoneNumber(String candidatePhoneNumber) {
+		this.candidatePhoneNumber = candidatePhoneNumber;
+	}
 }

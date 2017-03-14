@@ -194,5 +194,7 @@ public interface RequirementSubmissionService {
 	Integer getReferByMeJobAppliedCount(Long userId,Date startDate,Date endDate) throws Exception;
 	
 	Integer getReferByMeProfessionalJobSubmisssionsCountBySubmissionType(Long userId,String submissionStatus,Date startDate,Date endDate) throws Exception;
+	
+	List<RequirementSubmission>  getReferByMeProfessionalJobSubmisssionsCountListBySubmissionType(Long userId,String submissionStatus,Date startDate,Date endDate) throws Exception;
 
 }
