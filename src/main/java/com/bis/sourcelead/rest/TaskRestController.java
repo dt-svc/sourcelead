@@ -91,7 +91,7 @@ public class TaskRestController {
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		Date converteDate;
 		if(!"".equalsIgnoreCase(date)){
-			Date date1 = new SimpleDateFormat("MM/dd/yyyy").parse(date);
+			Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(date);
 			taskCurrentTimeStr = Constants.TZ_DF.format(date1);
 			taskCurrentDateInTimezone= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", taskCurrentTimeStr);
 			converteDate = TZ_DF_TS.parse(taskCurrentDateInTimezone);

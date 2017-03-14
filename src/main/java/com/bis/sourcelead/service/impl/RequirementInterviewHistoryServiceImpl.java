@@ -216,10 +216,16 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 	}
 
 	@Override
-	public List<RequirementInterviewHistory> getAllProfessinalInterviews(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode,Long candidateId)
+	public List<RequirementInterviewHistory> getAllProfessinalInterviews(String dateRange,Long candidateId)
 			throws Exception {
-		List<RequirementInterviewHistory> list = requirementInterviewHistoryDao.getAllProfessinalInterviews(orgLocationsId, dateRange, currentTime, userType, userId, userCode,candidateId);
+		List<RequirementInterviewHistory> list = requirementInterviewHistoryDao.getAllProfessinalInterviews(dateRange, candidateId);
 		return list;
 
 			}
+
+	@Override
+	public List<RequirementInterviewHistory> getAllRecruiterSubmittedInterviews(String dateRange, Long userId) throws Exception {
+		List<RequirementInterviewHistory> list = requirementInterviewHistoryDao.getAllRecruiterSubmittedInterviews(dateRange, userId);
+		return list;
+	}
 }
