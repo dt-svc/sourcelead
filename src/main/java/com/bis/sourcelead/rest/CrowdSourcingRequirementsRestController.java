@@ -1693,6 +1693,8 @@ public class CrowdSourcingRequirementsRestController {
 					submission.setCandidateName(userName.toString());
 					submission.setCandidateEmail(submission.getCandidate().getEmail());
 					submission.setPhoneNumber(submission.getCandidate().getMobilePhone());
+					submission.setCandidateId(submission.getCandidate().getId().toString());
+					submission.setRequirementId(submission.getRequirement().getId());
 					
 					reqSubmissionList.add(submission);
 				}
