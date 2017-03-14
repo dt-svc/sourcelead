@@ -1758,11 +1758,22 @@ public class CrowdSourcingRequirementsRestController {
 							}
 							rr.setCandidateEmail(rr.getReferToUser().getEmail());
 							rr.setCandidatePhoneNumber(rr.getReferToUser().getMobilePhone());
+						}else{
+							StringBuilder referToUser = new StringBuilder();
+							if(null != rr.getReferedUserLastName() && !"".equalsIgnoreCase(rr.getReferedUserLastName())){
+								rr.setCandidateName(referToUser.append(rr.getReferedUserFirstName()).append(" ").append(rr.getReferedUserLastName()).toString());	
+							}else{
+								rr.setCandidateName(referToUser.append(rr.getReferedUserFirstName()).toString());
+							}
+							rr.setCandidateEmail(rr.getReferToEmail());
 						}
+						
 						rr.setRequirementName(rr.getRequirementId().getJobTitle());
 						rr.setRequirementJobId(rr.getRequirementId().getJobId());
 						rr.setRequirementUUID(rr.getRequirementId().getRequirementUUID());
 						rr.setRequirementState(rr.getRequirementId().getRequirementSubmissionStatus().toString());
+						
+						
 						RequirementRefer requirementRefer = requirementReferService.getAppliedRequirementReferByRequirementIdAndUserId(rr.getRequirementId().getId(), user.getId());
 						if(null != requirementRefer){
 							rr.setReferredOn(Constants.DF_DMY.format(requirementRefer.getCreatedDate()));
