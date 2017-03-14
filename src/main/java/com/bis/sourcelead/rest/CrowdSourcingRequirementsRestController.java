@@ -1478,10 +1478,10 @@ public class CrowdSourcingRequirementsRestController {
     		
 			try{
 				
-				Integer referedByMeJobs = requirementReferService.getReferJobsByReferType(user.getId(),"referByMe",jobPortletsStartDate, jobPortletsEndDate);
+				Integer referedByMeJobs = requirementReferService.getReferredByMeCountByStartDateAndEndDate(user.getId(),jobPortletsStartDate, jobPortletsEndDate);
 				refer.setReferByMeJobs(referedByMeJobs);
 				
-				Integer appliedJobs = requirementSubmissionService.getReferByMeJobAppliedCount(user.getId(), jobPortletsStartDate, jobPortletsEndDate);
+				Integer appliedJobs = requirementSubmissionService.getReferByMeJobAppliedCandidateCount(user.getId(), jobPortletsStartDate, jobPortletsEndDate);
 				refer.setAppliedJobs(appliedJobs);
 				
 				Integer shortlistCount = requirementSubmissionService.getReferByMeProfessionalJobSubmisssionsCountBySubmissionType(user.getId(),"SHORTLIST",jobPortletsStartDate, jobPortletsEndDate);

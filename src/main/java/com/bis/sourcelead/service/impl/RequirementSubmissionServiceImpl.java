@@ -3499,4 +3499,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		return requirementSubmissionDao.getRecruiterSubmittedJobsCountByStage(userId, submissionStatus, startDate, endDate);
 	}
 
+	@Override
+	public Integer getReferByMeJobAppliedCandidateCount(Long userId, Date startDate, Date endDate) throws Exception {
+		return requirementSubmissionDao.getReferByMeJobAppliedCandidateCount(userId, startDate, endDate);
+	}
+
 }

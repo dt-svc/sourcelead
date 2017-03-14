@@ -34,5 +34,7 @@ public interface RequirementReferService {
 	Integer getReferJobsByReferType(Long userId,String referType,Date startDate,Date endDate) throws Exception;
 	
 	Integer getReferJobsByReferTypeByReferedDate(Long userId,String referType,Date referedDate) throws Exception;
+	
+	Integer getReferredByMeCountByStartDateAndEndDate(Long userId,Date startDate,Date endDate) throws Exception;
 
 }

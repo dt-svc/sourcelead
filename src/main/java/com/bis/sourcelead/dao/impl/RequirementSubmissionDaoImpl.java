@@ -1692,7 +1692,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			
 			Session session = this.sessionFactory.getCurrentSession();
 		     
-			String query = "select count(distinct rs.requirement) from RequirementSubmission rs where "
+			String query = "select count(*) from RequirementSubmission rs where "
 			 		+ "rs.candidate.consultantUser.id IN (select refer.referToUser from RequirementRefer refer where refer.referFromUser = :userId and refer.referStatus = 'Applied' and (refer.createdDate BETWEEN :startDate and :endDate)) and "
 			 		+ "rs.requirement.id IN (select refer.requirementId from RequirementRefer refer where refer.referFromUser = :userId and refer.referStatus = 'Applied' and (refer.createdDate BETWEEN :startDate and :endDate)) and "
 			 		+ "rs.submissionStatus = :submissionStatus";
@@ -1809,6 +1809,28 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		     
 		     List<Long> appliedCount = session.createQuery(query).setLong("recruiterUserId", userId).setDate("startDate", startDate)
 					   .setDate("endDate", endDate).setString("submissionStatus", submissionStatus).setCacheable(true).list();
+			 Integer count= 0;
+			 
+			 if(appliedCount != null && !appliedCount.isEmpty()){
+					count = appliedCount.get(0).intValue();
+			 }
+			return count;
+		}
+
+		@Override
+		@Transactional
+		public Integer getReferByMeJobAppliedCandidateCount(Long userId, Date startDate, Date endDate)
+				throws Exception {
+			
+			Session session = this.sessionFactory.getCurrentSession();
+		     
+			 String query = "select count(*) from RequirementSubmission rs where "
+			 		+ "rs.candidate.consultantUser.id IN (select refer.referToUser from RequirementRefer refer where refer.referFromUser = :userId and refer.referStatus = 'Applied' and (refer.createdDate BETWEEN :startDate and :endDate)) and "
+			 		+ "rs.requirement.id IN (select refer.requirementId from RequirementRefer refer where refer.referFromUser = :userId and refer.referStatus = 'Applied' and (refer.createdDate BETWEEN :startDate and :endDate))";
+		     
+		     List<Long> appliedCount = session.createQuery(query).setLong("userId", userId)
+		    		   .setDate("startDate", startDate)
+					   .setDate("endDate", endDate).setCacheable(true).list();
 			 Integer count= 0;
 			 
 			 if(appliedCount != null && !appliedCount.isEmpty()){
