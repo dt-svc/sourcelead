@@ -220,12 +220,12 @@ public class TimesheetSubmissionsRestController {
 		     	 emailMessage.setFirstName(projectMembers.getEmployee().getUser().getFirstName());
 			 	 emailMessage.setLastName(projectMembers.getEmployee().getUser().getLastName());
 			 	 emailMessage.setToEmail(projectMembers.getEmployee().getUser().getEmail());
-			 	 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+			 	 emailMessage.setFromEmail(loginUser.getEmail());
 			 	 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 	 
 			 	 StringBuilder userNameSB = new StringBuilder();
 			 	 emailMessage.setFromName(userNameSB.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		
+			 	emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 				 //setting the class filed values
 				 Map<String, String> globalVarsMap = new HashMap<>();
 				 globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
