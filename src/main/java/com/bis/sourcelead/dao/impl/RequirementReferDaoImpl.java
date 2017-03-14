@@ -303,6 +303,7 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 
 
 	@Override
+   @Transactional
 	public List<RequirementRefer> getReferJobsListByReferTypeByReferedDate(Long userId, String referType,
 			Date referedDate) throws Exception {
 		 Session session = this.sessionFactory.getCurrentSession();
@@ -336,5 +337,25 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 		 String query = "from RequirementRefer refer where "+subQuery+" and (refer.createdDate BETWEEN :startDate and :endDate))";
 		 List<RequirementRefer>  referCountList = session.createQuery(query).setLong("userId", userId) .setDate("startDate", startDate).setDate("endDate", endDate).setCacheable(true).list();
 		return referCountList;
+    
+	@Override
+	@Transactional
+	public Integer getReferredByMeCountByStartDateAndEndDate(Long userId, Date startDate, Date endDate)
+			throws Exception {
+		
+		 Session session = this.sessionFactory.getCurrentSession();
+		 	     
+		 String query = "select  count(*) from RequirementRefer refer where refer.referFromUser.id = :userId  and (refer.createdDate BETWEEN :startDate and :endDate))";
+	     
+	     List<Long> referCount = session.createQuery(query).setLong("userId", userId)
+	    		   .setDate("startDate", startDate)
+				   .setDate("endDate", endDate).setCacheable(true).list();
+		 Integer count= 0;
+		 
+		 if(referCount != null && !referCount.isEmpty()){
+				count = referCount.get(0).intValue();
+		 }
+		return count;
+
 	}
 }

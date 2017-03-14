@@ -3475,5 +3475,37 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	public List<RequirementSubmission> getReferByMeProfessionalJobSubmisssionsCountListBySubmissionType(Long userId, String submissionStatus, Date startDate, Date endDate) throws Exception {
 		return requirementSubmissionDao.getReferByMeProfessionalJobSubmisssionsCountListBySubmissionType(userId, submissionStatus, startDate, endDate);
 	}
+	@Override
+	public Integer getReferByMeJobAppliedCountByappliedDate(Long userId, Date appliedDate) throws Exception {
+		return requirementSubmissionDao.getReferByMeJobAppliedCountByappliedDate(userId, appliedDate);
+	}
+
+	@Override
+	public Integer getRecruiterSubmittedJobCountByappliedDate(Long userId, Date appliedDate) throws Exception {
+		return requirementSubmissionDao.getRecruiterSubmittedJobCountByappliedDate(userId, appliedDate);
+	}
+
+	@Override
+	public Integer getRequiterReferJobAppliedCount(Long userId, Date startDate, Date endDate)
+			throws Exception {
+		return requirementSubmissionDao.getRequiterReferJobAppliedCount(userId, startDate, endDate);
+	}
+
+	@Override
+	public Integer getRecruiterSubmittedJobCountByStartDateAndEndDate(Long userId, Date startDate, Date endDate)
+			throws Exception {
+		return requirementSubmissionDao.getRecruiterSubmittedJobCountByStartDateAndEndDate(userId, startDate, endDate);
+	}
+
+	@Override
+	public Integer getRecruiterSubmittedJobsCountByStage(Long userId, String submissionStatus, Date startDate,
+			Date endDate) throws Exception {
+		return requirementSubmissionDao.getRecruiterSubmittedJobsCountByStage(userId, submissionStatus, startDate, endDate);
+	}
+
+	@Override
+	public Integer getReferByMeJobAppliedCandidateCount(Long userId, Date startDate, Date endDate) throws Exception {
+		return requirementSubmissionDao.getReferByMeJobAppliedCandidateCount(userId, startDate, endDate);
+	}
 
 }

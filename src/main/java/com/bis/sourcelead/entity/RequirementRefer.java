@@ -102,6 +102,9 @@ public class RequirementRefer implements Serializable {
 	private Integer referedToMeCount;
 	
 	@Transient
+	private Integer submittedByMeJobs;
+	
+	@Transient
 	private List<RequirementSubmission> crowdSourcingPortLetList;
 	
 	@Transient
@@ -357,6 +360,7 @@ public class RequirementRefer implements Serializable {
 		this.referedToMeCount = referedToMeCount;
 	}
 
+
 	public List<RequirementRefer> getReferToMeList() {
 		return referToMeList;
 	}
@@ -365,6 +369,13 @@ public class RequirementRefer implements Serializable {
 		this.referToMeList = referToMeList;
 	}
 
+	public Integer getSubmittedByMeJobs() {
+		return submittedByMeJobs;
+	}
+
+	public void setSubmittedByMeJobs(Integer submittedByMeJobs) {
+		this.submittedByMeJobs = submittedByMeJobs;
+	}
 	
 	public List<RequirementSubmission> getReferredByMeList() {
 		return referredByMeList;
