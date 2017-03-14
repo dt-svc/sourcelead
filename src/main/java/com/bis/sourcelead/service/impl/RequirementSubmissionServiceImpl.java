@@ -3504,6 +3504,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
+	public List<RequirementSubmission> getReferByMeProfessionalJobSubmisssionsCountListBySubmissionType(Long userId, String submissionStatus, Date startDate, Date endDate) throws Exception {
+		return requirementSubmissionDao.getReferByMeProfessionalJobSubmisssionsCountListBySubmissionType(userId, submissionStatus, startDate, endDate);
+	}
+	@Override
 	public Integer getReferByMeJobAppliedCountByappliedDate(Long userId, Date appliedDate) throws Exception {
 		return requirementSubmissionDao.getReferByMeJobAppliedCountByappliedDate(userId, appliedDate);
 	}
@@ -3526,9 +3530,35 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public Integer getRecruiterSubmittedJobsCountByStage(Long userId, String submissionStatus, Date startDate,
+	public Integer getRecruiterSubmittedCandidatesCountByStage(Long userId, String submissionStatus, Date startDate,
 			Date endDate) throws Exception {
-		return requirementSubmissionDao.getRecruiterSubmittedJobsCountByStage(userId, submissionStatus, startDate, endDate);
+		return requirementSubmissionDao.getRecruiterSubmittedCandidatesCountByStage(userId, submissionStatus, startDate, endDate);
+	}
+
+	@Override
+	public Integer getReferByMeJobAppliedCandidateCount(Long userId, Date startDate, Date endDate) throws Exception {
+		return requirementSubmissionDao.getReferByMeJobAppliedCandidateCount(userId, startDate, endDate);
+	}
+
+	@Override
+	public Integer getRecruiterSubmittedCandidateCountByStartDateAndEndDate(Long userId, Date startDate, Date endDate)
+			throws Exception {
+		return requirementSubmissionDao.getRecruiterSubmittedCandidateCountByStartDateAndEndDate(userId, startDate, endDate);
+	}
+
+	@Override
+	public List<RequirementSubmission> getRecruiterSubmittedCandidatesCountListByStage(Long userId, String submissionStatus, Date startDate, Date endDate) throws Exception {
+		return requirementSubmissionDao.getRecruiterSubmittedCandidatesCountListByStage(userId, submissionStatus, startDate, endDate);
+	}
+	public RequirementSubmission getRequirementSubmissionByRequirementIdAndUserId(Long requirementId, Long userId)
+			throws Exception {
+		return requirementSubmissionDao.getRequirementSubmissionByRequirementIdAndUserId(requirementId, userId);
+	}
+
+	@Override
+	public List<RequirementSubmission> getRecruiterSubmittedCandidatesList(Long recruiterUserId, Long requirementId)
+			throws Exception {
+		return requirementSubmissionDao.getRecruiterSubmittedCandidatesList(recruiterUserId, requirementId);
 	}
 
 }

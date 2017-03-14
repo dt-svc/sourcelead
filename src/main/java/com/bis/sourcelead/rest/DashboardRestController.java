@@ -638,7 +638,18 @@ public class DashboardRestController {
 			requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
 			*/
 			
-			
+		//  This for the Requirement Location 
+					StringBuilder location = new StringBuilder();
+					if(null != requirement.getCity() && !requirement.getCity().equalsIgnoreCase("")){
+						location.append(requirement.getCity()).append(" ,");
+					 }
+					if(null != requirement.getState() && !requirement.getState().equalsIgnoreCase("")){
+						location.append(requirement.getState()).append(" ,");
+					 }
+					
+					 location.append(requirement.getCountry()).append(" ");
+					
+				
 			// requirement created user
 			User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
 
@@ -671,9 +682,9 @@ public class DashboardRestController {
 							}
 						// this is for sending email to requirement initiator
 						if (status.equalsIgnoreCase("APPROVED")) {
-							requirementService.acceptEmailScenario(loginUser, intiatorUser, requirement, orgLocation);
+							requirementService.acceptEmailScenario(loginUser, intiatorUser, requirement,location, orgLocation);
 						} else if (status.equalsIgnoreCase("REJECTED")) {
-							requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, null, reason,orgLocation);
+							requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, location, reason,orgLocation);
 						}
 				}else{
 
@@ -682,7 +693,7 @@ public class DashboardRestController {
 						if (status.equalsIgnoreCase("APPROVED")) {
 							if (null != level1approver) {
 								// this is for sending email to second level approver
-								requirementService.approverTwoEmailScenario(loginUser, approverUser, requirement, null,	orgLocation);
+								requirementService.approverTwoEmailScenario(loginUser, approverUser, requirement, location,	orgLocation);
 							}
 							requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
 							requirement.setReqlevel1ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED.toString());
@@ -691,7 +702,7 @@ public class DashboardRestController {
 							requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
 							requirement.setReqlevel1ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED.toString());
 							requirementApproverHierarchy.setRejectedReason(reason);
-							requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, null, reason,orgLocation);
+							requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, location, reason,orgLocation);
 							requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
 							
 							// This is  to update  the level2 Approver Record For RejectedS

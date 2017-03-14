@@ -31,8 +31,8 @@ $(document).ready(function() {
 	 var startDate = '${startDate}'; 
 	 var endDate = '${endDate}'; 
 	 var requirementStatus = '${requirementStatus}'; 
-	 professionalDashboardPortletListCounts(startDate,endDate,requirementStatus);
-	 professionalDashboardPortletList(startDate,endDate,requirementStatus);
+	 recruiterDashboardPortletListCounts(startDate,endDate,requirementStatus);
+	 recruiterDashboardPortletList(startDate,endDate,requirementStatus);
 	 
 	 var applicantStatus = "";
 	 if(requirementStatus == "SHORTLIST"){
@@ -47,8 +47,11 @@ $(document).ready(function() {
 	 if(requirementStatus == "REJECTED"){
 		  applicantStatus = "Rejected";
 	 }
+	 if(requirementStatus == "referByMe"){
+		  applicantStatus = "Referred By Me";
+	 }
 	 if(requirementStatus == "" || requirementStatus =='undefined'  || requirementStatus == null){
-		  applicantStatus = "Applied";
+		  applicantStatus = "Submitted";
 	 }
 	 $(".applicantStatus").append(applicantStatus); 
 	 
@@ -58,9 +61,9 @@ $(document).ready(function() {
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
-      <h2>Referred To Me</h2>
+      <h2>Submitted</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='professionalDashboard'/>">Home</a> » <span class="applicantStatus"></span>&nbsp; List </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='recruiterDashboard'/>">Home</a> » <span class="applicantStatus"></span>&nbsp; List </div>
   </section>
   <section class="clearfix">
   <div class="timesheet_out timesheet_background crowdDash_btn">
@@ -68,7 +71,7 @@ $(document).ready(function() {
   	      <h4 class="pull-left"> <span class="applicantStatus"></span> List</h4>
   	      <div id ="statusDropDown" class="pull-right mt10"></div>
   	</div>
-  	<div id="professionalDashboardPortletList"></div>
+  	<div id="submittedList"></div>
   </div>
   </section>
 <script>
@@ -90,13 +93,16 @@ function myFunction(){
 	 if(requirementStatus == "REJECTED"){
 		  applicantStatus = "Rejected";
 	 }
+	 if(requirementStatus == "referByMe"){
+		  applicantStatus = "Referred By Me";
+	 }
 	 if(requirementStatus == "" || requirementStatus =='undefined'  || requirementStatus == null){
-		  applicantStatus = "Applied";
+		  applicantStatus = "Submitted";
 	 }
 	 $(".applicantStatus").append(applicantStatus); 
 	 
 	
-    professionalDashboardPortletList(startDate,endDate,requirementStatus);
+	 recruiterDashboardPortletList(startDate,endDate,requirementStatus);
 }
 
 </script>  
@@ -104,8 +110,7 @@ function myFunction(){
 function portletListFilter(requirementStatus){
 	 var startDate = '${startDate}'; 
 	 var endDate = '${endDate}'; 
-	
-	professionalDashboardPortletList(startDate,endDate,requirementStatus);
+	 recruiterDashboardPortletList(startDate,endDate,requirementStatus);
   
 }
 
@@ -115,17 +120,17 @@ function portletListFilter(requirementStatus){
    
    
 <script type="text/javascript">
-  function professionalDashboardPortletListCounts(startDate,endDate,requirementStatus){
+  function recruiterDashboardPortletListCounts(startDate,endDate,requirementStatus){
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  $.ajax({ 
 		   	type: "GET",
-			url: sourceleadUrl+"/getJobSummaryPortlets?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,
+			url: sourceleadUrl+"/getRecruiterSubmttedJobSummaryPortlets?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,
 		    success: function(data) {
 	    	 var json = JSON.parse(data);
 	    	 var result ='';
 	    	 result =result +'<span class="select-field"><i class="fa fa-filter"></i>';
-	    	 result =result +'<select name = "navyOp" id="navyOp" onChange="myFunction(this);">'; 
-	    	 result =result +'<option '+ (requirementStatus == "" ? "selected" : '') +' value = "">Applied ('+json.appliedJobs+')</span></option>';
+	    	 result =result +'<select name = "navyOp" id="navyOp" onChange="myFunction();">'; 
+	    	 result =result +'<option '+ (requirementStatus == "" ? "selected" : '') +' value = "">Submitted ('+json.submittedByMeJobs+')</span></option>';
 	    	 result =result +'<option '+ (requirementStatus == "SHORTLIST" ? "selected" : '') +' value = "SHORTLIST">Short Listed ('+json.shortlistJobs+')</option>';
 	    	 result =result +'<option '+ (requirementStatus == "INTERVIEW" ? "selected" : '') +' value = "INTERVIEW">Interviews ('+json.interviews+') </option>';
 	    	 result =result +'<option '+ (requirementStatus == "OFFERMADE" ? "selected" : '') +' value = "OFFERMADE">Offered ('+json.offeredJobs+') </option>';
@@ -144,11 +149,11 @@ function portletListFilter(requirementStatus){
    
             
   <script type="text/javascript">
-  function professionalDashboardPortletList(startDate,endDate,requirementStatus){
+  function recruiterDashboardPortletList(startDate,endDate,requirementStatus){
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  $.ajax({ 
 		   	type: "GET",
-		   	url: sourceleadUrl+"/getJobSummaryPortletsList?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&requirementStatus="+requirementStatus,
+		   	url: sourceleadUrl+"/getRecruiterSubmttedJobSummaryPortletList?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&requirementStatus="+requirementStatus,
 		    success: function(data) {
 	    	 var json = JSON.parse(data);
 	    	 var result =""; 
@@ -157,85 +162,67 @@ function portletListFilter(requirementStatus){
 	    	   result = result + '<table id="professionalDashboardPortletPagenation" class="display" cellspacing="0" width="100%"">';
 	           result = result + '<thead>';
 	           result = result + '<tr>';
-	           result = result + '<th>Req. Name</th>';
-	           result = result + '<th>Company</th>';
-	           result = result + '<th>Emp. Type</th>';
-	           result = result + '<th>Location</th>';
-	           result = result + '<th>Rate</th>';
-	           result = result + '<th>Req. Status</th>';
-		       result = result + '<th>Stage</th>';
-		       result = result + '<th>Referred By</th>';
-		      /*  result = result + '<th>Referred On</th>'; */
+	           result = result + '<th>Name</th>';
+	           result = result + '<th>Email</th>';
+	           result = result + '<th>Phone</th>';
+	           result = result + '<th>Requirement</th>';
+	           result = result + '<th>Status</th>';
+	           result = result + '<th>Stage</th>';
+		       result = result + '<th>Submitted on</th>';
 	           result = result + '</tr>';
 	           result = result + '</thead>';
 	           result = result + '<tbody>';
-	           for (var i=0; i<json.crowdSourcingPortLetList.length; i++)
-  				{
-	        	   var report = json.crowdSourcingPortLetList[i];
-	        	   
-	        	   if(report.requirementJobId != null && report.requirementJobId != '' && report.requirementJobId != 'undefined'){
-	        		   requirementJobId = report.requirementJobId +' - ';
-	        	   }else{
-	        		   requirementJobId = "";
-	        	   }
-	        	   if(report.employeeType != null && report.employeeType != '' && report.employeeType != 'undefined'){
-	        		   employeeType = report.employeeType;
-	        	   }else{
-	        		   employeeType = "--"
-	        	   }
-	        	   
-	        	   if(report.state != null && report.state != '' && report.state != 'undefined'){
-	        		   report.state = ' , '+report.state;
-	        	   }else{
-	        		   state = "";
-	        	   }
-	        	   
-	        	   if(report.city != null && report.city != '' && report.city != 'undefined'){
-	        		   report.city = ' , '+report.city;
-	        	   }else{
-	        		   city = "";
-	        	   }
-	        	   
-	        	   if(report.rate != null && report.rate != '' && report.rate != 'undefined'){
-	        		   rate = report.rate;
-	        	   }else{
-	        		   rate = "--";
-	        	   }
-	        	   if(report.rateType != null && report.rateType != '' && report.rateType != 'undefined'){
-	        		   rateType =report.rateType;
-	        	   }else{
-	        		   rateType = "";
-	        	   }
-	        	   	        	
-	        	   if(report.referredBy != null && report.referredBy != '' && report.referredBy != 'undefined'){
-	        		   referredBy = report.referredBy;
-	        	   }else{
-	        		   referredBy= "--";
-	        	   }
-	        	  /*  if(report.referredOn != null && report.referredOn != '' && report.referredOn != 'undefined'){
-	        		   referredOn = report.referredOn;
-	        	   }else{
-	        		   referredOn= "--";
-	        	   } */
-	        	   result = result +'         <tr>';
-	        	   result = result +'         <td><a href="<c:url value="/requirementProfile/'+report.requirementUUID+'"/>"><div class="tbldata-dotdot-sm">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
-	        	   result = result +'         <td><div class="tbldata-dotdot">'+report.orgName+'</div></td>';
-	        	   result = result +'         <td><div class="tblminwidth-50">'+employeeType+'</div></td>';
-	        	   result = result +'         <td><div class="tbldata-dotdot-100">'+report.country+' '+state+' '+city+'</div></td>';
-	        	   result = result +'         <td><div class="tblminwidth-dotdot">'+rate+' '+rateType+'</div></td>';
-	        	   result = result +'         <td><div class="tblminwidth-50">'+report.requirementSubmissionStatus+'</div></td>';
-	        	   result = result +'         <td><div class="tblminwidth-50">'+report.submissionStatus+'</div></td>';
-	        	   result = result +'         <td><div class="tblminwidth-dotdot">'+referredBy+'</div></td>';
-	        	  /*  result = result +'         <td><div class="tblminwidth-50">'+referredOn+'</div></td>'; */
-	        	   result = result +'         </tr>';
-	        	   
-  				}
+	           
+	        	   for (var i=0; i<json.submittedList.length; i++)
+	  				{
+		        	   var report = json.submittedList[i];
+		        	   
+		        	   if(report.requirementJobId != null && report.requirementJobId != '' && report.requirementJobId != 'undefined'){
+		        		   requirementJobId = report.requirementJobId +' - ';
+		        	   }else{
+		        		   requirementJobId = "";
+		        	   }
+		        	   if(report.requirementSubmissionStatus != null && report.requirementSubmissionStatus != '' && report.requirementSubmissionStatus != 'undefined'){
+		        		   requirementSubmissionStatus = report.requirementSubmissionStatus;
+		        	   }else{
+		        		   requirementSubmissionStatus = "--"
+		        	   }
+		        	 
+		        	   if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
+		        		   candidateEmail = report.candidateEmail;
+		        	   }else{
+		        		   candidateEmail= "--";
+		        	   }
+		        	   
+		        	   if(report.phoneNumber != null && report.phoneNumber != '' && report.phoneNumber != 'undefined'){
+		        		   phoneNumber = report.phoneNumber;
+		        	   }else{
+		        		   phoneNumber= "--";
+		        	   }
+		        	  
+		        	   if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
+		        		   createdDateStr = report.createdDateStr;
+		        	   }else{
+		        		   createdDateStr= "--";
+		        	   }
+		        	   
+		        	   result = result +'         <tr>';
+		        	   result = result +'         <td><div class="tbldata-dotdot" title="'+report.candidateName+'">'+report.candidateName+'</div></td>';
+		        	   result = result +'         <td><div class="tbldata-dotdot" title="'+candidateEmail+'">'+candidateEmail+'</div></td>';
+		        	   result = result +'         <td><div class="tbldata-dotdot" title="'+phoneNumber+'">'+phoneNumber+'</div></td>';
+		        	   result = result +'         <td><a href="<c:url value="/requirementProfile/'+report.requirementUUID+'"/>"><div class="tbldata-dotdot-sm" title="'+requirementJobId+' '+report.requirementName+'">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
+		        	   result = result +'         <td><div class="tblminwidth-50">'+requirementSubmissionStatus+'</div></td>';
+		        	   result = result +'         <td><div class="tblminwidth-50">'+report.submissionStatus+'</div></td>';
+		        	   result = result +'         <td><div class="tblminwidth-50">'+createdDateStr+'</div></td>';
+		        	   result = result +'         </tr>';
+		        	   
+	  				}
 	    	 
 	           result = result + '       </tbody>';
 	           result = result + '     </table>';
 	           result = result + '   </div>';
-	           $("#professionalDashboardPortletList").empty();
-	           $("#professionalDashboardPortletList").append(result);
+	           $("#submittedList").empty();
+	           $("#submittedList").append(result);
 	    	 rejectedPagenatio();
 		    }
 	  });
