@@ -117,6 +117,9 @@ public class RequirementRefer implements Serializable {
 	private List<RequirementRefer> referByMeJobsList;
 	
 	@Transient
+	private  List<RequirementSubmission> submittedList;
+	
+	@Transient
 	private String requirementName;
 	
 	@Transient
@@ -520,4 +523,13 @@ public class RequirementRefer implements Serializable {
 	public void setCandidatePhoneNumber(String candidatePhoneNumber) {
 		this.candidatePhoneNumber = candidatePhoneNumber;
 	}
+
+	public List<RequirementSubmission> getSubmittedList() {
+		return submittedList;
+	}
+
+	public void setSubmittedList(List<RequirementSubmission> submittedList) {
+		this.submittedList = submittedList;
+	}
+	
 }

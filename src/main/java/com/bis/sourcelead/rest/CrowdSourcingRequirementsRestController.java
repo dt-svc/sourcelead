@@ -1742,6 +1742,73 @@ public class CrowdSourcingRequirementsRestController {
 
 		}
 		
+		@PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+		@RequestMapping(value = "/getRecruiterSubmttedJobSummaryPortletList", method = RequestMethod.GET)
+		public String getRecruiterSubmttedJobSummaryPortletList(@RequestParam(value = "startDate", required = false) String startDate,
+				@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "requirementStatus", required = false) String status,HttpServletRequest request) throws Exception {
+			String resultJson = null;
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+			RequirementRefer refer = new RequirementRefer();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			Date jobPortletsStartDate = null;
+			Date jobPortletsEndDate = null;
+			
+			if(!isNullOrEmpty(startDate) && !isNullOrEmpty(endDate)){
+				//Custom StartDate and EndDate
+				
+				jobPortletsStartDate =  sdf.parse(startDate);
+				jobPortletsEndDate =  sdf.parse(endDate);
+			
+			}else{
+				
+				//For This Month
+				
+				Calendar c = Calendar.getInstance();   
+	    	    c.set(Calendar.DAY_OF_MONTH, 1);
+	    	    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+	    	    startDate = df.format(c.getTime());
+	    	    
+	    	    int lastDate = c.getActualMaximum(Calendar.DATE);
+	    	    c.set(Calendar.DATE, lastDate);	
+	    	    endDate = df.format(c.getTime());
+	    	    
+	    	    jobPortletsStartDate =  sdf.parse(startDate);
+	    	    jobPortletsEndDate =  sdf.parse(endDate);
+			}
+			
+    		
+			try{
+				
+				List<RequirementSubmission> submittedList = requirementSubmissionService.getRecruiterSubmittedCandidatesCountListByStage(user.getId(),status,jobPortletsStartDate, jobPortletsEndDate);
+				for(RequirementSubmission rs : submittedList){
+					StringBuilder candidateName = new StringBuilder();
+					if(null != rs.getCandidate().getLastName()){
+						rs.setCandidateName(candidateName.append(rs.getCandidate().getFirstName()).append(" ").append(rs.getCandidate().getLastName()).toString());	
+					}else{
+						rs.setCandidateName(candidateName.append(rs.getCandidate().getFirstName()).toString());
+					}
+					rs.setCandidateEmail(rs.getCandidate().getEmail());
+					rs.setPhoneNumber(rs.getCandidate().getMobilePhone());
+					rs.setRequirementName(rs.getRequirement().getJobTitle());
+					rs.setRequirementUUID(rs.getRequirement().getRequirementUUID());
+					rs.setRequirementJobType(rs.getRequirement().getJobType());
+					rs.setRequirementSubmissionStatus(rs.getRequirement().getRequirementSubmissionStatus().toString());
+					rs.setCreatedDateStr(Constants.DF_DMY.format(rs.getCreatedDate()));
+					rs.setSubmissionStatus(rs.getSubmissionStatus());
+					
+				}
+				refer.setSubmittedList(submittedList);
+				
+			}catch (ParseException e) {
+				e.printStackTrace();
+			}
+			
+			resultJson = commonUtil.toJSON(refer);
+			return resultJson;
+
+		}
 		
 		
 		public String toJSON(Object obj){

@@ -3514,4 +3514,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		return requirementSubmissionDao.getRecruiterSubmittedCandidateCountByStartDateAndEndDate(userId, startDate, endDate);
 	}
 
+	@Override
+	public List<RequirementSubmission> getRecruiterSubmittedCandidatesCountListByStage(Long userId, String submissionStatus, Date startDate, Date endDate) throws Exception {
+		return requirementSubmissionDao.getRecruiterSubmittedCandidatesCountListByStage(userId, submissionStatus, startDate, endDate);
+	}
+
 }

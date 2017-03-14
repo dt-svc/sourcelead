@@ -145,4 +145,6 @@ public interface RequirementSubmissionDao {
 	Integer getReferByMeJobAppliedCandidateCount(Long userId,Date startDate,Date endDate) throws Exception;
 	
 	Integer getRecruiterSubmittedCandidateCountByStartDateAndEndDate(Long userId,Date startDate,Date endDate) throws Exception;
+	
+	List<RequirementSubmission> getRecruiterSubmittedCandidatesCountListByStage(Long userId,String submissionStatus,Date startDate,Date endDate) throws Exception;
 }
