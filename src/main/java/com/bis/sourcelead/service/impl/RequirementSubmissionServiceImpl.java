@@ -3517,8 +3517,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	@Override
 	public RequirementSubmission getRequirementSubmissionByRequirementIdAndUserId(Long requirementId, Long userId)
 			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return requirementSubmissionDao.getRequirementSubmissionByRequirementIdAndUserId(requirementId, userId);
+	}
+
+	@Override
+	public List<RequirementSubmission> getRecruiterSubmittedCandidatesList(Long recruiterUserId, Long requirementId)
+			throws Exception {
+		return requirementSubmissionDao.getRecruiterSubmittedCandidatesList(recruiterUserId, requirementId);
 	}
 
 }

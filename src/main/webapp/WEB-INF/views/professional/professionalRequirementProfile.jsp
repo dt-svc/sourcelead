@@ -306,7 +306,7 @@ function getReferalDetails(requirementUUID){
 			        	   result = result +'         <tr>';
 			        	   result = result +'         <td><div class="tbldata-dotdot">'+userName+'</div></td>';
 			        	   result = result +'         <td><div class="tbldata-dotdot">'+report.referToEmail+'</div></td>';
-			        	   result = result +'         <td><div class="tbldata-dotdot">'+phoneNumber+'</div></td>';
+			        	   result = result +'         <td><div class="tblminwidth-50">'+phoneNumber+'</div></td>';
 			        	   result = result +'         <td><div class="tblminwidth-50">'+requirementSubmissionStatus+'</div></td>';
 			        	   result = result +'         </tr>';
 			        	   
@@ -327,9 +327,83 @@ function getReferalDetails(requirementUUID){
 }
 </script>
 
+
+<script>
+function getSubmissionDetails(requirementUUID){
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+	   	type: "GET",
+	    url: sourceleadUrl+"/getRecruiterRequirementSubmissionsList?requirementUUID="+requirementUUID, 	   
+		    success: function(data) {
+		    	 var json = JSON.parse(data);
+		    	 var result =""; 
+		    	 
+		    	   result = result + '<div class="require_wrap_table overflow-data filter-position mt25">';
+		    	   result = result + '<div class="clerfix">';
+		    	   result = result + '<table id="submissionListPagenation" class="display" cellspacing="0" width="100%"">';
+		           result = result + '<thead>';
+		           result = result + '<tr>';
+		           result = result + '<th>Name</th>';
+		           result = result + '<th>Email</th>';
+		           result = result + '<th>Phone</th>';
+	        	   result = result + '<th>Stage</th>';
+		           result = result + '</tr>';
+		           result = result + '</thead>';
+		           result = result + '<tbody>';
+		           
+		           if(json.requirementSubmissionList.length > 0){
+		        	   for (var i=0; i<json.requirementSubmissionList.length; i++)
+		  				{
+			        	   var report = json.requirementSubmissionList[i];
+			        	   
+			        	   
+			        	   result = result +'         <tr>';
+			        	   result = result +'         <td><div class="tbldata-dotdot">'+report.candidateName+'</div></td>';
+			        	   result = result +'         <td><div class="tbldata-dotdot">'+report.candidateEmail+'</div></td>';
+			        	   result = result +'         <td><div class="tblminwidth-50">'+report.phoneNumber+'</div></td>';
+			        	   result = result +'         <td><div class="tblminwidth-50">'+report.submissionStatus+'</div></td>';
+			        	   result = result +'         </tr>';
+			        	   
+		  				}
+		          
+		           }
+		           
+		           result = result + '       </tbody>';
+		           result = result + '     </table>';
+		           result = result + '   </div>';
+		           $("#professionalRequirementProfileDiv").empty();
+		           $("#professionalRequirementProfileDiv").append(result);
+		           submissionListPagenation();
+		    }
+	});
+	
+	 
+}
+</script>
+
+
+
 <script>
 function referListPagenation(){  
     $('#referListPagenation').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    } );
+}
+</script>
+
+
+<script>
+function submissionListPagenation(){  
+    $('#submissionListPagenation').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
     	"bLengthChange": false,
