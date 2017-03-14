@@ -179,7 +179,7 @@ function requirementProfile(requirementUUID){
 				 
 			     result = result+'    <ul class="nav nav-tabs mt">';
 			     result = result+'      <li class="active"><a data-toggle="tab" href="javascript:void(0)" onclick="requirementDetails(\''+requirementUUID+'\');" >Details</a></li>';
-			     result = result+'      <li><a data-toggle="tab" href="javascript:void(0)" onclick="getReferalDetails(\''+requirementUUID+'\');" >Referals</a></li>';
+			     result = result+'      <li><a data-toggle="tab" href="javascript:void(0)" onclick="getReferalDetails(\''+requirementUUID+'\');" >Referrals</a></li>';
 			     
 			     '<sec:authorize access="hasRole(\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
 			     result = result+'      <li><a data-toggle="tab" href="javascript:void(0)" onclick="getSubmissionDetails(\''+requirementUUID+'\');">Submissions</a></li>';
@@ -359,7 +359,7 @@ function getSubmissionDetails(requirementUUID){
 			        	   
 			        	   
 			        	   result = result +'         <tr>';
-			        	   result = result +'         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+report.requirementId+');" class="tbldata-dotdot proj_show">'+report.candidateName+'</div></td>';
+			        	   result = result +'         <td><div onclick="cancelReferPopUp();getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+report.requirementId+');" class="tbldata-dotdot proj_show">'+report.candidateName+'</div></td>';
 			        	   result = result +'         <td><div class="tbldata-dotdot">'+report.candidateEmail+'</div></td>';
 			        	   result = result +'         <td><div class="tblminwidth-50">'+report.phoneNumber+'</div></td>';
 			        	   result = result +'         <td><div class="tblminwidth-50">'+report.submissionStatus+'</div></td>';
