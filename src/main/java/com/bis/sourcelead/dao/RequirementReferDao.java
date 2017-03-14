@@ -36,5 +36,7 @@ public interface RequirementReferDao {
 	Integer getReferredByMeCountByStartDateAndEndDate(Long userId,Date startDate,Date endDate) throws Exception;
 	
 	List<RequirementRefer> getReferredByMeCountListByStartDateAndEndDate(Long userId,Date startDate,Date endDate) throws Exception;
+	
+	List<RequirementRefer> getLoginUserReferredListByUserId(Long userId,Long requirementId) throws Exception;
 
 }

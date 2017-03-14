@@ -65,6 +65,12 @@ public class RequirementRefer implements Serializable {
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
+	@Column(name = "REFERED_USER_FIRSTNAME")
+	private String referedUserFirstName;
+	
+	@Column(name = "REFERED_USER_LASTNAME")
+	private String referedUserLastName;
+	
 	@Column(name = "CREATED_BY")
 	private String createdBy;
 	
@@ -167,8 +173,11 @@ public class RequirementRefer implements Serializable {
 	@Transient
 	private String candidatePhoneNumber;
 	
-   @Transient
+    @Transient
 	private String dateString;
+    
+    @Transient
+   	private String userName;
 	
 		public Long getId() {
 		return id;
@@ -532,4 +541,29 @@ public class RequirementRefer implements Serializable {
 		this.submittedList = submittedList;
 	}
 	
+
+	public String getReferedUserFirstName() {
+		return referedUserFirstName;
+	}
+
+	public void setReferedUserFirstName(String referedUserFirstName) {
+		this.referedUserFirstName = referedUserFirstName;
+	}
+
+	public String getReferedUserLastName() {
+		return referedUserLastName;
+	}
+
+	public void setReferedUserLastName(String referedUserLastName) {
+		this.referedUserLastName = referedUserLastName;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
 }

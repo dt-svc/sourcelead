@@ -330,6 +330,9 @@ public class RequirementSubmission implements Serializable{
 	
 	@Transient
 	private String referredOn;
+	
+	@Transient
+	private List<RequirementSubmission> requirementSubmissionList;
 
 	
 	public OrgLocations getVendorLocationId() {
@@ -1086,5 +1089,13 @@ public class RequirementSubmission implements Serializable{
 
 	public void setReferredOn(String referredOn) {
 		this.referredOn = referredOn;
+	}
+
+	public List<RequirementSubmission> getRequirementSubmissionList() {
+		return requirementSubmissionList;
+	}
+
+	public void setRequirementSubmissionList(List<RequirementSubmission> requirementSubmissionList) {
+		this.requirementSubmissionList = requirementSubmissionList;
 	}
 }
