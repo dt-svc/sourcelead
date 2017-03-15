@@ -33,6 +33,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
+import com.bis.sourcelead.entity.RequirementInterviewer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
@@ -45,6 +46,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
+import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TimeZoneService;
@@ -77,6 +79,9 @@ public class DashboardRestController {
 	
 	 @Autowired
 	 RequirementService requirementService;
+	 
+	 @Autowired
+	 RequirementInterviewerService requirementInterviewerService;
 	 
 	 @Autowired
 	 RequirementSubmissionService requirementSubmissionService;
@@ -527,6 +532,15 @@ public class DashboardRestController {
 				}
 				if(interviewHistory.getSubmissionId() != null && interviewHistory.getSubmissionId().getRequirement().getRequirementUUID() != null){
 					interviewHistory.setRequirementUUID(interviewHistory.getSubmissionId().getRequirement().getRequirementUUID());
+				}
+				
+				if(null != interviewHistory.getInterviewId().getInterviewTemplateId()){
+					interviewHistory.setInterviewTemplateid(interviewHistory.getInterviewId().getInterviewTemplateId().getId());
+				}
+				
+				RequirementInterviewer requirementInterviewer =  requirementInterviewerService.getInterviwerByInterviewIdAndUserId(interviewHistory.getInterviewId().getId(), user.getId());
+				if(null != requirementInterviewer){
+					interviewHistory.setInterviewerId(requirementInterviewer.getId());
 				}
 				
 				interviewHistory.setCandidateName(candidateName.append(candidateFirstName).append(" ").append(candidateLastName).toString());
