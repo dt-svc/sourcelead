@@ -27,7 +27,7 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 	}
 
 	@Override
-	public RequirementInterviewer getInterviwerstByInterviewIdAndUserId(Long requirementInterviewerId, Long userId) {
-		return requirementInterviewerDao.getInterviwerstByInterviewIdAndUserId(requirementInterviewerId,userId);
+	public RequirementInterviewer getInterviwerByInterviewIdAndUserId(Long requirementInterviewerId, Long userId) {
+		return requirementInterviewerDao.getInterviwerByInterviewIdAndUserId(requirementInterviewerId,userId);
 	}
 }

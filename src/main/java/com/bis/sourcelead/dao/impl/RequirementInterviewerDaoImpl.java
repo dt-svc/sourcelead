@@ -74,7 +74,7 @@ public class RequirementInterviewerDaoImpl implements RequirementInterviewerDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public RequirementInterviewer getInterviwerstByInterviewIdAndUserId(Long requirementInterviewerId, Long userId) {
+	public RequirementInterviewer getInterviwerByInterviewIdAndUserId(Long requirementInterviewerId, Long userId) {
 	
 
 		logger.debug("In RequirementInterviewer getInterviwerstByInterviewIdAndUserId method");

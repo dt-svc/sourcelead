@@ -10,5 +10,5 @@ public interface RequirementInterviewerService {
 	
 	RequirementInterviewer getInterviwerstByInterviewId(Long requirementInterviewerId);
 	
-	RequirementInterviewer getInterviwerstByInterviewIdAndUserId(Long requirementInterviewerId,Long userId);
+	RequirementInterviewer getInterviwerByInterviewIdAndUserId(Long requirementInterviewerId,Long userId);
 }

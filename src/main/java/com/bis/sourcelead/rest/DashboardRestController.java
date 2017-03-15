@@ -538,7 +538,7 @@ public class DashboardRestController {
 					interviewHistory.setInterviewTemplateid(interviewHistory.getInterviewId().getInterviewTemplateId().getId());
 				}
 				
-				RequirementInterviewer requirementInterviewer =  requirementInterviewerService.getInterviwerstByInterviewIdAndUserId(interviewHistory.getInterviewId().getId(), user.getId());
+				RequirementInterviewer requirementInterviewer =  requirementInterviewerService.getInterviwerByInterviewIdAndUserId(interviewHistory.getInterviewId().getId(), user.getId());
 				if(null != requirementInterviewer){
 					interviewHistory.setInterviewerId(requirementInterviewer.getId());
 				}
