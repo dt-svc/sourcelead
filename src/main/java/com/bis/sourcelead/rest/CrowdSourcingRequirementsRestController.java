@@ -1898,6 +1898,19 @@ public class CrowdSourcingRequirementsRestController {
 		}
 		
 		
+		
+		@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+		@RequestMapping(value = "/getAllCrowdSourcingInterviews" , method = RequestMethod.POST)
+		 public @ResponseBody  String getAllCrowdSourcingInterviews(@RequestParam(value="submissionId", required=false) Long submissionId, HttpServletRequest request) throws Exception {
+			
+			 String resultJson = null;
+			 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 List<RequirementInterviewHistory> interviewsList = requirementInterviewHistoryService.getCrowdSorurcingInterviews(submissionId,orgLocations);
+			 resultJson = commonUtil.toJSON(interviewsList);
+			 return resultJson;
+		   }
+		
+		
 		public String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
 	            public HierarchicalStreamWriter createWriter(Writer writer) {
