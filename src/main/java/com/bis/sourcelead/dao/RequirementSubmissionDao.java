@@ -33,7 +33,7 @@ public interface RequirementSubmissionDao {
 	
 	List<RequirementSubmission> getAllSubmissionListByRequirementIdAndSubmissionStage(OrgLocations loginOrgLocation, Long requirementId,String submissionStatus,User user,String loginUserRole) throws Exception;
 
-	Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String submissionStatus, String dateRange,String userType,User user);
+	Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String submissionStatus, String dateRange,String userType,User user, Date startUTCDate, Date endUTCDate);
 	
 	Integer getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(OrgLocations orgLocations,Long requirementId,User user,String loginUserRole) throws Exception;
 	
@@ -130,6 +130,8 @@ public interface RequirementSubmissionDao {
 	
 	Integer getReferByMeProfessionalJobSubmisssionsCountBySubmissionType(Long userId,String submissionStatus,Date startDate,Date endDate) throws Exception;
 	
+	List<RequirementSubmission> getReferByMeProfessionalJobSubmisssionsCountListBySubmissionType(Long userId,String submissionStatus,Date startDate,Date endDate) throws Exception;
+
 	Integer getReferByMeJobAppliedCountByappliedDate(Long userId,Date appliedDate) throws Exception;
 	
 	Integer getRecruiterSubmittedJobCountByappliedDate(Long userId,Date appliedDate) throws Exception;
@@ -138,7 +140,15 @@ public interface RequirementSubmissionDao {
 	
 	Integer getRecruiterSubmittedJobCountByStartDateAndEndDate(Long userId,Date startDate,Date endDate) throws Exception;
 	
-	Integer getRecruiterSubmittedJobsCountByStage(Long userId,String submissionStatus,Date startDate,Date endDate) throws Exception;
+	Integer getRecruiterSubmittedCandidatesCountByStage(Long userId,String submissionStatus,Date startDate,Date endDate) throws Exception;
 	
+	Integer getReferByMeJobAppliedCandidateCount(Long userId,Date startDate,Date endDate) throws Exception;
 	
+	Integer getRecruiterSubmittedCandidateCountByStartDateAndEndDate(Long userId,Date startDate,Date endDate) throws Exception;
+	
+	List<RequirementSubmission> getRecruiterSubmittedCandidatesCountListByStage(Long userId,String submissionStatus,Date startDate,Date endDate) throws Exception;
+
+	RequirementSubmission getRequirementSubmissionByRequirementIdAndUserId(Long requirementId,Long userId) throws Exception;
+	
+	List<RequirementSubmission>  getRecruiterSubmittedCandidatesList(Long recruiterUserId,Long requirementId) throws Exception;
 }
