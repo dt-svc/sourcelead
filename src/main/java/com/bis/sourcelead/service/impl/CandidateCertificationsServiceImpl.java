@@ -90,7 +90,7 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 				if (jsonObject.has("validFrom") && !(jsonObject.getString("validFrom").isEmpty()) && !" ".equals(jsonObject.get("validFrom"))) {
 					try {
 						
-						String pattern = "yyyy-MM-dd";
+						String pattern = "dd-MM-yyyy";
                         SimpleDateFormat format = new SimpleDateFormat(pattern);
                         
                         Date validFrom = format.parse(jsonObject.getString("validFrom"));
@@ -106,7 +106,7 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 				}
 				if (jsonObject.has("validTo") && !(jsonObject.getString("validTo").isEmpty()) && !" ".equals(jsonObject.get("validTo"))) {
 					try {
-						String pattern = "yyyy-MM-dd";
+						String pattern = "dd-MM-yyyy";
                         SimpleDateFormat format = new SimpleDateFormat(pattern);
                         
                         Date validTo = format.parse(jsonObject.getString("validTo"));
@@ -165,10 +165,10 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 			 List<CandidateCertifications> CandidateCertificationsList = candidateCertificationsDao.getCandidateCertificationListByCandidateIdAndOrgLocationID(candidateId,orgLocationId);
 			 for (CandidateCertifications candidateCertifications :CandidateCertificationsList ){
 				 if(candidateCertifications.getValidFrom() != null){
-					 candidateCertifications.setCandidatevalidFromDateToString(Constants.DF_YMD.format(candidateCertifications.getValidFrom())); 
+					 candidateCertifications.setCandidatevalidFromDateToString(Constants.DF_DMY.format(candidateCertifications.getValidFrom())); 
 				 }
 				 if(candidateCertifications.getValidTo() != null){
-					 candidateCertifications.setCandidatevalidToDateToString(Constants.DF_YMD.format(candidateCertifications.getValidTo())); 
+					 candidateCertifications.setCandidatevalidToDateToString(Constants.DF_DMY.format(candidateCertifications.getValidTo())); 
 				 }
 				    }
 			 return CandidateCertificationsList;

@@ -271,7 +271,7 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 	}
 	
 	$('#startDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      onSelect: function (selected) {
@@ -282,7 +282,7 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 	  });
 	  
 	  $('#endDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 	        onSelect: function (selected) {

@@ -23,4 +23,12 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 return model;
 			
 	 }	
+	 @RequestMapping(value = "/applicantsReceivedListForReports")
+		public ModelAndView applicantsReceivedListForReports() throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/applicantsReceivedReport");
+		 return model;
+			
+	 }	
 }

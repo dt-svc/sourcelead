@@ -63,6 +63,12 @@ function requirementProfile(requirementUUID){
 		    		rateType = "";
 		    	}
 		    	
+		    	if(json.currencyCode != null && json.currencyCode != '' && json.currencyCode != 'undefined'){
+		    		currencyCode = ' / '+json.currencyCode;
+		    	}else{
+		    		currencyCode = "";
+		    	}
+		    	
 		    	if(json.city != null && json.city != '' && json.city != 'undefined'){
 		    		city = json.city +' , ';
 		    	}else{
@@ -115,7 +121,7 @@ function requirementProfile(requirementUUID){
 				 result = result +'                      <ul class="list-unstyled can-perdt">';
 				 result = result +'                        <li><i class="fa fa-black-tie"></i><span>Min Experience - '+minExp+'</span></li>';
 				 result = result +'                        <li><i class="fa fa-black-tie"></i><span>Max Experience - '+maxExp+'</span></li>';
-				 result = result +'                        <li><i class="fa fa-rupee"></i><span>'+rate+' '+rateType+'</span></li>';
+				 result = result +'                        <li><i class="fa fa-rupee"></i><span>'+rate+' '+rateType+' '+currencyCode+'</span></li>';
 				 result = result +'                        <li><i class="fa fa-map-marker"></i><span>'+city+' '+state+' '+country+'</span></li>';
 				 result = result +'                      </ul>';
 				 result = result +'                    </div>';
