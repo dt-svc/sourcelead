@@ -114,7 +114,7 @@ overflow-x: auto;
 		                  <div class="clearfix">
 		                    <select class="chosen-select" name="country" id="countrySearch" field-name="Country"  >
 						     <c:forEach var="cntry" items="${countryList}">
-					                     <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
+					                     <option value="${cntry.name}">${cntry.name}</option>
 				             </c:forEach>
 				           </select>
 		                  </div>
@@ -700,8 +700,8 @@ function getClientUniversalSearchList(searchValue,searchType){
 			 document.getElementById("vendorListAdvanced").style.display="block";
 			 document.getElementById("vendorContactListAdvanced").style.display="none";
 		}
-		
-	    $('#countrySearch').val('${loginCountryName}'); 
+	    
+	    $('#countrySearch').val(''); 
 	    $('#stateSearch').val(''); 
 	    $('#citySearch').val(''); 
 	    
@@ -741,9 +741,9 @@ function getClientUniversalSearchList(searchValue,searchType){
     		var report = json[i];
     		var location = "";
     		if(report.city != null && report.city != '' && report.city != 'undefined'){
-    			location = report.country+", "+report.state+", "+report.city;
+    			location = report.city+", "+report.state+", "+report.country;
     		}else if(report.state != null && report.state != '' && report.state != 'undefined'){
-    			location = report.country+", "+report.state;
+    			location = report.state+", "+report.country;
     		}else{
     			location = report.country;
     		}
@@ -1227,9 +1227,9 @@ function preparedClientListFromElk(data){
 		   		var report = json[i];
 		   		var location = "";
 		   		if(report.city != null && report.city != '' && report.city != 'undefined'){
-		   			location = report.country+", "+report.state+", "+report.city;
+		   			location = report.city+", "+report.state+", "+report.country;
 		   		}else if(report.state != null && report.state != '' && report.state != 'undefined'){
-		   			location = report.country+", "+report.state;
+		   			location = report.state+", "+report.country;
 		   		}else{
 		   			location = report.country;
 		   		}
@@ -2194,6 +2194,7 @@ $('#selector').delay(2000).fadeOut('slow');
 	    $("#citySearch").empty();
 	    $("#stateSearch").empty();
 	    $("#countrySearch").empty();
+	    $("#countrySearch").val('');
 	}
 </script>
 
