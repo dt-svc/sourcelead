@@ -6497,6 +6497,33 @@ left: auto;right:225px;
 #statusDropDown {
 	position: relative; top:5px;
 }
+.cand-advsrch-popup.cand-advsrchPopup {
+	width: auto;
+	padding: 0;
+	overflow: inherit;
+	top: 40px; left: 10px;
+}
+.cand-advsrch-popup.cand-advsrchPopup .close-div {
+    right: -5px; top: -5px; 
+}
+.candAdvsrchPop {
+	width:825px;
+	min-height: 100px;
+	height: 385px;
+	overflow-y:visibile;
+	overflow-x:hidden;
+	padding:15px 10px 10px 10px;
+	box-sizing: border-box;
+}
+.candAdvsrchPop h4{
+	margin: 0;
+	font-size: 16px;
+	margin-bottom: 5px;
+}
+.cand-advsrch-popup.cand-advsrchPopup .form-footer {
+    min-height: 50px;
+    line-height: 50px;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
