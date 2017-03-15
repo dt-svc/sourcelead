@@ -257,7 +257,7 @@ public class RequirementOfferRestController {
 	* 
 	* @throws Exception
 	*/
-	@PreAuthorize("hasAnyRole('ROLE_VIEW_ACCEPT_OFFER','ROLE_VIEW_REJECT_OFFER')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_ACCEPT_OFFER','ROLE_VIEW_REJECT_OFFER','ROLE_CROWDSOURCING_REQUIREMENTS')")
 	@RequestMapping(value = "/acceptingOffer")
 	public @ResponseBody String acceptingOffer(@RequestParam(value="submissionId", required=false) Long submissionId,
 			                                   @RequestParam(value="offerStatus", required=false) String offerStatus,

@@ -355,7 +355,15 @@ function cancelAddOffer(){
   		var formData = new FormData(form); 
   		
   		var selectedOfferApplicants =  $('#1applicantId_chosen  span').size();
-  	  
+  		var isContinue = true;
+  		
+  		var offerAmount = document.getElementById("1Amount").value;
+  		var paymentModeType = document.getElementById("1PaymentMode").value;
+  		if(offerAmount != '' && paymentModeType.length == 1){
+  			isContinue = false;
+  		}
+  		
+  	 if(isContinue){
   	  if(selectedOfferApplicants <= 50){
   		$("#add_offer").attr("disabled", "disabled");
   		$("#add_offer" ).addClass('button').val('Processing..');  
@@ -383,7 +391,9 @@ function cancelAddOffer(){
   		alertOfferMessage("<b>Selected Applicants should not more than 50</b>");
   	  }
   	  
- 		
+  	 }else{
+  		alertOfferMessage("<b>Rate Per is Required for given Rate</b>");
+  	 }
    		   
         return true;
       }

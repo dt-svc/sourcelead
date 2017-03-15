@@ -318,9 +318,10 @@ function addDocument(vendorLocationId,orgRelationId) {
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      onSelect: function (selected) {
-	            var dt = new Date(selected);
-	            dt.setDate(dt.getDate() + 1);
-	            $("#endDate").datepicker("option", "minDate", dt);
+	           // var dt = new Date(selected);
+	           var dt = toDate("#startDate");
+	           dt.setDate(dt.getDate() + 1);
+	           $("#endDate").datepicker("option", "minDate", dt);
 	        }
 	  });
 	  
@@ -329,7 +330,8 @@ function addDocument(vendorLocationId,orgRelationId) {
 	      changeMonth: true,
 	  	  changeYear: true, 
 	        onSelect: function (selected) {
-	            var dt = new Date(selected);
+	           // var dt = new Date(selected);
+	            var dt = toDate("#endDate");
 	            dt.setDate(dt.getDate() - 1);
 	            $("#startDate").datepicker("option", "maxDate", dt);
 	        }
@@ -549,47 +551,48 @@ function getClientDocument(vendorLocationId,orgRelationId,docId){
     			 
     			 $("#update_doc").attr("onclick", "storeClientDocument("+vendorLocationId+","+orgRelationId+","+json.id+");");
     			 
-    			 manageDates();
+    			 manageDates(json.startDateStr,json.endDateStr);
 		    }
      });
 }
 </script>
 
 <script>
-function manageDates() {
+function manageDates(startDateStr,endDateStr) {
 	
 	  if($("#endDate").val() == "" ){
 		     
 			  var selected = $("#startDate").val();
-			  var dt = new Date(selected);
+			  var dt = toDate("#startDate");
 			  dt.setDate(dt.getDate() + 1);
 			  $("#endDate").datepicker("option", "minDate", dt);
 			  
-		 	  $('#endDate').datepicker({
+		 	  /* $('#endDate').datepicker({
 		            dateFormat: 'yy-mm-dd',
 		            onSelect: function (selected) {
 			            var dt = new Date(selected);
 			            dt.setDate(dt.getDate() - 1);
 			            $("#startDate").datepicker("option", "maxDate", dt);
 		           }
-	          });
+	          }); */
 	  }
 	  else{
 		   var selected = $("#startDate").val();
-		   var dt = new Date(selected);
+		   var dt = toDate("#startDate");
            dt.setDate(dt.getDate());
 		   
-		   var actualStartDate = $("#startDate").val();
+		  // var actualStartDate = $("#startDate").val();
 		   var startDate = "";
-           if(actualStartDate != null && actualStartDate != "" && actualStartDate != 'undefined'){
-        	   startDate = new Date(actualStartDate);
+           if(dt != null && dt != "" && dt != 'undefined'){
+        	   startDate = dt;
         	   startDate.setDate(startDate.getDate() + 1); 
            }
            
-           var actualEndDate = $("#endDate").val();
+           //var actualEndDate = $("#endDate").val();
            var endDate = "";
-           if(actualEndDate != null && actualEndDate != "" && actualEndDate != 'undefined'){
-          	  endDate = new Date(actualEndDate);
+           var enddt = toDate("#endDate");
+           if(enddt != null && enddt != "" && enddt != 'undefined'){
+          	  endDate = enddt;
 	          endDate.setDate(endDate.getDate() - 1); 
            }
            
@@ -667,3 +670,12 @@ function saveReasonForVendorDoc(vendorLocationId,orgRelationId,docId,docName){
 	}
 </script> 
 <!-- End -->
+
+<!-- script for converting dateformat in datepicker -->
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
+<!-- script for dateformat in datepicker End -->

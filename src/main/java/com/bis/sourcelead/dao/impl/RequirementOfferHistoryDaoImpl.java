@@ -100,5 +100,18 @@ public class RequirementOfferHistoryDaoImpl implements RequirementOfferHistoryDa
 		return offersHistoryList;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementOfferHistory> getCrowdSourcingOfferDetailsBySubmissionId(Long submissionId)
+			throws Exception {
+		  
+		    logger.debug("In RequirementOfferHistoryDaoImpl class getCrowdSourcingOfferDetailsBySubmissionId method");
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from RequirementOfferHistory roh where roh.submissionId.id = :submissionId ";
+			List<RequirementOfferHistory> offersList =  session.createQuery(query).setLong("submissionId", submissionId).setCacheable(true).list();
+			
+			return offersList;
+			}
+
 	
 }
