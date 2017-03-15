@@ -118,6 +118,7 @@ function getRequirementSubmissionDetails(submissionId,candidateId,requirementId)
 function getInternalInterviewsList(submissionId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var parentRequirement = '${parentRequirement}';
+	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	 $.ajax({  
          type : "POST",
          url: sourceleadUrl+"/getAllCrowdSourcingInterviews?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
@@ -195,15 +196,12 @@ function getInternalInterviewsList(submissionId){
 	                    		 result = result +' <font color="orange" class="brder-int">Maybe</font>';
 	                    	 }
 	                    	 
-	                    	 if(report.notificationToApplicant == null || report.notificationToApplicant == '' || report.notificationToApplicant =='undefined' || report.notificationToApplicant == 'N'){
-	                    		 result = result + '<span id="'+report.id+'applicantDiv">';
-	                    		 result = result + '<a href="javascript:void(0)"class="brder-int-left" onclick="sendMailToapplicant('+submissionId+','+report.interviewId.id+','+report.id+');" title="Notify to Applicant">&nbsp;&nbsp;<i class="fa fa-user text-muted"></i></a>';
-	                    		 result = result + '</span>';
-	                    	 }
-	                    	 if((report.notificationToSpoc == null || report.notificationToSpoc == '' || report.notificationToSpoc =='undefined' || report.notificationToSpoc == 'N') && (parentRequirement == 'Y') && (report.isNotifyToVendorRequired == 'Y')){
-	                    		 result = result + '<span id="'+report.id+'vendorDiv">';
-	                    		 result = result + '<a href="javascript:void(0)" class="brder-int-left" onclick="sendMailToVendor('+submissionId+','+report.interviewId.id+','+report.id+');" title="Notify to Vednor"><i class="fa fa-suitcase text-muted"></i></a>';
-	                    		 result = result + '</span>';
+	                    	 if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
+		                    	 if(report.notificationToApplicant == null || report.notificationToApplicant == '' || report.notificationToApplicant =='undefined' || report.notificationToApplicant == 'N'){
+		                    		 result = result + '<span id="'+report.id+'applicantDiv">';
+		                    		 result = result + '<a href="javascript:void(0)"class="brder-int-left" onclick="sendMailToapplicant('+submissionId+','+report.interviewId.id+','+report.id+');" title="Notify to Applicant">&nbsp;&nbsp;<i class="fa fa-user text-muted"></i></a>';
+		                    		 result = result + '</span>';
+		                    	 }
 	                    	 }
 	                    	 
 	                    	 
@@ -259,13 +257,15 @@ function getInternalInterviewsList(submissionId){
 		                         result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.remainderTime+'</p>';
 		                         result = result + '</div>';
 	                    	 }
-	                         
-	                         result = result + '<div class="row clearfix">';
-	                         result = result + '<label class="col-md-5">';
-	                         result = result + '<strong>Notified to</strong>';
-	                         result = result + '</label>';
-	                         result = result + '<p class="col-md-7 tbldata-dotdot-big"><span id="'+report.id+'notifiedDiv">'+notifiedDetails+'<span></p>';
-	                         result = result + '</div>';
+	                        
+	                    	 if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
+		                         result = result + '<div class="row clearfix">';
+		                         result = result + '<label class="col-md-5">';
+		                         result = result + '<strong>Notified to</strong>';
+		                         result = result + '</label>';
+		                         result = result + '<p class="col-md-7 tbldata-dotdot-big"><span id="'+report.id+'notifiedDiv">'+notifiedDetails+'<span></p>';
+		                         result = result + '</div>';
+	                    	  }
 	                        
                              if(report.clientName != null && report.clientName != "" && report.clientName != 'undefined' && report.interviewSourceType !="INTERVIEW"){
 	                        	 result = result + '<div class="row clearfix">';
@@ -310,6 +310,7 @@ function getInternalInterviewsList(submissionId){
 function getOfferDetails(submissionId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var parentRequirement = '${parentRequirement}';
+	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	 $.ajax({  
          type : "POST",
          url: sourceleadUrl+"/getCrowdSourcingOfferDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
@@ -371,11 +372,12 @@ function getOfferDetails(submissionId){
 	                    		 result = result +' <font color="orange" class="brder-int">Maybe</font>';
 	                    	 }
 	                    	 
-	                    	 
-	                    	 if(report.notifyToApplicant == null || report.notifyToApplicant == '' || report.notifyToApplicant =='undefined' || report.notifyToApplicant == 'N'){
-	                    		 result = result + '<span id="'+report.id+'offerApplicantDiv">';
-	                    		 result = result + '<a href="javascript:void(0)" class="brder-int-left" onClick ="notifyToApplicant(\''+ submissionId+ '\',\''+ report.offerId.id+ '\',\''+ report.id+ '\');" title="Notify to Applicant"><i class="fa fa-user text-muted"></i></a>';
-	                    		 result = result + '</span>';
+	                    	 if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
+		                    	 if(report.notifyToApplicant == null || report.notifyToApplicant == '' || report.notifyToApplicant =='undefined' || report.notifyToApplicant == 'N'){
+		                    		 result = result + '<span id="'+report.id+'offerApplicantDiv">';
+		                    		 result = result + '<a href="javascript:void(0)" class="brder-int-left" onClick ="notifyToApplicant(\''+ submissionId+ '\',\''+ report.offerId.id+ '\',\''+ report.id+ '\');" title="Notify to Applicant"><i class="fa fa-user text-muted"></i></a>';
+		                    		 result = result + '</span>';
+		                    	 }
 	                    	 }
 	                    	
 	                    	 result = result + '</div>';
@@ -455,12 +457,14 @@ function getOfferDetails(submissionId){
 	                        	 result = result + '</div>';
 	                    	 }
                     		 
-                    		 result = result + '<div class="row clearfix">';
-	                         result = result + '<label class="col-md-5">';
-	                         result = result + '<strong>Notified to</strong>';
-	                         result = result + '</label>';
-	                         result = result + '<p class="col-md-7 tbldata-dotdot-big"><span id="'+report.id+'offerNotifiedDiv">'+notifiedDetails+'<span></p>';
-	                         result = result + '</div>';
+	                    	 if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
+		                    	 result = result + '<div class="row clearfix">';
+		                         result = result + '<label class="col-md-5">';
+		                         result = result + '<strong>Notified to</strong>';
+		                         result = result + '</label>';
+		                         result = result + '<p class="col-md-7 tbldata-dotdot-big"><span id="'+report.id+'offerNotifiedDiv">'+notifiedDetails+'<span></p>';
+		                         result = result + '</div>';
+	                    	 }
                         	 
                     	
 	                         result = result + '</div>';
