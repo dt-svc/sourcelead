@@ -132,6 +132,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	@Transient
 	private String interviewTimezoneDateStr;
 	
+	@Transient
+	private Long interviewerId;
 	
 	
 	public String getInterviewTimeZoneStartTimeStr() {
@@ -410,4 +412,13 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	public void setRequirementUUID(String requirementUUID) {
 		this.requirementUUID = requirementUUID;
 	}
+
+	public Long getInterviewerId() {
+		return interviewerId;
+	}
+
+	public void setInterviewerId(Long interviewerId) {
+		this.interviewerId = interviewerId;
+	}
+	
 }
