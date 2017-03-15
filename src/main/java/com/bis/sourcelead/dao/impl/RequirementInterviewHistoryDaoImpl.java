@@ -260,5 +260,17 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 		return queryExe.setCacheable(true).list();
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementInterviewHistory> getCrowdSorurcingInterviews(Long submissionId) throws Exception {
+		
+		logger.debug("In RequirementInterviewHistoryDaoImpl class getCrowdSorurcingInterviews method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementInterviewHistory rih left join fetch rih.interviewId  where rih.submissionId.id = :submissionId  ORDER BY rih.createdDate DESC";
+		List<RequirementInterviewHistory> interviewsList =  session.createQuery(query).setLong("submissionId", submissionId).setCacheable(true).list();
+		
+		return interviewsList;
+	}
+
 	
 }

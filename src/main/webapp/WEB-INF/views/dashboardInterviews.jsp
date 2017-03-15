@@ -64,7 +64,7 @@ function interviews(dateRange){
 	            				if(orgATS == 'Y'){
 	            				resultToday = resultToday+'	    <th>Client</th>';
 	            				}
-	            				//resultToday = resultToday+'	    <th>Action</th>';
+	            				resultToday = resultToday+'	    <th>Action</th>';
 	            				resultToday = resultToday+'	  </tr>';
 	            				resultToday = resultToday+'	</thead>';
 	            				resultToday = resultToday+'	<tbody>';
@@ -76,7 +76,6 @@ function interviews(dateRange){
 	            		       			clientName = report.clientName;
 	            		       		}
 	            						resultToday = resultToday+'	  <tr>';
-
 	            						resultToday = resultToday+'	   <td><div><span title="'+report.candidateName+'">'+report.candidateName+'</span></div></td>';
 	            						resultToday = resultToday+'	   <td><div class="tbldata-dotdot-vsm"> <a href="'+sourceleadUrl+'/requirementSummary?requirementUUID='+report.requirementUUID+'"><span title ="'+report.requirementTitle+'">'+report.requirementTitle+'</span></a></div></td>';
 	            						resultToday = resultToday+'	   <td><div class="tblminwidth-150"><span title="'+report.interviewStartDateTimeStr+'">'+report.interviewStartDateTimeStr+'</span></div></td>';
@@ -84,8 +83,12 @@ function interviews(dateRange){
 	            							resultToday = resultToday+'	   <td><div><span title="'+clientName+'">'+clientName+'</span></div></td>';
 	            						}
 
-	            						//resultToday = resultToday+'	 <td><a class="btn btn-sm btn-primary fa fa-handshake-o" href="'+sourceleadUrl+'/'+'publicInterviewFeedBackTemplate?requirementInterviewid='+report.id+'"></a></td>';
-	            						resultToday = resultToday+'	 </tr>';
+                                       if(report.interviewerId != null  &&  report.interviewerId !='' && report.interviewerId !='undefined'){
+	            						  resultToday = resultToday+'	 <td><a  href="'+sourceleadUrl+'/'+'dashboardInterviewFeedBackTemplate?templateId='+report.interviewTemplateid+'&requirementInterviewid='+report.interviewerId+'">FeedBack</a></td>';
+                                       }else{
+                                           resultToday = resultToday+'	 <td>---</td>';
+                                        }
+                                        resultToday = resultToday+'	 </tr>';
 	            					}
 	            					resultToday = resultToday+'	 </tbody>';
 	            					resultToday = resultToday+'	</table>';											
