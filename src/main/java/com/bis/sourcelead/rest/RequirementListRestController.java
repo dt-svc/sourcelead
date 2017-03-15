@@ -563,8 +563,8 @@ public class RequirementListRestController {
 											if(requirementOffers.getDateOfJoining() != null){
 												requirementSubmission.setOfferJoinDate(Constants.DMY.format(requirementOffers.getDateOfJoining()));
 											}
-											if(requirementOffers.getPaymentType() != null){
-												requirementSubmission.setPositionType(requirementOffers.getPaymentType());
+											if(requirementOffers.getPositionType() != null){
+												requirementSubmission.setPositionType(requirementOffers.getPositionType());
 											}
 											if(requirementOffers.getAmount() != null){
 												requirementSubmission.setOfferRate(requirementOffers.getAmount());

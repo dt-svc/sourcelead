@@ -33,6 +33,76 @@ function applyToJob(requirementId,referId){
 </script>
 
 <script>
+function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
+	$(".new_side_wrap").addClass("new_side_wrap_active");
+	$(".side_mask").fadeIn(200);
+	$("body").css('overflow-y', 'hidden');
+	getRequirementSubmissionDetails(submissionId,candidateId,requirementId);
+}
+</script>
+
+
+<script>
+function getRequirementSubmissionDetails(submissionId,candidateId,requirementId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var loginUserId = '${SourceLeadWeb_userId}';
+	
+	$.ajax({ 
+	    	type: "POST",
+	    	url: sourceleadUrl+"/getProfessionalSubmissionDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,
+	    			
+	    	  success: function(data) {
+    		  var result = "";
+    		   var json = JSON.parse(data);
+    		   
+	           var submissionDetails = "";
+	    	   var details = eval(json.submissionTemplateJsonStringValue);
+	    	   
+	    	   $.each(details, function( k, v ) {
+	    		   var value = '';
+	    		   if(v['value'] == null || v['value'] == '' || v['value'] == 'undefined'){
+	    			   var value = 'NO DATA';
+	    		   }else{
+	    			   var value = v['value'];
+	    		   }
+	    		   
+	    		   submissionDetails = submissionDetails + '<div class="clearfix formgroup">';
+	    		   submissionDetails = submissionDetails + '<div class="col-md-5">'+v['label'];
+	    		   submissionDetails = submissionDetails + '</div>';
+	    		   submissionDetails = submissionDetails +'<div class="col-md-7">'+value;
+	    		   submissionDetails = submissionDetails + '</div>';
+	    		   submissionDetails = submissionDetails + '<div class="clearfix">';
+	    		   submissionDetails = submissionDetails + '</div>';
+	    		   submissionDetails = submissionDetails + '</div>';
+	    	   }); 
+			  
+	   			//Submission Details
+	   			 result = result + '<div class="row">';
+	   			 result = result + '<div class="col-md-6">';
+	  			 result = result + '<div class="release-jobs submissionDetails">';
+			     result = result + '<div class="clearfix sub-details">';
+			     result = result + ' <h2 class="active">Submission Details</h2>';
+			     result = result + ' <div class="content clearfix" style="display: block;">';
+			     result = result + submissionDetails;
+			     result = result + ' </div>';
+			     result = result + ' </div>';
+			     result = result + ' </div>';
+			     
+			     
+			     $("#submitDetailsDiv").empty();
+			     $("#applytoJobDiv").empty();
+			 	 $("#submitDetailsDiv").append(result);
+
+	    	  }
+	 });
+				   
+  
+}
+</script>
+
+
+
+<script>
 function getRequirementSubmissionTemaplate(requirementId,referId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var candidateId = '${candidateId}';
@@ -166,7 +236,7 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 	}
 	
 	
-	
+	$("#submitDetailsDiv").empty();
 	$("#applytoJobDiv").empty();
 	$("#applytoJobDiv").append(result);
 	

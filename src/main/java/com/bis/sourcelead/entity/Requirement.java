@@ -373,6 +373,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Transient
 	private String postedDateStr;
+	
+	@Transient
+	private Long submissionId;
 
 	public String getSearchType() {
 		return searchType;
@@ -1212,6 +1215,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setTotalApplicants(Integer totalApplicants) {
 		this.totalApplicants = totalApplicants;
+	}
+
+	public Long getSubmissionId() {
+		return submissionId;
+	}
+
+	public void setSubmissionId(Long submissionId) {
+		this.submissionId = submissionId;
 	}
 
 	
