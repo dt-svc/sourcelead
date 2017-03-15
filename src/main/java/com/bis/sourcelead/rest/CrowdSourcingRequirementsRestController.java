@@ -49,6 +49,8 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
+import com.bis.sourcelead.entity.RequirementOfferHistory;
+import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
@@ -58,6 +60,7 @@ import com.bis.sourcelead.service.CrowdSourcingUserBankAccountsService;
 import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
+import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementReferService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
@@ -111,6 +114,9 @@ public class CrowdSourcingRequirementsRestController {
 	
 	@Autowired
 	RequirementInterviewService requirementInterviewService;
+	
+	@Autowired
+	RequirementOfferHistoryService requirementOfferHistoryService;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -1909,6 +1915,21 @@ public class CrowdSourcingRequirementsRestController {
 			 resultJson = commonUtil.toJSON(interviewsList);
 			 return resultJson;
 		   }
+		
+		
+		@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+		@RequestMapping(value = "/getCrowdSourcingOfferDetails")
+		public @ResponseBody String getCrowdSourcingOfferDetails(@RequestParam(value="submissionId", required=false) Long submissionId,
+				                                              HttpServletRequest request) throws Exception {
+			
+			
+			String resultJson = null;
+			
+			List<RequirementOfferHistory> offersList = requirementOfferHistoryService.getCrowdSourcingOfferDetailsBySubmissionId(submissionId);
+			resultJson = commonUtil.toJSON(offersList);
+			return resultJson ;
+			
+		}
 		
 		
 		public String toJSON(Object obj){

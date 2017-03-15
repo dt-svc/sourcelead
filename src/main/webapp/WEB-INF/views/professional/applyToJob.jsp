@@ -91,11 +91,15 @@ function getRequirementSubmissionDetails(submissionId,candidateId,requirementId)
 			     result = result + ' </div>';
 			     
 			     result = result + '<div class="col-md-6">';
+			     result = result+'<div id="rejectOfferAlert" ></div>  ';
+			     
+			     result  = result + '   <div id="offerDetails" ></div>';
 			     result  = result + '   <div id="internalInterviewsList" ></div>';
 			     result = result + ' </div>';
 			     
 			     result = result + ' </div>';
 			     getInternalInterviewsList(submissionId);
+			     getOfferDetails(submissionId);   
 			     
 			     $("#submitDetailsDiv").empty();
 			     $("#applytoJobDiv").empty();
@@ -303,6 +307,193 @@ function getInternalInterviewsList(submissionId){
 
 
 <script>
+function getOfferDetails(submissionId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var parentRequirement = '${parentRequirement}';
+	 $.ajax({  
+         type : "POST",
+         url: sourceleadUrl+"/getCrowdSourcingOfferDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
+         success :function(data) {
+         if(data != null && data != 'undefined' && data != "" && data != '{}'){
+            		
+            			 $("#offerDetails").empty();
+            			 var json = JSON.parse(data);
+            			 for (var i = 0; i < json.length; i++) { 
+	                    	 
+	                    	 var report = json[i]; 
+	                    	 
+	                    	 var result = '';
+	                	     result = result+'<div id="rejectOfferAlert" ></div>  ';
+	                	 
+	                	     var notifiedDetails ="";
+	                    	
+	                    	 if(report.notifyToApplicant != null && report.notifyToApplicant != 'undefined' && report.notifyToApplicant != "" && report.notifyToApplicant == "Y"){
+	                    		 notifiedDetails = 'Applicant';
+				             }
+	                    	 if(report.notifyToApplicant != null && report.notifyToApplicant != 'undefined' && report.notifyToApplicant != "" && report.notifyToApplicant == "Y" 
+	                    			 && report.notifyToVendor != null && report.notifyToVendor != 'undefined' && report.notifyToVendor != "" && report.notifyToVendor == "Y"){
+	                    		 notifiedDetails = notifiedDetails + ' , ';
+	                    	 }
+	                    	 
+	                    	 if(notifiedDetails == ""){
+	                    		notifiedDetails = '---';
+	                    	 }
+	                    
+	                	 
+	                    	 result = result + '<div class="clearfix">';
+	   					     result = result + '<div class="content clearfix" style="display: block;">';
+		                  
+	   					     result = result + '<div id="accordion-sl" class="release-jobs">';
+	                    	 result = result + '<h2  class="active">Offer: <span>'+report.offerSourceType+'</span></h2>';
+	                    	 result = result + '<div class="content clearfix">';
+	                    	 result = result + '<div class="interview-type">';
+	
+	                         var accept = "OFFERACCEPTED";
+	                    	 var reject = "OFFERREJECTED";
+	                    	 
+	                    	 result = result + '<div class="row clearfix">';
+	                    	 result = result + '<div class="action-nav">';
+	                    	 result = result + '<span id="'+report.offerId.id+'offerActionDiv">';
+	                    	 if(report.offerId.offerStatus != "OFFERACCEPTED"  && report.offerId.offerStatus != "OFFERREJECTED" ){
+	                    		 	result = result + '<a  href="javascript:void(0)" title="Accept" onClick="acceptingOffer(\''+accept+'\' ,\''+submissionId+'\',\''+report.offerId.id+'\');"   >&nbsp;&nbsp;<i class="fa fa-check text-success"></i></a>';
+	                        	 	result = result + '<a  href="javascript:void(0)"  title="Reject"  onClick="rejectOffer( \''+reject+'\' ,\''+submissionId+'\',\''+report.offerId.id+'\');"  >&nbsp;&nbsp;<i class="fa fa-close text-danger"></i></a>';
+	                    	 }
+	                    	 result = result + '</span>';
+	                    	 
+	                    	 result = result + '<span id="'+report.offerId.id+'showOfferStatus"></span>';
+	                    	 if(report.offerId.offerStatus == "OFFERACCEPTED"){
+	                    		 result = result +' <font color="green" class="brder-int">OFFER ACCEPTED</font>';
+	                    	 }
+	                    	 if(report.offerId.offerStatus == "OFFERREJECTED"){
+	                    		 result = result +' <font color="red" class="brder-int">OFFER REJECTED</font>';
+	                    	 }
+	                    	 if(report.offerId.offerStatus == "Maybe"){
+	                    		 result = result +' <font color="orange" class="brder-int">Maybe</font>';
+	                    	 }
+	                    	 
+	                    	 
+	                    	 if(report.notifyToApplicant == null || report.notifyToApplicant == '' || report.notifyToApplicant =='undefined' || report.notifyToApplicant == 'N'){
+	                    		 result = result + '<span id="'+report.id+'offerApplicantDiv">';
+	                    		 result = result + '<a href="javascript:void(0)" class="brder-int-left" onClick ="notifyToApplicant(\''+ submissionId+ '\',\''+ report.offerId.id+ '\',\''+ report.id+ '\');" title="Notify to Applicant"><i class="fa fa-user text-muted"></i></a>';
+	                    		 result = result + '</span>';
+	                    	 }
+	                    	
+	                    	 result = result + '</div>';
+	                    	 result = result + '</div>';
+	                    	 
+	                    	 if(report.dateOfJoiningStr !=null && report.dateOfJoiningStr !='' && report.dateOfJoiningStr !='undefined'){
+		                    	 result = result + '<div class="row clearfix">';
+		                    	 result = result + '<label class="col-md-5">';
+		                    	 result = result + '<strong>Joining Date</strong>';
+		                    	 result = result + '</label>';
+		                    	 result = result + '<p class="col-md-7">'+report.dateOfJoiningStr+'</p>';
+		                    	 result = result + '</div>';
+	                    	 }else{
+	                    		 result = result + '<div class="row clearfix">';
+		                    	 result = result + '<label class="col-md-5">';
+		                    	 result = result + '<strong>Joining Date</strong>';
+		                    	 result = result + '</label>';
+		                    	 result = result + '<p class="col-md-7">No Data</p>';
+		                    	 result = result + '</div>';
+	                    	 }
+	                    	 
+	                    	 if(report.offerId.positionType !=null && report.offerId.positionType !='' && report.offerId.positionType !='undefined'){
+	                    		 result = result + '<div class="row clearfix">';
+	                        	 result = result + '<label class="col-md-5">';
+	                        	 result = result + '<strong>Position Type</strong>';
+	                        	 result = result + '</label>';
+	                        	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.positionType+'</p>';
+	                        	 result = result + '</div>';
+	                    	 }else{
+	                    		 result = result + '<div class="row clearfix">';
+	                        	 result = result + '<label class="col-md-5">';
+	                        	 result = result + '<strong>Position Type</strong>';
+	                        	 result = result + '</label>';
+	                        	 result = result + '<p class="col-md-7 tbldata-dotdot-big">No Data</p>';
+	                        	 result = result + '</div>';
+	                    	 }
+	                    	 
+	                    	 if(report.clientName !=null && report.clientName !='' && report.clientName !='undefined'){
+	                    		 result = result + '<div class="row clearfix">';
+	                        	 result = result + '<label class="col-md-5">';
+	                        	 result = result + '<strong>Client Name</strong>';
+	                        	 result = result + '</label>';
+	                        	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.clientName+'</p>';
+	                        	 result = result + '</div>';
+	                    	 }
+	                    	 
+	                    	 if(report.offerId.amount !=null && report.offerId.amount !='' && report.offerId.amount !='undefined'){
+	                    		 result = result + '<div class="row clearfix">';
+	                        	 result = result + '<label class="col-md-5">';
+	                        	 result = result + '<strong>Rate</strong>';
+	                        	 result = result + '</label>';
+	                        	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.amount+'</p>';
+	                        	 result = result + '</div>';
+	                    	 }else{
+	                    		 result = result + '<div class="row clearfix">';
+	                        	 result = result + '<label class="col-md-5">';
+	                        	 result = result + '<strong>Rate</strong>';
+	                        	 result = result + '</label>';
+	                        	 result = result + '<p class="col-md-7 tbldata-dotdot-big">No Data</p>';
+	                        	 result = result + '</div>';
+	                    	 }
+	                    	
+	                    	 if(report.offerId.docFile !=null && report.offerId.docFile !='' && report.offerId.docFile !='undefined'){
+	                    		 
+	                    		 result = result + '<div class="row clearfix">';
+	                        	 result = result + '<label class="col-md-5">';
+	                        	 result = result + '<strong>Attachment</strong>';
+	                        	 result = result + '</label>';
+	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.fileName+'<a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOfferAttachment?offerId='+report.offerId.id+'\"></a></p>';
+	                        	 result = result + '</div>';
+	                    	 }else{
+	                    		 result = result + '<div class="row clearfix">';
+	                        	 result = result + '<label class="col-md-5">';
+	                        	 result = result + '<strong>Attachment</strong>';
+	                        	 result = result + '</label>';
+	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">No Document</p>';
+	                        	 result = result + '</div>';
+	                    	 }
+                    		 
+                    		 result = result + '<div class="row clearfix">';
+	                         result = result + '<label class="col-md-5">';
+	                         result = result + '<strong>Notified to</strong>';
+	                         result = result + '</label>';
+	                         result = result + '<p class="col-md-7 tbldata-dotdot-big"><span id="'+report.id+'offerNotifiedDiv">'+notifiedDetails+'<span></p>';
+	                         result = result + '</div>';
+                        	 
+                    	
+	                         result = result + '</div>';
+	                         result = result + '</div>';
+	                         result = result + '</div>';
+	                    	 
+			                     
+		                     result = result + '</div>';
+		                     result = result + '</div>';
+		                     $("#offerDetails").append(result); 
+		                     $('#accordion-sl .content').hide();
+		                     $('#accordion-sl h2:first').addClass('active').next().slideDown('slow');
+		                     $('#accordion-sl h2').click(function() {
+		                         if($(this).next().is(':hidden')) {
+		                             $('#accordion-sl h2').removeClass('active').next().slideUp('slow');
+		                             $(this).toggleClass('active').next().slideDown('slow');
+		                         }
+		                     });
+			    	} 
+         } else{
+				  $("#offerDetails").empty();
+               }
+       },
+         
+    }); 
+	 
+	 
+}
+
+</script>
+
+
+<script>
 function changeInterviewStatus(submissionId,interviewId,interviewStatus){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
@@ -346,7 +537,93 @@ function sendMailToapplicant(submissionId,interviewId,interviewHistoryId){
 </script>
 
 
+<script type="text/javascript">
+function canceloffer(){ 
+	$("#remove_user_pop, .project_inn_mask").fadeOut(200);
+};
+</script>
 
+<script type="text/javascript">
+function rejectOffer(offerStatus,submissionId,offerId){
+	
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='acceptingOffer(\""+ offerStatus+ "\" ,\""+ submissionId+ "\",\""+ offerId+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='canceloffer()'></b>";
+	result = result +"	</div>";
+	$("#rejectOfferAlert").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+
+
+
+<script>
+function acceptingOffer(offerStatus,submissionId,offerId){
+	
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	 var reason;
+	 if ($('#rejectReason').length)
+	 {
+		 reason = document.getElementById("rejectReason").value; 
+	 }
+	 else
+	 {
+		 reason = '';
+	 }
+	 $.ajax({  
+         type : "POST",
+         url: sourceleadUrl+"/acceptingOffer?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&offerStatus="+offerStatus+"&reason="+reason+"&OfferId="+offerId,        
+         success :function(data) {
+
+        	 $("#rejectOfferAlert").empty();
+           	 
+           	 jQuery("#"+(offerId)+"offerActionDiv").css("display","none");
+	    	 if(offerStatus == "OFFERACCEPTED"){
+      		    $("#"+(offerId)+"showOfferStatus").html("<font color='green' >OFFERACCEPTED</font>");
+          	 }
+          	 if(offerStatus == "OFFERREJECTED"){
+          		$("#"+(offerId)+"showOfferStatus").html("<font color='red' >OFFERREJECTED</font>");
+          	 }
+ 
+        	 $("#remove_user_pop, .project_inn_mask").fadeOut(200);
+        	 
+       },
+         
+    }); 
+	 
+	 
+}
+
+</script>
+
+
+<script>
+function notifyToApplicant(submissionId,offerId,offerHistoryId){
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({  
+        type : "POST",
+        url: sourceleadUrl+"/sendNotificationAboutRequirementOfferMade?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&offerId="+offerId+"&notificationtype=Applicant&offerHistoryId="+offerHistoryId,        
+        success :function(data) {
+        	    jQuery("#"+(offerHistoryId)+"offerApplicantDiv").css("display","none");
+        	    var existingVal = $("#"+(offerHistoryId)+"offerNotifiedDiv").text();
+		    	if(existingVal == "" || existingVal == null || existingVal =="---" ){
+		    		 $("#"+(offerHistoryId)+"offerNotifiedDiv").html("Applicant");
+		    	}
+		    	else{
+		    		 $("#"+(offerHistoryId)+"offerNotifiedDiv").html(existingVal+",Applicant");
+		    	}
+      },
+        
+   });  
+}
+</script>
 
 <script>
 function getRequirementSubmissionTemaplate(requirementId,referId){
