@@ -571,11 +571,9 @@ function getInternalInterviewsList(submissionId){
 	                    	 }
 	                    	 
 	   					     result = result + '<div id="accordion-sl" class="release-jobs positionRelative">';
-	   					  if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
-	   					     //if(report.feedbackStartTime == "feedbackStartTime" || report.feedbackEndTime == "feedbackEndTime" ){
-	   					    	result = result + '<i class="fa fa-handshake-o pull-right" title="FeedBack" onclick="interviewFeedback('+report.interviewId.id+',\''+report.interviewTemplateid+'\',\''+report.id+'\');"></i>';	 
-	   					    // }
-	   					  }
+		   					  if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
+		   					    	result = result + '<i class="fa fa-handshake-o pull-right" title="FeedBack" onclick="interviewFeedback('+report.interviewId.id+',\''+report.interviewTemplateid+'\',\''+report.id+'\');"></i>';	 
+		   					  }
 	   					     result = result + '<h2>Interview: <span>'+interviewTypeHeader+' '+report.interviewTimezoneDateStr+' '+report.interviewTimeZoneStartTimeStr+' </span></h2>';
 	                    	result = result + '<div class="content clearfix">';
 	                    	
@@ -654,12 +652,6 @@ function getInternalInterviewsList(submissionId){
 	                    	 }
 	                    	 result = result + '</div>';
 	                    	 
-	                    	 /* result = result + '<div class="row clearfix">';
-	                    	 result = result + '<label class="col-md-5">';
-	                    	 result = result + '<strong>Time Zone</strong>';
-	                    	 result = result + '</label>';
-                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+timeZone+'</p>';
-	                    	 result = result + '</div>'; */
 	                    	 if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
 	                    		 result = result + '<div class="row clearfix">';
 		                    	 result = result + '<label class="col-md-5">';
