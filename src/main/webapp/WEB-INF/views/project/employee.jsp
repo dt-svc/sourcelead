@@ -330,8 +330,9 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
 						   continue;
 					 //Assign date of project member
 					 var selected = jsonData.projectAssignedDateStr;
-					 var dt = new Date(selected);
- 		             dt.setDate(dt.getDate());
+					 var from = selected.split("-");
+					 var dt = new Date(from[2], from[1] - 1, from[0]);
+ 		             dt.setDate(dt.getDate() + 1);
  		             
  		             //Main project end date
  		             var projectEndDate = jsonData.endDate;
@@ -509,6 +510,12 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 	        assignEmployeespagination();
 	        
 	        //StartDate And EndDate Pickers
+	        
+	        
+	        var from = startDateStr.split("-");
+	        var datepickerStartDate =  new Date(from[2], from[1] - 1, from[0]);
+	        datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
+	        
 		       if(json.length > 0){
 			    	for (var i = 0; i <json.length; i++) {
 						var opt = json[i];
@@ -520,9 +527,9 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 								minDate:startDateStr,
 								maxDate:endDateStr,
 								onSelect : function(selected) {
-									var dt = new Date(selected);
-									var id = $(this).attr('id');
 									var actualId = $(this).attr('id').split('startDate')[1];
+									var dt = toDate('#startDate'+actualId);
+									var id = $(this).attr('id');
 									dt.setDate(dt.getDate() + 1);
 									$("#endDate"+actualId).datepicker("option", "minDate", dt);
 									
@@ -534,11 +541,11 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 								changeMonth: true,
 								changeYear: true, 
 								maxDate:endDateStr,
-								minDate:startDateStr,
+								minDate: datepickerStartDate,
 								onSelect : function(selected) {
-									var dt = new Date(selected);
-									var id = $(this).attr('id');
 									var actualId = $(this).attr('id').split('endDate')[1];
+									var dt = toDate('#endDate'+actualId);
+									var id = $(this).attr('id');
 									dt.setDate(dt.getDate() - 1);
 									$("#startDate"+actualId).datepicker("option", "maxDate", dt);
 								}
@@ -551,9 +558,9 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 								changeYear: true, 
 								minDate:startDateStr,
 								onSelect : function(selected) {
-									var dt = new Date(selected);
-									var id = $(this).attr('id');
 									var actualId = $(this).attr('id').split('startDate')[1];
+									var dt = toDate('#startDate'+actualId);
+									var id = $(this).attr('id');
 									dt.setDate(dt.getDate() + 1);
 									$("#endDate"+actualId).datepicker("option", "minDate", dt);
 									
@@ -564,11 +571,11 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 								dateFormat : 'dd-mm-yy',
 								changeMonth: true,
 								changeYear: true, 
-								minDate:startDateStr,
+								minDate:datepickerStartDate,
 								onSelect : function(selected) {
-									var dt = new Date(selected);
-									var id = $(this).attr('id');
 									var actualId = $(this).attr('id').split('endDate')[1];
+									var dt = toDate('#endDate'+actualId);
+									var id = $(this).attr('id');
 									dt.setDate(dt.getDate() - 1);
 									$("#startDate"+actualId).datepicker("option", "maxDate", dt);
 								}
@@ -758,7 +765,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
    result = result +'<label class="col-lg-3" >Start date<span <span class="text-danger">*</span></label>';
    result = result +'<div class="col-lg-9 positionRelative" id="empDatePicker">';
    
-   result = result +'<input type="text" class="form-control calendar" readonly="readonly" placeholder="DD/MM/YYYY" id="Re-StartDate" name="Re-StartDate" field-name="Start Date" data-validation="required">';
+   result = result +'<input type="text" class="form-control calendar" readonly="readonly" placeholder="DD-MM-YYYY" id="Re-StartDate" name="Re-StartDate" field-name="Start Date" data-validation="required">';
 
    result = result +'</div>';
    result = result +'</div>';
@@ -767,7 +774,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
    result = result +'<label class="col-lg-3">End date</label>';
    result = result +'<div class="col-lg-9 positionRelative">';
 
-   result = result +'<input type="text" class="form-control calendar" readonly="readonly" placeholder="DD/MM/YYYY" id="Re-EndDate" name="Re-EndDate"  field-name="End Date" />';
+   result = result +'<input type="text" class="form-control calendar" readonly="readonly" placeholder="DD-MM-YYYY" id="Re-EndDate" name="Re-EndDate"  field-name="End Date" />';
 
    result = result +'</div>';
    result = result +'</div>';
@@ -793,7 +800,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 		  maxDate:projectEndDateStr,
 	      onSelect: function (selected) {
 	    	    removevalidation();
-	            var dt = new Date(selected);
+	            var dt = toDate('#Re-StartDate');
 	            dt.setDate(dt.getDate() + 1);
 	            $("#Re-EndDate").datepicker("option", "minDate", dt);
 	        }
@@ -807,7 +814,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	      minDate:endDate,
 	      maxDate:projectEndDateStr,
 	        onSelect: function (selected) {
-	            var dt = new Date(selected);
+	            var dt = toDate('#Re-EndDate');
 	            dt.setDate(dt.getDate() - 1);
 	            $("#Re-StartDate").datepicker("option", "maxDate", dt);
 	        }
@@ -820,7 +827,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	  	  changeYear: true, 
 		  minDate:endDate,
 	      onSelect: function (selected) {
-	            var dt = new Date(selected);
+	            var dt = toDate('#Re-StartDate');
 	            dt.setDate(dt.getDate() + 1);
 	            $("#Re-EndDate").datepicker("option", "minDate", dt);
 	            removevalidation();
@@ -836,7 +843,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	      minDate:endDate,
 	      maxDate:reStatertDate,
 	        onSelect: function (selected) {
-	            var dt = new Date(selected);
+	            var dt = toDate('#Re-EndDate');
 	            dt.setDate(dt.getDate() - 1);
 	            $("#Re-StartDate").datepicker("option", "maxDate", dt);
 	            removevalidation();
@@ -915,3 +922,12 @@ function flushReProject(){
         $('#selector3').delay(2000).fadeOut('slow');
 	}
 </script> 
+
+<!-- script for converting dateformat in datepicker -->
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
+<!-- script for dateformat in datepicker End -->
