@@ -649,7 +649,7 @@ public class RequirementServiceImpl implements RequirementService {
 	
 			       if(!requirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.DRAFT)){
 				 		
-					 mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
+					// mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
 					/*if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
 						  String approverNames = jsonObj.getString("sequentialApprover1");
 						  User approverUser = userService.getUserById(Long.parseLong(approverNames));
@@ -978,6 +978,8 @@ public class RequirementServiceImpl implements RequirementService {
 		 StringBuilder msgBuild = new StringBuilder();
 		 emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		UserRole loginUserRole =  userRoleService.getUserDetailsByUserIdAndLocationId(loginUser.getId(), orgLocations.getId());
+
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("requirementName", requirement.getJobTitle());
@@ -1010,7 +1012,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 globalVarsMap.put("link",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		 StringBuilder userBuild = new StringBuilder();
 		 globalVarsMap.put("loginUserName",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		 globalVarsMap.put("role", loginUser.getUserType());
+		 globalVarsMap.put("role", loginUserRole.getUserType());
 		 globalVarsMap.put("approverOne", loginUser.getFirstName());
 		 
 		 StringBuilder attachBuild = new StringBuilder();
@@ -1056,7 +1058,7 @@ public class RequirementServiceImpl implements RequirementService {
 
 	@SuppressWarnings("unused")
 	@Override
-	public void acceptEmailScenario(User loginUser, User intiatorUser, Requirement requirement,OrgLocations orgLocations) throws Exception {
+	public void acceptEmailScenario(User loginUser, User intiatorUser, Requirement requirement,StringBuilder requirementLocation,OrgLocations orgLocations) throws Exception {
 		
 		EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(loginUser.getFirstName());
@@ -1068,38 +1070,53 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
-		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 if(requirement.getJobTitle()!= null  && !"".equalsIgnoreCase(requirement.getJobTitle())){
-		 globalVarsMap.put("requirementName", requirement.getJobTitle()); 
-		 }else{
-		 globalVarsMap.put("requirementName", "--");	 
-		 }
-		 if( requirement.getJobId()!= null  && !"".equalsIgnoreCase( requirement.getJobId())){
-		 globalVarsMap.put("requirementId-Name", requirement.getJobId());	 
-		 }else{
-	     globalVarsMap.put("requirementId-Name","--"); 
-		 }
-		 if(loginUser.getFirstName()!= null  && !"".equalsIgnoreCase(loginUser.getFirstName())){
-		 globalVarsMap.put("approverName", loginUser.getFirstName());	 
-		 }else{
-		 globalVarsMap.put("approverName","--"); 
-		 }
-		 if(intiatorUser.getFirstName()!= null  && !"".equalsIgnoreCase(loginUser.getFirstName())){
-		 globalVarsMap.put("jobInitiatorName", intiatorUser.getFirstName()); 
-		 }else{
-		 globalVarsMap.put("jobInitiatorName","--"); 
-		 }
-		 if(loginUser.getFirstName() != null && loginUser.getLastName()!= null  && !"".equalsIgnoreCase( loginUser.getFirstName()) && !"".equalsIgnoreCase( loginUser.getLastName())){
-			 StringBuilder userBuild = new StringBuilder();
-			 globalVarsMap.put("loginUserName",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		 }else{
-		 globalVarsMap.put("loginUserName",loginUser.getFirstName()); 
-		 }
-		 if(loginUser.getUserType()!= null  && !"".equalsIgnoreCase(loginUser.getUserType())){
-		 globalVarsMap.put("role", loginUser.getUserType());
-		 }else{
-		 globalVarsMap.put("role","--"); 
-		 }
+		 UserRole loginUserRole =  userRoleService.getUserDetailsByUserIdAndLocationId(loginUser.getId(), orgLocations.getId());
+		 
+			//setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 if( requirement.getJobId()!= null  && !"".equalsIgnoreCase( requirement.getJobId())){
+				 StringBuilder userBuild1 = new StringBuilder();
+				 globalVarsMap.put("requirementId-Name",userBuild1.append(requirement.getJobTitle()).append(" ").append(requirement.getJobId()).toString());
+
+			 }else{
+		     globalVarsMap.put("requirementId-Name",requirement.getJobTitle()); 
+			 }
+			 if(requirementLocation != null ){
+				 globalVarsMap.put("requirementLocation", requirementLocation.toString());
+				 }else{
+				 globalVarsMap.put("requirementLocation","--");
+				 }
+			 if(loginUser.getFirstName()!= null  && !"".equalsIgnoreCase(loginUser.getFirstName())){
+			 globalVarsMap.put("approverName", loginUser.getFirstName());	 
+			 }else{
+			 globalVarsMap.put("approverName","--"); 
+			 }
+			 if(intiatorUser.getFirstName()!= null  && !"".equalsIgnoreCase(loginUser.getFirstName())){
+			 globalVarsMap.put("jobInitiatorName", intiatorUser.getFirstName()); 
+			 }else{
+			 globalVarsMap.put("jobInitiatorName","--"); 
+			 }
+			 if(requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate())){
+				 globalVarsMap.put("requirementRate", requirement.getRate());
+				 }else{
+				 globalVarsMap.put("requirementRate","--");
+				 }
+				 if(requirement.getClientId()!= null){
+				 globalVarsMap.put("client", requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+				 }else{
+				 globalVarsMap.put("client","--");
+				 }
+				 StringBuilder linkBuild = new StringBuilder();
+				 globalVarsMap.put("link",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+				
+			 if(loginUser.getFirstName() != null && loginUser.getLastName()!= null  && !"".equalsIgnoreCase( loginUser.getFirstName()) && !"".equalsIgnoreCase( loginUser.getLastName())){
+				 StringBuilder userBuild = new StringBuilder();
+				 globalVarsMap.put("loginUserName",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 }else{
+			 globalVarsMap.put("loginUserName",loginUser.getFirstName()); 
+			 }
+			 
+			 globalVarsMap.put("role", loginUserRole.getUserType());
 		 
 		 //setting the Recipient information
 		 /*ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
