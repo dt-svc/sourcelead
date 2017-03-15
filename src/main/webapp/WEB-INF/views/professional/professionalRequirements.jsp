@@ -271,8 +271,9 @@ window.onload = function () {
 	 <div class="side_mask"><div class="proj_close"></div></div>
 	 <div class="new_side_wrap">
 	 <div class="new_side_wrap_inn">
-	<div class="new_side_wrap_cta">
-		<div id="applytoJobDiv"></div>
+		<div class="new_side_wrap_cta">
+			<div id="applytoJobDiv"></div>
+			<div id="submitDetailsDiv"></div>
 		</div></div>
 	 </div> 
 	 
@@ -522,6 +523,7 @@ function requirementsList(offset){
 	var jobTitleSearch = document.getElementById('jobTitleSearch').value;
 	var jobLocationSearch = document.getElementById('jobLocationSearch').value;
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+	var candidateId = '${SourceLeadWeb_candidateId}'
 	
     loadChosenRequirementScripts();
 	
@@ -685,7 +687,7 @@ function requirementsList(offset){
 				 					if(requirements.isReferedRequiremetnApplied == 'Y'){
 				 						result = result +'<a href="javascript:void(0)" class="jobApply appliedJob">Applied</a>';
 				 					}else{
-				 						result = result +'<a href="javascript:void(0)" class="jobApply">Applied</a>';
+				 						result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();getSubmissionDetailsSideBar('+requirements.submissionId+','+candidateId+','+requirements.requirementId+');" class="jobApply">Applied</a>';
 				 					}
 				 					
 				 				}
@@ -806,6 +808,7 @@ function searchRequirement(offset){
 			//It will escape all the special characters
 			$("#search_requiremet").attr("disabled", "disabled");
 			$("#search_requiremet").addClass('button').val('Processing..');
+			var candidateId = '${SourceLeadWeb_candidateId}'
 			
 			var requirementType = document.getElementById('requirementType').value;
 			
@@ -949,7 +952,7 @@ function searchRequirement(offset){
 										 				}
 										 				
 										 				if(requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'Y'){
-										 					result = result +'<a href="javascript:void(0)" class="jobApply">Applied</a>';
+										 					result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();getSubmissionDetailsSideBar('+requirements.submissionId+','+candidateId+','+requirements.requirementId+');" class="jobApply">Applied</a>';
 										 				}
 										 				
 										 				
