@@ -224,6 +224,7 @@ public class RequirementServiceImpl implements RequirementService {
 			}else{
 				requirement = new Requirement();
 				requirement.setCreatedDate(commonUtil.currentDate());
+				requirement.setTotalApplicants(0);
 				requirement.setCreatedBy(user.getUserCode());
 				requirement.setUpdatedBy(user.getUserCode());
 				requirement.setUpdatedDate(commonUtil.currentDate());
@@ -638,7 +639,7 @@ public class RequirementServiceImpl implements RequirementService {
 						}
 				     
 			}
-			requirement.setTotalApplicants(0);
+			
 			requirement.setRequirementAssignTo(requirementAssignToList);
 			//storing assigned team END
 			

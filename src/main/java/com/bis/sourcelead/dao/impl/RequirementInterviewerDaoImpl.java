@@ -71,6 +71,23 @@ public class RequirementInterviewerDaoImpl implements RequirementInterviewerDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		return (RequirementInterviewer) session.get(RequirementInterviewer.class, requirementInterviewerIdValue);
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementInterviewer getInterviwerByInterviewIdAndUserId(Long requirementInterviewerId, Long userId) {
+	
+
+		logger.debug("In RequirementInterviewer getInterviwerstByInterviewIdAndUserId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from RequirementInterviewer rir where rir.requirementInterview.id = :requirementInterviewerId and rir.interviewerUser.id = :userId" ;
+		List<RequirementInterviewer> interviewerList =session.createQuery(query).setLong("requirementInterviewerId", requirementInterviewerId).setLong("userId", userId).setCacheable(true).list(); 
+		RequirementInterviewer interviewer = null;
+		if(interviewerList != null && !interviewerList.isEmpty()){
+			interviewer = interviewerList.iterator().next();
+		}
+		return interviewer;
+		
+	}
 	
 	
 }
