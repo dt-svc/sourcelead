@@ -23,4 +23,8 @@ public interface RequirementReportService {
 
 	List<RequirementSubmissionHistory> getApplicantsCountForChart(Long orgLocationId);
 
+	List<RequirementSubmission> getTotalApplicants(OrgLocations orgLocation, Date startDateUTC, Date endDateUTC)throws Exception;
+
+	List<RequirementSubmissionHistory> getApplicantsCountsByDateRange(Long id, Date startDateUTC, Date endDateUTC)throws Exception;
+
 }

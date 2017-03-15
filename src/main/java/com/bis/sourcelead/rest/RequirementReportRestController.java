@@ -168,18 +168,15 @@ public class RequirementReportRestController {
 			 @RequestParam(value="endDate", required=false) String customEndDate,
 			 HttpServletRequest request,HttpServletResponse response) throws Exception{
 		   
-		 String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		 String reportsList = null;
 
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 		 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
 		 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
 		 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
 		 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		 Date endDateUTC =null ;
-		 String filterDate = null;
 		 Date startDateUTC = null;
 		 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)){
 			 String endDate = outputFormatter1.print(zoned);
@@ -191,7 +188,6 @@ public class RequirementReportRestController {
 				if("today".equals(reportType)){
 					String startDate = outputFormatter.print(zoned);
 					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
-					filterDate = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
 					startDateUTC = TZ_DF_TS.parse(startDateString);
 				}else if("yesterday".equals(reportType)){
 					DateTime yesterDayZoned = zoned.minusDays(1);
@@ -235,10 +231,10 @@ public class RequirementReportRestController {
 					
 				}
 			}
-			List<Requirement> requirementList = requirementReportService.getRequirementReports(userRoleName,orgLocation,user,filterDate,startDateUTC,endDateUTC);
+			List<RequirementSubmission> reqSubmissionList = requirementReportService.getTotalApplicants(orgLocation,startDateUTC,endDateUTC);
 			List<ApplicantReport> applicantReportList = new ArrayList<>();
-			if(null != requirementList){
-				for(Requirement requirement:requirementList){
+			if(null != reqSubmissionList){
+				for(RequirementSubmission reqSub : reqSubmissionList){
 					ApplicantReport applicantReport = new ApplicantReport();
 					int applicantsCount = 0;
 					int requestSentCount = 0;
@@ -247,8 +243,7 @@ public class RequirementReportRestController {
 					int interviewsCount = 0;
 					int offeredCount = 0;
 					int rejectedCount = 0;
-
-					List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportService.getApplicantsCountsPerReq(requirement.getId());
+					List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportService.getApplicantsCountsByDateRange(reqSub.getId(),startDateUTC,endDateUTC);
 					if(null != requirementSubmissionHistoryList && requirementSubmissionHistoryList.size() >0){
 						for(RequirementSubmissionHistory rsh : requirementSubmissionHistoryList){
 							if("submission".equals(rsh.getToStage())){
@@ -267,8 +262,8 @@ public class RequirementReportRestController {
 								rejectedCount++;
 							}
 						}
-						applicantReport.setRequirementTitle(requirement.getJobTitle());
-						applicantReport.setPostedOn(getDateStr(requirement.getCreatedDate(),timezone));
+						applicantReport.setRequirementTitle(reqSub.getRequirement().getJobTitle());
+						applicantReport.setPostedOn(getDateStr(reqSub.getRequirement().getCreatedDate(),timezone));
 						applicantReport.setApplicantsCount(applicantsCount);
 						applicantReport.setShortlisted(shortlistedCount);
 						applicantReport.setInterviewCount(interviewsCount);
@@ -278,7 +273,8 @@ public class RequirementReportRestController {
 						applicantReport.setRequestSentCount(requestSentCount);
 						applicantReportList.add(applicantReport);
 					}
-				}	
+				
+				}
 				reportsList = commonUtil.toJSON(applicantReportList);
 			}else{
 				reportsList = commonUtil.toJSON("");
@@ -558,59 +554,15 @@ public class RequirementReportRestController {
 	
 	
 	/**
-	 * returns applicants counts based on stage status
-	 * 
-	 * @param applicantStatus
+	 * To Get Total counts for applicants,shortlist,interview ect. based on dates
+	 * @param reportType
+	 * @param customStartDate
+	 * @param customEndDate
 	 * @param request
+	 * @param response
 	 * @return json
 	 * @throws Exception
 	 */
-	@Async
-	@RequestMapping(value = "/getApplicantsCountForChart", method = RequestMethod.POST)
-	@ResponseBody
-	String getApplicantsCountForChart(HttpServletRequest request) throws Exception {
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		ApplicantReport applicantReport = new ApplicantReport();
-		int applicantsCount = 0;
-		int requestSentCount = 0;
-		int shortlistedCount = 0;
-		int submitToClientCount = 0;
-		int interviewsCount = 0;
-		int offeredCount = 0;
-		int rejectedCount = 0;
-		
-		List<RequirementSubmissionHistory> rshList  = requirementReportService.getApplicantsCountForChart(orgLocation.getId());
-		for(RequirementSubmissionHistory rsh : rshList){
-			
-			if("submission".equals(rsh.getToStage())){
-				applicantsCount++;
-			}else if("shortList".equals(rsh.getToStage())){
-				shortlistedCount++;
-			}else if("interview".equals(rsh.getToStage())){
-				interviewsCount++;
-			}else if("offer_made".equals(rsh.getToStage())){
-				offeredCount++;
-			}else if("request_sent".equals(rsh.getToStage())){
-				requestSentCount++;
-			}else if("submit_to_client".equals(rsh.getToStage())){
-				submitToClientCount++;
-			}else if("rejected".equals(rsh.getToStage())) {
-				rejectedCount++;
-			}
-		}
-		applicantReport.setApplicantsCount(applicantsCount);
-		applicantReport.setShortlisted(shortlistedCount);
-		applicantReport.setInterviewCount(interviewsCount);
-		applicantReport.setSubmitToClientCount(submitToClientCount);
-		applicantReport.setOfferedCount(offeredCount);
-		applicantReport.setRejectedCount(rejectedCount);
-		applicantReport.setRequestSentCount(requestSentCount);
-		return commonUtil.toJSON(applicantReport);
-
-	}
-	
-//	/getApplicantsTotalCounts
-	
 	 @RequestMapping(value = "/getApplicantsTotalCounts")
 	 public String getApplicantsTotalCounts(@RequestParam(value="reportType", required=false) String reportType,
 			 @RequestParam(value="startDate", required=false) String customStartDate,
@@ -625,18 +577,15 @@ public class RequirementReportRestController {
 			int offeredSum = 0;
 			int rejectedSum = 0;
 		 ApplicantReport applicantReport = new ApplicantReport();
-		 String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		 String reportsList = null;
 
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 		 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
 		 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
 		 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
 		 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		 Date endDateUTC =null ;
-		 String filterDate = null;
 		 Date startDateUTC = null;
 		 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)){
 			 String endDate = outputFormatter1.print(zoned);
@@ -648,7 +597,6 @@ public class RequirementReportRestController {
 				if("today".equals(reportType)){
 					String startDate = outputFormatter.print(zoned);
 					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
-					filterDate = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
 					startDateUTC = TZ_DF_TS.parse(startDateString);
 				}else if("yesterday".equals(reportType)){
 					DateTime yesterDayZoned = zoned.minusDays(1);
@@ -692,10 +640,10 @@ public class RequirementReportRestController {
 					
 				}
 			}
-			List<Requirement> requirementList = requirementReportService.getRequirementReports(userRoleName,orgLocation,user,filterDate,startDateUTC,endDateUTC);
-			List<ApplicantReport> applicantReportList = new ArrayList<>();
-			if(null != requirementList){
-				for(Requirement requirement:requirementList){
+			
+			List<RequirementSubmission> reqSubmissionList = requirementReportService.getTotalApplicants(orgLocation,startDateUTC,endDateUTC);
+			if(null != reqSubmissionList){
+				for(RequirementSubmission reqSub : reqSubmissionList){
 					int applicantsCount = 0;
 					int requestSentCount = 0;
 					int shortlistedCount = 0;
@@ -703,8 +651,7 @@ public class RequirementReportRestController {
 					int interviewsCount = 0;
 					int offeredCount = 0;
 					int rejectedCount = 0;
-
-					List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportService.getApplicantsCountsPerReq(requirement.getId());
+					List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportService.getApplicantsCountsByDateRange(reqSub.getId(),startDateUTC,endDateUTC);
 					if(null != requirementSubmissionHistoryList && requirementSubmissionHistoryList.size() >0){
 						for(RequirementSubmissionHistory rsh : requirementSubmissionHistoryList){
 							if("submission".equals(rsh.getToStage())){
@@ -723,15 +670,15 @@ public class RequirementReportRestController {
 								rejectedCount++;
 							}
 						}
-					}
-					     applicantsSum = applicantsSum+applicantsCount;
+						 applicantsSum = applicantsSum+applicantsCount;
 						 requestSentSum = requestSentSum+requestSentCount;
 						 shortlistedSum = shortlistedSum+shortlistedCount;
 						 submitToClientSum = submitToClientSum+submitToClientCount;
 						 interviewsSum = interviewsSum+interviewsCount;
 						 offeredSum = offeredSum+offeredCount;
 						 rejectedSum = rejectedSum+rejectedCount;
-				}	
+					}
+				}
 				applicantReport.setApplicantsSum(applicantsSum);
 				applicantReport.setShortlistedSum(shortlistedSum);
 				applicantReport.setSubmitToClientSum(submitToClientSum);
@@ -739,6 +686,7 @@ public class RequirementReportRestController {
 				applicantReport.setOfferedSum(offeredSum);
 				applicantReport.setRejectedSum(rejectedSum);
 				applicantReport.setRequestSentSum(requestSentSum);
+				
 				reportsList = commonUtil.toJSON(applicantReport);
 			}else{
 				reportsList = commonUtil.toJSON("");

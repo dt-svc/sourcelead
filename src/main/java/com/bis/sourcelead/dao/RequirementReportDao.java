@@ -23,4 +23,8 @@ public interface RequirementReportDao {
 
 	List<RequirementSubmissionHistory> getApplicantsCountForChart(Long orgLocationId);
 
+	List<RequirementSubmission> getTotalApplicants(OrgLocations orgLocation, Date startDateUTC, Date endDateUTC)throws Exception;
+
+	List<RequirementSubmissionHistory> getApplicantsCountsByDateRange(Long submissionId, Date startDateUTC,Date endDateUTC)throws Exception;
+
 }

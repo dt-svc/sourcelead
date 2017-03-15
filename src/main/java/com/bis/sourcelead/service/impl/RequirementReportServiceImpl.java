@@ -43,5 +43,13 @@ public class RequirementReportServiceImpl implements RequirementReportService{
 	public List<RequirementSubmissionHistory> getApplicantsCountForChart(Long orgLocationId) {
 		return requirementReportDao.getApplicantsCountForChart(orgLocationId);
 	}
+	@Override
+	public List<RequirementSubmission> getTotalApplicants(OrgLocations orgLocation, Date startDateUTC, Date endDateUTC)throws Exception {
+		return requirementReportDao.getTotalApplicants(orgLocation,startDateUTC,endDateUTC);
+	}
+	@Override
+	public List<RequirementSubmissionHistory> getApplicantsCountsByDateRange(Long submissionId, Date startDateUTC,Date endDateUTC) throws Exception {
+		return requirementReportDao.getApplicantsCountsByDateRange(submissionId,startDateUTC,endDateUTC);
+	}
 
 }
