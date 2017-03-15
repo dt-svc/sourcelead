@@ -281,7 +281,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			emailNotification.setEmailTo(recipients.toString());
 		}
 		
-		emailNotification.setEmailFrom(emailMessage.getUserName());
+		emailNotification.setEmailFrom(emailMessage.getFromEmail());
 		emailNotification.setSubject(emailMessage.getSubject());
 		emailNotification.setBody(emailMessage.getMessageBody());
 		emailNotification.setDeliveryStatus("N");
