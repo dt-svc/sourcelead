@@ -197,11 +197,11 @@ public class TaskServiceImpl implements TaskService{
 			 emailMessage.setFirstName(task.getTaskOwnerId().getFirstName());
 			 emailMessage.setLastName(task.getTaskOwnerId().getLastName());
 			 emailMessage.setToEmail(task.getAssignedUserId().getEmail());
-			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+			 emailMessage.setFromEmail(task.getTaskOwnerId().getEmail());
 			 emailMessage.setCreatedBy(task.getTaskOwnerId().getUserCode());
 			 StringBuilder msgBuild = new StringBuilder();
 			 emailMessage.setFromName(msgBuild.append(task.getTaskOwnerId().getFirstName()).append(" ").append(task.getTaskOwnerId().getLastName()).toString());
-			 
+			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
 			 if(task.getSubject()!= null  && !"".equalsIgnoreCase(task.getSubject())){

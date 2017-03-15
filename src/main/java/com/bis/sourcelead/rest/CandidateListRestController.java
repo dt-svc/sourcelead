@@ -193,7 +193,9 @@ public class CandidateListRestController {
 			    		StringBuilder json = new StringBuilder(hit.getSourceAsString());
 			    	    CandidateIndex candidateIndex = mapper.readValue(json.toString(), CandidateIndex.class);
 			    	    if(candidateIndex.getUpdatedDate() != null){
-			    	    	candidateIndex.setCandidateUpdateDateToString(candidateIndex.getUpdatedDate());
+			    	    	Date date1 = Constants.DF_YMD.parse(candidateIndex.getUpdatedDate());
+							String  updatedDate = Constants.DF_DMY.format(date1);
+			    	    	candidateIndex.setCandidateUpdateDateToString(updatedDate);
 			   			}
 			    	    candidatesList.add(candidateIndex);
 			    	}
@@ -522,7 +524,9 @@ public class CandidateListRestController {
 				    		StringBuilder json1 = new StringBuilder(hit.getSourceAsString());
 				    	    CandidateIndex candidateIndex = mapper.readValue(json1.toString(), CandidateIndex.class);
 				    	    if(candidateIndex.getUpdatedDate() != null){
-				    	    	candidateIndex.setCandidateUpdateDateToString(candidateIndex.getUpdatedDate());
+				    	    	Date date1 = Constants.DF_YMD.parse(candidateIndex.getUpdatedDate());
+								String  updatedDate = Constants.DF_DMY.format(date1);
+				    	    	candidateIndex.setCandidateUpdateDateToString(updatedDate);
 				   			}
 				    	    candidatesList.add(candidateIndex);
 				    	}
@@ -641,7 +645,7 @@ public class CandidateListRestController {
 			Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
 			if(null != can.getCurrentRateCurrency() && null != can.getExpectedRateCurrencey()){
 				can.setCurrentRateCurrency(can.getCurrentRateCurrency());
-				can.setCurrentRateCurrency(can.getExpectedRateCurrencey());
+				can.setExpectedRateCurrencey(can.getExpectedRateCurrencey());
 			}else{
 				 if(null != countries && !countries.getCurrency().equalsIgnoreCase("")){
 				can.setCurrentRateCurrency(countries.getCurrency());	

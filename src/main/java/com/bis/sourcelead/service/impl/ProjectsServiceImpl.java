@@ -293,7 +293,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-	 	String pattern = "yyyy-MM-dd";
+	 	String pattern = "dd-MM-yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
 	 	
     	Projects projects = new Projects();
@@ -490,10 +490,10 @@ public class ProjectsServiceImpl implements ProjectsService{
     	List<Projects> projectList = projectsDao.getProjectsBasedOnClientsAndStatusSelectionInFilters(userId,clients,status,orgLocationsId);
 		 for (Projects projects :projectList ){
 	    	    projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
-	    	    projects.setEmployeeStartDateStr(Constants.DF_YMD.format(projects.getStartDate()));
+	    	    projects.setEmployeeStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
 			    if(projects.getEndDate() != null){
 			    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
-			    	 projects.setEmployeeEndDateStr(Constants.DF_YMD.format(projects.getEndDate()));
+			    	 projects.setEmployeeEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
 			    }
 			    
 			    if(null != projects.getOrgRelationId()){
@@ -563,10 +563,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(user.getEmail());
 		 StringBuilder fromNameSB = new StringBuilder();
 		 emailMessage.setFromName(fromNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("firstName", emailMessage.getFirstName());
@@ -721,9 +721,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 		if(projects.getCreatedDate() != null){
 			projects.setCreatedDateStr(Constants.DF_DMY.format(projects.getCreatedDate()));	
 		}
-	    projects.setStartDateStr(Constants.DF_YMD.format(projects.getStartDate()));
+	    projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
 	    if(projects.getEndDate() != null){
-	    	 projects.setEndDateStr(Constants.DF_YMD.format(projects.getEndDate()));
+	    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
 	    }
 	    if(projects.getUpdatedDate() != null){
 	    	projects.setUpdatedDateStr(Constants.DF_DMY.format(projects.getUpdatedDate()));
@@ -869,7 +869,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		    	projects.setProjectStatus(Project_Status.getNameByValue(jsonObj.getString("projectStatusId")));
 		    	
 		    		if(jsonObj.has("endDateStr1")){
-			    		String pattern = "yyyy-MM-dd";
+			    		String pattern = "dd-MM-yyyy";
 			    	     SimpleDateFormat format = new SimpleDateFormat(pattern);
 			    	     if(!jsonObj.getString("endDateStr1").isEmpty() && jsonObj.getString("endDateStr1") != null && !"NO DATA".equalsIgnoreCase(jsonObj.getString("endDateStr1"))){
 					    		previousEndDate = projects.getEndDate();
@@ -1242,14 +1242,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 				 pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(pm.getId());
 			 }
 			 if(pmh != null && pmh.getProjectAssignedDate()!=null){
-				 pm.setProjectAssignedDateStr(Constants.DF_YMD.format(pmh.getProjectAssignedDate()));
+				 pm.setProjectAssignedDateStr(Constants.DF_DMY.format(pmh.getProjectAssignedDate()));
             }
 	       	 if(pmh != null && pmh.getProjectTerminationDate()!=null){
-	       		pm.setProjectEndDateStr(Constants.DF_YMD.format(pmh.getProjectTerminationDate()));
+	       		pm.setProjectEndDateStr(Constants.DF_DMY.format(pmh.getProjectTerminationDate()));
 	       	 }
 	       	 //to set actual project end date
 	       	 if(pm.getProjects().getEndDate() != null){
-	        		pm.setEndDate(Constants.DF_YMD.format(pm.getProjects().getEndDate()));
+	        		pm.setEndDate(Constants.DF_DMY.format(pm.getProjects().getEndDate()));
 	        	 }
 	       	 if(pm.getEmployee() != null && pm.getEmployee().getUser() != null && pm.getEmployee().getUser().getId() != null){
 	          		pm.setUserId(pm.getEmployee().getUser().getId().toString());
@@ -1541,10 +1541,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 				 emailMessage.setFirstName(projectManager.getFirstName());
 				 emailMessage.setLastName(projectManager.getLastName());
 				 emailMessage.setToEmail(projectManager.getEmail());
-				 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+				 emailMessage.setFromEmail(loginUser.getEmail());
 				 emailMessage.setCreatedBy(loginUser.getUserCode());
 				 emailMessage.setFromName(fromNameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-
+				 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 				 //setting the class filed values
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
 				 globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
@@ -1603,10 +1603,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 					 emailMessage.setFirstName(emp.getUser().getFirstName());
 					 emailMessage.setLastName(emp.getUser().getLastName());
 					 emailMessage.setToEmail(emp.getUser().getEmail());
-					 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+					 emailMessage.setFromEmail(loginUser.getEmail());
 					 emailMessage.setCreatedBy(loginUser.getUserCode());
 					 emailMessage.setFromName(fromNameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-
+					 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 					 //setting the class filed values
 					 Map<String, String> globalVarsMap = new HashMap<String, String>();
 					 globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
@@ -1749,9 +1749,9 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			 emailMessage.setFirstName(user.getFirstName());
 			 emailMessage.setLastName(user.getLastName());
 			 emailMessage.setToEmail(user.getEmail());
-			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+			 emailMessage.setFromEmail(user.getEmail());
 			 emailMessage.setFromName(fNameStringBuilder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-			 
+			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
 			 globalVarsMap.put("firstName", emailMessage.getFirstName());
@@ -1913,7 +1913,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 						}
 						 boolQueryBuilder.must(anyBoolQueryBuilder);
 					}
-					DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 					df.setTimeZone(TimeZone.getTimeZone("GMT"));
 					SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
 					if(searchHits != null && searchHits.length >0){

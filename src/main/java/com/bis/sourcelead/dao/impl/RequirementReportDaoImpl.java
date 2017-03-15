@@ -15,8 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.RequirementReportDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 
 @Repository
 public class RequirementReportDaoImpl implements RequirementReportDao{
@@ -94,13 +96,7 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		return query.setCacheable(true).list();
 	}
 
-	@Override
-	public List<RequirementSubmissionHistory> getApplicantsReports(String userRoleName, OrgLocations orgLocation,
-			User user, Date startDateUTC, Date endDateUTC) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementSubmissionHistory> getRequirementReports(Long requirementId) {
@@ -123,4 +119,19 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 	return totalCount;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmission> getReceivedApplicantsCountsPerReq(Long requirementId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where requirement.id = :requirementId  and rs.vendorLocationId <> null ";
+		return  session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmissionHistory> getReceivedApplicantsCountForReports(Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId rs where rs.orgLocations.id = :orgLocationId and  rs.vendorLocationId <> null ";
+		return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	}
 }

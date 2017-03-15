@@ -1,3 +1,7 @@
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
+
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
@@ -150,9 +154,10 @@ function requirementInterviewsPagination(){
 <script>
 $(function() {
    $( "#datepicker-int" ).datepicker({
-     changeMonth: true,
-     changeYear: true,
-     onSelect: function(){
+	   dateFormat : 'dd-mm-yy',
+	   changeMonth: true,
+       changeYear: true,
+       onSelect: function(){
     	    var dt = $(this).val();
     	    interviews(dt);
    		}

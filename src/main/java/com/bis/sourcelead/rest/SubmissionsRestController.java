@@ -363,7 +363,7 @@ public class SubmissionsRestController {
 			
 			if (requirementSubmission.getCreatedDate() != null) {
 				requirementSubmission
-						.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
+						.setCreatedDateStr(Constants.DF_DMY.format(requirementSubmission.getCreatedDate()));
 			}
 			candidatesList.add(requirementSubmission);
 		}
@@ -430,7 +430,7 @@ public class SubmissionsRestController {
 	
 			if (requirementSubmission.getCreatedDate() != null) {
 				requirementSubmission
-						.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
+						.setCreatedDateStr(Constants.DF_DMY.format(requirementSubmission.getCreatedDate()));
 			}
 			candidatesList.add(requirementSubmission);
 		}
@@ -586,11 +586,11 @@ public class SubmissionsRestController {
 		emailMessage.setFirstName(requirement.getManagerUserId().getFirstName());
 		emailMessage.setLastName(requirement.getManagerUserId().getLastName());
 		emailMessage.setToEmail(requirement.getManagerUserId().getEmail());
-		emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		emailMessage.setFromEmail(user.getEmail());
 		emailMessage.setCreatedBy(user.getUserCode());
 		StringBuilder userNameSB = new StringBuilder();
 		emailMessage.setFromName(userNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		// setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 		globalVarsMap.put("managerFirstName", emailMessage.getFirstName());

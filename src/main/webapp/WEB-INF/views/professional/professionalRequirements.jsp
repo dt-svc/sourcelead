@@ -252,7 +252,7 @@ window.onload = function () {
                   <option value="1 Day Ago">1 day ago</option>
                   <option value="3 Days Ago">3 day ago</option>
                   <option value="1 Week Ago">1 week ago</option>
-                  <option value="2 Weeks Ago">2 weeks ago</option>
+                  <option selected="selected" value="2 Weeks Ago">2 weeks ago</option>
                   <option value="1 Month Ago">1 month ago</option>
                    <option value="3 Months Ago">3 Months Ago</option>
                 </select>
@@ -271,8 +271,9 @@ window.onload = function () {
 	 <div class="side_mask"><div class="proj_close"></div></div>
 	 <div class="new_side_wrap">
 	 <div class="new_side_wrap_inn">
-	<div class="new_side_wrap_cta">
-		<div id="applytoJobDiv"></div>
+		<div class="new_side_wrap_cta">
+			<div id="applytoJobDiv"></div>
+			<div id="submitDetailsDiv"></div>
 		</div></div>
 	 </div> 
 	 
@@ -522,6 +523,7 @@ function requirementsList(offset){
 	var jobTitleSearch = document.getElementById('jobTitleSearch').value;
 	var jobLocationSearch = document.getElementById('jobLocationSearch').value;
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+	var candidateId = '${SourceLeadWeb_candidateId}'
 	
     loadChosenRequirementScripts();
 	
@@ -605,9 +607,13 @@ function requirementsList(offset){
 			 				}
 			 				
 			 				if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined'){
-			 					rate = requirements.rate+" / "+requirements.rateType;
+			 					rate = requirements.rate+" "+requirements.rateType +' / ';
+			 				}
+			 				
+			 				if(requirements.currentRateCurrency != null && requirements.currentRateCurrency != '' && requirements.currentRateCurrency != 'undefined'){
+			 					currentRateCurrency = requirements.currentRateCurrency;
 			 				}else{
-			 					rate = 'No Data';
+			 					currentRateCurrency = 'No Data';
 			 				}
 			 				
 			 				result = '<section class="openCta">';
@@ -618,7 +624,7 @@ function requirementsList(offset){
 			 				result = result +'<b><i class="fa fa-clock-o"></i>'+jobType+'</b>';
 			 				result = result +'<b><i class="fa fa-briefcase"></i>'+experience+'</b>';
 			 				result = result +'<b><i class="fa fa-map-marker"></i>'+location+'</b>';
-			 				result = result +'<b><i class="fa fa-money"></i>'+rate+'</b>';
+			 				result = result +'<b><i class="fa fa-money"></i>'+rate+' '+currentRateCurrency+'</b>';
 			 				result = result +'</span>';
 			 				result = result +'<h5>';
 			 				result = result +'<strong>Skills :</strong>';
@@ -681,7 +687,7 @@ function requirementsList(offset){
 				 					if(requirements.isReferedRequiremetnApplied == 'Y'){
 				 						result = result +'<a href="javascript:void(0)" class="jobApply appliedJob">Applied</a>';
 				 					}else{
-				 						result = result +'<a href="javascript:void(0)" class="jobApply">Applied</a>';
+				 						result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();getSubmissionDetailsSideBar('+requirements.submissionId+','+candidateId+','+requirements.requirementId+');" class="jobApply">Applied</a>';
 				 					}
 				 					
 				 				}
@@ -802,6 +808,7 @@ function searchRequirement(offset){
 			//It will escape all the special characters
 			$("#search_requiremet").attr("disabled", "disabled");
 			$("#search_requiremet").addClass('button').val('Processing..');
+			var candidateId = '${SourceLeadWeb_candidateId}'
 			
 			var requirementType = document.getElementById('requirementType').value;
 			
@@ -945,7 +952,7 @@ function searchRequirement(offset){
 										 				}
 										 				
 										 				if(requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'Y'){
-										 					result = result +'<a href="javascript:void(0)" class="jobApply">Applied</a>';
+										 					result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();getSubmissionDetailsSideBar('+requirements.submissionId+','+candidateId+','+requirements.requirementId+');" class="jobApply">Applied</a>';
 										 				}
 										 				
 										 				

@@ -1,3 +1,6 @@
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -434,6 +437,25 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	        result = result + ' </div>';
           }
          
+        
+          //Reject Reason
+          result = result + '<div class="row positionRelative">';
+          result = result + '<div class="col-sm-12 col-md-12">';
+          if(json.rejectedReason != null && json.rejectedReason !='' && json.rejectedReason !='undefined'){
+	     	 	 result = result + '<div class="clearfix">';
+				 result = result + '<div class="release-jobs alert alert-danger">';
+				 result = result + '<span class="close" data-dismiss="alert" aria-label="close">&times;</span>';
+			     result = result + '<div class="clearfix sub-details">';
+			     result = result + ' <p><strong>Rejected Reason</strong></p>';
+			     result = result + ' <div class="clearfix">';
+			     result = result + ' '+json.rejectedReason+' ';
+			     result = result + ' </div>';
+			     result = result + ' </div>';
+          		 result = result + ' </div>';
+	          	 result = result + ' </div>';
+      	  }          
+          result = result + '</div>';
+          result = result + '</div>';
           
 getInternalInterviewsList(submissionId);
 //getCustomerInterviewsList(submissionId,requirementId);

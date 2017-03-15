@@ -79,6 +79,15 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		requirementRefer.setReferFromEmail(user.getEmail());
 		requirementRefer.setReferFromUser(user);
 		
+		
+		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
+			requirementRefer.setReferedUserFirstName(jsonObj.getString("firstName"));
+		}
+		
+		if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
+			requirementRefer.setReferedUserLastName(jsonObj.getString("lastName"));
+		}
+		
 		if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
 			requirementRefer.setReferToEmail(jsonObj.getString("email"));
 			referToUser = userDao.getUserByEmailAndUserType(jsonObj.getString("email"), Constants.PROFESSIONAL);
@@ -250,5 +259,31 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 			throws Exception {
 		return requirementReferDao.getReferJobsByReferTypeByReferedDate(userId, referType, referedDate);
 	}
+
+	@Override
+	public List<RequirementRefer> getReferJobsListByReferType(Long userId, String referType, Date startDate, Date endDate) throws Exception {
+		return requirementReferDao.getReferJobsListByReferType(userId, referType, startDate, endDate);
+	}
+
+	@Override
+	public List<RequirementRefer> getReferJobsListByReferTypeByReferedDate(Long userId, String referType, Date referedDate) throws Exception {
+		return requirementReferDao.getReferJobsListByReferTypeByReferedDate(userId, referType, referedDate);
+	}
+	
+	@Override
+	public Integer getReferredByMeCountByStartDateAndEndDate(Long userId, Date startDate, Date endDate) throws Exception {
+		return requirementReferDao.getReferredByMeCountByStartDateAndEndDate(userId, startDate, endDate);
+	}
+	
+	@Override
+	public List<RequirementRefer> getReferredByMeCountListByStartDateAndEndDate(Long userId, Date startDate, Date endDate) throws Exception {
+		return requirementReferDao.getReferredByMeCountListByStartDateAndEndDate(userId, startDate, endDate);
+	}
+
+	@Override
+	public List<RequirementRefer> getLoginUserReferredListByUserId(Long userId,Long requirementId) throws Exception {
+		return requirementReferDao.getLoginUserReferredListByUserId(userId, requirementId);
+	}
+	
 
 }

@@ -285,7 +285,7 @@ function requirementReportPagination(){
 				<span><i class="glyphicon glyphicon-send"></i></span><b>100</b>
 			</li>
 			<li title="Interviews" class="colorTwo">
-				<span><img src="images/interview1.png" alt=""/></span><b>100</b>
+				<span><img src="resources/images/interview1.png" alt=""/></span><b>100</b>
 			</li>
 			<li title="Offers">
 				<span><i class="fa fa-tags"></i></span><b>100</b>

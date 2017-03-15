@@ -1,3 +1,6 @@
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <style>
 .clsDatePicker {
@@ -427,7 +430,7 @@ function addCertification(candidateId) {
 	   });	 */
 
 	  $('#StartDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      onSelect: function (selected) {
@@ -438,7 +441,7 @@ function addCertification(candidateId) {
 	  });
 	  
 	  $('#EndDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 	        onSelect: function (selected) {
@@ -600,7 +603,7 @@ function addCertification(candidateId) {
 							   });	 */
 
 							  $('#StartDateEdit').datepicker({
-							      dateFormat: 'yy-mm-dd',
+							      dateFormat: 'dd-mm-yy',
 							      changeMonth: true,
 							  	  changeYear: true, 
 							      onSelect: function (selected) {
@@ -611,7 +614,7 @@ function addCertification(candidateId) {
 							  });
 							  
 							  $('#EndDateEdit').datepicker({
-							      dateFormat: 'yy-mm-dd',
+							      dateFormat: 'dd-mm-yy',
 							      changeMonth: true,
 							  	  changeYear: true, 
 							      onSelect: function (selected) {

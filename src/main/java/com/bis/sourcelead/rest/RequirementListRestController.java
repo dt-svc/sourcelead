@@ -563,8 +563,8 @@ public class RequirementListRestController {
 											if(requirementOffers.getDateOfJoining() != null){
 												requirementSubmission.setOfferJoinDate(Constants.DMY.format(requirementOffers.getDateOfJoining()));
 											}
-											if(requirementOffers.getPaymentType() != null){
-												requirementSubmission.setPositionType(requirementOffers.getPaymentType());
+											if(requirementOffers.getPositionType() != null){
+												requirementSubmission.setPositionType(requirementOffers.getPositionType());
 											}
 											if(requirementOffers.getAmount() != null){
 												requirementSubmission.setOfferRate(requirementOffers.getAmount());
@@ -638,7 +638,7 @@ public class RequirementListRestController {
 											String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
 											DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 											Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-											currentDateInTimezone = Constants.DF_STD_DMY.format(converteDate);
+											currentDateInTimezone = Constants.DF_DMY.format(converteDate);
 											requirementSubmission.setCreatedDateStr(currentDateInTimezone);
 											
 											SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
@@ -1304,13 +1304,8 @@ public class RequirementListRestController {
 							Candidate candidate = candidateService.getCandidateByCandidateId(requirementSubmission.getCandidate().getId());
 							List<Candidate> candidateList = new ArrayList<>();
 							candidateList.add(candidate);
-							List<Candidate> candidateListCopy = recommendationsService.getRecommendationsWithScore(candidateList,requirementSubmission.getRequirement());
-							if(candidateListCopy !=null && candidateListCopy.size() >0){
-								StringBuilder candidateScoreSB = new StringBuilder();
-								requirementSubmission.setScore(candidateScoreSB.append(candidateListCopy.get(0).getCandidateScore()).append("%").toString());
-							}else{
-								requirementSubmission.setScore("0 %");
-							}
+							requirementSubmission.setScore(requirementSubmission.getCandidateScore()+"%");
+							
 							}
 
 					}

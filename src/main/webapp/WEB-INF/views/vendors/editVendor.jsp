@@ -1,3 +1,6 @@
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
 
 <!-- for Vendor edit -->
 <script type="text/javascript">
@@ -43,8 +46,6 @@
 						
 						if(json.country != null && json.country !='' && json.country !='undefined'){
 							country = json.country;
-							alert(country);
-							
 						}
 						if(json.state != null && json.state !='' && json.state !='undefined'){
 							state = json.state;
