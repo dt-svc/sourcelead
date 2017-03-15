@@ -45,7 +45,7 @@ public interface RequirementService {
 
 	public void  approverTwoEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location,OrgLocations orgLocations) throws Exception;
 	
-	public void acceptEmailScenario(User loginUser, User approverUser, Requirement requirement,OrgLocations orgLocations) throws Exception;
+	public void acceptEmailScenario(User loginUser, User approverUser, Requirement requirement,StringBuilder location,OrgLocations orgLocations) throws Exception;
 	
 	public void mailRequirementtoManager(User loginUser, User intiatorUser, Requirement requirement,StringBuilder location,OrgLocations loginOrgLocation) throws Exception;
 	

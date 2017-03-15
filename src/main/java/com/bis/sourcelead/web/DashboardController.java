@@ -58,4 +58,27 @@ public class DashboardController {
 		model.setViewName("professional/professionalDashboard");
 		return model;
 	}
+	
+	
+	
+	@RequestMapping(value = "/recruiterDashboard")
+	public ModelAndView recruiterDashboard(HttpServletRequest request) {
+		logger.debug("display the dash board page");
+		ModelAndView model = new ModelAndView();
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Dashboard);
+		
+		request.getSession().setAttribute("sessionData",sessionData);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("recruiter/recruiterDashboard");
+		return model;
+	}
+	
+	
+	
 }

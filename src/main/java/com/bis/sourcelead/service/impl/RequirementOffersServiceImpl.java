@@ -281,11 +281,11 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             emailMessage.setFirstName(loginUser.getFirstName());
             emailMessage.setLastName(loginUser.getLastName());
             emailMessage.setToEmail(clientrequirement.getSpocId().getVendorUser().getEmail());
-            emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+            emailMessage.setFromEmail(loginUser.getEmail());
             emailMessage.setCreatedBy(loginUser.getUserCode());
             StringBuilder nameBuilder=new StringBuilder();
             emailMessage.setFromName(nameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-
+            emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
             // setting the class filed values
             Map<String, String> globalVarsMap = new HashMap<String, String>();
             
@@ -368,11 +368,11 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             emailMessage.setFirstName(loginUser.getFirstName());
             emailMessage.setLastName(loginUser.getLastName());
             emailMessage.setToEmail(requirementSubmissionTemplateFields.getEmailId());
-            emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+            emailMessage.setFromEmail(loginUser.getEmail());
             emailMessage.setCreatedBy(loginUser.getUserCode());
             StringBuilder attachmentBuilder=new StringBuilder();
             emailMessage.setFromName(attachmentBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-
+            emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
             // setting the class filed values
             Map<String, String> globalVarsMap = new HashMap<String, String>();
             
@@ -509,10 +509,10 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		emailMessage.setFirstName(touser.getFirstName());
 		emailMessage.setLastName(touser.getLastName());
 		emailMessage.setToEmail(touser.getEmail());
-		emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		emailMessage.setFromEmail(loginUser.getEmail());
 		StringBuilder contactBuilder=new StringBuilder();
 		emailMessage.setFromName(contactBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		// setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 			
@@ -593,10 +593,10 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		emailMessage.setFirstName(touser.getFirstName());
 		emailMessage.setLastName(touser.getLastName());
 		emailMessage.setToEmail(touser.getEmail());
-		emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		emailMessage.setFromEmail(loginUser.getEmail());
 		StringBuilder nameStringBuilder=new StringBuilder();
 		emailMessage.setFromName(nameStringBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		// setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 		

@@ -125,6 +125,8 @@ public class RequirementIndex {
 	
 	private Integer recruiterSubmissionsCount;
 	
+	private Long submissionId;
+	
 	
 	
 	
@@ -603,6 +605,14 @@ public class RequirementIndex {
 
 	public void setRecruiterSubmissionsCount(Integer recruiterSubmissionsCount) {
 		this.recruiterSubmissionsCount = recruiterSubmissionsCount;
+	}
+
+	public Long getSubmissionId() {
+		return submissionId;
+	}
+
+	public void setSubmissionId(Long submissionId) {
+		this.submissionId = submissionId;
 	}
 	
 }
