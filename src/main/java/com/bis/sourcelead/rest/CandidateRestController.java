@@ -16,6 +16,7 @@ import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -69,6 +70,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.PrimarySkillUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.SourceleadResumeParser;
 import com.thoughtworks.xstream.XStream;
@@ -755,6 +757,19 @@ public class CandidateRestController {
 			 }
 			return null;
 	}
+	
+	
+	@RequestMapping(value = "/profileBySkillSet", method = RequestMethod.POST)
+	public @ResponseBody String profileBySkillSet(
+			@RequestParam(value = "allSkills", required = false) String allSkills, HttpServletRequest request) throws Exception {
+		
+		String[] mySkills= allSkills.split(",");
+		
+		
+		
+		return PrimarySkillUtil.returnMyskill(mySkills);
+	}
+	
 
 	public String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

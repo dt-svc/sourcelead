@@ -54,6 +54,9 @@ public class CandidateIndexHelper {
 				candidateIndex.setSkillsName(candidate.getSkillsName());
 			}
 			
+			if(null != candidate.getPrimarySkill() && !candidate.getPrimarySkill().isEmpty()){
+				candidateIndex.setPrimarySkill(candidate.getPrimarySkill());
+			}
 			/*if(null != candidate.getCandidateSkills() && !candidate.getCandidateSkills().isEmpty()){
 				ArrayList<String> skillList = new ArrayList<>();
 				for(CandidateSkills skills : candidate.getCandidateSkills()){
