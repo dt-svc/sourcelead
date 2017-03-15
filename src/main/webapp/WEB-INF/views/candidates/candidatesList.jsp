@@ -1006,8 +1006,9 @@ function cancel(candidateId){
 			  <i class="fa fa-search"></i>
 			  </a> 
 			  <form:form id="candidatelist_form" name="candidatelist_form"  enctype='multipart/form-data' >
-				  <div class="cand-advsrch-popup" >
+				  <div class="cand-advsrch-popup cand-advsrchPopup">
 					  <a href="javascript:void(0)" class="close-div" onclick="closePop();"><i class="fa fa-close"></i></a>
+					  <div class="candAdvsrchPop">
 					  <div class="row">
 						  <div class="col-md-4">
 							  <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
@@ -1036,6 +1037,20 @@ function cancel(candidateId){
 					  <div class="col-md-12">
 						  <h4>Details:</h4>
 					  </div>
+					  <div class="clearfix"></div>
+					<div class="clearfix mb">
+						<div class="col-md-12">
+						<label>Skills</label>
+							<div class="clearfix">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Skills" id="candidateSkills" name="candidateSkills">
+								<c:forEach var="skill" items="${skillsList}">
+								<option value="${skill.name}">${skill.name}</option>
+								</c:forEach>
+								</select>
+							 </div>
+						</div>
+					 </div>
+					  
 						<div class="clearfix">
 						  <div class="col-md-4">
 						    <label>Designation</label>
@@ -1068,9 +1083,6 @@ function cancel(candidateId){
 							<div class="col-md-6">
 								<label>&nbsp;</label> 
 								<div class="input-group error-field">
-								    <div id="maxRateDiv">
-									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
-									</div>
 									<div id="rateTypeDiv" class="input-group-btn selp-custom-min custommin">
 									      <select class="selectpicker" name="rateType" id="rateType" field-name="Rate Type"  >
 									            <option value="">Rate Type</option>
@@ -1082,6 +1094,9 @@ function cancel(candidateId){
 												<option value="Bi-Monthly">Bi-Monthly</option>
 												<option value="Yearly">Yearly</option>
 				                            </select> 
+									</div>
+								    <div id="maxRateDiv">
+									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
 									</div>
 								</div>
 							</div>
@@ -1112,7 +1127,6 @@ function cancel(candidateId){
 							  <div class="row" id="expId">
 				                  <input type="hidden" name="expValidation" id="expValidation">
 				              </div>
-							  
 						  </div>
 						  
 						  <div class="col-md-4">
@@ -1231,20 +1245,9 @@ function cancel(candidateId){
 							  </div>
 						  </div>
 						  </div>
-						    <div class="clearfix">
-							    <div class="col-md-12">
-								  <label>Skills</label>
-								  <div class="clearfix">
-									 <select class="chosen-select form-control input-sm" multiple data-placeholder="Skills" id="candidateSkills" name="candidateSkills">
-                                          <c:forEach var="skill" items="${skillsList}">
-							                     <option value="${skill.name}">${skill.name}</option>
-						                </c:forEach>
-                                     </select>
-								  </div>
-							  </div>
-						    </div>
 					  </div>
-					  <div class="row form-footer mt">
+					  </div>
+					  <div class="form-footer">
 						  <div class="pull-right mr">
 							   <input type="button" value="Search" id="search_candidate" onclick="searchCandidate();" class="btn btn-sm btn-primary"/>
                                <input type="button"  value="Clear"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-default ml10"/>

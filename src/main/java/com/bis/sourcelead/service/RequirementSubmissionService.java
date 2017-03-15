@@ -41,7 +41,7 @@ public interface RequirementSubmissionService {
 	
 	void storeClientSubmission(Long requirementId, User user, OrgLocations loginOrgLocation,String submissionIds, String selectedShortlistsRate, Org org) throws Exception;
 	
-	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String submissionStatus,String dateRange,String userType,User user);
+	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String submissionStatus,String dateRange,String userType,User user, Date startUTCDate, Date endUTCDate);
 	
 	//to get candidates for submit to client
 	List<RequirementSubmission> getAllShortLitstedCandidatesForClientSubmissionByRequirementId(Long id,Long requirementId) throws Exception;
