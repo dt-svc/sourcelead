@@ -199,6 +199,8 @@ public class RequirementSubmission implements Serializable{
     @Transient
    	private String resumeUUID;
     
+    @Transient
+   	private String requirementJobType;
     
     @Transient
    	private ApplicantSubmissionStatus requirementStage;
@@ -319,6 +321,18 @@ public class RequirementSubmission implements Serializable{
 
 	@Transient
 	private String submitToClientRateType;
+	
+	@Transient
+	private String rateType;
+	
+	@Transient
+	private String referredBy;
+	
+	@Transient
+	private String referredOn;
+	
+	@Transient
+	private List<RequirementSubmission> requirementSubmissionList;
 
 	
 	public OrgLocations getVendorLocationId() {
@@ -649,6 +663,14 @@ public class RequirementSubmission implements Serializable{
 
 	public void setRequirementStage(ApplicantSubmissionStatus requirementStage) {
 		this.requirementStage = requirementStage;
+	}
+
+	public String getRequirementJobType() {
+		return requirementJobType;
+	}
+
+	public void setRequirementJobType(String requirementJobType) {
+		this.requirementJobType = requirementJobType;
 	}
 
 	public String getScore() {
@@ -1043,5 +1065,37 @@ public class RequirementSubmission implements Serializable{
 
 	public void setSubmitToClientRateType(String submitToClientRateType) {
 		this.submitToClientRateType = submitToClientRateType;
+	}
+
+	public String getRateType() {
+		return rateType;
+	}
+
+	public void setRateType(String rateType) {
+		this.rateType = rateType;
+	}
+
+	public String getReferredBy() {
+		return referredBy;
+	}
+
+	public void setReferredBy(String referredBy) {
+		this.referredBy = referredBy;
+	}
+
+	public String getReferredOn() {
+		return referredOn;
+	}
+
+	public void setReferredOn(String referredOn) {
+		this.referredOn = referredOn;
+	}
+
+	public List<RequirementSubmission> getRequirementSubmissionList() {
+		return requirementSubmissionList;
+	}
+
+	public void setRequirementSubmissionList(List<RequirementSubmission> requirementSubmissionList) {
+		this.requirementSubmissionList = requirementSubmissionList;
 	}
 }

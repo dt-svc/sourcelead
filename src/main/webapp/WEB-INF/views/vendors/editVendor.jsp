@@ -46,8 +46,6 @@
 						
 						if(json.country != null && json.country !='' && json.country !='undefined'){
 							country = json.country;
-							alert(country);
-							
 						}
 						if(json.state != null && json.state !='' && json.state !='undefined'){
 							state = json.state;

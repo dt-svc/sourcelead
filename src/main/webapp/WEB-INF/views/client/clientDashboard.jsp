@@ -22,7 +22,7 @@
 <jsp:include page="submissionTemplateList.jsp" /> 
 
 <style type="text/css">
-.clients_wrap {
+clients_wrap {
 overflow-x: auto;
 }
 </style>
@@ -58,8 +58,8 @@ overflow-x: auto;
 		
 			
 			<!-- Advanced Search -->
-  <div class="timesheet_bg">
-  <div class="cand-advsrch">
+  <div class="timesheet_out">
+  <div class="cand-advsrch pull-left">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
             <form:form id="clientlist_form" name="clientlist_form"  enctype='multipart/form-data' >
           <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
@@ -260,11 +260,8 @@ overflow-x: auto;
         </div>
         </div>
 		<!-- Advanced Search Ends -->
-		</div>
-		<div class="clearfix"></div>
-		<div class="timesheet_out">
 		<div class="clients_wrap vendor_wrap_shadownone">
-				<div class="timesheet_head datatbl-filters customtimesheet-head">
+				<div class="timesheet_head datatbl-filters customtimesheet-head hdr-styles hdrStyles">
 					<ul>
 		                  <li  id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="clientsList" ></i>|
 		                	<div id="filter1ApprovedPop" class="approved_pop">
@@ -323,7 +320,7 @@ overflow-x: auto;
 						
 						 <sec:authorize access="hasRole('ROLE_EXPORT_CLIENTS')"> 
 						   <li id="clientImports" style="display:none">
-		                      <a  id="client-imports"><i class="glyphicon glyphicon-export"></i>&nbsp;ExportClient</a>
+		                      <a  id="client-imports"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>
 			                    <div class="export_pop">
 				                   <ul>
 				                     <li onclick="exportClientToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
@@ -335,7 +332,7 @@ overflow-x: auto;
 		            
 		             <sec:authorize access="hasRole('ROLE_EXPORT_CLIENT_CONTACTS')"> 
 		            <li id="ContactImports">
-		                     <a  id="export-popcon"><i class="glyphicon glyphicon-export"></i>&nbsp;ExportContact</a>
+		                     <a  id="export-popcon"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>
 			                    <div class="export_pop">
 				                <ul>
 				                <li onclick="exportContactToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp; PDF</li>
@@ -350,7 +347,7 @@ overflow-x: auto;
 					<div class="clearfix"></div>
 				</div>
 				
-				<div class="clients_wrap_table " id ="vendorListFilter">
+				<div class="clients_wrap_table filter_position datatable_scroll" id ="vendorListFilter">
 			      <input type="hidden" name="clientContactLength" id="clientContactLength" >
 			      <input type="hidden" name="emptyClientList" id="emptyClientList" >
 			      
@@ -888,7 +885,6 @@ function getClientDetailsELK(){
 function pagination(){  
     $('#clientList').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -1404,7 +1400,6 @@ function resendClientSpocInvitation(spocUserId,orgSpocId,orgRelationId){
 function pagination1(){ 
     $('#vendorContactList').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,

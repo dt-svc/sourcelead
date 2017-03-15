@@ -3263,7 +3263,8 @@ function documentpaginationRejected(){
 <script>
 function rejectApplicant(submissionId,requirementId,submissionType){
 	alert
-	$("#reasonForApplicantDiv").empty()
+	$("#reasonForApplicantDiv").empty();
+	$("#reasonForReject").val("");
 	var subId = submissionId;
 	var reqId = requirementId;
 	var subType = submissionType;
