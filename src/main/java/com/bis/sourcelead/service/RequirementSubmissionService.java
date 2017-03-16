@@ -205,6 +205,12 @@ public interface RequirementSubmissionService {
 	
 	Integer getRecruiterSubmittedJobCountByStartDateAndEndDate(Long userId,Date startDate,Date endDate) throws Exception;
 	
+
+	Integer getRecruiterSubmittedJobsCountByStage(Long userId,String submissionStatus,Date startDate,Date endDate) throws Exception;
+
+	List<RequirementSubmission> getAllVendorsIdbyorgLocationId(OrgLocations orgLocation);
+
+
 	Integer getRecruiterSubmittedCandidatesCountByStage(Long userId,String submissionStatus,Date startDate,Date endDate) throws Exception;
 	
 	Integer getReferByMeJobAppliedCandidateCount(Long userId,Date startDate,Date endDate) throws Exception;
@@ -216,4 +222,5 @@ public interface RequirementSubmissionService {
 	RequirementSubmission getRequirementSubmissionByRequirementIdAndUserId(Long requirementId,Long userId) throws Exception;
 	
 	List<RequirementSubmission>  getRecruiterSubmittedCandidatesList(Long recruiterUserId,Long requirementId) throws Exception;
+
 }

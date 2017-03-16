@@ -148,6 +148,21 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmissionHistory> getReceivedApplicantsCountForReportsByVendorLocationId(Long orgLocationId,
+			Long vendorLocationId,Date startDateUTC,Date endDateUTC) {
+		Session session = this.sessionFactory.getCurrentSession();
+		if(null != startDateUTC && null != endDateUTC ){
+				String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId rs where rs.orgLocations.id = :orgLocationId and rs.vendorLocationId.id = :vendorLocationId and (rsh.createdDate >= :startDateUTC and rs.createdDate <=  :endDateUTC) ";
+				return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("vendorLocationId", vendorLocationId).setDate("startDateUTC", startDateUTC).setDate("endDateUTC", endDateUTC).setCacheable(true).list();
+		}
+		else{
+			String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId rs where rs.orgLocations.id = :orgLocationId and rs.vendorLocationId.id = :vendorLocationId and  rs.vendorLocationId <> null  ";
+			return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("vendorLocationId", vendorLocationId).setCacheable(true).list();
+		}
+		
+			}
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementSubmission> getTotalApplicants(OrgLocations orgLocation, Date startDateUTC, Date endDateUTC)
 			throws Exception {
 		
@@ -179,6 +194,24 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
         }
 		return qry.setCacheable(true).list();
 		/*return  session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();*/
+
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmission> getReceivedApplicantsCountsByVendorLocationId(Long orgLocationId,
+			Long vendorLocationId,Date startDateUTC, Date endDateUTC) {
+		Session session = this.sessionFactory.getCurrentSession();
+		if(null != startDateUTC && null != endDateUTC ){
+			String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where rs.orgLocations.id = :orgLocationId and rs.vendorLocationId.id = :vendorLocationId and  rs.vendorLocationId <> null and  (rs.createdDate >= :startDateUTC and rs.createdDate <= :endDateUTC) ";
+			return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("vendorLocationId", vendorLocationId).setDate("startDateUTC", startDateUTC).setDate("endDateUTC", endDateUTC).setCacheable(true).list();
+		}
+		else{
+			String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where rs.orgLocations.id = :orgLocationId and rs.vendorLocationId.id = :vendorLocationId and  rs.vendorLocationId <> null  ";
+			return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("vendorLocationId", vendorLocationId).setCacheable(true).list();
+		
+		}
 	}
 
 
@@ -216,4 +249,5 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		
 		//return  session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
 	}
+
 }

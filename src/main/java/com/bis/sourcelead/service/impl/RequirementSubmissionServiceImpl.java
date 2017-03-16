@@ -3561,4 +3561,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		return requirementSubmissionDao.getRecruiterSubmittedCandidatesList(recruiterUserId, requirementId);
 	}
 
+	@Override
+	public List<RequirementSubmission> getAllVendorsIdbyorgLocationId(OrgLocations orgLocation) {
+		return requirementSubmissionDao.getAllVendorsIdbyorgLocationId(orgLocation);
+	}
+
 }
