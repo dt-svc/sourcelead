@@ -205,4 +205,6 @@ public interface RequirementSubmissionService {
 	
 	Integer getRecruiterSubmittedJobsCountByStage(Long userId,String submissionStatus,Date startDate,Date endDate) throws Exception;
 
+	List<RequirementSubmission> getAllVendorsIdbyorgLocationId(OrgLocations orgLocation);
+
 }

@@ -23,4 +23,10 @@ public interface RequirementReportDao {
 
 	List<RequirementSubmissionHistory> getApplicantsCountForChart(Long orgLocationId);
 
+	List<RequirementSubmissionHistory> getReceivedApplicantsCountForReportsByVendorLocationId(Long orgLocationId,
+			Long vendorLocationId, Date startDateUTC, Date endDateUTC);
+
+	List<RequirementSubmission> getReceivedApplicantsCountsByVendorLocationId(Long orgLocationId,
+			Long vendorLocationId, Date startDateUTC, Date endDateUTC);
+
 }

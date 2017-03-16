@@ -3510,4 +3510,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		return requirementSubmissionDao.getRecruiterSubmittedJobsCountByStage(userId, submissionStatus, startDate, endDate);
 	}
 
+	@Override
+	public List<RequirementSubmission> getAllVendorsIdbyorgLocationId(OrgLocations orgLocation) {
+		return requirementSubmissionDao.getAllVendorsIdbyorgLocationId(orgLocation);
+	}
+
 }

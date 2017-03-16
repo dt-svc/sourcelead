@@ -1817,6 +1817,13 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			return count;
 		}
 
+		@Override
+		@Transactional
+		public List<RequirementSubmission> getAllVendorsIdbyorgLocationId(OrgLocations orgLocation) {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where rs.vendorLocationId <> null and rs.orgLocations.id = :orgLocation group by rs.vendorLocationId.id";
+			return  session.createQuery(query).setLong("orgLocation", orgLocation.getId()).setCacheable(true).list();
+		}
 
   }
 

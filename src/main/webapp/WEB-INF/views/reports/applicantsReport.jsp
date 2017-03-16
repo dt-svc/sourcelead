@@ -240,8 +240,8 @@ function requirementReportPagination(){
 	
 </div>
                      
-        <ul style="padding: 2px 300px 2px 0px;">
-          <li><i class="fa fa-filter"></i><span class="padFil"></span><i class="glyphicon glyphicon-play" id="status-pop"></i>|
+        <ul style="padding: 2px 300px 2px 0px;" class="Pra11">
+          <li><i class="fa fa-filter"></i><span class="padFil"></span><i class="glyphicon glyphicon-play" id="status-pop"></i>
             <div class="export_pop">
               <ul>
                 <li>PDF<i class="fa fa-file-pdf-o"></i></li>
@@ -260,11 +260,6 @@ function requirementReportPagination(){
       
 	<div class="reportsCount">
 		<ul>
-		
-
-
-
-
 			<li title="Applicants" id="applicantsli">
 				<span><i class="fa fa-users"></i></span><b id="applicantCount">0</b>
 			</li>
@@ -294,7 +289,7 @@ function requirementReportPagination(){
 </div>  
 
   <div class="repTab2">
-  	<div id="chartdiv"></div>  
+  	<div class="chatOne" id="chartdiv"></div>  
   </div>                 
       
  </div>
@@ -635,17 +630,20 @@ function getCustomReports(){
 		$(".oneB").addClass("actRE");
 		$(".repTab1").hide();
 		$(".repTab2").show();
+		$(".Pra11").css("padding","2px 0px 2px 0px");
 	});
 	$(".oneA").click(function(){
 		$(".oneB").removeClass("actRE");
 		$(".oneA").addClass("actRE");
 		$(".repTab2").hide();
 		$(".repTab1").show();
+		$(".Pra11").css("padding","2px 300px 2px 0px");
 	});		
 	</script>
 
 <script src="resources/reports/amcharts.js"></script>
 <script src="resources/reports/pie.js"></script>
+<script src="resources/reports/export.min.js"></script>
 <link rel="stylesheet" href="resources/reports/export.css" type="text/css" media="all" />
 <script src="resources/reports/light.js"></script>
   
