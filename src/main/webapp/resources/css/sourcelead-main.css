@@ -3075,11 +3075,11 @@ a.btn-addskills:hover {
 	position: fixed;
 	width: 100%;
 	height: 100%;
-	background-color: rgba(0,0,0,0.6);
+	background-color: rgba(0,0,0,0.9);
 	top: 0px;
 	left: 0px;
 	z-index: 9999;
-	display: none;
+	display:none;
 	background-image: "../images/cancel.png";
 	background-repeat: no-repeat;
 	background-position: 10% 40px;
@@ -6399,7 +6399,7 @@ margin: 5px 0 5px 8px !important;
 	margin: 5px 0px 5px 5px;
 }
 .content_widget {
-background: #fff;box-shadow: 2px 2px 0px rgba(0,0,0,0.1);border-radius: 5px;min-height: 50px;
+background: #fff;box-shadow: 2px 2px 0px rgba(0,0,0,0.1);border-radius: 5px;min-height: 90px;
 max-height: 125px;padding: 10px;position: relative;
 }
 .activeJobs div[class*="col-md-"] {
@@ -6418,7 +6418,8 @@ max-height: 125px;padding: 10px;position: relative;
 	overflow: inherit !important;
 }
 .jobs-graphview .label {
-position: absolute; top: -8px; width: 55%; right:10px; min-height: 20px; line-height: 16px; font-size: 14px; color: #fff;
+position: absolute; top: -8px; width: 55%; right:10px; min-height:20px; line-height: 12px; font-size: 14px; color: #fff;
+font-weight: normal; padding: 6px 10px; text-align: right;
 }
 .jobs-graphview .fa {
     position: relative;top: 5px;color: #fff;opacity: 0.5;
@@ -6430,42 +6431,27 @@ jobs-graphview .label-info {
     background-color: #909090;
 }
 .jobs-graphview .count{
-    width: 85px;
-height: 55px;
-padding: 5px 15px;
-border-radius: 5%;
-background: #e0e0e0;
-position: absolute;
-right: 10px;
-bottom: 10px;
-font-weight: 600;
-line-height: 45px;
-font-size: 20px;
-color: #505050;
-text-align: center;
+ min-width: 80px; height: 55px; padding: 5px 15px; border-radius: 5%; background: #e0e0e0;
+position: absolute; right: 10px; bottom: 10px; font-weight: 600;
+line-height: 45px; font-size: 20px; color: #505050; text-align: center;
 -webkit-box-shadow: 0 8px 6px -6px rgba(0,0,0,0.2);
 -moz-box-shadow: 0 8px 6px -6px rgba(0,0,0,0.2);
 box-shadow: 0 8px 6px -6px rgba(0,0,0,0.2);
-/*    -moz-box-shadow:    inset 0 0 10px rgba(0,0,0,0.5);
-   -webkit-box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
-   box-shadow:         inset 0 0 10px rgba(0,0,0,0.5);*/
+}
+.jobs-graphview img{
+    width: 50px; height: 50px; position: relative; top: 10px; margin-left: 10px;
 }
 #chartdiv {
-	width	: 100%;
-	min-height: 350px;
+	width:100%; min-height:350px;
 }
 #jobSummary {
-	width:100%;
-	min-height:350px;
+	width:100%; min-height:350px;
 }
 .referred_pop input[type=checkbox], .referred_pop input[type=radio] {
-	margin: 1px 0;
-    line-height: normal;
-    margin-right: 5px;
+	margin: 1px 0; line-height: normal; margin-right: 5px;
 }
 .zIndex {
-	z-index:999 !important;
-	position: relative;
+	z-index:999 !important; position: relative;
 }
 /*border Top*/
 .referred_pop:after {
@@ -6473,29 +6459,176 @@ box-shadow: 0 8px 6px -6px rgba(0,0,0,0.2);
     border-color: rgba(136, 183, 213, 0); border-bottom-color: #ccc; border-width: 10px; margin-left: -10px;
   }
 #statusDropDown .select-field select {
-	padding-top: 4px;
-	padding-bottom: 4px;
+	padding-top: 4px; padding-bottom: 4px;
 }
 #statusDropDown li{
 	margin-bottom: 0;
 }
 .crowdDash_btn .dt-buttons {
-top:0px !important;
-left: auto;right:225px;
+	top:0px !important; left: auto;right:225px;
 }
 .chartArea {
-	background: #fff;
-	box-sizing:border-box;
-	padding: 10px;
-	border-radius:5px;
-	margin-bottom: 15px;
-	box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+	background: #fff; box-sizing:border-box; padding: 10px; border-radius:5px;
+	margin-bottom: 15px; box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+}
+.chartArea h4{
+	margin: 0; text-align: left;
 }
 .paddingBtm {
 	padding-bottom: 8px;
 }	
 #statusDropDown {
 	position: relative; top:5px;
+}
+.cand-advsrch-popup.cand-advsrchPopup {
+	width: auto; padding: 0; overflow: inherit; top: 40px; left: 10px;
+}
+.cand-advsrch-popup.cand-advsrchPopup .close-div {
+    right: -5px; top: -5px; 
+}
+.candAdvsrchPop {
+	width:825px; min-height: 100px; height: 385px; overflow-y:visibile; overflow-x:hidden;
+	padding:15px 10px 10px 10px; box-sizing: border-box;
+}
+.candAdvsrchPop h4{
+	margin: 0; font-size: 16px; margin-bottom: 5px;
+}
+.cand-advsrch-popup.cand-advsrchPopup .form-footer {
+    min-height: 50px; line-height: 50px;
+}
+/* Evetns Calendar */
+.eventAlert .alert{
+    padding:0px 15px;
+}
+.eventAlert .alert-dismissable .close{
+    top: 5px; right: 10px;
+}
+.eventHeader {
+    background-color: #bbdefb;
+}
+.eventHeader .media-left.bg-success {
+    padding: 10px; background: #42a5f5; color: #bbdefb;
+}
+.eventHeader .media-body{
+    padding: 10px 0 5px 10px;
+}
+.eventList .media-body{
+    padding: 5px 0 5px 10px;
+}
+.eventHeader .media-body p{
+    margin-bottom: 0;
+}
+.eventHeader .media-left{
+    vertical-align: middle; width: 65px;text-align: center; padding: 5px !important; line-height: 75px;
+    float: left; height: 65px;
+    }
+.eventList .media-left {
+    vertical-align: middle; width: 65px; padding:5px !important; line-height: 20px; float: left; min-height: 100%;
+    border-right:1px solid rgba(94,94,94,0.1); position: absolute; text-align: center; font-weight: 600; color: #707070; font-size: 13px;
+}
+.eventList {
+    border: 1px solid rgba(94,94,94,0.2); border-top: 0;
+}
+.eventList:nth-child(2n+2) {
+    background: #eceff1;
+}
+.eventList .media {
+    position: relative;
+}
+.eventList .media-body {
+    width: 85%; float: left; margin-left: 65px; min-height: 65px; position: relative;
+}
+.eventList figure{
+ padding: 0 10px;   
+}
+.evennt_details {
+margin-left: 15px;
+}
+.event_details {
+    width: 86%;
+}
+.event_details p {
+    margin-bottom: 0px;
+    position: relative;
+    clear: both;
+    color: #505050;
+}
+.event_details .feedBack a {
+    width: 45px;
+    height: 45px;
+    text-align: center;
+    line-height: 45px; font-size: 20px;
+    color: #D5D5D5;
+    background: #fff;
+    border-radius: 50%;
+    transition: all 0.3s linear;
+    position: absolute; top:10px; right: 10px;
+}
+.event_details .feedBack a:hover{
+    background: #f5f5f5;
+    border-radius: 50%;
+    color: #337ab7;
+}
+#eventCalendar .ui-widget.ui-widget-content {
+    border: 1px solid #dedfe4;
+    box-shadow: none;
+    width: 100%;
+    border-radius: 0;
+    background: #ededed;
+    padding: 10px;
+}
+#eventCalendar .ui-widget-header {
+    background: #bbb !important;
+    border: none !important;
+    color: #333;
+    font-weight: bold;
+    height: 45px;
+    border-radius: 0;
+}
+#eventCalendar .ui-datepicker select.ui-datepicker-month, #eventCalendar .ui-datepicker select.ui-datepicker-year {
+    color: #202020; height: 30px; margin-top: 4px;
+}
+#eventCalendar .ui-datepicker .ui-datepicker-prev, #eventCalendar .ui-datepicker .ui-datepicker-next {
+    top: 8px;
+}
+#eventCalendar .ui-widget-content a {
+    color: #333333;
+    height: 30px;
+    line-height: 25px;
+}
+#statusDropDown {
+	position: relative; top:5px;
+}
+.monthSearch_Custom .btn_currentmonth {
+	background-color: #f60; padding: 5px 10px; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; color: #fff;
+}
+.monthSearch_Custom .fa-calendar {
+	color: #505050; font-size: 1.5em; padding: 0 5px; position: relative; top: 2px; cursor: pointer; transition:all 0.3s linear;
+}
+.monthSearch_Custom .fa-calendar:hover{
+	color: #808080;
+}
+.mask_inner {
+	position:absolute; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); top: 0px; left: 0px;
+	z-index: 9999; display: none;
+}
+.demo {
+    background: #fff; padding: 15px 15px; border: 1px solid #ededed; top:60px !important;
+	width: 98% !important; left: 5px !important; box-shadow: 0px 8px 5px #505050;
+}
+.feedback_close {
+	cursor:pointer; font-size: 30px; background-color: #ededed; color:#333;
+    position: absolute; right: 5px; padding: 0px 10px; top: 20px; border-radius: 10%; transition:all 0.3s linear;
+}
+.feedback_close:hover{
+background-color: #ccc; color:#333;
+}
+.close-btn2 {
+	right: 15px !important;
+}
+.summarySearch {
+	position:absolute; top:50px; right: 20px;
+	display: none; z-index: 99;
 }
 /* media 320px */
 @media (max-width: 320px) {
