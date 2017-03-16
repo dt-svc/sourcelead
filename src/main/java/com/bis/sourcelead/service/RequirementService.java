@@ -45,7 +45,7 @@ public interface RequirementService {
 
 	public void  approverTwoEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location,OrgLocations orgLocations) throws Exception;
 	
-	public void acceptEmailScenario(User loginUser, User approverUser, Requirement requirement,OrgLocations orgLocations) throws Exception;
+	public void acceptEmailScenario(User loginUser, User approverUser, Requirement requirement,StringBuilder location,OrgLocations orgLocations) throws Exception;
 	
 	public void mailRequirementtoManager(User loginUser, User intiatorUser, Requirement requirement,StringBuilder location,OrgLocations loginOrgLocation) throws Exception;
 	
@@ -114,6 +114,8 @@ public interface RequirementService {
 	public List<Object> getAllUniversalSearchRequirementList(OrgLocations orgLocations, String serachValue,String userRole, User user) throws Exception;
 
 	public Requirement updateRequirement(Requirement requirement) throws Exception;
+
+	public List<Requirement> getAllRequirementsByOrglocationId(Long orgLocationId)throws Exception;
 
 
 }

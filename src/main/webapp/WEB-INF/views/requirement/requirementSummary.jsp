@@ -3263,7 +3263,8 @@ function documentpaginationRejected(){
 <script>
 function rejectApplicant(submissionId,requirementId,submissionType){
 	alert
-	$("#reasonForApplicantDiv").empty()
+	$("#reasonForApplicantDiv").empty();
+	$("#reasonForReject").val("");
 	var subId = submissionId;
 	var reqId = requirementId;
 	var subType = submissionType;
@@ -3503,7 +3504,7 @@ function assignedMemberList(requirementId){
 
 <script type="text/javascript">
 function requirementRecommendations(requirementId){
-	  var sourceleadUrl = '${sourceleadUrl}';
+	var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
          type : "POST",
           url: sourceleadUrl+"/getRecommendationsCountBasedOnRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,   
@@ -3897,19 +3898,24 @@ function clientSideBar(candidateId){
 						 result = result+'</form>';
 			             result = result+'                     <div class="media-body candidate-details">';
 			             
-			             result = result+'                       <h4 class="media-heading">'+json.firstName+' '+lastName+'</h4>';
+			             result = result+' <h4 class="media-heading">'+json.firstName+' '+lastName+'</h4>';
 			            
-			             result = result+'                       <ul class="list-unstyled">';
-			             result = result+'                        <li>Type - '+json.candidateType+'</li>';
+			             result = result+'<ul class="list-unstyled">';
+			             result = result+'<li>Type - '+json.candidateType+'</li>';
+			             
 			                                                       if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
-			             result = result+'                         <li>Experience - '+json.experienceYears+' years '+json.experienceMonths+' months </li>';
+			             result = result+'<li>Experience - '+json.experienceYears+' years '+json.experienceMonths+' months </li>';
               		                                                  }else{
               		                                                	  
-              		     result = result+'                          <li>Experience - ----</li>';  
+              		     result = result+'<li>Experience - ----</li>';  
               		                                                  }
+                                                                   if(json.primarySkill != null && json.primarySkill != '' && json.primarySkill != 'undefined'){
+                	     result = result+'  <li>Primary Skill - '+json.primarySkill+'</li>';
+                              		                                   }else{
+                              		                                                	  
+                         result = result+'<li>Primary Skill - ----</li>';  
+                              		                                    }
 			             result = result+'                       </ul>';
-			             
-			             
 			             result = result+'                 <div class="clearfix">';
 			             result = result+'                 <div class="socialnetwork-details">';
 			             result = result+'                 <ul class="list-inline list-unstyled">';

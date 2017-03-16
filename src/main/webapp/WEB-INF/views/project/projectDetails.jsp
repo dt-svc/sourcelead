@@ -1,4 +1,7 @@
- <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -393,7 +396,7 @@
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '	<label>Start date <span class="text-danger">*</span></label>';
 						result = result
-								+ '	<input class="calendar" value='+json.startDateStr+' type="text" disabled="disabled">';
+								+ '	<input class="calendar" value='+json.startDateStr+' type="text" disabled="disabled" id="startDateStr1">';
 						result = result + '</div>	';
 						
 						
@@ -449,13 +452,13 @@
 
 						//Assign date of project member
 						var selected = json.startDateStr;
-						var dt = new Date(selected);
-						dt.setDate(dt.getDate());
+						var dt = toDate("#startDateStr1");
+						dt.setDate(dt.getDate() + 1);
 
 						//Main project end date
 						var projectEndDate = json.endDateStr;
 						$('#endDateStr1').datepicker({
-							dateFormat : 'yy-mm-dd',
+							dateFormat : 'dd-mm-yy',
 							changeMonth: true,
 							changeYear: true, 
 							minDate : dt,
@@ -778,3 +781,12 @@ function showLevel2Div(){
         $('#selector2').delay(2000).fadeOut('slow');
 	}
 </script> 
+
+<!-- script for converting dateformat in datepicker -->
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
+<!-- script for dateformat in datepicker End -->

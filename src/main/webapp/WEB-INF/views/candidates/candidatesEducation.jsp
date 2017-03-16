@@ -1,3 +1,6 @@
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
 <!-- these files for autocomplete with tagit -->
 
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
@@ -331,22 +334,24 @@ function addEducation(candidateId) {
 	}
 	
 	$('#startDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      onSelect: function (selected) {
-	            var dt = new Date(selected);
+	            //var dt = new Date(selected);
+	            var dt = toDate("#startDate");
 	            dt.setDate(dt.getDate() + 1);
 	            $("#endDate").datepicker("option", "minDate", dt);
 	        }
 	  });
 	  
 	  $('#endDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 	        onSelect: function (selected) {
-	            var dt = new Date(selected);
+	            //var dt = new Date(selected);
+	            var dt = toDate("#endDate");
 	            dt.setDate(dt.getDate() - 1);
 	            $("#startDate").datepicker("option", "maxDate", dt);
 	        }
@@ -526,23 +531,35 @@ function EditEducation(candidateId,candidateEducationId) {
 	function educationStartDate(){
 	}
 	
+	/* var projectStartDate = $("#startDateEdit").val();
+	var projectEndDate = $("#endDateEdit").val(); */
+	
+	var datepickerStartDate = toDate("#startDateEdit");
+	datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
+	
+	var datepickerEndDate = toDate("#endDateEdit");
+	datepickerEndDate.setDate(datepickerEndDate.getDate() - 1);
 	$('#startDateEdit').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
+	  	  maxDate: datepickerEndDate,
 	      onSelect: function (selected) {
-	            var dt = new Date(selected);
+	            //var dt = new Date(selected);
+	            var dt = toDate("#startDateEdit");
 	            dt.setDate(dt.getDate() + 1);
 	            $("#endDateEdit").datepicker("option", "minDate", dt);
 	        }
 	  });
 	  
 	  $('#endDateEdit').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
+	  	  minDate: datepickerStartDate,
 	      onSelect: function (selected) {
-	            var dt = new Date(selected);
+	            //var dt = new Date(selected);
+	            var dt = toDate("#endDateEdit");
 	            dt.setDate(dt.getDate() - 1);
 	            $("#startDateEdit").datepicker("option", "maxDate", dt);
 	        }
@@ -861,3 +878,11 @@ function clearSearchKey() {
  }
  </script>     
  
+ <!-- script for converting dateformat in datepicker -->
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
+<!-- script for dateformat in datepicker End -->

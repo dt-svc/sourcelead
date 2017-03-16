@@ -257,13 +257,4 @@ public class RequirementListController {
 			
 	 }	 
 	 
-	 @RequestMapping(value = "/applicantsListForReports")
-		public ModelAndView applicantsListForReports() throws Exception {
-		 ModelAndView model = new ModelAndView();
-		 model.addObject("sourceleadUrl", sourceleadUrl);
-		 model.setViewName("requirement/applicantsReport");
-		 return model;
-			
-	 }	 
-	 
 }

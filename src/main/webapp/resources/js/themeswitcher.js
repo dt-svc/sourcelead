@@ -3,6 +3,13 @@ $(function(){
   $(".icon-theme").click(function () {
         $(".theme-color").toggleClass("theme-color-active");
   });
+  $('html').click(function(){
+	  $(".theme-color").removeClass("theme-color-active");
+  });
+  
+  $('.icon-theme, .theme-color').click(function(event){
+	  event.stopPropagation();
+  });
     if (typeof (Storage) !== "undefined") {
         var themeColor = localStorage.getItem("themeColor");
     if(themeColor == 'dark-blue'){

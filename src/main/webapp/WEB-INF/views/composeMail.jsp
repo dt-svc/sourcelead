@@ -80,8 +80,7 @@ display: none;
             <label class="col-md-4 control-label text-info small">Saluation</label>
             <div class="col-md-8 saluation field-border">
               <select id="saluation" name="saluation">
-               <option value="Dear" selected>Dear</option>
-                <option value="Hi">Hi</option>
+                <option value="Hi" selected>Hi</option>
                 <option value="Hello">Hello</option>
               </select>
             </div>

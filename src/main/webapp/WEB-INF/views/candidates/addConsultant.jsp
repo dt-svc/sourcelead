@@ -3,6 +3,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+
+<link href="resources/css/candidate-common.css" rel="stylesheet">
+
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
@@ -25,7 +28,7 @@
 		});
 	</script>
 	 
-	<style>
+	<!-- <style>
 	
 	.er .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn){
 	width:100px;
@@ -61,7 +64,7 @@
 	.pras.req-title p{
 	bottom:-14px;
 	}
-	</style>
+	</style> -->
 
 <!-- Content Area -->
 <section class="content-wraper">
@@ -219,10 +222,10 @@
              <div class="col-xs-6 col-md-6">
              		<select class="form-control selectpicker" id="experienceYears" name="experienceYears" onchange="disableMonths();">
              		  <option value="" >Years</option>
-             		  <c:forEach begin="0" end="24" varStatus="loop">
+             		  <c:forEach begin="0" end="25" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
-             		     <option>25+</option>
+             		     
              		</select>
              </div>
              
@@ -384,6 +387,13 @@
          </div>
         </div>
         </c:if>
+        
+        <div class="form-group">
+          <label class="col-md-3">Primary Skill</label>
+          <div class="col-md-9">
+            <input type="text" class="form-control" id="primarySkill" name="primarySkill" value="${primarySkill}"  field-name="Primary Skill" data-validation="validate_Space validate_length length2-200" data-validation-optional="true">
+          </div>
+         </div>
         
         <div class="form-group">
           <label class="col-md-3">Summary</label>
@@ -643,6 +653,22 @@ function getCities(){
 		    select = $("#candidateSkills");
 		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
 		    chosen = select.data('chosen');
+		    
+		    $("#candidateSkills").chosen().change(function(event) {
+		    	 var sourceleadUrl ='${sourceleadUrl}';
+		    	var allSkills = $(event.target).val();
+		    	$.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+			        success: function(data) {
+			        	var primarySkill = data;
+			        	      $("#primarySkill").val(primarySkill);
+			        	
+			        },
+			    });
+		    	
+		    });
+		    
 		    chosen.search_field.on('keyup', function(e)
 		    {
 		    	var newSkill = this.value.replace(",","");
@@ -749,7 +775,7 @@ function getCities(){
  
  function disableMonths() {
      $("#experienceYears").change(function() {
-         if ($("#experienceYears").val() == '25+'){
+         if ($("#experienceYears").val() == '25'){
         	 $("#experienceMonths").val('');  
         	 $('#experienceMonths').selectpicker('refresh');
         	 $('#experienceMonths').attr("disabled", true);

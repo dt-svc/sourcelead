@@ -192,12 +192,10 @@ public class CandidateListRestController {
 			    	for (SearchHit hit : searchHits) {
 			    		StringBuilder json = new StringBuilder(hit.getSourceAsString());
 			    	    CandidateIndex candidateIndex = mapper.readValue(json.toString(), CandidateIndex.class);
-			    	    if(null !=candidateIndex.getUpdatedDate() && !candidateIndex.getUpdatedDate().isEmpty()){
-			    	    	String pattern = Constants.DATE_DD_MM_YYYY;
-			    	        SimpleDateFormat format = new SimpleDateFormat(pattern);
-			    	    	Date updatedDate = format.parse(candidateIndex.getUpdatedDate());
-			    	    	candidateIndex.setCandidateUpdateDateToString( Constants.DF_DMY.format(updatedDate));
-			    	        
+			    	    if(candidateIndex.getUpdatedDate() != null){
+			    	    	Date date1 = Constants.DF_YMD.parse(candidateIndex.getUpdatedDate());
+							String  updatedDate = Constants.DF_DMY.format(date1);
+			    	    	candidateIndex.setCandidateUpdateDateToString(updatedDate);
 			   			}
 			    	    candidatesList.add(candidateIndex);
 			    	}
@@ -345,6 +343,12 @@ public class CandidateListRestController {
 				if(jsonObj.has("city")  && StringUtils.isNotEmpty(jsonObj.getString("city"))){
 					boolQueryBuilder.must(QueryBuilders.matchQuery("city", jsonObj.getString("city")));
 			    }
+				
+				//primary skill
+				if(jsonObj.has("primarySkill") && StringUtils.isNotEmpty(jsonObj.getString("primarySkill"))){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("primarySkill", jsonObj.getString("primarySkill")));
+			    }
+				
 				//minExpYears && maxExpYears
 			    if(StringUtils.isNotEmpty(jsonObj.getString("minExpYears")) && StringUtils.isNotEmpty(jsonObj.getString("maxExpYears"))){
 			    	String minYears= jsonObj.getString("minExpYears").replaceAll("[^0-9\\.]+", "");
@@ -511,6 +515,8 @@ public class CandidateListRestController {
 				}
 				
 				
+				
+				
 				List<CandidateIndex> candidatesList = new ArrayList<CandidateIndex>();
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -525,11 +531,9 @@ public class CandidateListRestController {
 				    		StringBuilder json1 = new StringBuilder(hit.getSourceAsString());
 				    	    CandidateIndex candidateIndex = mapper.readValue(json1.toString(), CandidateIndex.class);
 				    	    if(candidateIndex.getUpdatedDate() != null){
-				    	    	
-				    	    	String pattern = Constants.DATE_DD_MM_YYYY;
-				    	        SimpleDateFormat format = new SimpleDateFormat(pattern);
-				    	    	Date updatedDate = format.parse(candidateIndex.getUpdatedDate());
-				    	    	candidateIndex.setCandidateUpdateDateToString( Constants.DF_DMY.format(updatedDate));
+				    	    	Date date1 = Constants.DF_YMD.parse(candidateIndex.getUpdatedDate());
+								String  updatedDate = Constants.DF_DMY.format(date1);
+				    	    	candidateIndex.setCandidateUpdateDateToString(updatedDate);
 				   			}
 				    	    candidatesList.add(candidateIndex);
 				    	}
@@ -648,7 +652,7 @@ public class CandidateListRestController {
 			Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
 			if(null != can.getCurrentRateCurrency() && null != can.getExpectedRateCurrencey()){
 				can.setCurrentRateCurrency(can.getCurrentRateCurrency());
-				can.setCurrentRateCurrency(can.getExpectedRateCurrencey());
+				can.setExpectedRateCurrencey(can.getExpectedRateCurrencey());
 			}else{
 				 if(null != countries && !countries.getCurrency().equalsIgnoreCase("")){
 				can.setCurrentRateCurrency(countries.getCurrency());	

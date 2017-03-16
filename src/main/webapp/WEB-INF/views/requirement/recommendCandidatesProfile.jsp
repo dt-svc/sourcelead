@@ -1,3 +1,6 @@
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%-- 
      @author : David Raju.
@@ -292,17 +295,17 @@ function editCandidate(candidateId){
 								result = result  +'<option value="${i}" '  + (json.experienceYears == "${i}" ? "selected" : '') +  '>${i}</option>';
 							</c:forEach>
 							
-							if(json.experienceYears == "25+"){
-								result = result  +'<option value="25+" '+ (json.experienceYears == "25+" ? "selected" : '') +'>25+</option>';
+							if(json.experienceYears == "25"){
+								result = result  +'<option value="25" '+ (json.experienceYears == "25" ? "selected" : '') +'>25</option>';
 							}else{
-								result = result  +'<option>25+</option>';
+								result = result  +'<option>25</option>';
 							}
 							
 							result = result + '</select>';
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
-							if(json.experienceYears == "25+"){
+							if(json.experienceYears == "25"){
 							result = result + '<select  class="input-sm form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths" disabled="disabled">';
 							result = result + '<option  disabled>Select Months</option>';
 							
@@ -784,6 +787,7 @@ function candidateProfile(candidateId){
 											  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 											  '.chosen-select-width'     : {width:"95%"}
 								    }
+									
 									for (var selector in config) {
 									  $(selector).chosen(config[selector]);
 									}
@@ -804,6 +808,8 @@ function candidateProfile(candidateId){
 								$(".add-skills").click(function(e){
 									 e.stopPropagation();
 								});
+								
+								
 								
 								 $(".addUser-org").click(function(){
 									 $(".edit-details").toggleClass("edit-details-active");
@@ -1250,7 +1256,7 @@ If Experience Years 25+ when months will be Disabled
 <script>
  function disableMonths() {
 	
-         if ($("#experienceYears").val() == "25+"){
+         if ($("#experienceYears").val() == "25"){
              $("#experienceMonths").attr("disabled", true);
              $("#experienceMonths").val("disabled", true);
          }else{
