@@ -35,8 +35,8 @@ public interface RequirementReportService {
 
 	List<RequirementSubmissionHistory> getApplicantsCountsByDateRange(Long id, Date startDateUTC, Date endDateUTC)throws Exception;
 
+	List<RequirementSubmission> getReceivedApplicantsCountsPerOrgLocId(Long orgLocationId, Date startDateUTC, Date endDateUTC);
+
 	List<RequirementSubmission> getAllSubmissionsByAssignTeamMember(Long orgLocationId, Set<String> userCodesList,Date startDateUTC, Date endDateUTC);
-
-
 
 }

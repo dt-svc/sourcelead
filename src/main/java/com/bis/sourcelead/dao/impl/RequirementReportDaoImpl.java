@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.TemporalType;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -154,7 +156,7 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		if(null != startDateUTC && null != endDateUTC ){
 				String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId rs where rs.orgLocations.id = :orgLocationId and rs.vendorLocationId.id = :vendorLocationId and (rsh.createdDate >= :startDateUTC and rs.createdDate <=  :endDateUTC) ";
-				return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("vendorLocationId", vendorLocationId).setDate("startDateUTC", startDateUTC).setDate("endDateUTC", endDateUTC).setCacheable(true).list();
+				return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("vendorLocationId", vendorLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
 		}
 		else{
 			String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId rs where rs.orgLocations.id = :orgLocationId and rs.vendorLocationId.id = :vendorLocationId and  rs.vendorLocationId <> null  ";
@@ -187,10 +189,10 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 				qry.setLong(str, (long) params.get("orgLocationId"));
 			}
 			if(str.equalsIgnoreCase("startDateUTC") ){
-				qry.setDate(str, (Date) params.get("startDateUTC"));
+				qry.setParameter(str, (Date) params.get("startDateUTC"));
 			}
 			if(str.equalsIgnoreCase("endDateUTC") ){
-				qry.setDate(str, (Date) params.get("endDateUTC"));
+				qry.setParameter(str, (Date) params.get("endDateUTC"));
 			}
         }
 		return qry.setCacheable(true).list();
@@ -206,7 +208,7 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		if(null != startDateUTC && null != endDateUTC ){
 			String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where rs.orgLocations.id = :orgLocationId and rs.vendorLocationId.id = :vendorLocationId and  rs.vendorLocationId <> null and  (rs.createdDate >= :startDateUTC and rs.createdDate <= :endDateUTC) ";
-			return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("vendorLocationId", vendorLocationId).setDate("startDateUTC", startDateUTC).setDate("endDateUTC", endDateUTC).setCacheable(true).list();
+			return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("vendorLocationId", vendorLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
 		}
 		else{
 			String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where rs.orgLocations.id = :orgLocationId and rs.vendorLocationId.id = :vendorLocationId and  rs.vendorLocationId <> null  ";
@@ -240,10 +242,10 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 				qry.setLong(str, (long) params.get("submissionId"));
 			}
 			if(str.equalsIgnoreCase("startDateUTC") ){
-				qry.setDate(str, (Date) params.get("startDateUTC"));
+				qry.setParameter(str, (Date) params.get("startDateUTC"));
 			}
 			if(str.equalsIgnoreCase("endDateUTC") ){
-				qry.setDate(str, (Date) params.get("endDateUTC"));
+				qry.setParameter(str, (Date) params.get("endDateUTC"));
 			}
         }
 		return qry.setCacheable(true).list();
@@ -254,12 +256,25 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmission> getReceivedApplicantsCountsPerOrgLocId(Long orgLocationId, Date startDateUTC,Date endDateUTC) {
+		Session session = this.sessionFactory.getCurrentSession();
+		if(null != startDateUTC && null != endDateUTC ){
+			String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where rs.orgLocations.id = :orgLocationId and  rs.vendorLocationId <> null  and  (rs.createdDate >= :startDateUTC and rs.createdDate <= :endDateUTC) ";
+			return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
+
+		}
+		else{
+			String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where rs.orgLocations.id = :orgLocationId and  rs.vendorLocationId <> null ";
+			return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementSubmission> getAllSubmissionsByAssignTeamMember(Long orgLocationId,Set<String> userCodesList, Date startDateUTC, Date endDateUTC) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementSubmission rs where rs.createdBy IN (:userCodesList)";
 		return session.createQuery(query).setParameterList("userCodesList", userCodesList).setCacheable(true).list();
 	}
-
-
 
 }
