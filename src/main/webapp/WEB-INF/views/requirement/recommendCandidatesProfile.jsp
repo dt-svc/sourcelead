@@ -787,6 +787,7 @@ function candidateProfile(candidateId){
 											  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 											  '.chosen-select-width'     : {width:"95%"}
 								    }
+									
 									for (var selector in config) {
 									  $(selector).chosen(config[selector]);
 									}
@@ -807,6 +808,8 @@ function candidateProfile(candidateId){
 								$(".add-skills").click(function(e){
 									 e.stopPropagation();
 								});
+								
+								
 								
 								 $(".addUser-org").click(function(){
 									 $(".edit-details").toggleClass("edit-details-active");
