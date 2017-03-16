@@ -24,6 +24,9 @@ public interface RequirementReportDao {
 
 	List<RequirementSubmissionHistory> getApplicantsCountForChart(Long orgLocationId);
 
+	Integer getRequirementStagesCountsForReports(Long orgLocId, String requirementStatus);
+
+	List<Requirement> getRequirementStageReports(OrgLocations orgLocation, String status) throws Exception;
 
 	List<RequirementSubmissionHistory> getReceivedApplicantsCountForReportsByVendorLocationId(Long orgLocationId,
 			Long vendorLocationId, Date startDateUTC, Date endDateUTC);

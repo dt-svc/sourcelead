@@ -45,6 +45,13 @@ public class RequirementReportServiceImpl implements RequirementReportService{
 		return requirementReportDao.getApplicantsCountForChart(orgLocationId);
 	}
 	@Override
+	public Integer getRequirementStagesCountsForReports(Long orgLocId, String requirementStatus) throws Exception {
+		return requirementReportDao.getRequirementStagesCountsForReports(orgLocId, requirementStatus);
+	}
+	@Override
+	public List<Requirement> getRequirementStageReports(OrgLocations orgLocation, String Status) throws Exception {
+		return requirementReportDao.getRequirementStageReports(orgLocation,Status);
+	@Override
 	public List<RequirementSubmissionHistory> getReceivedApplicantsCountForReportsByVendorLocationId(Long orgLocationId,
 			Long vendorLocationId,Date startDateUTC, Date endDateUTC) {
 		return requirementReportDao.getReceivedApplicantsCountForReportsByVendorLocationId(orgLocationId,vendorLocationId,startDateUTC,endDateUTC);

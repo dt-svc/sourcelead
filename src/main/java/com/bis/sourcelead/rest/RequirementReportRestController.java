@@ -33,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.beans.ApplicantReport;
+import com.bis.sourcelead.beans.RequirementStagesReport;
 import com.bis.sourcelead.beans.AssignedRequirementReports;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -48,7 +49,6 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TimeZoneService;
-import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 /**
@@ -764,7 +764,51 @@ public class RequirementReportRestController {
 			}
 			return reportsList;
 	 }
-
+	 
+	 @RequestMapping(value = "/getRequirementCountBasedOnStatus")
+	 public String getRequirementCountBasedOnStatus(@RequestParam(value="status", required=false) String status, HttpServletRequest request,HttpServletResponse response) throws Exception{
+		 
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 RequirementStagesReport requirementStagesReport = new RequirementStagesReport();
+		 String reqStageReport = "";
+		 if(null == status){
+			 int newCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "NEW");
+			 int draftCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "DRAFT");
+			 int submittedCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "SUBMITTED");
+			 int approvedCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "APPROVED");
+			 int rejectedCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "REJECTED");
+			 int openCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "OPEN");
+			 int onholdCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "ONHOLD");
+			 int filledclosedCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "FILLEDCLOSED");
+			 int cancelCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "CANCEL");
+			 int unfilledclosedCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "UNFILLEDCLOSED");
+			 
+			 requirementStagesReport.setCancelRequirementsCount(cancelCount);
+			 requirementStagesReport.setDraftRequirementsCount(draftCount);
+			 requirementStagesReport.setFilledclosedRequirementsCount(filledclosedCount);
+			 requirementStagesReport.setNewRequirementsCount(newCount);
+			 requirementStagesReport.setOnholdRequirementsCount(onholdCount);
+			 requirementStagesReport.setOpenRequirementsCount(openCount);
+			 requirementStagesReport.setSubmittedRequirementsCount(submittedCount);
+			 requirementStagesReport.setUnfilledclosedRequirementsCount(unfilledclosedCount);
+			 requirementStagesReport.setApprovedRequirementsCount(approvedCount);
+			 requirementStagesReport.setRejectedRequirementsCount(rejectedCount);
+			 
+			 reqStageReport = commonUtil.toJSON(requirementStagesReport);
+		 }else{
+			 List<Requirement> reqList = requirementReportService.getRequirementStageReports(orgLocation,status);
+			 reqStageReport = commonUtil.toJSON(reqList);
+		 }
+		 return reqStageReport;
+		 
+	 }
+	 
+	 @RequestMapping(value = "/getRequirementListBasedOnStatus")
+	 public String getRequirementListBasedOnStatus(@RequestParam(value="status", required=false) String status, HttpServletRequest request,HttpServletResponse response) throws Exception{
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations"); 
+		 List<Requirement> reqList = requirementReportService.getRequirementStageReports(orgLocation,status);
+		 return commonUtil.toJSON(reqList);
+	 }
 
 	@RequestMapping(value = "/getDayWiseAppRecReports")
 	public String getDayWiseAppRecReports(@RequestParam(value="reportType", required=false) String reportType,
@@ -1316,4 +1360,5 @@ public class RequirementReportRestController {
 		return currentDateInTimezone = standardFormat.format(converteDate);
 		
 	}
+
 }

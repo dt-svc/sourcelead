@@ -47,7 +47,16 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 model.setViewName("reports/applicantsReceivedReport");
 		 return model;
 			
+	 }	 
+	 
+	 @RequestMapping(value = "/requirementStagesListForReports")
+		public ModelAndView requirementStagesListForReports() throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/requirementStageReports");
+		  return model;		
 	 }	
+
 	 /**
 	  * returns requirement assign to reports jsp page
 	  * @return ModelAndView
@@ -61,7 +70,6 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 model.addObject("userList", userList);
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 model.setViewName("reports/requirementAssignToReports");
-		 return model;
-			
+		 return model;	
 	 }	
 }
