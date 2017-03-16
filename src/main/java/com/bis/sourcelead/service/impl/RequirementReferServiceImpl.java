@@ -147,6 +147,7 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 			referContacts.setUpdatedDate(new Date());
 			referContacts.setCreatedBy(user.getUserCode());
 			referContacts.setUpdatedBy(user.getUserCode());
+			referContacts.setContactSource(Constants.CROWD_SOURCING_SOURCE_SELF);
 			
 			referContactsDao.addReferContacts(referContacts);
 			
@@ -182,7 +183,7 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		 globalVarsMap.put("professinalName", professionalName);
 		 globalVarsMap.put("referedProfessionalName", user.getUserName());
 		 StringBuilder loginBuilder = new StringBuilder();
-		 globalVarsMap.put("registerLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("referRequirementToProfessional?requirementUUID=").append(requirement.getRequirementUUID()).append("&contactUUID=").append(contactUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 globalVarsMap.put("registerLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("referRequirementToProfessional?requirementUUID=").append(requirement.getRequirementUUID()).append("&contactUUID=").append(contactUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Register</div></a>").toString());
 		
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());

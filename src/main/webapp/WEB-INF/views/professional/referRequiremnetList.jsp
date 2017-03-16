@@ -28,54 +28,49 @@ $(document).ready(function() {
       <div class="timesheet_head candidateHead">
           <ul>
             <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>
-              <!-- <div class="export_pop">
-                <ul>
-                  <li>PDF<i class="fa fa-file-pdf-o"></i></li>
-                  <li>Excel<i class="fa fa-file-excel-o"></i></li>
-                  <li>Word<i class="fa fa-file-word-o"></i></li>
-                </ul>
-              </div> -->
             </li>
             
             <li><a id="addPop" href="javascript:void(0)"><i class="fa fa-plus"></i>Add Contact</a>
             
-				<!-- <div class="referWrap">
+            <form:form id="addcontact_form"  name="addcontact_form" method="post"> 
+				<div class="referWrap">
+				<div id="loading"></div> 
 				  <div class="referWrapInn">
-					<div class="form-group col-md-6">
-					  <label class="col-md-12" for="Project Id">First Name</label>
+					<div class="form-group col-md-6" id="firstNameDiv">
+					  <label class="col-md-12">First Name *</label>
 					  <div class="col-md-12">
-						<input type="text" class="form-control" name="" value="">
-						<span class="hidden">Enter Project Id</span> </div>
+						<input type="text" class="form-control" name="firstName" id="firstName" field-name="First Name" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
+						<span class="hidden"></span> </div>
 					</div> 
-					<div class="form-group col-md-6">
-					  <label class="col-md-12" for="Project Id">Last Name</label>
+					<div class="form-group col-md-6" id="lastNameDiv">
+					  <label class="col-md-12">Last Name</label>
 					  <div class="col-md-12">
-						<input type="text" class="form-control" name="" value="">
-						<span class="hidden">Enter Project Id</span> </div>
+						<input type="text" class="form-control" name="lastName" id="lastName" field-name="Last Name" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
+						<span class="hidden"></span> </div>
 					</div> 
-					<div class="form-group col-md-6">
-					  <label class="col-md-12" for="Project Id">Email Id *</label>
+					<div class="form-group col-md-6" id="emailDiv">
+					  <label class="col-md-12">Email Id *</label>
 					  <div class="col-md-12">
-						<input type="text" class="form-control" name="" value="">
-						<span class="hidden">Enter Project Id</span> </div>
+						<input type="text" class="form-control" name="email" id="email" onblur="validateContactEmail()"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">
+						<span class="hidden"></span> </div>
 					</div> 
-					<div class="form-group col-md-6">
-					  <label class="col-md-12" for="Project Id">Phone *</label>
-					  <div class="col-md-12">
-						<input type="text" class="form-control" name="" value="">
-						<span class="hidden">Enter Project Id</span> </div>
+					<div class="form-group col-md-6" id="phoneDiv">
+					  <label class="col-md-12">Phone </label>
+					  <div class="col-md-12" >
+						<input type="text" class="form-control"  name="phone" id="phone" field-name="Phone" data-validation-optional="true" data-validation="validate_Space validate_phone validate_length length9-20">
+						<span class="hidden"></span> </div>
 					</div> 
-					<div class="col-md-12 mt5 clearfix">            
+					<div class="col-md-12 mt10 clearfix">            
 					<div class="pull-right">
-					  <input type="button" value="Add Contact" class="btn btn-primary">
-					  <input type="button" value="Cancel" class="btn btn-default ml10 canBtn">
+					  <input type="submit" value="Add Contact" id="add_contact"  class="btn btn-primary">
+					  <input type="button" value="Cancel" onclick="flushContactDetails()" class="btn btn-default ml10 canBtn">
 					</div>    
 					</div> 
 
 				  <div class="clearfix"></div>
 				  </div>
-			  </div> -->
-
+			  </div> 
+		</form:form>
             </li>
           </ul>
           <div class="clearfix"></div>
@@ -85,6 +80,10 @@ $(document).ready(function() {
 	</div>
   
 </section>
+
+
+<jsp:include page="../masterFooter.jsp" />
+<div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div> 
 
 <script>
 function refercontactList(){
@@ -102,6 +101,7 @@ function refercontactList(){
 			   	 result = result +'          <th>Name</th>';
 			   	 result = result +'          <th class="emailWidth">Email Id</th>';
 			   	 result = result +'          <th>Phone No</th>';
+			   	 result = result +'          <th>Source</th>';
 			   	 result = result +'          <th>Action</th>';
 			   	 result = result +'        </tr>';
 			   	result = result + '	     </thead>';
@@ -117,6 +117,7 @@ function refercontactList(){
 				   	 result = result +'          <td><div><span class="mid-span">'+report.firstName+'</span></div></td>';
 				   	 result = result +'          <td><div><span class="mid-span">'+report.contactUserEmail+'</span></div></td>';
 				   	 result = result +'          <td><div><span class="mid-span">'+contactUserPhone+'</span></div></td>';
+				   	result = result +'          <td><div><span class="mid-span">'+report.contactSource+'</span></div></td>';
 				   	 result = result +'          <td><div><i class="glyphicon glyphicon-edit"></i><i class="glyphicon glyphicon-trash"></i></div></td>';
 				   	 result = result +'        </tr>';
 			   }
@@ -148,4 +149,160 @@ function refercontactpagenation(){
     } );
 }
 </script>
-<jsp:include page="../masterFooter.jsp" />
+
+
+<script>
+function validateContactEmail(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var contactEmail = document.getElementById("email").value;
+	if(contactEmail){
+		  $("#add_contact").attr("disabled", "disabled");
+			$.ajax({
+			   	type: "GET",
+			       url: sourceleadUrl+"/validateContactEmail?${_csrf.parameterName}=${_csrf.token}&contactEmail="+contactEmail,
+			       success: function(data) {
+			    		if(data != null && data != ''){
+						     if(data == 'Invalid'){
+						    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+						    	    $("input#email").after("<p class='jquery_form_error_message'>"+contactEmail+" is already added as Contact</span>");
+				    				$('input#email').attr('record-exist','yes');
+				    				$('input#email').attr('record-exist-errorMsg',contactEmail+' is already added as Contact'); 
+						     } 
+						     
+					       	else{
+					       		 $("#add_contact").removeAttr("disabled");
+								 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+				        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+								 $( "#add_contact" ).removeAttr("style");
+								 $( "#add_contact" ).click(function() {
+								 if ($(this).validate(false, validationSettings)){
+								 }
+								});
+					       	}
+				       	}
+			    	   
+			      },
+			       
+			}); 
+	}
+}
+</script>
+
+
+<script type="text/javascript">
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   };  
+         $('body').on('submit', '#addcontact_form', function(e){
+        	  if ($(this).validate(false, validationSettings)){
+        		    e.preventDefault(); 
+	          		
+        		    var frm = $('#addcontact_form').serializeFormJSON();
+        	        var con = JSON.stringify(frm);
+        	        con = con.replace(/[{}]/g, "");
+        	        
+        	        //It will escape all the special characters
+        	        var jsonData = encodeURIComponent(con);
+				    
+	          		var sourceleadUrl ='${sourceleadUrl}';
+	          		
+	          		 $("#add_contact").attr("disabled", "disabled");
+	          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	          		
+	          	     $.ajax({
+	     		    	type: "POST",
+	     		    	 url: sourceleadUrl+"/addCrowdSourcingUserContact?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+	     		        success: function(data) {
+	     		        	location.replace(sourceleadUrl+ "/referRequirementList");
+	     		        },
+	     		    }); 
+                
+            	    return true;
+            }
+            else{
+            	return false;	
+               }
+            });
+         $('#addcontact_form').showHelpOnFocus();
+         $('#addcontact_form').validateOnBlur(false, validationSettings); 
+            
+     
+</script> 
+
+
+<script>
+function flushContactDetails(){
+	$('#firstName').val('');
+	$('#lastName').val('');
+	$('#email').val('');
+	$('#phone').val('');
+	$('#firstNameDiv').find('p.jquery_form_error_message').remove();
+	$('#lastNameDiv').find('p.jquery_form_error_message').remove();
+	$('#emailDiv').find('p.jquery_form_error_message').remove();
+	$('#phoneDiv').find('p.jquery_form_error_message').remove();
+}
+</script>
+
+
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>
+ 
+ <script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+
+        
+</script> 
+ 
+
+
+
+<script>	
+    $("#addPop").click(function(){
+		$(this).parent("li").find(".referWrap").toggleClass("referWrapActive");
+	});
+    $(".canBtn").click(function(){
+		$(".referWrap").removeClass("referWrapActive");
+	});		
+</script> 	
+
+
+<script>
+// Back To Top 
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 200) {
+            $('.backtotop').fadeIn('slow');
+        } else {
+            $('.backtotop').fadeOut('slow');
+        }
+    });
+    $('.backtotop').click(function() {
+        $("html, body").animate({scrollTop: 0}, 500);
+        return false;
+    });
+</script>

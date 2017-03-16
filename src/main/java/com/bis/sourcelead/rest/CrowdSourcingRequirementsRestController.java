@@ -914,6 +914,27 @@ public class CrowdSourcingRequirementsRestController {
 		}
 	 
 	 
+	 
+	 @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+		@RequestMapping(value = "/addCrowdSourcingUserContact", method = RequestMethod.POST)
+		public String addCrowdSourcingUserContact(@RequestParam(value = "json", required = false) String json,
+				HttpServletRequest request,HttpServletResponse response)
+				throws Exception {
+
+			String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);
+
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			
+			referContactsService.saveuserContacts(user, orgLocations, jsonObj);
+						
+			return "success";
+
+		}
+	 
+	 
 	 @RequestMapping(value = "/getRecruiterCandidatesList", method = RequestMethod.POST)
 		public @ResponseBody String getRecruiterCandidatesList(
 				@RequestParam(value = "requirementId", required = false) Long requirementId,
