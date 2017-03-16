@@ -15,7 +15,7 @@ public class PrimarySkillUtil {
 		
 		String[] dotNetSkills = {".Net",".NET(C#&ASP.NET)",".NETFramework","ASP.NetAJAX","ASP.NetandMVCFramework","ASP.NETFramework","C#.NET","SQL Server"};
 		
-		String[] testingSkills = {"Software Testing","IntegrationTesting","PerformanceTesting","UnitTesting","QTP","Selenium","Jmeter"};
+		String[] testingSkills = {"Software Testing","IntegrationTesting","PerformanceTesting","UnitTesting","QTP","Selenium","Jmeter","Automation Testing","Manual Testing"};
 		
 		String[] mainFrameSkills = {"Mainframe","MainframeDB2"};
 		
