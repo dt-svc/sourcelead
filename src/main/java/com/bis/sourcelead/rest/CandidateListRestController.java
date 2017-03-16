@@ -344,6 +344,11 @@ public class CandidateListRestController {
 					boolQueryBuilder.must(QueryBuilders.matchQuery("city", jsonObj.getString("city")));
 			    }
 				
+				//primary skill
+				if(jsonObj.has("primarySkill") && StringUtils.isNotEmpty(jsonObj.getString("primarySkill"))){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("primarySkill", jsonObj.getString("primarySkill")));
+			    }
+				
 				//minExpYears && maxExpYears
 			    if(StringUtils.isNotEmpty(jsonObj.getString("minExpYears")) && StringUtils.isNotEmpty(jsonObj.getString("maxExpYears"))){
 			    	String minYears= jsonObj.getString("minExpYears").replaceAll("[^0-9\\.]+", "");
@@ -508,6 +513,8 @@ public class CandidateListRestController {
 					}
 					boolQueryBuilder.must(skillBoolQueryBuilder);
 				}
+				
+				
 				
 				
 				List<CandidateIndex> candidatesList = new ArrayList<CandidateIndex>();

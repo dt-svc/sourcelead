@@ -561,7 +561,9 @@ function allApplicantsCount(reportType,startDate,endDate){
           	$("#rejectedCount").html(json.rejectedSum);  
 		}
     	if($(".oneB" ).hasClass( "actRE" )){
-     		getApplicantBarChat(json.applicantsSum,json.shortlistedSum,json.interviewsSum,json.submitToClientCount,json.offeredSum,json.rejectedSum,json.requestSentSum);
+
+     	getApplicantBarChat(json.applicantsSum,json.shortlistedSum,json.interviewsSum,json.submitToClientSum,json.offeredSum,json.rejectedSum,json.requestSentSum);
+
        	 
     	}
    	
@@ -714,20 +716,7 @@ function getCustomReports(){
 	     });
      }
      </script> 
-<script>
-function allApplicantsCountForChart(){
-	var sourceleadUrl = '${sourceleadUrl}';
-	 $.ajax({
-       type : "POST",
-        url: sourceleadUrl+"/getApplicantsCountForChart?${_csrf.parameterName}=${_csrf.token}",        
-        success :function(data) { 
-       	 var json = JSON.parse(data);
-       	getApplicantBarChat(json.applicantsCount,json.shortlisted,json.interviewCount,json.submitToClientCount,json.offeredCount,json.rejectedCount,json.requestSentCount);
-       	 /* $("#applicantCount").html(json);  */
-        },
-	  });
-}
-</script>
+
 
 <script>
 function getDefaultChart(){

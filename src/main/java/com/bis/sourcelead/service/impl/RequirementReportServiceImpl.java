@@ -53,5 +53,14 @@ public class RequirementReportServiceImpl implements RequirementReportService{
 			Long vendorLocationId,Date startDateUTC, Date endDateUTC) {
 		return requirementReportDao.getReceivedApplicantsCountsByVendorLocationId(orgLocationId,vendorLocationId,startDateUTC,endDateUTC);
 	}
+	@Override
+	public List<RequirementSubmission> getTotalApplicants(OrgLocations orgLocation, Date startDateUTC, Date endDateUTC)throws Exception {
+		return requirementReportDao.getTotalApplicants(orgLocation,startDateUTC,endDateUTC);
+	}
+	@Override
+	public List<RequirementSubmissionHistory> getApplicantsCountsByDateRange(Long submissionId, Date startDateUTC,Date endDateUTC) throws Exception {
+		return requirementReportDao.getApplicantsCountsByDateRange(submissionId,startDateUTC,endDateUTC);
+
+	}
 
 }

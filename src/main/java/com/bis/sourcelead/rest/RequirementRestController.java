@@ -260,6 +260,19 @@ public class RequirementRestController {
 
 		RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirementId, loginUser.getId());
 	    
+		
+		//  This for the Requirement Location 
+		StringBuilder location = new StringBuilder();
+		if(null != requirement.getCity() && !requirement.getCity().equalsIgnoreCase("")){
+			location.append(requirement.getCity()).append(" ,");
+		 }
+		if(null != requirement.getState() && !requirement.getState().equalsIgnoreCase("")){
+			location.append(requirement.getState()).append(" ,");
+		 }
+		
+		 location.append(requirement.getCountry()).append(" ");
+		
+		
 		// requirement created user
 					User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
 
@@ -290,9 +303,10 @@ public class RequirementRestController {
 									}
 								// this is for sending email to requirement initiator
 								if (status.equalsIgnoreCase("APPROVED")) {
-									requirementService.acceptEmailScenario(loginUser, intiatorUser, requirement, orgLocation);
+									
+									requirementService.acceptEmailScenario(loginUser, intiatorUser, requirement, location ,orgLocation);
 								} else if (status.equalsIgnoreCase("REJECTED")) {
-									requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, null, reason,orgLocation);
+									requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, location, reason,orgLocation);
 								}
 								 /*This logic is to send mail to assigned team members after approver accepted the requirement request(parallel approver)*/
 								RequirementApproverHierarchy hierarchy = requirementApproverHierarchyService.getApproverHierarchyByRequirementId(requirementId);
@@ -311,7 +325,7 @@ public class RequirementRestController {
 								if (status.equalsIgnoreCase("APPROVED")) {
 									if (null != level2approver) {
 										// this is for sending email to second level approver
-										requirementService.approverTwoEmailScenario(loginUser, approverUser, requirement, null,	orgLocation);
+										requirementService.approverTwoEmailScenario(loginUser, approverUser, requirement, location,	orgLocation);
 									}
 									requirementApproverHierarchy
 											.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
@@ -319,7 +333,7 @@ public class RequirementRestController {
 									// this is for sending email to requirement initiator
 									requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
 									requirementApproverHierarchy.setRejectedReason(reason);
-									requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, null, reason,orgLocation);
+									requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, location, reason,orgLocation);
 			
 								}
 								requirementApproverHierarchy.setUpdatedBy(loginUser.getUserCode());

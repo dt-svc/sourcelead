@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -73,6 +74,16 @@ public class RequirementAssignToServiceImpl implements RequirementAssignToServic
 	@Override
 	public RequirementAssignTo getRequirementAssignToByRequirementIdandAssignedUserId(Long assignedUserId,Long requirementId) throws Exception {
 		return requirementAssignToDao.getRequirementAssignToByRequirementIdandAssignedUserId(assignedUserId,requirementId);
+	}
+
+	@Override
+	public List<RequirementAssignTo> getAllAssignedRequirementByOrglocationId(Long orgLocationId) {
+		return requirementAssignToDao.getAllAssignedRequirementByOrglocationId(orgLocationId);
+	}
+
+	@Override
+	public List<RequirementAssignTo> getAllAssignedRequirementByDateRange(Long orgLocationId, String userId,Date startDateUTC, Date endDateUTC) throws Exception {
+		return requirementAssignToDao.getAllAssignedRequirementByDateRange(orgLocationId,userId,startDateUTC,endDateUTC);
 	}
 	
 }

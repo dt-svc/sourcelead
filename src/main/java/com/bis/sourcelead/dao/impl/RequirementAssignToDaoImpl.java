@@ -1,6 +1,9 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -188,6 +191,56 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 			requirementAssignTo = (RequirementAssignTo) requirementAssignToList.iterator().next();
 		}
 		return requirementAssignTo;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<RequirementAssignTo> getAllAssignedRequirementByOrglocationId(Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementAssignTo  rato left join fetch rato.teamId team left join fetch rato.requirementId requirement where requirement.orgLocationId.id = :orgLocationId";
+		return  session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<RequirementAssignTo> getAllAssignedRequirementByDateRange(Long orgLocationId, String userId,Date startDateUTC, Date endDateUTC) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		Map<String, Object> params = new HashMap<String,Object>();
+		String subQuery = "";
+		if(null != orgLocationId){
+			params.put("orgLocationId", orgLocationId);
+		}
+		if(null != startDateUTC && null != endDateUTC){
+			params.put("startDateUTC", startDateUTC);
+			params.put("endDateUTC", endDateUTC);
+			subQuery = "and rato.createdDate >= :startDateUTC and rato.createdDate <= :endDateUTC";
+		}
+		if(null != userId){
+			Long usrId = Long.parseLong(userId);
+			params.put("usrId", usrId);
+			subQuery = subQuery + " and rato.assignUserId.id = :usrId";
+		}
+		String query = "from RequirementAssignTo  rato left join fetch rato.teamId team left join fetch rato.requirementId requirement where requirement.orgLocationId.id = :orgLocationId "+subQuery;
+		Query qry = session.createQuery(query);
+		for (String str : qry.getNamedParameters())
+        {
+			if(str.equalsIgnoreCase("orgLocationId") ){
+				qry.setLong(str, (long) params.get("orgLocationId"));
+			}
+			if(str.equalsIgnoreCase("startDateUTC") ){
+				qry.setDate(str, (Date) params.get("startDateUTC"));
+			}
+			if(str.equalsIgnoreCase("endDateUTC") ){
+				qry.setDate(str, (Date) params.get("endDateUTC"));
+			}
+			if(str.equalsIgnoreCase("usrId") ){
+				qry.setLong(str, (long) params.get("usrId"));
+			}
+        }
+		 return qry.setCacheable(true).list();
 	}
 }
 
