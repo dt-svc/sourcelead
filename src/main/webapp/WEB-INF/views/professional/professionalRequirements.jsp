@@ -581,13 +581,14 @@ function requirementsList(offset){
 			 					jobId = requirements.jobId+" - "	
 			 				}
 			 				
+			 				
 			 				if(requirements.minExperience != 'undefined' && requirements.maxExperience == 'undefined'){
 			 					experience = requirements.minExperience+" Years";
 			 				}
 			 				else if(requirements.minExperience == 'undefined' && requirements.maxExperience != 'undefined'){
 			 					experience = requirements.maxExperience+" Years";
 			 				}
-			 				else if(requirements.minExperience != null && requirements.maxExperience != null){
+			 				else if(requirements.minExperience != '' && requirements.maxExperience != ''){
 			 					experience = requirements.minExperience+" to "+requirements.maxExperience+" Years";
 			 				}else{
 			 					experience = 'No Data';
@@ -600,14 +601,12 @@ function requirementsList(offset){
 			 				}
 			 				
 			 				if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined'){
-			 					rate = requirements.rate+" "+requirements.rateType +' / ';
+			 					rate = requirements.rate+" / "+requirements.rateType+" "+requirements.currentRateCurrency;
+			 				}else{
+			 					rate = 'No Data';
 			 				}
 			 				
-			 				if(requirements.currentRateCurrency != null && requirements.currentRateCurrency != '' && requirements.currentRateCurrency != 'undefined'){
-			 					currentRateCurrency = requirements.currentRateCurrency;
-			 				}else{
-			 					currentRateCurrency = 'No Data';
-			 				}
+			 				
 			 				
 			 				result = '<section class="openCta">';
 			 				result = result +'<div class="OpenJob">';
@@ -617,7 +616,7 @@ function requirementsList(offset){
 			 				result = result +'<b><i class="fa fa-clock-o"></i>'+jobType+'</b>';
 			 				result = result +'<b><i class="fa fa-briefcase"></i>'+experience+'</b>';
 			 				result = result +'<b><i class="fa fa-map-marker"></i>'+location+'</b>';
-			 				result = result +'<b><i class="fa fa-money"></i>'+rate+' '+currentRateCurrency+'</b>';
+			 				result = result +'<b><i class="fa fa-money"></i>'+rate+'</b>';
 			 				result = result +'</span>';
 			 				result = result +'<h5>';
 			 				result = result +'<strong>Skills :</strong>';
@@ -861,7 +860,7 @@ function searchRequirement(offset){
 									 				else if(requirements.minExperience == 'undefined' && requirements.maxExperience != 'undefined'){
 									 					experience = requirements.maxExperience+" Years";
 									 				}
-									 				else if(requirements.minExperience != null && requirements.maxExperience != null){
+									 				else if(requirements.minExperience != '' && requirements.maxExperience != ''){
 									 					experience = requirements.minExperience+" to "+requirements.maxExperience+" Years";
 									 				}else{
 									 					experience = 'No Data';
@@ -874,7 +873,7 @@ function searchRequirement(offset){
 									 				}
 									 				
 									 				if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined'){
-									 					rate = requirements.rate+" / "+requirements.rateType;
+									 					rate = requirements.rate+" / "+requirements.rateType+" "+requirements.currentRateCurrency;
 									 				}else{
 									 					rate = 'No Data';
 									 				}
