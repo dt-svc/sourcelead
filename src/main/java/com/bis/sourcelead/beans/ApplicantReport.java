@@ -40,6 +40,10 @@ public class ApplicantReport {
 	private int offeredSum;
 	private int rejectedSum;
 	
+	
+	// applicant received reports
+	
+	
 
 	public String getOrgName() {
 		return orgName;

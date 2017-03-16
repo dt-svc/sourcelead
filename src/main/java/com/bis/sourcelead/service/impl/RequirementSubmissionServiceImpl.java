@@ -70,11 +70,13 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.SubmissionXls;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
@@ -83,6 +85,7 @@ import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.SubmissionXlsService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -177,6 +180,12 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	
 	@Autowired
 	RequirementReferDao requirementReferDao;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
+	
+	@Autowired
+	TimeZoneService timeZoneService;
 	
 	@Override
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
@@ -893,8 +902,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 
 	@Override
-	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId, String submissionStatus, String dateRange,String userType,User user) {
-		return requirementSubmissionDao.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(orgLocationsId,submissionStatus,dateRange,userType,user);
+	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId, String submissionStatus, String dateRange,String userType,User user, Date startUTCDate, Date endUTCDate) {
+		return requirementSubmissionDao.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(orgLocationsId,submissionStatus,dateRange,userType,user,startUTCDate,endUTCDate);
 	}
 
 	//to get candidates for submit to client
@@ -2370,15 +2379,19 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		
         
         List<RequirementSubmission> submittedApplicantsList =  requirementSubmissionDao.getApplicantsByStatus(orgLocationsId, user, status);
-        
+        OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationsId);
+        Timezone timezone = null;
+		if(null != orgLoc.getTimezone()){
+	    	 timezone = timeZoneService.getTimezone(orgLoc.getTimezone().getId());
+		 }
         for(RequirementSubmission reqsub :submittedApplicantsList){
-            
+        	RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(reqsub.getId());
         	StringBuilder sb = new  StringBuilder();
-        	if(reqsub.getCandidate().getLastName() != null && !" ".equalsIgnoreCase(reqsub.getCandidate().getLastName())){
+        	if(reqsub.getCandidate().getLastName() != null && !" ".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
 	        		
-	                reqsub.setCandidateName(sb.append(reqsub.getCandidate().getFirstName()).append(" ").append(reqsub.getCandidate().getLastName()).toString());
+	                reqsub.setCandidateName(sb.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields).toString());
         	}else{
-                    reqsub.setCandidateName(sb.append(reqsub.getCandidate().getFirstName()).toString());
+                    reqsub.setCandidateName(sb.append(requirementSubmissionTemplateFields.getFirstName()).toString());
         	}
         	reqsub.setRequirementId(reqsub.getRequirement().getId());
         	StringBuilder jbt = new  StringBuilder();
@@ -2392,8 +2405,16 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
             User  submittedSourceUser = userDao.getUserByUserCode(reqsub.getCreatedBy());
             StringBuilder sub = new  StringBuilder();
             reqsub.setSubmittedBy(sub.append(submittedSourceUser.getFirstName()).append(" ").append(submittedSourceUser.getLastName()).toString() );
-            reqsub.setSubmittedOn(Constants.DF_DMY.format(reqsub.getCreatedDate()));
-
+            if(reqsub.getCreatedDate() != null){
+				String currentTimeStr = Constants.TZ_DF.format(reqsub.getCreatedDate());
+				if(null != timezone && null != timezone.getTimeZoneId()){
+					String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+					Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+					currentDateInTimezone = Constants.DF_DMY.format(converteDate);
+					reqsub.setSubmittedOn(currentDateInTimezone);
+				}
+		    }
         }
         return submittedApplicantsList;
 	}
@@ -3538,6 +3559,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	public List<RequirementSubmission> getRecruiterSubmittedCandidatesList(Long recruiterUserId, Long requirementId)
 			throws Exception {
 		return requirementSubmissionDao.getRecruiterSubmittedCandidatesList(recruiterUserId, requirementId);
+	}
+
+	@Override
+	public List<RequirementSubmission> getAllVendorsIdbyorgLocationId(OrgLocations orgLocation,Date startDateUTC,Date endDateUTC) {
+		return requirementSubmissionDao.getAllVendorsIdbyorgLocationId(orgLocation,startDateUTC,endDateUTC);
 	}
 
 }

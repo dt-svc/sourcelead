@@ -182,6 +182,7 @@ function requirementReportPagination(){
 			dateFormat : 'dd-mm-yy',
 			onSelect : function(selected) {
 				var dt = new Date(selected);
+				var dt = toDate("#ExportStartDate");
 				dt.setDate(dt.getDate() + 1);
 				$("#ExportEndDate").datepicker("option", "minDate", dt);
 				addValidClass();
@@ -198,6 +199,7 @@ function requirementReportPagination(){
 		     },
 			onSelect : function(selected) {
 				var dt = new Date(selected);
+				var dt = toDate("#ExportEndDate");
 				dt.setDate(dt.getDate() - 1);
 				$("#ExportStartDate").datepicker("option", "maxDate", dt);
 				addValidClass();
@@ -206,7 +208,12 @@ function requirementReportPagination(){
 		
 	});
 </script>	
-
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">

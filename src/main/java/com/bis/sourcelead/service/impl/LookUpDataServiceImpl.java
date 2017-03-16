@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,11 @@ public class LookUpDataServiceImpl implements LookUpDataService {
 	@Override
 	public List<LookUpData> getLookUpDataByCategory(String category) throws Exception {
 		return lookUpDataDao.getLookUpDataByCategory(category);
+	}
+	
+	@Override
+	public LinkedHashSet<String> getLookUpDataByCategoryWithSortedOrder(String category) throws Exception {
+		return lookUpDataDao.getLookUpDataByCategoryWithSortedOrder(category);
 	}
 
 	@Override
