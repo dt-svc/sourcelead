@@ -223,7 +223,7 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 			params.put("usrId", usrId);
 			subQuery = subQuery + " and rato.assignUserId.id = :usrId";
 		}
-		String query = "from RequirementAssignTo  rato left join fetch rato.teamId team left join fetch rato.requirementId requirement where requirement.orgLocationId.id = :orgLocationId "+subQuery;
+		String query = "from RequirementAssignTo  rato left join fetch rato.teamId team left join fetch rato.assignUserId left join fetch rato.requirementId requirement where requirement.orgLocationId.id = :orgLocationId "+subQuery;
 		Query qry = session.createQuery(query);
 		for (String str : qry.getNamedParameters())
         {

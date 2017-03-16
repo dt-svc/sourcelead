@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,6 +62,10 @@ public class RequirementReportServiceImpl implements RequirementReportService{
 	public List<RequirementSubmissionHistory> getApplicantsCountsByDateRange(Long submissionId, Date startDateUTC,Date endDateUTC) throws Exception {
 		return requirementReportDao.getApplicantsCountsByDateRange(submissionId,startDateUTC,endDateUTC);
 
+	}
+	@Override
+	public List<RequirementSubmission> getAllSubmissionsByAssignTeamMember(Long orgLocationId,Set<String> userCodesList, Date startDateUTC, Date endDateUTC) {
+		return requirementReportDao.getAllSubmissionsByAssignTeamMember(orgLocationId,userCodesList,startDateUTC,endDateUTC);
 	}
 
 }

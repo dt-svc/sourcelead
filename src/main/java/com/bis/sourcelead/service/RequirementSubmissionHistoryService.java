@@ -24,4 +24,6 @@ public interface RequirementSubmissionHistoryService {
 
 	RequirementSubmissionHistory getRequirementSubmissionHistoryBySubmissionId(Long submissionId);
 
+	List<RequirementSubmissionHistory> getAllRequirementSubmissionHistoryBySubmissionId(List<Long> submissionIds)throws Exception;
+
 }
