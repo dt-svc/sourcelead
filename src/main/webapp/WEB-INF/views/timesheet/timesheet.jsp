@@ -987,11 +987,13 @@ function addAttachment(){
 <!-- this script is for save Timesheet -->               
 <script type="text/javascript">
 function newSaveTimesheet(status,savingType){ 
+	 $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;'); 
 	 checkHours();
 	 var isTimesheetAttachmentRequired = $("#isTimesheetAttachmentRequired").val();
 	 if(isTimesheetAttachmentRequired != null && isTimesheetAttachmentRequired != "" && isTimesheetAttachmentRequired !="undefined" && isTimesheetAttachmentRequired == "Y"){
 		 $('#0docFile').removeAttr('data-validation-optional');
 		 $('#0docFile').attr("data-validation","required"); 
+		 $("#loadTime").removeAttr("style"); 
 	 }
 	 var validationSettings = {
 		        errorMessagePosition : 'element',
@@ -1000,7 +1002,6 @@ function newSaveTimesheet(status,savingType){
 				dateFormat : 'yyyy/mm/dd' 
 	 }; 
 	 if ($('#timesheet_form').validate(false, validationSettings)&&!$("#timeSheetErrorMsg").is(':visible')){ 
-		       $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;'); 
                var frm = $('#timesheet_form').serializeFormJSON();
                var sourceleadUrl ='${sourceleadUrl}';
                var startdate;
@@ -1024,7 +1025,6 @@ function newSaveTimesheet(status,savingType){
         	      	  url: sourceleadUrl+"/newSaveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
         		      success :function(result) {
         		    	  $("#loadTime").removeAttr("style"); 
-        		    	  /* timesheetDivByFrequency(); */
         		    	  $("html").trigger('click');
         		    	  maskme();
         		    	  var startDate = $("#tabStartDate").val();
@@ -1037,18 +1037,14 @@ function newSaveTimesheet(status,savingType){
         		    		  timesheetDivByFrequency();
         		    	  }
         		    	  
-        		    	 /*  timesheetEntriesDiv(); */
-        		    	 /*  $("#loadTime").removeAttr("style"); */
-        		    	  /*  dynamicTimesheet("left",result);  */
-        		    	   /* timesheetEntriesDiv */
-        		    	  /* dynamicTimesheet(); */
         		      }
         	      	  
         	    }); 
         	   return true;
 	 	}else{ 
+	 		 $("#loadTime").removeAttr("style"); 
 			return false;
-	 } 
+	   } 
 }
 
 $('body').on('blur', '#timesheet_form', function() {

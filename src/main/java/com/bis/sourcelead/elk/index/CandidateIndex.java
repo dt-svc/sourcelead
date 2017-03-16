@@ -66,6 +66,8 @@ public class CandidateIndex implements Serializable {
 	private String terminateReason;
 	
 	private String skillsName ;
+	
+	private String primarySkill ;
 
 	private ArrayList<String> education;
 
@@ -622,6 +624,15 @@ public class CandidateIndex implements Serializable {
 		this.skillsName = skillsName;
 	}
 	
+	
+
+	public String getPrimarySkill() {
+		return primarySkill;
+	}
+
+	public void setPrimarySkill(String primarySkill) {
+		this.primarySkill = primarySkill;
+	}
 
 	public double getFinalScore() {
 		return finalScore;

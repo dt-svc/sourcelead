@@ -251,6 +251,10 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setSkillsName(candidateSkills);
 		}
 		
+		if(jsonObj.has("primarySkill") && jsonObj.getString("primarySkill") != null){
+			candidate.setPrimarySkill(jsonObj.getString("primarySkill"));
+		}
+
 		HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(jsonObj, orgLocations,candidate,user.getUserCode());
 		candidate.setCandidateEducation(candidateEducationList);
 		
@@ -721,6 +725,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				
 				candidate.setSkillsName(candidateSkills);
 			}
+			
 			
 			HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(jsonObj, orgLocations,candidate,user.getUserCode());
 			candidate.setCandidateEducation(candidateEducationList);

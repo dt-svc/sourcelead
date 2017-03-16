@@ -477,7 +477,7 @@ public class TimesheetApprovalRestController {
 		 timesheetApprovalDiv.append("  <td>");
 		 timesheetApprovalDiv.append("<div class='time_appr_user'>");
 		 timesheetApprovalDiv.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='").append(request.getContextPath()).append("/displayUserImage/").append(projectMember.getEmployee().getUser().getId()).append("' alt='Profile Image' class='img-circle img-responsive'>");
-		 timesheetApprovalDiv.append("    <span><b>").append(projectMember.getEmployee().getUser().getFullName()).append("</b>")
+		 timesheetApprovalDiv.append("    <span><b  title='").append(projectMember.getEmployee().getUser().getFullName()).append("'>").append(projectMember.getEmployee().getUser().getFullName()).append("</b>")
 		                                             .append("<b title='").append(projectMember.getEmployee().getUser().getEmail()).append("'>").append(projectMember.getEmployee().getUser().getEmail()).append("</b>")
 		                                             .append("<b title='").append((projectMember.getEmployee().getUser().getMobilePhone() != null) ?(projectMember.getEmployee().getUser().getMobilePhone()) : "").append("'>").append((projectMember.getEmployee().getUser().getMobilePhone() != null) ?(projectMember.getEmployee().getUser().getMobilePhone()) : "").append("</b>")
 		                                             .append("</span>");
@@ -637,7 +637,7 @@ public class TimesheetApprovalRestController {
 						 timesheetApprovalDiv.append("  <td>");
 						 timesheetApprovalDiv.append("<div class='time_appr_user'>");
 						 timesheetApprovalDiv.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='").append(request.getContextPath()).append("/displayUserImage/").append(projectMember.getEmployee().getUser().getId()).append("' alt='Profile Image' class='img-circle img-responsive'>");
-						 timesheetApprovalDiv.append("    <span><b>").append(projectMember.getEmployee().getUser().getFullName()).append("</b>")
+						 timesheetApprovalDiv.append("    <span><b title='").append(projectMember.getEmployee().getUser().getFullName()).append("'>").append(projectMember.getEmployee().getUser().getFullName()).append("</b>")
 						                                             .append("<b title='").append(projectMember.getEmployee().getUser().getEmail()).append("'>").append(projectMember.getEmployee().getUser().getEmail()).append("</b>")
 						                                             .append("<b title='").append((projectMember.getEmployee().getUser().getMobilePhone() != null) ?(projectMember.getEmployee().getUser().getMobilePhone()) : "").append("'>").append((projectMember.getEmployee().getUser().getMobilePhone() != null) ?(projectMember.getEmployee().getUser().getMobilePhone()) : "").append("</b>")
 						                                             .append("</span>");
