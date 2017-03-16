@@ -259,6 +259,7 @@ width: 11.5%;
 	          </li>
 	          </c:if>
          
+          <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
           <li id="alert"> 
           <a href="#" title="Alerts" id="alert" onmouseover="notificationStatusAsRead();" > <i class="fa fa-bell bell" ></i> <span class="label label-warning">${SourceLeadWeb_notificationCount}</span></a>
             <div class="header-widget alert-area">
@@ -287,6 +288,7 @@ width: 11.5%;
               <div class="headerwidget-footer"> <a href="<c:url value='/notificationsList'/>">View All</a> </div>
             </div>
           </li>
+          </c:if>
           
           <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG','ROLE_ENROLL_NEW_ROLE','ROLE_VIEW_ORG_SETTINGS','ROLE_EDIT_ORG_SETTINGS','ROLE_ORG_SUBMISSION_TEMPLATE')"> 
 	            <li id="settingArea"> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
