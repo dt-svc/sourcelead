@@ -77,7 +77,7 @@ display: none;
         </div>
         <div class="clearfix">
           <div class="col-md-6">
-            <label class="col-md-4 control-label text-info small">Saluation</label>
+            <label class="col-md-4 control-label text-info small">Salutation</label>
             <div class="col-md-8 saluation field-border">
               <select id="saluation" name="saluation">
                 <option value="Hi" selected>Hi</option>
