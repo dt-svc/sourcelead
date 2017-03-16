@@ -217,6 +217,10 @@ public class Constants {
 	public static String APPLIED_TO_REQUIREMENT = "Applied To Requirement";
 	public static String REFER_REQUIREMENT_TO_PROFESSIONAL = "Refer Requirment To Professional";
 	
+	public static String ADD_NEW_USER_CONTACT = "Add New User Contact";
+	
+	public static String CROWD_SOURCING_SOURCE_SELF = "SELF";
+	
 	
 	public static final DateFormat TMS = new SimpleDateFormat ("hh:mm a");
 
