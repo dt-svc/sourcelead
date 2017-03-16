@@ -224,6 +224,7 @@ public class RequirementServiceImpl implements RequirementService {
 			}else{
 				requirement = new Requirement();
 				requirement.setCreatedDate(commonUtil.currentDate());
+				requirement.setTotalApplicants(0);
 				requirement.setCreatedBy(user.getUserCode());
 				requirement.setUpdatedBy(user.getUserCode());
 				requirement.setUpdatedDate(commonUtil.currentDate());
@@ -638,7 +639,7 @@ public class RequirementServiceImpl implements RequirementService {
 						}
 				     
 			}
-			requirement.setTotalApplicants(0);
+			
 			requirement.setRequirementAssignTo(requirementAssignToList);
 			//storing assigned team END
 			
@@ -1432,7 +1433,7 @@ public class RequirementServiceImpl implements RequirementService {
 	@Override
 	public void AssignToTeamMembersEmail(User loginUser, User assUser, Requirement requirement,StringBuilder location,OrgLocations orgLocations) throws Exception {
 			assUser= userService.getUserById(assUser.getId());
-
+			UserRole loginUserRole =  userRoleService.getUserDetailsByUserIdAndLocationId(loginUser.getId(), orgLocations.getId());
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(loginUser.getFirstName());
 		 emailMessage.setLastName(loginUser.getLastName());
@@ -1480,8 +1481,8 @@ public class RequirementServiceImpl implements RequirementService {
 			 }else{
 				 globalVarsMap.put("LoginUser",loginUser.getFirstName()); 
 			 }
-		 if( loginUser.getUserType() != null && !"".equalsIgnoreCase(loginUser.getUserType())){
-			 globalVarsMap.put("Role", loginUser.getUserType());
+		 if( loginUserRole.getUserType() != null && !"".equalsIgnoreCase(loginUserRole.getUserType())){
+			 globalVarsMap.put("Role",loginUserRole.getUserType());
 			 }else{
 				 globalVarsMap.put("Role","--"); 
 			 }

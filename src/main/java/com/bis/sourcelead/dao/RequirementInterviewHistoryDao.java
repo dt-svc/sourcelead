@@ -41,4 +41,6 @@ public interface RequirementInterviewHistoryDao {
 	Integer getRequirementInternalAndIsClientInterviewsCountBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception;
 	
 	List<RequirementInterviewHistory> getAllRecruiterSubmittedInterviews(String dateRange, Long userId)throws Exception;
+	
+	List<RequirementInterviewHistory> getCrowdSorurcingInterviews(Long submissionId) throws Exception;
 }

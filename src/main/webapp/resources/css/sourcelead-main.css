@@ -6497,6 +6497,149 @@ left: auto;right:225px;
 #statusDropDown {
 	position: relative; top:5px;
 }
+.cand-advsrch-popup.cand-advsrchPopup {
+	width: auto;
+	padding: 0;
+	overflow: inherit;
+	top: 40px; left: 10px;
+}
+.cand-advsrch-popup.cand-advsrchPopup .close-div {
+    right: -5px; top: -5px; 
+}
+.candAdvsrchPop {
+	width:825px;
+	min-height: 100px;
+	height: 385px;
+	overflow-y:visibile;
+	overflow-x:hidden;
+	padding:15px 10px 10px 10px;
+	box-sizing: border-box;
+}
+.candAdvsrchPop h4{
+	margin: 0;
+	font-size: 16px;
+	margin-bottom: 5px;
+}
+.cand-advsrch-popup.cand-advsrchPopup .form-footer {
+    min-height: 50px;
+    line-height: 50px;
+}
+/* Evetns Calendar */
+.eventAlert .alert{
+    padding:0px 15px;
+}
+.eventAlert .alert-dismissable .close{
+    top: 5px;
+    right: 10px;
+}
+.eventHeader {
+    background-color: #bbdefb;
+}
+.eventHeader .media-left.bg-success {
+    padding: 10px; background: #42a5f5; color: #bbdefb;
+}
+.eventHeader .media-body{
+    padding: 10px 0 5px 10px;
+}
+.eventList .media-body{
+    padding: 5px 0 5px 10px;
+}
+.eventHeader .media-body p{
+    margin-bottom: 0;
+}
+.eventHeader .media-left{
+    vertical-align: middle; width: 65px;text-align: center; padding: 5px !important; line-height: 75px;
+    float: left; height: 65px;
+    }
+.eventList .media-left {
+    vertical-align: middle; width: 65px;
+    padding:5px !important; line-height: 20px; float: left; min-height: 100%;
+    border-right:1px solid rgba(94,94,94,0.1); position: absolute; text-align: center;
+    font-weight: 600; color: #707070; font-size: 13px;
+}
+.eventList {
+    border: 1px solid rgba(94,94,94,0.2);
+    border-top: 0;
+}
+.eventList:nth-child(2n+2) {
+    background: #eceff1;
+}
+.eventList .media {
+    position: relative;
+}
+.eventList .media-body {
+    width: 85%; float: left; margin-left: 65px; min-height: 65px; position: relative;
+}
+.eventList figure{
+ padding: 0 10px;   
+}
+.evennt_details {
+margin-left: 15px;
+}
+.event_details {
+    width: 86%;
+}
+.event_details p {
+    margin-bottom: 0px;
+    position: relative;
+    clear: both;
+    color: #505050;
+}
+.event_details .feedBack a {
+    width: 45px;
+    height: 45px;
+    text-align: center;
+    line-height: 45px; font-size: 20px;
+    color: #D5D5D5;
+    background: #fff;
+    border-radius: 50%;
+    transition: all 0.3s linear;
+    position: absolute; top:10px; right: 10px;
+}
+.event_details .feedBack a:hover{
+    background: #f5f5f5;
+    border-radius: 50%;
+    color: #337ab7;
+}
+#eventCalendar .ui-widget.ui-widget-content {
+    border: 1px solid #dedfe4;
+    box-shadow: none;
+    width: 100%;
+    border-radius: 0;
+    background: #ededed;
+    padding: 10px;
+}
+#eventCalendar .ui-widget-header {
+    background: #bbb !important;
+    border: none !important;
+    color: #333;
+    font-weight: bold;
+    height: 45px;
+    border-radius: 0;
+}
+#eventCalendar .ui-datepicker select.ui-datepicker-month, #eventCalendar .ui-datepicker select.ui-datepicker-year {
+    color: #202020; height: 30px; margin-top: 4px;
+}
+#eventCalendar .ui-datepicker .ui-datepicker-prev, #eventCalendar .ui-datepicker .ui-datepicker-next {
+    top: 8px;
+}
+#eventCalendar .ui-widget-content a {
+    color: #333333;
+    height: 30px;
+    line-height: 25px;
+}
+#statusDropDown {
+	position: relative; top:5px;
+}
+.monthSearch_Custom .btn_currentmonth {
+	background-color: #f60; padding: 5px 10px; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; color: #fff;
+}
+.monthSearch_Custom .fa-calendar {
+	color: #505050; font-size: 1.5em; padding: 0 5px; position: relative; top: 2px; cursor: pointer; transition:all 0.3s linear;
+}
+.monthSearch_Custom .fa-calendar:hover{
+	color: #808080;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

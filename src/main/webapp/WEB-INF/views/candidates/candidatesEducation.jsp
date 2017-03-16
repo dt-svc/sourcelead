@@ -338,7 +338,8 @@ function addEducation(candidateId) {
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      onSelect: function (selected) {
-	            var dt = new Date(selected);
+	            //var dt = new Date(selected);
+	            var dt = toDate("#startDate");
 	            dt.setDate(dt.getDate() + 1);
 	            $("#endDate").datepicker("option", "minDate", dt);
 	        }
@@ -349,7 +350,8 @@ function addEducation(candidateId) {
 	      changeMonth: true,
 	  	  changeYear: true, 
 	        onSelect: function (selected) {
-	            var dt = new Date(selected);
+	            //var dt = new Date(selected);
+	            var dt = toDate("#endDate");
 	            dt.setDate(dt.getDate() - 1);
 	            $("#startDate").datepicker("option", "maxDate", dt);
 	        }
@@ -529,12 +531,22 @@ function EditEducation(candidateId,candidateEducationId) {
 	function educationStartDate(){
 	}
 	
+	/* var projectStartDate = $("#startDateEdit").val();
+	var projectEndDate = $("#endDateEdit").val(); */
+	
+	var datepickerStartDate = toDate("#startDateEdit");
+	datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
+	
+	var datepickerEndDate = toDate("#endDateEdit");
+	datepickerEndDate.setDate(datepickerEndDate.getDate() - 1);
 	$('#startDateEdit').datepicker({
 	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
+	  	  maxDate: datepickerEndDate,
 	      onSelect: function (selected) {
-	            var dt = new Date(selected);
+	            //var dt = new Date(selected);
+	            var dt = toDate("#startDateEdit");
 	            dt.setDate(dt.getDate() + 1);
 	            $("#endDateEdit").datepicker("option", "minDate", dt);
 	        }
@@ -544,8 +556,10 @@ function EditEducation(candidateId,candidateEducationId) {
 	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
+	  	  minDate: datepickerStartDate,
 	      onSelect: function (selected) {
-	            var dt = new Date(selected);
+	            //var dt = new Date(selected);
+	            var dt = toDate("#endDateEdit");
 	            dt.setDate(dt.getDate() - 1);
 	            $("#startDateEdit").datepicker("option", "maxDate", dt);
 	        }
@@ -864,3 +878,11 @@ function clearSearchKey() {
  }
  </script>     
  
+ <!-- script for converting dateformat in datepicker -->
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
+<!-- script for dateformat in datepicker End -->
