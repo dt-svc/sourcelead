@@ -924,7 +924,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 emailMessage.setFromName("Sourcelead Admin");
 		 emailMessage.setFromEmail("sourceleadadmin@sourcelead.com");
 		 emailMessage.setCreatedBy("sladmin");
-		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 
+		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("professionalName", professionalName);
