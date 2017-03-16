@@ -102,7 +102,7 @@ function refercontactList(){
 			   	 result = result +'          <th class="emailWidth">Email Id</th>';
 			   	 result = result +'          <th>Phone No</th>';
 			   	 result = result +'          <th>Source</th>';
-			   	 result = result +'          <th>Action</th>';
+			   	/*  result = result +'          <th>Action</th>'; */
 			   	 result = result +'        </tr>';
 			   	result = result + '	     </thead>';
 			   	 result = result +'      <tbody>';
@@ -117,8 +117,8 @@ function refercontactList(){
 				   	 result = result +'          <td><div><span class="mid-span">'+report.firstName+'</span></div></td>';
 				   	 result = result +'          <td><div><span class="mid-span">'+report.contactUserEmail+'</span></div></td>';
 				   	 result = result +'          <td><div><span class="mid-span">'+contactUserPhone+'</span></div></td>';
-				   	result = result +'          <td><div><span class="mid-span">'+report.contactSource+'</span></div></td>';
-				   	 result = result +'          <td><div><i class="glyphicon glyphicon-edit"></i><i class="glyphicon glyphicon-trash"></i></div></td>';
+				   	 result = result +'          <td><div><span class="mid-span">'+report.contactSource+'</span></div></td>';
+				   	 /* result = result +'          <td><div><i class="glyphicon glyphicon-edit"></i><i class="glyphicon glyphicon-trash"></i></div></td>'; */
 				   	 result = result +'        </tr>';
 			   }
 			   	 result = result +'      </tbody>';
