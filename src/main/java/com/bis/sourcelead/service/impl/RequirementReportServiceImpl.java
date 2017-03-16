@@ -62,5 +62,11 @@ public class RequirementReportServiceImpl implements RequirementReportService{
 		return requirementReportDao.getApplicantsCountsByDateRange(submissionId,startDateUTC,endDateUTC);
 
 	}
+	@Override
+	public List<RequirementSubmission> getReceivedApplicantsCountsPerOrgLocId(Long orgLocationId, Date startDateUTC,
+			Date endDateUTC) {
+		
+		return requirementReportDao.getReceivedApplicantsCountsPerOrgLocId(orgLocationId,startDateUTC,endDateUTC);
+	}
 
 }

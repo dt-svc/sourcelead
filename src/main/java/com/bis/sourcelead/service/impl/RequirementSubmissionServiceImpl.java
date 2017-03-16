@@ -3562,8 +3562,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public List<RequirementSubmission> getAllVendorsIdbyorgLocationId(OrgLocations orgLocation) {
-		return requirementSubmissionDao.getAllVendorsIdbyorgLocationId(orgLocation);
+	public List<RequirementSubmission> getAllVendorsIdbyorgLocationId(OrgLocations orgLocation,Date startDateUTC,Date endDateUTC) {
+		return requirementSubmissionDao.getAllVendorsIdbyorgLocationId(orgLocation,startDateUTC,endDateUTC);
 	}
 
 }

@@ -158,6 +158,7 @@ function requirementReportPagination(){
 			dateFormat : 'dd-mm-yy',
 			onSelect : function(selected) {
 				var dt = new Date(selected);
+				var dt = toDate("#ApplicantStartDate");
 				dt.setDate(dt.getDate() + 1);
 				$("#ApplicantEndDate").datepicker("option", "minDate", dt);
 				addValidClass();
@@ -174,6 +175,7 @@ function requirementReportPagination(){
 		     },
 			onSelect : function(selected) {
 				var dt = new Date(selected);
+				var dt = toDate("#ApplicantEndDate");
 				dt.setDate(dt.getDate() - 1);
 				$("#ApplicantStartDate").datepicker("option", "maxDate", dt);
 				addValidClass();

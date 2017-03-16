@@ -1848,12 +1848,18 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 
 		@Override
 		@Transactional
-		public List<RequirementSubmission> getAllVendorsIdbyorgLocationId(OrgLocations orgLocation) {
+		public List<RequirementSubmission> getAllVendorsIdbyorgLocationId(OrgLocations orgLocation,Date startDateUTC,Date endDateUTC) {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where rs.vendorLocationId <> null and rs.orgLocations.id = :orgLocation group by rs.vendorLocationId.id";
-			return  session.createQuery(query).setLong("orgLocation", orgLocation.getId()).setCacheable(true).list();
+			if(null != startDateUTC && null != endDateUTC ){
+				String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where rs.vendorLocationId <> null and rs.orgLocations.id = :orgLocation and (rs.createdDate BETWEEN :startDateUTC and :endDateUTC) group by rs.vendorLocationId.id";
+				return  session.createQuery(query).setLong("orgLocation", orgLocation.getId()).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
+			}
+			else{
+				String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where rs.vendorLocationId <> null and rs.orgLocations.id = :orgLocation group by rs.vendorLocationId.id";
+				return  session.createQuery(query).setLong("orgLocation", orgLocation.getId()).setCacheable(true).list();
+			}
 		}
-
+		
 		@Override
 		@Transactional
 		public Integer getReferByMeJobAppliedCandidateCount(Long userId, Date startDate, Date endDate)

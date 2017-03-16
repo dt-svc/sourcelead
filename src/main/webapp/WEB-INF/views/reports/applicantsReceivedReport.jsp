@@ -139,7 +139,8 @@ function requirementReportPagination(){
 			dateFormat : 'dd-mm-yy',
 			onSelect : function(selected) {
 				var dt = new Date(selected);
-				dt.setDate(dt.getDate() + 1);
+				var dt = toDate("#ExportStartDate");
+				dt.setDate(dt.getDate() + 1); 
 				$("#ExportEndDate").datepicker("option", "minDate", dt);
 				addValidClass();
 			}
@@ -155,6 +156,7 @@ function requirementReportPagination(){
 		     },
 			onSelect : function(selected) {
 				var dt = new Date(selected);
+				var dt = toDate("#ExportEndDate");
 				dt.setDate(dt.getDate() - 1);
 				$("#ExportStartDate").datepicker("option", "maxDate", dt);
 				addValidClass();
@@ -163,7 +165,12 @@ function requirementReportPagination(){
 		
 	});
 </script>	
-
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
@@ -759,7 +766,7 @@ Highcharts.chart('container', {
 function getDefaultChart(){
 	var reportType = $("#reportTypeId").val();
 	if(reportType=="custom"){
-		//getCustomReports();
+		getCustomReports();
 	}
 	else{
 		getDayWiseReports();
@@ -825,7 +832,7 @@ function getDayWiseAppRecReports(){
 		        		 applicantReceivedReportLineChart(chartData,applicantData,shortlistedData,interviewData,submitedtoClientData,offeredData,rejectedData,requestSentData);
 		 	   		}
 	        	 }
-        	 getAllCounts(json.length,reportType,startDate,endDate);
+        	// getAllCounts(json.length,reportType,startDate,endDate);
          },
           
      });  
