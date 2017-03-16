@@ -31,4 +31,14 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 return model;
 			
 	 }	
+	 
+	 
+	 @RequestMapping(value = "/requirementStagesListForReports")
+		public ModelAndView requirementStagesListForReports() throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/requirementStageReports");
+		 return model;
+			
+	 }	
 }

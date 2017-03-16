@@ -22,5 +22,9 @@ public interface RequirementReportService {
 	List<RequirementSubmissionHistory> getReceivedApplicantsCountForReports(Long orgLocationId, Long requirementId);
 
 	List<RequirementSubmissionHistory> getApplicantsCountForChart(Long orgLocationId);
+	
+	Integer getRequirementStagesCountsForReports(Long orgLocId, String requirementStatus)throws Exception;
+	
+	List<Requirement> getRequirementStageReports(OrgLocations orgLocation,String Status) throws Exception;
 
 }

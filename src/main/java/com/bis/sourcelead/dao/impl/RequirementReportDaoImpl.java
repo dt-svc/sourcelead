@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +21,7 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 @Repository
 public class RequirementReportDaoImpl implements RequirementReportDao{
@@ -143,5 +146,57 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		String query = "from RequirementSubmissionHistory rsh  left join fetch rsh.submissionId rs where rs.orgLocations = :orgLocationsId";
 	List<RequirementSubmissionHistory> rshList = session.createQuery(query).setLong("orgLocationsId",orgLocationId).setCacheable(true).list();
 	return rshList;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getRequirementStagesCountsForReports(Long orgLocId, String requirementStatus) {
+		int totalCount = 0;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Requirement req where req.orgLocationId =:orgLocId and req.requirementSubmissionStatus =:requirementStatus";
+		List<Requirement> reqList = session.createQuery(query).setLong("orgLocId",orgLocId).setString("requirementStatus", requirementStatus).setCacheable(true).list();
+		if(!reqList.isEmpty() && reqList.size() > 0){
+			totalCount = reqList.size();
+		}
+		return totalCount;
+	}
+
+
+	@SuppressWarnings({ "unchecked", "null" })
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Requirement> getRequirementStageReports(OrgLocations orgLocation, String status) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String[] reqStatus = null;
+		if(null != status && !"".equals(status)){	
+			reqStatus = status.split(",");
+		}
+	    List<REQUIREMENT_SUBMISSION_STATUS> list = new ArrayList<>();
+	    for(int i=0; i < reqStatus.length; i++){
+	    	if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.NEW.toString())){
+	    		list.add(REQUIREMENT_SUBMISSION_STATUS.NEW);
+	    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.DRAFT.toString())){
+	    		list.add(REQUIREMENT_SUBMISSION_STATUS.DRAFT);
+	    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED.toString())){
+	    		list.add(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED);
+	    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.OPEN.toString())){
+	    		list.add(REQUIREMENT_SUBMISSION_STATUS.OPEN);
+	    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.ONHOLD.toString())){
+	    		list.add(REQUIREMENT_SUBMISSION_STATUS.ONHOLD);
+	    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.CANCEL.toString())){
+	    		list.add(REQUIREMENT_SUBMISSION_STATUS.CANCEL);
+	    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.FILLEDCLOSED.toString())){
+	    		list.add(REQUIREMENT_SUBMISSION_STATUS.FILLEDCLOSED);
+	    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.UNFILLEDCLOSED.toString())){
+	    		list.add(REQUIREMENT_SUBMISSION_STATUS.UNFILLEDCLOSED);
+	    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.REJECTED.toString())){
+	    		list.add(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
+	    	}
+	    }
+		String query = "from Requirement req where req.orgLocationId =:orgLocId and req.requirementSubmissionStatus IN (:statusList)";
+		
+		List<Requirement> reqList = session.createQuery(query).setLong("orgLocId",orgLocation.getId()).setParameterList("statusList", list).setCacheable(true).list();
+		return reqList;
 	}
 }
