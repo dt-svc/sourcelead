@@ -233,8 +233,8 @@
 						result = result  +'	 <div class="col-md-12">';
 						result = result  +'	   <select class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
 						
-					    
-						for (var j = 0; j < json.userList.length; j++) {
+					    //alert("json.userList.length"+json.userList.length);
+						 for (var j = 0; j < json.userList.length; j++) {
 							var user = json.userList[j];
 							   if(user.id == tempOwnerId){
 								   selected = 'selected';
@@ -242,7 +242,7 @@
 							  }else{
 									  result = result+"<option value="+user.id+" >"+user.firstName+" "+user.lastName+"</option>";
 			   		 	    	 } 
-						}
+						} 
 						
 						result = result  +'	  </select>';
 					    result = result  +'	 </div>';
