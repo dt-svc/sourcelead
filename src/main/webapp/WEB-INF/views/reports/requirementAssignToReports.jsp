@@ -253,13 +253,13 @@ function requirementReportPagination(){
 	 </div>	
 	 <span class="dashboard-datepkr cusShow">
 	 <input type="text" class="form-control" value="" id="ApplicantStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
-	 <p id="ApplicantReportStartDate" class="ReError"></p>
+	<!--  <p id="ApplicantReportStartDate" class="ReError"></p> -->
 	 </span>
 	<span class="dashboard-datepkr cusShow">
 	<input type="text"  class="form-control" value="" id="ApplicantEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
-	<p id="ApplicantReportStartDate" class="ReError"></p>
+	<!-- <p id="ApplicantReportStartDate" class="ReError"></p> -->
 	</span>
-	<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
+	<!-- <span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getAssignedRequirement();" /></span> -->
 	
 		<span class="repoBtns">
 		<a href="javascript:void(0)" class="oneA actRE"><i class="fa fa-list"></i></a>
@@ -288,7 +288,7 @@ function requirementReportPagination(){
       <div class="reportA">
           <label>Assign To</label>
           <div class="reportAChoo">
-           <select multiple data-placeholder="select member" class="chosen-select" multiple="true"  name="user" id="user" field-name="user"  data-validation="required">
+           <select multiple data-placeholder="select member" class="chosen-select" multiple="true"  name="user" id="user" >
                 <c:forEach var="user" items="${userList}">
 	                     <%-- <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option> --%>
             			  <option value="${user.id}">${user.firstName} ${user.lastName}</option>
@@ -378,7 +378,12 @@ function requirementReportPagination(){
  		
 <script type="text/javascript">
 function getAssignedRequirement(){
-/* 	if ($('#client_form').validate(false, validationSettings)) { */
+	if ($('#assign_requirement_form').validate(false, validationSettings)) {
+		var validationSettings = {
+			errorMessagePosition : 'element',
+			borderColorOnError : '',
+			scrollToTopOnError : true,
+		};
 		var frm = $('#assign_requirement_form').serializeFormJSON();
 		var con = JSON.stringify(frm);
 		con = con.replace(/[{}]/g, "");
@@ -393,10 +398,10 @@ function getAssignedRequirement(){
 						prepareReportDataDiv(result);
 					},
 				});   
-		/* return true; */
-	/* } else {
+		 return true;
+	 } else {
 		return false;
-	} */
+	} 
 }
 
 
@@ -615,6 +620,7 @@ $(".reminder").click(function(){
 
 <script type="text/javascript">
 	function flushCustomDates() {
+		$("assign_requirement_form").validate().resetForm();
 		$('#ApplicantStartDate').val('');
 		$('#ApplicantEndDate').val('');
 		$.datepicker._clearDate('#ApplicantStartDate');
@@ -636,14 +642,20 @@ function custDates(){
 	var reportType = $("#reportTypeId").val();
 	if(reportType=="custom"){
 	    $(".cusShow").show();
+	     /*    $('#RatePer').attr("data-validation","required");*/
+	    $('#ApplicantStartDate').attr('data-validation', 'required');
+		$('#ApplicantEndDate').attr('data-validation','required'); 
 	}
 	if(reportType!="custom"){
+		$('#ApplicantStartDate').removeAttr('data-validation');
+		$('#ApplicantEndDate').removeAttr('data-validation'); 
 	    $(".cusShow").hide();
+		flushCustomDates()
 	}
 }
 </script>
 
-<script>
+<!-- <script>
 function getCustomReports(){
 	var reportType = $("#reportTypeId").val();
 	var startDate = $("#ApplicantStartDate").val();
@@ -669,7 +681,7 @@ function getCustomReports(){
 	}
 	 
 }
-</script>
+</script> -->
 <script type="text/javascript"> 
 	function addValidClass(){
 		 var StartDate = document.getElementById("ApplicantStartDate").value;

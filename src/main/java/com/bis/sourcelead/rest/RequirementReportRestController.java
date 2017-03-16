@@ -783,8 +783,10 @@ public class RequirementReportRestController {
 				reportType = jsonObj.getString("reportType");
 			}
 			if(null != jsonObj.getString("StartDate") && !"".equals(jsonObj.getString("StartDate"))){
+				customStartDate = jsonObj.getString("StartDate");
 			}
 			if(null != jsonObj.getString("EndDate") && !"".equals(jsonObj.getString("EndDate"))){
+				customEndDate = jsonObj.getString("EndDate");
 			}
 		    if(jsonObj.has("user")){
 		    	if(null != jsonObj.getString("user") && !"".equals(jsonObj.getString("user"))){
