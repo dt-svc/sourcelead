@@ -33,7 +33,7 @@ window.onload = function () {
            	<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
            	<option value="OpenJobs">Open</option>
            	</c:if>
-            <option value="CrowdSourcingJobs">CrowdSourcing</option>
+            <option value="CrowdSourcingJobs">Crowdsourcing</option>
             <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
            	<option value="ReferredToMe">Referred To Me</option>
            	</c:if>
@@ -536,10 +536,7 @@ function requirementsList(offset){
 		$('#viewMore').html("View More");
 	}
 	
-	if(requirementType == "CrowdSourcingJobs"){
-		document.getElementById("advancedSearch").style.display="";
-	}
-	else if(requirementType == "OpenJobs"){
+   if(requirementType == "OpenJobs" || requirementType == "CrowdSourcingJobs"){
 		document.getElementById("advancedSearch").style.display="";
 	}else{
 		document.getElementById("advancedSearch").style.display="none";

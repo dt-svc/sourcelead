@@ -53,9 +53,7 @@ $(document).ready(function(){
 					  </div>
 				  </div>
  		   </div>
-              <div id="chartdiv" style="width: 100%;">
-              
-              </div>
+              <div id="chartdiv" style="width: 100%;"></div>
           </div>
           </div>
 
@@ -86,23 +84,27 @@ $(document).ready(function(){
      <div class="row">
       <div class="col-md-12">
 		<div class="dashboard-widget clearfix">
+				    
 				    <div class="row">
-					  <div style="visibility:hidden" id="customDate">
-					  <div class="col-md-3 paddingRight">
+				    <div class="col-md-3 paddingRight">
+				    	<h4>Requirements Referred To Me</h4>
+				    </div>
+				    
+				    <div class="col-md-2 select-field monthSearch_Custom">
+					    <label class="btn_currentmonth" onclick="refertomeChangeMonth('currentMonth')">Current Month</label>
+					     <i class="fa fa-calendar" onclick="refertomeChangeMonth('customize')" title="Customize Dates"></i>
+					  </div>
+				    
+					  <div style="visibility:hidden" id="customDate" class="col-md-offset-2 pull-left">
+					  <div class="col-md-5 paddingRight">
 					     <input type="text" value="" placeholder="From Date" class="form-control input-sm calendar" id="portletfromdate" name="From Date" readonly="readonly">
 					  </div>
-			  		  <div class="col-md-3 paddingLeft paddingRight">
+			  		  <div class="col-md-5 paddingLeft paddingRight">
 					     <input type="text" value="" placeholder="To Date" class="form-control input-sm calendar" id="portlettodate" name="To Date" readonly="readonly">
 					  </div>
-					  <div class="col-md-2 paddingLeft">
-						  <button type="button" class="btn btn-sm btn-primary" onclick="getReferToMeJobPortlets();"><i class="fa fa-search"></i>&nbsp;&nbsp;Search</button>
+					  <div class="col-md-2 paddingLeft paddingRight">
+						  <button type="button" class="btn btn-sm btn-primary btn-block" onclick="getReferToMeJobPortlets();"><i class="fa fa-search"></i></button>
 					  </div>
-					  </div>
-					  <div class="col-md-2  col-md-offset-2 select-field">
-					   <select class="form-control active" id="refertomeChangeMonth" onchange="refertomeChangeMonth(this)">
-					   		<option selected value="currentMonth">Current Month</option>
-					   		<option value="customize">Customize</option>
-					   </select>
 					  </div>
 				  </div>
       <div id="jobPortletsDiv" class="activeJobs row"></div>
@@ -115,22 +117,24 @@ $(document).ready(function(){
       <div class="col-md-12">
 		<div class="dashboard-widget clearfix">
 				    <div class="row">
-					  <div style="visibility:hidden" id="customReferByMeDate">
-					  <div class="col-md-3 paddingRight">
+				    <div class="col-md-3 paddingRight">
+				    	<h4>Candidates Referred By Me</h4>
+				    </div>
+				    <div class="col-md-2 select-field monthSearch_Custom">
+					    <label class="btn_currentmonth" onclick="referbymeChangeMonth('currentMonth')">Current Month</label>
+					     <i class="fa fa-calendar" onclick="referbymeChangeMonth('customize')" title="Customize Dates"></i>
+					  </div>
+					  
+					  <div style="visibility:hidden" id="customReferByMeDate" class="col-md-offset-2 pull-left">
+					  <div class="col-md-5 paddingRight">
 					     <input type="text" value="" placeholder="From Date" class="form-control input-sm calendar" id="portletreferByMefromdate" name="From Date" readonly="readonly">
 					  </div>
-			  		  <div class="col-md-3 paddingLeft paddingRight">
+			  		  <div class="col-md-5 paddingLeft paddingRight">
 					     <input type="text" value="" placeholder="To Date" class="form-control input-sm calendar" id="portletreferByMetodate" name="To Date" readonly="readonly">
 					  </div>
 					  <div class="col-md-2 paddingLeft">
-						  <button type="button" class="btn btn-sm btn-primary" onclick="getReferByMeJobPortlets();"><i class="fa fa-search"></i>&nbsp;&nbsp;Search</button>
+						  <button type="button" class="btn btn-sm btn-primary btn-block" onclick="getReferByMeJobPortlets();"><i class="fa fa-search"></i></button>
 					  </div>
-					  </div>
-					  <div class="col-md-2  col-md-offset-2 select-field">
-					   <select class="form-control active" id="referbymeChangeMonth" onchange="referbymeChangeMonth(this)">
-					   		<option selected value="currentMonth">Current Month</option>
-					   		<option value="customize">Customize</option>
-					   </select>
 					  </div>
 				  </div>
       <div id="referByMeJobPortletsDiv" class="activeJobs row"></div>
@@ -168,32 +172,31 @@ $(document).ready(function(){
 
 
   <script>
-  function refertomeChangeMonth(){
-	  
+  function refertomeChangeMonth(type){
 	    $("#portletfromdate").val('');
 	    $("#portlettodate").val(''); 
 	    
-	  var refertomeChangeMonth = $("#refertomeChangeMonth").val();
-	  if(refertomeChangeMonth == "customize"){
+	  if(type == "customize"){
 		  document.getElementById("customDate").style.visibility='visible';
 	  }else{
 		  document.getElementById("customDate").style.visibility='hidden';
-	  }
+		  getReferToMeJobPortlets();
+	  } 
   }
   </script>
   
   
   
   <script>
-  function referbymeChangeMonth(){
+  function referbymeChangeMonth(type){
 	  $("#portletreferByMefromdate").val('');
 	  $("#portletreferByMetodate").val(''); 
 	    
-	  var referbymeChangeMonth = $("#referbymeChangeMonth").val();
-	  if(referbymeChangeMonth == "customize"){
+	  if(type == "customize"){
 		  document.getElementById("customReferByMeDate").style.visibility='visible';
 	  }else{
 		  document.getElementById("customReferByMeDate").style.visibility='hidden';
+		  getReferByMeJobPortlets();
 	  }
   }
   </script>
@@ -648,10 +651,10 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 			  "type": "pie",
 			  "theme": "light",
 			  "dataProvider": [ {
-			    "title": "Refered To Me ("+referToMeJobs+")",
+			    "title": "Refered\n To Me ("+referToMeJobs+")",
 			    "value": referToMeJobs
 			  }, {
-			    "title": "Refered By Me ("+referByMeJobs+")",
+			    "title": "Refered\n By Me ("+referByMeJobs+")",
 			    "value": referByMeJobs
 			  }, {
 			    "title": "Applied ("+appliedJobs+")",
@@ -693,7 +696,7 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	        "dashLength": 5,
 	        "gridCount": 10,
 	        "position": "left",
-	        "title": "Jobs"
+	        "title": "Requirements"
 	    }],
 	    "startDuration": 0.5,
 	    "graphs": [{

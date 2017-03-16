@@ -896,7 +896,7 @@ public class TimesheetRestController {
 									  Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasksByProjectId(ts.getProjectMembers().getProjects().getId());
 									  if(isFillMyTimeSheet 
 										    		&&!isNullOrEmpty(approvalStatus)
-										    		&&!approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) 
+										    		&&!(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())&& from.equalsIgnoreCase("user")) 
 										    		&& !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue())){
 										 
 												 //Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasks();
@@ -931,7 +931,7 @@ public class TimesheetRestController {
 						              
 						 			     if(isFillMyTimeSheet 
 									    		&&!isNullOrEmpty(approvalStatus)
-									    		&&!approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) 
+									    		&&!(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())&& from.equalsIgnoreCase("user")) 
 									    		&& !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue())){
 									              if(rowCount == 1){
 									            	  tabDiv.append("<input type='button' value='' onClick='addTimeSheetRow("+ts.getProjectMembers().getProjects().getId()+")' class='addtaskfield'/>");
@@ -1288,7 +1288,7 @@ public class TimesheetRestController {
 									
 								    if(isFillMyTimeSheet 
 								    		&&!isNullOrEmpty(approvalStatus)
-								    		&&!approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) 
+								    		&&!(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())&& from.equalsIgnoreCase("user"))
 								    		&& !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue())){
 										documentBuffer.append("<input class='dele' type='button' onClick='deleteSubmissionDocument(\""+tsd.getId()+"\");' >");
 									}
