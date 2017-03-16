@@ -153,6 +153,12 @@ public class CrowdSourcingRequirementsRestController {
 	    
 	     else if (requirementType.equalsIgnoreCase("CrowdSourcingJobs")){
 	    	 boolQueryBuilder.must(QueryBuilders.matchQuery("isCrowdSourcingJob", "Y"));
+	    	 List<RequirementRefer> referList = requirementReferService.getLoginUserReferToMeListByUserId(user.getId());
+	    	 if(null != referList && referList.size() > 0){
+	    		 for(RequirementRefer refer : referList){
+	    			 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementId", refer.getRequirementId().getId()));
+	    		 }
+	    	 }
 	     }
 	     
 	     else if(requirementType.equalsIgnoreCase("ReferredByMe")){
@@ -525,6 +531,12 @@ public class CrowdSourcingRequirementsRestController {
 		     }
 		     else if (requirementType.equalsIgnoreCase("CrowdSourcingJobs")){
 		    	 boolQueryBuilder.must(QueryBuilders.matchQuery("isCrowdSourcingJob", "Y"));
+		    	 List<RequirementRefer> referList = requirementReferService.getLoginUserReferToMeListByUserId(user.getId());
+		    	 if(null != referList && referList.size() > 0){
+		    		 for(RequirementRefer refer : referList){
+		    			 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementId", refer.getRequirementId().getId()));
+		    		 }
+		    	 }
 		     }
 		     
 		     boolQueryBuilder = getSearchRequirementsResults(boolQueryBuilder,jsonObj);   
@@ -908,6 +920,27 @@ public class CrowdSourcingRequirementsRestController {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			
 			requirementReferService.saveReferCandidate(user, orgLocations, jsonObj);
+						
+			return "success";
+
+		}
+	 
+	 
+	 
+	 @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+		@RequestMapping(value = "/addCrowdSourcingUserContact", method = RequestMethod.POST)
+		public String addCrowdSourcingUserContact(@RequestParam(value = "json", required = false) String json,
+				HttpServletRequest request,HttpServletResponse response)
+				throws Exception {
+
+			String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);
+
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			
+			referContactsService.saveuserContacts(user, orgLocations, jsonObj);
 						
 			return "success";
 
