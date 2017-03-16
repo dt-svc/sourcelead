@@ -1,7 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.LookUpDataDao;
 import com.bis.sourcelead.entity.LookUpData;
-import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 /**
  * 
@@ -64,6 +62,18 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
       
 	    return educationsList;
 	}
+	
+	
+	@Override
+	@Transactional
+	public LinkedHashSet<String> getLookUpDataByCategoryWithSortedOrder(String category) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "Select name from LookUpData lookupdata where lookupdata.category = :category ";
+	    LinkedHashSet<String> skillsList = new LinkedHashSet<>(session.createQuery(query.toString()).setString("category", category).setCacheable(true).list());
+      
+	    return skillsList;
+	}
+	
 
 	@Override
 	@Transactional
