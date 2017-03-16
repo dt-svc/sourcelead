@@ -3,6 +3,7 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,7 +25,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "CANDIDATE", catalog = "sourcelead")
@@ -182,6 +182,9 @@ public class Candidate implements Serializable{
 	@Column(name = "SKILLS_NAME", columnDefinition = "TEXT default NULL")
 	private String skillsName ;
 	
+	@Column(name = "PRIMARY_SKILL")
+	private String primarySkill;
+	
 	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateEducation> candidateEducation = new HashSet<CandidateEducation>(0);
@@ -264,6 +267,9 @@ public class Candidate implements Serializable{
 	 
 	 @Transient
 	 private List<RequirementSubmission> requirementSubmisstions;
+	 
+	 @Transient
+	 private LinkedHashSet<String> allAndCandidateSkills;
 	 
 
 	public Long getId() {
@@ -724,6 +730,16 @@ public class Candidate implements Serializable{
 	}
 
 
+	public LinkedHashSet<String> getAllAndCandidateSkills() {
+		return allAndCandidateSkills;
+	}
+
+
+	public void setAllAndCandidateSkills(LinkedHashSet<String> allAndCandidateSkills) {
+		this.allAndCandidateSkills = allAndCandidateSkills;
+	}
+
+
 	public String getReqSubmissionId() {
 		return reqSubmissionId;
 	}
@@ -985,4 +1001,15 @@ public class Candidate implements Serializable{
 	public void setGooglePlus(String googlePlus) {
 		this.googlePlus = googlePlus;
 	}
+
+
+	public String getPrimarySkill() {
+		return primarySkill;
+	}
+
+
+	public void setPrimarySkill(String primarySkill) {
+		this.primarySkill = primarySkill;
+	}
+	
 }
