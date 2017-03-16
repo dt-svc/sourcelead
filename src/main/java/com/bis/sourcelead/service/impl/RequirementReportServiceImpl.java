@@ -51,6 +51,7 @@ public class RequirementReportServiceImpl implements RequirementReportService{
 	@Override
 	public List<Requirement> getRequirementStageReports(OrgLocations orgLocation, String Status) throws Exception {
 		return requirementReportDao.getRequirementStageReports(orgLocation,Status);
+	}
 	@Override
 	public List<RequirementSubmissionHistory> getReceivedApplicantsCountForReportsByVendorLocationId(Long orgLocationId,
 			Long vendorLocationId,Date startDateUTC, Date endDateUTC) {

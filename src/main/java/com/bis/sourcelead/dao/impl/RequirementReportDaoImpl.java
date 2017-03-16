@@ -235,7 +235,7 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		}
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where rs.orgLocations.id = :orgLocationId "+subQuery;
+		String query = "from RequirementSubmission rs left join fetch rs.candidate left join fetch rs.requirement requirement where rs.orgLocations.id = :orgLocationId "+subQuery;
 		Query qry = session.createQuery(query);
 		for (String str : qry.getNamedParameters())
         {
@@ -331,5 +331,4 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		return session.createQuery(query).setParameterList("userCodesList", userCodesList).setCacheable(true).list();
 	}
 
->>>>>>> 4ac10ffed061e9a62cbce1617c1d09d25f69a4d0
 }

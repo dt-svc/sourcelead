@@ -253,34 +253,57 @@ public class RequirementReportRestController {
 					int interviewsCount = 0;
 					int offeredCount = 0;
 					int rejectedCount = 0;
+					
+					String submissionDate="";
+					String shortlistDate="";
+					String interviewDate="";
+					String offerDate="";
+					String requestSentDate="";
+					String submitToClientDate="";
+					String rejectedDate="";
+					
 					List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportService.getApplicantsCountsByDateRange(reqSub.getId(),startDateUTC,endDateUTC);
 					if(null != requirementSubmissionHistoryList && requirementSubmissionHistoryList.size() >0){
 						for(RequirementSubmissionHistory rsh : requirementSubmissionHistoryList){
 							if("submission".equals(rsh.getToStage())){
-								applicantsCount++;
+								//applicantsCount++;
+								submissionDate = getDateStr(rsh.getCreatedDate(),timezone);
 							}else if("shortList".equals(rsh.getToStage())){
-								shortlistedCount++;
+//								shortlistedCount++;
+								shortlistDate = getDateStr(rsh.getCreatedDate(),timezone);
 							}else if("interview".equals(rsh.getToStage())){
-								interviewsCount++;
+//								interviewsCount++;
+								interviewDate = getDateStr(rsh.getCreatedDate(),timezone);
 							}else if("offer_made".equals(rsh.getToStage())){
-								offeredCount++;
+//								offeredCount++;
+								offerDate = getDateStr(rsh.getCreatedDate(),timezone);
 							}else if("request_sent".equals(rsh.getToStage())){
-								requestSentCount++;
+//								requestSentCount++;
+								requestSentDate = getDateStr(rsh.getCreatedDate(),timezone);
 							}else if("submit_to_client".equals(rsh.getToStage())){
-								submitToClientCount++;
+//								submitToClientCount++;
+								submitToClientDate = getDateStr(rsh.getCreatedDate(),timezone);
 							}else if("rejected".equals(rsh.getToStage())){
-								rejectedCount++;
+//								rejectedCount++;
+								rejectedDate = getDateStr(rsh.getCreatedDate(),timezone);
 							}
 						}
 						applicantReport.setRequirementTitle(reqSub.getRequirement().getJobTitle());
-						applicantReport.setPostedOn(getDateStr(reqSub.getRequirement().getCreatedDate(),timezone));
-						applicantReport.setApplicantsCount(applicantsCount);
+						applicantReport.setApplicantName(reqSub.getCandidate().getFirstName());
+						applicantReport.setSubmissionDate(submissionDate);
+						applicantReport.setShortlistDate(shortlistDate);
+						applicantReport.setInterviewDate(interviewDate);
+						applicantReport.setOfferDate(offerDate);
+						applicantReport.setSubmitToClientDate(submitToClientDate);
+						applicantReport.setRequestSentDate(requestSentDate);
+						applicantReport.setRejectedDate(rejectedDate);
+						/*applicantReport.setApplicantsCount(applicantsCount);
 						applicantReport.setShortlisted(shortlistedCount);
 						applicantReport.setInterviewCount(interviewsCount);
 						applicantReport.setSubmitToClientCount(submitToClientCount);
 						applicantReport.setOfferedCount(offeredCount);
 						applicantReport.setRejectedCount(rejectedCount);
-						applicantReport.setRequestSentCount(requestSentCount);
+						applicantReport.setRequestSentCount(requestSentCount);*/
 						applicantReportList.add(applicantReport);
 					}
 				

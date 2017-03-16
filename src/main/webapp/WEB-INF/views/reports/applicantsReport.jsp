@@ -66,7 +66,7 @@ function prepareReportDataDiv(data){
 	result = result + '	<thead>';
 	result = result + '   <tr>';
 	result = result + '    <th>Requirement Title</th>';
-	result = result + '    <th>Posted on</th>';
+	result = result + '    <th>Applicant Name</th>';
 	result = result + '    <th>Applicants</th>';
 	result = result + '    <th>Request Sent for Approval</th>';
 	result = result + '    <th>Shortlisted</th>';
@@ -86,37 +86,69 @@ function prepareReportDataDiv(data){
         result = result + '</td>';
 
         result = result + '<td>';
-        if(report.postedOn != null && report.postedOn != '' && report.postedOn !='undefined'&& report.postedOn != null && report.postedOn != ''){
-       	result = result + '<div><span>'+report.postedOn+'</span></div>';
+        if(report.applicantName != null && report.applicantName != '' && report.applicantName !='undefined'){
+       	result = result + '<div><span>'+report.applicantName+'</span></div>';
  		} else{
 		result = result + '<div><span>---</span></div>';
 		    }
         result = result + '</td>';
+        
         result = result + '<td>';
-        if(report.applicantsCount != null && report.applicantsCount != '' && report.applicantsCount !='undefined'&& report.applicantsCount != null && report.applicantsCount != ''){
-         result = result + '<div><span>'+report.applicantsCount+'</span></div>';
+        if(report.submissionDate != null && report.submissionDate != '' && report.submissionDate !='undefined'){
+         result = result + '<div><span>'+report.submissionDate+'</span></div>';
         }
         else{
 		 result = result + '<div><span>---</span></div>';
 		    }
          result = result + '</td>';
+         
        	 result = result + '<td>';
-       	 result = result + "<div><span>"+report.requestSentCount+"</span></div>";
+       	if(report.requestSentDate != null && report.requestSentDate != '' && report.requestSentDate !='undefined'){
+       	 result = result + "<div><span>"+report.requestSentDate+"</span></div>";
+       	}else{
+   		 result = result + '<div><span>---</span></div>';
+	    }
          result = result + '</td>';
+         
          result = result + '<td>';
-         result = result + "<div><span>"+report.shortlisted+"</span></div>";
+     	if(report.shortlistDate != null && report.shortlistDate != '' && report.shortlistDate !='undefined'){
+         result = result + "<div><span>"+report.shortlistDate+"</span></div>";
+     	}else{
+   		 result = result + '<div><span>---</span></div>';
+	    }
          result = result + '</td>';
+         
          result = result + '<td>';
-       	 result = result + "<div><span>"+report.submitToClientCount+"</span></div>";
+     	if(report.submitToClientDate != null && report.submitToClientDate != '' && report.submitToClientDate !='undefined'){
+       	 result = result + "<div><span>"+report.submitToClientDate+"</span></div>";
+     	}else{
+   		 result = result + '<div><span>---</span></div>';
+	    }
          result = result + '</td>';
+         
          result = result + '<td>';
-         result = result + "<div><span>"+report.interviewCount+"</span></div> ";
+         if(report.interviewDate != null && report.interviewDate != '' && report.interviewDate !='undefined'){
+         result = result + "<div><span>"+report.interviewDate+"</span></div> ";
+         }else{
+       		 result = result + '<div><span>---</span></div>';
+ 	    }
          result = result + '</td>';
+         
+         
          result = result + '<td>';
-         result = result + "<div><span>"+report.offeredCount+"</span></div> ";
+         if(report.offerDate != null && report.offerDate != '' && report.offerDate !='undefined'){
+         result = result + "<div><span>"+report.offerDate+"</span></div> ";
+         }else{
+       		 result = result + '<div><span>---</span></div>';
+  	    }
          result = result + '</td>';
+         
          result = result + '<td>';
-       	 result = result + "<div><span>"+report.rejectedCount+"</span></div>";
+         if(report.rejectedDate != null && report.rejectedDate != '' && report.rejectedDate !='undefined'){
+       	 result = result + "<div><span>"+report.rejectedDate+"</span></div>";
+         }else{
+       		 result = result + '<div><span>---</span></div>';
+   	    }
          result = result + '</td>';
          result = result + '</tr>';
     }
