@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service;
 
+import java.text.ParseException;
 import java.util.List;
 
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -20,7 +21,9 @@ public interface RequirementSubmissionHistoryService {
 
 	List<RequirementSubmissionHistory> getRequirementHistoryByLocationIdAndStage(Long orgLocationID,String submissionType, Long submissionId)throws Exception;
 	
-	List<RequirementSubmissionHistory> getRequirementHistoryListByCandidateIdAndOrgLocationIdAndRequirementIdAndSubmissionId(Long candidateId, Long orgLocationId, Long requirementId,Long submissionId)throws Exception; 
+	List<RequirementSubmissionHistory> getRequirementHistoryListByCandidateIdAndOrgLocationIdAndRequirementIdAndSubmissionId(Long candidateId, Long orgLocationId, Long requirementId,Long submissionId)throws Exception;
+	
+	Boolean  isInCoolingOffPeriodByEmailAndLocationsId(String email, Long orgLocationId, String reqCoolingOffPeriod, Long requirementId) throws ParseException, Exception;
 
 	RequirementSubmissionHistory getRequirementSubmissionHistoryBySubmissionId(Long submissionId);
 

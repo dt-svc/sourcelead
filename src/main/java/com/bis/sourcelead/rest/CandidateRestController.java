@@ -502,6 +502,25 @@ public class CandidateRestController {
 			return resultJson;
 		}
 	 
+	 /**
+		 * @author Venkat Kesav
+		 * @ this method is uses for verify Cooling Off Period
+		 * @param 
+		 * @param request
+		 * @return
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/verifyCoolingOffPeriod")
+		public String verifyCoolingOffPeriod(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateEmail", required = false) String candidateEmail,HttpServletRequest request) throws Exception {
+			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			 String resultJson;
+			 
+			 Boolean isInCoolingOffPeriod = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(candidateEmail, loginOrgLocation.getId(), "120", requirementId);
+			 
+			 resultJson = commonUtil.toJSON(isInCoolingOffPeriod);
+			 return resultJson;
+		}
+	 
 	 
 	/**
 	 * @author Laxman

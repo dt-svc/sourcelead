@@ -114,13 +114,13 @@ function getAddApplicant(requirementId){
 	
 	result = result + '	<div class="col-md-6 upresume mb">';
 	result = result + '<label class="col-md-4">&nbsp;</label>';
-	result = result + '<input type="checkbox" name="needApplicantPermit" id="needApplicantPermit" onClick="ApplicantPermit();" >&nbsp;&nbsp;<span><strong>Need applicant permission</strong></span> ';
+	result = result + '<input type="checkbox" name="needApplicantPermit" id="needApplicantPermit" onClick="ApplicantPermit(); isCoolingOff('+requirementId+');" >&nbsp;&nbsp;<span><strong>Need applicant permission</strong></span> ';
 	result = result + '</div>';
 	result = result + '</div>';
 	
 	result = result + '<div class="form-footer clearfix mt">';
 	result = result + '<div class="pull-right mr">';
-	result = result + '<button type="submit" id="save_button"  class="btn btn-sm btn-primary ">SUBMIT</button>';
+	result = result + '<button type="submit" id="save_button"  class="btn btn-sm btn-primary " >SUBMIT</button>';
 	result = result + '</div>';
 	result = result + '</div>';
 	result = result + '</div>';  
@@ -214,6 +214,7 @@ function getAddApplicant(requirementId){
 
 <script type="text/javascript">
 function ApplicantPermit(){
+	alert("all");
 	 if($("#needApplicantPermit").is(':checked')){
 		  $("#needApplicantPermit").val("Y");
 	 }else{
@@ -222,6 +223,20 @@ function ApplicantPermit(){
 }
 </script>
 
+<script type="text/javascript">
+function isCoolingOff(requirementId){
+	alert("allfff");
+var candidateEmail =   $("input[name=EmailId]").val();
+var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+		type: "POST",
+	    url: sourceleadUrl+"/verifyCoolingOffPeriod?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&candidateEmail="+candidateEmail, 
+	    success: function(data) {
+	    	var json = JSON.parse(data);
+	    },
+	});
+}
+</script>
 
 <script type="text/javascript">
  function getCandidatesList(requirementId,candidateType) {
@@ -349,11 +364,17 @@ function ApplicantPermit(){
 <!-- For add New Applicant -->
 <script type="text/javascript">
 $('body').on('submit', '#addApplicant_form', function(e){
+	alert("kjhj");
+
+	var requirementId = $("#requirementId").val();
+	alert("hhhhhhhhhhhhhhhh"+requirementId);
+	isCoolingOff(requirementId);
+	alert("ggggggggggggggg"+requirementId);
 	  if ($(this).validate(false, validationSettings)){
       e.preventDefault();
       var frm = $('#addApplicant_form').serializeFormJSON();
       var sourceleadUrl ='${sourceleadUrl}';
-      var requirementId = $("#requirementId").val();
+      
       var frm = $('#addApplicant_form').serializeFormJSON();
       var con1 = JSON.stringify(frm);
       con1= con1.replace(/[{}]/g, "");

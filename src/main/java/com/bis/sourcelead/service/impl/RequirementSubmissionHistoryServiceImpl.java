@@ -76,5 +76,12 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 			Long candidateId, Long orgLocationId, Long requirementId, Long submissionId) throws Exception {
 		return requirementSubmissionHistoryDao.getRequirementHistoryListByCandidateIdAndOrgLocationIdAndRequirementIdAndSubmissionId(candidateId,orgLocationId,requirementId,submissionId);
 	}
+	
+	@Override
+	public Boolean isInCoolingOffPeriodByEmailAndLocationsId(
+			String email, Long orgLocationId, String reqCoolingOffPeriod, Long requirementId) throws Exception {
+		
+		return requirementSubmissionHistoryDao.isInCoolingOffPeriodByEmailAndLocationsId(email, orgLocationId, "120", requirementId);
+	}
 
 }

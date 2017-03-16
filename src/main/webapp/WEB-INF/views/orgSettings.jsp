@@ -22,6 +22,12 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<style type="text/css">
+.selectChosen .chosen-container {
+width: 100% !important;
+}
+</style>
+
 <!-- end files for autocomplete with tagit -->
 <script type="text/javascript">
 window.onload = function () {
@@ -654,8 +660,8 @@ function configCoolingOff(){
 					
 					result = result + '<div class="form-group">';
 					result = result + '<label class="col-md-3">Cooling Off Period</label>';
-					result = result + '<div class="col-md-4 select-field">';
-					result = result + '<select  class="chosen-select form-control" name="coolingOff" id="coolingOff" field-name="CoolingOff"  >';
+					result = result + '<div class="col-md-4 select-field selectChosen">';
+					result = result + '<select  class="form-control" name="coolingOff" id="coolingOff" field-name="CoolingOff">';
 					result = result + '		<option value="'+coolingOffPeriod+'" selected>'+coolingOffPeriod+'</option>';
 					result = result + '		<option value="0 Days">0 Days</option>';
                     result = result + '		<option value="1 Week">1 Week</option>';
@@ -683,6 +689,22 @@ function configCoolingOff(){
 					result = result + ' </form>';
 					
 					$("#coolingOffPeriodDiv").append(result);
+					
+					 var config = {
+							  '.chosen-select'           : {},
+							  '.chosen-select-deselect'  : {allow_single_deselect:true},
+							  '.chosen-select-no-single' : {disable_search_threshold:10},
+							  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+							  '.chosen-select-width'     : {width:"95%"}
+							}
+					       $('.chosen-select').each(function() {
+								var $this = $(this);
+								$this.next().css({'width': '100%'});
+						  })
+						  $('.chosen-container').css({'width': '100%'});
+					 
+				       $("#coolingOff").chosen();
+				       $("#coolingOff").trigger('chosen:update');
 		        },
 		 });
 }
