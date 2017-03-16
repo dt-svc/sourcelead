@@ -281,6 +281,8 @@ public class RequirementServiceImpl implements RequirementService {
 			}if(jsonObj.has("description")){
 					//requirement.setDescription(java.net.URLDecoder.decode(jsonObj.getString("description"), "utf-8"));
 					requirement.setDescription(jsonObj.getString("description"));	
+			}if(jsonObj.has("coolingOff")){
+				requirement.setReqCoolingOffPeriod(jsonObj.getString("coolingOff"));
 			}if(jsonObj.has("currencyCode")){
 				if(!"".equalsIgnoreCase(jsonObj.getString("currencyCode"))){
 					requirement.setCurrencyCode(jsonObj.getString("currencyCode"));
@@ -2177,6 +2179,9 @@ public class RequirementServiceImpl implements RequirementService {
 					reqTemplate.setDescription(jsonObj.getString("description"));
 				}
 				
+				if(jsonObj.has("coolingOff") && !"".equalsIgnoreCase(jsonObj.getString("coolingOff"))){
+					reqTemplate.setReqCoolingOffPeriod(jsonObj.getString("coolingOff"));
+				}
 				
 				if(jsonObj.has("currencyCode") && !"".equalsIgnoreCase(jsonObj.getString("currencyCode"))){
 					reqTemplate.setCurrencyCode(jsonObj.getString("currencyCode"));
