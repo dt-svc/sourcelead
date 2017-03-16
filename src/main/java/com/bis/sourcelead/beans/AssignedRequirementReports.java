@@ -17,6 +17,20 @@ public class AssignedRequirementReports {
 	private String teamName;
 	
 	private int offered;
+	
+    private int applicantsCount;
+	
+	private int requestSentCount;
+	
+	private int shortlistedCount;
+	
+	private int submitToClientCount;
+	
+	private int interviewCount;
+	
+	private int offeredCount;
+	
+	private int rejectedCount;
 
 	public String getJobTitle() {
 		return jobTitle;
@@ -80,6 +94,62 @@ public class AssignedRequirementReports {
 
 	public void setOffered(int offered) {
 		this.offered = offered;
+	}
+
+	public int getApplicantsCount() {
+		return applicantsCount;
+	}
+
+	public void setApplicantsCount(int applicantsCount) {
+		this.applicantsCount = applicantsCount;
+	}
+
+	public int getRequestSentCount() {
+		return requestSentCount;
+	}
+
+	public void setRequestSentCount(int requestSentCount) {
+		this.requestSentCount = requestSentCount;
+	}
+
+	public int getShortlistedCount() {
+		return shortlistedCount;
+	}
+
+	public void setShortlistedCount(int shortlistedCount) {
+		this.shortlistedCount = shortlistedCount;
+	}
+
+	public int getSubmitToClientCount() {
+		return submitToClientCount;
+	}
+
+	public void setSubmitToClientCount(int submitToClientCount) {
+		this.submitToClientCount = submitToClientCount;
+	}
+
+	public int getInterviewCount() {
+		return interviewCount;
+	}
+
+	public void setInterviewCount(int interviewCount) {
+		this.interviewCount = interviewCount;
+	}
+
+	public int getOfferedCount() {
+		return offeredCount;
+	}
+
+	public void setOfferedCount(int offeredCount) {
+		this.offeredCount = offeredCount;
+	}
+
+	public int getRejectedCount() {
+		return rejectedCount;
+	}
+
+	public void setRejectedCount(int rejectedCount) {
+		this.rejectedCount = rejectedCount;
 	}  
 
 

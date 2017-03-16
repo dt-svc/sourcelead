@@ -52,6 +52,7 @@ function getAllAssignedRequirementsReports(){
 	          url: sourceleadUrl+"/getAllAssignedRequirementsReports?${_csrf.parameterName}=${_csrf.token}",    
 	          success :function(data) {
 	        	 prepareReportDataDiv(data);
+	        	 getAllRequirementAssignToCounts();
 	         },
 	          
 	     }); 
@@ -252,32 +253,18 @@ function requirementReportPagination(){
 		</select>
 	 </div>	
 	 <span class="dashboard-datepkr cusShow">
-	 <input type="text" class="form-control" value="" id="ApplicantStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
+	 <input type="text" class="form-control" value="" id="ApplicantStartDate" name="StartDate" field-name="Start Date" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
 	<!--  <p id="ApplicantReportStartDate" class="ReError"></p> -->
 	 </span>
 	<span class="dashboard-datepkr cusShow">
-	<input type="text"  class="form-control" value="" id="ApplicantEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
+	<input type="text"  class="form-control" value="" id="ApplicantEndDate" name="EndDate" field-name="End Date" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
 	<!-- <p id="ApplicantReportStartDate" class="ReError"></p> -->
 	</span>
 	<!-- <span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getAssignedRequirement();" /></span> -->
 	
-		<span class="repoBtns">
-		<a href="javascript:void(0)" class="oneA actRE"><i class="fa fa-list"></i></a>
-		<a href="javascript:void(0)" class="oneB" onclick="getAssignedRequirement();"><i class="fa fa-pie-chart"></i></a>
-	</span>	
-	
 </div>
                      
-        <ul style="padding: 2px 300px 2px 0px;">
-          <li><i class="fa fa-filter"></i><span class="padFil"></span><i class="glyphicon glyphicon-play" id="status-pop"></i>|
-            <div class="export_pop">
-              <ul>
-                <li>PDF<i class="fa fa-file-pdf-o"></i></li>
-                <li>Excel<i class="fa fa-file-excel-o"></i></li>
-                <li>Word<i class="fa fa-file-word-o"></i></li>
-              </ul>
-            </div>
-          </li>
+        <ul style="padding: 2px 0px 2px 0px;">
 
           <div class="clearfix"></div>
         </ul>
@@ -302,7 +289,7 @@ function requirementReportPagination(){
             </select> -->
           </div>
           
-          <input type="button" value="Submit" class="btn btn-primary"  id="assigendReq"  onclick="getAssignedRequirement();"/>
+          <input type="button" value="Submit" class="btn btn-primary rePBT"  id="assigendReq"  onclick="getAssignedRequirement();"/>
 			<div class="clearfix"></div>		
 		</div>      
 		</form:form>
@@ -335,7 +322,7 @@ function requirementReportPagination(){
 	</div>
 
   <div class="project_tabs_inn_table vendor_wrap_inn_table">
-                 <div id="assignedRequirementReportsDiv" class="repoPositi"></div>
+                 <div id="assignedRequirementReportsDiv" class="repoPositiAs"></div>
                 </div>   
                 
 </div>  
@@ -357,7 +344,6 @@ function requirementReportPagination(){
   <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
 
 
-
 <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
@@ -375,15 +361,17 @@ function requirementReportPagination(){
 
 });
  		</script> 
- 		
+ <script type="text/javascript">
+      var validationSettings = {
+          errorMessagePosition : 'element',
+          borderColorOnError : '',
+		  scrollToTopOnError : true,
+		  dateFormat : 'yyyy/mm/dd' 
+          };
+</script> 
 <script type="text/javascript">
 function getAssignedRequirement(){
 	if ($('#assign_requirement_form').validate(false, validationSettings)) {
-		var validationSettings = {
-			errorMessagePosition : 'element',
-			borderColorOnError : '',
-			scrollToTopOnError : true,
-		};
 		var frm = $('#assign_requirement_form').serializeFormJSON();
 		var con = JSON.stringify(frm);
 		con = con.replace(/[{}]/g, "");
@@ -396,6 +384,8 @@ function getAssignedRequirement(){
 					url: sourceleadUrl+"/getDayWiseAssignedReqReports?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 					success : function(result) {
 						prepareReportDataDiv(result);
+						getAllRequirementAssignToCounts(jsonData);
+						reset();
 					},
 				});   
 		 return true;
@@ -404,23 +394,40 @@ function getAssignedRequirement(){
 	} 
 }
 
-
+$('body').on('blur', '#assign_requirement_form', function() {
+	$("#assign_requirement_form").showHelpOnFocus();
+	$("#assign_requirement_form").validateOnBlur(false, validationSettings);
+});
 </script>
  		
  		
+<script>
+function reset(){
+	$(".chosen-select").val('').trigger("chosen:updated");
+}
+
+</script> 		
  		
- 		
- 		
- 		
- 		
- 		
- 		
- 		
- 		
- 		
- 		
- 		
- 		
+<script>
+function getAllRequirementAssignToCounts(jsonData){
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+        type : "GET",
+        url: sourceleadUrl+"/getAllRequirementAssignToCounts?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+         success :function(data) {
+        	 var json = JSON.parse(data);
+        	 $("#applicantCount").html(json.applicantsCount); 
+       		 $("#shortlistedCount").html(json.shortlistedCount);
+       	 	 $("#submitToClientCount").html(json.submitToClientCount);
+       		 $("#interviewCount").html(json.interviewCount);
+       		 $("#offerCount").html(json.offeredCount); 
+          	 $("#rejectedCount").html(json.rejectedCount); 
+        },
+         
+    });	
+}
+
+</script>
  		
 
 <script>
@@ -631,26 +638,26 @@ $(".reminder").click(function(){
 
 
 <script>
-function getAllCounts(reportType,startDate,endDate){
-	 $('#applicantsli').load(allApplicantsCount(reportType,startDate,endDate)); 
-}
-</script>
-
-
-<script>
 function custDates(){
 	var reportType = $("#reportTypeId").val();
 	if(reportType=="custom"){
 	    $(".cusShow").show();
-	     /*    $('#RatePer').attr("data-validation","required");*/
+		$('#ApplicantStartDate').removeAttr('data-validation');
+		$('#ApplicantEndDate').removeAttr('data-validation'); 
+		$('#ApplicantStartDate').removeAttr('data-validation-optional');
+		$('#ApplicantEndDate').removeAttr('data-validation-optional');
 	    $('#ApplicantStartDate').attr('data-validation', 'required');
 		$('#ApplicantEndDate').attr('data-validation','required'); 
 	}
 	if(reportType!="custom"){
 		$('#ApplicantStartDate').removeAttr('data-validation');
 		$('#ApplicantEndDate').removeAttr('data-validation'); 
+		$('#ApplicantStartDate').removeAttr('data-validation-optional');
+		$('#ApplicantEndDate').removeAttr('data-validation-optional');
+		$('#ApplicantStartDate').attr('data-validation-optional', 'true');
+		$('#ApplicantEndDate').attr('data-validation-optional','true'); 
 	    $(".cusShow").hide();
-		flushCustomDates()
+	//	flushCustomDates();
 	}
 }
 </script>

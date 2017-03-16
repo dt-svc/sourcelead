@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.TemporalType;
 
@@ -220,8 +221,8 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementSubmissionHistory> getApplicantsCountsByDateRange(Long submissionId, Date startDateUTC,Date endDateUTC) throws Exception {
-		Session session = this.sessionFactory.getCurrentSession();
 		
+		Session session = this.sessionFactory.getCurrentSession();
 		String subQuery = "";
 		Map<String, Object> params = new HashMap<String,Object>();
 		if(null != submissionId){
@@ -267,4 +268,13 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 			return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		}
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmission> getAllSubmissionsByAssignTeamMember(Long orgLocationId,Set<String> userCodesList, Date startDateUTC, Date endDateUTC) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementSubmission rs where rs.createdBy IN (:userCodesList)";
+		return session.createQuery(query).setParameterList("userCodesList", userCodesList).setCacheable(true).list();
+	}
+
 }
