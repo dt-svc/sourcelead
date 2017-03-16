@@ -1067,6 +1067,7 @@ ul.timesheet-menu li a:hover, ul.backoffice-menu li a:hover {
 	display: inline-block;
 	overflow: hidden;
 	padding: 0.625rem 1.25rem;
+
 }
 .dropzone .file-upload .btnBlock {
 	display: block;

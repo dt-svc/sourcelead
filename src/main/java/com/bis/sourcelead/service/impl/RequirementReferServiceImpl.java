@@ -285,6 +285,11 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 	public List<RequirementRefer> getLoginUserReferredListByUserId(Long userId,Long requirementId) throws Exception {
 		return requirementReferDao.getLoginUserReferredListByUserId(userId, requirementId);
 	}
+
+	@Override
+	public List<RequirementRefer> getLoginUserReferToMeListByUserId(Long userId) throws Exception {
+		return requirementReferDao.getLoginUserReferToMeListByUserId(userId);
+	}
 	
 
 }

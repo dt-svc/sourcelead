@@ -44,4 +44,6 @@ public interface RequirementReferService {
 	List<RequirementRefer> getReferredByMeCountListByStartDateAndEndDate(Long userId,Date startDate,Date endDate) throws Exception;
 	
 	List<RequirementRefer> getLoginUserReferredListByUserId(Long userId,Long requirementId) throws Exception;
+	
+	List<RequirementRefer> getLoginUserReferToMeListByUserId(Long userId) throws Exception;
 }

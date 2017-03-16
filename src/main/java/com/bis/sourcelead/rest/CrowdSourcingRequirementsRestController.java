@@ -153,6 +153,12 @@ public class CrowdSourcingRequirementsRestController {
 	    
 	     else if (requirementType.equalsIgnoreCase("CrowdSourcingJobs")){
 	    	 boolQueryBuilder.must(QueryBuilders.matchQuery("isCrowdSourcingJob", "Y"));
+	    	 List<RequirementRefer> referList = requirementReferService.getLoginUserReferToMeListByUserId(user.getId());
+	    	 if(null != referList && referList.size() > 0){
+	    		 for(RequirementRefer refer : referList){
+	    			 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementId", refer.getRequirementId().getId()));
+	    		 }
+	    	 }
 	     }
 	     
 	     else if(requirementType.equalsIgnoreCase("ReferredByMe")){
@@ -525,6 +531,12 @@ public class CrowdSourcingRequirementsRestController {
 		     }
 		     else if (requirementType.equalsIgnoreCase("CrowdSourcingJobs")){
 		    	 boolQueryBuilder.must(QueryBuilders.matchQuery("isCrowdSourcingJob", "Y"));
+		    	 List<RequirementRefer> referList = requirementReferService.getLoginUserReferToMeListByUserId(user.getId());
+		    	 if(null != referList && referList.size() > 0){
+		    		 for(RequirementRefer refer : referList){
+		    			 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementId", refer.getRequirementId().getId()));
+		    		 }
+		    	 }
 		     }
 		     
 		     boolQueryBuilder = getSearchRequirementsResults(boolQueryBuilder,jsonObj);   
