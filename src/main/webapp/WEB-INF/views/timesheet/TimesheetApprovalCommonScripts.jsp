@@ -1320,7 +1320,8 @@ function pagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-    		"sSearch": ""
+    		"sSearch": "",
+    		"sZeroRecords": "", "sEmptyTable": ""
     	}
     } );
 }

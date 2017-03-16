@@ -328,6 +328,23 @@ public class ProfessionalRequirementsController {
 		  
 	   }
 	 
+	 
+	 
+	 @RequestMapping(value = "/validateContactEmail",  method = RequestMethod.GET)
+	   public @ResponseBody String validateContactEmail(@RequestParam(value="contactEmail", required=false) String contactEmail,
+	   		HttpServletRequest request) throws Exception {
+		  
+		  User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		  
+		  ReferContacts referContacts = referContactsService.getReferContactsByEmails(user.getId(), contactEmail);
+		  if(null != referContacts){
+			  return "Invalid";
+		  }else{
+			  return "Success";
+		  }
+		  
+	   }
+	 
  
  
 	 @RequestMapping(value = "/referredToMePortletList")
