@@ -557,7 +557,7 @@ public class ClientRestController {
 	         OrgSpoc orgSpoc =  orgSpocService.getSpocAndOwnerDetailsByIdAndOwnerId(spocId,ownerId,user.getId(),spocUserId,orgLoc.getId(),type);
 		     List<Long> ownerListOfSpoc =  orgSpocService.getOwnerIdbySpocId(spocUserId,ownerId);
 		     //List<User> userList = userService.getOwnersByOrgLocationIdAndNotExistedOwnerId(orgLoc.getId(),ownerId,ownerListOfSpoc);
-		     List<User>  userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(orgLoc.getId(),Long.valueOf(Constants.TAB_CLIENT),ownerListOfSpoc);
+		     List<User>  userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(orgLoc.getId(),Long.valueOf(Constants.TAB_VENDOR),ownerListOfSpoc);
 		     if(null != userList && !userList.isEmpty()){
 		    	  orgSpoc.setUserList(userList);
 		     }
