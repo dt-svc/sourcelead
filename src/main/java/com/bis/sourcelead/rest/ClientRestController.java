@@ -556,9 +556,15 @@ public class ClientRestController {
 		 
 	         OrgSpoc orgSpoc =  orgSpocService.getSpocAndOwnerDetailsByIdAndOwnerId(spocId,ownerId,user.getId(),spocUserId,orgLoc.getId(),type);
 		     List<Long> ownerListOfSpoc =  orgSpocService.getOwnerIdbySpocId(spocUserId,ownerId);
+		     List<User>  userList = null;
 		     //List<User> userList = userService.getOwnersByOrgLocationIdAndNotExistedOwnerId(orgLoc.getId(),ownerId,ownerListOfSpoc);
-		     List<User>  userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(orgLoc.getId(),Long.valueOf(Constants.TAB_VENDOR),ownerListOfSpoc);
-		     if(null != userList && !userList.isEmpty()){
+		     if(null != type && !"".equalsIgnoreCase(type) && "Client".equalsIgnoreCase(type)){
+		     	 userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(orgLoc.getId(),Long.valueOf(Constants.TAB_CLIENT),ownerListOfSpoc);
+		     }
+		     if(null != type && !"".equalsIgnoreCase(type) && "Vendor".equalsIgnoreCase(type)){
+		    	 userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(orgLoc.getId(),Long.valueOf(Constants.TAB_VENDOR),ownerListOfSpoc);
+		     }
+		     	if(null != userList && !userList.isEmpty()){
 		    	  orgSpoc.setUserList(userList);
 		     }
 		     String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editSpocMsg");
