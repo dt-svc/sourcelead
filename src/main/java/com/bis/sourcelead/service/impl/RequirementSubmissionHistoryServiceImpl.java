@@ -45,7 +45,7 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 		
 		StringBuilder userName = new StringBuilder();
 		
-		if(!isNullOrEmpty(user.getLastName())){
+		if(null != user.getLastName() && !"".equalsIgnoreCase(user.getLastName())){
 			userName = userName.append(user.getFirstName()).append(" ").append(user.getLastName());
 		}else{
 			userName = userName.append(user.getFirstName());
