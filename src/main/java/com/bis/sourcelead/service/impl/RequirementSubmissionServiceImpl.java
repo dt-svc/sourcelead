@@ -3560,6 +3560,14 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			throws Exception {
 		return requirementSubmissionDao.getRecruiterSubmittedCandidatesList(recruiterUserId, requirementId);
 	}
+	
+
+	@Override
+	public List<RequirementSubmission> getRecruiterSubmittedCandidatesListForReportsByLocationIdAndStatus(
+			Long loginOrgLocationId, String client,String filterDate,Date startDateUTC,Date endDateUTC) throws Exception {
+		return requirementSubmissionDao.getRecruiterSubmittedCandidatesListForReportsByLocationIdAndStatus(loginOrgLocationId, client,filterDate,startDateUTC,endDateUTC);
+	}
+	
 
 	@Override
 	public List<RequirementSubmission> getAllVendorsIdbyorgLocationId(OrgLocations orgLocation,Date startDateUTC,Date endDateUTC) {

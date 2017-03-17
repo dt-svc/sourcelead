@@ -73,5 +73,7 @@ public interface RequirementDao {
 
 	public List<Requirement> getAllRequirementsByOrglocationId(Long orgLocationId) throws Exception;
 
+	String getNoticePeriodByRequirementId(Long requirementId) throws Exception;
+
 
 }
