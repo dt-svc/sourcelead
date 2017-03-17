@@ -13,40 +13,64 @@
 
 <script type="text/javascript">
 window.onload = function () {
-	requirementsList(0);
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
 		document.getElementById('requirementType').value = 'OpenJobs';
+		document.getElementById('openjobs').checked = true;
 	}else{
 		document.getElementById('requirementType').value = 'CrowdSourcingJobs';
+		document.getElementById('crowdSourcingjobs').checked = true;
+		document.getElementById('crowd').className = 'ml'
 	}
+	requirementsList(0);
 	
  };
 </script>
 
-
 <section class="content-wraper openJobsWrap">
     <section class="content-header clearfix">
-      <div class="pull-left">
-        <h2>Requirements<span class="select-fild">
-          <select id="requirementType" onchange="requirementsList('0');">
+      <div class="pull-left mt20">
+        <h2>Requirements<span class="select-fild"> </h2>  
+        <div class="clearfix"></div>    
+          <%-- <select id="requirementType" onchange="requirementsList('0');">
            	<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-           	<option value="OpenJobs">Open Jobs</option>
+           	<option value="OpenJobs">Open</option>
            	</c:if>
-            <option value="CrowdSourcingJobs">CrowdSourcing Jobs</option>
-            <option value="AppliedJobs">Applied Jobs</option>
-          </select>
+            <option value="CrowdSourcingJobs">Crowdsourcing</option>
+            <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+           	<option value="ReferredToMe">Referred To Me</option>
+           	</c:if>
+           	<option value="ReferredByMe">Referred By Me</option>
+           	<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+            <option value="AppliedJobs">Applied</option>
+            </c:if>
+            <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+            <option value="AppliedJobs">Submitted</option>
+            </c:if>
+          </select> --%>
+          </div>
+          <div class="clearfix"></div> 
+         <div class="reportsCount req_Crowd clearfix">
+          <ul>
+          <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+          <li><label class="mr"><span><i class="fa fa-folder-open-o"></i></span><b><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="openjobs" onchange="selectRequirementType('OpenJobs');" value="OpenJobs">&nbsp;Open</label></b></li>
+          </c:if>
+          <li id="crowd"><label class="mr"><span><i class="fa fa-mixcloud"></i></span><b><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="crowdSourcingjobs" onchange="selectRequirementType('CrowdSourcingJobs');" value="CrowdSourcingJobs">&nbsp;Crowdsourcing</label></b></li>
+          <li><label class="mr"><span><i class="fa fa-handshake-o"></i></span><b><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="referedByMejobs" onchange="selectRequirementType('ReferredByMe');" value="ReferredByMe">&nbsp;Referred By Me</label></b></li>
+       	  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+       	  <li><label class="mr"><span><i class="fa fa-handshake-o"></i></span><b><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="referedToMejobs" onchange="selectRequirementType('ReferredToMe');" value="ReferredToMe">&nbsp;Referred To Me</label></b></li>
+          <li><label class="mr"><span><i class="fa fa-send-o"></i></span><b><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="appliedjobs" onchange="selectRequirementType('AppliedJobs');" value="AppliedJobs">&nbsp;Applied</label></b></li>
+          </c:if>
+          <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+          <li><label class="mr"><span><i class="fa fa-send-o"></i></span><b><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="submittedjobs" onchange="selectRequirementType('AppliedJobs');" value="AppliedJobs">&nbsp;Submitted</label></b></li>
+          </c:if>
+          </ul>
+          <input type="hidden" name="requirementType" id="requirementType" value="" />
           </span>
-			<div class="timeNewSe timeNewSe_h" id="referredJobType" style="display: none;">
-                <select class="form-control chosen-select" id="referJobType" onchange="requirementsList('0');">
-                  <option selected="selected" disabled="disabled" value="">Select Job Type</option>
-                  <option value="ReferredToMe">Referred to me</option>
-                  <option value="ReferredByMe">Referred by me</option>
-                </select>
-            </div> 
+          </div> 
 		  <div class="clearfix"></div>            
-          </h2>        
-      </div>
+               
+      
     </section>
     
     <!-- Project -->
@@ -534,22 +558,13 @@ function requirementsList(offset){
 		$('#viewMore').html("View More");
 	}
 	
-	if(requirementType == "CrowdSourcingJobs"){
-		document.getElementById("referredJobType").style.display="";
+   if(requirementType == "OpenJobs" || requirementType == "CrowdSourcingJobs"){
 		document.getElementById("advancedSearch").style.display="";
-	}
-	else if(requirementType == "OpenJobs"){
-		document.getElementById("referredJobType").style.display="none";
-		document.getElementById("advancedSearch").style.display="";
-		 $("#referJobType").val('').trigger("chosen:updated");
 	}else{
-		document.getElementById("referredJobType").style.display="none";
 		document.getElementById("advancedSearch").style.display="none";
-		 $("#referJobType").val('').trigger("chosen:updated");
 	}
 	
-	var referJobType = document.getElementById("referJobType").value;
-	if(null != referJobType && referJobType != '' && referJobType != 'undefined'){
+	if(requirementType == 'ReferredToMe' || requirementType == 'ReferredByMe'){
 		document.getElementById("advancedSearch").style.display="none";
 	}
 	
@@ -559,7 +574,7 @@ function requirementsList(offset){
 	
 	 $.ajax({ 
 	   	type: "POST",
-	   	url: sourceleadUrl+"/getCrowdSourcingRequirements?${_csrf.parameterName}=${_csrf.token}&requirementType="+requirementType+"&offset="+offset+"&postedOn="+postedOn+"&jobTitleSearch="+jobTitleSearch+"&jobLocationSearch="+jobLocationSearch+"&referJobType="+referJobType,
+	   	url: sourceleadUrl+"/getCrowdSourcingRequirements?${_csrf.parameterName}=${_csrf.token}&requirementType="+requirementType+"&offset="+offset+"&postedOn="+postedOn+"&jobTitleSearch="+jobTitleSearch+"&jobLocationSearch="+jobLocationSearch,
 	   			
 	    success: function(data) {
        	 var json = JSON.parse(data);
@@ -588,13 +603,14 @@ function requirementsList(offset){
 			 					jobId = requirements.jobId+" - "	
 			 				}
 			 				
+			 				
 			 				if(requirements.minExperience != 'undefined' && requirements.maxExperience == 'undefined'){
 			 					experience = requirements.minExperience+" Years";
 			 				}
 			 				else if(requirements.minExperience == 'undefined' && requirements.maxExperience != 'undefined'){
 			 					experience = requirements.maxExperience+" Years";
 			 				}
-			 				else if(requirements.minExperience != null && requirements.maxExperience != null){
+			 				else if(requirements.minExperience != '' && requirements.maxExperience != ''){
 			 					experience = requirements.minExperience+" to "+requirements.maxExperience+" Years";
 			 				}else{
 			 					experience = 'No Data';
@@ -607,14 +623,12 @@ function requirementsList(offset){
 			 				}
 			 				
 			 				if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined'){
-			 					rate = requirements.rate+" "+requirements.rateType +' / ';
+			 					rate = requirements.rate+" / "+requirements.rateType+" "+requirements.currentRateCurrency;
+			 				}else{
+			 					rate = 'No Data';
 			 				}
 			 				
-			 				if(requirements.currentRateCurrency != null && requirements.currentRateCurrency != '' && requirements.currentRateCurrency != 'undefined'){
-			 					currentRateCurrency = requirements.currentRateCurrency;
-			 				}else{
-			 					currentRateCurrency = 'No Data';
-			 				}
+			 				
 			 				
 			 				result = '<section class="openCta">';
 			 				result = result +'<div class="OpenJob">';
@@ -624,7 +638,7 @@ function requirementsList(offset){
 			 				result = result +'<b><i class="fa fa-clock-o"></i>'+jobType+'</b>';
 			 				result = result +'<b><i class="fa fa-briefcase"></i>'+experience+'</b>';
 			 				result = result +'<b><i class="fa fa-map-marker"></i>'+location+'</b>';
-			 				result = result +'<b><i class="fa fa-money"></i>'+rate+' '+currentRateCurrency+'</b>';
+			 				result = result +'<b><i class="fa fa-money"></i>'+rate+'</b>';
 			 				result = result +'</span>';
 			 				result = result +'<h5>';
 			 				result = result +'<strong>Skills :</strong>';
@@ -679,29 +693,25 @@ function requirementsList(offset){
 				 				result = result +'</span>'; */
 				 				result = result +'<div class="openPostBtns">';
 				 				
-				 				if((requirementType == "OpenJobs")|| (requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'N')){
+				 				if((requirementType == "OpenJobs")|| ((requirementType == "CrowdSourcingJobs" || requirementType == "ReferredToMe" || requirementType == "ReferredByMe") && requirements.isJobApplied == 'N')){
 				 					result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob('+requirements.requirementId+','+requirements.referId+');"  class="jobApply">Apply</a>';
 				 				}
 				 				
-				 				if(requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'Y'){
-				 					if(requirements.isReferedRequiremetnApplied == 'Y'){
-				 						result = result +'<a href="javascript:void(0)" class="jobApply appliedJob">Applied</a>';
-				 					}else{
+				 				if((requirementType == "CrowdSourcingJobs" || requirementType == "ReferredToMe" || requirementType == "ReferredByMe") && requirements.isJobApplied == 'Y'){
+				 					
 				 						result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();getSubmissionDetailsSideBar('+requirements.submissionId+','+candidateId+','+requirements.requirementId+');" class="jobApply">Applied</a>';
-				 					}
 				 					
 				 				}
 				 				
-				 				
-				 				if(requirementType == "CrowdSourcingJobs"){
-				 					if(referJobType == '' || referJobType == null || referJobType == 'undefined' || referJobType != 'ReferredToMe'){
+				 				if(requirementType != 'OpenJobs'){
+				 					if(requirementType != 'ReferredToMe'){
 					 					result = result +'<a class="refer" onclick="referToJob('+requirements.requirementId+','+requirements.referId+')" href="javascript:void(0)">Refer</a>';
 					 					result = result +'<div class="referWrap" id="refer'+requirements.requirementId+'">';
 						 				result = result +'<div class="referWrapInn">';
 						 				result = result +'<div id="refertoJobDiv'+requirements.requirementId+'"></div>';  
 						 				result = result +'</div>';
 						 				result = result +'</div>';
-				 					}else if(referJobType == 'ReferredToMe'){
+				 					}else if(requirementType == 'ReferredToMe'){
 				 						result = result +'<a class="refer" onclick="referToJob('+requirements.requirementId+','+requirements.referId+')" href="javascript:void(0)">Refer</a>';
 					 					result = result +'<div class="referWrap" id="refer'+requirements.referId+'">';
 						 				result = result +'<div class="referWrapInn">';
@@ -716,7 +726,7 @@ function requirementsList(offset){
 				 				result = result +'Posted :';
 				 				result = result +'<b><i class="fa fa-clock-o"></i> '+requirements.calDays+'</b>';
 				 				result = result +'</div>';
-				 				if(referJobType == 'ReferredToMe'){
+				 				if(requirementType == 'ReferredToMe'){
 				 					result = result +'<div class="applShare Refer">';
 					 				result = result +'Referred by : '+requirements.referedUser+'';
 					 				result = result +'</div>';
@@ -728,7 +738,13 @@ function requirementsList(offset){
 			 					
 			 					result = result +'<div class="openCtaRight text-center">';
 			 					result = result +'<div class="appliedWrap">';
-			 					result = result +'<i class="fa fa-check-circle"></i>';
+			 					
+			 					if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
+			 						result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();getSubmissionDetailsSideBar('+requirements.submissionId+','+candidateId+','+requirements.requirementId+');" class="jobApply"><i class="fa fa-check-circle"></i></a>';
+			 					}else{
+			 						result = result +'<i class="fa fa-check-circle"></i>';
+			 					}
+			 					
 			 					result = result +'<div class="openPostDate">';
 			 					
 			 					if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
@@ -866,7 +882,7 @@ function searchRequirement(offset){
 									 				else if(requirements.minExperience == 'undefined' && requirements.maxExperience != 'undefined'){
 									 					experience = requirements.maxExperience+" Years";
 									 				}
-									 				else if(requirements.minExperience != null && requirements.maxExperience != null){
+									 				else if(requirements.minExperience != '' && requirements.maxExperience != ''){
 									 					experience = requirements.minExperience+" to "+requirements.maxExperience+" Years";
 									 				}else{
 									 					experience = 'No Data';
@@ -879,7 +895,7 @@ function searchRequirement(offset){
 									 				}
 									 				
 									 				if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined'){
-									 					rate = requirements.rate+" / "+requirements.rateType;
+									 					rate = requirements.rate+" / "+requirements.rateType+" "+requirements.currentRateCurrency;
 									 				}else{
 									 					rate = 'No Data';
 									 				}
@@ -936,7 +952,7 @@ function searchRequirement(offset){
 									 				result = result +'</div>';
 									 				
 									 				
-									 				if(requirementType != "AppliedJobs" && requirements.isCrowdSourcingJob == 'Y'){
+									 				if(requirementType != "AppliedJobs"){
 									 					result = result +'<div class="openCtaRight">';
 										 				/* result = result +'<p>Share Requirement</p>';
 										 				result = result +'<span>';
@@ -947,7 +963,7 @@ function searchRequirement(offset){
 										 				result = result +'</span>'; */
 										 				result = result +'<div class="openPostBtns">';
 										 				
-										 				if((requirementType == "OpenJobs")|| (requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'N')){
+										 				if((requirementType == "OpenJobs") || (requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'N')){
 										 					result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob('+requirements.requirementId+');"  class="jobApply">Apply</a>';
 										 				}
 										 				
@@ -1285,4 +1301,9 @@ $('body').on('submit', '#referToJob_form', function(e){
   
   </script>
   
-
+<script type="text/javascript">
+ function selectRequirementType(type) {
+    	$("#requirementType").val(type);
+    	requirementsList('0')
+    }
+</script>

@@ -32,6 +32,7 @@ public class ApplicantReport {
 
 	private String orgName; 
 	
+	
 	private int applicantsSum;
 	private int requestSentSum;
 	private int shortlistedSum;
@@ -39,6 +40,16 @@ public class ApplicantReport {
 	private int interviewsSum;
 	private int offeredSum;
 	private int rejectedSum;
+	
+	private String submissionDate;
+	private String shortlistDate;
+	private String interviewDate;
+	private String offerDate;
+	private String requestSentDate;
+	private String submitToClientDate;
+	private String rejectedDate;
+	// applicant received reports
+	
 	
 
 	public String getOrgName() {
@@ -207,6 +218,62 @@ public class ApplicantReport {
 
 	public void setRejectedSum(int rejectedSum) {
 		this.rejectedSum = rejectedSum;
+	}
+
+	public String getSubmissionDate() {
+		return submissionDate;
+	}
+
+	public void setSubmissionDate(String submissionDate) {
+		this.submissionDate = submissionDate;
+	}
+
+	public String getShortlistDate() {
+		return shortlistDate;
+	}
+
+	public void setShortlistDate(String shortlistDate) {
+		this.shortlistDate = shortlistDate;
+	}
+
+	public String getInterviewDate() {
+		return interviewDate;
+	}
+
+	public void setInterviewDate(String interviewDate) {
+		this.interviewDate = interviewDate;
+	}
+
+	public String getOfferDate() {
+		return offerDate;
+	}
+
+	public void setOfferDate(String offerDate) {
+		this.offerDate = offerDate;
+	}
+
+	public String getRequestSentDate() {
+		return requestSentDate;
+	}
+
+	public void setRequestSentDate(String requestSentDate) {
+		this.requestSentDate = requestSentDate;
+	}
+
+	public String getSubmitToClientDate() {
+		return submitToClientDate;
+	}
+
+	public void setSubmitToClientDate(String submitToClientDate) {
+		this.submitToClientDate = submitToClientDate;
+	}
+
+	public String getRejectedDate() {
+		return rejectedDate;
+	}
+
+	public void setRejectedDate(String rejectedDate) {
+		this.rejectedDate = rejectedDate;
 	}
 
 

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.OrgLocations;
@@ -23,5 +24,9 @@ public interface RequirementAssignToDao {
 	public List<RequirementAssignTo> getAssignedToMembersByRequirementIdAndOrgLocationId(Long requirementId,Long orgLocationId);
 
 	public RequirementAssignTo getRequirementAssignToByRequirementIdandAssignedUserId(Long assignedUserId,Long requirementId)throws Exception;
+
+	public List<RequirementAssignTo> getAllAssignedRequirementByOrglocationId(Long orgLocationId);
+
+	public List<RequirementAssignTo> getAllAssignedRequirementByDateRange(Long orgLocationId, String userId,Date startDateUTC, Date endDateUTC);
 	
 }

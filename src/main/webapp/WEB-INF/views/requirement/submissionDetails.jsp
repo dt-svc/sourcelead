@@ -32,6 +32,9 @@
  	padding:11.74px 4px;
  	z-index: 9999;
  }
+ .demo {
+   position: absolute; top: 40px; left: 0; z-index: 999999;
+ }
  </style>
  
 <script>
@@ -227,11 +230,11 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 					    	    		result = result + 'Candidate status : '+json.submissionRateStatus;
 										result = result + '	</li>';
 			    	    			}
-									if(json.rejectedReason != null && json.rejectedReason != '' && json.rejectedReason != 'undefined'){
+									/* if(json.rejectedReason != null && json.rejectedReason != '' && json.rejectedReason != 'undefined'){
 										result = result + '	<li>';
 					    	    		result = result + 'Rejected Reason : '+json.rejectedReason;
 										result = result + '	</li>';
-									}
+									} */
 			    	    		}
 			    	    		if(json.submissionRateStatus == 'ACCEPTED'){
 			    	    			if(json.submissionRateStatus != null && json.submissionRateStatus != '' && json.submissionRateStatus != 'undefined'){
@@ -387,7 +390,11 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	                  
 	                  result = result + '<div class="col-md-6">';
 	     			  
-	     			  //Customer Interviews List
+	                  
+	                  
+	                  result = result+'<div class="mask_inner" id="mask_inner"><div class="feedback_close" onClick="feedback_close();">&times;</div></div> ';
+	     			  
+	                  //Customer Interviews List
 	     			/* '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_INTERVIEW\',\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
 	     			  result  = result + '   <div id="customerInterviewsList" ></div>';
 	     			 '</sec:authorize>';  */
@@ -424,7 +431,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 					           result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Accepted by:</label><span class="col-md-9">'+json.submissionRequestUser+'</span></div>';
 		                   }
 				          if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
-					          result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Attachment:</label><span class="col-md-9><a href="downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'">'+json.submissionRequestFileName+'</a></span></div>';
+					          result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Attachment:</label><span class="col-md-9"><a href=\"'+sourceleadUrl+'/downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'\">'+json.submissionRequestFileName+'</a></span></div>';
 					          result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Comment:</label><span class="col-md-9">'+json.submissionRequestComment+'</span></div>';
 					          }
 		          //}
@@ -435,14 +442,15 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	        result = result + ' </div>';
 
 	        result = result + ' </div>';
-          }
+       
          
         
           //Reject Reason
           result = result + '<div class="row positionRelative">';
           result = result + '<div class="col-sm-12 col-md-12">';
           if(json.rejectedReason != null && json.rejectedReason !='' && json.rejectedReason !='undefined'){
-	     	 	 result = result + '<div class="clearfix">';
+        	  if(json.submissionRateStatus == 'REJECTED'){ 
+        	  result = result + '<div class="clearfix">';
 				 result = result + '<div class="release-jobs alert alert-danger">';
 				 result = result + '<span class="close" data-dismiss="alert" aria-label="close">&times;</span>';
 			     result = result + '<div class="clearfix sub-details">';
@@ -456,7 +464,8 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
       	  }          
           result = result + '</div>';
           result = result + '</div>';
-          
+          }
+          }
 getInternalInterviewsList(submissionId);
 //getCustomerInterviewsList(submissionId,requirementId);
 getOfferDetails(submissionId);   
@@ -569,18 +578,17 @@ function getInternalInterviewsList(submissionId){
 	                    	 if(report.interviewId.location != null && report.interviewId.location != 'undefined' && report.interviewId.location != ""){
 	                    		 location = report.interviewId.location;
 	                    	 }
-	                    	 
-	   					     result = result + '<div id="accordion-sl" class="release-jobs positionRelative">';
-	   					  if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
-	   					     //if(report.feedbackStartTime == "feedbackStartTime" || report.feedbackEndTime == "feedbackEndTime" ){
-	   					    	result = result + '<i class="fa fa-handshake-o pull-right" title="FeedBack" onclick="interviewFeedback('+report.interviewId.id+',\''+report.interviewTemplateid+'\',\''+report.id+'\');"></i>';	 
-	   					    // }
-	   					  }
-	   					     result = result + '<h2>Interview: <span>'+interviewTypeHeader+' '+report.interviewTimezoneDateStr+' '+report.interviewTimeZoneStartTimeStr+' </span></h2>';
-	                    	result = result + '<div class="content clearfix">';
-	                    	
 	                    	 result = result + '<div id="feedbackdiv'+report.interviewId.id+'" class="require_wrap_table demo" style="display:none;">';
 		                     result = result + '</div>';
+		                     
+	   					     result = result + '<div id="accordion-sl" class="release-jobs positionRelative">';
+		   					  if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
+		   					    	result = result + '<i class="fa fa-handshake-o pull-right" title="FeedBack" onclick="interviewFeedback('+report.interviewId.id+',\''+report.interviewTemplateid+'\',\''+report.id+'\');"></i>';	 
+		   					  }
+		                    	 
+		   					  result = result + '<h2>Interview: <span>'+interviewTypeHeader+' '+report.interviewTimezoneDateStr+' '+report.interviewTimeZoneStartTimeStr+' </span></h2>';
+
+	   					     result = result + '<div class="content clearfix">';
 	                    	 result = result + '<div class="interview-type" id="interviewtypediv'+report.id+'" style="display:block;">';
 	                    	 
 	                    	 result = result + '<div class="row clearfix">';
@@ -654,12 +662,6 @@ function getInternalInterviewsList(submissionId){
 	                    	 }
 	                    	 result = result + '</div>';
 	                    	 
-	                    	 /* result = result + '<div class="row clearfix">';
-	                    	 result = result + '<label class="col-md-5">';
-	                    	 result = result + '<strong>Time Zone</strong>';
-	                    	 result = result + '</label>';
-                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+timeZone+'</p>';
-	                    	 result = result + '</div>'; */
 	                    	 if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
 	                    		 result = result + '<div class="row clearfix">';
 		                    	 result = result + '<label class="col-md-5">';
@@ -1686,10 +1688,11 @@ function savedCommentAndCount(candidateId,submissionId){
 <!-- this script using for interview feedback Start -->
 <script type="text/javascript">
 function interviewFeedback(interviewId,templateId,id){
+	$("#mask_inner").fadeIn();
 	//$('.content').show();
-	$("#interviewtypediv"+id+"").slideToggle();
-	$("#feedbackdiv"+interviewId+"").toggle();
-	$(this).next('.content').slideDown();
+	//$("#interviewtypediv"+id+"").slideToggle();
+	$("#feedbackdiv"+interviewId+"").show();
+	//$(this).next('.content').slideDown();
 	
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
@@ -1698,10 +1701,11 @@ function interviewFeedback(interviewId,templateId,id){
 		success: function(data) {
 			var json = JSON.parse(data);
 			var result = "";
-			result = result +"<table id='requirementApproverPagination' cellspacing='0' width='100%' >"; 
+			result = result +"<strong>Interview Feedback</strong>";
+			result = result +"<table id='requirementApproverPagination' cellspacing='0' width='100%' class='mt10'>"; 
 		    result = result +"<thead>"; 
 		    result = result +"  <tr>";  
-		    result = result +"    <th>Inteviewer Name</th>"; 
+		    result = result +"    <th>Interviewer Name</th>"; 
 		    result = result +"    <th>Date</th>"; 
 		    result = result +"    <th>Action</th>"; 
 		    result = result +"  </tr>"; 
@@ -1874,6 +1878,14 @@ function reActivateApplicant(submissionId,candidateId,requirementId){
 		
 	}
 	
+}
+</script>
+
+
+<script>
+function feedback_close() {
+	$("#mask_inner").fadeOut();
+	$('.demo').fadeOut();
 }
 </script>
 

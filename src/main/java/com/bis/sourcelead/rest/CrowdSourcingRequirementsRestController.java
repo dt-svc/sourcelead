@@ -49,6 +49,8 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
+import com.bis.sourcelead.entity.RequirementOfferHistory;
+import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
@@ -58,6 +60,7 @@ import com.bis.sourcelead.service.CrowdSourcingUserBankAccountsService;
 import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
+import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementReferService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
@@ -112,6 +115,9 @@ public class CrowdSourcingRequirementsRestController {
 	@Autowired
 	RequirementInterviewService requirementInterviewService;
 	
+	@Autowired
+	RequirementOfferHistoryService requirementOfferHistoryService;
+	
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -125,7 +131,6 @@ public class CrowdSourcingRequirementsRestController {
 			@RequestParam(value = "postedOn", required = false) String postedOn,
 			@RequestParam(value = "jobTitleSearch", required = false) String jobTitleSearch,
 			@RequestParam(value = "jobLocationSearch", required = false) String jobLocationSearch,
-			@RequestParam(value = "referJobType", required = false) String referJobType,
 			HttpServletRequest request) throws Exception {
 
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -138,36 +143,41 @@ public class CrowdSourcingRequirementsRestController {
 	    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	    df.setTimeZone(TimeZone.getTimeZone("GMT"));
 	    
-	    if(isNullOrEmpty(referJobType) || (!isNullOrEmpty(referJobType) && !referJobType.equalsIgnoreCase("ReferredToMe"))){
+	    if(isNullOrEmpty(requirementType) || (!isNullOrEmpty(requirementType) && !requirementType.equalsIgnoreCase("ReferredToMe"))){
 	    
 	    BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 	     if(requirementType.equalsIgnoreCase("OpenJobs")){
 	    	 boolQueryBuilder.must(QueryBuilders.matchQuery("isPublicJob", "Y"));
 	    	 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("appliedProfessionals", user.getId()));
 	     }
+	    
 	     else if (requirementType.equalsIgnoreCase("CrowdSourcingJobs")){
 	    	 boolQueryBuilder.must(QueryBuilders.matchQuery("isCrowdSourcingJob", "Y"));
-	    	 
-	    	 if(!isNullOrEmpty(referJobType)){
-	    		 if(referJobType.equalsIgnoreCase("ReferredByMe")){
-	    			 List<Long> referedRequirementList = requirementReferService.getReferByMeRequirementsByUserId(user.getId(), offset,Constants.MAX_RESULTS_TEN);
-	    			 if(referedRequirementList.size() > 0){
-	    				 BoolQueryBuilder subBoolQueryBuilder = new BoolQueryBuilder();
-	    				 for(int i=0; i<referedRequirementList.size(); i++){
-	    					 subBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementId", referedRequirementList.get(i)));
-		    			 } 
-	    				 
-	    				 boolQueryBuilder.must(subBoolQueryBuilder);
-	    				 
-	    			 }else{
-	    				 isELKSearchEnable = false;
-	    			 }
-	    			 
+	    	 List<RequirementRefer> referList = requirementReferService.getLoginUserReferToMeListByUserId(user.getId());
+	    	 if(null != referList && referList.size() > 0){
+	    		 for(RequirementRefer refer : referList){
+	    			 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementId", refer.getRequirementId().getId()));
 	    		 }
 	    	 }
-	    	
-	    	 
 	     }
+	     
+	     else if(requirementType.equalsIgnoreCase("ReferredByMe")){
+	    	     boolQueryBuilder.must(QueryBuilders.matchQuery("isCrowdSourcingJob", "Y"));
+    			 List<Long> referedRequirementList = requirementReferService.getReferByMeRequirementsByUserId(user.getId(), offset,Constants.MAX_RESULTS_TEN);
+    			 if(referedRequirementList.size() > 0){
+    				 BoolQueryBuilder subBoolQueryBuilder = new BoolQueryBuilder();
+    				 for(int i=0; i<referedRequirementList.size(); i++){
+    					 subBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementId", referedRequirementList.get(i)));
+	    			 } 
+    				 
+    				 boolQueryBuilder.must(subBoolQueryBuilder);
+    				 
+    			 }else{
+    				 isELKSearchEnable = false;
+    			 }
+    			 
+    	 }
+	     
 	     else if (requirementType.equalsIgnoreCase("AppliedJobs")){
 	    	 if(!isNullOrEmpty(loginUserRole)){
 	    		 if(loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")){
@@ -218,7 +228,7 @@ public class CrowdSourcingRequirementsRestController {
 	 	    		mapper.setDateFormat(df);
 	 	    	    RequirementIndex requirementIndex = mapper.readValue(json.toString(), RequirementIndex.class);
 	 	    	    
-	 	    	   if (requirementType.equalsIgnoreCase("CrowdSourcingJobs")){
+	 	    	   if (requirementType.equalsIgnoreCase("CrowdSourcingJobs") || requirementType.equalsIgnoreCase("ReferredByMe")){
 	 	    		   if(null !=  requirementIndex.getAppliedProfessionals()){
 	 	    			  List<Long> userId = new ArrayList<Long>();
 		 					for (String s : requirementIndex.getAppliedProfessionals()){
@@ -278,7 +288,7 @@ public class CrowdSourcingRequirementsRestController {
 	    
 	    }else{
 	    	
-	    	 if(referJobType.equalsIgnoreCase("ReferredToMe")){
+	    	 if(requirementType.equalsIgnoreCase("ReferredToMe")){
     			 List<RequirementRefer> referedToRequirementList = requirementReferService.getReferedToMeRequirementsByUserId(user.getId(), offset,Constants.MAX_RESULTS_TEN,jobTitleSearch,jobLocationSearch,postedOn);
     			 if(null != referedToRequirementList && referedToRequirementList.size() > 0){
     				 for(RequirementRefer refer : referedToRequirementList){
@@ -294,6 +304,7 @@ public class CrowdSourcingRequirementsRestController {
     					 requirementIndex.setCountry(refer.getRequirementId().getCountry());
     					 requirementIndex.setState(refer.getRequirementId().getState());
     					 requirementIndex.setCity(refer.getRequirementId().getCity());
+    					 requirementIndex.setIsCrowdSourcingJob(refer.getRequirementId().getIsCrowdSourcing());
     					 if(!isNullOrEmpty(refer.getRequirementId().getRate())){
     						 requirementIndex.setRate(Float.parseFloat(refer.getRequirementId().getRate()));
     					 }
@@ -520,6 +531,12 @@ public class CrowdSourcingRequirementsRestController {
 		     }
 		     else if (requirementType.equalsIgnoreCase("CrowdSourcingJobs")){
 		    	 boolQueryBuilder.must(QueryBuilders.matchQuery("isCrowdSourcingJob", "Y"));
+		    	 List<RequirementRefer> referList = requirementReferService.getLoginUserReferToMeListByUserId(user.getId());
+		    	 if(null != referList && referList.size() > 0){
+		    		 for(RequirementRefer refer : referList){
+		    			 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementId", refer.getRequirementId().getId()));
+		    		 }
+		    	 }
 		     }
 		     
 		     boolQueryBuilder = getSearchRequirementsResults(boolQueryBuilder,jsonObj);   
@@ -903,6 +920,27 @@ public class CrowdSourcingRequirementsRestController {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			
 			requirementReferService.saveReferCandidate(user, orgLocations, jsonObj);
+						
+			return "success";
+
+		}
+	 
+	 
+	 
+	 @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+		@RequestMapping(value = "/addCrowdSourcingUserContact", method = RequestMethod.POST)
+		public String addCrowdSourcingUserContact(@RequestParam(value = "json", required = false) String json,
+				HttpServletRequest request,HttpServletResponse response)
+				throws Exception {
+
+			String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);
+
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			
+			referContactsService.saveuserContacts(user, orgLocations, jsonObj);
 						
 			return "success";
 
@@ -1895,6 +1933,34 @@ public class CrowdSourcingRequirementsRestController {
 			resultJson = commonUtil.toJSON(refer);
 			return resultJson;
 
+		}
+		
+		
+		
+		@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+		@RequestMapping(value = "/getAllCrowdSourcingInterviews" , method = RequestMethod.POST)
+		 public @ResponseBody  String getAllCrowdSourcingInterviews(@RequestParam(value="submissionId", required=false) Long submissionId, HttpServletRequest request) throws Exception {
+			
+			 String resultJson = null;
+			 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 List<RequirementInterviewHistory> interviewsList = requirementInterviewHistoryService.getCrowdSorurcingInterviews(submissionId,orgLocations);
+			 resultJson = commonUtil.toJSON(interviewsList);
+			 return resultJson;
+		   }
+		
+		
+		@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+		@RequestMapping(value = "/getCrowdSourcingOfferDetails")
+		public @ResponseBody String getCrowdSourcingOfferDetails(@RequestParam(value="submissionId", required=false) Long submissionId,
+				                                              HttpServletRequest request) throws Exception {
+			
+			
+			String resultJson = null;
+			
+			List<RequirementOfferHistory> offersList = requirementOfferHistoryService.getCrowdSourcingOfferDetailsBySubmissionId(submissionId);
+			resultJson = commonUtil.toJSON(offersList);
+			return resultJson ;
+			
 		}
 		
 		

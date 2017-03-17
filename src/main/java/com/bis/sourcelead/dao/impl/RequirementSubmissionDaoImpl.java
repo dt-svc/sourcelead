@@ -371,7 +371,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String submissionStatus, String dateRange,String userType,User user) {
+	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String submissionStatus, String dateRange,String userType,User user, Date startUTCDate, Date endUTCDate) {
 		
         Session session = this.sessionFactory.getCurrentSession();
         
@@ -411,11 +411,13 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
     		String subQuery = "";
     		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" ){
     			if(dateRange != null && "today".equals(dateRange)){
-    				subQuery = "where rs.orgLocations.id = :orgLocationsId "+submissionStages+" and rs.status = 1 and DATE(rs.updatedDate) = CURDATE() and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
+    				subQuery = "where rs.orgLocations.id = :orgLocationsId "+submissionStages+" and rs.status = 1 and rs.updatedDate >= :startDate and rs.updatedDate <= :endDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
     			}else if(dateRange != null && "previous".equals(dateRange)){
-    			    subQuery = "where rs.orgLocations.id = :orgLocationsId "+submissionStages+" and rs.status = 1 and DATE(rs.updatedDate) < CURDATE() and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
+    			    subQuery = "where rs.orgLocations.id = :orgLocationsId "+submissionStages+" and rs.status = 1 and rs.updatedDate < :startDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
     			}
     			params.put("orgLocationsId",orgLocationsId);
+    			params.put("startDate",startUTCDate);
+    			params.put("endDate",endUTCDate);
     			//params.put("submissionStatus",submissionStatus);
     		}
     		String whereCondition = subQuery;
@@ -442,12 +444,12 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
         	
         	String query = "";
         	if(dateRange != null && "today".equals(dateRange)){
-                query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId "+submissionStages+" and rs.status = 1  and DATE(rs.updatedDate) = CURDATE()";
+                query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId "+submissionStages+" and rs.status = 1  and rs.updatedDate >= :startDate and rs.updatedDate <= :endDate";
      		}else if(dateRange != null && "previous".equals(dateRange)){
-     			query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId "+submissionStages+" and rs.status = 1  and DATE(rs.updatedDate) < CURDATE()";
+     			query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId "+submissionStages+" and rs.status = 1  and rs.updatedDate < :startDate";
      		}
         	
-        	List<Long> reqSubmsCount =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+        	List<Long> reqSubmsCount =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setDate("startDate",startUTCDate).setDate("endDate",endUTCDate).setCacheable(true).list();
 			Integer count = 0;
 			if(reqSubmsCount != null && !reqSubmsCount.isEmpty()){
 					count = reqSubmsCount.get(0).intValue();
@@ -1846,6 +1848,20 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 
 		@Override
 		@Transactional
+		public List<RequirementSubmission> getAllVendorsIdbyorgLocationId(OrgLocations orgLocation,Date startDateUTC,Date endDateUTC) {
+			Session session = this.sessionFactory.getCurrentSession();
+			if(null != startDateUTC && null != endDateUTC ){
+				String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where rs.vendorLocationId <> null and rs.orgLocations.id = :orgLocation and (rs.createdDate BETWEEN :startDateUTC and :endDateUTC) group by rs.vendorLocationId.id";
+				return  session.createQuery(query).setLong("orgLocation", orgLocation.getId()).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
+			}
+			else{
+				String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where rs.vendorLocationId <> null and rs.orgLocations.id = :orgLocation group by rs.vendorLocationId.id";
+				return  session.createQuery(query).setLong("orgLocation", orgLocation.getId()).setCacheable(true).list();
+			}
+		}
+		
+		@Override
+		@Transactional
 		public Integer getReferByMeJobAppliedCandidateCount(Long userId, Date startDate, Date endDate)
 				throws Exception {
 			
@@ -1937,6 +1953,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			 List<RequirementSubmission> submissionList  = session.createQuery(query).setLong("recruiterUserId", recruiterUserId) .setLong("requirementId", requirementId).setCacheable(true).list();
 			return submissionList;
 		}
+
 
 		@Override
 		@Transactional

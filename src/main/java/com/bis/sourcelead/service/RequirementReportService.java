@@ -2,6 +2,7 @@ package com.bis.sourcelead.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
@@ -22,5 +23,24 @@ public interface RequirementReportService {
 	List<RequirementSubmissionHistory> getReceivedApplicantsCountForReports(Long orgLocationId, Long requirementId);
 
 	List<RequirementSubmissionHistory> getApplicantsCountForChart(Long orgLocationId);
+	
+	Integer getRequirementStagesCountsForReports(Long orgLocId, String requirementStatus)throws Exception;
+	
+	List<Requirement> getRequirementStageReports(OrgLocations orgLocation,String Status) throws Exception;
+
+
+	List<RequirementSubmissionHistory> getReceivedApplicantsCountForReportsByVendorLocationId(Long orgLocationId,
+			Long vendorLocationId, Date startDateUTC, Date endDateUTC);
+
+	List<RequirementSubmission> getReceivedApplicantsCountsByVendorLocationId(Long orgLocationId,
+			Long vendorLocationId, Date startDateUTC, Date endDateUTC);
+
+	List<RequirementSubmission> getTotalApplicants(OrgLocations orgLocation, Date startDateUTC, Date endDateUTC)throws Exception;
+
+	List<RequirementSubmissionHistory> getApplicantsCountsByDateRange(Long id, Date startDateUTC, Date endDateUTC)throws Exception;
+
+	List<RequirementSubmission> getReceivedApplicantsCountsPerOrgLocId(Long orgLocationId, Date startDateUTC, Date endDateUTC);
+
+	List<RequirementSubmission> getAllSubmissionsByAssignTeamMember(Long orgLocationId, Set<String> userCodesList,Date startDateUTC, Date endDateUTC);
 
 }

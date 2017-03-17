@@ -179,8 +179,10 @@ function requirementReportPagination(){
 		$('#ExportStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
+			dateFormat : 'dd-mm-yy',
 			onSelect : function(selected) {
 				var dt = new Date(selected);
+				var dt = toDate("#ExportStartDate");
 				dt.setDate(dt.getDate() + 1);
 				$("#ExportEndDate").datepicker("option", "minDate", dt);
 				addValidClass();
@@ -191,11 +193,13 @@ function requirementReportPagination(){
 		$('#ExportEndDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
+			dateFormat : 'dd-mm-yy',
 			beforeShow: function(){
 		           this.value='';
 		     },
 			onSelect : function(selected) {
 				var dt = new Date(selected);
+				var dt = toDate("#ExportEndDate");
 				dt.setDate(dt.getDate() - 1);
 				$("#ExportStartDate").datepicker("option", "maxDate", dt);
 				addValidClass();
@@ -204,7 +208,12 @@ function requirementReportPagination(){
 		
 	});
 </script>	
-
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
@@ -214,13 +223,14 @@ function requirementReportPagination(){
 			<div class="RePop">
 				<ul>
 					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
+					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Stages</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Client Requirements</a></li>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Applicants Received</a></li>
-					<li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Short  listed</a></li>
+					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li>
+				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
+				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirement Assign To</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Short listed</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Interview</a></li>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Offer</a></li> 
-					<li><a href="reports.html"><i class="fa fa-user"></i>Custom</a></li> 
+					<li><a href="reports.html"><i class="fa fa-user"></i>Offer</a></li>  
 				</ul>
 			</div>
 		</div>

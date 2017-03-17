@@ -41,5 +41,7 @@ public interface RequirementInterviewHistoryService {
 	
 	
 	List<RequirementInterviewHistory> getAllRecruiterSubmittedInterviews(String dateRange, Long userId)throws Exception;
+	
+	List<RequirementInterviewHistory> getCrowdSorurcingInterviews(Long submissionId,OrgLocations orgLocations) throws Exception;
 
 }

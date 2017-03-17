@@ -17,5 +17,7 @@ public interface RequirementOfferHistoryService {
 	List<RequirementOfferHistory> getRequirementInternalAndIsClientOffersHistoryBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception;
 	
 	List<RequirementOfferHistory> getAllRequirementOfferHistoriesByOfferId(Long offerId);
+	
+	List<RequirementOfferHistory> getCrowdSourcingOfferDetailsBySubmissionId(Long submissionId) throws Exception;
 
 }

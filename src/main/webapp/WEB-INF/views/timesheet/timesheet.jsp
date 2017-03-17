@@ -955,7 +955,7 @@ function addAttachment(){
 						
 						<div id="divAttachmentTd1" style="display: none; float: left;">
 								<div id='REPLACEROWIDdocFileuploadFileGroup'>
-						  			<input type='file' name='REPLACEROWIDdocFile' id='REPLACEROWIDdocFile' class="timesheetAttachmentValidation"> 
+						  			<input type='file' name='REPLACEROWIDdocFile' id='REPLACEROWIDdocFile' class="timesheetAttachmentValidation" onchange='validateUploadFile(REPLACEROWID)'> 
 						  			<i class="fa fa-times" onclick="removeAttachmentRow(REPLACEROWID);"></i>
 						  		</div>
 					    </div>
@@ -963,6 +963,52 @@ function addAttachment(){
 <!-- Content Area Ends--> 
 <div class="time_pop" id="timeSheetErrorMsg"></div>
 </body>
+
+<script type="text/javascript">
+function validate_fileupload(fileName)
+{
+	
+    var allowed_extensions = new Array("docx","doc","pdf","rtf","jpeg","png","jpg","jpeg","xls","xlsx","csv");
+    var file_extension = fileName.split('.').pop(); 
+
+    for(var i = 0; i <= allowed_extensions.length; i++)
+    {
+        if(allowed_extensions[i] != null && allowed_extensions[i] != '' && allowed_extensions[i] != 'undefined' && allowed_extensions[i].toLowerCase()==file_extension)
+        {
+            return true; // valid file extension
+        }
+    }
+
+    return false;
+}
+</script>
+
+<script type="text/javascript">
+function validateUploadFile(id)
+{
+	  var selectedFile = $('#'+id+'docFile').val();
+	  if(validate_fileupload(selectedFile)){
+		   var docSize = $('#'+id+'docFile')[0].files[0].size;
+ 	       $("#"+id+"docFileuploadFileGroup").find('p.jquery_form_error_message').remove();
+ 	      if(docSize > 2097152){
+ 	    	  $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+ 	    	  $('#'+id+'docFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+ 			  $('#'+id+'docFile').attr('record-exist','yes');
+ 			  $('#'+id+'docFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+ 	      }else{
+ 	    	 $('input#'+id+'docFile').removeAttr( "record-exist record-exist-errormsg");
+    		 $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove(); 
+ 	      }
+	  }
+	  else{
+		      $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+		      $('#'+id+'docFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Invalid Format</span>");
+			  $('#'+id+'docFile').attr('record-exist','yes');
+ 			  $('#'+id+'docFile').attr('record-exist-errorMsg','Invalid Format'); 
+	  }
+	
+}
+</script>
 <script type="text/javascript">
 (function ($) {
    $.fn.serializeFormJSON = function () {
@@ -987,11 +1033,13 @@ function addAttachment(){
 <!-- this script is for save Timesheet -->               
 <script type="text/javascript">
 function newSaveTimesheet(status,savingType){ 
+	 $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;'); 
 	 checkHours();
 	 var isTimesheetAttachmentRequired = $("#isTimesheetAttachmentRequired").val();
 	 if(isTimesheetAttachmentRequired != null && isTimesheetAttachmentRequired != "" && isTimesheetAttachmentRequired !="undefined" && isTimesheetAttachmentRequired == "Y"){
 		 $('#0docFile').removeAttr('data-validation-optional');
 		 $('#0docFile').attr("data-validation","required"); 
+		 $("#loadTime").removeAttr("style"); 
 	 }
 	 var validationSettings = {
 		        errorMessagePosition : 'element',
@@ -1000,7 +1048,6 @@ function newSaveTimesheet(status,savingType){
 				dateFormat : 'yyyy/mm/dd' 
 	 }; 
 	 if ($('#timesheet_form').validate(false, validationSettings)&&!$("#timeSheetErrorMsg").is(':visible')){ 
-		       $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;'); 
                var frm = $('#timesheet_form').serializeFormJSON();
                var sourceleadUrl ='${sourceleadUrl}';
                var startdate;
@@ -1024,7 +1071,6 @@ function newSaveTimesheet(status,savingType){
         	      	  url: sourceleadUrl+"/newSaveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
         		      success :function(result) {
         		    	  $("#loadTime").removeAttr("style"); 
-        		    	  /* timesheetDivByFrequency(); */
         		    	  $("html").trigger('click');
         		    	  maskme();
         		    	  var startDate = $("#tabStartDate").val();
@@ -1037,24 +1083,20 @@ function newSaveTimesheet(status,savingType){
         		    		  timesheetDivByFrequency();
         		    	  }
         		    	  
-        		    	 /*  timesheetEntriesDiv(); */
-        		    	 /*  $("#loadTime").removeAttr("style"); */
-        		    	  /*  dynamicTimesheet("left",result);  */
-        		    	   /* timesheetEntriesDiv */
-        		    	  /* dynamicTimesheet(); */
         		      }
         	      	  
         	    }); 
         	   return true;
 	 	}else{ 
+	 		 $("#loadTime").removeAttr("style"); 
 			return false;
-	 } 
+	   } 
 }
 
-$('body').on('blur', '#timesheet_form', function() {
+/* $('body').on('blur', '#timesheet_form', function() {
 	$("#timesheet_form").showHelpOnFocus();
 	$("#timesheet_form").validateOnBlur(false, validationSettings);  
-});
+}); */
 </script>
 
 

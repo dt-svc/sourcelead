@@ -66,7 +66,7 @@ function prepareReportDataDiv(data){
 	result = result + '	<thead>';
 	result = result + '   <tr>';
 	result = result + '    <th>Requirement Title</th>';
-	result = result + '    <th>Posted on</th>';
+	result = result + '    <th>Applicant Name</th>';
 	result = result + '    <th>Applicants</th>';
 	result = result + '    <th>Request Sent for Approval</th>';
 	result = result + '    <th>Shortlisted</th>';
@@ -74,6 +74,7 @@ function prepareReportDataDiv(data){
 	result = result + '    <th>Interviewed</th>';
 	result = result + '    <th>Offered</th>';
 	result = result + '    <th>Rejected</th>';
+	result = result + '    <th>Status</th>';
 	result = result + '   </tr>';
 	result = result + '	</thead>';
 	result = result + '	<tbody>';
@@ -86,37 +87,77 @@ function prepareReportDataDiv(data){
         result = result + '</td>';
 
         result = result + '<td>';
-        if(report.postedOn != null && report.postedOn != '' && report.postedOn !='undefined'&& report.postedOn != null && report.postedOn != ''){
-       	result = result + '<div><span>'+report.postedOn+'</span></div>';
+        if(report.applicantName != null && report.applicantName != '' && report.applicantName !='undefined'){
+       	result = result + '<div><span>'+report.applicantName+'</span></div>';
  		} else{
 		result = result + '<div><span>---</span></div>';
 		    }
         result = result + '</td>';
+        
         result = result + '<td>';
-        if(report.applicantsCount != null && report.applicantsCount != '' && report.applicantsCount !='undefined'&& report.applicantsCount != null && report.applicantsCount != ''){
-         result = result + '<div><span>'+report.applicantsCount+'</span></div>';
+        if(report.submissionDate != null && report.submissionDate != '' && report.submissionDate !='undefined'){
+         result = result + '<div><span>'+report.submissionDate+'</span></div>';
         }
         else{
 		 result = result + '<div><span>---</span></div>';
 		    }
          result = result + '</td>';
+         
        	 result = result + '<td>';
-       	 result = result + "<div><span>"+report.requestSentCount+"</span></div>";
+       	if(report.requestSentDate != null && report.requestSentDate != '' && report.requestSentDate !='undefined'){
+       	 result = result + "<div><span>"+report.requestSentDate+"</span></div>";
+       	}else{
+   		 result = result + '<div><span>---</span></div>';
+	    }
          result = result + '</td>';
+         
          result = result + '<td>';
-         result = result + "<div><span>"+report.shortlisted+"</span></div>";
+     	if(report.shortlistDate != null && report.shortlistDate != '' && report.shortlistDate !='undefined'){
+         result = result + "<div><span>"+report.shortlistDate+"</span></div>";
+     	}else{
+   		 result = result + '<div><span>---</span></div>';
+	    }
          result = result + '</td>';
+         
          result = result + '<td>';
-       	 result = result + "<div><span>"+report.submitToClientCount+"</span></div>";
+     	if(report.submitToClientDate != null && report.submitToClientDate != '' && report.submitToClientDate !='undefined'){
+       	 result = result + "<div><span>"+report.submitToClientDate+"</span></div>";
+     	}else{
+   		 result = result + '<div><span>---</span></div>';
+	    }
          result = result + '</td>';
+         
          result = result + '<td>';
-         result = result + "<div><span>"+report.interviewCount+"</span></div> ";
+         if(report.interviewDate != null && report.interviewDate != '' && report.interviewDate !='undefined'){
+         result = result + "<div><span>"+report.interviewDate+"</span></div> ";
+         }else{
+       		 result = result + '<div><span>---</span></div>';
+ 	    }
          result = result + '</td>';
+         
+         
          result = result + '<td>';
-         result = result + "<div><span>"+report.offeredCount+"</span></div> ";
+         if(report.offerDate != null && report.offerDate != '' && report.offerDate !='undefined'){
+         result = result + "<div><span>"+report.offerDate+"</span></div> ";
+         }else{
+       		 result = result + '<div><span>---</span></div>';
+  	    }
          result = result + '</td>';
+         
          result = result + '<td>';
-       	 result = result + "<div><span>"+report.rejectedCount+"</span></div>";
+         if(report.rejectedDate != null && report.rejectedDate != '' && report.rejectedDate !='undefined'){
+       	 result = result + "<div><span>"+report.rejectedDate+"</span></div>";
+         }else{
+       		 result = result + '<div><span>---</span></div>';
+   	    }
+         result = result + '</td>';
+         
+         result = result + '<td>';
+         if(report.stage != null && report.stage != '' && report.stage !='undefined'){
+       	 result = result + "<div><span>"+report.stage+"</span></div>";
+         }else{
+       		 result = result + '<div><span>---</span></div>';
+   	    }
          result = result + '</td>';
          result = result + '</tr>';
     }
@@ -155,8 +196,10 @@ function requirementReportPagination(){
 		$('#ApplicantStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
+			dateFormat : 'dd-mm-yy',
 			onSelect : function(selected) {
 				var dt = new Date(selected);
+				var dt = toDate("#ApplicantStartDate");
 				dt.setDate(dt.getDate() + 1);
 				$("#ApplicantEndDate").datepicker("option", "minDate", dt);
 				addValidClass();
@@ -167,11 +210,13 @@ function requirementReportPagination(){
 		$('#ApplicantEndDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
+			dateFormat : 'dd-mm-yy',
 			beforeShow: function(){
 		           this.value='';
 		     },
 			onSelect : function(selected) {
 				var dt = new Date(selected);
+				var dt = toDate("#ApplicantEndDate");
 				dt.setDate(dt.getDate() - 1);
 				$("#ApplicantStartDate").datepicker("option", "maxDate", dt);
 				addValidClass();
@@ -186,17 +231,18 @@ function requirementReportPagination(){
     <div class="pull-left">
       <h2 class="pull-left">Reports</h2>
 		<div class=" pull-left reportsH">
-			<a title="Reports"><i class="fa fa-pie-chart"></i>Requirements Posted</a>
+			<a title="Reports"><i class="fa fa-pie-chart"></i>Applicants</a>
 			<div class="RePop">
 				<ul>
 					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
+					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Stages</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Client Requirements</a></li>
 					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li>
-					<li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Short  listed</a></li>
+				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
+				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirement Assign To</a></li>
+					<li><a href="reports.html"><i class="fa fa-user"></i>Short listed</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Interview</a></li>
 					<li><a href="reports.html"><i class="fa fa-user"></i>Offer</a></li> 
-					<li><a href="reports.html"><i class="fa fa-user"></i>Custom</a></li> 
 				</ul>
 			</div>
 		</div>
@@ -227,19 +273,19 @@ function requirementReportPagination(){
 	 </span>
 	<span class="dashboard-datepkr cusShow">
 	<input type="text"  class="form-control" value="" id="ApplicantEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
-	<p id="ApplicantReportStartDate" class="ReError"></p>
+	<p id="ApplicantReportEndDate" class="ReError"></p>
 	</span>
 	<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
 	
 		<span class="repoBtns">
 		<a href="javascript:void(0)" class="oneA actRE"><i class="fa fa-list"></i></a>
-		<a href="javascript:void(0)" class="oneB" onclick="getDayWiseReports();"><i class="fa fa-pie-chart"></i></a>
+		<a href="javascript:void(0)" class="oneB" onclick="getDefaultChart();"><i class="fa fa-pie-chart"></i></a>
 	</span>	
 	
 </div>
                      
-        <ul style="padding: 2px 300px 2px 0px;">
-          <li><i class="fa fa-filter"></i><span class="padFil"></span><i class="glyphicon glyphicon-play" id="status-pop"></i>|
+        <ul style="padding: 2px 300px 2px 0px;" class="Pra11">
+          <li><i class="fa fa-filter"></i><span class="padFil"></span><i class="glyphicon glyphicon-play" id="status-pop"></i>
             <div class="export_pop">
               <ul>
                 <li>PDF<i class="fa fa-file-pdf-o"></i></li>
@@ -258,11 +304,6 @@ function requirementReportPagination(){
       
 	<div class="reportsCount">
 		<ul>
-		
-
-
-
-
 			<li title="Applicants" id="applicantsli">
 				<span><i class="fa fa-users"></i></span><b id="applicantCount">0</b>
 			</li>
@@ -292,7 +333,7 @@ function requirementReportPagination(){
 </div>  
 
   <div class="repTab2">
-  	<div id="chartdiv"></div>  
+  	<div class="chatOne" id="chartdiv"></div>  
   </div>                 
       
  </div>
@@ -516,11 +557,14 @@ $(".reminder").click(function(){
 <script>
 function getDayWiseReports(){
 	$('#ApplicantReportStartDate').empty();
-	$('#ApplicantReportStartDate').empty(); 
+	$('#ApplicantReportEndDate').empty(); 
 	var reportType = $("#reportTypeId").val();
 	var startDate = $("#ApplicantStartDate").val();
 	var endDate = $("#ApplicantEndDate").val();
 	var sourceleadUrl ='${sourceleadUrl}';
+	/* if(reportType=="custom"){
+		getCustomReports();
+	} */
 	if(reportType!="custom"){
 	$.ajax({
          type : "POST",
@@ -561,7 +605,9 @@ function allApplicantsCount(reportType,startDate,endDate){
           	$("#rejectedCount").html(json.rejectedSum);  
 		}
     	if($(".oneB" ).hasClass( "actRE" )){
-     	getApplicantBarChat(json.applicantsSum,json.shortlistedSum,json.interviewsSum,json.submitToClientCount,json.offeredSum,json.rejectedSum,json.requestSentSum);
+
+     	getApplicantBarChat(json.applicantsSum,json.shortlistedSum,json.interviewsSum,json.submitToClientSum,json.offeredSum,json.rejectedSum,json.requestSentSum);
+
        	 
     	}
    	
@@ -592,7 +638,7 @@ function getCustomReports(){
 		$("#ApplicantReportStartDate").empty().append("Start Date is Required") ; 
 	}
 	if(endDate == null || endDate == '' || endDate == 'undefined'){
-		$("#ApplicantReportStartDate").empty().append("End Date is Required") ; 
+		$("#ApplicantReportEndDate").empty().append("End Date is Required") ; 
 	}
 	else{
 		$.ajax({
@@ -618,7 +664,7 @@ function getCustomReports(){
 		 
 		 var EndDate = document.getElementById("ApplicantEndDate").value;
 		 if(EndDate){
-			 $('#ApplicantReportStartDate').empty(); 
+			 $('#ApplicantReportEndDate').empty(); 
 		 }
 }
 </script>
@@ -630,17 +676,20 @@ function getCustomReports(){
 		$(".oneB").addClass("actRE");
 		$(".repTab1").hide();
 		$(".repTab2").show();
+		$(".Pra11").css("padding","2px 0px 2px 0px");
 	});
 	$(".oneA").click(function(){
 		$(".oneB").removeClass("actRE");
 		$(".oneA").addClass("actRE");
 		$(".repTab2").hide();
 		$(".repTab1").show();
+		$(".Pra11").css("padding","2px 300px 2px 0px");
 	});		
 	</script>
 
 <script src="resources/reports/amcharts.js"></script>
 <script src="resources/reports/pie.js"></script>
+<script src="resources/reports/export.min.js"></script>
 <link rel="stylesheet" href="resources/reports/export.css" type="text/css" media="all" />
 <script src="resources/reports/light.js"></script>
   
@@ -711,19 +760,17 @@ function getCustomReports(){
 	     });
      }
      </script> 
+
+
 <script>
-function allApplicantsCountForChart(){
-	var sourceleadUrl = '${sourceleadUrl}';
-	 $.ajax({
-       type : "POST",
-        url: sourceleadUrl+"/getApplicantsCountForChart?${_csrf.parameterName}=${_csrf.token}",        
-        success :function(data) { 
-       	 var json = JSON.parse(data);
-       	getApplicantBarChat(json.applicantsCount,json.shortlisted,json.interviewCount,json.submitToClientCount,json.offeredCount,json.rejectedCount,json.requestSentCount);
-       	 /* $("#applicantCount").html(json);  */
-        },
-	  });
+function getDefaultChart(){
+	var reportType = $("#reportTypeId").val();
+	if(reportType=="custom"){
+		getCustomReports();
+	}
+	else{
+		getDayWiseReports();
+	}
 }
 </script>
-
 
