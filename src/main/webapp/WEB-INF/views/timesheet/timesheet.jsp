@@ -987,7 +987,6 @@ function validate_fileupload(fileName)
 function validateUploadFile(id)
 {
 	  var selectedFile = $('#'+id+'docFile').val();
-	  alert(validate_fileupload(selectedFile));
 	  if(validate_fileupload(selectedFile)){
 		   var docSize = $('#'+id+'docFile')[0].files[0].size;
  	       $("#"+id+"docFileuploadFileGroup").find('p.jquery_form_error_message').remove();

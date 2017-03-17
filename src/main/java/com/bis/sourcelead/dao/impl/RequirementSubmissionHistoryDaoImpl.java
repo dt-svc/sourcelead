@@ -77,4 +77,13 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 	  return requirementHistoryList;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmissionHistory> getAllRequirementSubmissionHistoryBySubmissionId(List<Long> submissionIds)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementSubmissionHistory rsh where rsh.submissionId.id IN (:submissionIds)";
+		return session.createQuery(query).setParameterList("submissionIds", submissionIds).setCacheable(true).list();
+	}
+
 }
