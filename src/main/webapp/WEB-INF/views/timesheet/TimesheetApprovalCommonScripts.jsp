@@ -644,7 +644,6 @@ function clearTimesheet(){
 
 <script>
 	function timesheetDivAfterSaving(startDate,endDate,approvalStatus){
-		alert("approvalStatus>>>>>>>>>>"+approvalStatus);
 	         var sourceleadUrl ='${sourceleadUrl}';
 	         var projectMemberId = $("#projectMemberId").val();
 	         var timesheetFrequency = $("#frequencyDates").val();
