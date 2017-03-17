@@ -976,7 +976,7 @@ public class UserDaoImpl implements UserDao {
 	    	 
 	     }
 		 
-	     if(null != ownersList && !ownersList.isEmpty()){
+	     if(null != ownersList && !ownersList.isEmpty() && null != ownerRolesList && !ownerRolesList.isEmpty()){
 	    	 String query = "from User user where user.id NOT IN (:ownersList) and user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList))  ";
 		     userRoleList = session.createQuery(query.toString()).setParameterList("ownersList", ownersList).setParameterList("ownerRolesList", ownerRolesList).setCacheable(true).list();
 	     }else if(null != ownerRolesList && !ownerRolesList.isEmpty()){
