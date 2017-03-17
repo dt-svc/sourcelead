@@ -68,7 +68,7 @@ function getProfessionalInfo(){
 		    	 if(json.designation != null && json.designation != '' && json.designation !='undefined'){
 		    		 designation = json.designation;
 		    	 }else{
-		    		 designation = "";
+		    		 designation = "---";
 		    	 }
 		    	 if(json.designationType != null && json.designationType != '' && json.designationType !='undefined'){
 		    		 designationType = json.designationType;

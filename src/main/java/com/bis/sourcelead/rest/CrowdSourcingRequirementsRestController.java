@@ -310,6 +310,7 @@ public class CrowdSourcingRequirementsRestController {
     					 }
     					
     					 requirementIndex.setRateType(refer.getRequirementId().getRateType());
+    					 requirementIndex.setCurrentRateCurrency(refer.getRequirementId().getCurrencyCode());
     					 
     					 if(!isNullOrEmpty(refer.getRequirementId().getSkills())){
     						 String[] skills = refer.getRequirementId().getSkills().split(",");
