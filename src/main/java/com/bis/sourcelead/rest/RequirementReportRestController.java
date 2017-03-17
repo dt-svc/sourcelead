@@ -297,6 +297,7 @@ public class RequirementReportRestController {
 						applicantReport.setSubmitToClientDate(submitToClientDate);
 						applicantReport.setRequestSentDate(requestSentDate);
 						applicantReport.setRejectedDate(rejectedDate);
+						applicantReport.setStage(reqSub.getSubmissionStatus().toString());
 						/*applicantReport.setApplicantsCount(applicantsCount);
 						applicantReport.setShortlisted(shortlistedCount);
 						applicantReport.setInterviewCount(interviewsCount);
