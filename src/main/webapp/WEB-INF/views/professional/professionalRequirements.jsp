@@ -17,10 +17,12 @@ window.onload = function () {
 	if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
 		document.getElementById('requirementType').value = 'OpenJobs';
 		document.getElementById('openjobs').checked = true;
+		document.getElementById('openActive').className = 'activeBackground'
 	}else{
 		document.getElementById('requirementType').value = 'CrowdSourcingJobs';
 		document.getElementById('crowdSourcingjobs').checked = true;
 		document.getElementById('crowd').className = 'ml'
+		document.getElementById('crowdActive').className = 'activeBackground'
 	}
 	requirementsList(0);
 	
@@ -32,37 +34,21 @@ window.onload = function () {
       <div class="pull-left mt20">
         <h2>Requirements<span class="select-fild"> </h2>  
         <div class="clearfix"></div>    
-          <%-- <select id="requirementType" onchange="requirementsList('0');">
-           	<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-           	<option value="OpenJobs">Open</option>
-           	</c:if>
-            <option value="CrowdSourcingJobs">Crowdsourcing</option>
-            <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-           	<option value="ReferredToMe">Referred To Me</option>
-           	</c:if>
-           	<option value="ReferredByMe">Referred By Me</option>
-           	<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-            <option value="AppliedJobs">Applied</option>
-            </c:if>
-            <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-            <option value="AppliedJobs">Submitted</option>
-            </c:if>
-          </select> --%>
           </div>
           <div class="clearfix"></div> 
          <div class="reportsCount req_Crowd clearfix">
           <ul>
           <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-          <li><label class="mr"><span><i class="fa fa-folder-open-o"></i></span><b><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="openjobs" onchange="selectRequirementType('OpenJobs');" value="OpenJobs">&nbsp;Open</label></b></li>
+          <li><label class="mr"><span><i class="fa fa-folder-open-o"></i></span><b id="openActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="openjobs" onchange="selectRequirementType('OpenJobs');" value="OpenJobs">&nbsp;Open</label></b></li>
           </c:if>
-          <li id="crowd"><label class="mr"><span><i class="fa fa-mixcloud"></i></span><b><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="crowdSourcingjobs" onchange="selectRequirementType('CrowdSourcingJobs');" value="CrowdSourcingJobs">&nbsp;Crowdsourcing</label></b></li>
-          <li><label class="mr"><span><i class="fa fa-handshake-o"></i></span><b><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="referedByMejobs" onchange="selectRequirementType('ReferredByMe');" value="ReferredByMe">&nbsp;Referred By Me</label></b></li>
+          <li id="crowd"><label class="mr"><span><i class="fa fa-mixcloud"></i></span><b id="crowdActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="crowdSourcingjobs" onchange="selectRequirementType('CrowdSourcingJobs');" value="CrowdSourcingJobs">&nbsp;Crowdsourcing</label></b></li>
+          <li><label class="mr"><span><i class="fa fa-handshake-o"></i></span><b id="referByMeActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="referedByMejobs" onchange="selectRequirementType('ReferredByMe');" value="ReferredByMe">&nbsp;Referred By Me</label></b></li>
        	  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-       	  <li><label class="mr"><span><i class="fa fa-handshake-o"></i></span><b><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="referedToMejobs" onchange="selectRequirementType('ReferredToMe');" value="ReferredToMe">&nbsp;Referred To Me</label></b></li>
-          <li><label class="mr"><span><i class="fa fa-send-o"></i></span><b><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="appliedjobs" onchange="selectRequirementType('AppliedJobs');" value="AppliedJobs">&nbsp;Applied</label></b></li>
+       	  <li><label class="mr"><span><i class="fa fa-handshake-o"></i></span><b id="referToMeActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="referedToMejobs" onchange="selectRequirementType('ReferredToMe');" value="ReferredToMe">&nbsp;Referred To Me</label></b></li>
+          <li><label class="mr"><span><i class="fa fa-send-o"></i></span><b id="appliedActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="appliedjobs" onchange="selectRequirementType('AppliedJobs');" value="AppliedJobs">&nbsp;Applied</label></b></li>
           </c:if>
           <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-          <li><label class="mr"><span><i class="fa fa-send-o"></i></span><b><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="submittedjobs" onchange="selectRequirementType('AppliedJobs');" value="AppliedJobs">&nbsp;Submitted</label></b></li>
+          <li><label class="mr"><span><i class="fa fa-send-o"></i></span><b id="submittedActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="submittedjobs" onchange="selectRequirementType('AppliedJobs');" value="AppliedJobs">&nbsp;Submitted</label></b></li>
           </c:if>
           </ul>
           <input type="hidden" name="requirementType" id="requirementType" value="" />
@@ -548,6 +534,7 @@ function requirementsList(offset){
 	var jobLocationSearch = document.getElementById('jobLocationSearch').value;
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	var candidateId = '${SourceLeadWeb_candidateId}'
+	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	
     loadChosenRequirementScripts();
 	
@@ -694,7 +681,14 @@ function requirementsList(offset){
 				 				result = result +'<div class="openPostBtns">';
 				 				
 				 				if((requirementType == "OpenJobs")|| ((requirementType == "CrowdSourcingJobs" || requirementType == "ReferredToMe" || requirementType == "ReferredByMe") && requirements.isJobApplied == 'N')){
-				 					result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob('+requirements.requirementId+','+requirements.referId+');"  class="jobApply">Apply</a>';
+				 					
+				 					if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
+				 					  result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob('+requirements.requirementId+','+requirements.referId+');"  class="jobApply">Apply</a>';
+				 					}
+				 					
+				 					if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
+					 					  result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob('+requirements.requirementId+','+requirements.referId+');"  class="jobApply">Submit</a>';
+				 					 }
 				 				}
 				 				
 				 				if((requirementType == "CrowdSourcingJobs" || requirementType == "ReferredToMe" || requirementType == "ReferredByMe") && requirements.isJobApplied == 'Y'){
@@ -827,6 +821,7 @@ function searchRequirement(offset){
 			var candidateId = '${SourceLeadWeb_candidateId}'
 			
 			var requirementType = document.getElementById('requirementType').value;
+			var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 			
 			if(offset == 0){
 				$("#requirementsList").empty();
@@ -964,7 +959,13 @@ function searchRequirement(offset){
 										 				result = result +'<div class="openPostBtns">';
 										 				
 										 				if((requirementType == "OpenJobs") || (requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'N')){
+										 					if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
 										 					result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob('+requirements.requirementId+');"  class="jobApply">Apply</a>';
+										 					}
+										 					
+										 					if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
+											 					result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob('+requirements.requirementId+');"  class="jobApply">Submit</a>';
+										 					}
 										 				}
 										 				
 										 				if(requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'Y'){
@@ -1304,6 +1305,70 @@ $('body').on('submit', '#referToJob_form', function(e){
 <script type="text/javascript">
  function selectRequirementType(type) {
     	$("#requirementType").val(type);
+    	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+    	
+    	if(type == "OpenJobs"){
+    		document.getElementById('openActive').className = 'activeBackground'
+    		document.getElementById("crowdActive").removeAttribute("class");
+    		document.getElementById("referByMeActive").removeAttribute("class")
+    		document.getElementById("referToMeActive").removeAttribute("class")
+    		document.getElementById("appliedActive").removeAttribute("class")
+    	}
+    	else if (type == "CrowdSourcingJobs"){
+   		    document.getElementById('crowdActive').className = 'activeBackground'
+       		
+   		    if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
+   		    	document.getElementById("openActive").removeAttribute("class");
+   	       		document.getElementById("referToMeActive").removeAttribute("class")
+   	       		document.getElementById("appliedActive").removeAttribute("class")
+   		    }
+       		
+       		document.getElementById("referByMeActive").removeAttribute("class")
+       		if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
+       		document.getElementById("submittedActive").removeAttribute("class")
+       		}
+    	}
+    	else if (type == "ReferredByMe"){
+	        document.getElementById('referByMeActive').className = 'activeBackground'
+       		document.getElementById("crowdActive").removeAttribute("class")
+       		if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
+       		document.getElementById("submittedActive").removeAttribute("class")
+       		}
+       		
+       		if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
+	       		document.getElementById("referToMeActive").removeAttribute("class")
+	       		document.getElementById("openActive").removeAttribute("class");
+	       		document.getElementById("appliedActive").removeAttribute("class")
+       		}
+       		
+       		
+	    }
+    	else if (type == "ReferredToMe"){
+	        document.getElementById('referToMeActive').className = 'activeBackground'
+       		document.getElementById("openActive").removeAttribute("class");
+       		document.getElementById("crowdActive").removeAttribute("class")
+       		document.getElementById("referByMeActive").removeAttribute("class")
+       		document.getElementById("appliedActive").removeAttribute("class")
+       		if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
+       		document.getElementById("submittedActive").removeAttribute("class")
+       		}
+	    }
+    	    	
+    	else if (type == "AppliedJobs"){
+       		document.getElementById("crowdActive").removeAttribute("class")
+       		document.getElementById("referByMeActive").removeAttribute("class")
+       		if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
+       		document.getElementById("submittedActive").className = 'activeBackground'
+       		}
+       		 
+   			if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
+   			document.getElementById('appliedActive').className = 'activeBackground'
+       		document.getElementById("openActive").removeAttribute("class");
+       		document.getElementById("referToMeActive").removeAttribute("class")
+   			}
+       	   
+	    }
+    	
     	requirementsList('0')
     }
 </script>
