@@ -348,6 +348,7 @@
 						}
 							result = result + '<label> Manager 2 </label>';
 							result = result	+ '<select id="level2Manager" name="level2Manager">';
+							result = result    +'<option value="">-Select Manager-</option>';
 							for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
 								var manager = json.managersListwithoutManager1[j];
 								if (json.manager2 == manager.id) {
