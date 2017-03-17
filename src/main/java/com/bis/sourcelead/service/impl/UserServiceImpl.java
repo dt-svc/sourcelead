@@ -487,7 +487,7 @@ public class UserServiceImpl implements UserService {
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setOrgLocationId(locationId);
 		 

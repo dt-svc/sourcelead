@@ -1848,6 +1848,20 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 
 		@Override
 		@Transactional
+		public List<RequirementSubmission> getAllVendorsIdbyorgLocationId(OrgLocations orgLocation,Date startDateUTC,Date endDateUTC) {
+			Session session = this.sessionFactory.getCurrentSession();
+			if(null != startDateUTC && null != endDateUTC ){
+				String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where rs.vendorLocationId <> null and rs.orgLocations.id = :orgLocation and (rs.createdDate BETWEEN :startDateUTC and :endDateUTC) group by rs.vendorLocationId.id";
+				return  session.createQuery(query).setLong("orgLocation", orgLocation.getId()).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
+			}
+			else{
+				String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where rs.vendorLocationId <> null and rs.orgLocations.id = :orgLocation group by rs.vendorLocationId.id";
+				return  session.createQuery(query).setLong("orgLocation", orgLocation.getId()).setCacheable(true).list();
+			}
+		}
+		
+		@Override
+		@Transactional
 		public Integer getReferByMeJobAppliedCandidateCount(Long userId, Date startDate, Date endDate)
 				throws Exception {
 			
@@ -1941,6 +1955,74 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		}
 
 
+		@Override
+		@Transactional
+		public List<RequirementSubmission> getRecruiterSubmittedCandidatesListForReportsByLocationIdAndStatus(
+				Long loginOrgLocationId, String client,String filterDate,Date startDateUTC,Date endDateUTC) throws Exception {
+			
+		     Session session = this.sessionFactory.getCurrentSession();
+		     Map<String, Object> params = new HashMap<String,Object>();
+		     
+		     String[] clients = null;
+				if(null != client && !"".equals(client)){
+					client = client.replaceAll("[\\\"\\[\\]]", ""); 
+					clients = client.split(",");
+				}
+				List<Long> clientsList = new ArrayList<>();
+				if(clients != null){
+					for(int i=0;i<clients.length;i++){
+						clientsList.add(Long.parseLong(clients[i]));
+					}
+				}
+		     
+			String dateSubQuery = "";
+			if(null != startDateUTC && null != endDateUTC){
+				 dateSubQuery = " and reqSub.createdDate >= :startDateUTC and reqSub.createdDate <= :endDateUTC";
+				params.put("startDateUTC",startDateUTC);
+				params.put("endDateUTC",endDateUTC);
+			}
+				
+			/*String clientSubQuery = "";
+			if(!clientsList.isEmpty() && null != clientsList){
+				for(int i=0; i<clientsList.size(); i++){
+					clientSubQuery = " and req.clientId.id =:"+clientsList.get(i)+"";
+				}
+			}*/
+			   
+				 String from = "from RequirementSubmission reqSub left join fetch reqSub.requirement req   left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes "; 
+				 String subQuery = "";
+			
+				subQuery = " where reqSub.orgLocations.id =:loginOrgLocation  and (reqSub.submissionStatus = 'SUBMIT_TO_CLIENT' or reqSub.submissionStatus = 'CLIENT_INTERVIEW' or reqSub.submissionStatus = 'OFFERMADE')";
+				params.put("loginOrgLocation",loginOrgLocationId);
+			
+			Query query = null;
+			if(clientsList.isEmpty()){
+				query = session.createQuery(from+" "+subQuery+" "+dateSubQuery+" ORDER BY reqSub.id DESC");
+			}else{
+				query = session.createQuery(from+" "+subQuery+" "+dateSubQuery+" and req.clientId.id IN (:clientList) ORDER BY reqSub.id DESC");
+				params.put("clientList",clientsList);
+			}
+				
+				
+			
+			for (String str : query.getNamedParameters())
+	        {
+				if(str.equalsIgnoreCase("loginOrgLocationId") ){
+					query.setLong(str, (long) params.get( str ));
+				}
+				else if(str.equalsIgnoreCase("clientList") && clientsList.size()>0){
+					query.setParameterList("clientList", clientsList);
+				}
+				else{
+					query.setParameter( str, params.get( str ) );
+				}
+	        }
+			
+			List<RequirementSubmission> ownApplicantsList = query.setCacheable(true).list() ;
+			
+			return ownApplicantsList;
+		}
+		
   }
 
 

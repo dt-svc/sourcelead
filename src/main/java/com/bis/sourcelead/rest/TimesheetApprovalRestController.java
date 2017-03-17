@@ -82,9 +82,6 @@ public class TimesheetApprovalRestController {
 	TimeSheetPdfUtil timeSheetPdfUtil;
 	
 	@Autowired
-	ProjectTasksService projectTasksService;
-	
-	@Autowired
 	TimesheetSubmissionsService timesheetSubmissionsService;
 	
 	@Autowired

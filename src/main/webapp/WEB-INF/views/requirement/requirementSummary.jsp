@@ -996,28 +996,28 @@ function requirementDetails(requirementId){
 				             result = result +'     <div class="clearfix">';
 				             
 				            result = result +'     <div class="clearfix row">';
-					        result = result +'     <div class="col-md-9 divskill divsAssigned pull-left">';
+					        result = result +'     <div class="col-md-12 divskill divsAssigned pull-left">';
 					        
 					        result = result + '<div id="assignedMemberList"></div>';
 					        
 				            result = result +'   <h1>Description:</h1>';
 				            if(json.description != null && json.description != '' && json.description != 'undefined'){
-					           	 result = result +'   <textarea placeholder="Enter description" readonly>'+json.description+'</textarea>';
+					           	 result = result +'   <div class="RDdetails">'+json.description+'</div>';
 					         }
 					         else{
-					           	 result = result +'   <textarea readonly> NO DATA</textarea>';
+					           	 result = result +'   <div > NO DATA</div>';
 				    	        }
 				            
 				            result = result +'   <h1>Skills:</h1>';
 				            if(json.skills != null && json.skills != '' && json.skills != 'undefined'){
-					            result = result +'     <textarea placeholder="Enter description" readonly>'+json.skills+'</textarea>';
+					            result = result +'<div class="RDdetails">'+json.skills+'</div>';
 					            }
 					            else{
-					            result = result +'<textarea readonly> NO Skills</textarea>';	
+					            result = result +'<div class="RDdetails"> NO Skills</div>';	
 					            }
 				            
 				            
-				            result = result +'   <h2> Requirement Details:</h2>';
+				            result = result +'   <h2 class="RPadT"> Requirement Details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            if(json.positions != null && json.positions != '' && json.positions != 'undefined'){
 				            result = result +'     <div class="require_wrap_details_cta"> <b>No. of positions:</b>'+json.positions+'';
@@ -1048,12 +1048,10 @@ function requirementDetails(requirementId){
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
 				            result = result +'     <div class="clearfix"></div>';
-				            result = result +'   </div>';
+
 				            if(json.isClientJob  == 'Y')
 				            	{
 				            	
-				            result = result +'     <div class="clearfix"></div>';
-				            result = result +'     </br>';
 				            result = result +'   <h2>Client details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            
@@ -1172,7 +1170,6 @@ function requirementDetails(requirementId){
 				            result = result +'   <h2>Internal details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            //result = result +'     <div class="require_wrap_details_cta"> <b>Manager:</b> <span>Manager</span>';
-				            result = result +'       <div class="clearfix"></div>';
 				            if(json.isClientJob  == 'N'){
 				            if(json.clientSubmissionTemplate != '' && json.clientSubmissionTemplate != null && json.clientSubmissionTemplate != 'undefined'){
 					            result = result +'     <div class="require_wrap_details_cta"> <b>Application form:</b>'+json.clientSubmissionTemplate+'';
@@ -1182,7 +1179,8 @@ function requirementDetails(requirementId){
 	  	
 					            }
 				            }
-				            result = result +'     </div>';
+				            
+				           	            
 				            
 				            //  Checking  for approval mechanism type  Parallel or Sequential
 				            if(json.approvalMechanismType != null && json.approvalMechanismType !='' && json.approvalMechanismType !='undefined'){
@@ -1230,12 +1228,15 @@ function requirementDetails(requirementId){
 					            result = result +'<div class="require_wrap_details_cta"> <b>Approver2:</b> <span> -- </span>';	
 					            }	 */
 				            
-				            
-				            
+					            result = result +'       <div class="clearfix"></div>';				            
+					            result = result +'   </div>';							            
 				            
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            result = result +'     <div class="clearfix"></div>';
+				            
+				            result = result +'     </div>';	
+				            
 				            result = result +'   </div>';
 				            result = result +' </div>';
 							$("#tab-1").empty();
