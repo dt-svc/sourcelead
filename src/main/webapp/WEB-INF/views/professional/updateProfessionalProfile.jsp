@@ -1,0 +1,81 @@
+<jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterSideNav.jsp" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+ <link href="resources/css/jquery-ui.css" rel="stylesheet">
+ <link href="resources/css/crowdsourcingstyles.css" rel="stylesheet">
+<!-- <script src="resources/js/formvalidator.js"></script>
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> -->
+
+<style>
+.margin-down{
+    margin-bottom: 100px;
+}
+</style>
+<script> 
+$(document).ready(function(){
+	addCandidate();
+	//getProfessionalInfo();
+});
+</script>
+
+<div class="addcandidate-popup">
+			<div class="row">
+                  <div class="col-md-offset-2 col-md-8">
+				  <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()"><i class="fa fa-close"></i></a>
+                          <div class="col-md-6 mt">
+	                        <div class="small-widget bg-purple">
+	                            <a href="<c:url value='/professionalPraseCandidate'/>"  title="Parse Resume">
+	                                <div class="clearfix mb10">
+	                                <i class="fa fa-file-text-o fa-4x"></i>
+	                                    <span class="fa fa-arrow-right"></span>
+	                                </div>
+	                                <strong class="clearfix">Parse Resume</strong>
+	                                </a>
+	                        </div>
+					  </div>
+					  <div class="col-md-6 mt">
+                          <div class="small-widget bg-yellow">
+                              <a href="<c:url value='/professionalAddProfile'/>" title="Add Profile">
+                                  <div class="clearfix mb10">
+                                      <i class="fa fa-user-circle fa-4x"></i>
+                                      <span class="fa fa-plus"></span>
+                                  </div>
+                                  <strong class="clearfix">Add Profile</strong>
+                                </a>
+                                
+                          </div>
+					  </div>
+                  </div>
+		    </div>
+</div>
+<div class="pop_mask"></div>
+
+
+<script>
+    //addcandidate-popup script
+    function addCandidate(){
+        $('.addcandidate-popup').fadeIn(200);
+        $('.pop_mask').fadeIn(200);
+        $('#addmorepop').slideUp(200);
+    };
+       function closeCandidate(){
+    	var sourceleadUrl ='${sourceleadUrl}';
+        $('.addcandidate-popup').fadeOut(200);
+        $('.pop_mask').fadeOut(200);
+        location.replace(sourceleadUrl+"/professionalDashboard");
+       }
+</script>
+
+<section class="content-wraper">
+        
+     <section class="content-header clearfix">
+      <div class="pull-left">
+        <h2>Update Profile</h2>
+      </div>
+    </section>
+ 
+</section>
+
+
+<jsp:include page="../masterFooter.jsp" />
