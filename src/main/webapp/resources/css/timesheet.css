@@ -1598,13 +1598,13 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     width:50%; float:left; padding:8px 0px; position:relative;
     }
 .require_wrap_details_cta b {
-    display:block; width:150px; float:left; font-size:14px; font-weight:600;
+    display:block; width:150px; float:left; font-size:14px; font-weight:500; color: #454545;
     }
 .require_wrap_details_cta span  {
     display:block; width:60%; float:left; font-weight:500; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
     }
 .require_one {
-    padding:10px; background-color:#f8f8f8; position:relative;
+    padding:10px; background-color:#f5f5f5; position:relative;
     }
 .require_one .glyphicon-save {
     font-size:15px; display:inline-block; padding:0px 0px 0px 10px; color:#368ee0; cursor:pointer;
@@ -2448,7 +2448,7 @@ margin-bottom:15px !important;
     
 .require_wrap_details_cta.require_wrap_details_view span  {
    display: inline; float: left; width: 60%; text-overflow: inherit; white-space: normal; overflow: visible;
-       font-weight: 500; word-wrap: break-word;
+       font-weight: 400; word-wrap: break-word;
    }
     
 .addicon .chosen-drop ul li:before{
@@ -2677,6 +2677,7 @@ padding-right:10px;
     left: -275px; opacity: 1; visibility: visible;
 }
 .referWrapInn {
+
     position: relative; padding: 10px 10px 15px;
 }
 .referWrapInn:after {
@@ -2971,12 +2972,12 @@ padding: 2px 10px !important;
     position:relative; border-radius: 2px; border: 1px solid #878787; display: inline-block; padding: 5px 10px; color: #454545;
     font-size: 14px; font-weight: 500px; margin: 0px 0px 0px 15px; top: 8px;
 }
-.reportsCount ul li b.activeBackground {
-	background-color: #dddddd;
-}
 .reportsCount ul li b:after {
     right: 100%; top: 50%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
     border-color: rgba(136, 183, 213, 0); border-right-color: #878787; border-width: 10px; margin-top: -10px;
+}
+.reportsCount ul li b.activeBackground {
+background-color: #dddddd;
 }
     
 .reportsCount ul li:first-child + li span {
@@ -3249,4 +3250,12 @@ border: 1px solid rgb(204, 204, 204);
 .cusShow p {
     margin: 0px 0px; padding: 1px 6px !important; position: absolute; right: 4px; top: -5px; font-size: 11px; background-color: #fff;
     color: #d82424; border-radius: 2px; box-shadow: 0px 0px 2px rgba(0,0,0,0.2);
+}
+
+.RDdetails {
+	 padding: 12px 12px; background-color: #f5f5f5; line-height: 19px; border-radius:2px; margin-bottom: 15px; color: #454545;
+	 min-height: 50px;
+}
+.RPadT {
+	padding: 5px 0px 6px;
 }
