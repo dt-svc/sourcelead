@@ -550,7 +550,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromEmail("sourceleadadmin@sourcelead.com");
 		 emailMessage.setFromName("SourceLead");
-		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -876,6 +876,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidate.setUpdatedDate(new Date());
 		
 		candidateService.addCandidate(candidate);
+		candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		
 		
 		if(!isNullOrEmpty(contactUUID)){
@@ -1030,6 +1031,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidate.setUpdatedDate(new Date());
 		
 		candidateService.addCandidate(candidate);
+		candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		
 		sendEmailToIndividualRecruiter(user);
 		

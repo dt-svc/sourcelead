@@ -67,6 +67,10 @@ public class ReferContacts implements Serializable{
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "CONTACT_SOURCE")
+	private String contactSource;
+	
+	
 	@Transient
 	private String contactUserName;
 	
@@ -180,6 +184,14 @@ public class ReferContacts implements Serializable{
 
 	public void setContactUserName(String contactUserName) {
 		this.contactUserName = contactUserName;
+	}
+
+	public String getContactSource() {
+		return contactSource;
+	}
+
+	public void setContactSource(String contactSource) {
+		this.contactSource = contactSource;
 	}
 
 }
