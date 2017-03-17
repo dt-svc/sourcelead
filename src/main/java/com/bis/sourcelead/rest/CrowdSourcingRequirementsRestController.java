@@ -1965,6 +1965,23 @@ public class CrowdSourcingRequirementsRestController {
 		}
 		
 		
+		 @RequestMapping(value = "/valdateRecruiterSubmittedCandidateEmail" , method = RequestMethod.POST)
+		 public @ResponseBody  String valdateRecruiterSubmittedCandidateEmail(@RequestParam(value="email", required=false) String email,@RequestParam(value="requirementId", required=false) Long requirementId,HttpServletRequest request) throws Exception {
+			 	
+			 	String result = null;
+			 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 	RequirementSubmission requirementSubmission = requirementSubmissionService.validateRecruiterSubmittedCandidateEmail(email,requirementId,user.getId());
+			 	
+			 	if (requirementSubmission != null) {
+					result = "true";
+				}else{
+					result = "false";
+				}
+				return result;
+		   }
+		 
+		
+		
 		public String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
 	            public HierarchicalStreamWriter createWriter(Writer writer) {

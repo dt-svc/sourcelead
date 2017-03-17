@@ -215,7 +215,7 @@ function getProfessionalInfo(){
 				 result = result +'	        </ul>';
 				 result = result +'	    </div>';
 				 result = result +'	    <div class="col-md-3">';
-				 result = result +'	        <h5>Can be Reach</h5>';
+				 result = result +'	        <h5>Can Be Reach</h5>';
 				 result = result +'	        <ul class="list-inline list-unstyled reachout-links mt25">';
 				 result = result +'	            <li><a href="'+facebook+'"  title="FaceBook" class="btn-fb"><i class="fa fa-facebook-square fa-2x"></i></a></li>';
 				 result = result +'	            <li><a href="'+linkedIn+'" title="LinkedIn" class="btn-li"><i class="fa fa-linkedin-square fa-2x"></i></a></li>';

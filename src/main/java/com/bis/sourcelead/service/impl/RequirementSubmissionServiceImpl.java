@@ -3573,5 +3573,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	public List<RequirementSubmission> getAllVendorsIdbyorgLocationId(OrgLocations orgLocation,Date startDateUTC,Date endDateUTC) {
 		return requirementSubmissionDao.getAllVendorsIdbyorgLocationId(orgLocation,startDateUTC,endDateUTC);
 	}
+	
+	
+	@Override
+	public RequirementSubmission validateRecruiterSubmittedCandidateEmail(String email, Long requirementId, Long userId)
+			throws Exception {
+		return requirementSubmissionDao.validateRecruiterSubmittedCandidateEmail(email, requirementId, userId);
+	}
 
 }
