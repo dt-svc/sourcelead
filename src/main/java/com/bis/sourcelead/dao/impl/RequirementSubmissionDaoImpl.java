@@ -2023,6 +2023,30 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			return ownApplicantsList;
 		}
 		
+		
+		@Override
+		@Transactional
+		public RequirementSubmission validateRecruiterSubmittedCandidateEmail(String email, Long requirementId,
+				Long userId) throws Exception {
+			Session session = this.sessionFactory.getCurrentSession();
+			List<RequirementSubmission> submission = new ArrayList<RequirementSubmission>();
+			logger.debug("findByEmail start");
+			try{
+				submission = session.createQuery("from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes left join fetch rs.recruiterUserId where rs.candidate.email = :email and rs.requirement.id = :requirementId and rs.recruiterUserId.id = :recruiterUserId " )
+						.setString( "email", email ).setLong("requirementId", requirementId ).setLong("recruiterUserId", userId ).setCacheable(true).list();
+				
+				logger.debug("findByEmail end");
+				if (submission.size() > 0) {
+					return submission.get(0);
+				} else {
+					return null;
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			return null;
+		}
+		
   }
 
 

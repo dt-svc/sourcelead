@@ -180,8 +180,9 @@ function requirementProfile(requirementUUID){
 				 
 			     result = result+'    <ul class="nav nav-tabs mt">';
 			     result = result+'      <li class="active"><a data-toggle="tab" href="javascript:void(0)" onclick="requirementDetails(\''+requirementUUID+'\');" >Details</a></li>';
-			     result = result+'      <li><a data-toggle="tab" href="javascript:void(0)" onclick="getReferalDetails(\''+requirementUUID+'\');" >Referrals</a></li>';
-			     
+			     if(json.isCrowdSourcing == 'Y'){
+			     	result = result+'      <li><a data-toggle="tab" href="javascript:void(0)" onclick="getReferalDetails(\''+requirementUUID+'\');" >Referrals</a></li>';
+			     }
 			     '<sec:authorize access="hasRole(\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
 			     result = result+'      <li><a data-toggle="tab" href="javascript:void(0)" onclick="getSubmissionDetails(\''+requirementUUID+'\');">Submissions</a></li>';
 			     '</sec:authorize>';
@@ -511,6 +512,53 @@ function appendReferToJob(requirementId){
 		
 }
 </script> 
+
+
+<script>
+  function validateProfessionalEmail(requirementId){
+	  
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  var email = document.getElementById('email').value; 
+	  if(email != null && email != ''){
+		  $("#submit_refer").attr("disabled", "disabled");
+		$.ajax({
+		   	type: "GET",
+		       url: sourceleadUrl+"/validateReferedEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&requirementId="+requirementId,
+		       success: function(data) {
+		    		if(data != null && data != ''){
+					     if(data == 'Invalid'){
+					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+					    	    $("input#email").after("<p class='jquery_form_error_message'>"+email+" is already refered</span>");
+			    				$('input#email').attr('record-exist','yes');
+			    				$('input#email').attr('record-exist-errorMsg',email+' is already refered'); 
+					     } 
+					     
+					     else if(data == 'Invalid Email'){
+					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+					    	    $("input#email").after("<p class='jquery_form_error_message'> you can't refer user self</span>");
+			    				$('input#email').attr('record-exist','yes');
+			    				$('input#email').attr('record-exist-errorMsg'," you can't refer user self"); 
+					     } 
+					     
+				       	else{
+				       		 $("#submit_refer").removeAttr("disabled");
+							 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+							 $( "#submit_refer" ).removeAttr("style");
+							 $( "#submit_refer" ).click(function() {
+							 if ($(this).validate(false, validationSettings)){
+							 }
+							});
+				       	}
+			       	}
+		    	   
+		      },
+		       
+		}); 
+	   }
+  }
+  
+  </script>
 
 <script>
 function cancelReferPopUp(){

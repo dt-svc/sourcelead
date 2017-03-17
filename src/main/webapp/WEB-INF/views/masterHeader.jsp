@@ -105,6 +105,7 @@ $(window).load(function() {
       alert("window load occurred!"+url);
 });
 </script> -->
+
 <script>
 var BM = 2; // button middle
 var BR = 3; // button right
@@ -117,7 +118,7 @@ function mouseDown(e)
 document.oncontextmenu = function() { alert(msg); return false; }
 document.ondragstart   = function() {alert(msg);return false; }
 document.onmousedown   = mouseDown;
-</script>
+</script> 
 <script>
 var isCtrl = false;
 document.onkeyup=function(e){
@@ -136,7 +137,7 @@ document.onkeydown=function(e){
          return false;
      }
 }
-</script>
+</script> 
 
 <script>
 	function predefineOrgImage(imageId){
@@ -177,7 +178,18 @@ document.onkeydown=function(e){
 <div class="wraper"> 
   <!-- Header Area -->
   <header class="main-header">
-  <span class="logo"> <a href="dashboard/${SourceLeadWeb_orgLocationId}" title="Source Lead">
+  <span class="logo"> 
+  <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+  <a href="dashboard/${SourceLeadWeb_orgLocationId}" title="Source Lead">
+  </c:if>
+  
+  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+  <a href="${sourceleadUrl}/professionalDashboard" title="Source Lead">
+  </c:if>
+  
+  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+  <a href="${sourceleadUrl}/recruiterDashboard" title="Source Lead">
+  </c:if>
   <i>
  <img src="resources/images/logo-sourceld.png" alt="Source Lead"> </i>
     <h1>Source Lead</h1>
