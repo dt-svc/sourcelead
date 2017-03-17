@@ -66,7 +66,12 @@ margin-top: 45px;
 overflow: visible !important;
 margin-top: 3px;
 }
+.time_pop {
+ z-index: 99999;
+}
 </style>
+
+
 <div id='rejectedPopup'></div>
 <div id='reOpenPopup'></div>
 <div id='reOpenRejectedPopup'></div>
@@ -638,7 +643,8 @@ function clearTimesheet(){
 </script>
 
 <script>
-	function timesheetDivAfterSaving(startDate,endDate,approvalStatus){ 
+	function timesheetDivAfterSaving(startDate,endDate,approvalStatus){
+		alert("approvalStatus>>>>>>>>>>"+approvalStatus);
 	         var sourceleadUrl ='${sourceleadUrl}';
 	         var projectMemberId = $("#projectMemberId").val();
 	         var timesheetFrequency = $("#frequencyDates").val();
@@ -1360,14 +1366,22 @@ function notifyReopenTimeSheet(projectMemberId,timesheetFrequency,totalHours){
    			    var startDate = $("#tabStartDate").val();
    			    var endDate = $("#tabEndDate").val();
    			    var isSuperUser = $("#isSuperUser").val();
+   			    var timesheetSubmissionStatus = $("#timesheetSubmissionStatus").val();
+   			 
    			    if(startDate != null && startDate != '' && startDate != 'undefined' && 
    					  endDate != null && endDate != '' && endDate != 'undefined'){
-   			    	 if(isSuperUser){
-   			    		 timesheetDivAfterSaving(startDate,endDate,"draft");
-   			    	 }
-   			    	 else{
-   			    		timesheetDivAfterSaving(startDate,endDate,"submitted");
-   			    	 }
+   			    	
+   			    	  if(timesheetSubmissionStatus == 'approved'){
+   			    		  timesheetDivAfterSaving(startDate,endDate,"approved");
+   			    	  }else{
+   			    		 if(isSuperUser == true){
+      			    		 timesheetDivAfterSaving(startDate,endDate,"draft");
+      			    	 }
+      			    	 else{
+      			    		timesheetDivAfterSaving(startDate,endDate,"submitted");
+      			    	 } 
+   			    	  }
+   			    	 
    			    }
    			    else{
    			    	timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMemberId,"approver");
@@ -1525,7 +1539,7 @@ function validate_fileupload(fileName)
 
     for(var i = 0; i <= allowed_extensions.length; i++)
     {
-        if(allowed_extensions[i].toLowerCase()==file_extension)
+    	if(allowed_extensions[i] != null && allowed_extensions[i] != '' && allowed_extensions[i] != 'undefined' && allowed_extensions[i].toLowerCase()==file_extension)
         {
             return true; // valid file extension
         }
