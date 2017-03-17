@@ -164,6 +164,10 @@ public class Candidate implements Serializable{
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "IS_PROFILE_PUBLIC")
+	private String isProfilePublic;
+	
+	
 	@Transient
 	private String skills;
 	
@@ -1011,5 +1015,18 @@ public class Candidate implements Serializable{
 	public void setPrimarySkill(String primarySkill) {
 		this.primarySkill = primarySkill;
 	}
+
+
+	public String getIsProfilePublic() {
+		return isProfilePublic;
+	}
+
+
+	public void setIsProfilePublic(String isProfilePublic) {
+		this.isProfilePublic = isProfilePublic;
+	}
+
+
+
 	
 }

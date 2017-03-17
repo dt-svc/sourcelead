@@ -1229,11 +1229,13 @@ function getRecruiterCandidateDetails(){
 		        	 
 		        	 if(json['state'] != null && json['state'] != "" && json['state'] != 'undefined'){
 		        		 $("select[name=state]").val(json['state']);
+		        		 getCandidateStates();
 		        	 }else{
 		        		 $("select[name=state]").val('');
 		        	 }
 		        	 
 		        	 if(json['city'] != null && json['city'] != "" && json['city'] != 'undefined'){
+		        		 $("select[name=city]").val(json['city']);
 		        		 getCandidateCities(json['city']);
 		        	 }else{
 		        		 $("select[name=city]").val('');
@@ -1347,17 +1349,136 @@ function getRecruiterCandidateDetails(){
 
 <script>
 function getCandidateDetails(){
-	 $("input[name=FirstName]").val('${SourceLeadWeb_user.firstName}');
-	 
-	 if('${SourceLeadWeb_user.firstName}' != null && '${SourceLeadWeb_user.firstName}' != "" && '${SourceLeadWeb_user.firstName}' != 'undefined'){
-		 $("input[name=LastName]").val('${SourceLeadWeb_user.lastName}');
-	 }
-	 
-	 $("input[name=EmailId]").attr('readonly', true);
-	 $("input[name=EmailId]").val('${SourceLeadWeb_user.email}');
-	 $("input[name=PhoneNumber]").val('${SourceLeadWeb_candidate.mobilePhone}');
-	 
-	 getAllSubmissionCandidateCountries();
+     var candidateId = '${SourceLeadWeb_candidateId}'; 
+     var sourceleadUrl ='${sourceleadUrl}';
+     $.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	
+	        	 $("input[name=FirstName]").val(json['firstName']);
+	        	 $("input[name=EmailId]").val(json['email']);
+	        	 $("input[name=EmailId]").attr('readonly', 'readonly');
+	        	 
+	        	 if(json['lastName'] != null && json['lastName'] != "" && json['lastName'] != 'undefined'){
+	        		 $("input[name=LastName]").val(json['lastName']);
+	        	 }else{
+	        		 $("input[name=LastName]").val(''); 
+	        	 }
+	        	 
+	        	 if(json['mobilePhone'] != null && json['mobilePhone'] != "" && json['mobilePhone'] != 'undefined'){
+	        		 $("input[name=PhoneNumber]").val(json['mobilePhone']);
+	        	 }else{
+	        		 $("input[name=PhoneNumber]").val(''); 
+	        	 }
+	        	 
+	        	 if(json['alternateMobilePhone'] != null && json['alternateMobilePhone'] != "" && json['alternateMobilePhone'] != 'undefined'){
+	        		 $("input[name=AlternateNumber]").val(json['alternateMobilePhone']);
+	        	 }else{
+	        		 $("input[name=AlternateNumber]").val(''); 
+	        	 }
+	        	 
+	        	 if(json['designation'] != null && json['designation'] != "" && json['designation'] != 'undefined'){
+	        		 $("input[name=Designation]").val(json['designation']);
+	        	 }else{
+	        		 $("input[name=Designation]").val(''); 
+	        	 }
+	        	 
+	        	 if(json['candidateEdu'] != null && json['candidateEdu'] != "" && json['candidateEdu'] != 'undefined'){
+	        		 $("input[name=Education]").val(json['candidateEdu']);
+	        	 }else{
+	        		 $("input[name=Education]").val(''); 
+	        	 }
+	        	 
+	        	 if(json['country'] != null && json['country'] != "" && json['country'] != 'undefined'){
+	        		 $("select[name=country]").val(json['country']);
+	        	 }else{
+	        		 $("select[name=country]").val('');
+	        	 }
+	        	 
+	        	 if(json['state'] != null && json['state'] != "" && json['state'] != 'undefined'){
+	        		 $("select[name=state]").val(json['state']);
+	        		 getCandidateStates();
+	        	 }else{
+	        		 $("select[name=state]").val('');
+	        	 }
+	        	 
+	        	 if(json['city'] != null && json['city'] != "" && json['city'] != 'undefined'){
+	        		 $("select[name=city]").val(json['city']);
+	        		 getCandidateCities(json['city']);
+	        	 }else{
+	        		 $("select[name=city]").val('');
+	        	 }
+	        
+	        	 if(json['noticePeriod'] != null && json['noticePeriod'] != "" && json['noticePeriod'] != 'undefined'){
+	        		 $("select[name=NoticePeriod]").val(json['noticePeriod']);
+	        	 }else{
+	        		 $("select[name=NoticePeriod]").val('');
+	        	 }
+	        	 
+	        	 if(json['experienceYears'] != null && json['experienceYears'] != "" && json['experienceYears'] != 'undefined'){
+	        		 $("select[name=WorkExperience]").val(json['experienceYears']);
+	        		 if(json['experienceYears'] == "25+"){
+	        			 $("#monthExp").attr("disabled", "disabled");
+	        		 }else{
+	        			 $("#monthExp").removeAttr("disabled");
+	        		 }
+	        	 }else{
+	        		 $("select[name=WorkExperience]").val(0);
+	        	 }
+	        	 
+	        	 if(json['experienceMonths'] != null && json['experienceMonths'] != "" && json['experienceMonths'] != 'undefined'){
+	        		 $("select[name=monthExp]").val(json['experienceMonths']);
+	        	 }else{
+	        		 $("select[name=monthExp]").val(0);
+	        	 }
+	        	 
+	        	 if(json['expectedRate'] != null && json['expectedRate'] != "" && json['expectedRate'] != 'undefined'){
+	        		 $("input[name=ExpectedCTC]").val(json['expectedRate']);
+	        	 }else{
+	        		 $("input[name=ExpectedCTC]").val(''); 
+	        	 }
+	        	 
+	        	 
+	        	 if(json['rateType'] != null && json['rateType'] != "" && json['rateType'] != 'undefined'){
+	        		 $("select[name=expectedCTCRatePer]").val(json['rateType']);
+	        		 validateExpectedCTCRatePer();
+	        	 }else{
+	        		 $("select[name=expectedCTCRatePer]").val('');
+	        		 validateExpectedCTCRatePer();
+	        	 }
+	        	 
+	        	 if(json['expectedRateCurrencey'] != null && json['expectedRateCurrencey'] != "" && json['expectedRateCurrencey'] != 'undefined'){
+	        		 $("select[name=expectedCTCRateType]").val(json['expectedRateCurrencey']);
+	        	 }
+	        	 
+	        	 if(json['currentRate'] != null && json['currentRate'] != "" && json['currentRate'] != 'undefined'){
+	        		 $("input[name=CurrentCTC]").val(json['currentRate']);
+	        		 validateCurrentCTC();
+	        	 }else{
+	        		 $("input[name=CurrentCTC]").val(''); 
+	        		 validateCurrentCTC();
+	        	 }
+	        	 
+	        	 if(json['currentRateType'] != null && json['currentRateType'] != "" && json['currentRateType'] != 'undefined'){
+	        		 $("select[name=currentCTCRatePer]").val(json['currentRateType']);
+	        		 validateExpectedCTC();
+	        		 validateCurrentCTCRatePer();
+	        	 }else{
+	        		 $("select[name=currentCTCRatePer]").val(''); 
+	        		 validateExpectedCTC();
+	        		 validateCurrentCTCRatePer();
+	        	 }
+	        	 
+	        	 if(json['currentRateCurrency'] != null && json['currentRateCurrency'] != "" && json['currentRateCurrency'] != 'undefined'){
+	        		 $("select[name=currentCTCRateType]").val(json['currentRateCurrency']);
+	        	 }
+	        	 
+	        },
+	    });
+     
+     getAllSubmissionCandidateCountries();
 	 setRateTypesByLocation();
      
      $("#submissionCountry").on('change', function (e) {
@@ -1475,6 +1596,12 @@ function getAllSubmissionCandidateCountries(){
 function getCandidateStates(){
 	
 	var countryName = $("#submissionCountry").val();
+     var stateName = $("#submissionState").val();
+	
+	if(stateName == null || stateName == "" || stateName =="undefined"){
+		stateName = document.getElementById("state").value;
+	}
+	
 	if(countryName != null && countryName != "" && countryName !="undefined"){
 		$.ajax({
 	    	type: "POST",
@@ -1485,7 +1612,11 @@ function getCandidateStates(){
 	        	$('#submissionState').empty();
 	        	$('#submissionState').append('<option value="">---Select---</option>');
 	            for(var i=0;i<json.length;i++){
-	            	$('#submissionState').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	var selected = '';
+	            	if(stateName != null && stateName != "" && stateName !="undefined" && json[i] == stateName){
+	            		selected = 'selected';
+	            	}
+	            	$('#submissionState').append('<option value="'+json[i]+'" '+selected+'>'+json[i]+'</option>');
 	            }
 	            $('#submissionState').trigger("chosen:updated");
 	            
@@ -1701,7 +1832,8 @@ $('body').on('submit', '#applyToJob_form', function(e){
 	    		$(".side_mask").fadeOut(200);
 	    		$("body").css('overflow-y', 'auto');
 	    		
-	        	$("#requirementType").val("AppliedJobs");
+	        	document.getElementById('requirementType').value = 'AppliedJobs';
+	    		document.getElementById('appliedjobs').checked = true;
 	        	requirementsList(0);
 	        	
 	        	
