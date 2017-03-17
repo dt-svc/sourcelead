@@ -148,6 +148,13 @@ public class RequirementController {
 					requirement.setReqSkillsList(skillsList);
 					requirement.setReqSkillsListString(requirement.getSkills());
 			}
+			
+			if(requirement != null && requirement.getId() != null){
+				String storedNoticeperiodList = requirementService.getNoticePeriodByRequirementId(requirement.getId());
+						model.addObject("noticePeriod", storedNoticeperiodList);
+			}
+			
+			
 			String requirementAssignedIds = "";
 			if(null != requirement.getRequirementAssignTo()){
 				List<RequirementAssignTo> requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(requirement.getId());

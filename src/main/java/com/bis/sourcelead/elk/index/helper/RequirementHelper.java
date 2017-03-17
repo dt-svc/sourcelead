@@ -203,6 +203,10 @@ public class RequirementHelper {
 				String[] skills = requirement.getSkills().split(",");
 				requirementIndex.setSkills(skills);
 			}
+			if(null != requirement.getNoticePeriod()){
+				String[] noticePeriod = requirement.getNoticePeriod().split(",");
+				requirementIndex.setNoticePeriod(noticePeriod);
+			}
 			requirementIndex.setJobId(requirement.getJobId());
 			requirementIndex.setPriority(requirement.getPriority());
 			requirementIndex.setCurrentRateCurrency(requirement.getCurrencyCode());
