@@ -167,15 +167,26 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		 EmailMessage emailMessage = new EmailMessage();
 		 String professionalName = null;
 		 
+		 StringBuilder loginUser = new StringBuilder();
+		 
 		 if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
 			 professionalName = sb.append(jsonObj.getString("firstName")).append(" ").append(jsonObj.getString("lastName")).toString();
 		 }else{
 			 professionalName = sb.append(jsonObj.getString("firstName")).toString();
 		 }
 		 
+
+		 if(!isNullOrEmpty(user.getLastName())){
+			 loginUser = loginUser.append(user.getFirstName()).append(" ").append(user.getLastName());
+		 }else{
+			 loginUser = loginUser.append(user.getFirstName());
+		 }
+		 
+		 emailMessage.setUserName(loginUser.toString());
 		 emailMessage.setToEmail(jsonObj.getString("email"));
 		 emailMessage.setFromEmail(user.getEmail());
 		 emailMessage.setCreatedBy(user.getUserCode());
+		 emailMessage.setUserType(user.getUserType());
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
