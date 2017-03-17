@@ -117,5 +117,7 @@ public interface RequirementService {
 
 	public List<Requirement> getAllRequirementsByOrglocationId(Long orgLocationId)throws Exception;
 
+	public String getNoticePeriodByRequirementId(Long requirementId) throws Exception;
+
 
 }
