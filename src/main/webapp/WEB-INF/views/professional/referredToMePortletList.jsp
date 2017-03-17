@@ -198,7 +198,7 @@ function portletListFilter(requirementStatus){
 		        	   }
 		        	   
 		        	   if(report.city != null && report.city != '' && report.city != 'undefined'){
-		        		   report.city = ' , '+report.city;
+		        		   city = ' , '+report.city;
 		        	   }else{
 		        		   city = "";
 		        	   }

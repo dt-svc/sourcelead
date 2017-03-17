@@ -771,6 +771,7 @@ function requirementsList(offset){
 			       	    	
 			       	    	if(requirements.noOfSearchHits >= 10){
 			       	    		document.getElementById("loadMoreSection").style.display="";
+			       	    		document.getElementById("noMoreRecordsSection").style.display="none";
 			       	    	}else{
 			       	    		document.getElementById("loadMoreSection").style.display="none";
 			       	    		document.getElementById("noMoreRecordsSection").style.display="";
