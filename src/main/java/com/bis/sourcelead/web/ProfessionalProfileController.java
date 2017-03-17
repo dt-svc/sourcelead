@@ -91,7 +91,7 @@ public class ProfessionalProfileController {
 				if(candidateResumeCount > 0 ){
 					model.setViewName("professional/profile");
 				}else{
-					model.setViewName("professional/professionalPraseCandidate");
+					model.setViewName("professional/updateProfessionalProfile");
 				}
 				
 				model.addObject("sourceleadUrl", sourceleadUrl);
@@ -128,5 +128,51 @@ public class ProfessionalProfileController {
 				return resultJson;
 	}
 	 
+	 
+	 @RequestMapping(value = "/professionalPraseCandidate")
+		public ModelAndView addCandidate(HttpServletRequest request) throws Exception {
+		 	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 	Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+			ModelAndView model = new ModelAndView();
+			model.setViewName("professional/professionalPraseCandidate");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			Countries countries = countriesService.getCountriesByCountryName(loginUser.getCountry());
+			if(null != countries){
+	         model.addObject("loginCountryName", countries.getName());
+	         model.addObject("currencyCode", countries.getCurrency());
+			}
+            List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+			model.addObject("educationsList", educationsList);
+			
+			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			
+			model.addObject("skillsList", skillsList);
+			model.addObject("candidateId", candidateId);
+			
+			return model;
+	    }
+	 
+	 @RequestMapping(value = "/professionalAddProfile")
+		public ModelAndView professionalAddProfile(HttpServletRequest request) throws Exception {
+		 	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 	Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+			ModelAndView model = new ModelAndView();
+			model.setViewName("professional/professionalAddProfile");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			Countries countries = countriesService.getCountriesByCountryName(loginUser.getCountry());
+			if(null != countries){
+	         model.addObject("loginCountryName", countries.getName());
+	         model.addObject("currencyCode", countries.getCurrency());
+			}
+         List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+			model.addObject("educationsList", educationsList);
+			
+			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			
+			model.addObject("skillsList", skillsList);
+			model.addObject("candidateId", candidateId);
+			
+			return model;
+	    }
 	 
 }

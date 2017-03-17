@@ -686,6 +686,12 @@ function sideBar(requirementId){
 				        else{
 					    result = result+'<li><i class="fa fa-flag"></i><span> --- </span>';
 				        }
+				        if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined'){
+					    result = result+'<li><i class="fa fa-bell"></i><span>'+json.noticePeriod+'</span>';
+					    }
+					    else{
+						result = result+'<li><i class="fa fa-bell"></i><span> --- </span>';
+					    }
 				         result = result+'</li>';
 				        result = result+'</ul>';
 				        result = result+'</div>';
