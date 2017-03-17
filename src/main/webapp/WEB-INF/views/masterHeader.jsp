@@ -105,6 +105,7 @@ $(window).load(function() {
       alert("window load occurred!"+url);
 });
 </script> -->
+
 <script>
 var BM = 2; // button middle
 var BR = 3; // button right
@@ -117,7 +118,7 @@ function mouseDown(e)
 document.oncontextmenu = function() { alert(msg); return false; }
 document.ondragstart   = function() {alert(msg);return false; }
 document.onmousedown   = mouseDown;
-</script>
+</script> 
 <script>
 var isCtrl = false;
 document.onkeyup=function(e){
@@ -136,7 +137,7 @@ document.onkeydown=function(e){
          return false;
      }
 }
-</script>
+</script> 
 
 <script>
 	function predefineOrgImage(imageId){

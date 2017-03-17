@@ -222,4 +222,6 @@ public interface RequirementSubmissionService {
 	
 	List<RequirementSubmission>  getRecruiterSubmittedCandidatesListForReportsByLocationIdAndStatus(Long loginOrgLocationId,String client,String filterDate,Date startDateUTC,Date endDateUTC) throws Exception;
 	
+	RequirementSubmission validateRecruiterSubmittedCandidateEmail(String email, Long requirementId, Long userId) throws Exception;
+	
 }
