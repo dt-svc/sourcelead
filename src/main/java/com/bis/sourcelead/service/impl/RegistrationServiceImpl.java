@@ -876,6 +876,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidate.setUpdatedDate(new Date());
 		
 		candidateService.addCandidate(candidate);
+		candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		
 		
 		if(!isNullOrEmpty(contactUUID)){
@@ -1030,6 +1031,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidate.setUpdatedDate(new Date());
 		
 		candidateService.addCandidate(candidate);
+		candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		
 		sendEmailToIndividualRecruiter(user);
 		

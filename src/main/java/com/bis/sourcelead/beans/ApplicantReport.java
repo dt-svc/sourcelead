@@ -1,5 +1,7 @@
 package com.bis.sourcelead.beans;
 
+import java.util.List;
+
 public class ApplicantReport {
 	
 	private String requirementTitle;
@@ -29,6 +31,26 @@ public class ApplicantReport {
 	private String stage; 
 
 	private String orgName; 
+	
+	
+	private int applicantsSum;
+	private int requestSentSum;
+	private int shortlistedSum;
+	private int submitToClientSum;
+	private int interviewsSum;
+	private int offeredSum;
+	private int rejectedSum;
+	
+	private String submissionDate;
+	private String shortlistDate;
+	private String interviewDate;
+	private String offerDate;
+	private String requestSentDate;
+	private String submitToClientDate;
+	private String rejectedDate;
+	// applicant received reports
+	
+	
 
 	public String getOrgName() {
 		return orgName;
@@ -141,5 +163,119 @@ public class ApplicantReport {
 	public void setRejectedCount(int rejectedCount) {
 		this.rejectedCount = rejectedCount;
 	}
+
+	public int getApplicantsSum() {
+		return applicantsSum;
+	}
+
+	public void setApplicantsSum(int applicantsSum) {
+		this.applicantsSum = applicantsSum;
+	}
+
+	public int getRequestSentSum() {
+		return requestSentSum;
+	}
+
+	public void setRequestSentSum(int requestSentSum) {
+		this.requestSentSum = requestSentSum;
+	}
+
+	public int getShortlistedSum() {
+		return shortlistedSum;
+	}
+
+	public void setShortlistedSum(int shortlistedSum) {
+		this.shortlistedSum = shortlistedSum;
+	}
+
+	public int getSubmitToClientSum() {
+		return submitToClientSum;
+	}
+
+	public void setSubmitToClientSum(int submitToClientSum) {
+		this.submitToClientSum = submitToClientSum;
+	}
+
+	public int getInterviewsSum() {
+		return interviewsSum;
+	}
+
+	public void setInterviewsSum(int interviewsSum) {
+		this.interviewsSum = interviewsSum;
+	}
+
+	public int getOfferedSum() {
+		return offeredSum;
+	}
+
+	public void setOfferedSum(int offeredSum) {
+		this.offeredSum = offeredSum;
+	}
+
+	public int getRejectedSum() {
+		return rejectedSum;
+	}
+
+	public void setRejectedSum(int rejectedSum) {
+		this.rejectedSum = rejectedSum;
+	}
+
+	public String getSubmissionDate() {
+		return submissionDate;
+	}
+
+	public void setSubmissionDate(String submissionDate) {
+		this.submissionDate = submissionDate;
+	}
+
+	public String getShortlistDate() {
+		return shortlistDate;
+	}
+
+	public void setShortlistDate(String shortlistDate) {
+		this.shortlistDate = shortlistDate;
+	}
+
+	public String getInterviewDate() {
+		return interviewDate;
+	}
+
+	public void setInterviewDate(String interviewDate) {
+		this.interviewDate = interviewDate;
+	}
+
+	public String getOfferDate() {
+		return offerDate;
+	}
+
+	public void setOfferDate(String offerDate) {
+		this.offerDate = offerDate;
+	}
+
+	public String getRequestSentDate() {
+		return requestSentDate;
+	}
+
+	public void setRequestSentDate(String requestSentDate) {
+		this.requestSentDate = requestSentDate;
+	}
+
+	public String getSubmitToClientDate() {
+		return submitToClientDate;
+	}
+
+	public void setSubmitToClientDate(String submitToClientDate) {
+		this.submitToClientDate = submitToClientDate;
+	}
+
+	public String getRejectedDate() {
+		return rejectedDate;
+	}
+
+	public void setRejectedDate(String rejectedDate) {
+		this.rejectedDate = rejectedDate;
+	}
+
+
 
 }

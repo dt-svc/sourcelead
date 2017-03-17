@@ -43,6 +43,8 @@ public class RequirementIndex {
 	
 	private String[] skills;
 	
+	private String[] noticePeriod;
+	
 	private String[] appliedProfessionals;
 	
 	private String[] appliedRecruiters;
@@ -613,6 +615,14 @@ public class RequirementIndex {
 
 	public void setSubmissionId(Long submissionId) {
 		this.submissionId = submissionId;
+	}
+
+	public String[] getNoticePeriod() {
+		return noticePeriod;
+	}
+
+	public void setNoticePeriod(String[] noticePeriod) {
+		this.noticePeriod = noticePeriod;
 	}
 	
 }
