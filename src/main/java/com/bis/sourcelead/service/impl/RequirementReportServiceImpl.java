@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,8 +37,50 @@ public class RequirementReportServiceImpl implements RequirementReportService{
 		return requirementReportDao.getReceivedApplicantsCountsPerReq(requirementId);
 	}
 	@Override
-	public List<RequirementSubmissionHistory> getReceivedApplicantsCountForReports(Long orgLocationId) {
-		return requirementReportDao.getReceivedApplicantsCountForReports(orgLocationId);
+	public List<RequirementSubmissionHistory> getReceivedApplicantsCountForReports(Long orgLocationId,Long requirementId) {
+		return requirementReportDao.getReceivedApplicantsCountForReports(orgLocationId,requirementId);
+	}
+	@Override
+	public List<RequirementSubmissionHistory> getApplicantsCountForChart(Long orgLocationId) {
+		return requirementReportDao.getApplicantsCountForChart(orgLocationId);
+	}
+	@Override
+	public Integer getRequirementStagesCountsForReports(Long orgLocId, String requirementStatus) throws Exception {
+		return requirementReportDao.getRequirementStagesCountsForReports(orgLocId, requirementStatus);
+	}
+	@Override
+	public List<Requirement> getRequirementStageReports(OrgLocations orgLocation, String Status) throws Exception {
+		return requirementReportDao.getRequirementStageReports(orgLocation,Status);
+	}
+	@Override
+	public List<RequirementSubmissionHistory> getReceivedApplicantsCountForReportsByVendorLocationId(Long orgLocationId,
+			Long vendorLocationId,Date startDateUTC, Date endDateUTC) {
+		return requirementReportDao.getReceivedApplicantsCountForReportsByVendorLocationId(orgLocationId,vendorLocationId,startDateUTC,endDateUTC);
+	}
+	@Override
+	public List<RequirementSubmission> getReceivedApplicantsCountsByVendorLocationId(Long orgLocationId,
+			Long vendorLocationId,Date startDateUTC, Date endDateUTC) {
+		return requirementReportDao.getReceivedApplicantsCountsByVendorLocationId(orgLocationId,vendorLocationId,startDateUTC,endDateUTC);
+	}
+	@Override
+	public List<RequirementSubmission> getTotalApplicants(OrgLocations orgLocation, Date startDateUTC, Date endDateUTC)throws Exception {
+		return requirementReportDao.getTotalApplicants(orgLocation,startDateUTC,endDateUTC);
+	}
+	@Override
+	public List<RequirementSubmissionHistory> getApplicantsCountsByDateRange(Long submissionId, Date startDateUTC,Date endDateUTC) throws Exception {
+		return requirementReportDao.getApplicantsCountsByDateRange(submissionId,startDateUTC,endDateUTC);
+
+	}
+	@Override
+	public List<RequirementSubmission> getReceivedApplicantsCountsPerOrgLocId(Long orgLocationId, Date startDateUTC,
+			Date endDateUTC) {
+		
+		return requirementReportDao.getReceivedApplicantsCountsPerOrgLocId(orgLocationId,startDateUTC,endDateUTC);
+	}
+	
+	@Override
+	public List<RequirementSubmission> getAllSubmissionsByAssignTeamMember(Long orgLocationId,Set<String> userCodesList, Date startDateUTC, Date endDateUTC) {
+		return requirementReportDao.getAllSubmissionsByAssignTeamMember(orgLocationId,userCodesList,startDateUTC,endDateUTC);
 	}
 
 }

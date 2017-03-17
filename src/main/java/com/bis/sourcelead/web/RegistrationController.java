@@ -30,6 +30,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.ActionRolesService;
+import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -96,6 +97,9 @@ public class RegistrationController {
 	 
 	 @Autowired
 	 TimeZoneService timeZoneService;
+	 
+	 @Autowired
+	 private ClientService clientService;
 	 
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	 @RequestMapping(value = "/enrolledOrgsList")
@@ -168,7 +172,6 @@ public class RegistrationController {
 		    Org org = null;
 		    OrgLocations orgLocations = null;
 		    boolean flag;
-			
 		    try {
 		    	orgLocations = orgLocationService.getOrgLocations(respondingPartyOrgLocationId);
 		    	org = orgLocations.getOrg();
@@ -230,6 +233,8 @@ public class RegistrationController {
 						 orgSpoc.setInvitationStatus(Constants.MAIL_ACCEPTED);
 						 orgSpocService.addOrgSpoc(orgSpoc);
 					 }
+					 
+					 clientService.sendAcceptEmailToClientOrVendor(orgSpoc,orgSpoc.getClientUser(),orgLocations);
 				 }else if("rejectNotification".equalsIgnoreCase(actionLink)){
 					 Notifications notifications = notificationsService.getNotificationsByUUID(UUID);
 					 if(null != notifications){
@@ -242,6 +247,7 @@ public class RegistrationController {
 						 orgSpoc.setInvitationStatus(Constants.MAIL_REJECTED);
 						 orgSpoc.setSpocStatus("In-Active");
 						 orgSpocService.addOrgSpoc(orgSpoc);
+						 clientService.sendRejectEmailToClientOrVendor(orgSpoc,orgSpoc.getClientUser(),orgLocations);
 					 }
 				 }
 				 

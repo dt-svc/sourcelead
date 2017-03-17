@@ -6631,6 +6631,12 @@ background-color: #ccc; color:#333;
 	position:absolute; top:50px; right: 20px;
 	display: none; z-index: 99;
 }
+.reportsCount.req_Crowd {
+ margin-top: 10px; border:1px solid #dedede; border-radius:3px; background: #fff;
+}
+.reportsCount.req_Crowd ul li {
+	width: 20%;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

@@ -967,12 +967,13 @@ function addAttachment(){
 <script type="text/javascript">
 function validate_fileupload(fileName)
 {
+	
     var allowed_extensions = new Array("docx","doc","pdf","rtf","jpeg","png","jpg","jpeg","xls","xlsx","csv");
     var file_extension = fileName.split('.').pop(); 
 
     for(var i = 0; i <= allowed_extensions.length; i++)
     {
-        if(allowed_extensions[i].toLowerCase()==file_extension)
+        if(allowed_extensions[i] != null && allowed_extensions[i] != '' && allowed_extensions[i] != 'undefined' && allowed_extensions[i].toLowerCase()==file_extension)
         {
             return true; // valid file extension
         }
