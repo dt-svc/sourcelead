@@ -98,6 +98,13 @@ width: 11.5%;
 }
 
 </style>
+
+<!-- <script>
+$(window).load(function() {
+	var url = window.location.href;
+      alert("window load occurred!"+url);
+});
+</script> -->
 <script>
 var BM = 2; // button middle
 var BR = 3; // button right
@@ -119,10 +126,12 @@ document.onkeyup=function(e){
 document.onkeydown=function(e){
     if(e.which == 17) isCtrl=true;
     if(e.which == 85 && isCtrl == true) {
+    	e.preventDefault();
         alert('CTRL + U IS NOT SUPPORTED ON THIS PAGE');
         return false;
     }
     else if(e.which == 123){
+    	e.preventDefault();
     	 alert('F12 IS NOT SUPPORTED ON THIS PAGE');
          return false;
      }
@@ -168,7 +177,18 @@ document.onkeydown=function(e){
 <div class="wraper"> 
   <!-- Header Area -->
   <header class="main-header">
-  <span class="logo"> <a href="dashboard/${SourceLeadWeb_orgLocationId}" title="Source Lead">
+  <span class="logo"> 
+  <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+  <a href="dashboard/${SourceLeadWeb_orgLocationId}" title="Source Lead">
+  </c:if>
+  
+  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+  <a href="${sourceleadUrl}/professionalDashboard" title="Source Lead">
+  </c:if>
+  
+  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+  <a href="${sourceleadUrl}/recruiterDashboard" title="Source Lead">
+  </c:if>
   <i>
  <img src="resources/images/logo-sourceld.png" alt="Source Lead"> </i>
     <h1>Source Lead</h1>

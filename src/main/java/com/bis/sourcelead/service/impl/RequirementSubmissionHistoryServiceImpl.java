@@ -84,4 +84,10 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 		return requirementSubmissionHistoryDao.isInCoolingOffPeriodByEmailAndLocationsId(email, orgLocationId, "120", requirementId);
 	}
 
+	@Override
+	public List<RequirementSubmissionHistory> getAllRequirementSubmissionHistoryBySubmissionId(List<Long> submissionIds)
+			throws Exception {
+		return requirementSubmissionHistoryDao.getAllRequirementSubmissionHistoryBySubmissionId(submissionIds);
+	}
+
 }

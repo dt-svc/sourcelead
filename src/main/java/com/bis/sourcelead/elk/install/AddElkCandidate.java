@@ -143,6 +143,12 @@ public class AddElkCandidate{
 						DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 						candidateIndex.setUpdatedDate(df.format(new java.util.Date(updatedDateTimestamp.getTime())));
 				    }
+					
+					if(StringUtils.isNotEmpty(rs.getString("IS_PROFILE_PUBLIC"))){
+						candidateIndex.setIsProfilePublic(rs.getString("IS_PROFILE_PUBLIC"));
+					}
+					
+					
 					candidateIndex.setUpdatedBy(rs.getString("UPDATED_BY"));
 				    
 				    Long candidateId = rs.getLong("ID");

@@ -147,6 +147,7 @@ public class CandidateIndex implements Serializable {
 	
 	private double finalScore;
 	
+	private String isProfilePublic;
 		
 	public String getSearchType() {
 		return searchType;
@@ -697,6 +698,16 @@ public class CandidateIndex implements Serializable {
 	public void setTotalExpPercentage(int totalExpPercentage) {
 		this.totalExpPercentage = totalExpPercentage;
 	}
+
+	public String getIsProfilePublic() {
+		return isProfilePublic;
+	}
+
+	public void setIsProfilePublic(String isProfilePublic) {
+		this.isProfilePublic = isProfilePublic;
+	}
+
+	
 }
 
 
