@@ -107,6 +107,10 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 			requirementRefer.setReferId(parentRefer);
 		}
 		
+		if(jsonObj.has("phone") && !isNullOrEmpty(jsonObj.getString("phone"))){
+			requirementRefer.setPhoneNumber(jsonObj.getString("phone"));
+		}
+		
 		requirementRefer.setOrgLocationId(orgLocations);
 		requirementRefer.setCreatedDate(new Date());
 		requirementRefer.setUpdatedDate(new Date());

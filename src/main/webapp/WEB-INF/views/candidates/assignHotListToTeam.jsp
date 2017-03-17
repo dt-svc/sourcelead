@@ -23,7 +23,7 @@
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
-      <div class="timesheet_head hdr-styles hotlist-header">
+      <div class="timesheet_head hdr-styles">
         <ul>
           
             <li id="teamDiv" style="display: none">
@@ -314,10 +314,10 @@ function assignHotListToTeam(){
 $(document).ready(function() {
     
     $("#filter3ApprovePop").click(function(){
-		$("#filter3ApprovedPop").slideToggle(200);
+		$("#filter3ApprovedPop").slideToggle(100);
 	});
     $("html").click(function() {
-        $("#filter3ApprovedPop").slideUp(200);
+        $("#filter3ApprovedPop").slideUp(100);
     });
     $("#filter3ApprovedPop, #filter3ApprovePop").click(function(e) {  
         e.stopPropagation();
