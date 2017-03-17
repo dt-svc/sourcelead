@@ -37,7 +37,7 @@ $(document).ready(function(){
           <div class="chartArea">
 	         <div class="row">
 	          	<div class="col-md-3">
-			          <h4>Daily Status</h4>
+			          <h4>Daily Report</h4>
 		          </div>
 	           <div class="col-md-9 select-field monthSearch_Custom">
 	            <div class="row">
