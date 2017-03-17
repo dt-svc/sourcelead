@@ -177,7 +177,18 @@ document.onkeydown=function(e){
 <div class="wraper"> 
   <!-- Header Area -->
   <header class="main-header">
-  <span class="logo"> <a href="dashboard/${SourceLeadWeb_orgLocationId}" title="Source Lead">
+  <span class="logo"> 
+  <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+  <a href="dashboard/${SourceLeadWeb_orgLocationId}" title="Source Lead">
+  </c:if>
+  
+  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+  <a href="${sourceleadUrl}/professionalDashboard" title="Source Lead">
+  </c:if>
+  
+  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+  <a href="${sourceleadUrl}/recruiterDashboard" title="Source Lead">
+  </c:if>
   <i>
  <img src="resources/images/logo-sourceld.png" alt="Source Lead"> </i>
     <h1>Source Lead</h1>
