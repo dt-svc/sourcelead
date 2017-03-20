@@ -310,6 +310,7 @@ public class CrowdSourcingRequirementsRestController {
     					 }
     					
     					 requirementIndex.setRateType(refer.getRequirementId().getRateType());
+    					 requirementIndex.setCurrentRateCurrency(refer.getRequirementId().getCurrencyCode());
     					 
     					 if(!isNullOrEmpty(refer.getRequirementId().getSkills())){
     						 String[] skills = refer.getRequirementId().getSkills().split(",");
@@ -1687,7 +1688,9 @@ public class CrowdSourcingRequirementsRestController {
 						}
 						refer.setUserName(userName.toString());
 						refer.setReferToEmail(refer.getReferToUser().getEmail());
-						
+						if(!isNullOrEmpty(refer.getReferToUser().getMobilePhone())){
+							refer.setPhoneNumber(refer.getReferToUser().getMobilePhone());
+						}
 					}
 					
 					if(!isNullOrEmpty(refer.getReferStatus()) && refer.getReferStatus().equalsIgnoreCase("Applied")){
@@ -1962,6 +1965,23 @@ public class CrowdSourcingRequirementsRestController {
 			return resultJson ;
 			
 		}
+		
+		
+		 @RequestMapping(value = "/valdateRecruiterSubmittedCandidateEmail" , method = RequestMethod.POST)
+		 public @ResponseBody  String valdateRecruiterSubmittedCandidateEmail(@RequestParam(value="email", required=false) String email,@RequestParam(value="requirementId", required=false) Long requirementId,HttpServletRequest request) throws Exception {
+			 	
+			 	String result = null;
+			 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 	RequirementSubmission requirementSubmission = requirementSubmissionService.validateRecruiterSubmittedCandidateEmail(email,requirementId,user.getId());
+			 	
+			 	if (requirementSubmission != null) {
+					result = "true";
+				}else{
+					result = "false";
+				}
+				return result;
+		   }
+		 
 		
 		
 		public String toJSON(Object obj){

@@ -149,6 +149,10 @@ public class CandidateIndexHelper {
 				candidateIndex.setUpdatedDate(df.format(new Date(candidate.getUpdatedDate().getTime())));
 			}
 			
+			if(null != candidate.getIsProfilePublic()){
+				candidateIndex.setIsProfilePublic(candidate.getIsProfilePublic());
+			}
+			
 			candidateIndex.setUpdatedBy(candidate.getUpdatedBy());
 			
 		}
