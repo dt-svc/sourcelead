@@ -558,6 +558,7 @@ public class RequirementReleaseRestController {
 		requirement.setCity(parentRequirement.getCity());
 		requirement.setSkills(parentRequirement.getSkills());
 		requirement.setDescription(parentRequirement.getDescription());
+		requirement.setNoticePeriod(parentRequirement.getNoticePeriod());
 		requirement.setDocFile(parentRequirement.getDocFile());
 		requirement.setFileContentType(parentRequirement.getFileContentType());
 		requirement.setFileName(parentRequirement.getFileName());

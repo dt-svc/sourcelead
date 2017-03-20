@@ -281,9 +281,25 @@ public class RequirementServiceImpl implements RequirementService {
 			}if(jsonObj.has("description")){
 					//requirement.setDescription(java.net.URLDecoder.decode(jsonObj.getString("description"), "utf-8"));
 					requirement.setDescription(jsonObj.getString("description"));	
-			}if(jsonObj.has("coolingOff")){
-				requirement.setReqCoolingOffPeriod(jsonObj.getString("coolingOff"));
-			}if(jsonObj.has("currencyCode")){
+			}
+			
+			
+			if(jsonObj.has("noticePeriod")){
+				requirement.setNoticePeriod(jsonObj.getString("noticePeriod"));	
+				String noticePeriod =null;
+				try{
+					JSONArray jsonArray = jsonObj.getJSONArray("noticePeriod");
+					noticePeriod = jsonArray.toString();
+				}
+				catch(JSONException e){
+					noticePeriod =jsonObj.getString("noticePeriod");
+				}
+				noticePeriod = noticePeriod.replaceAll("\\[", "").replaceAll("\\]","");
+				noticePeriod = noticePeriod.replaceAll("\"", "");
+		  	    requirement.setNoticePeriod(noticePeriod);
+			}
+			
+			if(jsonObj.has("currencyCode")){
 				if(!"".equalsIgnoreCase(jsonObj.getString("currencyCode"))){
 					requirement.setCurrencyCode(jsonObj.getString("currencyCode"));
 				}
@@ -2178,9 +2194,19 @@ public class RequirementServiceImpl implements RequirementService {
 				if(jsonObj.has("description") && !"".equalsIgnoreCase(jsonObj.getString("description"))){
 					reqTemplate.setDescription(jsonObj.getString("description"));
 				}
-				
-				if(jsonObj.has("coolingOff") && !"".equalsIgnoreCase(jsonObj.getString("coolingOff"))){
-					reqTemplate.setReqCoolingOffPeriod(jsonObj.getString("coolingOff"));
+
+				if(jsonObj.has("noticePeriod")&& !"".equalsIgnoreCase(jsonObj.getString("noticePeriod"))){
+					reqTemplate.setNoticePeriod(jsonObj.getString("noticePeriod"));	
+					String noticePeriod =null;
+					try{
+						JSONArray jsonArray = jsonObj.getJSONArray("noticePeriod");
+						noticePeriod = jsonArray.toString();
+					}catch(JSONException e){
+						noticePeriod =jsonObj.getString("noticePeriod");
+					}
+					noticePeriod = noticePeriod.replaceAll("\\[", "").replaceAll("\\]","");
+					noticePeriod = noticePeriod.replaceAll("\"", "");
+					reqTemplate.setNoticePeriod(noticePeriod);
 				}
 				
 				if(jsonObj.has("currencyCode") && !"".equalsIgnoreCase(jsonObj.getString("currencyCode"))){
@@ -2380,6 +2406,19 @@ public class RequirementServiceImpl implements RequirementService {
 			if(jsonObj.has("city")  && !"".equalsIgnoreCase(jsonObj.getString("city"))){
 				boolQueryBuilder.must(QueryBuilders.matchQuery("city", jsonObj.getString("city")));
 		    }
+			
+			if(jsonObj.has("noticePeriod") && !"".equalsIgnoreCase(jsonObj.getString("noticePeriod"))){
+				ArrayList<String> noticePeriodArray = getSearchKeywordsFromChosenSelectField(jsonObj, "noticePeriod");
+				if(noticePeriodArray != null && !noticePeriodArray.isEmpty()){
+					BoolQueryBuilder edunBoolQueryBuilder = new BoolQueryBuilder();
+					for(String keywd : noticePeriodArray){
+						edunBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("noticePeriod", keywd));
+					}
+					boolQueryBuilder.must(edunBoolQueryBuilder);
+				} 
+			}
+			
+			
 			
 			// currency
 //		    if(jsonObj.has("currencyCode") && !"".equalsIgnoreCase(jsonObj.getString("currencyCode"))){
@@ -2807,6 +2846,11 @@ public class RequirementServiceImpl implements RequirementService {
 	@Override
 	public List<Requirement> getAllRequirementsByOrglocationId(Long orgLocationId) throws Exception {
 		return requirementDao.getAllRequirementsByOrglocationId(orgLocationId);
+	}
+
+	@Override
+	public String getNoticePeriodByRequirementId(Long requirementId) throws Exception {
+		return requirementDao.getNoticePeriodByRequirementId(requirementId);
 	}
 
 }

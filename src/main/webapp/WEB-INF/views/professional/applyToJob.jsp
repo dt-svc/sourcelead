@@ -41,6 +41,37 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 }
 </script>
 
+<script type="text/javascript">
+ function validateSubmissionCandidateEmail() {
+	 var email =   $("input[name=EmailId]").val();
+	$('#emailDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var requirementId = $("#requirementId").val();
+	 if(email != null && email != ""){
+		 $("#save_button").attr("disabled", "disabled");
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/valdateRecruiterSubmittedCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&requirementId="+requirementId, 
+		        success: function(data) {
+		         	if(data == 'true'){
+			        	  $("#save_button" ).addClass('btn btn-sm btn-primary').val('SUBMIT');
+			        	  $('.jquery_form_error_message').remove();
+		        		  $("input[name=EmailId]").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+		        		  $("input[name=EmailId]").setAttribute('record-exist','yes');
+		        		  $("input[name=EmailId]").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
+		        	}
+		        	else{
+		        		$("#save_button").removeAttr("disabled");
+		        		$("input[name=EmailId]").removeAttr( "record-exist record-exist-errormsg");
+		        		$('.jquery_form_error_message').remove();
+		        		
+		        	} 
+		        },
+		    });
+	 }
+ }
+ </script>   
+
 
 <script>
 function getRequirementSubmissionDetails(submissionId,candidateId,requirementId){
@@ -1834,7 +1865,11 @@ $('body').on('submit', '#applyToJob_form', function(e){
 	    		
 	        	document.getElementById('requirementType').value = 'AppliedJobs';
 	    		document.getElementById('appliedjobs').checked = true;
-	        	requirementsList(0);
+	    		document.getElementById('appliedActive').className = 'activeBackground'
+	    		document.getElementById("crowdActive").removeAttribute("class")
+	       		document.getElementById("openActive").removeAttribute("class");
+	        	
+	       		requirementsList(0);
 	        	
 	        	
 	        },
