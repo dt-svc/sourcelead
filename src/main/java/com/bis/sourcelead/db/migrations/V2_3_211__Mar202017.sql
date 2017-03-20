@@ -1,3 +1,4 @@
+
 set SQL_SAFE_UPDATES=0;
 
 #Project edit EMAIL to managers
@@ -59,5 +60,7 @@ INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQ
 											
 											
 									
-											
-	
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `sourcelead`.`REFER_CONTACTS` SET `CONTACT_SOURCE`='SELF';
+SET SQL_SAFE_UPDATES = 1;
+
