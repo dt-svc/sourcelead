@@ -1840,7 +1840,7 @@ public class RequirementServiceImpl implements RequirementService {
 			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,requirementSubCount);
 			int column = 0;
 			for (Requirement requirement : requirementList) {
-				writeRow = createExcelsheet.createRow(column + 9);
+				writeRow = createExcelsheet.createRow(column + 13);
 				createExcelsheet = createXlsSheet(createExcelsheet, writeRow, requirement);
 				column++;
 			}
@@ -1909,7 +1909,10 @@ public class RequirementServiceImpl implements RequirementService {
 			 writeRow.createCell(10).setCellValue(requirement.getClientContactName()); 
 		}
 		if(requirement.getClientContactEmail() != null && !"".equalsIgnoreCase(requirement.getClientContactEmail())){
-			 writeRow.createCell(12).setCellValue(requirement.getClientContactEmail()); 
+			 writeRow.createCell(11).setCellValue(requirement.getClientContactEmail()); 
+		}
+		if(requirement.getRequirementSubmissionStatus() != null && !"".equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())){
+			 writeRow.createCell(12).setCellValue(requirement.getRequirementSubmissionStatus().toString()); 
 		}
 		return createExcelsheet;
 	}
