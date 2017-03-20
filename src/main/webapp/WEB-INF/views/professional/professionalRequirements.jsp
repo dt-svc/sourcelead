@@ -998,6 +998,7 @@ function searchRequirement(offset){
 									       	     
 									       	    if(requirements.noOfSearchHits >= 10){
 								       	    		document.getElementById("loadMoreSearchSection").style.display="";
+								       	    		document.getElementById("noMoreRecordsSection").style.display="none";
 								       	    	}else{
 								       	    		document.getElementById("loadMoreSearchSection").style.display="none";
 								       	    		document.getElementById("noMoreRecordsSection").style.display="";
