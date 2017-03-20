@@ -1591,6 +1591,51 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 if(null != submission.getCandidateScore() && !"".equalsIgnoreCase(submission.getCandidateScore())){
 			 clientSubmission.setCandidateScore(submission.getCandidateScore());		 
 		 }
+		 
+		/* the functionality of this block is to verify the submitted candidate is in the Cooling-Off Period or not
+		 if the applicant is in cooling-off period, the candidate should be in rejected state(set previous state to Submission) at client side  [Venkat Kesav] START Code snippet*/
+		 String parentReqCoolingOffPeriod = requirement.getParentRequirement().getReqCoolingOffPeriod();
+		 String [] coolingOffArr = parentReqCoolingOffPeriod.split(" ");
+		 String reqCoolingOffPeriodDays;
+		 int Days;
+		 switch (coolingOffArr[1]) {
+			 case "Week" :
+				 reqCoolingOffPeriodDays = "7";
+			      break;
+			 case "Weeks" :
+				 Days  = (Integer.parseInt(coolingOffArr[0]) * 7);
+				 reqCoolingOffPeriodDays = Integer.toString(Days);
+			     break;
+			 case "Month" :
+				 reqCoolingOffPeriodDays = "30";
+			     break;
+			 case "Months" :
+				 Days  = (Integer.parseInt(coolingOffArr[0]) * 30);
+				 reqCoolingOffPeriodDays = Integer.toString(Days);
+			     break;
+			 case "Year" :
+				 reqCoolingOffPeriodDays = "365";
+			     break;
+			 default:
+				 reqCoolingOffPeriodDays = "0";
+		 }
+		 
+		 RequirementSubmissionHistory requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(submission.getCandidate().getEmail(), requirement.getParentRequirement().getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getParentRequirement().getId());
+		 
+		 
+		 if(requirementSubmissionHistoryForCoolingOff != null){
+			 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
+				 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+				 clientSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+				 clientSubmission.setRejectedReason("Under cooling off period, completed by "+requirementSubmissionHistoryForCoolingOff.getCoolingOffPeriodEndDateStr()+".");
+			 }else{
+				 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+			 }
+			 
+		 }
+		 /*END Code snippet*/
+		 
+		 
    		 clientSubmission = requirementSubmissionDao.storeRequirementSubmission(clientSubmission);
    		 
          if(null != requirement.getParentRequirement()){
