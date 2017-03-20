@@ -106,7 +106,7 @@ $(window).load(function() {
 });
 </script> -->
 
-<script>
+<!-- <script>
 var BM = 2; // button middle
 var BR = 3; // button right
 var msg ="MOUSE RIGHT CLICK IS NOT SUPPORTED ON THIS PAGE";
@@ -137,7 +137,7 @@ document.onkeydown=function(e){
          return false;
      }
 }
-</script> 
+</script>  -->
 
 <script>
 	function predefineOrgImage(imageId){
