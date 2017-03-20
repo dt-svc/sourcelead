@@ -107,7 +107,12 @@ function requirementProfile(requirementUUID){
 		    	}else{
 		    		education = "NO DATA";
 		    	}
-		    	
+		    	if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined'){
+		    		 noticePeriod = json.noticePeriod;
+	    		}else{
+	    		   noticePeriod = "";
+	    		}
+
 		    	
 				 result = result +'	<div class="timesheet_out">';
 				 result = result +'    <div class="clients_side_wrap_inn no_pad">';
@@ -130,6 +135,7 @@ function requirementProfile(requirementUUID){
 				 result = result +'                        <li><i class="fa fa-black-tie"></i><span>Max Experience - '+maxExp+'</span></li>';
 				 result = result +'                        <li><i class="fa fa-rupee"></i><span>'+rate+' '+rateType+' '+currencyCode+'</span></li>';
 				 result = result +'                        <li><i class="fa fa-map-marker"></i><span>'+city+' '+state+' '+country+'</span></li>';
+				 result = result +'                        <li><i class="fa fa-bell"></i><span>'+noticePeriod+'</span>';
 				 result = result +'                      </ul>';
 				 result = result +'                    </div>';
 				 result = result +'                  </div>';

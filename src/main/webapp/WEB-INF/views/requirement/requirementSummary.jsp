@@ -4655,7 +4655,7 @@ function customizeScore(requirementId){
 		        result = result +'		                <div class="clearfix mt">';
 		        result = result +'		                  <div class="col-md-5 lblup"> ';
 		        result = result +'		                   <label>Experience</label>';
-		        result = result + '<select  class="chosen-select input-sm form-control" data-placeholder="Min Experience" name="minExperience"  id="minExperienceminExperienceminExperienceminExperienceminExperienceminExperience" field-name="Experience Years">';
+		        result = result + '<select  class="chosen-select input-sm form-control" data-placeholder="Min Experience" name="minExperience"  id="minExperience" onblur="minMaxExperience();" field-name="Experience Years">';
 				result = result + '<option value="">Min Experience</option>';
 				<c:forEach var="i" begin="0" end="24" >
 					result = result  +'<option value="${i}" '  + (customizeMinExperience == "${i}" ? "selected" : '') +  '>${i}</option>';
@@ -4665,7 +4665,7 @@ function customizeScore(requirementId){
 		        
 		        
 		        result = result +'		                  <div class="col-md-5 paddingRight"> ';
-		        result = result + '<select  class="chosen-select input-sm form-control" data-placeholder="Max Experience" name="maxExperience"  id="maxExperience" field-name="Experience Years">';
+		        result = result + '<select  class="chosen-select input-sm form-control" data-placeholder="Max Experience" name="maxExperience"  onblur="minMaxExperience();" id="maxExperience" field-name="Experience Years">';
 				result = result + '<option value="">Max Experience</option>';
 				<c:forEach var="i" begin="0" end="25" >
 					result = result  +'<option value="${i}" '  + (customizeMaxExperience == "${i}" ? "selected" : '') +  '>${i}</option>';
@@ -4688,8 +4688,15 @@ function customizeScore(requirementId){
 		        result = result +'		                      <option '+ (json.customizeExperienceScore == "100" ? "selected" : '') +' value="100">100%</option>';
 		        result = result +'		                    </select>              ';
 		        result = result +'		                  </div>                   ';
+		        result = result +'<p class="jquery_form_error_message" id="experiencevalidation"> </p>';
+		        
+		        result = result +'<div id="expId">';
+		        result = result +'<input type="hidden" name="expValidation" id="expValidation">';
+		        result = result +'</div>';		        
 		        result = result +'		                </div>                     ';
+		        
 		        result = result +'		           <div class="clearfix mt">     ';
+		        
 		        
 		        result = result +'		                  <div class="col-md-5 lblup">   ';
 		        result = result +'		                   <label>Rate</label>';
@@ -4798,7 +4805,15 @@ function customizeScore(requirementId){
 		    				$this.next().css({'width': '100%'});
 		    		   });
 
-		    			
+		    			 // here call experience validation
+		 		       $("#maxExperience").on('change', function (e) {
+		 		    	   minMaxExperience();
+		 		       });
+		 		       
+		 		       $("#minExperience").on('change', function (e) {
+		 		    	   minMaxExperience();
+		 		       });
+		 		       
 		    			   //Adding Customized Skills to the list
 		    	        var select, chosen;
 		    		    select = $("#customizeSkills");
@@ -4850,6 +4865,26 @@ function customizeScore(requirementId){
 	 });
 	
 }
+</script>
+
+<script>
+//Function to validate if maximum exp value is more the minimum exp value
+function minMaxExperience(){
+    var maxExp = ($('#maxExperience').val());
+    var minExp = ($('#minExperience').val());
+    if (parseFloat(maxExp) <= parseFloat(minExp)){
+        $('#expId').find('p.jquery_form_error_message').remove(); 
+		$('input#expValidation').attr('class','error signin_fild');
+		$("input#expValidation").after("<p class='jquery_form_error_message'>Max Experience should be greater than Min Experience</p>");
+		$('input#expValidation').attr('record-exist','yes');
+		$('input#expValidation').attr('record-exist-errorMsg','Max Experience should be greater than Min Experience'); 
+    }  else{
+    	$('#expId').find('p.jquery_form_error_message').remove(); 
+    	$('input#expValidation').removeAttr( "class record-exist record-exist-errormsg");
+		$('#expId').find('p.jquery_form_error_message').remove();
+    }
+}
+
 </script>
 
 <script type="text/javascript">
@@ -4976,6 +5011,7 @@ function getCities(){
 
 <script>
 function updateCutomize(requirementId){
+	minMaxExperience();
     var skillPerc = parseInt($("#skillScore").val());
     var expPerc = parseInt($("#experienceScore").val());
     var ratePerc = parseInt($("#rateScore").val());
@@ -5013,6 +5049,7 @@ function updateCutomize(requirementId){
     		$("#less_user_pop").slideDown(200);
     		$(".project_inn_mask").fadeIn(200);
         }else if(totalscore=100){
+           	if ($('#updateCustomize_form').validate(false, validationSettings)){
         	var frm = $('#updateCustomize_form').serializeFormJSON();
     		var con = JSON.stringify(frm);
     		con = con.replace(/[{}]/g, "");
@@ -5028,7 +5065,10 @@ function updateCutomize(requirementId){
     						}
     					}
     				}); 
-    		return true;
+    		 return true;
+       	  }else{ 
+			return false;
+		 } 
        } 
 	
 }
