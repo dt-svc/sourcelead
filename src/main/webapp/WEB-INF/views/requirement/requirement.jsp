@@ -512,6 +512,20 @@ $(document).ready(function () {
           </div>
           
           <div class="form-group">
+              <label class="col-md-3">Notice Period</label>
+              <div class="col-md-9">
+                <select multiple class="chosen-select form-control" name="noticePeriod" id="noticePeriod" data-validation-optional="true" onclick="getNoticeperiod();">
+					     <option  selected value="${noticePrd}">${noticePrd}</option>
+					        <option  ${requirement.noticePeriod  == 'Immediately Available' ? 'selected' : ''}>Immediately Available</option>
+	                		 <option  ${requirement.noticePeriod  == '15-Days' ? 'selected' : ''}>15-Days</option>
+	               			  <option  ${requirement.noticePeriod  == '1-Month' ? 'selected' : ''}>1-Month</option>
+	                		 <option  ${requirement.noticePeriod  == '2-Month' ? 'selected' : ''}>2-Month</option>
+	                 		<option  ${requirement.noticePeriod  == '3-Month' ? 'selected' : ''}>3-Month</option>
+                </select>
+              </div>
+            </div>
+          
+          <div class="form-group">
 	         <label class="col-md-3">Cooling-Off Period</label>
 	         <div class="col-md-9">
 	             <select class="selectpicker form-control" id="coolingOff" name="coolingOff" >
