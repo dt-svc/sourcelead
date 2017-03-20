@@ -1047,7 +1047,7 @@ function referToJob(requirementId,referId){
 	    result = result +'<div class="clearfix refercontacts">';
 	    result = result + '<ul class="nav nav-tabs">';
 	    result = result + '<li class="active"><a data-toggle="tab" href="#contacts" onclick="getUserContats('+requirementId+')">Contacts</a></li>';
-	    result = result + '<li><a data-toggle="tab" href="#addnew" onclick="flushContactDetails();">Add New</a></li>';
+	    result = result + '<li><a data-toggle="tab" href="#addnew" onclick="flushContactDetails();">Refer New</a></li>';
 	    result = result + '</ul>';
 	    result = result +'</div>';
 	    
