@@ -166,4 +166,15 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 		
 	}
 
+	@Override
+	public List<ReferContacts> getUserContactsListByUserIdAndRequirementId(Long userId, Long requirementId)
+			throws Exception {
+		return referContactsDao.getUserContactsListByUserIdAndRequirementId(userId, requirementId);
+	}
+
+	@Override
+	public ReferContacts getReferContactsById(Long id) throws Exception {
+		return referContactsDao.getReferContactsById(id);
+	}
+
 }
