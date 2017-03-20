@@ -524,10 +524,9 @@ $(document).ready(function () {
        </div> --%> 
           
            <div class="form-group">
-              <label class="col-md-3">Notice Period  ${noticePeriod}</label>
+              <label class="col-md-3">Notice Period </label>
               <div class="col-md-9">
-                <select multiple class="chosen-select form-control" name="noticePeriod" id="noticePeriod" data-validation-optional="true">
-					        <option  selected value="${noticePrd}">${noticePrd}</option>
+                <select multiple class="chosen-select form-control" data-placeholder="Notice Period" name="noticePeriod" id="noticePeriod" data-validation-optional="true">
 					        <option  ${requirement.noticePeriod  == 'Immediately Available' ? 'selected' : ''}>Immediately Available</option>
 	                		 <option  ${requirement.noticePeriod  == '15-Days' ? 'selected' : ''}>15-Days</option>
 	               			  <option  ${requirement.noticePeriod  == '1-Month' ? 'selected' : ''}>1-Month</option>
