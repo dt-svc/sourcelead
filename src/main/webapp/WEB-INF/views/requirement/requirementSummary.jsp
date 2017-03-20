@@ -4632,11 +4632,11 @@ function customizeScore(requirementId){
 		    		var customizeNoticeperiod = json.customizeNoticeperiod;
 			    	noticeperiod =  customizeNoticeperiod.split(",");
 		    	}
-	        	 result = result  +' <option value="available" '+(noticeperiod.includes("available") ? "selected" : '') +'>Immediately available</option>';
-	        	 result = result  +' <option value="15Days" '+(noticeperiod.includes("15Days") ? "selected" : '') +'>15 Days</option>';
-	        	 result = result  +' <option value="1Month" '+(noticeperiod.includes("1Month") ? "selected" : '') +'>1 Month</option>';
-	        	 result = result  +' <option value="2Month" '+(noticeperiod.includes("2Month") ? "selected" : '') +'>2 Month</option>';
-	        	 result = result  +' <option value="3Month" '+(noticeperiod.includes( "3Month") ? "selected" : '') +'>3 Month</option>';
+	        	 result = result  +' <option value="Immediately Available" '+(noticeperiod.includes("Immediately Available") ? "selected" : '') +'>Immediately available</option>';
+	        	 result = result  +' <option value="15-Days" '+(noticeperiod.includes("15-Days") ? "selected" : '') +'>15 Days</option>';
+	        	 result = result  +' <option value="1-Month" '+(noticeperiod.includes("1-Month") ? "selected" : '') +'>1 Month</option>';
+	        	 result = result  +' <option value="2-Month" '+(noticeperiod.includes("2-Month") ? "selected" : '') +'>2 Month</option>';
+	        	 result = result  +' <option value="3-Month" '+(noticeperiod.includes( "3-Month") ? "selected" : '') +'>3 Month</option>';
 	        	 $("#noticeperiod").empty();
 	        	 $("#noticeperiod").append(result);
    			     $("#noticeperiod").trigger('chosen:update');

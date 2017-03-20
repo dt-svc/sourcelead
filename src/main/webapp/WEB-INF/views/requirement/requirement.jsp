@@ -98,6 +98,7 @@ $(document).ready(function() {
 
 <script type="text/javascript">
 		window.onload = function () {
+			getNoticePeriodList();
 			var jobType = '${requirement.jobType}';
 			if(jobType !=null && jobType != "" && jobType != "undefined" && jobType == 'Other'){
 				  document.getElementById("jobTypeDiv").style.display="block";
@@ -509,6 +510,20 @@ $(document).ready(function () {
              <textarea rows="5" class="form-control" id="description" name="description" value="${requirement.description}" field-name="Description"  data-validation-optional="true">${requirement.description}</textarea>
             </div>
           </div>
+          
+          <div class="form-group">
+              <label class="col-md-3">Notice Period</label>
+              <div class="col-md-9">
+                <select multiple class="chosen-select form-control" name="noticePeriod" id="noticePeriod" data-validation-optional="true" onclick="getNoticeperiod();">
+					     <option  selected value="${noticePrd}">${noticePrd}</option>
+					        <option  ${requirement.noticePeriod  == 'Immediately Available' ? 'selected' : ''}>Immediately Available</option>
+	                		 <option  ${requirement.noticePeriod  == '15-Days' ? 'selected' : ''}>15-Days</option>
+	               			  <option  ${requirement.noticePeriod  == '1-Month' ? 'selected' : ''}>1-Month</option>
+	                		 <option  ${requirement.noticePeriod  == '2-Month' ? 'selected' : ''}>2-Month</option>
+	                 		<option  ${requirement.noticePeriod  == '3-Month' ? 'selected' : ''}>3-Month</option>
+                </select>
+              </div>
+            </div>
           
           <div class="form-group">
 	         <label class="col-md-3">Cooling-Off Period</label>
@@ -2611,5 +2626,16 @@ function checkcheckbox(){
 }
 </script> -->
 
+
+<script>
+function getNoticePeriodList(){
+var notice = '${requirement.noticePeriod}';	
+var splitNotice = notice.split(",");
+for (var i = 0; i < splitNotice.length; i++) {
+	splitNotice[i] = splitNotice[i].replace(/^\s*/, "").replace(/\s*$/, "");
+}
+$("#noticePeriod").val(splitNotice).trigger("chosen:updated");
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />
