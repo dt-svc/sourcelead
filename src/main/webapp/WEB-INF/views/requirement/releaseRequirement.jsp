@@ -456,7 +456,11 @@ function getContactsLists(){
 					        			result = result +'<div title="'+report.spocEmail+'"><span>'+report.spocEmail+'</span></div>';
 					        			result = result +'</td>';
 					        			result = result +'<td>';
-					        			result = result +'<div title="'+report.spocMobilePhone+'"><span>'+report.spocMobilePhone+'</span></div>';
+					        			if(null != report.spocMobilePhone && '' != report.spocMobilePhone && 'undefined' != report.spocMobilePhone){
+					        				result = result +'<div title="'+report.spocMobilePhone+'"><span>'+report.spocMobilePhone+'</span></div>';
+					        			}else{
+					        				result = result +'<div title=""><span>---</span></div>';
+					        			}
 					        			result = result +'</td>';
 					        			result = result +'<td>';
 					        			result = result +'<div title="'+report.ownerName+'"><span>'+report.ownerName+'</span></div>';

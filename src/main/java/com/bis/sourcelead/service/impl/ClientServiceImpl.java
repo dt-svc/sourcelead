@@ -855,12 +855,11 @@ public class ClientServiceImpl implements ClientService{
 			 emailMessage.setFirstName(editUser.getFirstName());
 			 emailMessage.setLastName(editUser.getLastName());
 			 emailMessage.setToEmail(editUser.getEmail());
-			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+			 emailMessage.setFromEmail(loginUser.getEmail());
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 StringBuilder fromName=new StringBuilder();
 			 emailMessage.setFromName(fromName.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-			 
-			 
+			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
 				 globalVarsMap.put("clientFirstName", emailMessage.getFirstName());
@@ -925,30 +924,32 @@ public class ClientServiceImpl implements ClientService{
 				 emailMessage.setLastName(orgSpoc.getOwnerUser().getLastName());	 
 			 }
 			 emailMessage.setToEmail(orgSpoc.getOwnerUser().getEmail());
+			 emailMessage.setFromEmail("qa@sourcelead.com");
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 StringBuilder emailMsgBuilder = new StringBuilder();
 			 emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-			 
+			// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
 			 String UUID = SourceLeadRandomCodeHelper.generateUUID();
 			 if(Constants.CLIENT.equals(orgSpoc.getOrgRelations().getResponderType())){
 				 globalVarsMap.put("firstName", emailMessage.getFirstName());
 				 globalVarsMap.put("lastName",emailMessage.getLastName());
-				 globalVarsMap.put("vendorFirstName",orgSpoc.getVendorUser().getFirstName());
-				 globalVarsMap.put("vendorLastName",orgSpoc.getVendorUser().getLastName());
+				 globalVarsMap.put("vendorFirstName",orgSpoc.getClientUser().getFirstName());
+				 globalVarsMap.put("vendorLastName",orgSpoc.getClientUser().getLastName());
 				 globalVarsMap.put("vendorOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
-				  
+				 globalVarsMap.put("signature","Sourcelead Team");
 				 StringBuilder loginBuilder = new StringBuilder();
 				 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 				
 			 }else if(Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())){
 					 globalVarsMap.put("firstName", emailMessage.getFirstName());
 					 globalVarsMap.put("lastName",emailMessage.getLastName());
-					 globalVarsMap.put("clientFirstName", loginUser.getFirstName());
-					 globalVarsMap.put("clientLastName",loginUser.getLastName());
+					 globalVarsMap.put("clientFirstName", orgSpoc.getVendorUser().getFirstName());
+					 globalVarsMap.put("clientLastName",orgSpoc.getVendorUser().getLastName());
 					 globalVarsMap.put("clientOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
-					  
+					 globalVarsMap.put("signature","Sourcelead Team"); 
 					 StringBuilder loginBuilder = new StringBuilder();
 					 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			}
@@ -992,26 +993,28 @@ public class ClientServiceImpl implements ClientService{
 				 emailMessage.setLastName(orgSpoc.getOwnerUser().getLastName());	 
 			 }
 			 emailMessage.setToEmail(orgSpoc.getOwnerUser().getEmail());
+			 emailMessage.setFromEmail("qa@sourcelead.com");
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 StringBuilder emailMsgBuilder = new StringBuilder();
 			 emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-			 
+
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
 			 String UUID = SourceLeadRandomCodeHelper.generateUUID();
 			 if(Constants.CLIENT.equals(orgSpoc.getOrgRelations().getResponderType())){
 				 globalVarsMap.put("firstName", emailMessage.getFirstName());
 				 globalVarsMap.put("lastName",emailMessage.getLastName());
-				 globalVarsMap.put("vendorFirstName",orgSpoc.getVendorUser().getFirstName());
-				 globalVarsMap.put("vendorLastName",orgSpoc.getVendorUser().getLastName());
+				 globalVarsMap.put("vendorFirstName",orgSpoc.getClientUser().getFirstName());
+				 globalVarsMap.put("vendorLastName",orgSpoc.getClientUser().getLastName());
 				 globalVarsMap.put("vendorOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
-				 
+				 globalVarsMap.put("signature","Sourcelead Team");
 			 }else if( Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())){
 					 globalVarsMap.put("firstName", emailMessage.getFirstName());
 					 globalVarsMap.put("lastName",emailMessage.getLastName());
-					 globalVarsMap.put("clientFirstName", loginUser.getFirstName());
-					 globalVarsMap.put("clientLastName",loginUser.getLastName());
+					 globalVarsMap.put("clientFirstName", orgSpoc.getVendorUser().getFirstName());
+					 globalVarsMap.put("clientLastName",orgSpoc.getVendorUser().getLastName());
 					 globalVarsMap.put("clientOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
+					 globalVarsMap.put("signature","Sourcelead Team");
 				}
 
 			 // changed the logic of adding to emails in InetAddress Array

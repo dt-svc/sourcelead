@@ -17,7 +17,16 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
 
-
+<!-- these files for export -->
+<link href="https://cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css" rel="stylesheet">
+<script src="https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.flash.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js" type="text/javascript" charset="utf-8"></script>
+<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.print.min.js" type="text/javascript" charset="utf-8"></script>
+<!-- ends files of export -->
 <!-- Content Area -->
 <script type="text/javascript">
 window.onload = function() { 
@@ -148,6 +157,10 @@ function prepareReportDataDiv(data){
 <script>
 function requirementReportPagination(){
 	$('#requirementReportPagination').DataTable({ 
+		 dom: 'Bfrtip',
+	        buttons: [
+	            'excel', 'pdf'
+	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
@@ -166,8 +179,10 @@ function requirementReportPagination(){
 		$('#ExportStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
+			dateFormat : 'dd-mm-yy',
 			onSelect : function(selected) {
 				var dt = new Date(selected);
+				var dt = toDate("#ExportStartDate");
 				dt.setDate(dt.getDate() + 1);
 				$("#ExportEndDate").datepicker("option", "minDate", dt);
 				addValidClass();
@@ -178,11 +193,13 @@ function requirementReportPagination(){
 		$('#ExportEndDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
+			dateFormat : 'dd-mm-yy',
 			beforeShow: function(){
 		           this.value='';
 		     },
 			onSelect : function(selected) {
 				var dt = new Date(selected);
+				var dt = toDate("#ExportEndDate");
 				dt.setDate(dt.getDate() - 1);
 				$("#ExportStartDate").datepicker("option", "maxDate", dt);
 				addValidClass();
@@ -191,7 +208,12 @@ function requirementReportPagination(){
 		
 	});
 </script>	
-
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
@@ -201,13 +223,11 @@ function requirementReportPagination(){
 			<div class="RePop">
 				<ul>
 					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Client Requirements</a></li>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Applicants Received</a></li>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Applicants</a></li>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Short  listed</a></li>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Interview</a></li>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Offer</a></li> 
-					<li><a href="reports.html"><i class="fa fa-user"></i>Custom</a></li> 
+					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Stages</a></li>
+					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li>
+				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
+				    <li><a href="<c:url value='/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Submitted</a></li>
+				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirement Assign To</a></li> 
 				</ul>
 			</div>
 		</div>
@@ -243,19 +263,16 @@ function requirementReportPagination(){
 	<p id="reportEndDate" class="ReError"></p>
 	</span>
 	<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
+	
+		<span class="repoBtns">
+		<a href="javascript:void(0)" class="oneA actRE"><i class="fa fa-list"></i></a>
+		<a href="javascript:void(0)" class="oneB"><i class="fa fa-pie-chart"></i></a>
+	</span>
+	
 </div>
                      
-        <ul style="padding: 2px 220px 2px 0px;">
-          <li><i class="fa fa-filter"></i><span>Fliter</span><i class="glyphicon glyphicon-play" id="status-pop"></i>|
-            <div class="export_pop">
-              <ul>
-                <li>PDF<i class="fa fa-file-pdf-o"></i></li>
-                <li>Excel<i class="fa fa-file-excel-o"></i></li>
-                <li>Word<i class="fa fa-file-word-o"></i></li>
-              </ul>
-            </div>
-          </li>
-          <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>
+        <ul style="padding: 2px 300px 2px 0px;">
+          <li><i class="fa fa-filter"></i><span class="padFil"></span><i class="glyphicon glyphicon-play" id="status-pop"></i>|
             <div class="export_pop">
               <ul>
                 <li>PDF<i class="fa fa-file-pdf-o"></i></li>
@@ -267,10 +284,9 @@ function requirementReportPagination(){
           <div class="clearfix"></div>
         </ul>
         <div class="clearfix"></div>
-        <div class="remove_search">
-          <input type="text" placeholder="search" />
-        </div>
       </div>
+  
+ <div class="repTab1">  
       
 	<div class="reportsCount">
 		<ul>
@@ -284,7 +300,7 @@ function requirementReportPagination(){
 				<span><i class="glyphicon glyphicon-send"></i></span><b>100</b>
 			</li>
 			<li title="Interviews" class="colorTwo">
-				<span><img src="images/interview1.png" alt=""/></span><b>100</b>
+				<span><img src="resources/images/interview1.png" alt=""/></span><b>100</b>
 			</li>
 			<li title="Offers">
 				<span><i class="fa fa-tags"></i></span><b>100</b>
@@ -297,8 +313,13 @@ function requirementReportPagination(){
 	</div>
 
   <div class="project_tabs_inn_table vendor_wrap_inn_table">
-                 <div id="requirementReportsDiv12"></div>
+                 <div id="requirementReportsDiv12" class="repoPositi"></div>
                 </div>      
+</div>
+
+ <div class="repTab2">
+	  	Reports Chat here..
+	  </div>
       
  </div>
 
@@ -590,3 +611,18 @@ function getCustomReports(){
 		 }
 }
 </script>
+<script>
+// Reports Active
+	$(".oneB").click(function(){
+		$(".oneA").removeClass("actRE");
+		$(".oneB").addClass("actRE");
+		$(".repTab1").hide();
+		$(".repTab2").show();
+	});
+	$(".oneA").click(function(){
+		$(".oneB").removeClass("actRE");
+		$(".oneA").addClass("actRE");
+		$(".repTab2").hide();
+		$(".repTab1").show();
+	});		
+	</script>

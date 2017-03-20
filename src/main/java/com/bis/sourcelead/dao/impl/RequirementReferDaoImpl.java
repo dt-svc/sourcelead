@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementReferDao;
 import com.bis.sourcelead.entity.RequirementRefer;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -298,5 +299,102 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 				count = referCount.get(0).intValue();
 		 }
 		return count;
+	}
+
+
+	@Override
+   @Transactional
+	public List<RequirementRefer> getReferJobsListByReferTypeByReferedDate(Long userId, String referType,
+			Date referedDate) throws Exception {
+		 Session session = this.sessionFactory.getCurrentSession();
+		 String subQuery = "";
+		 
+		 if(referType.equalsIgnoreCase("referToMe")){
+			 subQuery = "refer.referToUser.id = :userId ";
+		 }else if(referType.equalsIgnoreCase("referByMe")){
+			 subQuery = "refer.referFromUser.id = :userId ";
+		 }
+		 
+		 java.sql.Date ourJavaDateObject = new java.sql.Date(referedDate.getTime());
+		 String query = "from RequirementRefer refer left join fetch refer.requirementId  where "+subQuery+" and DATE(refer.createdDate) = :referedDate ";
+		 List<RequirementRefer>  referCountList = session.createQuery(query).setLong("userId", userId).setDate("referedDate", ourJavaDateObject).setCacheable(true).list();
+		return referCountList;
+	}
+
+
+	@Override
+	@Transactional
+	public List<RequirementRefer> getReferJobsListByReferType(Long userId, String referType, Date startDate,
+			Date endDate) throws Exception {
+		 Session session = this.sessionFactory.getCurrentSession();
+		 String subQuery = "";
+		 
+		 if(referType.equalsIgnoreCase("referToMe")){
+			 subQuery = "refer.referToUser.id = :userId ";
+		 }else if(referType.equalsIgnoreCase("referByMe")){
+			 subQuery = "refer.referFromUser.id = :userId ";
+		 }
+		 String query = "from RequirementRefer refer left join fetch refer.requirementId where "+subQuery+" and (refer.createdDate BETWEEN :startDate and :endDate))";
+		 List<RequirementRefer>  referCountList = session.createQuery(query).setLong("userId", userId) .setDate("startDate", startDate).setDate("endDate", endDate).setCacheable(true).list();
+		return referCountList;
+	}
+	
+	@Override
+	@Transactional
+	public Integer getReferredByMeCountByStartDateAndEndDate(Long userId, Date startDate, Date endDate)
+			throws Exception {
+		
+		 Session session = this.sessionFactory.getCurrentSession();
+		 	     
+		 String query = "select  count(*) from RequirementRefer refer where refer.referFromUser.id = :userId  and (refer.createdDate BETWEEN :startDate and :endDate))";
+	     
+	     List<Long> referCount = session.createQuery(query).setLong("userId", userId)
+	    		   .setDate("startDate", startDate)
+				   .setDate("endDate", endDate).setCacheable(true).list();
+		 Integer count= 0;
+		 
+		 if(referCount != null && !referCount.isEmpty()){
+				count = referCount.get(0).intValue();
+		 }
+		return count;
+
+	}
+	
+	@Override
+	@Transactional
+	public List<RequirementRefer> getReferredByMeCountListByStartDateAndEndDate(Long userId, Date startDate, Date endDate) throws Exception {
+		 Session session = this.sessionFactory.getCurrentSession();
+		 String query = "from RequirementRefer refer left join fetch refer.requirementId left join fetch refer.referToUser left join fetch refer.referFromUser  where refer.referFromUser.id = :userId  and (refer.createdDate BETWEEN :startDate and :endDate))";
+		 List<RequirementRefer> referCountList = session.createQuery(query).setLong("userId", userId).setDate("startDate", startDate).setDate("endDate", endDate).setCacheable(true).list();
+		
+		return referCountList;
+	}
+
+
+	@Override
+	@Transactional
+	public List<RequirementRefer> getLoginUserReferredListByUserId(Long userId, Long requirementId) throws Exception {
+		
+		 Session session = this.sessionFactory.getCurrentSession();
+		 String subQuery = "";
+		 
+		 String query = "from RequirementRefer refer left join fetch refer.requirementId left join fetch refer.referToUser where "
+		 		+ "refer.referFromUser.id = :userId and refer.requirementId.id = :requirementId)";
+		 List<RequirementRefer>  referCountList = session.createQuery(query).setLong("userId", userId) .setLong("requirementId", requirementId).setCacheable(true).list();
+		return referCountList;
+	}
+
+
+	@Override
+	@Transactional
+	public List<RequirementRefer> getLoginUserReferToMeListByUserId(Long userId) throws Exception {
+		
+		 Session session = this.sessionFactory.getCurrentSession();
+		 String subQuery = "";
+		 
+		 String query = "from RequirementRefer refer left join fetch refer.requirementId left join fetch refer.referToUser where refer.referToUser.id = :userId ";
+		 List<RequirementRefer>  referList = session.createQuery(query).setLong("userId", userId).setCacheable(true).list();
+		return referList;
+	
 	}
 }

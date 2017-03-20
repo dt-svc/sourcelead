@@ -1006,8 +1006,9 @@ function cancel(candidateId){
 			  <i class="fa fa-search"></i>
 			  </a> 
 			  <form:form id="candidatelist_form" name="candidatelist_form"  enctype='multipart/form-data' >
-				  <div class="cand-advsrch-popup" >
+				  <div class="cand-advsrch-popup cand-advsrchPopup">
 					  <a href="javascript:void(0)" class="close-div" onclick="closePop();"><i class="fa fa-close"></i></a>
+					  <div class="candAdvsrchPop">
 					  <div class="row">
 						  <div class="col-md-4">
 							  <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
@@ -1036,6 +1037,29 @@ function cancel(candidateId){
 					  <div class="col-md-12">
 						  <h4>Details:</h4>
 					  </div>
+					  <div class="clearfix">
+						<div class="col-md-8">
+						<label>Skills</label>
+							<div class="clearfix">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Skills" id="candidateSkills" name="candidateSkills">
+								<c:forEach var="skill" items="${skillsList}">
+								<option value="${skill.name}">${skill.name}</option>
+								</c:forEach>
+								</select>
+							 </div>
+						</div>
+						
+						<div class="col-md-4">
+						<label>Primary Skill</label>
+							<div class="clearfix">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Primary Skill" id="primarySkill" name="primarySkill">
+                                 </select>
+							 </div>
+						</div>
+						
+						 
+					 </div>
+						
 						<div class="clearfix">
 						  <div class="col-md-4">
 						    <label>Designation</label>
@@ -1068,9 +1092,6 @@ function cancel(candidateId){
 							<div class="col-md-6">
 								<label>&nbsp;</label> 
 								<div class="input-group error-field">
-								    <div id="maxRateDiv">
-									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
-									</div>
 									<div id="rateTypeDiv" class="input-group-btn selp-custom-min custommin">
 									      <select class="selectpicker" name="rateType" id="rateType" field-name="Rate Type"  >
 									            <option value="">Rate Type</option>
@@ -1082,6 +1103,9 @@ function cancel(candidateId){
 												<option value="Bi-Monthly">Bi-Monthly</option>
 												<option value="Yearly">Yearly</option>
 				                            </select> 
+									</div>
+								    <div id="maxRateDiv">
+									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
 									</div>
 								</div>
 							</div>
@@ -1112,7 +1136,6 @@ function cancel(candidateId){
 							  <div class="row" id="expId">
 				                  <input type="hidden" name="expValidation" id="expValidation">
 				              </div>
-							  
 						  </div>
 						  
 						  <div class="col-md-4">
@@ -1147,8 +1170,9 @@ function cancel(candidateId){
 							  <label>Country</label>
 							  <div class="clearfix">
 								 <select class="chosen-select" name="country" id="country" field-name="Country"  >
+								    <option value="">--Select country--</option>
 								     <c:forEach var="cntry" items="${countryList}">
-							                     <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
+							                     <option value="${cntry.name}">${cntry.name}</option>
 						                </c:forEach>
 				                 </select>
 							  </div>
@@ -1224,26 +1248,15 @@ function cancel(candidateId){
 							  <div class="clearfix">
 								   <select class="chosen-select" name="applicantType" id="applicantType" field-name="Applicant Type"  >
 								      <option value="">---select Applicant Type---</option>
-								      <option value="candidate">Candiate</option>
+								      <option value="candidate">Candidate</option>
 									  <option value="consultant">Consultant</option> 
 				                   </select>
 							  </div>
 						  </div>
 						  </div>
-						    <div class="clearfix">
-							    <div class="col-md-12">
-								  <label>Skills</label>
-								  <div class="clearfix">
-									 <select class="chosen-select form-control input-sm" multiple data-placeholder="Skills" id="candidateSkills" name="candidateSkills">
-                                          <c:forEach var="skill" items="${skillsList}">
-							                     <option value="${skill.name}">${skill.name}</option>
-						                </c:forEach>
-                                     </select>
-								  </div>
-							  </div>
-						    </div>
 					  </div>
-					  <div class="row form-footer mt">
+					  </div>
+					  <div class="form-footer">
 						  <div class="pull-right mr">
 							   <input type="button" value="Search" id="search_candidate" onclick="searchCandidate();" class="btn btn-sm btn-primary"/>
                                <input type="button"  value="Clear"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-default ml10"/>
@@ -1805,7 +1818,7 @@ function getCities(){
 	    $('#currency').val(''); 
 	    $('#rateType').val(''); 
 	    
-	    $('#country').val('${loginCountryName}'); 
+	    $('#country').val(''); 
 	    $('#state').val(''); 
 	    $('#city').val(''); 
 	    $('#rateType').val(''); 
@@ -1829,6 +1842,7 @@ function getCities(){
 	    $("#excludeEmployers").val('').trigger("chosen:updated");
 	    $("#candidateSkills").val('').trigger("chosen:updated");
 	    $("#noticePeriod").val('').trigger("chosen:updated");
+	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
 	    $("#anyOfKeyword").empty();
 	    $("#allKeywords").empty();
@@ -1980,6 +1994,27 @@ function getCities(){
 		        }
 		    });
 		    
+		    var selectzero, chosenzero;
+		    selectzero = $("#primarySkill");
+		    selectzero.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Primary Skill:' });
+		    chosenzero = selectzero.data('chosen');
+		    chosenzero.search_field.on('keyup', function(e10)
+		    {
+		    	var prmSkill = this.value.replace(",","");
+		        if ((e10.which == 13 || e10.which == 188) && (prmSkill != null  && prmSkill != '' && prmSkill != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(prmSkill).text(prmSkill);
+		            selectzero.append(option);
+		            selectzero.find(option).prop('selected', true);
+                    $("#primarySkill option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#primarySkill").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
 		    var selecteight, choseneight;
 		    selecteight = $("#excludeEmployers");
 		    selecteight.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Employer:' });
@@ -2021,6 +2056,10 @@ function getCities(){
 	        		
 		        }
 		    });
+		    
+		    
+		  
+		    
 		      $("#country").on('change', function (e) {
 		    	   getStates();
 		       });
@@ -2272,6 +2311,8 @@ function minMaxExperience(){
 	    $("#excludeEmployers").val('').trigger("chosen:updated");
 	    $("#applicantType").val('').trigger("chosen:updated");
 	    $("#candidateSkills").val('').trigger("chosen:updated");
+	    $("#primarySkill").val('').trigger("chosen:updated");
+	    
 	    $("#designationType").val('').trigger("chosen:updated");
 	    
 	    
@@ -2293,7 +2334,7 @@ function minMaxExperience(){
 	     $("#maxExpYears").val(''); 
 	     $('#expId').find('p.jquery_form_error_message').remove();
 	     
-	     $("#noticePeriod").empty(); 
+	     $("#noticePeriod").val(''); 
 	     
 	     $("#country").val(''); 
 	     $("#state").val(''); 
@@ -2310,6 +2351,7 @@ function minMaxExperience(){
 	     $("#excludeEmployers").val(''); 
 	     $("#applicantType").val('');
 	     $("#candidateSkills").val('');
+	     $("#primarySkill").val('');
 	    
 	}
 </script>

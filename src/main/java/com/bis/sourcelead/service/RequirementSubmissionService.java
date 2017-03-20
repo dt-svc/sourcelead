@@ -41,7 +41,7 @@ public interface RequirementSubmissionService {
 	
 	void storeClientSubmission(Long requirementId, User user, OrgLocations loginOrgLocation,String submissionIds, String selectedShortlistsRate, Org org) throws Exception;
 	
-	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String submissionStatus,String dateRange,String userType,User user);
+	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String submissionStatus,String dateRange,String userType,User user, Date startUTCDate, Date endUTCDate);
 	
 	//to get candidates for submit to client
 	List<RequirementSubmission> getAllShortLitstedCandidatesForClientSubmissionByRequirementId(Long id,Long requirementId) throws Exception;
@@ -186,5 +186,42 @@ public interface RequirementSubmissionService {
 	Integer getProfessionalJobAppliedCountByappliedDate(Long candidateId,Date appliedDate) throws Exception;
 	
 	Integer getProfessionalJobSubmisssionsCountBySubmissionType(Long candidateId,String submissionStatus,Date startDate,Date endDate) throws Exception;
+	
+	List<RequirementSubmission> getProfessionalJobAppliedCountList(Long candidateId,Date startDate,Date endDate) throws Exception;
+	
+	List<RequirementSubmission> getProfessionalJobSubmisssionsCountListBySubmissionType(Long candidateId,String submissionStatus,Date startDate,Date endDate) throws Exception;
+	
+	Integer getReferByMeJobAppliedCount(Long userId,Date startDate,Date endDate) throws Exception;
+	
+	Integer getReferByMeProfessionalJobSubmisssionsCountBySubmissionType(Long userId,String submissionStatus,Date startDate,Date endDate) throws Exception;
+	
+	List<RequirementSubmission>  getReferByMeProfessionalJobSubmisssionsCountListBySubmissionType(Long userId,String submissionStatus,Date startDate,Date endDate) throws Exception;
 
+	Integer getReferByMeJobAppliedCountByappliedDate(Long userId,Date appliedDate) throws Exception;
+	
+	Integer getRecruiterSubmittedJobCountByappliedDate(Long userId,Date appliedDate) throws Exception;
+	
+	Integer getRequiterReferJobAppliedCount(Long userId,Date startDate,Date endDate) throws Exception;
+	
+	Integer getRecruiterSubmittedJobCountByStartDateAndEndDate(Long userId,Date startDate,Date endDate) throws Exception;
+	
+	List<RequirementSubmission> getAllVendorsIdbyorgLocationId(OrgLocations orgLocation, Date startDateUTC, Date endDateUTC);
+
+
+	Integer getRecruiterSubmittedCandidatesCountByStage(Long userId,String submissionStatus,Date startDate,Date endDate) throws Exception;
+	
+	Integer getReferByMeJobAppliedCandidateCount(Long userId,Date startDate,Date endDate) throws Exception;
+	
+	Integer getRecruiterSubmittedCandidateCountByStartDateAndEndDate(Long userId,Date startDate,Date endDate) throws Exception;
+	
+	List<RequirementSubmission> getRecruiterSubmittedCandidatesCountListByStage(Long userId,String submissionStatus,Date startDate,Date endDate) throws Exception;
+	
+	RequirementSubmission getRequirementSubmissionByRequirementIdAndUserId(Long requirementId,Long userId) throws Exception;
+	
+	List<RequirementSubmission>  getRecruiterSubmittedCandidatesList(Long recruiterUserId,Long requirementId) throws Exception;
+	
+	List<RequirementSubmission>  getRecruiterSubmittedCandidatesListForReportsByLocationIdAndStatus(Long loginOrgLocationId,String client,String filterDate,Date startDateUTC,Date endDateUTC) throws Exception;
+	
+	RequirementSubmission validateRecruiterSubmittedCandidateEmail(String email, Long requirementId, Long userId) throws Exception;
+	
 }

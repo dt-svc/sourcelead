@@ -334,10 +334,10 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		}
 		 StringBuilder interviewStringBuilder=new StringBuilder();
 		 emailMessage.setToEmail(interviewerUser.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setFromName(interviewStringBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 String candidateName = requirementSubmissionTemplateFields.getFirstName();
 		 if(null != candidate.getLastName()){
 			 StringBuilder nameBuilder=new StringBuilder();
@@ -427,11 +427,11 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 emailMessage.setFirstName(requirementSubmissionTemplateFields.getFirstName());
 		 emailMessage.setLastName(requirementSubmissionTemplateFields.getLastName());
 		 emailMessage.setToEmail(requirementSubmissionTemplateFields.getEmailId());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 StringBuilder timeStringBuilder=new StringBuilder();
 		 emailMessage.setFromName(timeStringBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 String time = "";
 		 String endTime = "";
 		 String dateOfInterviewStr ="";
@@ -644,11 +644,11 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 StringBuilder nameStringBuilder=new StringBuilder();
 		 emailMessage.setFromName(nameStringBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 String time = "";
 		 String endTime = "";
 		 if(requirementInterview.getStartTime() != null){
@@ -766,11 +766,11 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 emailMessage.setLastName("");
 		}
 		 emailMessage.setToEmail(interviewerUser.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 StringBuilder timeBuilder = new StringBuilder();
 		 emailMessage.setFromName(timeBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 String candidateName = requirementSubmissionTemplateFields.getFirstName();
 		 if(requirementSubmissionTemplateFields.getLastName()!=null){
 			 StringBuilder nameBuilder = new StringBuilder();

@@ -54,6 +54,9 @@ public class CandidateIndexHelper {
 				candidateIndex.setSkillsName(candidate.getSkillsName());
 			}
 			
+			if(null != candidate.getPrimarySkill() && !candidate.getPrimarySkill().isEmpty()){
+				candidateIndex.setPrimarySkill(candidate.getPrimarySkill());
+			}
 			/*if(null != candidate.getCandidateSkills() && !candidate.getCandidateSkills().isEmpty()){
 				ArrayList<String> skillList = new ArrayList<>();
 				for(CandidateSkills skills : candidate.getCandidateSkills()){
@@ -144,6 +147,10 @@ public class CandidateIndexHelper {
 			if(candidate.getUpdatedDate() != null){
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 				candidateIndex.setUpdatedDate(df.format(new Date(candidate.getUpdatedDate().getTime())));
+			}
+			
+			if(null != candidate.getIsProfilePublic()){
+				candidateIndex.setIsProfilePublic(candidate.getIsProfilePublic());
 			}
 			
 			candidateIndex.setUpdatedBy(candidate.getUpdatedBy());

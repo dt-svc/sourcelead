@@ -194,7 +194,12 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 				message.setFrom(new InternetAddress(emailMessage.getFromEmail(), emailMessage.getFromName()));
 				message.setRecipients(Message.RecipientType.TO, iAdressArray);
 			}else{
-				message.setFrom(new InternetAddress(username, emailMessage.getFromName()));
+				if(null != emailMessage.getUserType() && (emailMessage.getUserType().equalsIgnoreCase("Professional") || emailMessage.getUserType().equalsIgnoreCase("Recruiter"))){
+					message.setFrom(new InternetAddress(username, emailMessage.getFromEmail()));
+				}else{
+					message.setFrom(new InternetAddress(username, emailMessage.getFromName()));
+				}
+				
 				message.setRecipients(Message.RecipientType.TO, iAdressArray);
 			}
 
@@ -281,7 +286,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			emailNotification.setEmailTo(recipients.toString());
 		}
 		
-		emailNotification.setEmailFrom(emailMessage.getUserName());
+		emailNotification.setEmailFrom(emailMessage.getFromEmail());
 		emailNotification.setSubject(emailMessage.getSubject());
 		emailNotification.setBody(emailMessage.getMessageBody());
 		emailNotification.setDeliveryStatus("N");

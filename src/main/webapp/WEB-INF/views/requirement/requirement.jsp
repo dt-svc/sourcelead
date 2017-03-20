@@ -510,6 +510,34 @@ $(document).ready(function () {
             </div>
           </div>
           
+       <%--     <div class="form-group">
+         <label class="col-md-3">Notice Period</label>
+         <div class="col-md-9">
+             <select multiple class="chosen-select form-control" id="noticePeriod" name="noticePeriod"  data-validation-optional="true" >
+	                 <option  ${requirement.noticePeriod  == 'Immediately Available' ? 'selected' : ''}>Immediately Available</option>
+	                 <option  ${requirement.noticePeriod  == '15-Days' ? 'selected' : ''}>15-Days</option>
+	                 <option  ${requirement.noticePeriod  == '1-Month' ? 'selected' : ''}>1-Month</option>
+	                 <option  ${requirement.noticePeriod  == '2-Month' ? 'selected' : ''}>2-Month</option>
+	                 <option  ${requirement.noticePeriod  == '3-Month' ? 'selected' : ''}>3-Month</option>
+	             </select>
+         </div>
+       </div> --%> 
+          
+           <div class="form-group">
+              <label class="col-md-3">Notice Period </label>
+              <div class="col-md-9">
+                <select multiple class="chosen-select form-control" data-placeholder="Notice Period" name="noticePeriod" id="noticePeriod" data-validation-optional="true">
+					        <option  ${requirement.noticePeriod  == 'Immediately Available' ? 'selected' : ''}>Immediately Available</option>
+	                		 <option  ${requirement.noticePeriod  == '15-Days' ? 'selected' : ''}>15-Days</option>
+	               			  <option  ${requirement.noticePeriod  == '1-Month' ? 'selected' : ''}>1-Month</option>
+	                		 <option  ${requirement.noticePeriod  == '2-Month' ? 'selected' : ''}>2-Month</option>
+	                 		<option  ${requirement.noticePeriod  == '3-Month' ? 'selected' : ''}>3-Month</option> 
+                </select>
+              </div>
+            </div>
+          
+          
+          
          <div class="form-group">
 				<div class="ml">
 					<c:set var="val" value="${requirement.isClientJob}" />
@@ -1154,7 +1182,7 @@ $(document).ready(function () {
 			var sourceleadUrl = '${sourceleadUrl}';
 			$( "#submitForApproval" ).addClass('button').val('Processing..');
      		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-		
+			
 			$.ajax({
 						type : "POST",
 		        	    data: formData,
@@ -2491,11 +2519,15 @@ function minMaxExperience(){
 function checkTemplateforDouplicate(){
 	if(document.getElementById('isTemplate').checked) {
 		var templateName = document.getElementById("jobTitle").value; 
+		
+		// This will allow all special chars
+         var jsonData = encodeURIComponent(templateName);	  
+       
 		$('#jobTitleDiv').find('p.jquery_form_error_message').remove();
 		var sourceleadUrl ='${sourceleadUrl}';
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/validatetemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="+templateName, 
+			        url: sourceleadUrl+"/validatetemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="+jsonData, 
 			        success: function(data) {
 			        	if(data == "true"){
 			        		  $('#jobTitleDiv').find('p.jquery_form_error_message').remove();

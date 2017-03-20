@@ -1,3 +1,6 @@
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <style>
 .clsDatePicker {
@@ -390,29 +393,34 @@ function addCertification(candidateId) {
 	   });	 */
 
 	  $('#StartDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+		  dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      onSelect: function (selected) {
-	            var dt = new Date(selected);
+	    	    var dt = toDate("#StartDate");
 	            dt.setDate(dt.getDate() + 1);
 	            $("#EndDate").datepicker("option", "minDate", dt);
 	        }
 	  });
 	  
 	  $('#EndDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+		  dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 	        onSelect: function (selected) {
-	            var dt = new Date(selected);
+	        	var dt = toDate("#EndDate");
 	            dt.setDate(dt.getDate() - 1);
 	            $("#StartDate").datepicker("option", "maxDate", dt);
 	        }
 	  });
 	}
 </script>
-
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
 <%-- 
      @author : Laxman.
      this script is for edit Candidate certification .

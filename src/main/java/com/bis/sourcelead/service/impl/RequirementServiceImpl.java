@@ -209,7 +209,7 @@ public class RequirementServiceImpl implements RequirementService {
 	@Override
 	public Requirement storeRequirement(JSONObject jsonObj,OrgLocations orgLocations,User user,MultipartFile multiFile) throws Exception {
 		
-		    Requirement requirement = new Requirement();
+		    Requirement requirement = null;
 	        String client="";
 	        String requirementClient="";
 	        StringBuilder location = new StringBuilder();
@@ -222,7 +222,9 @@ public class RequirementServiceImpl implements RequirementService {
 				requirement.setUpdatedBy(user.getUserCode());
 				requirement.setUpdatedDate(commonUtil.currentDate());
 			}else{
+				requirement = new Requirement();
 				requirement.setCreatedDate(commonUtil.currentDate());
+				requirement.setTotalApplicants(0);
 				requirement.setCreatedBy(user.getUserCode());
 				requirement.setUpdatedBy(user.getUserCode());
 				requirement.setUpdatedDate(commonUtil.currentDate());
@@ -279,7 +281,25 @@ public class RequirementServiceImpl implements RequirementService {
 			}if(jsonObj.has("description")){
 					//requirement.setDescription(java.net.URLDecoder.decode(jsonObj.getString("description"), "utf-8"));
 					requirement.setDescription(jsonObj.getString("description"));	
-			}if(jsonObj.has("currencyCode")){
+			}
+			
+			
+			if(jsonObj.has("noticePeriod")){
+				requirement.setNoticePeriod(jsonObj.getString("noticePeriod"));	
+				String noticePeriod =null;
+				try{
+					JSONArray jsonArray = jsonObj.getJSONArray("noticePeriod");
+					noticePeriod = jsonArray.toString();
+				}
+				catch(JSONException e){
+					noticePeriod =jsonObj.getString("noticePeriod");
+				}
+				noticePeriod = noticePeriod.replaceAll("\\[", "").replaceAll("\\]","");
+				noticePeriod = noticePeriod.replaceAll("\"", "");
+		  	    requirement.setNoticePeriod(noticePeriod);
+			}
+			
+			if(jsonObj.has("currencyCode")){
 				if(!"".equalsIgnoreCase(jsonObj.getString("currencyCode"))){
 					requirement.setCurrencyCode(jsonObj.getString("currencyCode"));
 				}
@@ -637,7 +657,7 @@ public class RequirementServiceImpl implements RequirementService {
 						}
 				     
 			}
-			requirement.setTotalApplicants(0);
+			
 			requirement.setRequirementAssignTo(requirementAssignToList);
 			//storing assigned team END
 			
@@ -648,7 +668,7 @@ public class RequirementServiceImpl implements RequirementService {
 	
 			       if(!requirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.DRAFT)){
 				 		
-					 mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
+					// mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
 					/*if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
 						  String approverNames = jsonObj.getString("sequentialApprover1");
 						  User approverUser = userService.getUserById(Long.parseLong(approverNames));
@@ -851,11 +871,11 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setFirstName(loginUser.getFirstName());
 		 emailMessage.setLastName(loginUser.getLastName());
 		 emailMessage.setToEmail(approverUser.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 StringBuilder msgBuild = new StringBuilder();
 		 emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 
@@ -972,11 +992,13 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setFirstName(loginUser.getFirstName());
 		 emailMessage.setLastName(loginUser.getLastName());
 		 emailMessage.setToEmail(approverUser.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 StringBuilder msgBuild = new StringBuilder();
 		 emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		UserRole loginUserRole =  userRoleService.getUserDetailsByUserIdAndLocationId(loginUser.getId(), orgLocations.getId());
+
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("requirementName", requirement.getJobTitle());
@@ -1009,7 +1031,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 globalVarsMap.put("link",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		 StringBuilder userBuild = new StringBuilder();
 		 globalVarsMap.put("loginUserName",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		 globalVarsMap.put("role", loginUser.getUserType());
+		 globalVarsMap.put("role", loginUserRole.getUserType());
 		 globalVarsMap.put("approverOne", loginUser.getFirstName());
 		 
 		 StringBuilder attachBuild = new StringBuilder();
@@ -1055,50 +1077,65 @@ public class RequirementServiceImpl implements RequirementService {
 
 	@SuppressWarnings("unused")
 	@Override
-	public void acceptEmailScenario(User loginUser, User intiatorUser, Requirement requirement,OrgLocations orgLocations) throws Exception {
+	public void acceptEmailScenario(User loginUser, User intiatorUser, Requirement requirement,StringBuilder requirementLocation,OrgLocations orgLocations) throws Exception {
 		
 		EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(loginUser.getFirstName());
 		 emailMessage.setLastName(loginUser.getLastName());
 		 emailMessage.setToEmail(intiatorUser.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 StringBuilder msgBuild = new StringBuilder();
 		 emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
-		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 if(requirement.getJobTitle()!= null  && !"".equalsIgnoreCase(requirement.getJobTitle())){
-		 globalVarsMap.put("requirementName", requirement.getJobTitle()); 
-		 }else{
-		 globalVarsMap.put("requirementName", "--");	 
-		 }
-		 if( requirement.getJobId()!= null  && !"".equalsIgnoreCase( requirement.getJobId())){
-		 globalVarsMap.put("requirementId-Name", requirement.getJobId());	 
-		 }else{
-	     globalVarsMap.put("requirementId-Name","--"); 
-		 }
-		 if(loginUser.getFirstName()!= null  && !"".equalsIgnoreCase(loginUser.getFirstName())){
-		 globalVarsMap.put("approverName", loginUser.getFirstName());	 
-		 }else{
-		 globalVarsMap.put("approverName","--"); 
-		 }
-		 if(intiatorUser.getFirstName()!= null  && !"".equalsIgnoreCase(loginUser.getFirstName())){
-		 globalVarsMap.put("jobInitiatorName", intiatorUser.getFirstName()); 
-		 }else{
-		 globalVarsMap.put("jobInitiatorName","--"); 
-		 }
-		 if(loginUser.getFirstName() != null && loginUser.getLastName()!= null  && !"".equalsIgnoreCase( loginUser.getFirstName()) && !"".equalsIgnoreCase( loginUser.getLastName())){
-			 StringBuilder userBuild = new StringBuilder();
-			 globalVarsMap.put("loginUserName",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		 }else{
-		 globalVarsMap.put("loginUserName",loginUser.getFirstName()); 
-		 }
-		 if(loginUser.getUserType()!= null  && !"".equalsIgnoreCase(loginUser.getUserType())){
-		 globalVarsMap.put("role", loginUser.getUserType());
-		 }else{
-		 globalVarsMap.put("role","--"); 
-		 }
+		 UserRole loginUserRole =  userRoleService.getUserDetailsByUserIdAndLocationId(loginUser.getId(), orgLocations.getId());
+		 
+			//setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 if( requirement.getJobId()!= null  && !"".equalsIgnoreCase( requirement.getJobId())){
+				 StringBuilder userBuild1 = new StringBuilder();
+				 globalVarsMap.put("requirementId-Name",userBuild1.append(requirement.getJobTitle()).append(" ").append(requirement.getJobId()).toString());
+
+			 }else{
+		     globalVarsMap.put("requirementId-Name",requirement.getJobTitle()); 
+			 }
+			 if(requirementLocation != null ){
+				 globalVarsMap.put("requirementLocation", requirementLocation.toString());
+				 }else{
+				 globalVarsMap.put("requirementLocation","--");
+				 }
+			 if(loginUser.getFirstName()!= null  && !"".equalsIgnoreCase(loginUser.getFirstName())){
+			 globalVarsMap.put("approverName", loginUser.getFirstName());	 
+			 }else{
+			 globalVarsMap.put("approverName","--"); 
+			 }
+			 if(intiatorUser.getFirstName()!= null  && !"".equalsIgnoreCase(loginUser.getFirstName())){
+			 globalVarsMap.put("jobInitiatorName", intiatorUser.getFirstName()); 
+			 }else{
+			 globalVarsMap.put("jobInitiatorName","--"); 
+			 }
+			 if(requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate())){
+				 globalVarsMap.put("requirementRate", requirement.getRate());
+				 }else{
+				 globalVarsMap.put("requirementRate","--");
+				 }
+				 if(requirement.getClientId()!= null){
+				 globalVarsMap.put("client", requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+				 }else{
+				 globalVarsMap.put("client","--");
+				 }
+				 StringBuilder linkBuild = new StringBuilder();
+				 globalVarsMap.put("link",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+				
+			 if(loginUser.getFirstName() != null && loginUser.getLastName()!= null  && !"".equalsIgnoreCase( loginUser.getFirstName()) && !"".equalsIgnoreCase( loginUser.getLastName())){
+				 StringBuilder userBuild = new StringBuilder();
+				 globalVarsMap.put("loginUserName",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 }else{
+			 globalVarsMap.put("loginUserName",loginUser.getFirstName()); 
+			 }
+			 
+			 globalVarsMap.put("role", loginUserRole.getUserType());
 		 
 		 //setting the Recipient information
 		 /*ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
@@ -1301,11 +1338,11 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setFirstName(loginUser.getFirstName());
 		 emailMessage.setLastName(loginUser.getLastName());
 		 emailMessage.setToEmail(managerUser.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 StringBuilder msgBuild = new StringBuilder();
 		 emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 if(managerUser.getFirstName()!= null  && !"".equalsIgnoreCase(managerUser.getFirstName())){
@@ -1414,16 +1451,16 @@ public class RequirementServiceImpl implements RequirementService {
 	@Override
 	public void AssignToTeamMembersEmail(User loginUser, User assUser, Requirement requirement,StringBuilder location,OrgLocations orgLocations) throws Exception {
 			assUser= userService.getUserById(assUser.getId());
-
+			UserRole loginUserRole =  userRoleService.getUserDetailsByUserIdAndLocationId(loginUser.getId(), orgLocations.getId());
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(loginUser.getFirstName());
 		 emailMessage.setLastName(loginUser.getLastName());
 		 emailMessage.setToEmail(assUser.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 StringBuilder msgBuild = new StringBuilder();
 		 emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 if(assUser.getFirstName()!= null && !"".equalsIgnoreCase(assUser.getFirstName())){
@@ -1462,8 +1499,8 @@ public class RequirementServiceImpl implements RequirementService {
 			 }else{
 				 globalVarsMap.put("LoginUser",loginUser.getFirstName()); 
 			 }
-		 if( loginUser.getUserType() != null && !"".equalsIgnoreCase(loginUser.getUserType())){
-			 globalVarsMap.put("Role", loginUser.getUserType());
+		 if( loginUserRole.getUserType() != null && !"".equalsIgnoreCase(loginUserRole.getUserType())){
+			 globalVarsMap.put("Role",loginUserRole.getUserType());
 			 }else{
 				 globalVarsMap.put("Role","--"); 
 			 }
@@ -1520,11 +1557,11 @@ public class RequirementServiceImpl implements RequirementService {
 		emailMessage.setFirstName(loginUser.getFirstName());
 		emailMessage.setLastName(loginUser.getLastName());
 		emailMessage.setToEmail(initiatorUser.getEmail());
-		emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		emailMessage.setFromEmail(loginUser.getEmail());
 		emailMessage.setCreatedBy(loginUser.getUserCode());
 		StringBuilder msgBuild = new StringBuilder();
 		emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		// setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 		if (rejectedReason != null && !"".equalsIgnoreCase(rejectedReason)) {
@@ -1628,11 +1665,11 @@ public class RequirementServiceImpl implements RequirementService {
 		 emailMessage.setFirstName(loginUser.getFirstName());
 		 emailMessage.setLastName(loginUser.getLastName());
 		 emailMessage.setToEmail(vendorContactUser.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 StringBuilder msgBuild = new StringBuilder();
 		 emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 if (requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle()) ) {
@@ -2157,7 +2194,20 @@ public class RequirementServiceImpl implements RequirementService {
 				if(jsonObj.has("description") && !"".equalsIgnoreCase(jsonObj.getString("description"))){
 					reqTemplate.setDescription(jsonObj.getString("description"));
 				}
-				
+
+				if(jsonObj.has("noticePeriod")&& !"".equalsIgnoreCase(jsonObj.getString("noticePeriod"))){
+					reqTemplate.setNoticePeriod(jsonObj.getString("noticePeriod"));	
+					String noticePeriod =null;
+					try{
+						JSONArray jsonArray = jsonObj.getJSONArray("noticePeriod");
+						noticePeriod = jsonArray.toString();
+					}catch(JSONException e){
+						noticePeriod =jsonObj.getString("noticePeriod");
+					}
+					noticePeriod = noticePeriod.replaceAll("\\[", "").replaceAll("\\]","");
+					noticePeriod = noticePeriod.replaceAll("\"", "");
+					reqTemplate.setNoticePeriod(noticePeriod);
+				}
 				
 				if(jsonObj.has("currencyCode") && !"".equalsIgnoreCase(jsonObj.getString("currencyCode"))){
 					reqTemplate.setCurrencyCode(jsonObj.getString("currencyCode"));
@@ -2356,6 +2406,19 @@ public class RequirementServiceImpl implements RequirementService {
 			if(jsonObj.has("city")  && !"".equalsIgnoreCase(jsonObj.getString("city"))){
 				boolQueryBuilder.must(QueryBuilders.matchQuery("city", jsonObj.getString("city")));
 		    }
+			
+			if(jsonObj.has("noticePeriod") && !"".equalsIgnoreCase(jsonObj.getString("noticePeriod"))){
+				ArrayList<String> noticePeriodArray = getSearchKeywordsFromChosenSelectField(jsonObj, "noticePeriod");
+				if(noticePeriodArray != null && !noticePeriodArray.isEmpty()){
+					BoolQueryBuilder edunBoolQueryBuilder = new BoolQueryBuilder();
+					for(String keywd : noticePeriodArray){
+						edunBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("noticePeriod", keywd));
+					}
+					boolQueryBuilder.must(edunBoolQueryBuilder);
+				} 
+			}
+			
+			
 			
 			// currency
 //		    if(jsonObj.has("currencyCode") && !"".equalsIgnoreCase(jsonObj.getString("currencyCode"))){
@@ -2778,6 +2841,16 @@ public class RequirementServiceImpl implements RequirementService {
 	@Override
 	public Requirement updateRequirement(Requirement requirement) throws Exception {
 		return requirementDao.storeRequirement(requirement);	
+	}
+
+	@Override
+	public List<Requirement> getAllRequirementsByOrglocationId(Long orgLocationId) throws Exception {
+		return requirementDao.getAllRequirementsByOrglocationId(orgLocationId);
+	}
+
+	@Override
+	public String getNoticePeriodByRequirementId(Long requirementId) throws Exception {
+		return requirementDao.getNoticePeriodByRequirementId(requirementId);
 	}
 
 }

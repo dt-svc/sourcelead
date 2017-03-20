@@ -1,3 +1,6 @@
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
 <!-- these files for autocomplete with tagit -->
 
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
@@ -287,22 +290,22 @@ function addEducation(candidateId) {
 	}
 	
 	$('#startDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      onSelect: function (selected) {
-	            var dt = new Date(selected);
+	    	    var dt = toDate("#startDate");
 	            dt.setDate(dt.getDate() + 1);
 	            $("#endDate").datepicker("option", "minDate", dt);
 	        }
 	  });
 	  
 	  $('#endDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 	        onSelect: function (selected) {
-	            var dt = new Date(selected);
+	        	var dt = toDate("#endDate");
 	            dt.setDate(dt.getDate() - 1);
 	            $("#startDate").datepicker("option", "maxDate", dt);
 	        }
@@ -339,9 +342,12 @@ function addEducation(candidateId) {
 		<%-- Eductions and Skills Autocomplete Scripts Ends Here --%>
 	}
 </script>
-
-
-
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
 
 <script>
 function EditEducation(candidateId,candidateEducationId) {

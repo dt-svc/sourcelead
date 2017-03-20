@@ -1,3 +1,6 @@
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -250,6 +253,7 @@ function selectOfferApplicants(){
 		$("#"+maxRowNum+"applicantId").chosen();
 		
 		$('.Datepicker').datepicker({
+			dateFormat : 'dd-mm-yy',
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
@@ -351,7 +355,15 @@ function cancelAddOffer(){
   		var formData = new FormData(form); 
   		
   		var selectedOfferApplicants =  $('#1applicantId_chosen  span').size();
-  	  
+  		var isContinue = true;
+  		
+  		var offerAmount = document.getElementById("1Amount").value;
+  		var paymentModeType = document.getElementById("1PaymentMode").value;
+  		if(offerAmount != '' && paymentModeType.length == 1){
+  			isContinue = false;
+  		}
+  		
+  	 if(isContinue){
   	  if(selectedOfferApplicants <= 50){
   		$("#add_offer").attr("disabled", "disabled");
   		$("#add_offer" ).addClass('button').val('Processing..');  
@@ -379,7 +391,9 @@ function cancelAddOffer(){
   		alertOfferMessage("<b>Selected Applicants should not more than 50</b>");
   	  }
   	  
- 		
+  	 }else{
+  		alertOfferMessage("<b>Rate Per is Required for given Rate</b>");
+  	 }
    		   
         return true;
       }

@@ -1,3 +1,6 @@
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
 
 <!-- for Vendor edit -->
 <script type="text/javascript">
@@ -95,14 +98,14 @@
 							
 							result = result + '<div class="user_summary_edit_cta">';
 							result = result + '<label>Country</label>';
-							result = result + ' <select class="chosen-select form-control" name="vendorCountry" id="country" field-name="Country"  >';
+							result = result + ' <select class="chosen-select form-control" name="vendorCountry" id="spocCountry" field-name="Country"  >';
 							result = result + '</select>';
 							result = result + '<input type="hidden"  id="existingCountry" value="'+country+'" >';
 							result = result + '</div>  ';
 							
 							result = result + '<div class="user_summary_edit_cta" id="stateDiv">';
 							result = result + '<label>State</label>';
-							result = result + '<select  class="chosen-select form-control" name="vendorState" id="state" field-name="State"  > ';
+							result = result + '<select  class="chosen-select form-control" name="vendorState" id="spocState" field-name="State"  > ';
 							result = result + ' </select> ';
 							result = result + '<input type="hidden"  id="existingState" value="'+state+'" >';
 							result = result + '</div> ';
@@ -145,15 +148,15 @@
 				        		  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 				        		  '.chosen-select-width'     : {width:"95%"}
 				        		}
-				            $("#country").chosen();
-				            $("#state").chosen();
-				            $("#city").chosen();
+				            $("#spocCountry").chosen();
+				            $("#spocState").chosen();
+				            $("#spocCity").chosen();
 				            
-				            $("#country").on('change', function (e) {
+				            $("#spocCountry").on('change', function (e) {
 				         	   getAllStates();
 				            });
 				           
-				            $("#state").on('change', function (e) {
+				            $("#spocState").on('change', function (e) {
 				         	   getAllCities();
 				            });
 				           
@@ -322,21 +325,21 @@ function getAllCountries(){
 	    	 url: '${sourceleadUrl}'+"/sourceLeadCountryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
 	        success: function(data) {
 	        	var json = JSON.parse(data);
-	        	$('#country').empty();
-	        	$('#country').append('<option value="">---select country---</option>');
+	        	$('#spocCountry').empty();
+	        	$('#spocCountry').append('<option value="">---select country---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == countryName){
-	            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+	            		$('#spocCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
 	            	}else if(json[i] == '${loginCountryName}'){
-	            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+	            		$('#spocCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
 	            	}
 	            	else{ 
-	            		$('#country').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            		$('#spocCountry').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            	} 
 	            	
 	            }
 	            
-	            $('#country').trigger("chosen:updated");
+	            $('#spocCountry').trigger("chosen:updated");
 	            getAllStates();
 	        },
 	        error: function(e){
@@ -349,10 +352,10 @@ function getAllCountries(){
 
 <script>
 function getAllStates(){
-	var countryName = $("#country").val();
+	var countryName = $("#spocCountry").val();
 	
 	//to set existing state value(Auto populate)
-	var stateName = $("#state").val();
+	var stateName = $("#spocState").val();
 	if(stateName == null || stateName == 'undefined' || stateName == ''){
 		stateName = document.getElementById("existingState").value;
 	}
@@ -365,29 +368,29 @@ function getAllStates(){
 	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
-	        	$('#state').empty();
-	        	$('#state').append('<option value="">---select state---</option>');
+	        	$('#spocState').empty();
+	        	$('#spocState').append('<option value="">---select state---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == stateName){
-	            		$('#state').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+	            		$('#spocState').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
 	            	}
 	            	else{ 
-	            		$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            		$('#spocState').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            	} 
 	            }
-	            $('#state').trigger("chosen:updated");
+	            $('#spocState').trigger("chosen:updated");
 	            getAllCities();
 	        },
 	        error: function(e){
 	        }
 	    });
 	}else{
-		$('#state').empty();
-    	$('#state').append('<option value="">---select state---</option>');
-    	$('#state').trigger("chosen:updated");
-    	$('#city').empty();
-    	$('#city').append('<option value="">---select city---</option>');
-        $('#city').trigger("chosen:updated");
+		$('#spocState').empty();
+    	$('#spocState').append('<option value="">---select state---</option>');
+    	$('#spocState').trigger("chosen:updated");
+    	$('#spocCity').empty();
+    	$('#spocCity').append('<option value="">---select city---</option>');
+        $('#spocCity').trigger("chosen:updated");
 	}
 }
 </script> 
@@ -395,15 +398,15 @@ function getAllStates(){
 
 <script>
 function getAllCities(){
-	var countryName = $("#country").val();
-	var stateName = $("#state").val();
+	var countryName = $("#spocCountry").val();
+	var stateName = $("#spocState").val();
 	
 	//to set existing city value(Auto populate)
-	var cityName = $("#city").val();
+	var cityName = $("#spocCity").val();
 	if(cityName == null || cityName == 'undefined' || cityName == ''){
 		cityName = document.getElementById("existingCity").value;
 	}
-	//end city Auto populate
+	//end spocCity Auto populate
 	
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
 		$.ajax({
@@ -412,25 +415,25 @@ function getAllCities(){
 	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
-	        	$('#city').empty();
-	        	$('#city').append('<option value="">---select city---</option>');
+	        	$('#spocCity').empty();
+	        	$('#spocCity').append('<option value="">---select city---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == cityName){
-	            		$('#city').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+	            		$('#spocCity').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
 	            	}
 	            	else{ 
-	            		$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            		$('#spocCity').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            	} 
 	            }
-	            $('#city').trigger("chosen:updated");
+	            $('#spocCity').trigger("chosen:updated");
 	        },
 	        error: function(e){
 	        }
 	    });
 	}else{
-		$('#city').empty();
-    	$('#city').append('<option value="">---select city---</option>');
-    	$('#city').trigger("chosen:updated");
+		$('#spocCity').empty();
+    	$('#spocCity').append('<option value="">---select city---</option>');
+    	$('#spocCity').trigger("chosen:updated");
 	}
 }
 </script>

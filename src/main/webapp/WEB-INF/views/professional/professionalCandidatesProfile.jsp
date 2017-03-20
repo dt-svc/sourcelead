@@ -1,3 +1,6 @@
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
 <script src="resources/js/formvalidator.js"></script>
  
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -161,7 +164,7 @@ function editCandidate(candidateId){
 							
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6">';
-						    result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" >';
+						    result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" readonly data-validation="validate_Space required validate_email validate_length length2-100" >';
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6">';

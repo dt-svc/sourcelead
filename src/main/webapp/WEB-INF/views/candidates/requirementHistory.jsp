@@ -1,3 +1,6 @@
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
 <!-- these files for autocomplete with tagit -->
 
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>

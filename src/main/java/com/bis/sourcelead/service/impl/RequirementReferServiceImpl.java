@@ -79,6 +79,15 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		requirementRefer.setReferFromEmail(user.getEmail());
 		requirementRefer.setReferFromUser(user);
 		
+		
+		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
+			requirementRefer.setReferedUserFirstName(jsonObj.getString("firstName"));
+		}
+		
+		if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
+			requirementRefer.setReferedUserLastName(jsonObj.getString("lastName"));
+		}
+		
 		if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
 			requirementRefer.setReferToEmail(jsonObj.getString("email"));
 			referToUser = userDao.getUserByEmailAndUserType(jsonObj.getString("email"), Constants.PROFESSIONAL);
@@ -96,6 +105,10 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 			RequirementRefer parentRefer = new RequirementRefer();
 			parentRefer.setId(Long.valueOf(jsonObj.getString("referId")));
 			requirementRefer.setReferId(parentRefer);
+		}
+		
+		if(jsonObj.has("phone") && !isNullOrEmpty(jsonObj.getString("phone"))){
+			requirementRefer.setPhoneNumber(jsonObj.getString("phone"));
 		}
 		
 		requirementRefer.setOrgLocationId(orgLocations);
@@ -138,6 +151,7 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 			referContacts.setUpdatedDate(new Date());
 			referContacts.setCreatedBy(user.getUserCode());
 			referContacts.setUpdatedBy(user.getUserCode());
+			referContacts.setContactSource(Constants.CROWD_SOURCING_SOURCE_SELF);
 			
 			referContactsDao.addReferContacts(referContacts);
 			
@@ -157,15 +171,26 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		 EmailMessage emailMessage = new EmailMessage();
 		 String professionalName = null;
 		 
+		 StringBuilder loginUser = new StringBuilder();
+		 
 		 if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
 			 professionalName = sb.append(jsonObj.getString("firstName")).append(" ").append(jsonObj.getString("lastName")).toString();
 		 }else{
 			 professionalName = sb.append(jsonObj.getString("firstName")).toString();
 		 }
 		 
+
+		 if(!isNullOrEmpty(user.getLastName())){
+			 loginUser = loginUser.append(user.getFirstName()).append(" ").append(user.getLastName());
+		 }else{
+			 loginUser = loginUser.append(user.getFirstName());
+		 }
+		 
+		 emailMessage.setUserName(loginUser.toString());
 		 emailMessage.setToEmail(jsonObj.getString("email"));
 		 emailMessage.setFromEmail(user.getEmail());
 		 emailMessage.setCreatedBy(user.getUserCode());
+		 emailMessage.setUserType(user.getUserType());
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -173,7 +198,7 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		 globalVarsMap.put("professinalName", professionalName);
 		 globalVarsMap.put("referedProfessionalName", user.getUserName());
 		 StringBuilder loginBuilder = new StringBuilder();
-		 globalVarsMap.put("registerLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("referRequirementToProfessional?requirementUUID=").append(requirement.getRequirementUUID()).append("&contactUUID=").append(contactUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 globalVarsMap.put("registerLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("referRequirementToProfessional?requirementUUID=").append(requirement.getRequirementUUID()).append("&contactUUID=").append(contactUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Register</div></a>").toString());
 		
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -250,5 +275,36 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 			throws Exception {
 		return requirementReferDao.getReferJobsByReferTypeByReferedDate(userId, referType, referedDate);
 	}
+
+	@Override
+	public List<RequirementRefer> getReferJobsListByReferType(Long userId, String referType, Date startDate, Date endDate) throws Exception {
+		return requirementReferDao.getReferJobsListByReferType(userId, referType, startDate, endDate);
+	}
+
+	@Override
+	public List<RequirementRefer> getReferJobsListByReferTypeByReferedDate(Long userId, String referType, Date referedDate) throws Exception {
+		return requirementReferDao.getReferJobsListByReferTypeByReferedDate(userId, referType, referedDate);
+	}
+	
+	@Override
+	public Integer getReferredByMeCountByStartDateAndEndDate(Long userId, Date startDate, Date endDate) throws Exception {
+		return requirementReferDao.getReferredByMeCountByStartDateAndEndDate(userId, startDate, endDate);
+	}
+	
+	@Override
+	public List<RequirementRefer> getReferredByMeCountListByStartDateAndEndDate(Long userId, Date startDate, Date endDate) throws Exception {
+		return requirementReferDao.getReferredByMeCountListByStartDateAndEndDate(userId, startDate, endDate);
+	}
+
+	@Override
+	public List<RequirementRefer> getLoginUserReferredListByUserId(Long userId,Long requirementId) throws Exception {
+		return requirementReferDao.getLoginUserReferredListByUserId(userId, requirementId);
+	}
+
+	@Override
+	public List<RequirementRefer> getLoginUserReferToMeListByUserId(Long userId) throws Exception {
+		return requirementReferDao.getLoginUserReferToMeListByUserId(userId);
+	}
+	
 
 }

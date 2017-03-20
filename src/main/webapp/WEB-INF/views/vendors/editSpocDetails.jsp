@@ -1,3 +1,6 @@
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -230,8 +233,8 @@
 						result = result  +'	 <div class="col-md-12">';
 						result = result  +'	   <select class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
 						
-					    
-						for (var j = 0; j < json.userList.length; j++) {
+					    //alert("json.userList.length"+json.userList.length);
+						 for (var j = 0; j < json.userList.length; j++) {
 							var user = json.userList[j];
 							   if(user.id == tempOwnerId){
 								   selected = 'selected';
@@ -239,7 +242,7 @@
 							  }else{
 									  result = result+"<option value="+user.id+" >"+user.firstName+" "+user.lastName+"</option>";
 			   		 	    	 } 
-						}
+						} 
 						
 						result = result  +'	  </select>';
 					    result = result  +'	 </div>';

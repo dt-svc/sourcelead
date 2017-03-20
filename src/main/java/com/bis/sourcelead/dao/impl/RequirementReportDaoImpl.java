@@ -1,9 +1,14 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import javax.persistence.TemporalType;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -15,7 +20,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.RequirementReportDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 @Repository
 public class RequirementReportDaoImpl implements RequirementReportDao{
@@ -30,9 +39,13 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		 
 		Session session = this.sessionFactory.getCurrentSession();
 		Map<String, Object> params = new HashMap<String,Object>();
-		String dateSubQuery = " and requirement.createdDate >= :startDateUTC and requirement.createdDate <= :endDateUTC";
-		params.put("startDateUTC",startDateUTC);
-		params.put("endDateUTC",endDateUTC);
+		String dateSubQuery = "";
+		if(null != startDateUTC && null != endDateUTC){
+			 dateSubQuery = " and requirement.createdDate >= :startDateUTC and requirement.createdDate <= :endDateUTC";
+			params.put("startDateUTC",startDateUTC);
+			params.put("endDateUTC",endDateUTC);
+		}
+		
 		
 		String from = "from Requirement requirement  left join fetch requirement.parentRequirement  left join fetch requirement.clientId left join fetch requirement.spocId left join fetch requirement.submissionTemplateId left join fetch requirement.clientSubmissionTemplateId left join fetch requirement.parentRequirement"; 
 		String subQuery = "";
@@ -87,6 +100,235 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
         }
 		
 		return query.setCacheable(true).list();
+	}
+
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmissionHistory> getRequirementReports(Long requirementId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementSubmissionHistory rsh "
+				+ " left join fetch rsh.submissionId rs left join fetch rsh.submissionId.requirement requirement where requirement.id = :requirementId";
+		return  session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getApplicantsCountsForReports(Long orgLocationId,String applicantStatus) throws Exception {
+		int totalCount = 0;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementSubmissionHistory rsh  left join fetch rsh.submissionId rs where rs.orgLocations = :orgLocationsId and rsh.toStage = :applicantStatus";
+	List<RequirementSubmissionHistory> rshList = session.createQuery(query).setLong("orgLocationsId",orgLocationId).setString("applicantStatus", applicantStatus).setCacheable(true).list();
+	if(null != rshList){
+		totalCount = rshList.size();
+	}
+	return totalCount;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmission> getReceivedApplicantsCountsPerReq(Long requirementId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where requirement.id = :requirementId  and rs.vendorLocationId <> null ";
+		return  session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmissionHistory> getReceivedApplicantsCountForReports(Long orgLocationId,Long requirementId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId rs where rs.orgLocations.id = :orgLocationId and rs.requirement.id = :requirementId and  rs.vendorLocationId <> null ";
+		return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("requirementId", requirementId).setCacheable(true).list();
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmissionHistory> getApplicantsCountForChart(Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementSubmissionHistory rsh  left join fetch rsh.submissionId rs where rs.orgLocations = :orgLocationsId";
+	List<RequirementSubmissionHistory> rshList = session.createQuery(query).setLong("orgLocationsId",orgLocationId).setCacheable(true).list();
+	return rshList;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getRequirementStagesCountsForReports(Long orgLocId, String requirementStatus) {
+		int totalCount = 0;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Requirement req where req.orgLocationId =:orgLocId and req.requirementSubmissionStatus =:requirementStatus";
+		List<Requirement> reqList = session.createQuery(query).setLong("orgLocId",orgLocId).setString("requirementStatus", requirementStatus).setCacheable(true).list();
+		if(!reqList.isEmpty() && reqList.size() > 0){
+			totalCount = reqList.size();
+		}
+		return totalCount;
+	}
+
+
+	@SuppressWarnings({ "unchecked", "null" })
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Requirement> getRequirementStageReports(OrgLocations orgLocation, String status) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String[] reqStatus = null;
+		if(null != status && !"".equals(status)){	
+			reqStatus = status.split(",");
+		}
+	    List<REQUIREMENT_SUBMISSION_STATUS> list = new ArrayList<>();
+	    for(int i=0; i < reqStatus.length; i++){
+	    	if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.NEW.toString())){
+	    		list.add(REQUIREMENT_SUBMISSION_STATUS.NEW);
+	    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.DRAFT.toString())){
+	    		list.add(REQUIREMENT_SUBMISSION_STATUS.DRAFT);
+	    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED.toString())){
+	    		list.add(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED);
+	    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.OPEN.toString())){
+	    		list.add(REQUIREMENT_SUBMISSION_STATUS.OPEN);
+	    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.ONHOLD.toString())){
+	    		list.add(REQUIREMENT_SUBMISSION_STATUS.ONHOLD);
+	    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.CANCEL.toString())){
+	    		list.add(REQUIREMENT_SUBMISSION_STATUS.CANCEL);
+	    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.FILLEDCLOSED.toString())){
+	    		list.add(REQUIREMENT_SUBMISSION_STATUS.FILLEDCLOSED);
+	    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.UNFILLEDCLOSED.toString())){
+	    		list.add(REQUIREMENT_SUBMISSION_STATUS.UNFILLEDCLOSED);
+	    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.REJECTED.toString())){
+	    		list.add(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
+	    	}
+	    }
+		String query = "from Requirement req where req.orgLocationId =:orgLocId and req.requirementSubmissionStatus IN (:statusList)";
+		
+		List<Requirement> reqList = session.createQuery(query).setLong("orgLocId",orgLocation.getId()).setParameterList("statusList", list).setCacheable(true).list();
+		return reqList;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmissionHistory> getReceivedApplicantsCountForReportsByVendorLocationId(Long orgLocationId,
+			Long vendorLocationId,Date startDateUTC,Date endDateUTC) {
+		Session session = this.sessionFactory.getCurrentSession();
+		if(null != startDateUTC && null != endDateUTC ){
+				String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId rs where rs.orgLocations.id = :orgLocationId and rs.vendorLocationId.id = :vendorLocationId and (rsh.createdDate >= :startDateUTC and rs.createdDate <=  :endDateUTC) ";
+				return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("vendorLocationId", vendorLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
+		}
+		else{
+			String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId rs where rs.orgLocations.id = :orgLocationId and rs.vendorLocationId.id = :vendorLocationId and  rs.vendorLocationId <> null  ";
+			return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("vendorLocationId", vendorLocationId).setCacheable(true).list();
+		}
+		
+			}
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmission> getTotalApplicants(OrgLocations orgLocation, Date startDateUTC, Date endDateUTC)
+			throws Exception {
+		
+		String subQuery = "";
+		Map<String, Object> params = new HashMap<String,Object>();
+		if(null != orgLocation){
+			params.put("orgLocationId", orgLocation.getId());
+		}
+		if(null != startDateUTC && null != endDateUTC){
+			params.put("startDateUTC", startDateUTC);
+			params.put("endDateUTC", endDateUTC);
+			subQuery = "and rs.createdDate >= :startDateUTC and rs.createdDate <= :endDateUTC";
+		}
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementSubmission rs left join fetch rs.candidate left join fetch rs.requirement requirement where rs.orgLocations.id = :orgLocationId "+subQuery;
+		Query qry = session.createQuery(query);
+		for (String str : qry.getNamedParameters())
+        {
+			if(str.equalsIgnoreCase("orgLocationId") ){
+				qry.setLong(str, (long) params.get("orgLocationId"));
+			}
+			if(str.equalsIgnoreCase("startDateUTC") ){
+				qry.setParameter(str, (Date) params.get("startDateUTC"));
+			}
+			if(str.equalsIgnoreCase("endDateUTC") ){
+				qry.setParameter(str, (Date) params.get("endDateUTC"));
+			}
+        }
+		return qry.setCacheable(true).list();
+		/*return  session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();*/
+
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmission> getReceivedApplicantsCountsByVendorLocationId(Long orgLocationId,
+			Long vendorLocationId,Date startDateUTC, Date endDateUTC) {
+		Session session = this.sessionFactory.getCurrentSession();
+		if(null != startDateUTC && null != endDateUTC ){
+			String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where rs.orgLocations.id = :orgLocationId and rs.vendorLocationId.id = :vendorLocationId and  rs.vendorLocationId <> null and  (rs.createdDate >= :startDateUTC and rs.createdDate <= :endDateUTC) ";
+			return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("vendorLocationId", vendorLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
+		}
+		else{
+			String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where rs.orgLocations.id = :orgLocationId and rs.vendorLocationId.id = :vendorLocationId and  rs.vendorLocationId <> null  ";
+			return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("vendorLocationId", vendorLocationId).setCacheable(true).list();
+		
+		}
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmissionHistory> getApplicantsCountsByDateRange(Long submissionId, Date startDateUTC,Date endDateUTC) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "";
+		Map<String, Object> params = new HashMap<String,Object>();
+		if(null != submissionId){
+			params.put("submissionId", submissionId);
+		}
+		if(null != startDateUTC && null != endDateUTC){
+			params.put("startDateUTC", startDateUTC);
+			params.put("endDateUTC", endDateUTC);
+			subQuery = "and rsh.createdDate >= :startDateUTC and rsh.createdDate <= :endDateUTC";
+		}
+		String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId rs left join fetch rsh.submissionId.requirement requirement where rsh.submissionId.id = :submissionId "+subQuery;
+		
+		Query qry = session.createQuery(query);
+		for (String str : qry.getNamedParameters())
+        {
+			if(str.equalsIgnoreCase("submissionId") ){
+				qry.setLong(str, (long) params.get("submissionId"));
+			}
+			if(str.equalsIgnoreCase("startDateUTC") ){
+				qry.setParameter(str, (Date) params.get("startDateUTC"));
+			}
+			if(str.equalsIgnoreCase("endDateUTC") ){
+				qry.setParameter(str, (Date) params.get("endDateUTC"));
+			}
+        }
+		return qry.setCacheable(true).list();
+		
+		//return  session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmission> getReceivedApplicantsCountsPerOrgLocId(Long orgLocationId, Date startDateUTC,Date endDateUTC) {
+		Session session = this.sessionFactory.getCurrentSession();
+		if(null != startDateUTC && null != endDateUTC ){
+			String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where rs.orgLocations.id = :orgLocationId and  rs.vendorLocationId <> null  and  (rs.createdDate >= :startDateUTC and rs.createdDate <= :endDateUTC) ";
+			return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
+
+		}
+		else{
+			String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where rs.orgLocations.id = :orgLocationId and  rs.vendorLocationId <> null ";
+			return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmission> getAllSubmissionsByAssignTeamMember(Long orgLocationId,Set<String> userCodesList, Date startDateUTC, Date endDateUTC) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementSubmission rs where rs.createdBy IN (:userCodesList)";
+		return session.createQuery(query).setParameterList("userCodesList", userCodesList).setCacheable(true).list();
 	}
 
 }

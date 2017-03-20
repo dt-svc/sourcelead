@@ -71,5 +71,9 @@ public interface RequirementDao {
 	
 	List<String> getAllRequirementSkillsByRequirementI(Long requirementId)throws Exception;
 
+	public List<Requirement> getAllRequirementsByOrglocationId(Long orgLocationId) throws Exception;
+
+	String getNoticePeriodByRequirementId(Long requirementId) throws Exception;
+
 
 }

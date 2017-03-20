@@ -24,6 +24,7 @@ import com.bis.sourcelead.entity.CrowdSourcingUserBankAccounts;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CountriesService;
@@ -32,6 +33,7 @@ import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.service.RequirementReferService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -70,6 +72,9 @@ public class ProfessionalRequirementsController {
 	
 	@Autowired
 	CrowdSourcingUserBankAccountsService crowdSourcingUserBankAccountsService;
+	
+	@Autowired
+	RequirementSubmissionService requirementSubmissionService;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -239,6 +244,7 @@ public class ProfessionalRequirementsController {
 		public  @ResponseBody String getRequirementProfessionalProfileDetails(@RequestParam(value="requirementUUID", required=false) String  requirementUUID,HttpServletRequest request) throws Exception {
 		        String resultJson;
 		        User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		        Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 		        Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		        if(null != requirement.getOrgLocationId()){
 		        	if(null != requirement.getOrgLocationId().getOrg()){
@@ -257,6 +263,10 @@ public class ProfessionalRequirementsController {
 	 					boolean flag = userId.contains(user.getId());
 	 					if(flag == true){
 	 						requirement.setIsJobApplied(Constants.YES);
+	 						RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirement.getId(), candidateId);
+	 		 	    		   if(null != submission){
+	 		 	    			 requirement.setSubmissionId(submission.getId());
+	 		 	    		   }
 	 					}else{
 	 						requirement.setIsJobApplied(Constants.NO);
 	 					} 
@@ -318,4 +328,85 @@ public class ProfessionalRequirementsController {
 		  
 	   }
 	 
+	 
+	 
+	 @RequestMapping(value = "/validateContactEmail",  method = RequestMethod.GET)
+	   public @ResponseBody String validateContactEmail(@RequestParam(value="contactEmail", required=false) String contactEmail,
+	   		HttpServletRequest request) throws Exception {
+		  
+		  User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		  
+		  ReferContacts referContacts = referContactsService.getReferContactsByEmails(user.getId(), contactEmail);
+		  if(null != referContacts){
+			  return "Invalid";
+		  }else{
+			  return "Success";
+		  }
+		  
+	   }
+	 
+ 
+ 
+	 @RequestMapping(value = "/referredToMePortletList")
+	 @ResponseBody
+		public ModelAndView referredToMePortletList(HttpServletRequest request,@RequestParam(value = "startDate", required = false) String startDate,
+				@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "requirementStatus", required = false) String requirementStatus) throws Exception {
+		 ModelAndView model = new ModelAndView();
+			  SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			 if(sessionData == null)
+			 {
+			 	sessionData = new SessionMaintainanceData();
+			 }
+			sessionData.setNav(Constants.Dashboard);
+			request.getSession().setAttribute("sessionData",sessionData);
+			model.setViewName("professional/referredToMePortletList");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.addObject("startDate", startDate);
+			model.addObject("endDate", endDate);
+			model.addObject("requirementStatus", requirementStatus);
+			return model;
+
+		}
+	 
+	 @RequestMapping(value = "/referredByMePortletList")
+	 @ResponseBody
+		public ModelAndView referredByMePortletList(HttpServletRequest request,@RequestParam(value = "startDate", required = false) String startDate,
+				@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "requirementStatus", required = false) String requirementStatus) throws Exception {
+		 ModelAndView model = new ModelAndView();
+			  SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			 if(sessionData == null)
+			 {
+			 	sessionData = new SessionMaintainanceData();
+			 }
+			sessionData.setNav(Constants.Dashboard);
+			request.getSession().setAttribute("sessionData",sessionData);
+			model.setViewName("professional/referredByMePortletList");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.addObject("startDate", startDate);
+			model.addObject("endDate", endDate);
+			model.addObject("requirementStatus", requirementStatus);
+			return model;
+
+		}
+	 
+	 @RequestMapping(value = "/recruiterSubmttedJobList")
+	 @ResponseBody
+		public ModelAndView recruiterSubmttedJobList(HttpServletRequest request,@RequestParam(value = "startDate", required = false) String startDate,
+				@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "requirementStatus", required = false) String requirementStatus) throws Exception {
+		 ModelAndView model = new ModelAndView();
+			  SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			 if(sessionData == null)
+			 {
+			 	sessionData = new SessionMaintainanceData();
+			 }
+			sessionData.setNav(Constants.Dashboard);
+			request.getSession().setAttribute("sessionData",sessionData);
+			model.setViewName("professional/recruiterSubmttedJobList");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.addObject("startDate", startDate);
+			model.addObject("endDate", endDate);
+			model.addObject("requirementStatus", requirementStatus);
+			return model;
+
+		}
 }

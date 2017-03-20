@@ -7,12 +7,17 @@
 <!-- <script src="resources/js/formvalidator.js"></script>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> -->
 
-
+<style>
+.margin-down{
+    margin-bottom: 100px;
+}
+</style>
 <script> 
 $(document).ready(function(){
 	getProfessionalInfo();
 });
 </script>
+
 <script>
 	function predefineProfileImage(imageId){   
 		$(imageId).attr('src','resources/images/userprofile-img.png');
@@ -63,7 +68,7 @@ function getProfessionalInfo(){
 		    	 if(json.designation != null && json.designation != '' && json.designation !='undefined'){
 		    		 designation = json.designation;
 		    	 }else{
-		    		 designation = "";
+		    		 designation = "---";
 		    	 }
 		    	 if(json.designationType != null && json.designationType != '' && json.designationType !='undefined'){
 		    		 designationType = json.designationType;
@@ -210,7 +215,7 @@ function getProfessionalInfo(){
 				 result = result +'	        </ul>';
 				 result = result +'	    </div>';
 				 result = result +'	    <div class="col-md-3">';
-				 result = result +'	        <h5>Can be Reach</h5>';
+				 result = result +'	        <h5>Can Be Reach</h5>';
 				 result = result +'	        <ul class="list-inline list-unstyled reachout-links mt25">';
 				 result = result +'	            <li><a href="'+facebook+'"  title="FaceBook" class="btn-fb"><i class="fa fa-facebook-square fa-2x"></i></a></li>';
 				 result = result +'	            <li><a href="'+linkedIn+'" title="LinkedIn" class="btn-li"><i class="fa fa-linkedin-square fa-2x"></i></a></li>';
@@ -235,7 +240,7 @@ function getProfessionalInfo(){
 				 result = result +'	</div>';
 				 
 				 
-				 result = result +' <section class="clearfix mt25">';
+				 result = result +' <section class="clearfix mt25 margin-down">';
 				 result = result +'<div class="project_side_wrap_inn_tabs">';
 			     result = result +'   <ul class="project-tabs-menu">';
 			     result = result +'     <li class="current"><a href="#tab-1" onclick="professionalProfile('+json.id+');">Profile</a></li>';

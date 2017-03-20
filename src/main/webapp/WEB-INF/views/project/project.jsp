@@ -234,7 +234,7 @@ function validateTaskName(){
 					 <c:if test="${not empty user_List}">
 						<div class="form-group">
 							<label class="col-md-3" for="Project Manager">Manager <span
-								class="text-danger">*&nbsp;<i class=" text-info fa fa-info-circle" title="Before Selecting The Manager Project Start Date is Mandatory"></i></span></label>
+								class="text-danger">*&nbsp;</span></label>
 							<div class="col-md-9">
 								<div class="form-icon-min" id="chosen-level1Manager">
 									<select class="form-control chosen-select" name="level1Manager" id="level1Manager" field-name="Select Manager" data-validation="required" onchange="getLevel2Approvers();">
@@ -272,7 +272,7 @@ function validateTaskName(){
 						
 				   <sec:authorize access="hasAnyRole('ROLE_ASSIGN_EMPLOYEE_TO_PROJECT')"> 		
 						<div class="form-group">
-							<label class="col-md-3">Assign Team &nbsp;<i class=" text-info fa fa-info-circle" title="Before Assinging Team Project Start Date is Mandatory"></i></label>
+							<label class="col-md-3">Assign Team &nbsp;<i class=" text-info fa fa-info-circle" title="Before Assinging Team Project Start Date & Manager is Mandatory"></i></label>
 
 							<div id="assignTeamSavingDiv" style="display: none;"></div>
 							<input type="hidden" name="team" value="" />
@@ -821,32 +821,34 @@ function flushProjectTasks(){
 									var projectStartDate = $("#StartDate").val();
 									var projectEndDate = $("#EndDate").val();
 									
+									var datepickerStartDate = toDate("#StartDate");
+									datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
+									
 									$('#startDate'+opt.id).datepicker({
-										dateFormat : 'yy-mm-dd',
+										dateFormat : 'dd-mm-yy',
 										changeMonth: true,
 										changeYear: true, 
 										minDate:projectStartDate,
 										maxDate:projectEndDate,
 										onSelect : function(selected) {
-											var dt = new Date(selected);
-											var id = $(this).attr('id');
 											var actualId = $(this).attr('id').split('startDate')[1];
+											var dt = toDate('#startDate'+actualId);
+											//var id = $(this).attr('id');
 											dt.setDate(dt.getDate() + 1);
 											$("#endDate"+actualId).datepicker("option", "minDate", dt);
-											
 										}
 									});
 		
 									$('#endDate'+opt.id).datepicker({
-										dateFormat : 'yy-mm-dd',
+										dateFormat : 'dd-mm-yy',
 										changeMonth: true,
 										changeYear: true, 
 										maxDate:projectEndDate,
-										minDate:projectStartDate,
+										minDate: datepickerStartDate,
 										onSelect : function(selected) {
-											var dt = new Date(selected);
-											var id = $(this).attr('id');
 											var actualId = $(this).attr('id').split('endDate')[1];
+											var dt = toDate('#endDate'+actualId);
+											//var id = $(this).attr('id');
 											dt.setDate(dt.getDate() - 1);
 											$("#startDate"+actualId).datepicker("option", "maxDate", dt);
 										}
@@ -942,11 +944,12 @@ function assignEmployeeCancel(){
 	$(function() {
 
 		$('#StartDate').datepicker({
-			dateFormat : 'yy-mm-dd',
+			dateFormat : 'dd-mm-yy',
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
-				var dt = new Date(selected);
+				//var dt = new Date(selected);
+				var dt = toDate("#StartDate");
 				dt.setDate(dt.getDate() + 1);
 				$("#EndDate").datepicker("option", "minDate", dt);
 				addValidClass();
@@ -954,11 +957,12 @@ function assignEmployeeCancel(){
 		});
 
 		$('#EndDate').datepicker({
-			dateFormat : 'yy-mm-dd',
+			dateFormat : 'dd-mm-yy',
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
-				var dt = new Date(selected);
+				//var dt = new Date(selected);
+				var dt = toDate("#EndDate");
 				dt.setDate(dt.getDate() - 1);
 				$("#StartDate").datepicker("option", "maxDate", dt);
 				addValidClass();
@@ -1111,3 +1115,12 @@ function getChildLevel1Approvers(currentApproverId){
 				$this.next().css({'width': '100%'});
 				});
 </script>
+
+<!-- script for converting dateformat in datepicker -->
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
+<!-- script for dateformat in datepicker End -->

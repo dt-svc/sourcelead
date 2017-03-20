@@ -1,3 +1,6 @@
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
 <%-- 
      @author : Venkat Kesav
      this script is for get candidate resumes list.
@@ -297,7 +300,7 @@ function addResume(candidateId) {
 							result = result+'	            <th>Title</th>';
 							result = result+'	            <th>Attachment</th>';
 							result = result+'	            <th>Description</th>';
-							result = result+'	            <th>Created By</th>';
+							/* result = result+'	            <th>Created By</th>'; */
 							result = result+'	            <th>Action</th>';
 							result = result+'	          </tr>';
 							
@@ -327,7 +330,7 @@ function addResume(candidateId) {
 					           		result = result+'<td><div><span title = "'+title+'">'+title+'</span></div></td>';
 					           		result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span></div></td>';
 					           		result = result+'<td><div><span title="'+description+'">'+description+'</span></div></td>';
-					           		result = result+'<td><div><span>'+createdBy+'</span></div></td>';
+					           		//result = result+'<td><div><span>'+createdBy+'</span></div></td>';
 					           		result = result+'<td><div class="tblicons"> <a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+opt.resumeUUID+'\"></a>';
 					           		if(window.candidateStatusGlobal == 0){
 					           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
@@ -382,7 +385,9 @@ function deleteResume(candidateId, resumeId){
          			 $("#selector2").css({ display: "block" });
          			 $("#resMsgDiv").html("Resume deleted");
         			 $("#popUpDivResume").removeClass("edit-details-active");
-        		     candidateResumesList(candidateId);
+        			 location.replace(sourceleadUrl+"/professionalProfile");
+        		    /*  candidateResumesList(candidateId);
+        		     getProfessionalInfo(); */
         		     resMsgFadein();
    		    	}
    		    },

@@ -421,24 +421,8 @@ function prepareRequirementData(data){
 
 			result = result +" </select>";	
            result = result +" </td>";
-       
-       /*  if(((orgATS == 'Y' && orgVMS == 'Y') || orgATS != 'Y') && (opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN')){
-       	 '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
-       	 if(opt.isRequirementReleasedByuser == 'Y'){
-       		 result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success'></i></a></div></td>"; 
-       	 }else{	
-       	 result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
-       	 }
-       	 '</sec:authorize>';
-       	 '<sec:authorize access="!hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
-       	 	result = result +"<td><div><i class='fa fa-bullhorn'></i></div></td>";
-       	 '</sec:authorize>';
-       	 
-        }else{
-            result = result +"<td><div>--</div></td>";
-        } */
-        
-        if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN'){
+              
+		if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN'){
 	        	if(opt.isRequirementReleasedByuser == 'Y'){
 		   		 	result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success'></i></a></div></td>"; 
 			   	 }else{	
@@ -446,8 +430,7 @@ function prepareRequirementData(data){
 			   	 }
         }else{
            result = result +"<td><div>--</div></td>";
-       }
-        
+       }        
         
         result = result +"</tr>";
         result = result +"</tr>";
@@ -1242,12 +1225,11 @@ function requirementPipeline(requirementId){
 			<div class="RePop">
 				<ul>
 					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Client Requirements</a></li>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Applicants Received</a></li>
-				 <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Short listed</a></li>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Interview</a></li>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Offer</a></li> 
+					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Stages</a></li>
+					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li>
+				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
+				    <li><a href="<c:url value='/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Submitted</a></li>
+				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirement Assign To</a></li>
 				</ul>
 			</div>
 		</div>  
@@ -1482,6 +1464,23 @@ function requirementPipeline(requirementId){
                   </div>
                 </div>
               </div>
+              
+              
+         <div class="col-md-4">
+         <label>Notice Period<i class="fa fa-info-circle" title="Notice Period"></i></label>
+          <div class="clearfix">
+             <select multiple class="chosen-select form-control" id="noticePeriod" name="noticePeriod"  data-validation-optional="true" >
+	                 <option  ${requirement.noticeperiodList  == 'Immediately Available' ? 'selected' : ''}>Immediately Available</option>
+	                 <option  ${requirement.noticeperiodList  == '15-Days' ? 'selected' : ''}>15-Days</option>
+	                 <option  ${requirement.noticeperiodList  == '1-Month' ? 'selected' : ''}>1-Month</option>
+	                 <option  ${requirement.noticeperiodList  == '2-Month' ? 'selected' : ''}>2-Month</option>
+	                 <option  ${requirement.noticeperiodList  == '3-Month' ? 'selected' : ''}>3-Month</option>
+	             </select>
+         </div>
+       </div> 
+              
+              
+              
            <%--    <div class="clearfix">
                 <div class="col-md-12">
                   <label>Skills</label>

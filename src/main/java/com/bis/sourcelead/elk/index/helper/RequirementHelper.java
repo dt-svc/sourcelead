@@ -54,14 +54,17 @@ public class RequirementHelper {
 			requirementIndex.setJobTitle(requirement.getJobTitle());
 			requirementIndex.setJobType(requirement.getJobType());
 			requirementIndex.setOtherJobType(requirement.getOtherJobType());
-			if (requirement.getRate() !=null && !"".equalsIgnoreCase(requirement.getRate())) {
+			if (null != requirement.getRate() && !"".equals(requirement.getRate())) {
 				requirementIndex.setRate(Float.parseFloat(requirement.getRate()));
 			}
-			requirementIndex.setRateType(requirement.getRateType());
-			if (requirement.getMinExp() !=null && !"".equalsIgnoreCase(requirement.getMinExp())) {
+			if (null != requirement.getRateType() && !"".equals(requirement.getRateType())) {
+				requirementIndex.setRateType(requirement.getRateType());	
+			}
+			
+			if (null != requirement.getMinExp()) {
 				requirementIndex.setMinExperience(requirement.getMinExp());
 			}
-			if (requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())) {
+			if (null != requirement.getMaxExp()) {
 				requirementIndex.setMaxExperience(requirement.getMaxExp());
 			}
 			requirementIndex.setRequirementStatus(requirement.getRequirementSubmissionStatus().toString());
@@ -145,7 +148,7 @@ public class RequirementHelper {
 			
 			
 			// education
-			if (null != requirement.getEducation() && !"".equalsIgnoreCase(requirement.getEducation())) {
+			if (null != requirement.getEducation()) {
 				String[] education = requirement.getEducation().split(",");
 				requirementIndex.setEducation(education);
 			}
@@ -196,9 +199,13 @@ public class RequirementHelper {
 				
 			// requirementIndex.setClient(requirement.getClientName());
 			// skill pending
-			if (null != requirement.getSkills() && !"".equalsIgnoreCase(requirement.getSkills())) {
+			if (null != requirement.getSkills()) {
 				String[] skills = requirement.getSkills().split(",");
 				requirementIndex.setSkills(skills);
+			}
+			if(null != requirement.getNoticePeriod()){
+				String[] noticePeriod = requirement.getNoticePeriod().split(",");
+				requirementIndex.setNoticePeriod(noticePeriod);
 			}
 			requirementIndex.setJobId(requirement.getJobId());
 			requirementIndex.setPriority(requirement.getPriority());

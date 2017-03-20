@@ -16,11 +16,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -50,13 +52,16 @@ public class ProfessionalProfileController {
 	@Autowired
 	StatesService statesService;
 	
+	@Autowired
+	CandidateResumesService candidateResumesService;
+	
 	 @PreAuthorize("hasRole('ROLE_CROWDSOURCING_PROFILE')")
 	 @RequestMapping(value = "/professionalProfile")
 		public ModelAndView professionalProfile(HttpServletRequest request) throws Exception {
 		        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		        User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				ModelAndView model = new ModelAndView();
-				
+				Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 				SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 				if(sessionData == null)
 				{
@@ -82,11 +87,17 @@ public class ProfessionalProfileController {
 				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 				model.addObject("skillsList", skillsList);
 				
-				model.setViewName("professional/profile");
+				Integer candidateResumeCount =  candidateResumesService.getCandidateResumeCountByResumeId(candidateId);
+				if(candidateResumeCount > 0 ){
+					model.setViewName("professional/profile");
+				}else{
+					model.setViewName("professional/updateProfessionalProfile");
+				}
+				
 				model.addObject("sourceleadUrl", sourceleadUrl);
+				model.addObject("candidateId", candidateId);
 				return model;
 	}
-	 
 	 
 	 @RequestMapping(value = "/getProfessionalInfo" , method = RequestMethod.GET)
 		public String getProfessionalInfo(@RequestParam(value="candidateStatus", required=false) String  candidateStatus,HttpServletRequest request) throws Exception {
@@ -117,5 +128,51 @@ public class ProfessionalProfileController {
 				return resultJson;
 	}
 	 
+	 
+	 @RequestMapping(value = "/professionalPraseCandidate")
+		public ModelAndView addCandidate(HttpServletRequest request) throws Exception {
+		 	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 	Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+			ModelAndView model = new ModelAndView();
+			model.setViewName("professional/professionalPraseCandidate");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			Countries countries = countriesService.getCountriesByCountryName(loginUser.getCountry());
+			if(null != countries){
+	         model.addObject("loginCountryName", countries.getName());
+	         model.addObject("currencyCode", countries.getCurrency());
+			}
+            List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+			model.addObject("educationsList", educationsList);
+			
+			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			
+			model.addObject("skillsList", skillsList);
+			model.addObject("candidateId", candidateId);
+			
+			return model;
+	    }
+	 
+	 @RequestMapping(value = "/professionalAddProfile")
+		public ModelAndView professionalAddProfile(HttpServletRequest request) throws Exception {
+		 	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 	Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+			ModelAndView model = new ModelAndView();
+			model.setViewName("professional/professionalAddProfile");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			Countries countries = countriesService.getCountriesByCountryName(loginUser.getCountry());
+			if(null != countries){
+	         model.addObject("loginCountryName", countries.getName());
+	         model.addObject("currencyCode", countries.getCurrency());
+			}
+         List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+			model.addObject("educationsList", educationsList);
+			
+			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			
+			model.addObject("skillsList", skillsList);
+			model.addObject("candidateId", candidateId);
+			
+			return model;
+	    }
 	 
 }

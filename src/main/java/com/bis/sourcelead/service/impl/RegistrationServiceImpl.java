@@ -548,9 +548,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail("sourceleadadmin@sourcelead.com");
 		 emailMessage.setFromName("SourceLead");
-		 
+		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("firstName", emailMessage.getFirstName());
@@ -588,7 +589,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail("sourceleadadmin@sourcelead.com");
 		 emailMessage.setFromName("SourceLead");
 		 
 		//setting the class filed values
@@ -755,7 +756,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setOrgLocationId(locationId);
 		 
@@ -873,6 +876,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidate.setUpdatedDate(new Date());
 		
 		candidateService.addCandidate(candidate);
+		candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		
 		
 		if(!isNullOrEmpty(contactUUID)){
@@ -919,8 +923,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromName("Sourcelead Admin");
+		 emailMessage.setFromEmail("sourceleadadmin@sourcelead.com");
 		 emailMessage.setCreatedBy("sladmin");
 		 
+		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("professionalName", professionalName);
@@ -1025,6 +1031,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidate.setUpdatedDate(new Date());
 		
 		candidateService.addCandidate(candidate);
+		candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		
 		sendEmailToIndividualRecruiter(user);
 		

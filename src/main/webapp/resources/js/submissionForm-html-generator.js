@@ -422,6 +422,10 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             		 educationPlaceHolder = 'placeholder="Enter educations by comma(,) seperated"';
             	 }
             	 
+            	 if(label == 'Notice Period'){
+            		 options = '<option value="">--Select--</option>';
+            	 }
+            	 
                 
 
                  switch (fieldType) {
@@ -515,7 +519,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
              var year = d.getFullYear() - 18;
              d.setFullYear(year);
              $(".DatePicker").datepicker({
-            	 dateFormat: 'yy-mm-dd',
+            	 dateFormat: 'dd-mm-yy',
             	 yearRange: "-70Y:-18Y" ,
             	 defaultDate: d,
             	 changeMonth: true,
