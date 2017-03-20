@@ -114,7 +114,7 @@ function getAddApplicant(requirementId){
 	
 	result = result + '	<div class="col-md-6 upresume mb">';
 	result = result + '<label class="col-md-4">&nbsp;</label>';
-	result = result + '<input type="checkbox" name="needApplicantPermit" id="needApplicantPermit" onClick="ApplicantPermit(); isCoolingOff('+requirementId+');" >&nbsp;&nbsp;<span><strong>Need applicant permission</strong></span> ';
+	result = result + '<input type="checkbox" name="needApplicantPermit" id="needApplicantPermit" onClick="ApplicantPermit();" >&nbsp;&nbsp;<span><strong>Need applicant permission</strong></span> ';
 	result = result + '</div>';
 	result = result + '</div>';
 	
@@ -209,12 +209,8 @@ function getAddApplicant(requirementId){
 }
 </script>
 
-
-
-
 <script type="text/javascript">
 function ApplicantPermit(){
-	alert("all");
 	 if($("#needApplicantPermit").is(':checked')){
 		  $("#needApplicantPermit").val("Y");
 	 }else{
@@ -223,16 +219,57 @@ function ApplicantPermit(){
 }
 </script>
 
+<div id="popUp"></div>
+
+<script>
+function isCoolingOffAlert(){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Applicant Cooling-Off period (${requirement.reqCoolingOffPeriod}) not completed</p>";
+	result = result + ' <div id="reasonForSpocDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Proceed' onClick='proceedApplicant();'><input class='u_can_color' type='button' value='Discord' onClick='discordApplicant();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<script>
+function proceedApplicant(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+<script>
+function discordApplicant(){
+	$("#save_button").attr("disabled", "disabled");
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+	
+	$(".new_side_wrap").removeClass("new_side_wrap_active");
+	$(".side_mask").fadeOut(200);
+	$("body").css('overflow-y', 'auto');
+}
+</script>
+
 <script type="text/javascript">
-function isCoolingOff(requirementId){
-	alert("allfff");
-var candidateEmail =   $("input[name=EmailId]").val();
-var sourceleadUrl ='${sourceleadUrl}';
+ function isCoolingOff(requirementId){
+	var candidateEmail =   $("input[name=EmailId]").val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	var reqCoolingOffPeriod ='${requirement.reqCoolingOffPeriod}';
 	$.ajax({
 		type: "POST",
-	    url: sourceleadUrl+"/verifyCoolingOffPeriod?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&candidateEmail="+candidateEmail, 
+	    url: sourceleadUrl+"/verifyCoolingOffPeriod?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&candidateEmail="+candidateEmail+"&reqCoolingOffPeriod="+reqCoolingOffPeriod, 
 	    success: function(data) {
-	    	var json = JSON.parse(data);
+	    	if(data == "true"){
+	    		isCoolingOffAlert();
+	    		return true;
+	    	}else{
+	    		return false;
+	    	}
 	    },
 	});
 }
@@ -364,12 +401,8 @@ var sourceleadUrl ='${sourceleadUrl}';
 <!-- For add New Applicant -->
 <script type="text/javascript">
 $('body').on('submit', '#addApplicant_form', function(e){
-	alert("kjhj");
 
-	var requirementId = $("#requirementId").val();
-	alert("hhhhhhhhhhhhhhhh"+requirementId);
-	isCoolingOff(requirementId);
-	alert("ggggggggggggggg"+requirementId);
+	  var requirementId = $("#requirementId").val();
 	  if ($(this).validate(false, validationSettings)){
       e.preventDefault();
       var frm = $('#addApplicant_form').serializeFormJSON();
@@ -656,6 +689,11 @@ function getCandidateDetails(){
 		        	 $("input[name=FirstName]").val(json['firstName']);
 		        	 $("input[name=EmailId]").val(json['email']);
 		        	 $("input[name=EmailId]").attr('readonly', 'readonly');
+		        	 
+		        	 if(json['email'] != null && json['email'] != "" && json['email'] != 'email'){
+		        		 var requirementId = $("#requirementId").val();
+		        		 isCoolingOff(requirementId);
+		        	 }
 		        	 
 		        	 if(json['lastName'] != null && json['lastName'] != "" && json['lastName'] != 'undefined'){
 		        		 $("input[name=LastName]").val(json['lastName']);
@@ -1084,6 +1122,8 @@ function validate_fileupload(fileName)
 		        },
 		    });
 	 }
+	 
+	 isCoolingOff(requirementId);
  }
  </script>   
  

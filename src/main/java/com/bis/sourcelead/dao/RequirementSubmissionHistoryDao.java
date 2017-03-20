@@ -16,7 +16,7 @@ public interface RequirementSubmissionHistoryDao {
 
 	RequirementSubmissionHistory getRequirementSubmissionHistoryBySubmissionId(Long submissionId);
 	
-	Boolean  isInCoolingOffPeriodByEmailAndLocationsId(String email, Long orgLocationId, String reqCoolingOffPeriod, Long requirementId) throws ParseException;
+	RequirementSubmissionHistory  isInCoolingOffPeriodByEmailAndLocationsId(String email, Long orgLocationId, String reqCoolingOffPeriod, Long requirementId) throws ParseException;
 	
 	List<RequirementSubmissionHistory> getRequirementHistoryListByCandidateIdAndOrgLocationIdAndRequirementIdAndSubmissionId(Long candidateId, Long orgLocationId, Long requirementId,Long submissionId)throws Exception;
 
