@@ -35,45 +35,65 @@ $(document).ready(function(){
 <div class="row">
           <div class="col-md-7">
           <div class="chartArea">
-          <div class="col-md-10">
-				    <div class="row">
-					  <div class="col-md-5 paddingRight">
-					     <input type="text" value="" placeholder="From Date" class="form-control input-sm calendar" id="serialfromdate" name="From Date" readonly="readonly">
-					  </div>
-			  		  <div class="col-md-5 paddingRight paddingLeft">
-					     <input type="text" value="" placeholder="To Date" class="form-control input-sm calendar" id="serialtodate" name="To Date" readonly="readonly">
-					  </div>
-					  <div class="col-md-2 paddingLeft">
-						  <button type="button" class="btn btn-sm btn-primary" onclick="getJobSummarySerialChart();"><i class="fa fa-search"></i>&nbsp;&nbsp;Search</button>
-					  </div>
-				  </div>
- 		   </div>
-              <div id="chartdiv" style="width: 100%;">
-              
-              </div>
+	         <div class="row">
+	          	<div class="col-md-3">
+			          <h4>Daily Report</h4>
+		          </div>
+	           <div class="col-md-9 select-field monthSearch_Custom">
+	            <div class="row">
+		          <div class="col-md-4">
+						<label class="btn_currentmonth" onclick="dailyStatusChangeMonth('currentMonth')">15 Days</label>
+						<i class="fa fa-calendar" onclick="dailyStatusChangeMonth('customize')" title="Customize Dates"></i>
+					</div>
+			          <div class="col-md-8" style="visibility:hidden" id="dailyStatus">
+							    <div class="row">
+								  <div class="col-md-5 paddingRight">
+								     <input type="text" value="" placeholder="From Date" class="form-control input-sm calendar" id="serialfromdate" name="From Date" readonly="readonly">
+								  </div>
+						  		  <div class="col-md-5 paddingRight paddingLeft">
+								     <input type="text" value="" placeholder="To Date" class="form-control input-sm calendar" id="serialtodate" name="To Date" readonly="readonly">
+								  </div>
+								  <div class="col-md-2 paddingLeft">
+									  <button type="button" class="btn btn-sm btn-primary" onclick="getJobSummarySerialChart();"><i class="fa fa-search"></i></button>
+								  </div>
+							  </div>
+			 		   </div>
+			 	   </div>  
+			 	</div>	
+			 </div>   
+              <div id="chartdiv" style="width: 100%;"> </div>
           </div>
           </div>
 
           <div class="col-md-5 text-center paddingLeft">
             <div class="chartArea">
-          <div class="col-md-10">
-				    <div class="row">
-					  <div class="col-md-5 paddingRight">
-					     <input type="text" value="" placeholder="From Date" class="form-control input-sm calendar" id="dpfromdate" name="From Date" readonly="readonly">
-					  </div>
-			  		  <div class="col-md-5 paddingLeft paddingRight">
-					     <input type="text" value="" placeholder="To Date" class="form-control input-sm calendar" id="dptodate" name="To Date" readonly="readonly">
-					  </div>
-					  <div class="col-md-2 paddingLeft">
-						  <button type="button" class="btn btn-sm btn-primary" onclick="getJobSummaryDoNutChart();"><i class="fa fa-search"></i>&nbsp;&nbsp;Search</button>
-					  </div>
+	             <div class="row">
+		             <div class="col-md-3">
+		            	<h4>Summary</h4>
+		             </div>
+			         <div class="col-md-5 monthSearch_Custom">
+		           		<label class="btn_currentmonth" onclick="summaryChangeMonth('currentMonth')">Current Month</label>
+						<i class="fa fa-calendar" onclick="summaryChangeMonth('customize')" title="Customize Dates"></i>
+					</div>
 				  </div>
- 		   </div>
- 		   <div class="content-new clearfix mt25">
-             <div id="jobSummary">
-         
-             </div>
-          </div>
+				  <div class="row summarySearch">
+		          <div class="col-md-10">
+						    <div class="row">
+							  <div class="col-md-5 paddingRight">
+							     <input type="text" value="" placeholder="From Date" class="form-control input-sm calendar" id="dpfromdate" name="From Date" readonly="readonly">
+							  </div>
+					  		  <div class="col-md-5 paddingLeft paddingRight">
+							     <input type="text" value="" placeholder="To Date" class="form-control input-sm calendar" id="dptodate" name="To Date" readonly="readonly">
+							  </div>
+							  <div class="col-md-2 paddingLeft">
+								  <button type="button" class="btn btn-sm btn-primary" onclick="getJobSummaryDoNutChart();"><i class="fa fa-search"></i></button>
+							  </div>
+						  </div>
+		 		   </div>
+		 		  </div>
+	 		   <div class="content-new clearfix mt25">
+	             <div id="jobSummary"> </div>
+	          </div>
       </div></div>
       <div class="clearfix"></div>
       </div>
@@ -577,36 +597,58 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
 			window.location.href = sourceleadUrl + '/referredByMePortletList?${_csrf.parameterName}=${_csrf.token}&startDate='+startDate+'&endDate='+endDate+'&requirementStatus='+status;
 	}
 </script>
-  
-  <script>
-  function refertomeChangeMonth(type){
-	    $("#portletfromdate").val('');
-	    $("#portlettodate").val(''); 
-	    
-	  if(type == "customize"){
-		  document.getElementById("customDate").style.visibility='visible';
-	  }else{
-		  document.getElementById("customDate").style.visibility='hidden';
-		  getSubmittedByMeJobPortlets();
+
+ <script>
+	  function dailyStatusChangeMonth(type){
+		    $("#serialtodate").val('');
+		    $("#serialfromdate").val(''); 
+		  if(type == "customize"){
+			  document.getElementById("dailyStatus").style.visibility='visible';
+		  }else{
+			  document.getElementById("dailyStatus").style.visibility='hidden';
+			  getJobSummarySerialChart();
+		  } 
 	  }
+ </script>
+ <script>
+  function summaryChangeMonth(type){
+	    $("#dpfromdate").val('');
+	    $("#dptodate").val(''); 
+	  if(type == "customize"){
+		  $('.summarySearch').show();
+	  }else{
+		  $('.summarySearch').hide();
+		  getJobSummaryDoNutChart();
+	  } 
   }
   </script>
-  
-  
-  
-  <script>
-  function referbymeChangeMonth(type){
-	  $("#portletreferByMefromdate").val('');
-	  $("#portletreferByMetodate").val(''); 
-	    
-	  if(type == "customize"){
-		  document.getElementById("customReferByMeDate").style.visibility='visible';
-	  }else{
-		  document.getElementById("customReferByMeDate").style.visibility='hidden';
-		  getReferByMeJobPortlets();
+ <script>
+	  function refertomeChangeMonth(type){
+		    $("#portletfromdate").val('');
+		    $("#portlettodate").val(''); 
+		    
+		  if(type == "customize"){
+			  document.getElementById("customDate").style.visibility='visible';
+		  }else{
+			  document.getElementById("customDate").style.visibility='hidden';
+			  getSubmittedByMeJobPortlets();
+		  }
 	  }
-  }
-  </script>
+ </script>
+  
+ <script>
+	  function referbymeChangeMonth(type){
+		  $("#portletreferByMefromdate").val('');
+		  $("#portletreferByMetodate").val(''); 
+		    
+		  if(type == "customize"){
+			  document.getElementById("customReferByMeDate").style.visibility='visible';
+		  }else{
+			  document.getElementById("customReferByMeDate").style.visibility='hidden';
+			  getReferByMeJobPortlets();
+		  }
+	  }
+ </script>
   
 <script>
 function flushDate(){

@@ -39,6 +39,8 @@ public class EmailMessage implements Serializable {
 	private String emailType;
 
 	private String sendResumes;
+	
+	private String userType;
 
 	public String getFirstName() {
 		return firstName;
@@ -166,5 +168,13 @@ public class EmailMessage implements Serializable {
 
 	public void setSendResumes(String sendResumes) {
 		this.sendResumes = sendResumes;
+	}
+
+	public String getUserType() {
+		return userType;
+	}
+
+	public void setUserType(String userType) {
+		this.userType = userType;
 	}
 }

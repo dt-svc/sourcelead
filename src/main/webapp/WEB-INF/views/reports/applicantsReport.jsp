@@ -74,6 +74,7 @@ function prepareReportDataDiv(data){
 	result = result + '    <th>Interviewed</th>';
 	result = result + '    <th>Offered</th>';
 	result = result + '    <th>Rejected</th>';
+	result = result + '    <th>Status</th>';
 	result = result + '   </tr>';
 	result = result + '	</thead>';
 	result = result + '	<tbody>';
@@ -146,6 +147,14 @@ function prepareReportDataDiv(data){
          result = result + '<td>';
          if(report.rejectedDate != null && report.rejectedDate != '' && report.rejectedDate !='undefined'){
        	 result = result + "<div><span>"+report.rejectedDate+"</span></div>";
+         }else{
+       		 result = result + '<div><span>---</span></div>';
+   	    }
+         result = result + '</td>';
+         
+         result = result + '<td>';
+         if(report.stage != null && report.stage != '' && report.stage !='undefined'){
+       	 result = result + "<div><span>"+report.stage+"</span></div>";
          }else{
        		 result = result + '<div><span>---</span></div>';
    	    }
@@ -226,14 +235,11 @@ function requirementReportPagination(){
 			<div class="RePop">
 				<ul>
 					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
-					<li><a href="<c:url value='requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Stages</a></li>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Client Requirements</a></li>
+					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Stages</a></li>
 					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li>
-					<li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Short  listed</a></li>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Interview</a></li>
-					<li><a href="reports.html"><i class="fa fa-user"></i>Offer</a></li> 
-					<li><a href="reports.html"><i class="fa fa-user"></i>Custom</a></li> 
+				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
+				    <li><a href="<c:url value='/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Submitted</a></li>
+				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirement Assign To</a></li>
 				</ul>
 			</div>
 		</div>

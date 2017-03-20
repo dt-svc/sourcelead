@@ -66,7 +66,12 @@ margin-top: 45px;
 overflow: visible !important;
 margin-top: 3px;
 }
+.time_pop {
+ z-index: 99999;
+}
 </style>
+
+
 <div id='rejectedPopup'></div>
 <div id='reOpenPopup'></div>
 <div id='reOpenRejectedPopup'></div>
@@ -615,7 +620,7 @@ function deleteSubmissionDocument(submissionDocumentId){
 	
 	<div id="divAttachmentTd1" style="display: none; float: left;">
 	<div id='REPLACEROWIDdocFileuploadFileGroup'>
-				<input type='file' name='REPLACEROWIDdocFile' id='REPLACEROWIDdocFile' class="timesheetAttachmentValidation"> 
+				<input type='file' name='REPLACEROWIDdocFile' id='REPLACEROWIDdocFile' class="timesheetAttachmentValidation" onchange='validateUploadFile(REPLACEROWID)'> 
 				<i class="fa fa-times" onclick="removeAttachmentRow(REPLACEROWID);"></i>
 		</div>
 	</div>
@@ -638,7 +643,7 @@ function clearTimesheet(){
 </script>
 
 <script>
-	function timesheetDivAfterSaving(startDate,endDate,approvalStatus){ 
+	function timesheetDivAfterSaving(startDate,endDate,approvalStatus){
 	         var sourceleadUrl ='${sourceleadUrl}';
 	         var projectMemberId = $("#projectMemberId").val();
 	         var timesheetFrequency = $("#frequencyDates").val();
@@ -1320,7 +1325,8 @@ function pagination(){
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
-    		"sSearch": ""
+    		"sSearch": "",
+    		"sZeroRecords": "", "sEmptyTable": ""
     	}
     } );
 }
@@ -1359,14 +1365,22 @@ function notifyReopenTimeSheet(projectMemberId,timesheetFrequency,totalHours){
    			    var startDate = $("#tabStartDate").val();
    			    var endDate = $("#tabEndDate").val();
    			    var isSuperUser = $("#isSuperUser").val();
+   			    var timesheetSubmissionStatus = $("#timesheetSubmissionStatus").val();
+   			 
    			    if(startDate != null && startDate != '' && startDate != 'undefined' && 
    					  endDate != null && endDate != '' && endDate != 'undefined'){
-   			    	 if(isSuperUser){
-   			    		 timesheetDivAfterSaving(startDate,endDate,"draft");
-   			    	 }
-   			    	 else{
-   			    		timesheetDivAfterSaving(startDate,endDate,"submitted");
-   			    	 }
+   			    	
+   			    	  if(timesheetSubmissionStatus == 'approved'){
+   			    		  timesheetDivAfterSaving(startDate,endDate,"approved");
+   			    	  }else{
+   			    		 if(isSuperUser == true){
+      			    		 timesheetDivAfterSaving(startDate,endDate,"draft");
+      			    	 }
+      			    	 else{
+      			    		timesheetDivAfterSaving(startDate,endDate,"submitted");
+      			    	 } 
+   			    	  }
+   			    	 
    			    }
    			    else{
    			    	timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMemberId,"approver");
@@ -1514,4 +1528,49 @@ function timesheetEntriesExport(startDate,endDate,projectMemberId,exportType,sub
 	 
 }
 </script>
- <!-- this script is for save Timesheet -->  
+
+
+<script type="text/javascript">
+function validate_fileupload(fileName)
+{
+    var allowed_extensions = new Array("docx","doc","pdf","rtf","jpeg","png","jpg","jpeg","xls","xlsx","csv");
+    var file_extension = fileName.split('.').pop(); 
+
+    for(var i = 0; i <= allowed_extensions.length; i++)
+    {
+    	if(allowed_extensions[i] != null && allowed_extensions[i] != '' && allowed_extensions[i] != 'undefined' && allowed_extensions[i]==file_extension.toLowerCase())
+        {
+            return true; // valid file extension
+        }
+    }
+
+    return false;
+}
+</script>
+
+<script type="text/javascript">
+function validateUploadFile(id)
+{
+	  var selectedFile = $('#'+id+'docFile').val();
+	  if(validate_fileupload(selectedFile)){
+		   var docSize = $('#'+id+'docFile')[0].files[0].size;
+ 	       $("#"+id+"docFileuploadFileGroup").find('p.jquery_form_error_message').remove();
+ 	      if(docSize > 2097152){
+ 	    	  $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+ 	    	  $('#'+id+'docFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+ 			  $('#'+id+'docFile').attr('record-exist','yes');
+ 			  $('#'+id+'docFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+ 	      }else{
+ 	    	 $('input#'+id+'docFile').removeAttr( "record-exist record-exist-errormsg");
+    		 $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove(); 
+ 	      }
+	  }
+	  else{
+		      $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+		      $('#'+id+'docFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Invalid Format</span>");
+			  $('#'+id+'docFile').attr('record-exist','yes');
+ 			  $('#'+id+'docFile').attr('record-exist-errorMsg','Invalid Format'); 
+	  }
+	
+}
+</script>
