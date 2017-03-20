@@ -14,49 +14,9 @@
 </style>
 <script> 
 $(document).ready(function(){
-	//addCandidate();
 	getProfessionalInfo();
 });
 </script>
-
-<div class="addcandidate-popup">
-			<div class="row">
-                  <div class="col-md-offset-2 col-md-8">
-				  <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()"><i class="fa fa-close"></i></a>
-                          <div class="col-md-6 mt">
-                        <div class="small-widget bg-purple">
-                            <a href="<c:url value='/professionalPraseCandidate'/>"  title="Parse Resume">
-                                <div class="clearfix mb10">
-                                <i class="fa fa-file-text-o fa-4x"></i>
-                                    <span class="fa fa-arrow-right"></span>
-                                </div>
-                                <strong class="clearfix">Parse Resume</strong>
-                                </a>
-                        </div>
-					  </div>
-                  </div>
-		    </div>
-</div>
-<div class="pop_mask"></div>
-
-
-<script>
-    //addcandidate-popup script
-    function addCandidate(){
-        $('.addcandidate-popup').fadeIn(200);
-        $('.pop_mask').fadeIn(200);
-        $('#addmorepop').slideUp(200);
-    };
-       function closeCandidate(){
-        $('.addcandidate-popup').fadeOut(200);
-        $('.pop_mask').fadeOut(200);
-       }
-    </script>
-
-
-
-
-
 
 <script>
 	function predefineProfileImage(imageId){   
@@ -108,7 +68,7 @@ function getProfessionalInfo(){
 		    	 if(json.designation != null && json.designation != '' && json.designation !='undefined'){
 		    		 designation = json.designation;
 		    	 }else{
-		    		 designation = "";
+		    		 designation = "---";
 		    	 }
 		    	 if(json.designationType != null && json.designationType != '' && json.designationType !='undefined'){
 		    		 designationType = json.designationType;
@@ -255,7 +215,7 @@ function getProfessionalInfo(){
 				 result = result +'	        </ul>';
 				 result = result +'	    </div>';
 				 result = result +'	    <div class="col-md-3">';
-				 result = result +'	        <h5>Can be Reach</h5>';
+				 result = result +'	        <h5>Can Be Reach</h5>';
 				 result = result +'	        <ul class="list-inline list-unstyled reachout-links mt25">';
 				 result = result +'	            <li><a href="'+facebook+'"  title="FaceBook" class="btn-fb"><i class="fa fa-facebook-square fa-2x"></i></a></li>';
 				 result = result +'	            <li><a href="'+linkedIn+'" title="LinkedIn" class="btn-li"><i class="fa fa-linkedin-square fa-2x"></i></a></li>';

@@ -686,6 +686,12 @@ function sideBar(requirementId){
 				        else{
 					    result = result+'<li><i class="fa fa-flag"></i><span> --- </span>';
 				        }
+				        if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined'){
+					    result = result+'<li><i class="fa fa-bell"></i><span>'+json.noticePeriod+'</span>';
+					    }
+					    else{
+						result = result+'<li><i class="fa fa-bell"></i><span> --- </span>';
+					    }
 				         result = result+'</li>';
 				        result = result+'</ul>';
 				        result = result+'</div>';
@@ -990,28 +996,28 @@ function requirementDetails(requirementId){
 				             result = result +'     <div class="clearfix">';
 				             
 				            result = result +'     <div class="clearfix row">';
-					        result = result +'     <div class="col-md-9 divskill divsAssigned pull-left">';
+					        result = result +'     <div class="col-md-12 divskill divsAssigned pull-left">';
 					        
 					        result = result + '<div id="assignedMemberList"></div>';
 					        
 				            result = result +'   <h1>Description:</h1>';
 				            if(json.description != null && json.description != '' && json.description != 'undefined'){
-					           	 result = result +'   <textarea placeholder="Enter description" readonly>'+json.description+'</textarea>';
+					           	 result = result +'   <div class="RDdetails">'+json.description+'</div>';
 					         }
 					         else{
-					           	 result = result +'   <textarea readonly> NO DATA</textarea>';
+					           	 result = result +'   <div > NO DATA</div>';
 				    	        }
 				            
 				            result = result +'   <h1>Skills:</h1>';
 				            if(json.skills != null && json.skills != '' && json.skills != 'undefined'){
-					            result = result +'     <textarea placeholder="Enter description" readonly>'+json.skills+'</textarea>';
+					            result = result +'<div class="RDdetails">'+json.skills+'</div>';
 					            }
 					            else{
-					            result = result +'<textarea readonly> NO Skills</textarea>';	
+					            result = result +'<div class="RDdetails"> NO Skills</div>';	
 					            }
 				            
 				            
-				            result = result +'   <h2> Requirement Details:</h2>';
+				            result = result +'   <h2 class="RPadT"> Requirement Details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            if(json.positions != null && json.positions != '' && json.positions != 'undefined'){
 				            result = result +'     <div class="require_wrap_details_cta"> <b>No. of positions:</b>'+json.positions+'';
@@ -1042,12 +1048,10 @@ function requirementDetails(requirementId){
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
 				            result = result +'     <div class="clearfix"></div>';
-				            result = result +'   </div>';
+
 				            if(json.isClientJob  == 'Y')
 				            	{
 				            	
-				            result = result +'     <div class="clearfix"></div>';
-				            result = result +'     </br>';
 				            result = result +'   <h2>Client details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            
@@ -1166,7 +1170,6 @@ function requirementDetails(requirementId){
 				            result = result +'   <h2>Internal details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            //result = result +'     <div class="require_wrap_details_cta"> <b>Manager:</b> <span>Manager</span>';
-				            result = result +'       <div class="clearfix"></div>';
 				            if(json.isClientJob  == 'N'){
 				            if(json.clientSubmissionTemplate != '' && json.clientSubmissionTemplate != null && json.clientSubmissionTemplate != 'undefined'){
 					            result = result +'     <div class="require_wrap_details_cta"> <b>Application form:</b>'+json.clientSubmissionTemplate+'';
@@ -1176,7 +1179,8 @@ function requirementDetails(requirementId){
 	  	
 					            }
 				            }
-				            result = result +'     </div>';
+				            
+				           	            
 				            
 				            //  Checking  for approval mechanism type  Parallel or Sequential
 				            if(json.approvalMechanismType != null && json.approvalMechanismType !='' && json.approvalMechanismType !='undefined'){
@@ -1224,12 +1228,15 @@ function requirementDetails(requirementId){
 					            result = result +'<div class="require_wrap_details_cta"> <b>Approver2:</b> <span> -- </span>';	
 					            }	 */
 				            
-				            
-				            
+					            result = result +'       <div class="clearfix"></div>';				            
+					            result = result +'   </div>';							            
 				            
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            result = result +'     <div class="clearfix"></div>';
+				            
+				            result = result +'     </div>';	
+				            
 				            result = result +'   </div>';
 				            result = result +' </div>';
 							$("#tab-1").empty();
@@ -4648,7 +4655,7 @@ function customizeScore(requirementId){
 		        result = result +'		                <div class="clearfix mt">';
 		        result = result +'		                  <div class="col-md-5 lblup"> ';
 		        result = result +'		                   <label>Experience</label>';
-		        result = result + '<select  class="chosen-select input-sm form-control" data-placeholder="Min Experience" name="minExperience"  id="minExperienceminExperienceminExperienceminExperienceminExperienceminExperience" field-name="Experience Years">';
+		        result = result + '<select  class="chosen-select input-sm form-control" data-placeholder="Min Experience" name="minExperience"  id="minExperience" onblur="minMaxExperience();" field-name="Experience Years">';
 				result = result + '<option value="">Min Experience</option>';
 				<c:forEach var="i" begin="0" end="24" >
 					result = result  +'<option value="${i}" '  + (customizeMinExperience == "${i}" ? "selected" : '') +  '>${i}</option>';
@@ -4658,7 +4665,7 @@ function customizeScore(requirementId){
 		        
 		        
 		        result = result +'		                  <div class="col-md-5 paddingRight"> ';
-		        result = result + '<select  class="chosen-select input-sm form-control" data-placeholder="Max Experience" name="maxExperience"  id="maxExperience" field-name="Experience Years">';
+		        result = result + '<select  class="chosen-select input-sm form-control" data-placeholder="Max Experience" name="maxExperience"  onblur="minMaxExperience();" id="maxExperience" field-name="Experience Years">';
 				result = result + '<option value="">Max Experience</option>';
 				<c:forEach var="i" begin="0" end="25" >
 					result = result  +'<option value="${i}" '  + (customizeMaxExperience == "${i}" ? "selected" : '') +  '>${i}</option>';
@@ -4681,8 +4688,15 @@ function customizeScore(requirementId){
 		        result = result +'		                      <option '+ (json.customizeExperienceScore == "100" ? "selected" : '') +' value="100">100%</option>';
 		        result = result +'		                    </select>              ';
 		        result = result +'		                  </div>                   ';
+		        result = result +'<p class="jquery_form_error_message" id="experiencevalidation"> </p>';
+		        
+		        result = result +'<div id="expId">';
+		        result = result +'<input type="hidden" name="expValidation" id="expValidation">';
+		        result = result +'</div>';		        
 		        result = result +'		                </div>                     ';
+		        
 		        result = result +'		           <div class="clearfix mt">     ';
+		        
 		        
 		        result = result +'		                  <div class="col-md-5 lblup">   ';
 		        result = result +'		                   <label>Rate</label>';
@@ -4791,7 +4805,15 @@ function customizeScore(requirementId){
 		    				$this.next().css({'width': '100%'});
 		    		   });
 
-		    			
+		    			 // here call experience validation
+		 		       $("#maxExperience").on('change', function (e) {
+		 		    	   minMaxExperience();
+		 		       });
+		 		       
+		 		       $("#minExperience").on('change', function (e) {
+		 		    	   minMaxExperience();
+		 		       });
+		 		       
 		    			   //Adding Customized Skills to the list
 		    	        var select, chosen;
 		    		    select = $("#customizeSkills");
@@ -4843,6 +4865,26 @@ function customizeScore(requirementId){
 	 });
 	
 }
+</script>
+
+<script>
+//Function to validate if maximum exp value is more the minimum exp value
+function minMaxExperience(){
+    var maxExp = ($('#maxExperience').val());
+    var minExp = ($('#minExperience').val());
+    if (parseFloat(maxExp) <= parseFloat(minExp)){
+        $('#expId').find('p.jquery_form_error_message').remove(); 
+		$('input#expValidation').attr('class','error signin_fild');
+		$("input#expValidation").after("<p class='jquery_form_error_message'>Max Experience should be greater than Min Experience</p>");
+		$('input#expValidation').attr('record-exist','yes');
+		$('input#expValidation').attr('record-exist-errorMsg','Max Experience should be greater than Min Experience'); 
+    }  else{
+    	$('#expId').find('p.jquery_form_error_message').remove(); 
+    	$('input#expValidation').removeAttr( "class record-exist record-exist-errormsg");
+		$('#expId').find('p.jquery_form_error_message').remove();
+    }
+}
+
 </script>
 
 <script type="text/javascript">
@@ -4969,6 +5011,7 @@ function getCities(){
 
 <script>
 function updateCutomize(requirementId){
+	minMaxExperience();
     var skillPerc = parseInt($("#skillScore").val());
     var expPerc = parseInt($("#experienceScore").val());
     var ratePerc = parseInt($("#rateScore").val());
@@ -5006,6 +5049,7 @@ function updateCutomize(requirementId){
     		$("#less_user_pop").slideDown(200);
     		$(".project_inn_mask").fadeIn(200);
         }else if(totalscore=100){
+           	if ($('#updateCustomize_form').validate(false, validationSettings)){
         	var frm = $('#updateCustomize_form').serializeFormJSON();
     		var con = JSON.stringify(frm);
     		con = con.replace(/[{}]/g, "");
@@ -5021,7 +5065,10 @@ function updateCutomize(requirementId){
     						}
     					}
     				}); 
-    		return true;
+    		 return true;
+       	  }else{ 
+			return false;
+		 } 
        } 
 	
 }

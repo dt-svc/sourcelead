@@ -205,6 +205,9 @@ public interface RequirementSubmissionService {
 	
 	Integer getRecruiterSubmittedJobCountByStartDateAndEndDate(Long userId,Date startDate,Date endDate) throws Exception;
 	
+	List<RequirementSubmission> getAllVendorsIdbyorgLocationId(OrgLocations orgLocation, Date startDateUTC, Date endDateUTC);
+
+
 	Integer getRecruiterSubmittedCandidatesCountByStage(Long userId,String submissionStatus,Date startDate,Date endDate) throws Exception;
 	
 	Integer getReferByMeJobAppliedCandidateCount(Long userId,Date startDate,Date endDate) throws Exception;
@@ -216,4 +219,9 @@ public interface RequirementSubmissionService {
 	RequirementSubmission getRequirementSubmissionByRequirementIdAndUserId(Long requirementId,Long userId) throws Exception;
 	
 	List<RequirementSubmission>  getRecruiterSubmittedCandidatesList(Long recruiterUserId,Long requirementId) throws Exception;
+	
+	List<RequirementSubmission>  getRecruiterSubmittedCandidatesListForReportsByLocationIdAndStatus(Long loginOrgLocationId,String client,String filterDate,Date startDateUTC,Date endDateUTC) throws Exception;
+	
+	RequirementSubmission validateRecruiterSubmittedCandidateEmail(String email, Long requirementId, Long userId) throws Exception;
+	
 }

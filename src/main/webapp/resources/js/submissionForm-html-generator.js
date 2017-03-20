@@ -422,6 +422,10 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             		 educationPlaceHolder = 'placeholder="Enter educations by comma(,) seperated"';
             	 }
             	 
+            	 if(label == 'Notice Period'){
+            		 options = '<option value="">--Select--</option>';
+            	 }
+            	 
                 
 
                  switch (fieldType) {

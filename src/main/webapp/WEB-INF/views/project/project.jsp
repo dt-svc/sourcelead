@@ -234,7 +234,7 @@ function validateTaskName(){
 					 <c:if test="${not empty user_List}">
 						<div class="form-group">
 							<label class="col-md-3" for="Project Manager">Manager <span
-								class="text-danger">*&nbsp;<i class=" text-info fa fa-info-circle" title="Before Selecting The Manager Project Start Date is Mandatory"></i></span></label>
+								class="text-danger">*&nbsp;</span></label>
 							<div class="col-md-9">
 								<div class="form-icon-min" id="chosen-level1Manager">
 									<select class="form-control chosen-select" name="level1Manager" id="level1Manager" field-name="Select Manager" data-validation="required" onchange="getLevel2Approvers();">
@@ -272,7 +272,7 @@ function validateTaskName(){
 						
 				   <sec:authorize access="hasAnyRole('ROLE_ASSIGN_EMPLOYEE_TO_PROJECT')"> 		
 						<div class="form-group">
-							<label class="col-md-3">Assign Team &nbsp;<i class=" text-info fa fa-info-circle" title="Before Assinging Team Project Start Date is Mandatory"></i></label>
+							<label class="col-md-3">Assign Team &nbsp;<i class=" text-info fa fa-info-circle" title="Before Assinging Team Project Start Date & Manager is Mandatory"></i></label>
 
 							<div id="assignTeamSavingDiv" style="display: none;"></div>
 							<input type="hidden" name="team" value="" />
