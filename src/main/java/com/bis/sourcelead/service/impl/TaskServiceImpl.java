@@ -98,7 +98,7 @@ public class TaskServiceImpl implements TaskService{
 			if(tk.getTaskDate() != null){
 
 				String currentTimeStr = Constants.TZ_DF.format(tk.getTaskDate());
-				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+				String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,timezone.getTimeZoneId(), currentTimeStr);
 				 TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				 converteDate = TZ_DF_TS.parse(currentDateInTimezone);
 				currentDateInTimezone = Constants.DMY.format(converteDate);
@@ -106,7 +106,7 @@ public class TaskServiceImpl implements TaskService{
 		    }
 			if(tk.getTaskTime() != null){
 				String currentTimeStr = Constants.TZ_DF.format(tk.getTaskDate());
-				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+				String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,timezone.getTimeZoneId(), currentTimeStr);
 				 TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				 converteDate = TZ_DF_TS.parse(currentDateInTimezone);
 				currentDateInTimezone = Constants.TMS.format(converteDate);
@@ -194,7 +194,7 @@ public class TaskServiceImpl implements TaskService{
 				if(jsonObj.has("taskDatpicker") && !jsonObj.getString("taskDatpicker").isEmpty() && jsonObj.has("timepicker") && !jsonObj.getString("timepicker").isEmpty()){
 				Date startTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.getDateFormat(jsonObj.getString("taskDatpicker")),jsonObj.getString("timepicker"));
 				String currentTimeStr = Constants.TZ_DF.format(startTime);  
-				String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
+				String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE , currentTimeStr);
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
 				task.setTaskDate(convertedDate);

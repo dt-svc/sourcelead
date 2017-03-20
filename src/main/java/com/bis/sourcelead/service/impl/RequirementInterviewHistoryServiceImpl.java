@@ -85,12 +85,12 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			    if(requirementInterview.getDateOfInterview() != null){
 
 					String currentTimeStr = Constants.TZ_DF.format(requirementInterview.getStartTime());
-					String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+					String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,timezone.getTimeZoneId(), currentTimeStr);
 					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 					Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
 					currentDateInTimezone = Constants.DMY.format(converteDate);
 					
-					String interviewDateInTimezone= CommonUtil.convertTimeZones("UTC" ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
+					String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
 					Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
 					interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
 					interviewHistory.setDateOfInterviewStr(currentDateInTimezone);
@@ -103,7 +103,7 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			    if(requirementInterview.getStartTime() != null){
 			    	DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
 					String currentTimeStr = Constants.TZ_DF.format(requirementInterview.getStartTime());  
-					String startTimeUTC= CommonUtil.convertTimeZones("UTC",timezone.getTimeZoneId(), currentTimeStr);
+					String startTimeUTC= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
 					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 					Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
 					String convertedDateStr = DF_DMY.format(convertedDate);
@@ -114,7 +114,7 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 						 interviewHistory.setStartTimeStr(convertedDateStr);
 					 }
 					 
-					 String interviewStartTimeUTC= CommonUtil.convertTimeZones("UTC",requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
+					 String interviewStartTimeUTC= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
 					 DateFormat TZ_DF_TSP = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 					 Date interviewConverteDate = TZ_DF_TSP.parse(interviewStartTimeUTC);
 						String interviewConvertedDateStr = DF_DMY.format(interviewConverteDate);
@@ -127,13 +127,13 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			    if(requirementInterview.getEndTime() != null){
 			    	DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
 					String currentTimeStr = Constants.TZ_DF.format(requirementInterview.getEndTime());  
-					String startTimeUTC= CommonUtil.convertTimeZones("UTC",timezone.getTimeZoneId(), currentTimeStr);
+					String startTimeUTC= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
 					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 					Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
 					String convertedDateStr = DF_DMY.format(convertedDate);  
 					interviewHistory.setEndTimeStr(convertedDateStr+"("+timezone.getTimeZoneId()+")");
 					
-					 String interviewStartTimeUTC= CommonUtil.convertTimeZones("UTC",requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
+					 String interviewStartTimeUTC= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
 					 DateFormat TZ_DF_TSP = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 					 Date interviewConverteDate = TZ_DF_TSP.parse(interviewStartTimeUTC);
 						String interviewConvertedDateStr = DF_DMY.format(interviewConverteDate);
@@ -254,7 +254,7 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			DateFormat eventstartTimrFroDashBoard = new SimpleDateFormat( "hh:mm aa");
 			if(null != timezone.getTimeZoneId() && null != interviewHistory.getInterviewId() && null != interviewHistory.getInterviewId().getId() && null != interviewHistory.getInterviewId().getStartTime()){
 				String currentTimeStr = Constants.TZ_DF.format(interviewHistory.getInterviewId().getStartTime());  
-				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+				String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
 				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
 				currentDateInTimezone = standardFormat.format(converteDate);
 				String eventstartTimrFroDashBoardStr = eventstartTimrFroDashBoard.format(converteDate);
@@ -265,7 +265,7 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			
 			if(null != timezone.getTimeZoneId() && null != interviewHistory.getInterviewId() && null != interviewHistory.getInterviewId().getId() && null != interviewHistory.getInterviewId().getEndTime()){
 				String currentTimeStr = Constants.TZ_DF.format(interviewHistory.getInterviewId().getEndTime());  
-				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+				String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,timezone.getTimeZoneId(), currentTimeStr);
 				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
 				String eventstartTimrFroDashBoardStr = eventstartTimrFroDashBoard.format(converteDate);
 				interviewHistory.setEndTimeStr(eventstartTimrFroDashBoardStr);
@@ -346,12 +346,12 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			    if(requirementInterview.getDateOfInterview() != null){
 
 					String currentTimeStr = Constants.TZ_DF.format(requirementInterview.getStartTime());
-					String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+					String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,timezone.getTimeZoneId(), currentTimeStr);
 					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 					Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
 					currentDateInTimezone = Constants.DMY.format(converteDate);
 					
-					String interviewDateInTimezone= CommonUtil.convertTimeZones("UTC" ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
+					String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
 					Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
 					interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
 					interviewHistory.setDateOfInterviewStr(currentDateInTimezone);
@@ -363,7 +363,7 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			    if(requirementInterview.getStartTime() != null){
 			    	DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
 					String currentTimeStr = Constants.TZ_DF.format(requirementInterview.getStartTime());  
-					String startTimeUTC= CommonUtil.convertTimeZones("UTC",timezone.getTimeZoneId(), currentTimeStr);
+					String startTimeUTC= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
 					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 					Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
 					String convertedDateStr = DF_DMY.format(convertedDate);
@@ -374,7 +374,7 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 						 interviewHistory.setStartTimeStr(convertedDateStr);
 					 }
 					 
-					 String interviewStartTimeUTC= CommonUtil.convertTimeZones("UTC",requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
+					 String interviewStartTimeUTC= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
 					 DateFormat TZ_DF_TSP = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 					 Date interviewConverteDate = TZ_DF_TSP.parse(interviewStartTimeUTC);
 						String interviewConvertedDateStr = DF_DMY.format(interviewConverteDate);
@@ -387,13 +387,13 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			    if(requirementInterview.getEndTime() != null){
 			    	DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
 					String currentTimeStr = Constants.TZ_DF.format(requirementInterview.getEndTime());  
-					String startTimeUTC= CommonUtil.convertTimeZones("UTC",timezone.getTimeZoneId(), currentTimeStr);
+					String startTimeUTC= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
 					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 					Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
 					String convertedDateStr = DF_DMY.format(convertedDate);  
 					interviewHistory.setEndTimeStr(convertedDateStr+"("+timezone.getTimeZoneId()+")");
 					
-					 String interviewStartTimeUTC= CommonUtil.convertTimeZones("UTC",requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
+					 String interviewStartTimeUTC= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
 					 DateFormat TZ_DF_TSP = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 					 Date interviewConverteDate = TZ_DF_TSP.parse(interviewStartTimeUTC);
 						String interviewConvertedDateStr = DF_DMY.format(interviewConverteDate);
