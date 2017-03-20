@@ -21,7 +21,9 @@ import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementInterviewer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
+import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CalendarUtil;
@@ -46,6 +48,9 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 	
 	@Autowired
 	private TimeZoneService timeZoneService;
+	
+	@Autowired
+	RequirementInterviewerService requirementInterviewerService;
 	
 	@Override
 	public RequirementInterviewHistory storeRequirementInterviewHistory(
@@ -196,11 +201,102 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 	
 
 	@Override
-	public List<RequirementInterviewHistory> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode,Date startUTCDate, Date endUTCDate)
+	public List<RequirementInterviewHistory> getAllInterviewAssignedToLoginUser(OrgLocations loginOrgLocations, String dateRange, String currentTime, String userType, Long userId, String userCode, Date startUTCDate, Date endUTCDate,Timezone timezone,User user)
 			throws Exception {
 		
-		List<RequirementInterviewHistory> list = requirementInterviewHistoryDao.getAllInterviewAssignedToLoginUser(orgLocationsId, dateRange, currentTime, userType, userId, userCode,startUTCDate,endUTCDate);
-		return list;
+		List<RequirementInterviewHistory> requirementInterviewList = requirementInterviewHistoryDao.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode,startUTCDate,endUTCDate);
+		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+		for(RequirementInterviewHistory interviewHistory : requirementInterviewList){
+			String candidateFirstName = "";
+			String candidateLastName = "";
+			String requirementTitle = "";
+			StringBuilder candidateName = new StringBuilder();
+			if(interviewHistory.getSubmissionId() != null && interviewHistory.getSubmissionId().getCandidate() != null){
+				if(interviewHistory.getSubmissionId().getCandidate().getFirstName() != null){
+					
+					candidateFirstName = interviewHistory.getSubmissionId().getCandidate().getFirstName();
+				}
+				if(interviewHistory.getSubmissionId().getCandidate().getLastName() != null){
+					
+					candidateLastName = interviewHistory.getSubmissionId().getCandidate().getLastName();
+				}
+			}
+			
+			
+			if(interviewHistory.getSubmissionId() != null && interviewHistory.getSubmissionId().getRequirement().getJobTitle() != null){
+				requirementTitle = interviewHistory.getSubmissionId().getRequirement().getJobTitle();
+			}
+			if(interviewHistory.getSubmissionId() != null && interviewHistory.getSubmissionId().getRequirement().getRequirementUUID() != null){
+				interviewHistory.setRequirementUUID(interviewHistory.getSubmissionId().getRequirement().getRequirementUUID());
+			}
+			
+			if(null != interviewHistory.getInterviewId().getInterviewTemplateId()){
+				interviewHistory.setInterviewTemplateid(interviewHistory.getInterviewId().getInterviewTemplateId().getId());
+			}
+			
+			RequirementInterviewer requirementInterviewer =  requirementInterviewerService.getInterviwerByInterviewIdAndUserId(interviewHistory.getInterviewId().getId(), user.getId());
+			if(null != requirementInterviewer){
+				interviewHistory.setInterviewerId(requirementInterviewer.getId());
+			}
+			
+			interviewHistory.setCandidateName(candidateName.append(candidateFirstName).append(" ").append(candidateLastName).toString());
+			
+			interviewHistory.setCandidateEmail(interviewHistory.getSubmissionId().getCandidate().getEmail());
+			
+			interviewHistory.setCandidatePhoneNumber(interviewHistory.getSubmissionId().getCandidate().getMobilePhone());
+			
+			interviewHistory.setRequirementTitle(requirementTitle);
+			
+			interviewHistory.setRequirementId(interviewHistory.getSubmissionId().getRequirement().getId().toString());
+			
+			//changed as per the timezone
+			DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm aa");
+			DateFormat eventstartTimrFroDashBoard = new SimpleDateFormat( "hh:mm aa");
+			if(null != timezone.getTimeZoneId() && null != interviewHistory.getInterviewId() && null != interviewHistory.getInterviewId().getId() && null != interviewHistory.getInterviewId().getStartTime()){
+				String currentTimeStr = Constants.TZ_DF.format(interviewHistory.getInterviewId().getStartTime());  
+				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+				currentDateInTimezone = standardFormat.format(converteDate);
+				String eventstartTimrFroDashBoardStr = eventstartTimrFroDashBoard.format(converteDate);
+				interviewHistory.setInterviewStartDateTimeStr(currentDateInTimezone);
+				interviewHistory.setStartTimeStr(eventstartTimrFroDashBoardStr);
+			}
+			
+			
+			if(null != timezone.getTimeZoneId() && null != interviewHistory.getInterviewId() && null != interviewHistory.getInterviewId().getId() && null != interviewHistory.getInterviewId().getEndTime()){
+				String currentTimeStr = Constants.TZ_DF.format(interviewHistory.getInterviewId().getEndTime());  
+				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+				String eventstartTimrFroDashBoardStr = eventstartTimrFroDashBoard.format(converteDate);
+				interviewHistory.setEndTimeStr(eventstartTimrFroDashBoardStr);
+			}
+			else{
+				interviewHistory.setEndTimeStr("--");
+			}
+			
+			 if(interviewHistory.getSubmissionId().getRequirement().getClientId() != null){
+					if(interviewHistory.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")){
+						interviewHistory.setClientName(interviewHistory.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrg().getOrgName());
+					}
+					if(interviewHistory.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+						interviewHistory.setClientName(interviewHistory.getSubmissionId().getRequirement().getClientId().getLocationId().getOrg().getOrgName());
+					}
+				}else{
+					RequirementSubmission requirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(interviewHistory.getSubmissionId().getId(),loginOrgLocations.getId());
+				    if(requirementSubmission != null){
+				    	interviewHistory.setClientName(requirementSubmission.getOrgLocations().getOrg().getOrgName());
+				    }else if(interviewHistory.getSubmissionId().getSourceSubmission() != null && interviewHistory.getSubmissionId().getSourceSubmission().getId() != null){
+				    	RequirementSubmission parentRequirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(interviewHistory.getSubmissionId().getSourceSubmission().getId(),loginOrgLocations.getId());
+				    	 if(parentRequirementSubmission != null){
+						     interviewHistory.setClientName(parentRequirementSubmission.getOrgLocations().getOrg().getOrgName());
+				    	 }
+				    }
+				}
+			
+		}
+		
+		
+		return requirementInterviewList;
 
 			}
 
