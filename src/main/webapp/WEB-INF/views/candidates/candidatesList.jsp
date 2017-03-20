@@ -146,7 +146,8 @@ else{
 	         /*  result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>";   */
 	          result = result +"    <th>&nbsp;</th>";
 	          result = result +"    <th>Name</th>"; 
-	          result = result +"    <th>Skills</th>"; 
+	          result = result +"    <th>Primary Skill</th>"; 
+	         /*  result = result +"    <th>Skills</th>";  */
 	          result = result +"    <th>Employment Type</th>"; 
 	          result = result +"    <th>Email</th>"; 
 	          result = result +"    <th>Mobile</th>"; 
@@ -227,13 +228,20 @@ else{
 	              '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
 	               result = result +"  <td><div class='proj_show' onclick='#'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span></div></td>";
 	              '</sec:authorize>';
-	            
-	              if(opt.skillsName != null && opt.skillsName != '' && opt.skillsName != "undefined"){
-	            	  result = result +"  <td><div><span title='"+opt.skillsName+"'>"+opt.skillsName+"</span></div></td>";
+	              
+	              if(opt.primarySkill != null && opt.primarySkill != '' && opt.primarySkill != "undefined"){
+	            	  result = result +"  <td><div><span title='"+opt.primarySkill+"'>"+opt.primarySkill+"</span></div></td>";
 	              }else{
 	            	  
 	            	  result = result +"  <td><div>----</div></td>";
 	              }
+	            
+	             /*  if(opt.skillsName != null && opt.skillsName != '' && opt.skillsName != "undefined"){
+	            	  result = result +"  <td><div><span title='"+opt.skillsName+"'>"+opt.skillsName+"</span></div></td>";
+	              }else{
+	            	  
+	            	  result = result +"  <td><div>----</div></td>";
+	              } */
 	             
 	              
 	              if(opt.designationType != null && opt.designationType != '' && opt.designationType != "undefined")
@@ -530,14 +538,18 @@ function candidateSideBar(candidateId){
 			             
 			            
 			             result = result+'<ul class="list-inline list-unstyled">';
-			             if(json.skillsList != null && json.skillsList != '' && json.skillsList != 'undefined'){
+			            /*  if(json.skillsList != null && json.skillsList != '' && json.skillsList != 'undefined'){
 			              for (i=0;i < skills.length;i++)
 			             {
 			            	  result = result+'<li>'+skills[i]+'</li>';
 			             } 
+			             } */
+			             
+			             if(json.primarySkill != null && json.primarySkill != '' && json.primarySkill != 'undefined'){
+			            	 result = result+'<li>Primary Skill -'+json.primarySkill+' </li>';
+			             }else{
+			            	 result = result+'<li>Primary Skill ----</li>';  
 			             }
-			             
-			             
 			             
 			             result = result+'</ul>';
 			             
@@ -996,6 +1008,16 @@ function cancel(candidateId){
       <h2>Candidate List</h2>
     </div>
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Candidate List</div>
+    
+    <div class=" pull-left reportsH">
+			<a title="Reports"><i class="fa fa-pie-chart"></i>Reports</a>
+			<div class="RePop">
+				<ul>
+					<li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Create Candidate</a></li>
+				</ul>
+			</div>
+		</div>  
+		
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap" style="overflow-X:auto;">
