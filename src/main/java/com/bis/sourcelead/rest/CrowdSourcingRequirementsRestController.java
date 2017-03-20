@@ -1688,7 +1688,9 @@ public class CrowdSourcingRequirementsRestController {
 						}
 						refer.setUserName(userName.toString());
 						refer.setReferToEmail(refer.getReferToUser().getEmail());
-						
+						if(!isNullOrEmpty(refer.getReferToUser().getMobilePhone())){
+							refer.setPhoneNumber(refer.getReferToUser().getMobilePhone());
+						}
 					}
 					
 					if(!isNullOrEmpty(refer.getReferStatus()) && refer.getReferStatus().equalsIgnoreCase("Applied")){
