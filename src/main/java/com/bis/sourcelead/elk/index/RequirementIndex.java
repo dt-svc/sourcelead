@@ -129,7 +129,7 @@ public class RequirementIndex {
 	
 	private Long submissionId;
 	
-	
+	private String reqCoolingOffPeriod;
 	
 	
 	public String getManagerUserId() {
@@ -617,12 +617,21 @@ public class RequirementIndex {
 		this.submissionId = submissionId;
 	}
 
+
+	public String getReqCoolingOffPeriod() {
+		return reqCoolingOffPeriod;
+	}
+
+	public void setReqCoolingOffPeriod(String reqCoolingOffPeriod) {
+		this.reqCoolingOffPeriod = reqCoolingOffPeriod;
+	}
 	public String[] getNoticePeriod() {
 		return noticePeriod;
 	}
 
 	public void setNoticePeriod(String[] noticePeriod) {
 		this.noticePeriod = noticePeriod;
+
 	}
 	
 }
