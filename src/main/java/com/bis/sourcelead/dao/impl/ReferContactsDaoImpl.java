@@ -102,4 +102,35 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 		return referContactsList;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<ReferContacts> getUserContactsListByUserIdAndRequirementId(Long userId, Long requirementId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from  ReferContacts contacts  where contacts.referFromUser.id = :userId and "
+				+ "contacts.contactUserEmail NOT IN (select refer.referToEmail from RequirementRefer refer where refer.referFromUser.id = :userId and refer.requirementId.id = :requirementId) ";
+		List<ReferContacts> referContactsList  =   session.createQuery(query.toString()).setLong("userId", userId).setLong("requirementId", requirementId).setCacheable(true) .list();
+		return referContactsList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ReferContacts getReferContactsById(Long id) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ReferContacts> referContacts = new ArrayList<ReferContacts>();
+		logger.debug("getReferContactsById start");
+		referContacts = session
+				.createQuery(
+						"from ReferContacts contacts left join fetch contacts.referFromUser where contacts.id =:id")
+				.setLong("id", id).setCacheable(true).list();
+		logger.debug("getReferContactsById end");
+		if (referContacts.size() > 0) {
+			return referContacts.get(0);
+		} else {
+			return null;
+		}
+	}
+
 }

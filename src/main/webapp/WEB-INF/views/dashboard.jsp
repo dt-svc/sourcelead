@@ -120,6 +120,9 @@ overflow-x: auto;
 		     		</sec:authorize>
 		     <!-- </div> -->
 	    
+	    
+	   
+	    
 	    <!-- <div class="row clearfix"> -->
 	    <div class="col-md-6 mb">
 
@@ -157,8 +160,13 @@ overflow-x: auto;
 				 </sec:authorize> 
 	    
 	    <div class="clearfix"></div> 
+	    
+	     <jsp:include page="dashboardEvents.jsp"></jsp:include>
+	    
+	    
 	  
 </section>
+
 
 
 <jsp:include page="masterFooter.jsp" />

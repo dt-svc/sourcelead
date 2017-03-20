@@ -1,10 +1,18 @@
 package com.bis.sourcelead.web;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,17 +24,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.States;
+import com.bis.sourcelead.entity.Timezone;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.StatesService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -52,6 +65,9 @@ public class CandidateController {
 	
 	@Autowired
 	private RolesService roleService;
+	
+	@Autowired
+	 TimeZoneService timeZoneService;
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -284,6 +300,112 @@ public class CandidateController {
 			return model;
 
 		}
+	 
+	 /*
+	  * author PrasadK
+	  * redirect to candidateReports page
+	  */
+	 @RequestMapping(value = "/candidateListForReports")
+		public ModelAndView candidateListForReports(@RequestParam(value="serachValue", required=false)String serachValue,HttpServletRequest request) throws Exception {
+		 
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("candidates/candidatesReports");
+		 
+		 Long candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(orgLocations.getId(), "Candidate");
+		 Long consultantCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(orgLocations.getId(), "Consultant");
+
+		 model.addObject("consultantCount", consultantCount);
+		 model.addObject("candidateCount", candidateCount);
+		 
+		 return model;
+		
+	 }	 
+	 
+	 @RequestMapping(value = "/getCandidateReports")
+	 public String getCandidateReports(@RequestParam(value="reportType", required=false) String reportType,
+			 @RequestParam(value="startDate", required=false) String customStartDate,
+			 @RequestParam(value="endDate", required=false) String customEndDate,
+			 HttpServletRequest request,HttpServletResponse response) throws Exception{
+
+
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+		 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+		 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+		 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+		 Date endDateUTC =null ;
+		 String filterDate = null;
+		 Date startDateUTC = null;
+		 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)){
+			 String endDate = outputFormatter1.print(zoned);
+			 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
+			 endDateUTC = TZ_DF_TS.parse(endDateString);
+		 }
+			
+			if(null != reportType && !"".equals(reportType)){
+				if("today".equals(reportType)){
+					String startDate = outputFormatter.print(zoned);
+					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
+					filterDate = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
+					startDateUTC = TZ_DF_TS.parse(startDateString);
+				}else if("yesterday".equals(reportType)){
+					DateTime yesterDayZoned = zoned.minusDays(1);
+					String yesterDayDate = outputFormatter.print(yesterDayZoned);
+					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
+					startDateUTC = TZ_DF_TS.parse(startDateString);
+					
+				}else if("week".equals(reportType)){
+					DateTime yesterDayZoned = zoned.minusDays(7);
+					String yesterDayDate = outputFormatter.print(yesterDayZoned);
+					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
+					startDateUTC = TZ_DF_TS.parse(startDateString);
+				}else if("twoweeks".equals(reportType)){
+					DateTime yesterDayZoned = zoned.minusDays(14);
+					String yesterDayDate = outputFormatter.print(yesterDayZoned);
+					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
+					startDateUTC = TZ_DF_TS.parse(startDateString);
+				}else if("month".equals(reportType)){
+					DateTime yesterDayZoned = zoned.minusDays(30);
+					String yesterDayDate = outputFormatter.print(yesterDayZoned);
+					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
+					startDateUTC = TZ_DF_TS.parse(startDateString);
+				}else if("twomonths".equals(reportType)){
+					DateTime yesterDayZoned = zoned.minusDays(60);
+					String yesterDayDate = outputFormatter.print(yesterDayZoned);
+					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
+					startDateUTC = TZ_DF_TS.parse(startDateString);
+				}else{
+					 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
+						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
+						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
+						Date startTime =  commonUtil.getDateFormat(customStartDate);
+						Date endTime =  commonUtil.getDateFormat(customEndDate);
+						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+						String customEndTimeStr = TZ_DF_CED.format(endTime);  
+						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
+						String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customEndTimeStr);
+						startDateUTC = TZ_DF_TS.parse(startDateString);
+						endDateUTC = TZ_DF_TS.parse(endDateString);
+					 }
+					
+				}
+			}
+			
+			List<Candidate> canList = candidateService.getCandidateReports(orgLocation.getId(), null, filterDate, startDateUTC, endDateUTC);
+			for(Candidate candidate : canList){
+				 DateFormat standardFormat = new SimpleDateFormat ("yyyy-MM-dd");
+				String currentTimeStr = Constants.TZ_DF.format(candidate.getCreatedDate());  
+				String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
+				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+				currentDateInTimezone = standardFormat.format(converteDate);
+				candidate.setPostedDateStr(currentDateInTimezone);
+			}
+		    String reportsList = commonUtil.toJSON(canList);
+			return reportsList;
+	 }
 
 	private boolean isNullOrEmpty(String msg) {
 		// TODO Auto-generated method stub

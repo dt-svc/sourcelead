@@ -126,7 +126,8 @@ private String parseCandidatesXlsxandXlsData(MultipartFile multipartFile, OrgLoc
 						} else {
 							candidateImport.setLastName(row.getCell(1).toString());
 						}
-						candidateImport.setEmailId(row.getCell(2).toString());
+						
+						candidateImport.setEmailId(row.getCell(2).toString().trim());
 
 						if (row.getCell(3) != null) {
 							String mobileNumber = getCellValueAsString(row.getCell(3),fileName);
@@ -225,6 +226,13 @@ private String parseCandidatesXlsxandXlsData(MultipartFile multipartFile, OrgLoc
 						}else{
 							candidateImport.setEmployers("");
 						}
+						
+						if(row.getCell(17) != null){
+							String primarySkill = getCellValueAsString(row.getCell(17), fileName);
+							candidateImport.setPrimarySkill(primarySkill);
+						}else{
+							candidateImport.setPrimarySkill("");
+						}
 					
 					   saveBulkCandidates(candidateImport,orgLocations, user, isMailChecked);
 						 
@@ -285,7 +293,8 @@ private void createCandidateErrorFile(Row row, Sheet createExcelsheet, int rowIn
 	}
 	
 	if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
-		String emailId = getCellValueAsString(row.getCell(2), fileName);
+		String emailId = getCellValueAsString(row.getCell(2), fileName).toString();
+		emailId.trim();
 		writeRow.createCell(2).setCellValue(emailId);
 	} else {
 		writeRow.createCell(2).setCellValue("");
@@ -390,7 +399,14 @@ private void createCandidateErrorFile(Row row, Sheet createExcelsheet, int rowIn
 		writeRow.createCell(16).setCellValue("");
 	}
 	
-		writeRow.createCell(17).setCellValue(candidateImport.getReason());
+	if (row.getCell(17) != null && !"".equalsIgnoreCase(row.getCell(17).toString())) {
+		String primarySkill = getCellValueAsString(row.getCell(17), fileName);
+		writeRow.createCell(17).setCellValue(primarySkill);
+	} else {
+		writeRow.createCell(17).setCellValue("");
+	}
+	
+	writeRow.createCell(18).setCellValue(candidateImport.getReason());
 	
 	
 }
@@ -398,6 +414,7 @@ private void createCandidateErrorFile(Row row, Sheet createExcelsheet, int rowIn
 private boolean validateCandidateExeclData(Row row, CandidatesImport candidateImport, String fileName, OrgLocations orgLocations) throws Exception {
 
 //	boolean isValidated; 
+	logger.info("row============>"+row.getRowNum());
 	if (row.getRowNum() > 0) { // Excluding column names
 
 		if (row.getCell(0) == null || "".equalsIgnoreCase(row.getCell(0).toString())) {
@@ -537,6 +554,11 @@ private JSONObject populateJsonObject(CandidatesImport candidate,OrgLocations or
 	if(null != candidate.getSkillsName()){
 	jsonObj.put("candidateSkills", candidate.getSkillsName());
 	}
+	
+	if(null != candidate.getPrimarySkill()){
+		jsonObj.put("primarySkill", candidate.getPrimarySkill());
+	}
+	
 	return jsonObj;
 }
 
@@ -631,7 +653,8 @@ private String getExpectedRate(String expectedRate) {
 		excelHeader.createCell(14).setCellValue(Constants.CANDIDATE_SKILLS_NAME);
 		excelHeader.createCell(15).setCellValue(Constants.CANDIDATE_EDUCATION);
 		excelHeader.createCell(16).setCellValue(Constants.CANDIDATE_EMPLOERS);
-		excelHeader.createCell(17).setCellValue(Constants.FAILED_REASON);
+		excelHeader.createCell(17).setCellValue(Constants.CANDIDATE_PRIMARY_SKILL);
+		excelHeader.createCell(18).setCellValue(Constants.FAILED_REASON);
 		
 		return createExcelsheet;
 	}
@@ -642,9 +665,10 @@ private String getExpectedRate(String expectedRate) {
 	 * @return boolean
 	 */
 		private boolean validateEmail(String email) {
+			String emailId = email.trim();
 			Pattern pattern = Pattern.compile(
 					"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
-			Matcher matcher = pattern.matcher(email);
+			Matcher matcher = pattern.matcher(emailId);
 			return matcher.matches();
 		}
 }
