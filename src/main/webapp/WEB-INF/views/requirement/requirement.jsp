@@ -98,6 +98,7 @@ $(document).ready(function() {
 
 <script type="text/javascript">
 		window.onload = function () {
+			getNoticePeriodList();
 			var jobType = '${requirement.jobType}';
 			if(jobType !=null && jobType != "" && jobType != "undefined" && jobType == 'Other'){
 				  document.getElementById("jobTypeDiv").style.display="block";
@@ -2578,6 +2579,17 @@ function getJobType(jobType){
 		  }
 	}
 }
+</script>
+
+<script>
+function getNoticePeriodList(){
+var notice = '${requirement.noticePeriod}';	
+var splitNotice = notice.split(",");
+for (var i = 0; i < splitNotice.length; i++) {
+	splitNotice[i] = splitNotice[i].replace(/^\s*/, "").replace(/\s*$/, "");
+}
+$("#noticePeriod").val(splitNotice).trigger("chosen:updated");
+};
 </script>
 
 <!-- <script type="text/javascript">
