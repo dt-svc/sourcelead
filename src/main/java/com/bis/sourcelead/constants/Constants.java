@@ -290,6 +290,8 @@ public class Constants {
 	public static String FORGOT_PASSWORD = "Forgot Password";
 	public static String UPDATE_PASSWORD = "Update Password";
 	public static String MAIL_PROJECT_MANAGER = "Mail To Project Manager";
+	public static String EDITPROJECT_MAIL_MANAGER= "Editprojecttomanager";
+	public static String EDITPROJECT_MAIL_TEAMMEMBER= "Editprojecttoteammember";
 	
 	public static String REJECTMAILFROMCLIENT_TO_VENDOR = "RejectMailFromClient_To_Vendor";
 
