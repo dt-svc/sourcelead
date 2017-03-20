@@ -1813,12 +1813,12 @@ public class CrowdSourcingRequirementsRestController {
 						rr.setRequirementJobId(rr.getRequirementId().getJobId());
 						rr.setRequirementUUID(rr.getRequirementId().getRequirementUUID());
 						rr.setRequirementState(rr.getRequirementId().getRequirementSubmissionStatus().toString());
+						rr.setReferredOn(Constants.DF_DMY.format(rr.getCreatedDate()));
 						
-						
-						RequirementRefer requirementRefer = requirementReferService.getAppliedRequirementReferByRequirementIdAndUserId(rr.getRequirementId().getId(), user.getId());
+						/*RequirementRefer requirementRefer = requirementReferService.getAppliedRequirementReferByRequirementIdAndUserId(rr.getRequirementId().getId(), user.getId());
 						if(null != requirementRefer){
 							rr.setReferredOn(Constants.DF_DMY.format(requirementRefer.getCreatedDate()));
-						}
+						}*/
 					}
 					refer.setReferByMeJobsList(referedByMeJobsList);
 					
