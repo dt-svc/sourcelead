@@ -34,22 +34,20 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 	@Override
 	public RequirementSubmissionHistory updateRequirementHistory(RequirementSubmission requirementSubmission,User user,RequirementSubmissionHistory requirementSubmissionHistory)
 			throws Exception {
+		StringBuilder userName = new StringBuilder();
 		requirementSubmissionHistory.setSubmissionId(requirementSubmission);
 		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
 		if(user != null){
 			requirementSubmissionHistory.setCreatedBy(user.getUserCode());
 			requirementSubmissionHistory.setUpdatedBy(user.getUserCode());	
+			if(null != user.getLastName() && !"".equalsIgnoreCase(user.getLastName())){
+				userName = userName.append(user.getFirstName()).append(" ").append(user.getLastName());
+			}else{
+				userName = userName.append(user.getFirstName());
+			}
 		}
 		requirementSubmissionHistory.setCreatedDate(new Date());
 		requirementSubmissionHistory.setUpdatedDate(new Date());
-		
-		StringBuilder userName = new StringBuilder();
-		
-		if(!isNullOrEmpty(user.getLastName())){
-			userName = userName.append(user.getFirstName()).append(" ").append(user.getLastName());
-		}else{
-			userName = userName.append(user.getFirstName());
-		}
 		requirementSubmissionHistory.setCreatedUser(userName.toString());
 		
 		return requirementSubmissionHistoryDao.updateRequirementHistory(requirementSubmissionHistory);
