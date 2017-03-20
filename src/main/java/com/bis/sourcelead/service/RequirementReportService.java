@@ -12,7 +12,7 @@ import com.bis.sourcelead.entity.User;
 
 public interface RequirementReportService {
 
-	List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String filterDate, Date startDateUTC, Date endDateUTC);
+	List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user, String reportType, String customStartDate, String customEndDate) throws Exception;
 
 	List<RequirementSubmissionHistory> getApplicantsCountsPerReq(Long requirementId)throws Exception;
 

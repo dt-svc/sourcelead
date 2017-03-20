@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
+
 /**
  * 
  * @author Rajashekar
@@ -558,6 +559,12 @@ public class Constants {
     
     public static String DATE_DD_MM_YYYY ="dd-MM-yyyy";
     
+    public static String TO_DAY = "today";
+    public static String YESTER_DAY = "yesterday";
+    public static String ONE_WEEK = "week";
+    public static String TWO_WEEKS = "twoweeks";
+    public static String ONE_MONTH = "month";
+    public static String TWO_MONTHS = "twomonths";
     
    
 }	
