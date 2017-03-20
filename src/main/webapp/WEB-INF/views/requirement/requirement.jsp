@@ -511,33 +511,50 @@ $(document).ready(function () {
             </div>
           </div>
           
-       <%--     <div class="form-group">
-         <label class="col-md-3">Notice Period</label>
-         <div class="col-md-9">
-             <select multiple class="chosen-select form-control" id="noticePeriod" name="noticePeriod"  data-validation-optional="true" >
-	                 <option  ${requirement.noticePeriod  == 'Immediately Available' ? 'selected' : ''}>Immediately Available</option>
-	                 <option  ${requirement.noticePeriod  == '15-Days' ? 'selected' : ''}>15-Days</option>
-	                 <option  ${requirement.noticePeriod  == '1-Month' ? 'selected' : ''}>1-Month</option>
-	                 <option  ${requirement.noticePeriod  == '2-Month' ? 'selected' : ''}>2-Month</option>
-	                 <option  ${requirement.noticePeriod  == '3-Month' ? 'selected' : ''}>3-Month</option>
-	             </select>
-         </div>
-       </div> --%> 
-          
-           <div class="form-group">
-              <label class="col-md-3">Notice Period </label>
-              <div class="col-md-9">
-                <select multiple class="chosen-select form-control" data-placeholder="Notice Period" name="noticePeriod" id="noticePeriod" data-validation-optional="true">
-					        <option  ${requirement.noticePeriod  == 'Immediately Available' ? 'selected' : ''}>Immediately Available</option>
-	                		 <option  ${requirement.noticePeriod  == '15-Days' ? 'selected' : ''}>15-Days</option>
-	               			  <option  ${requirement.noticePeriod  == '1-Month' ? 'selected' : ''}>1-Month</option>
-	                		 <option  ${requirement.noticePeriod  == '2-Month' ? 'selected' : ''}>2-Month</option>
-	                 		<option  ${requirement.noticePeriod  == '3-Month' ? 'selected' : ''}>3-Month</option> 
-                </select>
-              </div>
-            </div>
-          
-          
+          <div class="form-group">
+	         <label class="col-md-3">Cooling-Off Period</label>
+	         <div class="col-md-9">
+	             <select class="selectpicker form-control" id="coolingOff" name="coolingOff" >
+	             
+	             		<c:if test="${requirement.requirementSubmissionStatus == 'OPEN' ||  requirement.requirementSubmissionStatus == 'ONHOLD'}">
+	                     	 <option ${requirement.reqCoolingOffPeriod  == '0 Days' ? 'selected' : ''} value="0 Days">0 Days</option>
+	                    	 <option ${requirement.reqCoolingOffPeriod  == '1 Week' ? 'selected' : ''} value="1 Week">1 Week</option>
+	                     	 <option ${requirement.reqCoolingOffPeriod  == '2 Weeks' ? 'selected' : ''} value="2 Weeks">2 Weeks</option>
+	                     	 <option ${requirement.reqCoolingOffPeriod  == '3 Weeks' ? 'selected' : ''} value="3 Weeks">3 Weeks</option>
+	                     	 <option ${requirement.reqCoolingOffPeriod  == '1 Month' ? 'selected' : ''} value="1 Month">1 Month</option>
+	                     	 <option ${requirement.reqCoolingOffPeriod  == '2 Months' ? 'selected' : ''} value="2 Months">2 Months</option>
+		                     <option ${requirement.reqCoolingOffPeriod  == '3 Months' ? 'selected' : ''} value="3 Months" >3 Months</option>
+	                     	 <option ${requirement.reqCoolingOffPeriod  == '4 Months' ? 'selected' : ''} value="4 Months">4 Months</option>
+	                     	 <option ${requirement.reqCoolingOffPeriod  == '5 Months' ? 'selected' : ''} value="5 Months">5 Months</option>
+	                     	 <option ${requirement.reqCoolingOffPeriod  == '6 Months' ? 'selected' : ''} value="6 Months">6 Months</option>
+	                    	 <option ${requirement.reqCoolingOffPeriod  == '7 Months' ? 'selected' : ''} value="7 Months">7 Months</option>
+	                     	 <option ${requirement.reqCoolingOffPeriod  == '8 Months' ? 'selected' : ''} value="8 Months">8 Months</option>
+	                     	 <option ${requirement.reqCoolingOffPeriod  == '9 Months' ? 'selected' : ''} value="9 Months">9 Months</option>
+	                     	 <option ${requirement.reqCoolingOffPeriod  == '10 Months' ? 'selected' : ''} value="10 Months">10 Months</option>
+	                     	 <option ${requirement.reqCoolingOffPeriod  == '11 Months' ? 'selected' : ''} value="11 Months">11 Months</option>
+	                      	 <option ${requirement.reqCoolingOffPeriod  == '1 Year' ? 'selected' : ''} value="1 Year">1 Year</option>
+                     	 </c:if>
+                     	 <c:if test="${requirement.requirementSubmissionStatus != 'OPEN'  &&  requirement.requirementSubmissionStatus != 'ONHOLD'}">
+		                	 <option ${loginOrgLocCoolingOffPeriod  == '0 Days' ? 'selected' : ''} value="0 Days">0 Days</option>
+	                    	 <option ${loginOrgLocCoolingOffPeriod  == '1 Week' ? 'selected' : ''} value="1 Week">1 Week</option>
+	                     	 <option ${loginOrgLocCoolingOffPeriod  == '2 Weeks' ? 'selected' : ''} value="2 Weeks">2 Weeks</option>
+	                     	 <option ${loginOrgLocCoolingOffPeriod  == '3 Weeks' ? 'selected' : ''} value="3 Weeks">3 Weeks</option>
+	                     	 <option ${loginOrgLocCoolingOffPeriod  == '1 Month' ? 'selected' : ''} value="1 Month">1 Month</option>
+	                     	 <option ${loginOrgLocCoolingOffPeriod  == '2 Months' ? 'selected' : ''} value="2 Months">2 Months</option>
+		                     <option ${loginOrgLocCoolingOffPeriod  == '3 Months' ? 'selected' : ''} value="3 Months" >3 Months</option>
+	                     	 <option ${loginOrgLocCoolingOffPeriod  == '4 Months' ? 'selected' : ''} value="4 Months">4 Months</option>
+	                     	 <option ${loginOrgLocCoolingOffPeriod  == '5 Months' ? 'selected' : ''} value="5 Months">5 Months</option>
+	                     	 <option ${loginOrgLocCoolingOffPeriod  == '6 Months' ? 'selected' : ''} value="6 Months">6 Months</option>
+	                    	 <option ${loginOrgLocCoolingOffPeriod  == '7 Months' ? 'selected' : ''} value="7 Months">7 Months</option>
+	                     	 <option ${loginOrgLocCoolingOffPeriod  == '8 Months' ? 'selected' : ''} value="8 Months">8 Months</option>
+	                     	 <option ${loginOrgLocCoolingOffPeriod  == '9 Months' ? 'selected' : ''} value="9 Months">9 Months</option>
+	                     	 <option ${loginOrgLocCoolingOffPeriod  == '10 Months' ? 'selected' : ''} value="10 Months">10 Months</option>
+	                     	 <option ${loginOrgLocCoolingOffPeriod  == '11 Months' ? 'selected' : ''} value="11 Months">11 Months</option>
+	                      	 <option ${loginOrgLocCoolingOffPeriod  == '1 Year' ? 'selected' : ''} value="1 Year">1 Year</option>
+		                 </c:if>
+		             </select>
+	         </div>
+       	 </div>
           
          <div class="form-group">
 				<div class="ml">
@@ -1581,6 +1598,8 @@ function setTemplateValues(){
 			    	$("#jobTitle").val(json.jobTitle);
 			    	$("#jobType").val(json.jobType);
 			    	
+			    	$("#coolingOff").val(json.reqCoolingOffPeriod);
+			    	
 			    	$("#jobOtherType").val(json.otherJobType);
 			    	$('.selectpicker').selectpicker('refresh');
 			    	$("#jobId").val(json.jobId);
@@ -2581,17 +2600,6 @@ function getJobType(jobType){
 }
 </script>
 
-<script>
-function getNoticePeriodList(){
-var notice = '${requirement.noticePeriod}';	
-var splitNotice = notice.split(",");
-for (var i = 0; i < splitNotice.length; i++) {
-	splitNotice[i] = splitNotice[i].replace(/^\s*/, "").replace(/\s*$/, "");
-}
-$("#noticePeriod").val(splitNotice).trigger("chosen:updated");
-};
-</script>
-
 <!-- <script type="text/javascript">
 function checkcheckbox(){
 	var count = $("[type='checkbox']:checked").length;
@@ -2604,5 +2612,16 @@ function checkcheckbox(){
 }
 </script> -->
 
+
+<script>
+function getNoticePeriodList(){
+var notice = '${requirement.noticePeriod}';	
+var splitNotice = notice.split(",");
+for (var i = 0; i < splitNotice.length; i++) {
+	splitNotice[i] = splitNotice[i].replace(/^\s*/, "").replace(/\s*$/, "");
+}
+$("#noticePeriod").val(splitNotice).trigger("chosen:updated");
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />
