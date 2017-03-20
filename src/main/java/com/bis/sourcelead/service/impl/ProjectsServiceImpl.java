@@ -26,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -849,9 +850,159 @@ public class ProjectsServiceImpl implements ProjectsService{
 	  * update by prasad salina here changed method return type String to Projects
 	  */
 	
+	
+	 private void sendProjectEditMailtoProjectManager(Projects projects, User loginUser, User approverUserId1, OrgLocations loginOrgLocation, String teamMembersList,String loginOrgCode) throws Exception {
+	  	 User projectManager = userService.getUserById(approverUserId1.getId());
+	  	 
+	  	 if(isNullOrEmpty(teamMembersList) && ("undefined".equals(teamMembersList))){
+	  		teamMembersList = "-";
+	  	 }
+	  	 StringBuilder fromNameBuilder=new StringBuilder();
+	     EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(projectManager.getFirstName());
+		 emailMessage.setLastName(projectManager.getLastName());
+		 emailMessage.setToEmail(projectManager.getEmail());
+		 emailMessage.setFromEmail(loginUser.getEmail());
+		 emailMessage.setFromName(fromNameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 //setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 
+		 
+		 projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
+		    if(projects.getEndDate() != null){
+		    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
+		    }
+			
+		    
+		    
+		 globalVarsMap.put("projectStartdate",projects.getStartDateStr());
+		 globalVarsMap.put("projectEnddate",projects.getEndDateStr());
+		 
+		 if(loginUser.getFirstName() != null && loginUser.getLastName()!=null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())){
+			 StringBuilder userBuild = new StringBuilder();
+			 globalVarsMap.put("loginUser",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 }else{
+				 globalVarsMap.put("loginUser",loginUser.getFirstName());
+			}
+		 if(projectManager.getFirstName() != null && projectManager.getLastName()!=null && !"".equalsIgnoreCase(projectManager.getFirstName()) && !"".equalsIgnoreCase(projectManager.getLastName())){
+			 StringBuilder userBuild = new StringBuilder();
+			 globalVarsMap.put("managerName",userBuild.append(projectManager.getFirstName()).append(" ").append(projectManager.getLastName()).toString());
+			 }else{
+				 globalVarsMap.put("managerName",projectManager.getFirstName());
+			}
+		 globalVarsMap.put("projectName", projects.getProjectName());
+		 globalVarsMap.put("loginOrgName",loginOrgLocation.getOrg().getOrgName());
+		  
+		 //setting the Recipient information
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EDITPROJECT_MAIL_MANAGER,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 if(null != projects.getOrgLocationsId())
+		 emailScenerioUtil.sendEmail(emailMessage,projects.getOrgLocationsId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 
+		 
+		//calling the sendNotification method of emailScenerioUtil
+		EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EDITPROJECT_MAIL_MANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
+		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		notificationScenario.setBody(notificationBody);
+		notificationScenario.setOrgCode(loginOrgCode);
+		//String url = null;
+		String actionLink = "";
+		emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, loginOrgLocation, notificationScenario);
+	}
+	 
+	 
+	 private void sendProjectEditMailtoTeamMembers(Projects projects, Employees emp, User loginUser, User approverUserId1, OrgLocations loginOrgLocation,String loginOrgCode) throws Exception {
+	  	 StringBuilder fromNameBuilder=new StringBuilder();
+	     EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(emp.getUser().getFirstName());
+		 emailMessage.setLastName(emp.getUser().getLastName());
+		 emailMessage.setToEmail(emp.getUser().getEmail());
+		 emailMessage.setFromEmail(loginUser.getEmail());
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
+		 emailMessage.setFromName(fromNameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 //setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 
+		 
+		 projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
+		    if(projects.getEndDate() != null){
+		    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
+		    }
+			
+		    
+		    
+		 globalVarsMap.put("projectStartdate",projects.getStartDateStr());
+		 globalVarsMap.put("projectEnddate",projects.getEndDateStr());
+		 
+		 if(loginUser.getFirstName() != null && loginUser.getLastName()!=null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())){
+			 StringBuilder userBuild = new StringBuilder();
+			 globalVarsMap.put("loginUser",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 }else{
+				 globalVarsMap.put("loginUser",loginUser.getFirstName());
+			}
+		 if(emailMessage.getFirstName() != null && emailMessage.getLastName()!=null && !"".equalsIgnoreCase(emailMessage.getFirstName()) && !"".equalsIgnoreCase(emailMessage.getLastName())){
+			 StringBuilder userBuild = new StringBuilder();
+			 globalVarsMap.put("employeeName",userBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
+			 }else{
+				 globalVarsMap.put("employeeName",emailMessage.getFirstName());
+			}
+		 globalVarsMap.put("projectName", projects.getProjectName());
+		 globalVarsMap.put("loginOrgName",loginOrgLocation.getOrg().getOrgName());
+		 
+		 //setting the Recipient information
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EDITPROJECT_MAIL_TEAMMEMBER,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 if(null != projects.getOrgLocationsId())
+		 emailScenerioUtil.sendEmail(emailMessage,projects.getOrgLocationsId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 
+		 
+		//calling the sendNotification method of emailScenerioUtil
+		EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EDITPROJECT_MAIL_TEAMMEMBER,Constants.ENTITY_TYPE_NOTIFICATION);
+		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		notificationScenario.setBody(notificationBody);
+		notificationScenario.setOrgCode(loginOrgCode);
+		//String url = null;
+		String actionLink = "";
+		emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getUser(), loginOrgLocation, notificationScenario);
+	}
+	
 	@Override
 	public Projects getProjectDetailsUpdateByProjectId(Long projectId, User user, JSONObject jsonObj) throws Exception {
-		
+	 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
+
 		 Date currentDate = new Date();
 		 Date previousEndDate = null;
          Projects projects = getProjectById(projectId);
@@ -874,7 +1025,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    	     if(!jsonObj.getString("endDateStr1").isEmpty() && jsonObj.getString("endDateStr1") != null && !"NO DATA".equalsIgnoreCase(jsonObj.getString("endDateStr1"))){
 					    		previousEndDate = projects.getEndDate();
 					    		Date endDate = format.parse(jsonObj.getString("endDateStr1"));
-								projects.setEndDate(endDate);
+					    		//this method is used to send email for edit project end date
+								 sendProjectEditMailtoTeamMembersAndOwnersWhenProjectEndDateIsEdited(jsonObj,projects,user,loginOrgLocation,loginOrgCode);
+								 projects.setEndDate(endDate);
+
 					    	}else{
 					    		Date endDate = null;
 					    		projects.setEndDate(endDate);
@@ -1039,15 +1193,181 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
 			    }
 				
+			    
+			  /*  Set<ProjectMembers>  projectMemberList = projectMembersService.prepareProjectMembersListByJson(jsonObj,request, projects);
+				projects.setProjectMembers(projectMemberList);*/
 				 /*
 	    		 * Updating Project data as ElasticSearch Documents
 	    		 */
 	    		saveOrUpdateProjectElkDocument(projects);
-	    	    
-	    	    
+
+	    		
+	    	
 		 return projects;
 
 	}
+	
+	 void  sendProjectEditMailtoTeamMembersAndOwnersWhenProjectEndDateIsEdited(JSONObject jsonObj ,Projects projects,User user, OrgLocations loginOrgLocation,String loginOrgCode){
+		 
+
+		 try{
+			 
+			//  This is to send mail to managers TeamMembers when project end Date is Edited
+			  Date previousEndDate = null;
+				if(jsonObj.has("endDateStr1")){
+		    		String pattern = "dd-MM-yyyy";
+		    	     SimpleDateFormat format = new SimpleDateFormat(pattern);
+		    	     if(!jsonObj.getString("endDateStr1").isEmpty() && jsonObj.getString("endDateStr1") != null && !"NO DATA".equalsIgnoreCase(jsonObj.getString("endDateStr1"))){
+				    		previousEndDate = projects.getEndDate();
+				    		Date endDate = format.parse(jsonObj.getString("endDateStr1"));
+							 
+				    		if(projects.getEndDate() != null ){
+				    			projects.getEndDate();
+				    		}
+				    		
+				    		
+	                  if(endDate.compareTo(projects.getEndDate()) != 0 ){
+	                 	    User  approverUserId2  = null;
+	         				User  approverUserId1 = null;
+	         				if( null !=  jsonObj.getString("level1Manager")  && jsonObj.has("level1Manager") && !jsonObj.getString("level1Manager").isEmpty()){
+	         					  String level1UserDetails[] = jsonObj.getString("level1Manager").split(",");
+	         					  approverUserId1 =   userService.getUserById(Long.valueOf(level1UserDetails[0]));
+	         				if(jsonObj.has("level2Manager") && null != jsonObj.getString("level2Manager") &&jsonObj.has("level2Manager")  && !jsonObj.getString("level2Manager").isEmpty()){
+	         			      approverUserId2 =   userService.getUserById(Long.valueOf(jsonObj.getString("level2Manager")));
+	         				}
+	         				
+	         			    Collection<ProjectMembers>  projectMemberList = projectMembersService.getAllProjectMembersByProjectId(projects.getId()) ;
+
+	         			    if(projectMemberList != null && projectMemberList.size() >0){
+	         			    	for(ProjectMembers projectMembers : projectMemberList){
+		         					if(null != projectMembers.getEmployee()){
+		         						Employees emp = projectMembers.getEmployee();
+		         							
+		         						//if  we have   both level1 and Level2 ProjectManagers
+		         						if( null != approverUserId1 && null != approverUserId2){
+		         							  if(approverUserId1.getId().longValue() != emp.getUser().getId().longValue() && approverUserId2.getId().longValue() != emp.getUser().getId().longValue()){
+		         								  if(user.getId().longValue() != emp.getUser().getId().longValue()){
+		         									  sendProjectEditMailtoTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation,loginOrgCode);
+		         								  }
+		         					    }
+		         							//if  we have   both level1 only One ProjectManagers
+		         						}else if(approverUserId1.getId().longValue() != emp.getUser().getId().longValue()){
+		         							 if(user.getId().longValue() != emp.getUser().getId().longValue()){
+		         								 sendProjectEditMailtoTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation,loginOrgCode);
+		         							 }
+		         							 
+		         							 }   
+		         							
+		         						}
+		         					}
+	         			      }
+	         				}
+	         					if(jsonObj.has("level1Manager") && null != jsonObj.getString("level1Manager") && !jsonObj.getString("level1Manager").isEmpty()){
+	         						User  approverUserId111 =new User();
+	         						String level1UserDetails[] = jsonObj.getString("level1Manager").split(",");
+	         						approverUserId111.setId(Long.valueOf(level1UserDetails[0]));
+	         						if(approverUserId111 != null && user.getId() != approverUserId111.getId()){
+	         							sendProjectEditMailtoProjectManager(projects, user, approverUserId111, loginOrgLocation,"",loginOrgCode);
+	         						}
+	         						
+	         					}
+	         					
+
+	         					/*
+	         					 * This is Mailing for Level2 Manager who was assigned to Project
+	         					 * 
+	         					 */
+	         					
+	         					if(jsonObj.has("level2Manager") && null != jsonObj.getString("level2Manager") && !jsonObj.getString("level2Manager").isEmpty()){
+	         						User  approverUserId22 =new User();
+	         						approverUserId22.setId(Long.valueOf(jsonObj.getString("level2Manager")));
+	         						if(!jsonObj.getString("level2Manager").isEmpty() && null !=  approverUserId22 && user.getId() != approverUserId22.getId()){
+	         							 if(user.getId().longValue() != approverUserId22.getId().longValue()){
+	         								 	sendProjectEditMailtoProjectManager(projects, user, approverUserId22, loginOrgLocation,"",loginOrgCode);
+	         							 }
+	         						 }
+	         					}
+	         				
+	                  }
+				    	}else{
+				    		Date endDate = null;
+				    		projects.setEndDate(endDate);
+				    	}
+		    	}else{
+		    		if(!jsonObj.getString("endDateStr1").isEmpty() && jsonObj.getString("endDateStr1") != null && !"NO DATA".equalsIgnoreCase(jsonObj.getString("endDateStr1"))){
+			    		 
+			    		if(projects.getEndDate() != null ){
+			    			projects.getEndDate();
+			    		}
+                 	    User  approverUserId2  = null;
+         				User  approverUserId1 = null;
+         				if( null !=  jsonObj.getString("level1Manager")  && jsonObj.has("level1Manager") && !jsonObj.getString("level1Manager").isEmpty()){
+         					  String level1UserDetails[] = jsonObj.getString("level1Manager").split(",");
+         					  approverUserId1 =   userService.getUserById(Long.valueOf(level1UserDetails[0]));
+         				if(jsonObj.has("level2Manager") && null != jsonObj.getString("level2Manager") &&jsonObj.has("level2Manager")  && !jsonObj.getString("level2Manager").isEmpty()){
+         			      approverUserId2 =   userService.getUserById(Long.valueOf(jsonObj.getString("level2Manager")));
+         				}
+         				
+         			    Collection<ProjectMembers>  projectMemberList = projectMembersService.getAllProjectMembersByProjectId(projects.getId()) ;
+
+         			    if(projectMemberList != null && projectMemberList.size() >0){
+         			    	for(ProjectMembers projectMembers : projectMemberList){
+	         					if(null != projectMembers.getEmployee()){
+	         						Employees emp = projectMembers.getEmployee();
+	         							
+	         						//if  we have   both level1 and Level2 ProjectManagers
+	         						if( null != approverUserId1 && null != approverUserId2){
+	         							  if(approverUserId1.getId().longValue() != emp.getUser().getId().longValue() && approverUserId2.getId().longValue() != emp.getUser().getId().longValue()){
+	         								  if(user.getId().longValue() != emp.getUser().getId().longValue()){
+	         									  sendProjectEditMailtoTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation,loginOrgCode);
+	         								  }
+	         					    }
+	         							//if  we have   both level1 only One ProjectManagers
+	         						}else if(approverUserId1.getId().longValue() != emp.getUser().getId().longValue()){
+	         							 if(user.getId().longValue() != emp.getUser().getId().longValue()){
+	         								 sendProjectEditMailtoTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation,loginOrgCode);
+	         							 }
+	         							 
+	         							 }   
+	         							
+	         						}
+	         					}
+         			      }
+         				}
+         					if(jsonObj.has("level1Manager") && null != jsonObj.getString("level1Manager") && !jsonObj.getString("level1Manager").isEmpty()){
+         						User  approverUserId111 =new User();
+         						String level1UserDetails[] = jsonObj.getString("level1Manager").split(",");
+         						approverUserId111.setId(Long.valueOf(level1UserDetails[0]));
+         						if(approverUserId111 != null && user.getId() != approverUserId111.getId()){
+         							sendProjectEditMailtoProjectManager(projects, user, approverUserId111, loginOrgLocation,"",loginOrgCode);
+         						}
+         						
+         					}
+         					
+
+         					/*
+         					 * This is Mailing for Level2 Manager who was assigned to Project
+         					 * 
+         					 */
+         					
+         					if(jsonObj.has("level2Manager") && null != jsonObj.getString("level2Manager") && !jsonObj.getString("level2Manager").isEmpty()){
+         						User  approverUserId22 =new User();
+         						approverUserId22.setId(Long.valueOf(jsonObj.getString("level2Manager")));
+         						if(!jsonObj.getString("level2Manager").isEmpty() && null !=  approverUserId22 && user.getId() != approverUserId22.getId()){
+         							 if(user.getId().longValue() != approverUserId22.getId().longValue()){
+         								 	sendProjectEditMailtoProjectManager(projects, user, approverUserId22, loginOrgLocation,"",loginOrgCode);
+         							 }
+         						 }
+         					}
+		    		}
+		    	}
+		    	
+		 }catch(Exception e){
+			 
+		 }
+		 
+			
+	   }
 
 	 /**
 	  * Save Employee from project summary

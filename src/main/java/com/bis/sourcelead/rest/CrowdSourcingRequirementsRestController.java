@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
@@ -54,6 +55,7 @@ import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CrowdSourcingUserBankAccountsService;
@@ -921,6 +923,27 @@ public class CrowdSourcingRequirementsRestController {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			
 			requirementReferService.saveReferCandidate(user, orgLocations, jsonObj);
+						
+			return "success";
+
+		}
+	 
+	 
+
+	 @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+		@RequestMapping(value = "/submitUserContactsToRequirement", method = RequestMethod.POST)
+		public String submitUserContactsToRequirement(@RequestParam(value = "json", required = false) String json,
+				HttpServletRequest request,HttpServletResponse response)
+				throws Exception {
+
+			String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);
+
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			
+			requirementReferService.submitUserContactsToRequirement(user, orgLocations, jsonObj);
 						
 			return "success";
 
@@ -1813,12 +1836,12 @@ public class CrowdSourcingRequirementsRestController {
 						rr.setRequirementJobId(rr.getRequirementId().getJobId());
 						rr.setRequirementUUID(rr.getRequirementId().getRequirementUUID());
 						rr.setRequirementState(rr.getRequirementId().getRequirementSubmissionStatus().toString());
+						rr.setReferredOn(Constants.DF_DMY.format(rr.getCreatedDate()));
 						
-						
-						RequirementRefer requirementRefer = requirementReferService.getAppliedRequirementReferByRequirementIdAndUserId(rr.getRequirementId().getId(), user.getId());
+						/*RequirementRefer requirementRefer = requirementReferService.getAppliedRequirementReferByRequirementIdAndUserId(rr.getRequirementId().getId(), user.getId());
 						if(null != requirementRefer){
 							rr.setReferredOn(Constants.DF_DMY.format(requirementRefer.getCreatedDate()));
-						}
+						}*/
 					}
 					refer.setReferByMeJobsList(referedByMeJobsList);
 					
@@ -1964,6 +1987,35 @@ public class CrowdSourcingRequirementsRestController {
 			resultJson = commonUtil.toJSON(offersList);
 			return resultJson ;
 			
+		}
+		
+		
+		@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+		@RequestMapping(value = "/getCrowdSourcingUserContacts")
+		public @ResponseBody String getCrowdSourcingUserContacts(@RequestParam(value="requirementId", required=false) Long requirementId,
+				                                              HttpServletRequest request) throws Exception {
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+			String resultJson = null;
+			List<ReferContacts> contactsList = referContactsService.getUserContactsListByUserIdAndRequirementId(user.getId(), requirementId);
+			List<ReferContacts>  userContactsList = new ArrayList<ReferContacts>();
+					
+				if(null != contactsList){
+					 for (ReferContacts contacts : contactsList) {
+						
+						StringBuilder nameBuilder = new StringBuilder();
+						
+						if(StringUtils.isNotBlank(contacts.getLastName())){
+							contacts.setContactUserName(nameBuilder.append(contacts.getFirstName()).append(" ").append(contacts.getLastName()).toString());
+						}else{
+							contacts.setContactUserName(contacts.getFirstName());
+						}
+						userContactsList.add(contacts);
+					}
+				}
+			 
+			resultJson = commonUtil.toJSON(userContactsList);
+			return resultJson;
 		}
 		
 		
