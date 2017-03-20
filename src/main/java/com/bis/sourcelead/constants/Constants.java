@@ -550,6 +550,7 @@ public class Constants {
     public static String CANDIDATE_SKILLS_NAME = "Skills Name";
     public static String CANDIDATE_EDUCATION = "Education";
     public static String CANDIDATE_EMPLOERS = "Employer's";
+    public static String CANDIDATE_PRIMARY_SKILL = "Primary Skill";
     
     public static String EMPLOYEE = "Employee";
     
