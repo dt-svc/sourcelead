@@ -1538,7 +1538,7 @@ function validate_fileupload(fileName)
 
     for(var i = 0; i <= allowed_extensions.length; i++)
     {
-    	if(allowed_extensions[i] != null && allowed_extensions[i] != '' && allowed_extensions[i] != 'undefined' && allowed_extensions[i].toLowerCase()==file_extension)
+    	if(allowed_extensions[i] != null && allowed_extensions[i] != '' && allowed_extensions[i] != 'undefined' && allowed_extensions[i]==file_extension.toLowerCase())
         {
             return true; // valid file extension
         }

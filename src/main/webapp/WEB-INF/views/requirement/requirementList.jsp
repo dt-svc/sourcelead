@@ -1464,6 +1464,23 @@ function requirementPipeline(requirementId){
                   </div>
                 </div>
               </div>
+              
+              
+         <div class="col-md-4">
+         <label>Notice Period<i class="fa fa-info-circle" title="Notice Period"></i></label>
+          <div class="clearfix">
+             <select multiple class="chosen-select form-control" id="noticePeriod" name="noticePeriod"  data-validation-optional="true" >
+	                 <option  ${requirement.noticeperiodList  == 'Immediately Available' ? 'selected' : ''}>Immediately Available</option>
+	                 <option  ${requirement.noticeperiodList  == '15-Days' ? 'selected' : ''}>15-Days</option>
+	                 <option  ${requirement.noticeperiodList  == '1-Month' ? 'selected' : ''}>1-Month</option>
+	                 <option  ${requirement.noticeperiodList  == '2-Month' ? 'selected' : ''}>2-Month</option>
+	                 <option  ${requirement.noticeperiodList  == '3-Month' ? 'selected' : ''}>3-Month</option>
+	             </select>
+         </div>
+       </div> 
+              
+              
+              
            <%--    <div class="clearfix">
                 <div class="col-md-12">
                   <label>Skills</label>
