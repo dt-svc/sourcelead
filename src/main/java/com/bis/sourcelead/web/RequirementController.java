@@ -242,6 +242,8 @@ public class RequirementController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirement");
 		
+		model.addObject("loginOrgLocCoolingOffPeriod", orgLocations.getCoolingOffPeriod());
+		
 		//OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		

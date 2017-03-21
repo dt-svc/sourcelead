@@ -62,7 +62,7 @@
                 <div class="col-xs-12 col-md-6">
                     <i class="fa fa-unlock-alt"></i>
                     <label>Password <span class="text-danger">*</span></label>
-                    <input type="password" id="password" name="password" filed-name="Password" data-validation="required validate_length length6-100" >
+                    <input type="password" id="password" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" >
                     <b></b>
                 </div>
                 <div class="col-xs-12 col-md-6" id="passwordDiv">

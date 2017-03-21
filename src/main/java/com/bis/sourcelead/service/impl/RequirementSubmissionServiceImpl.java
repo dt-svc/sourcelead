@@ -74,6 +74,7 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
+import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -1591,6 +1592,50 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 if(null != submission.getCandidateScore() && !"".equalsIgnoreCase(submission.getCandidateScore())){
 			 clientSubmission.setCandidateScore(submission.getCandidateScore());		 
 		 }
+		 
+		/* the functionality of this block is to verify the submitted candidate is in the Cooling-Off Period or not
+		 if the applicant is in cooling-off period, the candidate should be in rejected state(set previous state to Submission) at client side  [Venkat Kesav] START Code snippet*/
+		 String parentReqCoolingOffPeriod = requirement.getParentRequirement().getReqCoolingOffPeriod();
+		 String [] coolingOffArr = parentReqCoolingOffPeriod.split(" ");
+		 String reqCoolingOffPeriodDays;
+		 int Days;
+		 switch (coolingOffArr[1]) {
+			 case "Week" :
+				 reqCoolingOffPeriodDays = "7";
+			      break;
+			 case "Weeks" :
+				 Days  = (Integer.parseInt(coolingOffArr[0]) * 7);
+				 reqCoolingOffPeriodDays = Integer.toString(Days);
+			     break;
+			 case "Month" :
+				 reqCoolingOffPeriodDays = "30";
+			     break;
+			 case "Months" :
+				 Days  = (Integer.parseInt(coolingOffArr[0]) * 30);
+				 reqCoolingOffPeriodDays = Integer.toString(Days);
+			     break;
+			 case "Year" :
+				 reqCoolingOffPeriodDays = "365";
+			     break;
+			 default:
+				 reqCoolingOffPeriodDays = "0";
+		 }
+		 
+		 RequirementSubmissionHistory requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(submission.getCandidate().getEmail(), requirement.getParentRequirement().getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getParentRequirement().getId());
+		 
+		 
+		 if(requirementSubmissionHistoryForCoolingOff != null){
+			 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
+				 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+				 clientSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+				 clientSubmission.setRejectedReason("Under cooling off period, completed by "+requirementSubmissionHistoryForCoolingOff.getCoolingOffPeriodEndDateStr()+".");
+			 }
+		 }else{
+			 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+		 }
+		 /*END Code snippet*/
+		 
+		 
    		 clientSubmission = requirementSubmissionDao.storeRequirementSubmission(clientSubmission);
    		 
          if(null != requirement.getParentRequirement()){
@@ -1705,13 +1750,32 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 requirementSubmissionTemplateFieldsDao.storeRequirementSubmissionTemplateFields(clientSubmissionFields);
    		 RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
    		 requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
+   		 requirementSubmissionHistory.setToStage(submission.getSubmissionStatus().getValue());
    		 submission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMIT_TO_CLIENT);
    		 submission.setUpdatedBy(user.getUserCode());
    		 submission.setUpdatedDate(commonUtil.currentDate());
    		 requirementSubmissionDao.storeRequirementSubmission(submission);
    		 
-   		 
+   		
    		 requirementSubmissionHistoryService.updateRequirementHistory(submission, user, requirementSubmissionHistory);
+   		 
+   		 
+   		 if(requirementSubmissionHistoryForCoolingOff != null){
+			 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
+				 RequirementSubmissionHistory requirementSubmissionHistoryNewToSubmission = new RequirementSubmissionHistory();
+				 requirementSubmissionHistoryNewToSubmission.setFromStage(Submission_Status.NEW.toString());
+				 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+				 requirementSubmissionHistoryService.updateRequirementHistory(clientSubmission, null, requirementSubmissionHistoryNewToSubmission);
+				 
+				 RequirementSubmissionHistory requirementSubmissionHistorySubmissionToRejected = new RequirementSubmissionHistory();
+				 requirementSubmissionHistorySubmissionToRejected.setFromStage(ApplicantSubmissionStatus.SUBMISSION.getValue());
+				 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+				 requirementSubmissionHistoryService.updateRequirementHistory(clientSubmission, null, requirementSubmissionHistorySubmissionToRejected);
+				 
+			 }
+   		}
+   		 
+   		 
    		 
    		 String data = clientSubmission.getSubmissionTemplateJsonStringValue();
    		 try {
@@ -2389,7 +2453,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
         	StringBuilder sb = new  StringBuilder();
         	if(reqsub.getCandidate().getLastName() != null && !" ".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
 	        		
-	                reqsub.setCandidateName(sb.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields).toString());
+        		reqsub.setCandidateName(sb.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
         	}else{
                     reqsub.setCandidateName(sb.append(requirementSubmissionTemplateFields.getFirstName()).toString());
         	}
