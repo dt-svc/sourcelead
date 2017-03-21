@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
+import com.bis.sourcelead.entity.Timezone;
+import com.bis.sourcelead.entity.User;
 
 public interface RequirementInterviewHistoryService {
 
@@ -29,11 +31,12 @@ public interface RequirementInterviewHistoryService {
 	 * @param userCode
 	 * @param endUTCDate 
 	 * @param startUTCDate 
+	 * @param user 
 	 * @return
 	 * @throws Exception
 	 * To get dashboard interviews
 	 */
-	List<RequirementInterviewHistory> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode, Date startUTCDate, Date endUTCDate)throws Exception;
+	List<RequirementInterviewHistory> getAllInterviewAssignedToLoginUser(OrgLocations loginOrgLocations, String dateRange, String currentTime, String userType, Long userId, String userCode, Date startUTCDate, Date endUTCDate,Timezone timezone, User user)throws Exception;
 	
 	List<RequirementInterviewHistory> getAllProfessinalInterviews(String dateRange,Long candidateId)throws Exception;
 	
@@ -43,5 +46,6 @@ public interface RequirementInterviewHistoryService {
 	List<RequirementInterviewHistory> getAllRecruiterSubmittedInterviews(String dateRange, Long userId)throws Exception;
 	
 	List<RequirementInterviewHistory> getCrowdSorurcingInterviews(Long submissionId,OrgLocations orgLocations) throws Exception;
+
 
 }

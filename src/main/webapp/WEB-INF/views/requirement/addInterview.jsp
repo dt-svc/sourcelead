@@ -76,7 +76,7 @@ function addInterview(requirementId){
 	if(parentRequirement == 'Y'){
 	   result = result + '<label><input type="checkbox" name="notificationToSpoc" value="Y" checked="checked"><b>Notify to Vendors</b></label>';
 	}
-	result = result + '<label><input type="checkbox" name="notificationToOthers" id="notificationToOthers" value="Y" onClick="showOthersDiv();"><b>Notify to Others</b></label>';
+	result = result + '<label><input type="checkbox" name="notificationToOthers" id="notificationToOthers" onClick="getNotifyToOtersVal();showOthersDiv();"><b>Notify to Others</b></label>';
 	result = result + '</div>';
 	
 	result = result + '<div class="mb10 mt clearfix" id="notifyOthersDiv" style="display: none;">';
@@ -216,15 +216,32 @@ function checkEmails(){
 	}
 }
 </script> 
-
+<script>
+function validateOtherMail(){
+var dataNotify =document.getElementById("notificationToOthersEmails").value;
+var isNofityToOthers = document.getElementById("notificationToOthers").value;
+if((dataNotify == '' || dataNotify == 0)){
+	  $("#add_interview").attr("disabled", "disabled");
+	  $('#notifyOthersDiv').find('p.jquery_form_error_message').remove();
+	  $("input#notificationToOthersEmails").after("<p class='jquery_form_error_message'>Please enter Email</span>");
+	  document.getElementById("notificationToOthersEmails").setAttribute('record-exist','yes');
+	  document.getElementById("notificationToOthersEmails").setAttribute('record-exist-errorMsg','Please enter Email'); 
+}else{
+	$('input#notificationToOthersEmails').removeAttr( "record-exist record-exist-errormsg");
+	$('#notifyOthersDiv').find('p.jquery_form_error_message').remove(); 
+    $("#add_interview").removeAttr("disabled");
+}
+}
+</script>
 <script>
 function selectInterviewApplicants(){
 	var selectedInterviewApplicants =  $('#1applicant_chosen  span').size();
 	$("#selectedInterviewApplicantsCount").html(selectedInterviewApplicants);
-	$('#1applicant_chosen').next("p").remove();
+	$('#1applicant_chosen').next('p.jquery_form_error_message').remove();
 	
 	$('.search-choice-close').click(function() {
 		var interviewApplicants =  $('#1applicant_chosen  span').size();
+		$('#1applicant_chosen').next('p.jquery_form_error_message').remove();
 		if(interviewApplicants <1){
 			$('#1applicant_chosen').after('<p class="jquery_form_error_message">Applicant is Required</p>');
 		}
@@ -489,8 +506,26 @@ function cancelAddInterviewDiv(){
 
 </script>
 
+<script>
+function getNotifyToOtersVal(){
+    if(document.getElementById('notificationToOthers').checked) {
+        $("#notificationToOthers").val('Y');
+        $("#notifyOthersDiv").find('p.jquery_form_error_message').remove();
+    }else{
+        $("#notificationToOthers").val('N');
+        $("#notifyOthersDiv").find('p.jquery_form_error_message').remove();
+        $("#add_interview").removeAttr("disabled");
+    }
+}
+
+</script>
+
 <script type="text/javascript">
    	$('body').on('submit', '#addInterview_form', function(e){
+   	var isNofityToOthers = document.getElementById("notificationToOthers").value;
+   		if(isNofityToOthers == "Y"){
+   			validateOtherMail();
+   		}
 	  if ($(this).validate(false, validationSettings)){
         e.preventDefault();
         var frm = $('#addInterview_form').serializeFormJSON();
