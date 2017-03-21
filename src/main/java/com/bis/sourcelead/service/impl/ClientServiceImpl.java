@@ -927,7 +927,7 @@ public class ClientServiceImpl implements ClientService{
 			 emailMessage.setFromEmail("qa@sourcelead.com");
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 StringBuilder emailMsgBuilder = new StringBuilder();
-			 emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 emailMessage.setFromName("Sourcelead");
 			// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 
 			//setting the class filed values
