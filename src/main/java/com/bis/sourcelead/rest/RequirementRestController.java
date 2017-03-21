@@ -257,9 +257,14 @@ public class RequirementRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+	   
+		//rejected reason save in requirementApproverHierarchy table only who can reject the requirement
 
 		RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirementId, loginUser.getId());
-	    
+		if(status.equalsIgnoreCase("REJECTED")  &&  !reason.equalsIgnoreCase("") && !reason.isEmpty()){
+	    	requirementApproverHierarchy.setRejectedReason(reason);
+	    	requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
+	    }
 		
 		//  This for the Requirement Location 
 		StringBuilder location = new StringBuilder();
@@ -294,7 +299,6 @@ public class RequirementRestController {
 										if (status.equalsIgnoreCase("APPROVED")) {
 											rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
 										} else if (status.equalsIgnoreCase("REJECTED")) {
-											rah.setRejectedReason(reason);
 											rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
 										}
 										rah.setUpdatedBy(loginUser.getUserCode());

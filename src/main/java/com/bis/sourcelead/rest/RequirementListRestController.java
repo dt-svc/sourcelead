@@ -437,7 +437,6 @@ public class RequirementListRestController {
 							requirement.setApprovalMechanismType(approverN.getHierarchyType().toString());
 							if(null != approverN.getRejectedReason() && !approverN.getRejectedReason().equalsIgnoreCase("") && Constants.REJECTED.equalsIgnoreCase(approverN.getRequirementApproverStatus().toString())){
 								requirement.setRejectReasonForRequirement(sb.append(approverN.getRejectedReason()).toString());
-								break;
 							}
 						}
 						requirement.setApproverNames(ar);
