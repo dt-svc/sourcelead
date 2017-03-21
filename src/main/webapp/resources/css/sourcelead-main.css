@@ -6659,33 +6659,44 @@ background-color:#fff !important;
 .eventCalendr_content {
     overflow-y: auto; min-height: 150px; max-height: 350px;
 }
-.userdetails {
-    padding: 8px 10px 3px 10px; margin-top: 10px; width: 300px; background-color:#fff; border: 1px solid #ededed; border-radius: 5px;
-    position: absolute; z-index: 99; top: 20px; right: 20px; display: none; box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+.personalInfo .userdetails {
+    padding: 5px 10px 2px 10px; margin-top: 0px; width: 275px; background-color:#e3f2fd; border: 1px solid #90caf9; border-radius: 5px;
+    position: absolute; z-index: 99; top: 0px; right: 25px; display: none; box-shadow: 0 1px 1px rgba(0,0,0,0.1);
 }
-.userdetails p{
+.personalInfo .userdetails p{
     margin-bottom: 2px;
 }
-.userdetails::before{
-    top: -20px; right:27%; border: solid transparent; content: " "; height: 0;
-	width: 0; position: absolute; pointer-events: none; border-color: rgba(194, 225, 245, 0); border-bottom-color: #ddd; border-width: 10px; margin-left: -36px;
+.personalInfo .userdetails:before{
+    top: 5px; right:0%; border: solid transparent; content: " "; height: 0;
+	width: 0; position: absolute; pointer-events: none; border-color: rgba(194, 225, 245, 0);
+    border-right-color: #42a5f5; border-width: 10px; margin-left: 0px;
 }
-.userdetails .fa {
-    padding-right: 10px; float: left; color: #838282;
+.personalInfo .userdetails .fa {
+    padding-right: 10px; float: left; color: #838282; width: auto; height: auto;
 }
-span.personalInfo {
-    cursor: pointer; float: right; margin-right: 100px;
+.personalInfo .fa {
+    color: #1976d2; display: inline-block; width: 20px;height: 20px; text-align: center;
+}
+.personalInfo {
+    cursor: pointer; position: absolute; right: 100px; top: 0; z-index: 999;
+}
+.personalInfo:hover .userdetails {
+    color:red; display: block;
 }
 .userdetails label {
     width: 200px; overflow: hidden; display: inline-block; text-overflow: ellipsis; margin-bottom: 0;
 }
 #referToContacts .chosen-container-multi .chosen-choices li.search-choice span {
-word-wrap: break-word;
-font-size: 13px;
-color: #333;
+word-wrap: break-word; font-size: 13px; color: #333;
 }
 #referToContacts .chosen-container a {
 padding: 0; margin: 0;
+}
+#referToContacts .chosen-results .no-results span {
+word-wrap: break-word; font-size: 13px !important; color: #333;
+}
+#referToContacts .chosen-container-multi .chosen-choices{
+min-height: 30px; max-height: 100px !important; overflow-y: scroll !important;
 }
 /* media 320px */
 @media (max-width: 320px) {

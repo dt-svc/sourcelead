@@ -1,8 +1,12 @@
 package com.bis.sourcelead.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.User;
 
 public interface CandidateDao {
 
@@ -44,5 +48,10 @@ public interface CandidateDao {
 	Candidate getCandidateByEmailAndRecruiterUserId(String email,Long recruiterUserId) throws Exception;
 	
 	public List<Candidate> getCandidatesByOrgLocationIDAndSearchText(Long orgLocationId,Long requirementId, String candidateType,String searchApplicant) throws Exception;
-
+    
+	public Long getCandidatesCountByCandidateTypeOrgLocationID(Long orgLocationId,String candidateType);
+	
+	public List<Candidate> getCandidateReportsListByOrgLocationID(Long orgLocationId,String candidateType) throws Exception;
+	
+	List<Candidate> getCandidateReports(Long orgLocationId,String candidateType,String filterDate, Date startDateUTC, Date endDateUTC);
 }

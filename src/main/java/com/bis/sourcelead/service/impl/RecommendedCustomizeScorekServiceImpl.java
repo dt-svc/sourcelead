@@ -84,6 +84,9 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 		if("" != null && null != requirement.getRateType()){
 			res.setCustomizeRatetype(requirement.getRateType());	
 		}
+		if("" != null && null != requirement.getNoticePeriod()){
+			res.setCustomizeNoticeperiod(requirement.getNoticePeriod());	
+		}
 		
 		res.setCustomizeSkillScore(Constants.SCORE_20);
 		res.setCustomizeRateScore(Constants.SCORE_20);

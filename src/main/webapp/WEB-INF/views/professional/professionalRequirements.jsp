@@ -274,7 +274,8 @@ window.onload = function () {
 	   <br/>
 	   <input type="hidden" name="requirementOffset" id="requirementOffset" value="0"/>
 	    <input type="hidden" name="requirementSearchOffset" id="requirementSearchOffset" value="0"/>
-	  <div id="requirementsList"></div> 
+	    <div id="requirementsListLoading"></div>  
+	  <div id="requirementsList"></div>
 	  <a href="#" id="loadMoreSection" style="display: none;"><section class="loadJob" onclick="getViewMoreRecords();"><i id="viewMoreLoading"></i><span id="viewMore">View more</span></section></a>
 	   <a href="#" id="noMoreRecordsSection" style="display: none;"><section class="loadJob"><span id="viewMore">No More Records</span></section></a>
 	  <a href="#" id="loadMoreSearchSection" style="display: none;"><section class="loadJob" onclick="getViewMoreSearchRecords();"><i id="viewMoreSearchLoading"></i><span id="viewSearchMore">View more</span></section></a>
@@ -558,7 +559,7 @@ function requirementsList(offset){
 	
 	closePop();
 	loadChosenRequirementScripts();
-	
+	$("#requirementsListLoading").attr('style','position:absolute; width:100%; height:30%; background-color:rgba(255,255,255,0.8); top:248px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	
 	 $.ajax({ 
 	   	type: "POST",
@@ -792,6 +793,8 @@ function requirementsList(offset){
    		    	document.getElementById("noMoreRecordsSection").style.display="";
    		    	
    		    }
+	     
+	     $("#requirementsListLoading").removeAttr("style"); 
    	
 		 },
        error: function(e){
@@ -824,6 +827,7 @@ function searchRequirement(offset){
 			
 			var requirementType = document.getElementById('requirementType').value;
 			var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+			$("#requirementsListLoading").attr('style','position:absolute; width:100%; height:30%; background-color:rgba(255,255,255,0.8); top:248px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 			
 			if(offset == 0){
 				$("#requirementsList").empty();
@@ -1023,6 +1027,7 @@ function searchRequirement(offset){
 		           		    	document.getElementById("noMoreRecordsSection").style.display="none";
 		           		    	document.getElementById("noMoreRecordsSection").style.display="none";
 		               		 }
+					       	$("#requirementsListLoading").removeAttr("style"); 
 						},
 					});  
 			return true;

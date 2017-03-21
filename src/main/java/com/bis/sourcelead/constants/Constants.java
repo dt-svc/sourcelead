@@ -290,6 +290,8 @@ public class Constants {
 	public static String FORGOT_PASSWORD = "Forgot Password";
 	public static String UPDATE_PASSWORD = "Update Password";
 	public static String MAIL_PROJECT_MANAGER = "Mail To Project Manager";
+	public static String EDITPROJECT_MAIL_MANAGER= "Editprojecttomanager";
+	public static String EDITPROJECT_MAIL_TEAMMEMBER= "Editprojecttoteammember";
 	
 	public static String REJECTMAILFROMCLIENT_TO_VENDOR = "RejectMailFromClient_To_Vendor";
 
@@ -373,7 +375,7 @@ public class Constants {
 			"Date Of Join", "Rate", "Location", "Role", "Manager", "status" };
 	public static String[] CANDIDATE_EXCEL_HEADERS = {"Firstname","Last name","Email id","Phone Number","Location","Designation","Education","Experience","Skills","Rate"};
    
-	public static String[] REQUIREMENT_EXCEL_HEADERS = {"Requirement id","Requirement Title","Experience","Rate","Location","Skills","Manager","Priority","Application Form Name","Client Name","Client Contact Name","Client Contact Email"};
+	public static String[] REQUIREMENT_EXCEL_HEADERS = {"Requirement id","Requirement Title","Experience","Rate","Location","Skills","Manager","Priority","Application Form Name","Client Name","Client Contact Name","Client Contact Email","Status"};
     
     public static String[] REQUIREMENT_PIPELINE_EXCEL_HEADERS={"Name","Email","PhoneNumber","Resume","Applied On","Rate","Source","Score","Experience","Status","Submitted On","Submitted By"};
     
@@ -550,6 +552,7 @@ public class Constants {
     public static String CANDIDATE_SKILLS_NAME = "Skills Name";
     public static String CANDIDATE_EDUCATION = "Education";
     public static String CANDIDATE_EMPLOERS = "Employer's";
+    public static String CANDIDATE_PRIMARY_SKILL = "Primary Skill";
     
     public static String EMPLOYEE = "Employee";
     
