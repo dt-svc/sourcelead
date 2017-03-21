@@ -6651,10 +6651,10 @@ padding: 10px;
 
 }
 .refercontacts .nav>li>a {
-background-color:#909090;
+background-color:#E0E0E0; 
 }
 .refercontacts .nav-tabs>li.active>a, .refercontacts .nav-tabs>li.active>a:focus, .refercontacts .nav-tabs>li.active>a:hover {
-background-color:#fff !important;
+background-color:#fff !important; color:#EF6C00; border-top:3px solid #FFB74D;
 }
 .eventCalendr_content {
     overflow-y: auto; min-height: 150px; max-height: 350px;
