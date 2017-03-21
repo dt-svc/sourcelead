@@ -13,4 +13,8 @@ public interface ReferContactsDao {
 	ReferContacts getReferContactsByEmails(Long userId,String toEmail) throws Exception;
 
 	List<ReferContacts> getReferContactsListByUserIdAndOrglocationId(Long userId,Long orgLocationId) throws Exception;
+	
+	List<ReferContacts> getUserContactsListByUserIdAndRequirementId(Long userId,Long requirementId) throws Exception;
+	
+	ReferContacts getReferContactsById(Long id) throws Exception;
 }

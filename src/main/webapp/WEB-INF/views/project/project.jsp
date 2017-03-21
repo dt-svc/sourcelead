@@ -181,8 +181,7 @@ function validateTaskName(){
 														<div class="form-group" id="descriptionDiv">
 															<label class="col-md-3">Description</label>
 															<div class="col-md-9">
-																<textarea class="form-control" placeholder="Enter Task Description" data-validation="validate_length length10-5000"
-									data-validation-optional="true" id="taskDescription" name="taskDescription"></textarea>
+																<textarea class="form-control" placeholder="Enter Task Description"  id="taskDescription" name="taskDescription"></textarea>
 															</div>
 														</div>
 													</div>
@@ -442,14 +441,14 @@ function getStatus(){
 	function addTasks() {
 		$('#taskNameDIV').find('p.jquery_form_error_message').remove();
 		$('#descriptionDiv').find('p.jquery_form_error_message').remove();
-		if ($('#taskName').val() == '' || $("#taskDescription").val().length > 200 || $("#taskName").val().length > 100) {
+		if ($('#taskName').val() == '' || $("#taskDescription").val().length > 200 || $("#taskDescription").val().length < 10 || $("#taskName").val().length > 100 || $("#taskName").val().length < 2) {
 			if ($('#taskName').val() == '') {
 				$("input#taskName") .after( "<p class='jquery_form_error_message'>Task Name is required</span>");
 			}
-			if($("#taskName").val().length > 100){
-				$("input#taskName") .after( "<p class='jquery_form_error_message'>The values Entered must be between10-100 characters</span>");
+			if(($('#taskName').val() != '' && $("#taskName").val().length < 2 )|| $("#taskName").val().length > 100){
+				$("input#taskName") .after( "<p class='jquery_form_error_message'>The values Entered must be between 2-100 characters</span>");
 			}
-			if ($("#taskDescription").val().length > 200) {
+			if (($("#taskDescription").val() != '' && $("#taskDescription").val().length < 10) || $("#taskDescription").val().length > 200) {
 				$("textarea#taskDescription") .after( "<p class='jquery_form_error_message'>The values Entered must be between10-200 characters</span>");
 			}
 			return true;
@@ -511,6 +510,7 @@ function getStatus(){
 </script>
 <script type="text/javascript">
 	function editTask(rowId) {
+		$('#addTask').find('p.jquery_form_error_message').remove();	 	
 		var updateTaskName = $("#" + rowId + "taskName").val();
 		var updateTaskDescription = $("#" + rowId + "taskDescription").val();
 		var updateTaskBillableType = $("#" + rowId + "taskBillableType").val();
@@ -658,6 +658,7 @@ function getStatus(){
 <script type="text/javascript">
 function flushProjectTasks(){
 	$("#taskName").val('');
+	$("#taskDescription").val('');
 	$('#addTask').find('p.jquery_form_error_message').remove();	
 }
 </script>

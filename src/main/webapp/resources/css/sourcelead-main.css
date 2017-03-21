@@ -613,7 +613,7 @@ ul.timesheet-menu li a, .backoffice-menu li a {
 }
 ul.timesheet-menu li a::before, .backoffice-menu li a::before {
 	color: #f0ad4e;
-	content: "ïˆ­";
+	content: "\f22d";
 	font-family: fontawesome;
 	padding-right: 5px;
 }
@@ -1067,6 +1067,7 @@ ul.timesheet-menu li a:hover, ul.backoffice-menu li a:hover {
 	display: inline-block;
 	overflow: hidden;
 	padding: 0.625rem 1.25rem;
+
 
 }
 .dropzone .file-upload .btnBlock {
@@ -4693,12 +4694,10 @@ import-tranhd  [class*="col-md-"]{
    padding: 0px 5px 0px 0px !important;
 }
 .customtimesheet-head ul ul{
-       width: 150px !important;
+       width: 180px !important;
 }
 .customtimesheet-head ul ul li {
-           text-overflow: ellipsis;
-           overflow: hidden;
-           width: 150px;
+   text-overflow: ellipsis; overflow: hidden; width: 180px; white-space: nowrap;
 }
 .customtimesheet-head ul ul li label{
        top:0;
@@ -5135,6 +5134,7 @@ border-radius: 0;
 .mailerpopup {
 min-height: 100px;
 max-height: 400px;
+
 }
 
 /* worked for pav bug */
@@ -6528,7 +6528,7 @@ box-shadow: 0 8px 6px -6px rgba(0,0,0,0.2);
     border-right:1px solid rgba(94,94,94,0.1); position: absolute; text-align: center; font-weight: 600; color: #707070; font-size: 13px;
 }
 .eventList {
-    border: 1px solid rgba(94,94,94,0.2); border-top: 0;
+    border: 1px solid rgba(94,94,94,0.2); border-top: 0; position: relative;
 }
 .eventList:nth-child(2n+2) {
     background: #eceff1;
@@ -6537,7 +6537,7 @@ box-shadow: 0 8px 6px -6px rgba(0,0,0,0.2);
     position: relative;
 }
 .eventList .media-body {
-    width: 85%; float: left; margin-left: 65px; min-height: 65px; position: relative;
+    width: 89%; float: left; margin-left: 65px; min-height: 65px; position: relative;
 }
 .eventList figure{
  padding: 0 10px;   
@@ -6546,7 +6546,7 @@ box-shadow: 0 8px 6px -6px rgba(0,0,0,0.2);
 margin-left: 15px;
 }
 .event_details {
-    width: 86%;
+    width: 86%; position: relative;
 }
 .event_details p {
     margin-bottom: 0px;
@@ -6563,7 +6563,7 @@ margin-left: 15px;
     background: #fff;
     border-radius: 50%;
     transition: all 0.3s linear;
-    position: absolute; top:10px; right: 10px;
+    position: absolute; top:10px; right: 15px;
 }
 .event_details .feedBack a:hover{
     background: #f5f5f5;
@@ -6636,6 +6636,67 @@ background-color: #ccc; color:#333;
 }
 .reportsCount.req_Crowd ul li {
 	width: 20%;
+}
+
+.refercontacts .nav>li>a {
+position: relative;
+display: block;
+padding: 5px 10px;
+font-size: 12px;
+}
+.tab-content.refercontacts_content {
+border: 1px solid #ededed;
+border-top:none;
+padding: 10px;
+
+}
+.refercontacts .nav>li>a {
+background-color:#909090;
+}
+.refercontacts .nav-tabs>li.active>a, .refercontacts .nav-tabs>li.active>a:focus, .refercontacts .nav-tabs>li.active>a:hover {
+background-color:#fff !important;
+}
+.eventCalendr_content {
+    overflow-y: auto; min-height: 150px; max-height: 350px;
+}
+.personalInfo .userdetails {
+    padding: 5px 10px 2px 10px; margin-top: 0px; width: 275px; background-color:#e3f2fd; border: 1px solid #90caf9; border-radius: 5px;
+    position: absolute; z-index: 99; top: 0px; right: 25px; display: none; box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+}
+.personalInfo .userdetails p{
+    margin-bottom: 2px;
+}
+.personalInfo .userdetails:before{
+    top: 5px; right:0%; border: solid transparent; content: " "; height: 0;
+	width: 0; position: absolute; pointer-events: none; border-color: rgba(194, 225, 245, 0);
+    border-right-color: #42a5f5; border-width: 10px; margin-left: 0px;
+}
+.personalInfo .userdetails .fa {
+    padding-right: 10px; float: left; color: #838282; width: auto; height: auto;
+}
+.personalInfo .fa {
+    color: #1976d2; display: inline-block; width: 20px;height: 20px; text-align: center;
+}
+.personalInfo {
+    cursor: pointer; position: absolute; right: 100px; top: 0; z-index: 999;
+}
+.personalInfo:hover .userdetails {
+    color:red; display: block;
+}
+.userdetails label {
+    width: 200px; overflow: hidden; display: inline-block; text-overflow: ellipsis; margin-bottom: 0;
+}
+#referToContacts .chosen-container-multi .chosen-choices li.search-choice span {
+word-wrap: break-word; font-size: 13px; color: #333;
+}
+#referToContacts .chosen-container a {
+padding: 0; margin: 0;
+}
+#referToContacts .chosen-results .no-results span {
+word-wrap: break-word; font-size: 13px !important; color: #333;
+}
+#referToContacts .chosen-container-multi .chosen-choices{
+min-height: 30px; max-height: 100px !important; overflow-y: scroll !important;
 }
 /* media 320px */
 @media (max-width: 320px) {
