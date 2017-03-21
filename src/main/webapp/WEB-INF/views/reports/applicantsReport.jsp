@@ -751,7 +751,7 @@ function getCustomReports(){
 	     "labelRotation": 45
 	     },
 	     "export": {
-	     "enabled": true
+	     "enabled": false
 	     }
 	
 	     });
