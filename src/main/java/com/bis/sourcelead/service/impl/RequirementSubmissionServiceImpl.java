@@ -2434,7 +2434,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
         	StringBuilder sb = new  StringBuilder();
         	if(reqsub.getCandidate().getLastName() != null && !" ".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
 	        		
-	                reqsub.setCandidateName(sb.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields).toString());
+        		reqsub.setCandidateName(sb.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
         	}else{
                     reqsub.setCandidateName(sb.append(requirementSubmissionTemplateFields.getFirstName()).toString());
         	}
