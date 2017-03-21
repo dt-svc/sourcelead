@@ -103,7 +103,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
 		 Boolean teamFlag = teamDao.getTeamOwnersListByUserIdAndRequirementId(user,orgLocations.getId(),requirement.getId());
 		 if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && teamFlag == false ) {
-			 subQuery2 = " and rs.createdBy = '"+user.getUserCode()+"' ";
+			 subQuery2 = " and ((rs.createdBy = '"+user.getUserCode()+"') OR (rs.candidate.candidateType = 'Professional') OR (rs.recruiterUserId IS NOT NULL)) ";
 		 }
 		 
 		 
@@ -137,7 +137,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
 		 Boolean teamFlag = teamDao.getTeamOwnersListByUserIdAndRequirementId(user,orgLocations.getId(),requirement.getId());
 		 if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && teamFlag == false ) {
-			 subQuery2 = " and rs.createdBy = '"+user.getUserCode()+"' ";
+			 subQuery2 = " and ((rs.createdBy = '"+user.getUserCode()+"') OR (rs.candidate.candidateType = 'Professional') OR (rs.recruiterUserId IS NOT NULL)) ";
 		 }
 		 
 		 List<RequirementSubmission> shortListCandidatesList;
@@ -247,7 +247,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				params.put("userId",user.getId());
 				
 				// This is if the user is  created by 
-				String subQuery2 = "reqSub.createdBy =:usercode";
+				String subQuery2 = "((reqSub.createdBy =:usercode) OR (reqSub.candidate.candidateType = 'Professional') OR (reqSub.recruiterUserId IS NOT NULL))";
 				params.put("usercode",user.getUserCode());
 				
 				//  this is if the  user is   Assign Team  Owner
@@ -350,7 +350,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
 		 Boolean teamFlag = teamDao.getTeamOwnersListByUserIdAndRequirementId(user,loginOrgLocation.getId(),requirement.getId());
 		 if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && teamFlag == false ) {
-			 subQuery = " and rs.createdBy = '"+user.getUserCode()+"' ";
+			 subQuery = " and ((rs.createdBy = '"+user.getUserCode()+"') OR (rs.candidate.candidateType = 'Professional') OR (rs.recruiterUserId IS NOT NULL)) ";
 		 }
 		 
 		 String submissionStages = "";
@@ -770,7 +770,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
                     params.put("userId",user.getId());
                     
                     // This is if the user is  created by
-                    String subQuery2 = "reqSub.createdBy =:usercode";
+                    String subQuery2 = "((reqSub.createdBy =:usercode) OR (reqSub.candidate.candidateType = 'Professional') OR (reqSub.recruiterUserId IS NOT NULL))";
                     params.put("usercode",user.getUserCode());
                     
                     //  this is if the  user is   Assign Team  Owner
@@ -1167,7 +1167,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				params.put("userId",user.getId());
 				
 				// This is if the user is  created by 
-				String subQuery2 = "reqSub.createdBy =:usercode";
+				String subQuery2 = "((reqSub.createdBy =:usercode) OR (reqSub.candidate.candidateType = 'Professional') OR (reqSub.recruiterUserId IS NOT NULL))";
 				params.put("usercode",user.getUserCode());
 				
 				//  this is if the  user is   Assign Team  Owner
