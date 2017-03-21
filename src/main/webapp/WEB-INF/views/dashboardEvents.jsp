@@ -65,7 +65,7 @@ window.onload = function() {
 					 result = result + '          </div>                       ';
 					 result = result + '              <div class="media-body paddingLeft">   ';
 					 result = result + '                  <figure class="pull-left">         ';
-					 result = result + '                  <img src="images/interview_icons.png" class="img-responsive" width="40">    ';
+					 result = result + '                  <img src="resources/images/interview_icons.png" class="img-responsive" width="40">    ';
 					 result = result + '                  </figure>                                                                   ';
 					 result = result + '                      <div class="pull-left event_details form-horizontal">                   ';
 					 result = result + '                          <p><label class="text-muted small col-md-2">Name:</label>'+report.candidateName+' </p>    ';
@@ -118,13 +118,26 @@ window.onload = function() {
 					 	 result = result + '         </div>                          ';
 					 	 result = result + '             <div class="media-body paddingLeft"> ';
 					 	 result = result + '                 <figure class="pull-left">       ';
-					 	 result = result + '                 <img src="images/task-icon.png" class="img-responsive" width="40">    ';
+					 	 result = result + '                 <img src="resources/images/task-icon.png" class="img-responsive" width="40">    ';
 					 	 result = result + '                 </figure>                                                             ';
 					 	 result = result + '                     <div class="pull-left event_details">                             ';
 					 	 result = result + '                         <p><label class="text-muted small col-md-2">Subject:</label> '+report.subject+'</p>         ';
-					 	 result = result + '                         <p class="text-danger"><label class="text-muted small col-md-2">Priortiy:</label> '+priority+'</p>   ';
-					 	 result = result + '                         <p><label class="text-muted small col-md-2">Status:</label> '+report.taskStatus+'</p>                    ';
-					 	 result = result + '                         <p><label class="text-muted small col-md-2">Des.:</label> '+description+'</p>   ';
+					 	 
+					 	 result = result + '                     <div class="clearfix"></div>            ';
+
+					 	 result = result + '                     <div class="row">            ';
+					 	 
+					 	 result = result + '                     <div class="col-md-5">            ';
+					 	 result = result + '                         <p class="text-danger"><label class="text-muted small col-md-6">Priortiy:</label> '+priority+'</p>   ';
+					 	 result = result + '                     </div>            ';
+
+					 	 result = result + '                     <div class="col-md-5">            ';
+					 	 result = result + '                         <p><label class="text-muted small col-md-6">Status:</label> '+report.taskStatus+'</p>                    ';
+					 	 result = result + '                     </div>            ';
+					 	 
+					 	result = result + '                     </div>            ';
+					 	 
+					 	result = result + '                         <p><label class="text-muted small col-md-2">Des.:</label> '+description+'</p>   ';
 					 	 result = result + '                     </div>            ';
 					 	 result = result + '             </div>                    ';
 					 	 result = result + '     </div>                            ';
