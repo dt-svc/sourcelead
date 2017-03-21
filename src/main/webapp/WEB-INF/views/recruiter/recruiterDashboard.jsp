@@ -41,9 +41,9 @@ $(document).ready(function(){
 		          </div>
 	           <div class="col-md-9 select-field monthSearch_Custom">
 	            <div class="row">
-		          <div class="col-md-4">
+		          <div class="col-md-4 pull-right">
 						<label class="btn_currentmonth" onclick="dailyStatusChangeMonth('currentMonth')">15 Days</label>
-						<i class="fa fa-calendar" onclick="dailyStatusChangeMonth('customize')" title="Customize Dates"></i>
+						<i class="fa fa-calendar pull-right" onclick="dailyStatusChangeMonth('customize')" title="Customize Dates"></i>
 					</div>
 			          <div class="col-md-8" style="visibility:hidden" id="dailyStatus">
 							    <div class="row">
@@ -71,9 +71,9 @@ $(document).ready(function(){
 		             <div class="col-md-3">
 		            	<h4>Summary</h4>
 		             </div>
-			         <div class="col-md-5 monthSearch_Custom">
+			         <div class="col-md-5 monthSearch_Custom pull-right">
 		           		<label class="btn_currentmonth" onclick="summaryChangeMonth('currentMonth')">Current Month</label>
-						<i class="fa fa-calendar" onclick="summaryChangeMonth('customize')" title="Customize Dates"></i>
+						<i class="fa fa-calendar pull-right" onclick="summaryChangeMonth('customize')" title="Customize Dates"></i>
 					</div>
 				  </div>
 				  <div class="row summarySearch">
@@ -105,7 +105,7 @@ $(document).ready(function(){
 				    <div class="col-md-3 paddingRight">
 				    	<h4>Candidates Submitted By Me</h4>
 				    </div>
-				    <div class="col-md-2 select-field monthSearch_Custom">
+				    <div class="col-md-2 select-field monthSearch_Custom pull-right">
 					    <label class="btn_currentmonth" onclick="refertomeChangeMonth('currentMonth')">Current Month</label>
 					     <i class="fa fa-calendar" onclick="refertomeChangeMonth('customize')" title="Customize Dates"></i>
 					  </div>
@@ -135,7 +135,7 @@ $(document).ready(function(){
 				    <div class="col-md-3 paddingRight">
 				    	<h4>Candidates Referred By Me</h4>
 				    </div>
-				    <div class="col-md-2 select-field monthSearch_Custom">
+				    <div class="col-md-2 select-field monthSearch_Custom pull-right">
 					    <label class="btn_currentmonth" onclick="referbymeChangeMonth('currentMonth')">Current Month</label>
 					     <i class="fa fa-calendar" onclick="referbymeChangeMonth('customize')" title="Customize Dates"></i>
 					  </div>
@@ -741,7 +741,7 @@ function flushDate(){
 	  	  onSelect : function(selected) {
 				var dt = new Date(selected);
 				dt.setDate(dt.getDate() + 1);
-				$("#portlettodate").datepicker("option", "minDate", dt);
+				$("#portletreferByMetodate").datepicker("option", "minDate", dt);
 			}
 	      //minDate: 0  this line for to restrict selection of previous dates
 	  });
@@ -753,7 +753,7 @@ function flushDate(){
 		  onSelect : function(selected) {
 				var dt = new Date(selected);
 				dt.setDate(dt.getDate() - 1);
-				$("#portletfromdate").datepicker("option", "maxDate", dt);
+				$("#portletreferByMefromdate").datepicker("option", "maxDate", dt);
 		  	}
 	      //minDate: 0  this line for to restrict selection of previous dates
 	  });

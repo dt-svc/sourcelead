@@ -1107,7 +1107,7 @@ public class CandidateListRestController {
 		 }
 	 	 
 	 	 
-	 	 /**
+	 	   /**
 			 *  This Method is for saving Skils into Candidate table By candidateID
 			 *  
 			 * @author : venkat kesav
@@ -1132,5 +1132,16 @@ public class CandidateListRestController {
 				}else{
 					return "failed";
 				}
+			 }
+		   
+		   @RequestMapping(value = "/getCandidateReportsListByOrgLocationID")
+			 public String getCandidateReportsListByOrgLocationID(@RequestParam(value="candidateType", required=false) String  candidateType,
+					 HttpServletRequest request) throws Exception {
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				String resultJson;
+				List<Candidate> candidatesList = candidateService.getCandidateReportsListByOrgLocationID(orgLocations.getId(), candidateType);
+				/* List<Candidate> consultantsList = candidateService.getCandidateReportsListByOrgLocationID(orgLocations.getId(), "Consultant");*/
+				resultJson = commonUtil.toJSON(candidatesList);
+				return resultJson;
 			 }
 	}

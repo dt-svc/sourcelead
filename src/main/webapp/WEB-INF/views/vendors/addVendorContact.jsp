@@ -195,7 +195,7 @@
 	                  <option value="In-Active">In-Active</option>
 	                  <option value="New">New</option>
 	                  <option value="Negotiation">Negotiation</option>
-	                  <option value="Contracted">Contracted</option>
+	                  <option value="Contract">Contract</option>
 	                </select>
 	              </div>
 	            </div>
