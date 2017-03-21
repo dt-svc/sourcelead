@@ -18,7 +18,7 @@ import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
-public class SetDefaultCoolinOffPeriod {
+public class SetDefaultCoolingOffPeriod {
 		private ComboPooledDataSource comboPooledDataSource;
 		
 		
