@@ -33,6 +33,7 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 
 	@Override
 	public OrgLocations addOrgLocations(OrgLocations orgLocations) throws Exception {
+		orgLocations.setCoolingOffPeriod("3 Months"); //to set default cooling-off period to three months
 		return orgLocationsDao.addOrgLocations(orgLocations);
 	}
 

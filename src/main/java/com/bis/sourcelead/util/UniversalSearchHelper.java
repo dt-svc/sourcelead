@@ -131,6 +131,7 @@ public class UniversalSearchHelper {
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("designationType", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("primarySkill", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("certifications", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("candidateType", keywd));
 

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -110,5 +111,8 @@ public interface CandidateService {
 	public List<Candidate> getCandidatesByOrgLocationIDAndSearchText(Long orgLocationId,Long requirementId, String candidateType,String searchApplicant) throws Exception;
 	
 	public Candidate storeProfessionalParseCandidate(JSONObject jsonObj,OrgLocations orgLocations,User user,MultipartFile multiFile,Long candidateId) throws Exception;
-
+	
+	public Long getCandidatesCountByCandidateTypeOrgLocationID(Long orgLocationId,String candidateType);
+	public List<Candidate> getCandidateReportsListByOrgLocationID(Long orgLocationId,String candidateType) throws Exception;
+	List<Candidate> getCandidateReports(Long orgLocationId,String candidateType,String filterDate, Date startDateUTC, Date endDateUTC);
 }

@@ -94,6 +94,9 @@ public class OrgLocations implements Serializable{
 	@Column(name = "LOCATION_CODE")
 	private String locationCode;
 	
+	@Column(name = "COOLINGOFF_PERIOD")
+	private String coolingOffPeriod;
+	
 	@Column(name = "CREATED_BY")
 	private String createdBy;
 	
@@ -207,6 +210,14 @@ public class OrgLocations implements Serializable{
 		this.locationCode = locationCode;
 	}
 
+	public String getCoolingOffPeriod() {
+		return coolingOffPeriod;
+	}
+
+	public void setCoolingOffPeriod(String coolingOffPeriod) {
+		this.coolingOffPeriod = coolingOffPeriod;
+	}
+
 	public String getCreatedBy() {
 		return createdBy;
 	}
@@ -214,7 +225,6 @@ public class OrgLocations implements Serializable{
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
-
 
 	public String getUpdatedBy() {
 		return updatedBy;
