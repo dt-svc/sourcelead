@@ -305,6 +305,43 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 	public List<RequirementRefer> getLoginUserReferToMeListByUserId(Long userId) throws Exception {
 		return requirementReferDao.getLoginUserReferToMeListByUserId(userId);
 	}
+
+	@Override
+	public void submitUserContactsToRequirement(User user, OrgLocations orgLocations, JSONObject jsonObj)
+			throws Exception {
+		
+		
+		if(jsonObj.has("userContacts") && !isNullOrEmpty(jsonObj.getString("userContacts"))){
+			
+			
+			String userContacts = jsonObj.getString("userContacts");
+			userContacts = userContacts.replaceAll("\\[", "").replaceAll("\\]","");
+			
+			String[] contacts = userContacts.split(",");
+			Requirement requirement = new Requirement();
+			requirement.setId(Long.valueOf(jsonObj.getString("contactReferRequirementId")));
+			
+			for(int i=0; i < contacts.length; i++){
+				ReferContacts referContacts = referContactsDao.getReferContactsById(Long.parseLong(contacts[i].replace("\"", "")));
+				RequirementRefer refer = new RequirementRefer();
+				refer.setReferFromUser(user);
+				refer.setReferToUser(referContacts.getContactUser());
+				refer.setReferFromEmail(user.getEmail());
+				refer.setReferedUserFirstName(referContacts.getFirstName());
+				refer.setReferedUserLastName(referContacts.getLastName());
+				refer.setReferToEmail(referContacts.getContactUserEmail());
+				refer.setRequirementId(requirement);
+				refer.setOrgLocationId(orgLocations);
+				refer.setCreatedDate(new Date());
+				refer.setUpdatedDate(new Date());
+				refer.setCreatedBy(user.getUserCode());
+				refer.setPhoneNumber(referContacts.getContactUserPhone());
+				refer.setUpdatedBy(user.getUserCode());
+				requirementReferDao.addRequirementRefer(refer);
+			}
+		}
+	
+	}
 	
 
 }

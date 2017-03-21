@@ -542,6 +542,9 @@ public class RequirementReleaseRestController {
 		if(null != parentRequirement.getJobType() &&  parentRequirement.getJobType() != "" &&  parentRequirement.getJobType() != "undefined" && parentRequirement.getJobType().equalsIgnoreCase("Other")){
 			requirement.setOtherJobType(parentRequirement.getOtherJobType());
 		}
+		
+		requirement.setReqCoolingOffPeriod(parentRequirement.getReqCoolingOffPeriod());
+		
 //		requirement.setJobId(parentRequirement.getJobId());
 		requirement.setPositions(parentRequirement.getPositions());
 		requirement.setEducation(parentRequirement.getEducation());
