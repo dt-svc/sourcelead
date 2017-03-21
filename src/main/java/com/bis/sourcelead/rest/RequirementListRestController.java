@@ -376,7 +376,8 @@ public class RequirementListRestController {
 
 			if(requirementId !=null && !requirementId.isEmpty()){
 				Requirement requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
-				
+				User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
+
 				// to get the RequirementApproverHierarchy to set the Status
 				    Boolean isLoginUserAsApprover = false;
 					RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(Long.parseLong(requirementId), user.getId());
@@ -409,6 +410,14 @@ public class RequirementListRestController {
 						requirement.setManager(managerSB.append(requirement.getManagerUserId().getFirstName()).append(" ").append(requirement.getManagerUserId().getLastName()).toString());	
 					}
 					
+					//created by name display
+					StringBuilder createdby = new StringBuilder();
+					if(null != intiatorUser.getLastName() && intiatorUser.getLastName() != "undefined"){
+					requirement.setCreatedByName(createdby.append(intiatorUser.getFirstName()).append(" ").append(intiatorUser.getLastName()).toString());	
+					}else{
+					requirement.setCreatedByName(createdby.append(intiatorUser.getFirstName()).toString());	
+
+					}
 
 					if(requirement.getSubmissionTemplateId()!=null){
 						requirement.setClientSubmissionTemplate(requirement.getSubmissionTemplateId().getTemplateName());
@@ -425,11 +434,11 @@ public class RequirementListRestController {
 						for(RequirementApproverHierarchy approverN :list ){
 							StringBuilder approverSB = new StringBuilder();
 							ar.add(approverSB.append(approverN.getApproverUserId().getFirstName()).append(" ").append(approverN.getApproverUserId().getLastName()).toString());
+							requirement.setApprovalMechanismType(approverN.getHierarchyType().toString());
 							if(null != approverN.getRejectedReason() && !approverN.getRejectedReason().equalsIgnoreCase("") && Constants.REJECTED.equalsIgnoreCase(approverN.getRequirementApproverStatus().toString())){
 								requirement.setRejectReasonForRequirement(sb.append(approverN.getRejectedReason()).toString());
 								break;
 							}
-							requirement.setApprovalMechanismType(approverN.getHierarchyType().toString());
 						}
 						requirement.setApproverNames(ar);
 					}else{

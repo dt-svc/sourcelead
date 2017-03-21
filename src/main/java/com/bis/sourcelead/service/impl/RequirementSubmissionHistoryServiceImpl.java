@@ -103,39 +103,43 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 		RequirementSubmissionHistory requirementSubmissionHistory1 = requirementSubmissionHistoryDao.isInCoolingOffPeriodByEmailAndLocationsId(email, orgLocations.getId(), reqCoolingOffPeriod, requirementId);
 		
 		boolean isInCoolingOffPeriod = false;
-		if(coolingOffEndDate.before(requirementSubmissionHistory1.getCreatedDate())){
-			isInCoolingOffPeriod = true;
+		if(null != requirementSubmissionHistory1){
+			if(coolingOffEndDate.before(requirementSubmissionHistory1.getCreatedDate())){
+				isInCoolingOffPeriod = true;
+				requirementSubmissionHistory1.setIsInCoolingOffPeriod(isInCoolingOffPeriod);
+	
+				 Calendar cp = Calendar.getInstance();
+				
+			     cp.setTime(requirementSubmissionHistory1.getCreatedDate()); // Now use today date.
+			     Integer coolingOffPeriodEndDate = Integer.parseInt(reqCoolingOffPeriod);
+			     cp.add(Calendar.DATE, coolingOffPeriodEndDate);
+		         String updatedCPDate     = dateFormat.format(cp.getTime());
+		         Date parsedCPED = dateFormat.parse(updatedCPDate);
+				
+				Timezone timezone = null;
+				if(null != orgLocations.getTimezone()){
+			    	 timezone = timeZoneDao.getTimezone(orgLocations.getTimezone().getId());
+				 }
+				
+				if(parsedCPED != null){
+					String currentTimeStr = Constants.TZ_DF.format(parsedCPED);
+					if(null != timezone && null != timezone.getTimeZoneId()){
+						String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+						DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+						Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+						currentDateInTimezone = Constants.DF_DMY.format(converteDate);
+						requirementSubmissionHistory1.setCoolingOffPeriodEndDateStr(currentDateInTimezone);
+						
+						/*SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
+				        String time = localDateFormat.format(converteDate);
+				        requirementSubmission.setCreatedTimeStr(time);*/
+					}
+			    }
+			}
+		}else{
+			requirementSubmissionHistory1 = new RequirementSubmissionHistory();
 			requirementSubmissionHistory1.setIsInCoolingOffPeriod(isInCoolingOffPeriod);
-
-			 Calendar cp = Calendar.getInstance();
-			
-		     cp.setTime(requirementSubmissionHistory1.getCreatedDate()); // Now use today date.
-		     Integer coolingOffPeriodEndDate = Integer.parseInt(reqCoolingOffPeriod);
-		     cp.add(Calendar.DATE, coolingOffPeriodEndDate);
-	         String updatedCPDate     = dateFormat.format(cp.getTime());
-	         Date parsedCPED = dateFormat.parse(updatedCPDate);
-			
-			Timezone timezone = null;
-			if(null != orgLocations.getTimezone()){
-		    	 timezone = timeZoneDao.getTimezone(orgLocations.getTimezone().getId());
-			 }
-			
-			if(parsedCPED != null){
-				String currentTimeStr = Constants.TZ_DF.format(parsedCPED);
-				if(null != timezone && null != timezone.getTimeZoneId()){
-					String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
-					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-					Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-					currentDateInTimezone = Constants.DF_DMY.format(converteDate);
-					requirementSubmissionHistory1.setCoolingOffPeriodEndDateStr(currentDateInTimezone);
-					
-					/*SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
-			        String time = localDateFormat.format(converteDate);
-			        requirementSubmission.setCreatedTimeStr(time);*/
-				}
-		    }
 		}
-		
 		return requirementSubmissionHistory1;
 	}
 
