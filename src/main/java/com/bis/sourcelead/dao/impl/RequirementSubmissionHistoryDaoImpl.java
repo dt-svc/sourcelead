@@ -100,7 +100,7 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 		List<RequirementSubmissionHistory> requirementHistoryList = session.createQuery(query).setString("email", email).setLong("orgLocationId", orgLocationId).list();
 	  
 		
-		RequirementSubmissionHistory requirementSubmissionHistory1 = new RequirementSubmissionHistory();
+		RequirementSubmissionHistory requirementSubmissionHistory1 = null;
 		if (requirementHistoryList != null && !requirementHistoryList.isEmpty() ) {
 			RequirementSubmissionHistory requirementSubmissionHistory = requirementHistoryList.get(0);
 			
