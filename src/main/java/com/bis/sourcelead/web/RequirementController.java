@@ -332,8 +332,10 @@ public class RequirementController {
 				SubmissionTemplate   clientSubmissionTemplete = submissionTemplateService.getSubmissionTemplateById(requirement.getParentRequirement().getSubmissionTemplateId().getId());
 				model.addObject("clientSubmissionTemplete", clientSubmissionTemplete);
 			}else{
-				SubmissionTemplate   clientSubmissionTemplete = submissionTemplateService.getSubmissionTemplateById(requirement.getClientSubmissionTemplateId().getId());
-				model.addObject("clientSubmissionTemplete", clientSubmissionTemplete);
+				if(null != requirement.getClientSubmissionTemplateId()){
+					SubmissionTemplate   clientSubmissionTemplete = submissionTemplateService.getSubmissionTemplateById(requirement.getClientSubmissionTemplateId().getId());
+					model.addObject("clientSubmissionTemplete", clientSubmissionTemplete);
+				}
 			}
 		}
 
