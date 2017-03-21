@@ -74,6 +74,7 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
+import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -1628,10 +1629,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
 				 clientSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 				 clientSubmission.setRejectedReason("Under cooling off period, completed by "+requirementSubmissionHistoryForCoolingOff.getCoolingOffPeriodEndDateStr()+".");
-			 }else{
-				 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 			 }
-			 
+		 }else{
+			 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 		 }
 		 /*END Code snippet*/
 		 
@@ -1750,13 +1750,32 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 requirementSubmissionTemplateFieldsDao.storeRequirementSubmissionTemplateFields(clientSubmissionFields);
    		 RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
    		 requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
+   		 requirementSubmissionHistory.setToStage(submission.getSubmissionStatus().getValue());
    		 submission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMIT_TO_CLIENT);
    		 submission.setUpdatedBy(user.getUserCode());
    		 submission.setUpdatedDate(commonUtil.currentDate());
    		 requirementSubmissionDao.storeRequirementSubmission(submission);
    		 
-   		 
+   		
    		 requirementSubmissionHistoryService.updateRequirementHistory(submission, user, requirementSubmissionHistory);
+   		 
+   		 
+   		 if(requirementSubmissionHistoryForCoolingOff != null){
+			 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
+				 RequirementSubmissionHistory requirementSubmissionHistoryNewToSubmission = new RequirementSubmissionHistory();
+				 requirementSubmissionHistoryNewToSubmission.setFromStage(Submission_Status.NEW.toString());
+				 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+				 requirementSubmissionHistoryService.updateRequirementHistory(clientSubmission, null, requirementSubmissionHistoryNewToSubmission);
+				 
+				 RequirementSubmissionHistory requirementSubmissionHistorySubmissionToRejected = new RequirementSubmissionHistory();
+				 requirementSubmissionHistorySubmissionToRejected.setFromStage(ApplicantSubmissionStatus.SUBMISSION.getValue());
+				 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+				 requirementSubmissionHistoryService.updateRequirementHistory(clientSubmission, null, requirementSubmissionHistorySubmissionToRejected);
+				 
+			 }
+   		}
+   		 
+   		 
    		 
    		 String data = clientSubmission.getSubmissionTemplateJsonStringValue();
    		 try {
