@@ -502,6 +502,55 @@ public class CandidateRestController {
 			return resultJson;
 		}
 	 
+	 /**
+		 * @author Venkat Kesav
+		 * @ this method is uses for verify Cooling Off Period
+		 * @param 
+		 * @param request
+		 * @return
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/verifyCoolingOffPeriod")
+		public String verifyCoolingOffPeriod(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateEmail", required = false) String candidateEmail, @RequestParam(value = "reqCoolingOffPeriod", required = false) String reqCoolingOffPeriod, HttpServletRequest request) throws Exception {
+			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			 String resultJson ="false";
+			 
+			 String [] coolingOffArr = reqCoolingOffPeriod.split(" ");
+			 String reqCoolingOffPeriodDays;
+			 int Days;
+			 switch (coolingOffArr[1]) {
+				 case "Week" :
+					 reqCoolingOffPeriodDays = "7";
+				      break;
+				 case "Weeks" :
+					 Days  = (Integer.parseInt(coolingOffArr[0]) * 7);
+					 reqCoolingOffPeriodDays = Integer.toString(Days);
+				     break;
+				 case "Month" :
+					 reqCoolingOffPeriodDays = "30";
+				     break;
+				 case "Months" :
+					 Days  = (Integer.parseInt(coolingOffArr[0]) * 30);
+					 reqCoolingOffPeriodDays = Integer.toString(Days);
+				     break;
+				 case "Year" :
+					 reqCoolingOffPeriodDays = "365";
+				     break;
+				 default:
+					 reqCoolingOffPeriodDays = "0";
+			 }
+			 
+			 RequirementSubmissionHistory requirementSubmissionHistory = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(candidateEmail, loginOrgLocation, reqCoolingOffPeriodDays, requirementId);
+			 if(null != requirementSubmissionHistory){
+				 if(requirementSubmissionHistory.getIsInCoolingOffPeriod()){
+					 resultJson = commonUtil.toJSON(requirementSubmissionHistory.getIsInCoolingOffPeriod());
+				 }else{
+					 resultJson = commonUtil.toJSON("false");
+				 }
+			 }
+			 return resultJson;
+		}
+	 
 	 
 	/**
 	 * @author Laxman

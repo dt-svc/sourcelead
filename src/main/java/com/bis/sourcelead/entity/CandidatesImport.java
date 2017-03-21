@@ -56,6 +56,8 @@ private String education;
 
 private String employers;
 
+private String primarySkill;
+
 private String reason;
 
 public String getFirstName() {
@@ -228,6 +230,14 @@ public void setEmployers(String employers) {
 
 public static long getSerialversionuid() {
 	return serialVersionUID;
+}
+
+public String getPrimarySkill() {
+	return primarySkill;
+}
+
+public void setPrimarySkill(String primarySkill) {
+	this.primarySkill = primarySkill;
 }
 
 public String getReason() {
