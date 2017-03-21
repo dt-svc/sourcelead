@@ -214,6 +214,13 @@ function toDate(selector) {
     return new Date(from[2], from[1] - 1, from[0]);
 }
 </script>
+
+<style>
+.project_tabs_inn_table.vendor_wrap_inn_table div span {
+	max-width: 150px;
+}
+</style>
+
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
@@ -264,14 +271,14 @@ function toDate(selector) {
 	</span>
 	<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
 	
-		<span class="repoBtns">
+<!-- 		<span class="repoBtns">
 		<a href="javascript:void(0)" class="oneA actRE"><i class="fa fa-list"></i></a>
 		<a href="javascript:void(0)" class="oneB"><i class="fa fa-pie-chart"></i></a>
-	</span>
+	</span> -->
 	
 </div>
                      
-        <ul style="padding: 2px 300px 2px 0px;">
+<!--         <ul style="padding: 2px 300px 2px 0px;">
           <li><i class="fa fa-filter"></i><span class="padFil"></span><i class="glyphicon glyphicon-play" id="status-pop"></i>|
             <div class="export_pop">
               <ul>
@@ -282,13 +289,13 @@ function toDate(selector) {
             </div>
           </li>
           <div class="clearfix"></div>
-        </ul>
+        </ul> -->
         <div class="clearfix"></div>
       </div>
   
  <div class="repTab1">  
       
-	<div class="reportsCount">
+	<!-- <div class="reportsCount">
 		<ul>
 			<li title="Applicants">
 				<span><i class="fa fa-users"></i></span><b>100</b>
@@ -310,16 +317,13 @@ function toDate(selector) {
 			</li>
 					<div class="clearfix"></div>
 		</ul>
-	</div>
+	</div> -->
 
   <div class="project_tabs_inn_table vendor_wrap_inn_table">
-                 <div id="requirementReportsDiv12" class="repoPositi"></div>
+                 <div id="requirementReportsDiv12" class="repoPositiNoCount"></div>
                 </div>      
 </div>
 
- <div class="repTab2">
-	  	Reports Chat here..
-	  </div>
       
  </div>
 
