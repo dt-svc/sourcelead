@@ -18,7 +18,7 @@ import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
-public class SetDefaultCoolinOffPeriod {
+public class SetDefaultCoolingOffPeriod {
 		private ComboPooledDataSource comboPooledDataSource;
 		
 		
@@ -74,7 +74,7 @@ public class SetDefaultCoolinOffPeriod {
 		}
 	 
 	public static void main(String[] args) throws IOException, SQLException {
-		SetDefaultCoolinOffPeriod dump = new SetDefaultCoolinOffPeriod();
+		SetDefaultCoolingOffPeriod dump = new SetDefaultCoolingOffPeriod();
 		dump.setDefaultCoolinOffPeriod();
 	}
 

@@ -36,7 +36,6 @@ window.onload = function() {
 	        	 var json = JSON.parse(data);
 	        	 var result = "";
 	        	 
-			         result = result + ' <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>     ';
 				     result = result + '    <div class="eventHeader">                                                      ';
 				     result = result + '          <div class="media">                                                      ';
 				     result = result + '            <div class="media-left bg-success paddingRight">                       ';
