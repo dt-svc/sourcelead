@@ -422,7 +422,7 @@ function prepareRequirementData(data){
 			result = result +" </select>";	
            result = result +" </td>";
               
-		if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN'){
+		if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
 	        	if(opt.isRequirementReleasedByuser == 'Y'){
 		   		 	result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success'></i></a></div></td>"; 
 			   	 }else{	
