@@ -226,7 +226,12 @@
 $(document).ready(function(){
 	getVendorLists();
 	
-    openVendors();
+	if('${SourceLeadWeb_vms}'  == 'Y'){
+		openVendors();
+	}else{
+		opennetwork();
+	}
+    
 	
 	if('${requirementType}' != null && '${requirementType}' != '' && '${requirementType}' != 'undefined'){
 		$("#jobType").html('${requirementType}');
@@ -316,7 +321,6 @@ function releaseToOneContact(contactscheckboxId){
 
 <script type="text/javascript">
  function releaseToCrowdSourcing() {
-	 
 	 
 	   if ($('#releaseToCrowdSourcing_form').validate(false, validationSettings)){ 
 		    var frm = $('#releaseToCrowdSourcing_form').serializeFormJSON();
