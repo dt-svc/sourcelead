@@ -1052,7 +1052,9 @@ function requirementDetails(requirementId){
 					            }
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
-				            
+				           
+				            result = result +'     <div class="require_wrap_details_cta"> <b>Created By:</b>'+json.createdByName+'';
+
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
 				            result = result +'     <div class="clearfix"></div>';
