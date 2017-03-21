@@ -74,7 +74,7 @@ public class SetDefaultCoolingOffPeriod {
 		}
 	 
 	public static void main(String[] args) throws IOException, SQLException {
-		SetDefaultCoolinOffPeriod dump = new SetDefaultCoolinOffPeriod();
+		SetDefaultCoolingOffPeriod dump = new SetDefaultCoolingOffPeriod();
 		dump.setDefaultCoolinOffPeriod();
 	}
 
