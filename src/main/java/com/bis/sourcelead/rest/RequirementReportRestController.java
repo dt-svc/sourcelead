@@ -1500,8 +1500,10 @@ public class RequirementReportRestController {
 					if(null != reqSubHistory){
 					requirementSubmission.setSubmittedBy(reqSubHistory.getCreatedUser());
 					}
-					if(null != req.getVendorLocationId() ){
-						requirementSubmission.setOrgName(req.getOrgLocations().getOrg().getOrgName());
+					if(null != req){
+						if(null != req.getVendorLocationId()){
+							requirementSubmission.setOrgName(req.getOrgLocations().getOrg().getOrgName());
+						}
 					}
 					
 					if (null != requirementSubmission.getCreatedDate()) {
