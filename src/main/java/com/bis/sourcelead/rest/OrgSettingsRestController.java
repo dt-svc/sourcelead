@@ -422,6 +422,40 @@ public class OrgSettingsRestController {
 		return resultJson;
 
 	}
+    
+    
+    /**
+     * 
+     * Handles requests for the Cooling Off Period service.
+     * 
+     * @author Venkat Kesav
+     * @date 15th Mar 2017
+     *
+     */
+    @RequestMapping(value = "/getCoolingOffPeriod")
+	public String getCoolingOffPeriod(HttpServletRequest request) throws Exception {
+		
+	 	String resultJson = null;
+	 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	resultJson = toJSON(orgLocations);
+		return resultJson;
+
+	}
+    
+    
+    @PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
+	@RequestMapping(value = "/saveCoolingOffPeriod", method = RequestMethod.POST)
+	public String saveCoolingOffPeriod(@RequestParam(value = "json", required = false) String json,HttpServletRequest request) throws Exception {
+		
+		String jsonc = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(jsonc);
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if(jsonObj.has("coolingOff")){
+			orgLocation.setCoolingOffPeriod(jsonObj.getString("coolingOff"));
+		}
+		orgLocationService.updateOrgLocations(orgLocation);
+		return "success";
+	}
 	 
    
    private String toJSON(Object obj){

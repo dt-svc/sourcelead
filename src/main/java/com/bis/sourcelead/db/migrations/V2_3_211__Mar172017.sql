@@ -1,0 +1,4 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_LOCATIONS','COOLINGOFF_PERIOD','VARCHAR(20) DEFAULT NULL AFTER `FROM_EMAIL_PASSWORD`');
+
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','REQ_COOLINGOFF_PERIOD','VARCHAR(20) DEFAULT NULL');
