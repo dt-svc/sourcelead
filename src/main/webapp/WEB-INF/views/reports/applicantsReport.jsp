@@ -729,7 +729,7 @@ function getCustomReports(){
 	     "valueAxes": [{
 	     "axisAlpha": 0,
 	     "position": "left",
-	     "title": "Visitors from country"
+	     "title": "Applicants"
 	     }],
 	     "startDuration": 1,
 	     "graphs": [{
