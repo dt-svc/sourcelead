@@ -36,7 +36,6 @@ window.onload = function() {
 	        	 var json = JSON.parse(data);
 	        	 var result = "";
 	        	 
-			         result = result + ' <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>     ';
 				     result = result + '    <div class="eventHeader">                                                      ';
 				     result = result + '          <div class="media">                                                      ';
 				     result = result + '            <div class="media-left bg-success paddingRight">                       ';
@@ -79,8 +78,8 @@ window.onload = function() {
 					 result = result + '                          <p><label class="text-muted small col-md-2">Req.:</label> <a href="'+sourceleadUrl+"/requirementSummary?requirementUUID="+report.requirementUUID+'">'+report.requirementTitle+'</a></p>';
 					 result = result + '                          <p><label class="text-muted small col-md-2">Client:</label> '+clientName+'</p>    ';
 					 result = result + '                          <div class="feedBack"> ';
-					  if(report.interviewerId != null  &&  report.interviewerId !='' && report.interviewerId !='undefined'){
-						  result = result+'	 <a  href="'+sourceleadUrl+'/'+'dashboardInterviewFeedBackTemplate?templateId='+report.interviewTemplateid+'&requirementInterviewid='+report.interviewerId+'">FeedBack</a>';
+					  if(report.interviewerId != null  &&  report.interviewerId !='' && report.interviewerId !='undefined' && report.interviewTemplateid != null && report.interviewTemplateid != '' && report.interviewTemplateid != 'undefined'){
+						  result = result+'	 <a  href="'+sourceleadUrl+'/'+'dashboardInterviewFeedBackTemplate?templateId='+report.interviewTemplateid+'&requirementInterviewid='+report.interviewerId+'" ><i class="fa fa-handshake-o"></i></a>';
                       }  
 					 //result = result + '                          <a href="javascript:void(0)" title="FeedBack"><i class="fa fa-handshake-o"></i></a>    ';
 					 result = result + '                          </div>                                                                               ';
