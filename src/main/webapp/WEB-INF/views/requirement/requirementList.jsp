@@ -359,6 +359,12 @@ function prepareRequirementData(data){
 				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
 					result = result +"<option value='ONHOLD'>ONHOLD</option>";
 				'</sec:authorize>';
+				'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
+				result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
+			'</sec:authorize>';
+			'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
+				result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
+			'</sec:authorize>';
 				'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
 					result = result +"<option value='CANCEL'>CANCEL</option>";
 				'</sec:authorize>';
@@ -405,6 +411,21 @@ function prepareRequirementData(data){
 				if(opt.requirementSubmissionPreviousStatus == "SUBMITTED"){
 					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
 					result = result +"<option value='SUBMITTED'>SUBMITTED</option>";
+					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
+						result = result +"<option value='CANCEL'>CANCEL</option>";
+					'</sec:authorize>';
+				}if(opt.requirementSubmissionPreviousStatus == "NEW"){
+					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+					result = result +"<option value='OPEN'>OPEN</option>";
+					'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
+						result = result +"<option value='ONHOLD'>ONHOLD</option>";
+					'</sec:authorize>';
+					'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
+					result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
+				'</sec:authorize>';
+				'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
+					result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
+				'</sec:authorize>';
 					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
 						result = result +"<option value='CANCEL'>CANCEL</option>";
 					'</sec:authorize>';

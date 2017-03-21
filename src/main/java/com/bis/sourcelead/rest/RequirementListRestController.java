@@ -437,7 +437,6 @@ public class RequirementListRestController {
 							requirement.setApprovalMechanismType(approverN.getHierarchyType().toString());
 							if(null != approverN.getRejectedReason() && !approverN.getRejectedReason().equalsIgnoreCase("") && Constants.REJECTED.equalsIgnoreCase(approverN.getRequirementApproverStatus().toString())){
 								requirement.setRejectReasonForRequirement(sb.append(approverN.getRejectedReason()).toString());
-								break;
 							}
 						}
 						requirement.setApproverNames(ar);
@@ -609,6 +608,14 @@ public class RequirementListRestController {
 									
 									if(null != requirementSubmission.getVendorLocationId()){
 										requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrg().getOrgName());
+									}else{
+										if(null == requirementSubmission.getRecruiterUserId() &&  requirementSubmission.getCandidate().getCandidateType().equalsIgnoreCase("Professional")){
+											requirementSubmission.setCandidateSource(requirementSubmission.getCandidate().getCandidateType());
+										}
+										
+										if(null != requirementSubmission.getRecruiterUserId()){
+											requirementSubmission.setCandidateSource("Individual Recruiter");
+										}
 									}
 									
 									if(null != submissionType && submissionType.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
