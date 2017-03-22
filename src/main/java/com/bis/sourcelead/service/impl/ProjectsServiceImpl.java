@@ -1074,7 +1074,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 								    	 fieldValuelong = Long.valueOf(level1UserDetails[0]);
 								     }
 								     if(prHierarchy.getLevel() == 2 &&  jsonObj.has("level2Manager")){
-								    	 fieldValuelong = Long.valueOf(jsonObj.getString("level2Manager"));
+								    	 if(!"".equalsIgnoreCase(jsonObj.getString("level2Manager"))){
+								    		 fieldValuelong = Long.valueOf(jsonObj.getString("level2Manager"));
+								    	 }
+								    	 
 								     }
 								      if(prHierarchy.getLevel() == 2 && (!jsonObj.has("level2Manager") || (jsonObj.has("level2Manager") && StringUtils.isEmpty(jsonObj.getString("level2Manager"))))){
 								    	 oldlist.add(pah.getApproverUserId().getId());

@@ -524,6 +524,7 @@ $(".reminder").click(function(){
 	</script>
 <script>
 function getDayWiseReports(){
+	$('#container').empty();
 	$('#reportStartDate').empty();
 	$('#reportEndDate').empty(); 
 	var reportType = $("#reportTypeId").val();
@@ -762,6 +763,7 @@ Highcharts.chart('container', {
 
 <script>
 function getDefaultChart(){
+	$('#container').empty();
 	var reportType = $("#reportTypeId").val();
 	if(reportType=="custom"){
 		getCustomReports();
@@ -830,6 +832,15 @@ function getDayWiseAppRecReports(){
 		        		 applicantReceivedReportLineChart(chartData,applicantData,shortlistedData,interviewData,submitedtoClientData,offeredData,rejectedData,requestSentData);
 		 	   		}
 	        	 }
+        	 else{
+        		 var result ="";
+	        		result = result + ' <div class="row">                                            ';
+					result = result + '	<div class="dataTables_empty">                                     ';
+					result = result + '	</div>                                                      ';
+					result = result + ' </div>                                                      ';
+				  $("#container").empty();
+				    $("#container").append(result);
+        	 }
         	// getAllCounts(json.length,reportType,startDate,endDate);
          },
           

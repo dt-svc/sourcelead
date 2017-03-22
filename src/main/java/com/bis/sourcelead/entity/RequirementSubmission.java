@@ -333,6 +333,9 @@ public class RequirementSubmission implements Serializable{
 	
 	@Transient
 	private List<RequirementSubmission> requirementSubmissionList;
+	
+	@Transient
+	private String candidateSource;
 
 	
 	public OrgLocations getVendorLocationId() {
@@ -1097,5 +1100,13 @@ public class RequirementSubmission implements Serializable{
 
 	public void setRequirementSubmissionList(List<RequirementSubmission> requirementSubmissionList) {
 		this.requirementSubmissionList = requirementSubmissionList;
+	}
+
+	public String getCandidateSource() {
+		return candidateSource;
+	}
+
+	public void setCandidateSource(String candidateSource) {
+		this.candidateSource = candidateSource;
 	}
 }

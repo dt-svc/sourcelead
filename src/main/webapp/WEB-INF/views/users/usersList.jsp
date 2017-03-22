@@ -557,6 +557,7 @@ function exportToPdf(){
             	var result ="";
 	         	result = result + '<div id="loadMoreDiv" >No More Records..</div>';
 	         	$('#loadMoreDiv').append(result);
+	         	$("#noUsers").val("")
             }else{
             	$("#noUsers").val("nousers")
             	$('#loadMoreDiv').empty(); 

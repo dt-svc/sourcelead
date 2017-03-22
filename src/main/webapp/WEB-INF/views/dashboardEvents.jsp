@@ -36,7 +36,6 @@ window.onload = function() {
 	        	 var json = JSON.parse(data);
 	        	 var result = "";
 	        	 
-			         result = result + ' <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>     ';
 				     result = result + '    <div class="eventHeader">                                                      ';
 				     result = result + '          <div class="media">                                                      ';
 				     result = result + '            <div class="media-left bg-success paddingRight">                       ';
@@ -65,7 +64,7 @@ window.onload = function() {
 					 result = result + '          </div>                       ';
 					 result = result + '              <div class="media-body paddingLeft">   ';
 					 result = result + '                  <figure class="pull-left">         ';
-					 result = result + '                  <img src="images/interview_icons.png" class="img-responsive" width="40">    ';
+					 result = result + '                  <img src="resources/images/interview_icons.png" class="img-responsive" width="40">    ';
 					 result = result + '                  </figure>                                                                   ';
 					 result = result + '                      <div class="pull-left event_details form-horizontal">                   ';
 					 result = result + '                          <p><label class="text-muted small col-md-2">Name:</label>'+report.candidateName+' </p>    ';
@@ -79,8 +78,8 @@ window.onload = function() {
 					 result = result + '                          <p><label class="text-muted small col-md-2">Req.:</label> <a href="'+sourceleadUrl+"/requirementSummary?requirementUUID="+report.requirementUUID+'">'+report.requirementTitle+'</a></p>';
 					 result = result + '                          <p><label class="text-muted small col-md-2">Client:</label> '+clientName+'</p>    ';
 					 result = result + '                          <div class="feedBack"> ';
-					  if(report.interviewerId != null  &&  report.interviewerId !='' && report.interviewerId !='undefined'){
-						  result = result+'	 <a  href="'+sourceleadUrl+'/'+'dashboardInterviewFeedBackTemplate?templateId='+report.interviewTemplateid+'&requirementInterviewid='+report.interviewerId+'">FeedBack</a>';
+					  if(report.interviewerId != null  &&  report.interviewerId !='' && report.interviewerId !='undefined' && report.interviewTemplateid != null && report.interviewTemplateid != '' && report.interviewTemplateid != 'undefined'){
+						  result = result+'	 <a  href="'+sourceleadUrl+'/'+'dashboardInterviewFeedBackTemplate?templateId='+report.interviewTemplateid+'&requirementInterviewid='+report.interviewerId+'" ><i class="fa fa-handshake-o"></i></a>';
                       }  
 					 //result = result + '                          <a href="javascript:void(0)" title="FeedBack"><i class="fa fa-handshake-o"></i></a>    ';
 					 result = result + '                          </div>                                                                               ';
@@ -118,13 +117,26 @@ window.onload = function() {
 					 	 result = result + '         </div>                          ';
 					 	 result = result + '             <div class="media-body paddingLeft"> ';
 					 	 result = result + '                 <figure class="pull-left">       ';
-					 	 result = result + '                 <img src="images/task-icon.png" class="img-responsive" width="40">    ';
+					 	 result = result + '                 <img src="resources/images/task-icon.png" class="img-responsive" width="40">    ';
 					 	 result = result + '                 </figure>                                                             ';
 					 	 result = result + '                     <div class="pull-left event_details">                             ';
 					 	 result = result + '                         <p><label class="text-muted small col-md-2">Subject:</label> '+report.subject+'</p>         ';
-					 	 result = result + '                         <p class="text-danger"><label class="text-muted small col-md-2">Priortiy:</label> '+priority+'</p>   ';
-					 	 result = result + '                         <p><label class="text-muted small col-md-2">Status:</label> '+report.taskStatus+'</p>                    ';
-					 	 result = result + '                         <p><label class="text-muted small col-md-2">Des.:</label> '+description+'</p>   ';
+					 	 
+					 	 result = result + '                     <div class="clearfix"></div>            ';
+
+					 	 result = result + '                     <div class="row">            ';
+					 	 
+					 	 result = result + '                     <div class="col-md-5">            ';
+					 	 result = result + '                         <p class="text-danger"><label class="text-muted small col-md-6">Priortiy:</label> '+priority+'</p>   ';
+					 	 result = result + '                     </div>            ';
+
+					 	 result = result + '                     <div class="col-md-5">            ';
+					 	 result = result + '                         <p><label class="text-muted small col-md-6">Status:</label> '+report.taskStatus+'</p>                    ';
+					 	 result = result + '                     </div>            ';
+					 	 
+					 	result = result + '                     </div>            ';
+					 	 
+					 	result = result + '                         <p><label class="text-muted small col-md-2">Des.:</label> '+description+'</p>   ';
 					 	 result = result + '                     </div>            ';
 					 	 result = result + '             </div>                    ';
 					 	 result = result + '     </div>                            ';

@@ -400,7 +400,6 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     padding:0px 30px 0px 0px; display:inline-block;
     }
 .timesheet_appr_wrap .timesheet_head .glyphicon-play {
-   
     right:20px; opacity:1;
     }
 .timesheet_appr_wrap .export_pop {
@@ -410,9 +409,6 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     right:-4px;
     }  
 .timesheet_appr_wrap .export_pop ul li, .timesheet_appr_wrap .approved_pop ul li { margin:0px;}
-      
-      
-      
 .timesheet_appr_table {
     width:100%;
 }  
@@ -572,8 +568,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .time_newhead_pop_inn li p b {
     display:block; font-weight:400; color:#666; font-size:12px;
     }                      
-      
-         
+          
     /*    Project Css    */
       
 .project_wrap {
@@ -643,7 +638,6 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .clients_wrap_table table tr:hover .proj_show i {
     visibility:visible; opacity:1;
     }  
-      
 .project_side_wrap {
     width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
     transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
@@ -655,8 +649,6 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .project_side_wrap_inn {
     position:relative; padding:10px;
     }
-         
-         
 .project_inn_mask {
     position:absolute; width:100%; height:100%; background-color:rgba(0,0,0,0.4); left:0px; top:0px; z-index:15000; display:none;
     }
@@ -696,7 +688,6 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     border-radius:10px 10px 0px 0px; border-top:2px solid #d4d4d1;
     }
 .project-tabs-menu li.current, .canreq-tabs-menu li.current {
-  
     position:relative; background-color:#fff; z-index:5; border-top:2px solid #368ee0;
     }
 .project-tabs-menu li a, .canreq-tabs-menu li a {
@@ -3124,6 +3115,32 @@ background-size:260px; margin: 0px 15px;
 .repoPositiAs .dataTables_filter {
     top: -150px !important;
 }
+
+
+.repoPositiNoCount {
+    position: relative;
+}
+ .repoPositiNoCount .dataTables_filter {
+    top: -33px !important;
+}
+.repoPositiNoCount .dt-buttons {
+    position: absolute !important; width: 90px; left: inherit; right: 220px !important; top:-35px;
+}
+.repoPositiNoCount .dt-buttons span {
+    display: none !important;
+}
+.repoPositiNoCount .dt-buttons a {
+    font-size: 18px; padding: 5px 9px !important; border: 1px solid #BCBCBC !important;
+}
+.repoPositiNoCount .buttons-excel::before, .repoPositiNoCount .buttons-pdf::before {
+    top: 0px; left: 0px;
+}
+.repoPositiAs .dt-buttons a span {
+    display: none;
+}
+.repoPositiAs .dataTables_filter {
+    top: -150px !important;
+}
  
 .reopen-label {
 border-bottom: 1px solid #ddd;
@@ -3258,4 +3275,64 @@ border: 1px solid rgb(204, 204, 204);
 }
 .RPadT {
 	padding: 5px 0px 6px;
+}
+
+.action-nav a{
+	position:relative;
+}
+.action-nav a .text-warning {
+    color: #e18225;
+}
+.reSchPop {
+	position: absolute; right: -50px; top: 30px; z-index: 1000; cursor: default;
+}
+.reSchPopInn {
+	width: 450px; background-color: #fff; box-shadow:0px 0px 3px rgba(0,0,0,0.2); border-radius: 3px;
+	padding: 10px;
+}
+.reSchPopInn h3 {
+	font-size: 16px; padding: 3px 0px 7px 10px; margin: 0px 0px; border-bottom: 1px solid #ededed; font-weight: 400;
+	color: #666;
+}
+.reSchPopCta {
+	width: auto; padding: 15px 5px 5px;
+}
+.reSchPopCta span {
+	position: relative; display: block; float: left; width: 48%; margin: 0px 0px 2% 0px; 
+}
+.reSchPopCta span i {
+	position: absolute; right: 1px; top: 1px; height: 28px; background-color: #ededed; width: 28px; text-align: center;
+	color: #666 !important; padding: 7px 0px 0px 0px; font-size: 14px;
+}
+
+.reSchPopCta span.popTime {
+	float: left; width: 23%; margin: 0px 0px 2% 3%; 
+}
+.reSchPopCta span.Pmess {
+	width: 100%;
+}
+.reSchPopCta span textarea {
+	background-color: #fff; background-image: none; border: 1px solid #ccc;
+}
+.reSchPopCta .ne-ch {
+	padding: 0px 0px;
+}
+.reSchPopCta .ne-ch label {
+	padding: 0px 12px 0px 0px; 
+}
+.reSchPopCta .ne-ch .input-sm {
+	padding: 0px 10px;
+	
+}
+.ne-ch .Pmess {
+	margin: 0px 0px;
+}
+.reSchPopCta .chosen-single span {
+	width: auto;
+}
+.reSchPopCta .chosen-container-single .chosen-single {
+	line-height: 26px !important; height: 30px !important;
+}
+.Pmess button {
+	margin: 2px 0px 0px 10px;
 }
