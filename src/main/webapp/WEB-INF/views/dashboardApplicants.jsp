@@ -23,10 +23,10 @@
       </div>
 <!-- Applicant Authorization Ends --> 
 <script>
-window.onload = function () {
-ApplicantAuthorization('requestSent');
-};
 
+$(document).ready(function(){
+	ApplicantAuthorization('requestSent');
+});
 </script>
 <script>
 function ApplicantAuthorization(status){
