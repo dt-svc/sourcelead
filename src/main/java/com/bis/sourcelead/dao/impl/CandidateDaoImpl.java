@@ -543,7 +543,45 @@ public class CandidateDaoImpl implements CandidateDao {
 		return results.get(0);
 	}
 
-	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getCandidateReports(Long orgLocationId, String candidateType, String filterDate,
+			Date startDateUTC, Date endDateUTC) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		Map<String, Object> params = new HashMap<String,Object>();
+		String dateSubQuery = "";
+		if(null != startDateUTC && null != endDateUTC){
+			 dateSubQuery = "and (candidate.createdDate >= :startDateUTC and candidate.createdDate <= :endDateUTC)";
+			  params.put("startDateUTC",startDateUTC);
+			  params.put("endDateUTC",endDateUTC);
+		}
+		
+		String subQuery  = null;
+		if(null != candidateType && !candidateType.isEmpty() && candidateType.equalsIgnoreCase(Constants.CONSULTANT)){
+			subQuery = "and candidateType = 'Consultant'"; 
+		}else{
+			subQuery = "and candidateType = 'Candidate'"; 
+		}
+		
+		String from = "from Candidate candidate where candidate.orgLocationId.id =:orgLocationId "+subQuery+" "+dateSubQuery; 
+		params.put("orgLocationId",orgLocationId);
+		
+		Query query = session.createQuery(from);
+		for (String str : query.getNamedParameters())
+        {
+			if(str.equalsIgnoreCase("orgLocationId")){
+				query.setParameter(str, (long) params.get(str));
+			}if(str.equalsIgnoreCase("startDateUTC")){
+				query.setParameter( str, (Date) params.get(str) );
+			}
+			if(str.equalsIgnoreCase("endDateUTC")){
+				query.setParameter( str, (Date) params.get(str) );
+			}
+        }
+		
+		return query.setCacheable(true).list();
+	}
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -566,40 +604,6 @@ public class CandidateDaoImpl implements CandidateDao {
 		
 		
 		    return candidateList;
-	}
-
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public List<Candidate> getCandidateReports(Long orgLocationId, String candidateType, String filterDate,
-			Date startDateUTC, Date endDateUTC) {
-		
-		Session session = this.sessionFactory.getCurrentSession();
-		Map<String, Object> params = new HashMap<String,Object>();
-		String dateSubQuery = "";
-		if(null != startDateUTC && null != endDateUTC){
-			 dateSubQuery = "and (candidate.createdDate >= :startDateUTC and candidate.createdDate <= :endDateUTC)";
-			  params.put("startDateUTC",startDateUTC);
-			  params.put("endDateUTC",endDateUTC);
-		}
-		
-		
-		String from = "from Candidate candidate where candidate.orgLocationId.id =:orgLocationId "+dateSubQuery; 
-		params.put("orgLocationId",orgLocationId);
-		
-		Query query = session.createQuery(from);
-		for (String str : query.getNamedParameters())
-        {
-			if(str.equalsIgnoreCase("orgLocationId")){
-				query.setParameter(str, (long) params.get(str));
-			}if(str.equalsIgnoreCase("startDateUTC")){
-				query.setParameter( str, (Date) params.get(str) );
-			}
-			if(str.equalsIgnoreCase("endDateUTC")){
-				query.setParameter( str, (Date) params.get(str) );
-			}
-        }
-		
-		return query.setCacheable(true).list();
 	}
 
 	
