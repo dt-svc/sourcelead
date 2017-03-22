@@ -593,10 +593,10 @@ function requirementsList(offset){
 			 				}
 			 				
 			 				
-			 				if(requirements.minExperience != 'undefined' && requirements.maxExperience == 'undefined'){
+			 				if(requirements.minExperience != '' && requirements.maxExperience == ''){
 			 					experience = requirements.minExperience+" Years";
 			 				}
-			 				else if(requirements.minExperience == 'undefined' && requirements.maxExperience != 'undefined'){
+			 				else if(requirements.minExperience == '' && requirements.maxExperience != ''){
 			 					experience = requirements.maxExperience+" Years";
 			 				}
 			 				else if(requirements.minExperience != '' && requirements.maxExperience != ''){

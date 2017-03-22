@@ -5,8 +5,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
@@ -80,8 +82,64 @@ public class TaskServiceImpl implements TaskService{
 	}
 	
 	@Override
-	public List<Tasks> tasksListByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId, Long userId,String Status,String date) throws Exception {
-		return taskDao.tasksListByIdAndOrgLocationIdAssignedUserId(OrgLocationId,userId,Status,date);
+	public List<Tasks> tasksListByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId, Long userId,String Status,String date,Date converteDate, Timezone timezone) throws Exception {
+		
+		List<Tasks> taklist =  taskDao.tasksListByIdAndOrgLocationIdAssignedUserId(OrgLocationId,userId,Status,date);
+		
+		Set<Tasks> taskList = new HashSet<Tasks>();
+		for(Tasks tasks : taklist) {
+			taskList.add(tasks);
+		}
+		
+		for(Tasks tk :taklist){
+			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+			tk.setSubject(tk.getSubject());
+			
+			if(tk.getTaskDate() != null){
+
+				String currentTimeStr = Constants.TZ_DF.format(tk.getTaskDate());
+				String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,timezone.getTimeZoneId(), currentTimeStr);
+				 TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				 converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+				currentDateInTimezone = Constants.DMY.format(converteDate);
+				tk.setTaskDateStr(currentDateInTimezone);
+		    }
+			if(tk.getTaskTime() != null){
+				String currentTimeStr = Constants.TZ_DF.format(tk.getTaskDate());
+				String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,timezone.getTimeZoneId(), currentTimeStr);
+				 TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				 converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+				currentDateInTimezone = Constants.TMS.format(converteDate);
+				tk.setTaskTime(currentDateInTimezone);
+			}
+			tk.setDescription(tk.getDescription());
+			tk.setAlertType(tk.getAlertType());
+			tk.setTaskStatus(tk.getTaskStatus());
+			tk.setPriority(tk.getPriority());
+			
+			if( null != tk.getAssignedUserId()){
+				StringBuilder assignedName= new StringBuilder();
+				if(null != tk.getAssignedUserId().getLastName()){
+					tk.setAssignedName(assignedName.append(tk.getAssignedUserId().getFirstName()+" "+tk.getAssignedUserId().getLastName()).toString());
+				}else{
+					tk.setAssignedName(assignedName.append(tk.getAssignedUserId().getFirstName()).toString());
+				}
+			}
+			
+			if( null != tk.getTaskOwnerId()){
+				StringBuilder taskOwnerName= new StringBuilder();
+				if(null != tk.getAssignedUserId().getLastName()){
+					tk.setTaskOwnerName(taskOwnerName.append(tk.getTaskOwnerId().getFirstName()+" "+tk.getTaskOwnerId().getLastName()).toString());
+				}else{
+					tk.setTaskOwnerName(taskOwnerName.append(tk.getTaskOwnerId().getFirstName()).toString());
+				}
+			}
+			
+			
+				
+		}
+		return taklist;
+		
 	}
 
 	public String saveTasks(JSONObject jsonObj) throws Exception {
@@ -136,7 +194,7 @@ public class TaskServiceImpl implements TaskService{
 				if(jsonObj.has("taskDatpicker") && !jsonObj.getString("taskDatpicker").isEmpty() && jsonObj.has("timepicker") && !jsonObj.getString("timepicker").isEmpty()){
 				Date startTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.getDateFormat(jsonObj.getString("taskDatpicker")),jsonObj.getString("timepicker"));
 				String currentTimeStr = Constants.TZ_DF.format(startTime);  
-				String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
+				String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE , currentTimeStr);
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
 				task.setTaskDate(convertedDate);

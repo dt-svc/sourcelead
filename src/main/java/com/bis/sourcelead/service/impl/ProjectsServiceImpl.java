@@ -1026,7 +1026,16 @@ public class ProjectsServiceImpl implements ProjectsService{
 					    		previousEndDate = projects.getEndDate();
 					    		Date endDate = format.parse(jsonObj.getString("endDateStr1"));
 					    		//this method is used to send email for edit project end date
-								 sendProjectEditMailtoTeamMembersAndOwnersWhenProjectEndDateIsEdited(jsonObj,projects,user,loginOrgLocation,loginOrgCode);
+								
+					    		 if(projects.getEndDate() != null ){		
+					                  if(endDate.compareTo(projects.getEndDate()) != 0 ){
+								    		sendProjectEditMailtoTeamMembersAndOwnersWhenProjectEndDateIsEdited(jsonObj,projects,user,loginOrgLocation,loginOrgCode);
+
+					                  }
+					                  
+					    		 } else if(!jsonObj.getString("endDateStr1").isEmpty() && jsonObj.getString("endDateStr1") != null && !"NO DATA".equalsIgnoreCase(jsonObj.getString("endDateStr1"))){
+							    		sendProjectEditMailtoTeamMembersAndOwnersWhenProjectEndDateIsEdited(jsonObj,projects,user,loginOrgLocation,loginOrgCode);
+					    		 }
 								 projects.setEndDate(endDate);
 
 					    	}else{
@@ -1065,7 +1074,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 								    	 fieldValuelong = Long.valueOf(level1UserDetails[0]);
 								     }
 								     if(prHierarchy.getLevel() == 2 &&  jsonObj.has("level2Manager")){
-								    	 fieldValuelong = Long.valueOf(jsonObj.getString("level2Manager"));
+								    	 if(!"".equalsIgnoreCase(jsonObj.getString("level2Manager"))){
+								    		 fieldValuelong = Long.valueOf(jsonObj.getString("level2Manager"));
+								    	 }
+								    	 
 								     }
 								      if(prHierarchy.getLevel() == 2 && (!jsonObj.has("level2Manager") || (jsonObj.has("level2Manager") && StringUtils.isEmpty(jsonObj.getString("level2Manager"))))){
 								    	 oldlist.add(pah.getApproverUserId().getId());
@@ -1225,8 +1237,6 @@ public class ProjectsServiceImpl implements ProjectsService{
 				    			projects.getEndDate();
 				    		}
 				    		
-				    		
-	                  if(endDate.compareTo(projects.getEndDate()) != 0 ){
 	                 	    User  approverUserId2  = null;
 	         				User  approverUserId1 = null;
 	         				if( null !=  jsonObj.getString("level1Manager")  && jsonObj.has("level1Manager") && !jsonObj.getString("level1Manager").isEmpty()){
@@ -1288,82 +1298,15 @@ public class ProjectsServiceImpl implements ProjectsService{
 	         						 }
 	         					}
 	         				
-	                  }
+	                
 				    	}else{
 				    		Date endDate = null;
 				    		projects.setEndDate(endDate);
 				    	}
-		    	}else{
-		    		if(!jsonObj.getString("endDateStr1").isEmpty() && jsonObj.getString("endDateStr1") != null && !"NO DATA".equalsIgnoreCase(jsonObj.getString("endDateStr1"))){
-			    		 
-			    		if(projects.getEndDate() != null ){
-			    			projects.getEndDate();
-			    		}
-                 	    User  approverUserId2  = null;
-         				User  approverUserId1 = null;
-         				if( null !=  jsonObj.getString("level1Manager")  && jsonObj.has("level1Manager") && !jsonObj.getString("level1Manager").isEmpty()){
-         					  String level1UserDetails[] = jsonObj.getString("level1Manager").split(",");
-         					  approverUserId1 =   userService.getUserById(Long.valueOf(level1UserDetails[0]));
-         				if(jsonObj.has("level2Manager") && null != jsonObj.getString("level2Manager") &&jsonObj.has("level2Manager")  && !jsonObj.getString("level2Manager").isEmpty()){
-         			      approverUserId2 =   userService.getUserById(Long.valueOf(jsonObj.getString("level2Manager")));
-         				}
-         				
-         			    Collection<ProjectMembers>  projectMemberList = projectMembersService.getAllProjectMembersByProjectId(projects.getId()) ;
-
-         			    if(projectMemberList != null && projectMemberList.size() >0){
-         			    	for(ProjectMembers projectMembers : projectMemberList){
-	         					if(null != projectMembers.getEmployee()){
-	         						Employees emp = projectMembers.getEmployee();
-	         							
-	         						//if  we have   both level1 and Level2 ProjectManagers
-	         						if( null != approverUserId1 && null != approverUserId2){
-	         							  if(approverUserId1.getId().longValue() != emp.getUser().getId().longValue() && approverUserId2.getId().longValue() != emp.getUser().getId().longValue()){
-	         								  if(user.getId().longValue() != emp.getUser().getId().longValue()){
-	         									  sendProjectEditMailtoTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation,loginOrgCode);
-	         								  }
-	         					    }
-	         							//if  we have   both level1 only One ProjectManagers
-	         						}else if(approverUserId1.getId().longValue() != emp.getUser().getId().longValue()){
-	         							 if(user.getId().longValue() != emp.getUser().getId().longValue()){
-	         								 sendProjectEditMailtoTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation,loginOrgCode);
-	         							 }
-	         							 
-	         							 }   
-	         							
-	         						}
-	         					}
-         			      }
-         				}
-         					if(jsonObj.has("level1Manager") && null != jsonObj.getString("level1Manager") && !jsonObj.getString("level1Manager").isEmpty()){
-         						User  approverUserId111 =new User();
-         						String level1UserDetails[] = jsonObj.getString("level1Manager").split(",");
-         						approverUserId111.setId(Long.valueOf(level1UserDetails[0]));
-         						if(approverUserId111 != null && user.getId() != approverUserId111.getId()){
-         							sendProjectEditMailtoProjectManager(projects, user, approverUserId111, loginOrgLocation,"",loginOrgCode);
-         						}
-         						
-         					}
-         					
-
-         					/*
-         					 * This is Mailing for Level2 Manager who was assigned to Project
-         					 * 
-         					 */
-         					
-         					if(jsonObj.has("level2Manager") && null != jsonObj.getString("level2Manager") && !jsonObj.getString("level2Manager").isEmpty()){
-         						User  approverUserId22 =new User();
-         						approverUserId22.setId(Long.valueOf(jsonObj.getString("level2Manager")));
-         						if(!jsonObj.getString("level2Manager").isEmpty() && null !=  approverUserId22 && user.getId() != approverUserId22.getId()){
-         							 if(user.getId().longValue() != approverUserId22.getId().longValue()){
-         								 	sendProjectEditMailtoProjectManager(projects, user, approverUserId22, loginOrgLocation,"",loginOrgCode);
-         							 }
-         						 }
-         					}
-		    		}
 		    	}
 		    	
 		 }catch(Exception e){
-			 
+			 e.printStackTrace();
 		 }
 		 
 			
