@@ -2853,4 +2853,21 @@ public class RequirementServiceImpl implements RequirementService {
 		return requirementDao.getNoticePeriodByRequirementId(requirementId);
 	}
 
+	@Override
+	public List<Requirement> getAllRequirementsByOrglocationIdAndUserId(Long orgLocationId, User user)
+			throws Exception {
+		return requirementDao.getAllRequirementsByOrglocationIdAndUserId(orgLocationId,user);
+	}
+
+	@Override
+	public List<Requirement> getAllRequirementsByOrglocationIdAndUserIdAsTeamLead(Long orgLocationId, User user)
+			throws Exception {
+		return requirementDao.getAllRequirementsByOrglocationIdAndUserIdAsTeamLead(orgLocationId,user);
+	}
+	
+	@Override
+	public boolean getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(Long orgLocationId, User user,Requirement requirement)	throws Exception {
+		return requirementDao.getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(orgLocationId,user,requirement);
+	}
+	
 }

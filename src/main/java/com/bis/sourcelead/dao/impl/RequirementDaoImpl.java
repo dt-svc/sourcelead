@@ -10,7 +10,6 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +17,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -878,5 +877,73 @@ public class RequirementDaoImpl implements RequirementDao {
 	    List<String> noticePeriodList = session.createQuery(query).setLong( "requirementId", requirementId).setCacheable(true).list();
 	    return noticePeriodList.get(0);
 	}
+	
+	
+	
+
+@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Requirement> getAllRequirementsByOrglocationIdAndUserId(Long orgLocationId,User user)
+			throws Exception {
+		
+		     Session session = this.sessionFactory.getCurrentSession();
+		
+			 String requirementQuery = "from Requirement req where  ( (req.managerUserId.id =:userId)  or (req.createdBy =:userCode) or (req.id IN (select  reqAssignTo.requirementId.id  from RequirementAssignTo reqAssignTo  where  reqAssignTo.assignUserId.id =:userId ) ) or (req.id IN (select  reqApproverHirerarchy.requirementId.id  from RequirementApproverHierarchy reqApproverHirerarchy  where  reqApproverHirerarchy.approverUserId.id =:userId ) ) ) and req.orgLocationId.id =:orgLocationId  ";
+	         List<Requirement> requirementList = session.createQuery(requirementQuery.toString())
+	        		                                    .setLong( "userId", user.getId())
+	        		                                    .setLong( "orgLocationId", orgLocationId)
+	        		                                    .setString("userCode", user.getUserCode())
+	        		                                    .setCacheable(true)
+	        		                                    .list();
+  
+        return requirementList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Requirement> getAllRequirementsByOrglocationIdAndUserIdAsTeamLead(Long orgLocationId,User user)
+			throws Exception {
+		
+		      Session session = this.sessionFactory.getCurrentSession();
+		     
+		      String requirementQuery = "from Requirement req where  (req.id IN (select  reqAssignTo.requirementId.id  from RequirementAssignTo reqAssignTo  where  reqAssignTo.teamId.id IN ( select tm.id from Team  tm where tm.ownerUserId.id = :userId and tm.orgLocationsId.id =:orgLocationsId )) ) ";
+              List<Requirement> requirementList = session.createQuery(requirementQuery.toString())
+            		                                     .setLong( "userId", user.getId())
+            		                                     .setLong( "orgLocationId", orgLocationId)
+            		                                     .setCacheable(true)
+            		                                     .list();
+   
+		return requirementList;
+	}
+
+	@Override
+	public boolean getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(Long orgLocationId, User user,Requirement requirement)
+			throws Exception {
+		
+	     
+		Session session = this.sessionFactory.getCurrentSession();
+	      
+		String[] releasedBy =null;
+		
+		ArrayList<RequirementSubmission> finalList  = new ArrayList<RequirementSubmission>();
+		
+		if(!"".equalsIgnoreCase(requirement.getReleasedBy()) && requirement.getReleasedBy()!= null ){
+			releasedBy = requirement.getReleasedBy().split(",");
+		}
+		 boolean requirementReleased = false;
+		 
+		 List<Long> releasedByUserIds = new ArrayList<Long>();
+		 if(!"".equalsIgnoreCase(requirement.getReleasedBy()) && requirement.getReleasedBy()!= null ){
+		 for (String s : requirement.getReleasedBy().split(",")){
+			 releasedByUserIds.add(Long.parseLong(s));
+    	 }
+		 if(releasedByUserIds != null ){
+			 requirementReleased = releasedByUserIds.contains(user.getId());
+		 }
+		 }
+		 return requirementReleased;
+	}
+
+	
 	
 }

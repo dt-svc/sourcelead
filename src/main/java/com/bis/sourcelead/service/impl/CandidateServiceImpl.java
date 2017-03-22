@@ -745,6 +745,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			return savedCandidate;
 	}
 
+	@Override
+	public List<Candidate> getAllCandidatedsBasedOnCreatedByAndOrglocationCodeWhichAreCreatedToday(OrgLocations orgLocations,
+			User user) throws Exception {
+		
+		   return candidateDao.getAllCandidatedsBasedOnCreatedByAndOrglocationCodeWhichAreCreatedToday(orgLocations, user);
+	}
+
 //	private ArrayList<String> getSearchValuesFromChosenSelectField(String searchValue) {
 //		 ArrayList<String> keyWordList = null;
 //		 if(searchValue !=null && !"".equalsIgnoreCase(searchValue)){

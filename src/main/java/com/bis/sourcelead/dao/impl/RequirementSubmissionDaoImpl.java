@@ -21,6 +21,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.TeamDao;
@@ -38,6 +39,7 @@ import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.RequirementAssignToService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
 public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
@@ -54,10 +56,16 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	TeamDao teamDao;
 	
 	@Autowired
+	CommonUtil commonUtil;
+	
+	@Autowired
 	TeamMemberDao teamMemberDao;
 	
 	@Autowired
 	UserRoleDao userRoleDao;
+	
+	@Autowired
+	OrgLocationsDao orgLocationsDao;
 	
 	@Autowired
 	RequirementAssignToService requirementAssignToService;
@@ -2047,7 +2055,142 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			return null;
 		}
 		
+		
+		
+		
+
+        @Override
+		@Transactional
+		public Integer getConsolidatedReportsForMailingForIndividualUserForToday(User user,
+				 OrgLocations loginOrgLocation,String submissionStatus,Requirement requirement) throws Exception {
+			
+			 Session session = this.sessionFactory.getCurrentSession();
+			 String submissionStages = "";
+			 
+				java.sql.Date sqlCurrentDate = null;
+				Date currentDate =  commonUtil.currentDate();
+				// for current Date Converting to Sql Date Format
+				 if(currentDate != null){
+						sqlCurrentDate = new java.sql.Date(currentDate.getTime());
+						java.sql.Timestamp sq = new java.sql.Timestamp(currentDate.getTime());
+				 }
+				 
+		     
+	         if(submissionStatus.equalsIgnoreCase("APPLICANTS")){
+	             submissionStages = "";
+	         }else if(submissionStatus.equalsIgnoreCase("SHORTLISTED")){
+	             submissionStages = " and (reqSub.submissionStatus = 'SHORTLIST')";
+	         }else if(submissionStatus.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
+	             submissionStages = "and (reqSub.submissionStatus = 'SUBMIT_TO_CLIENT')";
+	         }else if(submissionStatus.equalsIgnoreCase("INTERVIEWED")){
+	             submissionStages = "and (reqSub.submissionStatus = 'INTERVIEW' OR reqSub.submissionStatus = 'CLIENT_INTERVIEW')";
+	         }else if(submissionStatus.equalsIgnoreCase("REJECTED")){
+	             submissionStages = "and (reqSub.submissionStatus = 'REJECTED')";
+	         }else if(submissionStatus.equalsIgnoreCase("REQUESTSENT")){
+	             submissionStages = "and (reqSub.submissionStatus = 'REQUEST_SENT')";
+	         }else if(submissionStatus.equalsIgnoreCase("OFFERED")){
+	             submissionStages = "and (reqSub.submissionStatus = 'OFFERMADE' OR reqSub.submissionStatus = 'OFFERACCEPTED' OR reqSub.submissionStatus = 'OFFERREJECTED' OR reqSub.submissionStatus = 'OFFERHIRED' OR "
+	                     + " reqSub.submissionStatus = 'CLIENT_OFFERMADE' OR reqSub.submissionStatus = 'CLIENT_OFFERACCEPTED' OR reqSub.submissionStatus = 'CLIENT_OFFERREJECTED' OR reqSub.submissionStatus = 'CLIENT_OFFERHIRED' )";
+	         }
+	     
+	         else if(submissionStatus.equalsIgnoreCase("CLIENT_SUBMISSIONS")){
+	             submissionStages = "and (reqSub.submissionStatus = 'OFFERMADE' OR reqSub.submissionStatus = 'OFFERACCEPTED' OR reqSub.submissionStatus = 'OFFERREJECTED' OR reqSub.submissionStatus = 'OFFERHIRED' OR "
+	                     + " reqSub.submissionStatus = 'CLIENT_OFFERMADE' OR reqSub.submissionStatus = 'CLIENT_OFFERACCEPTED' OR reqSub.submissionStatus = 'CLIENT_OFFERREJECTED' OR reqSub.submissionStatus = 'CLIENT_OFFERHIRED' )";
+	         }
+	         
+             String query = "select reqSub.id from RequirementSubmission  reqSub  where reqSub.orgLocations.id =:orgLocations and reqSub.createdBy =:userCode  and reqSub.requirement.id =:requirememntId and  reqSub.createdDate >= :sqlCurrentDate  "+submissionStages+"";
+  			 List<RequirementSubmission> submissionList  = session.createQuery(query)
+  					                                              .setLong("orgLocations", loginOrgLocation.getId())
+											  					  .setLong("requirememntId", requirement.getId())
+											  					  .setString("userCode", user.getUserCode())
+											  					  .setDate("sqlCurrentDate", sqlCurrentDate)
+											  					  .setCacheable(true).list();
+             return submissionList.size();
+	            
+		}
+
+		@Override
+		@Transactional
+		public List<RequirementSubmission> getAllSubmissionsfromVendorsBasedOnLocationIdAndUserId(User user,
+				OrgLocations orgLocations, String status, Requirement requirement) throws Exception {
+			
+			
+			String[] releasedBy =null;
+			
+			ArrayList<RequirementSubmission> finalList  = new ArrayList<RequirementSubmission>();
+			
+			if(!"".equalsIgnoreCase(requirement.getReleasedBy()) && requirement.getReleasedBy()!= null ){
+				releasedBy = requirement.getReleasedBy().split(",");
+			}
+			 boolean requirementReleased = false;
+			 List<Long> releasedByUserIds = new ArrayList<Long>();
+			 if(!"".equalsIgnoreCase(requirement.getReleasedBy()) && requirement.getReleasedBy()!= null ){
+			 for (String s : requirement.getReleasedBy().split(",")){
+				 releasedByUserIds.add(Long.parseLong(s));
+	    	 }
+			 if(releasedByUserIds != null ){
+				 requirementReleased = releasedByUserIds.contains(user.getId());
+			 }
+			 }
+			     java.sql.Date sqlCurrentDate = null;
+			     Date currentDate =  commonUtil.currentDate();
+				// for current Date Converting to Sql Date Format
+				 if(currentDate != null){
+						sqlCurrentDate = new java.sql.Date(currentDate.getTime());
+						java.sql.Timestamp sq = new java.sql.Timestamp(currentDate.getTime());
+				 }
+			 
+			    Session session = this.sessionFactory.getCurrentSession();
+			    Map<String, Object> params = new HashMap<String,Object>();
+				String from = "from RequirementSubmission reqSub left join fetch reqSub.requirement req   left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes "; 
+				String subQuery = "";
+				
+				
+				// These conditions are to check  for vendors  Submitted Applicants  and Requirement who Released
+					if(null != releasedBy && releasedBy.length > 0){
+						
+						String subQueryForVendors = "where req.id IN ( select rq.id from Requirement rq where     rq.parentRequirement.id =:requirementId and  rq.spocId.id IN ( select orgSpock.id from OrgSpoc orgSpock  where  orgSpock.clientUser.id =:userId and orgSpock.clientLocationId.id =:loginOrgLocation )   and reqSub.id IN( select sourceSub.sourceSubmission.id from   RequirementSubmission sourceSub    ) ) ";
+														params.put("userId",user.getId());
+														params.put("loginOrgLocation",orgLocations.getId());
+														params.put("requirementId",requirement.getId());
+						
+			            String whereCondition = subQueryForVendors;
+						
+						Query queryForVendors = session.createQuery(from+" "+whereCondition+"  GROUP BY reqSub.id  ORDER BY reqSub.id DESC");
+						for (String str : queryForVendors.getNamedParameters())
+				        {
+							if(str.equalsIgnoreCase("requirementId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("loginOrgLocation") ){
+								queryForVendors.setLong(str, (long) params.get( str ));
+							}else{
+								queryForVendors.setParameter( str, params.get( str ) );
+							}
+				        }
+						
+						List<RequirementSubmission> vendorSubmittedApplicants = queryForVendors.setCacheable(true).list() ; 
+						 List<Long> sourceSubmissionIds = new ArrayList<Long>();
+						 if(null != vendorSubmittedApplicants && vendorSubmittedApplicants.size() >0 ){
+							 for(RequirementSubmission rs :vendorSubmittedApplicants){
+									sourceSubmissionIds.add(rs.getId());
+								}
+								String sourceSubmissionIdQuery = "from RequirementSubmission reqSub left join fetch reqSub.requirement req   left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes where  reqSub.sourceSubmission.id  IN (:sourceSubmissionIds)  and and  reqSub.createdDate >= :sqlCurrentDate  "; 
+								List<RequirementSubmission> finalSourceList = session.createQuery(sourceSubmissionIdQuery.toString())
+																					.setParameterList("sourceSubmissionIds", sourceSubmissionIds)
+																					.setDate("sqlCurrentDate", sqlCurrentDate)
+																					.setCacheable(true).list();
+								finalList.addAll(finalSourceList);
+								
+						   }
+						 
+
+					}
+			
+					return	finalList;
+		}
+
+		
   }
+
+
 
 
 

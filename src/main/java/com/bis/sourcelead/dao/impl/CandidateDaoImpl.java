@@ -22,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -520,6 +522,29 @@ public class CandidateDaoImpl implements CandidateDao {
 		return candidatesList;
 	}
 
-	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getAllCandidatedsBasedOnCreatedByAndOrglocationCodeWhichAreCreatedToday(OrgLocations orgLocations,
+			User user) throws Exception {
+		
+		
+		java.sql.Date sqlCurrentDate = null;
+		Date currentDate =  commonUtil.currentDate();
+		// for current Date Converting to Sql Date Format
+		 if(currentDate != null){
+				sqlCurrentDate = new java.sql.Date(currentDate.getTime());
+		 }
+		 
+		List<Candidate> candidatesList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId  and cnadidate.createdBy =:userCode and  cnadidate.createdDate =:sqlCurrentDate   ORDER BY cnadidate.id DESC";  
+       
+		return  session.createQuery(query)
+				       .setLong("orgLocationId", orgLocations.getId())
+				       .setString("userCode", user.getUserCode())
+				       .setDate("sqlCurrentDate", sqlCurrentDate)
+				       .setCacheable(true)
+				       .list();
+	}
 	
 }

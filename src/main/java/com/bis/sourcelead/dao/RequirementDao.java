@@ -2,8 +2,6 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
-import org.json.JSONObject;
-
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -75,5 +73,10 @@ public interface RequirementDao {
 
 	String getNoticePeriodByRequirementId(Long requirementId) throws Exception;
 
+	List<Requirement> getAllRequirementsByOrglocationIdAndUserId(Long orgLocationId, User user) throws Exception ;
+	
+	List<Requirement> getAllRequirementsByOrglocationIdAndUserIdAsTeamLead(Long orgLocationId, User user)	throws Exception ;
+	
+	boolean getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(Long orgLocationId, User user,Requirement requirement)	throws Exception ; 
 
 }

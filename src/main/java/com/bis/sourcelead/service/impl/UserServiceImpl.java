@@ -994,4 +994,11 @@ public class UserServiceImpl implements UserService {
 		return userList;
 	}
 	
+	
+	@Override
+	public List<User> getAllUsersWithRequirementTabAccessAndMemeberInRequirementMemberOrgLocationIdAndTabId(
+			Long orgLocationsId, Long tabId) throws Exception {
+		return userDao.getAllUsersWithRequirementTabAccessAndMemeberInRequirementMemberOrgLocationIdAndTabId(orgLocationsId,tabId);
+	}
+	
 }

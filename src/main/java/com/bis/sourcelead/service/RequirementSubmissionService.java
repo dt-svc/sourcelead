@@ -224,4 +224,9 @@ public interface RequirementSubmissionService {
 	
 	RequirementSubmission validateRecruiterSubmittedCandidateEmail(String email, Long requirementId, Long userId) throws Exception;
 	
+	Integer  getConsolidatedReportsForMailingForIndividualUserForToday(User user, OrgLocations orgLocations,String status,Requirement requirement) throws Exception;
+ 
+	List<RequirementSubmission>  getAllSubmissionsfromVendorsBasedOnLocationIdAndUserId(User user, OrgLocations orgLocations,String status,Requirement requirement) throws Exception;
+	
+   
 }

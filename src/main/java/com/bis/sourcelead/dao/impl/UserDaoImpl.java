@@ -25,6 +25,8 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -986,6 +988,110 @@ public class UserDaoImpl implements UserDao {
 	     return userRoleList;
 	}
 	
+	
+    @Override
+	public List<User> getAllUsersWithRequirementTabAccessAndMemeberInRequirementMemberOrgLocationIdAndTabId(
+			Long orgLocationsId, Long tabId) throws Exception {
+	
+		  Session session = this.sessionFactory.getCurrentSession();
+
+    	 String actionsQuery = "select sa.id from SourceleadActions sa where sa.tabs.id = :tabId  ";
+         List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong( "tabId", tabId).setCacheable(true).list();
+         
+         String rolesQuery = "from Roles roles where roles.orgLocations.id = :orgLocationsId ";
+         List<Roles> rolesList = session.createQuery(rolesQuery.toString()).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
+         List<Long> ownerRolesList = new ArrayList<Long>();
+         
+         for(Roles roles : rolesList){
+        	 if(null != roles.getActionId()){
+        		 List<Long> roleActionsList = new ArrayList<Long>();
+        		 for (String s : roles.getActionId().split(",")){
+            		 roleActionsList.add(Long.parseLong(s));
+            	 }
+            	 
+            	 roleActionsList.retainAll(tabActionsIds);
+            	 if(roleActionsList.size() > 0){
+            		 ownerRolesList.add(roles.getId());
+            	 }
+        	 }
+        	 
+         }
+    	 
+    	
+         String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList))  ";
+         List<User> userRoleList = session.createQuery(query.toString()).setParameterList("ownerRolesList", ownerRolesList).setCacheable(true).list();
+         /* 
+         ArrayList<Long> userIdList =  new ArrayList<Long>();
+         ArrayList<String> userCodeList =  new ArrayList<String>();
+         
+         if(userRoleList != null && userRoleList.size() > 0){
+        	  for(User user :userRoleList){
+        		  userIdList.add(user.getId());
+        		  userCodeList.add(user.getUserCode());
+              }
+          }
+         
+         for(Long userId :userIdList){
+        	 
+              String requirementQuery = "from Requirement req where ( (req.managerUserId.id = :userId)  or (req.createdBy IN (:userCodeList)) or (req.id IN (select  reqAssignTo.requirementId.id RequirementAssignTo reqAssignTo  where  reqAssignTo.assignUserId.id = :userId ) ) or (req.id IN (select  reqApproverHirerarchy.requirementId.id RequirementApproverHierarchy reqApproverHirerarchy  where  reqApproverHirerarchy.approverUserId.id = :userId ) ) ";
+              List<Requirement> requirementList = session.createQuery(query.toString()).setLong( "userId", userId).setParameterList("userCodeList", userCodeList).setCacheable(true).list();
+        
+         
+              for(Requirement req :requirementList){
+            	  
+            	  
+            	   Integer applicantsCount = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(user.getId(),loginOrgLocation.getId(),"APPLICANTS");
+
+          		   Integer shortlistedCount = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(user.getId(),loginOrgLocation.getId(),"SHORTLIST");
+
+          		   Integer submitToClientCount = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(user.getId(),loginOrgLocation.getId(),"SUBMIT_TO_CLIENT");
+
+          		  Integer interviewedCount = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(user.getId(),loginOrgLocation.getId(),"INTERVIEWED");
+
+          		  Integer rejectedCount = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(user.getId(),loginOrgLocation.getId(),"REJECTED");
+
+          		  Integer requestSentCount = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(user.getId(),loginOrgLocation.getId(),"REQUESTSENT");
+
+          		  Integer offeredCount = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(user.getId(),loginOrgLocation.getId(),"OFFERED");
+
+          		
+            	  
+     	         if(submissionStatus.equalsIgnoreCase("APPLICANTS")){
+     	             submissionStages = "";
+     	         }else if(submissionStatus.equalsIgnoreCase("SHORTLISTED")){
+     	             submissionStages = " and (reqSub.submissionStatus = 'SHORTLIST')";
+     	         }else if(submissionStatus.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
+     	             submissionStages = "and (reqSub.submissionStatus = 'SUBMIT_TO_CLIENT')";
+     	         }else if(submissionStatus.equalsIgnoreCase("INTERVIEWED")){
+     	             submissionStages = "and (reqSub.submissionStatus = 'INTERVIEW' OR reqSub.submissionStatus = 'CLIENT_INTERVIEW')";
+     	         }else if(submissionStatus.equalsIgnoreCase("REJECTED")){
+     	             submissionStages = "and (reqSub.submissionStatus = 'REJECTED')";
+     	         }else if(submissionStatus.equalsIgnoreCase("REQUESTSENT")){
+     	             submissionStages = "and (reqSub.submissionStatus = 'REQUEST_SENT')";
+     	         }else if(submissionStatus.equalsIgnoreCase("OFFERED")){
+     	             submissionStages = "and (reqSub.submissionStatus = 'OFFERMADE' OR reqSub.submissionStatus = 'OFFERACCEPTED' OR reqSub.submissionStatus = 'OFFERREJECTED' OR reqSub.submissionStatus = 'OFFERHIRED' OR "
+     	                     + " reqSub.submissionStatus = 'CLIENT_OFFERMADE' OR reqSub.submissionStatus = 'CLIENT_OFFERACCEPTED' OR reqSub.submissionStatus = 'CLIENT_OFFERREJECTED' OR reqSub.submissionStatus = 'CLIENT_OFFERHIRED' )";
+     	         }
+     	     
+                  String query = "select reqSub.id from RequirementSubmission  reqSub  where reqSub.orgLocations.id =:orgLocations and reqSub.createdBy =:userCode  "+submissionStages+"";
+       			 List<RequirementSubmission> submissionList  = session.createQuery(query).setLong("orgLocations", orgLocations.getId()).setString("userCode", user.getUserCode()).setCacheable(true).list();
+                 
+            	  
+              }
+         }   
+        	    
+         
+         
+           */
+         
+         return userRoleList;
+         
+         
+         
+         
+         
+	}
+
 	
 	
 }
