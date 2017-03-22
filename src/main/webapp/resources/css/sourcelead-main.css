@@ -6698,6 +6698,10 @@ word-wrap: break-word; font-size: 13px !important; color: #333;
 #referToContacts .chosen-container-multi .chosen-choices{
 min-height: 30px; max-height: 100px !important; overflow-y: scroll !important;
 }
+.chosenWidth .chosen-container {
+	width:100% !important;
+}
+ 
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

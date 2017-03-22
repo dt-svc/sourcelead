@@ -272,5 +272,14 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 		return interviewsList;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementInterviewHistory getRequirementInterviewHistoryByInterviewId(Long interviewId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementInterviewHistory rih  where rih.interviewId.id = :interviewId ";
+		RequirementInterviewHistory requirementInterviewHistory =  (RequirementInterviewHistory) session.createQuery(query).setLong("interviewId", interviewId).setCacheable(true).list();
+		return requirementInterviewHistory;
+	}
+
 	
 }

@@ -134,6 +134,20 @@ public class RequirementInterviewRestController {
 
   }
 	
+    @RequestMapping(value = "/updateRescheduleInterview" , method = RequestMethod.POST)
+    public String updateRescheduleInterview(@RequestParam(value="jsonData", required=false) String json, HttpServletRequest request) throws Exception {
+			
+ 	    String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			requirementInterviewService.updateRescheduleInterview(jsonObj,user,orgLocations,loginOrg);
+			return "success";
+   }
+	
+	
+	
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_INTERVIEW','ROLE_VIEW_CANCEL_INTERVIEW')")
 	@RequestMapping(value = "/getAllInternalInterviews" , method = RequestMethod.POST)
 	 public @ResponseBody  String getAllInternalInterviews(@RequestParam(value="submissionId", required=false) Long submissionId, HttpServletRequest request) throws Exception {

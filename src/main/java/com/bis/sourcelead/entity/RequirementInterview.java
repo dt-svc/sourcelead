@@ -87,6 +87,9 @@ import org.hibernate.annotations.FetchMode;
 	@JoinColumn(name = "INTERVIEW_TEMPLATE_ID")
     private SubmissionTemplate interviewTemplateId;
 	
+	@Column(name = "INTERVIEW_RESCHEDULE_COMMENT", columnDefinition = "TEXT default NULL")
+	private String rescheduleComment;
+	
 	@Transient
 	private String remainderTime;
 	
@@ -367,5 +370,13 @@ import org.hibernate.annotations.FetchMode;
 
 	public void setInterviewTemplateId(SubmissionTemplate interviewTemplateId) {
 		this.interviewTemplateId = interviewTemplateId;
+	}
+
+	public String getRescheduleComment() {
+		return rescheduleComment;
+	}
+
+	public void setRescheduleComment(String rescheduleComment) {
+		this.rescheduleComment = rescheduleComment;
 	}
 }

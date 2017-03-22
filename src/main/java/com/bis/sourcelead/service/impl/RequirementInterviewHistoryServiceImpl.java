@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementInterviewDao;
 import com.bis.sourcelead.dao.RequirementInterviewHistoryDao;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
@@ -63,6 +65,12 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 	public RequirementInterviewHistory getRequirementInterviewHistoryById(Long Id) {
 		return requirementInterviewHistoryDao.getRequirementInterviewHistoryById(Id);
 	}
+	
+	@Override
+	public RequirementInterviewHistory getRequirementInterviewHistoryByInterviewId(Long interviewId) throws Exception {
+		return requirementInterviewHistoryDao.getRequirementInterviewHistoryByInterviewId(interviewId);
+	}
+	
 	
 	@Override
 	public List<RequirementInterviewHistory> getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId,OrgLocations orgLocation) throws Exception {
@@ -144,6 +152,13 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			    }
 			    if(requirementInterview.getInterviewTemplateId() != null){
 			    	interviewHistory.setInterviewTemplateid(requirementInterview.getInterviewTemplateId().getId());
+			    }
+			    if(requirementInterview.getTimezone() != null){
+			    	interviewHistory.setTimezone(requirementInterview.getTimezone().getTimeZoneId());
+			    }
+			    
+			    if(requirementInterview.getRescheduleComment() != null){
+			    	interviewHistory.setRescheduleComment(requirementInterview.getRescheduleComment());
 			    }
 			    
 			    if(interviewHistory.getSubmissionId().getVendorLocationId() != null){
@@ -453,4 +468,6 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 		}
 		return ineterviewList;
 	}
+
+	
 }
