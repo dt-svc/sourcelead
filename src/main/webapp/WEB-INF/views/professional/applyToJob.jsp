@@ -766,6 +766,7 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 	                        
 		result = result + '</div>';
 		
+		
 		result = result + '<div class="row">';
 	    result = result + '	<div class="col-md-6 upresume mb" id="skillsDiv" style="display: none;">';
 		result = result + '<label class="col-md-4">Skills</label>';
@@ -778,7 +779,27 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 		result = result + '		 </div>';
 		result = result + '	 </div>';
 		result = result + '	 </div>';
+		
+		result = result + '<div class="row">';
+		result = result + '	<div class="col-md-6 upresume mb" id="newResumeDiv" style="display: none;">';
+		result = result + '<label class="col-md-4">Add Resume &nbsp;*</label>';
+		result = result + '		<div class="col-md-8">';
+		result = result + '			    <div class="input-group col-md-12 attachfile-error" id="uploadFileGroup1" style="margin:0 auto">';
+		result = result + '			        <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+		result = result + '                   <input type="file" style="display: none;" name="newUploadBtn" id="newUploadBtn"  class="upload">';
+		result = result + '			          </span> </label>';
+		result = result + '			          <input type="text" class="form-control" readonly id="newUploadFile" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validatedoc "  >';
+		result = result + '			    </div>';
+		result = result + '		 </div>';
+		result = result + '	 </div>';
+		
+	
+		
+		
+		
 		result = result + '</div>';
+		
+		
 		
 		
 		result = result + '<div class="form-footer clearfix mt">';
@@ -897,6 +918,11 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 			 $("#candidateSkills").val('').trigger("chosen:updated");
 		 }
 		 
+		 var newResumeDiv =  document.getElementById('newResumeDiv'); 
+		 if(newResumeDiv != null){
+			 document.getElementById("newResumeDiv").style.display="none";
+		 }
+		 
 		 if(requirementId != null && requirementId != "" && requirementId != 'undefined'){
 			 $.ajax({
 			    	type: "POST",
@@ -947,6 +973,8 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 			 $('#uploadFile').attr("data-validation","required validatedoc "); 
 			 
 			 document.getElementById("skillsDiv").style.display="";
+			 document.getElementById("newResumeDiv").style.display="none";
+			 
 			 $("#candidateSkills").val('').trigger("chosen:updated");
 			 $('#newUploadFile').removeAttr('data-validation');
 			 $('#newUploadFile').attr("data-validation-optional","true"); 
@@ -1013,11 +1041,14 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 				        $("#candidateResumesList").append(output);
 				        
 				        document.getElementById("skillsDiv").style.display="none";
+				        document.getElementById("newResumeDiv").style.display="none";
+				        
 				        $('#newUploadFile').removeAttr('data-validation');
 		        		$('#newUploadFile').attr("data-validation-optional","true"); 
 		        		
 		        		 $('#candidateResumesList').removeAttr('data-validation-optional');
 		    			 $("#candidateResumesList").attr("data-validation", "required");
+		    			
 		        	}else{
 		        		
 		        		 $('#candidateResumesList').removeAttr('data-validation');
@@ -1027,7 +1058,7 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 		        		 document.getElementById("browseDiv").style.display="none";
 		        		 document.getElementById("orConditionDiv").style.display="none";
 		        		
-		        		 document.getElementById("skillsDiv").style.display="";
+		        		 document.getElementById("newResumeDiv").style.display="";
 		        		 $('#newUploadFile').removeAttr('data-validation-optional');
 		        		 $("#newUploadFile").attr("data-validation", "required validatedoc");
 		        		 
