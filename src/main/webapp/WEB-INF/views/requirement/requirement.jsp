@@ -1153,14 +1153,14 @@ $(document).ready(function () {
 			 
 			 //for client details in draft
 			 
-			 $('#addClientId').removeAttr('data-validation');
+			 /* $('#addClientId').removeAttr('data-validation');
 			 $('#addClientId').attr("data-validation-optional","true");
 			 
 			 $('#selectContact').removeAttr('data-validation');
 			 $('#selectContact').attr("data-validation-optional","true");
 			 
 			 $('#clientSubmissionForm').removeAttr('data-validation');
-			 $('#clientSubmissionForm').attr("data-validation-optional","true");
+			 $('#clientSubmissionForm').attr("data-validation-optional","true"); */
 		}
 		
           var rateType = document.getElementById("rateType").value; 
