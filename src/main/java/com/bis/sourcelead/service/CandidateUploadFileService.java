@@ -1,8 +1,5 @@
 package com.bis.sourcelead.service;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.Org;
