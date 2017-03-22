@@ -414,7 +414,6 @@ private void createCandidateErrorFile(Row row, Sheet createExcelsheet, int rowIn
 private boolean validateCandidateExeclData(Row row, CandidatesImport candidateImport, String fileName, OrgLocations orgLocations) throws Exception {
 
 //	boolean isValidated; 
-	logger.info("row============>"+row.getRowNum());
 	if (row.getRowNum() > 0) { // Excluding column names
 
 		if (row.getCell(0) == null || "".equalsIgnoreCase(row.getCell(0).toString())) {
