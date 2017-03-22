@@ -1530,47 +1530,22 @@ function timesheetEntriesExport(startDate,endDate,projectMemberId,exportType,sub
 </script>
 
 
-<script type="text/javascript">
-function validate_fileupload(fileName)
-{
-    var allowed_extensions = new Array("docx","doc","pdf","rtf","jpeg","png","jpg","jpeg","xls","xlsx","csv");
-    var file_extension = fileName.split('.').pop(); 
-
-    for(var i = 0; i <= allowed_extensions.length; i++)
-    {
-    	if(allowed_extensions[i] != null && allowed_extensions[i] != '' && allowed_extensions[i] != 'undefined' && allowed_extensions[i]==file_extension.toLowerCase())
-        {
-            return true; // valid file extension
-        }
-    }
-
-    return false;
-}
-</script>
 
 <script type="text/javascript">
 function validateUploadFile(id)
 {
-	  var selectedFile = $('#'+id+'docFile').val();
-	  if(validate_fileupload(selectedFile)){
-		   var docSize = $('#'+id+'docFile')[0].files[0].size;
- 	       $("#"+id+"docFileuploadFileGroup").find('p.jquery_form_error_message').remove();
- 	      if(docSize > 2097152){
- 	    	  $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
- 	    	  $('#'+id+'docFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
- 			  $('#'+id+'docFile').attr('record-exist','yes');
- 			  $('#'+id+'docFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
- 	      }else{
- 	    	 $('input#'+id+'docFile').removeAttr( "record-exist record-exist-errormsg");
-    		 $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove(); 
- 	      }
-	  }
-	  else{
-		      $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
-		      $('#'+id+'docFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Invalid Format</span>");
+	    var selectedFile = $('#'+id+'docFile').val();
+	   var docSize = $('#'+id+'docFile')[0].files[0].size;
+	       $("#"+id+"docFileuploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+	    	  $('#'+id+'docFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
 			  $('#'+id+'docFile').attr('record-exist','yes');
- 			  $('#'+id+'docFile').attr('record-exist-errorMsg','Invalid Format'); 
-	  }
+			  $('#'+id+'docFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+	      }else{
+	    	 $('input#'+id+'docFile').removeAttr( "record-exist record-exist-errormsg");
+   		     $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove(); 
+	      }
 	
 }
 </script>
