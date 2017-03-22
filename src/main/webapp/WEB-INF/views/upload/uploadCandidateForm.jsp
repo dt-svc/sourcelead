@@ -90,7 +90,6 @@ margin:10px 220px 0;
 			  <p>
 			  <label><i class="fa fa-user"></i>&nbsp;&nbsp;First Name</label>
 			  <label><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</label>
-			  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Role</label>
 			  </p>
 			  </span>
             </div>
