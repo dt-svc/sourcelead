@@ -5,7 +5,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -546,5 +548,88 @@ public class CandidateDaoImpl implements CandidateDao {
 				       .setCacheable(true)
 				       .list();
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getCandidatesCountByCandidateTypeOrgLocationID(Long orgLocationId, String candidateType) {
+		
+		logger.debug("..getCandidatesCount() Method Started..");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String subQuery  = null;
+		if(null != candidateType && !candidateType.isEmpty() && candidateType.equalsIgnoreCase(Constants.CONSULTANT)){
+			subQuery = "and candidateType = 'Consultant'"; 
+		}else{
+			subQuery = "and candidateType = 'Candidate'"; 
+		}
+			
+		
+		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId "+subQuery+" ";
+		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		logger.debug("..getCandidatesCount() Method Ended..");
+		return results.get(0);
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getCandidateReports(Long orgLocationId, String candidateType, String filterDate,
+			Date startDateUTC, Date endDateUTC) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		Map<String, Object> params = new HashMap<String,Object>();
+		String dateSubQuery = "";
+		if(null != startDateUTC && null != endDateUTC){
+			 dateSubQuery = "and (candidate.createdDate >= :startDateUTC and candidate.createdDate <= :endDateUTC)";
+			  params.put("startDateUTC",startDateUTC);
+			  params.put("endDateUTC",endDateUTC);
+		}
+		
+		String subQuery  = null;
+		if(null != candidateType && !candidateType.isEmpty() && candidateType.equalsIgnoreCase(Constants.CONSULTANT)){
+			subQuery = "and candidateType = 'Consultant'"; 
+		}else{
+			subQuery = "and candidateType = 'Candidate'"; 
+		}
+		
+		String from = "from Candidate candidate where candidate.orgLocationId.id =:orgLocationId "+subQuery+" "+dateSubQuery; 
+		params.put("orgLocationId",orgLocationId);
+		
+		Query query = session.createQuery(from);
+		for (String str : query.getNamedParameters())
+        {
+			if(str.equalsIgnoreCase("orgLocationId")){
+				query.setParameter(str, (long) params.get(str));
+			}if(str.equalsIgnoreCase("startDateUTC")){
+				query.setParameter( str, (Date) params.get(str) );
+			}
+			if(str.equalsIgnoreCase("endDateUTC")){
+				query.setParameter( str, (Date) params.get(str) );
+			}
+        }
+		
+		return query.setCacheable(true).list();
+	}
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getCandidateReportsListByOrgLocationID(Long orgLocationId, String candidateType)
+			throws Exception {
+			
+		    
+			//Checking for Candidate Status 
+		    Session session = this.sessionFactory.getCurrentSession();
+			
+			String subQuery  = null;
+			if(null != candidateType && !candidateType.isEmpty() && candidateType.equalsIgnoreCase(Constants.CONSULTANT)){
+				subQuery = "and candidateType = 'Consultant'"; 
+			}else{
+				subQuery = "and candidateType = 'Candidate'"; 
+			}
+			
+			String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId "+subQuery+" ";
+			List<Candidate> candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		
+		
+		    return candidateList;
+	}
 }

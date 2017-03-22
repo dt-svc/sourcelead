@@ -267,6 +267,9 @@ public class Candidate implements Serializable{
 		
 	 @Transient
 	 private String googlePlus;
+	 
+	 @Transient
+	 private String postedDateStr;
 		
 	 
 	 @Transient
@@ -1027,6 +1030,16 @@ public class Candidate implements Serializable{
 	}
 
 
+	public String getPostedDateStr() {
+		return postedDateStr;
+	}
+
+
+	public void setPostedDateStr(String postedDateStr) {
+		this.postedDateStr = postedDateStr;
+	}
+
+   
 
 	
 }

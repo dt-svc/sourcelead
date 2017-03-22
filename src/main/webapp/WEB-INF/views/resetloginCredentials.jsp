@@ -62,7 +62,7 @@
                 <div class="col-xs-12 col-md-6">
                     <i class="fa fa-unlock-alt"></i>
                     <label>Password <span class="text-danger">*</span></label>
-                    <input type="password" id="password" name="password" filed-name="Password" data-validation="required validate_length length6-100" >
+                    <input type="password" id="password" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" >
                     <b></b>
                 </div>
                 <div class="col-xs-12 col-md-6" id="passwordDiv">
@@ -169,9 +169,9 @@ function validateUserName(){
 					     
 				       	else{
 				       		$('#userNameDiv').find('p.jquery_form_error_message').remove(); 
-				    	    $("input#userName").after("<p class='jquery_form_error_message'>Invalid User Name</span>");
+				    	    $("input#userName").after("<p class='jquery_form_error_message'>User Name Already Existed</span>");
 		    				$('input#userName').attr('record-exist','yes');
-		    				$('input#userName').attr('record-exist-errorMsg','Invalid User Name'); 
+		    				$('input#userName').attr('record-exist-errorMsg','User Name Already Existed'); 
 				       	}
 			       	}
 		    	   

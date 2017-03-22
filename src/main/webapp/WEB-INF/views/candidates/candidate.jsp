@@ -287,7 +287,8 @@
                </select>
            </div>
          </div>
-<div class="clearfix">
+         
+         <div class="clearfix">
           <div class="form-group">
               <label class="col-md-3">Skills</label>
               <div class="col-md-9">
@@ -299,8 +300,24 @@
               </div>
             </div>
         
-        
          <div class="form-group">
+          <label class="col-md-3">Primary Skill</label>
+          <div class="col-md-9">
+            <input type="text" class="form-control" id="primarySkill" name="primarySkill" value="${primarySkill}"  field-name="Primary Skill" data-validation="validate_Space validate_length length2-200" data-validation-optional="true">
+          </div>
+         </div>
+        
+         
+            </div>
+        
+        <div class="form-group mb">
+          <label class="col-md-3">Summary</label>
+          <div class="col-md-9">
+            <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true"></textarea>
+          </div>
+        </div>
+        
+        <div class="form-group">
               <label class="col-md-3">Education</label>
               <div class="col-md-9">
                 <select multiple data-placeholder="select Education" class="chosenone-selectone form-control" name="candidateEducation" id="candidateEducation" data-validation="validate_Space" data-validation-optional="true">
@@ -310,28 +327,6 @@
                 </select>
               </div>
             </div>
-            </div>
-         <div class="form-group">
-          <label class="col-md-3">Primary Skill</label>
-          <div class="col-md-9">
-            <input type="text" class="form-control" id="primarySkill" name="primarySkill" value="${primarySkill}"  field-name="Primary Skill" data-validation="validate_Space validate_length length2-200" data-validation-optional="true">
-          </div>
-         </div>
-        <div class="form-group mb">
-          <label class="col-md-3">Summary</label>
-          <div class="col-md-9">
-            <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true"></textarea>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label class="col-md-3"></label>
-         <!--  <div class="col-md-9 checkbox checkBox">
-            <label>
-              <input type="checkbox" value="">
-              Send Invitation </label>
-          </div> -->
-        </div> 
         <div class="clearfix"></div>
       </div> 
     </div>

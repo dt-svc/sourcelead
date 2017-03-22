@@ -526,7 +526,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getCandidatesCountByOrgLocationID(orgLocationId,candidateStatus);
 	}
 
-
+	@Override
+	public Long getCandidatesCountByCandidateTypeOrgLocationID(Long orgLocationId,String candidateType) {
+		return candidateDao.getCandidatesCountByCandidateTypeOrgLocationID(orgLocationId,candidateType);
+	}
+	
+	
 	@Override
 	public Integer getHotlistCandidatesCountByTeamIdAndOrgLocationId(Long teamId, Long orgLocationId) throws Exception {
 		return candidateDao.getHotlistCandidatesCountByTeamIdAndOrgLocationId(teamId, orgLocationId);
@@ -750,6 +755,25 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			User user) throws Exception {
 		
 		   return candidateDao.getAllCandidatedsBasedOnCreatedByAndOrglocationCodeWhichAreCreatedToday(orgLocations, user);
+	}
+			
+	@Override
+	public List<Candidate> getCandidateReportsListByOrgLocationID(Long orgLocationId, String candidateType)
+			throws Exception {
+			List<Candidate> candidateList = candidateDao.getCandidateReportsListByOrgLocationID(orgLocationId,candidateType);
+			for(Candidate can :candidateList){
+				if(can.getUpdatedDate() != null){
+				 can.setCandidateUpdateDateToString(Constants.DF_DMY.format(can.getUpdatedDate()));
+				}
+			}
+		return candidateList;
+	}
+
+	@Override
+	public List<Candidate> getCandidateReports(Long orgLocationId, String candidateType, String filterDate,
+			Date startDateUTC, Date endDateUTC) {
+		List<Candidate> candidateReportsList = candidateDao.getCandidateReports(orgLocationId, candidateType, filterDate, startDateUTC, endDateUTC);
+		return candidateReportsList;
 	}
 
 //	private ArrayList<String> getSearchValuesFromChosenSelectField(String searchValue) {

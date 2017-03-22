@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -135,7 +136,73 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	@Transient
 	private Long interviewerId;
 	
+	@Transient
+	private List<RequirementInterviewHistory> interviewerList;
 	
+	@Transient
+	private List<Tasks> tasksList;
+	
+	@Transient
+	private String dayOfweek;
+
+	@Transient
+	private String selectedDate;
+	
+	@Transient
+	private String candidateEmail;
+		
+	@Transient
+	private String candidatePhoneNumber;
+	
+	
+	public String getCandidateEmail() {
+		return candidateEmail;
+	}
+
+	public void setCandidateEmail(String candidateEmail) {
+		this.candidateEmail = candidateEmail;
+	}
+
+	public String getCandidatePhoneNumber() {
+		return candidatePhoneNumber;
+	}
+
+	public void setCandidatePhoneNumber(String candidatePhoneNumber) {
+		this.candidatePhoneNumber = candidatePhoneNumber;
+	}
+
+	public String getDayOfweek() {
+		return dayOfweek;
+	}
+
+	public void setDayOfweek(String dayOfweek) {
+		this.dayOfweek = dayOfweek;
+	}
+
+	public String getSelectedDate() {
+		return selectedDate;
+	}
+
+	public void setSelectedDate(String selectedDate) {
+		this.selectedDate = selectedDate;
+	}
+
+	public List<RequirementInterviewHistory> getInterviewerList() {
+		return interviewerList;
+	}
+
+	public void setInterviewerList(List<RequirementInterviewHistory> interviewerList) {
+		this.interviewerList = interviewerList;
+	}
+
+	public List<Tasks> getTasksList() {
+		return tasksList;
+	}
+
+	public void setTasksList(List<Tasks> tasksList) {
+		this.tasksList = tasksList;
+	}
+
 	public String getInterviewTimeZoneStartTimeStr() {
 		return interviewTimeZoneStartTimeStr;
 	}

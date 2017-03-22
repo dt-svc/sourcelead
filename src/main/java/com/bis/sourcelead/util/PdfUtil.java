@@ -450,10 +450,10 @@ public class PdfUtil {
             PdfPTable table = new PdfPTable(headers.length);
             Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
 	        PdfPCell cell1 = new PdfPCell(new Phrase(sbReqStyle.toString(),font));
-	        cell1.setColspan(12);
+	        cell1.setColspan(13);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
-            table.setWidths(new int[]{3, 5, 3,5, 5, 3,5,3,5,5,3,3});
+            table.setWidths(new int[]{3, 5, 3,5, 5, 3,5,3,5,5,3,3,5});
             table.addCell(cell1);
 	        for (int i = 0; i < headers.length; i++) {
 	            String header = headers[i];
@@ -566,6 +566,11 @@ public class PdfUtil {
 			requirementArray[11] = requirement.getClientContactEmail();
 		}else{
 			requirementArray[11] = "--";
+		}
+		if(requirement.getRequirementSubmissionStatus() != null && !"".equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())){
+			requirementArray[12] = requirement.getRequirementSubmissionStatus().toString();
+		}else{
+			requirementArray[12] = "--";
 		}
 		return requirementArray;
 	}

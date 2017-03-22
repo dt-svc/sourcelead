@@ -175,12 +175,17 @@ public class RequirementDaoImpl implements RequirementDao {
 			}
 		}
 		
+		String subQuery7 = "";
+		if((null == status || "".equals(status)) && (null == clients || "".equals(clients))){
+			subQuery7 = " and (requirement.requirementSubmissionStatus ='NEW' or requirement.requirementSubmissionStatus = 'SUBMITTED' or requirement.requirementSubmissionStatus = 'DRAFT' or requirement.requirementSubmissionStatus = 'OPEN') ";
+		}
+		
 		Query query = null;
 		if(clientsList.isEmpty()){
-			query = session.createQuery(from+" "+subQuery+" ORDER BY requirement.id DESC");
+			query = session.createQuery(from+" "+subQuery+" "+subQuery7+" ORDER BY requirement.id DESC");
 		}
 		else{
-			query = session.createQuery(from+" "+subQuery+"and requirement.clientId.id IN (:clientList) ORDER BY requirement.id DESC");
+			query = session.createQuery(from+" "+subQuery+" "+subQuery7+"and requirement.clientId.id IN (:clientList) ORDER BY requirement.id DESC");
 		}
 		
 		for (String str : query.getNamedParameters())

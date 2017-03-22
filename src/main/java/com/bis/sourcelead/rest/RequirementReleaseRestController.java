@@ -542,6 +542,9 @@ public class RequirementReleaseRestController {
 		if(null != parentRequirement.getJobType() &&  parentRequirement.getJobType() != "" &&  parentRequirement.getJobType() != "undefined" && parentRequirement.getJobType().equalsIgnoreCase("Other")){
 			requirement.setOtherJobType(parentRequirement.getOtherJobType());
 		}
+		
+		requirement.setReqCoolingOffPeriod(parentRequirement.getReqCoolingOffPeriod());
+		
 //		requirement.setJobId(parentRequirement.getJobId());
 		requirement.setPositions(parentRequirement.getPositions());
 		requirement.setEducation(parentRequirement.getEducation());
@@ -600,7 +603,6 @@ public class RequirementReleaseRestController {
 	}
 	
 	
-	 @PreAuthorize("hasRole('ROLE_RELEASE_REQUIREMENT')")
 	 @RequestMapping(value = "/releaseToCrowdSourcingNetwork" , method = RequestMethod.POST)
 	 public  String releaseToCrowdSourcingNetwork(@RequestParam(value="json", required=false) String json,
 			 @RequestParam(value = "requirementId", required = false) Long requirementId,

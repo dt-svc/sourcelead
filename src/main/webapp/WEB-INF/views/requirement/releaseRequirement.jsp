@@ -191,7 +191,7 @@
         <div class="form-footer clearfix row mt" id="releaseToCrowdSourcing" style="display: none">
         <div class="col-lg-12">
           <div class="pull-right">
-            <span class="jquery_form_error_message" style="display:none;">Vendor/Contact/Open Network selection is mandatory</span>
+            <span id="openNetworkRelease" class="text-danger small" style="font-size: 11px; display: none;">Public / Crowdsourcing  is mandatory</span>
            	<input type="button" class="btn btn-primary ml" onclick="releaseToCrowdSourcing();" id="releaseToCWBtn" value="Release">
             <input type="button" class="btn btn-default ml" id="releaseCancelBtn" value="Cancel" onClick="javascript:location.href = '<c:url value='requirementList'/>'">
           </div>
@@ -205,6 +205,7 @@
           <div class="pull-right">
          
             <sec:authorize access="hasAnyRole('ROLE_RELEASE_REQUIREMENT')">
+            <span class="jquery_form_error_message" style="display:none;">Vendor/Contact selection is mandatory</span>
             	<input type="button" class="btn btn-primary ml" id="releaseBtn" onclick="releaseTo();" value="Release">
 			</sec:authorize>
 			
@@ -225,7 +226,12 @@
 $(document).ready(function(){
 	getVendorLists();
 	
-    openVendors();
+	if('${SourceLeadWeb_vms}'  == 'Y'){
+		openVendors();
+	}else{
+		opennetwork();
+	}
+    
 	
 	if('${requirementType}' != null && '${requirementType}' != '' && '${requirementType}' != 'undefined'){
 		$("#jobType").html('${requirementType}');
@@ -284,6 +290,7 @@ function releaseTo(){
 	    
 	    	 if(contactsIds.length > 0 || vendorIds.length > 0 || isPublic == "Y" || isCrowdScourcing == "Y" || (isPublicGlobel != isPublic && isPublicGlobel != "") || (isCrowdScourcingGlobel != isCrowdScourcing && isCrowdScourcingGlobel != "")){
 	 	    	$('span.jquery_form_error_message').hide();
+	 	    	$('#vendorRelease').find('span.jquery_form_error_message').remove();
 	 	    	$("#releaseBtn").prop('disabled', true);
 	 	    	$("#releaseCancelBtn").prop('disabled', true);
 	 			$("#releaseBtn").prop('value', 'Processing');
@@ -315,7 +322,6 @@ function releaseToOneContact(contactscheckboxId){
 <script type="text/javascript">
  function releaseToCrowdSourcing() {
 	 
-	 
 	   if ($('#releaseToCrowdSourcing_form').validate(false, validationSettings)){ 
 		    var frm = $('#releaseToCrowdSourcing_form').serializeFormJSON();
 	        var con = JSON.stringify(frm);
@@ -328,17 +334,30 @@ function releaseToOneContact(contactscheckboxId){
 	        var requirementUUID = '${requirementUUID}';
        	    var requirementId = '${requirementId}';
 	        
-     		$("#releaseToCWBtn" ).addClass('button').val('Processing..');
+     		var isPublicGlobel = document.getElementById("isPublicGlobel").value;
+     		var isCrowdScourcingGlobel = document.getElementById("isCrowdScourcingGlobel").value;
+     		var isContinue = false;
+     		
+     		if(isPublicGlobel == 'Y' || isCrowdScourcingGlobel == 'Y'){
+     			 isContinue = true;
+     			 document.getElementById("openNetworkRelease").style.display="none";
+     			 $("#releaseToCWBtn").attr("disabled", "disabled");
+     			 $("#releaseToCWBtn" ).addClass('button').val('Processing..');
+     		}else{
+     			 document.getElementById("openNetworkRelease").style.display="";
+     		}
+     		
        	    
-	        
-       	    $.ajax({
-		    	type: "POST",
-		    	 url: sourceleadUrl+"/releaseToCrowdSourcingNetwork?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&requirementId="+requirementId, 
-		        success: function(result) {
-		        	location.replace(sourceleadUrl+"/releaseRequirementToClientOrVendors?requirementUUID="+requirementUUID);
-		        },
-		    }); 
-	        return true;
+	        if(isContinue){
+	       	     $.ajax({
+			    	type: "POST",
+			    	 url: sourceleadUrl+"/releaseToCrowdSourcingNetwork?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&requirementId="+requirementId, 
+			        success: function(result) {
+			        	location.replace(sourceleadUrl+"/releaseRequirementToClientOrVendors?requirementUUID="+requirementUUID);
+			        },
+			    });  
+		        return true;
+	        } 
 		
 	  }else{
 		return false;
