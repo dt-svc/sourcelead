@@ -146,7 +146,7 @@ function editCandidate(candidateId){
             			 		summary = json.summary;            			 		
             			 	}
 							var result ='';
-							result = result + '		    <div class="edit-details col-md-8 edit-candaite canprofile-popright"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
+							result = result + '		    <div class="edit-details col-md-8 edit-candaite"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
 							result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
 							result = result + '		      <div class="form-horizontal clearfix">';
 							result = result + '<input type="hidden" class="form-control input-sm" name="candidateId"  value="'+candidateId+'">';
@@ -599,10 +599,37 @@ function professionalProfile(candidateId){
               if(data != null && data != 'undefined' && data != ""){  
               	var json = JSON.parse(data);
 							var result ="";
+							var checked = "";
+							
+							if(json.isProfilePublic == 'Y'){
+    							checked = "checked"+" "+"value = 'Y'";
+    						}else{
+    							checked = "value = 'N'";
+    						}
 							
 							result = result+'<div id="removeCandidateAlert" ></div>  ';
-						    result = result + '<div class="project_tabs_inn_head mt10"> <div class="anchor-inline"><a href="#" onClick="editCandidate('+candidateId+');" onChange="updateDesignationType(this);" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a> </div>';
-							result = result + '<div id="profileEditPopup"></div>';
+							result = result+'<div id="choicepopUp"></div>';
+							result = result+'<div id="loading"></div>';
+						    result = result + '<div class="project_tabs_inn_head mt10">'; 
+						    
+						    
+						    result = result + '<div class="anchor-inline clearfix">';
+						    
+						    result = result + '<div class="col-md-4 pull-right">';
+						    result = result + '<div class="toggle-button pull-left">';
+						    result = result + '<span class="pull-left paddingRight">Public Visibility</span>';
+						    result = result + '<label class="switch">';
+						    result = result + '<input type="checkbox" id="isProfilePublic" '+checked+' onclick="makeProfileAsPublic();">';
+						    result = result + '<div class="slider round"></div>';
+						    result = result + '</label>';
+						    result = result + '</div>';
+						    
+						    
+						    result = result + '<a href="#" onClick="editCandidate('+candidateId+');" onChange="updateDesignationType(this);" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';  
+						    result = result + '</div>';
+						    result = result + '</div>';
+
+						    result = result + '<div id="profileEditPopup"></div>';
 							result = result +'<div class="require_wrap_details candidate_wrap_details">';	 
 							result = result +'		<h1>Summary:</h1>';
 							if(json.summary != null && json.summary != '' && json.summary != 'undifined'){
@@ -1466,5 +1493,66 @@ function updateDesignationType(){
 		  $("#designationOtherType").attr("data-validation-optional", "true");
 		  $("#designationTypeDiv").find('p.jquery_form_error_message').remove();
 	}
+}
+</script>
+
+
+<script>
+function makeProfileAsPublic(){
+	var checked = document.getElementById("isProfilePublic").checked
+	if(checked == true){
+		alertMessage("Do you want to make your profile as public visibility?",checked);
+	}else{
+		alertMessage("Do you want to remove your profile from public visibility?",checked);
+	}
+}
+</script>
+
+<script type="text/javascript">
+function alertMessage(message,checked){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>"+message+"</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='makeAsPublicVisibility();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel("+checked+");'></b>";
+	result = result +"	</div>";
+	$("#choicepopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancel(checked){
+	$("#choicepopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+	if(checked){
+		document.getElementById("isProfilePublic").checked = false;
+	}else{
+		document.getElementById("isProfilePublic").checked = true;
+	}
+	
+}
+</script>
+
+
+<script type="text/javascript">
+function makeAsPublicVisibility(){
+	
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $("#choicepopUp").empty();
+ 	 $(".project_inn_mask").fadeOut(200);
+ 	
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/setCrowdSourcingProfessionalProfileAsPublicVisibility?${_csrf.parameterName}=${_csrf.token}", 
+	        success: function(data) {
+	        	$("#loading").removeAttr("style");
+	        },
+	    });
+	
 }
 </script>
