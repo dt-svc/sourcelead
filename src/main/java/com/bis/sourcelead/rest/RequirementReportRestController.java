@@ -1497,14 +1497,16 @@ public class RequirementReportRestController {
 					requirementSubmission.setRequirementName(requirementSubmission.getRequirement().getJobTitle());
 					
 					RequirementSubmissionHistory reqSubHistory = requirementSubmissionHistoryService.getRequirementSubmissionHistoryBySubmissionId(requirementSubmission.getId());
-					if(reqSubHistory != null){
+					if(null != reqSubHistory){
 					requirementSubmission.setSubmittedBy(reqSubHistory.getCreatedUser());
 					}
-					if(req.getVendorLocationId() != null){
-						requirementSubmission.setOrgName(req.getOrgLocations().getOrg().getOrgName());
+					if(null != req){
+						if(null != req.getVendorLocationId()){
+							requirementSubmission.setOrgName(req.getOrgLocations().getOrg().getOrgName());
+						}
 					}
 					
-					if (requirementSubmission.getCreatedDate() != null) {
+					if (null != requirementSubmission.getCreatedDate()) {
 						requirementSubmission
 								.setCreatedDateStr(Constants.DF_DMY.format(requirementSubmission.getCreatedDate()));
 					}
