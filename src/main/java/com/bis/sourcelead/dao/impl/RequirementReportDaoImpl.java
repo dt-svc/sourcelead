@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementReportDao;
+import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -327,7 +328,7 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementSubmission> getAllSubmissionsByAssignTeamMember(Long orgLocationId,Set<String> userCodesList, Date startDateUTC, Date endDateUTC) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RequirementSubmission rs where rs.createdBy IN (:userCodesList)";
+		String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidateResumes left join fetch rs.orgLocations left join fetch rs.vendorLocationId where rs.createdBy IN (:userCodesList)";
 		return session.createQuery(query).setParameterList("userCodesList", userCodesList).setCacheable(true).list();
 	}
 
