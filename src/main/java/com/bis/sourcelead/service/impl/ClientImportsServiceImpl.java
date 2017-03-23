@@ -196,7 +196,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 										 if(orgSpoc == null){
 											 if(ownerUser.getId() != null){
 												 client.setOwnerUserId(ownerUser.getUser().getId());
-												 JSONObject jsonObj = populateJsonObject(client,isMailSent,vandorsListByOrgLocationId,orgLocation);
+												 JSONObject jsonObj = populateJsonObject(client,isMailSent,vandorsListByOrgLocationId,orgLocation,row.getCell(0).toString());
 												 try {
 														//clientService.storeClient(jsonObj, user, orgLocation,responderType,org);
 														orgSpocService.addVendorContacts(jsonObj, user, orgLocation, orgRelationId.toString(), "", responderType, org);
@@ -246,7 +246,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 												createClientXlsSheet(row, createExcelsheet,count, fname,client);
 											}
 							    	   }else{
-							    		   JSONObject jsonObj = populateJsonObject(client,isMailSent,vandorsListByOrgLocationId,orgLocation);
+							    		   JSONObject jsonObj = populateJsonObject(client,isMailSent,vandorsListByOrgLocationId,orgLocation,row.getCell(0).toString());
 							    			try {
 												clientService.storeClient(jsonObj, user, orgLocation,responderType,org);
 											} catch (Exception e) {
@@ -361,18 +361,26 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	   * prepares json for client saving
 	   * @param clientObject
 	   * @param isMailSent
+	 * @param orgName 
 	 * @param vendorOrg 
 	 * @param ownerId 
 	   * @return
 	   * @throws JSONException
 	   */
-	  private JSONObject populateJsonObject(ClientImportObject clientObject,String isMailSent, List<OrgRelations> vandorsListByOrgLocationId,OrgLocations orgLocation) throws JSONException {
+	  private JSONObject populateJsonObject(ClientImportObject clientObject,String isMailSent, List<OrgRelations> orgList,OrgLocations orgLocation, String orgName) throws JSONException {
 		  String roleTypeId  = "";
 		  JSONObject jsonObj = new JSONObject(); 
-		  if(vandorsListByOrgLocationId != null){
+		  if(orgList != null){
 			  jsonObj.put("roleTypeId", roleTypeId);
-		    OrgRelations  orgRelation = vandorsListByOrgLocationId.get(0);
-		     StringBuilder vendorName = new StringBuilder();
+	              OrgRelations  orgRelation = null;
+	              for(OrgRelations org : orgList){
+	                  if(orgName.equals(org.getResponderLocationId().getOrg().getOrgName())){
+	                      orgRelation = org;
+	                  }else if(orgName.equals(org.getLocationId().getOrg().getOrgName())){
+	                      orgRelation = org;
+	                  }
+	              }
+		    StringBuilder vendorName = new StringBuilder();
 			  if(orgLocation.getId().longValue() == orgRelation.getLocationId().getId().longValue() ){
 				  jsonObj.put("vendorName", vendorName.append(orgRelation.getId()).append(",").append(orgRelation.getResponderLocationId().getId()));
 			  }else{
