@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
@@ -50,6 +51,9 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 	
 	@Autowired
 	private TimeZoneService timeZoneService;
+	
+	@Autowired
+	private SubmissionTemplateService submissionTemplateService;
 	
 	@Autowired
 	RequirementInterviewerService requirementInterviewerService;
@@ -155,6 +159,11 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			    }
 			    if(requirementInterview.getTimezone() != null){
 			    	interviewHistory.setTimezone(requirementInterview.getTimezone().getTimeZoneId());
+			    }
+			    
+			    //This condition  is to enable the feedback  and reschedule icon for Own Interviews
+			    if(requirementInterview.getSubmissionId() != null){
+			    	interviewHistory.setInterviewSubmissionId(requirementInterview.getSubmissionId().getId().toString());
 			    }
 			    
 			    if(requirementInterview.getRescheduleComment() != null){

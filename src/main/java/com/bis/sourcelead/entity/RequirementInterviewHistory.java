@@ -160,6 +160,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	@Transient
 	private String timezone;
 	
+	@Transient
+	private String interviewSubmissionId;
+	
+	@Transient
+	private String isOwnOrgTemplate;
+	
 	
 	public String getCandidateEmail() {
 		return candidateEmail;
@@ -508,5 +514,21 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 	public void setRescheduleComment(String rescheduleComment) {
 		this.rescheduleComment = rescheduleComment;
+	}
+
+	public String getIsOwnOrgTemplate() {
+		return isOwnOrgTemplate;
+	}
+
+	public void setIsOwnOrgTemplate(String isOwnOrgTemplate) {
+		this.isOwnOrgTemplate = isOwnOrgTemplate;
+	}
+
+	public String getInterviewSubmissionId() {
+		return interviewSubmissionId;
+	}
+
+	public void setInterviewSubmissionId(String interviewSubmissionId) {
+		this.interviewSubmissionId = interviewSubmissionId;
 	}
 }

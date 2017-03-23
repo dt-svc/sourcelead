@@ -277,8 +277,14 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 	public RequirementInterviewHistory getRequirementInterviewHistoryByInterviewId(Long interviewId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementInterviewHistory rih  where rih.interviewId.id = :interviewId ";
-		RequirementInterviewHistory requirementInterviewHistory =  (RequirementInterviewHistory) session.createQuery(query).setLong("interviewId", interviewId).setCacheable(true).list();
-		return requirementInterviewHistory;
+		List<RequirementInterviewHistory> requirementInterviewHistory = session.createQuery(query).setLong("interviewId", interviewId).setCacheable(true).list();
+		RequirementInterviewHistory interviewHistory = null;
+		RequirementInterview interview = null;
+		if(requirementInterviewHistory != null && !requirementInterviewHistory.isEmpty()){
+			interviewHistory = requirementInterviewHistory.iterator().next();
+		}
+		return interviewHistory;
+		
 	}
 
 	

@@ -528,6 +528,7 @@ $(document).ready(function() {
 function getInternalInterviewsList(submissionId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var parentRequirement = '${parentRequirement}';
+    
 	 $.ajax({  
          type : "POST",
          url: sourceleadUrl+"/getAllInternalInterviews?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
@@ -544,6 +545,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 
 	                    	 var report = json[i]; 
 	                    	 var notifiedDetails ="";
+	                    	                     	                     	 
 	                    	// var interviewers = "---";
 	                    	 var interviewTypeHeader = "";
 	                    	 var interviewType = "---";
@@ -592,12 +594,16 @@ function getInternalInterviewsList(submissionId){
 		                     result = result + '</div>';
 		                     
 	   					     result = result + '<div id="accordion-sl" class="release-jobs positionRelative">';
-		   					  if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
-		   						  if(report.interviewTemplateid != null && report.interviewTemplateid != '' && report.interviewTemplateid != 'undefined'){
-		   							result = result + '<i class="fa fa-handshake-o pull-right" title="FeedBack" onclick="interviewFeedback('+report.interviewId.id+',\''+report.interviewTemplateid+'\',\''+report.id+'\');"></i>';  
-		   						  }
-		   					  }
-		                    	 
+	   					   
+	   					   //This condition  is to enable the feedback  and reschedule icon for Own Interviews
+	   					     if(submissionId == report.interviewSubmissionId){
+	   					    	 if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
+			   						  if(report.interviewTemplateid != null && report.interviewTemplateid != '' && report.interviewTemplateid != 'undefined'){
+			   							result = result + '<i class="fa fa-handshake-o pull-right" title="FeedBack" onclick="interviewFeedback('+report.interviewId.id+',\''+report.interviewTemplateid+'\',\''+report.id+'\');"></i>';  
+			   						  }
+			   					  }
+	   					     }
+		   					 
 		   					  result = result + '<h2>Interview: <span>'+interviewTypeHeader+' '+report.interviewTimezoneDateStr+' '+report.interviewTimeZoneStartTimeStr+' </span></h2>';
 
 	   					     result = result + '<div class="content clearfix">';
@@ -609,13 +615,18 @@ function getInternalInterviewsList(submissionId){
 		                    	 if(report.interviewId.interviewStatus == null || report.interviewId.interviewStatus == '' || report.interviewId.interviewStatus =='undefined'){
 		                    		 /* if(report.feedbackStartTime != "feedbackStartTime" || report.feedbackEndTime != "feedbackEndTime"){ */
 		                    	   //Latest interview for Reschedule  start
-			                    	if(i == 0){
-			                    		result = result + '		  <a title="Reschedule"><i  class="fa fa-retweet text-warning" onclick="rescheduleInterView(\''+report.interviewId.id+'\',\''+report.timezone+'\',\''+submissionId+'\');"></i>';
-										result = result + '			<div class="reSchPop" id="rescheduleInterViewdiv" >';
-										result = result + '			</div>';
-										result = result + '			 </a> ';
-			                    				                    		
-			                    	}
+		                    	   //This condition  is to enable the feedback  and reschedule icon for Own Interviews
+		                    	   if(submissionId == report.interviewSubmissionId){
+		                    		   if(i == 0){
+				                    		result = result + '		  <a title="Reschedule"><i  class="fa fa-retweet text-warning" onclick="rescheduleInterView(\''+report.interviewId.id+'\',\''+report.timezone+'\',\''+submissionId+'\');"></i>';
+											result = result + '			<div class="reSchPop" id="rescheduleInterViewdiv" >';
+											result = result + '			</div>';
+											result = result + '			 </a> ';
+				                    				                    		
+				                    	}
+		                    	   }
+		                    		  
+			                    	
 			                    	//Latest interview for Reschedule  ends
 		                    		 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Attending\');" title="Attending"><i class="fa fa-check text-success"></i></a>';
 		                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
@@ -2227,6 +2238,7 @@ function reActivateApplicant(submissionId,candidateId,requirementId){
 
 <script>
 function feedback_close() {
+	$(".bg_mask, #viewfeedbackdiv").fadeOut(200);
 	$("#mask_inner").fadeOut();
 	$('.demo').fadeOut();
 }
