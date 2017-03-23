@@ -175,8 +175,10 @@ function cpagination(){
 		$('#ExportStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
+			dateFormat : 'dd-mm-yy',
 			onSelect : function(selected) {
 				var dt = new Date(selected);
+				var dt = toDate("#ExportStartDate");
 				dt.setDate(dt.getDate() + 1);
 				$("#ExportEndDate").datepicker("option", "minDate", dt);
 				addValidClass();
@@ -187,11 +189,13 @@ function cpagination(){
 		$('#ExportEndDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
+			dateFormat : 'dd-mm-yy',
 			beforeShow: function(){
 		           this.value='';
 		     },
 			onSelect : function(selected) {
 				var dt = new Date(selected);
+				var dt = toDate("#ExportEndDate");
 				dt.setDate(dt.getDate() - 1);
 				$("#ExportStartDate").datepicker("option", "maxDate", dt);
 				addValidClass();
@@ -199,7 +203,14 @@ function cpagination(){
 		});
 		
 	});
-</script>	 
+</script>	
+
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script> 
 
 <section class="content-wraper">
   <section class="content-header clearfix">
@@ -321,7 +332,56 @@ function cpagination(){
 				$this.next().css({'width': '100%'});
 
 });
- 		</script> 
+</script> 
+
+ 
+ <script type="text/javascript">
+      var validationSettings = {
+          errorMessagePosition : 'element',
+          borderColorOnError : '',
+		  scrollToTopOnError : true,
+		  dateFormat : 'yyyy/mm/dd' 
+          };
+</script> 
+<script type="text/javascript">
+function getCandidatesByOwner(){
+	if ($('#assign_requirement_form').validate(false, validationSettings)) {
+		var frm = $('#assign_requirement_form').serializeFormJSON();
+		var con = JSON.stringify(frm);
+		con = con.replace(/[{}]/g, "");
+		  //It will escape all the special characters
+        var jsonData = encodeURIComponent(con);
+		var sourceleadUrl = '${sourceleadUrl}';
+		/* $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;'); */
+ 		 $.ajax({
+					type : "GET",
+					url: sourceleadUrl+"/getDayWiseAssignedReqReports?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+					success : function(result) {
+						prepareReportDataDiv(result);
+						getAllRequirementAssignToCounts(jsonData);
+						reset();
+					},
+				});   
+		 return true;
+	 } else {
+		return false;
+	} 
+}
+
+$('body').on('blur', '#assign_requirement_form', function() {
+	$("#assign_requirement_form").showHelpOnFocus();
+	$("#assign_requirement_form").validateOnBlur(false, validationSettings);
+});
+</script>
+ 		
+ 		
+<script>
+function reset(){
+	$(".chosen-select").val('').trigger("chosen:updated");
+}
+
+</script> 		
+ 		
 
 <script type="text/javascript">
 	function flushCustomDates() {
@@ -343,10 +403,9 @@ function getDayWiseReports(){
 	$.ajax({
          type : "POST",
          url: sourceleadUrl+"/getCandidateReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
-          success :function(data) {
-        	  alert("data"+data);
-        	 prepareCandidateReportsDataDiv(data);
-         },
+         success :function(data) {
+	        	 prepareCandidateReportsDataDiv(data);
+        },
           
      });  
 	}
@@ -383,7 +442,6 @@ function getCustomReports(){
 	         type : "POST",
 	          url: sourceleadUrl+"/getCandidateReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,    
 	          success :function(data) {
-	        	  alert("data"+data);
 	        	 prepareCandidateReportsDataDiv(data);
 	         },
 	         

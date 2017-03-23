@@ -1013,7 +1013,7 @@ function cancel(candidateId){
 			<a title="Reports"><i class="fa fa-pie-chart"></i>Reports</a>
 			<div class="RePop">
 				<ul>
-					<li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Create Candidate</a></li>
+					<li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
 				</ul>
 			</div>
 		</div>  
@@ -1289,19 +1289,6 @@ function cancel(candidateId){
       </div>
       <div class="timesheet_head  customtimesheet-head hdr-styles pull-right">
         <ul>
-          <sec:authorize access="hasAnyRole('ROLE_EXPORT_CANDIDATES')">
-          <li id="candidate-export"><i class="glyphicon glyphicon-export"></i><span>Export</span>&nbsp;<i class="glyphicon glyphicon-play" ></i>
-            <div class="export_pop">
-              <ul>
-                <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
-                <li onclick="exportToExcel();"><i class="fa fa-file-excel-o"></i>&nbsp; Excel</li>
-              </ul>
-            </div>
-          </li>
-          </sec:authorize>
-          
-             <li><a href="uploadCandidateForm"><i class="fa fa-upload"></i>&nbsp;Imports</a></li> 
-	      
            <li id="filter2ApprovePop"><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter2ApprovedPop" class="approved_pop">
                   	<ul>
@@ -1355,8 +1342,19 @@ function cancel(candidateId){
            </div>
           </li>
           
+          <li title="Import"><a href="uploadCandidateForm"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li> 
           
-         
+          <sec:authorize access="hasAnyRole('ROLE_EXPORT_CANDIDATES')">
+          <li title="Export" id="candidate-export" class="mrPOP"><i class="glyphicon glyphicon-export expIcon"></i>
+            <div class="export_pop">
+              <ul>
+                <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
+                <li onclick="exportToExcel();"><i class="fa fa-file-excel-o"></i>&nbsp; Excel</li>
+              </ul>
+            </div>
+          </li>
+          </sec:authorize>
+          
           <div class="clearfix"></div>
         </ul>
         
