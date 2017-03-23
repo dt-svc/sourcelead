@@ -143,6 +143,9 @@ public class Constants {
 
 	public static String TASK_MECHANISM_EMAIL ="Task Mechanism";
     public static String TASK_MECHANISM_NOTIFICATION="Task Mechanism";
+    
+    public static String MODIFIED_REQUIREMENT_STATUS_EMAIL = "ModifiedRequirementStatusMailtoVendorContact";
+    public static String MODIFIED_REQUIREMENT_STATUS_NOTIFICATION = "ModifiedRequirementStatusNotificationtoVendorContact";
 	
 	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
 	
