@@ -517,7 +517,6 @@ function getEmailDetails(uuid,type){
 	   			  
 	   			result = result +'<div class="mailbox-read-message clearfix borderbottm-none">';
 	   			
-	   			result = result +'<p>Dear,</p><br/>';
 	   			
 	   			if(opt.comments != null && opt.comments != 'undefined' && opt.comments != ""){
 	   				result = result +'<p>'+opt.comments+'</p>';

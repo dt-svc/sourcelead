@@ -1412,7 +1412,7 @@ function requirementPipeline(requirementId,submissionType){
 							 result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
 							 result = result +'<span class="applicant_export">';
 							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-					            result = result +'<a onClick="piplineexport();"class="Clo1"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+					            result = result +'<a title="Export" onClick="piplineexport();"class="Clo1"><i class="glyphicon glyphicon-export expIcon"></i></a>';
 					            result = result +'<div class="export_pipline" style="display:none">';
 					            result = result +'<ul>';
 					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');"><i class="fa fa-file-pdf-o text-danger"></i>&nbsp;&nbsp;PDF</li>';
@@ -1451,6 +1451,13 @@ function requirementPipeline(requirementId,submissionType){
 			   	        			orgName = "("+report.orgName+")";
 			   	        		}else{
 			   	        			orgName = "";
+			   	        		}
+			   	        		
+			   	        		
+			   	        		if(report.candidateSource != null && report.candidateSource != '' && report.candidateSource != 'undefined'){
+			   	        			candidateSource = "("+report.candidateSource+")";
+			   	        		}else{
+			   	        			candidateSource = "";
 			   	        		}
 
 						           result = result + '       <tr>';
@@ -1570,7 +1577,7 @@ function requirementPipeline(requirementId,submissionType){
 							           }
 							      }   
 						           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
+						        	   result = result + '         <td><div><span>'+report.createdUser+''+orgName+'<br/>'+candidateSource+'</span></div></td>';
 							           }
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
@@ -1696,7 +1703,7 @@ function requirementPipelineDA(requirementId,submissionType){
 						   
 						   result = result +'<span class="applicant_export">';
 							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-					            result = result +'<a onClick="piplineexport(); " class="Clo1"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+					            result = result +'<a title="Export" onClick="piplineexport(); " class="Clo1"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>';
 					            result = result +'<div class="export_pipline" style="display:none">';
 					            result = result +'<ul>';
 					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
@@ -1735,6 +1742,12 @@ function requirementPipelineDA(requirementId,submissionType){
 			   	        			orgName = "("+report.orgName+")";
 			   	        		}else{
 			   	        			orgName = "";
+			   	        		}
+			   	        		
+			   	        		if(report.candidateSource != null && report.candidateSource != '' && report.candidateSource != 'undefined'){
+			   	        			candidateSource = "("+report.candidateSource+")";
+			   	        		}else{
+			   	        			candidateSource = "";
 			   	        		}
 
 						           result = result + '       <tr>';
@@ -1827,7 +1840,7 @@ function requirementPipelineDA(requirementId,submissionType){
 							       } */
 							           
 						           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
+						        	   result = result + '         <td><div><span>'+report.createdUser+''+orgName+'<br/>'+candidateSource+'</span></div></td>';
 							           }
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
@@ -1950,7 +1963,7 @@ function requirementPipelineRS(requirementId,submissionType){
 						   
 						   result = result +'<span class="applicant_export">';
 							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-					            result = result +'<a onClick="piplineexport();" class="Clo1"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+					            result = result +'<a title="Export" onClick="piplineexport();" class="Clo1"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>';
 					            result = result +'<div class="export_pipline" style="display:none">';
 					            result = result +'<ul>';
 					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
@@ -1990,6 +2003,12 @@ function requirementPipelineRS(requirementId,submissionType){
 			   	        			orgName = "("+report.orgName+")";
 			   	        		}else{
 			   	        			orgName = "";
+			   	        		}
+			   	        		
+			   	        		if(report.candidateSource != null && report.candidateSource != '' && report.candidateSource != 'undefined'){
+			   	        			candidateSource = "("+report.candidateSource+")";
+			   	        		}else{
+			   	        			candidateSource = "";
 			   	        		}
 
 						           result = result + '<tr>';
@@ -2077,7 +2096,7 @@ function requirementPipelineRS(requirementId,submissionType){
 							        } */
 							           
 						           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
+						        	   result = result + '         <td><div><span>'+report.createdUser+''+orgName+'<br/>'+candidateSource+'</span></div></td>';
 							           }
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
@@ -2181,7 +2200,7 @@ function documentpaginationRS(){
 <!-- Script for Short List -->
 <script>  
 function requirementPipelineSL(requirementId,submissionType){
-	  var sourceleadUrl = '${sourceleadUrl}';
+	var sourceleadUrl = '${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
 	  
@@ -2198,7 +2217,7 @@ function requirementPipelineSL(requirementId,submissionType){
 				           
 						   result = result +'<span class="applicant_export">';
 							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-					            result = result +'<a onClick="piplineexport();" class="Clo1"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+					            result = result +'<a title="Export" onClick="piplineexport();" class="Clo1"><i class="glyphicon glyphicon-export expIcon"></i></a>';
 					            result = result +'<div class="export_pipline" style="display:none">';
 					            result = result +'<ul>';
 					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
@@ -2238,6 +2257,12 @@ function requirementPipelineSL(requirementId,submissionType){
 			   	        			orgName = "("+report.orgName+")";
 			   	        		}else{
 			   	        			orgName = "";
+			   	        		}
+			   	        		
+			   	        		if(report.candidateSource != null && report.candidateSource != '' && report.candidateSource != 'undefined'){
+			   	        			candidateSource = "("+report.candidateSource+")";
+			   	        		}else{
+			   	        			candidateSource = "";
 			   	        		}
 
 						           result = result + '       <tr>';
@@ -2331,7 +2356,7 @@ function requirementPipelineSL(requirementId,submissionType){
 							           } */
 							           
 							           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
-							        	   result = result + '         <td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
+							        	   result = result + '         <td><div><span>'+report.createdUser+''+orgName+'<br/>'+candidateSource+'</span></div></td>';
 								           }
 								       else{
 								        	result = result + '         <td><div><span>--</span></div></td>';
@@ -2459,7 +2484,7 @@ function requirementPipelineSC(requirementId,submissionType){
 						   
 						   result = result +'<span class="applicant_export">';
 							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-					            result = result +'<a onClick="piplineexport();" class="Clo1"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+					            result = result +'<a title="Export" onClick="piplineexport();" class="Clo1"><i class="glyphicon glyphicon-export expIcon"></i></a>';
 					            result = result +'<div class="export_pipline" style="display:none">';
 					            result = result +'<ul>';
 					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
@@ -2497,6 +2522,12 @@ function requirementPipelineSC(requirementId,submissionType){
 			   	        			orgName = "("+report.orgName+")";
 			   	        		}else{
 			   	        			orgName = "";
+			   	        		}
+			   	        		
+			   	        		if(report.candidateSource != null && report.candidateSource != '' && report.candidateSource != 'undefined'){
+			   	        			candidateSource = "("+report.candidateSource+")";
+			   	        		}else{
+			   	        			candidateSource = "";
 			   	        		}
 
 						           result = result + '       <tr>';
@@ -2574,7 +2605,7 @@ function requirementPipelineSC(requirementId,submissionType){
 							        }
 							           
 						           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
+						        	   result = result + '         <td><div><span>'+report.createdUser+''+orgName+'<br/>'+candidateSource+'</span></div></td>';
 							           }
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
@@ -2698,7 +2729,7 @@ function requirementPipelineIN(requirementId,submissionType){
 						   
 						   result = result +'<span class="applicant_export">';
 							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-					            result = result +'<a onClick="piplineexport();" class="Clo1"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+					            result = result +'<a title="Export" onClick="piplineexport();" class="Clo1"><i class="glyphicon glyphicon-export expIcon"></i></a>';
 					            result = result +'<div class="export_pipline" style="display:none">';
 					            result = result +'<ul>';
 					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
@@ -2867,7 +2898,7 @@ function requirementPipelineOffer(requirementId,submissionType){
 						   
 						   result = result +'<span class="applicant_export">';
 							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-					            result = result +'<a onClick="piplineexport();" class="Clo1"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+					            result = result +'<a title="Export" onClick="piplineexport();" class="Clo1"><i class="glyphicon glyphicon-export expIcon"></i></a>';
 					            result = result +'<div class="export_pipline" style="display:none">';
 					            result = result +'<ul>';
 					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
@@ -3057,7 +3088,7 @@ function requirementPipelineRejected(requirementId,submissionType){
 						  
 						   result = result +'<span class="applicant_export">';
 							 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
-					            result = result +'<a onClick="piplineexport();" class="Clo1"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+					            result = result +'<a title="Export" onClick="piplineexport();" class="Clo1"><i class="glyphicon glyphicon-export expIcon"></i></a>';
 					            result = result +'<div class="export_pipline" style="display:none">';
 					            result = result +'<ul>';
 					            result = result +'<li onclick="exportPipelineToPdf('+requirementId+',\''+submissionType+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
@@ -3096,6 +3127,12 @@ function requirementPipelineRejected(requirementId,submissionType){
 			   	        			orgName = "("+report.orgName+")";
 			   	        		}else{
 			   	        			orgName = "";
+			   	        		}
+			   	        		
+			   	        		if(report.candidateSource != null && report.candidateSource != '' && report.candidateSource != 'undefined'){
+			   	        			candidateSource = "("+report.candidateSource+")";
+			   	        		}else{
+			   	        			candidateSource = "";
 			   	        		}
 
 						           result = result + '       <tr>';
@@ -3191,7 +3228,7 @@ function requirementPipelineRejected(requirementId,submissionType){
 							           }
 							        }
 						           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
+						        	   result = result + '         <td><div><span>'+report.createdUser+''+orgName+'<br/>'+candidateSource+'</span></div></td>';
 							           }
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
@@ -3279,7 +3316,6 @@ function documentpaginationRejected(){
 <div id="customizePopUp"></div>
 <script>
 function rejectApplicant(submissionId,requirementId,submissionType){
-	alert
 	$("#reasonForApplicantDiv").empty();
 	$("#reasonForReject").val("");
 	var subId = submissionId;
@@ -3289,7 +3325,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
     if(selectBox != "Status"){
     	var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
-		result = result +"	   <div id='remove_user_pop"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"	   <div id='rejectApplicant"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
 // 		result = result +"<form id='myForm'>";
 		result = result +"		<p>Applicant reject message here</p>";
 		result = result +"		<textarea  id='reasonForReject' name='reasonForReject'  placeholder='Comments here'></textarea>";
@@ -3298,7 +3334,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
 // 		result = result +"</form>";
 		result = result +"	</div>";
 		$("#popUp").append(result);
-		$("#remove_user_pop"+submissionId).slideDown(200);
+		$("#rejectApplicant"+submissionId).slideDown(200);
 		$(".project_inn_mask").fadeIn(200);
     }
 }
@@ -3306,7 +3342,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
 
 <script type="text/javascript">
 function cancelRejectApplicant(submissionId,requirementId,submissionType){ 
-	$("#remove_user_pop"+submissionId).fadeOut(200);
+	$("#rejectApplicant"+submissionId).fadeOut(200);
 	$(".project_inn_mask").fadeOut(200);
 	/* $("#remove_user_pop, .project_inn_mask").fadeOut(200); */
 	if(submissionType == 'all'){

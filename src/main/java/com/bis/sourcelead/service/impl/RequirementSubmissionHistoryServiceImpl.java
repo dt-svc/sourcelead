@@ -135,6 +135,8 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 				        requirementSubmission.setCreatedTimeStr(time);*/
 					}
 			    }
+			}else{
+				requirementSubmissionHistory1.setIsInCoolingOffPeriod(isInCoolingOffPeriod);
 			}
 		}else{
 			requirementSubmissionHistory1 = new RequirementSubmissionHistory();

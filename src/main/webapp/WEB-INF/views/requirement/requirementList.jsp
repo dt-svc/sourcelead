@@ -359,6 +359,12 @@ function prepareRequirementData(data){
 				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
 					result = result +"<option value='ONHOLD'>ONHOLD</option>";
 				'</sec:authorize>';
+				'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
+				result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
+			'</sec:authorize>';
+			'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
+				result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
+			'</sec:authorize>';
 				'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
 					result = result +"<option value='CANCEL'>CANCEL</option>";
 				'</sec:authorize>';
@@ -408,6 +414,21 @@ function prepareRequirementData(data){
 					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
 						result = result +"<option value='CANCEL'>CANCEL</option>";
 					'</sec:authorize>';
+				}if(opt.requirementSubmissionPreviousStatus == "NEW"){
+					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+					result = result +"<option value='OPEN'>OPEN</option>";
+					'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
+						result = result +"<option value='ONHOLD'>ONHOLD</option>";
+					'</sec:authorize>';
+					'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
+					result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
+				'</sec:authorize>';
+				'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
+					result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
+				'</sec:authorize>';
+					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
+						result = result +"<option value='CANCEL'>CANCEL</option>";
+					'</sec:authorize>';
 				}
 				 
 			}else if(opt.requirementSubmissionStatus == "UNFILLEDCLOSED"){
@@ -422,7 +443,7 @@ function prepareRequirementData(data){
 			result = result +" </select>";	
            result = result +" </td>";
               
-		if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN'){
+		if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
 	        	if(opt.isRequirementReleasedByuser == 'Y'){
 		   		 	result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success'></i></a></div></td>"; 
 			   	 }else{	
@@ -1572,7 +1593,7 @@ function requirementPipeline(requirementId){
           </div>
           </li>
           <sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
-           <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="mypop"></i>
+           <li title="Export" class="mrPOP" id="mypop"><i class="glyphicon glyphicon-export"></i>
             <div id="exportPop">
               <ul>
                 <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>

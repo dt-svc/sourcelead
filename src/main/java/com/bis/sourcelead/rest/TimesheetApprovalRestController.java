@@ -502,17 +502,17 @@ public class TimesheetApprovalRestController {
 			  	    	  }
 			  	    	 if(sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty() && sah.getWeekTotals().get(entry.getKey()) != null){
 			  	    		 totalHours = CommonUtil.getCombinedHours(totalHours, sah.getWeekTotals().get(entry.getKey()));
-			  	    		 timesheetApprovalDiv.append("<td><div class='sm'>").append(sah.getWeekTotals().get(entry.getKey())).append("/").append(weekTotal).append("</div></td>");
+			  	    		 timesheetApprovalDiv.append("<td><div class='sm'>").append(CommonUtil.getHoursDisplayFormat(sah.getWeekTotals().get(entry.getKey()))).append("/").append(CommonUtil.getHoursDisplayFormat(weekTotal)).append("</div></td>");
 			  	    	 }
 			  	    	 else{
-			  	    		 timesheetApprovalDiv.append("<td><div class='sm'>0/").append("/").append(weekTotal).append("</div></td>");
+			  	    		 timesheetApprovalDiv.append("<td><div class='sm'>0/").append("/").append(CommonUtil.getHoursDisplayFormat(weekTotal)).append("</div></td>");
 			  	    	 }
 	    	   }
 	     }
 
 	
 	    /*timesheetApprovalDiv.append("<td><div class='sm'><a href='javascript:void(0)'>").append(totalHours).append("/40</a></div></td>");*/
-	     timesheetApprovalDiv.append("<td><div class='sm'><a href='#' onClick='timesheetApprovalPopUpByProjectMemberId(\""+startDate+"To"+endDate+"\" ,\""+projectMember.getId()+"\",\"approver\" );'>").append(totalHours).append("/").append(estimatedTotalHours).append("</a></div></td>");
+	     timesheetApprovalDiv.append("<td><div class='sm'><a href='#' onClick='timesheetApprovalPopUpByProjectMemberId(\""+startDate+"To"+endDate+"\" ,\""+projectMember.getId()+"\",\"approver\" );'>").append(CommonUtil.getHoursDisplayFormat(totalHours)).append("/").append(CommonUtil.getHoursDisplayFormat(estimatedTotalHours)).append("</a></div></td>");
 	    timesheetApprovalDiv.append("<td><div class='sm' id='status").append(projectMember.getId()).append("'>").append(sah.getSubmissionApprovalStatus()).append("</div></td>");
 	    timesheetApprovalDiv.append("<td>");
 	     if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){
@@ -680,7 +680,7 @@ public class TimesheetApprovalRestController {
 					    	    	  }
 					    	    	 if(sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty() && sah.getWeekTotals().get(entry.getKey()) != null){
 					    	    		 totalHours = CommonUtil.getCombinedHours(totalHours, sah.getWeekTotals().get(entry.getKey()));
-					    	    		 timesheetApprovalDiv.append("<td><div class='sm'>").append(sah.getWeekTotals().get(entry.getKey())).append("/").append(weekTotal).append("</div></td>");
+					    	    		 timesheetApprovalDiv.append("<td><div class='sm'>").append(CommonUtil.getHoursDisplayFormat(sah.getWeekTotals().get(entry.getKey()))).append("/").append(weekTotal).append("</div></td>");
 					    	    	 }
 					    	    	 else{
 					    	    		 timesheetApprovalDiv.append("<td><div class='sm'>0").append("/").append(weekTotal).append("</div></td>");
@@ -693,7 +693,7 @@ public class TimesheetApprovalRestController {
 					     
 					     timesheetApprovalDiv.append("<input type='hidden' name='totalHours'  id='totalHours' value='"+totalHours+"' >");
 					    /*timesheetApprovalDiv.append("<td><div class='sm'><a href='javascript:void(0)'>").append(totalHours).append("/40</a></div></td>");*/
-					    timesheetApprovalDiv.append("<td><div class='sm'><a href='#' onClick='timesheetApprovalPopUpByProjectMemberId(\""+startDate+"To"+endDate+"\" ,\""+projectMember.getId()+"\",\"approver\");'>").append(totalHours).append("/").append(estimatedTotalHours).append("</a></div></td>");
+					    timesheetApprovalDiv.append("<td><div class='sm'><a href='#' onClick='timesheetApprovalPopUpByProjectMemberId(\""+startDate+"To"+endDate+"\" ,\""+projectMember.getId()+"\",\"approver\");'>").append(CommonUtil.getHoursDisplayFormat(totalHours)).append("/").append(estimatedTotalHours).append("</a></div></td>");
 					    timesheetApprovalDiv.append("<td><div class='sm' id='status").append(projectMember.getId()).append("'>").append(sah.getSubmissionApprovalStatus()).append("</div></td>");
 					    timesheetApprovalDiv.append("<td>");
 					     if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){

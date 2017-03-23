@@ -42,14 +42,15 @@ $(document).ready(function() {
 	function timesheetEntriesDiv(){ 
 	               var sourceleadUrl ='${sourceleadUrl}';
 	               $("#timesheetEntriesDiv").empty();
-	               $("#timesheetEntriesDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	               $("#loadTime").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100; background-position:center; background-repeat:no-repeat; background-size:50px;');
 	        	   $.ajax({
 		      	          type : "POST",
 		          	      dataType : 'json',
 	        	      	  url: sourceleadUrl+"/timesheetEntries?${_csrf.parameterName}=${_csrf.token}&from=user",		
 	        		      success :function(data) {
 	        		    	   if(data != '' && data != 'undefined' && data != null){ 
-		        		    	    $("#timesheetEntriesDiv").removeAttr("style");
+		        		    	    $("#loadTime").removeAttr("style");
+		        		    		
 		        		    	    $("#timesheetEntriesDiv").empty();
 		        		    	  	$("#timesheetEntriesDiv").append(data);
 		        		    	  	maskme();
@@ -96,13 +97,13 @@ $(document).ready(function() {
 	         var sourceleadUrl ='${sourceleadUrl}';
 	         var projectMemberId = $("#projectMemberId").val();
 	         $("#timesheetEntriesDivByProjectMemberId").empty();
-	         $("#timesheetEntriesDivByProjectMemberId").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $("#loadTime").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100; background-position:center; background-repeat:no-repeat; background-size:50px;');
 	         $.ajax({
      	          type : "POST",
          	      dataType : 'json',
    	      	  	  url: sourceleadUrl+"/timesheetEntriesDivByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&from=user",		
    		          success :function(result) {
-   		        	 $("#timesheetEntriesDivByProjectMemberId").removeAttr("style");
+   		        	 $("#loadTime").removeAttr("style");
    		        	 $("#timesheetEntriesDivByProjectMemberId").empty();
    		        	 $("#timesheetEntriesDivByProjectMemberId").append(result);
    		        	 maskme();
@@ -128,7 +129,7 @@ $(document).ready(function() {
 	         var timesheetFrequency = $("#timesheetFrequency").val();
 	         var projectMemberId = $("#projectMemberId").val();
 	         $("#timesheetDivByFrequency").empty();
-	         $("#timesheetDivByFrequency").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $("#loadTime").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100; background-position:center; background-repeat:no-repeat; background-size:50px;');
 	        
 	         $.ajax({
      	          type : "POST",
@@ -136,7 +137,7 @@ $(document).ready(function() {
    	      	  	  url: sourceleadUrl+"/timesheetDivByFrequency?${_csrf.parameterName}=${_csrf.token}&timesheetFrequency="+timesheetFrequency+"&projectMemberId="+projectMemberId+"&from=user",		
    		          success :function(result) {
    		        	  		
-   		        	      $("#timesheetDivByFrequency").removeAttr("style");
+   		        	      $("#loadTime").removeAttr("style");
 	   		    	      $("#timesheetDivByFrequency").empty();
 			    	  	  $("#timesheetDivByFrequency").append(result); 
 			    	  	  
@@ -164,13 +165,13 @@ $(document).ready(function() {
 	         var timesheetFrequency = $("#timesheetFrequency").val();
 	         approvalStatus =$("#timesheetSubmissionStatus").val();
 	         $("#timesheetDivByTab").empty();
-	         $("#timesheetDivByTab").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $("#loadTime").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100; background-position:center; background-repeat:no-repeat; background-size:50px;');
 	         $.ajax({
     	          type : "POST",
         	      dataType : 'json',
   	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&approvalStatus="+approvalStatus+"&from=user",		
   		          success :function(result) {
-  		        	   $("#timesheetDivByTab").removeAttr("style");
+  		        	   $("#loadTime").removeAttr("style");
   		    	       $("#timesheetDivByTab").empty();
 		    	  	   $("#timesheetDivByTab").append(result);
 		    	  	   maskme();
@@ -186,13 +187,13 @@ $(document).ready(function() {
 	         var projectMemberId = $("#projectMemberId").val();
 	         var timesheetFrequency = $("#timesheetFrequency").val();
 	         $("#timesheetDivByTab").empty();
-	         $("#timesheetDivByTab").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $("#loadTime").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100; background-position:center; background-repeat:no-repeat; background-size:50px;');
 	         $.ajax({
     	          type : "POST",
         	      dataType : 'json',
   	      	  	  url: sourceleadUrl+"/timesheetDivAfterSaving?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&approvalStatus="+approvalStatus+"&from=user",		
   		          success :function(result) {
-  		        	   $("#timesheetDivByTab").removeAttr("style");
+  		        	  $("#loadTime").removeAttr("style");
   		        	   $("#timesheetDivByTab").empty();
   		        	   if(result != null){
   		        		   var statusDivWidth = result["statusDivWidth"];
@@ -877,10 +878,10 @@ function addAttachment(){
           </div>
           <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; My Timesheets</div>
         </section>
-        
-        <div id="timesheetEntriesDiv"> 
-           <div class="loadTime" id="loadTime"></div>  
-        </div>
+         <div class="loadTime" id="loadTime"></div> 
+         <div id="timesheetEntriesDiv"> 
+           
+         </div>
         
         
         <!-- <div id="timesheetEntriesDivByProjectMemberId">
@@ -964,48 +965,23 @@ function addAttachment(){
 <div class="time_pop" id="timeSheetErrorMsg"></div>
 </body>
 
-<script type="text/javascript">
-function validate_fileupload(fileName)
-{
-	
-    var allowed_extensions = new Array("docx","doc","pdf","rtf","jpeg","png","jpg","jpeg","xls","xlsx","csv");
-    var file_extension = fileName.split('.').pop(); 
 
-    for(var i = 0; i <= allowed_extensions.length; i++)
-    {
-        if(allowed_extensions[i] != null && allowed_extensions[i] != '' && allowed_extensions[i] != 'undefined' && allowed_extensions[i]==file_extension.toLowerCase())
-        {
-            return true; // valid file extension
-        }
-    }
-
-    return false;
-}
-</script>
 
 <script type="text/javascript">
 function validateUploadFile(id)
 {
-	  var selectedFile = $('#'+id+'docFile').val();
-	  if(validate_fileupload(selectedFile)){
-		   var docSize = $('#'+id+'docFile')[0].files[0].size;
- 	       $("#"+id+"docFileuploadFileGroup").find('p.jquery_form_error_message').remove();
- 	      if(docSize > 2097152){
- 	    	  $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
- 	    	  $('#'+id+'docFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
- 			  $('#'+id+'docFile').attr('record-exist','yes');
- 			  $('#'+id+'docFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
- 	      }else{
- 	    	 $('input#'+id+'docFile').removeAttr( "record-exist record-exist-errormsg");
-    		 $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove(); 
- 	      }
-	  }
-	  else{
-		      $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
-		      $('#'+id+'docFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Invalid Format</span>");
+	    var selectedFile = $('#'+id+'docFile').val();
+	   var docSize = $('#'+id+'docFile')[0].files[0].size;
+	       $("#"+id+"docFileuploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+	    	  $('#'+id+'docFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
 			  $('#'+id+'docFile').attr('record-exist','yes');
- 			  $('#'+id+'docFile').attr('record-exist-errorMsg','Invalid Format'); 
-	  }
+			  $('#'+id+'docFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+	      }else{
+	    	 $('input#'+id+'docFile').removeAttr( "record-exist record-exist-errormsg");
+   		 $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove(); 
+	      }
 	
 }
 </script>
@@ -1029,18 +1005,59 @@ function validateUploadFile(id)
    };
 })(jQuery);
 </script>
-                
+      
+      
+ <script type="text/javascript">
+   function alertMessage(message,status,savingType){
+   $("#timesheetEntriesDiv").append("<div id='choicepopUp'></div>");
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	  <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>"+message+"</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='timesheetDbSave(\""+status+"\",\""+savingType+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#choicepopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+  }
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#choicepopUp").remove(); 
+	$(".project_inn_mask").fadeOut(200);
+    $(".time_btn").removeAttr("disabled");
+	$("#loadTime").removeAttr("style"); 
+}
+</script>
+          
 <!-- this script is for save Timesheet -->               
 <script type="text/javascript">
 function newSaveTimesheet(status,savingType){ 
+	 $(".time_btn").attr("disabled", "disabled");
 	 $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;'); 
 	 checkHours();
 	 var isTimesheetAttachmentRequired = $("#isTimesheetAttachmentRequired").val();
 	 if(isTimesheetAttachmentRequired != null && isTimesheetAttachmentRequired != "" && isTimesheetAttachmentRequired !="undefined" && isTimesheetAttachmentRequired == "Y"){
 		 $('#0docFile').removeAttr('data-validation-optional');
 		 $('#0docFile').attr("data-validation","required"); 
+		 $(".time_btn").removeAttr("disabled");
 		 $("#loadTime").removeAttr("style"); 
 	 }
+	 var unfilledDates = [];
+	 $('ul.project-tabs-menu li').each(function() {
+		 var attr = $(this).attr('class');
+		 if (attr!= null && attr != "" && attr !='undefined' && attr != 'hidden') {}
+		 else{
+			 var currentInputValue = $(this).prev("input").val();
+			 if(currentInputValue != null && currentInputValue !='undefined' && currentInputValue != ''){
+				 unfilledDates.push(currentInputValue);
+			 }
+			
+		 }	
+     });
 	 var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -1048,46 +1065,22 @@ function newSaveTimesheet(status,savingType){
 				dateFormat : 'yyyy/mm/dd' 
 	 }; 
 	 if ($('#timesheet_form').validate(false, validationSettings)&&!$("#timeSheetErrorMsg").is(':visible')){ 
-               var frm = $('#timesheet_form').serializeFormJSON();
-               var sourceleadUrl ='${sourceleadUrl}';
-               var startdate;
-           	   var navigation;
-               
-       		   var mydata = JSON.stringify(frm);
-       		   mydata = mydata.replace(/[{}]/g, "");
-       		   mydata = encodeURIComponent(mydata);
-       		
-       		   var form = $('#timesheet_form')[0];
-       		   var formData = new FormData(form); 
-       		   var submissionIds = $("#submissionId").val();
-        	   $.ajax({
-	      	          type : "POST",
-	          	      data: formData,
-	          	      contentType : 'application/json; charset=utf-8',
-	          	      enctype: 'multipart/form-data',
-	      	          processData: false,
-	      	          contentType:false,
-	          	      dataType : 'json',
-        	      	  url: sourceleadUrl+"/newSaveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
-        		      success :function(result) {
-        		    	  $("#loadTime").removeAttr("style"); 
-        		    	  $("html").trigger('click');
-        		    	  maskme();
-        		    	  var startDate = $("#tabStartDate").val();
-        		    	  var endDate = $("#tabEndDate").val();
-        		    	  if(startDate != null && startDate != '' && startDate != 'undefined' && 
-        		    			  endDate != null && endDate != '' && endDate != 'undefined'){
-        		    		  timesheetDivAfterSaving(startDate,endDate,status);
-        		    	  }
-        		    	  else{
-        		    		  timesheetDivByFrequency();
-        		    	  }
-        		    	  
-        		      }
-        	      	  
-        	    }); 
-        	   return true;
+		 
+		     if(status != null && status != 'undefined' && status != '' && ((status == 'Submitted' && unfilledDates.length === 0) || (status == 'Draft'))){
+		    	   timesheetDbSave(status,savingType)
+	        	   return true;
+		     }
+		     else{
+		    	 var message = "<b>Are you sure to submit the timesheets, the following frequencies haven't updated<b>";
+		    	 for(var i=0;i<unfilledDates.length;i++){
+		    		 message = message+"<br/>"+unfilledDates[i];
+		    	 }
+		    	 alertMessage(message,status,savingType);
+		    	 return false;
+		     }
+              
 	 	}else{ 
+	 		 $(".time_btn").removeAttr("disabled");
 	 		 $("#loadTime").removeAttr("style"); 
 			return false;
 	   } 
@@ -1097,6 +1090,57 @@ function newSaveTimesheet(status,savingType){
 	$("#timesheet_form").showHelpOnFocus();
 	$("#timesheet_form").validateOnBlur(false, validationSettings);  
 }); */
+</script>
+
+
+
+
+
+
+
+
+<script>
+ function timesheetDbSave(status,savingType){
+	     $("#choicepopUp").empty(); 
+	     $("#choicepopUp").remove(); 
+		 $(".project_inn_mask").fadeOut(200);
+	      var frm = $('#timesheet_form').serializeFormJSON();
+          var sourceleadUrl ='${sourceleadUrl}';
+		   var mydata = JSON.stringify(frm);
+		   mydata = mydata.replace(/[{}]/g, "");
+		   mydata = encodeURIComponent(mydata);
+		
+		   var form = $('#timesheet_form')[0];
+		   var formData = new FormData(form); 
+		   var submissionIds = $("#submissionId").val();
+	   $.ajax({
+	          type : "POST",
+    	      data: formData,
+    	      contentType : 'application/json; charset=utf-8',
+    	      enctype: 'multipart/form-data',
+	          processData: false,
+	          contentType:false,
+    	      dataType : 'json',
+	      	  url: sourceleadUrl+"/newSaveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
+		      success :function(result) {
+		    	  $(".time_btn").removeAttr("disabled");
+		    	  $("#loadTime").removeAttr("style"); 
+		    	  $("html").trigger('click');
+		    	  maskme();
+		    	  var startDate = $("#tabStartDate").val();
+		    	  var endDate = $("#tabEndDate").val();
+		    	  if(startDate != null && startDate != '' && startDate != 'undefined' && 
+		    			  endDate != null && endDate != '' && endDate != 'undefined'){
+		    		  timesheetDivAfterSaving(startDate,endDate,status);
+		    	  }
+		    	  else{
+		    		  timesheetDivByFrequency();
+		    	  }
+		    	  
+		      }
+	      	  
+	    });
+ }
 </script>
 
 

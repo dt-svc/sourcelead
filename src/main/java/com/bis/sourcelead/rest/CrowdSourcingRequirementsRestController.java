@@ -2034,7 +2034,27 @@ public class CrowdSourcingRequirementsRestController {
 				return result;
 		   }
 		 
-		
+		 
+		 @RequestMapping(value = "/setCrowdSourcingProfessionalProfileAsPublicVisibility" , method = RequestMethod.POST)
+		 public @ResponseBody  String setCrowdSourcingProfessionalProfileAsPublicVisibility(HttpServletRequest request) throws Exception {
+			 	
+			 	Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+			 	Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+			 	
+			 	if (null != candidate) {
+			 		if(isNullOrEmpty(candidate.getIsProfilePublic()) || candidate.getIsProfilePublic().equalsIgnoreCase("N")){
+			 			candidate.setIsProfilePublic(Constants.YES);
+			 		}else{
+			 			candidate.setIsProfilePublic(Constants.NO);
+			 		}
+			 		
+			 		candidateService.addCandidate(candidate);
+					candidateService.saveOrUpdateCandidateElkDocument(candidate);
+			 	}
+			 	return "Success";
+		 }
+		 
+		 
 		
 		public String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

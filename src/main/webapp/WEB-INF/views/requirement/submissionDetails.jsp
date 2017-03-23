@@ -37,6 +37,9 @@
  }
  </style>
  
+ 
+ 
+ 
 <script>
 function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -142,6 +145,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	    		   country = "";
 	    	   }
 	    	   var result = "";
+	    	   result = result + '<div id="loading"></div>';
           	   result = result + ' <div class="req_hide">';
                result = result + '<div class="profile_details clearfix">';
                result = result + '<div class="col-md-6">';
@@ -2203,6 +2207,7 @@ function reActivateApplicant(submissionId,candidateId,requirementId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var message = confirm("You are choosing to ReActivate the Applicant");
 	if (message == true) {
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 	        type : "POST",
 	         url: sourceleadUrl+"/reActivateRejectedApplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
