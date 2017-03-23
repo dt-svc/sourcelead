@@ -263,7 +263,7 @@ overflow-x: auto;
 		<div class="clients_wrap vendor_wrap_shadownone">
 				<div class="timesheet_head datatbl-filters customtimesheet-head hdr-styles hdrStyles">
 					<ul>
-		                  <li  id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="clientsList" ></i>|
+		                  <%-- <li  id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="clientsList" ></i>|
 		                	<div id="filter1ApprovedPop" class="approved_pop">
 		                    	<ul>
 		                    	  <c:forEach var="report" items="${clientsList}">  
@@ -271,7 +271,7 @@ overflow-x: auto;
 								  </c:forEach>
 		                        </ul>
 		                    </div>                	
-		                </li>
+		                </li> --%>
 	               
 		                <li  id="filter3ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="clientSatatus"></i>|
 	                	<div id="filter3ApprovedPop" class="approved_pop">
@@ -315,14 +315,14 @@ overflow-x: auto;
 							<li><a href="<c:url value='/client'/>"><i class="fa fa-plus"></i>Client</a></li>
 						</sec:authorize>
 						 <sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> 
-						 <li><a href="<c:url value='/uploadClientForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>
+						 <li title="Import"><a href="<c:url value='/uploadClientForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
 						 </sec:authorize>
 						
 						 <sec:authorize access="hasRole('ROLE_EXPORT_CLIENTS')"> 
-						   <li id="clientImports" style="display:none">
-		                      <a  id="client-imports"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>
+						   <li id="clientImports" style="display:none" title="Export">
+		                      <a  id="client-imports"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
 			                    <div class="export_pop">
-				                   <ul>
+				                   <ul class="widScr">
 				                     <li onclick="exportClientToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
 				                     <li onclick="exportClientToExcel();"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;Excel </li>
 				                   </ul>
@@ -331,10 +331,10 @@ overflow-x: auto;
 		            </sec:authorize>
 		            
 		             <sec:authorize access="hasRole('ROLE_EXPORT_CLIENT_CONTACTS')"> 
-		            <li id="ContactImports">
-		                     <a  id="export-popcon"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>
+		            <li id="ContactImports" title="Export">
+		                     <a  id="export-popcon"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
 			                    <div class="export_pop">
-				                <ul>
+				                <ul class="widScr">
 				                <li onclick="exportContactToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp; PDF</li>
 				                <li onclick="exportContactToExcel();"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp; Excel</li>
 				       </ul>
@@ -347,7 +347,7 @@ overflow-x: auto;
 					<div class="clearfix"></div>
 				</div>
 				
-				<div class="clients_wrap_table filter_position datatable_scroll" id ="vendorListFilter">
+				<div class="clients_wrap_table datatable_scroll" id ="vendorListFilter">
 			      <input type="hidden" name="clientContactLength" id="clientContactLength" >
 			      <input type="hidden" name="emptyClientList" id="emptyClientList" >
 			      

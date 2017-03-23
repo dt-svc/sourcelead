@@ -128,11 +128,11 @@ function prepareReportDataDiv(data){
         result = result + '</td>';
         
         result = result + '<td>';
-        if(report.totalApplicantsForRequirement != null && report.totalApplicantsForRequirement != '' && report.totalApplicantsForRequirement !='undefined'&& report.totalApplicantsForRequirement != null && report.totalApplicantsForRequirement != ''){
-        		result = result + "<div><span>"+report.totalApplicantsForRequirement+"</span></div> ";
+        if(report.totalApplicants != null && report.totalApplicants != '' && report.totalApplicants !='undefined'&& report.totalApplicants != null && report.totalApplicants != ''){
+        		result = result + "<div><span>"+report.totalApplicants+"</span></div> ";
         }
         else{
-		    	result = result + "<div><span>---</span></div>";
+		    	result = result + "<div><span>0</span></div>";
 		    }
         result = result + '</td>';
         

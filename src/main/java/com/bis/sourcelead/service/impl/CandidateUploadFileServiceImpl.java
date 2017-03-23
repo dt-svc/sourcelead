@@ -619,8 +619,9 @@ private String getExpectedRate(String expectedRate) {
 		private boolean isMobileNumberValid(String mobileNmber){
 			String regex = "([\\.\\-\\s+\\/()]*[0-9][\\.\\-\\s+\\/()]*){8,15}";
 			boolean flag;
-			if(mobileNmber.length() > 9 && mobileNmber.length() <= 20){
-				flag = mobileNmber.matches(regex);
+			String mobNum = mobileNmber.trim();
+			if(mobNum.length() > 9 && mobNum.length() <= 20){
+				flag = mobNum.matches(regex);
 			}else{
 				flag=false;
 			}
