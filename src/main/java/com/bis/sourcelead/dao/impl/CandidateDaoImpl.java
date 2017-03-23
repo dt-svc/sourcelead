@@ -526,7 +526,7 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Candidate> getAllCandidatedsBasedOnCreatedByAndOrglocationCodeWhichAreCreatedToday(OrgLocations orgLocations,
+	public Integer getAllCandidatedsBasedOnCreatedByAndOrglocationCodeWhichAreCreatedToday(OrgLocations orgLocations,
 			User user) throws Exception {
 		
 		
@@ -537,16 +537,21 @@ public class CandidateDaoImpl implements CandidateDao {
 				sqlCurrentDate = new java.sql.Date(currentDate.getTime());
 		 }
 		 
-		List<Candidate> candidatesList = null;
+		List<Long> candidatesList = null;
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId  and cnadidate.createdBy =:userCode and  cnadidate.createdDate =:sqlCurrentDate   ORDER BY cnadidate.id DESC";  
-       
-		return  session.createQuery(query)
-				       .setLong("orgLocationId", orgLocations.getId())
-				       .setString("userCode", user.getUserCode())
-				       .setDate("sqlCurrentDate", sqlCurrentDate)
-				       .setCacheable(true)
-				       .list();
+		String query = "select count(*)  from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId  and cnadidate.createdBy =:userCode and  DATE(cnadidate.createdDate) = :sqlCurrentDate   ORDER BY cnadidate.id DESC";  
+		candidatesList = session.createQuery(query)
+										       .setLong("orgLocationId", orgLocations.getId())
+										       .setString("userCode", user.getUserCode())
+										       .setDate("sqlCurrentDate", sqlCurrentDate)
+										       .setCacheable(true)
+										       .list();
+		
+		  Integer count = 0;
+	  		if(candidatesList != null && !candidatesList.isEmpty()){
+	  				count = candidatesList.get(0).intValue();
+	  		}
+	  		return count;
 	}
 
 	@Override

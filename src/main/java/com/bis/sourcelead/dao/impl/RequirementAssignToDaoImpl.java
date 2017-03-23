@@ -242,5 +242,20 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
         }
 		 return qry.setCacheable(true).list();
 	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<RequirementAssignTo> getAllAssignedRequirementByOrglocationIdAndTeamId(Long orgLocationId,
+			Long teamId) {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementAssignTo rat    where  rat.requirementId.orgLocationId.id =:orgLocationId and rat.teamId.id =:teamId";
+		return session.createQuery(query)
+				      .setLong("orgLocationId", orgLocationId)
+				      .setLong("teamId", teamId)
+				      .setCacheable(true)
+				      .list();
+	}
 }
 

@@ -2185,7 +2185,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 							 for(RequirementSubmission rs :vendorSubmittedApplicants){
 									sourceSubmissionIds.add(rs.getId());
 								}
-								String sourceSubmissionIdQuery = "from RequirementSubmission reqSub left join fetch reqSub.requirement req   left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes where  reqSub.sourceSubmission.id  IN (:sourceSubmissionIds)  and and  reqSub.createdDate >= :sqlCurrentDate  "; 
+								String sourceSubmissionIdQuery = "from RequirementSubmission reqSub   where  reqSub.sourceSubmission.id  IN (:sourceSubmissionIds)  and  reqSub.createdDate >= :sqlCurrentDate "; 
 								List<RequirementSubmission> finalSourceList = session.createQuery(sourceSubmissionIdQuery.toString())
 																					.setParameterList("sourceSubmissionIds", sourceSubmissionIds)
 																					.setDate("sqlCurrentDate", sqlCurrentDate)

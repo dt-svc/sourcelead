@@ -44,6 +44,9 @@ public class ConsolidatedReport implements Serializable{
 	
 	private Integer releasedRequirementCount;
 	
+	private Integer requestSentCount;
+	
+	
 	
 	@Transient
 	private ArrayList<String> approverNames;
@@ -192,6 +195,13 @@ public class ConsolidatedReport implements Serializable{
 	public void setApproverNames(ArrayList<String> approverNames) {
 		this.approverNames = approverNames;
 	}
-	
+
+	public Integer getRequestSentCount() {
+		return requestSentCount;
+	}
+
+	public void setRequestSentCount(Integer requestSentCount) {
+		this.requestSentCount = requestSentCount;
+	}
    	
  }

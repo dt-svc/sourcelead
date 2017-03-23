@@ -77,6 +77,6 @@ public interface RequirementDao {
 	
 	List<Requirement> getAllRequirementsByOrglocationIdAndUserIdAsTeamLead(Long orgLocationId, User user)	throws Exception ;
 	
-	boolean getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(Long orgLocationId, User user,Requirement requirement)	throws Exception ; 
+	Integer getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(Long orgLocationId, User user)	throws Exception ; 
 
 }

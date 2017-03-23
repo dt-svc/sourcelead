@@ -85,5 +85,11 @@ public class RequirementAssignToServiceImpl implements RequirementAssignToServic
 	public List<RequirementAssignTo> getAllAssignedRequirementByDateRange(Long orgLocationId, String userId,Date startDateUTC, Date endDateUTC) throws Exception {
 		return requirementAssignToDao.getAllAssignedRequirementByDateRange(orgLocationId,userId,startDateUTC,endDateUTC);
 	}
+
+	@Override
+	public List<RequirementAssignTo> getAllAssignedRequirementByOrglocationIdAndTeamId(Long orgLocationId,
+			Long teamId) {
+		return requirementAssignToDao.getAllAssignedRequirementByOrglocationIdAndTeamId(orgLocationId,teamId);
+	}
 	
 }

@@ -2874,7 +2874,7 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 	
 	@Override
-	public boolean getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(Long orgLocationId, User user,Requirement requirement)	throws Exception {
-		return requirementDao.getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(orgLocationId,user,requirement);
+	public Integer getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(Long orgLocationId, User user)	throws Exception {
+		return requirementDao.getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(orgLocationId,user);
 	}
 }

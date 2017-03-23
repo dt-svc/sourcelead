@@ -127,6 +127,6 @@ public interface RequirementService {
 
 	// This method is for  getting  the released requirements based on the user and orglocatinsId for consolidates reports for individual 
 	
-	boolean getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(Long orgLocationId, User user,Requirement requirement)	throws Exception ; 
+	Integer getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(Long orgLocationId, User user)	throws Exception ; 
 
 }

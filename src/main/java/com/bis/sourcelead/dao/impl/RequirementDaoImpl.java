@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,10 +24,10 @@ import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
-import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.util.CommonUtil;
 
 /**
  * 
@@ -44,6 +45,9 @@ public class RequirementDaoImpl implements RequirementDao {
 	
 	@Autowired
 	private UserDao userDao;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	@Autowired
 	UserRoleDao userRoleDao;
@@ -773,7 +777,8 @@ public class RequirementDaoImpl implements RequirementDao {
 	@Transactional
 	public List<Requirement> getManagerAssignedRequirementsList(Long userId, Long orgLocationId) throws Exception {
 		Session session = sessionFactory.getCurrentSession();
-		String query = "from Requirement requirement left join fetch requirement.parentRequirement "
+		String query = "from Requirement requirement left join f"
+				+ "etch requirement.parentRequirement "
 					+ "where requirement.managerUserId.id = :userId and requirement.orgLocationId.id = :orgLocationId";
 		return session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		
@@ -922,33 +927,32 @@ public class RequirementDaoImpl implements RequirementDao {
 	}
 
 	@Override
-	public boolean getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(Long orgLocationId, User user,Requirement requirement)
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(Long orgLocationId, User user)
 			throws Exception {
 		
-	     
 		Session session = this.sessionFactory.getCurrentSession();
-	      
-		String[] releasedBy =null;
 		
-		ArrayList<RequirementSubmission> finalList  = new ArrayList<RequirementSubmission>();
+		 java.sql.Date sqlCurrentDate = null;
+	     Date currentDate =  commonUtil.currentDate();
+		// for current Date Converting to Sql Date Format
+		 if(currentDate != null){
+				sqlCurrentDate = new java.sql.Date(currentDate.getTime());
+				java.sql.Timestamp sq = new java.sql.Timestamp(currentDate.getTime());
+		 }
 		
-		if(!"".equalsIgnoreCase(requirement.getReleasedBy()) && requirement.getReleasedBy()!= null ){
-			releasedBy = requirement.getReleasedBy().split(",");
-		}
-		 boolean requirementReleased = false;
-		 
-		 List<Long> releasedByUserIds = new ArrayList<Long>();
-		 if(!"".equalsIgnoreCase(requirement.getReleasedBy()) && requirement.getReleasedBy()!= null ){
-		 for (String s : requirement.getReleasedBy().split(",")){
-			 releasedByUserIds.add(Long.parseLong(s));
-    	 }
-		 if(releasedByUserIds != null ){
-			 requirementReleased = releasedByUserIds.contains(user.getId());
-		 }
-		 }
-		 return requirementReleased;
+		  String requirementQuery = "select count(*)  from Requirement req where   req.spocId.clientLocationId.id =:orgLocationId and  req.spocId.clientUser.id =:userId  and DATE(req.createdDate) = :sqlCurrentDate GROUP BY req.id";
+          List<Long> requirementList = session.createQuery(requirementQuery.toString())
+        		                                     .setLong( "userId", user.getId())
+        		                                     .setDate("sqlCurrentDate", sqlCurrentDate)
+        		                                     .setLong( "orgLocationId", orgLocationId)
+        		                                     .setCacheable(true)
+        		                                     .list();
+        Integer count = 0;
+  		if(requirementList != null && !requirementList.isEmpty()){
+  				count = requirementList.get(0).intValue();
+  		}
+  		return count;
 	}
-
-	
 	
 }
