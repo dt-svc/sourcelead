@@ -1593,7 +1593,7 @@ function requirementPipeline(requirementId){
           </div>
           </li>
           <sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
-           <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="mypop"></i>
+           <li title="Export" class="mrPOP" id="mypop"><i class="glyphicon glyphicon-export"></i>
             <div id="exportPop">
               <ul>
                 <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
