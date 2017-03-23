@@ -250,9 +250,13 @@ function getUsersSearchResult(searchValue){
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_USER')"> 
 	           <li><a href="<c:url value='/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Create</a></li>
 	       </sec:authorize>
+
+		     <sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
+	                      <li title="Import"><a href="<c:url value='/uploadForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
+	         </sec:authorize>		  
 		  
 		   <sec:authorize access="hasRole('ROLE_EXPORT_USERS')"> 
-		   <li><a  id="export-pop"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>
+		   <li title="Export"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
 			    <div id="exportPop" class="user_exp">
 				   <ul class="ul_padding">
 				   <li onclick="exportToPdf();" title="PDF"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
@@ -262,9 +266,6 @@ function getUsersSearchResult(searchValue){
 		   </li>
 		    </sec:authorize>
 		   
-		     <sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
-	                      <li><a href="<c:url value='/uploadForm'/>"><i class="fa fa-upload"></i>&nbsp;Bulk Imports</a></li>
-	         </sec:authorize>
         </ul>
       </div>
       </div>

@@ -360,7 +360,7 @@ public  class TimesheetFrequencyGeneratorUtil {
 								 Calendar endCal = Calendar.getInstance(TimeZone.getDefault());
 								 endCal.setLenient(false);
 								 endCal.setTime(empEndDate);
-								 Calendar empEndMonday = CalendarUtil.getCurrentWeekDayByCalendar(endCal, "MON");
+								 Calendar empEndMonday = CalendarUtil.getNextWeekDayByCalendar(endCal, "MON");
 									
 								  int totalWeeks = 0; 
 								  Calendar tsCal = Calendar.getInstance(TimeZone.getDefault());

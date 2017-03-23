@@ -166,9 +166,9 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
     		'<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_EMPLOYEE\')">';
     		result = result +'<li>';
     		if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
-    			result = result +' <a id="export-pop" onClick="exportFun()"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';	
+    			result = result +' <a title="Export" id="export-pop" onClick="exportFun()"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>';	
     		}else{
-    			result = result +' <a><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+    			result = result +' <a title="Export"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>';
     		}
     		
     		result = result +'<div class="" id="exportPop" style="display:none;">';
