@@ -116,6 +116,8 @@ public class SourceleadSignatureServiceImpl implements SourceleadSignatureServic
 			fontStyle.toString();
 			if(!isNullOrEmpty(fontStyle.toString())){
 				orgSign.setFontStyle(fontStyle.substring(0,fontStyle.length()-1));
+			}else{
+				orgSign.setFontStyle(null);
 			}
 			
 			
