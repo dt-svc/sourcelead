@@ -4,6 +4,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.json.JSONObject;
+
+import com.bis.sourcelead.beans.ApplicantReport;
+import com.bis.sourcelead.beans.AssignedRequirementReports;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -12,7 +16,7 @@ import com.bis.sourcelead.entity.User;
 
 public interface RequirementReportService {
 
-	List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String filterDate, Date startDateUTC, Date endDateUTC);
+	List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user, String reportType, String customStartDate, String customEndDate) throws Exception;
 
 	List<RequirementSubmissionHistory> getApplicantsCountsPerReq(Long requirementId)throws Exception;
 
@@ -35,12 +39,24 @@ public interface RequirementReportService {
 	List<RequirementSubmission> getReceivedApplicantsCountsByVendorLocationId(Long orgLocationId,
 			Long vendorLocationId, Date startDateUTC, Date endDateUTC);
 
-	List<RequirementSubmission> getTotalApplicants(OrgLocations orgLocation, Date startDateUTC, Date endDateUTC)throws Exception;
+	List<ApplicantReport> getTotalApplicants(OrgLocations orgLocation, String customStartDate, String customEndDate, String reportType)throws Exception;
 
-	List<RequirementSubmissionHistory> getApplicantsCountsByDateRange(Long id, Date startDateUTC, Date endDateUTC)throws Exception;
+	ApplicantReport getApplicantsCountsByDateRange(OrgLocations orgLocation,String reportType,String customStartDate,String customEndDate)throws Exception;
 
-	List<RequirementSubmission> getReceivedApplicantsCountsPerOrgLocId(Long orgLocationId, Date startDateUTC, Date endDateUTC);
+	List<ApplicantReport> getReceivedApplicantsCountsPerOrgLocId(OrgLocations orgLocation,String reportType,String customStartDate,String customEndDate) throws Exception;
 
 	List<RequirementSubmission> getAllSubmissionsByAssignTeamMember(Long orgLocationId, Set<String> userCodesList,Date startDateUTC, Date endDateUTC);
+
+	ApplicantReport getApplicantsReceivedCountsByDateRange(OrgLocations orgLocation, String reportType, String customStartDate, String customEndDate) throws Exception;
+
+	List<ApplicantReport> getAllDayWiseApplicantsRecievedRports(String reportType, String customStartDate, String customEndDate, OrgLocations orgLocation)throws Exception;
+
+	List<AssignedRequirementReports> getAllAssignedRequirementList(JSONObject jsonObj, OrgLocations orgLocation)throws Exception;
+
+	AssignedRequirementReports getAllRequirementAssignToCounts(OrgLocations orgLocation, String json)throws Exception;
+
+	List<RequirementSubmission> allSubmittedApplicantsForReports(String jsonData, String customStartDate, String customEndDate, String reportType, OrgLocations orgLocation)throws Exception;
+
+	ApplicantReport getSubmittedApplicantsCountForReports(String jsonData, String customStartDate, String customEndDate, String reportType, OrgLocations orgLocation, User user)throws Exception;
 
 }
