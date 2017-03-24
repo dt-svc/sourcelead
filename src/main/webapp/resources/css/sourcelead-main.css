@@ -119,7 +119,7 @@ textarea {
 .main-header .navbar a {
 	color: #fff;
 	display: block;
-	/*text-shadow: 1px 1px 1px #2970ad;*/
+	text-shadow: 1px 1px 1px #2970ad;
 }
 .main-header .navbar .dropdown-menu > li > a {
 	color: #333 !important;
@@ -939,7 +939,7 @@ ul.timesheet-menu li a:hover, ul.backoffice-menu li a:hover {
 	border-radius: 4px;
 }
 .section-action-btns ul {
-	margin: 5px 10px;
+	margin: 7px 10px;
 }
 .section-action-btns ul li {
 	/*padding: 5px 10px;*/
@@ -6418,15 +6418,6 @@ max-height: 125px;padding: 10px;position: relative;
 .overflow_inherint{
 	overflow: inherit !important;
 }
-.filter_position .dataTables_filter {
-  position: relative !important;
-  top: 0 !important;
-}
-.hdrPosition h4 {
-	left: 0;
-	float: left;
-	margin-bottom: -30px;
-}
 .jobs-graphview .label {
 position: absolute; top: -8px; width: 55%; right:10px; min-height:20px; line-height: 12px; font-size: 14px; color: #fff;
 font-weight: normal; padding: 6px 10px; text-align: right;
@@ -6534,7 +6525,7 @@ box-shadow: 0 8px 6px -6px rgba(0,0,0,0.2);
     }
 .eventList .media-left {
     vertical-align: middle; width: 65px; padding:5px !important; line-height: 20px; float: left; min-height: 100%;
-    border-right:1px solid rgba(94,94,94,0.1); position: absolute; text-align: center; font-weight: 600; color: #707070; font-size: 12px;
+    border-right:1px solid rgba(94,94,94,0.1); position: absolute; text-align: center; font-weight: 600; color: #707070; font-size: 13px;
 }
 .eventList {
     border: 1px solid rgba(94,94,94,0.2); border-top: 0; position: relative;
@@ -6579,7 +6570,7 @@ margin-left: 15px;
     border-radius: 50%;
     color: #337ab7;
 }
-#eventCalendar .ui-widget.ui-widget-content, #scheduleCalendar .ui-widget.ui-widget-content   {
+#eventCalendar .ui-widget.ui-widget-content {
     border: 1px solid #dedfe4;
     box-shadow: none;
     width: 100%;
@@ -6587,7 +6578,7 @@ margin-left: 15px;
     background: #ededed;
     padding: 10px;
 }
-#eventCalendar .ui-widget-header, #scheduleCalendar .ui-widget-header {
+#eventCalendar .ui-widget-header {
     background: #bbb !important;
     border: none !important;
     color: #333;
@@ -6598,16 +6589,10 @@ margin-left: 15px;
 #eventCalendar .ui-datepicker select.ui-datepicker-month, #eventCalendar .ui-datepicker select.ui-datepicker-year {
     color: #202020; height: 30px; margin-top: 4px;
 }
-#scheduleCalendar .ui-datepicker select.ui-datepicker-month, #scheduleCalendar .ui-datepicker select.ui-datepicker-year {
-    color: #202020; height: 30px; margin-top: 4px;
-}
 #eventCalendar .ui-datepicker .ui-datepicker-prev, #eventCalendar .ui-datepicker .ui-datepicker-next {
     top: 8px;
 }
-#scheduleCalendar .ui-datepicker .ui-datepicker-prev, #scheduleCalendar .ui-datepicker .ui-datepicker-next {
-    top: 8px;
-}
-#eventCalendar .ui-widget-content a, #scheduleCalendar .ui-widget-content a {
+#eventCalendar .ui-widget-content a {
     color: #333333;
     height: 30px;
     line-height: 25px;
@@ -6666,10 +6651,10 @@ padding: 10px;
 
 }
 .refercontacts .nav>li>a {
-    background-color:#E0E0E0;
+background-color:#909090;
 }
 .refercontacts .nav-tabs>li.active>a, .refercontacts .nav-tabs>li.active>a:focus, .refercontacts .nav-tabs>li.active>a:hover {
-    background-color:#fff !important; color:#EF6C00; border-top:3px solid #FFB74D;
+background-color:#fff !important;
 }
 .eventCalendr_content {
     overflow-y: auto; min-height: 150px; max-height: 350px;
@@ -6713,55 +6698,10 @@ word-wrap: break-word; font-size: 13px !important; color: #333;
 #referToContacts .chosen-container-multi .chosen-choices{
 min-height: 30px; max-height: 100px !important; overflow-y: scroll !important;
 }
-.scheduleAvailable {
-    list-style-type: none; font-size: 13px; margin: 10px auto; width: 100%;
-}
-.scheduleAvailable li{
-    float: left; padding-right: 10px; margin-right: 15px;
-}
-.scheduleAvailable li span{
-    width: 20px; height: 20px; border-radius: 50%; padding-left: 5px; display: inline-block; margin-left: 5px; top: 5px; position: relative;
-}
-.scheduleAvailable li span.bg-success{
-    background-color: #66bb6a;
-}
-.scheduleAvailable li:first-child{
-    color: #1b5e20;
-}
-.scheduleAvailable li span.bg-warning{
-    background-color: #fff176;
-}
-.scheduleAvailable li:first-child + li{
-    color: #f9a825;
-}
-.scheduleAvailable li span.bg-danger{
-    background-color: #d32f2f;
-}
-.scheduleAvailable li:first-child + li + li{
-    color: #b71c1c;
-}
-.scheduleAvailable li:first-child + li + li + li {
-    color: #337ab7;
-}
-.schedule_widget {
-background: #fff;box-shadow: 2px 2px 0px rgba(0,0,0,0.1);border-radius: 5px; min-height: 150px;
-padding: 10px;position: relative;
-}
-.schedule_widget .tab-content {
-    border: 1px solid #ededed; padding: 0 5px 15px; border-top: 0;
-}
-.scheduleTable {
-    height: 300px; overflow-y: auto;
-}
-.schedule_widget .btn {
-    padding: 4px 12px;
-}
-.btn_Avail.btn{
-max-width: 30px !important; padding: 5px !important;
-}
 .chosenWidth .chosen-container {
-width:100% !important;
+	width:100% !important;
 }
+ 
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
