@@ -171,6 +171,8 @@ function requirementReportPagination(){
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
+	$(".vendor_wrap_inn_table").find('a.buttons-excel').prop("title", "Excel");
+	$(".vendor_wrap_inn_table").find('a.buttons-pdf').prop("title", "PDF");
 }
 
 </script>
