@@ -603,7 +603,6 @@ public class RequirementReleaseRestController {
 	}
 	
 	
-	 @PreAuthorize("hasRole('ROLE_RELEASE_REQUIREMENT')")
 	 @RequestMapping(value = "/releaseToCrowdSourcingNetwork" , method = RequestMethod.POST)
 	 public  String releaseToCrowdSourcingNetwork(@RequestParam(value="json", required=false) String json,
 			 @RequestParam(value = "requirementId", required = false) Long requirementId,

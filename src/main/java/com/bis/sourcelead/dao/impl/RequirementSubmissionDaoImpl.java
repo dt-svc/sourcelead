@@ -246,6 +246,10 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				String subQuery1 = "reqSub.requirement.managerUserId.id  =:userId ";
 				params.put("userId",user.getId());
 				
+				//This is for Requirement Created by
+				String subQuery6 = "reqSub.requirement.createdBy =:requirementUsercode ";
+				params.put("requirementUsercode",user.getUserCode());
+				
 				// This is if the user is  created by 
 				String subQuery2 = "((reqSub.createdBy =:usercode) OR (reqSub.candidate.candidateType = 'Professional') OR (reqSub.recruiterUserId IS NOT NULL))";
 				params.put("usercode",user.getUserCode());
@@ -264,7 +268,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				String subQuery5 = "req.id IN ( select reqApproverHirachy.requirementId from RequirementApproverHierarchy reqApproverHirachy where reqApproverHirachy.approverUserId.id =:userId)";
 				params.put("userId",user.getId());
 				
-				if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" || subQuery5 != "" ){
+				if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" || subQuery5 != "" || subQuery6 !="" ){
 					subQuery = "where reqSub.orgLocations.id =:loginOrgLocation and req.id =:requirementId  and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery3+")  OR ("+subQuery4+") OR ("+subQuery5+")   )";
 					params.put("loginOrgLocation",loginOrgLocation.getId());
 					params.put("requirementId",requirementId);
@@ -901,6 +905,11 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					String subQuery1 = "reqSub.requirement.managerUserId.id  =:userId ";
 					params.put("userId",user.getId());
 					
+					//This is for Requirement Created by
+					String subQuery6 = "reqSub.requirement.createdBy =:requirementUsercode ";
+					params.put("requirementUsercode",user.getUserCode());
+					
+					
 					// This is if the user is  created by 
 					String subQuery2 = "reqSub.createdBy =:usercode";
 					params.put("usercode",user.getUserCode());
@@ -920,7 +929,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
     				
     				
 					
-					if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" || subQuery5 != ""    ){
+					if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" || subQuery5 != ""  || subQuery6 !=""){
 						subQuery = "where reqSub.orgLocations.id =:loginOrgLocation and req.id =:requirementId  and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery3+")  OR ("+subQuery4+")  OR ("+subQuery5+")   )";
 						params.put("loginOrgLocation",loginOrgLocation.getId());
 						params.put("requirementId",requirementId);
@@ -1166,6 +1175,10 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				String subQuery1 = "reqSub.requirement.managerUserId.id  =:userId ";
 				params.put("userId",user.getId());
 				
+				//This is for Requirement Created by
+				String subQuery6 = "reqSub.requirement.createdBy =:requirementUsercode ";
+				params.put("requirementUsercode",user.getUserCode());
+				
 				// This is if the user is  created by 
 				String subQuery2 = "((reqSub.createdBy =:usercode) OR (reqSub.candidate.candidateType = 'Professional') OR (reqSub.recruiterUserId IS NOT NULL))";
 				params.put("usercode",user.getUserCode());
@@ -1184,7 +1197,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				String subQuery5 = "req.id IN ( select reqApproverHirachy.requirementId from RequirementApproverHierarchy reqApproverHirachy where reqApproverHirachy.approverUserId.id =:userId)";
 				params.put("userId",user.getId());
 				
-				if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" || subQuery5 != ""   ){
+				if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" || subQuery5 != "" || subQuery6 !=""  ){
 					subQuery = "where reqSub.orgLocations.id =:loginOrgLocation and req.id =:requirementId  and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery3+")  OR ("+subQuery4+") OR ("+subQuery5+")    )";
 					params.put("loginOrgLocation",loginOrgLocation.getId());
 					params.put("requirementId",requirementId);
