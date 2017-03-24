@@ -59,6 +59,10 @@ public interface RequirementInterviewService {
 	Integer getInterviewCountByCandidateId(Long candidateId,String submissionStatus,Date startDate,Date endDate) throws Exception;
 
 
+	List<RequirementInterview> getRequirementInterviewsBySubmissionAndOrgLocId(List<Long> submissionsIds, Long locationId, Date startUTCDate,
+			Date endUTCDate);
+
+
 	//List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime);
 	
 

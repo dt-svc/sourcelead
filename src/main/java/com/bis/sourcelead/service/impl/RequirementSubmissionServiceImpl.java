@@ -3650,4 +3650,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		return requirementSubmissionDao.validateRecruiterSubmittedCandidateEmail(email, requirementId, userId);
 	}
 
+	@Override
+	public List<RequirementSubmission> getApplicantsListByOrgLocationAndUserId(OrgLocations loginOrgLocations,
+			List<Long> applicantsList, Date startUTCDate, Date endUTCDate) {
+		return requirementSubmissionDao.getApplicantsListByOrgLocationAndUserId(loginOrgLocations,applicantsList,startUTCDate,endUTCDate);
+	}
+
 }
