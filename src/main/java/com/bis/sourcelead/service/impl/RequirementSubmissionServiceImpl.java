@@ -3655,4 +3655,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		return requirementSubmissionDao.getApplicantsListByOrgLocationAndUserId(loginOrgLocations,applicantsList,startUTCDate,endUTCDate);
 	}
 
+	@Override
+	public Integer getRequirementHistoryCountByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception {
+		return requirementSubmissionDao.getRequirementHistoryCountByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
+	}
+
 }

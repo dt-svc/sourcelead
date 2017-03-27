@@ -455,8 +455,8 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		if (Arrays.asList(tokens).contains("Negotiation")) {
 			spocStatus = spocStatus + "spoc.spocStatus = 'Negotiation' or ";
 		}
-		if (Arrays.asList(tokens).contains("Contracted")) {
-			spocStatus = spocStatus + "spoc.spocStatus = 'Contracted' or ";
+		if (Arrays.asList(tokens).contains("Contract")) {
+			spocStatus = spocStatus + "spoc.spocStatus = 'Contract' or ";
 		}
 		if(!spocStatus.equalsIgnoreCase("")){
 		   spocStatus = " (" + spocStatus.substring(0, spocStatus.length() - 4) + ")";
