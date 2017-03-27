@@ -781,8 +781,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 					can.setCreatedBy(sb.append(user.getFirstName()).append(" ").toString());
 				}
 				
-				 List<RequirementSubmission> requirementSubmission =requirementSubmissionService.getRequirementHistoryListByCandidateIdAndOrgLocationID(can.getId(), orgLocationId);
-				 can.setCandidateRequiementCount(requirementSubmission.size());
+				 Integer requirementSubmissionCount = requirementSubmissionService.getRequirementHistoryCountByCandidateIdAndOrgLocationID(can.getId(), orgLocationId);
+				 can.setCandidateRequiementCount(requirementSubmissionCount);
 			}
 			
 		return candidateList;
@@ -793,8 +793,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			Date startDateUTC, Date endDateUTC,String ownersList) throws Exception {
 		List<Candidate> candidateReportsList = candidateDao.getCandidateReports(orgLocationId, candidateType, filterDate, startDateUTC, endDateUTC,ownersList);
 		for(Candidate can : candidateReportsList){
-			 List<RequirementSubmission> requirementSubmission =requirementSubmissionService.getRequirementHistoryListByCandidateIdAndOrgLocationID(can.getId(), orgLocationId);
-			 can.setCandidateRequiementCount(requirementSubmission.size());
+			if(can.getUpdatedDate() != null){
+				 can.setCandidateUpdateDateToString(Constants.DF_DMY.format(can.getUpdatedDate()));
+				}
+			 Integer requirementSubmissionCount = requirementSubmissionService.getRequirementHistoryCountByCandidateIdAndOrgLocationID(can.getId(), orgLocationId);
+			 can.setCandidateRequiementCount(requirementSubmissionCount);
 			}
 		return candidateReportsList;
 	}
@@ -828,8 +831,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public List<Candidate> getOwnersByCandidates(Long orgLocationId, String candidateType,  String ownersList) throws Exception {
 		List<Candidate> ownerByCandidatesList = candidateDao.getOwnersByCandidates(orgLocationId, candidateType, ownersList);
 		for(Candidate can : ownerByCandidatesList){
-		 List<RequirementSubmission> requirementSubmission =requirementSubmissionService.getRequirementHistoryListByCandidateIdAndOrgLocationID(can.getId(), orgLocationId);
-		 can.setCandidateRequiementCount(requirementSubmission.size());
+			 Integer requirementSubmissionCount = requirementSubmissionService.getRequirementHistoryCountByCandidateIdAndOrgLocationID(can.getId(), orgLocationId);
+			 can.setCandidateRequiementCount(requirementSubmissionCount);
 		}
 		return ownerByCandidatesList;
 	}

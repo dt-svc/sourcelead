@@ -1271,7 +1271,8 @@ public class CandidateListRestController {
 							StringBuilder sb =  new StringBuilder();
 							candidate.setCreatedBy(sb.append(user.getFirstName()).append(" ").toString());
 						}
-						candidate.setCandidateUpdateDateToString(currentTimeStr);
+						candidate.setCandidateUpdateDateToString(Constants.DF_DMY.format(candidate.getUpdatedDate()));
+						 
 						freshList.add(candidate);
 					}
 				    String reportsList = commonUtil.toJSON(freshList);

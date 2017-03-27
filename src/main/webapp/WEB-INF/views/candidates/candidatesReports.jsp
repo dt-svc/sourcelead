@@ -87,7 +87,6 @@ window.onload = function() {
 		            	}else{
 		            		mobilePhone = "----";
 		            	}
-	         	        
 		            	
 		            	if(opt.address != null && opt.address != 'undefined' && opt.address != ""){
 		            		address = opt.address;
@@ -460,3 +459,5 @@ function getCustomReports(){
 		 }
 }
 </script>
+
+<jsp:include page="../masterFooter.jsp" /> 

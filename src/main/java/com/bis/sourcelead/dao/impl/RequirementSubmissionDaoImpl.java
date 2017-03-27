@@ -2071,6 +2071,19 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 List<RequirementSubmission> submissionList  = session.createQuery(query).setLong("orgLocationId", loginOrgLocations.getId()).setParameter("startDateUTC", startUTCDate).setParameter("endDateUTC", endUTCDate).setParameterList("candidateIds", applicantsList).setCacheable(true).list();
 		 return submissionList;
 		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public Integer getRequirementHistoryCountByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception {
+			Session session = this.sessionFactory.getCurrentSession();
+		     String query = "select count(*) from RequirementSubmission rs where rs.candidate.id =:candidateId and rs.orgLocations =:orgLocationId";
+		     List<Long> requirementHistoryCount = session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		     Integer count = 0;
+				if(requirementHistoryCount != null && !requirementHistoryCount.isEmpty()){
+						count = requirementHistoryCount.get(0).intValue();
+				}
+				return count;
+		}
 		
   }
 
