@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
@@ -124,6 +125,26 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 		for (Requirement requirement : requirementList) {
 			String postedDate = getDateStr(requirement.getCreatedDate(), timezone);
 			requirement.setPostedDateStr(postedDate);
+			if(requirement.getClientId() != null){
+				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
+					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+				}
+				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+					requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+				}
+			}
+			if(requirement.getManagerUserId() != null){
+				String managerFirstName = "";
+				if(StringUtils.isNotEmpty(requirement.getManagerUserId().getFirstName())){
+					managerFirstName = requirement.getManagerUserId().getFirstName();
+				}
+				String managerLastName = "";
+				if(StringUtils.isNotEmpty(requirement.getManagerUserId().getLastName())){
+					managerLastName = requirement.getManagerUserId().getLastName();
+				}
+				 StringBuilder managerSB = new StringBuilder();
+				requirement.setManager(managerSB.append(managerFirstName).append(" ").append(managerLastName).toString());
+			}
 		}
 		return requirementList;
 	}

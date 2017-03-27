@@ -43,7 +43,7 @@ public class Constants {
 	public static final String CLIENT_NAME = "Client Name*";
 	public static final String PHONE = "Phone";
 	public static final String STATUS = "Status";
-	public static final String OWNER = "Owner(Email)";
+	public static final String OWNER = "Owner";
 	public static final String WEBSITE = "Website";
 	public static final String COUNTRY = "Country*";
 	public static final String SATATE = "State";
@@ -143,6 +143,9 @@ public class Constants {
 
 	public static String TASK_MECHANISM_EMAIL ="Task Mechanism";
     public static String TASK_MECHANISM_NOTIFICATION="Task Mechanism";
+    
+    public static String MODIFIED_REQUIREMENT_STATUS_EMAIL = "ModifiedRequirementStatusMailtoVendorContact";
+    public static String MODIFIED_REQUIREMENT_STATUS_NOTIFICATION = "ModifiedRequirementStatusNotificationtoVendorContact";
 	
 	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
 	
@@ -460,12 +463,11 @@ public class Constants {
     public static String[] PROJECT_ASSIGNED_EMPLOYEES = {"Employee","Email id","Project Start Date","Project End Date","Approved Hours","Rejected Hours","Wiating for Approval","Saved Hours"};	
 
     public static String[] VENDOR_CONTACTS_HEADERS = {"Vendor Name*","First Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
-    
-    public static String[] VENDOR_HEADERS = {"Vendor Name*","Website","Country","State","City","Tier","First Name*","Last Name","Email*","Phone","Status","Owner(Email)"};
+    public static String[] CLIENT_CONTACTS_HEADERS = {"Client Name*","First Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
+	
+	public static String[] VENDOR_HEADERS = {"Vendor Name*","Website","Country","State","City","Tier","First Name*","Last Name","Email*","Phone","Status","Owner(Email)"};
    
     public static String[] CLIENT_HEADERS = {"Client Name*","Website","Country","State","City","Tier","First Name*","Last Name","Email*","Phone","Status","Owner(Email)"};
-    
-    public static String[] CLIENT_CONTACTS_HEADERS = {"Client Name*","First Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
     
     public static String[] VENDOR_CONTACTS_STATUS_DROPDOWN = {"New","Active","In-Active","Negotiation","Contracted"};
     public static String[] CLIENT_CONTACTS_STATUS_DROPDOWN = {"New","Active","In-Active","Negotiation","Contracted"};

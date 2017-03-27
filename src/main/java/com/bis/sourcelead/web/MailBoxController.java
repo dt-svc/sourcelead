@@ -32,6 +32,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateService;
@@ -108,10 +109,21 @@ public class MailBoxController {
 	
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/composeMail")
- 	public ModelAndView composeMail(HttpServletRequest request) {
+ 	public ModelAndView composeMail(HttpServletRequest request,@RequestParam(value="UUID", required=false) String UUID) {
 		    ModelAndView model = new ModelAndView();
  			model.setViewName("composeMail");
  			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			if(!isNullOrEmpty(UUID)){
+ 				model.addObject("UUID", UUID);
+ 				UserMailBox mailBox = userMailBoxService.getUserMailBoxByUUID(UUID);
+ 				if(null != mailBox){
+ 					model.addObject("subject", mailBox.getSubject());
+ 					model.addObject("fromEmail", mailBox.getFromMail());
+ 				}else{
+ 					model.setViewName("registration/persmissionDenied");
+ 				}
+ 			}
+ 			
  			return model;
  	}
 	

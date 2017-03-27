@@ -424,37 +424,53 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 candidateName=nameBuilder.append(candidateName).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString();
 		 }
 		 
-		 String dateOfInterviewValue ="";
-		 if(requirementInterview.getDateOfInterview()!=null){
-			 dateOfInterviewValue = Constants.DMY.format(requirementInterview.getDateOfInterview());
-		 }
+		
 		 String interviewTypeValue="--";
 		 if(requirementInterview.getInterviewType() !=null){
 			 interviewTypeValue = requirementInterview.getInterviewType();
 		 }
 	 
 		 String time = "";
-		 String endTime = ""; 
-		 if(requirementInterview.getStartTime() != null){
-	    	 String hours = Integer.toString(requirementInterview.getStartTime().getHours());
-	    	 String minutes = Integer.toString(requirementInterview.getStartTime().getMinutes());
-	    	 StringBuilder startTimeBuilder=new StringBuilder();
-	    	 time = CalendarUtil.get12FormatTimeFrom24FormatTime(startTimeBuilder.append(hours).append(":").append(minutes).toString());
-	    }
-	    
-	    if(requirementInterview.getEndTime() != null){
-	    	 StringBuilder endTimeBuilder=new StringBuilder();
-	    	 String hours = Integer.toString(requirementInterview.getEndTime().getHours());
-	    	 String minutes = Integer.toString(requirementInterview.getEndTime().getMinutes());
-	    	 endTime = CalendarUtil.get12FormatTimeFrom24FormatTime(endTimeBuilder.append(hours).append(":").append(minutes).toString());
-	    }
+		 String startTime = "";
+		 String endTime = "";
+		 String dateOfInterviewStr ="";
+		 
+		 if(requirementInterview.getDateOfInterview() != null){
+
+				String currentTimeStr = Constants.TZ_DF.format(requirementInterview.getStartTime());
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
+				Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
+				interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
+				dateOfInterviewStr = interviewDateInTimezone;
+		    }
+		    
+		    if(requirementInterview.getStartTime() != null){
+		    	DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
+				String currentTimeStr = Constants.TZ_DF.format(requirementInterview.getStartTime());  
+				String startTimeUTC= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+				String convertedDateStr = DF_DMY.format(convertedDate);
+				startTime = convertedDateStr;
+			}
+				 
+		    if(requirementInterview.getEndTime() != null){
+		    	DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
+				String currentTimeStr = Constants.TZ_DF.format(requirementInterview.getEndTime());  
+				String startTimeUTC= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+				String convertedDateStr = DF_DMY.format(convertedDate);  
+				endTime = convertedDateStr;
+		    }
 		 
 		 if(endTime!=null){
-			  StringBuilder sb=new StringBuilder();
-			  time=sb.append(time).append(" - ").append(endTime).append(" UTC ").toString();
+			 StringBuilder timeBuilder=new StringBuilder();
+			  time = timeBuilder.append(startTime).append(" - ").append(endTime).append(" ("+requirementInterview.getTimezone().getTimeZoneId()+")").toString();
 		 }
 		 StringBuilder dateOfInterviewSB=new StringBuilder();
-		 dateOfInterviewValue = dateOfInterviewSB.append(dateOfInterviewValue).append(" ").append(time).toString();
+		 String dateOfInterviewValue = dateOfInterviewSB.append(dateOfInterviewStr).append(" ").append(time).toString();
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 			 globalVarsMap.put("interviewerFirstName", emailMessage.getFirstName());
@@ -503,6 +519,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	public void sendEmailToApplicants(Candidate candidate,OrgLocations loginOrgLocations,RequirementSubmission requirementSubmission, User loginUser, Org loginOrg, RequirementInterview requirementInterview) throws Exception {
 		 
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
+		Timezone timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
 		EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(requirementSubmissionTemplateFields.getFirstName());
 		 emailMessage.setLastName(requirementSubmissionTemplateFields.getLastName());
@@ -512,30 +529,45 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 StringBuilder timeStringBuilder=new StringBuilder();
 		 emailMessage.setFromName(timeStringBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 
 		 String time = "";
+		 String startTime = "";
 		 String endTime = "";
 		 String dateOfInterviewStr ="";
-		 if(requirementInterview.getDateOfInterview()!=null){
-		  dateOfInterviewStr = Constants.DMY.format(requirementInterview.getDateOfInterview());
-		 }
+		 
+		 if(requirementInterview.getDateOfInterview() != null){
 
-		 if(requirementInterview.getStartTime() != null){
-	    	 String hours = Integer.toString(requirementInterview.getStartTime().getHours());
-	    	 String minutes = Integer.toString(requirementInterview.getStartTime().getMinutes());
-	    	 StringBuilder startBuilder=new StringBuilder();
-	    	 time = CalendarUtil.get12FormatTimeFrom24FormatTime(startBuilder.append(hours).append(":").append(minutes).toString());
-	    }
-	    
-	    if(requirementInterview.getEndTime() != null){
-	    	 String hours = Integer.toString(requirementInterview.getEndTime().getHours());
-	    	 String minutes = Integer.toString(requirementInterview.getEndTime().getMinutes());
-	    	 StringBuilder endBuilder=new StringBuilder();
-	    	 endTime = CalendarUtil.get12FormatTimeFrom24FormatTime(endBuilder.append(hours).append(":").append(minutes).toString());;
-	    }
+				String currentTimeStr = Constants.TZ_DF.format(requirementInterview.getStartTime());
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
+				Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
+				interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
+				dateOfInterviewStr = interviewDateInTimezone;
+		    }
+		    
+		    if(requirementInterview.getStartTime() != null){
+		    	DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
+				String currentTimeStr = Constants.TZ_DF.format(requirementInterview.getStartTime());  
+				String startTimeUTC= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+				String convertedDateStr = DF_DMY.format(convertedDate);
+				startTime = convertedDateStr;
+			}
+				 
+		    if(requirementInterview.getEndTime() != null){
+		    	DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
+				String currentTimeStr = Constants.TZ_DF.format(requirementInterview.getEndTime());  
+				String startTimeUTC= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+				String convertedDateStr = DF_DMY.format(convertedDate);  
+				endTime = convertedDateStr;
+		    }
 		 
 		 if(endTime!=null){
 			 StringBuilder timeBuilder=new StringBuilder();
-			  time=timeBuilder.append(time).append(" - ").append(endTime).append(" UTC ").toString();
+			  time = timeBuilder.append(startTime).append(" - ").append(endTime).append(" ("+requirementInterview.getTimezone().getTimeZoneId()+")").toString();
 		 }
 		 String interviewTypeValue="--";
 		 if(requirementInterview.getInterviewType() !=null){
@@ -730,30 +762,43 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 emailMessage.setFromName(nameStringBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 String time = "";
+		 String startTime = "";
 		 String endTime = "";
-		 if(requirementInterview.getStartTime() != null){
-	    	 String hours = Integer.toString(requirementInterview.getStartTime().getHours());
-	    	 String minutes = Integer.toString(requirementInterview.getStartTime().getMinutes());
-	    	 StringBuilder startBuilder=new StringBuilder();
-	    	 time = CalendarUtil.get12FormatTimeFrom24FormatTime(startBuilder.append(hours).append(":").append(minutes).toString());
-	    }
-	    
-	    if(requirementInterview.getEndTime() != null){
-	    	 String hours = Integer.toString(requirementInterview.getEndTime().getHours());
-	    	 String minutes = Integer.toString(requirementInterview.getEndTime().getMinutes());
-	    	 StringBuilder endBuilder=new StringBuilder();
-	    	 endTime = CalendarUtil.get12FormatTimeFrom24FormatTime(endBuilder.append(hours).append(":").append(minutes).toString());
-	    }
+		 String dateOfInterviewStr ="";
+		 
+		 if(requirementInterview.getDateOfInterview() != null){
+
+				String currentTimeStr = Constants.TZ_DF.format(requirementInterview.getStartTime());
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
+				Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
+				interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
+				dateOfInterviewStr = interviewDateInTimezone;
+		    }
+		    
+		    if(requirementInterview.getStartTime() != null){
+		    	DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
+				String currentTimeStr = Constants.TZ_DF.format(requirementInterview.getStartTime());  
+				String startTimeUTC= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+				String convertedDateStr = DF_DMY.format(convertedDate);
+				startTime = convertedDateStr;
+			}
+				 
+		    if(requirementInterview.getEndTime() != null){
+		    	DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
+				String currentTimeStr = Constants.TZ_DF.format(requirementInterview.getEndTime());  
+				String startTimeUTC= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+				String convertedDateStr = DF_DMY.format(convertedDate);  
+				endTime = convertedDateStr;
+		    }
 		 
 		 if(endTime!=null){
 			 StringBuilder endTimeBuilder=new StringBuilder();
-			  time=endTimeBuilder.append(time).append(" - ").append(endTime).append(" UTC ").toString();
-		 }
-		 
-		 
-		 String dateOfInterviewStr ="";
-		 if(requirementInterview.getDateOfInterview()!=null){
-		  dateOfInterviewStr = Constants.DMY.format(requirementInterview.getDateOfInterview());
+			  time=endTimeBuilder.append(startTime).append(" - ").append(endTime).append(" ("+requirementInterview.getTimezone().getTimeZoneId()+")").toString();
 		 }
 		 
 		 String interviewTypeValue="--";
