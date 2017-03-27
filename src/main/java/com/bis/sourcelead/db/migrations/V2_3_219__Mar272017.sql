@@ -1,1 +1,1 @@
-ALTER TABLE `sourcelead`.`USER_MAIL_BOX` CHANGE COLUMN `BODY` `BODY` LONGTEXT NULL DEFAULT NULL ;
+INSERT INTO `sourcelead`.`submission_template` (`TEMPLATE_NAME`, `IS_DEFAULT`, `ORG_LOCATION_ID`, `JSON_STRING`, `DESCRIPTION`, `STATUS`, `TEMPLATE_TYPE`) VALUES ('Sourcelead Inerview Feedback Template', 'Y', '1', '[{\"type\":\"textarea\",\"label\":\"Comment\",\"req\":1},{\"type\":\"radio\",\"label\":\"Selected for Interview\",\"req\":0,\"choices\":[{\"label\":\"Yes\",\"sel\":0},{\"label\":\"No\",\"sel\":0}]}]', 'Sourcelead Inerview Feedback Template', '1', 'Feedback');
