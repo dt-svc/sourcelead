@@ -320,14 +320,10 @@ public class VendorController {
 			
 				File file;
 				String fn = getFileName(fileName);
-					if(Constants.VENDORS_IMPORT_TEMPLATE_XLS.equalsIgnoreCase(fn)){
-						 file = new File("vendors_import_template.xls");
-					}else if(Constants.VENDORS_CONTACTS_IMPORT_XLS.equalsIgnoreCase(fn)){
-						 file = new File("vendors_contacts_Import.xls");
-					}else if(Constants.VENDORS_IMPORT_TEMPLATE_XLSX.equalsIgnoreCase(fn)){
-						file = new File("vendors_import_template.xlsx");
+					if(fileName.endsWith("xls")){
+						 file = new File("vendor_error.xls");
 					}else{
-						file = new File("vendors_import_template.xlsx");
+						file = new File("vendor_error.xlsx");
 					}
 				
 				String mimeType = URLConnection.guessContentTypeFromName(file.getName());
