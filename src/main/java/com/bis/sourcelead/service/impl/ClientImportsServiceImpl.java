@@ -196,7 +196,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 										 if(orgSpoc == null){
 											 if(ownerUser.getId() != null){
 												 client.setOwnerUserId(ownerUser.getUser().getId());
-												 JSONObject jsonObj = populateJsonObject(client,isMailSent,vandorsListByOrgLocationId,orgLocation);
+												 JSONObject jsonObj = populateJsonObject(client,isMailSent,vandorsListByOrgLocationId,orgLocation,row.getCell(0).toString());
 												 try {
 														//clientService.storeClient(jsonObj, user, orgLocation,responderType,org);
 														orgSpocService.addVendorContacts(jsonObj, user, orgLocation, orgRelationId.toString(), "", responderType, org);
@@ -210,7 +210,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			    	   }else{
 			    		   if (row.getRowNum() > 0) {
 			    			   count++;
-								createContactXlsSheet(row, createExcelsheet,count, fname,client);
+								createContactXlsSheet(row, createExcelsheet,count, fname,client,orgLocation);
 							}
 			    	   }
 			         }else{
@@ -246,7 +246,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 												createClientXlsSheet(row, createExcelsheet,count, fname,client);
 											}
 							    	   }else{
-							    		   JSONObject jsonObj = populateJsonObject(client,isMailSent,vandorsListByOrgLocationId,orgLocation);
+							    		   JSONObject jsonObj = populateJsonObject(client,isMailSent,vandorsListByOrgLocationId,orgLocation,row.getCell(0).toString());
 							    			try {
 												clientService.storeClient(jsonObj, user, orgLocation,responderType,org);
 											} catch (Exception e) {
@@ -361,18 +361,26 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	   * prepares json for client saving
 	   * @param clientObject
 	   * @param isMailSent
+	 * @param orgName 
 	 * @param vendorOrg 
 	 * @param ownerId 
 	   * @return
 	   * @throws JSONException
 	   */
-	  private JSONObject populateJsonObject(ClientImportObject clientObject,String isMailSent, List<OrgRelations> vandorsListByOrgLocationId,OrgLocations orgLocation) throws JSONException {
+	  private JSONObject populateJsonObject(ClientImportObject clientObject,String isMailSent, List<OrgRelations> orgList,OrgLocations orgLocation, String orgName) throws JSONException {
 		  String roleTypeId  = "";
 		  JSONObject jsonObj = new JSONObject(); 
-		  if(vandorsListByOrgLocationId != null){
+		  if(orgList != null){
 			  jsonObj.put("roleTypeId", roleTypeId);
-		    OrgRelations  orgRelation = vandorsListByOrgLocationId.get(0);
-		     StringBuilder vendorName = new StringBuilder();
+	              OrgRelations  orgRelation = null;
+	              for(OrgRelations org : orgList){
+	                  if(orgName.equals(org.getResponderLocationId().getOrg().getOrgName())){
+	                      orgRelation = org;
+	                  }else if(orgName.equals(org.getLocationId().getOrg().getOrgName())){
+	                      orgRelation = org;
+	                  }
+	              }
+		    StringBuilder vendorName = new StringBuilder();
 			  if(orgLocation.getId().longValue() == orgRelation.getLocationId().getId().longValue() ){
 				  jsonObj.put("vendorName", vendorName.append(orgRelation.getId()).append(",").append(orgRelation.getResponderLocationId().getId()));
 			  }else{
@@ -714,12 +722,28 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		 * @param rowIndex
 		 * @param fname
 		 * @param client
+		 * @param orgLocation 
+		 * @throws Exception 
 		 */
-		private void createContactXlsSheet(Row row, Sheet createExcelsheet, int rowIndex ,String fname, ClientImportObject client) {
+		private void createContactXlsSheet(Row row, Sheet createExcelsheet, int rowIndex ,String fname, ClientImportObject client, OrgLocations orgLocation) throws Exception {
 			Row writeRow = createExcelsheet.createRow(rowIndex);
 			
 			if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
-		        writeRow.createCell(0).setCellValue(row.getCell(0).toString());
+				String orgNames [] = null;
+				if(fname.contains("clients_contacts_Import")){
+					orgNames = getClientNameList(orgLocation.getId());
+				}else{
+					orgNames = getVendorNameList(orgLocation.getId());
+				}
+				if(null != orgNames){
+					if(!fname.endsWith("xlsx")){
+						createExcelsheet.addValidationData(getDropDownListForCell(orgNames,0));
+					}else{
+						createExcelsheet.addValidationData(getXssfDropDownlist(orgNames,0,createExcelsheet));
+					}
+				}
+				
+				writeRow.createCell(0).setCellValue(row.getCell(0).toString());
 			} else {
 				writeRow.createCell(0).setCellValue("");
 			}
@@ -758,11 +782,22 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 				if(!fname.endsWith("xlsx")){
 					createExcelsheet.addValidationData(getDropDownListForCell(Constants.STATUS_DROPDOWN,5));
 				}else{
-//					createExcelsheet.addValidationData(getXssfDropDownlist(Constants.STATUS_DROPDOWN,6,createExcelsheet));
+					createExcelsheet.addValidationData(getXssfDropDownlist(Constants.STATUS_DROPDOWN,5,createExcelsheet));
 				}
 			    writeRow.createCell(5).setCellValue("");
 			}
 			if (row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())) {
+				
+				String[] ownersList = getOwnerList(orgLocation.getId(),Long.valueOf(Constants.TAB_CLIENT));
+				
+				if(null != ownersList){
+					if(!fname.endsWith("xlsx")){
+						createExcelsheet.addValidationData(getDropDownListForCell(ownersList,6));
+					}else{
+						createExcelsheet.addValidationData(getXssfDropDownlist(ownersList,6,createExcelsheet));
+					}
+				}
+				
 				writeRow.createCell(6).setCellValue(row.getCell(6).toString());
 			} else {
 			    writeRow.createCell(6).setCellValue("");
@@ -774,6 +809,37 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	
 		
 		
+		private String[] getVendorNameList(Long orgLocationId)
+		{
+//			vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
+			List<String> list = new ArrayList<>();
+			List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocationId);
+			for(OrgRelations orgRelations :vandorsListByOrgLocationId){
+			if(orgLocationId.longValue() == orgRelations.getLocationId().getId().longValue() ){
+				list.add(orgRelations.getResponderLocationId().getOrg().getOrgName());
+			}else{
+				list.add(orgRelations.getLocationId().getOrg().getOrgName());
+			}
+				
+			}
+			String [] orgList = list.toArray(new String[list.size()]);
+			 return orgList;
+		}
+		private String[] getClientNameList(Long orgLocationId) throws Exception
+		{
+			List<String> list = new ArrayList<>();
+			List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllClientsByOrgLocationId(orgLocationId);
+			for(OrgRelations orgRelations :vandorsListByOrgLocationId){
+			if(orgLocationId.longValue() == orgRelations.getLocationId().getId().longValue() ){
+				list.add(orgRelations.getResponderLocationId().getOrg().getOrgName());
+			}else{
+				list.add(orgRelations.getLocationId().getOrg().getOrgName());
+			}
+				
+			}
+			String [] roleList = list.toArray(new String[list.size()]);
+			 return roleList;
+		}
 		/**
 		 * prepares client excel file when record validation failed
 		 * @param row
@@ -913,8 +979,8 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			HSSFSheet realSheet = workbook.createSheet("clientContact");
 			realSheet = setCLirntTemplateHeaders(realSheet);
 			HSSFSheet hidden = workbook.createSheet("hidden");
-			String[] vendorsList = getClientList(orgLocationId);
-//			String[] ownersList = getOwnerList(orgLocationId,Long.valueOf(Constants.TAB_VENDOR));
+			String[] vendorsList = getClientNameList(orgLocationId);
+			String[] ownersList = getOwnerList(orgLocationId,Long.valueOf(Constants.TAB_CLIENT));
 			for (int i = 0, length= vendorsList.length; i < length; i++) {
 			   String name = vendorsList[i];
 			   HSSFRow row = hidden.createRow(i);
@@ -938,7 +1004,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 ////				 CellRangeAddressList addressList = new CellRangeAddressList(1,500,0,0);
 ////				 HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
 ////				 workbook.setSheetHidden(1, true);
-//				 realSheet.addValidationData(getDropDownListForCell(ownersList,6,"xls"));
+				 realSheet.addValidationData(getDropDownListForCell(ownersList,6,"xls"));
 ////				 realSheet.addValidationData(validation);
 //			 }
 			 File file = new File("clients_contacts_Import.xls");
@@ -958,21 +1024,21 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			return sheet;
 		}
 		
-        private String[] getClientList(Long orgLocationId) throws Exception {
-			
-			List<String> list = new ArrayList<>();
-			List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllClientsByOrgLocationId(orgLocationId);
-			for(OrgRelations orgRelations :vandorsListByOrgLocationId){
-			if(orgLocationId.longValue() == orgRelations.getLocationId().getId().longValue() ){
-				list.add(orgRelations.getResponderLocationId().getOrg().getOrgName());
-			}else{
-				list.add(orgRelations.getLocationId().getOrg().getOrgName());
-			}
-				
-			}
-			String [] roleList = list.toArray(new String[list.size()]);
-			 return roleList;
-		}
+//        private String[] getClientList(Long orgLocationId) throws Exception {
+//			
+//			List<String> list = new ArrayList<>();
+//			List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllClientsByOrgLocationId(orgLocationId);
+//			for(OrgRelations orgRelations :vandorsListByOrgLocationId){
+//			if(orgLocationId.longValue() == orgRelations.getLocationId().getId().longValue() ){
+//				list.add(orgRelations.getResponderLocationId().getOrg().getOrgName());
+//			}else{
+//				list.add(orgRelations.getLocationId().getOrg().getOrgName());
+//			}
+//				
+//			}
+//			String [] roleList = list.toArray(new String[list.size()]);
+//			 return roleList;
+//		}
 
 		public File getVendorContactsTemplate(Long orgLocationId) throws Exception {
 			
@@ -983,7 +1049,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			realSheet = setTemplateHeaders(realSheet);
 			HSSFSheet hidden = workbook.createSheet("hidden");
 			String[] vendorsList = getVendorsList(orgLocationId);
-//			String[] ownersList = getOwnerList(orgLocationId,Long.valueOf(Constants.TAB_VENDOR));
+			String[] ownersList = getOwnerList(orgLocationId,Long.valueOf(Constants.TAB_VENDOR));
 			for (int i = 0, length= vendorsList.length; i < length; i++) {
 			   String name = vendorsList[i];
 			   HSSFRow row = hidden.createRow(i);
@@ -1010,15 +1076,15 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 //				   cell1.setCellValue(ownerName);
 //				 }
 			 
-//			 if(ownersList.length > 0){
-//				 namedCell.setRefersToFormula("hidden!$G$2:$G$" + ownersList.length);	 
-//				 DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
+			 if(ownersList.length > 0){
+////				 namedCell.setRefersToFormula("hidden!$G$2:$G$" + ownersList.length);	 
+////				 DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
 //				 CellRangeAddressList addressList = new CellRangeAddressList(1,500,6,6);
 //				 HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
 //				 workbook.setSheetHidden(1, true);
-////				 realSheet.addValidationData(getDropDownListForCell(Constants.VENDOR_CONTACTS_STATUS_DROPDOWN,5,"xls"));
+				 realSheet.addValidationData(getDropDownListForCell(ownersList,6,"xls"));
 //				 realSheet.addValidationData(validation);
-//			 }	
+			 }	
 
 			 File file = new File("vendors_contacts_Import.xls");
 			 FileOutputStream stream = new FileOutputStream(file);
@@ -1028,15 +1094,15 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		}
 		
 
-//		private String[] getOwnerList(Long orgLocationId, Long vendortab) throws Exception {
-//			List<String> ownerList = new ArrayList<>();
-//			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationId,vendortab);
-//			for(User usr : userList){
-//				ownerList.add(usr.getEmail());
-//			}
-//			String [] ownersList = ownerList.toArray(new String[ownerList.size()]);
-//			 return ownersList;
-//		}
+		private String[] getOwnerList(Long orgLocationId, Long vendortab) throws Exception {
+			List<String> ownerList = new ArrayList<>();
+			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationId,vendortab);
+			for(User usr : userList){
+				ownerList.add(usr.getEmail());
+			}
+			String [] ownersList = ownerList.toArray(new String[ownerList.size()]);
+			 return ownersList;
+		}
 		
 		private HSSFSheet setTemplateHeaders(HSSFSheet sheet) {
 			String headers[] = Constants.VENDOR_CONTACTS_HEADERS;

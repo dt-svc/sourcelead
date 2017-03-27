@@ -3,6 +3,9 @@ package com.bis.sourcelead.service;
 import java.util.Date;
 import java.util.List;
 
+import org.json.JSONObject;
+
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.Timezone;
@@ -14,6 +17,8 @@ public interface RequirementInterviewHistoryService {
 	RequirementInterviewHistory storeRequirementInterviewHistory(RequirementInterviewHistory requirementInterviewHistory)throws Exception;
 	
 	RequirementInterviewHistory getRequirementInterviewHistoryById(Long Id);
+	
+	RequirementInterviewHistory getRequirementInterviewHistoryByInterviewId(Long interviewId)throws Exception;
 	
 	List<RequirementInterviewHistory> getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, OrgLocations orgLocationsId) throws Exception;
 	
@@ -46,6 +51,5 @@ public interface RequirementInterviewHistoryService {
 	List<RequirementInterviewHistory> getAllRecruiterSubmittedInterviews(String dateRange, Long userId)throws Exception;
 	
 	List<RequirementInterviewHistory> getCrowdSorurcingInterviews(Long submissionId,OrgLocations orgLocations) throws Exception;
-
-
+	
 }

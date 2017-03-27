@@ -9,7 +9,9 @@ import com.bis.sourcelead.entity.Timezone;
 public interface RequirementInterviewHistoryDao {
 	
 	RequirementInterviewHistory storeRequirementInterviewHistory(RequirementInterviewHistory requirementInterviewHistory)throws Exception;
-
+	
+	RequirementInterviewHistory getRequirementInterviewHistoryByInterviewId(Long interviewId)throws Exception;
+	
 	List<RequirementInterviewHistory> getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(
 			Long submissionId, Long orgLocationsId) throws Exception;
 
