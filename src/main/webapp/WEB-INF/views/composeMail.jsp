@@ -12,11 +12,21 @@ display: none;
 }
 </style>
 
-<!-- <script>
- window.onload = function() {
-	 getTeamsList('All');
-};
-</script> -->
+ <script>
+ $(document).ready(function(){
+	 var UUID = '${UUID}';
+	
+	 if(null != UUID && UUID != '' && UUID != 'undefined'){
+		 $("input[name=subject]").val("Re :"+'${subject}');
+		 var fromEmail = '${fromEmail}';
+		 
+		 $("#emailsList").empty();
+		 $("#emailsList").append("<option value='" +fromEmail+ "' selected>"+fromEmail+"</option>");
+		 $("#emailsList").trigger("chosen:updated");
+		 
+	 }
+});
+</script> 
 
 
 <section class="content-wraper">
@@ -73,7 +83,7 @@ display: none;
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-danger small">Subject</label>
           <div class="col-md-10">
-            <input type="text" name="subject" data-validation="required" field-name="Subject" id="subject" class="form-control input-sm">
+            <input type="text" name="subject" data-validation="required" field-name="Subject" id="subject" value="" class="form-control input-sm">
           </div>
         </div>
         <div class="clearfix">
@@ -196,7 +206,6 @@ $(function(){
 		   	    }
 		  		else{
 		  			var bodytext = nicEditors.findEditor('bodytext').getContent();
-		  			alert(bodytext.length);
 		  			 if(bodytext.length < 60000){ 	
 		  			
 			  			$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
