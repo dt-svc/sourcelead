@@ -651,7 +651,7 @@ public class SubmissionsRestController {
 
 		// construct HTML template using required data
 		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
-				signature, url, new Org());
+				signature, url, loginOrg);
 		emailMessage.setSubject(subject);
 		emailMessage.setMessageBody(emailTemplate);
 

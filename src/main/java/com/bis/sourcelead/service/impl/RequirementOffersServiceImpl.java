@@ -340,7 +340,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 
 
             // construct HTML template using required data
-            String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, new Org());
+            String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrgLocations.getOrg());
             emailMessage.setSubject(subject);
             emailMessage.setMessageBody(emailTemplate);
 
@@ -474,7 +474,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 
 
             // construct HTML template using required data
-            String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,signature, url, new Org());
+            String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,signature, url, orgLocations.getOrg());
             emailMessage.setSubject(subject);
             emailMessage.setMessageBody(emailTemplate);
 
@@ -571,8 +571,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		String url = "";
 
 		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
-				signature, url, new Org());
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, orgLocations.getOrg());
 		emailMessage.setSubject(subject);
 		emailMessage.setMessageBody(emailTemplate);
 
@@ -655,8 +654,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		String url = "";
 
 		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
-				signature, url, new Org());
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrgLocations.getOrg());
 		emailMessage.setSubject(subject);
 		emailMessage.setMessageBody(emailTemplate);
 
