@@ -793,11 +793,17 @@ $(document).ready(function(){
 
 <script>
 function toggle(source) {
-    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    var checkboxes = [];
+    checkboxes = document.querySelectorAll('input[name="vendorcheckbox"]');
+    if(checkboxes.length < 1){
+    	checkboxes = [];
+    }
+    var contactCheckboxes = [];
+    contactCheckboxes = document.querySelectorAll('input[name="contactscheckbox"]');
+    $.merge( checkboxes, contactCheckboxes)
     for (var i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i] != source)
             checkboxes[i].checked = source.checked;
-        
     }
 $('input:checkbox:not(#contactscheckbox)').click(function() {
     if(!this.checked) {
