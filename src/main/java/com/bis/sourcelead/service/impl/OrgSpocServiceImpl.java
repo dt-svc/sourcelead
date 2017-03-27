@@ -492,9 +492,9 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	}
 
 	@Override
-	public OrgSpoc getValidateOwnersBySpocUserIdAndSpocOwnerUserId(Long spocUserId, Long spocOwnderUserId) throws Exception
+	public OrgSpoc getValidateOwnersBySpocUserIdAndSpocOwnerUserId(Long spocUserId, Long spocOwnderUserId,Long responderLocationId) throws Exception
 	{
-		return  orgSpocDao.getValidateOwnersBySpocUserIdAndSpocOwnerUserId(spocUserId,spocOwnderUserId);
+		return  orgSpocDao.getValidateOwnersBySpocUserIdAndSpocOwnerUserId(spocUserId,spocOwnderUserId,responderLocationId);
 	}
 	
 }

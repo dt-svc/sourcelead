@@ -60,6 +60,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.ClientImportsService;
 import com.bis.sourcelead.service.ClientService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -103,6 +104,12 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	@Autowired
 	UserService userService;
 	
+	@Autowired
+	private OrgLocationService orgLocationService;
+	
+	/**
+	 * this old code we need to remove after QA gives confirmation that the clien and vendor working fine
+	 */
 	@Override
 	public String clientBulkSaving(MultipartFile multipartFile,User user,OrgLocations orgLocation,Org  org,String isMailSent,String responderType) throws Exception {
 		
@@ -510,35 +517,35 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 						client.setReason("Invalid Email");
 						return false;
 					}else if(row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())){
-						OrgRelations  orgRelation = null;
-						  for(OrgRelations org : orgList){
-			                  if(orgName.equals(org.getResponderLocationId().getOrg().getOrgName())){
-			                      orgRelation = org;
-			                  }else if(orgName.equals(org.getLocationId().getOrg().getOrgName())){
-			                      orgRelation = org;
+						Org org = null;
+						  for(OrgRelations orgRelation : orgList){
+			                  if(orgName.equals(orgRelation.getResponderLocationId().getOrg().getOrgName())){
+			                	  org = orgRelation.getResponderLocationId().getOrg();
+			                  }else if(orgName.equals(orgRelation.getLocationId().getOrg().getOrgName())){
+			                	  org = orgRelation.getLocationId().getOrg();
 			                  }
 			              }
-						  
+						  OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(org.getId());
 						 UserRole userRole = null;
 						 userRole = userRoleService.getUserDetailsByEmailAndLocationId(row.getCell(8).toString(), orgLocation.getId());
 						 if(userRole == null){
-							 if(orgLocation.getId() == orgRelation.getLocationId().getId() ){
-								  userRole = userRoleService.getUserDetailsByEmailAndLocationId(row.getCell(8).toString(), orgRelation.getLocationId().getId());
-							  }else{
-								  userRole =  userRoleService.getUserDetailsByEmailAndLocationId(row.getCell(8).toString(), orgRelation.getResponderLocationId().getId());
-							  }
+//							 if(orgLocation.getId() == orgRelation.getLocationId().getId() ){
+//								  userRole = userRoleService.getUserDetailsByEmailAndLocationId(row.getCell(8).toString(), orgRelation.getLocationId().getId());
+//							  }else{
+//								  userRole =  userRoleService.getUserDetailsByEmailAndLocationId(row.getCell(8).toString(), orgRelation.getResponderLocationId().getId());
+//							  }
 							  User spocUser = userService.findByEmail(row.getCell(8).toString());
 							  User spocOwnerUser = userService.findByEmail(row.getCell(11).toString());
 							 if(spocUser !=null && spocOwnerUser !=null){
-								 OrgSpoc orgSpoc = orgSpocService.getValidateOwnersBySpocUserIdAndSpocOwnerUserId(spocUser.getId(), spocOwnerUser.getId());
-									if(userRole ==null && orgSpoc != null){
-										client.setReason("duplicate email");
+								 OrgSpoc orgSpoc = orgSpocService.getValidateOwnersBySpocUserIdAndSpocOwnerUserId(spocUser.getId(), spocOwnerUser.getId(),orgLocations.getId());
+									if(orgSpoc != null){
+										client.setReason("spoc already existed.!");
 										return false;
 									} 
 							 }
 							 
 						 }else{
-							   client.setReason(row.getCell(8).toString()+ "should not your org users email");
+							   client.setReason(row.getCell(8).toString()+" should not your org users email");
 								return false;
 						 }
 						
@@ -1540,9 +1547,6 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			  String isFileCreated = "failure";
 			  String fn = multipartFile.getOriginalFilename();
 			  String fname = getFileName(fn);
-			  if(!fname.contains("clients_contacts_Import") && !fname.contains("vendors_contacts_Import") && !fname.contains("clients_import_template") && !fname.contains("vendors_import_template")){
-				  return "worngFileName";
-			  }
 			  File file = new File(multipartFile.getOriginalFilename());
 			  multipartFile.transferTo(file);
 			  
@@ -1634,11 +1638,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 									   }
 							    			 isValidContact = validateContactsExeclDataImp(row,fname,client,orgLocation,responderType,row.getCell(0).toString());
 							    			 if(isValidContact){
-							    				 if(fname.contains("vendors_contacts_Import")){
-											   		 vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgName(row.getCell(0).toString(),orgLocation.getId());
-											   	  }else{
 											   		vandorsListByOrgLocationId = orgRelationsService.getAllClientsByOrgNameOrgLocationId(row.getCell(0).toString(),orgLocation.getId());	  
-											   	  }
 											   
 											   String email = row.getCell(11).toString();
 												String emails [] = email.split(",");
@@ -1676,18 +1676,18 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 				       if (!isValidated || isClientFound) {
 				    	   FileOutputStream fos = null;
 				    	   if(!fname.endsWith("xls")){
-				    		   fos = new FileOutputStream(fname);
+				    		   fos = new FileOutputStream("client_error.xlsx");
 				    	   }else{
-				    		   fos = new FileOutputStream(fname);
+				    		   fos = new FileOutputStream("client_error.xls");
 				    	   }
 							wb_hssf.write(fos);
 							fos.close();
 						}
 						if(count > 0){
 							if(!fname.endsWith("xlsx")){
-								isFileCreated = fname;
+								isFileCreated = "client_error.xls";
 							}else{
-								isFileCreated = fname;
+								isFileCreated = "client_error.xlsx";
 							}
 							
 						}else{

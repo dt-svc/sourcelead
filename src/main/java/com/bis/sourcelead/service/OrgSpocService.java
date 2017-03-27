@@ -114,5 +114,5 @@ public interface OrgSpocService {
 
 	List<Long> getOwnerListByUserIdAndOrglocationId(User user, OrgLocations orgLocations, String type);
 	
-	OrgSpoc getValidateOwnersBySpocUserIdAndSpocOwnerUserId(Long spocUserId,Long spocOwnderUserId) throws Exception;
+	OrgSpoc getValidateOwnersBySpocUserIdAndSpocOwnerUserId(Long spocUserId,Long spocOwnderUserId, Long responderLocationId) throws Exception;
 }

@@ -510,11 +510,11 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 
 		@Override
 		@Transactional(rollbackFor = { Exception.class })
-		public OrgSpoc getValidateOwnersBySpocUserIdAndSpocOwnerUserId(Long spocUserId, Long spocOwnderUserId) throws Exception
+		public OrgSpoc getValidateOwnersBySpocUserIdAndSpocOwnerUserId(Long spocUserId, Long spocOwnderUserId,Long responderLocationId) throws Exception
 		{
 			Session session = this.sessionFactory.getCurrentSession();
-			Query query= session.createQuery("from OrgSpoc spoc  where  spoc.clientUser.id =:spocUserId and spoc.ownerUser.id =:spocOwnderUserId ");
-			List<OrgSpoc> spocsList = query.setLong("spocUserId", spocUserId).setLong("spocOwnderUserId", spocOwnderUserId).setCacheable(true).list();
+			Query query= session.createQuery("from OrgSpoc spoc  where  spoc.clientUser.id =:spocUserId and spoc.ownerUser.id =:spocOwnderUserId and spoc.clientLocationId.id = :responderLocationId");
+			List<OrgSpoc> spocsList = query.setLong("spocUserId", spocUserId).setLong("spocOwnderUserId", spocOwnderUserId).setLong("responderLocationId", responderLocationId).setCacheable(true).list();
 			OrgSpoc orgSpoc = null;
 			if(spocsList != null && spocsList.size() > 0){
 				orgSpoc = spocsList.get(0);

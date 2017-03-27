@@ -115,34 +115,23 @@ public class ClientUploadController {
 		if(multipartFile != null){
 			String fn = multipartFile.getOriginalFilename();//clients_contacts_Import  clients_import_template.xls
 			String fileName = getFileName(fn);
-			if(!fileName.equals(Constants.VENDORS_CONTACTS_IMPORT_XLS) && !fileName.equals(Constants.VENDORS_CONTACTS_IMPORT_XLSX) && !fileName.equals(Constants.VENDORS_IMPORT_TEMPLATE_XLS) && !fileName.equals(Constants.VENDORS_IMPORT_TEMPLATE_XLSX)){
 			//String isFileCreated = clientImportsService.clientBulkSaving(multipartFile,user,orgLocation,org,uploadedFile.getEmail(),responderType);
 			String isFileCreated = clientImportsService.clientBulkSavingImp(multipartFile,user,orgLocation,org,uploadedFile.getEmail(),responderType);
-			if (fileName.equalsIgnoreCase(isFileCreated)) {
+			if ("client_error.xls".equalsIgnoreCase(isFileCreated)) {
 				model.addAttribute("errorMessage", "Please download Error file here");
-	             model.addAttribute("fileName", fileName);
+	             model.addAttribute("fileName", "client_error.xls");
 				return "upload/uploadClientForm";
-			}/*else if("FailureUsersForCheck.xls".equalsIgnoreCase(isFileCreated)){
+			}else if("client_error.xlsx".equalsIgnoreCase(isFileCreated)){
 				model.addAttribute("errorMessage", "Please download Error file here");
-	            model.addAttribute("fileName", "xls");
-				return "upload/uploadClientForm";
-			}*/else if("worngFileName".equalsIgnoreCase(isFileCreated)){
-				model.addAttribute("fileNameWrong", "File name should follow as clients_contacts_Import/clients_import_template with .xls or .xlsx");
-	            model.addAttribute("fileName", "xls");
+	             model.addAttribute("fileName", "client_error.xlsx");
 				return "upload/uploadClientForm";
 			}
-		}else{
-			model.addAttribute("fileNameWrong", "Oops.! It's not client template");
-            model.addAttribute("fileName", "xls");
-			return "upload/uploadClientForm";
-		}
-			
-		}else{
-			return "upload/uploadClientForm";
-		}
+				model.addAttribute("errorMessage", "Please download Error file here");
+	            model.addAttribute("fileName", "xls");
+				return "upload/uploadClientForm";
+	}
 		SourceLeadSessionManager.setSessionAttribute(request, "clientImport", "Success!! New clients created ");
 		return "redirect:/clientDashboard";
-		
 	}
 	
 	/**	
@@ -213,18 +202,11 @@ public class ClientUploadController {
 	public void downloadFile(@PathVariable String fileName,HttpServletResponse response) throws IOException {
 		
 			File file;
-			
-				String fn = getFileName(fileName);
-				if(Constants.CLIENTS_IMPORT_TEMPLATE_XLS.equalsIgnoreCase(fn)){
-					 file = new File("clients_import_template.xls");
-				}else if(Constants.CLIENTS_CONTACTS_IMPORT_XLS.equalsIgnoreCase(fn)){
-					 file = new File("clients_contacts_Import.xls");
-				}else if(Constants.CLIENTS_IMPORT_TEMPLATE_XLSX.equalsIgnoreCase(fn)){
-					file = new File("clients_import_template.xlsx");
+				if(fileName.endsWith("xls")){
+					file = new File("client_error.xls");
 				}else{
-					file = new File("clients_import_template.xlsx");
+					file = new File("client_error.xlsx");
 				}
-			
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {
 				mimeType = "application/octet-stream";
