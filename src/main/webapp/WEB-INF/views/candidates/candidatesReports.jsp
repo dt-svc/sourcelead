@@ -421,6 +421,10 @@ function custDates(){
 function getCustomReports(){
 	
 	var ownersList = $("#user").val();
+	var userList = "";
+	if(ownersList != null && ownersList != ''){
+		userList = ownersList;
+	}
 	var reportType = $("#reportTypeId").val();
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
@@ -433,7 +437,7 @@ function getCustomReports(){
 	}else{
 		$.ajax({
 	         type : "POST",
-	         url: sourceleadUrl+"/getCandidateReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate+"&ownersList="+ownersList,     
+	         url: sourceleadUrl+"/getCandidateReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate+"&ownersList="+userList,     
 	         success :function(data) {
 		        	 prepareCandidateReportsDataDiv(data);
 	        },

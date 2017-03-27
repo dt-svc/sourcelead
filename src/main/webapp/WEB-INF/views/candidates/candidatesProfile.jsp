@@ -77,6 +77,8 @@ function editCandidate(candidateId){
 	  $("#profileEditPopup").show();
 	  var loginCountryName = '${loginCountryName}';
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  
+	  
 	/* 	var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -85,7 +87,6 @@ function editCandidate(candidateId){
 	         };  */
 		
  if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
-	  
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -256,7 +257,6 @@ function editCandidate(candidateId){
 							result = result + '<div class="col-md-6">';
 							result = result + '<div class="input-group er ratetype">';
 							result = result + '<div class="input-group-btn tblminwidth-75 select-field">';
-			                  
 							result = result + ' <select class="selct-picker" id="currentRateCurrency" name="currentRateCurrency">';
 							result = result + ' <option '+(json.currentRateCurrency == "INR" ? "selected" : '') +'><a href="#">INR</a></option>';
 							result = result + '<option   '+(json.currentRateCurrency == "AUD" ? "selected" : '') +'><a href="#">AUD</a></option>';
@@ -700,7 +700,6 @@ function reActivateCandidateAlertMessage(candidateId){
 function candidateProfile(candidateId){
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var skillsList = '${skillsList}'; 
-	  
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
