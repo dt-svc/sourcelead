@@ -67,7 +67,6 @@ window.onload = function() {
 	          result = result +"    <th>Primary Skill</th>";
 	          result = result +"    <th>Experience</th>"; 
 	          result = result +"    <th>No of Requirements</th>"; 
-	          result = result +"    <th>Offered</th>"; 
 	          result = result +"    <th>Owner</th>"; 
 	          result = result +"    <th>Last Update</th>"; 
 	          result = result +"  </tr>"; 
@@ -81,6 +80,7 @@ window.onload = function() {
 	         	 var address="";
 	         	 var designationType = "";
 	         	 var candidateUpdateDateToString ="";
+	         	 var candidateRequiementCount ="";
 	         	        
 	         	      if(opt.mobilePhone != null && opt.mobilePhone != 'undefined' && opt.mobilePhone != ""){
 	         		       mobilePhone = opt.mobilePhone;
@@ -127,9 +127,8 @@ window.onload = function() {
 		             		 result = result +"  <td><div>----</div></td>"; 
 		             	 }
 		              result = result +"  <td><div><span title='"+Experience+"'>"+Experience+"</span></div></td>";
-	
-		              result = result +"  <td><div ><span >------</span></div></td>";
-		              result = result +"  <td><div ><span >------</span></div></td>";
+	                 
+		              result = result +"  <td><div ><span >"+opt.candidateRequiementCount+"</span></div></td>";
 		              
 		              if(opt.createdBy != null && opt.createdBy !='' & opt.createdBy !='undefined'){
 		              result = result +"  <td><div><span title='"+opt.createdBy+"'>"+opt.createdBy+"</span></div></td>";
@@ -220,7 +219,7 @@ function toDate(selector) {
 			<a title="Reports"><i class="fa fa-pie-chart"></i>Reports</a>
 			<div class="RePop">
 				<ul>
-					<li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Create Candidate</a></li>
+					<li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
 				</ul>
 			</div>
 		</div>  
@@ -254,10 +253,10 @@ function toDate(selector) {
 	</span>
 	<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
 	
-		<span class="repoBtns">
+		<!-- <span class="repoBtns">
 		<a href="javascript:void(0)" class="oneA actRE"><i class="fa fa-list"></i></a>
 		<a href="javascript:void(0)" class="oneB"><i class="fa fa-pie-chart"></i></a>
-	</span>
+	</span> -->
 </div>
                      
         <ul style="padding: 2px 300px 2px 0px;">
@@ -277,7 +276,7 @@ function toDate(selector) {
                 </select>
           </div>
           
-          <input type="button" value="Submit" class="btn btn-primary rePBT"  id="owner"  onclick="getCandidatesByOwners();"/>
+          <input type="button" value="Submit" class="btn btn-primary rePBT"  id="owner"  onclick="getDayWiseReports();"/>
 			<div class="clearfix"></div>		
 		</div>
     
@@ -348,16 +347,6 @@ function getCandidatesByOwners(){
 	    var sourceleadUrl = '${sourceleadUrl}';
 		var ownersList = $("#user").val();
 		var reportType = "Candidate";
-		
-		
- 		/*  $.ajax({
-					type : "GET",
-					url: sourceleadUrl+"/getOwnersByCandidates?${_csrf.parameterName}=${_csrf.token}&ownersList="+ownersList+"&reportType="+reportType,
-					success : function(data) {
-						alert("david"+data);
-					},
-				});   */
- 		 
  		 
  		$.ajax({
  	         type : "POST",
@@ -393,14 +382,19 @@ function getDayWiseReports(){
 	$('#reportStartDate').empty();
 	$('#reportEndDate').empty(); 
 	
-	var reportType = $("#reportTypeId").val();
+	var ownersList = $("#user").val();
+	var userList = "";
+	if(ownersList != null && ownersList != ''){
+		userList = ownersList;
+	}
+	 var reportType = $("#reportTypeId").val(); 
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(reportType != "custom"){
 	$.ajax({
          type : "POST",
-         url: sourceleadUrl+"/getCandidateReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
+         url: sourceleadUrl+"/getCandidateReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate+"&ownersList="+userList,     
          success :function(data) {
 	        	 prepareCandidateReportsDataDiv(data);
         },
@@ -425,6 +419,8 @@ function custDates(){
 
 <script>
 function getCustomReports(){
+	
+	var ownersList = $("#user").val();
 	var reportType = $("#reportTypeId").val();
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
@@ -434,17 +430,15 @@ function getCustomReports(){
 	}
 	if(endDate == null || endDate == '' || endDate == 'undefined'){
 		$("#reportEndDate").empty().append("End Date is Required") ; 
-	}
-	else{
+	}else{
 		$.ajax({
 	         type : "POST",
-	          url: sourceleadUrl+"/getCandidateReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,    
-	          success :function(data) {
-	        	 prepareCandidateReportsDataDiv(data);
-	         },
-	         
+	         url: sourceleadUrl+"/getCandidateReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate+"&ownersList="+ownersList,     
+	         success :function(data) {
+		        	 prepareCandidateReportsDataDiv(data);
+	        },
 	          
-	     }); 
+	     });  
 	}
 	 
 }

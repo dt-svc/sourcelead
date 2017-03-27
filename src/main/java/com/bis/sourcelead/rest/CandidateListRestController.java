@@ -61,6 +61,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -68,6 +69,7 @@ import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -115,6 +117,9 @@ public class CandidateListRestController {
 	  
 	  @Autowired
 	  UserService userService;
+	  
+	  @Autowired
+	  RequirementSubmissionService requirementSubmissionService;
 	  
 	  
 	  
@@ -1159,6 +1164,7 @@ public class CandidateListRestController {
 				String resultJson;
 				List<Candidate> candidatesList = candidateService.getCandidateReportsListByOrgLocationID(orgLocations.getId(), candidateType);
 				/* List<Candidate> consultantsList = candidateService.getCandidateReportsListByOrgLocationID(orgLocations.getId(), "Consultant");*/
+				
 				resultJson = commonUtil.toJSON(candidatesList);
 				return resultJson;
 			 }
@@ -1168,6 +1174,7 @@ public class CandidateListRestController {
 			 public String getCandidateReports(@RequestParam(value="reportType", required=false) String reportType,
 					 @RequestParam(value="startDate", required=false) String customStartDate,
 					 @RequestParam(value="endDate", required=false) String customEndDate,
+					 @RequestParam(value="ownersList", required=false) String ownersList,
 					 HttpServletRequest request,HttpServletResponse response) throws Exception{
 
 
@@ -1243,8 +1250,10 @@ public class CandidateListRestController {
 					}
 					
 					List<Candidate> freshList = new ArrayList<Candidate>();
+//					List<Candidate> candidatesList = candidateService.getCandidateReportsListByOrgLocationID(orgLocations.getId(), candidateType);
 					
-					List<Candidate> canList = candidateService.getCandidateReports(orgLocation.getId(), null, filterDate, startDateUTC, endDateUTC);
+					List<Candidate> canList = candidateService.getCandidateReports(orgLocation.getId(), null, filterDate, startDateUTC, endDateUTC,ownersList);
+					
 					for(Candidate candidate : canList){
 						 DateFormat standardFormat = new SimpleDateFormat ("yyyy-MM-dd");
 						String currentTimeStr = Constants.TZ_DF.format(candidate.getCreatedDate());  

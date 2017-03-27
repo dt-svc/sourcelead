@@ -50,6 +50,7 @@ import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -97,6 +98,9 @@ public class CandidateServiceImpl implements CandidateService {
 	
 	@Autowired
 	CandidateIndexHelper candidateIndexHelper;
+	
+	@Autowired
+	RequirementSubmissionService requirementSubmissionService;
 	
 	
 	@Autowired
@@ -776,14 +780,22 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 					StringBuilder sb =  new StringBuilder();
 					can.setCreatedBy(sb.append(user.getFirstName()).append(" ").toString());
 				}
+				
+				 List<RequirementSubmission> requirementSubmission =requirementSubmissionService.getRequirementHistoryListByCandidateIdAndOrgLocationID(can.getId(), orgLocationId);
+				 can.setCandidateRequiementCount(requirementSubmission.size());
 			}
+			
 		return candidateList;
 	}
 
 	@Override
 	public List<Candidate> getCandidateReports(Long orgLocationId, String candidateType, String filterDate,
-			Date startDateUTC, Date endDateUTC) {
-		List<Candidate> candidateReportsList = candidateDao.getCandidateReports(orgLocationId, candidateType, filterDate, startDateUTC, endDateUTC);
+			Date startDateUTC, Date endDateUTC,String ownersList) throws Exception {
+		List<Candidate> candidateReportsList = candidateDao.getCandidateReports(orgLocationId, candidateType, filterDate, startDateUTC, endDateUTC,ownersList);
+		for(Candidate can : candidateReportsList){
+			 List<RequirementSubmission> requirementSubmission =requirementSubmissionService.getRequirementHistoryListByCandidateIdAndOrgLocationID(can.getId(), orgLocationId);
+			 can.setCandidateRequiementCount(requirementSubmission.size());
+			}
 		return candidateReportsList;
 	}
 
@@ -813,8 +825,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public List<Candidate> getOwnersByCandidates(Long orgLocationId, String candidateType,  String ownersList) {
+	public List<Candidate> getOwnersByCandidates(Long orgLocationId, String candidateType,  String ownersList) throws Exception {
 		List<Candidate> ownerByCandidatesList = candidateDao.getOwnersByCandidates(orgLocationId, candidateType, ownersList);
+		for(Candidate can : ownerByCandidatesList){
+		 List<RequirementSubmission> requirementSubmission =requirementSubmissionService.getRequirementHistoryListByCandidateIdAndOrgLocationID(can.getId(), orgLocationId);
+		 can.setCandidateRequiementCount(requirementSubmission.size());
+		}
 		return ownerByCandidatesList;
 	}
 
