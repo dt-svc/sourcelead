@@ -129,7 +129,7 @@ function addInterview(requirementId){
 	
 	result = result + '<div id="emptyTemplate" style="dispaly:none">';
 	result = result + '<strong class="clearfix col-md-12">Interview Template</strong>';
-	result = result + '<div class="col-md-3 select-field">';
+	result = result + '<div class="chosen-select col-md-3 select-field">';
 	result = result + '<select class="form-control mt10" id="interviewSubmissionTemplate" name="interviewSubmissionTemplate">';
 	result = result + '</select>';
 	result = result + '</div>';
@@ -957,14 +957,19 @@ function interviewTemplate(){
 	        var json = JSON.parse(data);
 	        var output = "";
 	        if(json.length > 0){
-	        	 output = output + "<option value=''>-Select Template-</option>"; 
 	         	for (var i=0; i<json.length; i++)
 	 			{
 	 	        		var opt = json[i];
+	 	        		
 	 	        		output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
 	 			}
 	         	$("#interviewSubmissionTemplate").empty();
 	 	        $("#interviewSubmissionTemplate").append(output);
+	 	       
+	 	        $("#interviewSubmissionTemplate").chosen();
+	 			$("#interviewSubmissionTemplate").trigger('chosen:update');
+	 			$('.chosen-container').css({'width': '100%'});
+	 			
 	        }else{
 	        	$("#emptyTemplate").empty();
 	        }
