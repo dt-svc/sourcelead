@@ -497,6 +497,12 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	}
 
 	@Override
+	public OrgSpoc getValidateOwnersBySpocUserIdAndSpocOwnerUserId(Long spocUserId, Long spocOwnderUserId,Long responderLocationId) throws Exception
+	{
+		return  orgSpocDao.getValidateOwnersBySpocUserIdAndSpocOwnerUserId(spocUserId,spocOwnderUserId,responderLocationId);
+	}
+	
+	@Override
 	public List<OrgSpoc> getOrgSpocContactEmailsByOrgRelationIdAndUserId(Long userId, Long orgRelationId,Long orgLocationId)
 			throws Exception {
 		return orgSpocDao.getOrgSpocContactEmailsByOrgRelationIdAndUserId(userId, orgRelationId,orgLocationId);
