@@ -142,7 +142,8 @@ function getNotificationtLists(){
 				    
 				   result = result +'   <td>';
 					result = result +'			<div class="mailbox-subject tbldata-dotdot-big">';
-					result = result +'				<span><a href="#" title='+report.body+'><b>'+report.body+'</b></a></span>';
+					//result = result +'				<span><a href="#" title="'+report.body+'"> <b>'+report.body+'</b> </a></span>';
+					result = result +'				<span><a href="#" title="'+report.body+'"> <b>'+report.body+'</b> </a></span>';
 					result = result +'			</div>';
 				    result = result +'   </td>';
 				    

@@ -315,7 +315,10 @@ public class CandidateController {
 		 
 		 Long candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(orgLocations.getId(), "Candidate");
 		 Long consultantCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(orgLocations.getId(), "Consultant");
-
+         
+		 List<User> ownersList = candidateService.getAllCandidateOwnersByLocationIdAndCandidateType(orgLocations.getId(), "");
+		 model.addObject("ownersList", ownersList);
+		 
 		 model.addObject("consultantCount", consultantCount);
 		 model.addObject("candidateCount", candidateCount);
 		 

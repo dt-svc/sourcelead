@@ -102,12 +102,17 @@ public class MailBoxRestController {
 	
 	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/getClientContactsEmailsByOrgRelationId", method = RequestMethod.POST)
-	@ResponseBody String getClientContactsEmailsByOrgRelationId(@RequestParam(value = "orgRelationIds", required = false) String orgRelationIds) throws Exception {
+	@ResponseBody String getClientContactsEmailsByOrgRelationId(@RequestParam(value = "orgRelationIds", required = false) String orgRelationIds,
+			HttpServletRequest request) throws Exception {
 		
+		
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    
 		String[] relationsId = orgRelationIds.split(",");
 		StringBuilder emails  = new StringBuilder();
 		for(int i=0 ; i < relationsId.length; i++){
-			List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(Long.valueOf(relationsId[i]));
+			List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocContactEmailsByOrgRelationIdAndUserId(user.getId(), Long.valueOf(relationsId[i]), orgLocations.getId());
 			for(OrgSpoc orgSpoc :orgSpocList){
 				emails.append(orgSpoc.getClientUser().getEmail()).append(",");
 			}
@@ -145,7 +150,8 @@ public class MailBoxRestController {
 	
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/sendEmailToUsers", method = RequestMethod.POST)
-	public String sendEmailToUsers(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
+	public String sendEmailToUsers(@RequestParam(value = "json", required = false) String json,
+			MultipartHttpServletRequest request) throws Exception {
 		
 		MultipartFile multiFile = null;
 		Iterator<String> itrator = request.getFileNames();
@@ -155,6 +161,7 @@ public class MailBoxRestController {
 		
 		String jsonc = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(jsonc);
+		
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");

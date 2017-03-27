@@ -571,12 +571,12 @@ public class TimesheetApprovalRestController {
 		        	if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Bi-Weekly")){
 			        	for(ProjectMembers pm :projectMembers){
 			        		 Date biweeklyStrDate = null;
-			        		 if(actualStartDate.before(CommonUtil.currentDate()) || actualStartDate == CommonUtil.currentDate()){
+			        		/* if(actualStartDate.before(CommonUtil.currentDate()) || actualStartDate == CommonUtil.currentDate()){*/
 			        			 biweeklyStrDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndEmployeeStartDate(pm.getProjects(),pm.getProjects().getStartDate());
-			        		 }
+			        		/* }
 			        		 else{
 			        			 biweeklyStrDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(pm.getProjects());
-			        		 }
+			        		 }*/
 			        		 if(CalendarUtil.getNumberOfDays(biweeklyStrDate, actualStartDate)%14==0){
 			        	    	 freshProjectMembers.add(pm);
 			        	     }
