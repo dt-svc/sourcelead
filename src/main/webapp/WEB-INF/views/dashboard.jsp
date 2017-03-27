@@ -14,7 +14,7 @@
 /* min-height: 400px !important; */
 }
 .dashboard-widget.dashboard-widget-icons{
-min-height: 225px !important;
+min-height: 125px !important;
 }
 .dashboard-widget .blank-pages{
 padding: 0;
