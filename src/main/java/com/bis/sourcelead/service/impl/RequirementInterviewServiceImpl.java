@@ -105,9 +105,6 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	@Autowired
 	private RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	
-	@Autowired
-	private RequirementService requirementService;
-	
 	@Override
 	public void saveRequirementInterview(JSONObject jsonObj, User user, OrgLocations orgLocations, Org loginOrg) throws Exception  {
 		
@@ -287,7 +284,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 									for (String emailId : othersEmails) {
 										User otherUser = new User();
 										otherUser.setEmail(emailId);
-										sendEmailToInterviewrs(candidate,otherUser,requirementSubmission, user, loginOrg,requirementInterview,orgLocations);
+										//sendEmailToInterviewrs(candidate,otherUser,requirementSubmission, user, loginOrg,requirementInterview,orgLocations);
 									}
 									
 									
@@ -310,7 +307,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 								         interviewer.setUpdatedDate(new Date());
 							             interviewer.setUpdatedBy(user.getUserCode());
 							            /* sendEmailToInterviewrs(candidate,interviewerUser,requirementSubmission, user, jsonObj.getString(c+"startTime"), jsonObj.getString(c+"endTime"), loginOrg, jsonObj.getString(c+"dateOfInterview"), jsonObj.getString(c+"location"),jsonObj.getString(c+"interviewType"),orgLocations);*/
-							             sendEmailToInterviewrs(candidate,interviewerUser,requirementSubmission, user, loginOrg,requirementInterview,orgLocations);
+							             //sendEmailToInterviewrs(candidate,interviewerUser,requirementSubmission, user, loginOrg,requirementInterview,orgLocations);
 							             savedInterviewer =  requirementInterviewerDao.storeRequirementInterviewer(interviewer);
 								         
 								         intervieresArrayList.add(savedInterviewer.getRequirementInterview());
@@ -318,7 +315,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 								         
 								         if(jsonObj.has("interviewSubmissionTemplate") && !jsonObj.getString("interviewSubmissionTemplate").isEmpty()){
 							            	 String templateId = jsonObj.getString("interviewSubmissionTemplate");
-							            	 interViewerFeedbackTemplateSendEmailToInterviewrs(candidate,interviewerUser,requirementSubmission, user, loginOrg,requirementInterview,orgLocations,templateId,interviewer); 
+							            	// interViewerFeedbackTemplateSendEmailToInterviewrs(candidate,interviewerUser,requirementSubmission, user, loginOrg,requirementInterview,orgLocations,templateId,interviewer); 
 							             }
 									}
 					           }
