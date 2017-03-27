@@ -42,6 +42,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.VendorImportService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -68,8 +69,11 @@ public class VendorController {
 	@Autowired
 	OrgSpocService orgSpocService;
 	
+//	@Autowired
+//	ClientImportsService clientImportsService;
+	
 	@Autowired
-	ClientImportsService clientImportsService;
+	private VendorImportService vendorImportService;
 
 	/* This method is used for landing page of vendors tab. So, who has vendors tab access they can see vendors list. No preAuthorize for this method */
 	@RequestMapping(value = "/vendorsList")
@@ -279,7 +283,7 @@ public class VendorController {
 				String fn = multipartFile.getOriginalFilename(); // vendors_contacts_Import vendors_import_template.xls
 				String fileName = getFileName(fn);
 				if(!fileName.contains(Constants.CLIENTS_CONTACTS_IMPORT_XLS) && !fileName.contains(Constants.CLIENTS_CONTACTS_IMPORT_XLSX) && !fileName.contains(Constants.CLIENTS_IMPORT_TEMPLATE_XLS) && !fileName.contains(Constants.CLIENTS_IMPORT_TEMPLATE_XLSX)){
-					String isFileCreated = clientImportsService.clientBulkSaving(multipartFile,user,orgLocation,org,uploadedFile.getEmail(),responderType);
+					String isFileCreated = vendorImportService.clientBulkSaving(multipartFile,user,orgLocation,org,uploadedFile.getEmail(),responderType);
 					
 					if (fileName.equalsIgnoreCase(isFileCreated)) {
 						model.addAttribute("errorMessage", "Please download Error file here");
