@@ -659,7 +659,7 @@ public class VendorImportServiceImpl implements VendorImportService {
 					User spocUser = userService.findByEmail(row.getCell(8).toString());
 					User spocOwnerUser = userService.findByEmail(client.getOwner());
 					if (spocUser != null && spocOwnerUser != null) {
-						OrgSpoc orgSpoc = orgSpocService.getValidateOwnersBySpocUserIdAndSpocOwnerUserId(spocUser.getId(), spocOwnerUser.getId(), orgLocations.getId());
+						OrgSpoc orgSpoc = orgSpocService.getValidateOwnersByVendorUserIdAndSpocOwnerUserId(spocUser.getId(), spocOwnerUser.getId(), orgLocations.getId());
 						if (orgSpoc != null) {
 							client.setReason("spoc already existed.!");
 							return false;

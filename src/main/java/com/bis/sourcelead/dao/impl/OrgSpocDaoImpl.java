@@ -548,4 +548,18 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			
 	   	}
 
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public OrgSpoc getValidateOwnersByVendorUserIdAndSpocOwnerUserId(Long vendorUserId, Long spocOwnderUserId, Long responderLocationId) throws Exception
+		{
+			Session session = this.sessionFactory.getCurrentSession();
+			Query query= session.createQuery("from OrgSpoc spoc  where  spoc.vendorUser.id =:vendorUserId and spoc.ownerUser.id =:spocOwnderUserId and spoc.vendorLocationId.id = :responderLocationId");
+			List<OrgSpoc> spocsList = query.setLong("vendorUserId", vendorUserId).setLong("spocOwnderUserId", spocOwnderUserId).setLong("responderLocationId", responderLocationId).setCacheable(true).list();
+			OrgSpoc orgSpoc = null;
+			if(spocsList != null && spocsList.size() > 0){
+				orgSpoc = spocsList.get(0);
+			}
+			return orgSpoc;
+		}
+
 }

@@ -118,4 +118,6 @@ public interface OrgSpocService {
 
 	List<OrgSpoc> getOrgSpocContactEmailsByOrgRelationIdAndUserId(Long userId,Long orgRelationId,Long orgLocationId) throws Exception;
 
+	OrgSpoc getValidateOwnersByVendorUserIdAndSpocOwnerUserId(Long spocUserId,Long spocOwnderUserId, Long responderLocationId)throws Exception;
+
 }
