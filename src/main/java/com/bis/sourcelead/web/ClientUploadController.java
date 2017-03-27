@@ -126,9 +126,9 @@ public class ClientUploadController {
 	             model.addAttribute("fileName", "client_error.xlsx");
 				return "upload/uploadClientForm";
 			}
-				model.addAttribute("errorMessage", "Please download Error file here");
-	            model.addAttribute("fileName", "xls");
-				return "upload/uploadClientForm";
+//				model.addAttribute("errorMessage", "Please download Error file here");
+//	            model.addAttribute("fileName", "xls");
+//				return "upload/uploadClientForm";
 	}
 		SourceLeadSessionManager.setSessionAttribute(request, "clientImport", "Success!! New clients created ");
 		return "redirect:/clientDashboard";

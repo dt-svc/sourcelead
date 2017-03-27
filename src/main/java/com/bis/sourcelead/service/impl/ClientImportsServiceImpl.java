@@ -369,6 +369,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	   * @param clientObject
 	   * @param isMailSent
 	 * @param orgName 
+	 * @param user 
 	 * @param string 
 	 * @param vendorOrg 
 	 * @param ownerId 
@@ -403,6 +404,31 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		  }
 		  if(clientObject.getCountry() != null){
 			  jsonObj.put("country",clientObject.getCountry());
+		  }else{
+			   if("India".equals(orgLocation.getCountry())){
+	               
+	               jsonObj.put("country", "India");
+	               
+	       }else if("Australia".equals(orgLocation.getCountry())){
+	               
+	               jsonObj.put("country", "Australia");
+	               
+	       }else if("United States".equals(orgLocation.getCountry())){
+	               
+	               jsonObj.put("country", "United States");
+	               
+	       }else if("Singapore".equals(orgLocation.getCountry())){
+	               
+	               jsonObj.put("country", "Singapore");
+	               
+	       }else if("United Kingdom".equals(orgLocation.getCountry())){
+	               
+	               jsonObj.put("country", "United Kingdom");
+	               
+	       }else if("France".equals(orgLocation.getCountry())){
+	               
+	               jsonObj.put("country", "France");
+	       } 
 		  }
 		  if(clientObject.getState() != null){
 			  jsonObj.put("state",clientObject.getState());
@@ -424,7 +450,6 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		  }
 		  if(clientObject.getOwnerUserId() != null){
 			  jsonObj.put("owner",clientObject.getOwnerUserId()); 
-				 
 		  }
 		  if(!"org".equals(type)){
 			  if(clientObject.getEmailid() != null){
@@ -468,16 +493,20 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		  private boolean validateContactsExeclDataImp(Row row, String fname, ClientImportObject client, OrgLocations orgLocation, String responderType, String orgName) throws Exception {
 			  boolean isValidated;
 			  List<OrgRelations> orgList = null;
-			  if(fname.contains("vendors_contacts_Import")){
-				  if(null != row.getCell(0) ){
-					  orgList = orgRelationsService.getAllVendorsListByOrgName(row.getCell(0).toString(),orgLocation.getId());
-				  }
-				  }else{
-			   		  if(null != row.getCell(0)){
-			   			orgList = orgRelationsService.getAllClientsByOrgNameOrgLocationId(row.getCell(0).toString(),orgLocation.getId());	  
+			  if(null != row.getCell(0)){
+		   			orgList = orgRelationsService.getAllClientsByOrgNameOrgLocationId(row.getCell(0).toString(),orgLocation.getId());	  
 
-			   		  }
-			   	  }
+		   		  }
+//			  if(fname.contains("vendors_contacts_Import")){
+//				  if(null != row.getCell(0) ){
+//					  orgList = orgRelationsService.getAllVendorsListByOrgName(row.getCell(0).toString(),orgLocation.getId());
+//				  }
+//				  }else{
+//			   		  if(null != row.getCell(0)){
+//			   			orgList = orgRelationsService.getAllClientsByOrgNameOrgLocationId(row.getCell(0).toString(),orgLocation.getId());	  
+//
+//			   		  }
+//			   	  }
 			  if (row.getRowNum() > 0) { 
 //				  if (row.getCell(0) == null || "".equalsIgnoreCase(row.getCell(0).toString())) {
 //						client.setReason("Required fields is not filled");
@@ -535,7 +564,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 //								  userRole =  userRoleService.getUserDetailsByEmailAndLocationId(row.getCell(8).toString(), orgRelation.getResponderLocationId().getId());
 //							  }
 							  User spocUser = userService.findByEmail(row.getCell(8).toString());
-							  User spocOwnerUser = userService.findByEmail(row.getCell(11).toString());
+							  User spocOwnerUser = userService.findByEmail(client.getOwner());
 							 if(spocUser !=null && spocOwnerUser !=null){
 								 OrgSpoc orgSpoc = orgSpocService.getValidateOwnersBySpocUserIdAndSpocOwnerUserId(spocUser.getId(), spocOwnerUser.getId(),orgLocations.getId());
 									if(orgSpoc != null){
@@ -563,11 +592,11 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 					}
 				  
 				  
-				  if (row.getCell(11) == null || "".equalsIgnoreCase(row.getCell(11).toString())) {
+				 /* if (row.getCell(11) == null || "".equalsIgnoreCase(row.getCell(11).toString())) {
 						client.setReason("Required fields is not filled");
 						return false;
-					}else if(row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())){
-						String email = row.getCell(11).toString();
+					}else*/ if(client.getOwner() != null && !"".equalsIgnoreCase(client.getOwner())){
+						String email = client.getOwner();
 						String emails [] = email.split(",");
 						for(int i=0;i<emails.length;i++){
 							if(!validateEmail(emails[i])){
@@ -743,10 +772,10 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 						return isValidated;
 					}
 				}
-			  if(row.getCell(2) == null){
-				  client.setReason("Country is required");
-					return false;
-			  }
+//			  if(row.getCell(2) == null){
+//				  client.setReason("Country is required");
+//					return false;
+//			  }
 			  if(null != row.getCell(5)&& !"".equalsIgnoreCase(row.getCell(5).toString())){
 				  boolean isValid = checkTierLevel(row.getCell(5).toString());
 				   if(isValid == false){
@@ -1083,6 +1112,11 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 				
 				writeRow.createCell(2).setCellValue(row.getCell(2).toString());
 			} else {
+				if(!fname.endsWith("xlsx")){
+					createExcelsheet.addValidationData(getDropDownListForCell(Constants.COUNTRY_DROPDOWN,2));
+				}else{
+					createExcelsheet.addValidationData(getXssfDropDownlist(Constants.COUNTRY_DROPDOWN,2,createExcelsheet));
+				}
 				 writeRow.createCell(2).setCellValue("");
 			}
 			if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
@@ -1624,7 +1658,9 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 									   }  
 									   if(row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())){
 										   client.setOwner(row.getCell(11).toString());
-									   }  
+									   }else{
+										   client.setOwner(user.getEmail());
+									   }
                               
 									   isClientFound = validateClient(row.getCell(0).toString(), client,orgLocation,responderType);
 									   
@@ -1640,7 +1676,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 							    			 if(isValidContact){
 											   		vandorsListByOrgLocationId = orgRelationsService.getAllClientsByOrgNameOrgLocationId(row.getCell(0).toString(),orgLocation.getId());	  
 											   
-											   String email = row.getCell(11).toString();
+											   String email = client.getOwner();
 												String emails [] = email.split(",");
 												for(int i=0;i<emails.length;i++){
 													UserRole ownerUser = userRoleService.getUserDetailsByEmailAndLocationId(emails[i], orgLocation.getId());
