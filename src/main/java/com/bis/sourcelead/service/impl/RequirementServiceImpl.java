@@ -2856,6 +2856,11 @@ public class RequirementServiceImpl implements RequirementService {
 	public List<Requirement> getAllRequirementsByOrglocationId(Long orgLocationId) throws Exception {
 		return requirementDao.getAllRequirementsByOrglocationId(orgLocationId);
 	}
+	
+	@Override
+	public List<Requirement> getAllReleasedRequirementsByParentId(Long parentRequirementId) throws Exception {
+		return requirementDao.getAllReleasedRequirementsByParentId(parentRequirementId);
+	}
 
 	@Override
 	public String getNoticePeriodByRequirementId(Long requirementId) throws Exception {

@@ -585,7 +585,6 @@ public class CandidateRestController {
 					 req.setClientName(req.getRequirement().getSpocId().getClientUser().getFirstName());
 				 }
 			 }
-			
 			 
 		 }
 		 resultJson = commonUtil.toJSON(requirementSubmission);
