@@ -749,30 +749,25 @@ function loadSignature(){
 						var italicChecked = "";
 						var underlineChecked = "";
 
-						if(opt.fontStyle != null){
+						if(null != opt.fontStyle){
 							 var fontStyle = opt.fontStyle.split(',');
 							  for(var fn = 0; fn < fontStyle.length; fn++) {
 								 if(fontStyle[fn] == "Bold"){
 									 boldClass = "btn-active";
 									 boldValue = "value = 'Y'";
 									 boldChecked = "checked";
-								 }else{
-									 boldValue = "value = 'N'";
-								 } 
+								 }
 								  
 								 if(fontStyle[fn] == "Italic"){
 									 italicClass = "btn-active";
 									 italicValue = "value = 'Y'";
 									 italicChecked = "checked";
-								 }else{
-									 italicValue = "value = 'N'";
 								 }
+								 
 								 if(fontStyle[fn] == "Underline"){
 									 underlineClass = "btn-active";
 									 underlineValue = "value = 'Y'";
 									 underlineChecked = "checked";
-								 }else{
-									 underlineValue = "value = 'N'";
 								 }
 							 } 
 						}

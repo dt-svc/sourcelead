@@ -45,8 +45,8 @@ public class RequirementSubmission implements Serializable{
 	@JoinColumn(name = "CANDIDATE_ID")
    	private Candidate candidate;
 	
-	@ManyToOne
-	@JoinColumn(name = "SOURCE_SUBMISSION_ID")
+	@ManyToOne 
+	@JoinColumn(name = "SOURCE_SUBMISSION_ID") 
    	private RequirementSubmission sourceSubmission;
 	
 	@ManyToOne
