@@ -33,8 +33,9 @@ display: none;
     <div class="content-area clearfix">
     <div id="mailLoading"></div>
      <div id ="popUp"></div>
+      <div id ="textBoxPopUp"></div>
       <div class="form-horizontal compose-mail col-md-10 col-md-offset-1">
-       <form:form id="email_form" name="email_form"  enctype='multipart/form-data' >
+       <form:form id="email_form" name="email_form" content="text/html" enctype='multipart/form-data' >
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-muted small">From</label>
           <div class="col-md-10">
@@ -91,9 +92,14 @@ display: none;
         <div class="col-md-12 clearfix mb10 mt10">
           <div class="col-md-12">
             <div class="clearfix txt-area">
-              <textarea id="compose-textarea" id="bodytext" name="bodytext" class="form-control" rows="5" placeholder="Message" style="height: 250px">
+              <textarea  id="bodytext" name="bodytext" class="form-control" rows="5" placeholder="Message" style="height: 250px">
                     
-			  </textarea>
+			  </textarea> 
+			  <input type="hidden" name="bodyTextTextArea"  id="bodyTextTextArea"  value=""/>
+			  
+			  <!-- <textarea name="bodytext" placeholder="Message"  rows="5" style="width: 100%;">
+	Some Initial Content was in this textarea
+</textarea> -->
             </div>
           </div>
         </div>
@@ -133,8 +139,10 @@ display: none;
   </section>
   
   
-  <script type="text/javascript" src="resources/js/bootstrap-multiselect.js"></script>
-  <script src="resources/js/bootstrap3-wysihtml5.all.min.js"></script> 
+  <!-- <script type="text/javascript" src="resources/js/bootstrap-multiselect.js"></script>
+  <script src="resources/js/bootstrap3-wysihtml5.all.min.js"></script>  -->
+  
+  <script src="resources/js/nicEdit.js"></script> 
   
   
   
@@ -165,44 +173,59 @@ $(function(){
   <script type="text/javascript">
 	function sendEmails() {
 		if ($('#email_form').validate(false, validationSettings)){ 
-		var sourceleadUrl = '${sourceleadUrl}';
-		var frm = $('#email_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, ""); 
-	    var jsonData = encodeURIComponent(con);
-	    var form = $('#email_form')[0];
-  		var formData = new FormData(form)
-  		
-  		var toEmails =  $('#emailsList_chosen span').size();
-  		 
-  		if(toEmails < 1){
-   	    	
-   	    	alertMailerMsg();
-   	    }
-  		else{
-  			$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-  		 	$.ajax({
-  				type : "POST",
-  	    	    data: formData,
-  	    	    contentType : 'application/json; charset=utf-8',
-  	    	    enctype: 'multipart/form-data',
-  		        processData: false,
-  		        contentType:false, 
-  	    	    dataType : 'json',
-  				url : sourceleadUrl+"/sendEmailToUsers?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
-  				success : function(result) {
-  						location.replace(sourceleadUrl+"/mailBox");
-  				},
-  			});
-  		}
-  		  
-		 return true
+			
+	
+			
+			
+			
+			
+				var sourceleadUrl = '${sourceleadUrl}';
+				nicEditors.findEditor('bodytext').saveContent();
+				
+				var frm = $('#email_form').serializeFormJSON();
+				var con = JSON.stringify(frm);
+				con = con.replace(/[{}]/g, ""); 
+			    var jsonData = encodeURIComponent(con);
+			    var form = $('#email_form')[0];
+		  		var formData = new FormData(form);
+		  		
+		  		var toEmails =  $('#emailsList_chosen span').size();
+		  		 
+		  		if(toEmails < 1){
+		   	    	alertMailerMsg("Provide at least one To mail");
+		   	    }
+		  		else{
+		  			var bodytext = nicEditors.findEditor('bodytext').getContent();
+		  			if(bodytext.length < 36000){	
+		  			
+			  			$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			  		 	$.ajax({
+			  				type : "POST",
+			  	    	    data: formData,
+			  	    	    contentType : 'application/json; charset=utf-8',
+			  	    	    enctype: 'multipart/form-data',
+			  		        processData: false,
+			  		        contentType:false, 
+			  	    	    dataType : 'json',
+			  				url : sourceleadUrl+"/sendEmailToUsers?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+			  				success : function(result) {
+			  						location.replace(sourceleadUrl+"/mailBox");
+			  				},
+			  			});
+			  		 }else{
+			  			alertTextboxMsg("Message body is too large. If you have more data, Plz go with attachment");
+			  		 } 
+		  		}
+		  		  
+				 return true
+		 
 		 
 		}else{
 			return false;
 		  }
 		
 	}
+		
 	
 	$('body').on('blur', '#email_form', function() {
 		$("#email_form").showHelpOnFocus();
@@ -212,12 +235,12 @@ $(function(){
 
 
 <script type="text/javascript">
-function alertMailerMsg(){
+function alertMailerMsg(msgText){
 	
 	var result = "";
 	result = result +"<div class='project_inn_mask'></div>";
 	result = result +"<div id='mailerPopup' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"<p><strong>Provide at least one To mail</strong></p>";
+	result = result +"<p><strong>"+msgText+"</strong></p>";
 	result = result +"<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"<b href='javascript:void(0)'><input type='button'  value='Ok' onclick='cancel();' style='background-color:#1ab394;width:100%'/></b>";
 	result = result +"</div>";
@@ -231,6 +254,31 @@ function alertMailerMsg(){
 <script type="text/javascript">
 function cancel(){
 	$("#mailerPopup").slideUp(200);
+	$(".project_inn_mask").hide();
+}
+</script>
+
+
+<script type="text/javascript">
+function alertTextboxMsg(msgText){
+	
+	var result = "";
+	result = result +"<div class='project_inn_mask'></div>";
+	result = result +"<div id='textBoxmailerPopup' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"<p><strong>"+msgText+"</strong></p>";
+	result = result +"<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"<b href='javascript:void(0)'><input type='button'  value='Ok' onclick='textBoxCancel();' style='background-color:#1ab394;width:100%'/></b>";
+	result = result +"</div>";
+	$("#textBoxPopUp").append(result);
+	$("#textBoxmailerPopup").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+
+<script type="text/javascript">
+function textBoxCancel(){
+	$("#textBoxmailerPopup").slideUp(200);
 	$(".project_inn_mask").hide();
 }
 </script>
@@ -585,5 +633,11 @@ document.getElementById("attachfileBtn").onchange = function () {
 	return html;
 	};
 </script>
+
+<script type="text/javascript">
+	bkLib.onDomLoaded(function() { nicEditors.allTextAreas() });
+</script>
+
+
   
 <jsp:include page="masterFooter.jsp" />
