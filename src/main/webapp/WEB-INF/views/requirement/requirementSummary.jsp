@@ -604,7 +604,7 @@ function sideBar(requirementId){
                			}
 				        result = result+'<div class="hide-row">';
 				       /*result = result+'    <div class="profile_details requirement_details clearfix">'; */
-				        result = result+'<div class="col-md-9">';
+				        result = result+'<div class="col-md-12">';
 				        result = result+'<div class="row">';
 				        result = result+'<div class="col-md-3">';
 				        result = result+'<div class="company-logo">';
@@ -615,7 +615,7 @@ function sideBar(requirementId){
 				        result = result+'<div class="canDetails clearfix">';
 				        result = result+'<h4></h4>';
 				        result = result+'<div class="row">';
-				        result = result+'<div class="col-md-6">';
+				        result = result+'<div class="col-md-5">';
 				        result = result+'<ul class="list-unstyled can-perdt">';
 				        if(json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined' && json.minExp != null && json.minExp != '' && json.minExp != 'undefined')
 			        	{
@@ -668,7 +668,7 @@ function sideBar(requirementId){
 			        }
 			        result = result+'</ul>';
 			        result = result+'</div>';
-			        result = result+'<div class="col-md-6">';
+			        result = result+'<div class="col-md-7">';
 			        result = result+'<ul class="list-unstyled can-perdt">';
 			        if(json.manager != null && json.manager != '' && json.manager != 'undefined'){
 			        result = result+'<li> <i class="fa fa-user" ></i><span id="canName">'+json.manager+'</span></li>';
@@ -687,8 +687,14 @@ function sideBar(requirementId){
 					    result = result+'<li><i class="fa fa-flag"></i><span> --- </span>';
 				        }
 				        if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined'){
-					    result = result+'<li><i class="fa fa-bell"></i><span>'+json.noticePeriod+'</span>';
-					    }
+					        var tempNoticePeriod = json.noticePeriod;
+					        var strNoticeArray = tempNoticePeriod.split(", ");
+					        var arrNotice = new Array();
+					        for(var i=0; i<strNoticeArray.length; i++){
+					        	arrNotice[i] = strNoticeArray[i] +" ";
+					        }
+					        result = result+'<li class="noticePeriod"><i class="fa fa-bell"></i><span>'+arrNotice+'</span></li>';
+				        }
 					    else{
 						result = result+'<li><i class="fa fa-bell"></i><span> --- </span>';
 					    }
