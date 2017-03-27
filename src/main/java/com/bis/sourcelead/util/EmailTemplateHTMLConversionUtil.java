@@ -88,7 +88,7 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 					                 tempHTML.append("</td>");
 					            tempHTML.append("</tr>");
 					         
-					            tempHTML.append("<tr>");
+					            tempHTML.append("<tr>");    
 					                  tempHTML.append("<td>");
 					                       tempHTML.append("<p style='text-align:center; padding:10px 0px; margin:0px 0px; font-size:13px; font-weight:600; border-top:1px solid #333;'>");
 					                       tempHTML.append("<a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#333;'>About SourceLead</a> | <a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#333;'>Contact Us</a> | <a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#333;'>Legal Notices</a> | <a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#333;'>Terms of Use</a> | <a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#333;'>Your Privacy Rights</a></p>");

@@ -227,4 +227,6 @@ public interface RequirementSubmissionService {
 	List<RequirementSubmission> getApplicantsListByOrgLocationAndUserId(OrgLocations loginOrgLocations,
 			List<Long> applicantsList, Date startUTCDate, Date endUTCDate);
 	
+	Integer getRequirementHistoryCountByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
+	
 }

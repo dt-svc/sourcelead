@@ -212,7 +212,7 @@ function getOrgDetails()
                   <div class="form-group">
 	              <label class="col-md-3">Phone Number</label>
 	              <div class="col-md-9">
-	                <input type="text" class="form-control" name="phoneNumber" id="phoneNumber" data-validation="validate_NumberAlphabet validate_phone validate_length length2-20" data-validation-optional="true">
+	                <input type="text" class="form-control" name="phoneNumber" id="phoneNumber" data-validation="validate_phone validate_length length2-20" data-validation-optional="true">
 	              </div>
 	            </div>
 	            
