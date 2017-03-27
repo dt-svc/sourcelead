@@ -51,4 +51,7 @@ public interface CandidateDao {
 	public List<Candidate> getCandidateReportsListByOrgLocationID(Long orgLocationId,String candidateType) throws Exception;
 	
 	List<Candidate> getCandidateReports(Long orgLocationId,String candidateType,String filterDate, Date startDateUTC, Date endDateUTC);
+	
+	List<Candidate> getOwnersByCandidates(Long orgLocationId,String candidateType,String ownersList);
+	
 }
