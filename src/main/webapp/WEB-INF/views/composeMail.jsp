@@ -576,4 +576,14 @@ document.getElementById("attachfileBtn").onchange = function () {
 	</script> 
   
   
+<script>
+	wysihtml5.dom.getPastedHtml = function(event) {
+	var html;
+	if (event.clipboardData) {
+	html = event.clipboardData.getData('text/plain');
+	}
+	return html;
+	};
+</script>
+  
 <jsp:include page="masterFooter.jsp" />

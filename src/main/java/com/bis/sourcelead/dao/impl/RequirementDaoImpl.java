@@ -878,6 +878,14 @@ public class RequirementDaoImpl implements RequirementDao {
 			String query = "from Requirement requirement where requirement.orgLocationId.id = :orgLocationId";
 			return session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Requirement> getAllReleasedRequirementsByParentId(Long parentRequirementId) throws Exception {
+		 Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Requirement requirement where requirement.parentRequirement.id = :parentRequirementId";
+			return session.createQuery(query).setLong("parentRequirementId", parentRequirementId).setCacheable(true).list();
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })

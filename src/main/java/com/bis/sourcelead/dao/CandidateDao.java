@@ -59,4 +59,6 @@ public interface CandidateDao {
 	
 	List<Candidate> getCandidateReports(Long orgLocationId,String candidateType,String filterDate, Date startDateUTC, Date endDateUTC);
 
+	List<Candidate> getOwnersByCandidates(Long orgLocationId,String candidateType,String ownersList);
+	
 }

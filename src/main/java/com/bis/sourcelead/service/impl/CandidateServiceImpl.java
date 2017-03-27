@@ -8,9 +8,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -41,6 +43,7 @@ import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateEducationService;
@@ -48,10 +51,12 @@ import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * 
@@ -71,6 +76,9 @@ public class CandidateServiceImpl implements CandidateService {
 
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private UserService userService;
 	
 	@Autowired
 	CandidateEducationService candidateEducationService;
@@ -765,6 +773,16 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				if(can.getUpdatedDate() != null){
 				 can.setCandidateUpdateDateToString(Constants.DF_DMY.format(can.getUpdatedDate()));
 				}
+				User user  = userService.getUserByUserCode(can.getCreatedBy());
+				if(!"".equalsIgnoreCase(user.getLastName()) && user.getLastName()!=null && !user.getLastName().isEmpty() ){
+					
+					StringBuilder sb =  new StringBuilder();
+					can.setCreatedBy(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+				}else{
+					
+					StringBuilder sb =  new StringBuilder();
+					can.setCreatedBy(sb.append(user.getFirstName()).append(" ").toString());
+				}
 			}
 		return candidateList;
 	}
@@ -776,13 +794,36 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateReportsList;
 	}
 
-//	private ArrayList<String> getSearchValuesFromChosenSelectField(String searchValue) {
-//		 ArrayList<String> keyWordList = null;
-//		 if(searchValue !=null && !"".equalsIgnoreCase(searchValue)){
-//			 String searchKeywordString = searchValue.replaceAll("\\[", "").replaceAll("\\]","");
-//		     keyWordList = new ArrayList<String>(Arrays.asList(searchKeywordString.split(",")));
-//		 }
-//        return keyWordList;
-//	}
+	@Override
+	public List<User> getAllCandidateOwnersByLocationIdAndCandidateType(Long orgLocationId, String candidateType)
+			throws Exception {
+		
+		List<Candidate> candidatesList = candidateDao.getCandidateReportsListByOrgLocationID(orgLocationId, candidateType);
+		List<Long> tempOwnersIds = new ArrayList<Long>();
+		List<User> owners = new ArrayList<User>();
+		
+		if(null != candidatesList && candidatesList.size() >0){
+			for(Candidate can  : candidatesList){
+				
+				User usr = userService.getUserByUserCode(can.getCreatedBy());
+				tempOwnersIds.add(usr.getId());
+			}
+		}
+		
+		Set<Long> setWithUniqueValues = new HashSet<>(tempOwnersIds);
+        for(Long ind :setWithUniqueValues){
+        	
+        	User usr = userService.getUserById(ind);
+        	owners.add(usr);
+        }
+		return owners;
+	}
+
+	@Override
+	public List<Candidate> getOwnersByCandidates(Long orgLocationId, String candidateType,  String ownersList) {
+		List<Candidate> ownerByCandidatesList = candidateDao.getOwnersByCandidates(orgLocationId, candidateType, ownersList);
+		return ownerByCandidatesList;
+	}
+
 
 }

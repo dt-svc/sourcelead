@@ -580,6 +580,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	public List<Candidate> getCandidateReports(Long orgLocationId, String candidateType, String filterDate,
 			Date startDateUTC, Date endDateUTC) {
 		
+		 
 		Session session = this.sessionFactory.getCurrentSession();
 		Map<String, Object> params = new HashMap<String,Object>();
 		String dateSubQuery = "";
@@ -589,6 +590,8 @@ public class CandidateDaoImpl implements CandidateDao {
 			  params.put("endDateUTC",endDateUTC);
 		}
 		
+		 
+		 
 		String subQuery  = null;
 		if(null != candidateType && !candidateType.isEmpty() && candidateType.equalsIgnoreCase(Constants.CONSULTANT)){
 			subQuery = "and candidateType = 'Consultant'"; 
@@ -596,7 +599,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			subQuery = "and candidateType = 'Candidate'"; 
 		}
 		
-		String from = "from Candidate candidate where candidate.orgLocationId.id =:orgLocationId "+subQuery+" "+dateSubQuery; 
+		String from = "from Candidate candidate where candidate.orgLocationId.id =:orgLocationId "+subQuery+" "+dateSubQuery;  
 		params.put("orgLocationId",orgLocationId);
 		
 		Query query = session.createQuery(from);
@@ -609,6 +612,54 @@ public class CandidateDaoImpl implements CandidateDao {
 			}
 			if(str.equalsIgnoreCase("endDateUTC")){
 				query.setParameter( str, (Date) params.get(str) );
+			}
+			
+        }
+		
+		return query.setCacheable(true).list();
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getOwnersByCandidates(Long orgLocationId, String candidateType,String ownersList) {
+		
+		
+		 List<String> userCodesList = new ArrayList<String>();
+		 if(!"".equalsIgnoreCase(ownersList) && ownersList != null ){
+			for (String s : ownersList.split(",")){
+			 userCodesList.add(s);
+    	    }
+		 }
+		 
+		Session session = this.sessionFactory.getCurrentSession();
+		Map<String, Object> params = new HashMap<String,Object>();
+		
+		String subQuery1 = null;
+		 if(userCodesList != null && userCodesList.size() >0){
+			 subQuery1 =  " and candidate.createdBy IN (:userCodesList)";
+			 params.put("userCodesList", userCodesList);
+		 }
+		 
+		 
+		String subQuery  = null;
+		if(null != candidateType && !candidateType.isEmpty() && candidateType.equalsIgnoreCase(Constants.CONSULTANT)){
+			subQuery = "and candidateType = 'Consultant'"; 
+		}else{
+			subQuery = "and candidateType = 'Candidate'"; 
+		}
+		
+		String from = "from Candidate candidate where candidate.orgLocationId.id =:orgLocationId "+subQuery+"  "+subQuery1;  
+		params.put("orgLocationId",orgLocationId);
+		
+		Query query = session.createQuery(from);
+		for (String str : query.getNamedParameters())
+        {
+			if(str.equalsIgnoreCase("orgLocationId")){
+				query.setParameter(str, (long) params.get(str));
+			}
+			if(str.equalsIgnoreCase("userCodesList")){
+				query.setParameterList("userCodesList", userCodesList);
 			}
         }
 		
@@ -637,4 +688,5 @@ public class CandidateDaoImpl implements CandidateDao {
 		
 		    return candidateList;
 	}
+
 }

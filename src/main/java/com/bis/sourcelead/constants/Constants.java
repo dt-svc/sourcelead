@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
+
 /**
  * 
  * @author Rajashekar
@@ -142,6 +143,9 @@ public class Constants {
 
 	public static String TASK_MECHANISM_EMAIL ="Task Mechanism";
     public static String TASK_MECHANISM_NOTIFICATION="Task Mechanism";
+    
+    public static String MODIFIED_REQUIREMENT_STATUS_EMAIL = "ModifiedRequirementStatusMailtoVendorContact";
+    public static String MODIFIED_REQUIREMENT_STATUS_NOTIFICATION = "ModifiedRequirementStatusNotificationtoVendorContact";
 	
 	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
 	
@@ -561,6 +565,12 @@ public class Constants {
     
     public static String DATE_DD_MM_YYYY ="dd-MM-yyyy";
     
+    public static String TO_DAY = "today";
+    public static String YESTER_DAY = "yesterday";
+    public static String ONE_WEEK = "week";
+    public static String TWO_WEEKS = "twoweeks";
+    public static String ONE_MONTH = "month";
+    public static String TWO_MONTHS = "twomonths";
     
    
 }	
