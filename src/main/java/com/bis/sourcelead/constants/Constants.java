@@ -228,7 +228,7 @@ public class Constants {
 	
 	public static final DateFormat TMS = new SimpleDateFormat ("hh:mm a");
 
-
+	public static String INTERVIEWER_INVITATION_REDIFINED = "Interviewer InvitationRedifined";
 
 
 	public static String YES = "Y";
