@@ -278,7 +278,9 @@ public class Candidate implements Serializable{
 	 @Transient
 	 private LinkedHashSet<String> allAndCandidateSkills;
 	 
-
+	 @Transient
+	 private Integer candidateRequiementCount;
+	 
 	public Long getId() {
 		return id;
 	}
@@ -1039,7 +1041,14 @@ public class Candidate implements Serializable{
 		this.postedDateStr = postedDateStr;
 	}
 
-   
 
+	public Integer getCandidateRequiementCount() {
+		return candidateRequiementCount;
+	}
+
+
+	public void setCandidateRequiementCount(Integer candidateRequiementCount) {
+		this.candidateRequiementCount = candidateRequiementCount;
+	}
 	
 }

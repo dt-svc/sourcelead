@@ -937,6 +937,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 					
             	});
              }
+             submissionApproverHierarchy.setSubmissionStatus(Submission_Status.NEW);
              submissionApproverHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.NEW);
 	     	 submissionApproverHierarchy.setWeekTotals(weekTotalsMap);
 	    }

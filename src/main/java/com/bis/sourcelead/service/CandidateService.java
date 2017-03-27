@@ -114,5 +114,11 @@ public interface CandidateService {
 	
 	public Long getCandidatesCountByCandidateTypeOrgLocationID(Long orgLocationId,String candidateType);
 	public List<Candidate> getCandidateReportsListByOrgLocationID(Long orgLocationId,String candidateType) throws Exception;
-	List<Candidate> getCandidateReports(Long orgLocationId,String candidateType,String filterDate, Date startDateUTC, Date endDateUTC);
+	List<Candidate> getCandidateReports(Long orgLocationId,String candidateType,String filterDate, Date startDateUTC, Date endDateUTC,String ownersList) throws Exception;
+	
+	public List<User> getAllCandidateOwnersByLocationIdAndCandidateType(Long orgLocationId,String candidateType)throws Exception;
+	
+	List<Candidate> getOwnersByCandidates(Long orgLocationId,String candidateType,String ownersList) throws Exception;
+	
+	
 }

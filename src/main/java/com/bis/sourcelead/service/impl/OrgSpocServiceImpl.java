@@ -446,7 +446,12 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 			   for (OrgSpoc orgSpoc : clientContactsList) {
 				     StringBuilder spocNameSB = new StringBuilder();
 				     orgSpoc.setSpocEmail(orgSpoc.getClientUser().getEmail());
-					 orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()).toString());
+				     if(null != orgSpoc.getClientUser().getLastName()){
+				    	 orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()).toString());
+				     }else{
+				    	 orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getClientUser().getFirstName()).toString());
+				     }
+					
 					 orgSpoc.setSpocMobilePhone(orgSpoc.getClientUser().getMobilePhone());
 					 orgSpoc.setOrgName(orgSpoc.getClientLocationId().getOrg().getOrgName());
 					 contactsList.add(orgSpoc);
@@ -489,6 +494,24 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	@Override
 	public List<Long> getOwnerListByUserIdAndOrglocationId(User user, OrgLocations orgLocations,String type) {
 		return  orgSpocDao.getOwnerListByUserIdAndOrglocationId(user,orgLocations,type);
+	}
+
+	@Override
+	public OrgSpoc getValidateOwnersBySpocUserIdAndSpocOwnerUserId(Long spocUserId, Long spocOwnderUserId,Long responderLocationId) throws Exception
+	{
+		return  orgSpocDao.getValidateOwnersBySpocUserIdAndSpocOwnerUserId(spocUserId,spocOwnderUserId,responderLocationId);
+	}
+	
+	@Override
+	public List<OrgSpoc> getOrgSpocContactEmailsByOrgRelationIdAndUserId(Long userId, Long orgRelationId,Long orgLocationId)
+			throws Exception {
+		return orgSpocDao.getOrgSpocContactEmailsByOrgRelationIdAndUserId(userId, orgRelationId,orgLocationId);
+	}
+
+	@Override
+	public OrgSpoc getValidateOwnersByVendorUserIdAndSpocOwnerUserId(Long spocUserId, Long spocOwnderUserId, Long responderLocationId) throws Exception
+	{
+		return orgSpocDao.getValidateOwnersByVendorUserIdAndSpocOwnerUserId(spocUserId, spocOwnderUserId, responderLocationId);
 	}
 	
 }

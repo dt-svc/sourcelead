@@ -1626,7 +1626,7 @@ public class CrowdSourcingRequirementsRestController {
 						rr.setRequirementJobId(rr.getRequirementId().getJobId());
 						rr.setRequirementUUID(rr.getRequirementId().getRequirementUUID());
 						rr.setRequirementOrgName(rr.getRequirementId().getOrgLocationId().getOrg().getOrgName());
-						rr.setRequirementRateType(rr.getRequirementId().getJobType());
+						rr.setRequirementJobType(rr.getRequirementId().getJobType());
 						rr.setRequirementCountry(rr.getRequirementId().getCountry());
 						rr.setRequirementState(rr.getRequirementId().getState());
 						rr.setRequirementCity(rr.getRequirementId().getCity());
