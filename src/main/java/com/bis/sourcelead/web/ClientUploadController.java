@@ -71,7 +71,8 @@ public class ClientUploadController {
 			     file = new File(url.toURI());
 	    	}else{
 	    		//fn = "/templates/clients_contacts_Import.xls";
-	    		file = clientImportsService.getClientContactsTemplate(orgLocations.getId());
+//	    		file = clientImportsService.getClientContactsTemplate(orgLocations.getId());
+	    		file = clientImportsService.getClientTemplate(orgLocations.getId());
 	    	}
 			
 		    
@@ -115,8 +116,8 @@ public class ClientUploadController {
 			String fn = multipartFile.getOriginalFilename();//clients_contacts_Import  clients_import_template.xls
 			String fileName = getFileName(fn);
 			if(!fileName.equals(Constants.VENDORS_CONTACTS_IMPORT_XLS) && !fileName.equals(Constants.VENDORS_CONTACTS_IMPORT_XLSX) && !fileName.equals(Constants.VENDORS_IMPORT_TEMPLATE_XLS) && !fileName.equals(Constants.VENDORS_IMPORT_TEMPLATE_XLSX)){
-			String isFileCreated = clientImportsService.clientBulkSaving(multipartFile,user,orgLocation,org,uploadedFile.getEmail(),responderType);
-
+			//String isFileCreated = clientImportsService.clientBulkSaving(multipartFile,user,orgLocation,org,uploadedFile.getEmail(),responderType);
+			String isFileCreated = clientImportsService.clientBulkSavingImp(multipartFile,user,orgLocation,org,uploadedFile.getEmail(),responderType);
 			if (fileName.equalsIgnoreCase(isFileCreated)) {
 				model.addAttribute("errorMessage", "Please download Error file here");
 	             model.addAttribute("fileName", fileName);
