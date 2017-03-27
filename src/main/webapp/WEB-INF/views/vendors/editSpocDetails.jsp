@@ -236,10 +236,10 @@
 					    //alert("json.userList.length"+json.userList.length);
 						 for (var j = 0; j < json.userList.length; j++) {
 							var user = json.userList[j];
-							   if(user.id == tempOwnerId){
+							   if(user.id == tempOwnerId && user.id != json.tempSpocId){
 								   selected = 'selected';
 								   result = result+"<option value="+user.id+" "+selected+" >"+user.firstName+" "+user.lastName+"</option>";
-							  }else{
+							  }else if(user.id != json.tempSpocId){
 									  result = result+"<option value="+user.id+" >"+user.firstName+" "+user.lastName+"</option>";
 			   		 	    	 } 
 						} 
