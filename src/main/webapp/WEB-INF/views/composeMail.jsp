@@ -17,7 +17,7 @@ display: none;
 	 var UUID = '${UUID}';
 	
 	 if(null != UUID && UUID != '' && UUID != 'undefined'){
-		 $("input[name=subject]").val("Re :"+'${subject}');
+		 $("input[name=subject]").val("Re : "+'${subject}');
 		 var fromEmail = '${fromEmail}';
 		 
 		 $("#emailsList").empty();
