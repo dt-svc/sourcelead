@@ -777,10 +777,12 @@ private String getCellValueAsString(Cell cell, String fileName) {
  * @return boolean
  */
 	private boolean validateEmail(String email) {
-		Pattern pattern = Pattern.compile(
-				"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
-		Matcher matcher = pattern.matcher(email);
-		return matcher.matches();
+		 
+		  String emailId =email.trim();
+		  Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+		  Matcher matcher = pattern.matcher(emailId);
+		  return matcher.matches();
+		  
 	}
 	/**
 	 * Prepares Headers for xls and xlsx
@@ -967,10 +969,12 @@ private String getCellValueAsString(Cell cell, String fileName) {
  * @return
  */
 	private boolean isMobileNumberValid(String mobileNmber){
+		
+		String phoneNumber = mobileNmber.trim();
 		String regex = "([\\.\\-\\s+\\/()]*[0-9][\\.\\-\\s+\\/()]*){8,15}";
 		boolean flag;
-		if(mobileNmber.length() > 9 && mobileNmber.length() <= 20){
-			flag = mobileNmber.matches(regex);
+		if(phoneNumber.length() > 9 && phoneNumber.length() <= 20){
+			flag = phoneNumber.matches(regex);
 		}else{
 			flag=false;
 		}

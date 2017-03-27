@@ -228,7 +228,7 @@ function toDate(selector) {
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
-     
+
       <div class="timesheet_head">
 
 <div class="pull-left reportBtns">
@@ -271,16 +271,15 @@ function toDate(selector) {
           <label>Owner</label>
           <div class="reportAChoo">
            <select multiple data-placeholder="select owner" class="chosen-select"   name="user" id="user" >
-                <c:forEach var="user" items="${userList}">
-            			  <option value="${user.id}">${user.firstName} ${user.lastName}</option>
+                <c:forEach var="user" items="${ownersList}">
+            			  <option value="${user.userCode}">${user.firstName} ${user.lastName}</option>
                 </c:forEach>
                 </select>
           </div>
           
-          <input type="button" value="Submit" class="btn btn-primary rePBT"  id="owner"  onclick="getCandidatesByOwner();"/>
+          <input type="button" value="Submit" class="btn btn-primary rePBT"  id="owner"  onclick="getCandidatesByOwners();"/>
 			<div class="clearfix"></div>		
 		</div>
-  
     
    <div class="repTab1">   
 	<div class="reportsCount">
@@ -344,34 +343,32 @@ function toDate(selector) {
           };
 </script> 
 <script type="text/javascript">
-function getCandidatesByOwner(){
-	if ($('#assign_requirement_form').validate(false, validationSettings)) {
-		var frm = $('#assign_requirement_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, "");
-		  //It will escape all the special characters
-        var jsonData = encodeURIComponent(con);
-		var sourceleadUrl = '${sourceleadUrl}';
-		/* $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;'); */
- 		 $.ajax({
+function getCandidatesByOwners(){
+	
+	    var sourceleadUrl = '${sourceleadUrl}';
+		var ownersList = $("#user").val();
+		var reportType = "Candidate";
+		
+		
+ 		/*  $.ajax({
 					type : "GET",
-					url: sourceleadUrl+"/getDayWiseAssignedReqReports?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
-					success : function(result) {
-						prepareReportDataDiv(result);
-						getAllRequirementAssignToCounts(jsonData);
-						reset();
+					url: sourceleadUrl+"/getOwnersByCandidates?${_csrf.parameterName}=${_csrf.token}&ownersList="+ownersList+"&reportType="+reportType,
+					success : function(data) {
+						alert("david"+data);
 					},
-				});   
-		 return true;
-	 } else {
-		return false;
-	} 
+				});   */
+ 		 
+ 		 
+ 		$.ajax({
+ 	         type : "POST",
+				url: sourceleadUrl+"/getOwnersByCandidates?${_csrf.parameterName}=${_csrf.token}&ownersList="+ownersList+"&reportType="+reportType,
+ 	         success :function(data) {
+  		        	 prepareCandidateReportsDataDiv(data);
+  	        },
+ 	          
+ 	     }); 
 }
 
-$('body').on('blur', '#assign_requirement_form', function() {
-	$("#assign_requirement_form").showHelpOnFocus();
-	$("#assign_requirement_form").validateOnBlur(false, validationSettings);
-});
 </script>
  		
  		
@@ -390,11 +387,12 @@ function reset(){
 		$.datepicker._clearDate('#ExportStartDate');
 		$.datepicker._clearDate('#ExportEndDate');
 	}
-	</script>
+</script>
 <script>
 function getDayWiseReports(){
 	$('#reportStartDate').empty();
 	$('#reportEndDate').empty(); 
+	
 	var reportType = $("#reportTypeId").val();
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();

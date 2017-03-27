@@ -1,5 +1,9 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -11,10 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.beans.AssignedRequirementReports;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementAssignToDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.service.RequirementAssignToService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class RequirementAssignToServiceImpl implements RequirementAssignToService{
@@ -77,13 +85,75 @@ public class RequirementAssignToServiceImpl implements RequirementAssignToServic
 	}
 
 	@Override
-	public List<RequirementAssignTo> getAllAssignedRequirementByOrglocationId(Long orgLocationId) {
-		return requirementAssignToDao.getAllAssignedRequirementByOrglocationId(orgLocationId);
+	public List<AssignedRequirementReports> getAllAssignedRequirementByOrglocationId(Long orgLocationId,Timezone timezone) throws Exception {
+		
+		List<RequirementAssignTo> reqAssignToList = requirementAssignToDao.getAllAssignedRequirementByOrglocationId(orgLocationId);
+		List<AssignedRequirementReports> astoList = null;
+		if(null != reqAssignToList){
+			astoList = new ArrayList<>();
+			for(RequirementAssignTo rato :reqAssignToList){
+				StringBuilder sb = new StringBuilder();
+				AssignedRequirementReports assignedRequirementReports = new AssignedRequirementReports();
+				assignedRequirementReports.setJobTitle(rato.getRequirementId().getJobTitle());
+				assignedRequirementReports.setPostedOn(getDateStr(rato.getRequirementId().getUpdatedDate(),timezone));
+				if(rato.getRequirementId().getManagerUserId() != null){
+					if(rato.getRequirementId().getManagerUserId().getFirstName() !=null && rato.getRequirementId().getManagerUserId().getLastName() !=null){
+						sb.append(rato.getRequirementId().getManagerUserId().getFirstName()).append(" ").append(rato.getRequirementId().getManagerUserId().getLastName());
+					}else{
+						sb.append(rato.getRequirementId().getManagerUserId().getFirstName());
+					}
+				}
+				assignedRequirementReports.setOwner(sb.toString());
+				
+				if(rato.getRequirementId().getClientId() != null){
+					if(rato.getRequirementId().getClientId().getResponderType().equalsIgnoreCase("Client")){
+						assignedRequirementReports.setClient(rato.getRequirementId().getClientId().getResponderLocationId().getOrg().getOrgName());
+					}
+					if(rato.getRequirementId().getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+						assignedRequirementReports.setClient(rato.getRequirementId().getClientId().getLocationId().getOrg().getOrgName());
+					}
+				}
+				StringBuilder assignUserName = new StringBuilder();
+				if(null != rato.getAssignUserId()){
+					if(null != rato.getAssignUserId().getFirstName() && null != rato.getAssignUserId().getLastName()){
+						assignUserName.append(rato.getAssignUserId().getFirstName()).append(" ").append(rato.getAssignUserId().getLastName());
+					}else{
+						assignUserName.append(rato.getAssignUserId().getFirstName());
+					}
+				}
+				assignedRequirementReports.setAssignedUser(assignUserName.toString());
+				assignedRequirementReports.setAssignedOn(getDateStr(rato.getUpdatedDate(), timezone));
+				assignedRequirementReports.setOffered(0);
+				if(rato.getTeamId() !=null){
+					assignedRequirementReports.setTeamName(rato.getTeamId().getName());
+				}
+				astoList.add(assignedRequirementReports);
+			}	
+		}
+		return astoList;
 	}
 
 	@Override
 	public List<RequirementAssignTo> getAllAssignedRequirementByDateRange(Long orgLocationId, String userId,Date startDateUTC, Date endDateUTC) throws Exception {
 		return requirementAssignToDao.getAllAssignedRequirementByDateRange(orgLocationId,userId,startDateUTC,endDateUTC);
 	}
+	
+	
+	/**
+	 * Returns date format as string
+	 * @param date
+	 * @param timezone
+	 * @return String
+	 * @throws ParseException
+	 */
+private String getDateStr(Date date, Timezone timezone) throws ParseException {
+	 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+	 DateFormat standardFormat = new SimpleDateFormat ("dd-MM-yyyy");
+	String currentTimeStr = Constants.TZ_DF.format(date);  
+	String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
+	Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+	return currentDateInTimezone = standardFormat.format(converteDate);
+	
+}
 	
 }

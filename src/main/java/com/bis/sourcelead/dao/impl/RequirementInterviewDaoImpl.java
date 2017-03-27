@@ -23,6 +23,7 @@ import com.bis.sourcelead.dao.RequirementInterviewDao;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterview;
+import com.bis.sourcelead.entity.RequirementInterviewer;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -220,6 +221,16 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 				count = interviewCount.get(0).intValue();
 		 }
 		return count;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementInterview> getRequirementInterviewsBySubmissionAndOrgLocId(List<Long> submissionsList,
+			Long locationId, Date startUTCDate, Date endUTCDate) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from RequirementInterview interview where interview.submissionId.id IN(:submissionsList) and interview.startTime >= :startDateUTC and interview.endTime <= :endDateUTC)" ;
+		List<RequirementInterview> interviewList =session.createQuery(query).setParameter("startDateUTC", startUTCDate).setParameter("endDateUTC", endUTCDate).setParameterList("submissionsList", submissionsList).setCacheable(true).list(); 
+		return interviewList;
 	}
 
 	/*@Override
