@@ -1,6 +1,9 @@
 package com.bis.sourcelead.rest;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -21,15 +24,19 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
+import com.bis.sourcelead.entity.RequirementInterviewer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
+import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -66,6 +73,12 @@ public class RequirementInterviewRestController {
 	
 	@Autowired
 	private UserRoleService userRoleService;
+	
+	 @Autowired
+	 TimeZoneService timeZoneService;
+	 
+	 @Autowired
+	 private RequirementInterviewerService requirementInterviewerService;
 	
 	@RequestMapping(value = "/getAllInterviewers")
 	public @ResponseBody String getAllApprovers(HttpServletRequest request) throws Exception {
@@ -263,4 +276,124 @@ public class RequirementInterviewRestController {
 		 
 		return "success";
 	 }		
+	 
+	 
+	 
+	 
+	 
+	 
+	 @RequestMapping(value = "/getInterviewerAndApplicantsDetails")
+		public @ResponseBody String getInterviewerAndApplicantsDetails(
+				@RequestParam(value = "applicantSubId", required = false) String applicantSubId,
+				@RequestParam(value = "interviewerIds", required = false) String interviewerIds,
+				@RequestParam(value = "date", required = false) String date,
+				HttpServletRequest request) throws Exception {
+			OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+			Timezone timezone = null;
+			if(loginOrgLocations.getTimezone() != null){
+				timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
+			}
+			
+			Date startUTCDate = null;
+			Date endUTCDate = null;
+			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+			DateFormat END_TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
+			Date startTime =  commonUtil.getDateFormat(date);
+			
+			String startTimeTS = Constants.TZ_DF.format(startTime); 
+			String endTimeTS = END_TZ_DF.format(startTime);
+			String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startTimeTS);
+			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endTimeTS);
+				 startUTCDate = TZ_DF_TS.parse(startDateString);
+				 endUTCDate = TZ_DF_TS.parse(endDateString);
+			
+			RequirementInterviewer reqInterviwer = new RequirementInterviewer();
+			//interviewer interviews list	 
+			List<Long> interviewersList = new ArrayList<>();
+			
+			List<RequirementInterviewer> selectedInterviewerList = new ArrayList<>();
+			if(!interviewerIds.equalsIgnoreCase("null")){
+				
+				for (String interviewId : interviewerIds.split(","))
+					interviewersList.add(Long.valueOf(interviewId));
+			
+				selectedInterviewerList =  requirementInterviewerService.getinterviewListByOrgLocationAndUserId(loginOrgLocations,interviewersList,startUTCDate,endUTCDate);
+				for (RequirementInterviewer requirementInterviewer : selectedInterviewerList) {
+					User interviewrUser = userService.getUserById(requirementInterviewer.getInterviewerUser().getId());
+					if(interviewrUser.getLastName() !=null){
+						requirementInterviewer.setInterviewerName(interviewrUser.getFirstName()+" "+interviewrUser.getLastName());
+					}else{
+						requirementInterviewer.setInterviewerName(interviewrUser.getFirstName());
+					}
+					RequirementInterview reqInterview = requirementInterviewService.getRequirementInterviewById(requirementInterviewer.getRequirementInterview().getId().toString());
+					//requirementInterviewer.setInterviewStartTime(reqInterview.getStartTime().toString());
+					//requirementInterviewer.setInterviewEndTime(reqInterview.getEndTime().toString());
+					DateFormat eventstartTimrFroDashBoard = new SimpleDateFormat( "hh:mm aa");
+					reqInterview.setCandidateName(reqInterview.getSubmissionId().getCandidate().getFirstName());
+					if(null != timezone.getTimeZoneId() && null != reqInterview.getId() && null != reqInterview.getStartTime()){
+						String currentTimeStr = Constants.TZ_DF.format(reqInterview.getStartTime());  
+						String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
+						Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+						currentDateInTimezone = eventstartTimrFroDashBoard.format(converteDate);
+						requirementInterviewer.setInterviewStartTime(currentDateInTimezone);
+					}
+					
+					
+					if(null  != timezone.getTimeZoneId() && null != reqInterview.getId() && null != reqInterview.getEndTime()){
+						String currentTimeStr = Constants.TZ_DF.format(reqInterview.getEndTime());  
+						String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,timezone.getTimeZoneId(), currentTimeStr);
+						Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+						String eventstartTimrFroDashBoardStr = eventstartTimrFroDashBoard.format(converteDate);
+						requirementInterviewer.setInterviewEndTime(eventstartTimrFroDashBoardStr);
+					}
+					requirementInterviewer.setRequirementTitle(reqInterview.getSubmissionId().getRequirement().getJobTitle());
+					requirementInterviewer.setInterviewType(reqInterview.getInterviewType());
+				}
+				
+			}
+			
+			reqInterviwer.setInterviewerList(selectedInterviewerList);
+			//applicantslist
+			List<RequirementInterview> requirementInterview = new ArrayList<>();
+			if(!applicantSubId.equalsIgnoreCase("null")){
+				List<String> submissionsList = new ArrayList<String>(Arrays.asList(applicantSubId.split(",")));
+				List<Long> submissionsIds = new ArrayList<>();
+				for (String subId : submissionsList){
+					submissionsIds.add(Long.valueOf(subId));
+				}
+				
+				requirementInterview = requirementInterviewService.getRequirementInterviewsBySubmissionAndOrgLocId(submissionsIds,loginOrgLocations.getId(),startUTCDate,endUTCDate);
+				for(RequirementInterview reqInterview : requirementInterview){
+					DateFormat eventstartTimrFroDashBoard = new SimpleDateFormat( "hh:mm aa");
+					reqInterview.setCandidateName(reqInterview.getSubmissionId().getCandidate().getFirstName());
+					if(null != timezone.getTimeZoneId() && null != reqInterview.getId() && null != reqInterview.getStartTime()){
+						String currentTimeStr = Constants.TZ_DF.format(reqInterview.getStartTime());  
+						String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
+						Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+						currentDateInTimezone = eventstartTimrFroDashBoard.format(converteDate);
+						reqInterview.setInterviewStartDateTimeStr(currentDateInTimezone);
+					}
+					
+					
+					if(null  != timezone.getTimeZoneId() && null != reqInterview.getId() && null != reqInterview.getEndTime()){
+						String currentTimeStr = Constants.TZ_DF.format(reqInterview.getEndTime());  
+						String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,timezone.getTimeZoneId(), currentTimeStr);
+						Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+						String eventstartTimrFroDashBoardStr = eventstartTimrFroDashBoard.format(converteDate);
+						reqInterview.setInterviewEndtDateTimeStr(eventstartTimrFroDashBoardStr);
+					}
+					
+					/*reqInterview.setInterviewStartDateTimeStr(reqInterview.getStartTime().toString());
+					reqInterview.setInterviewEndtDateTimeStr(reqInterview.getEndTime().toString());*/
+					
+					reqInterview.setInterviewType(reqInterview.getInterviewType());
+					reqInterview.setRequirementTitle(reqInterview.getSubmissionId().getRequirement().getJobTitle());
+				}
+			}
+			reqInterviwer.setApplicantsList(requirementInterview);
+				return  commonUtil.toJSON(reqInterviwer);
+			}
+
 }

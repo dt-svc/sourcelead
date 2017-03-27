@@ -103,7 +103,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
 		 Boolean teamFlag = teamDao.getTeamOwnersListByUserIdAndRequirementId(user,orgLocations.getId(),requirement.getId());
 		 if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && teamFlag == false ) {
-			 subQuery2 = " and ((rs.createdBy = '"+user.getUserCode()+"') OR (rs.candidate.candidateType = 'Professional') OR (rs.recruiterUserId IS NOT NULL)) ";
+			 subQuery2 = " and ((rs.createdBy = '"+user.getUserCode()+"')  OR (rs.vendorLocationId IS NOT NULL) OR (rs.candidate.candidateType = 'Professional') OR (rs.recruiterUserId IS NOT NULL)) ";
 		 }
 		 
 		 
@@ -354,7 +354,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
 		 Boolean teamFlag = teamDao.getTeamOwnersListByUserIdAndRequirementId(user,loginOrgLocation.getId(),requirement.getId());
 		 if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && teamFlag == false ) {
-			 subQuery = " and ((rs.createdBy = '"+user.getUserCode()+"') OR (rs.candidate.candidateType = 'Professional') OR (rs.recruiterUserId IS NOT NULL)) ";
+			 subQuery = " and ((rs.createdBy = '"+user.getUserCode()+"') OR (rs.vendorLocationId IS NOT NULL) OR (rs.candidate.candidateType = 'Professional') OR (rs.recruiterUserId IS NOT NULL)) ";
 		 }
 		 
 		 String submissionStages = "";
@@ -2058,6 +2058,18 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				e.printStackTrace();
 			}
 			return null;
+		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<RequirementSubmission> getApplicantsListByOrgLocationAndUserId(OrgLocations loginOrgLocations,
+				List<Long> applicantsList, Date startUTCDate, Date endUTCDate) {
+			Session session = this.sessionFactory.getCurrentSession();
+			
+			String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate where rs.orgLocations.id = :orgLocationId and rs.candidate.id IN(:candidateIds) and rs.id IN(select interview.submissionId.id from RequirementInterview interview where interview.startTime >= :startDateUTC and interview.endTime <= :endDateUTC) and (rs.submissionStatus ='INTERVIEW' or rs.submissionStatus = 'CLIENT_INTERVIEW')";
+		 
+		 List<RequirementSubmission> submissionList  = session.createQuery(query).setLong("orgLocationId", loginOrgLocations.getId()).setParameter("startDateUTC", startUTCDate).setParameter("endDateUTC", endUTCDate).setParameterList("candidateIds", applicantsList).setCacheable(true).list();
+		 return submissionList;
 		}
 		
   }
