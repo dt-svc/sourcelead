@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementInterviewerDao;
-import com.bis.sourcelead.entity.RequirementInterview;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementInterviewer;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -87,6 +88,17 @@ public class RequirementInterviewerDaoImpl implements RequirementInterviewerDao{
 		}
 		return interviewer;
 		
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementInterviewer> getinterviewListByOrgLocationAndUserId(OrgLocations loginOrgLocations,
+			List<Long> interviewerIds,Date startUTCDate, Date endUTCDate) {
+		logger.debug("In RequirementInterviewer getInterviwerstByInterviewIdAndUserId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from RequirementInterviewer rir where rir.requirementInterview.submissionId.orgLocations.id = :loginOrgLocations and rir.interviewerUser.id IN(:userId) and( rir.requirementInterview.startTime >= :startDateUTC and rir.requirementInterview.endTime <= :endDateUTC)" ;
+		List<RequirementInterviewer> interviewerList =session.createQuery(query).setLong("loginOrgLocations", loginOrgLocations.getId()).setParameter("startDateUTC", startUTCDate).setParameter("endDateUTC", endUTCDate).setParameterList("userId", interviewerIds).setCacheable(true).list(); 
+		return interviewerList;
 	}
 	
 	
