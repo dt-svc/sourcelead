@@ -67,6 +67,8 @@ $(document).ready(function() {
 		        		    	    }); 
 	        		    	   }else{
 				    	    	    $("#timesheetEntriesDiv").removeAttr("style");
+				    	    	    $("#loadTime").removeAttr("style");
+				    	    	    $("#loadTime").removeClass( "loadTime");
 				    	    	    var result ="";
 						    	     result = result+"   <div class='dataTables_empty'>"; 
 									 /* result = result+"	<div class='col-lg-12'>"; 
