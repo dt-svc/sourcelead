@@ -12,11 +12,27 @@ display: none;
 }
 </style>
 
-<!-- <script>
- window.onload = function() {
-	 getTeamsList('All');
-};
-</script> -->
+ <script>
+ $(document).ready(function(){
+	 var UUID = '${UUID}';
+	
+	 if(null != UUID && UUID != '' && UUID != 'undefined'){
+		 
+		 var mailType = '${mailType}';
+		 
+		 if(null != mailType && mailType != '' && mailType != 'undefined'){
+			 loadMailBoxDetails(UUID);
+		 }else{
+			 $("input[name=subject]").val('${subject}');
+			 var fromEmail = '${fromEmail}';
+			 
+			 $("#emailsList").empty();
+			 $("#emailsList").append("<option value='" +fromEmail+ "' selected>"+fromEmail+"</option>");
+			 $("#emailsList").trigger("chosen:updated");
+		 }
+	 }
+});
+</script> 
 
 
 <section class="content-wraper">
@@ -73,7 +89,7 @@ display: none;
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-danger small">Subject</label>
           <div class="col-md-10">
-            <input type="text" name="subject" data-validation="required" field-name="Subject" id="subject" class="form-control input-sm">
+            <input type="text" name="subject" data-validation="required" field-name="Subject" id="subject" value="" class="form-control input-sm">
           </div>
         </div>
         <div class="clearfix">
@@ -95,11 +111,8 @@ display: none;
               <textarea  id="bodytext" name="bodytext" class="form-control" rows="5" placeholder="Message" style="height: 250px">
                     
 			  </textarea> 
-			  <input type="hidden" name="bodyTextTextArea"  id="bodyTextTextArea"  value=""/>
 			  
-			  <!-- <textarea name="bodytext" placeholder="Message"  rows="5" style="width: 100%;">
-	Some Initial Content was in this textarea
-</textarea> -->
+			  
             </div>
           </div>
         </div>
@@ -145,7 +158,26 @@ display: none;
   <script src="resources/js/nicEdit.js"></script> 
   
   
-  
+   <script>
+  function loadMailBoxDetails(UUID){
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  
+			 $.ajax({
+				 
+				 type: "POST",
+			        url: sourceleadUrl+"/getUserMailBoxDetailsByUUID?${_csrf.parameterName}=${_csrf.token}&UUID="+UUID, 
+			        success: function(data) {
+			        	var json = JSON.parse(data);
+			        	
+			        	 $("input[name=subject]").val(json['subject']);
+			    		 
+			    		 nicEditors.findEditor('bodytext').setContent(json['body']);
+			        	
+			        }
+			 });
+	  
+  }
+  </script> 
  
 
 <script type="text/javascript">
@@ -174,11 +206,6 @@ $(function(){
 	function sendEmails() {
 		if ($('#email_form').validate(false, validationSettings)){ 
 			
-	
-			
-			
-			
-			
 				var sourceleadUrl = '${sourceleadUrl}';
 				nicEditors.findEditor('bodytext').saveContent();
 				
@@ -196,7 +223,7 @@ $(function(){
 		   	    }
 		  		else{
 		  			var bodytext = nicEditors.findEditor('bodytext').getContent();
-		  			if(bodytext.length < 36000){	
+		  			 if(bodytext.length < 60000){ 	
 		  			
 			  			$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 			  		 	$.ajax({
@@ -211,10 +238,10 @@ $(function(){
 			  				success : function(result) {
 			  						location.replace(sourceleadUrl+"/mailBox");
 			  				},
-			  			});
-			  		 }else{
+			  			}); 
+			  		  }else{
 			  			alertTextboxMsg("Message body is too large. If you have more data, Plz go with attachment");
-			  		 } 
+			  		 }  
 		  		}
 		  		  
 				 return true
