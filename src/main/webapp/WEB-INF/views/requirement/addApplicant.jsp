@@ -41,8 +41,8 @@ function getAddApplicant(requirementId){
 	result = result + '<div class="col-md-7 radioInline">';
 	result = result + '<label class="mr"><input type="radio" checked="checked" value="Candidates" name="candidateType" onClick="getCandidatesList('+requirementId+',\'Candidate\');">Candidates</label>';
 	result = result + '<label class="mr"><input type="radio" value="Consultants" name="candidateType" onClick="getCandidatesList('+requirementId+',\'Consultant\');">Consultants</label>';
-	result = result + '<label class="mr"><input type="radio" value="New candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'New\');">Add New Candidate</label>';
-	result = result + '<label class="mr"><input type="radio" value="Parese candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'parseCandidate\');">Parse Candidate</label>';
+	result = result + '<label class="mr"><input type="radio" value="New candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'New\');getCandidateSelectionType();">Add New Candidate</label>';
+	result = result + '<label class="mr"><input type="radio" value="Parese candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'parseCandidate\');getCandidateSelectionType();">Parse Candidate</label>';
 	result = result + '</div>';	
 	
 	result = result + '<div class="col-md-5 pull-right">';
@@ -85,6 +85,21 @@ function getAddApplicant(requirementId){
 	
                         
 	result = result + '</div>';
+	
+	
+	/* result = result + '<div class="row">';
+    result = result + '	<div class="col-md-6 upresume mb" id="employmentTypeDiv" style="display: none;">';
+	result = result + '<label class="col-md-4">Employment Type</label>';
+	result = result + '<div class="col-md-8">';
+	result = result + '<select class="form-control" id="designationType" name="designationType" onchange="getEmployementType();" field-name="Employment Type">';
+	result = result + '<option value="">--Select--</option>';
+	result = result + '</select>';
+	result = result + '</div>';
+	result = result + '</div>';
+	result = result + '</div>'; */
+	
+	
+	
 	result = result + '<div class="row">';
     result = result + '	<div class="col-md-6 upresume mb" id="skillsDiv" style="display: none;">';
 	result = result + '<label class="col-md-4">Skills</label>';
@@ -97,6 +112,7 @@ function getAddApplicant(requirementId){
 	result = result + '		 </div>';
 	result = result + '	 </div>';
 	result = result + '	 </div>';
+	
 	
 	result = result + '<div class="row">';
 	result = result + '	<div class="col-md-6 upresume mb" id="newResumeDiv" style="display: none;">';
@@ -294,6 +310,15 @@ function discordApplicant(){
 			 $("#candidateSkills").val('').trigger("chosen:updated");
 		 }
 		 
+		/*  var employmentTypeDiv = document.getElementById('employmentTypeDiv');
+		 if(employmentTypeDiv != null){
+			 document.getElementById("employmentTypeDiv").style.display="none";
+			 $("#designationType").removeAttr("data-validation");
+		     $('#designationType').attr("data-validation-optional","true");
+		     $("#designationType").empty();
+		 } */
+		 
+		 
 		 if(requirementId != null && requirementId != "" && requirementId != 'undefined'){
 			 $.ajax({
 			    	type: "POST",
@@ -345,7 +370,12 @@ function discordApplicant(){
 			 
 			 document.getElementById("newResumeDiv").style.display="none";
 			 document.getElementById("skillsDiv").style.display="";
-			 $("#candidateSkills").val('').trigger("chosen:updated");
+			 
+			/*  document.getElementById("employmentTypeDiv").style.display="";
+			 $("#designationType").removeAttr("data-validation-optional");
+		     $('#designationType').attr("data-validation","required"); */
+			
+		     $("#candidateSkills").val('').trigger("chosen:updated");
 			 $('#newUploadFile').removeAttr('data-validation');
 			 $('#newUploadFile').attr("data-validation-optional","true"); 
 	     }else if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType == 'New'){
@@ -355,7 +385,12 @@ function discordApplicant(){
 	    	 
 	    	 document.getElementById("newResumeDiv").style.display="";
 	    	 document.getElementById("skillsDiv").style.display="";
-	    	 $("#candidateSkills").val('').trigger("chosen:updated");
+	    	 
+	    /* 	 document.getElementById("employmentTypeDiv").style.display="";
+	    	 $("#designationType").removeAttr("data-validation-optional");
+		     $('#designationType').attr("data-validation","required"); */
+	    	
+		     $("#candidateSkills").val('').trigger("chosen:updated");
 			 $('#newUploadFile').removeAttr('data-validation-optional');
 			 $("#newUploadFile").attr("data-validation", "required validatedoc");
 			 
@@ -585,6 +620,20 @@ $('body').on('submit', '#addApplicant_form', function(e){
 </script>
 
 
+<script>
+function getCandidateSelectionType(){
+	var output = "";
+	output = output + "<option value=''>-- Select --</option>"; 
+	output = output + "<option value='C2C'>C2C</option>"; 
+	output = output + "<option value='W-2'>W-2</option>"; 
+	output = output + "<option value='C2H'>C2H</option>"; 
+	output = output + "<option value='Part Time'>Part Time</option>"; 
+	output = output + "<option value='Full Time'>Full Time</option>"; 
+	$("#designationType").empty();
+    $("#designationType").append(output);
+}
+</script>
+
 
 <script type="text/javascript">
  function getCandidateResumes() {
@@ -634,6 +683,12 @@ $('body').on('submit', '#addApplicant_form', function(e){
 				        
 				        document.getElementById("newResumeDiv").style.display="none";
 				        document.getElementById("skillsDiv").style.display="none";
+				        
+				       /*  document.getElementById("employmentTypeDiv").style.display="none";
+					    $('#designationType').removeAttr("data-validation");
+					    $("#designationType").attr("data-validation-optional","true");
+					    $("#designationType").empty(); */
+				        
 				        $('#newUploadFile').removeAttr('data-validation');
 		        		$('#newUploadFile').attr("data-validation-optional","true"); 
 		        		
@@ -650,6 +705,12 @@ $('body').on('submit', '#addApplicant_form', function(e){
 		        		
 		        		 document.getElementById("newResumeDiv").style.display="";
 		        		 document.getElementById("skillsDiv").style.display="";
+		        		
+		        		/*  document.getElementById("employmentTypeDiv").style.display="";
+		        		 $('#designationType').removeAttr("data-validation-optional");
+						 $("#designationType").attr("data-validation","required"); */
+		        		 
+		        		 
 		        		 $('#newUploadFile').removeAttr('data-validation-optional');
 		        		 $("#newUploadFile").attr("data-validation", "required validatedoc");
 		        		 
@@ -1206,7 +1267,22 @@ function validate_fileupload(fileName)
 		 $("#expectedRate").html("Expected Rate");
 	 }
 	 
-	 
-	 
  }
  </script>
+ 
+ 
+ 
+ <script>
+ function getEmployementType(){
+	 var designationType = document.getElementById("designationType").value;
+	 if(designationType == 'C2H'){
+		 $("#needApplicantPermit").attr("disabled", "disabled");
+		 document.getElementById("needApplicantPermit").checked = false;
+		 $("#needApplicantPermit").val('N');
+	 }else{
+		 $("#needApplicantPermit").removeAttr("disabled");
+		
+	 }
+ }
+ </script>
+ 
