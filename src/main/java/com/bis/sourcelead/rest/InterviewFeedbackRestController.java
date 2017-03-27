@@ -208,7 +208,9 @@ public class InterviewFeedbackRestController {
 			   ift.setSubmissionTemplateId(sub);
 			   ift.setStatus("Y");
 			   ift.setComment(jsonObj.getString("interviewComment"));
-			   ift.setInterviewStatus(jsonObj.getString("feedback"));
+			   if(!"".equalsIgnoreCase(jsonObj.getString("feedback"))){
+				   ift.setInterviewStatus(jsonObj.getString("feedback"));   
+			   }
 			   ift.setInterviewTemplateJsonString(jsonStringData);
 			   ift.setCreatedBy(user.getUserCode());
 			   ift.setCreatedDate(new Date());

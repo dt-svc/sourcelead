@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementInterviewDao;
 import com.bis.sourcelead.dao.RequirementInterviewHistoryDao;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
@@ -25,6 +27,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
@@ -50,6 +53,9 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 	private TimeZoneService timeZoneService;
 	
 	@Autowired
+	private SubmissionTemplateService submissionTemplateService;
+	
+	@Autowired
 	RequirementInterviewerService requirementInterviewerService;
 	
 	@Override
@@ -63,6 +69,12 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 	public RequirementInterviewHistory getRequirementInterviewHistoryById(Long Id) {
 		return requirementInterviewHistoryDao.getRequirementInterviewHistoryById(Id);
 	}
+	
+	@Override
+	public RequirementInterviewHistory getRequirementInterviewHistoryByInterviewId(Long interviewId) throws Exception {
+		return requirementInterviewHistoryDao.getRequirementInterviewHistoryByInterviewId(interviewId);
+	}
+	
 	
 	@Override
 	public List<RequirementInterviewHistory> getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId,OrgLocations orgLocation) throws Exception {
@@ -144,6 +156,18 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			    }
 			    if(requirementInterview.getInterviewTemplateId() != null){
 			    	interviewHistory.setInterviewTemplateid(requirementInterview.getInterviewTemplateId().getId());
+			    }
+			    if(requirementInterview.getTimezone() != null){
+			    	interviewHistory.setTimezone(requirementInterview.getTimezone().getTimeZoneId());
+			    }
+			    
+			    //This condition  is to enable the feedback  and reschedule icon for Own Interviews
+			    if(requirementInterview.getSubmissionId() != null){
+			    	interviewHistory.setInterviewSubmissionId(requirementInterview.getSubmissionId().getId().toString());
+			    }
+			    
+			    if(requirementInterview.getRescheduleComment() != null){
+			    	interviewHistory.setRescheduleComment(requirementInterview.getRescheduleComment());
 			    }
 			    
 			    if(interviewHistory.getSubmissionId().getVendorLocationId() != null){
@@ -453,4 +477,6 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 		}
 		return ineterviewList;
 	}
+
+	
 }
