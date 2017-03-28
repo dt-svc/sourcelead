@@ -96,12 +96,17 @@ function editCandidate(candidateId){
          			 		designationOtherType = '';  
          			 	 }
          			 	
-         			 	var summary = "";
-         			 	if(json.summary != null && json.summary != '' && json.summary != 'undefined'){
-         			 		summary = json.summary;            			 		
-         			 	}else{
-         			 		summary ="NO DATA";
-         			 	}
+	         			 	var summary = "";
+	         			 	if(json.summary != null && json.summary != '' && json.summary != 'undefined'){
+	         			 		summary = json.summary;            			 		
+	         			 	}else{
+	         			 		summary ="NO DATA";
+	         			 	}
+	         			 	
+	         			 	var primarySkill = '';
+	        			 	if(json.primarySkill != null && json.primarySkill != '' && json.primarySkill != 'undefined'){
+	        			 		primarySkill = json.primarySkill;            			 		
+	        			 	}
 							var result ='';
 							result = result + '		    <div class="edit-details col-md-8 edit-candaite canprofile-popright"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
 							result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
@@ -333,10 +338,17 @@ function editCandidate(candidateId){
 							
 							
 							result = result + '<div class="col-md-6">';
+							result = result + '<input type="text" class="form-control input-sm" name="primarySkill" value="'+primarySkill+'" placeholder="Primary Skill" data-validation="validate_Space validate_length length1-100" data-validation-optional="true">';
+							result = result + '</div>';
+							result = result + '</div>';
+							
+							result = result + '<div class="clearfix mb10">';
+							result = result + '<div class="col-md-6">';
 							result = result + '<textarea placeholder="Summary" class="form-control input-sm"  name="summary" rows="2" cols="5">'+summary+'</textarea>';
 							result = result + ' </div>';
 							result = result + '</div>';
 							result = result + '</div>';
+							
 							result = result + '		        <div class="clearfix mr">';
 							result = result + '		          <div class="pull-right">';
 							result = result + '		            <button type="button" id="update_candidate"  onClick ="upDateCandidate('+candidateId+');" class="btn btn-sm btn-primary mr">Save</button>';
