@@ -110,7 +110,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	/**
 	 * this old code we need to remove after QA gives confirmation that the clien and vendor working fine
 	 */
-	@Override
+	/*@Override
 	public String clientBulkSaving(MultipartFile multipartFile,User user,OrgLocations orgLocation,Org  org,String isMailSent,String responderType) throws Exception {
 		
 		  boolean isValidated = false;
@@ -166,11 +166,12 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			    	   if(isValidated){
 			    		   if(row.getRowNum() > 0){
 					    		   if(row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())){
-									   	  client.setClientName(row.getCell(0).toString());
+									   	  String orgName = row.getCell(0).toString().trim();
+					    			      client.setClientName(orgName);
 									   	  if(fname.contains("vendors_contacts_Import")){
-									   		 vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgName(row.getCell(0).toString(),orgLocation.getId());
+									   		 vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgName(row.getCell(0).toString().trim(),orgLocation.getId());
 									   	  }else{
-									   		vandorsListByOrgLocationId = orgRelationsService.getAllClientsByOrgNameOrgLocationId(row.getCell(0).toString(),orgLocation.getId());	  
+									   		vandorsListByOrgLocationId = orgRelationsService.getAllClientsByOrgNameOrgLocationId(row.getCell(0).toString().trim(),orgLocation.getId());	  
 									   	  }
 									  }
 						    	   if(row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())){
@@ -203,7 +204,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 										 if(orgSpoc == null){
 											 if(ownerUser.getId() != null){
 												 client.setOwnerUserId(ownerUser.getUser().getId());
-												 JSONObject jsonObj = populateJsonObject(client,isMailSent,vandorsListByOrgLocationId,orgLocation,row.getCell(0).toString(),"contact");
+												 JSONObject jsonObj = populateJsonObject(client,isMailSent,vandorsListByOrgLocationId,orgLocation,row.getCell(0).toString().trim(),"contact");
 												 try {
 														//clientService.storeClient(jsonObj, user, orgLocation,responderType,org);
 														orgSpocService.addVendorContacts(jsonObj, user, orgLocation, orgRelationId.toString(), "", responderType, org);
@@ -228,7 +229,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			        	 if(isValidated){
 			        		   if(row.getRowNum() > 0){
 						    	      if(row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())){
-								    	  client.setClientName(row.getCell(0).toString());
+								    	  client.setClientName(row.getCell(0).toString().trim());
 								       }
 									   if(row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())){
 										   client.setWebSite(row.getCell(1).toString());  
@@ -245,7 +246,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 									   if(row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())){
 										   client.setLevel(row.getCell(5).toString());
 									   }  
-									   isUserFound = validateClient(row.getCell(0).toString(), client,orgLocation,responderType);
+									   isUserFound = validateClient(row.getCell(0).toString().trim(), client,orgLocation,responderType);
 									   
 									   if(isUserFound){
 							    		   if (row.getRowNum() > 0) {
@@ -253,7 +254,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 												createClientXlsSheet(row, createExcelsheet,count, fname,client);
 											}
 							    	   }else{
-							    		   JSONObject jsonObj = populateJsonObject(client,isMailSent,vandorsListByOrgLocationId,orgLocation,row.getCell(0).toString(),"org");
+							    		   JSONObject jsonObj = populateJsonObject(client,isMailSent,vandorsListByOrgLocationId,orgLocation,row.getCell(0).toString().trim(),"org");
 							    			try {
 												clientService.storeClient(jsonObj, user, orgLocation,responderType,org);
 											} catch (Exception e) {
@@ -291,6 +292,181 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		      }
 		  inp.close();
 		return isFileCreated;
+	}*/
+	
+	
+	@Override
+	public String clientBulkSavingImp(MultipartFile multipartFile, User user, OrgLocations orgLocation, Org org, String isMailSent, String responderType) throws Exception
+	{
+
+		
+		  boolean isValidated = false;
+		  boolean isClientFound = false;
+		  boolean isValidContact = false;
+		  
+		  String isFileCreated = "failed";
+		  String fn = multipartFile.getOriginalFilename();
+		  String fname = getFileName(fn);
+		  File file = new File(multipartFile.getOriginalFilename());
+		  multipartFile.transferTo(file);
+		  
+		  InputStream inp = new FileInputStream(file);
+	      String fileExtn = GetFileExtension(fname);
+	      Workbook workbook; //Declare XSSF WorkBook
+	      Workbook wb_hssf = null ; //Declare HSSF WorkBook
+	      Sheet sheet = null; // sheet can be used as common for XSSF and HSSF
+			
+	      if ("xlsx".equalsIgnoreCase(fileExtn))
+	      {
+//		       wb_xssf = new XSSFWorkbook(inp);
+	    	  workbook = WorkbookFactory.create(inp);
+	    	  wb_hssf = new XSSFWorkbook();
+		       logger.info("xlsx="+workbook.getSheetName(0));
+		      sheet = workbook.getSheetAt(0);
+	      }
+	      if ("xls".equalsIgnoreCase(fileExtn))
+	      {
+		     POIFSFileSystem fs = new POIFSFileSystem(inp);
+//	    	  wb_hssf = (Workbook) new HSSFWorkbook(fs);
+		     workbook = WorkbookFactory.create(fs);
+		     wb_hssf = (Workbook) new HSSFWorkbook();
+//	    	  logger.info("xls="+workbook.getSheetName(0));
+	    	  sheet = workbook.getSheetAt(0);
+	      }
+	      Sheet createExcelsheet = wb_hssf.createSheet("createContact");
+	 			
+	      Iterator rows = sheet.rowIterator(); // Now we have rows ready from the sheet
+	      int count = 0;
+	      List<OrgRelations> vandorsListByOrgLocationId = null;
+	      createExcelsheet = setClientExcelHeader(createExcelsheet,responderType);
+	     while (rows.hasNext()) 
+		      { 
+			       ClientImportObject client = new ClientImportObject();
+			       Row row = (Row) rows.next();
+			        	 if (row.getRowNum() > 0) {
+								isValidated = validateClientData(row,fname,client,responderType,orgLocation);
+							}
+			        	 if(isValidated){
+			        		 if(row.getRowNum() > 0){
+					    	      if(row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())){
+							    	 String orgName = row.getCell(0).toString().trim();
+					    	    	  client.setClientName(orgName);
+							       }
+								   if(row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())){
+									   client.setWebSite(row.getCell(1).toString());  
+								   }
+								   if(row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())){
+									   client.setCountry(row.getCell(2).toString());
+								   }
+								   if(row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())){
+									   client.setState(row.getCell(3).toString());
+								   }
+								   if(row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())){
+									   client.setCity(row.getCell(4).toString());
+								   }  
+								   if(row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())){
+									   client.setLevel(row.getCell(5).toString());
+								   }  
+								   //
+								   if(row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())){
+									   client.setFirstName(row.getCell(6).toString());
+								   }  
+								   if(row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())){
+									   client.setLastName(row.getCell(7).toString());
+								   }  
+								   if(row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())){
+									   client.setEmailid(row.getCell(8).toString());
+								   }  
+								   if(row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())){
+									   String mobileNumer = getCellValueAsString(row.getCell(10),fname);
+						    		   client.setPhone(mobileNumer);
+								   }  
+								   if(row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())){
+									   String status = getCellValueAsString(row.getCell(9),fname);
+						    		   client.setStatus(status);;
+								   }  
+								   if(row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())){
+									   client.setOwner(row.getCell(11).toString());
+								   }else{
+									   client.setOwner(user.getEmail());
+								   }
+                          
+								   isClientFound = validateClient(client.getClientName(), client,orgLocation,responderType);
+								   
+								   if(!isClientFound){
+									   JSONObject jsonObj = populateJsonObject(client,isMailSent,vandorsListByOrgLocationId,orgLocation,client.getClientName(),"org");
+						    			try {
+											clientService.storeClient(jsonObj, user, orgLocation,responderType,org);
+										} catch (Exception e) {
+											logger.error(ExceptionUtils.getFullStackTrace(e)); 
+										}
+								   }
+						    			 isValidContact = validateContactsExeclDataImp(row,fname,client,orgLocation,responderType,client.getClientName());
+						    			
+						    			 if(isValidContact){
+										   		vandorsListByOrgLocationId = orgRelationsService.getAllClientsByOrgNameOrgLocationId(client.getClientName(),orgLocation.getId());	  
+										   
+										   String email = client.getOwner();
+											String emails [] = email.split(",");
+											for(int i=0;i<emails.length;i++){
+												UserRole ownerUser = userRoleService.getUserDetailsByEmailAndLocationId(emails[i], orgLocation.getId());
+												Long orgRelationId =0L; 
+												OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(row.getCell(8).toString(), orgRelationId, ownerUser.getId(),Constants.RECORD_ACTIVE);
+												 if(orgSpoc == null){
+													 if(ownerUser.getId() != null){
+														 client.setOwnerUserId(ownerUser.getUser().getId());
+														 JSONObject jsonObj1 = populateJsonObject(client,isMailSent,vandorsListByOrgLocationId,orgLocation,client.getClientName(),"contact");
+														 try {
+																//clientService.storeClient(jsonObj, user, orgLocation,responderType,org);
+																orgSpocService.addVendorContacts(jsonObj1, user, orgLocation, orgRelationId.toString(), "", responderType, org);
+																vandorsListByOrgLocationId.clear();
+															} catch (Exception e) {
+																logger.error(ExceptionUtils.getFullStackTrace(e)); 
+															}
+													    }
+													}
+											} 
+						    			 }else{
+						    				 if(!isValidContact && row.getRowNum() > 0) {
+								    			   count++;
+								    			   createClientXlsErrorSheet(row, createExcelsheet,count, fname,client,orgLocation.getId());
+												}
+						    			 }
+					       } 
+			        	 }else{
+			        		 if(!isValidated && row.getRowNum() > 0) {
+				    			   count++;
+				    			   createClientXlsErrorSheet(row, createExcelsheet,count, fname,client,orgLocation.getId());
+								}
+			        	 }
+			       if (count > 0) {
+			    	   FileOutputStream fos = null;
+			    	   if(!fname.endsWith("xls")){
+			    		   fos = new FileOutputStream("client_error.xlsx");
+			    		   isFileCreated = "client_error.xlsx";
+			    	   }else{
+			    		   fos = new FileOutputStream("client_error.xls");
+			    		   isFileCreated = "client_error.xls";
+			    	   }
+						wb_hssf.write(fos);
+						fos.close();
+					}else{
+						isFileCreated = "failed";
+					}
+//					if(count > 0){
+//						if(!fname.endsWith("xlsx")){
+//							isFileCreated = "client_error.xls";
+//						}else{
+//							isFileCreated = "client_error.xlsx";
+//						}
+//						
+//					}else{
+//						
+//					}
+		      }
+		  inp.close();
+		return isFileCreated;
+	
 	}
 	/**
 	 * check Clinet is duplicate or not 
@@ -383,9 +559,9 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			  jsonObj.put("roleTypeId", roleTypeId);
 	              OrgRelations  orgRelation = null;
 	              for(OrgRelations org : orgList){
-	                  if(orgName.equals(org.getResponderLocationId().getOrg().getOrgName())){
+	                  if(orgName.equalsIgnoreCase(org.getResponderLocationId().getOrg().getOrgName())){
 	                      orgRelation = org;
-	                  }else if(orgName.equals(org.getLocationId().getOrg().getOrgName())){
+	                  }else if(orgName.equalsIgnoreCase(org.getLocationId().getOrg().getOrgName())){
 	                      orgRelation = org;
 	                  }
 	              }
@@ -494,7 +670,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			  boolean isValidated;
 			  List<OrgRelations> orgList = null;
 			  if(null != row.getCell(0)){
-		   			orgList = orgRelationsService.getAllClientsByOrgNameOrgLocationId(row.getCell(0).toString(),orgLocation.getId());	  
+		   			orgList = orgRelationsService.getAllClientsByOrgNameOrgLocationId(client.getClientName(),orgLocation.getId());	  
 
 		   		  }
 //			  if(fname.contains("vendors_contacts_Import")){
@@ -548,9 +724,9 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 					}else if(row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())){
 						Org org = null;
 						  for(OrgRelations orgRelation : orgList){
-			                  if(orgName.equals(orgRelation.getResponderLocationId().getOrg().getOrgName())){
+			                  if(orgName.equalsIgnoreCase(orgRelation.getResponderLocationId().getOrg().getOrgName())){
 			                	  org = orgRelation.getResponderLocationId().getOrg();
-			                  }else if(orgName.equals(orgRelation.getLocationId().getOrg().getOrgName())){
+			                  }else if(orgName.equalsIgnoreCase(orgRelation.getLocationId().getOrg().getOrgName())){
 			                	  org = orgRelation.getLocationId().getOrg();
 			                  }
 			              }
@@ -627,16 +803,16 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	  * @return boolean
 	 * @throws Exception 
 	  */
-	  private boolean validateContactsExeclData(Row row, String fname, ClientImportObject client, OrgLocations orgLocation, String responderType) throws Exception {
+	 /* private boolean validateContactsExeclData(Row row, String fname, ClientImportObject client, OrgLocations orgLocation, String responderType) throws Exception {
 		  boolean isValidated;
 		  List<OrgRelations> vandorsListByOrgLocationId = null;
 		  if(fname.contains("vendors_contacts_Import")){
 			  if(null != row.getCell(0) ){
-		   		     vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgName(row.getCell(0).toString(),orgLocation.getId());
+		   		     vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgName(row.getCell(0).toString().trim(),orgLocation.getId());
 			  }
 			  }else{
 		   		  if(null != row.getCell(0)){
-				   		vandorsListByOrgLocationId = orgRelationsService.getAllClientsByOrgNameOrgLocationId(row.getCell(0).toString(),orgLocation.getId());	  
+				   		vandorsListByOrgLocationId = orgRelationsService.getAllClientsByOrgNameOrgLocationId(row.getCell(0).toString().trim(),orgLocation.getId());	  
 
 		   		  }
 		   	  }
@@ -647,7 +823,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 				}else if(row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())){
 					isValidated = isFnameLnameValid(row.getCell(0).toString());
 					if(isValidated){
-						boolean found = validateClient(row.getCell(0).toString(), client,orgLocation,responderType);
+						boolean found = validateClient(row.getCell(0).toString().trim(), client,orgLocation,responderType);
 						if(found == false){
 							 StringBuilder type = new StringBuilder();
 							client.setReason(type.append(responderType).append(" does not exist").toString());
@@ -735,7 +911,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		  }
 		  }
 		return true;
-		}
+		}*/
 	  
 	  
 	  
@@ -795,7 +971,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	   * @param client
 	   * @return
 	   */
-	  private boolean validateClientExeclData(Row row, String fname, ClientImportObject client) {
+	 /* private boolean validateClientExeclData(Row row, String fname, ClientImportObject client) {
 		  boolean isValidated; 
 		  if (row.getRowNum() > 0) { 
 			  if (row.getCell(0) == null || "".equalsIgnoreCase(row.getCell(0).toString())) {
@@ -829,7 +1005,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			  }
 		  }
 			return true;
-		}
+		}*/
 	  
 	  /**
 	   * @author Rajashekar
@@ -882,10 +1058,11 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	  	 * @return
 	  	 */
 	  		private boolean isMobileNumberValid(String mobileNmber){
+	  			String phoneNumber = mobileNmber.trim();
 	  			String regex = "([\\.\\-\\s+\\/()]*[0-9][\\.\\-\\s+\\/()]*){8,15}";
 	  			boolean flag;
-	  			if(mobileNmber.length() > 9 && mobileNmber.length() <= 20){
-	  				flag = mobileNmber.matches(regex);
+	  			if(phoneNumber.length() > 9 && phoneNumber.length() <= 20){
+	  				flag = phoneNumber.matches(regex);
 	  			}else{
 	  				flag=false;
 	  			}
@@ -897,7 +1074,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 	  		 * @param createExcelsheet
 	  		 * @return
 	  		 */
-		private Sheet setContactExcelHeader(Sheet createExcelsheet,String responderType) {
+	/*	private Sheet setContactExcelHeader(Sheet createExcelsheet,String responderType) {
 			
 			Row excelHeader = createExcelsheet.createRow(0);
 			if("Client".equalsIgnoreCase(responderType)){
@@ -913,7 +1090,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			excelHeader.createCell(6).setCellValue(Constants.OWNER);
 			excelHeader.createCell(7).setCellValue(Constants.FAILED_REASON);
 			return createExcelsheet;
-		}
+		}*/
 		
 		
 		
@@ -956,7 +1133,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		 * @param orgLocation 
 		 * @throws Exception 
 		 */
-		private void createContactXlsSheet(Row row, Sheet createExcelsheet, int rowIndex ,String fname, ClientImportObject client, OrgLocations orgLocation) throws Exception {
+		/*private void createContactXlsSheet(Row row, Sheet createExcelsheet, int rowIndex ,String fname, ClientImportObject client, OrgLocations orgLocation) throws Exception {
 			Row writeRow = createExcelsheet.createRow(rowIndex);
 			
 			if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
@@ -1036,26 +1213,27 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			if (client.getReason() !=null) {
 				writeRow.createCell(7).setCellValue(client.getReason());
 			} 
-		}
+		}*/
 	
 		
 		
-		private String[] getVendorNameList(Long orgLocationId)
-		{
-//			vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
-			List<String> list = new ArrayList<>();
-			List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocationId);
-			for(OrgRelations orgRelations :vandorsListByOrgLocationId){
-			if(orgLocationId.longValue() == orgRelations.getLocationId().getId().longValue() ){
-				list.add(orgRelations.getResponderLocationId().getOrg().getOrgName());
-			}else{
-				list.add(orgRelations.getLocationId().getOrg().getOrgName());
-			}
-				
-			}
-			String [] orgList = list.toArray(new String[list.size()]);
-			 return orgList;
-		}
+//		private String[] getVendorNameList(Long orgLocationId)
+//		{
+////			vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
+//			List<String> list = new ArrayList<>();
+//			List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocationId);
+//			for(OrgRelations orgRelations :vandorsListByOrgLocationId){
+//			if(orgLocationId.longValue() == orgRelations.getLocationId().getId().longValue() ){
+//				list.add(orgRelations.getResponderLocationId().getOrg().getOrgName());
+//			}else{
+//				list.add(orgRelations.getLocationId().getOrg().getOrgName());
+//			}
+//				
+//			}
+//			String [] orgList = list.toArray(new String[list.size()]);
+//			 return orgList;
+//		}
+	
 		private String[] getClientNameList(Long orgLocationId) throws Exception
 		{
 			List<String> list = new ArrayList<>();
@@ -1222,7 +1400,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		 * @param fname
 		 * @param client
 		 */
-		private void createClientXlsSheet(Row row, Sheet createExcelsheet, int rowIndex ,String fname, ClientImportObject client) {
+		/*private void createClientXlsSheet(Row row, Sheet createExcelsheet, int rowIndex ,String fname, ClientImportObject client) {
 			
 			Row writeRow = createExcelsheet.createRow(rowIndex);
 			
@@ -1278,7 +1456,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			if (client.getReason() !=null) {
 				writeRow.createCell(6).setCellValue(client.getReason());
 			} 
-		}
+		}*/
 		
 /**
  * Prepares dropdown for Role and status		
@@ -1552,171 +1730,5 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			 return file;
 		
 		}
-		@Override
-		public String clientBulkSavingImp(MultipartFile multipartFile, User user, OrgLocations orgLocation, Org org, String isMailSent, String responderType) throws Exception
-		{
-
-			
-			  boolean isValidated = false;
-			  boolean isClientFound = false;
-			  boolean isValidContact = false;
-			  
-			  String isFileCreated = "failure";
-			  String fn = multipartFile.getOriginalFilename();
-			  String fname = getFileName(fn);
-			  File file = new File(multipartFile.getOriginalFilename());
-			  multipartFile.transferTo(file);
-			  
-			  InputStream inp = new FileInputStream(file);
-		      String fileExtn = GetFileExtension(fname);
-		      Workbook workbook; //Declare XSSF WorkBook
-		      Workbook wb_hssf = null ; //Declare HSSF WorkBook
-		      Sheet sheet = null; // sheet can be used as common for XSSF and HSSF
-				
-		      if ("xlsx".equalsIgnoreCase(fileExtn))
-		      {
-//			       wb_xssf = new XSSFWorkbook(inp);
-		    	  workbook = WorkbookFactory.create(inp);
-		    	  wb_hssf = new XSSFWorkbook();
-			       logger.info("xlsx="+workbook.getSheetName(0));
-			      sheet = workbook.getSheetAt(0);
-		      }
-		      if ("xls".equalsIgnoreCase(fileExtn))
-		      {
-			     POIFSFileSystem fs = new POIFSFileSystem(inp);
-//		    	  wb_hssf = (Workbook) new HSSFWorkbook(fs);
-			     workbook = WorkbookFactory.create(fs);
-			     wb_hssf = (Workbook) new HSSFWorkbook();
-//		    	  logger.info("xls="+workbook.getSheetName(0));
-		    	  sheet = workbook.getSheetAt(0);
-		      }
-		      Sheet createExcelsheet = wb_hssf.createSheet("createContact");
-		 			
-		      Iterator rows = sheet.rowIterator(); // Now we have rows ready from the sheet
-		      int count = 0;
-		      List<OrgRelations> vandorsListByOrgLocationId = null;
-		     while (rows.hasNext()) 
-			      { 
-				       ClientImportObject client = new ClientImportObject();
-				       Row row = (Row) rows.next();
-				        	 createExcelsheet = setClientExcelHeader(createExcelsheet,responderType);
-				        	 if (row.getRowNum() > 0) {
-									isValidated = validateClientData(row,fname,client,responderType,orgLocation);
-								}
-				        	 if(isValidated){
-				        		 if(row.getRowNum() > 0){
-						    	      if(row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())){
-								    	  client.setClientName(row.getCell(0).toString());
-								       }
-									   if(row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())){
-										   client.setWebSite(row.getCell(1).toString());  
-									   }
-									   if(row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())){
-										   client.setCountry(row.getCell(2).toString());
-									   }
-									   if(row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())){
-										   client.setState(row.getCell(3).toString());
-									   }
-									   if(row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())){
-										   client.setCity(row.getCell(4).toString());
-									   }  
-									   if(row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())){
-										   client.setLevel(row.getCell(5).toString());
-									   }  
-									   //
-									   if(row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())){
-										   client.setFirstName(row.getCell(6).toString());
-									   }  
-									   if(row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())){
-										   client.setLastName(row.getCell(7).toString());
-									   }  
-									   if(row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())){
-										   client.setEmailid(row.getCell(8).toString());
-									   }  
-									   if(row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())){
-										   client.setPhone(row.getCell(9).toString());
-									   }  
-									   if(row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())){
-										   client.setStatus(row.getCell(10).toString());
-									   }  
-									   if(row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())){
-										   client.setOwner(row.getCell(11).toString());
-									   }else{
-										   client.setOwner(user.getEmail());
-									   }
-                              
-									   isClientFound = validateClient(row.getCell(0).toString(), client,orgLocation,responderType);
-									   
-									   if(!isClientFound){
-										   JSONObject jsonObj = populateJsonObject(client,isMailSent,vandorsListByOrgLocationId,orgLocation,row.getCell(0).toString(),"org");
-							    			try {
-												clientService.storeClient(jsonObj, user, orgLocation,responderType,org);
-											} catch (Exception e) {
-												logger.error(ExceptionUtils.getFullStackTrace(e)); 
-											}
-									   }
-							    			 isValidContact = validateContactsExeclDataImp(row,fname,client,orgLocation,responderType,row.getCell(0).toString());
-							    			 if(isValidContact){
-											   		vandorsListByOrgLocationId = orgRelationsService.getAllClientsByOrgNameOrgLocationId(row.getCell(0).toString(),orgLocation.getId());	  
-											   
-											   String email = client.getOwner();
-												String emails [] = email.split(",");
-												for(int i=0;i<emails.length;i++){
-													UserRole ownerUser = userRoleService.getUserDetailsByEmailAndLocationId(emails[i], orgLocation.getId());
-													Long orgRelationId =0L; 
-													OrgSpoc orgSpoc = orgSpocService.validateSpacEmailIdByOwnerUserIdAndOrgRelationId(row.getCell(8).toString(), orgRelationId, ownerUser.getId(),Constants.RECORD_ACTIVE);
-													 if(orgSpoc == null){
-														 if(ownerUser.getId() != null){
-															 client.setOwnerUserId(ownerUser.getUser().getId());
-															 JSONObject jsonObj1 = populateJsonObject(client,isMailSent,vandorsListByOrgLocationId,orgLocation,row.getCell(0).toString(),"contact");
-															 try {
-																	//clientService.storeClient(jsonObj, user, orgLocation,responderType,org);
-																	orgSpocService.addVendorContacts(jsonObj1, user, orgLocation, orgRelationId.toString(), "", responderType, org);
-																	vandorsListByOrgLocationId.clear();
-																} catch (Exception e) {
-																	logger.error(ExceptionUtils.getFullStackTrace(e)); 
-																}
-														    }
-														}
-												} 
-							    			 }else{
-							    				 if(row.getRowNum() > 0) {
-									    			   count++;
-									    			   createClientXlsErrorSheet(row, createExcelsheet,count, fname,client,orgLocation.getId());
-													}
-							    			 }
-						       } 
-				        	 }else{
-				        		 if(row.getRowNum() > 0) {
-					    			   count++;
-					    			   createClientXlsErrorSheet(row, createExcelsheet,count, fname,client,orgLocation.getId());
-									}
-				        	 }
-				       if (!isValidated || isClientFound) {
-				    	   FileOutputStream fos = null;
-				    	   if(!fname.endsWith("xls")){
-				    		   fos = new FileOutputStream("client_error.xlsx");
-				    	   }else{
-				    		   fos = new FileOutputStream("client_error.xls");
-				    	   }
-							wb_hssf.write(fos);
-							fos.close();
-						}
-						if(count > 0){
-							if(!fname.endsWith("xlsx")){
-								isFileCreated = "client_error.xls";
-							}else{
-								isFileCreated = "client_error.xlsx";
-							}
-							
-						}else{
-							isFileCreated = "failed";
-						}
-			      }
-			  inp.close();
-			return isFileCreated;
-		
-		}
-		
 		
 }

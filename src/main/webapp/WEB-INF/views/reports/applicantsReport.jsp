@@ -702,19 +702,23 @@ function getCustomReports(){
 	     "Stage": "Applicants",
 	     "StageCount": applicantsCount,
 	     "color": "#FF0F00"
-	     }, {
+         },{
+	     "Stage": "Request Sent",
+	     "StageCount": requestSentCount,
+	     "color": "#04D215"
+	     },{
 	     "Stage": "Shortlisted",
 	     "StageCount": shortlisted,
 	     "color": "#FF6600"
-	     }, {
-	     "Stage": "Interview",
-	     "StageCount": interviewCount,
-	     "color": "#FF9E01"
-	     }, {
+		  },{
 	     "Stage": "Submit To Client",
 	     "StageCount": submitToClientCount,
 	     "color": "#FCD202"
-	     }, {
+		 }, {
+	     "Stage": "Interview",
+	     "StageCount": interviewCount,
+	     "color": "#FF9E01"
+	     },{
 	     "Stage": "Offered",
 	     "StageCount": offeredCount,
 	     "color": "#F8FF01"
@@ -723,10 +727,6 @@ function getCustomReports(){
 	     "StageCount": rejectedCount,
 	     "color": "#B0DE09"
 	
-	     }, {
-	     "Stage": "Request Sent",
-	     "StageCount": requestSentCount,
-	     "color": "#04D215"
 	     }],
 	     "valueAxes": [{
 	     "axisAlpha": 0,
