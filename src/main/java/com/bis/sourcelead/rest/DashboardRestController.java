@@ -33,8 +33,8 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
-import com.bis.sourcelead.entity.RequirementInterviewer;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -49,11 +49,11 @@ import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -67,7 +67,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @RestController
 public class DashboardRestController {
 
-
+	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
@@ -112,6 +112,9 @@ public class DashboardRestController {
 	 
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	TaskService taskService;
 	/****
 	 * This  controller method is   for getting TimesheetSubmission Counts in dashboard Landing Page Based on User Login
 	 * @author: Sammeta David
@@ -201,8 +204,8 @@ public class DashboardRestController {
 		String userType = null;
 		List<Requirement>   requirementList = null;
 		
-		if("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole)){
-			userType = "ADMIN";
+		if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+			userType = Constants.ADMIN;
 			//requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
 			requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode);
 		}else{
@@ -302,8 +305,8 @@ public class DashboardRestController {
 			 startUTCDate = TZ_DF_TS.parse(startDateString);
 		}
 		
-		if("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole)){
-			userType = "ADMIN";
+		if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+			userType = Constants.ADMIN;
 		} 
 		
 		int toDayReqSubmissionscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMIT_TO_CLIENT",daterange,userType,user,startUTCDate,endUTCDate);
@@ -358,8 +361,8 @@ public class DashboardRestController {
 		String userType = null;
 		List<Requirement>   requirementList = null;
 		
-		if("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole)){
-			userType = "ADMIN";
+		if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+			userType = Constants.ADMIN;
 			requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
 		}else{
 			requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
@@ -401,8 +404,8 @@ public class DashboardRestController {
 		List<Requirement>   requirementList = null;
 		ArrayList<Requirement>   newList = new ArrayList<Requirement>();
 		
-		if("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole)){
-			userType = "ADMIN";
+		if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+			userType = Constants.ADMIN;
 			requirementList = requirementService.getApproverRequirementApproverListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode,statusType);
 		}else{
 			requirementList = requirementService.getApproverRequirementApproverListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode,statusType);
@@ -504,81 +507,14 @@ public class DashboardRestController {
 				 String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
 				 startUTCDate = TZ_DF_TS.parse(startDateString);
 			}
-			if("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole)){
-				userType = "ADMIN";
-				requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode,startUTCDate,endUTCDate);
+			if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+				userType = Constants.ADMIN;
+				requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations, dateRange, currentTime, userType, userId, userCode,startUTCDate,endUTCDate,timezone,user);
 				}else{
-				requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), dateRange, currentTime, userType, userId, userCode,startUTCDate,endUTCDate);
+				requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations, dateRange, currentTime, userType, userId, userCode,startUTCDate,endUTCDate,timezone,user);
 			}
 			
-			for(RequirementInterviewHistory interviewHistory : requirementInterviewList){
-				String candidateFirstName = "";
-				String candidateLastName = "";
-				String requirementTitle = "";
-				StringBuilder candidateName = new StringBuilder();
-				if(interviewHistory.getSubmissionId() != null && interviewHistory.getSubmissionId().getCandidate() != null){
-					if(interviewHistory.getSubmissionId().getCandidate().getFirstName() != null){
-						
-						candidateFirstName = interviewHistory.getSubmissionId().getCandidate().getFirstName();
-					}
-					if(interviewHistory.getSubmissionId().getCandidate().getLastName() != null){
-						
-						candidateLastName = interviewHistory.getSubmissionId().getCandidate().getLastName();
-					}
-				}
-				
-				if(interviewHistory.getSubmissionId() != null && interviewHistory.getSubmissionId().getRequirement().getJobTitle() != null){
-					requirementTitle = interviewHistory.getSubmissionId().getRequirement().getJobTitle();
-				}
-				if(interviewHistory.getSubmissionId() != null && interviewHistory.getSubmissionId().getRequirement().getRequirementUUID() != null){
-					interviewHistory.setRequirementUUID(interviewHistory.getSubmissionId().getRequirement().getRequirementUUID());
-				}
-				
-				if(null != interviewHistory.getInterviewId().getInterviewTemplateId()){
-					interviewHistory.setInterviewTemplateid(interviewHistory.getInterviewId().getInterviewTemplateId().getId());
-				}
-				
-				RequirementInterviewer requirementInterviewer =  requirementInterviewerService.getInterviwerByInterviewIdAndUserId(interviewHistory.getInterviewId().getId(), user.getId());
-				if(null != requirementInterviewer){
-					interviewHistory.setInterviewerId(requirementInterviewer.getId());
-				}
-				
-				interviewHistory.setCandidateName(candidateName.append(candidateFirstName).append(" ").append(candidateLastName).toString());
-				
-				interviewHistory.setRequirementTitle(requirementTitle);
-				
-				interviewHistory.setRequirementId(interviewHistory.getSubmissionId().getRequirement().getId().toString());
-				
-				//changed as per the timezone
-				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm aa");
-				if(null != timezone.getTimeZoneId() && null != interviewHistory.getInterviewId() && null != interviewHistory.getInterviewId().getId() && null != interviewHistory.getInterviewId().getStartTime()){
-					String currentTimeStr = Constants.TZ_DF.format(interviewHistory.getInterviewId().getStartTime());  
-					String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
-					Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-					currentDateInTimezone = standardFormat.format(converteDate);
-					interviewHistory.setInterviewStartDateTimeStr(currentDateInTimezone);
-				}
-				
-				 if(interviewHistory.getSubmissionId().getRequirement().getClientId() != null){
-						if(interviewHistory.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")){
-							interviewHistory.setClientName(interviewHistory.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrg().getOrgName());
-						}
-						if(interviewHistory.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")){
-							interviewHistory.setClientName(interviewHistory.getSubmissionId().getRequirement().getClientId().getLocationId().getOrg().getOrgName());
-						}
-					}else{
-						RequirementSubmission requirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(interviewHistory.getSubmissionId().getId(),loginOrgLocations.getId());
-					    if(requirementSubmission != null){
-					    	interviewHistory.setClientName(requirementSubmission.getOrgLocations().getOrg().getOrgName());
-					    }else if(interviewHistory.getSubmissionId().getSourceSubmission() != null && interviewHistory.getSubmissionId().getSourceSubmission().getId() != null){
-					    	RequirementSubmission parentRequirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(interviewHistory.getSubmissionId().getSourceSubmission().getId(),loginOrgLocations.getId());
-					    	 if(parentRequirementSubmission != null){
-							     interviewHistory.setClientName(parentRequirementSubmission.getOrgLocations().getOrg().getOrgName());
-					    	 }
-					    }
-					}
-				
-			}
+			
 			
 			
 			resultJson = commonUtil.toJSON(requirementInterviewList);
@@ -751,5 +687,79 @@ public class DashboardRestController {
 		 resultJson = commonUtil.toJSON(requirementSubmissionList);
 		 return resultJson;
 
+		}
+		
+		@PreAuthorize("hasRole('ROLE_VIEW_INTERVIEW')")
+		@RequestMapping(value = "/getInterviewsandTasks")
+		public String getInterviewsandTasks(String dateRange, HttpServletRequest request) throws Exception {
+			
+			String resultJson;
+			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+
+		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+			List<RequirementInterviewHistory> requirementInterviewList = null;
+			
+			String currentTime = null;
+			String userType = null;
+			Timezone timezone = null;
+			String userCode = user.getUserCode();
+			Long userId = user.getId();
+			if(loginOrgLocations.getTimezone() != null){
+				timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
+			}
+			
+			Date startUTCDate = null;
+			Date endUTCDate = null;
+			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+			DateFormat END_TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
+			Date startTime =  commonUtil.getDateFormat(dateRange);
+			
+			String startTimeTS = Constants.TZ_DF.format(startTime); 
+			String endTimeTS = END_TZ_DF.format(startTime);
+			String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startTimeTS);
+			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endTimeTS);
+				 startUTCDate = TZ_DF_TS.parse(startDateString);
+				 endUTCDate = TZ_DF_TS.parse(endDateString);
+			if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+				userType = Constants.ADMIN;
+					requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations, dateRange, currentTime, userType, userId, userCode,startUTCDate,endUTCDate,timezone,user);
+				}else{
+					requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations, dateRange, currentTime, userType, userId, userCode,startUTCDate,endUTCDate,timezone,user);
+			}
+			
+			// tasks
+			String taskCurrentTimeStr = "";
+			String taskCurrentDateInTimezone ="";
+			Date converteDate = null;
+			
+			String status =  "myTask";
+			if(!"".equalsIgnoreCase(dateRange)){
+				Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(dateRange);
+				taskCurrentTimeStr = Constants.TZ_DF.format(date1);
+				taskCurrentDateInTimezone= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, taskCurrentTimeStr);
+				converteDate = TZ_DF_TS.parse(taskCurrentDateInTimezone);
+				taskCurrentDateInTimezone = Constants.DMY.format(converteDate);
+			}
+			
+			List<Tasks> taklist = taskService.tasksListByIdAndOrgLocationIdAssignedUserId(loginOrgLocations.getId(),user.getId(),status,taskCurrentDateInTimezone,converteDate,timezone);
+			
+			DateFormat week_Day = new SimpleDateFormat ("EEEE");
+			
+			String dayOfweek = week_Day.format(startTime);
+			SimpleDateFormat formatter = new SimpleDateFormat("MMM dd yyyy");
+			String selectedDate  = formatter.format(startTime);
+			RequirementInterviewHistory reqInterviewHistory =  new RequirementInterviewHistory();
+			
+			
+			reqInterviewHistory.setInterviewerList(requirementInterviewList);
+			reqInterviewHistory.setTasksList(taklist);
+			
+			reqInterviewHistory.setDayOfweek(dayOfweek);
+			reqInterviewHistory.setSelectedDate(selectedDate);
+			
+			resultJson = commonUtil.toJSON(reqInterviewHistory);
+			return resultJson;
 		}
 }

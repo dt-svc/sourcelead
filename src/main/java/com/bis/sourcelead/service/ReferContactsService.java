@@ -19,5 +19,9 @@ public interface ReferContactsService {
 	ReferContacts getReferContactsByEmails(Long userId,String toEmail) throws Exception;
 
 	public void saveuserContacts(User user, OrgLocations orgLocations,JSONObject jsonObj) throws Exception;
+	
+	List<ReferContacts> getUserContactsListByUserIdAndRequirementId(Long userId,Long requirementId) throws Exception;
+	
+	ReferContacts getReferContactsById(Long id) throws Exception;
 
 }

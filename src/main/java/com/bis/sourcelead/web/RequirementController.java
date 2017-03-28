@@ -242,6 +242,8 @@ public class RequirementController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirement");
 		
+		model.addObject("loginOrgLocCoolingOffPeriod", orgLocations.getCoolingOffPeriod());
+		
 		//OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		
@@ -323,15 +325,17 @@ public class RequirementController {
 		if(null != requirement.getClientId()){
 			List<SubmissionTemplate>   clientSubmissionTempletesList = submissionTemplateService.getSubmissionTemplateByClientLocationIdAndOrgLocationIdAndTemplateType(requirement.getClientId().getResponderLocationId().getId(), orgLocations.getId(),"Submission");
 			model.addObject("clientSubmissionTempletesList", clientSubmissionTempletesList);
-		}
+/*		}
 		
-		if(null != requirement.getClientId()){
+		if(null != requirement.getClientId()){*/
 			if(null != requirement.getParentRequirement() && null != requirement.getParentRequirement().getSubmissionTemplateId()){
 				SubmissionTemplate   clientSubmissionTemplete = submissionTemplateService.getSubmissionTemplateById(requirement.getParentRequirement().getSubmissionTemplateId().getId());
 				model.addObject("clientSubmissionTemplete", clientSubmissionTemplete);
 			}else{
-				SubmissionTemplate   clientSubmissionTemplete = submissionTemplateService.getSubmissionTemplateById(requirement.getClientSubmissionTemplateId().getId());
-				model.addObject("clientSubmissionTemplete", clientSubmissionTemplete);
+				if(null != requirement.getClientSubmissionTemplateId()){
+					SubmissionTemplate   clientSubmissionTemplete = submissionTemplateService.getSubmissionTemplateById(requirement.getClientSubmissionTemplateId().getId());
+					model.addObject("clientSubmissionTemplete", clientSubmissionTemplete);
+				}
 			}
 		}
 

@@ -89,7 +89,7 @@ public class TaskRestController {
 		String taskCurrentTimeStr = "";
 		String taskCurrentDateInTimezone ="";
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-		Date converteDate;
+		Date converteDate=null;
 		if(!"".equalsIgnoreCase(date)){
 			Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(date);
 			taskCurrentTimeStr = Constants.TZ_DF.format(date1);
@@ -98,59 +98,9 @@ public class TaskRestController {
 			taskCurrentDateInTimezone = Constants.DMY.format(converteDate);
 		}
 		
-		List<Tasks> taklist = taskService.tasksListByIdAndOrgLocationIdAssignedUserId(orgLocations.getId(),user.getId(),status,taskCurrentDateInTimezone);
+		List<Tasks> taklist = taskService.tasksListByIdAndOrgLocationIdAssignedUserId(orgLocations.getId(),user.getId(),status,taskCurrentDateInTimezone,converteDate,timezone);
 		
-		Set<Tasks> taskList = new HashSet<Tasks>();
-		for(Tasks tasks : taklist) {
-			taskList.add(tasks);
-		}
-		
-		for(Tasks tk :taklist){
-			tk.setSubject(tk.getSubject());
-			
-			if(tk.getTaskDate() != null){
-
-				String currentTimeStr = Constants.TZ_DF.format(tk.getTaskDate());
-				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
-				 TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-				 converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-				currentDateInTimezone = Constants.DMY.format(converteDate);
-				tk.setTaskDateStr(currentDateInTimezone);
-		    }
-			if(tk.getTaskTime() != null){
-				String currentTimeStr = Constants.TZ_DF.format(tk.getTaskDate());
-				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
-				 TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-				 converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-				currentDateInTimezone = Constants.TMS.format(converteDate);
-				tk.setTaskTime(currentDateInTimezone);
-			}
-			tk.setDescription(tk.getDescription());
-			tk.setAlertType(tk.getAlertType());
-			tk.setTaskStatus(tk.getTaskStatus());
-			tk.setPriority(tk.getPriority());
-			
-			if( null != tk.getAssignedUserId()){
-				StringBuilder assignedName= new StringBuilder();
-				if(null != tk.getAssignedUserId().getLastName()){
-					tk.setAssignedName(assignedName.append(tk.getAssignedUserId().getFirstName()+" "+tk.getAssignedUserId().getLastName()).toString());
-				}else{
-					tk.setAssignedName(assignedName.append(tk.getAssignedUserId().getFirstName()).toString());
-				}
-			}
-			
-			if( null != tk.getTaskOwnerId()){
-				StringBuilder taskOwnerName= new StringBuilder();
-				if(null != tk.getAssignedUserId().getLastName()){
-					tk.setTaskOwnerName(taskOwnerName.append(tk.getTaskOwnerId().getFirstName()+" "+tk.getTaskOwnerId().getLastName()).toString());
-				}else{
-					tk.setTaskOwnerName(taskOwnerName.append(tk.getTaskOwnerId().getFirstName()).toString());
-				}
-			}
-			
-			
-				
-		}
+	
 		return commonUtil.toJSON(taklist);
 	} 
  
