@@ -492,6 +492,7 @@ public class Constants {
     
     public static String REQ_SEARCHTYPE = "Requirement";
 
+    public static String TODAY ="Today";
     public static String ONE_DAY_AGO ="1 Day Ago";
     public static String THREE_DAY_AGO ="3 Days Ago";
     public static String ONE_WEEK_AGO ="1 Week Ago";
