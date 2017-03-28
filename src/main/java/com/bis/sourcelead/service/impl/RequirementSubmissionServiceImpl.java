@@ -1740,8 +1740,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    			 clientSubmissionFields.setCurrentCTC(templateFields.getCurrentCTC()); 
    		 }
    		 
-   		 if(!isNullOrEmpty(templateFields.getExpectedCTC())){
-   			 clientSubmissionFields.setExpectedCTC(templateFields.getExpectedCTC()); 
+   		 if(!isNullOrEmpty(clientShortlistsRate[i])){
+   			 clientSubmissionFields.setExpectedCTC(clientShortlistsRate[i]); 
    		 }
    		 
    		 if(!isNullOrEmpty(templateFields.getNoticePeriod())){
@@ -2921,8 +2921,14 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 templateFields.setDesignation(jsonObj.getString("Designation"));
 		 }
 		 
+		 
 		 if(jsonObj.has("WorkExperience") && !isNullOrEmpty(jsonObj.getString("WorkExperience"))){
-			 templateFields.setWorkExperience(jsonObj.getString("WorkExperience"));
+			 StringBuilder sb = new StringBuilder();
+			 if(jsonObj.has("monthExp") && !isNullOrEmpty(jsonObj.getString("monthExp"))){
+				 templateFields.setWorkExperience(sb.append(jsonObj.getString("WorkExperience")).append(".").append(jsonObj.getString("monthExp")).toString());
+			 }else{
+				 templateFields.setWorkExperience(sb.append(jsonObj.getString("WorkExperience")).toString());
+			 }
 		 }
 		 
 		 if(jsonObj.has("Education") && !isNullOrEmpty(jsonObj.getString("Education"))){
