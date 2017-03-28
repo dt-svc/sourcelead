@@ -327,9 +327,17 @@ document.onkeydown=function(e){
                     <img class="img-circle" title="${report.notificationFrom.firstName} ${report.notificationFrom.lastName}" alt="${report.notificationFrom.userType}" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage/${report.notificationFrom.id}'/>">
                     </span> </div>
                     <div class="msg-content">
-                      <p>${report.body}</p>
+                    <c:if test="${report.actionLink != ''  && report.actionLink !='undefined' && ! empty report.actionLink}">
+                     <a href="${report.actionLink}"><p>${report.body}</p>
                      <c:out value="${userId}" />
-                      <span>${report.calDays} days ago at ${report.time} ${report.dateValue}</span> </div>
+                      <span>${report.calDays} days ago at ${report.time} ${report.dateValue}</span></a> 
+                      </c:if>
+                    <c:if test="${empty report.actionLink}">
+                     <a href="#"><p>${report.body}</p>
+                     <c:out value="${userId}" />
+                      <span>${report.calDays} days ago at ${report.time} ${report.dateValue}</span></a> 
+                  	</c:if>
+                   </div>
                   </div>
                 </li>
                 </c:forEach>

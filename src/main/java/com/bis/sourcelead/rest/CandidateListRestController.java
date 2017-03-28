@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
@@ -59,8 +60,10 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -68,6 +71,7 @@ import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -115,6 +119,9 @@ public class CandidateListRestController {
 	  
 	  @Autowired
 	  UserService userService;
+	  
+	  @Autowired
+	  RequirementSubmissionService requirementSubmissionService;
 	  
 	  
 	  
@@ -666,6 +673,20 @@ public class CandidateListRestController {
 			 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			Countries countries = countriesService.getCountriesByCountryName(loginUser.getCountry());
 			Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
+			
+			LinkedHashSet<String> lhs = new LinkedHashSet<String>();
+			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			for(LookUpData lookUpData :skillsList){
+				lhs.add(lookUpData.getName());
+			}
+			if(StringUtils.isNotEmpty(can.getSkillsName())){
+				String [] csl = can.getSkillsName().split(",");
+				for(String sl : csl){
+					lhs.add(sl);
+				}
+			}
+			can.setAllAndCandidateSkills(lhs);
+			
 			if(null != can.getCurrentRateCurrency() && null != can.getExpectedRateCurrencey()){
 				can.setCurrentRateCurrency(can.getCurrentRateCurrency());
 				can.setExpectedRateCurrencey(can.getExpectedRateCurrencey());
@@ -1159,6 +1180,7 @@ public class CandidateListRestController {
 				String resultJson;
 				List<Candidate> candidatesList = candidateService.getCandidateReportsListByOrgLocationID(orgLocations.getId(), candidateType);
 				/* List<Candidate> consultantsList = candidateService.getCandidateReportsListByOrgLocationID(orgLocations.getId(), "Consultant");*/
+				
 				resultJson = commonUtil.toJSON(candidatesList);
 				return resultJson;
 			 }
@@ -1168,6 +1190,7 @@ public class CandidateListRestController {
 			 public String getCandidateReports(@RequestParam(value="reportType", required=false) String reportType,
 					 @RequestParam(value="startDate", required=false) String customStartDate,
 					 @RequestParam(value="endDate", required=false) String customEndDate,
+					 @RequestParam(value="ownersList", required=false) String ownersList,
 					 HttpServletRequest request,HttpServletResponse response) throws Exception{
 
 
@@ -1243,8 +1266,10 @@ public class CandidateListRestController {
 					}
 					
 					List<Candidate> freshList = new ArrayList<Candidate>();
+//					List<Candidate> candidatesList = candidateService.getCandidateReportsListByOrgLocationID(orgLocations.getId(), candidateType);
 					
-					List<Candidate> canList = candidateService.getCandidateReports(orgLocation.getId(), null, filterDate, startDateUTC, endDateUTC);
+					List<Candidate> canList = candidateService.getCandidateReports(orgLocation.getId(), null, filterDate, startDateUTC, endDateUTC,ownersList);
+					
 					for(Candidate candidate : canList){
 						 DateFormat standardFormat = new SimpleDateFormat ("yyyy-MM-dd");
 						String currentTimeStr = Constants.TZ_DF.format(candidate.getCreatedDate());  
@@ -1262,7 +1287,8 @@ public class CandidateListRestController {
 							StringBuilder sb =  new StringBuilder();
 							candidate.setCreatedBy(sb.append(user.getFirstName()).append(" ").toString());
 						}
-						candidate.setCandidateUpdateDateToString(currentTimeStr);
+						candidate.setCandidateUpdateDateToString(Constants.DF_DMY.format(candidate.getUpdatedDate()));
+						 
 						freshList.add(candidate);
 					}
 				    String reportsList = commonUtil.toJSON(freshList);

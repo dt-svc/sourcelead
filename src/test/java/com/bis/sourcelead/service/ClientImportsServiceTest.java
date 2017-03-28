@@ -66,7 +66,7 @@ public class ClientImportsServiceTest {
 	    MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "text/plain", IOUtils.toByteArray(input));
 	    String isMailCheck = "checked";
 	    String responderType = "Client";
-	    clientImportsService.clientBulkSaving(multipartFile, user, orgLocations, org, isMailCheck, responderType);
+	    clientImportsService.clientBulkSavingImp(multipartFile, user, orgLocations, org, isMailCheck, responderType);
 	}
 	
 	@Test

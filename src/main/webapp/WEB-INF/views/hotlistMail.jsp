@@ -11,6 +11,10 @@
 .modal-backdrop{
 display: none;
 }
+
+.nicEdit-main {
+	overflow: auto !important;
+}
 </style>
 
 
@@ -66,7 +70,7 @@ display: none;
                         </div>
                       </div>
                     </div>
-                    <div class="modal-body-custom mailerpopup mt clearfix">
+                    <div class="modal-body-custom mailerpopup mt25 clearfix filter-position">
                      <div id="clientsList"></div>
                     </div>
                   </div> 
@@ -91,7 +95,7 @@ display: none;
           </div>
         </div>
         <div class="col-md-12 clearfix">
-          <label class="col-md-2 control-label text-success small">Candiates</label>
+          <label class="col-md-2 control-label text-success small">Candidates</label>
           <div class="col-md-10 positionRelative disable-choosen-dropdown">
             <select class="chosen-select" name="hotlistcandidates" data-validation="required" field-name="Candidates" multiple data-placeholder="&nbsp;" id="selectedCandidates">
             </select>
@@ -120,7 +124,7 @@ display: none;
                         </div>
                       </div>
                     </div>
-                    <div class="modal-body-custom mailerpopup mt clearfix">
+                    <div class="modal-body-custom mailerpopup mt25 clearfix filter-position">
                      <div id="candidatesList"></div>
                      <div id="candidatesLoading"></div>
                     </div>
@@ -254,7 +258,7 @@ $(function(){
   	    }
   	    else{
 	  	    	var bodytext = nicEditors.findEditor('bodytext').getContent();
-	  			if(bodytext.length < 36000){
+	  			if(bodytext.length < 60000){
 	  	    	
 	  	    	$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  			$.ajax({
