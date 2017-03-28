@@ -728,33 +728,33 @@ Highcharts.chart('container', {
         }
     },
     series: [{
-        name: 'Applications',
+        name: 'Applicants',
         data: applicantData
 
     }, {
-        name: 'Shortlisted',
+    	name: 'Request Sent',
+        data: requestSentData
+
+    }, {
+    	name: 'Shortlisted',
         data: shortlistedData
 
     }, {
-        name: 'Interviewed',
-        data: interviewData
-
-    }, {
-        name: 'SubmitedToClient',
+        name: 'Submit To Client',
         data: submitedtoClientData
 
     }, {
-        name: 'Offered',
-        data: offeredData
+    	name: 'Interview',
+        data: interviewData
 
     },
 		{
-        name: 'Rejected',
-        data: rejectedData
+    	name: 'Offered',
+        data: offeredData
 
     },{
-        name: 'Request Sent',
-        data: requestSentData
+    	name: 'Rejected',
+        data: rejectedData
 
     }
     ]	
