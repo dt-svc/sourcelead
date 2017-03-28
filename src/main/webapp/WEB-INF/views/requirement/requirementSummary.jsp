@@ -693,7 +693,7 @@ function sideBar(requirementId){
 					        for(var i=0; i<strNoticeArray.length; i++){
 					        	arrNotice[i] = strNoticeArray[i] +" ";
 					        }
-					        result = result+'<li class="noticePeriod"><i class="fa fa-bell"></i><span>'+arrNotice+'</span></li>';
+					        result = result+'<li class="noticePeriod"><i class="fa fa-bell" title="Notice Period"></i>'+arrNotice+'</li>';
 				        }
 					    else{
 						result = result+'<li><i class="fa fa-bell"></i><span> --- </span>';
