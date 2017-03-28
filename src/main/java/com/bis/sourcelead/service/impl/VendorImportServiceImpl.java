@@ -223,7 +223,7 @@ public class VendorImportServiceImpl implements VendorImportService {
 					createVendorErrorSheet(row, createExcelsheet, count, fname, client, orgLocation.getId());
 				}
 			}
-			if (!isValidated || isClientFound) {
+			if (count > 0) {
 				FileOutputStream fos = null;
 				if (!fname.endsWith("xls")) {
 					fos = new FileOutputStream("vendor_error.xlsx");
