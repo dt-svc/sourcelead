@@ -390,7 +390,12 @@ public class CrowdSourcingRequirementsRestController {
 			
 		 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	     Calendar cal = Calendar.getInstance();
-	     if((Constants.ONE_DAY_AGO).equalsIgnoreCase(updatedOn)){
+	    
+	     if((Constants.TODAY).equalsIgnoreCase(updatedOn)){
+	        cal.add(Calendar.DATE, 0);    
+	        return  dateFormat.format(cal.getTime());
+		 }
+	     else if((Constants.ONE_DAY_AGO).equalsIgnoreCase(updatedOn)){
 	        cal.add(Calendar.DATE, -1);    
 	        return  dateFormat.format(cal.getTime());
 		 }else if((Constants.THREE_DAY_AGO).equalsIgnoreCase(updatedOn)){

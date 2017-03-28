@@ -243,6 +243,10 @@ public class RequirementListRestController {
 	         		}else{
 	         			requirement.setIsRequirementReleasedByuser("N");
 	         		}
+	         		
+	         		if(userRoleName.equalsIgnoreCase("ROLE_ADMIN") || userRoleName.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
+	         			requirement.setIsRequirementReleasedByuser("Y");
+	         		}
 				}
 				
          		
