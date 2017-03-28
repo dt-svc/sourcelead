@@ -157,13 +157,13 @@ overflow-x: auto;
 						</div>
 						</div>
 					  </div> 
-				 </sec:authorize> 
+		</sec:authorize> 
 	    
 	    <div class="clearfix"></div> 
 	    
-	     <jsp:include page="dashboardEvents.jsp"></jsp:include>
-	    
-	    
+	    <sec:authorize access="hasRole('ROLE_VIEW_INTERVIEW')">
+	     	<jsp:include page="dashboardEvents.jsp"></jsp:include>	    
+	    </sec:authorize> 
 	  
 </section>
 
