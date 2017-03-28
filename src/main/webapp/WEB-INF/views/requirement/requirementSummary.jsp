@@ -596,7 +596,7 @@ function sideBar(requirementId){
                			else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined' && json.jobType != 'Other'){
      				     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'-'+json.jobType+'">'+json.jobTitle+'-'+json.jobType+'</span><i></i></h4></a>';
                			}else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined' && json.jobType == 'Other' ){
-        			     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'-'+json.jobType+'-'+json.otherJobType+'">'+json.jobTitle+'-'+json.jobType+'-'+json.otherJobType+'</span><i></i></h4></a>';
+           			     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'-'+json.jobId+'-'+json.jobType+'-'+json.otherJobType+'">'+json.jobTitle+'-'+json.jobId+'-'+json.jobType+'-'+json.otherJobType+'</span><i></i></h4></a>';
 	
                			}else{
                				result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'">'+json.jobTitle+'</span><i></i></h4></a>';
@@ -1370,7 +1370,7 @@ function rejectRequirementAlertMessage(status){
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
 	result = result +"	<div id='reasonDiv'/>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='updateReuqirementStatus(\""+ status+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert12();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='updateReuqirementStatusReject(\""+ status+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert12();'></b>";
 	result = result +"	</div>";
 	result = result +"	</div>";
 	$("#rejectRequirementAlert").append(result);
@@ -1379,7 +1379,51 @@ function rejectRequirementAlertMessage(status){
 }
 </script>
 
-
+<script>
+function updateReuqirementStatusReject(status){
+	
+	var sourceleadUrl = '${sourceleadUrl}';
+	var requirementId = '${requirementId}';
+	 
+	 var reason = document.getElementById("rejectReason").value;
+	  if(reason.match(/^[^\s-](.*)*$/) != null){
+	$('#reasonDiv').empty();
+ 	$.ajax({
+      type : "POST",
+      url: sourceleadUrl+"/requirementAcceptOrReject?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&reason="+reason, 
+    		  success :function(data) {  
+            if(data != null && data != 'undefined' && data != ""){  
+          		 if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+          		 else if (data.indexOf('exception') >= 0) {
+          			 location.replace(sourceleadUrl+"/errorPage");
+          		 }
+          		 else{ 
+          			 $("#selector11").removeAttr("style");
+           			 $("#selector11").css({ display: "block" });
+          			 if(status == "APPROVED"){
+          				$("#msgDiv").html("Requirement approved Successfully");
+          			 }else{
+          				$("#msgDiv").html("Requirement rejected Successfully");
+          			   }
+      				 requirementDetails(requirementId)
+             			msgFadein();
+               	 }
+            }
+       },
+	  }); 
+	  }
+	  else{
+		  if(reason){
+				$("#reasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+			}else{
+				$("#reasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+			}
+	  }
+	 
+}
+</script>
 <%-- 
      @author : Venkat Kesav
      this script is for Delete Candidate alert
