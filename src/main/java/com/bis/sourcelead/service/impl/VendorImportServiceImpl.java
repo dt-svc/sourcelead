@@ -162,7 +162,8 @@ public class VendorImportServiceImpl implements VendorImportService {
 						client.setEmailid(row.getCell(8).toString());
 					}
 					if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
-						client.setPhone(row.getCell(9).toString());
+						 String mobileNumer = getCellValueAsString(row.getCell(9),fname);
+			    		 client.setPhone(mobileNumer);
 					}
 					if (row.getCell(10) != null
 							&& !"".equalsIgnoreCase(row.getCell(10).toString())) {
