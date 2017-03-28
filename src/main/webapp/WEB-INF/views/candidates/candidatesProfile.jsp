@@ -376,7 +376,7 @@ function editCandidate(candidateId){
 							
 							
 							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="primarySkill" value="'+primarySkill+'" placeholder="Primary Skill" data-validation="validate_Space validate_length length2-200" data-validation-optional="true">';
+							result = result + '		            <input type="text" class="form-control input-sm" name="primarySkill" value="'+primarySkill+'" placeholder="Primary Skill" data-validation="validate_Space validate_length length1-100" data-validation-optional="true">';
 							result = result + '		          </div>';
 							
 							
@@ -760,7 +760,27 @@ function candidateProfile(candidateId){
 							result = result +'<div class="clearfix">';
 							
 							result = result + '<select multiple class="chosen-select form-control" name="skillName" id="skillName" data-validation="validate_Space" data-validation-optional="true">';
-							<c:forEach var="skill" items="${skillsList}">
+							// here get lookup data skills and manually enter skills 
+							$.each( json.allAndCandidateSkills, function( i, skill ){
+								  var existed = 0;
+					                if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
+						                var res = [];
+						                res = json.skillsName.split(",");
+						                res.forEach(function(item) {
+						                	if(skill == item){
+						                		existed = 1;
+						                		result = result + ' <option selected value="'+skill+'">'+skill+'</option>';
+						                	}
+						                });
+					                }
+					                if(existed == 0){
+					                	result = result + ' <option value="'+skill+'">'+skill+'</option>';
+					                }
+								  
+								});
+							
+							
+							/* <c:forEach var="skill" items="${skillsList}">
 					                var existed = 0;
 					                if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
 						                var res = [];
@@ -775,7 +795,7 @@ function candidateProfile(candidateId){
 					                if(existed == 0){
 					                	result = result + ' <option value="${skill.name}">${skill.name}</option>';
 					                }
-			                </c:forEach>
+			                </c:forEach> */
 			                result = result + '</select>';
 							result = result +'</div>';
 							result = result +'<div class="clearfix"></div>';
@@ -841,6 +861,7 @@ function candidateProfile(candidateId){
 											  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 											  '.chosen-select-width'     : {width:"95%"}
 								    }
+									
 									for (var selector in config) {
 									  $(selector).chosen(config[selector]);
 									}
@@ -866,6 +887,7 @@ function candidateProfile(candidateId){
 									var $this = $(this);
 									$this.next().css({'width': '100%'});
 									})
+									
 								$("#skillName").chosen();
 								$("#skillName").prop('disabled', true).trigger("chosen:updated");
 								$(".close-div").click(function(){
@@ -874,6 +896,8 @@ function candidateProfile(candidateId){
 								$(".add-skills").click(function(e){
 									 e.stopPropagation();
 								});
+								
+								
 								
 								 $(".addUser-org").click(function(){
 									 $(".edit-details").toggleClass("edit-details-active");
@@ -926,6 +950,31 @@ function candidateProfile(candidateId){
 		$("#saveSkillBtnSpan").empty();
 		$("#saveSkillBtnSpan").append(result);
 		$("#saveSkillBtnSpan").show();
+		
+		//Adding Customized Skills to the list
+        var select, chosen;
+	    select = $("#skillName");
+	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
+	    chosen = select.data('chosen');
+	    chosen.search_field.on('keyup', function(e)
+	    {
+	    	var newSkill = this.value.replace(",","");
+	        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+	        {
+	        	var par = this.parent;
+	            var option = $("<option>").val(newSkill).text(newSkill);
+	            select.append(option);
+	            select.find(option).prop('selected', true);
+	          //to doesn't allow duplicates
+                $("#skillName option").each(function(){
+                      $(this).siblings("[value='"+ this.value+"']").remove();
+                });
+                //end
+        		$("#skillName").trigger("chosen:updated");
+        		
+	        }
+	    });
+	    //Adding Customized Skills to the list
 	}
 
 	function saveSkill(candidateId){
