@@ -143,6 +143,9 @@ public class Constants {
 
 	public static String TASK_MECHANISM_EMAIL ="Task Mechanism";
     public static String TASK_MECHANISM_NOTIFICATION="Task Mechanism";
+    
+    public static String MODIFIED_REQUIREMENT_STATUS_EMAIL = "ModifiedRequirementStatusMailtoVendorContact";
+    public static String MODIFIED_REQUIREMENT_STATUS_NOTIFICATION = "ModifiedRequirementStatusNotificationtoVendorContact";
 	
 	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
 	
@@ -225,7 +228,7 @@ public class Constants {
 	
 	public static final DateFormat TMS = new SimpleDateFormat ("hh:mm a");
 
-
+	public static String INTERVIEWER_INVITATION_REDIFINED = "Interviewer InvitationRedifined";
 
 
 	public static String YES = "Y";
@@ -461,6 +464,10 @@ public class Constants {
 
     public static String[] VENDOR_CONTACTS_HEADERS = {"Vendor Name*","First Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
     public static String[] CLIENT_CONTACTS_HEADERS = {"Client Name*","First Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
+	
+	public static String[] VENDOR_HEADERS = {"Vendor Name*","Website","Country","State","City","Tier","First Name*","Last Name","Email*","Phone","Status","Owner(Email)"};
+   
+    public static String[] CLIENT_HEADERS = {"Client Name*","Website","Country","State","City","Tier","First Name*","Last Name","Email*","Phone","Status","Owner(Email)"};
     
     public static String[] VENDOR_CONTACTS_STATUS_DROPDOWN = {"New","Active","In-Active","Negotiation","Contracted"};
     public static String[] CLIENT_CONTACTS_STATUS_DROPDOWN = {"New","Active","In-Active","Negotiation","Contracted"};

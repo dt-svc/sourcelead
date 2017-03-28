@@ -11,6 +11,10 @@
 .modal-backdrop{
 display: none;
 }
+
+.nicEdit-main {
+	overflow: auto !important;
+}
 </style>
 
 
@@ -29,6 +33,7 @@ display: none;
     <div class="content-area clearfix">
     <div id="mailLoading"></div>
     <div id ="popUp"></div>
+    <div id ="textBoxPopUp"></div>
       <div class="form-horizontal compose-mail col-md-10 col-md-offset-1">
        <form:form id="hotlistCampaign_form" name="hotlistCampaign_form"  enctype='multipart/form-data' >
         <div class="col-md-12 clearfix">
@@ -65,7 +70,7 @@ display: none;
                         </div>
                       </div>
                     </div>
-                    <div class="modal-body-custom mailerpopup mt clearfix">
+                    <div class="modal-body-custom mailerpopup mt25 clearfix filter-position">
                      <div id="clientsList"></div>
                     </div>
                   </div> 
@@ -119,7 +124,7 @@ display: none;
                         </div>
                       </div>
                     </div>
-                    <div class="modal-body-custom mailerpopup mt clearfix">
+                    <div class="modal-body-custom mailerpopup mt25 clearfix filter-position">
                      <div id="candidatesList"></div>
                      <div id="candidatesLoading"></div>
                     </div>
@@ -160,7 +165,7 @@ display: none;
         <div class="col-md-12 clearfix mb10 mt10">
           <div class="col-md-12">
             <div class="clearfix txt-area">
-              <textarea id="compose-textarea" id="bodytext" name="bodytext" class="form-control" rows="5" placeholder="Message" style="height: 250px">
+              <textarea id="bodytext" name="bodytext" class="form-control" rows="5" placeholder="Message" style="height: 250px">
                     
 			  </textarea>
             </div>
@@ -200,12 +205,12 @@ display: none;
     
   </section>
   
-  
+<!--   
   <script type="text/javascript" src="resources/js/bootstrap-multiselect.js"></script>
-  <script src="resources/js/bootstrap3-wysihtml5.all.min.js"></script> 
+  <script src="resources/js/bootstrap3-wysihtml5.all.min.js"></script>  -->
   
   
-  
+  <script src="resources/js/nicEdit.js"></script> 
    
 
 <script type="text/javascript">
@@ -234,6 +239,7 @@ $(function(){
 	function sendHotListCampaign() {
 		if ($('#hotlistCampaign_form').validate(false, validationSettings)){ 
 		var sourceleadUrl = '${sourceleadUrl}';
+		nicEditors.findEditor('bodytext').saveContent();
 		var frm = $('#hotlistCampaign_form').serializeFormJSON();
 		var con = JSON.stringify(frm);
 		con = con.replace(/[{}]/g, ""); 
@@ -251,22 +257,27 @@ $(function(){
   	    	alertMailerMsg();
   	    }
   	    else{
-  	    	$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-  			$.ajax({
-  				type : "POST",
-  	    	    data: formData,
-  	    	    contentType : 'application/json; charset=utf-8',
-  	    	    enctype: 'multipart/form-data',
-  		        processData: false,
-  		        contentType:false, 
-  	    	    dataType : 'json',
-  				url : sourceleadUrl+"/sendHotListCampaign?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
-  				success : function(result) {
-  						location.replace(sourceleadUrl+"/mailBox");
-  				},
-  			}); 
+	  	    	var bodytext = nicEditors.findEditor('bodytext').getContent();
+	  			if(bodytext.length < 60000){
+	  	    	
+	  	    	$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  			$.ajax({
+	  				type : "POST",
+	  	    	    data: formData,
+	  	    	    contentType : 'application/json; charset=utf-8',
+	  	    	    enctype: 'multipart/form-data',
+	  		        processData: false,
+	  		        contentType:false, 
+	  	    	    dataType : 'json',
+	  				url : sourceleadUrl+"/sendHotListCampaign?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+	  				success : function(result) {
+	  						location.replace(sourceleadUrl+"/mailBox");
+	  				},
+	  			}); 
+	  	    }else{
+	  	    	alertTextboxMsg("Message body is too large. If you have more data, Plz go with attachment");
+	  	    }
   	    }
-  		
 		 return true
 		 
 		}else{
@@ -305,6 +316,30 @@ function cancel(){
 }
 </script>
 
+
+<script type="text/javascript">
+function alertTextboxMsg(msgText){
+	
+	var result = "";
+	result = result +"<div class='project_inn_mask'></div>";
+	result = result +"<div id='textBoxmailerPopup' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"<p><strong>"+msgText+"</strong></p>";
+	result = result +"<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"<b href='javascript:void(0)'><input type='button'  value='Ok' onclick='textBoxCancel();' style='background-color:#1ab394;width:100%'/></b>";
+	result = result +"</div>";
+	$("#textBoxPopUp").append(result);
+	$("#textBoxmailerPopup").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+
+<script type="text/javascript">
+function textBoxCancel(){
+	$("#textBoxmailerPopup").slideUp(200);
+	$(".project_inn_mask").hide();
+}
+</script>
 
 
 
@@ -985,33 +1020,16 @@ function candidateListChange(){
 
 
   <script>
-  $(function () {
-    //Add text editor
-    $("#compose-textarea").wysihtml5();
-	  $("#create-signature").wysihtml5();
-  });
 //upload file script -laptop-shiftA
 document.getElementById("attachfileBtn").onchange = function () {
 	$('#attachfile-mail').val($(this).val().replace(/C:\\fakepath\\/i, ''))
 };
 </script> 
-  <script type="text/javascript">
-	function createSign(){
-	   $(".createSign-pop").fadeToggle(200);
-	}
-		function closeSign(){
-	   $(".createSign-pop").fadeOut(200);
-	}
-	</script> 
   
-  <script>
-	wysihtml5.dom.getPastedHtml = function(event) {
-	var html;
-	if (event.clipboardData) {
-	html = event.clipboardData.getData('text/plain');
-	}
-	return html;
-	};
+
+
+<script type="text/javascript">
+	bkLib.onDomLoaded(function() { nicEditors.allTextAreas() });
 </script>
   
 <jsp:include page="masterFooter.jsp" />
