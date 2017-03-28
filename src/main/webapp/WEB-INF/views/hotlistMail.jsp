@@ -11,6 +11,10 @@
 .modal-backdrop{
 display: none;
 }
+
+.nicEdit-main {
+	overflow: auto !important;
+}
 </style>
 
 
@@ -66,7 +70,7 @@ display: none;
                         </div>
                       </div>
                     </div>
-                    <div class="modal-body-custom mailerpopup mt clearfix">
+                    <div class="modal-body-custom mailerpopup mt25 clearfix filter-position">
                      <div id="clientsList"></div>
                     </div>
                   </div> 
@@ -120,7 +124,7 @@ display: none;
                         </div>
                       </div>
                     </div>
-                    <div class="modal-body-custom mailerpopup mt clearfix">
+                    <div class="modal-body-custom mailerpopup mt25 clearfix filter-position">
                      <div id="candidatesList"></div>
                      <div id="candidatesLoading"></div>
                     </div>

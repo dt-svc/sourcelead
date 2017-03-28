@@ -27,6 +27,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -120,6 +121,26 @@ public class MailBoxController {
  					model.addObject("subject", mailBox.getSubject());
  					model.addObject("fromEmail", mailBox.getFromMail());
  				}else{
+ 					model.setViewName("registration/persmissionDenied");
+ 				}
+ 			}
+ 			
+ 			return model;
+ 	}
+	
+	
+	
+	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
+	@RequestMapping(value = "/forwardEmail")
+ 	public ModelAndView forwardEmail(HttpServletRequest request,@RequestParam(value="UUID", required=false) String UUID) {
+		    ModelAndView model = new ModelAndView();
+ 			model.setViewName("composeMail");
+ 			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			if(!isNullOrEmpty(UUID)){
+ 				model.addObject("UUID", UUID);
+ 				model.addObject("mailType", "forwardEmail");
+ 				UserMailBox mailBox = userMailBoxService.getUserMailBoxByUUID(UUID);
+ 				if(null == mailBox){
  					model.setViewName("registration/persmissionDenied");
  				}
  			}

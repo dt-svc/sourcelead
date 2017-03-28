@@ -15,5 +15,9 @@ public interface ClientImportsService {
 	File getVendorContactsTemplate(Long orgLocationID) throws Exception;
 	
 	File getClientContactsTemplate(Long orgLocationID) throws Exception;
+
+	File getClientTemplate(Long orgLocationId)throws Exception;
+
+	String clientBulkSavingImp(MultipartFile multipartFile, User user, OrgLocations orgLocation, Org org, String isMailCheck, String responderType)throws Exception;
 	
 }

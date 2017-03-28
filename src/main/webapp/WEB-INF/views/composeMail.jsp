@@ -10,6 +10,10 @@
 .modal-backdrop{
 display: none;
 }
+
+.nicEdit-main {
+	overflow: auto !important;
+}
 </style>
 
  <script>
@@ -17,13 +21,19 @@ display: none;
 	 var UUID = '${UUID}';
 	
 	 if(null != UUID && UUID != '' && UUID != 'undefined'){
-		 $("input[name=subject]").val('${subject}');
-		 var fromEmail = '${fromEmail}';
 		 
-		 $("#emailsList").empty();
-		 $("#emailsList").append("<option value='" +fromEmail+ "' selected>"+fromEmail+"</option>");
-		 $("#emailsList").trigger("chosen:updated");
+		 var mailType = '${mailType}';
 		 
+		 if(null != mailType && mailType != '' && mailType != 'undefined'){
+			 loadMailBoxDetails(UUID);
+		 }else{
+			 $("input[name=subject]").val('${subject}');
+			 var fromEmail = '${fromEmail}';
+			 
+			 $("#emailsList").empty();
+			 $("#emailsList").append("<option value='" +fromEmail+ "' selected>"+fromEmail+"</option>");
+			 $("#emailsList").trigger("chosen:updated");
+		 }
 	 }
 });
 </script> 
@@ -69,7 +79,7 @@ display: none;
                   </div>
                   
                    <div class="modal-body mail-body clearfix">
-                    <div class="modal-body-custom mailerpopup mt clearfix">
+                    <div class="modal-body-custom mailerpopup mt25 clearfix filter-position">
                      <div id="userList"></div>
                     </div>
                   </div> 
@@ -102,14 +112,11 @@ display: none;
         <div class="col-md-12 clearfix mb10 mt10">
           <div class="col-md-12">
             <div class="clearfix txt-area">
-              <textarea  id="bodytext" name="bodytext" class="form-control" rows="5" placeholder="Message" style="height: 250px">
+              <textarea  id="bodytext" name="bodytext" class="form-control" rows="5" placeholder="Message" style="height: 250px; overflow: auto;">
                     
 			  </textarea> 
-			  <input type="hidden" name="bodyTextTextArea"  id="bodyTextTextArea"  value=""/>
 			  
-			  <!-- <textarea name="bodytext" placeholder="Message"  rows="5" style="width: 100%;">
-	Some Initial Content was in this textarea
-</textarea> -->
+			  
             </div>
           </div>
         </div>
@@ -155,7 +162,26 @@ display: none;
   <script src="resources/js/nicEdit.js"></script> 
   
   
-  
+   <script>
+  function loadMailBoxDetails(UUID){
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  
+			 $.ajax({
+				 
+				 type: "POST",
+			        url: sourceleadUrl+"/getUserMailBoxDetailsByUUID?${_csrf.parameterName}=${_csrf.token}&UUID="+UUID, 
+			        success: function(data) {
+			        	var json = JSON.parse(data);
+			        	
+			        	 $("input[name=subject]").val(json['subject']);
+			    		 
+			    		 nicEditors.findEditor('bodytext').setContent(json['body']);
+			        	
+			        }
+			 });
+	  
+  }
+  </script> 
  
 
 <script type="text/javascript">
@@ -183,11 +209,6 @@ $(function(){
   <script type="text/javascript">
 	function sendEmails() {
 		if ($('#email_form').validate(false, validationSettings)){ 
-			
-	
-			
-			
-			
 			
 				var sourceleadUrl = '${sourceleadUrl}';
 				nicEditors.findEditor('bodytext').saveContent();

@@ -150,6 +150,9 @@ public class RequirementRefer implements Serializable {
 	private String requirementCity;
 	
 	@Transient
+	private String requirementJobType;
+	
+	@Transient
 	private String requirementRate;
 	
 	@Transient
@@ -577,4 +580,11 @@ public class RequirementRefer implements Serializable {
 		this.phoneNumber = phoneNumber;
 	}
 
+	public String getRequirementJobType() {
+		return requirementJobType;
+	}
+
+	public void setRequirementJobType(String requirementJobType) {
+		this.requirementJobType = requirementJobType;
+	}
 }
