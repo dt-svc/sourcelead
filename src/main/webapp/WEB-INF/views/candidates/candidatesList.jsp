@@ -534,7 +534,7 @@ function candidateSideBar(candidateId){
 			             result = result+'</ul>';
 			             
 			             result = result+'<div class="clearfix">';
-			             result = result+'<div class="professinal-details">';
+			             result = result+'<div class="">';
 			             
 			            
 			             result = result+'<ul class="list-inline list-unstyled">';

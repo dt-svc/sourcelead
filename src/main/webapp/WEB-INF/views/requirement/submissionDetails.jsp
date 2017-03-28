@@ -456,7 +456,6 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
         	  if(json.submissionRateStatus == 'REJECTED'){ 
         	  result = result + '<div class="clearfix">';
 				 result = result + '<div class="release-jobs alert alert-danger">';
-				 result = result + '<span class="close" data-dismiss="alert" aria-label="close">&times;</span>';
 			     result = result + '<div class="clearfix sub-details">';
 			     result = result + ' <p><strong>Rejected Reason</strong></p>';
 			     result = result + ' <div class="clearfix">';
