@@ -14,7 +14,7 @@
 /* min-height: 400px !important; */
 }
 .dashboard-widget.dashboard-widget-icons{
-min-height: 225px !important;
+min-height: 125px !important;
 }
 .dashboard-widget .blank-pages{
 padding: 0;
@@ -157,13 +157,13 @@ overflow-x: auto;
 						</div>
 						</div>
 					  </div> 
-				 </sec:authorize> 
+		</sec:authorize> 
 	    
 	    <div class="clearfix"></div> 
 	    
-	     <jsp:include page="dashboardEvents.jsp"></jsp:include>
-	    
-	    
+	    <sec:authorize access="hasRole('ROLE_VIEW_INTERVIEW')">
+	     	<jsp:include page="dashboardEvents.jsp"></jsp:include>	    
+	    </sec:authorize> 
 	  
 </section>
 

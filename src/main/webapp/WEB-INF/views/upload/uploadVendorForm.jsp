@@ -35,7 +35,7 @@ margin:10px 220px 0;
 		  <!-- Download File button -->
 		  <div class="clearfix mb row">
 			<sec:authorize access="hasAnyRole('ROLE_VENDOR_BULK_IMPORTS')">
-			<div class="col-xs-12 col-md-6">			
+			<div class="col-xs-12 col-md-6 hidden">			
 			 <a href="<c:url value='/downloadVendorTemplate?name=Vendor'/>">
 			 <button class="btn btn-success btn-block" type="button">
 					<i class="fa fa-download"></i>&nbsp;&nbsp;Download Vendor Template
@@ -44,10 +44,10 @@ margin:10px 220px 0;
 			</div>
 			</sec:authorize>
 			<sec:authorize access="hasAnyRole('ROLE_VENDOR_CONTACT_BULK_IMPORTS')">
-			<div class="col-xs-12 col-md-6">
+			<div class="col-xs-12 col-md-12">
 			 <a href="<c:url value='/downloadVendorTemplate?name=Contact'/>">
-			 <button class="btn btn-warning btn-block" type="button">
-					<i class="fa fa-download"></i>&nbsp;&nbsp;Download Vendor Contact Template
+			 <button class="btn btn-success btn-block" type="button">
+					<i class="fa fa-download"></i>&nbsp;&nbsp;Download Vendor Template
 			</button>
 			</a>
 			</div>

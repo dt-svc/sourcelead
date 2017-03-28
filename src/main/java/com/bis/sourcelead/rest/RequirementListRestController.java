@@ -243,6 +243,10 @@ public class RequirementListRestController {
 	         		}else{
 	         			requirement.setIsRequirementReleasedByuser("N");
 	         		}
+	         		
+	         		if(userRoleName.equalsIgnoreCase("ROLE_ADMIN") || userRoleName.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
+	         			requirement.setIsRequirementReleasedByuser("Y");
+	         		}
 				}
 				
          		
@@ -612,7 +616,7 @@ public class RequirementListRestController {
 										}else{
 											requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
 										}*/
-										
+										requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
 										requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
 										requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
 									}
