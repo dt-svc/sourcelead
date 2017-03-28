@@ -167,7 +167,7 @@ function cancelOrgImg(){
       <div class="tab-content">
         <div id="orgsetting" class="tab-pane fade in active">   
         <div class="row">
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <div class="clearfix">
 		    <!-- Tab for Profile setting-area -->
 		  <div class="accountsettings-tab org-settings-area">
 		  <div class="tab-content panel-body">

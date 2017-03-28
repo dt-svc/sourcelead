@@ -20,7 +20,7 @@
 
 
 <style type="text/css">
-.add_inter .chosen-container{
+.addinterTable .chosen-container{
 width:125px !important;
 }
 #addInterviewTbl p.jquery_form_error_message{
@@ -53,7 +53,7 @@ function addInterview(requirementId){
         result = result + '<label>&nbsp;&nbsp;<strong>Is Client Interview</strong>&nbsp;&nbsp;</label>';
 	} 
 	
-	result = result + '<table cellpadding="0" cellspacing="0" id="addInterviewTbl">';
+	result = result + '<table cellpadding="0" cellspacing="0" id="addInterviewTbl" class="addinterTable">';
 	result = result + '<tbody>';
 		result = result + '<tr id="divTsRow0">';
 			result = result + '<th>Applicant</th>';
@@ -968,7 +968,7 @@ function interviewTemplate(){
 	 	       
 	 	        $("#interviewSubmissionTemplate").chosen();
 	 			$("#interviewSubmissionTemplate").trigger('chosen:update');
-	 			$('.chosen-container').css({'width': '100%'});
+	 			$('.chosen-container').css({'width': '100% !important'});
 	 			
 	        }else{
 	        	$("#emptyTemplate").empty();
