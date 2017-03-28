@@ -658,6 +658,20 @@ public class MailBoxRestController {
 	    		}
 
 	    	}
+	        
+        
+        @PreAuthorize("hasRole('ROLE_MAIL_BOX')")    
+        @RequestMapping(value = "/getUserMailBoxDetailsByUUID")
+    	public String getUserMailBoxDetailsByUUID(@RequestParam(value = "UUID", required = false) String UUID,
+    			HttpServletRequest request) throws Exception {
+
+    		String resultJson = null;
+    		UserMailBox mailBox = userMailBoxService.getUserMailBoxByUUID(UUID);
+    	
+    		resultJson = toJSON(mailBox);
+    		return resultJson;
+
+    	}
 
 	 
 	 public String toJSON(Object obj){
