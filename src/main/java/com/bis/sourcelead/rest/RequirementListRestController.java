@@ -612,7 +612,7 @@ public class RequirementListRestController {
 										}else{
 											requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
 										}*/
-										
+										requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
 										requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
 										requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
 									}
