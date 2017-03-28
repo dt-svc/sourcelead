@@ -1,4 +1,4 @@
-package com.bis.si;
+package com.bis.sourcelead.si;
 
 public class SocialInviterService {
 
