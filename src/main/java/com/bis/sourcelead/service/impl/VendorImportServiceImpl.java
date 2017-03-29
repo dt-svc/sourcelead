@@ -501,10 +501,10 @@ public class VendorImportServiceImpl implements VendorImportService {
 			jsonObj.put("roleTypeId", roleTypeId);
 			OrgRelations orgRelation = null;
 			for (OrgRelations org : orgList) {
-				if (orgName.equals(org.getResponderLocationId().getOrg().getOrgName())) {
+				if (orgName.equalsIgnoreCase(org.getResponderLocationId().getOrg().getOrgName())) {
 					orgRelation = org;
 				}
-				else if (orgName.equals(org.getLocationId().getOrg().getOrgName())) {
+				else if (orgName.equalsIgnoreCase(org.getLocationId().getOrg().getOrgName())) {
 					orgRelation = org;
 				}
 			}
@@ -638,10 +638,10 @@ public class VendorImportServiceImpl implements VendorImportService {
 			else if (row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())) {
 				Org org = null;
 				for (OrgRelations orgRelation : orgList) {
-					if (orgName.equals(orgRelation.getResponderLocationId().getOrg().getOrgName())) {
+					if (orgName.equalsIgnoreCase(orgRelation.getResponderLocationId().getOrg().getOrgName())) {
 						org = orgRelation.getResponderLocationId().getOrg();
 					}
-					else if (orgName.equals(orgRelation.getLocationId().getOrg().getOrgName())) {
+					else if (orgName.equalsIgnoreCase(orgRelation.getLocationId().getOrg().getOrgName())) {
 						org = orgRelation.getLocationId().getOrg();
 					}
 				}
