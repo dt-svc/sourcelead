@@ -42,7 +42,7 @@ overflow-x: auto;
        </div>
 			<div class="pull-left">
 				<h2>Clients<span class="select-fild">
-				    <select id="listOfVendors" onchange="listChange(this);">
+				    <select id="listOfVendors" onchange="listChange(this); flushCheckBoxVal();">
                   		 <option value="listbyVendor">List by client</option>
                         <option value="listbyContact" selected="selected">List by contact</option> 
                     </select>
@@ -2350,5 +2350,13 @@ function getCities(){
 	}
 }
 </script>  
+
+<script>
+function flushCheckBoxVal(){
+	$("input[type=checkbox]").each(function() { this.checked=false; });
+	
+}
+ </script>
+
 
 <jsp:include page="../masterFooter.jsp" />	

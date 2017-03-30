@@ -52,6 +52,12 @@ float: left;
 position: absolute;
 left:0;
 }
+.viewTemplate .sjfb-field select {
+-webkit-appearance: none; -moz-appearance: none; -ms-appearance: none; -o-appearance: none;
+}
+.viewTemplate .sjfb-field select::-ms-expand {
+    display: none;
+}
 </style>
 
 
