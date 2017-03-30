@@ -241,7 +241,7 @@ public class RegistrationServiceImpl implements RegistrationService{
  		  }*/
 		
 		saveDefaultSubmissionTemplate(org,orgLocations,user);
-		//saveDefaultInterviewFeedbackTemplate(org,orgLocations,user);
+		saveDefaultInterviewFeedbackTemplate(org,orgLocations,user);
 		
 		/*
 		 * Saving USER DB data as ElasticSearch Documents
