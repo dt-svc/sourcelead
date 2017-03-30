@@ -3807,4 +3807,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		return requirementSubmissionDao.getRequirementHistoryCountByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
 	}
 
+	@Override
+	public boolean isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(Long candidateId, Long requirementId)
+			throws Exception {
+		return requirementSubmissionDao.isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(candidateId, requirementId);
+	}
+
 }
