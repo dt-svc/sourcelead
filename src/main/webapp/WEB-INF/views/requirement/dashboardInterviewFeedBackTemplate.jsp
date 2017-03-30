@@ -33,7 +33,7 @@ font-size: 20px;
 }
 .container-wraper .viewTemplate .sjfb-field{
 display: inline-flex;
-margin-bottom: 10px;
+margin-bottom: 20px;
 }
 .container-wraper .viewTemplate .sjfb-field label {
 font-size:14px !important;
@@ -63,6 +63,12 @@ padding-right: 15px;
 	background-color: #f5f5f5;
 	padding:0;
 }
+.viewTemplate .sjfb-field {
+    width: 49%;
+ }
+ .viewTemplate textarea + p{
+top:70px !important;
+} 
 </style>
 
 <script type="text/javascript">
@@ -70,8 +76,7 @@ window.onload = function () {
 	var requirementInterviewid = '${requirementInterviewid}';
 	var previousInterviewId = '${afterRequirementInterviewid}';
 	var feedbackStatus = '${feedbackStatus}';
-	
-	if(parseInt(requirementInterviewid) == parseInt(previousInterviewId)){
+		if(parseInt(requirementInterviewid) == parseInt(previousInterviewId)){
 		if(feedbackStatus == "N"){
 			viewTemplateNo();
 		}else{
@@ -87,7 +92,6 @@ window.onload = function () {
 <div id ="popUp"></div>
 <script type="text/javascript">
 function after(){
-	
 	var result = "";
 	result = result +"<div class='project_inn_mask'></div>";
 	result = result +"<div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
@@ -117,12 +121,27 @@ function feedback(){
 </script>
 <script type="text/javascript">
 function cancelFunction(){
+	var requirementName = '${requirementName}';
+	var applicantName = '${applicantName}';
 	$("#remove_user_pop").slideUp(200);
 	$(".project_inn_mask").hide();
 	var result = "";
 	result = result + '<form id="cancelFunction_form" name="cancelFunction_form" enctype="multipart/form-data" method="post">';
 	result = result + '<h3>Interview Feedback</h3>';
 	result = result + '<div class="row clearfix">';
+	result = result + '<div col-md-6 ">';
+		result = result + '<div class="col-md-6">';
+		result = result + '<label class="col-md-4">Requirement Name</label>';
+		result = result + '<span class="col-md-8">'+requirementName+'</span>';
+		result = result + '</div>';
+	
+		result = result + '<div class="col-md-6">';
+		result = result + '<label class="col-md-4">Applicant Name</label>';
+		result = result + '<span class="col-md-8">'+applicantName+'</span>';
+		result = result + '</div>';
+	result = result + '</div>&nbsp;&nbsp;';
+
+	result = result + '<div class=" clearfix mp">';
 	result = result + '<div class="col-md-6">';
 	result = result + '<label class="col-md-4">Comment <span class="text-danger">*</span></label>';
 	result = result + '<div class="col-md-8">';
@@ -243,18 +262,33 @@ function interviewTemplateForm(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var requirementInterviewid = '${requirementInterviewid}';
 	var previousInterviewId = '${afterRequirementInterviewid}';
+	var requirementName = '${requirementName}';
+	var applicantName = '${applicantName}';
 	$("#remove_user_pop").slideUp(200);
 	$(".project_inn_mask").hide();
 	$("#interviewTemplateFormDiv").show();
-	
 	if(requirementInterviewid = previousInterviewId){
 		viewTemplate()
 	}else{
 		generateInterviewFeedbackForm1(sourceleadUrl,templateId)
 		var result = "";
 		result = result + '<form id="interviewTemplate_form" name="interviewTemplate_form" enctype="multipart/form-data" method="post">';
+		
 		result = result + '<h3>Interview Feedback</h3>';
+		
 		result = result + '<div class="viewTemplate feedbackTemplate col-md-12">';
+			result = result + '<div class="sjfb-field sjfb-text">';
+			result = result + '<label>Requirement Name</label>';
+			result = result + '<span>'+requirementName+'</span>';
+			result = result + '</div>';
+
+			result = result + '<div class="sjfb-field sjfb-text">';
+			result = result + '<label>Applicant Name</label>';
+			result = result + '<span>'+applicantName+'</span>';
+			result = result + '</div>';
+		result = result + '</div>';
+		
+		/* result = result + '<div class="viewTemplate feedbackTemplate col-md-12">';
 		result = result + '<div class="sjfb-field sjfb-text">';
 		result = result + '<label>Comment <span class="text-danger">*</span></label>';
 		result = result + '<textarea rows="2" placeholder="Comment" class="form-control" name="interviewComment" field-name="Comment" data-validation="required"></textarea>';
@@ -264,7 +298,7 @@ function interviewTemplateForm(){
 		result = result + '<span class="radio-inline"><input type="radio" value="Yes" name="feedback">Yes</span>';
 		result = result + '<span class="radio-inline"><input type="radio" value="No" name="feedback">No</span>';
 		result = result + '</div>';
-		result = result + '</div>';
+		result = result + '</div>'; */
 		
 		result = result + '<div class="form-horizontal clearfix">';
 		result = result + '<div id="interviewsjfb-fields" class="viewTemplate">';
@@ -408,12 +442,12 @@ $('body').on('blur', '#interviewTemplate_form', function() {
 	})(jQuery);
 </script>
 
-<section class="content-wraper">
+<section class="content-wraper clearfix">
   <!-- Header Area -->
-   <div id="interviewTemplateFormDiv" class="container container-wraper positionRelative" style="display: none;"> </div> 
-   <div id="cancelFeedbackDiv" class="container container-wraper positionRelative" style="display: none;"> </div>
-   <div id="viewInterviewTemplateList" class="container"></div>
-   <div id="viewInterviewTemplateNo" class="container"></div>
+   <div id="interviewTemplateFormDiv" class="container container-wraper positionRelative interFeedback" style="display: none;"> </div> 
+   <div id="cancelFeedbackDiv" class="container container-wraper positionRelative interFeedback" style="display: none;"> </div>
+   <div id="viewInterviewTemplateList" class="container interFeedback"></div>
+   <div id="viewInterviewTemplateNo" class="container interFeedback"></div>
  </section>  
 
 
@@ -579,6 +613,8 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
 		var sourceleadUrl ='${sourceleadUrl}';
 		var requirementInterviewid = '${requirementInterviewid}';
 		var orgLocations = '${orgLocations}';
+		var requirementName = '${requirementName}';
+		var applicantName = '${applicantName}';
 		
 		$("#viewInterviewTemplateNo").hide();
 		$("#interviewTemplateFormDiv").hide();
@@ -610,7 +646,7 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
 		    	     result = result + '<div class="">';
 		  			 result = result + '<div class="release-jobs submissionDetails">';
 				     result = result + '<div class="clearfix sub-details">';
-				     result = result + ' <h2 class="active">Interview Feedback Details</h2>';
+				     result = result + ' <h2 class="active clearfix intfd_dashbord"><span class="col-md-3">Interview Feedback Details</span> <span class="col-md-4">Req. Name:<lable class="paddingLeft" title="'+requirementName+'">'+requirementName+'</label></span><span class="col-md-4">Appli. Name:<lable class="paddingLeft" title="'+applicantName+'">'+applicantName+'</label></span></h2>';
 				     result = result + ' <div class="content clearfix">'; 
 				     result = result + submissionDetails;
 				     result = result + ' </div>';

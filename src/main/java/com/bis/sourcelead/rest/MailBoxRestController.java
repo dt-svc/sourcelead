@@ -102,12 +102,17 @@ public class MailBoxRestController {
 	
 	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/getClientContactsEmailsByOrgRelationId", method = RequestMethod.POST)
-	@ResponseBody String getClientContactsEmailsByOrgRelationId(@RequestParam(value = "orgRelationIds", required = false) String orgRelationIds) throws Exception {
+	@ResponseBody String getClientContactsEmailsByOrgRelationId(@RequestParam(value = "orgRelationIds", required = false) String orgRelationIds,
+			HttpServletRequest request) throws Exception {
 		
+		
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    
 		String[] relationsId = orgRelationIds.split(",");
 		StringBuilder emails  = new StringBuilder();
 		for(int i=0 ; i < relationsId.length; i++){
-			List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(Long.valueOf(relationsId[i]));
+			List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocContactEmailsByOrgRelationIdAndUserId(user.getId(), Long.valueOf(relationsId[i]), orgLocations.getId());
 			for(OrgSpoc orgSpoc :orgSpocList){
 				emails.append(orgSpoc.getClientUser().getEmail()).append(",");
 			}
@@ -653,6 +658,20 @@ public class MailBoxRestController {
 	    		}
 
 	    	}
+	        
+        
+        @PreAuthorize("hasRole('ROLE_MAIL_BOX')")    
+        @RequestMapping(value = "/getUserMailBoxDetailsByUUID")
+    	public String getUserMailBoxDetailsByUUID(@RequestParam(value = "UUID", required = false) String UUID,
+    			HttpServletRequest request) throws Exception {
+
+    		String resultJson = null;
+    		UserMailBox mailBox = userMailBoxService.getUserMailBoxByUUID(UUID);
+    	
+    		resultJson = toJSON(mailBox);
+    		return resultJson;
+
+    	}
 
 	 
 	 public String toJSON(Object obj){

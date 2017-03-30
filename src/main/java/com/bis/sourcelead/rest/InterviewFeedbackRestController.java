@@ -207,10 +207,6 @@ public class InterviewFeedbackRestController {
 			   ift.setRequirementInterviewerId(rqr);
 			   ift.setSubmissionTemplateId(sub);
 			   ift.setStatus("Y");
-			   ift.setComment(jsonObj.getString("interviewComment"));
-			   if(!"".equalsIgnoreCase(jsonObj.getString("feedback"))){
-				   ift.setInterviewStatus(jsonObj.getString("feedback"));   
-			   }
 			   ift.setInterviewTemplateJsonString(jsonStringData);
 			   ift.setCreatedBy(user.getUserCode());
 			   ift.setCreatedDate(new Date());
@@ -252,7 +248,12 @@ public class InterviewFeedbackRestController {
 						
 						for(RequirementInterviewer interviewer: interviewers){
 							StringBuilder name = new StringBuilder();
-							interviewer.setInterviewerName(name.append(interviewer.getInterviewerUser().getFirstName()).append(" ").append(interviewer.getInterviewerUser().getLastName()).toString());
+							if(null != interviewer.getInterviewerUser().getLastName() && !"".equalsIgnoreCase(interviewer.getInterviewerUser().getLastName())){
+								interviewer.setInterviewerName(name.append(interviewer.getInterviewerUser().getFirstName()).append(" ").append(interviewer.getInterviewerUser().getLastName()).toString());	
+							}else{
+								interviewer.setInterviewerName(name.append(interviewer.getInterviewerUser().getFirstName()).toString());
+							}
+							
 							InterviewFeedbackTemplate feedbackTemplate = interviewFeedbackTemplateService.getInterviewFeedbackTemplateById(interviewer.getId()) ;
 							if(feedbackTemplate != null){
 								interviewer.setFeedbackDate(Constants.DMY.format(feedbackTemplate.getCreatedDate()));
@@ -261,6 +262,13 @@ public class InterviewFeedbackRestController {
 						}
 		      resultJson = toJSON(interviewers);
 			 return resultJson;
+	   }
+    
+    @RequestMapping(value = "/loadInterviewFeedbackTemplate" , method = RequestMethod.GET)
+	   public String loadInterviewFeedbackTemplate() throws Exception {
+		    SubmissionTemplate submissionTemplate = submissionTemplateService.getSubmissionTemplateByTemplateNameByOrg(1L,Constants.DEFAULT_INTERVIEW_FEEDBACK_TEMAPLATE);
+			return submissionTemplate.getJsonString();
+	    
 	   }
     
     private String toJSON(Object obj){

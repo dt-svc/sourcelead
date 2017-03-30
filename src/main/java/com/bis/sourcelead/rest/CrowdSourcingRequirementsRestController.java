@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,6 +38,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.CampaignIndex;
@@ -390,7 +392,12 @@ public class CrowdSourcingRequirementsRestController {
 			
 		 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	     Calendar cal = Calendar.getInstance();
-	     if((Constants.ONE_DAY_AGO).equalsIgnoreCase(updatedOn)){
+	    
+	     if((Constants.TODAY).equalsIgnoreCase(updatedOn)){
+	        cal.add(Calendar.DATE, 0);    
+	        return  dateFormat.format(cal.getTime());
+		 }
+	     else if((Constants.ONE_DAY_AGO).equalsIgnoreCase(updatedOn)){
 	        cal.add(Calendar.DATE, -1);    
 	        return  dateFormat.format(cal.getTime());
 		 }else if((Constants.THREE_DAY_AGO).equalsIgnoreCase(updatedOn)){
@@ -449,18 +456,33 @@ public class CrowdSourcingRequirementsRestController {
 	@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
 	@RequestMapping(value = "/applyToJobFromCrowdSourcing", method = RequestMethod.POST)
 	public String applyToJobFromCrowdSourcing(@RequestParam(value = "jsonData", required = false) String json,
-			@RequestParam(value = "con", required = false) String con, MultipartHttpServletRequest request)
+			@RequestParam(value = "con", required = false) String con, MultipartHttpServletRequest request,
+			@RequestParam(value = "locationMapFile", required = false) CommonsMultipartFile locationMapFileData)
 			throws Exception {
 
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
 
 		
+		MultipartFile multiFile = null;
+		//to get parse resume
+		if(locationMapFileData != null && locationMapFileData.getSize() > 0 ){
+			Iterator<String> itrator = request.getFileNames();
+			if (itrator.hasNext()) {
+				multiFile = request.getFile(itrator.next());
+			}
+		}
+		//to get the manually uploaded resume
+		else{
+			final Map files = request.getFileMap();
+		    multiFile = (MultipartFile)files.get("newUploadBtn");
+		}
+		
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-		RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmissionFromCrowdSourcing(jsonObj,user, con);
+		RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmissionFromCrowdSourcing(jsonObj,user, con,orgLocations,multiFile);
 		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
 		requirementSubmissionHistory.setFromStage("NEW");
@@ -1626,7 +1648,7 @@ public class CrowdSourcingRequirementsRestController {
 						rr.setRequirementJobId(rr.getRequirementId().getJobId());
 						rr.setRequirementUUID(rr.getRequirementId().getRequirementUUID());
 						rr.setRequirementOrgName(rr.getRequirementId().getOrgLocationId().getOrg().getOrgName());
-						rr.setRequirementRateType(rr.getRequirementId().getJobType());
+						rr.setRequirementJobType(rr.getRequirementId().getJobType());
 						rr.setRequirementCountry(rr.getRequirementId().getCountry());
 						rr.setRequirementState(rr.getRequirementId().getState());
 						rr.setRequirementCity(rr.getRequirementId().getCity());

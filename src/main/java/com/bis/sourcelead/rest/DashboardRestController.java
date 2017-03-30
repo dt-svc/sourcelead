@@ -626,6 +626,11 @@ public class DashboardRestController {
 	     		}else{
 	     			requirement.setIsRequirementReleasedByuser("N");
 	     		}
+	     		
+	     		
+	     		if(userRole.equalsIgnoreCase("ROLE_ADMIN") || userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
+         			requirement.setIsRequirementReleasedByuser("Y");
+         		}
 			}
 
 		}

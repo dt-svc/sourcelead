@@ -167,7 +167,7 @@ public interface RequirementSubmissionService {
 	
 	Integer getRecruiterSubmissionsCountByRecruiterIdAndRequirementId(Long requirementId,Long userId) throws Exception;
 	
-	RequirementSubmission saveRequirementSubmissionFromCrowdSourcing(JSONObject jsonObj,User user,String jsonStringvalues) throws Exception;
+	RequirementSubmission saveRequirementSubmissionFromCrowdSourcing(JSONObject jsonObj,User user,String jsonStringvalues,OrgLocations orgLocations,MultipartFile multiFile) throws Exception;
 
 	void applicantAcceptMailAboutRateNegotiation(Requirement requirement, User initiatorUser, RequirementSubmission requirementSubmission,
 			OrgLocations orgLocations,StringBuilder tempHTML) throws Exception;
@@ -231,5 +231,8 @@ public interface RequirementSubmissionService {
  
 	List<RequirementSubmission>  getAllSubmissionsfromVendorsBasedOnLocationIdAndUserId(User user, OrgLocations orgLocations,String status,Requirement requirement) throws Exception;
 	
-   
+	Integer getRequirementHistoryCountByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
+	
+	boolean isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(Long candidateId,Long requirementId) throws Exception;
+	
 }

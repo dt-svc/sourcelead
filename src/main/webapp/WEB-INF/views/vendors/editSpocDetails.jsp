@@ -11,7 +11,12 @@
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-
+<script>
+	function vendorEditMsgFadein() {
+		$("#vendorEditMsgDiv").fadeIn(200);
+        $('#vendorEditMsgDiv').delay(2000).fadeOut('slow');
+	}
+</script> 
 <script type="text/javascript">
 	function vendorDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId)
 	{
@@ -23,6 +28,9 @@
 						
 						var json = JSON.parse(data);
 						var result = "";
+						result  = result + '<div class="success_pop" id="vendorEditMsgDiv" style="display: none;">';
+					    result  = result + '<i class="fa fa-check-circle"></i><span id="vendorEditMsg"></span>';
+					    result  = result + '</div>';
 						if(json.msg != null && json.msg != "" && json.msg != 'undefined'){
 							result = result+ '<div class="success_pop" id="selector1" style="display: block;">';
 							result = result+ ' <i class="fa fa-check-circle"></i><span>'+json.msg+'</span>';
@@ -236,10 +244,10 @@
 					    //alert("json.userList.length"+json.userList.length);
 						 for (var j = 0; j < json.userList.length; j++) {
 							var user = json.userList[j];
-							   if(user.id == tempOwnerId){
+							   if(user.id == tempOwnerId && user.id != json.tempSpocId){
 								   selected = 'selected';
 								   result = result+"<option value="+user.id+" "+selected+" >"+user.firstName+" "+user.lastName+"</option>";
-							  }else{
+							  }else if(user.id != json.tempSpocId){
 									  result = result+"<option value="+user.id+" >"+user.firstName+" "+user.lastName+"</option>";
 			   		 	    	 } 
 						} 
@@ -332,8 +340,12 @@
 	   		    	var newOwner = data;
 	   		    	$("#spocDetailsId").removeAttr("onClick")
 	   		    	$("#spocDetailsId").attr("onclick","vendorDetailsbySpocId('"+spocId+"', '"+newOwner+"', '"+spocUserId+"', '"+ownerId+"')");
+	   		 		$("#vendorEditMsgDiv").removeAttr("style");
+		 			$("#vendorEditMsgDiv").css({ display: "block" });
+		 			$("#vendorEditMsg").html("Contact Details Updated");
 	   		    	vendorDetailsbySpocId(spocId,newOwner,spocUserId,tempOwnerId);
 	   		    	getVendorContactLists();
+	   		    	vendorEditMsgFadein();
 	   		    }
 		 }); 
 	     	return true;
