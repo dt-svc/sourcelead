@@ -177,6 +177,10 @@ public class Constants {
 	public static String  PROJECT_MEMBER_HISTORY_CLOSED= "CLOSED";
 	public static String REQUIREMENT_EMAIL_NOTIFICATION = "Approval Mechanism";
 	
+	public static String APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR = "ApplicantAcceptMailToInterviewCreator";
+	
+	public static String APPLICANT_REJECT_MAILTO_INTERVIEW_CREATOR = "ApplicantRejectMailToInterviewCreator";
+	
 	public static String REQUIREMENT_SEQUENTIAL_EMAIL_NOTIFICATION = "Approval Mechanism Sequential";
 	public static String APPROVED_EMAIL_NOTIFICATION = "Approved Requirement";
 	public static String REJECTED_EMAIL_NOTIFICATION ="Rejected Mail About The Requirement";
@@ -227,6 +231,8 @@ public class Constants {
 	
 	
 	public static final DateFormat TMS = new SimpleDateFormat ("hh:mm a");
+	
+	public static final DateFormat TMS_FORMAT = new SimpleDateFormat ("HH:mm aa");
 
 	public static String INTERVIEWER_INVITATION_REDIFINED = "Interviewer InvitationRedifined";
 

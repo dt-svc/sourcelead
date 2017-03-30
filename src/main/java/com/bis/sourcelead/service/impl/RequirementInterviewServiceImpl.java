@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementInterviewer;
@@ -104,6 +105,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	
 	@Autowired
 	private RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+	
+	@Autowired
+	private RequirementService requirementService;
 	
 	@Override
 	public void saveRequirementInterview(JSONObject jsonObj, User user, OrgLocations orgLocations, Org loginOrg) throws Exception  {
@@ -785,7 +789,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 StringBuilder tentativeBuilder = new StringBuilder();
 			 
 			 globalVarsMap.put("acceptURL",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectInterview?interviewStatus=Attending&requirementInterviewId=").append(requirementInterview.getId()).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
-			 globalVarsMap.put("rejectURL",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectInterview?interviewStatus=Not Attending&requirementInterviewId=").append(requirementInterview.getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
+			 globalVarsMap.put("rejectURL",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectInterview?interviewStatus=Not_Attending&requirementInterviewId=").append(requirementInterview.getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
 			 globalVarsMap.put("tentativeURL",tentativeBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectInterview?interviewStatus=Maybe&requirementInterviewId=").append(requirementInterview.getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Tentative</div></a>").toString());
 			 
 		 //setting the Recipient information
@@ -1241,6 +1245,219 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	public List<RequirementInterview> getRequirementInterviewsBySubmissionAndOrgLocId(List<Long> submissionsList, Long locationId,
 			Date startUTCDate, Date endUTCDate) {
 		return requirementInterviewDao.getRequirementInterviewsBySubmissionAndOrgLocId(submissionsList, locationId, startUTCDate, endUTCDate);
+	}
+
+
+	@Override
+	public void applicantInterviewAcceptmailToInterviewInitiator(String requirementInterviewId) throws Exception {
+		RequirementInterview reqnterview = getRequirementInterviewById(requirementInterviewId);
+		User interviewCreactorUser =  userService.getUserByUserCode(reqnterview.getCreatedBy());
+		
+		EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(interviewCreactorUser.getFirstName());
+		 emailMessage.setLastName(interviewCreactorUser.getLastName());
+		 emailMessage.setToEmail(interviewCreactorUser.getEmail());
+		 emailMessage.setFromEmail("info@sourecelead.com");
+		 emailMessage.setCreatedBy(interviewCreactorUser.getUserCode());
+		
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 
+		 if(interviewCreactorUser.getFullName()!= null && !"".equalsIgnoreCase(interviewCreactorUser.getFullName())){
+			 globalVarsMap.put("InterviewCreatorName", interviewCreactorUser.getFullName());
+			 }else{
+				 globalVarsMap.put("InterviewCreatorName","--");
+			 }
+		 
+		 RequirementSubmissionTemplateFields interviewDetails = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(reqnterview.getSubmissionId().getId());
+		 if(null != interviewDetails.getFirstName() && !"".equalsIgnoreCase(interviewDetails.getFirstName())){
+			 globalVarsMap.put("ApplicantName", interviewDetails.getFirstName());
+			 }else{
+				 globalVarsMap.put("ApplicantName","--");
+			 }
+		 RequirementSubmission reqSubmission= requirementSubmissionService.getRequirementSubmissionById(reqnterview.getSubmissionId().getId());
+		 Requirement requirement = requirementService.getRequirementByRequirementId(reqSubmission.getRequirement().getId());
+		 
+		 if(null != requirement.getJobTitle() && !"".equalsIgnoreCase(requirement.getJobTitle())){
+			 globalVarsMap.put("requirementName", requirement.getJobTitle());
+			 }else{
+				 globalVarsMap.put("requirementName","--");
+			 }
+		 if(null != reqnterview.getDateOfInterviewStr() && !"".equalsIgnoreCase(reqnterview.getDateOfInterviewStr())){
+			 globalVarsMap.put("InterviewDate", reqnterview.getDateOfInterviewStr());
+			 }else{
+				 globalVarsMap.put("InterviewDate","--");
+			 }
+			 	StringBuilder sb = new StringBuilder();
+			 	String interviewStartTime =null;
+		 		String interviewEndTime = null;
+		 		if(null != reqnterview.getStartTime() && null !=reqnterview.getEndTime()){
+		 		if(null != reqnterview.getStartTime()){
+		 		DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
+				String currentTimeStr = Constants.TZ_DF.format(reqnterview.getStartTime());  
+				String startTimeUTC= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,reqnterview.getTimezone().getTimeZoneId(), currentTimeStr);
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+				String convertedDateStr = DF_DMY.format(convertedDate);
+				interviewStartTime = convertedDateStr;
+		 		}
+		 		if(null != reqnterview.getEndTime()){
+		 		DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
+				String currentTimeStr = Constants.TZ_DF.format(reqnterview.getEndTime());  
+				String startTimeUTC= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,reqnterview.getTimezone().getTimeZoneId(), currentTimeStr);
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+				String convertedDateStr = DF_DMY.format(convertedDate);
+				interviewEndTime = convertedDateStr;
+		 		}
+		 		 
+			 globalVarsMap.put("InterviewTime",sb.append(interviewStartTime).append(interviewEndTime).toString());
+			 }else if(null != reqnterview.getStartTime()){
+			 globalVarsMap.put("InterviewTime",sb.append(interviewStartTime).toString());
+			 }else{
+			 globalVarsMap.put("InterviewTime","--");
+			 }
+		 if(null != reqnterview.getInterviewType() && !"".equalsIgnoreCase(reqnterview.getInterviewType())){
+			 globalVarsMap.put("InterviewType",reqnterview.getInterviewType());
+			 }else{
+				 globalVarsMap.put("InterviewType","--");
+			 }
+		 if(null != reqnterview.getLocation() && !"".equalsIgnoreCase(reqnterview.getLocation())){
+			 globalVarsMap.put("Details", reqnterview.getLocation());
+			 }else{
+				 globalVarsMap.put("Details","--");
+			 }
+
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR,Constants.ENTITY_TYPE_EMAIL);
+		 //EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR,Constants.ENTITY_TYPE_NOTIFICATION);
+
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		// String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		 //notificationScenario.setBody(notificationbody);
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, reqSubmission.getOrgLocations().getOrg());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		// String actionLink= "";
+
+		 //emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, loginOrgLocation, notificationScenario);
+		 emailScenerioUtil.sendEmail(emailMessage,reqSubmission.getOrgLocations().getOrg().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+	
+	}
+
+
+	@Override
+	public void applicantInterviewRejectmailToInterviewInitiator(String requirementInterviewId) throws Exception {
+		RequirementInterview reqnterview = getRequirementInterviewById(requirementInterviewId);
+		User interviewCreactorUser =  userService.getUserByUserCode(reqnterview.getCreatedBy());
+		
+		EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(interviewCreactorUser.getFirstName());
+		 emailMessage.setLastName(interviewCreactorUser.getLastName());
+		 emailMessage.setToEmail(interviewCreactorUser.getEmail());
+		 emailMessage.setFromEmail("info@sourecelead.com");
+		 emailMessage.setCreatedBy(interviewCreactorUser.getUserCode());
+		
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 
+		 if(interviewCreactorUser.getFullName()!= null && !"".equalsIgnoreCase(interviewCreactorUser.getFullName())){
+			 globalVarsMap.put("InterviewCreatorName", interviewCreactorUser.getFullName());
+			 }else{
+				 globalVarsMap.put("InterviewCreatorName","--");
+			 }
+		 
+		 RequirementSubmissionTemplateFields interviewDetails = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(reqnterview.getSubmissionId().getId());
+		 if(null != interviewDetails.getFirstName() && !"".equalsIgnoreCase(interviewDetails.getFirstName())){
+			 globalVarsMap.put("ApplicantName", interviewDetails.getFirstName());
+			 }else{
+				 globalVarsMap.put("ApplicantName","--");
+			 }
+		 RequirementSubmission reqSubmission= requirementSubmissionService.getRequirementSubmissionById(reqnterview.getSubmissionId().getId());
+		 Requirement requirement = requirementService.getRequirementByRequirementId(reqSubmission.getRequirement().getId());
+		 
+		 if(null != requirement.getJobTitle() && !"".equalsIgnoreCase(requirement.getJobTitle())){
+			 globalVarsMap.put("requirementName", requirement.getJobTitle());
+			 }else{
+				 globalVarsMap.put("requirementName","--");
+			 }
+		 if(null != reqnterview.getDateOfInterview()){
+			 String interviewDate = Constants.DMY.format(reqnterview.getDateOfInterview());
+			 globalVarsMap.put("InterviewDate", interviewDate);
+			 }else{
+				 globalVarsMap.put("InterviewDate","--");
+			 }
+		 	StringBuilder sb = new StringBuilder();
+		 	String interviewStartTime =null;
+	 		String interviewEndTime = null;
+		 	if(null != reqnterview.getStartTime() && null !=reqnterview.getEndTime()){
+		 		if(null != reqnterview.getStartTime()){
+		 		DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
+				String currentTimeStr = Constants.TZ_DF.format(reqnterview.getStartTime());  
+				String startTimeUTC= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,reqnterview.getTimezone().getTimeZoneId(), currentTimeStr);
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+				String convertedDateStr = DF_DMY.format(convertedDate);
+				interviewStartTime = convertedDateStr;
+		 		}
+		 		if(null != reqnterview.getEndTime()){
+		 		DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
+				String currentTimeStr = Constants.TZ_DF.format(reqnterview.getEndTime());  
+				String startTimeUTC= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,reqnterview.getTimezone().getTimeZoneId(), currentTimeStr);
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+				String convertedDateStr = DF_DMY.format(convertedDate);
+				interviewEndTime = convertedDateStr;
+		 		}
+		 		 
+			 globalVarsMap.put("InterviewTime",sb.append(interviewStartTime).append(interviewEndTime).toString());
+			 }else if(null != reqnterview.getStartTime()){
+			 globalVarsMap.put("InterviewTime",sb.append(interviewStartTime).toString());
+			 }else{
+			 globalVarsMap.put("InterviewTime","--");
+			 }
+		 	
+		 if(null != reqnterview.getInterviewType() && !"".equalsIgnoreCase(reqnterview.getInterviewType())){
+			 globalVarsMap.put("InterviewType",reqnterview.getInterviewType());
+			 }else{
+				 globalVarsMap.put("InterviewType","--");
+			 }
+		 if(null != reqnterview.getLocation() && !"".equalsIgnoreCase(reqnterview.getLocation())){
+			 globalVarsMap.put("Details", reqnterview.getLocation());
+			 }else{
+				 globalVarsMap.put("Details","--");
+			 }
+
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_REJECT_MAILTO_INTERVIEW_CREATOR,Constants.ENTITY_TYPE_EMAIL);
+		 //EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR,Constants.ENTITY_TYPE_NOTIFICATION);
+
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		// String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		 //notificationScenario.setBody(notificationbody);
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, reqSubmission.getOrgLocations().getOrg());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		// String actionLink= "";
+
+		 //emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, loginOrgLocation, notificationScenario);
+		 emailScenerioUtil.sendEmail(emailMessage,reqSubmission.getOrgLocations().getOrg().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 	}
 	
 	
