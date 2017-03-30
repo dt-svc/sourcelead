@@ -35,7 +35,7 @@ font-size: 20px;
 }
 .container-wraper .viewTemplate .sjfb-field{
 display: inline-flex;
-margin-bottom: 10px;
+margin-bottom: 20px;
 }
 .container-wraper .viewTemplate .sjfb-field label {
 font-size:14px !important;
@@ -68,6 +68,9 @@ padding-right: 15px;
 .viewTemplate .sjfb-field {
     width: 49%;
  }
+ .viewTemplate textarea + p{
+top:70px !important;
+} 
 </style>
 
 <script type="text/javascript">
@@ -287,7 +290,7 @@ function interviewTemplateForm(){
 			result = result + '</div>';
 		result = result + '</div>';
 		
-		result = result + '<div class="viewTemplate feedbackTemplate col-md-12">';
+		/* result = result + '<div class="viewTemplate feedbackTemplate col-md-12">';
 		result = result + '<div class="sjfb-field sjfb-text">';
 		result = result + '<label>Comment <span class="text-danger">*</span></label>';
 		result = result + '<textarea rows="2" placeholder="Comment" class="form-control" name="interviewComment" field-name="Comment" data-validation="required"></textarea>';
@@ -297,7 +300,7 @@ function interviewTemplateForm(){
 		result = result + '<span class="radio-inline"><input type="radio" value="Yes" name="feedback">Yes</span>';
 		result = result + '<span class="radio-inline"><input type="radio" value="No" name="feedback">No</span>';
 		result = result + '</div>';
-		result = result + '</div>';
+		result = result + '</div>'; */
 		
 		result = result + '<div class="form-horizontal clearfix">';
 		result = result + '<div id="interviewsjfb-fields" class="viewTemplate">';
