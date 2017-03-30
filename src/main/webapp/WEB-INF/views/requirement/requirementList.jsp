@@ -244,22 +244,25 @@ function prepareRequirementData(data){
     result = result +"    <th>Applicants</th>"; 
     result = result +"    <th>Owner</th>"; 
     result = result +"    <th>Status</th>"; 
+    '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
+       result = result +"<th>Action</th>";
+    '</sec:authorize>';
     result = result +"    <th>Release</th>"; 
     result = result +"  </tr>"; 
     result = result +"</thead>";
     result = result +"<tbody>"; 
+    
+    
+    result = result + '<div class="new_side_wrap">';
+	result = result + '<div class="new_side_wrap_inn">';
+	result = result + '<div class="new_side_wrap_cta">';
+	result = result +'<div id="addApplicantDiv"></div>';
+	result = result +'</div>';
+	result = result +'</div>';
+	result = result +'</div>';
+	
     var json = JSON.parse(data);
-    /* for (var i = 0; i < 1; i++) {
-           var val= json[i];
-           var opt = "";
-                   if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
-                           opt  = opt + '<div class="success_pop" id="selector2" style="display: block;">';
-                           opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
-                           opt  = opt + '</div>';
-                           }
-                   $("#msgDiv").empty();
-                   $("#msgDiv").append(opt);
-           } */
+    
     for (var i = 0; i < json.length; i++) { 
     	
    	 var opt = json[i]; 
@@ -442,7 +445,11 @@ function prepareRequirementData(data){
 
 			result = result +" </select>";	
            result = result +" </td>";
-              
+           
+	        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
+	             result = result +'<td><div><a href="javascript:void(0)" title="" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div></td>';
+	        '</sec:authorize>';
+	              
 		if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
 	        	if(opt.isRequirementReleasedByuser == 'Y'){
 		   		 	result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success'></i></a></div></td>"; 
@@ -2253,5 +2260,5 @@ function getCities(){
 
 <!-- Country,State,City Script Ends Here -->	
 
-
+<jsp:include page="addApplicantFromRequirementList.jsp" />
 <jsp:include page="../masterFooter.jsp" />
