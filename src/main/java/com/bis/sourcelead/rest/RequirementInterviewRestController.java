@@ -349,7 +349,14 @@ public class RequirementInterviewRestController {
 						requirementInterviewer.setInterviewEndTime(eventstartTimrFroDashBoardStr);
 					}
 					requirementInterviewer.setRequirementTitle(reqInterview.getSubmissionId().getRequirement().getJobTitle());
-					requirementInterviewer.setInterviewType(reqInterview.getInterviewType());
+					
+					if(reqInterview.getInterviewType()!=null){
+						requirementInterviewer.setInterviewType(reqInterview.getInterviewType());
+					}
+					else{
+						requirementInterviewer.setInterviewType("--");
+					}
+					
 				}
 				
 			}
@@ -387,8 +394,12 @@ public class RequirementInterviewRestController {
 					
 					/*reqInterview.setInterviewStartDateTimeStr(reqInterview.getStartTime().toString());
 					reqInterview.setInterviewEndtDateTimeStr(reqInterview.getEndTime().toString());*/
-					
-					reqInterview.setInterviewType(reqInterview.getInterviewType());
+					if(reqInterview.getInterviewType()!=null){
+						reqInterview.setInterviewType(reqInterview.getInterviewType());
+					}
+					else{
+						reqInterview.setInterviewType("--");
+					}
 					reqInterview.setRequirementTitle(reqInterview.getSubmissionId().getRequirement().getJobTitle());
 				}
 			}
