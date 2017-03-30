@@ -2813,7 +2813,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 
 	@Override
 	public RequirementSubmission saveRequirementSubmissionFromCrowdSourcing(JSONObject jsonObj, User user,
-			String jsonStringvalues) throws Exception {
+			String jsonStringvalues,OrgLocations orgLocations,MultipartFile multiFile) throws Exception {
 		
 		 Requirement requirement = null;;
 		 RequirementSubmission requirementSubmission = new RequirementSubmission();
@@ -2838,7 +2838,148 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 candidateResumes = candidateResumesDao.getCandidateResumeByResumeId(Long.parseLong(jsonObj.getString("candidateResume")));
 			 candidateResumes.setId(Long.parseLong(jsonObj.getString("candidateResume")));
 			 requirementSubmission.setCandidateResumes(candidateResumes);
+		 }else{
+			 
+		       if(jsonObj.has("FirstName") && !isNullOrEmpty(jsonObj.getString("FirstName"))){
+				candidate.setFirstName(jsonObj.getString("FirstName"));
+				}
+				
+		        if(jsonObj.has("LastName") && !isNullOrEmpty(jsonObj.getString("LastName"))){
+				candidate.setLastName(jsonObj.getString("LastName") );
+				}
+				
+		        if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
+		        	candidate.setCountry(jsonObj.getString("country"));
+				}
+				 
+				if(jsonObj.has("state") && !isNullOrEmpty(jsonObj.getString("state"))){
+					 candidate.setState(jsonObj.getString("state"));
+				}
+				 
+				if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
+					 candidate.setCity(jsonObj.getString("city"));
+				}
+				
+				if(jsonObj.has("PhoneNumber") && !isNullOrEmpty(jsonObj.getString("PhoneNumber"))){
+					 candidate.setMobilePhone(jsonObj.getString("PhoneNumber"));
+				}
+				
+				if(jsonObj.has("AlternateNumber") && !isNullOrEmpty(jsonObj.getString("AlternateNumber"))){
+					 candidate.setAlternateMobilePhone(jsonObj.getString("AlternateNumber"));
+				}
+				
+				if(jsonObj.has("EmailId") && !isNullOrEmpty(jsonObj.getString("EmailId"))){
+				candidate.setEmail(jsonObj.getString("EmailId"));
+				}
+				
+				if(jsonObj.has("currentCTCRateType") && !isNullOrEmpty(jsonObj.getString("currentCTCRateType"))){
+					candidate.setCurrentRateCurrency(jsonObj.getString("currentCTCRateType"));
+				}
+				
+				if(jsonObj.has("CurrentCTC") && !isNullOrEmpty(jsonObj.getString("CurrentCTC"))){
+					candidate.setCurrentRate(jsonObj.getString("CurrentCTC"));
+				}
+				
+				if(jsonObj.has("currentCTCRatePer") && !isNullOrEmpty(jsonObj.getString("currentCTCRatePer"))){
+					 candidate.setCurrentRateType(jsonObj.getString("currentCTCRatePer"));
+				}
+				
+				if(jsonObj.has("expectedCTCRateType") && !isNullOrEmpty(jsonObj.getString("expectedCTCRateType"))){
+					 candidate.setExpectedRateCurrencey(jsonObj.getString("expectedCTCRateType"));
+					 
+				}
+				 
+				if(jsonObj.has("ExpectedCTC") && !isNullOrEmpty(jsonObj.getString("ExpectedCTC"))){
+					 candidate.setExpectedRate(jsonObj.getString("ExpectedCTC"));
+					 
+				}
+				
+				if(jsonObj.has("expectedCTCRatePer") && !isNullOrEmpty(jsonObj.getString("expectedCTCRatePer"))){
+					 candidate.setRateType(jsonObj.getString("expectedCTCRatePer"));
+				}
+				
+				if(jsonObj.has("Designation") && !isNullOrEmpty(jsonObj.getString("Designation"))){
+					candidate.setDesignation(jsonObj.getString("Designation"));
+				}
+				 
+				if(jsonObj.has("WorkExperience") && !isNullOrEmpty(jsonObj.getString("WorkExperience"))){
+					 candidate.setExperienceYears(jsonObj.getString("WorkExperience"));
+				 }
+				 
+				 
+				if(jsonObj.has("monthExp") && !isNullOrEmpty(jsonObj.getString("monthExp"))){
+					 candidate.setExperienceMonths(jsonObj.getString("monthExp"));
+				 }
+				
+				 if(jsonObj.has("NoticePeriod") && !isNullOrEmpty(jsonObj.getString("NoticePeriod"))){
+					 candidate.setNoticePeriod(jsonObj.getString("NoticePeriod"));
+				 }
+		 
+		        if(jsonObj.has("candidateSkills") && !isNullOrEmpty(jsonObj.getString("candidateSkills"))){
+			    String candidateSkills = null;
+				try{
+		    		   JSONArray jsonArray = jsonObj.getJSONArray("candidateSkills");
+		    		   candidateSkills = jsonArray.toString();
+		    	  }
+		    	  catch(JSONException e){
+		    		  candidateSkills= jsonObj.getString("candidateSkills");
+		    	  }
+				candidateSkills = candidateSkills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]","");
+			    candidate.setSkillsName(candidateSkills);
+			    
+			    candidateDao.storeCandidate(candidate);
+				CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
+				sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
 		 }
+		 
+		 
+		 if(jsonObj.has("Education") && !isNullOrEmpty(jsonObj.getString("Education"))){
+	    		
+	    		String[] educationList = jsonObj.getString("Education").split(",");
+	    		   
+				for(int i=0; i<educationList.length; i++){
+					CandidateEducation candidateEducation = new CandidateEducation();
+					candidateEducation.setCandidateId(candidate);
+					candidateEducation.setOrglocationId(orgLocations);
+					candidateEducation.setName(educationList[i].startsWith(" ") ? educationList[i].substring(1) : educationList[i]);
+					candidateEducation.setCreatedBy(user.getUserCode());
+					candidateEducation.setCreatedDate(new Date());
+					candidateEducation.setStatus(Constants.CANDIDATE_ACTIVE);
+					candidateEducationDao.storeCandidateEducation(candidateEducation);
+				}
+			 }
+			
+			 if(jsonObj.has("Current/LastCompany") && !isNullOrEmpty(jsonObj.getString("Current/LastCompany"))){
+				 CandidateEmployers candidateEmployers = new CandidateEmployers();
+				 candidateEmployers.setOrgLocationId(orgLocations);
+				 candidateEmployers.setCandidateId(candidate);
+				 candidateEmployers.setName(jsonObj.getString("Current/LastCompany"));
+				 candidateEmployers.setStatus(Constants.CANDIDATE_ACTIVE);
+				 candidateEmployers.setCreatedDate(new Date());
+				 candidateEmployers.setCreatedBy(user.getUserCode());
+				 candidateEmployers.setUpdatedDate(new Date());
+				 candidateEmployersDao.storeCandidateEmployers(candidateEmployers);
+				 
+			 }
+			 
+			 if(multiFile != null && multiFile.getOriginalFilename() != null && !multiFile.getOriginalFilename().isEmpty()){
+				 candidateResumes = new CandidateResumes();
+				 candidateResumes.setCandidateId(candidate);
+				 candidateResumes.setDocFile(multiFile.getBytes());
+				 candidateResumes.setFileName(multiFile.getOriginalFilename());
+				 candidateResumes.setTitle(multiFile.getOriginalFilename());
+				 candidateResumes.setFileContentType(multiFile.getContentType());
+				 candidateResumes.setStatus(Constants.CANDIDATE_ACTIVE);
+				 candidateResumes.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+				 candidateResumes.setCreatedDate(new Date());
+				 candidateResumes.setCreatedBy(user.getUserCode());
+				 candidateResumes.setUpdatedDate(new Date());
+				 candidateResumes.setOrgLocationId(orgLocations);
+				 candidateResumesDao.storeCandidateResumes(candidateResumes);
+				 requirementSubmission.setCandidateResumes(candidateResumes);
+			 }
+		 
+	 }
 		 
 		 requirementSubmission.setOrgLocations(requirement.getOrgLocationId());
 		 requirementSubmission.setSubmissionTemplateJsonStringValue(jsonStringvalues);
@@ -2921,8 +3062,14 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 templateFields.setDesignation(jsonObj.getString("Designation"));
 		 }
 		 
+		 
 		 if(jsonObj.has("WorkExperience") && !isNullOrEmpty(jsonObj.getString("WorkExperience"))){
-			 templateFields.setWorkExperience(jsonObj.getString("WorkExperience"));
+			 StringBuilder sb = new StringBuilder();
+			 if(jsonObj.has("monthExp") && !isNullOrEmpty(jsonObj.getString("monthExp"))){
+				 templateFields.setWorkExperience(sb.append(jsonObj.getString("WorkExperience")).append(".").append(jsonObj.getString("monthExp")).toString());
+			 }else{
+				 templateFields.setWorkExperience(sb.append(jsonObj.getString("WorkExperience")).toString());
+			 }
 		 }
 		 
 		 if(jsonObj.has("Education") && !isNullOrEmpty(jsonObj.getString("Education"))){

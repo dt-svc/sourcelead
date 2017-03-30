@@ -260,6 +260,7 @@ window.onload = function () {
 	  
 			<div class="timeNewSe" style="float:right;">
                 <select class="form-control chosen-select"  id="postedOn" name="postedOn" onchange="requirementsList('0');">
+                  <option value="Today">Today</option>
                   <option value="1 Day Ago">1 day ago</option>
                   <option value="3 Days Ago">3 day ago</option>
                   <option value="1 Week Ago">1 week ago</option>
@@ -1070,7 +1071,7 @@ function referToJob(requirementId,referId){
 	    result = result +'<span style="font-size:13px;">No Of Contacts Selected: <b id="contactsCount">0</b>&nbsp;&nbsp;&nbsp;</span>';
 	    result = result +'</div>';
 	    result = result +'<div class="pull-right">';
-		result = result +'<input type="submit" value="Refer" id="submit_refer"  class="btn btn-primary">';
+		result = result +'<input type="submit" value="Refer" id="submit_contacts"  class="btn btn-primary">';
 		result = result +'<input type="button" value="Cancel" onclick="cancelReferPopUp('+requirementId+','+referId+')" class="btn btn-default ml10 canBtn">';
 		result = result +'</div>';  
 	    result = result + '</form>';
@@ -1112,7 +1113,7 @@ function referToJob(requirementId,referId){
 		result = result +'</div>'; 
 		result = result +'<div class="col-md-12 mt5 clearfix">';            
 		result = result +'<div class="pull-right">';
-		result = result +'<input type="submit" value="Refer" id="submit_contacts"  class="btn btn-primary">';
+		result = result +'<input type="submit" value="Refer" id="submit_refer"  class="btn btn-primary">';
 		result = result +'<input type="button" value="Cancel" onclick="cancelReferPopUp('+requirementId+','+referId+')" class="btn btn-default ml10 canBtn">';
 		result = result +'</div>';    
 		result = result +'</div>'; 
