@@ -48,7 +48,7 @@ font-size: 20px;
 }
 .container-wraper .viewTemplate .sjfb-field{
 display: inline-flex;
-margin-bottom: 10px;
+margin-bottom: 20px;
 }
 .container-wraper .viewTemplate .sjfb-field label {
 font-size:14px !important;
@@ -78,6 +78,9 @@ padding-right: 15px;
 	background-color: #f5f5f5;
 	padding:0;
 }
+.viewTemplate textarea + p{
+top:55px !important;
+} 
 </style>
 
 <script type="text/javascript">
@@ -137,6 +140,7 @@ function cancelFunction(){
 	var result = "";
 	result = result + '<form id="cancelFunction_form" name="cancelFunction_form" enctype="multipart/form-data" method="post">';
 	result = result + '<h3>Interview Feedback</h3>';
+	
 	result = result + '<div class="row clearfix">';
 	result = result + '<div class="col-md-6">';
 	result = result + '<label class="col-md-4">Comment <span class="text-danger">*</span></label>';
@@ -144,6 +148,7 @@ function cancelFunction(){
 	result = result + '<textarea rows="2" placeholder="Comment" class="form-control" name="interviewComment" id="interviewComment" field-name="Comment" data-validation="required"></textarea>';
 	result = result + '</div>';
 	result = result + '</div>';
+	
 	result = result + '<div class="col-md-6">';
 	result = result + '<label class="col-md-4">Selected for Interview</label>';
 	result = result + '<div class="col-md-8">';
@@ -151,7 +156,9 @@ function cancelFunction(){
 	result = result + '<label class="radio-inline"><input type="radio" value="No" name="feedback">No</label>';
 	result = result + '</div>';
 	result = result + '</div>';
-	result = result + '</div>';
+	
+	result = result + '</div>'; 
+	
 	result = result + '<div class="clearfix"></div>';
 	result = result + '<div class="form-footer clearfix mt">';
 	result = result + '<div class="pull-right mr">';
@@ -268,7 +275,7 @@ function interviewTemplateForm(){
 		var result = "";
 		result = result + '<form id="interviewTemplate_form" name="interviewTemplate_form" enctype="multipart/form-data" method="post">';
 		result = result + '<h3>Interview Feedback</h3>';
-		result = result + '<div class="viewTemplate feedbackTemplate col-md-12">';
+		/* result = result + '<div class="viewTemplate feedbackTemplate col-md-12">';
 		result = result + '<div class="sjfb-field sjfb-text">';
 		result = result + '<label>Comment <span class="text-danger">*</span></label>';
 		result = result + '<textarea rows="2" placeholder="Comment" class="form-control" name="interviewComment" field-name="Comment" data-validation="required"></textarea>';
@@ -278,7 +285,7 @@ function interviewTemplateForm(){
 		result = result + '<span class="radio-inline"><input type="radio" value="Yes" name="feedback">Yes</span>';
 		result = result + '<span class="radio-inline"><input type="radio" value="No" name="feedback">No</span>';
 		result = result + '</div>';
-		result = result + '</div>';
+		result = result + '</div>'; */
 		
 		result = result + '<div class="form-horizontal clearfix">';
 		result = result + '<div id="interviewsjfb-fields" class="viewTemplate">';

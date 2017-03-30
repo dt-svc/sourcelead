@@ -140,6 +140,9 @@ public class Constants {
 	public static String TASK_STATUS_MYTASK = "myTask";
 	public static String TASK_STATUS_ASSIGNTASK = "assignedTasks";
 	public static String TASK_STATUS_CLOSEDTASK = "closedTasks";
+	
+	
+	public static String DEFAULT_INTERVIEW_FEEDBACK_TEMAPLATE = "Sourcelead Inerview Feedback Template";
 
 	public static String TASK_MECHANISM_EMAIL ="Task Mechanism";
     public static String TASK_MECHANISM_NOTIFICATION="Task Mechanism";

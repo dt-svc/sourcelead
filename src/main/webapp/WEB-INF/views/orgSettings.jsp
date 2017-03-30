@@ -167,7 +167,7 @@ function cancelOrgImg(){
       <div class="tab-content">
         <div id="orgsetting" class="tab-pane fade in active">   
         <div class="row">
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <div class="clearfix">
 		    <!-- Tab for Profile setting-area -->
 		  <div class="accountsettings-tab org-settings-area">
 		  <div class="tab-content panel-body">
@@ -285,7 +285,7 @@ function cancelOrgImg(){
 						<div class="form-group mt">
 							<label class="col-md-3">Fax</label>
 							<div class="col-md-9">
-							<input type="text"  class="form-control" name="fax" field-name="fax" data-validation="validate_phone validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.fax}" />
+							<input type="text"  class="form-control" name="fax" id="faxId" field-name="fax" data-validation="validate_phone validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.fax}" />
 							</div>
 						</div>
 						
@@ -369,6 +369,12 @@ function cancelOrgImg(){
   <!-- Content Area Ends-->
 
 </body>
+
+<script>
+$("#faxId").keyup(function () {
+    this.value = this.value.replace(/ /g, "-");
+});
+</script>
 
 <script type="text/javascript">
 function validateCompanyName(){

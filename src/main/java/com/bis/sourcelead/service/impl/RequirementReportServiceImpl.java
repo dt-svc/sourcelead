@@ -186,9 +186,36 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 	}
 	
 	@Override
-	public List<Requirement> getRequirementStageReports(OrgLocations orgLocation, String Status) throws Exception
-	{
-		return requirementReportDao.getRequirementStageReports(orgLocation, Status);
+	public List<Requirement> getRequirementStageReports(OrgLocations orgLocation, String Status) throws Exception{
+		
+		Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+		List<Requirement> reqList = requirementReportDao.getRequirementStageReports(orgLocation, Status);
+		for (Requirement requirement : reqList) {
+			String postedDate = getDateStr(requirement.getCreatedDate(), timezone);
+			requirement.setPostedDateStr(postedDate);
+			if(requirement.getClientId() != null){
+				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
+					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+				}
+				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+					requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+				}
+			}
+			if(requirement.getManagerUserId() != null){
+				String managerFirstName = "";
+				if(StringUtils.isNotEmpty(requirement.getManagerUserId().getFirstName())){
+					managerFirstName = requirement.getManagerUserId().getFirstName();
+				}
+				String managerLastName = "";
+				if(StringUtils.isNotEmpty(requirement.getManagerUserId().getLastName())){
+					managerLastName = requirement.getManagerUserId().getLastName();
+				}
+				 StringBuilder managerSB = new StringBuilder();
+				requirement.setManager(managerSB.append(managerFirstName).append(" ").append(managerLastName).toString());
+			}
+		}
+		
+		return reqList;
 	}
 	
 	@Override

@@ -83,7 +83,8 @@ function interviews(dateRange){
 	            							resultToday = resultToday+'	   <td><div><span title="'+clientName+'">'+clientName+'</span></div></td>';
 	            						}
 
-                                       if(report.interviewerId != null  &&  report.interviewerId !='' && report.interviewerId !='undefined' && report.interviewTemplateid != null && report.interviewTemplateid != '' && report.interviewTemplateid != 'undefined'  ){
+	            						
+                                       if(report.interviewerId != null  &&  report.interviewerId !='' && report.interviewerId !='undefined'){
 	            						  resultToday = resultToday+'	 <td><a  href="'+sourceleadUrl+'/'+'dashboardInterviewFeedBackTemplate?templateId='+report.interviewTemplateid+'&requirementInterviewid='+report.interviewerId+'">FeedBack</a></td>';
                                        }else{
                                            resultToday = resultToday+'	 <td>---</td>';
