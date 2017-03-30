@@ -46,6 +46,7 @@ import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.Team;
+import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -64,6 +65,7 @@ import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TaskService;
+import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
@@ -130,6 +132,9 @@ public class DashboardRestController {
 	 @Autowired
 	 TeamService teamService;
 	 
+	 @Autowired
+	 TeamMembersService teamMembersService;
+	 
 	 
 	 
 	 @Autowired
@@ -161,152 +166,259 @@ public class DashboardRestController {
 	@RequestMapping(value = "/getTimeSheetSubmissionStatus")
 	public String getTimeSheetSubmissionStatus(@RequestParam(value="timesheetType", required=false) String timesheetType,HttpServletRequest request) throws Exception {
 
-			List<Org> orgList = orgService.getOrgs();
-			for (Org org : orgList) {
-				OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(org.getId());
-				ArrayList<Long> userIdList = new ArrayList<Long>();
-				ArrayList<String> userCodeList = new ArrayList<String>();
-				
-				List<User> userRoleList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),
-						Long.valueOf(Constants.TAB_REQUIREMENT));
+		List<Org> orgList = orgService.getOrgs();
+		for (Org org : orgList) {
+			OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(org.getId());
+			ArrayList<Long> userIdList = new ArrayList<Long>();
+			ArrayList<String> userCodeList = new ArrayList<String>();
+			
+			
+			List<User> userRoleList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),
+					Long.valueOf(Constants.TAB_REQUIREMENT));
 
-				if (userRoleList != null && userRoleList.size() > 0) {
+			if (userRoleList != null && userRoleList.size() > 0) {
 
-					for (User user : userRoleList) {
-						
-						List<Team> teamList = teamService.getTeamListByTeamOwner(user.getId(),orgLocations.getId());
-						if(teamList.size() >0 && !teamList.isEmpty()){
-							for(Team team :teamList){
-								List<RequirementAssignTo> requirementAssig = requirementAssignToService.getAllAssignedRequirementByOrglocationIdAndTeamId(orgLocations.getId(), team.getId());
-							   
-								if(requirementAssig.size() >0 && !requirementAssig.isEmpty()){
+				for (User user : userRoleList) {
+					
+					List<Team> teamList = teamService.getTeamListByTeamOwner(user.getId(),orgLocations.getId());
+					if(teamList.size() >0 && !teamList.isEmpty()){
+						for(Team team :teamList){
+							
+							String teamName = team.getName();
+							
+							//List<RequirementAssignTo> requirementAssig = requirementAssignToService.getAllAssignedRequirementByOrglocationIdAndTeamId(orgLocations.getId(), team.getId());
+							 List<TeamMembers>  teamMembersList =   teamMembersService.getTeamMembersListByTeamID(team.getId(), orgLocations.getId());
+
+							
+							
+							Integer  teamMembersCount =  teamMembersList.size();
+							List<ConsolidatedReport> consolidatedList = new ArrayList<ConsolidatedReport>();
+							
+							if(teamMembersList.size() >0 && !teamMembersList.isEmpty()){
+								
+								
+								for(TeamMembers teamMember :teamMembersList){
+								
+									ConsolidatedReport  conreport  =  new  ConsolidatedReport();
 									
-									for(RequirementAssignTo assign :requirementAssig){
-										  
-										Integer  todayReleasedRequirementsCount  = 0;
-										Integer  activeRequirmenttsCount  = 0;
-										Integer  applicantsCount  = 0;
-										Integer  shortlistedCount  = 0;
-										Integer  interviewedCount  = 0;
-										Integer  submittedToClientCount  = 0;
-										Integer  offeredCount  = 0;
-										Integer  rejectedCount  = 0;
-										Integer  tasksCompleted  = 0;
-										Integer  candidatesCount  = 0;
-										Integer  submissionsRecievedCount  = 0;
-										Integer  requestSentCount  = 0;
-										
-										
-										User assignUser =  userService.getUserById(assign.getAssignUserId().getId());
-										
-										// To get released  requirement Counts
-										String[] modules = org.getModulesId().split(",");
-										for (int i = 0; i < modules.length; i++) {
-												if (modules[i].equalsIgnoreCase(Constants.MODULE_VMS_STR)) {
-													  todayReleasedRequirementsCount = requirementService.getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(orgLocations.getId(), assignUser);
-													  break;
-												}
-												
-										}
-										// to get active requirmentCounts
-										List<Requirement> requirementList = requirementService.getAllRequirementsByOrglocationIdAndUserId(orgLocations.getId(), assignUser);
-										activeRequirmenttsCount = requirementList.size();
-										
-										if(requirementList.size() >0 && !requirementList.isEmpty()){
-                                        	   
-                                        	   for (Requirement requirement : requirementList) {
-
-                       							ConsolidatedReport conreport = new ConsolidatedReport();
-
-                       							conreport.setRequirementName(requirement.getJobTitle());
-                       							for (int i = 0; i < modules.length; i++) {
-
-                       								/*
-                       								 * This is for checking the login Organization is
-                       								 * ATS or not And Get ALl Vendor Submitted Jobs
-                       								 * 
-                       								 */
-                       								if (modules[i].equalsIgnoreCase(Constants.MODULE_ATS_STR)) {
-
-                       									List<RequirementSubmission> submissionsRecievedList = requirementSubmissionService.getAllSubmissionsfromVendorsBasedOnLocationIdAndUserId(user, orgLocations,
-                       													"CLIENT_SUBMISSIONS", requirement);
-                       									if (submissionsRecievedList.size() > 0 && submissionsRecievedList != null) {
-                       										   conreport.setSubmissionCount(submissionsRecievedList.size());
-                       										   break;
-                       										//submissionsRecievedCount = submissionsRecievedList.size();
-                       										//submissionsRecievedCount ++;
-                       									}
-                       								}
-                       								
-                       							}
-
-                       							applicantsCount = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(user, orgLocations,"APPLICANTS", requirement);
-                       							applicantsCount ++;
-                       							
-                       							shortlistedCount = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(user, orgLocations,"SHORTLISTED", requirement);
-                       							shortlistedCount ++;
-                       							
-                       							submittedToClientCount= requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(user, orgLocations,"SUBMIT_TO_CLIENT", requirement);
-                       							submittedToClientCount ++;
-                       							
-                       							
-                       							interviewedCount = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(user, orgLocations,"INTERVIEWED", requirement);
-                       							interviewedCount ++;
-
-                       							rejectedCount= requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(user, orgLocations,"REJECTED", requirement);
-                       							rejectedCount ++;
-                       							
-
-                       						    requestSentCount = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(user, orgLocations,"REQUESTSENT", requirement);
-                       							requestSentCount ++;
-
-                       							offeredCount= requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(user, orgLocations,"OFFERED", requirement);
-                       							offeredCount ++;
-
-                       						}
-                                           }
-										
-										
-										System.out.println("todayReleasedRequirementsCount"+todayReleasedRequirementsCount);
-										System.out.println("activeRequirmenttsCount"+activeRequirmenttsCount);
-										System.out.println("applicantsCount"+applicantsCount);
-										System.out.println("shortlistedCount"+shortlistedCount);
-										System.out.println("interviewedCount"+interviewedCount);
-										System.out.println("submittedToClientCount"+submittedToClientCount);
-										System.out.println("offeredCount"+offeredCount);
-										System.out.println("todayReleasedRequirementsCount"+todayReleasedRequirementsCount);
-										
+									Integer  todayReleasedRequirementsCount  = 0;
+									Integer  activeRequirmenttsCount  = 0;
+									Integer  applicantsCount  = 0;
+									Integer  shortlistedCount  = 0;
+									Integer  interviewedCount  = 0;
+									Integer  submittedToClientCount  = 0;
+									Integer  offeredCount  = 0;
+									Integer  rejectedCount  = 0;
+									Integer  tasksCompleted  = 0;
+									Integer  candidatesCount  = 0;
+									Integer  submissionsRecievedCount  = 0;
+									Integer  requestSentCount  = 0;
+									
+									
+									
+									User assignUser =  userService.getUserById(teamMember.getMemberUserId().getId());
+									conreport.setTeamMemberName(assignUser.getFirstName());
+									
+									Long tasksCount = taskService.getTasksCompletedTodayByLocationCodeandUserId(orgLocations, assignUser);
+									conreport.setNumberOfTasksCompletedCount(tasksCount.intValue());
+									
+									Integer candidatesCountCreatedToday = candidateService.getAllCandidatedsBasedOnCreatedByAndOrglocationCodeWhichAreCreatedToday(orgLocations, assignUser);
+									conreport.setCreatedCandidatesCount(candidatesCountCreatedToday);
+									
+									// To get released  requirement Counts
+									String[] modules = org.getModulesId().split(",");
+									for (int i = 0; i < modules.length; i++) {
+											if (modules[i].equalsIgnoreCase(Constants.MODULE_VMS_STR)) {
+												  todayReleasedRequirementsCount = requirementService.getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(orgLocations.getId(), assignUser);
+												  conreport.setReleasedRequirementCount(todayReleasedRequirementsCount);
+												  break;
+											}
+											
 									}
+									// to get active requirmentCounts
+									List<Requirement> requirementList = requirementService.getAllRequirementsByOrglocationIdAndRequirementWhoAreAssignedToRequirement(orgLocations.getId(),teamMember);
+									activeRequirmenttsCount = requirementList.size();
+									conreport.setActiveRequirementsCount(activeRequirmenttsCount);
 									
+									if(requirementList.size() >0 && !requirementList.isEmpty()){
+                                    	   
+                                    	   for (Requirement requirement : requirementList) {
+
+
+                   							conreport.setRequirementName(requirement.getJobTitle());
+                   							for (int i = 0; i < modules.length; i++) {
+
+                   								/*
+                   								 * This is for checking the login Organization is
+                   								 * ATS or not And Get ALl received jobs Count
+                   								 * 
+                   								 */
+                   								if (modules[i].equalsIgnoreCase(Constants.MODULE_ATS_STR)) {
+
+                   									List<RequirementSubmission> submissionsRecievedList = requirementSubmissionService.getAllSubmissionsfromVendorsBasedOnLocationIdAndUserId(assignUser, orgLocations,
+                   													"CLIENT_SUBMISSIONS", requirement);
+                   									if (submissionsRecievedList.size() > 0 && submissionsRecievedList != null) {
+                   										submissionsRecievedCount = submissionsRecievedList.size();
+                   										   conreport.setRecievedSubmussionsCount(submissionsRecievedCount);
+                   										   break;
+                   									}
+                   								}
+                   								
+                   							}
+
+                   							Integer applicantsCountForEachRequirement = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(assignUser, orgLocations,"APPLICANTS", requirement);
+                   							applicantsCount = applicantsCount+ applicantsCountForEachRequirement ;
+                   							conreport.setApplicantsCount(applicantsCount);
+                   							
+                   							Integer shortlistedCountForEachRequirement = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(assignUser, orgLocations,"SHORTLISTED", requirement);
+                   							shortlistedCount = shortlistedCount + shortlistedCountForEachRequirement;
+                   							conreport.setShortlistedCount(shortlistedCount);
+
+                   							
+                   							
+                   							Integer submittedToClientCountForEachRequirement= requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(assignUser, orgLocations,"SUBMIT_TO_CLIENT", requirement);
+                   							submittedToClientCount = submittedToClientCount + submittedToClientCountForEachRequirement;
+                   							conreport.setSubmitToClientCount(submittedToClientCount);
+                   							
+                   							Integer interviewedCountForEachRequirement = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(assignUser, orgLocations,"INTERVIEWED", requirement);
+                   							interviewedCount = interviewedCount + interviewedCountForEachRequirement;
+                   							conreport.setInterviewsCount(interviewedCount);
+                   							
+
+                   							Integer rejectedCountForEachRequirement = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(assignUser, orgLocations,"REJECTED", requirement);
+                   							rejectedCount = rejectedCount + rejectedCountForEachRequirement;
+                   							conreport.setRejectedCount(rejectedCount);
+
+                   							Integer  requestSentCountForEachRequirement = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(assignUser, orgLocations,"REQUESTSENT", requirement);
+                   							requestSentCount = requestSentCount +requestSentCountForEachRequirement ;
+                   							conreport.setRequestSentCount(requestSentCount);
+
+                   							Integer offeredCountForEachRequirement = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(assignUser, orgLocations,"OFFERED", requirement);
+                   							offeredCount = offeredCount + offeredCountForEachRequirement ;
+                   							conreport.setOffersCount(offeredCount);
+
+                   						}
+                                       }
+									consolidatedList.add(conreport);
 								}
 								
-								  
-							
 							}
+							sendEmailToTeamLeadEveryDayConsolidatedReports(consolidatedList, user,team.getName(),teamMembersCount);
 						}
-						
 					}
-
+					
 				}
-			}
-			return "david";
-			
-			
-			
-			/*String resultJson;
 
-		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
-			if("employes".equalsIgnoreCase(timesheetType)){
-				timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId());
-			}else if("myTimesheets".equalsIgnoreCase(timesheetType)){
-				timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationId(user.getId(), loginOrgLocations.getId());
 			}
-			resultJson = commonUtil.toJSON(timeSheetSubmissionCount);
-			return resultJson;*/
-		
 		}
+                   									
+		return "david";
+	}
+		
+			
+			public void sendEmailToTeamLeadEveryDayConsolidatedReports(List<ConsolidatedReport> list,User user,String teamName,Integer teamMembersCount) throws Exception {
+				
+				 StringBuilder  sb  = new StringBuilder();
+				
+				 sb.append("<div>");
+				 sb.append("<span style='width:260px;display:inline-block;margin-bottom:5px'>Team Name:</span>");
+				 sb.append("<strong style='padding-left:10px'>");
+				 sb.append(teamName);
+				 sb.append("</strong><div>");
+				 
+				 sb.append("<div>");
+				 sb.append("<span style='width:260px;display:inline-block;margin-bottom:5px'>Number of Team Numbers:</span>");
+				 sb.append("<strong style='padding-left:10px'>");
+				 sb.append(teamMembersCount);
+				 sb.append("</strong><div>");
+				 sb.append("<div>");
+				
+			
+		    	sb.append("<table width='900' align='center' style='border-collapse: collapse; margin: 0 auto;border: 1px solid #375d81; text-align: center;' cellpadding='2px' cellspacing='0' border='0'>");
+		    	sb.append("<thead style='background-color:#375d81; color: #fff;'>");
+		    	sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");		    
+		    	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Team Members</th>");	      
+		    	sb.append("<th style=.border: 1px solid #12385c; text-align: center;'>Active Requirements </th>");		        
+		    	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Applicants  </th>");		          
+		    	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Received </th>");
+		    	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Shortlisted </th>");
+		    	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Interviewed  </th>");
+		    	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Submit to Client </th>");
+		    	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Offered </th>");
+		    	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Tasks completed </th>");
+		    	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Candidates created </th>");
+		    	
+		    	sb.append("</tr>");	
+		    	sb.append("</thead>");	
+		    	sb.append("<tbody>");
+		    	for(ConsolidatedReport conreport :list){
+		    		
+		    	sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");
+		    	sb.append("<td style='border: 1px solid #375d81;' width='300'>"+conreport.getTeamMemberName()+"</td>");		              
+		    	sb.append("<td style='border: 1px solid #375d81;' width='225'>"+conreport.getActiveRequirementsCount()+"</td>");	              
+		    	sb.append("<td style='border: 1px solid #375d81;' width='275'>"+conreport.getApplicantsCount()+"</td>");
+		    	if(null != conreport.getRecievedSubmussionsCount()){
+			    	sb.append("<td style='border: 1px solid #375d81;' width='275'>"+conreport.getRecievedSubmussionsCount()+"</td>");		            
+		    	}else{
+			    	sb.append("<td style='border: 1px solid #375d81;' width='275'>"+0+"</td>");		            
+
+		    	}
+		    	sb.append("<td style='border: 1px solid #375d81;' width='200'>"+conreport.getShortlistedCount()+"</td>");
+		    	sb.append("<td style='border: 1px solid #375d81;' width='200'>"+conreport.getInterviewsCount()+"</td>");	
+		    	sb.append("<td style='border: 1px solid #375d81;' width='200'>"+conreport.getSubmitToClientCount()+"</td>");	
+		    	sb.append("<td style='border: 1px solid #375d81;' width='200'>"+conreport.getOffersCount()+"</td>");	
+		    	sb.append("<td style='border: 1px solid #375d81;' width='200'>"+conreport.getNumberOfTasksCompletedCount()+"</td>");
+		    	sb.append("<td style='border: 1px solid #375d81;' width='200'>"+conreport.getCreatedCandidatesCount()+"</td>");
+		    	sb.append("</tr>");		            
+		    	   
+		        }
+		    	sb.append("</tbody>");	              
+		    	sb.append("</table>");   
+				
+				 StringBuilder nameBuilder = new StringBuilder();
+				 StringBuilder expBuilder = new StringBuilder();
+				 StringBuilder locationBuilder = new StringBuilder();
+				 EmailMessage emailMessage = new EmailMessage();
+				 String professionalName = null;
+				 String experience = null;
+				 String location = null;
+				 
+				 
+				 emailMessage.setToEmail(user.getEmail());
+				 emailMessage.setFromName("Sourcelead Admin");
+				 emailMessage.setCreatedBy("sladmin");
+				 emailMessage.setFromName("info@sourcelead.com");
+				 
+				//setting the class filed values
+				 Map<String, String> globalVarsMap = new HashMap<String, String>();
+				 globalVarsMap.put("professionalName", professionalName);
+				 globalVarsMap.put("experience", experience);
+				 globalVarsMap.put("location", location);
+				 globalVarsMap.put("professionalEmail", "sammetadavid@gmail.com");
+				 
+				
+				 //setting the Recipient information
+				 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+				
+				 //getting the current EmailScenario by EmailScenario unique name and entity type
+				 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLIED_TO_REQUIREMENT,Constants.ENTITY_TYPE_EMAIL);
+				
+				 //covert subject,body and signature
+				 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+				 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+				 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+				 String url = sourceleadUrl;
+				 
+				 //construct HTML template using required data
+				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, sb.toString(), signature, url, new Org());
+				 emailMessage.setSubject(subject);
+				 emailMessage.setMessageBody(emailTemplate);
+				 
+				 //calling the sendEmail method of emailScenerioUtil
+				 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
+				
+			}
+		
 		
 		public void sendEmailToProfessionalForAppliedJob(List<ConsolidatedReport> list,User user,Integer releasedRequirementCount,Integer numberOfActiveRequirementCount,Integer numberOfCreatedCandidatesCount) throws Exception {
 			

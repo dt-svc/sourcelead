@@ -2882,4 +2882,11 @@ public class RequirementServiceImpl implements RequirementService {
 	public Integer getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(Long orgLocationId, User user)	throws Exception {
 		return requirementDao.getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(orgLocationId,user);
 	}
+
+	@Override
+	public List<Requirement> getAllRequirementsByOrglocationIdAndRequirementWhoAreAssignedToRequirement(
+			Long orgLocationId,  TeamMembers teamMembers) throws Exception {
+		return requirementDao.getAllRequirementsByOrglocationIdAndRequirementWhoAreAssignedToRequirement(orgLocationId,teamMembers);
+	}
+	
 }

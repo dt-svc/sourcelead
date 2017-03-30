@@ -250,7 +250,7 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 			Long teamId) {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RequirementAssignTo rat    where  rat.requirementId.orgLocationId.id =:orgLocationId and rat.teamId.id =:teamId";
+		String query = "from RequirementAssignTo rat    where  rat.teamId.orgLocationsId.id =:orgLocationId and rat.teamId.id =:teamId  GROUP BY rat.id";
 		return session.createQuery(query)
 				      .setLong("orgLocationId", orgLocationId)
 				      .setLong("teamId", teamId)

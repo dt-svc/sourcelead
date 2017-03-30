@@ -38,7 +38,7 @@ public class ConsolidatedReport implements Serializable{
 	
 	private String numberOfCandidatesCreated;
 	
-	private String activeRequirementsCount;
+	private Integer activeRequirementsCount;
 	
 	private String tasksCompletedCount;
 	
@@ -46,7 +46,9 @@ public class ConsolidatedReport implements Serializable{
 	
 	private Integer requestSentCount;
 	
+	private Integer recievedSubmussionsCount;
 	
+	private String teamMemberName;
 	
 	@Transient
 	private ArrayList<String> approverNames;
@@ -164,11 +166,12 @@ public class ConsolidatedReport implements Serializable{
 		this.numberOfCandidatesCreated = numberOfCandidatesCreated;
 	}
 
-	public String getActiveRequirementsCount() {
+	
+	public Integer getActiveRequirementsCount() {
 		return activeRequirementsCount;
 	}
 
-	public void setActiveRequirementsCount(String activeRequirementsCount) {
+	public void setActiveRequirementsCount(Integer activeRequirementsCount) {
 		this.activeRequirementsCount = activeRequirementsCount;
 	}
 
@@ -202,6 +205,22 @@ public class ConsolidatedReport implements Serializable{
 
 	public void setRequestSentCount(Integer requestSentCount) {
 		this.requestSentCount = requestSentCount;
+	}
+
+	public String getTeamMemberName() {
+		return teamMemberName;
+	}
+
+	public void setTeamMemberName(String teamMemberName) {
+		this.teamMemberName = teamMemberName;
+	}
+
+	public Integer getRecievedSubmussionsCount() {
+		return recievedSubmussionsCount;
+	}
+
+	public void setRecievedSubmussionsCount(Integer recievedSubmussionsCount) {
+		this.recievedSubmussionsCount = recievedSubmussionsCount;
 	}
    	
  }

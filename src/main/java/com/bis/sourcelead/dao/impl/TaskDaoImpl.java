@@ -14,8 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TaskDao;
-import com.bis.sourcelead.entity.RequirementInterviewHistory;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Tasks;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.util.CommonUtil;
 import com.ibm.icu.text.SimpleDateFormat;
 
 @Repository
@@ -24,6 +26,9 @@ public class TaskDaoImpl implements TaskDao{
 	@Autowired
 	private SessionFactory sessionFactory;
 	  
+	@Autowired
+	private CommonUtil commonUtil;
+	
     @Value("${SourceLead.100}")
 	private String notFound;
 	@Value("${SourceLead.101}")
@@ -115,6 +120,33 @@ public class TaskDaoImpl implements TaskDao{
 		 String query ="from Tasks tasks left join fetch tasks.ownerOrglocationId orglocation left join fetch tasks.taskOwnerId user left join fetch tasks.assignedUserId assignUser where tasks.taskDate = :currentTime";
 		List<Tasks> tasksScheduledList = session.createQuery(query).setString("currentTime",currentTime).setCacheable(true).list();
 		return tasksScheduledList;
+	}
+
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getTasksCompletedTodayByLocationCodeandUserId(OrgLocations orglocationCode, User user)
+			throws Exception {
+		
+
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		// This is to check with current date which is converted to normal sql date
+		java.sql.Date sqlCurrentDate = null;
+ 	    Date currentDate =  commonUtil.currentDate();
+ 	    java.sql.Timestamp sq =  null;
+ 		// for current Date Converting to Sql Date Format
+ 		 if(currentDate != null){
+ 				sqlCurrentDate = new java.sql.Date(currentDate.getTime());
+ 				sq = new java.sql.Timestamp(currentDate.getTime());
+ 		 }
+		
+	    String query ="select count(*) from Tasks tasks where  DATE(tasks.updatedDate) =:sqlCurrentDate and tasks.ownerOrglocationId =:orgLocationId  and tasks.taskStatus = 'Closed' and tasks.assignedUserId.id =:assignUserId";
+		List<Long> results = session.createQuery(query).setDate("sqlCurrentDate",sq).setLong("orgLocationId", orglocationCode.getId()).setLong("assignUserId", user.getId()).setCacheable(true).list();
+		logger.debug("..getCandidatesCount() Method Ended..");
+		return results.get(0);
+		
 	}
 
 

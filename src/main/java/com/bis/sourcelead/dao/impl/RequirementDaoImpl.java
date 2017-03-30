@@ -24,6 +24,8 @@ import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.Team;
+import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -917,50 +919,65 @@ public class RequirementDaoImpl implements RequirementDao {
         return requirementList;
 	}
 
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public List<Requirement> getAllRequirementsByOrglocationIdAndUserIdAsTeamLead(Long orgLocationId,User user)
-			throws Exception {
+     @Override
+     @Transactional(rollbackFor = { Exception.class })
+		public List<Requirement> getAllRequirementsByOrglocationIdAndUserIdAsTeamLead(Long orgLocationId,User user)
+				throws Exception {
+			
+			      Session session = this.sessionFactory.getCurrentSession();
+			     
+			      String requirementQuery = "from Requirement req where  (req.id IN (select  reqAssignTo.requirementId.id  from RequirementAssignTo reqAssignTo  where  reqAssignTo.teamId.id IN ( select tm.id from Team  tm where tm.ownerUserId.id =:userId and tm.orgLocationsId.id =:orgLocationsId )) ) ";
+		          List<Requirement> requirementList = session.createQuery(requirementQuery.toString())
+		        		                                     .setLong( "userId", user.getId())
+		        		                                     .setLong( "orgLocationId", orgLocationId)
+		        		                                     .setCacheable(true)
+		        		                                     .list();
 		
-		      Session session = this.sessionFactory.getCurrentSession();
-		     
-		      String requirementQuery = "from Requirement req where  (req.id IN (select  reqAssignTo.requirementId.id  from RequirementAssignTo reqAssignTo  where  reqAssignTo.teamId.id IN ( select tm.id from Team  tm where tm.ownerUserId.id = :userId and tm.orgLocationsId.id =:orgLocationsId )) ) ";
-              List<Requirement> requirementList = session.createQuery(requirementQuery.toString())
-            		                                     .setLong( "userId", user.getId())
-            		                                     .setLong( "orgLocationId", orgLocationId)
-            		                                     .setCacheable(true)
-            		                                     .list();
-   
-		return requirementList;
-	}
+			return requirementList;
+		}
 
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public Integer getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(Long orgLocationId, User user)
-			throws Exception {
-		
-		Session session = this.sessionFactory.getCurrentSession();
-		
-		 java.sql.Date sqlCurrentDate = null;
-	     Date currentDate =  commonUtil.currentDate();
-		// for current Date Converting to Sql Date Format
-		 if(currentDate != null){
-				sqlCurrentDate = new java.sql.Date(currentDate.getTime());
-				java.sql.Timestamp sq = new java.sql.Timestamp(currentDate.getTime());
-		 }
-		
-		  String requirementQuery = "select count(*)  from Requirement req where   req.spocId.clientLocationId.id =:orgLocationId and  req.spocId.clientUser.id =:userId  and DATE(req.createdDate) = :sqlCurrentDate GROUP BY req.id";
-          List<Long> requirementList = session.createQuery(requirementQuery.toString())
-        		                                     .setLong( "userId", user.getId())
-        		                                     .setDate("sqlCurrentDate", sqlCurrentDate)
-        		                                     .setLong( "orgLocationId", orgLocationId)
-        		                                     .setCacheable(true)
-        		                                     .list();
-        Integer count = 0;
-  		if(requirementList != null && !requirementList.isEmpty()){
-  				count = requirementList.get(0).intValue();
-  		}
-  		return count;
-	}
+
+     @Override
+ 	 @Transactional(rollbackFor = { Exception.class })
+ 	public Integer getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(Long orgLocationId, User user)
+ 			throws Exception {
+ 		
+ 		Session session = this.sessionFactory.getCurrentSession();
+ 		
+ 		 java.sql.Date sqlCurrentDate = null;
+ 	     Date currentDate =  commonUtil.currentDate();
+ 		// for current Date Converting to Sql Date Format
+ 		 if(currentDate != null){
+ 				sqlCurrentDate = new java.sql.Date(currentDate.getTime());
+ 				java.sql.Timestamp sq = new java.sql.Timestamp(currentDate.getTime());
+ 		 }
+ 		
+ 		  String requirementQuery = "select count(*)  from Requirement req where   req.spocId.clientLocationId.id =:orgLocationId and  req.spocId.clientUser.id =:userId  and DATE(req.createdDate) =:sqlCurrentDate GROUP BY req.id";
+           List<Long> requirementList = session.createQuery(requirementQuery.toString())
+         		                                     .setLong( "userId", user.getId())
+         		                                     .setDate("sqlCurrentDate", sqlCurrentDate)
+         		                                     .setLong( "orgLocationId", orgLocationId)
+         		                                     .setCacheable(true)
+         		                                     .list();
+         Integer count = 0;
+   		if(requirementList != null && !requirementList.isEmpty()){
+   				count = requirementList.get(0).intValue();
+   		}
+   		return count;
+ 	}
+     
+     
+	 	@Override
+	 	@Transactional(rollbackFor = { Exception.class })
+	 	public List<Requirement> getAllRequirementsByOrglocationIdAndRequirementWhoAreAssignedToRequirement(Long orgLocationId,  TeamMembers teamMembers) throws Exception {
+	 		
+	 		Session session = this.sessionFactory.getCurrentSession();
+	 		
+	 		String query = "from Requirement requirement left join fetch requirement.parentRequirement where   requirement.orgLocationId.id =:orgLocationId and  requirement.id  IN (select reqassign.requirementId.id  from RequirementAssignTo reqassign where reqassign.assignUserId.id =:userId  and reqassign.teamId.id =:teamId)";
+	 		
+	         List<Requirement> requirementList = session.createQuery(query).setLong("userId", teamMembers.getMemberUserId().getId()).setLong("teamId", teamMembers.getTeamId().getId()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	 		return requirementList;
+	 	}
+	
 	
 }

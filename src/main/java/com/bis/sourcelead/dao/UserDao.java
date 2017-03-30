@@ -132,4 +132,5 @@ public interface UserDao {
 	
 	public List<User> getAllUsersWithRequirementTabAccessAndMemeberInRequirementMemberOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
 
+	public List<User> getUsersListAssignedToReoprtingManagersByOrgLocationId(Long orgLocationsId,User user,Long tabId) throws Exception;
 }

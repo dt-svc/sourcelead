@@ -43,11 +43,14 @@ import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementInterviewer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Tasks;
+import com.bis.sourcelead.entity.Team;
+import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateHotListService;
@@ -59,6 +62,7 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
@@ -66,6 +70,8 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TaskService;
+import com.bis.sourcelead.service.TeamMembersService;
+import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -171,7 +177,15 @@ public class EMailJobScheduler {
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
 	
+	@Autowired
+	TeamService teamService;
 	
+	@Autowired
+	TeamMembersService teamMembersService;
+	
+	
+	@Autowired
+	RequirementAssignToService requirementAssignToService;
 	
 	@Autowired
 	TimesheetFrequencyGeneratorUtil timesheetFrequencyGeneratorUtil;
@@ -793,7 +807,7 @@ public class EMailJobScheduler {
 
 	}
 	
-	@Scheduled(cron = "0 0/1 * 1/1 * ? ")
+	/*@Scheduled(cron = "0 0/1 * 1/1 * ? ")
 	@Async
 	public void scheduleUserMailForRequirementConsolidatedReports() throws Exception {
 		
@@ -835,11 +849,13 @@ public class EMailJobScheduler {
 										conreport.setRequirementName(requirement.getJobTitle());
 										for (int i = 0; i < modules.length; i++) {
 				
-											/*
+											
+											
 											 * This is for checking the login Organization is
 											 * ATS or not And Get ALl Vendor Submitted Jobs
 											 * 
-											 */
+											 
+											 
 											if (modules[i].equalsIgnoreCase(Constants.MODULE_ATS_STR)) {
 				
 												List<RequirementSubmission> submissionsFromClient = requirementSubmissionService.getAllSubmissionsfromVendorsBasedOnLocationIdAndUserId(user, orgLocations,
@@ -890,36 +906,307 @@ public class EMailJobScheduler {
 
 			     }
 		     }
+		}*/
+
+
+	
+	// Team Lead
+	
+	/*@Scheduled(cron = "0 0/1 * 1/1 * ? ")
+	@Async
+	public void scheduleTeamLeadMailForRequirementConsolidatedReports() throws Exception {
+	
+	     	
+		List<Org> orgList = orgService.getOrgs();
+		for (Org org : orgList) {
+			OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(org.getId());
+			ArrayList<Long> userIdList = new ArrayList<Long>();
+			ArrayList<String> userCodeList = new ArrayList<String>();
+			
+			
+			List<User> userRoleList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),
+					Long.valueOf(Constants.TAB_REQUIREMENT));
+
+			if (userRoleList != null && userRoleList.size() > 0) {
+
+				for (User user : userRoleList) {
+					
+					List<Team> teamList = teamService.getTeamListByTeamOwner(user.getId(),orgLocations.getId());
+					if(teamList.size() >0 && !teamList.isEmpty()){
+						for(Team team :teamList){
+							
+							String teamName = team.getName();
+							
+							//List<RequirementAssignTo> requirementAssig = requirementAssignToService.getAllAssignedRequirementByOrglocationIdAndTeamId(orgLocations.getId(), team.getId());
+							 List<TeamMembers>  teamMembersList =   teamMembersService.getTeamMembersListByTeamID(team.getId(), orgLocations.getId());
+							
+							Integer  teamMembersCount =  teamMembersList.size();
+							List<ConsolidatedReport> consolidatedList = new ArrayList<ConsolidatedReport>();
+							
+							if(teamMembersList.size() >0 && !teamMembersList.isEmpty()){
+								
+								
+								for(TeamMembers teamMember :teamMembersList){
+								
+									ConsolidatedReport  conreport  =  new  ConsolidatedReport();
+									
+									Integer  todayReleasedRequirementsCount  = 0;
+									Integer  activeRequirmenttsCount  = 0;
+									Integer  applicantsCount  = 0;
+									Integer  shortlistedCount  = 0;
+									Integer  interviewedCount  = 0;
+									Integer  submittedToClientCount  = 0;
+									Integer  offeredCount  = 0;
+									Integer  rejectedCount  = 0;
+									Integer  tasksCompleted  = 0;
+									Integer  candidatesCount  = 0;
+									Integer  submissionsRecievedCount  = 0;
+									Integer  requestSentCount  = 0;
+									
+									
+									
+									User assignUser =  userService.getUserById(teamMember.getMemberUserId().getId());
+									conreport.setTeamMemberName(assignUser.getFirstName());
+									
+									Long tasksCount = taskService.getTasksCompletedTodayByLocationCodeandUserId(orgLocations, assignUser);
+									conreport.setNumberOfTasksCompletedCount(tasksCount.intValue());
+									
+									Integer candidatesCountCreatedToday = candidateService.getAllCandidatedsBasedOnCreatedByAndOrglocationCodeWhichAreCreatedToday(orgLocations, assignUser);
+									conreport.setCreatedCandidatesCount(candidatesCountCreatedToday);
+									
+									// To get released  requirement Counts
+									String[] modules = org.getModulesId().split(",");
+									for (int i = 0; i < modules.length; i++) {
+											if (modules[i].equalsIgnoreCase(Constants.MODULE_VMS_STR)) {
+												  todayReleasedRequirementsCount = requirementService.getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(orgLocations.getId(), assignUser);
+												  conreport.setReleasedRequirementCount(todayReleasedRequirementsCount);
+												  break;
+											}
+											
+									}
+									// to get active requirmentCounts
+									List<Requirement> requirementList = requirementService.getAllRequirementsByOrglocationIdAndRequirementWhoAreAssignedToRequirement(orgLocations.getId(),teamMember);
+									activeRequirmenttsCount = requirementList.size();
+									conreport.setActiveRequirementsCount(activeRequirmenttsCount);
+									
+									if(requirementList.size() >0 && !requirementList.isEmpty()){
+                                    	   
+                                    	   for (Requirement requirement : requirementList) {
+
+
+                   							conreport.setRequirementName(requirement.getJobTitle());
+                   							for (int i = 0; i < modules.length; i++) {
+
+                   								
+                   								 * This is for checking the login Organization is
+                   								 * ATS or not And Get ALl received jobs Count
+                   								 * 
+                   								 
+                   								if (modules[i].equalsIgnoreCase(Constants.MODULE_ATS_STR)) {
+
+                   									List<RequirementSubmission> submissionsRecievedList = requirementSubmissionService.getAllSubmissionsfromVendorsBasedOnLocationIdAndUserId(assignUser, orgLocations,
+                   													"CLIENT_SUBMISSIONS", requirement);
+                   									if (submissionsRecievedList.size() > 0 && submissionsRecievedList != null) {
+                   										submissionsRecievedCount = submissionsRecievedList.size();
+                   										   conreport.setRecievedSubmussionsCount(submissionsRecievedCount);
+                   										   break;
+                   									}
+                   								}
+                   								
+                   							}
+
+                   							Integer applicantsCountForEachRequirement = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(assignUser, orgLocations,"APPLICANTS", requirement);
+                   							applicantsCount = applicantsCount+ applicantsCountForEachRequirement ;
+                   							conreport.setApplicantsCount(applicantsCount);
+                   							
+                   							Integer shortlistedCountForEachRequirement = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(assignUser, orgLocations,"SHORTLISTED", requirement);
+                   							shortlistedCount = shortlistedCount + shortlistedCountForEachRequirement;
+                   							conreport.setShortlistedCount(shortlistedCount);
+
+                   							
+                   							
+                   							Integer submittedToClientCountForEachRequirement= requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(assignUser, orgLocations,"SUBMIT_TO_CLIENT", requirement);
+                   							submittedToClientCount = submittedToClientCount + submittedToClientCountForEachRequirement;
+                   							conreport.setSubmitToClientCount(submittedToClientCount);
+                   							
+                   							Integer interviewedCountForEachRequirement = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(assignUser, orgLocations,"INTERVIEWED", requirement);
+                   							interviewedCount = interviewedCount + interviewedCountForEachRequirement;
+                   							conreport.setInterviewsCount(interviewedCount);
+                   							
+
+                   							Integer rejectedCountForEachRequirement = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(assignUser, orgLocations,"REJECTED", requirement);
+                   							rejectedCount = rejectedCount + rejectedCountForEachRequirement;
+                   							conreport.setRejectedCount(rejectedCount);
+
+                   							Integer  requestSentCountForEachRequirement = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(assignUser, orgLocations,"REQUESTSENT", requirement);
+                   							requestSentCount = requestSentCount +requestSentCountForEachRequirement ;
+                   							conreport.setRequestSentCount(requestSentCount);
+
+                   							Integer offeredCountForEachRequirement = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(assignUser, orgLocations,"OFFERED", requirement);
+                   							offeredCount = offeredCount + offeredCountForEachRequirement ;
+                   							conreport.setOffersCount(offeredCount);
+
+                   						}
+                                       }
+									consolidatedList.add(conreport);
+								}
+								
+							}
+							sendEmailToTeamLeadEveryDayConsolidatedReports(consolidatedList, user,team.getName(),teamMembersCount);
+						}
+					}
+					
+				}
+
+			}
 		}
+		
+		}*/
 
 
+	public void sendEmailToTeamLeadEveryDayConsolidatedReports(List<ConsolidatedReport> list,User user,String teamName,Integer teamMembersCount) throws Exception {
+		
+		 StringBuilder  sb  = new StringBuilder();
+		
+		 sb.append("<div>");
+		 sb.append("<span style='width:260px;display:inline-block;margin-bottom:5px'>Team Name:</span>");
+		 sb.append("<strong style='padding-left:10px'>");
+		 sb.append(teamName);
+		 sb.append("</strong><div>");
+		 
+		 sb.append("<div>");
+		 sb.append("<span style='width:260px;display:inline-block;margin-bottom:5px'>Number of Team Numbers:</span>");
+		 sb.append("<strong style='padding-left:10px'>");
+		 sb.append(teamMembersCount);
+		 sb.append("</strong><div>");
+		 sb.append("<div>");
+		
+	
+   	sb.append("<table width='900' align='center' style='border-collapse: collapse; margin: 0 auto;border: 1px solid #375d81; text-align: center;' cellpadding='2px' cellspacing='0' border='0'>");
+   	sb.append("<thead style='background-color:#375d81; color: #fff;'>");
+   	sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");		    
+   	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Team Members</th>");	      
+   	sb.append("<th style=.border: 1px solid #12385c; text-align: center;'>Active Requirements </th>");		        
+   	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Applicants  </th>");		          
+   	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Received </th>");
+   	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Shortlisted </th>");
+   	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Interviewed  </th>");
+   	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Submit to Client </th>");
+   	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Offered </th>");
+   	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Tasks completed </th>");
+   	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Candidates created </th>");
+   	
+   	sb.append("</tr>");	
+   	sb.append("</thead>");	
+   	sb.append("<tbody>");
+   	for(ConsolidatedReport conreport :list){
+   		
+   	sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");
+   	sb.append("<td style='border: 1px solid #375d81;' width='300'>"+conreport.getTeamMemberName()+"</td>");		              
+   	sb.append("<td style='border: 1px solid #375d81;' width='225'>"+conreport.getActiveRequirementsCount()+"</td>");	              
+   	sb.append("<td style='border: 1px solid #375d81;' width='275'>"+conreport.getApplicantsCount()+"</td>");
+   	if(null != conreport.getRecievedSubmussionsCount()){
+	    	sb.append("<td style='border: 1px solid #375d81;' width='275'>"+conreport.getRecievedSubmussionsCount()+"</td>");		            
+   	}else{
+	    	sb.append("<td style='border: 1px solid #375d81;' width='275'>"+0+"</td>");		            
 
-
-
+   	}
+   	sb.append("<td style='border: 1px solid #375d81;' width='200'>"+conreport.getShortlistedCount()+"</td>");
+   	sb.append("<td style='border: 1px solid #375d81;' width='200'>"+conreport.getInterviewsCount()+"</td>");	
+   	sb.append("<td style='border: 1px solid #375d81;' width='200'>"+conreport.getSubmitToClientCount()+"</td>");	
+   	sb.append("<td style='border: 1px solid #375d81;' width='200'>"+conreport.getOffersCount()+"</td>");	
+   	sb.append("<td style='border: 1px solid #375d81;' width='200'>"+conreport.getNumberOfTasksCompletedCount()+"</td>");
+   	sb.append("<td style='border: 1px solid #375d81;' width='200'>"+conreport.getCreatedCandidatesCount()+"</td>");
+   	sb.append("</tr>");		            
+   	   
+       }
+   	sb.append("</tbody>");	              
+   	sb.append("</table>");   
+		
+		 StringBuilder nameBuilder = new StringBuilder();
+		 StringBuilder expBuilder = new StringBuilder();
+		 StringBuilder locationBuilder = new StringBuilder();
+		 EmailMessage emailMessage = new EmailMessage();
+		 String professionalName = null;
+		 String experience = null;
+		 String location = null;
+		 
+		 
+		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFromName("Sourcelead Admin");
+		 emailMessage.setCreatedBy("sladmin");
+		 emailMessage.setFromName("info@sourcelead.com");
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("professionalName", professionalName);
+		 globalVarsMap.put("experience", experience);
+		 globalVarsMap.put("location", location);
+		 globalVarsMap.put("professionalEmail", "sammetadavid@gmail.com");
+		 
+		
+		 //setting the Recipient information
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLIED_TO_REQUIREMENT,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, sb.toString(), signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
+		
+	}
+	
 	private void sendEmailToProfessionalForAppliedJob(List<ConsolidatedReport> list, User user,
 			Integer todayReleasedRequirementsCount, int size, Integer numberOfCreatedCandidatesCount) throws Exception {
 		
 		 StringBuilder  sb  = new StringBuilder();
 		 
-			sb.append("Released Requirement Count ").append(todayReleasedRequirementsCount);
+			
+		 
+		 
+		 sb.append("<div>");
+		 sb.append("<span style='width:260px; display: inline-block; margin-bottom: 5px;'>Released Requirement Count:</span> <strong style='padding-left:10px;'>0</strong>");
+		 sb.append("<div>");
+		 sb.append("<div>");
+		 sb.append("<span style='width:260px; display: inline-block; margin-bottom: 5px;'>Released Requirement Count:</span> <strong style='padding-left:10px;'>0</strong>");
+		 sb.append("<div>");
+		 sb.append("<div>");
+		 sb.append("<span style='width:260px; display: inline-block; margin-bottom: 5px;'>Released Requirement Count:</span> <strong style='padding-left:10px;'>0</strong>");
+		 sb.append("<div>");
+		 sb.append("<div>");
+		 sb.append("<span style='width:260px; display: inline-block; margin-bottom: 5px;'>Released Requirement Count:</span> <strong style='padding-left:10px;'>0</strong>");
+		 sb.append("<div>");
 
+		    sb.append("Released Requirement Count ").append(todayReleasedRequirementsCount);
+          
 			sb.append("Created Candidates Count ").append(numberOfCreatedCandidatesCount);
 			
 			sb.append("Number Of Active Requirement ").append(size);
 			
 			
-	    	sb.append("<table width='900' align='center' style='border-collapse: collapse; margin: 0 auto;border: 1px solid #375d81; text-align: center;' cellpadding='2px' cellspacing='0' border='0'>");
+	    	sb.append("<table width='900' align='center' style='border-collapse: collapse; margin: 0 auto;border: 1px solid #375d81; text-align: center; font-size: 12px;' cellpadding='2px' cellspacing='0' border='0'>");
 	    	sb.append("<thead style='background-color:#375d81; color: #fff;'>");
-	    	sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");		    
-	    	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Requirement Name</th>");	      
-	    	sb.append("<th style=.border: 1px solid #12385c; text-align: center;'>Applicants </th>");		        
-	    	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Shortlisted </th>");		          
-	    	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Submit To Client </th>");
-	    	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Rejected </th>");
-	    	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Interviewed </th>");
-	    	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Request Sent </th>");
-	    	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Offered </th>");
-	    	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Submissions from Client </th>");
+	    	sb.append("<tr style='min-height: 30px; vertical-align: middle;'>");		    
+	    	sb.append("<th style='border: 1px solid #12385c; text-align: center; padding:15px 0;'>Requirement Name</th>");	      
+	    	sb.append("<th style=.border: 1px solid #12385c; text-align: center; padding:15px 0;'>Applicants</th>");		        
+	    	sb.append("<th style='border: 1px solid #12385c; text-align: center; padding:15px 0;'>Shortlisted </th>");		          
+	    	sb.append("<th style='border: 1px solid #12385c; text-align: center; padding:15px 0;'>Submit To Client </th>");
+	    	sb.append("<th style='border: 1px solid #12385c; text-align: center; padding:15px 0;'>Rejected </th>");
+	    	sb.append("<th style='border: 1px solid #12385c; text-align: center; padding:15px 0;'>Interviewed </th>");
+	    	sb.append("<th style='border: 1px solid #12385c; text-align: center; padding:15px 0;'>Request Sent </th>");
+	    	sb.append("<th style='border: 1px solid #12385c; text-align: center; padding:15px 0;'>Offered </th>");
+	    	sb.append("<th style='border: 1px solid #12385c; text-align: center; padding:15px 0;'>Submissions from Client </th>");
 	    	
 	    	sb.append("</tr>");	
 	    	sb.append("</thead>");	
@@ -927,7 +1214,7 @@ public class EMailJobScheduler {
 	    	for(ConsolidatedReport conreport :list){
 	    		
 	    	sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");
-	    	sb.append("<td style='border: 1px solid #375d81;' width='300'>"+conreport.getRequirementName()+"</td>");		              
+	    	sb.append("<td style='display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 200px;' width='300'>"+conreport.getRequirementName()+"</td>");		              
 	    	sb.append("<td style='border: 1px solid #375d81;' width='225'>"+conreport.getApplicantsCount()+"</td>");	              
 	    	sb.append("<td style='border: 1px solid #375d81;' width='275'>"+conreport.getShortlistedCount()+"</td>");	              
 	    	sb.append("<td style='border: 1px solid #375d81;' width='275'>"+conreport.getSubmitToClientCount()+"</td>");		            
@@ -985,8 +1272,6 @@ public class EMailJobScheduler {
 			 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
 		
 	}
-		
-
 
 	
 }

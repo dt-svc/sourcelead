@@ -347,6 +347,12 @@ public class TaskServiceImpl implements TaskService{
 public List<Tasks> getTaskByScheduledTime(String currentTime) throws Exception {
 	return taskDao.getTaskByScheduledTime(currentTime);
 }
+
+@Override
+public Long getTasksCompletedTodayByLocationCodeandUserId(OrgLocations orglocationCode, User user) throws Exception{
+	
+	return taskDao.getTasksCompletedTodayByLocationCodeandUserId(orglocationCode,user);
+}
 }
 	
 
