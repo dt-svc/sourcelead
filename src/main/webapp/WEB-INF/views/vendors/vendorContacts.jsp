@@ -491,7 +491,11 @@ $('html').click(function(){
 						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId+"&clientLocationId="+vendorLocationId+"&responderType=Vendor",
 						success : function(result) {
 							$("#popUpDivContact").removeClass("edit-details-active");
+							$("#vendorConactTerminateMsgDiv").removeAttr("style");
+				 			$("#vendorConactTerminateMsgDiv").css({ display: "block" });
+				 			$("#vendorConactTerminateMsg").html("Success !! New Contact Added");
 							vendorContactList(orgRelationId,vendorLocationId);
+							vendorConactTerminateMsgFadein();
 						},
 			});
 			return true;

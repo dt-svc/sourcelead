@@ -68,7 +68,7 @@ function prepareReportDataDiv(data){
 	result = result + '    <th>Requirement Title</th>';
 	result = result + '    <th>Applicant Name</th>';
 	result = result + '    <th>Applicants</th>';
-	result = result + '    <th>Request Sent for Approval</th>';
+// 	result = result + '    <th>Request Sent for Approval</th>';
 	result = result + '    <th>Shortlisted</th>';
 	result = result + '    <th>Submit to client</th>';
 	result = result + '    <th>Interviewed</th>';
@@ -103,13 +103,13 @@ function prepareReportDataDiv(data){
 		    }
          result = result + '</td>';
          
-       	 result = result + '<td>';
+       	 /* result = result + '<td>';
        	if(report.requestSentDate != null && report.requestSentDate != '' && report.requestSentDate !='undefined'){
        	 result = result + "<div><span>"+report.requestSentDate+"</span></div>";
        	}else{
    		 result = result + '<div><span>---</span></div>';
 	    }
-         result = result + '</td>';
+         result = result + '</td>'; */
          
          result = result + '<td>';
      	if(report.shortlistDate != null && report.shortlistDate != '' && report.shortlistDate !='undefined'){
@@ -319,7 +319,7 @@ function requirementReportPagination(){
 				<span><i class="fa fa-tags"></i></span><b id="offerCount">0</b>
 			</li>
 			<li title="Rejected" id="rejectedli" class="colorTwo">
-				<span><i class="glyphicon glyphicon-trash"></i></span><b id="rejectedCount">0</b>
+				<span><i class="fa fa-ban"></i></span><b id="rejectedCount">0</b>
 			</li>
 					<div class="clearfix"></div>
 		</ul>
@@ -702,19 +702,23 @@ function getCustomReports(){
 	     "Stage": "Applicants",
 	     "StageCount": applicantsCount,
 	     "color": "#FF0F00"
-	     }, {
+         },{
+	     "Stage": "Request Sent",
+	     "StageCount": requestSentCount,
+	     "color": "#04D215"
+	     },{
 	     "Stage": "Shortlisted",
 	     "StageCount": shortlisted,
 	     "color": "#FF6600"
-	     }, {
-	     "Stage": "Interview",
-	     "StageCount": interviewCount,
-	     "color": "#FF9E01"
-	     }, {
+		  },{
 	     "Stage": "Submit To Client",
 	     "StageCount": submitToClientCount,
 	     "color": "#FCD202"
-	     }, {
+		 }, {
+	     "Stage": "Interview",
+	     "StageCount": interviewCount,
+	     "color": "#FF9E01"
+	     },{
 	     "Stage": "Offered",
 	     "StageCount": offeredCount,
 	     "color": "#F8FF01"
@@ -723,10 +727,6 @@ function getCustomReports(){
 	     "StageCount": rejectedCount,
 	     "color": "#B0DE09"
 	
-	     }, {
-	     "Stage": "Request Sent",
-	     "StageCount": requestSentCount,
-	     "color": "#04D215"
 	     }],
 	     "valueAxes": [{
 	     "axisAlpha": 0,
