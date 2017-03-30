@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
@@ -59,6 +60,7 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -671,6 +673,20 @@ public class CandidateListRestController {
 			 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			Countries countries = countriesService.getCountriesByCountryName(loginUser.getCountry());
 			Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
+			
+			LinkedHashSet<String> lhs = new LinkedHashSet<String>();
+			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			for(LookUpData lookUpData :skillsList){
+				lhs.add(lookUpData.getName());
+			}
+			if(StringUtils.isNotEmpty(can.getSkillsName())){
+				String [] csl = can.getSkillsName().split(",");
+				for(String sl : csl){
+					lhs.add(sl);
+				}
+			}
+			can.setAllAndCandidateSkills(lhs);
+			
 			if(null != can.getCurrentRateCurrency() && null != can.getExpectedRateCurrencey()){
 				can.setCurrentRateCurrency(can.getCurrentRateCurrency());
 				can.setExpectedRateCurrencey(can.getExpectedRateCurrencey());

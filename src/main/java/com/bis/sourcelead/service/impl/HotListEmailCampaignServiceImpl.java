@@ -123,7 +123,15 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 			 }
 		}
 		StringBuilder tomaillBuilder = new StringBuilder();
-		iAdressArray = InternetAddress.parse(tomaillBuilder.append(emails).append(",").append(otherEmails).toString());
+		
+		if(null != emails && null != otherEmails){
+			iAdressArray = InternetAddress.parse(tomaillBuilder.append(emails).append(",").append(otherEmails).toString());
+		}else if(null == emails && null != otherEmails){
+			iAdressArray = InternetAddress.parse(tomaillBuilder.append(otherEmails).toString());
+		}else if(null != emails && null == otherEmails){
+			iAdressArray = InternetAddress.parse(tomaillBuilder.append(emails).toString());
+		}
+		
 		
 		 emailMessage.setCreatedBy(user.getUserCode());
 		 emailMessage.setFromEmail(user.getEmail());

@@ -95,7 +95,7 @@ display: none;
           </div>
         </div>
         <div class="col-md-12 clearfix">
-          <label class="col-md-2 control-label text-success small">Candiates</label>
+          <label class="col-md-2 control-label text-success small">Candidates</label>
           <div class="col-md-10 positionRelative disable-choosen-dropdown">
             <select class="chosen-select" name="hotlistcandidates" data-validation="required" field-name="Candidates" multiple data-placeholder="&nbsp;" id="selectedCandidates">
             </select>
