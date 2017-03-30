@@ -144,7 +144,7 @@
                       </div>
                       <div class="col-md-7 paddingLeft">
                         <div class="form-group positionRelative iconHolder percentage" id="percentageReward"  style="display: none">
-                          <input type="text" class="form-control input-sm" field-name="Percentage" id="percentageRewardValue" name="percentageReward" placeholder="Percentage">
+                          <input type="text" class="form-control input-sm" field-name="Percentage" id="percentageRewardValue" name="percentageReward" onblur="getPercentageValue()" placeholder="Percentage">
                           <i class="fa fa-percent"></i> 
                         </div>
                         
@@ -218,7 +218,39 @@
 <!-- Content Area Starts -->
 
 
-
+<script>
+function getPercentageValue(){
+	var percentageValue = document.getElementById("percentageRewardValue").value;
+	if(percentageValue > 100 || percentageValue < 0){
+		$("#releaseToCWBtn").attr("disabled", "disabled");
+	    $('#percentageReward').find('p.jquery_form_error_message').remove(); 
+	   
+	    if(percentageValue < 0){
+	    	$("input#percentageRewardValue").after("<p class='jquery_form_error_message'>Percentage value should not in negitive</span>");
+	    }else{
+	    	$("input#percentageRewardValue").after("<p class='jquery_form_error_message'>Percentage value not more than 100</span>");
+	    }
+	    
+		$('input#percentageRewardValue').attr('record-exist','yes');
+		 if(percentageValue < 0){
+			 $('input#percentageRewardValue').attr('record-exist-errorMsg','Percentage value should not in negitive'); 
+		 }else{
+			 $('input#percentageRewardValue').attr('record-exist-errorMsg','Percentage value not more than 100'); 
+		 }
+		
+	}else{
+		 $("#releaseToCWBtn").removeAttr("disabled");
+		 $('input#percentageRewardValue').removeAttr( "record-exist record-exist-errormsg");
+		 $('#percentageReward').find('p.jquery_form_error_message').remove(); 
+		 $( "#releaseToCWBtn" ).removeAttr("style");
+		 $( "#releaseToCWBtn" ).click(function() {
+		 if ($(this).validate(false, validationSettings)){
+		 }
+		});
+	}
+	
+}
+</script>
 
 
 
@@ -570,9 +602,10 @@ function getRewardType(rewardType){
 		$('#flatRewardValue').removeAttr('data-validation-optional');
 		$('#percentageRewardValue').removeAttr('data-validation');
 		$('#percentageRewardValue').attr("data-validation-optional","true"); 
-		    	
 		
 	}
+	
+	 $("#releaseToCWBtn").removeAttr("disabled");
 }
 </script>
 
@@ -793,11 +826,17 @@ $(document).ready(function(){
 
 <script>
 function toggle(source) {
-    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    var checkboxes = [];
+    checkboxes = document.querySelectorAll('input[name="vendorcheckbox"]');
+    if(checkboxes.length < 1){
+    	checkboxes = [];
+    }
+    var contactCheckboxes = [];
+    contactCheckboxes = document.querySelectorAll('input[name="contactscheckbox"]');
+    $.merge( checkboxes, contactCheckboxes)
     for (var i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i] != source)
             checkboxes[i].checked = source.checked;
-        
     }
 $('input:checkbox:not(#contactscheckbox)').click(function() {
     if(!this.checked) {

@@ -667,10 +667,7 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 	 generateOrgSubmissionForm(sourceleadUrl,requirementId) 
 	 
 	 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-	
-	var result = "";
-	
-	
+	 var result = "";
 	
 	if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
 		result = result + '<form id="applyToJob_form" name="applyToJob_form" method="post">';
@@ -684,6 +681,8 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 		result = result + '<div class="row">';
 		
 		result = result + '<div class="venk clearfix">';
+		
+		if('${resumesCount}' > 0){
 		result = result + '<div class="col-md-6">';
 		result = result + '<label class="col-md-2 mt10">Resume</label>';
 		result = result + '<div class="panel-border_a col-md-8 mt10" id="resumesDiv">';
@@ -691,17 +690,41 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 		result = result + '</select>';
 		result = result + '</div>';
 		result = result + '</div>';
-		
-		result = result + '<div class="col-md-6 text-danger" id="noProfilesFound" style="display: none;">';
-		result = result + '<p class="mt10"><i class="fa fa-info-circle"></i>&nbsp;&nbsp;No resumes found. Provide resume in your profile</p>';
-		result = result + '</div>';
+		}
+		else{
+			result = result + '<label class="mr"><input type="radio" onClick="parseProfessionalResume();">&nbsp;Parse Resume</label>';
+			
+			result = result + '<div class="col-md-5 pull-right">';
+			result = result + '<div class="col-md-12" id="browseDiv"  style="display: none;">';
+			result = result + '<div class="input-group" id="uploadFileGroup">';
+			result = result + '<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+			result = result + '<input type="file" style="display: none;" name="locationMapFile" multiple id="uploadBtn"  class="upload">';
+			result = result + '</span> </label>';
+			result = result + '<input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
+			result = result + '</div>';
+			result = result + '</div>';	
+			result = result + '</div>';
+		}
 		
 		result = result + '</div>';
 		
 		result = result + '<div id="sjfb-fields" class="viewTemplate"> <div id="loading"></div></div>';
 		result = result + '</div>';
 		
-		result = result + '</div>';  
+		result = result + '</div>'; 
+		
+		result = result + '<div class="row">';
+	    result = result + '	<div class="col-md-6 upresume mb" id="skillsDiv" style="display: none;">';
+		result = result + '<label class="col-md-4">Skills</label>';
+		result = result + '<div class="col-md-8">';
+		result = result + '<select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">';
+		result = result + '<c:forEach var="skill" items="${skillsList}">';
+		result = result + '<option value="${skill.name}">${skill.name}</option>';
+		result = result + ' </c:forEach>';
+		result = result + '</select>';
+		result = result + '		 </div>';
+		result = result + '	 </div>';
+		result = result + '	 </div>';
 	                        
 		
 		result = result + '<div class="form-footer clearfix">';
@@ -766,6 +789,7 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 	                        
 		result = result + '</div>';
 		
+		
 		result = result + '<div class="row">';
 	    result = result + '	<div class="col-md-6 upresume mb" id="skillsDiv" style="display: none;">';
 		result = result + '<label class="col-md-4">Skills</label>';
@@ -778,7 +802,27 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 		result = result + '		 </div>';
 		result = result + '	 </div>';
 		result = result + '	 </div>';
+		
+		result = result + '<div class="row">';
+		result = result + '	<div class="col-md-6 upresume mb" id="newResumeDiv" style="display: none;">';
+		result = result + '<label class="col-md-4">Add Resume &nbsp;*</label>';
+		result = result + '		<div class="col-md-8">';
+		result = result + '			    <div class="input-group col-md-12 attachfile-error" id="uploadFileGroup1" style="margin:0 auto">';
+		result = result + '			        <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+		result = result + '                   <input type="file" style="display: none;" name="newUploadBtn" id="newUploadBtn"  class="upload">';
+		result = result + '			          </span> </label>';
+		result = result + '			          <input type="text" class="form-control" readonly id="newUploadFile" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validatedoc "  >';
+		result = result + '			    </div>';
+		result = result + '		 </div>';
+		result = result + '	 </div>';
+		
+	
+		
+		
+		
 		result = result + '</div>';
+		
+		
 		
 		
 		result = result + '<div class="form-footer clearfix mt">';
@@ -897,6 +941,11 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 			 $("#candidateSkills").val('').trigger("chosen:updated");
 		 }
 		 
+		 var newResumeDiv =  document.getElementById('newResumeDiv'); 
+		 if(newResumeDiv != null){
+			 document.getElementById("newResumeDiv").style.display="none";
+		 }
+		 
 		 if(requirementId != null && requirementId != "" && requirementId != 'undefined'){
 			 $.ajax({
 			    	type: "POST",
@@ -947,6 +996,8 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 			 $('#uploadFile').attr("data-validation","required validatedoc "); 
 			 
 			 document.getElementById("skillsDiv").style.display="";
+			 document.getElementById("newResumeDiv").style.display="none";
+			 
 			 $("#candidateSkills").val('').trigger("chosen:updated");
 			 $('#newUploadFile').removeAttr('data-validation');
 			 $('#newUploadFile').attr("data-validation-optional","true"); 
@@ -1013,11 +1064,14 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 				        $("#candidateResumesList").append(output);
 				        
 				        document.getElementById("skillsDiv").style.display="none";
+				        document.getElementById("newResumeDiv").style.display="none";
+				        
 				        $('#newUploadFile').removeAttr('data-validation');
 		        		$('#newUploadFile').attr("data-validation-optional","true"); 
 		        		
 		        		 $('#candidateResumesList').removeAttr('data-validation-optional');
 		    			 $("#candidateResumesList").attr("data-validation", "required");
+		    			
 		        	}else{
 		        		
 		        		 $('#candidateResumesList').removeAttr('data-validation');
@@ -1027,7 +1081,7 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 		        		 document.getElementById("browseDiv").style.display="none";
 		        		 document.getElementById("orConditionDiv").style.display="none";
 		        		
-		        		 document.getElementById("skillsDiv").style.display="";
+		        		 document.getElementById("newResumeDiv").style.display="";
 		        		 $('#newUploadFile').removeAttr('data-validation-optional');
 		        		 $("#newUploadFile").attr("data-validation", "required validatedoc");
 		        		 
@@ -1857,21 +1911,23 @@ $('body').on('submit', '#applyToJob_form', function(e){
  	        dataType : 'json',
  	    	url : sourceleadUrl+"/applyToJobFromCrowdSourcing?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
-	        	$("#loading").removeAttr("style");
 	        	
-	        	$(".new_side_wrap").removeClass("new_side_wrap_active");
-	    		$(".side_mask").fadeOut(200);
-	    		$("body").css('overflow-y', 'auto');
-	    		
-	        	document.getElementById('requirementType').value = 'AppliedJobs';
-	    		document.getElementById('appliedjobs').checked = true;
-	    		document.getElementById('appliedActive').className = 'activeBackground'
-	    		document.getElementById("crowdActive").removeAttribute("class")
-	       		document.getElementById("openActive").removeAttribute("class");
-	        	
-	       		requirementsList(0);
-	        	
-	        	
+	        	if('${resumesCount}' > 0){
+	        		$("#loading").removeAttr("style");
+		        	$(".new_side_wrap").removeClass("new_side_wrap_active");
+		    		$(".side_mask").fadeOut(200);
+		    		$("body").css('overflow-y', 'auto');
+		    		
+		        	document.getElementById('requirementType').value = 'AppliedJobs';
+		    		document.getElementById('appliedjobs').checked = true;
+		    		document.getElementById('appliedActive').className = 'activeBackground'
+		    		document.getElementById("crowdActive").removeAttribute("class")
+		       		document.getElementById("openActive").removeAttribute("class");
+		        	
+		       		requirementsList(0);
+	        	}else{
+	        		location.replace(sourceleadUrl+"/professionalRequirements");  
+	        	}
 	        },
 	    }); 
       return true; 
@@ -2098,6 +2154,87 @@ function setRateTypesByLocation(){
 }
 </script>
 
+
+<script>
+ $(document.body).on('change', '#uploadBtn' ,function(){
+	 $('#uploadFile').val(this.value.split( '\\' ).pop());
+	 $("#uploadFile").focus();
+ 	 if(validate_fileupload(this.value)){
+ 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		var form = $('#applyToJob_form')[0];
+  		var formData = new FormData(form); 
+		var sourceleadUrl = '${sourceleadUrl}';
+		   $.ajax({
+				    type: "POST",
+			    	data: formData,
+		   	        contentType : 'application/json; charset=utf-8',
+		   	        enctype: 'multipart/form-data',
+			        processData: false,
+			        contentType:false,
+		   	        dataType : 'json',
+					url : sourceleadUrl+"/parseResume?${_csrf.parameterName}=${_csrf.token}",
+					success : function(data) {
+						var json = JSON.parse(data);
+						var name = json.name;
+						var firstName = '';
+						var lastName = '';
+						if(name != null && name != 'undefined' && name != ''){
+							 firstName = name.split(".")[0]; 
+							 lastName = name.split(".")[1]; 
+							 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
+									 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
+								 firstName = name;
+							 }
+						}
+						
+						
+						 $("input[name=FirstName]").val('${SourceLeadWeb_candidate.firstName}');
+			        	 $("input[name=LastName]").val('${SourceLeadWeb_candidate.lastName}');
+			        	 $("input[name=EmailId]").val('${SourceLeadWeb_candidate.email}');
+			        	 $("input[name=PhoneNumber]").val('${SourceLeadWeb_user.mobilePhone}');
+			        	 
+			        	 $("input[name=FirstName]").attr("readonly", "readonly");
+			        	 $("input[name=LastName]").attr("readonly", "readonly");
+			        	 $("input[name=EmailId]").attr("readonly", "readonly");
+			        	 
+			        	 $("#candidateSkills").empty();
+			        	 var internalOutput = "";
+ 						 <c:forEach var="skill" items="${skillsList}">
+ 						    internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
+ 	                     </c:forEach>
+ 						var skills = json.skills;
+ 						if(skills != null && skills != 'undefined' && skills != ''){
+ 							var str_array = skills.split(',');
+ 							for(var i = 0; i < str_array.length; i++) {
+ 							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+ 							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+ 							}
+ 						}
+ 						$("#candidateSkills").append(internalOutput);
+ 		        		$("#candidateSkills").trigger("chosen:updated");
+  						
+			        	 
+						 validateCandidateEmail();
+						 getAllSubmissionCandidateCountries();
+						 setRateTypesByLocation();
+						 $("#loading").removeAttr("style");
+					},
+				});
+ 	 }
+ });
+
+</script> 
+
+<script>
+function parseProfessionalResume(){
+	 document.getElementById("browseDiv").style.display="";
+	 $('#uploadFile').removeAttr('data-validation-optional');
+	 $('#uploadFile').attr("data-validation","required validatedoc "); 
+	 
+	 document.getElementById("skillsDiv").style.display="";
+	 $("#candidateSkills").val('').trigger("chosen:updated");
+}
+</script>
 
 <script type="text/javascript">
 	(function($) {

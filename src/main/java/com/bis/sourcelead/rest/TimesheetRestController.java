@@ -155,9 +155,10 @@ public class TimesheetRestController {
 		
 		    Long superUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "superUserId");
 		    Boolean isSuperUser = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isSuperUser");
+		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	    	StringBuilder projectDiv = new StringBuilder("");
 		    if(StringUtils.isNotEmpty(projectMemberId)){
-		    	 projectDiv = timesheetEntriesDivByProjectMemberId(projectMemberId,from,superUserId,isSuperUser);
+		    	 projectDiv = timesheetEntriesDivByProjectMemberId(loginUser,projectMemberId,from,superUserId,isSuperUser);
 		    }
 		    return projectDiv.toString();
 	}
@@ -170,12 +171,13 @@ public class TimesheetRestController {
 		
 		Long superUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "superUserId");
 		Boolean isSuperUser = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isSuperUser");
+	    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		StringBuilder frequencyBasedDiv = new StringBuilder();
 		if(StringUtils.isNotEmpty(timesheetFrequency)){
 		 	 String[] frequency = timesheetFrequency.split("To");
 		 	 String weekStartDate = frequency[0].trim();
 		  	 String weekEndDate = frequency[1].trim();
-			 frequencyBasedDiv = timesheetEntriesDivByFrequnecy(weekStartDate,weekEndDate,projectMemberId,from,superUserId,isSuperUser);
+			 frequencyBasedDiv = timesheetEntriesDivByFrequnecy(loginUser,weekStartDate,weekEndDate,projectMemberId,from,superUserId,isSuperUser);
 		}
 		
 		return frequencyBasedDiv.toString();
@@ -321,7 +323,7 @@ public class TimesheetRestController {
 			
 				timesheetEntriesDiv.append("					<div id='timesheetEntriesDivByProjectMemberId'>");
 				if(initialProjectMemberId != null){
-					 StringBuilder projectDiv = timesheetEntriesDivByProjectMemberId(initialProjectMemberId.toString(),from,superUserId,isSuperUser);
+					 StringBuilder projectDiv = timesheetEntriesDivByProjectMemberId(loginUser,initialProjectMemberId.toString(),from,superUserId,isSuperUser);
 					 timesheetEntriesDiv.append(projectDiv);		 
 				}
 				timesheetEntriesDiv.append("		            </div>");	
@@ -335,7 +337,7 @@ public class TimesheetRestController {
 		}
 	}
 	
-	public StringBuilder timesheetEntriesDivByProjectMemberId(String projectMemberId,String from,Long superUserId,boolean isSuperUser) throws Exception{
+	public StringBuilder timesheetEntriesDivByProjectMemberId(User loginUser,String projectMemberId,String from,Long superUserId,boolean isSuperUser) throws Exception{
 		StringBuilder timesheetEntriesDiv = new StringBuilder();
 		if(StringUtils.isNotEmpty(projectMemberId)){
 			ProjectMembers projectMember = projectMembersService.getProjectMemberById(Long.parseLong(projectMemberId));
@@ -379,7 +381,7 @@ public class TimesheetRestController {
 				timesheetEntriesDiv.append("		            </div> ");
 				
 				timesheetEntriesDiv.append("			<div id='timesheetDivByFrequency'> ");
-					StringBuilder frequencyBasedDiv = timesheetEntriesDivByFrequnecy(selectedStartDate.toString(),selectedEndDate.toString(),projectMember.getId(),from,superUserId,isSuperUser);
+					StringBuilder frequencyBasedDiv = timesheetEntriesDivByFrequnecy(loginUser,selectedStartDate.toString(),selectedEndDate.toString(),projectMember.getId(),from,superUserId,isSuperUser);
 					timesheetEntriesDiv.append(frequencyBasedDiv);
 				timesheetEntriesDiv.append("		            </div> ");
 				
@@ -409,7 +411,7 @@ public class TimesheetRestController {
 		
 	}
 	
-	public StringBuilder timesheetEntriesDivByFrequnecy(String weekStartDate,String weekEndDate,Long projectMemberId,String from,Long superUserId,boolean isSuperUser) throws Exception{
+	public StringBuilder timesheetEntriesDivByFrequnecy(User loginUser,String weekStartDate,String weekEndDate,Long projectMemberId,String from,Long superUserId,boolean isSuperUser) throws Exception{
 		
 		Boolean isModifyMyTimeSheet = commonUtil.hasRole("ROLE_MODIFY_MY_TIMESHEETS");
 		
@@ -421,7 +423,13 @@ public class TimesheetRestController {
 		Date frequencyStartDate = format.parse(weekStartDate.replaceAll("/", "-"));
 		Date frequencyEndDate = format.parse(weekEndDate.replaceAll("/", "-"));
 		 
-		SubmissionApproverHierarchy sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMemberId);
+		SubmissionApproverHierarchy sah = null;
+		if(from != null && !from.isEmpty() && from.equalsIgnoreCase("user")){
+			sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMemberId);  
+		}
+		else{
+			sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(loginUser.getId(),projectMemberId,frequencyStartDate, frequencyEndDate);
+		}
 		Submission_Status submissionStatus = sah.getSubmissionStatus();
 		String submissionStatusStr = submissionStatus.getValue();
 		
@@ -581,6 +589,13 @@ public class TimesheetRestController {
 		   StringBuilder timesheetEntriesDiv = new StringBuilder();
 		   DateFormat format = Constants.DF_DMY;
 		   Boolean isModifyMyTimeSheet = commonUtil.hasRole("ROLE_MODIFY_MY_TIMESHEETS");
+		   String acSubmissionStatusStr = null;
+		   if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
+			   SubmissionApproverHierarchy acsah =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMemberId);
+			   Submission_Status acSubmissionStatus = acsah.getSubmissionStatus();
+			   acSubmissionStatusStr = acSubmissionStatus.getValue();
+		   }
+		  
 		   
 		    timesheetEntriesDiv.append("<input type='hidden' name='timesheetSubmissionStatus'  id='timesheetSubmissionStatus' value='"+submissionStatusStr+"' >");
 		    timesheetEntriesDiv.append("<input type='hidden' name='isSuperUser'  id='isSuperUser' value='"+isSuperUser+"' >");
@@ -612,6 +627,7 @@ public class TimesheetRestController {
 	        			timesheetEntriesDiv.append(" <div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>").append(sah.getReopenRejectedReason()).append("</div>");
 		        		timesheetEntriesDiv.append(" </i>");
 	        		}
+	        		if(!isNullOrEmpty(acSubmissionStatusStr) && acSubmissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))
 	        		timesheetEntriesDiv.append("<b  "+innerStyleWidth+" class='proj_withdraw "+pullRightClass+" ml'  onClick='reOpenMyTimesheet(\""+projectMemberId+"\",\""+weekStartDate+"To"+weekEndDate+"\");' >Re-Open</b>");
 	        	}
 	        	else if(from.equalsIgnoreCase("approver") && !isSuperUser && StringUtils.isNotEmpty(sah.getReopenReason()) && isSahReopened){
@@ -1230,7 +1246,7 @@ public class TimesheetRestController {
 	      
 	    if(!isNullOrEmpty(approvalStatus)  && !(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && from.equalsIgnoreCase("user")) && !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){
 			
-	    	if(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()))
+	    	if(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()) || !(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && from.equalsIgnoreCase("user")))
 	    	tabDiv.append("		        	<input type='button' onClick='newSaveTimesheet(\"Draft\",\""+from+"\");'  value='Save' class='time_btn time_dra' />");	
 			
 			if(StringUtils.isNotEmpty(timesheetFrequencyEndDate)){
@@ -1383,12 +1399,25 @@ public class TimesheetRestController {
 		            	 if(timesheetSubmissions != null){
 		            		 List<SubmissionApproverHierarchy> saHierarchyList =  submissionApproverHierarchyService.getSubmissionApproverHierarchyBySubmissionId(timesheetSubmissions.getId());
 		            		 for(SubmissionApproverHierarchy saHierarchy : saHierarchyList){
-		            			  saHierarchy.setSubmissionStatus(Submission_Status.getNameByValue(status));
+		            			   Submission_Status currentSahStatus = saHierarchy.getSubmissionStatus();
+		            			   if(currentSahStatus != null && currentSahStatus.equals(Submission_Status.SUBMITTED)  && StringUtils.isNotEmpty(savingType) && !savingType.equalsIgnoreCase("user") && StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("Draft")){
+		            				   status = "submitted";
+		            			   }
+		            			   
+		            			   if(StringUtils.isNotEmpty(saHierarchy.getSubmissionStatus().getValue()) && saHierarchy.getSubmissionStatus().getValue().equalsIgnoreCase("approved")){
+		            				   status = "approved";
+		            				   saHierarchy.setSubmissionStatus(Submission_Status.getNameByValue("approved"));
+		            			   }
+		            			   else{
+		            				   saHierarchy.setSubmissionStatus(Submission_Status.getNameByValue(status));
+		            			   }
+		            			  
 		            			  if(StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("Draft"))
 		    					  saHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("new"));
 		            			  
 		            			  if(StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("Submitted"))
 		            			   saHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("submitted for approval"));
+		            			  
 		    					   saHierarchy.setUpdatedDate(CommonUtil.currentDate());
 		    					   saHierarchy.setUpdatedBy(loginUser.getUserCode());
 		    					   
@@ -1793,7 +1822,7 @@ public class TimesheetRestController {
 			 String url = sourceleadUrl;;
 			 
 			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
 			 emailMessage.setSubject(subject);
 			 emailMessage.setMessageBody(emailTemplate);
 			 

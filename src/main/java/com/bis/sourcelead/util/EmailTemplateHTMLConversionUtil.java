@@ -2,6 +2,8 @@ package com.bis.sourcelead.util;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.Org;
 
@@ -34,7 +36,18 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 												tempHTML.append("<td>");
 												  tempHTML.append("<table width='600' align='center'>");
 												      tempHTML.append("<tr>");
-												           tempHTML.append("<td><img src='"+url+"/resources/images/mail-logo.png' width='300px' height='71px'></td>");
+												      
+												      //This condition for org image     
+												      if(org != null && org.getId() != null){
+												    	  	if(StringUtils.isNotEmpty(org.getFileContentType())){
+												    	  	  tempHTML.append("<td><img src='"+url+"/displayOrgImage/"+org.getOrgCode()+"' width='auto' style='padding: 5px 20px; max-height:55px; background-color:#fff; margin: 5px 0px;'></td>");
+												    	  	}else{
+												    	  		 tempHTML.append("<td class='text-logo'><span class='tbldata-dotdot'  style='font-size: 25px; color: white; width: 300px; display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; padding: 10px 0px;'>"+org.getOrgName()+"</span></td>");
+												    	  	}
+												      }else{
+												    	  tempHTML.append("<td><img src='"+url+"/resources/images/mail-logo.png' width='300px' height='71px'></td>");
+												      }
+												           
 										             tempHTML.append("</tr>");
 								                 tempHTML.append("</table>");
 						                      tempHTML.append("</td>");
@@ -75,7 +88,7 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 					                 tempHTML.append("</td>");
 					            tempHTML.append("</tr>");
 					         
-					            tempHTML.append("<tr>");
+					            tempHTML.append("<tr>");    
 					                  tempHTML.append("<td>");
 					                       tempHTML.append("<p style='text-align:center; padding:10px 0px; margin:0px 0px; font-size:13px; font-weight:600; border-top:1px solid #333;'>");
 					                       tempHTML.append("<a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#333;'>About SourceLead</a> | <a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#333;'>Contact Us</a> | <a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#333;'>Legal Notices</a> | <a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#333;'>Terms of Use</a> | <a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#333;'>Your Privacy Rights</a></p>");

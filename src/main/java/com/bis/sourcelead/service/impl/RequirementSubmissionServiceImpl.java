@@ -888,7 +888,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 String url = "";
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, org);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -1132,7 +1132,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		// notificationScenario.setBody(notificationbody);
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -1233,7 +1233,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		notificationScenario.setBody(notificationbody);
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		  
@@ -1321,7 +1321,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		notificationScenario.setBody(notificationbody);
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		  
@@ -1407,7 +1407,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		notificationScenario.setBody(notificationbody);
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		  
@@ -1595,46 +1595,51 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 
 		/* the functionality of this block is to verify the submitted candidate is in the Cooling-Off Period or not
 		 if the applicant is in cooling-off period, the candidate should be in rejected state(set previous state to Submission) at client side  [Venkat Kesav] START Code snippet*/
-		 String parentReqCoolingOffPeriod = requirement.getParentRequirement().getReqCoolingOffPeriod();
-		 String [] coolingOffArr = parentReqCoolingOffPeriod.split(" ");
-		 String reqCoolingOffPeriodDays;
-		 int Days;
-		 switch (coolingOffArr[1]) {
-			 case "Week" :
-				 reqCoolingOffPeriodDays = "7";
-			      break;
-			 case "Weeks" :
-				 Days  = (Integer.parseInt(coolingOffArr[0]) * 7);
-				 reqCoolingOffPeriodDays = Integer.toString(Days);
-			     break;
-			 case "Month" :
-				 reqCoolingOffPeriodDays = "30";
-			     break;
-			 case "Months" :
-				 Days  = (Integer.parseInt(coolingOffArr[0]) * 30);
-				 reqCoolingOffPeriodDays = Integer.toString(Days);
-			     break;
-			 case "Year" :
-				 reqCoolingOffPeriodDays = "365";
-			     break;
-			 default:
-				 reqCoolingOffPeriodDays = "0";
-		 }
-		 
-		 RequirementSubmissionHistory requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(submission.getCandidate().getEmail(), requirement.getParentRequirement().getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getParentRequirement().getId());
-		 
-		 
-		 if(requirementSubmissionHistoryForCoolingOff != null){
-			 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
-				 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
-				 clientSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
-				 clientSubmission.setRejectedReason("Under cooling off period, completed by "+requirementSubmissionHistoryForCoolingOff.getCoolingOffPeriodEndDateStr()+".");
+		 RequirementSubmissionHistory requirementSubmissionHistoryForCoolingOff = null;
+		 if(null != requirement.getParentRequirement()){
+			 String parentReqCoolingOffPeriod = requirement.getParentRequirement().getReqCoolingOffPeriod();
+			 String [] coolingOffArr = parentReqCoolingOffPeriod.split(" ");
+			 String reqCoolingOffPeriodDays;
+			 int Days;
+			 switch (coolingOffArr[1]) {
+				 case "Week" :
+					 reqCoolingOffPeriodDays = "7";
+				      break;
+				 case "Weeks" :
+					 Days  = (Integer.parseInt(coolingOffArr[0]) * 7);
+					 reqCoolingOffPeriodDays = Integer.toString(Days);
+				     break;
+				 case "Month" :
+					 reqCoolingOffPeriodDays = "30";
+				     break;
+				 case "Months" :
+					 Days  = (Integer.parseInt(coolingOffArr[0]) * 30);
+					 reqCoolingOffPeriodDays = Integer.toString(Days);
+				     break;
+				 case "Year" :
+					 reqCoolingOffPeriodDays = "365";
+				     break;
+				 default:
+					 reqCoolingOffPeriodDays = "0";
 			 }
+			 
+			 requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(submission.getCandidate().getEmail(), requirement.getParentRequirement().getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getParentRequirement().getId());
+			 
+			 
+			 if(requirementSubmissionHistoryForCoolingOff != null){
+				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
+					 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+					 clientSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+					 clientSubmission.setRejectedReason("Under cooling off period, completed by "+requirementSubmissionHistoryForCoolingOff.getCoolingOffPeriodEndDateStr()+".");
+				 }
+			 }else{
+				 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+			 }
+			 /*END Code snippet*/
+		 
 		 }else{
 			 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 		 }
-		 /*END Code snippet*/
-		 
 		 
    		 clientSubmission = requirementSubmissionDao.storeRequirementSubmission(clientSubmission);
    		 
@@ -1735,8 +1740,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    			 clientSubmissionFields.setCurrentCTC(templateFields.getCurrentCTC()); 
    		 }
    		 
-   		 if(!isNullOrEmpty(templateFields.getExpectedCTC())){
-   			 clientSubmissionFields.setExpectedCTC(templateFields.getExpectedCTC()); 
+   		 if(!isNullOrEmpty(clientShortlistsRate[i])){
+   			 clientSubmissionFields.setExpectedCTC(clientShortlistsRate[i]); 
    		 }
    		 
    		 if(!isNullOrEmpty(templateFields.getNoticePeriod())){
@@ -1862,8 +1867,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			}*/
 
 			// construct HTML template using required data
-			String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
-					null, url, new Org());
+			String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, null, url, loginOrgLocation.getOrg());
 			emailMessage.setSubject(subject);
 			emailMessage.setMessageBody(emailTemplate);
 
@@ -2116,7 +2120,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		notificationScenario.setBody(notificationbody);*/
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		  
@@ -2201,7 +2205,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		notificationScenario.setBody(notificationbody);*/
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrg);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		  
@@ -2287,7 +2291,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 String url = "";
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		  
@@ -2430,7 +2434,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
 		 String url = "";
 		 
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrg);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		  
@@ -2556,7 +2560,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		notificationScenario.setBody(notificationbody);*/
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrg);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		  
@@ -2634,7 +2638,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 String url = "";
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		  
@@ -2783,7 +2787,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		notificationScenario.setBody(notificationbody);*/
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrg);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		  
@@ -2809,7 +2813,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 
 	@Override
 	public RequirementSubmission saveRequirementSubmissionFromCrowdSourcing(JSONObject jsonObj, User user,
-			String jsonStringvalues) throws Exception {
+			String jsonStringvalues,OrgLocations orgLocations,MultipartFile multiFile) throws Exception {
 		
 		 Requirement requirement = null;;
 		 RequirementSubmission requirementSubmission = new RequirementSubmission();
@@ -2834,7 +2838,148 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 candidateResumes = candidateResumesDao.getCandidateResumeByResumeId(Long.parseLong(jsonObj.getString("candidateResume")));
 			 candidateResumes.setId(Long.parseLong(jsonObj.getString("candidateResume")));
 			 requirementSubmission.setCandidateResumes(candidateResumes);
+		 }else{
+			 
+		       if(jsonObj.has("FirstName") && !isNullOrEmpty(jsonObj.getString("FirstName"))){
+				candidate.setFirstName(jsonObj.getString("FirstName"));
+				}
+				
+		        if(jsonObj.has("LastName") && !isNullOrEmpty(jsonObj.getString("LastName"))){
+				candidate.setLastName(jsonObj.getString("LastName") );
+				}
+				
+		        if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
+		        	candidate.setCountry(jsonObj.getString("country"));
+				}
+				 
+				if(jsonObj.has("state") && !isNullOrEmpty(jsonObj.getString("state"))){
+					 candidate.setState(jsonObj.getString("state"));
+				}
+				 
+				if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
+					 candidate.setCity(jsonObj.getString("city"));
+				}
+				
+				if(jsonObj.has("PhoneNumber") && !isNullOrEmpty(jsonObj.getString("PhoneNumber"))){
+					 candidate.setMobilePhone(jsonObj.getString("PhoneNumber"));
+				}
+				
+				if(jsonObj.has("AlternateNumber") && !isNullOrEmpty(jsonObj.getString("AlternateNumber"))){
+					 candidate.setAlternateMobilePhone(jsonObj.getString("AlternateNumber"));
+				}
+				
+				if(jsonObj.has("EmailId") && !isNullOrEmpty(jsonObj.getString("EmailId"))){
+				candidate.setEmail(jsonObj.getString("EmailId"));
+				}
+				
+				if(jsonObj.has("currentCTCRateType") && !isNullOrEmpty(jsonObj.getString("currentCTCRateType"))){
+					candidate.setCurrentRateCurrency(jsonObj.getString("currentCTCRateType"));
+				}
+				
+				if(jsonObj.has("CurrentCTC") && !isNullOrEmpty(jsonObj.getString("CurrentCTC"))){
+					candidate.setCurrentRate(jsonObj.getString("CurrentCTC"));
+				}
+				
+				if(jsonObj.has("currentCTCRatePer") && !isNullOrEmpty(jsonObj.getString("currentCTCRatePer"))){
+					 candidate.setCurrentRateType(jsonObj.getString("currentCTCRatePer"));
+				}
+				
+				if(jsonObj.has("expectedCTCRateType") && !isNullOrEmpty(jsonObj.getString("expectedCTCRateType"))){
+					 candidate.setExpectedRateCurrencey(jsonObj.getString("expectedCTCRateType"));
+					 
+				}
+				 
+				if(jsonObj.has("ExpectedCTC") && !isNullOrEmpty(jsonObj.getString("ExpectedCTC"))){
+					 candidate.setExpectedRate(jsonObj.getString("ExpectedCTC"));
+					 
+				}
+				
+				if(jsonObj.has("expectedCTCRatePer") && !isNullOrEmpty(jsonObj.getString("expectedCTCRatePer"))){
+					 candidate.setRateType(jsonObj.getString("expectedCTCRatePer"));
+				}
+				
+				if(jsonObj.has("Designation") && !isNullOrEmpty(jsonObj.getString("Designation"))){
+					candidate.setDesignation(jsonObj.getString("Designation"));
+				}
+				 
+				if(jsonObj.has("WorkExperience") && !isNullOrEmpty(jsonObj.getString("WorkExperience"))){
+					 candidate.setExperienceYears(jsonObj.getString("WorkExperience"));
+				 }
+				 
+				 
+				if(jsonObj.has("monthExp") && !isNullOrEmpty(jsonObj.getString("monthExp"))){
+					 candidate.setExperienceMonths(jsonObj.getString("monthExp"));
+				 }
+				
+				 if(jsonObj.has("NoticePeriod") && !isNullOrEmpty(jsonObj.getString("NoticePeriod"))){
+					 candidate.setNoticePeriod(jsonObj.getString("NoticePeriod"));
+				 }
+		 
+		        if(jsonObj.has("candidateSkills") && !isNullOrEmpty(jsonObj.getString("candidateSkills"))){
+			    String candidateSkills = null;
+				try{
+		    		   JSONArray jsonArray = jsonObj.getJSONArray("candidateSkills");
+		    		   candidateSkills = jsonArray.toString();
+		    	  }
+		    	  catch(JSONException e){
+		    		  candidateSkills= jsonObj.getString("candidateSkills");
+		    	  }
+				candidateSkills = candidateSkills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]","");
+			    candidate.setSkillsName(candidateSkills);
+			    
+			    candidateDao.storeCandidate(candidate);
+				CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
+				sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
 		 }
+		 
+		 
+		 if(jsonObj.has("Education") && !isNullOrEmpty(jsonObj.getString("Education"))){
+	    		
+	    		String[] educationList = jsonObj.getString("Education").split(",");
+	    		   
+				for(int i=0; i<educationList.length; i++){
+					CandidateEducation candidateEducation = new CandidateEducation();
+					candidateEducation.setCandidateId(candidate);
+					candidateEducation.setOrglocationId(orgLocations);
+					candidateEducation.setName(educationList[i].startsWith(" ") ? educationList[i].substring(1) : educationList[i]);
+					candidateEducation.setCreatedBy(user.getUserCode());
+					candidateEducation.setCreatedDate(new Date());
+					candidateEducation.setStatus(Constants.CANDIDATE_ACTIVE);
+					candidateEducationDao.storeCandidateEducation(candidateEducation);
+				}
+			 }
+			
+			 if(jsonObj.has("Current/LastCompany") && !isNullOrEmpty(jsonObj.getString("Current/LastCompany"))){
+				 CandidateEmployers candidateEmployers = new CandidateEmployers();
+				 candidateEmployers.setOrgLocationId(orgLocations);
+				 candidateEmployers.setCandidateId(candidate);
+				 candidateEmployers.setName(jsonObj.getString("Current/LastCompany"));
+				 candidateEmployers.setStatus(Constants.CANDIDATE_ACTIVE);
+				 candidateEmployers.setCreatedDate(new Date());
+				 candidateEmployers.setCreatedBy(user.getUserCode());
+				 candidateEmployers.setUpdatedDate(new Date());
+				 candidateEmployersDao.storeCandidateEmployers(candidateEmployers);
+				 
+			 }
+			 
+			 if(multiFile != null && multiFile.getOriginalFilename() != null && !multiFile.getOriginalFilename().isEmpty()){
+				 candidateResumes = new CandidateResumes();
+				 candidateResumes.setCandidateId(candidate);
+				 candidateResumes.setDocFile(multiFile.getBytes());
+				 candidateResumes.setFileName(multiFile.getOriginalFilename());
+				 candidateResumes.setTitle(multiFile.getOriginalFilename());
+				 candidateResumes.setFileContentType(multiFile.getContentType());
+				 candidateResumes.setStatus(Constants.CANDIDATE_ACTIVE);
+				 candidateResumes.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+				 candidateResumes.setCreatedDate(new Date());
+				 candidateResumes.setCreatedBy(user.getUserCode());
+				 candidateResumes.setUpdatedDate(new Date());
+				 candidateResumes.setOrgLocationId(orgLocations);
+				 candidateResumesDao.storeCandidateResumes(candidateResumes);
+				 requirementSubmission.setCandidateResumes(candidateResumes);
+			 }
+		 
+	 }
 		 
 		 requirementSubmission.setOrgLocations(requirement.getOrgLocationId());
 		 requirementSubmission.setSubmissionTemplateJsonStringValue(jsonStringvalues);
@@ -2917,8 +3062,14 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 templateFields.setDesignation(jsonObj.getString("Designation"));
 		 }
 		 
+		 
 		 if(jsonObj.has("WorkExperience") && !isNullOrEmpty(jsonObj.getString("WorkExperience"))){
-			 templateFields.setWorkExperience(jsonObj.getString("WorkExperience"));
+			 StringBuilder sb = new StringBuilder();
+			 if(jsonObj.has("monthExp") && !isNullOrEmpty(jsonObj.getString("monthExp"))){
+				 templateFields.setWorkExperience(sb.append(jsonObj.getString("WorkExperience")).append(".").append(jsonObj.getString("monthExp")).toString());
+			 }else{
+				 templateFields.setWorkExperience(sb.append(jsonObj.getString("WorkExperience")).toString());
+			 }
 		 }
 		 
 		 if(jsonObj.has("Education") && !isNullOrEmpty(jsonObj.getString("Education"))){
@@ -3147,7 +3298,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		  
@@ -3237,7 +3388,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 String url = "";
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -3349,7 +3500,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 								 String url = "";
 								 
 								 //construct HTML template using required data
-								 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+								 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
 								 emailMessage.setSubject(subject);
 								 emailMessage.setMessageBody(emailTemplate);
 								 
@@ -3643,6 +3794,23 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	public RequirementSubmission validateRecruiterSubmittedCandidateEmail(String email, Long requirementId, Long userId)
 			throws Exception {
 		return requirementSubmissionDao.validateRecruiterSubmittedCandidateEmail(email, requirementId, userId);
+	}
+
+	@Override
+	public List<RequirementSubmission> getApplicantsListByOrgLocationAndUserId(OrgLocations loginOrgLocations,
+			List<Long> applicantsList, Date startUTCDate, Date endUTCDate) {
+		return requirementSubmissionDao.getApplicantsListByOrgLocationAndUserId(loginOrgLocations,applicantsList,startUTCDate,endUTCDate);
+	}
+
+	@Override
+	public Integer getRequirementHistoryCountByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception {
+		return requirementSubmissionDao.getRequirementHistoryCountByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
+	}
+
+	@Override
+	public boolean isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(Long candidateId, Long requirementId)
+			throws Exception {
+		return requirementSubmissionDao.isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(candidateId, requirementId);
 	}
 
 }

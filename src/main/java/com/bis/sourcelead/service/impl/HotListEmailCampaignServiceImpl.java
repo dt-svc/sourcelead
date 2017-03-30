@@ -123,7 +123,15 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 			 }
 		}
 		StringBuilder tomaillBuilder = new StringBuilder();
-		iAdressArray = InternetAddress.parse(tomaillBuilder.append(emails).append(",").append(otherEmails).toString());
+		
+		if(null != emails && null != otherEmails){
+			iAdressArray = InternetAddress.parse(tomaillBuilder.append(emails).append(",").append(otherEmails).toString());
+		}else if(null == emails && null != otherEmails){
+			iAdressArray = InternetAddress.parse(tomaillBuilder.append(otherEmails).toString());
+		}else if(null != emails && null == otherEmails){
+			iAdressArray = InternetAddress.parse(tomaillBuilder.append(emails).toString());
+		}
+		
 		
 		 emailMessage.setCreatedBy(user.getUserCode());
 		 emailMessage.setFromEmail(user.getEmail());
@@ -170,7 +178,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocation.getOrg());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 emailMessage.setOrgLocationId(orgLocation.getId());

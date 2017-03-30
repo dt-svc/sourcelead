@@ -241,6 +241,7 @@ public class RegistrationServiceImpl implements RegistrationService{
  		  }*/
 		
 		saveDefaultSubmissionTemplate(org,orgLocations,user);
+		saveDefaultInterviewFeedbackTemplate(org,orgLocations,user);
 		
 		/*
 		 * Saving USER DB data as ElasticSearch Documents
@@ -478,6 +479,27 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
 		 submissionTemplate.setUpdatedBy(user.getUserCode());
 		 submissionTemplate.setTemplateType("Submission");
+		 submissionTemplate.setUpdatedDate(new Date());
+		 submissionTemplate.setCreatedBy(user.getUserCode());
+		 submissionTemplate.setCreatedDate(new Date());
+		 submissionTemplateService.addSubmissionTemplate(submissionTemplate);
+		 
+	 }
+	 
+	 
+	 
+	 public void  saveDefaultInterviewFeedbackTemplate(Org org,OrgLocations orgLocations,User user) throws Exception {
+		 SubmissionTemplate sourceLeadDefaultTemplate = submissionTemplateService.getSubmissionTemplateByTemplateNameByOrg(1L,Constants.DEFAULT_INTERVIEW_FEEDBACK_TEMAPLATE);
+		 
+		 StringBuilder templateStringBuilder=new StringBuilder();
+		 SubmissionTemplate submissionTemplate = new SubmissionTemplate();
+		 submissionTemplate.setTemplateName(templateStringBuilder.append(org.getOrgName()).append("Interview Feedback Template").toString());
+		 submissionTemplate.setDescription(templateStringBuilder.append(org.getOrgName()).append("Interview Feedback Template").toString());
+		 submissionTemplate.setOrgLocationId(orgLocations);
+		 submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
+		 submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+		 submissionTemplate.setUpdatedBy(user.getUserCode());
+		 submissionTemplate.setTemplateType("Feedback");
 		 submissionTemplate.setUpdatedDate(new Date());
 		 submissionTemplate.setCreatedBy(user.getUserCode());
 		 submissionTemplate.setCreatedDate(new Date());

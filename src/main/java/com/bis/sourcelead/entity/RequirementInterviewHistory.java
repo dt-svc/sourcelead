@@ -154,6 +154,18 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	@Transient
 	private String candidatePhoneNumber;
 	
+	@Transient
+	private String rescheduleComment;
+	
+	@Transient
+	private String timezone;
+	
+	@Transient
+	private String interviewSubmissionId;
+	
+	@Transient
+	private String isOwnOrgTemplate;
+	
 	
 	public String getCandidateEmail() {
 		return candidateEmail;
@@ -487,5 +499,36 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	public void setInterviewerId(Long interviewerId) {
 		this.interviewerId = interviewerId;
 	}
-	
+
+	public String getTimezone() {
+		return timezone;
+	}
+
+	public void setTimezone(String timezone) {
+		this.timezone = timezone;
+	}
+
+	public String getRescheduleComment() {
+		return rescheduleComment;
+	}
+
+	public void setRescheduleComment(String rescheduleComment) {
+		this.rescheduleComment = rescheduleComment;
+	}
+
+	public String getIsOwnOrgTemplate() {
+		return isOwnOrgTemplate;
+	}
+
+	public void setIsOwnOrgTemplate(String isOwnOrgTemplate) {
+		this.isOwnOrgTemplate = isOwnOrgTemplate;
+	}
+
+	public String getInterviewSubmissionId() {
+		return interviewSubmissionId;
+	}
+
+	public void setInterviewSubmissionId(String interviewSubmissionId) {
+		this.interviewSubmissionId = interviewSubmissionId;
+	}
 }

@@ -505,8 +505,8 @@ function getEmailDetails(uuid,type){
 	   			result = result +'<div class="pull-left">';
 	   			result = result +'<div class="btn-group">';
 	   			result = result +'<button class="btn btn-danger" type="button" title="Delete" onclick="deleteReadMail(\''+uuid+'\',\''+opt.nextMailUUID+'\',\''+type+'\');"><i class="fa fa-trash-o"></i></button>';
-	   		 /* result = result +'<button class="btn btn-warning" type="button" title="Reply"><i class="fa fa-reply"></i></button>';
-	   			result = result +'<button class="btn btn-info" type="button" title="Forward"><i class="fa fa-share"></i></button>'; */
+	   		    result = result +'<button class="btn btn-warning" type="button" title="Reply" onclick="replayToMail(\''+uuid+'\');"><i class="fa fa-reply"></i></button>';
+	   		    result = result +'<button class="btn btn-info" type="button" title="Forward" onclick="forwardEmail(\''+uuid+'\');"><i class="fa fa-share"></i></button>'; 
 	   			result = result +'</div>';
 	   			result = result +'</div>';
 	   			/* result = result +'<div class="pull-right">';
@@ -517,7 +517,6 @@ function getEmailDetails(uuid,type){
 	   			  
 	   			result = result +'<div class="mailbox-read-message clearfix borderbottm-none">';
 	   			
-	   			result = result +'<p>Dear,</p><br/>';
 	   			
 	   			if(opt.comments != null && opt.comments != 'undefined' && opt.comments != ""){
 	   				result = result +'<p>'+opt.comments+'</p>';
@@ -624,6 +623,21 @@ function deleteReadMail(uuid,nextMailUUID,type){
 			}
 		},
 	});   
+}
+</script>
+
+
+<script>
+function replayToMail(uuid){
+	var sourceleadUrl = '${sourceleadUrl}';
+	location.replace(sourceleadUrl+"/composeMail?UUID="+uuid);  
+}
+</script>
+
+<script>
+function forwardEmail(uuid){
+	var sourceleadUrl = '${sourceleadUrl}';
+	location.replace(sourceleadUrl+"/forwardEmail?UUID="+uuid);  
 }
 </script>
 

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementReportDao;
+import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -176,30 +177,38 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 			reqStatus = status.split(",");
 		}
 	    List<REQUIREMENT_SUBMISSION_STATUS> list = new ArrayList<>();
-	    for(int i=0; i < reqStatus.length; i++){
-	    	if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.NEW.toString())){
-	    		list.add(REQUIREMENT_SUBMISSION_STATUS.NEW);
-	    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.DRAFT.toString())){
-	    		list.add(REQUIREMENT_SUBMISSION_STATUS.DRAFT);
-	    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED.toString())){
-	    		list.add(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED);
-	    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.OPEN.toString())){
-	    		list.add(REQUIREMENT_SUBMISSION_STATUS.OPEN);
-	    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.ONHOLD.toString())){
-	    		list.add(REQUIREMENT_SUBMISSION_STATUS.ONHOLD);
-	    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.CANCEL.toString())){
-	    		list.add(REQUIREMENT_SUBMISSION_STATUS.CANCEL);
-	    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.FILLEDCLOSED.toString())){
-	    		list.add(REQUIREMENT_SUBMISSION_STATUS.FILLEDCLOSED);
-	    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.UNFILLEDCLOSED.toString())){
-	    		list.add(REQUIREMENT_SUBMISSION_STATUS.UNFILLEDCLOSED);
-	    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.REJECTED.toString())){
-	    		list.add(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
-	    	}
+	    if(reqStatus != null){
+	    	for(int i=0; i < reqStatus.length; i++){
+		    	if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.NEW.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.NEW);
+		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.DRAFT.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.DRAFT);
+		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED);
+		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.OPEN.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.OPEN);
+		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.ONHOLD.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.ONHOLD);
+		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.CANCEL.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.CANCEL);
+		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.FILLEDCLOSED.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.FILLEDCLOSED);
+		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.UNFILLEDCLOSED.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.UNFILLEDCLOSED);
+		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.REJECTED.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
+		    	}
+		    }
 	    }
-		String query = "from Requirement req where req.orgLocationId =:orgLocId and req.requirementSubmissionStatus IN (:statusList)";
-		
-		List<Requirement> reqList = session.createQuery(query).setLong("orgLocId",orgLocation.getId()).setParameterList("statusList", list).setCacheable(true).list();
+	    String query = "";
+	    List<Requirement> reqList = null;
+	    if(!list.isEmpty() && null != list){
+	    	query = "from Requirement req where req.orgLocationId =:orgLocId and req.requirementSubmissionStatus IN (:statusList)";
+	    	reqList = session.createQuery(query).setLong("orgLocId",orgLocation.getId()).setParameterList("statusList", list).setCacheable(true).list();
+	    }else{
+	    	query = "from Requirement req where req.orgLocationId =:orgLocId and (req.isTemplate IS NULL OR req.isTemplate <> 'Y') ORDER BY req.id DESC";
+	    	reqList = session.createQuery(query).setLong("orgLocId",orgLocation.getId()).setCacheable(true).list();
+	    }
 		return reqList;
 	}
 	
@@ -327,7 +336,7 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementSubmission> getAllSubmissionsByAssignTeamMember(Long orgLocationId,Set<String> userCodesList, Date startDateUTC, Date endDateUTC) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RequirementSubmission rs where rs.createdBy IN (:userCodesList)";
+		String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidateResumes left join fetch rs.orgLocations left join fetch rs.vendorLocationId where rs.createdBy IN (:userCodesList)";
 		return session.createQuery(query).setParameterList("userCodesList", userCodesList).setCacheable(true).list();
 	}
 
