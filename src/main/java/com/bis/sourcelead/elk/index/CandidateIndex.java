@@ -148,6 +148,8 @@ public class CandidateIndex implements Serializable {
 	private double finalScore;
 	
 	private String isProfilePublic;
+	
+	private String isCandidateSubmitted;
 		
 	public String getSearchType() {
 		return searchType;
@@ -705,6 +707,14 @@ public class CandidateIndex implements Serializable {
 
 	public void setIsProfilePublic(String isProfilePublic) {
 		this.isProfilePublic = isProfilePublic;
+	}
+
+	public String getIsCandidateSubmitted() {
+		return isCandidateSubmitted;
+	}
+
+	public void setIsCandidateSubmitted(String isCandidateSubmitted) {
+		this.isCandidateSubmitted = isCandidateSubmitted;
 	}
 
 	
