@@ -27,6 +27,7 @@ import com.bis.sourcelead.dao.TeamDao;
 import com.bis.sourcelead.dao.TeamMemberDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -2083,6 +2084,26 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						count = requirementHistoryCount.get(0).intValue();
 				}
 				return count;
+		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public boolean isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(Long candidateId,
+				Long requirementId) throws Exception {
+
+			Session session = this.sessionFactory.getCurrentSession();
+			boolean flag = false;
+			String query ="from RequirementSubmission submission where submission.candidate.id = :candidateId and submission.requirement.id = :requirementId  ";
+			List<CandidateEducation> educationList = session.createQuery(query).setLong("candidateId", candidateId).setLong("requirementId", requirementId).setCacheable(true).list();
+			if(educationList !=null && educationList.size() >0){
+				flag = true;
+				return flag;
+			}else{
+				return flag;
+			}
+		
+			
+			
 		}
 		
   }
