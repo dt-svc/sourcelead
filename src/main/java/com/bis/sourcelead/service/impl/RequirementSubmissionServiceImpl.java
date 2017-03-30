@@ -1740,8 +1740,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    			 clientSubmissionFields.setCurrentCTC(templateFields.getCurrentCTC()); 
    		 }
    		 
-   		 if(!isNullOrEmpty(templateFields.getExpectedCTC())){
-   			 clientSubmissionFields.setExpectedCTC(templateFields.getExpectedCTC()); 
+   		 if(!isNullOrEmpty(clientShortlistsRate[i])){
+   			 clientSubmissionFields.setExpectedCTC(clientShortlistsRate[i]); 
    		 }
    		 
    		 if(!isNullOrEmpty(templateFields.getNoticePeriod())){
