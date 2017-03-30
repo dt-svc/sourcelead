@@ -151,8 +151,8 @@ function selectOfferApplicants(){
 
 
 <div id="divOfferTd3" style="display: none; float: left;">
-   	 <div class="positionRelative float">
-           <select class="form-control" id="REPLACEROWIDPaymentType" name="REPLACEROWIDPaymentType"  >
+   	 <div class="positionRelative float select-field">
+           <select class="form-control" id="REPLACEROWIDPaymentType" name="REPLACEROWIDPaymentType" style="height: 30px;">
 	          		 <option ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}>INR</option>
 	                 <option ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}>AUD</option>
 	                 <option ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}>USD</option>
@@ -161,11 +161,11 @@ function selectOfferApplicants(){
 	                 <option ${SourceLeadWeb_currencyCode == 'EUR' ? 'selected' : ''}>EUR</option>
            </select>
      </div>
-     <div class="positionRelative float">
+     <div class="positionRelative float select-field">
      	  <input type="text" value="" class="form-control input-sm" id="REPLACEROWIDAmount" name="REPLACEROWIDpaymentTypAmount" data-validation="validate_length length1-20" data-validation-optional="true">
      </div>
-   	 <div class="positionRelative float">
-           <select class="form-control" id="REPLACEROWIDPaymentMode" name="REPLACEROWIDPaymentMode">
+   	 <div class="positionRelative float select-rateper select-field">
+           <select class="form-control" id="REPLACEROWIDPaymentMode" name="REPLACEROWIDPaymentMode" style="height: 30px;">
 	                 <option value=" ">Rate Per</option>
 	                 <option value="Hourly">Hourly</option>
 	                 <option value="Weekly">Weekly</option>
@@ -178,7 +178,7 @@ function selectOfferApplicants(){
      </div>
 </div> 
 
-<div id="divOfferTd4" style="display: none; float: left;">
+<div id="divOfferTd4" style="display: none; float: left;" class="select-field">
  	<select class="form-control" id="REPLACEROWIDPositionType" name="REPLACEROWIDPositionType">
  	 				 <option value="" disabled selected>Select Type</option>
 	                 <option  ${requirement.jobType  == 'C2C' ? 'selected' : ''}>C2C</option>
