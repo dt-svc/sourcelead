@@ -240,26 +240,29 @@ function prepareRequirementData(data){
     result = result +"    <th>Client</th>"; 
     result = result +"    <th>Employment type</th>"; 
     result = result +"    <th>Location</th>"; 
-    result = result +"    <th>No.of<br> Positions</th>"; 
     result = result +"    <th>Applicants</th>"; 
     result = result +"    <th>Owner</th>"; 
+    result = result +"    <th>Requirement Posted Date</th>";
     result = result +"    <th>Status</th>"; 
+    '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
+       result = result +"<th>Action</th>";
+    '</sec:authorize>';
     result = result +"    <th>Release</th>"; 
     result = result +"  </tr>"; 
     result = result +"</thead>";
     result = result +"<tbody>"; 
+    
+    
+    result = result + '<div class="new_side_wrap">';
+	result = result + '<div class="new_side_wrap_inn">';
+	result = result + '<div class="new_side_wrap_cta">';
+	result = result +'<div id="addApplicantDiv"></div>';
+	result = result +'</div>';
+	result = result +'</div>';
+	result = result +'</div>';
+	
     var json = JSON.parse(data);
-    /* for (var i = 0; i < 1; i++) {
-           var val= json[i];
-           var opt = "";
-                   if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
-                           opt  = opt + '<div class="success_pop" id="selector2" style="display: block;">';
-                           opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
-                           opt  = opt + '</div>';
-                           }
-                   $("#msgDiv").empty();
-                   $("#msgDiv").append(opt);
-           } */
+    
     for (var i = 0; i < json.length; i++) { 
     	
    	 var opt = json[i]; 
@@ -308,11 +311,11 @@ function prepareRequirementData(data){
         }else{
             result = result +"<td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
         }
-        if(opt.positions!=null && opt.positions !='' && opt.positions !='undefined'){
+       /*  if(opt.positions!=null && opt.positions !='' && opt.positions !='undefined'){
        	 result = result +"<td><div>"+opt.positions+"</div></td>";
         }else{
        	 result = result +"<td><div>----</div></td>";
-        }
+        } */
        /*  if(opt.totalApplicantsForRequirement!=null && opt.totalApplicantsForRequirement!='' && opt.totalApplicantsForRequirement!='undefined'){ */
        	result = result +"<td><div>"+opt.totalApplicants+"</div></td>";
        	/* } else{
@@ -323,7 +326,11 @@ function prepareRequirementData(data){
         }else{
        	 result = result +"<td><div>----</div></td>";
         }
-        
+        if(opt.postedDateStr!=null && opt.postedDateStr !='' && opt.postedDateStr !='undefined'){
+          	 result = result +"<td><div>"+opt.postedDateStr+"</div></td>";
+           }else{
+          	 result = result +"<td><div>----</div></td>";
+           }
           result = result +"<td><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+");'  id='changeStatusId"+opt.id+"'>";
            if(opt.requirementSubmissionStatus == "DRAFT"){
 				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
@@ -442,7 +449,16 @@ function prepareRequirementData(data){
 
 			result = result +" </select>";	
            result = result +" </td>";
-              
+           
+	        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
+		        if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
+		        	result = result +'<td><div class="text-center"><a href="javascript:void(0)" title="" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div></td>';
+		        }else{
+		        	result = result +"<td><div class='text-center'>--</div></td>";
+		        }
+	        
+	        '</sec:authorize>';
+	        
 		if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
 	        	if(opt.isRequirementReleasedByuser == 'Y'){
 		   		 	result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success'></i></a></div></td>"; 
@@ -2253,5 +2269,5 @@ function getCities(){
 
 <!-- Country,State,City Script Ends Here -->	
 
-
+<jsp:include page="addApplicantFromRequirementList.jsp" />
 <jsp:include page="../masterFooter.jsp" />
