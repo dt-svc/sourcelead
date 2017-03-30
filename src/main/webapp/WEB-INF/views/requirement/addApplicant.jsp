@@ -834,12 +834,10 @@ $('body').on('submit', '#submitRecomendedApplicant_form', function(e){
  	        dataType : 'json',
  	    	url : sourceleadUrl+"/saveAddApplicant?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
-	        	 $(".new_side_wrap").removeClass("new_side_wrap_active");
+	        	$(".new_side_wrap").removeClass("new_side_wrap_active");
 	    		$(".side_mask").fadeOut(200);
 	    		$("body").css('overflow-y', 'auto');
-	    		var allApplicants = 'all';
-	    		requirementPipeline(requirementId,allApplicants); 
-	    		pipelineList(requirementId);
+	    		requirementRecommendations(requirementId);
 	        },
 	    }); 
       return true; 
