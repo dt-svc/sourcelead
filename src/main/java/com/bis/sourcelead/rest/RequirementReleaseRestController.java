@@ -552,6 +552,7 @@ public class RequirementReleaseRestController {
 		requirement.setMaxExp(parentRequirement.getMaxExp());
 		requirement.setCurrencyCode(parentRequirement.getCurrencyCode());
 		requirement.setRate(parentRequirement.getRate());
+		requirement.setPriority(parentRequirement.getPriority());
 		requirement.setRateType(parentRequirement.getRateType());
 		requirement.setCountry(parentRequirement.getCountry());
 		requirement.setState(parentRequirement.getState());

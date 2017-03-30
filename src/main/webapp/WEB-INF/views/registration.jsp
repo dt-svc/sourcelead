@@ -71,8 +71,8 @@ window.onload = function () {
                 </div>
                 <div class="col-xs-12 col-md-6 select-field">
                     <i class="fa fa-map-marker"></i>
-                    <select class="form-control chosen-select" name="location" id="location" field-name="Location" data-validation="required">
-                        <option disabled selected>Location</option>
+                    <select class="form-control chosen-select" name="location" id="location" field-name="Country" data-validation="required">
+                        <option disabled selected>Country</option>
                         <option value="Australia">Australia</option>
 		                <option value="France">France</option>
 		                <option value="India">India</option>

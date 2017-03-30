@@ -41,7 +41,7 @@ function getRequirementList(){
 	    var clients = "";
 		$.ajax({
 	         type : "POST",
-	          url: sourceleadUrl+"/getRequirementListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients,    
+	          url: sourceleadUrl+"/getRequirementReports?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients,    
 	          success :function(data) {
 	        	 prepareReportDataDiv(data);
 	         },
