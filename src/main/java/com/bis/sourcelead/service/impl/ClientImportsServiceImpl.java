@@ -378,11 +378,12 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 									   client.setEmailid(row.getCell(8).toString());
 								   }  
 								   if(row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())){
-									   client.setPhone(row.getCell(9).toString());
-								   }  
-								   if(row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())){
 									   String mobileNumer = getCellValueAsString(row.getCell(10),fname);
 						    		   client.setPhone(mobileNumer);
+								   }  
+								   if(row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())){
+									   String status = getCellValueAsString(row.getCell(9),fname);
+						    		   client.setStatus(status);;
 								   }  
 								   if(row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())){
 									   client.setOwner(row.getCell(11).toString());
@@ -723,8 +724,6 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 					}else if(row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())){
 						Org org = null;
 						  for(OrgRelations orgRelation : orgList){
-							  System.out.println("ResponderLocationId************** "+orgRelation.getResponderLocationId().getOrg().getOrgName());
-							  System.out.println("LocationId************** "+orgRelation.getLocationId().getOrg().getOrgName());
 			                  if(orgName.equalsIgnoreCase(orgRelation.getResponderLocationId().getOrg().getOrgName())){
 			                	  org = orgRelation.getResponderLocationId().getOrg();
 			                  }else if(orgName.equalsIgnoreCase(orgRelation.getLocationId().getOrg().getOrgName())){
