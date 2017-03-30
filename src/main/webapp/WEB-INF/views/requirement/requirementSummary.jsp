@@ -3769,7 +3769,7 @@ function requirementRecommendations(requirementId){
 		    result = result +'</div></td>';
 		    
 		    if(report.isCandidateSubmitted == 'N'){
-		    	result = result +'<td class="text-center"><div><a href="javascript:void(0)" title="" onclick="submitRecomendedApplicant('+requirementId+','+report.candidateId+');" class="add-applicant">Apply</a></div>';
+		    	result = result +'<td class="text-center"><div id="recommendedCandidate'+report.candidateId+'"><a href="javascript:void(0)" title="" onclick="submitRecomendedApplicant('+requirementId+','+report.candidateId+');" class="add-applicant">Apply</a></div>';
 		    }else{
 		    	result = result +'<td class="text-center"><div class="text-success">Applied</div>';
 		    }

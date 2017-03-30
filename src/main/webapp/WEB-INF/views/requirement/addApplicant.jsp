@@ -236,6 +236,7 @@ function submitRecomendedApplicant(requirementId,candidateId){
 	result = result + '<h3>Add Applicant</h3>';
 	result = result + '<div class="form-horizontal clearfix select-field">';
 	result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
+	result = result + '<input type="hidden" id="candidateId" name="candidateId" value='+candidateId+'>';
 	
 	result = result + '<div class="row">';
 	result = result + '<div class="venk clearfix">';
@@ -708,6 +709,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
 $('body').on('submit', '#submitRecomendedApplicant_form', function(e){
 
 	  var requirementId = $("#requirementId").val();
+	  var candidateId = $("#candidateId").val();
 	  if ($(this).validate(false, validationSettings)){
       e.preventDefault();
       var frm = $('#submitRecomendedApplicant_form').serializeFormJSON();
@@ -837,7 +839,7 @@ $('body').on('submit', '#submitRecomendedApplicant_form', function(e){
 	        	$(".new_side_wrap").removeClass("new_side_wrap_active");
 	    		$(".side_mask").fadeOut(200);
 	    		$("body").css('overflow-y', 'auto');
-	    		requirementRecommendations(requirementId);
+	    		$("#recommendedCandidate"+candidateId).html("<font color='green'>Applied</font>");
 	        },
 	    }); 
       return true; 
