@@ -453,7 +453,7 @@ function referToJob(requirementId){
 	    result = result +'<span style="font-size:13px;">No Of Contacts Selected: <b id="contactsCount">0</b>&nbsp;&nbsp;&nbsp;</span>';
 	    result = result +'</div>';
 	    result = result +'<div class="pull-right">';
-		result = result +'<input type="submit" value="Refer" id="submit_refer"  class="btn btn-primary">';
+		result = result +'<input type="submit" value="Refer" id="submit_contacts"  class="btn btn-primary">';
 		result = result +'<input type="button" value="Cancel" onclick="cancelReferPopUp()" class="btn btn-default ml10 canBtn">';
 		result = result +'</div>';  
 	    result = result + '</form>';
@@ -475,7 +475,7 @@ function referToJob(requirementId){
 		result = result +'<input type="text" class="form-control" name="lastName" id="lastName" field-name="Last Name" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">';
 		result = result +'</div>';
 		result = result +'</div>'; 
-		result = result +'<div class="form-group col-md-6">';
+		result = result +'<div class="form-group col-md-6" id="emailDiv">';
 		result = result +'<label class="col-md-12" for="Project Id">Email Id *</label>';
 		result = result +'<div class="col-md-12">';
 		result = result +'<input type="text" class="form-control" name="email" id="email" onblur="validateProfessionalEmail('+requirementId+')"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">';
