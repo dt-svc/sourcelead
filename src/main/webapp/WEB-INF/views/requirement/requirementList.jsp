@@ -240,9 +240,9 @@ function prepareRequirementData(data){
     result = result +"    <th>Client</th>"; 
     result = result +"    <th>Employment type</th>"; 
     result = result +"    <th>Location</th>"; 
-    result = result +"    <th>No.of<br> Positions</th>"; 
     result = result +"    <th>Applicants</th>"; 
     result = result +"    <th>Owner</th>"; 
+    result = result +"    <th>Requirement Posted Date</th>";
     result = result +"    <th>Status</th>"; 
     '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
        result = result +"<th>Action</th>";
@@ -311,11 +311,11 @@ function prepareRequirementData(data){
         }else{
             result = result +"<td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
         }
-        if(opt.positions!=null && opt.positions !='' && opt.positions !='undefined'){
+       /*  if(opt.positions!=null && opt.positions !='' && opt.positions !='undefined'){
        	 result = result +"<td><div>"+opt.positions+"</div></td>";
         }else{
        	 result = result +"<td><div>----</div></td>";
-        }
+        } */
        /*  if(opt.totalApplicantsForRequirement!=null && opt.totalApplicantsForRequirement!='' && opt.totalApplicantsForRequirement!='undefined'){ */
        	result = result +"<td><div>"+opt.totalApplicants+"</div></td>";
        	/* } else{
@@ -326,7 +326,11 @@ function prepareRequirementData(data){
         }else{
        	 result = result +"<td><div>----</div></td>";
         }
-        
+        if(opt.postedDateStr!=null && opt.postedDateStr !='' && opt.postedDateStr !='undefined'){
+          	 result = result +"<td><div>"+opt.postedDateStr+"</div></td>";
+           }else{
+          	 result = result +"<td><div>----</div></td>";
+           }
           result = result +"<td><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+");'  id='changeStatusId"+opt.id+"'>";
            if(opt.requirementSubmissionStatus == "DRAFT"){
 				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";

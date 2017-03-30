@@ -20,7 +20,7 @@
 
 
 <style type="text/css">
-.add_inter .chosen-container{
+.addinterTable .chosen-container{
 width:125px !important;
 }
 #addInterviewTbl p.jquery_form_error_message{
@@ -53,11 +53,11 @@ function addInterview(requirementId){
         result = result + '<label>&nbsp;&nbsp;<strong>Is Client Interview</strong>&nbsp;&nbsp;</label>';
 	} 
 	
-	result = result + '<table cellpadding="0" cellspacing="0" id="addInterviewTbl">';
+	result = result + '<table cellpadding="0" cellspacing="0" id="addInterviewTbl" class="addinterTable">';
 	result = result + '<tbody>';
 		result = result + '<tr id="divTsRow0">';
 			result = result + '<th>Applicant</th>';
-			result = result + '<th>Inteview Type</th>';
+			result = result + '<th>Interview Type</th>';
 			result = result + '<th>Interview Date</th>';
 			result = result + '<th>Start - End Time</th>';	
 			result = result + '<th>Time Zone</th>';
@@ -72,7 +72,7 @@ function addInterview(requirementId){
 	result = result + '<div class="schedule_widget clearfix mb eventAlert" style="display:none;" id="availbleDiv">        								        ';
 	result = result + '    <div class="row">                                                                            ';
 	result = result + '      <div class="col-xs-12 col-md-12 event_calendar">                                           ';
-	result = result + '        <h4>Availabile Slots</h4>                                                               ';
+	result = result + '        <h4>Available Slots</h4>                                                               ';
 	result = result + '      </div>                                                                                     ';
 	result = result + '      <!-- show Calendar -->                                                                     ';
 	result = result + '      <div class="col-xs-12 col-md-5 mb">                                                        ';
@@ -129,7 +129,7 @@ function addInterview(requirementId){
 	
 	result = result + '<div id="emptyTemplate" style="dispaly:none">';
 	result = result + '<strong class="clearfix col-md-12">Interview Template</strong>';
-	result = result + '<div class="col-md-3 select-field">';
+	result = result + '<div class="chosen-select col-md-3 select-field">';
 	result = result + '<select class="form-control mt10" id="interviewSubmissionTemplate" name="interviewSubmissionTemplate">';
 	result = result + '</select>';
 	result = result + '</div>';
@@ -957,14 +957,19 @@ function interviewTemplate(){
 	        var json = JSON.parse(data);
 	        var output = "";
 	        if(json.length > 0){
-	        	 output = output + "<option value=''>-Select Template-</option>"; 
 	         	for (var i=0; i<json.length; i++)
 	 			{
 	 	        		var opt = json[i];
+	 	        		
 	 	        		output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
 	 			}
 	         	$("#interviewSubmissionTemplate").empty();
 	 	        $("#interviewSubmissionTemplate").append(output);
+	 	       
+	 	        $("#interviewSubmissionTemplate").chosen();
+	 			$("#interviewSubmissionTemplate").trigger('chosen:update');
+	 			$('.chosen-container').css({'width': '100% !important'});
+	 			
 	        }else{
 	        	$("#emptyTemplate").empty();
 	        }
@@ -1074,9 +1079,7 @@ function checkAvailability(){
 	var applicantSubId = $("#"+bid+"applicant").val();
 	var interviewerIds = $("#"+bid+"interviewer").val(); 
 	var selectedInterviewDate = $("#"+bid+"dateOfInterview").val();
-	if(selectedInterviewDate!=''){
-		alert("fffffffffffffffffffffffffffffffff");
-	}
+	
 	$("#selectedTimeZoneId").append(timezone);
 	$("#selectedDate").append(date);
 	if(applicantSubId==null && interviewerIds==null ){
