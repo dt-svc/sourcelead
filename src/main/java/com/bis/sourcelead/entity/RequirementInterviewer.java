@@ -31,7 +31,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="INTERVIEW_ID", nullable=false )        
     private RequirementInterview requirementInterview;
 	
