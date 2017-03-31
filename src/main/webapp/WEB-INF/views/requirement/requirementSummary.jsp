@@ -721,16 +721,6 @@ function sideBar(requirementId){
 				        result = result+'        </div>';
 				        result = result+'      </div>';
 				        result = result+'    </div>';
-				        result = result+'    <div class="col-md-3">';
-				        result = result+'      <select class="selectpicker pull-right">';
-				        result = result+'        <option>Open</option>';
-				        result = result+'        <option>Draft</option>';
-				        result = result+'        <option>Filled Closed</option>';
-				        result = result+'        <option>Unfilled</option>';
-				        result = result+'        <option>On Hold</option>';
-				        result = result+'        <option>Cancel</option>';
-				        result = result+'      </select>';
-				        result = result+'    </div>';
 				        result = result+'  </div>';
 				        result = result+'</div>';
 				        
