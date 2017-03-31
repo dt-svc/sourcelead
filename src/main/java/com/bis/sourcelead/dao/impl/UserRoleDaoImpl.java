@@ -268,7 +268,8 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			subQuery4 = " and userRole.userState = '" + userState + "'";
 			 subquerys.add(subQuery4);
 		}else{
-			 subQuery4 ="";
+			 subQuery4 ="and userRole.userState != 'INACTIVE' ";
+			 subquerys.add(subQuery4);
 		}
 		
 		

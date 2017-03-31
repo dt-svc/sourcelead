@@ -251,8 +251,7 @@ function prepareRequirementData(data){
     result = result +"  </tr>"; 
     result = result +"</thead>";
     result = result +"<tbody>"; 
-    
-    
+        
     result = result + '<div class="new_side_wrap">';
 	result = result + '<div class="new_side_wrap_inn">';
 	result = result + '<div class="new_side_wrap_cta">';
@@ -2265,7 +2264,6 @@ function getCities(){
 	}
 }
 </script>
-
 
 <!-- Country,State,City Script Ends Here -->	
 

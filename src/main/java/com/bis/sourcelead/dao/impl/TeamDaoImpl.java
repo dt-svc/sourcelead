@@ -246,7 +246,7 @@ public class TeamDaoImpl  implements TeamDao{
 		List<Team> team = new ArrayList<Team>();
 		logger.debug("findByTeamName start");
 		try{
-			team = session.createQuery("from Team tm where tm.name=:name and tm.orgLocationsId.id = :orgLocationId" )
+			team = session.createQuery("from Team tm where tm.name=:name and tm.orgLocationsId.id = :orgLocationId and tm.status = '1' " )
 					.setString( "name", name ).setLong("orgLocationId", orgLocationId ).setCacheable(true).list();
 			
 			logger.debug("findByTeamName end");

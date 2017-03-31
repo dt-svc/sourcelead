@@ -304,11 +304,12 @@ public class TeamRestController {
 		 @RequestMapping(value = "/deleteTeamById", method = RequestMethod.POST,headers="Accept=application/json")
 		 public String deleteTeamById(@RequestParam( value = "teamId", required = false) Long teamId,HttpServletRequest request) throws Exception { 
 	   		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	   		 List<CandidateHotList> hotListCandidatesList = candidateHotListService.getHotCandidateListForTeamByTeamId(teamId, orgLocations.getId());
+	   		 List<Candidate> hotListCandidatesList = candidateService.getHotCandidateListByTeamIdAndOrgLocationId(teamId, orgLocations.getId());
 	   		 if(null != hotListCandidatesList){
-	   			 for(CandidateHotList hotList : hotListCandidatesList){
+	   			 for(Candidate hotList : hotListCandidatesList){
 	   				hotList.setTeamId(null);
-	   				candidateHotListService.saveCandidateHotList(hotList);
+	   				candidateService.saveOrUpdateCandidate(hotList);
+	   				candidateService.saveOrUpdateCandidateElkDocument(hotList);
 	   			 }
 	   		 }
 	   		 Team team = teamService.deleteTeamById(teamId);
