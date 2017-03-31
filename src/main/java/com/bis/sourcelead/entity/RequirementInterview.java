@@ -90,6 +90,9 @@ import org.hibernate.annotations.FetchMode;
 	@Column(name = "INTERVIEW_RESCHEDULE_COMMENT", columnDefinition = "TEXT default NULL")
 	private String rescheduleComment;
 	
+	@Column(name = "CUSTOM_INTERVIEW_TYPE")
+	private String customInterviewType;
+	
 	@Transient
 	private String remainderTime;
 	
@@ -130,6 +133,15 @@ import org.hibernate.annotations.FetchMode;
 	@Column(name = "INTERVIEW_STATUS", columnDefinition = "TEXT default NULL")
 	private String interviewStatus;
 	
+	
+	public String getCustomInterviewType() {
+		return customInterviewType;
+	}
+
+	public void setCustomInterviewType(String customInterviewType) {
+		this.customInterviewType = customInterviewType;
+	}
+
 	public String getInterviewStatus() {
 		return interviewStatus;
 	}
