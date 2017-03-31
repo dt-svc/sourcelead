@@ -1067,7 +1067,7 @@ public class DashboardRestController {
 				taskCurrentDateInTimezone = Constants.DMY.format(converteDate);
 			}
 			
-			List<Tasks> taklist = taskService.tasksListByIdAndOrgLocationIdAssignedUserId(loginOrgLocations.getId(),user.getId(),status,taskCurrentDateInTimezone,converteDate,timezone);
+			List<Tasks> taklist = taskService.tasksListByIdAndOrgLocationIdAssignedUserId(loginOrgLocations.getId(),user.getId(),status,dateRange,converteDate,timezone);
 			
 			DateFormat week_Day = new SimpleDateFormat ("EEEE");
 			

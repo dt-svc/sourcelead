@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 
 public interface CandidateDao {
@@ -47,18 +48,14 @@ public interface CandidateDao {
 	Candidate getCandidateByEmailAndRecruiterUserId(String email,Long recruiterUserId) throws Exception;
 	
 	public List<Candidate> getCandidatesByOrgLocationIDAndSearchText(Long orgLocationId,Long requirementId, String candidateType,String searchApplicant) throws Exception;
-
-	/*
-	 * This Method is to  get the consolidated reports which candidates are created on current Date for individual  user 
-	 */
-	public Integer getAllCandidatedsBasedOnCreatedByAndOrglocationCodeWhichAreCreatedToday(OrgLocations orgLocations,User user) throws Exception;
     
 	public Long getCandidatesCountByCandidateTypeOrgLocationID(Long orgLocationId,String candidateType);
 	
 	public List<Candidate> getCandidateReportsListByOrgLocationID(Long orgLocationId,String candidateType) throws Exception;
 	
-	List<Candidate> getCandidateReports(Long orgLocationId,String candidateType,String filterDate, Date startDateUTC, Date endDateUTC,String ownersList);
+	List<Candidate> getCandidateReports(Long orgLocationId,String candidateType,String filterDate, Date startDateUTC, Date endDateUTC);
+	
+	List<Candidate> getHotCandidateListByTeamIdAndOrgLocationId(Long teamId,Long orgLocationId) throws Exception;
 	
 	List<Candidate> getOwnersByCandidates(Long orgLocationId,String candidateType,String ownersList);
-	
 }

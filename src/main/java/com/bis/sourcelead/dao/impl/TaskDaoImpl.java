@@ -68,22 +68,20 @@ public class TaskDaoImpl implements TaskDao{
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Tasks> tasksListByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId, Long userId, String taskStatus,String date) throws Exception {
+	public List<Tasks> tasksListByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId, Long userId, String taskStatus,String date, Date startDateUTC, Date endDateUTC) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		String subQuery = "";
 		List<Tasks> tasksList  = null;
-		String strDate = null;
 		String query = null;
-		Date date1 = null;
 		if(null != date && "" != date){
-			 date1 = new SimpleDateFormat("dd-MM-yyyy").parse(date);
-			 strDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date1);
-			subQuery = "and (CONVERT(tasks.taskDate AS DATE) =:strDate)";	
+			subQuery = "and tasks.taskDate >= :startDateUTC and tasks.taskDate <= :endDateUTC";
 		}else{
 			subQuery = "";
 		}
-		 
+		
+		
+		
 		if(Constants.TASK_STATUS_MYTASK.equalsIgnoreCase(taskStatus)){
 			query = "from Tasks tasks where tasks.assignedUserId =:userId "+subQuery+" and ((tasks.ownerOrglocationId =:OrgLocationId) OR (tasks.assignedOrglocationId =:OrgLocationId)) ORDER BY tasks.createdDate DESC";
 			//query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and tasks.assignedUserId =:userId "+subQuery+" ORDER BY tasks.createdDate DESC";
@@ -94,9 +92,9 @@ public class TaskDaoImpl implements TaskDao{
 		}
 		if(null != date && "" != date){
 			if(Constants.TASK_STATUS_MYTASK.equalsIgnoreCase(taskStatus)){
-				tasksList = session.createQuery(query).setLong( "userId", userId).setString("strDate", strDate).setLong( "OrgLocationId", OrgLocationId).setCacheable(true).list();
+				tasksList = session.createQuery(query).setLong( "userId", userId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setLong( "OrgLocationId", OrgLocationId).setCacheable(true).list();
 			}else{
-				tasksList = session.createQuery(query).setLong( "OrgLocationId", OrgLocationId).setLong( "userId", userId).setString("strDate", strDate).setCacheable(true).list();	
+				tasksList = session.createQuery(query).setLong( "OrgLocationId", OrgLocationId).setLong( "userId", userId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();	
 			}
 			 	
 		}else{

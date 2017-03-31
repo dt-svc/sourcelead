@@ -9,14 +9,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -25,16 +23,16 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.TimeZoneDao;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.ConsolidatedReport;
+import com.bis.sourcelead.entity.CandidatesHotListDummy;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -42,16 +40,13 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.entity.Requirement;
-import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementInterviewer;
-import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Tasks;
-import com.bis.sourcelead.entity.Team;
-import com.bis.sourcelead.entity.TeamMembers;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateHotListService;
@@ -61,18 +56,14 @@ import com.bis.sourcelead.service.JobSchedulerTestService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
-import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
-import com.bis.sourcelead.service.RequirementService;
-import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TaskService;
-import com.bis.sourcelead.service.TeamMembersService;
-import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -103,11 +94,6 @@ import com.bis.sourcelead.service.UserService;
 */
 public class EMailJobScheduler {
 	
-	
-	@Value("${sourceleadUrl}")
-	private String sourceleadUrl;
-	
-	
 	@Autowired
 	JobSchedulerTestService jobSchedulerTestService;
 	
@@ -134,12 +120,6 @@ public class EMailJobScheduler {
 	
 	@Autowired
 	RequirementInterviewerService requirementInterviewerService;
-	
-	@Autowired
-	RequirementService requirementService;
-	
-	@Autowired
-	RequirementSubmissionService requirementSubmissionService;
 	
 	@Autowired
 	ProjectApproverHierarchyService projectApproverHierarchyService;
@@ -170,7 +150,14 @@ public class EMailJobScheduler {
 	ProjectMembersService projectMembersService;
 	
 	@Autowired
+	ProjectMembersHistoryService projectMembersHistoryService;
+	
+	@Autowired
 	TaskService taskService;
+	
+	
+	@Autowired
+	TimesheetFrequencyGeneratorUtil timesheetFrequencyGeneratorUtil;
 	
 	@Autowired
 	EmailScenarioService emailScenarioService;
@@ -179,17 +166,7 @@ public class EMailJobScheduler {
 	EmailScenerioUtil emailScenerioUtil;
 	
 	@Autowired
-	TeamService teamService;
-	
-	@Autowired
-	TeamMembersService teamMembersService;
-	
-	
-	@Autowired
-	RequirementAssignToService requirementAssignToService;
-	
-	@Autowired
-	TimesheetFrequencyGeneratorUtil timesheetFrequencyGeneratorUtil;
+	TimeZoneDao timeZoneDao;
 	
 	private static final Logger logger = LoggerFactory.getLogger(EMailJobScheduler.class);
 	
@@ -764,22 +741,62 @@ public class EMailJobScheduler {
 			for (Org org : orgList) {
 				OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(org.getId());
 				
-				// to bring the candidates who are going to terminate in a given time 
-				
-  			    List<Candidate>   candidatesListToBeAddedInHotList = candidateService.getAllCandidatesForHotListingWhoAreTerminating(orgLocations.getId(),30);
-                
-  			    if(null != candidatesListToBeAddedInHotList){
-  			    	 for(Candidate can :candidatesListToBeAddedInHotList){
-  			    		can.setIsFavourite(Constants.RECORD_ACTIVE);
-  			    		Candidate candi = candidateService.addCandidate(can);
-	  			  		
-		  			  	CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candi);
-		  			  	sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candi.getId().toString());
-  				
-  				
-  	                }
-  			    }
-  			      
+				List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+				 for(User user :userList){
+					 List<ProjectMembers> projectMemberslist = null;
+						// to bring the candidates who are going to terminate in a given time 
+		  			  List<Candidate>   candidatesListToBeAddedInHotList = candidateService.getAllCandidatesForHotListingWhoAreTerminating(orgLocations.getId(),30,user.getId());
+		  			
+		  			    if(null != candidatesListToBeAddedInHotList && candidatesListToBeAddedInHotList.size() > 0){
+		  			    	List<CandidatesHotListDummy> hotlist  =  new ArrayList<CandidatesHotListDummy>();
+		  			    	 for(Candidate can :candidatesListToBeAddedInHotList){
+		  			    		can.setIsFavourite(Constants.RECORD_ACTIVE);
+		  			    		Candidate candi = candidateService.addCandidate(can);
+		  			    		projectMemberslist  = 	projectMembersService.getAllProjectsByUserIdForCandidatesHotList(can.getConsultantUser().getId());
+			  			  		if(null != projectMemberslist && projectMemberslist.size() > 0){
+				  			  		
+			  			  		List<CandidatesHotListDummy> hotlist1  =  new ArrayList<CandidatesHotListDummy>();
+			  			  			
+				  			  		for(ProjectMembers pm :projectMemberslist){
+				  			  			ProjectMembersHistory pmh = 	projectMembersHistoryService.getProjectMembeHistoryForHotlistCandidatesByUsedId(pm.getId());
+				  			  			CandidatesHotListDummy candidatesHotListDummy = new CandidatesHotListDummy();
+				  			  			
+				  			  			StringBuilder cName = new StringBuilder();
+				  			  			if(null != can.getLastName()){
+				  			  				cName.append("can.getFirstName()").append(" ").append(can.getLastName());
+				  			  			}else{
+				  			  				cName.append("can.getFirstName()");
+				  			  			}
+				  			  			candidatesHotListDummy.setCandidateName(cName.toString());
+				  			  			candidatesHotListDummy.setCandidateEmail(can.getEmail());
+				  			  			candidatesHotListDummy.setCandidatePhnNo(can.getMobilePhone());
+				  			  		    candidatesHotListDummy.setProjectName(pm.getProjects().getProjectName());
+				  			  		   
+				  			  		    String dateOfInterviewStr ="";
+					  			  		Timezone timezone = null;
+					  					if(null != orgLocations.getTimezone()){
+					  				    	 timezone = timeZoneDao.getTimezone(orgLocations.getTimezone().getId());
+					  					 }
+				  			  		    String currentTimeStr = Constants.TZ_DF.format(pmh.getProjectTerminationDate());
+					  					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+					  					String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,timezone.getTimeZoneId(), currentTimeStr);
+					  					Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
+					  					interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
+					  					dateOfInterviewStr = interviewDateInTimezone;
+				  			  		    candidatesHotListDummy.setProjectEndDate(dateOfInterviewStr);
+				  			  		   hotlist1.add(candidatesHotListDummy);
+				  			  		   
+				  			  		}
+				  			  		
+				  			  	hotlist.addAll(hotlist1);
+				  			  		 
+			  			  		}
+				  			  	CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candi);
+				  			  	sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candi.getId().toString());
+		  			    	 }
+				  			  sendEmailToManager(user, projectMemberslist, candidatesListToBeAddedInHotList,hotlist, orgLocations, org);
+		  			    }
+				 }
 			}
     }
 
@@ -807,6 +824,99 @@ public class EMailJobScheduler {
 		}
 
 	}
+	
+	public void sendEmailToManager(User user, List<ProjectMembers> projectMemberslist, List<Candidate> candidatesListToBeAddedInHotList, List<CandidatesHotListDummy> hotlist , OrgLocations orgLocations, Org org)	throws Exception {
+		 
+		EmailMessage emailMessage = new EmailMessage();
+		
+		
+		    StringBuilder sb = new StringBuilder();
+		
+	        sb.append("<table width='900' align='center' style='border-collapse: collapse; margin: 0 auto;border: 1px solid #375d81; text-align: center;' cellpadding='2px' cellspacing='0' border='0'>");
+	        sb.append("<thead style='background-color:#375d81; color: #fff;'>");
+	        sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");            
+	        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Name</th>");          
+	        sb.append("<th style=.border: 1px solid #12385c; text-align: center;'>Email Id </th>");                
+	        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Phn No  </th>");                  
+	        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Project Name </th>");
+	        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Project End Date </th>");
+	        sb.append("</tr>");    
+	        sb.append("</thead>");    
+	        sb.append("<tbody>");
+			
+	  		for(CandidatesHotListDummy can :hotlist){
+		        sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");
+		        sb.append("<td style='border: 1px solid #375d81;' width='300'>"+can.getCandidateName()+"</td>");                      
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+can.getCandidateEmail()+"</td>");                  
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+can.getCandidatePhnNo()+"</td>"); 
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+can.getProjectName()+"</td>"); 
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+can.getProjectEndDate()+"</td>"); 
+		        sb.append("</tr>");
+	  		}
+	  		sb.append("</tbody>");   
+		    sb.append("/<table>"); 
+		
+		if(user.getFirstName()!=null){
+			 emailMessage.setFirstName(user.getFirstName());
+		}
+		else{
+			 emailMessage.setFirstName("");
+		}
+		if(user.getLastName()!=null){
+			 emailMessage.setLastName(user.getLastName());
+		}
+		else{
+			 emailMessage.setLastName("");
+		}
+		 StringBuilder interviewStringBuilder=new StringBuilder();
+		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFromEmail("info@sourcelead.com");
+		 emailMessage.setCreatedBy("");
+		 emailMessage.setFromName("Sourcelead Team");
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("managerName", emailMessage.getFirstName()+" "+emailMessage.getLastName());
+		 globalVarsMap.put("consultantsCount", Integer.toString(candidatesListToBeAddedInHotList.size()));
+		 globalVarsMap.put("tableOfContent", sb.toString());
+			 
+		 //setting the Recipient information
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = null;
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.HOTLIST_ALERT_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, org);
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+
+		 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.HOTLIST_ALERT_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION); 
+		 String actionLink = "";
+		 
+		 if(user.getFirstName()!=null){
+		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
+		 noificationEmailScenario.setBody(notificationbody);
+		 
+		 User sourceLeadAdmin = userService.getUserById(Constants.SOURCELEAD_ADMIN_USERID);
+		 
+		 emailScenerioUtil.sendNotification(actionLink, sourceLeadAdmin, user, orgLocations, noificationEmailScenario);
+		 }
+	}
+	
+	
+	
 	@Scheduled(cron = "0 0/30 * 1/1 * ?")
 	@Async
 	public void consolidatedReportsofReportingManagerForHisUsers() throws Exception {
@@ -1452,6 +1562,7 @@ public class EMailJobScheduler {
 	    	sb.append("</tr>");	
 	    	sb.append("</thead>");	
 	    	sb.append("<tbody>");
+	    	
 	    	for(ConsolidatedReport conreport :list){
 	    		
 	    	sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");
@@ -1514,5 +1625,5 @@ public class EMailJobScheduler {
 		
 	}
 
-	
+
 }

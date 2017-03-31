@@ -444,7 +444,6 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		Roles role = rolesService.getRolesByRoleDisplayNameAndOrgLocationId(userImport.getRole(), orgLocations.getId());
 		userRole.setIsPrimary(1);
 		userRole.setRoles(role);
-		userRole.setUserState(Status.NOT_LOGGEDIN);
 		userRole.setUserType(role.getDisplayName());
 		userRole.setCreatedDate(new Date());
 		userRole.setCreatedBy(loginUser.getUserCode());
@@ -462,9 +461,13 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		
 		if(null !=  userExisted){
 			User user1 = userService.findByEmail(userImport.getEmailId());
-			if(user1.getUserState() !=null && !"ACTIVE".equalsIgnoreCase(user1.getUserState().toString())){
+			UserRole userRole1 = userRoleService.getUserByUserId(user1.getId());
+			if(userRole1.getUserState() !=null && "NOT_LOGGEDIN".equalsIgnoreCase(userRole1.getUserState().toString())){
+				userRole.setUserState(Status.NOT_LOGGEDIN);
 				user1.setPassword(sourceleadPasswordEncoder.encode(password));
 				userService.addUser(user1);
+			}else{
+				userRole.setUserState(Status.ACTIVE);
 			}
 			userRole.setUser(user1);
 			userRoleService.addUserRole(userRole);
@@ -486,6 +489,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			
 			user.setPassword(sourceleadPasswordEncoder.encode(password));
 			user.setIsMailSent(userImport.getIsMailChecked());
+			userRole.setUserState(Status.NOT_LOGGEDIN);
 			userRole.setUser(user);
 		    userService.addUser(user);	
 		    userRoleService.addUserRole(userRole);

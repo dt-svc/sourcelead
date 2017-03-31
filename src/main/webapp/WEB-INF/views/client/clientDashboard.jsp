@@ -42,7 +42,7 @@ overflow-x: auto;
        </div>
 			<div class="pull-left">
 				<h2>Clients<span class="select-fild">
-				    <select id="listOfVendors" onchange="listChange(this);">
+				    <select id="listOfVendors" onchange="listChange(this); flushCheckBoxVal();">
                   		 <option value="listbyVendor">List by client</option>
                         <option value="listbyContact" selected="selected">List by contact</option> 
                     </select>
@@ -314,9 +314,9 @@ overflow-x: auto;
                         <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
 							<li><a href="<c:url value='/client'/>"><i class="fa fa-plus"></i>Client</a></li>
 						</sec:authorize>
-						 <sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> 
+						<%--  <sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> 
 						 <li title="Import"><a href="<c:url value='/uploadClientForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
-						 </sec:authorize>
+						 </sec:authorize> --%>
 						
 						 <sec:authorize access="hasRole('ROLE_EXPORT_CLIENTS')"> 
 						   <li id="clientImports" style="display:none" title="Export">
@@ -2351,5 +2351,13 @@ function getCities(){
 	}
 }
 </script>  
+
+<script>
+function flushCheckBoxVal(){
+	$("input[type=checkbox]").each(function() { this.checked=false; });
+	
+}
+ </script>
+
 
 <jsp:include page="../masterFooter.jsp" />	

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.OrgLocations;
@@ -12,7 +13,7 @@ public interface TaskDao {
 	
 	Tasks getTasksById(Long id);
 	
-	List<Tasks> tasksListByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId,Long userId,String Status,String date)throws Exception;
+	List<Tasks> tasksListByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId,Long userId,String Status,String date, Date startDateUTC, Date endDateUTC)throws Exception;
 	
 	List<Tasks> getTaskByScheduledTime(String currentTime)throws Exception;
 	

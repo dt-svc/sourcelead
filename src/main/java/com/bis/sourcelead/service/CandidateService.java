@@ -97,7 +97,7 @@ public interface CandidateService {
 	
 	public Integer getAllCandidatesCountForCampaignByTeam(List<Long> teamId,String type,Long orgLocationId)throws Exception;
 
-	public List<Candidate> getAllCandidatesForHotListingWhoAreTerminating(Long orgLocationId,Integer datRange)throws Exception;
+	public List<Candidate> getAllCandidatesForHotListingWhoAreTerminating(Long orgLocationId,Integer datRange,Long reportingManagerUserId)throws Exception;
 
 	List<Object> getAllUniversalSearchCandidateList(OrgLocations orgLocation, String searchValue) throws Exception;
 
@@ -124,4 +124,6 @@ public interface CandidateService {
 	
 	List<Candidate> getOwnersByCandidates(Long orgLocationId,String candidateType,String ownersList) throws Exception;
 	
+	List<Candidate> getHotCandidateListByTeamIdAndOrgLocationId(Long teamId,Long orgLocationId) throws Exception;
+
 }
