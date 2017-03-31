@@ -4,12 +4,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 
-import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -32,48 +28,33 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
-import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.ConsolidatedReport;
 import com.bis.sourcelead.entity.DashboardCounts;
-import com.bis.sourcelead.entity.EmailAttachment;
-import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailScenario;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
-import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Tasks;
-import com.bis.sourcelead.entity.Team;
-import com.bis.sourcelead.entity.TeamMembers;
+import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Status;
-import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgLocationService;
-import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
-import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TaskService;
-import com.bis.sourcelead.service.TeamMembersService;
-import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
@@ -103,18 +84,6 @@ public class DashboardRestController {
 	 RequirementInterviewerService requirementInterviewerService;
 	 
 	 @Autowired
-	 RequirementAssignToService requirementAssignToService;
-	 
-	 @Autowired
-	 EmailScenerioUtil emailScenerioUtil;
-	 
-	 @Autowired
-	 EmailScenarioService emailScenarioService;
-	
-	 @Autowired
-	 CandidateService candidateService;
-	 
-	 @Autowired
 	 RequirementSubmissionService requirementSubmissionService;
 	 
 	 @Autowired
@@ -128,18 +97,6 @@ public class DashboardRestController {
 	 
 	 @Autowired
 	 UserService userService;
-	 
-	 
-	 @Autowired
-	 TeamService teamService;
-	 
-	 @Autowired
-	 TeamMembersService teamMembersService;
-	 
-	 
-	 
-	 @Autowired
-	 OrgService orgService;
 	 
 	 @Autowired
      UserRoleService userRoleService;
@@ -166,296 +123,20 @@ public class DashboardRestController {
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/getTimeSheetSubmissionStatus")
 	public String getTimeSheetSubmissionStatus(@RequestParam(value="timesheetType", required=false) String timesheetType,HttpServletRequest request) throws Exception {
-		
 
-		
-		List<Org> orgList = orgService.getOrgs();
-		for (Org org : orgList) {
-			OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(org.getId());
-			ArrayList<Long> userIdList = new ArrayList<Long>();
-			ArrayList<String> userCodeList = new ArrayList<String>();
+		String resultJson;
 
-			List<User> userRoleList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),
-					Long.valueOf(Constants.TAB_REQUIREMENT));
-
-			if (userRoleList != null && userRoleList.size() > 0) {
-
-				for (User user : userRoleList) {
-							Integer  todayReleasedRequirementsCount  = 0;
-							
-							List<ConsolidatedReport> list = new ArrayList<ConsolidatedReport>();
-							System.out.println("UserName" + user.getFirstName());
-		
-							String[] modules = org.getModulesId().split(",");
-							for (int i = 0; i < modules.length; i++) {
-									if (modules[i].equalsIgnoreCase(Constants.MODULE_VMS_STR)) {
-										
-										  todayReleasedRequirementsCount = requirementService.getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(orgLocations.getId(), user);
-										  break;
-									}
-									
-							}
-							List<Requirement> requirementList = requirementService.getAllRequirementsByOrglocationIdAndUserId(orgLocations.getId(), user);
-							Integer releasedRequirementCount = 0;
-							Integer numberOfActiveRequirementCount = 0;
-							Integer numberOfCreatedCandidatesCount = 0;
-		
-							for (Requirement requirement : requirementList) {
-		
-										ConsolidatedReport conreport = new ConsolidatedReport();
-				
-										conreport.setRequirementName(requirement.getJobTitle());
-										for (int i = 0; i < modules.length; i++) {
-				
-											
-											/*
-											 * This is for checking the login Organization is
-											 * ATS or not And Get ALl Vendor Submitted Jobs
-											 * */
-											 
-											 
-											if (modules[i].equalsIgnoreCase(Constants.MODULE_ATS_STR)) {
-				
-												List<RequirementSubmission> submissionsFromClient = requirementSubmissionService.getAllSubmissionsfromVendorsBasedOnLocationIdAndUserId(user, orgLocations,
-																"CLIENT_SUBMISSIONS", requirement);
-												if (submissionsFromClient.size() > 0 && submissionsFromClient != null) {
-													   conreport.setSubmissionCount(submissionsFromClient.size());
-													   break;
-												}
-											}
-											
-										}
-				
-										Integer applicantsCount = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(user, orgLocations,"APPLICANTS", requirement);
-										conreport.setApplicantsCount(applicantsCount);
-				
-										Integer shortlistedCount = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(user, orgLocations,
-														"SHORTLISTED", requirement);
-										conreport.setShortlistedCount(shortlistedCount);
-				
-										Integer submittedToClientCount = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(user, orgLocations,
-														"SUBMIT_TO_CLIENT", requirement);
-										conreport.setSubmitToClientCount(submittedToClientCount);
-				
-										Integer interviewedCount = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(user, orgLocations,
-														"INTERVIEWED", requirement);
-										conreport.setInterviewsCount(interviewedCount);
-				
-										Integer rejectedCount = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(user, orgLocations,
-														"REJECTED", requirement);
-										conreport.setRejectedCount(rejectedCount);
-				
-										Integer requestSentCount = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(user, orgLocations,
-														"REQUESTSENT", requirement);
-										conreport.setRequestSentCount(requestSentCount);
-				
-										Integer offeredCount = requirementSubmissionService.getConsolidatedReportsForMailingForIndividualUserForToday(user, orgLocations,
-														"OFFERED", requirement);
-										conreport.setOffersCount(offeredCount);
-				
-				  
-										list.add(conreport);
-				
-									}
-									numberOfCreatedCandidatesCount =	 candidateService.getAllCandidatedsBasedOnCreatedByAndOrglocationCodeWhichAreCreatedToday(orgLocations,user);
-									sendEmailToscheduleUserMailForRequirementConsolidatedReports(list,user,todayReleasedRequirementsCount,requirementList.size(),numberOfCreatedCandidatesCount);
-							
-						}
-
-			     }
-		     }
-		
-	return "Success";
-	}
-	private void sendEmailToscheduleUserMailForRequirementConsolidatedReports(List<ConsolidatedReport> list, User user,
-			Integer todayReleasedRequirementsCount, int size, Integer numberOfCreatedCandidatesCount) throws Exception {
-		
-		 StringBuilder  sb  = new StringBuilder();
-		 
-			
-		 
-		 
-		 sb.append("<div>");
-		 sb.append("<span style='width:260px; display: inline-block; margin-bottom: 5px;'>Released Requirement Count:</span> <strong style='padding-left:10px;'>"+todayReleasedRequirementsCount+"</strong>");
-		 sb.append("<div>");
-		 sb.append("<div>");
-		 sb.append("<span style='width:260px; display: inline-block; margin-bottom: 5px;'>Created Candidates Count:</span> <strong style='padding-left:10px;'>"+numberOfCreatedCandidatesCount+"</strong>");
-		 sb.append("<div>");
-		 sb.append("<div>");
-		 sb.append("<span style='width:260px; display: inline-block; margin-bottom: 5px;'>Number Of Active Requirement:</span> <strong style='padding-left:10px;'>"+size+"</strong>");
-		 sb.append("<div>");
-
-			
-			
-	    	sb.append("<table width='900' align='center' style='border-collapse: collapse; margin: 0 auto;border: 1px solid #375d81; text-align: center; font-size: 12px;' cellpadding='2px' cellspacing='0' border='0'>");
-	    	sb.append("<thead style='background-color:#375d81; color: #fff;'>");
-	    	sb.append("<tr style='min-height: 30px; vertical-align: middle;'>");		    
-	    	sb.append("<th style='border: 1px solid #12385c; text-align: center; padding:15px 0;'>Requirement Name</th>");	      
-	    	sb.append("<th style=.border: 1px solid #12385c; text-align: center; padding:15px 0;'>Applicants</th>");		        
-	    	sb.append("<th style='border: 1px solid #12385c; text-align: center; padding:15px 0;'>Shortlisted </th>");		          
-	    	sb.append("<th style='border: 1px solid #12385c; text-align: center; padding:15px 0;'>Submit To Client </th>");
-	    	sb.append("<th style='border: 1px solid #12385c; text-align: center; padding:15px 0;'>Rejected </th>");
-	    	sb.append("<th style='border: 1px solid #12385c; text-align: center; padding:15px 0;'>Interviewed </th>");
-	    	sb.append("<th style='border: 1px solid #12385c; text-align: center; padding:15px 0;'>Request Sent </th>");
-	    	sb.append("<th style='border: 1px solid #12385c; text-align: center; padding:15px 0;'>Offered </th>");
-	    	sb.append("<th style='border: 1px solid #12385c; text-align: center; padding:15px 0;'>Submissions from Client </th>");
-	    	
-	    	sb.append("</tr>");	
-	    	sb.append("</thead>");	
-	    	sb.append("<tbody>");
-	    	for(ConsolidatedReport conreport :list){
-	    		
-	    	sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");
-	    	sb.append("<td style='display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 200px;' width='300'>"+conreport.getRequirementName()+"</td>");		              
-	    	sb.append("<td style='border: 1px solid #375d81;' width='225'>"+conreport.getApplicantsCount()+"</td>");	              
-	    	sb.append("<td style='border: 1px solid #375d81;' width='275'>"+conreport.getShortlistedCount()+"</td>");	              
-	    	sb.append("<td style='border: 1px solid #375d81;' width='275'>"+conreport.getSubmitToClientCount()+"</td>");		            
-	    	sb.append("<td style='border: 1px solid #375d81;' width='200'>"+conreport.getRejectedCount()+"</td>");
-	    	sb.append("<td style='border: 1px solid #375d81;' width='200'>"+conreport.getInterviewsCount()+"</td>");	
-	    	sb.append("<td style='border: 1px solid #375d81;' width='200'>"+conreport.getRequestSentCount()+"</td>");	
-	    	sb.append("<td style='border: 1px solid #375d81;' width='200'>"+conreport.getOffersCount()+"</td>");	
-	    	sb.append("<td style='border: 1px solid #375d81;' width='200'>"+conreport.getSubmissionCount()+"</td>");
-	    	sb.append("</tr>");		            
-	    	   
-	        }
-	    	sb.append("</tbody>");	              
-	    	sb.append("</table>");   
-			
-			 StringBuilder nameBuilder = new StringBuilder();
-			 StringBuilder expBuilder = new StringBuilder();
-			 StringBuilder locationBuilder = new StringBuilder();
-			 EmailMessage emailMessage = new EmailMessage();
-			 String professionalName = null;
-			 String experience = null;
-			 String location = null;
-			 
-			 
-			 emailMessage.setToEmail(user.getEmail());
-			 emailMessage.setFromName("Sourcelead Admin");
-			 emailMessage.setCreatedBy("sladmin");
-			 emailMessage.setFromName("info@sourcelead.com");
-			 
-			//setting the class filed values
-			 Map<String, String> globalVarsMap = new HashMap<String, String>();
-			 globalVarsMap.put("professionalName", professionalName);
-			 globalVarsMap.put("experience", experience);
-			 globalVarsMap.put("location", location);
-			 globalVarsMap.put("professionalEmail", "sammetadavid@gmail.com");
-			 
-			
-			 //setting the Recipient information
-			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-			
-			 //getting the current EmailScenario by EmailScenario unique name and entity type
-			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLIED_TO_REQUIREMENT,Constants.ENTITY_TYPE_EMAIL);
-			
-			 //covert subject,body and signature
-			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-			 String url = sourceleadUrl;
-			 
-			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, sb.toString(), signature, url, new Org());
-			 emailMessage.setSubject(subject);
-			 emailMessage.setMessageBody(emailTemplate);
-			 
-			 //calling the sendEmail method of emailScenerioUtil
-			 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
-		
-	}
-		
-		
-		public void sendEmailToProfessionalForAppliedJob(List<ConsolidatedReport> list,User user,Integer releasedRequirementCount,Integer numberOfActiveRequirementCount,Integer numberOfCreatedCandidatesCount) throws Exception {
-			
-			 StringBuilder  sb  = new StringBuilder();
-			 
-			sb.append("Released Requirement Count ").append(releasedRequirementCount);
-
-			sb.append("Created Candidates Count ").append(numberOfCreatedCandidatesCount);
-			
-			sb.append("Number Of Active Requirement ").append(numberOfActiveRequirementCount);
-			
-			
-	    	sb.append("<table width='900' align='center' style='border-collapse: collapse; margin: 0 auto;border: 1px solid #375d81; text-align: center;' cellpadding='2px' cellspacing='0' border='0'>");
-	    	sb.append("<thead style='background-color:#375d81; color: #fff;'>");
-	    	sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");		    
-	    	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Requirement Name</th>");	      
-	    	sb.append("<th style=.border: 1px solid #12385c; text-align: center;'>Applicants </th>");		        
-	    	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Shortlisted </th>");		          
-	    	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Submit To Client </th>");
-	    	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Rejected </th>");
-	    	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Interviewed </th>");
-	    	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Request Sent </th>");
-	    	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Offered </th>");
-	    	sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Submissions from Client </th>");
-	    	
-	    	sb.append("</tr>");	
-	    	sb.append("</thead>");	
-	    	sb.append("<tbody>");
-	    	for(ConsolidatedReport conreport :list){
-	    		
-	    	sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");
-	    	sb.append("<td style='border: 1px solid #375d81;' width='300'>"+conreport.getRequirementName()+"</td>");		              
-	    	sb.append("<td style='border: 1px solid #375d81;' width='225'>"+conreport.getApplicantsCount()+"</td>");	              
-	    	sb.append("<td style='border: 1px solid #375d81;' width='275'>"+conreport.getShortlistedCount()+"</td>");	              
-	    	sb.append("<td style='border: 1px solid #375d81;' width='275'>"+conreport.getSubmitToClientCount()+"</td>");		            
-	    	sb.append("<td style='border: 1px solid #375d81;' width='200'>"+conreport.getRejectedCount()+"</td>");
-	    	sb.append("<td style='border: 1px solid #375d81;' width='200'>"+conreport.getInterviewsCount()+"</td>");	
-	    	sb.append("<td style='border: 1px solid #375d81;' width='200'>"+conreport.getRequestSentCount()+"</td>");	
-	    	sb.append("<td style='border: 1px solid #375d81;' width='200'>"+conreport.getOffersCount()+"</td>");	
-	    	sb.append("<td style='border: 1px solid #375d81;' width='200'>"+conreport.getSubmissionCount()+"</td>");
-	    	sb.append("</tr>");		            
-	    	   
-	        }
-	    	sb.append("</tbody>");	              
-	    	sb.append("</table>");   
-			
-			 StringBuilder nameBuilder = new StringBuilder();
-			 StringBuilder expBuilder = new StringBuilder();
-			 StringBuilder locationBuilder = new StringBuilder();
-			 EmailMessage emailMessage = new EmailMessage();
-			 String professionalName = null;
-			 String experience = null;
-			 String location = null;
-			 
-			 
-			 emailMessage.setToEmail(user.getEmail());
-			 emailMessage.setFromName("Sourcelead Admin");
-			 emailMessage.setCreatedBy("sladmin");
-			 emailMessage.setFromName("info@sourcelead.com");
-			 
-			//setting the class filed values
-			 Map<String, String> globalVarsMap = new HashMap<String, String>();
-			 globalVarsMap.put("professionalName", professionalName);
-			 globalVarsMap.put("experience", experience);
-			 globalVarsMap.put("location", location);
-			 globalVarsMap.put("professionalEmail", "sammetadavid@gmail.com");
-			 
-			
-			 //setting the Recipient information
-			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-			
-			 //getting the current EmailScenario by EmailScenario unique name and entity type
-			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLIED_TO_REQUIREMENT,Constants.ENTITY_TYPE_EMAIL);
-			
-			 //covert subject,body and signature
-			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-			 String url = sourceleadUrl;
-			 
-			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, sb.toString(), signature, url, new Org());
-			 emailMessage.setSubject(subject);
-			 emailMessage.setMessageBody(emailTemplate);
-			 
-			 //calling the sendEmail method of emailScenerioUtil
-			 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
-			
+	    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
+		if("employes".equalsIgnoreCase(timesheetType)){
+			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId());
+		}else if("myTimesheets".equalsIgnoreCase(timesheetType)){
+			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationId(user.getId(), loginOrgLocations.getId());
 		}
-		
-
+		resultJson = commonUtil.toJSON(timeSheetSubmissionCount);
+		return resultJson;
+	}
 	/****
 	 * 
 	 * @author: Pavan Jampana 
