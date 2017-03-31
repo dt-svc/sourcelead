@@ -851,7 +851,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	  */
 	
 	
-	 private void sendProjectEditMailtoProjectManager(Projects projects, User loginUser, User approverUserId1, OrgLocations loginOrgLocation, String teamMembersList,String loginOrgCode) throws Exception {
+	 private void sendProjectEditMailtoProjectManager(Projects projects, User loginUser, User approverUserId1, OrgLocations loginOrgLocation, String teamMembersList,String loginOrgCode,Date changedEndDate) throws Exception {
 	  	 User projectManager = userService.getUserById(approverUserId1.getId());
 	  	 
 	  	 if(isNullOrEmpty(teamMembersList) && ("undefined".equals(teamMembersList))){
@@ -870,8 +870,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 
 		 
 		 projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
-		    if(projects.getEndDate() != null){
-		    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
+		    if(changedEndDate != null){
+		    	 projects.setEndDateStr(Constants.DF_DMY.format(changedEndDate));
 		    }
 			
 		    
@@ -927,7 +927,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	}
 	 
 	 
-	 private void sendProjectEditMailtoTeamMembers(Projects projects, Employees emp, User loginUser, User approverUserId1, OrgLocations loginOrgLocation,String loginOrgCode) throws Exception {
+	 private void sendProjectEditMailtoTeamMembers(Projects projects, Employees emp, User loginUser, User approverUserId1, OrgLocations loginOrgLocation,String loginOrgCode, Date changedEndDate) throws Exception {
 	  	 StringBuilder fromNameBuilder=new StringBuilder();
 	     EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(emp.getUser().getFirstName());
@@ -942,8 +942,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 
 		 
 		 projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
-		    if(projects.getEndDate() != null){
-		    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
+		    if(changedEndDate != null){
+		    	 projects.setEndDateStr(Constants.DF_DMY.format(changedEndDate));
 		    }
 			
 		    
@@ -1231,7 +1231,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		    	     SimpleDateFormat format = new SimpleDateFormat(pattern);
 		    	     if(!jsonObj.getString("endDateStr1").isEmpty() && jsonObj.getString("endDateStr1") != null && !"NO DATA".equalsIgnoreCase(jsonObj.getString("endDateStr1"))){
 				    		previousEndDate = projects.getEndDate();
-				    		Date endDate = format.parse(jsonObj.getString("endDateStr1"));
+				    		Date changedEndDate = format.parse(jsonObj.getString("endDateStr1"));
 							 
 				    		if(projects.getEndDate() != null ){
 				    			projects.getEndDate();
@@ -1257,13 +1257,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 		         						if( null != approverUserId1 && null != approverUserId2){
 		         							  if(approverUserId1.getId().longValue() != emp.getUser().getId().longValue() && approverUserId2.getId().longValue() != emp.getUser().getId().longValue()){
 		         								  if(user.getId().longValue() != emp.getUser().getId().longValue()){
-		         									  sendProjectEditMailtoTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation,loginOrgCode);
+		         									  sendProjectEditMailtoTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation,loginOrgCode, changedEndDate);
 		         								  }
 		         					    }
 		         							//if  we have   both level1 only One ProjectManagers
 		         						}else if(approverUserId1.getId().longValue() != emp.getUser().getId().longValue()){
 		         							 if(user.getId().longValue() != emp.getUser().getId().longValue()){
-		         								 sendProjectEditMailtoTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation,loginOrgCode);
+		         								 sendProjectEditMailtoTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation,loginOrgCode, changedEndDate);
 		         							 }
 		         							 
 		         							 }   
@@ -1277,7 +1277,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	         						String level1UserDetails[] = jsonObj.getString("level1Manager").split(",");
 	         						approverUserId111.setId(Long.valueOf(level1UserDetails[0]));
 	         						if(approverUserId111 != null && user.getId() != approverUserId111.getId()){
-	         							sendProjectEditMailtoProjectManager(projects, user, approverUserId111, loginOrgLocation,"",loginOrgCode);
+	         							sendProjectEditMailtoProjectManager(projects, user, approverUserId111, loginOrgLocation,"",loginOrgCode,changedEndDate);
 	         						}
 	         						
 	         					}
@@ -1293,7 +1293,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	         						approverUserId22.setId(Long.valueOf(jsonObj.getString("level2Manager")));
 	         						if(!jsonObj.getString("level2Manager").isEmpty() && null !=  approverUserId22 && user.getId() != approverUserId22.getId()){
 	         							 if(user.getId().longValue() != approverUserId22.getId().longValue()){
-	         								 	sendProjectEditMailtoProjectManager(projects, user, approverUserId22, loginOrgLocation,"",loginOrgCode);
+	         								 	sendProjectEditMailtoProjectManager(projects, user, approverUserId22, loginOrgLocation,"",loginOrgCode,changedEndDate);
 	         							 }
 	         						 }
 	         					}

@@ -897,8 +897,6 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 			    	 weekTotalsMap.put(sah.getSubmissionId().getStartDate(),0f);
 			     }
 	    		 
-	    		 System.out.println( sah.getSubmissionApprovalStatus());
-			    
 				if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
 					isRejected   = true;  
 					submissionApproverHierarchy = sah;
