@@ -211,7 +211,7 @@ function getInternalInterviewsList(submissionId){
 		                    	 if(report.interviewId.interviewStatus == null || report.interviewId.interviewStatus == '' || report.interviewId.interviewStatus =='undefined'){
 		                    		 if(report.feedbackStartTime != "feedbackStartTime" || report.feedbackEndTime != "feedbackEndTime"){
 		                    		 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Attending\');" title="Attending"><i class="fa fa-check text-success"></i></a>';
-			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Not Attending\');" title="Not Attending">&nbsp;&nbsp;<i class="fa fa-close text-danger"></i></a>';
+			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Not_Attending\');" title="Not Attending">&nbsp;&nbsp;<i class="fa fa-close text-danger"></i></a>';
 			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Maybe\');" title="Maybe"  class="brder-int">&nbsp;&nbsp;<i class="fa fa-question-circle text-muted"></i></a>';
 		                    	 }
 		                    }
@@ -539,7 +539,7 @@ function changeInterviewStatus(submissionId,interviewId,interviewStatus){
 		    	 if(interviewStatus == "Attending"){
            		    $("#"+(interviewId)+"showStatus").html("<font color='green' >Attending</font>");
 	           	 }
-	           	 if(interviewStatus == "Not Attending"){
+	           	 if(interviewStatus == "Not_Attending"){
 	           		$("#"+(interviewId)+"showStatus").html("<font color='red' >Not Attending</font>");
 	           	 }
 	           	 if(interviewStatus == "Maybe"){

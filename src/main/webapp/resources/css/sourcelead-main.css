@@ -738,12 +738,12 @@ ul.timesheet-menu li a:hover, ul.backoffice-menu li a:hover {
     -ms-transition:all 0.3s linear;
     -o-transition:all 0.3s linear;
     -webkit-transition:all 0.3s linear;
-    transition:all 0.3s linear;
+    transition:all 0.5s linear;
 }
 .login-user:hover .fa-caret-down{
-     -ms-transform: rotate(180deg); /* IE 9 */
-    -webkit-transform: rotate(180deg); /* Chrome, Safari, Opera */
-    transform: rotate(180deg);
+     -ms-transform: rotate(-180deg); /* IE 9 */
+    -webkit-transform: rotate(-180deg); /* Chrome, Safari, Opera */
+    transform: rotate(-180deg);
 }
 .user-details {
 	background: #3081cb;
@@ -3271,7 +3271,7 @@ a.collpase-div .fa-angle-down:hover{
 	position:fixed;
 	right: 0px;
 	top: 90px;
-	z-index: 9999;
+	z-index: 999999;
 }
 .addTask .icon-addTask{
 	background:-webkit-linear-gradient(#2bddb8,#17aa8c);
@@ -3380,7 +3380,7 @@ ul.addTasUl li .fa{
 .addTask-widget .nav li a:hover {
 	 color:#424242;
 }
-.addTask-widget table tr th {
+addTask-widget table tr th {
 	background:#c86636 !important;
 	border-right:1px solid #ad572d !important;
 }
@@ -6542,20 +6542,12 @@ margin-left: 15px;
     color: #337ab7;
 }
 #eventCalendar .ui-widget.ui-widget-content, #scheduleCalendar .ui-widget.ui-widget-content   {
-    border: 1px solid #dedfe4;
-    box-shadow: none;
-    width: 100%;
-    border-radius: 0;
-    background: #ededed;
-    padding: 10px;
+    border: 1px solid #dedfe4; box-shadow: none; width: 100%; border-radius: 0;
+    background: #ededed; padding: 10px;
 }
 #eventCalendar .ui-widget-header, #scheduleCalendar .ui-widget-header {
-    background: #bbb !important;
-    border: none !important;
-    color: #333;
-    font-weight: bold;
-    height: 45px;
-    border-radius: 0;
+    background: #bbb !important; border: none !important; color: #333; font-weight: bold;
+    height: 45px; border-radius: 0; z-index: 9 !important;
 }
 #eventCalendar .ui-datepicker select.ui-datepicker-month, #eventCalendar .ui-datepicker select.ui-datepicker-year {
     color: #202020; height: 30px; margin-top: 4px;
@@ -6737,8 +6729,88 @@ text-overflow:ellipsis; overflow: hidden; white-space:nowrap !important; width: 
 font-size: 14px; font-weight: normal;
 }
 .noticePeriod span {
-max-width: 400px !important;
+    max-width: 400px !important;
 }
+.select-rateper {
+    width: 135px !important;
+}
+.select-rateper {
+    width: 135px !important;
+}
+#client_chosen .chosen-choices {
+    min-height: 35px; max-height: 55px !important; overflow-y:auto !important; 
+}
+
+/* CrowdSourcing New Header Styles 
+
+.crowd-header .fa {
+    font-size: 1.2em; vertical-align: top;
+}
+.crowd-header .glyphicon {
+    font-size: 1.1em; vertical-align: top;
+}
+.crowd-header .title {
+    font-size: 12px;
+}
+.custom-navbar-inner.crowd-header li{
+    padding: 8px 12px !important; float: left;
+}
+.custom-navbar-inner.crowd-header li a{
+    margin-top:2px;
+}
+ul.crowd-header > li > a > .label {
+    right: 10px !important;  top: 5px !important;
+}
+.content-wraper.crowd-contentWraper {
+    margin-left: 0;
+}
+.main-header.crowdHeader span.logo {
+    line-height: 51px; height: 51px;
+}
+.crowed_sidebar {
+ background-color: #375d81; left: 0; min-height: 100%; position: absolute; top: 0; width: 100px; z-index: 810;
+padding-top: 50px; box-shadow: 1px 1px 2px #707070; transition: 0.3s ease-in-out; -moz-transition: 0.3s ease-in-out;
+-webkit-transition: 0.3s ease-in-out; overflow-x: hidden; overflow-y: auto; overflow: hidden;
+}
+.crowed_sidebar .side-nav ul li span {
+    width:100px; height: auto; text-align: center; }
+.crowed_sidebar .user-panel {
+    background: url(../images/userpanel-bg.jpg) no-repeat 0 0;
+    width: 100px; height: auto; padding: 10px 15px;
+    color: #fff; transition: all ease-in-out .3s;
+}
+.crowed_sidebar .side-nav ul li a {
+    color: #afd5f9; display: block; padding: 10px 0; transition:all 0.3s linear;
+}
+.crowed_sidebar .side-nav ul li {
+    border-bottom: 1px solid #2e5478;
+}
+.crowed_sidebar .side-nav ul li a:hover, .crowed_sidebar .side-nav ul li a.selected {
+    background: #4a7094; color: #fff; border-right: 5px solid #f60;
+}
+.crowed_sidebar .side-nav ul li .fa-2x {
+    font-size: 22px;
+}
+.crowed_sidebar .side-nav ul li .url {
+    font-size: 12px; text-shadow: none; padding: 2px 0;
+}
+.crowed_sidebarinner {
+    text-align: center;
+}
+.crowed_sidebarinner .text-logo span {
+    width: 80px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block;
+}
+.content-wraper.contentside-wraper {
+ margin-left: 100px;
+}
+.universalSrch_crowd .form-control {
+    background: #64b5f6; border: 1px solid #6cc4ff; border-radius: 5px;
+}
+.universalSrch_crowd .form-control::-moz-placeholder {
+    color: #fff;
+}
+CrowdSourcing New Header Styles */
+
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

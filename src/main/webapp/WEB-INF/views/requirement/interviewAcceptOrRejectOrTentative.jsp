@@ -28,7 +28,7 @@
 			}else{
 				if(interviewStatus == 'Attending'){     
 					$("#accept").removeAttr("style");
-				}else if(interviewStatus == 'Not Attending'){
+				}else if(interviewStatus == 'Not_Attending'){
 					$("#reject").removeAttr("style");
 				}else if(interviewStatus == 'Maybe'){
 					$("#tentative").removeAttr("style");
