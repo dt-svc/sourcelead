@@ -184,7 +184,6 @@ public class DashboardRestController {
 							Integer  todayReleasedRequirementsCount  = 0;
 							
 							List<ConsolidatedReport> list = new ArrayList<ConsolidatedReport>();
-							System.out.println("UserName" + user.getFirstName());
 		
 							String[] modules = org.getModulesId().split(",");
 							for (int i = 0; i < modules.length; i++) {
