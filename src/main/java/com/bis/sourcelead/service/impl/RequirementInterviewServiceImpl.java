@@ -156,6 +156,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 								
 								if(jsonObj.has(c+"interviewType") && !jsonObj.getString(c+"interviewType").isEmpty()){
 									requirementInterview.setInterviewType(jsonObj.getString(c+"interviewType"));
+									if(jsonObj.has(c+"interviewTypeother") && !jsonObj.getString(c+"interviewTypeother").isEmpty()){
+										requirementInterview.setCustomInterviewType(jsonObj.getString(c+"interviewTypeother"));
+									}
 								}
 								
 								if(jsonObj.has(c+"startTime") && !jsonObj.getString(c+"startTime").isEmpty()){

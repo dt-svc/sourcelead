@@ -149,6 +149,11 @@ public class Constants {
     
     public static String MODIFIED_REQUIREMENT_STATUS_EMAIL = "ModifiedRequirementStatusMailtoVendorContact";
     public static String MODIFIED_REQUIREMENT_STATUS_NOTIFICATION = "ModifiedRequirementStatusNotificationtoVendorContact";
+    
+    public static String HOTLIST_ALERT_EMAIL = "HotListAlertMail";
+    public static String HOTLIST_ALERT_NOTIFICATION = "HotListAlertNotification";
+    
+    public static long SOURCELEAD_ADMIN_USERID = 1;
 	
 	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
 	
