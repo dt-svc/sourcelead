@@ -632,7 +632,7 @@ function getInternalInterviewsList(submissionId){
 			                    	//Latest interview for Reschedule  ends
 		                    		 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Attending\');" title="Attending"><i class="fa fa-check text-success"></i></a>';
 		                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
-			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Not Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
+			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Not_Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
 			                    	 '</sec:authorize>';
 			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Maybe\');" title="Maybe"  class="brder-int"><i class="fa fa-question-circle text-muted"></i></a>';
 		                    	/*  } */
@@ -784,7 +784,7 @@ function changeInterviewStatus(submissionId,interviewId,interviewStatus){
 		    	 if(interviewStatus == "Attending"){
            		    $("#"+(interviewId)+"showStatus").html("<font color='green' >Attending</font>");
 	           	 }
-	           	 if(interviewStatus == "Not Attending"){
+	           	 if(interviewStatus == "Not_Attending"){
 	           		$("#"+(interviewId)+"showStatus").html("<font color='red' >Not Attending</font>");
 	           	 }
 	           	 if(interviewStatus == "Maybe"){
@@ -884,7 +884,7 @@ function getCustomerInterviewsList(submissionId,requirementId){
 		                    	 if(report.interviewStatus == null || report.interviewStatus == '' || report.interviewStatus =='undefined'){
 		                    		 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Attending\');" title="Attending"><i class="fa fa-check text-success"></i></a>';
 		                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
-			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Not Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
+			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Not_Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
 			                    	 '</sec:authorize>';
 			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Maybe\');" title="Maybe"><i class="fa fa-question-circle text-muted"></i></a>';
 		                    	 }
