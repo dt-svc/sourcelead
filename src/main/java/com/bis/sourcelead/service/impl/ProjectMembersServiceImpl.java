@@ -633,4 +633,12 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getUser(), loginOrgLocation, notificationScenario);
 	}
 
+	@Override
+	public List<ProjectMembers> getAllProjectsByUserIdForCandidatesHotList(Long userId) throws Exception {
+
+		return projectMembersDao.getAllProjectsByUserIdForCandidatesHotList(userId)  ;
+		
+		
+	}
+
 }
