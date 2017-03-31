@@ -552,7 +552,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<CandidateIndex> getRecommendationsUpdateWithScoreByUsingElk(Long orgLocationId, RecommendedCustomizeScore recommendedCustomizeScore) throws Exception {
+	public List<CandidateIndex> getRecommendationsUpdateWithScoreByUsingElk(Long orgLocationId, RecommendedCustomizeScore recommendedCustomizeScore,Long requirementId) throws Exception {
 		logger.info("....getRecommendationsUpdateWithScoreByUsingElk Method Started...");
 		float locationPercentage = 0; // location 10%
 		float ratePercentage = 0;    // rate 20 %
@@ -642,6 +642,13 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					
 					//List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidateIndex.getCandidateId());
 					Integer reqListCount = requirementSubmissionService.getRequirementPerCandidateCount(candidateIndex.getCandidateId(),candidateIndex.getOrgLocationId());
+					
+					boolean isSumbitted = requirementSubmissionService.isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(candidateIndex.getCandidateId(), requirementId);
+					if(isSumbitted == true){
+						candidateIndex.setIsCandidateSubmitted(Constants.YES);
+					}else{
+						candidateIndex.setIsCandidateSubmitted(Constants.NO);
+					}
 					
 					//get the skillPercentage method
 					 				 

@@ -885,27 +885,27 @@ public class VendorImportServiceImpl implements VendorImportService {
 		}
 		if (row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())) {
 			
-			String[] ownersList = getOwnerList(orgLocationId, Long.valueOf(Constants.TAB_VENDOR));
-			if (null != ownersList) {
-				if (!fname.endsWith("xlsx")) {
-					createExcelsheet.addValidationData(getDropDownListForCell(ownersList, 11));
-				}
-				else {
-					createExcelsheet.addValidationData(getXssfDropDownlist(ownersList, 11, createExcelsheet));
-				}
-			}
+//			String[] ownersList = getOwnerList(orgLocationId, Long.valueOf(Constants.TAB_VENDOR));
+//			if (null != ownersList) {
+//				if (!fname.endsWith("xlsx")) {
+//					createExcelsheet.addValidationData(getDropDownListForCell(ownersList, 11));
+//				}
+//				else {
+//					createExcelsheet.addValidationData(getXssfDropDownlist(ownersList, 11, createExcelsheet));
+//				}
+//			}
 			writeRow.createCell(11).setCellValue(row.getCell(11).toString());
 		}
 		else {
-			String[] ownersList = getOwnerList(orgLocationId, Long.valueOf(Constants.TAB_VENDOR));
-			if (null != ownersList) {
-				if (!fname.endsWith("xlsx")) {
-					createExcelsheet.addValidationData(getDropDownListForCell(ownersList, 11));
-				}
-				else {
-					createExcelsheet.addValidationData(getXssfDropDownlist(ownersList, 11, createExcelsheet));
-				}
-			}
+//			String[] ownersList = getOwnerList(orgLocationId, Long.valueOf(Constants.TAB_VENDOR));
+//			if (null != ownersList) {
+//				if (!fname.endsWith("xlsx")) {
+//					createExcelsheet.addValidationData(getDropDownListForCell(ownersList, 11));
+//				}
+//				else {
+//					createExcelsheet.addValidationData(getXssfDropDownlist(ownersList, 11, createExcelsheet));
+//				}
+//			}
 			writeRow.createCell(11).setCellValue("");
 		}
 		// if (row.getCell(11) != null &&
