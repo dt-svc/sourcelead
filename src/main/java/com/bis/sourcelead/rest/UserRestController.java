@@ -338,7 +338,8 @@ public class UserRestController {
 	  * @throws Exception
 	  */
 	  @RequestMapping(value = "/resendInvitationEmail" , method = RequestMethod.POST)
-	  public @ResponseBody  String resendInvitationEmail(@RequestParam(value="userId", required=false) String userId, HttpServletRequest request) throws Exception {
+	  public @ResponseBody  String resendInvitationEmail(@RequestParam(value="userId", required=false) String userId,
+			  @RequestParam(value="orgId", required=false) Long orgId,HttpServletRequest request) throws Exception {
 		    
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -356,7 +357,7 @@ public class UserRestController {
 	 			user.setIsMailSent(Status.Y);
 	 			userService.addUser(user);
 
-	 			userService.sendEmail(user,loginUser,password,orgLocations.getId());
+	 			userService.sendEmailFromSourcelead(user,loginUser,password,orgLocations.getId(),orgId);
 
 	 			/*
 				 * Update USER DB data as ElasticSearch Documents
