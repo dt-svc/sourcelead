@@ -65,9 +65,6 @@ public interface RequirementInterviewService {
 
 	void applicantInterviewAcceptmailToInterviewInitiator(String requirementInterviewId) throws Exception;
 	
-	void applicantInterviewRejectmailToInterviewInitiator(String requirementInterviewId) throws Exception;
-
-
 	//List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime);
 	
 

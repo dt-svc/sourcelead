@@ -181,6 +181,14 @@ public class Constants {
 	
 	public static String APPLICANT_REJECT_MAILTO_INTERVIEW_CREATOR = "ApplicantRejectMailToInterviewCreator";
 	
+	public static String APPLICANT_TENTATIVE_MAILTO_INTERVIEWCREATOR ="ApplicantTentativeMailToInterviewCreator";
+	
+	public static String VENDOR_APPLICANT_REJECTMAIL_TO_INTERVIEWCREATOR="VendorApplicantRejectMailToInterviewCreator";
+	
+	public static String VENDOR_APPLICANT_ACCEPT_MAILTO_INTERVIEWCREATOR ="VendorApplicantAcceptMailToInterviewCreator";
+	
+	public static String VENDOR_APPLICANT_TENTATIVE_MAILTO_INTERVIEWCREATOR ="VendorApplicantTentativeMailToInterviewCreator";
+	
 	public static String REQUIREMENT_SEQUENTIAL_EMAIL_NOTIFICATION = "Approval Mechanism Sequential";
 	public static String APPROVED_EMAIL_NOTIFICATION = "Approved Requirement";
 	public static String REJECTED_EMAIL_NOTIFICATION ="Rejected Mail About The Requirement";

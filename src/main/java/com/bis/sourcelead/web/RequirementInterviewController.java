@@ -82,10 +82,11 @@ public class RequirementInterviewController {
 				 }
 				 if(interviewStatus.equalsIgnoreCase(ApplicantSubmissionStatus.NOT_ATTENDING.toString())){
 					 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW_REJECT);
-					 requirementInterviewService.applicantInterviewRejectmailToInterviewInitiator(requirementInterviewId);
+					 requirementInterviewService.applicantInterviewAcceptmailToInterviewInitiator(requirementInterviewId);
 				 }
 				 if(interviewStatus.equalsIgnoreCase(ApplicantSubmissionStatus.MAYBE.toString())){
 					 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW_TENTATIVE);
+					 requirementInterviewService.applicantInterviewAcceptmailToInterviewInitiator(requirementInterviewId);
 				 }
 				 requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 					
