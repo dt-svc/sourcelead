@@ -569,12 +569,17 @@ function filter(){
    		    		}else{
    		    			projectSequeneNumber = "---";
    		    		}
+   		    		if(report.employeeEndDateStr != null && report.employeeEndDateStr != '' && report.employeeEndDateStr != 'undefined'){
+   		    			employeeEndDateStr = report.employeeEndDateStr;
+   		    		}else{
+   		    			employeeEndDateStr = "";
+   		    		}
    		    		result = result +'<tr>';
    		    		result = result +'<td data-title="Id"><div><span title='+projectSequeneNumber+'>'+projectSequeneNumber+'</span></div></td>';
 
    		    		
    		    		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'
-   		    		  result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.employeeStartDateStr+'\',\''+report.employeeEndDateStr+'\',\''+report.projectStatus+'\');"><span title="'+report.projectName+'">'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   		    		  result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.employeeStartDateStr+'\',\''+employeeEndDateStr+'\',\''+report.projectStatus+'\');"><span title="'+report.projectName+'">'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';
    		    		'</sec:authorize>';
    		    		
    		    		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'
