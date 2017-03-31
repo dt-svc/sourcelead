@@ -189,7 +189,11 @@ public class UserServiceImpl implements UserService {
 					 userRole.setUserType("Employee");
 				 }
 		  }else{
-				userRole.setIsPrimary(0);
+			  if(isUserActive == false){
+				  userRole.setIsPrimary(1);
+			  }else{
+				  userRole.setIsPrimary(0);
+			  }
 			}
 	   }
 		
