@@ -5,7 +5,16 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<!-- <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> -->
+
+
+
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+ <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<script src="resources/js/formvalidator.js"></script>
 
 <div class="content-dashboard clearfix" id="assignedRequirementsDiv" style="display: none;"> 
       <!-- Assigned Requirements -->
@@ -22,6 +31,10 @@
       </div>
     </div>
     
+    <div class="side_mask">
+      <div class="proj_close"></div>
+    </div>
+    
     
  <%-- 
      @author : sarath kumar.
@@ -36,6 +49,12 @@ $(document).ready(function(){
 	requirementList();
 });
 </script>
+
+<style>
+#resumesDiv select{
+width: 100% !important;
+}
+</style>
 
 <script>
 function requirementList(){  
@@ -67,10 +86,21 @@ function requirementList(){
 	                     result = result +"    <th>Submitted</th>"; 
 	                     result = result +"    <th>Interviewed</th>"; 
 	                     result = result +"    <th>Offered</th>"; 
-	                     result = result +"    <th>Action</th>"; 
+	                     '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
+	                     result = result +"<th>Action</th>";
+	                    '</sec:authorize>';
+	                     result = result +"    <th>Release</th>"; 
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
+	                     
+	                     result = result + '<div class="new_side_wrap">';
+	                 	 result = result + '<div class="new_side_wrap_inn">';
+	                 	 result = result + '<div class="new_side_wrap_cta">';
+	                 	 result = result +'<div id="addApplicantDiv"></div>';
+	                 	 result = result +'</div>';
+	                 	 result = result +'</div>';
+	                 	 result = result +'</div>';
 	                     
 	                     var json = JSON.parse(data);
 	                     for (var i = 0; i < json.length; i++) { 
@@ -104,6 +134,15 @@ function requirementList(){
 			                 result = result +"<td><div>"+opt.noOfSubmittedApplicants+"</div></td>";
 		                     result = result +"<td><div>"+opt.noOfInterviewedApplicants+"</div></td>";
 		                     result = result +"<td><div>"+opt.noOfOfferedApplicants+"</div></td>";
+
+		         	        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
+			         	       if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
+			         	    	  result = result +'<td><div class="text-center"><a href="javascript:void(0)" title="" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div></td>';
+			         	       }else{
+			         	    	  result = result +"<td><div class='text-center'>--</div></td>";
+			         	       }
+		         	        '</sec:authorize>';
+		                     
 		                     if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
 		                    	 if(opt.isRequirementReleasedByuser == 'Y'){
 		                       		 result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success'></i></a></div></td>"; 
@@ -111,7 +150,7 @@ function requirementList(){
 		                       	 result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
 		                       	 }
 		                     }else{
-			                     result = result +"<td><div>--</div></td>";
+			                     result = result +"<td><div>----</div></td>";
 		                     }
 		                     result = result +"</tr>";
 		                     result = result +"</tr>";
@@ -120,6 +159,13 @@ function requirementList(){
 	                     result = result +"</table>"; 
 	                     $("#requirementList").append(result); 
 	                     $("#assignedRequirementsDiv").css("display", "block");
+	                     
+	                	 $(".proj_close, .side_mask").click(function(){
+								$(".clients_side_wrap").removeClass("clients_side_wrap_active");
+								$(".side_mask").fadeOut(200);
+								$("body").css('overflow-y', 'auto');
+						 });	
+			 			 
 	                     pagination(); 
                  }else{
                 	 $("#requirementList").removeAttr("style");
@@ -154,3 +200,5 @@ function pagination(){
     } );
 }
 </script>
+
+<jsp:include page="addApplicantFromDashboard.jsp" />
