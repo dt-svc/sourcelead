@@ -57,7 +57,7 @@ function addInterview(requirementId){
 	result = result + '<tbody>';
 		result = result + '<tr id="divTsRow0">';
 			result = result + '<th>Applicant</th>';
-			result = result + '<th>Inteview Type</th>';
+			result = result + '<th>Interview Type</th>';
 			result = result + '<th>Interview Date</th>';
 			result = result + '<th>Start - End Time</th>';	
 			result = result + '<th>Time Zone</th>';
@@ -72,7 +72,7 @@ function addInterview(requirementId){
 	result = result + '<div class="schedule_widget clearfix mb eventAlert" style="display:none;" id="availbleDiv">        								        ';
 	result = result + '    <div class="row">                                                                            ';
 	result = result + '      <div class="col-xs-12 col-md-12 event_calendar">                                           ';
-	result = result + '        <h4>Availabile Slots</h4>                                                               ';
+	result = result + '        <h4>Available Slots</h4>                                                               ';
 	result = result + '      </div>                                                                                     ';
 	result = result + '      <!-- show Calendar -->                                                                     ';
 	result = result + '      <div class="col-xs-12 col-md-5 mb">                                                        ';
@@ -1079,9 +1079,7 @@ function checkAvailability(){
 	var applicantSubId = $("#"+bid+"applicant").val();
 	var interviewerIds = $("#"+bid+"interviewer").val(); 
 	var selectedInterviewDate = $("#"+bid+"dateOfInterview").val();
-	if(selectedInterviewDate!=''){
-		alert("fffffffffffffffffffffffffffffffff");
-	}
+	
 	$("#selectedTimeZoneId").append(timezone);
 	$("#selectedDate").append(date);
 	if(applicantSubId==null && interviewerIds==null ){

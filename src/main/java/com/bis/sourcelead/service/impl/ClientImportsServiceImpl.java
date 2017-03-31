@@ -378,11 +378,11 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 									   client.setEmailid(row.getCell(8).toString());
 								   }  
 								   if(row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())){
-									   String mobileNumer = getCellValueAsString(row.getCell(10),fname);
+									   String mobileNumer = getCellValueAsString(row.getCell(9),fname);
 						    		   client.setPhone(mobileNumer);
 								   }  
 								   if(row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())){
-									   String status = getCellValueAsString(row.getCell(9),fname);
+									   String status = getCellValueAsString(row.getCell(10),fname);
 						    		   client.setStatus(status);;
 								   }  
 								   if(row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())){
@@ -730,7 +730,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			                	  org = orgRelation.getLocationId().getOrg();
 			                  }
 			              }
-						  OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(org.getId());
+						 OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(org.getId());
 						 UserRole userRole = null;
 						 userRole = userRoleService.getUserDetailsByEmailAndLocationId(row.getCell(8).toString(), orgLocation.getId());
 						 if(userRole == null){
