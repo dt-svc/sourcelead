@@ -345,7 +345,10 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 							InterviewcandidateList.add(requirementSubmission);
 						}
 					
-		            	String templateId = jsonObj.getString("interviewSubmissionTemplate");
+						String templateId = "";
+						if(jsonObj.has("interviewSubmissionTemplate") && !jsonObj.getString("interviewSubmissionTemplate").isEmpty()){
+							templateId = jsonObj.getString("interviewSubmissionTemplate");
+						}
 						sendMailToInterViewrsRedefined(InterviewcandidateList,interviewerUser, requirementInterview, user,orgLocations,templateId,intervieresArrayList,requirementIntervier);
 					}	
 			

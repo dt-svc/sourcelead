@@ -690,7 +690,7 @@ public class RequirementRestController {
 		RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirementId);
 	    if(null != recommendedCustomizeScore){ 
 		//candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocation.getId(), recommendedCustomizeScore,offset);
-	    	candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocation.getId(), recommendedCustomizeScore);
+	    	candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocation.getId(), recommendedCustomizeScore,requirementId);
 	    }
 		resultJson = commonUtil.toJSON(candidateListCopy);
 		return resultJson;
@@ -817,10 +817,22 @@ public class RequirementRestController {
 				@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request)
 				throws Exception {
 			String resultJson = null;
-			List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidateId);
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementHistoryListByCandidateIdAndOrgLocationID(candidateId,orgLocation.getId());
 			for(RequirementSubmission reqSubmission : reqList){
-				reqSubmission.setRequirementName(reqSubmission.getRequirement().getJobTitle());
+				if(null != reqSubmission.getRequirement().getJobTitle() && !"".equalsIgnoreCase(reqSubmission.getRequirement().getJobTitle())){
+					reqSubmission.setRequirementName(reqSubmission.getRequirement().getJobTitle());	
+				}
+				reqSubmission.setRequirementJobId(reqSubmission.getRequirement().getJobId());
 				reqSubmission.setRequirementStage(reqSubmission.getSubmissionStatus());
+				if(null != reqSubmission.getRequirement().getSpocId()){
+					StringBuilder clientName = new StringBuilder();
+					 if(!"".equalsIgnoreCase(reqSubmission.getRequirement().getSpocId().getClientUser().getLastName()) && null != reqSubmission.getRequirement().getSpocId().getClientUser().getLastName() ){
+						 reqSubmission.setClientName(clientName.append(reqSubmission.getRequirement().getSpocId().getClientUser().getFirstName()).append(" ").append(reqSubmission.getRequirement().getSpocId().getClientUser().getLastName()).toString());
+					 }else{
+						 reqSubmission.setClientName(clientName.append(reqSubmission.getRequirement().getSpocId().getClientUser().getFirstName()).toString());
+					 }
+				 }
 			}
 			resultJson = toJSON(reqList);
 			return resultJson;

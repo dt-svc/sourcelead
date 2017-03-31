@@ -150,7 +150,7 @@ else{
 	         /*  result = result +"    <th>Skills</th>";  */
 	          result = result +"    <th>Employment Type</th>"; 
 	          result = result +"    <th>Email</th>"; 
-	          result = result +"    <th>Mobile</th>"; 
+	          result = result +"    <th>Mobile Number</th>"; 
 	          result = result +"    <th>Location</th>"; 
 	          result = result +"    <th>Last Update</th>"; 
 	          result = result +"  </tr>"; 
@@ -251,6 +251,7 @@ else{
 	             		 result = result +"  <td><div>----</div></td>"; 
 	             	 }
 	              result = result +"  <td><div ><span title='"+opt.email+"'>"+opt.email+"</span></div></td>";
+	             
 	              result = result +"  <td><div>"+mobilePhone+"</div></td>";
 	              
 	              result = result +"  <td><div><span title='"+location+"'>"+location+"</span></div></td>";
