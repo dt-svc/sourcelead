@@ -616,11 +616,7 @@ function deleteReadMail(uuid,nextMailUUID,type){
 		type : "POST",
 		url : sourceleadUrl+"/deleteReadMail?${_csrf.parameterName}=${_csrf.token}&UUID="+uuid+"&type="+type,
 		success : function(data) {
-			if(nextMailUUID != null && nextMailUUID != '' && nextMailUUID != 'undefined'){
-				getEmailDetails(nextMailUUID,type);
-			}else{
-				getMails(type);
-			}
+			getMails(type);
 		},
 	});   
 }
