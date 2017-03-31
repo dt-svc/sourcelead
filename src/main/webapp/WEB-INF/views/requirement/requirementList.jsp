@@ -1273,7 +1273,7 @@ function requirementPipeline(requirementId){
   </section>
   
   <div class="timesheet_out">
-    <div class="vendor_wrap">
+    <div class="vendor_wrap" style="overflow-x:auto;">
       <div class="timesheet_head timesheetHead_Custom">
        <div class="pull-left cand-advsrch advsrch_chosen">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenRequirementScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
