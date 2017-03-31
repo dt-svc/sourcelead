@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateHotList;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -673,6 +674,17 @@ public class CandidateDaoImpl implements CandidateDao {
 		
 		
 		    return candidateList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getHotCandidateListByTeamIdAndOrgLocationId(Long teamId, Long orgLocationId)
+			throws Exception {
+		
+		 Session session = this.sessionFactory.getCurrentSession();
+		 String query = "from Candidate candidate where candidate.teamId.id =:teamId and candidate.orgLocationId.id =:orgLocationId  ";
+		 List<Candidate> candidateHotList = session.createQuery(query.toString()).setLong( "teamId", teamId).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
+		 return candidateHotList;
 	}
 
 
