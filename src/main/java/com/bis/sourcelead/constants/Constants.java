@@ -192,6 +192,8 @@ public class Constants {
 	
 	public static String VENDOR_APPLICANT_TENTATIVE_MAILTO_INTERVIEWCREATOR ="VendorApplicantTentativeMailToInterviewCreator";
 	
+	public static final long USERID = 1;
+	
 	public static String REQUIREMENT_SEQUENTIAL_EMAIL_NOTIFICATION = "Approval Mechanism Sequential";
 	public static String APPROVED_EMAIL_NOTIFICATION = "Approved Requirement";
 	public static String REJECTED_EMAIL_NOTIFICATION ="Rejected Mail About The Requirement";
