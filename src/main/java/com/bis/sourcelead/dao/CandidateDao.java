@@ -4,9 +4,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Requirement;
-import com.bis.sourcelead.entity.User;
 
 public interface CandidateDao {
 
@@ -41,7 +38,7 @@ public interface CandidateDao {
 	
 	public Integer getAllCandidatesCountForCampaignByTeam(List<Long> teamId,String type,Long orgLocationId)throws Exception;
 
-	public List<Candidate> getAllCandidatesForHotListingWhoAreTerminating(Long orgLocationId,Integer datRange)throws Exception;
+	public List<Candidate> getAllCandidatesForHotListingWhoAreTerminating(Long orgLocationId,Integer datRange,Long reportingManagerUserId)throws Exception;
 	
 	Candidate getProfessionalInfoByLoginUserIdAndCandidateType(Long userId,String candidateType) throws Exception;
 	
@@ -53,7 +50,10 @@ public interface CandidateDao {
 	
 	public List<Candidate> getCandidateReportsListByOrgLocationID(Long orgLocationId,String candidateType) throws Exception;
 	
-	List<Candidate> getCandidateReports(Long orgLocationId,String candidateType,String filterDate, Date startDateUTC, Date endDateUTC);
+	List<Candidate> getCandidateReports(Long orgLocationId,String candidateType,String filterDate, Date startDateUTC, Date endDateUTC,String ownersList);
+	
+	List<Candidate> getOwnersByCandidates(Long orgLocationId,String candidateType,String ownersList);
 	
 	List<Candidate> getHotCandidateListByTeamIdAndOrgLocationId(Long teamId,Long orgLocationId) throws Exception;
+	
 }
