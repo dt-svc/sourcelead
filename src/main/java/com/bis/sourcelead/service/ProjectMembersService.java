@@ -43,6 +43,8 @@ public interface ProjectMembersService {
 
 	public List<ProjectMembers> getAllProjectsByUserId(Long userId);
 	
+	public List<ProjectMembers> getAllProjectsByUserIdForCandidatesHotList(Long userId) throws Exception;
+	
 	public ProjectMembers getProjectMemberByUserIdAndProjectId(Long userId,Long projectId) throws Exception;
 	
 	public ProjectMembers getProjectMemberByEmpIdAndProjectId(Long empId,Long projectId) throws Exception;

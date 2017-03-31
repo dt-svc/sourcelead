@@ -251,8 +251,7 @@ function prepareRequirementData(data){
     result = result +"  </tr>"; 
     result = result +"</thead>";
     result = result +"<tbody>"; 
-    
-    
+        
     result = result + '<div class="new_side_wrap">';
 	result = result + '<div class="new_side_wrap_inn">';
 	result = result + '<div class="new_side_wrap_cta">';
@@ -451,9 +450,14 @@ function prepareRequirementData(data){
            result = result +" </td>";
            
 	        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
-	             result = result +'<td><div><a href="javascript:void(0)" title="" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div></td>';
+		        if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
+		        	result = result +'<td><div class="text-center"><a href="javascript:void(0)" title="" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div></td>';
+		        }else{
+		        	result = result +"<td><div class='text-center'>--</div></td>";
+		        }
+	        
 	        '</sec:authorize>';
-	              
+	        
 		if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
 	        	if(opt.isRequirementReleasedByuser == 'Y'){
 		   		 	result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success'></i></a></div></td>"; 
@@ -1268,7 +1272,7 @@ function requirementPipeline(requirementId){
   </section>
   
   <div class="timesheet_out">
-    <div class="vendor_wrap">
+    <div class="vendor_wrap" style="overflow-x:auto;">
       <div class="timesheet_head timesheetHead_Custom">
        <div class="pull-left cand-advsrch advsrch_chosen">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenRequirementScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
@@ -2260,7 +2264,6 @@ function getCities(){
 	}
 }
 </script>
-
 
 <!-- Country,State,City Script Ends Here -->	
 

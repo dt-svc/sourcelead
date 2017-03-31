@@ -83,8 +83,26 @@ public class TaskServiceImpl implements TaskService{
 	
 	@Override
 	public List<Tasks> tasksListByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId, Long userId,String Status,String date,Date converteDate, Timezone timezone) throws Exception {
+		Date endDateUTC =null ;
+		Date startDateUTC = null;
+		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+		DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
+		DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
+		if(null != date && "" != date){
 		
-		List<Tasks> taklist =  taskDao.tasksListByIdAndOrgLocationIdAssignedUserId(OrgLocationId,userId,Status,date);
+		
+		Date startTime =  commonUtil.getDateFormat(date);
+		Date endTime =  commonUtil.getDateFormat(date);
+		String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+		String customEndTimeStr = TZ_DF_CED.format(endTime);  
+		String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
+		String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customEndTimeStr);
+		startDateUTC = TZ_DF_TS.parse(startDateString);
+		endDateUTC = TZ_DF_TS.parse(endDateString);
+		
+		}
+		
+		List<Tasks> taklist =  taskDao.tasksListByIdAndOrgLocationIdAssignedUserId(OrgLocationId,userId,Status,date,startDateUTC,endDateUTC);
 		
 		Set<Tasks> taskList = new HashSet<Tasks>();
 		for(Tasks tasks : taklist) {
@@ -92,7 +110,6 @@ public class TaskServiceImpl implements TaskService{
 		}
 		
 		for(Tasks tk :taklist){
-			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			tk.setSubject(tk.getSubject());
 			
 			if(tk.getTaskDate() != null){

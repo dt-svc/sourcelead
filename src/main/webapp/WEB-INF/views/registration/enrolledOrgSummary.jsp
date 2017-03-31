@@ -772,10 +772,11 @@ function makeAsPrimaryAdmin(userId){
 <script type="text/javascript">
 function resendInvitation(userId){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var orgId = '${orgId}';
 	if(userId != null && userId != ""){
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
+			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgId="+orgId, 
 			        success: function(result) {
 			        },
 			    });
