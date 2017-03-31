@@ -837,5 +837,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return ownerByCandidatesList;
 	}
 
+	@Override
+	public List<Candidate> getHotCandidateListByTeamIdAndOrgLocationId(Long teamId, Long orgLocationId)
+			throws Exception {
+		return candidateDao.getHotCandidateListByTeamIdAndOrgLocationId(teamId, orgLocationId);
+	}
+
 
 }

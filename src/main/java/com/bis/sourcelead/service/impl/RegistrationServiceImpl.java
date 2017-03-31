@@ -780,7 +780,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 /*emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);*/
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setOrgLocationId(locationId);
 		 
@@ -795,9 +795,12 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		 globalVarsMap.put("userEmailId",user.getEmail());
 		 if(isUserActive == false){
+			 password = SourceLeadRandomCodeHelper.generateRandomPassword();
+			 user.setPassword(sourceleadPasswordEncoder.encode(password));
+			 userService.addUser(user);
 			 globalVarsMap.put("password",password);
 		 }else{
-			 globalVarsMap.put("password","Note : Login with your existing Sourcelead password");
+			 globalVarsMap.put("password","<font color='green'>Note : <b>Login with your existing Sourcelead password.</b></font>");
 		 }
 		 
 		
