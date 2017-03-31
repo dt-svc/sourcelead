@@ -19,5 +19,7 @@ public interface ProjectMembersHistoryDao {
     ProjectMembersHistory updateProjectMembersHistory(ProjectMembersHistory projectMembersHistory) throws Exception ;
     
     Integer updateEndDateOfProjectMemberId(Date endDate, Long projectMemberId);
+    
+	ProjectMembersHistory getProjectMembeHistoryForHotlistCandidatesByUsedId(Long userId) throws Exception;
 
 }
