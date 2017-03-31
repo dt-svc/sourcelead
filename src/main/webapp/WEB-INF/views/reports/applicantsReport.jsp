@@ -175,7 +175,14 @@ function requirementReportPagination(){
 	$('#requirementReportPagination').DataTable({ 
 		 dom: 'Bfrtip',
 	        buttons: [
-	            'excel', 'pdf'
+	        	{
+	                extend: 'excel',
+	                title: 'Applicants',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Applicants',
+	            }
 	        ],
 		
     	"scrollCollapse": false,
