@@ -66,6 +66,8 @@ function customizeFields(templateId,sourceleadUrl){
     //load saved form
     if(null != templateId && templateId != undefined){
     	 loadSavedForm(templateId,sourceleadUrl);
+    }else{
+    	 loadForm(sourceleadUrl,templateId);
     }
    
 
@@ -259,6 +261,53 @@ function addChoice(labelValue) {
 }
 
 
+//Loads a saved form from your database into the builder
+function loadForm(sourceleadUrl,templateId) {
+        $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/loadInterviewFeedbackTemplate", 
+	        success: function(data) {
+	        	 var data = eval(data);
+	        	 if (data) {
+	                 //go through each saved field object and render the builder
+	                 $.each( data, function( k, v ) {
+	                     //Add the field
+	                     $(addField(v['type'],v['isRemoved'],v['isLabelModified'],v['label'],sourceleadUrl,templateId,'N')).appendTo('#interViewform-fields').hide().slideDown('fast');
+	                     var $currentField = $('#interViewform-fields .field').last();
+
+	                     //Add the label
+	                     $currentField.find('.field-label').val(v['label']);
+
+	                     //Is it required?
+	                     if (v['req']) {
+	                         requiredField($currentField.find('.toggle-required'));
+	                     }
+
+	                     //Any choices?
+	                     if (v['choices']) {
+	                         $.each( v['choices'], function( k, v ) {
+	                             //add the choices
+	                             $currentField.find('.choices ul').append(addChoice(v['isLabelModified']));
+
+	                             //Add the label
+	                             $currentField.find('.choice-label').last().val(v['label']);
+
+	                             //Is it selected?
+	                             if (v['sel']) {
+	                                 selectedChoice($currentField.find('.toggle-selected').last());
+	                             }
+	                         });
+	                     }
+
+	                 });
+
+	                 $('#interViewform-fields').sortable();
+	                 $('.choices ul').sortable();
+	             }
+	        },
+	    });
+       
+}
 
 
 function loadSavedForm(templateId,sourceleadUrl) {

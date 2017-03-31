@@ -320,7 +320,9 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 						applicantReport.setSubmitToClientDate(submitToClientDate);
 						applicantReport.setRequestSentDate(requestSentDate);
 						applicantReport.setRejectedDate(rejectedDate);
-						applicantReport.setStage(reqSub.getSubmissionStatus().toString());
+						if(null != reqSub.getSubmissionStatus()){
+							applicantReport.setStage(reqSub.getSubmissionStatus().toString());
+						}
 						applicantReportList.add(applicantReport);
 					}
 				
