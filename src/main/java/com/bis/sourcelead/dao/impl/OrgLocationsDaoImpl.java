@@ -214,7 +214,7 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 
-		String query = "from OrgLocations orgLocations where orgLocations.org.id IN (select org.id from Org org where org.orgCode <> :orgCode and org.orgCode != 'slead') ";
+		String query = "from OrgLocations orgLocations where orgLocations.org.id IN (select org.id from Org org where org.orgCode <> :orgCode and org.modulesId IN (2,3) and org.orgCode != 'slead') ";
 		
 		List orgList = session.createQuery(query).setString("orgCode", orgCode).setCacheable(true).list();
 		return orgList;}

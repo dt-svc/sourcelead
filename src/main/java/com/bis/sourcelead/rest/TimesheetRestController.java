@@ -1331,6 +1331,7 @@ public class TimesheetRestController {
 						documentBuffer.append("</tr>");
 				documentBuffer.append("</table>");
 				documentBuffer.append("</span>");
+				documentBuffer.append("<i class='fa fa-info-circle' title='Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,  zip,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps    Allowed Size : 2MB '></i>"); 
 				documentBuffer.append("</div>");
 			}
 		documentBuffer.append("</div>"); 

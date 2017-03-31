@@ -251,8 +251,7 @@ function prepareRequirementData(data){
     result = result +"  </tr>"; 
     result = result +"</thead>";
     result = result +"<tbody>"; 
-    
-    
+        
     result = result + '<div class="new_side_wrap">';
 	result = result + '<div class="new_side_wrap_inn">';
 	result = result + '<div class="new_side_wrap_cta">';
@@ -1273,7 +1272,7 @@ function requirementPipeline(requirementId){
   </section>
   
   <div class="timesheet_out">
-    <div class="vendor_wrap">
+    <div class="vendor_wrap" style="overflow-x:auto;">
       <div class="timesheet_head timesheetHead_Custom">
        <div class="pull-left cand-advsrch advsrch_chosen">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenRequirementScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
@@ -2265,7 +2264,6 @@ function getCities(){
 	}
 }
 </script>
-
 
 <!-- Country,State,City Script Ends Here -->	
 

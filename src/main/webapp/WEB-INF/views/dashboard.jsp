@@ -112,13 +112,13 @@ overflow-x: auto;
 			   	 	 <%--  <sec:authorize access="hasAnyRole('ROLE_VIEW_INTERVIEW')">
 			    	 <jsp:include page="dashboardInterviews.jsp"></jsp:include>
 			    	 </sec:authorize> --%>
-			    </div>
+			    
 		    </c:if>
-		     <div class="clearfix row mb"> 
+		      
 		     		<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 		     		<jsp:include page="dashboardApplicants.jsp"></jsp:include>
 		     		</sec:authorize>
-		     <!-- </div> -->
+		     </div>
 	    
 	    
 	   
@@ -137,8 +137,8 @@ overflow-x: auto;
           </div>
         </div>
         Pagenation Ends 
-      </div> -->
-      </div>
+      </div> 
+      </div>-->
        <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_INTERVIEW')">
 	   				  <div class='row'>
 						<div class='col-lg-12'> 
