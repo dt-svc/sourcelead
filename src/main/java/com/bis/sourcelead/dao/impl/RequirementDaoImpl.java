@@ -649,7 +649,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	public Boolean validateRequirementTitle(String jobName,Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		boolean flag = false;
-		String query ="from Requirement requirement left join fetch requirement.parentRequirement  where requirement.jobTitle = :jobName and requirement.orgLocationId.id =:orgLocationId";
+		String query ="from Requirement requirement left join fetch requirement.parentRequirement  where requirement.jobTitle = :jobName and requirement.isTemplate = 'Y' and requirement.orgLocationId.id =:orgLocationId";
 		List<Requirement> requirementList = session.createQuery(query).setString("jobName", jobName).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		if(requirementList !=null && requirementList.size() >0){
 			flag = true;
