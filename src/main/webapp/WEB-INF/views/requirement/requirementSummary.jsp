@@ -693,7 +693,7 @@ function sideBar(requirementId){
 					        for(var i=0; i<strNoticeArray.length; i++){
 					        	arrNotice[i] = strNoticeArray[i] +" ";
 					        }
-					        result = result+'<li class="noticePeriod"><i class="fa fa-bell"></i><span>'+arrNotice+'</span></li>';
+					        result = result+'<li class="noticePeriod"><i class="fa fa-bell" title="Notice Period"></i>'+arrNotice+'</li>';
 				        }
 					    else{
 						result = result+'<li><i class="fa fa-bell"></i><span> --- </span>';
@@ -3779,7 +3779,7 @@ function requirementRecommendations(requirementId){
 		    result = result +'<div class="clearfix row">';
 		    
 		    result = result +'<div class="col-md-6 paddingRight">';
-		    result = result +'<label>NoticePeriod</label>';
+		    result = result +'<label>Notice Period</label>';
 		    result = result +'<div class="progress">';
 		    var noticePeriodGraph = (100 * report.noticePeriodPercentage)/report.totalNoticePeriodPercentage;
 		    result = result +'<div class="progress-bar progress-bar-danger" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+noticePeriodGraph+'%"> '+report.noticePeriodPercentage+'% ';
@@ -3788,7 +3788,7 @@ function requirementRecommendations(requirementId){
 		    result = result +' </div>';
 		    
 		    result = result +'<div class="col-md-6 paddingLeft">';
-		    result = result +'<label>KeyWord</label>';
+		    result = result +'<label>Keyword</label>';
 		    result = result +'<div class="progress">';
 		    var keywordGraph = (100 * report.totalKeyWordPerPercentage)/report.keyWordPerPercentage;
 		    result = result +'<div class="progress-bar progress-bar-primary" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+keywordGraph+'%"> '+report.totalKeyWordPerPercentage+'% ';

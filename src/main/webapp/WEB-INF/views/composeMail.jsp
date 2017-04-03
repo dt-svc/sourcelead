@@ -462,7 +462,7 @@ function getTeamsList(teamType){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getTeamsList?${_csrf.parameterName}=${_csrf.token}",    
+           url: sourceleadUrl+"/getComposeMailTeamsList?${_csrf.parameterName}=${_csrf.token}",    
             success :function(data) {
             	var json = JSON.parse(data);
 				var output = "";
