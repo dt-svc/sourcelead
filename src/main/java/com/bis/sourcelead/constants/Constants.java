@@ -97,6 +97,12 @@ public class Constants {
 	public static String INTERVIEWER_INVITATION = "Interviewer Invitation";
 	public static String INTERVIEWER_TEMPLATE = "Interviewer Template";
 	
+	public static String OFFER_ACCEPTED = "Offer Accepted";
+	public static String OFFER_ACCEPTED_NOTIFICATION = "Offer Accepted Notification";
+	
+	public static String OFFER_REJECTED = "Offer Rejected";
+	public static String OFFER_REJECTED_NOTIFICATION = "Offer Rejected Notification";
+	
 	public static String HOT_LIST_CAMPAIGN = "HotListCampaign";
 	public static String EMAIL_TO_USERS = "EmailToUsers";
 	public static String EMAIL_CAMPAIGN = "EmailCampaign";
@@ -107,6 +113,7 @@ public class Constants {
 	
 	public static String SUBMIT_TO_CLIENT = "Submit To Client";
 	public static String ADD_OFFER_MAIL ="Forward the Mail";
+	public static String NOTIFICATION_TO_CLIENT = "Notification To Client";
 
 	public static String VENDOR_INTERVIEW = "Vendors Interview";
 	public static String VENDOR_INVITATION = "Vendor Invitation";
@@ -114,6 +121,7 @@ public class Constants {
 	public static String EDIT_CLIENTCONTACT = "Edit SpocContact";
 	
 	public static String SHORTLIST_APPLICANTS = "ShortList Applicants";
+	public static String SHORTLIST_NOTIFICATION_MANAGER = "Notification To Manager";
 	
 	public static String MAIL_PROJECT_MANAGER_TIMESHEET = "Mail To Manager At Timesheet Submission";
 	public static String MAIL_TEAM_MEMBERS_APPROVED_TIMESHEET = "Timesheet Approved By Approver";
