@@ -705,10 +705,7 @@ Highcharts.chart('container', {
         type: 'column'
     },
     title: {
-        text: 'Monthly Average Rainfall'
-    },
-    subtitle: {
-        text: 'Source: WorldClimate.com'
+        text: 'Applicants Received'
     },
     xAxis: {
         categories: chartData,
