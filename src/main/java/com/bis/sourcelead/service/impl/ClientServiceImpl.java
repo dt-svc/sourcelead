@@ -368,13 +368,6 @@ public class ClientServiceImpl implements ClientService{
 				 submissionTemplate.setTemplateName(templateStringBuilder.append(org.getOrgName()).append("Interview Feedback Template").toString());
 				 submissionTemplate.setDescription(templateStringBuilder.append(org.getOrgName()).append("Interview Feedback Template").toString());
 				 submissionTemplate.setIsDefault("Y");
-					if("Client".equals(responderType)){
-						submissionTemplate.setClientLocationId(clientOrgLocations);
-						submissionTemplate.setOrgLocationId(orgLocations);
-					}else if("Vendor".equals(responderType)){
-						submissionTemplate.setClientLocationId(orgLocations);
-						submissionTemplate.setOrgLocationId(clientOrgLocations);
-					}
 				 submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
 				 submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
 				 submissionTemplate.setUpdatedBy(user.getUserCode());
