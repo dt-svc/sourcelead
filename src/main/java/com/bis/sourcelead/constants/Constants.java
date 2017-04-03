@@ -271,6 +271,7 @@ public class Constants {
 	public static  String Projects = "Projects";
 	public static  String Clients = "Clients";
 	public static  String TimeSheet = "TimeSheet";
+	public static  String SocialInviter = "SocialInviter";
 	public static  String TimeSheetApproval = "TimeSheetApproval";
 	public static  String OrgSettings = "OrgSettings";
 	public static  String BackOffice = "BackOffice";
