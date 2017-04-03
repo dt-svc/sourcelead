@@ -552,7 +552,10 @@ public class DashboardRestController {
 			
 			Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 			RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirementId, loginUser.getId());
-		    
+			if(status.equalsIgnoreCase("REJECTED")  &&  !reason.equalsIgnoreCase("") && !reason.isEmpty()){
+		    	requirementApproverHierarchy.setRejectedReason(reason);
+		    	requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
+		    }
 			/*// to get  RequirementApproverHierarchy with maximum Level
 			Integer maxLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirementId);
 
@@ -627,7 +630,7 @@ public class DashboardRestController {
 									rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
 									requirement.setReqlevel2ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED.toString());
 								} else if (status.equalsIgnoreCase("REJECTED")) {
-									rah.setRejectedReason(reason);
+									//rah.setRejectedReason(reason);
 									rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
 									requirement.setReqlevel2ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED.toString());
 								}

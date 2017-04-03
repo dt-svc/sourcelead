@@ -257,7 +257,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     position:absolute; left:9px; z-index:1000; top:11px; color:#FFF;
 }
 .commentFile {
-    width:50%; float:left;
+    width:50%; float:left; position: relative; padding-top: 10px;
     }
 .timesheet_week_comm span {
     padding:0px 0px 12px 0px; display:inline-block; width:100%;
@@ -1160,7 +1160,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     z-index:100; display:none;
 }
 .remove_user_pop.remove_user_pop_a  {
-    right:0px; top:25%; left:0px; margin:0px auto; z-index:15500; width:300px;
+    right:0px; top:50%; left:0px; margin:0px auto; z-index:15500; width:300px;
          
 }
 .remove_user_pop  p {
@@ -3412,6 +3412,7 @@ border: 1px solid rgb(204, 204, 204);
 .pavInp {
     width: 125px; margin: 4px 0px 0px 0px;
 }
-.commentFile p {
-	padding: 0px 0px; margin: 0px 0px; position: relative; top: -5px; font-size: 12px;
+.commentFile .fa-info-circle {
+	padding: 5px; margin: 0px 0px; position: absolute; top: -15px; font-size: 16px; color: #17324c; cursor: pointer;
+	left: 0px;
 }
