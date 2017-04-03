@@ -1086,7 +1086,7 @@ $(document).ready(function () {
                               </div>
                             </div>
                             <div class="form-group">
-                            <label class="col-lg-4">Team Owner <span class="text-danger">*</span></label>
+                            <label class="col-lg-4">Team Lead <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
                              <select class="form-control"  name="ownerUserId" id="ownerUserId" placeholder="Team Lead *" data-validation="required validate_Space" field-name="Team Lead"  onchange="getTeamMembers();">
 			                    	
@@ -2300,7 +2300,7 @@ function getTeamOwners(){
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
-		        	output = output + "<option value=''>-Select Team Owners-</option>"; 
+		        	output = output + "<option value=''>-Select Team Lead-</option>"; 
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
