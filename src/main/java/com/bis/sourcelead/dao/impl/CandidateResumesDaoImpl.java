@@ -220,4 +220,19 @@ public Integer getCandidateResumeCountByResumeId(Long candidateId) throws Except
 	return count;
 }
 
+
+@Override
+@Transactional(rollbackFor = { Exception.class })
+public Integer getCandidateResumeCountByCandidateId(Long candidateId) throws Exception {
+	logger.debug("In Candidate Resume By ResumeId");
+	Integer count= 0;
+	Session session = this.sessionFactory.getCurrentSession();
+	String query = " from CandidateResumes candidateResumes where candidateId.id = :candidateId and status = '1' " ;
+	List<Long> candidateResumesCount =session.createQuery(query).setLong("candidateId", candidateId).setCacheable(true).list(); 
+	if(candidateResumesCount != null){
+	count = candidateResumesCount.size();
+	}
+	return count;
+}
+
 }

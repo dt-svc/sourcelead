@@ -41,7 +41,7 @@ function getRequirementList(){
 	    var clients = "";
 		$.ajax({
 	         type : "POST",
-	          url: sourceleadUrl+"/getRequirementListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients,    
+	          url: sourceleadUrl+"/getRequirementReports?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients,    
 	          success :function(data) {
 	        	 prepareReportDataDiv(data);
 	         },
@@ -128,11 +128,11 @@ function prepareReportDataDiv(data){
         result = result + '</td>';
         
         result = result + '<td>';
-        if(report.totalApplicantsForRequirement != null && report.totalApplicantsForRequirement != '' && report.totalApplicantsForRequirement !='undefined'&& report.totalApplicantsForRequirement != null && report.totalApplicantsForRequirement != ''){
-        		result = result + "<div><span>"+report.totalApplicantsForRequirement+"</span></div> ";
+        if(report.totalApplicants != null && report.totalApplicants != '' && report.totalApplicants !='undefined'&& report.totalApplicants != null && report.totalApplicants != ''){
+        		result = result + "<div><span>"+report.totalApplicants+"</span></div> ";
         }
         else{
-		    	result = result + "<div><span>---</span></div>";
+		    	result = result + "<div><span>0</span></div>";
 		    }
         result = result + '</td>';
         
@@ -159,7 +159,14 @@ function requirementReportPagination(){
 	$('#requirementReportPagination').DataTable({ 
 		 dom: 'Bfrtip',
 	        buttons: [
-	            'excel', 'pdf'
+	        	{
+	                extend: 'excel',
+	                title: 'Requirements Posted',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Requirements Posted',
+	            }
 	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
@@ -171,6 +178,8 @@ function requirementReportPagination(){
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
+	$(".vendor_wrap_inn_table").find('a.buttons-excel').prop("title", "Excel");
+	$(".vendor_wrap_inn_table").find('a.buttons-pdf').prop("title", "PDF");
 }
 
 </script>
@@ -239,7 +248,7 @@ function toDate(selector) {
 			</div>
 		</div>
     </div>
-    <div class="pull-right brud-crum">Home &raquo; Vendor &raquo; Client Contact Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/requirementList'/>"> Requirement List</a> &raquo; Requirements Posted</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">

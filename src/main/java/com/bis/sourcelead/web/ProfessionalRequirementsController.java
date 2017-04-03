@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.CrowdSourcingUserBankAccountsService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -75,6 +76,9 @@ public class ProfessionalRequirementsController {
 	
 	@Autowired
 	RequirementSubmissionService requirementSubmissionService;
+	
+	@Autowired
+	CandidateResumesService candidateResumesService;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -180,8 +184,8 @@ public class ProfessionalRequirementsController {
 			        model.addObject("statesList", statesList);
 				}
 				
-				/*List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
-				model.addObject("skillsList", skillsList);*/
+				Integer resumesCount = candidateResumesService.getCandidateResumeCountByCandidateId(candidateId);
+				model.addObject("resumesCount", resumesCount);
 				
 				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 				model.addObject("skillsList", skillsList);
@@ -345,6 +349,14 @@ public class ProfessionalRequirementsController {
 		  
 	   }
 	 
+	 
+	 @RequestMapping(value = "/getProfessionalResumesCount",  method = RequestMethod.GET)
+	   public @ResponseBody Integer getProfessionalResumesCount(HttpServletRequest request) throws Exception {
+		  
+		  Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		  Integer resumesCount = candidateResumesService.getCandidateResumeCountByCandidateId(candidateId);
+		  return resumesCount;
+	   }
  
  
 	 @RequestMapping(value = "/referredToMePortletList")

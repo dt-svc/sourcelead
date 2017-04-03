@@ -439,13 +439,11 @@ private String getCellValueAsString(Cell cell, String fileName) {
  * @throws Exception
  */
 	private void saveBulkUser(UsersImport userImport, OrgLocations orgLocations, User loginUser, String isMailChecked) throws Exception {
-		User user = null;
 		UserRole userRole = new UserRole();
 		Employees employee = new Employees();
 		Roles role = rolesService.getRolesByRoleDisplayNameAndOrgLocationId(userImport.getRole(), orgLocations.getId());
 		userRole.setIsPrimary(1);
 		userRole.setRoles(role);
-		userRole.setUserState(Status.NOT_LOGGEDIN);
 		userRole.setUserType(role.getDisplayName());
 		userRole.setCreatedDate(new Date());
 		userRole.setCreatedBy(loginUser.getUserCode());
@@ -458,8 +456,28 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		
 		employee.setHireDate(userImport.getDateOfJoin());
 		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
-		if(!"INSERT".equalsIgnoreCase(userImport.getReason())){
-			user = new User();
+		
+		User userExisted = userService.findByEmail(userImport.getEmailId());
+		
+		if(null !=  userExisted){
+			User user1 = userService.findByEmail(userImport.getEmailId());
+			UserRole userRole1 = userRoleService.getUserByUserId(user1.getId());
+			if(userRole1.getUserState() !=null && "NOT_LOGGEDIN".equalsIgnoreCase(userRole1.getUserState().toString())){
+				userRole.setUserState(Status.NOT_LOGGEDIN);
+				user1.setPassword(sourceleadPasswordEncoder.encode(password));
+				userService.addUser(user1);
+			}else{
+				userRole.setUserState(Status.ACTIVE);
+			}
+			userRole.setUser(user1);
+			userRoleService.addUserRole(userRole);
+			employee.setUser(user1);
+			employeesService.addEmployee(employee);
+			if(isMailChecked !=null){
+				userService.sendEmail(user1, loginUser, password,orgLocations.getId());
+			}
+		}else{
+			User user  = new User();
 			user.setFirstName(userImport.getFirstName());
 			user.setLastName(userImport.getLastName());
 			user.setEmail(userImport.getEmailId());
@@ -471,6 +489,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			
 			user.setPassword(sourceleadPasswordEncoder.encode(password));
 			user.setIsMailSent(userImport.getIsMailChecked());
+			userRole.setUserState(Status.NOT_LOGGEDIN);
 			userRole.setUser(user);
 		    userService.addUser(user);	
 		    userRoleService.addUserRole(userRole);
@@ -479,20 +498,8 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			if(isMailChecked !=null){
 				userService.sendEmail(user, loginUser, password,orgLocations.getId());
 			}
-		}else{
-			User user1 = userService.findByEmail(userImport.getEmailId());
-			if(user1.getUserState() !=null && !"ACTIVE".equalsIgnoreCase(user1.getUserState().toString())){
-				user1.setPassword(sourceleadPasswordEncoder.encode(password));
-				userService.addUser(user1);
-			}
-			userRole.setUser(user1);
-			userRoleService.addUserRole(userRole);
-			employee.setUser(user1);
-			employeesService.addEmployee(employee);
-			if(isMailChecked !=null){
-				userService.sendEmail(user1, loginUser, password,orgLocations.getId());
-			}
 		}
+		
 		userService.saveOrUpdateUserElkDocument(userRole,employee,loginUser.getUserCode());
 
 	}
@@ -777,10 +784,12 @@ private String getCellValueAsString(Cell cell, String fileName) {
  * @return boolean
  */
 	private boolean validateEmail(String email) {
-		Pattern pattern = Pattern.compile(
-				"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
-		Matcher matcher = pattern.matcher(email);
-		return matcher.matches();
+		 
+		  String emailId =email.trim();
+		  Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+		  Matcher matcher = pattern.matcher(emailId);
+		  return matcher.matches();
+		  
 	}
 	/**
 	 * Prepares Headers for xls and xlsx
@@ -967,10 +976,12 @@ private String getCellValueAsString(Cell cell, String fileName) {
  * @return
  */
 	private boolean isMobileNumberValid(String mobileNmber){
+		
+		String phoneNumber = mobileNmber.trim();
 		String regex = "([\\.\\-\\s+\\/()]*[0-9][\\.\\-\\s+\\/()]*){8,15}";
 		boolean flag;
-		if(mobileNmber.length() > 9 && mobileNmber.length() <= 20){
-			flag = mobileNmber.matches(regex);
+		if(phoneNumber.length() > 9 && phoneNumber.length() <= 20){
+			flag = phoneNumber.matches(regex);
 		}else{
 			flag=false;
 		}

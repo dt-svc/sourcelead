@@ -7,25 +7,19 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
-<!--  No auto completes are used in addInterview -->
-
-<!-- these files for autocomplete with tagit -->
-
-<!-- <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script> -->
-
-<!-- end files for autocomplete with tagit -->
-
-
 <style type="text/css">
-.add_inter .chosen-container{
-width:145px !important;
+.addinterTable .chosen-container{
+width:125px !important;
 }
 #addInterviewTbl p.jquery_form_error_message{
 padding:0!important;
 }
+
+.fullCount, .particalCount {
+	display: none;
+}
+
+
 </style>
 <!-- For add New Interview -->
 
@@ -43,8 +37,8 @@ function addInterview(requirementId){
 	result = result + '<input type="hidden" id="reqId" name="requirementId" value='+requirementId+'>';
 	result = result + '<input type="hidden" id="isFlushRequired" name="isFlushRequired">';
 	
-	/* result = result + '<div class="add_inter_head"> <span>Add Interview</span><a href="javascript:void(0)" onClick="addInterviewRow();"><i class="fa fa-plus"></i> Add row</a>'; */
-	result = result + '<div class="add_inter_head"> <span> Schedule interview</span><span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="selectedInterviewApplicantsCount">0</b></span>';
+	 result = result + '<div class="add_inter_head"> <span>Add Interview</span><a href="javascript:void(0)" onClick="addInterviewRow();"><i class="fa fa-plus"></i> Add row</a>'; 
+// 	result = result + '<div class="add_inter_head"> <span> Schedule interview</span><span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="selectedInterviewApplicantsCount">0</b></span>';
 	result = result + '<div class="clearfix"></div>';
 	result = result + '</div>';
 	
@@ -53,21 +47,61 @@ function addInterview(requirementId){
         result = result + '<label>&nbsp;&nbsp;<strong>Is Client Interview</strong>&nbsp;&nbsp;</label>';
 	} 
 	
-	result = result + '<table cellpadding="0" cellspacing="0" id="addInterviewTbl">';
+	result = result + '<table cellpadding="0" cellspacing="0" id="addInterviewTbl" class="addinterTable">';
 	result = result + '<tbody>';
 		result = result + '<tr id="divTsRow0">';
 			result = result + '<th>Applicant</th>';
-			result = result + '<th>Inteview Type</th>';
+			result = result + '<th>Interview Type</th>';
 			result = result + '<th>Interview Date</th>';
-			result = result + '<th>Start Time/End Time</th>';	
+			result = result + '<th>Start - End Time</th>';	
 			result = result + '<th>Time Zone</th>';
 			result = result + '<th>Details</th>';
 			result = result + '<th>Interviewer</th>';
-			/* result = result + '<th>Action</th>'; */
+			result = result + '<th>Action</th>';
+ 			//result = result + '<th>Avail</th>';
 		result = result + '</tr>';
 	result = result + '</tbody>';
 	result = result + '</table>';
 	
+	result = result + '<div class="schedule_widget clearfix mb eventAlert" style="display:none;" id="availbleDiv">        								        ';
+	result = result + '    <div class="row">                                                                            ';
+	result = result + '      <div class="col-xs-12 col-md-12 event_calendar">                                           ';
+	result = result + '        <h4>Available Slots</h4>                                                               ';
+	result = result + '      </div>                                                                                     ';
+	result = result + '      <!-- show Calendar -->                                                                     ';
+	result = result + '      <div class="col-xs-12 col-md-5 mb">                                                        ';
+	result = result + '        <div id="scheduleCalendar"></div>                                                        ';
+	result = result + '        <div class="clearfix"></div>                                                             ';
+	result = result + '        <ul class="scheduleAvailable">                                                           ';
+	result = result + '          <li class="particalCount">Partly available<span class="bg-warning"></span></li>                              ';
+	result = result + '          <li class="fullCount">Full<span class="bg-danger"></span></li>                                           ';
+	result = result + '        <div class="clearfix"></div> ';
+	result = result + '        </ul>                                                                                    ';
+	result = result + '        <div class="clearfix">                                                                   ';
+	result = result + '      <div class="timeZT">Timezone : <b id="selectedTimeZoneId"></b></div>'; 
+	result = result + '          <button type="button" class="btn btn-primary pull-right" onClick = "setDate();">Pick</button>              ';
+	result = result + '        </div>                                                                                   ';
+	result = result + '      </div>                                                                                     ';   
+	result = result + '      <!-- show Calendar -->                                                                     ';
+	result = result + '      <div class="col-xs-12 col-md-7 mb alert alert-dismissable prBG">	';
+	result = result + '      <div class="PrDate">	';
+	result = result + ' 	<i class="fa fa-calendar"></i><b id="selectedDate"></b><div class="clearfix"></div><p id="selectApp"></p> ';
+	result = result + '      </div>	';
+	result = result + '        <ul class="nav nav-tabs">                                                                ';
+	result = result + '          <li class="active"> <a href="#interviewer" data-toggle="tab">Interviewer</a> </li>     ';
+	result = result + '          <li> <a href="#applicant" data-toggle="tab">Applicant</a> </li>         ';
+	result = result + '        </ul>                                                                                    ';
+	
+	result = result + '        <div class="tab-content">                                                                ';
+	result = result + '          <div id="interviewer" class="tab-pane fade in active">                                   ';
+	result = result + '          </div>                                                                                 ';
+	
+	result = result + '          <div id="applicant" class="tab-pane fade">                                           ';
+	result = result + '          </div>                                                                                 ';
+	result = result + '        </div>                                                                                   ';
+	result = result + '      </div>                                                                                     ';
+	result = result + '    </div>                                                                                       ';
+	result = result + '  </div>                                                                                         ';
 	
 	result = result + '<div class="row pad2">';
 	result = result + '<div class="col-md-12 mt10">';
@@ -90,7 +124,7 @@ function addInterview(requirementId){
 	
 	result = result + '<div id="emptyTemplate" style="dispaly:none">';
 	result = result + '<strong class="clearfix col-md-12">Interview Template</strong>';
-	result = result + '<div class="col-md-3 select-field">';
+	result = result + '<div class="chosen-select col-md-3 select-field">';
 	result = result + '<select class="form-control mt10" id="interviewSubmissionTemplate" name="interviewSubmissionTemplate">';
 	result = result + '</select>';
 	result = result + '</div>';
@@ -124,6 +158,7 @@ function addInterview(requirementId){
           
 	result = result + '</div>';
 	result = result + '</div>';
+	
 	result = result + '<div class="clearfix">';
 	result = result + '<div class="pull-right">';
 	result = result + '<button type="submit" id="add_interview" class="btn btn-sm btn-primary mr">Submit</button>';
@@ -132,6 +167,9 @@ function addInterview(requirementId){
 	result = result + '</div>';
 	result = result + '</div>';
 
+	
+	
+	
 	result = result + '</div>';
 	result = result + '</div>';   
 	result = result + '</form>';
@@ -157,6 +195,8 @@ function addInterview(requirementId){
 		$("body").css('overflow-y', 'auto');
 	});	
 </script>
+
+
 
 <script>
 function showOthersDiv(){
@@ -235,6 +275,7 @@ if((dataNotify == '' || dataNotify == 0)){
 </script>
 <script>
 function selectInterviewApplicants(){
+	$('.eventAlert').hide();
 	var selectedInterviewApplicants =  $('#1applicant_chosen  span').size();
 	$("#selectedInterviewApplicantsCount").html(selectedInterviewApplicants);
 	$('#1applicant_chosen').next('p.jquery_form_error_message').remove();
@@ -273,7 +314,7 @@ function validateTimeZone(){
 </div>
 
 <div id="divTaskTd3" style="display: none; float: left;">
-   	 <select class="form-control input-sm"  id="REPLACEROWIDinterviewType" name="REPLACEROWIDinterviewType">
+   	 <select class="form-control input-sm"  id="REPLACEROWIDinterviewType" name="REPLACEROWIDinterviewType" onchange="interviewType(this);">
 		<option value="">--Select Type--</option>
 		<option value="F2F">F2F</option>
 		<option value="Telephonic">Telephonic</option>
@@ -281,7 +322,9 @@ function validateTimeZone(){
 		<option value="Screening">Screening</option>
 		<option value="Skype">Skype</option>
 		<option value="Webex/GoToMeeting">Webex/GoTo Meeting</option>
+		<option value="Other">Other</option>
 	</select>
+	<div id="REPLACEROWIDinterviewTypeCheck" style="display: none; "><input value=""  type="text" id="REPLACEROWIDinterviewTypeother" name="REPLACEROWIDinterviewTypeother" class="form-control input-sm pavInp" placeholder="Interview type" field-name="Interview type" data-validation-optional="true"></div>
 </div>
 
 <div id="divTaskTd5" style="display: none; float: left;">
@@ -294,20 +337,21 @@ function validateTimeZone(){
 </div> 
 
 <div id="divTaskTd7" style="display: none; float: left;">
-		  <select multiple data-placeholder="select interviewer" id="REPLACEROWIDinterviewer" name="REPLACEROWIDinterviewer" field-name="Interviewer" >
+		  <select multiple data-placeholder="select interviewer" id="REPLACEROWIDinterviewer" name="REPLACEROWIDinterviewer" field-name="Interviewer" onchange="toggleEventCalender();">
 			
 	  </select>
 </div> 
+<div id="divTaskTd8" style="display: none; float: left;" >
+		  <button type="button"class="btn-sm btn-primary btn_Avail"  id ="REPLACEROWIDAvail" onClick ="showCal(this.id);"><i class="fa fa-clock-o"></i></button>
 
-<!--  <div id="divTaskTd7" style="display: none; float: left;">
-	 <div>
-         <a href="#" onclick="removeInterviewRow(REPLACEROWID);"><i class="glyphicon glyphicon-trash deme"></i></a>
-    </div>
-</div>  -->
+	<input type="hidden" id="button_id" name="button_id" value="1Avail" />
+	 <a href="#" onclick="removeInterviewRow(REPLACEROWID);"><i class="text-danger glyphicon glyphicon-remove deme"></i></a>
+</div>  
+
+
 
 <script type="text/javascript">
 	function addInterviewRow() {
-		
 		$("#isFlushRequired").val('N');
 		var checkMaxTsRowNum = $("#maxTsRowNum").val();
 		var tbl = document.getElementById("addInterviewTbl");
@@ -316,7 +360,6 @@ function validateTimeZone(){
 		
 		var row = tbl.insertRow(maxRowNum);
 		row.setAttribute("id", "divTsRow" + maxRowNum);
-		
 		var cell0 = row.insertCell(0);
 		var divTsTd1Str = document.getElementById("divTaskTd1").innerHTML;
 		divTsTd1Str = divTsTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
@@ -385,10 +428,15 @@ function validateTimeZone(){
 		divTsTd7Str = divTsTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
 		cell6.innerHTML = divTsTd7Str; 
 		
-		/* var cell7 = row.insertCell(7);
-		var divTsTd7Str = document.getElementById("divTaskTd7").innerHTML;
-		divTsTd7Str = divTsTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
-		cell6.innerHTML = divTsTd7Str; */
+		var cell7 = row.insertCell(7);
+		var divTsTd8Str = document.getElementById("divTaskTd8").innerHTML;
+		divTsTd8Str = divTsTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
+		cell7.innerHTML = divTsTd8Str;
+		/* 
+		 var cell8 = row.insertCell(8);
+		var divTsTd9Str = document.getElementById("divTaskTd9").innerHTML;
+		divTsTd9Str = divTsTd9Str.replace(/REPLACEROWID/g, (maxRowNum));
+		cell8.innerHTML = divTsTd9Str;  */
 		
 		getInterviewers(maxRowNum);
 		getShortListCandidates(maxRowNum);
@@ -405,6 +453,16 @@ function validateTimeZone(){
 	   /*  $("#"+maxRowNum+"applicant").on('change', function (e) {
 	    	getUpdatedShortListCandidates();
 	    }); */ 
+	    
+		$( "#scheduleCalendar" ).datepicker({
+			  changeMonth: true,
+		      changeYear: true,
+		      dateFormat : 'dd-mm-yy',
+		      minDate: 0  ,
+			  onSelect : function(selected) {
+				checkAvailability();
+		 	  }
+		    });
 		    
 		    
 				
@@ -795,14 +853,19 @@ function interviewTemplate(){
 	        var json = JSON.parse(data);
 	        var output = "";
 	        if(json.length > 0){
-	        	 output = output + "<option value=''>-Select Template-</option>"; 
 	         	for (var i=0; i<json.length; i++)
 	 			{
 	 	        		var opt = json[i];
+	 	        		
 	 	        		output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
 	 			}
 	         	$("#interviewSubmissionTemplate").empty();
 	 	        $("#interviewSubmissionTemplate").append(output);
+	 	       
+	 	        $("#interviewSubmissionTemplate").chosen();
+	 			$("#interviewSubmissionTemplate").trigger('chosen:update');
+	 			$('.chosen-container').css({'width': '100% !important'});
+	 			
 	        }else{
 	        	$("#emptyTemplate").empty();
 	        }
@@ -855,3 +918,262 @@ function timezoneClose(){
 	$('.timePop').hide();
 }
 </script>
+<script>
+function showCal(id){
+	 $("#interviewer").empty();
+	 $("#applicant").empty();
+	$("#selectedDate").empty();
+	$("#selectedTimeZoneId").empty();
+	$("#selectApp").empty();
+	var checkMaxTsRowNum1 = $("#maxTsRowNum").val();
+	$("#selectedTimeZoneId").empty();
+	var timezone = '${timezone}';
+	$("#selectedTimeZoneId").append(timezone);
+	
+	if(document.getElementById("button_id").value == id){
+		$('.eventAlert').toggle();
+	}
+	
+	if(document.getElementById("button_id").value != id){
+		$('.eventAlert').show();
+	} 
+	document.getElementById("button_id").value = id;
+	
+	 var result1 ="";
+		result1 = result1 + ' <div class="row">                                            ';
+		result1 = result1 + '	<div class="dataTables_empty">                                     ';
+		result1 = result1 + '	</div>                                                      ';
+		result1 = result1 + ' </div>                                                      ';
+		  $("#interviewer").empty();
+		  $("#interviewer").append(result1);
+		  $("#applicant").empty();
+		  $("#applicant").append(result1);
+		  $("#selectedDate").append("Please select the date to check available slots");
+}
+
+</script>
+
+<!-- <script>
+    $( "#scheduleCalendar" ).datepicker({
+	  changeMonth: true,
+      changeYear: true,
+    });
+  </script> -->
+<script>
+function checkAvailability(){
+	 $("#interviewer").empty();
+	 $("#applicant").empty();
+	$("#selectedDate").empty();
+	$("#selectedTimeZoneId").empty();
+	$("#selectApp").empty();
+	 $('.fullCount').hide();
+		$('.particalCount').hide();
+	var timezone = '${timezone}';
+	var date = $("#scheduleCalendar").val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	var bid = document.getElementById("button_id").value;
+	var checkMaxTsRowNum1 = $("#maxTsRowNum").val();
+	bid = bid.replace("Avail", "");
+	var applicantSubId = $("#"+bid+"applicant").val();
+	var interviewerIds = $("#"+bid+"interviewer").val(); 
+	var selectedInterviewDate = $("#"+bid+"dateOfInterview").val();
+	
+	$("#selectedTimeZoneId").append(timezone);
+	$("#selectedDate").append(date);
+	if(applicantSubId==null && interviewerIds==null ){
+		$("#selectApp").append("Select Applicant/Interviewer")
+	}
+			  $.ajax({
+			    	type: "POST",
+			    	url : sourceleadUrl+"/getInterviewerAndApplicantsDetails?${_csrf.parameterName}=${_csrf.token}&applicantSubId="+applicantSubId+"&interviewerIds="+interviewerIds+"&date="+date, 
+			        success: function(data) {
+			        	 var json = JSON.parse(data);
+					     	$("#interviewer").empty();
+					        $("#applicant").empty();
+					     
+					        var result = "";
+					        if(json.interviewerList.length>0){
+						        result = result + '            <div class="require_wrap_table scheduleTable">                                       ';
+						    	result = result + '              <table id="requirementPagination11" width="100%" cellpadding="0" cellspacing="0" class="table-responsive mt10"> ';
+						    	result = result + '                <thead>                                                                          ';
+						    	result = result + '                  <tr>                                                                           ';
+						    	result = result + '                    <th>Name</th>                                                                ';
+						    	result = result + '                    <th>Time</th>                                                                ';
+						    	result = result + '                    <th>Type</th>                                                                ';
+						    	result = result + '                    <th>Title</th>                                                               ';
+						    	result = result + '                  </tr>                                                                          ';
+						    	result = result + '                </thead>                                                                         ';
+						    	result = result + '                <tbody>                                                                          ';
+							    	for(var i=0; i<json.interviewerList.length; i++)
+									{
+							    		
+								        var report = json.interviewerList[i];
+								    	result = result + '                  <tr>                                                                           ';
+								    	result = result + '                    <td>                                                                         ';
+								    	result = result + '                      <div class="tbldata-dotdot">'+report.interviewerName+'</div>                                     ';
+								    	result = result + '                    </td>                                                                        ';
+								    	result = result + '                    <td>                                                                         ';
+								    	result = result + '                      <div class="tblminwidth-75">'+report.interviewStartTime+' - '+report.interviewEndTime+'</div>                                     ';
+								    	result = result + '                    </td>                                                                        ';
+								    	result = result + '                    <td>                                                                         ';
+								    	result = result + '                      <div class="tbldata-dotdot-100">'+report.interviewType+'</div>                           ';
+								    	result = result + '                    </td>                                                                        ';
+								    	result = result + '                    <td>                                                                         ';
+								    	result = result + '                      <div class="tbldata-dotdot-vsm">'+report.requirementTitle+'</div>                                ';
+								    	result = result + '                    </td>                                                                        ';
+								    	result = result + '                  </tr>  ';
+									}
+						    	
+						    	result = result + '                </tbody>                                                                         ';
+						    	result = result + '              </table>                                                                           ';
+						    	result = result + '            </div>                                                                               ';
+						    	 if(json.interviewerList.length>5 && json.interviewerList.length<=10){
+						    		$('.fullCount').hide();
+						    		$('.particalCount').show();
+						    	 }
+						    	 if(json.interviewerList.length>=10){
+						    		 $('.fullCount').show();
+						    		$('.particalCount').hide();
+						    	 }
+			        }
+			    	else{
+			    		result = result + ' <div class="row">                                            ';
+			    		result = result + '	<div class="dataTables_empty">                                     ';
+			    		result = result + '	</div>                                                      ';
+			    		result = result + ' </div>                                                      ';
+			    	}
+					        $("#interviewer").append(result);
+					        interviewPagination(); 
+						  	var opt = "";
+						    	if(json.applicantsList.length>0){
+						    	opt = opt + '            <div class="require_wrap_table scheduleTable">                                       ';
+						    	opt = opt + '              <table id="applicantPagination" width="100%" cellpadding="0" cellspacing="0" class="table-responsive mt10"> ';
+						    	opt = opt + '                <thead>                                                                          ';
+						    	opt = opt + '                  <tr>                                                                           ';
+						    	opt = opt + '                    <th>Name</th>                                                                ';
+						    	opt = opt + '                    <th>Time</th>                                                                ';
+						    	opt = opt + '                    <th>Type</th>                                                                ';
+						    	opt = opt + '                    <th>Title</th>                                                               ';
+						    	opt = opt + '                  </tr>                                                                          ';
+						    	opt = opt + '                </thead>                                                                         ';
+						    	opt = opt + '                <tbody>                                                                          ';
+						    	
+						    	
+							    	for(var i=0; i<json.applicantsList.length; i++)
+									{
+								    	var report = json.applicantsList[i];
+								    	opt = opt + '                  <tr>                                                                           ';
+								    	opt = opt + '                    <td>                                                                         ';
+								    	opt = opt + '                      <div class="tbldata-dotdot">'+report.candidateName+'</div>                                     ';
+								    	opt = opt + '                    </td>                                                                        ';
+								    	opt = opt + '                    <td>                                                                         ';
+								    	opt = opt + '                      <div class="tblminwidth-75">'+report.interviewStartDateTimeStr+' - '+report.interviewEndtDateTimeStr+'</div>                                     ';
+								    	opt = opt + '                    </td>                                                                        ';
+								    	opt = opt + '                    <td>                                                                         ';
+								    	opt = opt + '                      <div class="tbldata-dotdot-100">'+report.interviewType+'</div>                           ';
+								    	opt = opt + '                    </td>                                                                        ';
+								    	opt = opt + '                    <td>                                                                         ';
+								    	opt = opt + '                      <div class="tbldata-dotdot-vsm">'+report.requirementTitle+'</div>                                ';
+								    	opt = opt + '                    </td>                                                                        ';
+								    	opt = opt + '                  </tr>                                                                          ';
+									}
+						    	
+						    	opt = opt + '                </tbody>                                                                         ';
+						    	opt = opt + '              </table>                                                                           ';
+						    	opt = opt + '            </div>                                                                               '; 
+						    	if(json.applicantsList.length>5 && json.applicantsList.length<=10){
+						    		$('.fullCount').hide();
+						    		$('.particalCount').show();
+						    	 }
+						    	 if(json.applicantsList.length>=10){
+						    		 $('.fullCount').show();
+						    		$('.particalCount').hide();
+						    	 }
+						    	}
+						    	else{
+						    		opt = opt + ' <div class="row">                                            ';
+						    		opt = opt + '	<div class="dataTables_empty">                                     ';
+						    		opt = opt + '	</div>                                                      ';
+						    		opt = opt + ' </div>                                                      ';
+						    	}
+					        	$("#applicant").append(opt); 
+					        	appPagination(); 
+					        
+			        }
+			 }); 
+	
+	}
+	  </script>
+	  
+ <script>
+   $('#applicantPagination').DataTable( { 
+		"autoWidth": false,
+		"scrollX": true,
+	});
+	function appPagination(){ 
+	    $('#applicantPagination').DataTable( { 
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[5, 15, 20, -1], [2, 15, 20, "All"]],
+	    	"bLengthChange": false,
+	    	"bDestroy": true,
+	    	"ordering": false,
+	    	"oLanguage": {
+	            "sSearch": "",
+	            "sZeroRecords": "", "sEmptyTable": ""
+	       }
+	    } );
+	} 
+	  
+ $('#requirementPagination11').DataTable( { 
+	"autoWidth": false,
+	"scrollX": true,
+}); 
+function interviewPagination(){ 
+    $('#requirementPagination11').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 15, 20, -1], [2, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    } );
+}
+</script>
+	  
+<script>
+function setDate(){
+	var date = $("#scheduleCalendar").val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	var bid = document.getElementById("button_id").value;
+	var checkMaxTsRowNum1 = $("#maxTsRowNum").val();
+	var clicked_button = bid;
+	clicked_button = clicked_button.replace("Avail", "");
+	$("#"+clicked_button+"dateOfInterview").datepicker('setDate',date);
+}
+</script>
+
+<script>
+function toggleEventCalender(){
+	$('.eventAlert').hide();
+}
+</script>
+ <script>
+function interviewType(id){ 
+	 if(id.value=="Other"){
+		 document.getElementById(id.id+'Check').style.display="block";
+		 $('#'+id.id+'other').removeAttr('data-validation-optional');
+		 $('#'+id.id+'other').attr("data-validation","required validate_length length1-50"); 
+	 }
+	 else{
+		 document.getElementById(id.id+'Check').style.display="none";
+		 $('#'+id.id+'other').removeAttr("data-validation");
+		 $('#'+id.id+'other').attr('data-validation-optional',"true");
+	 }
+}
+
+</script>
+
+	  

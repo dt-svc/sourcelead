@@ -14,7 +14,7 @@
 /* min-height: 400px !important; */
 }
 .dashboard-widget.dashboard-widget-icons{
-min-height: 225px !important;
+min-height: 125px !important;
 }
 .dashboard-widget .blank-pages{
 padding: 0;
@@ -61,11 +61,11 @@ overflow-x: auto;
 }
 </style>
 
-  <script type="text/javascript">
+ <!--  <script type="text/javascript">
  $( document ).ready(function() {
 	 assignTasksList();
 	});
-</script>
+</script> -->
   
 <section class="content-wraper">
 	    <section class="content-header clearfix">
@@ -109,32 +109,25 @@ overflow-x: auto;
 			    	 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 			   	 	 <jsp:include page="dashboardRequirementApprovals.jsp"></jsp:include>
 			   	 	 </sec:authorize>
-			   	 	  <sec:authorize access="hasAnyRole('ROLE_VIEW_INTERVIEW')">
+			   	 	 <%--  <sec:authorize access="hasAnyRole('ROLE_VIEW_INTERVIEW')">
 			    	 <jsp:include page="dashboardInterviews.jsp"></jsp:include>
-			    	 </sec:authorize>
-			    </div>
+			    	 </sec:authorize> --%>
+			    
 		    </c:if>
-		     <div class="clearfix row mb"> 
+		      
 		     		<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 		     		<jsp:include page="dashboardApplicants.jsp"></jsp:include>
 		     		</sec:authorize>
-		     <!-- </div> -->
+		     </div>
 	    
 	    
 	   
 	    
 	    <!-- <div class="row clearfix"> -->
-	    <div class="col-md-6 mb">
+	    <!-- <div class="col-md-6 mb">
 
         <div class="clients_wrap_table dashboard-widget overflow_inherint"  id="assignTaskListDiv" style="display: none;">
 
-          <!-- <h4 class="pull-left">Tasks &nbsp;&nbsp;
-          <b class="newdate">
-               <i class="fa fa-filter"></i>
-              <span class="dashboard-datepkr"><input class="form-control TaskDate input-sm"  name="dasboardTaskDatpicker" id="dasboardTaskDatpicker"  type="text" readonly="readonly" >
-           <i class="fa fa-calendar"></i></span>
-           </b>
-           </h4> -->
            <h4 class="clearfix">Tasks
         <b class="dashboard-datepkr"><input class="input-sm" id="dasboardTaskDatpicker" readonly="readonly" type="text"><i class="fa fa-calendar"></i></b>  
           </h4>	
@@ -143,9 +136,9 @@ overflow-x: auto;
             
           </div>
         </div>
-        <!-- Pagenation Ends --> 
-      </div>
-      </div>
+        Pagenation Ends 
+      </div> 
+      </div>-->
        <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_INTERVIEW')">
 	   				  <div class='row'>
 						<div class='col-lg-12'> 
@@ -157,13 +150,13 @@ overflow-x: auto;
 						</div>
 						</div>
 					  </div> 
-				 </sec:authorize> 
+		</sec:authorize> 
 	    
 	    <div class="clearfix"></div> 
 	    
-	     <jsp:include page="dashboardEvents.jsp"></jsp:include>
-	    
-	    
+	    <sec:authorize access="hasRole('ROLE_VIEW_INTERVIEW')">
+	     	<jsp:include page="dashboardEvents.jsp"></jsp:include>	    
+	    </sec:authorize> 
 	  
 </section>
 

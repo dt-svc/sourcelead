@@ -42,7 +42,7 @@ function getRequirementList(){
 	    var clients = "";
 		$.ajax({
 	         type : "POST",
-	          url: sourceleadUrl+"/getRequirementListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients,    
+	          url: sourceleadUrl+"/getRequirementReports?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients,    
 	          success :function(data) {
 	        	 prepareReportDataDiv(data);
 	         },
@@ -133,7 +133,14 @@ function requirementReportPagination(){
 	$('#requirementReportPagination').DataTable({ 
 		 dom: 'Bfrtip',
 	        buttons: [
-	            'excel', 'pdf'
+	        	{
+	                extend: 'excel',
+	                title: 'Requirement Stages',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Requirement Stages',
+	            }
 	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
@@ -145,6 +152,8 @@ function requirementReportPagination(){
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
+	$(".vendor_wrap_inn_table").find('a.buttons-excel').prop("title", "Excel");
+	$(".vendor_wrap_inn_table").find('a.buttons-pdf').prop("title", "PDF");
 }
 
 </script>
@@ -295,7 +304,7 @@ function getRequirementStageList(){
 			</div>
 		</div>
     </div>
-    <div class="pull-right brud-crum">Home &raquo; Vendor &raquo; Client Contact Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/requirementList'/>"> Requirement List</a> &raquo; Requirements Stages</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
@@ -384,7 +393,7 @@ function getRequirementStageList(){
 				<span><i class="fa fa-star-o"></i></span><b id="unfilledclosedRequirementsCount"></b>
 			</li>
 			<li title="REJECTED">
-				<span><i class="glyphicon glyphicon-trash"></i></span><b id="rejectedRequirementsCount"></b>
+				<span><i class="fa fa-ban"></i></span><b id="rejectedRequirementsCount"></b>
 			</li>
 					<div class="clearfix"></div>
 		</ul>
@@ -404,12 +413,7 @@ function getRequirementStageList(){
 
   </div>
 </section>
-<!--   Error Message   -->
-<div class="vendor_wrap_mask"></div>
-<div class="vendor_error">
-  <p>Delete conformation message....</p>
-  <textarea placeholder="Enter message"></textarea>
-  <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
+
 
 
 

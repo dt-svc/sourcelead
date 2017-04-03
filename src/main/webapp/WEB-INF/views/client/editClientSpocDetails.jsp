@@ -20,7 +20,9 @@
 						
 						var json = JSON.parse(data);
 						var result = "";
-						
+						result  = result + '<div class="success_pop" id="clientEditMsgDiv" style="display: none;">';
+					    result  = result + '<i class="fa fa-check-circle"></i><span id="clientEditMsg"></span>';
+					    result  = result + '</div>';
 						if(json.msg != null && json.msg != "" && json.msg != 'undefined'){
 							result = result+ '<div class="success_pop" id="selector1" style="display: block;">';
 							result = result+ ' <i class="fa fa-check-circle"></i><span>'+json.msg+'</span>';
@@ -118,6 +120,13 @@
 				});
 	}
 </script>
+
+<script>
+	function clientEditMsgFadein() {
+		$("#clientEditMsgDiv").fadeIn(200);
+        $('#clientEditMsgDiv').delay(2000).fadeOut('slow');
+	}
+</script> 
 <script type="text/javascript">
 	function editVendorContactDetails(spocId,ownerId,spocUserId,tempOwnerId) {
 		var sourceleadUrl = '${sourceleadUrl}';
@@ -234,10 +243,10 @@
 						result = result  +'	   <select  class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
 						for (var j = 0; j < json.userList.length; j++) {
 							var user = json.userList[j];
-							  if(user.id == tempOwnerId){
+							  if(user.id == tempOwnerId && user.id != json.tempSpocId){
 								   selected = 'selected';
 								   result = result+"<option value="+user.id+" "+selected+" >"+user.firstName+" "+user.lastName+"</option>";
-							  }else{
+							  }else if(user.id != json.tempSpocId){
 									  result = result+"<option value="+user.id+" >"+user.firstName+" "+user.lastName+"</option>";
 			   		 	    	 }  
 						}
@@ -331,9 +340,14 @@
 	   		    	
 	   		    	$("#spocDetailsId").removeAttr("onClick")
 	   		    	$("#spocDetailsId").attr("onclick","clientDetailsbySpocId('"+spocId+"', '"+ownerId+"', '"+spocUserId+"', '"+ownerId+"')");
+	   		    	$("#clientEditMsgDiv").removeAttr("style");
+		 			$("#clientEditMsgDiv").css({ display: "block" });
+		 			$("#clientEditMsg").html("Contact Details Updated");
 	   		    	clientDetailsbySpocId(spocId,ownerId,spocUserId,ownerId);
+	   		    	clientEditMsgFadein();
 	   		    	/* getVendorContactLists();  */
 	   		    	getVendorContactListsELK();
+	   		    	
 	   		    }
 		 }); 
 	     	return true;

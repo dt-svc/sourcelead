@@ -167,7 +167,7 @@ function cancelOrgImg(){
       <div class="tab-content">
         <div id="orgsetting" class="tab-pane fade in active">   
         <div class="row">
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <div class="clearfix">
 		    <!-- Tab for Profile setting-area -->
 		  <div class="accountsettings-tab org-settings-area">
 		  <div class="tab-content panel-body">
@@ -285,7 +285,7 @@ function cancelOrgImg(){
 						<div class="form-group mt">
 							<label class="col-md-3">Fax</label>
 							<div class="col-md-9">
-							<input type="text"  class="form-control" name="fax" field-name="fax" data-validation="validate_phone validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.fax}" />
+							<input type="text"  class="form-control" name="fax" id="faxId" field-name="fax" data-validation="validate_phone validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.fax}" />
 							</div>
 						</div>
 						
@@ -303,7 +303,7 @@ function cancelOrgImg(){
 					<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_ORG_SETTINGS')">
 					<input type="submit" value="Save" id="save_button" class="btn btn-primary mr">
 					</sec:authorize>
-					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/sourcelead/dashboard'">
+					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/sourcelead/dashboard/${SourceLeadWeb_orgLocationId}'">
 					</div>
 					</div>
 					</div>
@@ -369,6 +369,12 @@ function cancelOrgImg(){
   <!-- Content Area Ends-->
 
 </body>
+
+<script>
+$("#faxId").keyup(function () {
+    this.value = this.value.replace(/ /g, "-");
+});
+</script>
 
 <script type="text/javascript">
 function validateCompanyName(){
@@ -749,30 +755,25 @@ function loadSignature(){
 						var italicChecked = "";
 						var underlineChecked = "";
 
-						if(opt.fontStyle != null){
+						if(null != opt.fontStyle){
 							 var fontStyle = opt.fontStyle.split(',');
 							  for(var fn = 0; fn < fontStyle.length; fn++) {
 								 if(fontStyle[fn] == "Bold"){
 									 boldClass = "btn-active";
 									 boldValue = "value = 'Y'";
 									 boldChecked = "checked";
-								 }else{
-									 boldValue = "value = 'N'";
-								 } 
+								 }
 								  
 								 if(fontStyle[fn] == "Italic"){
 									 italicClass = "btn-active";
 									 italicValue = "value = 'Y'";
 									 italicChecked = "checked";
-								 }else{
-									 italicValue = "value = 'N'";
 								 }
+								 
 								 if(fontStyle[fn] == "Underline"){
 									 underlineClass = "btn-active";
 									 underlineValue = "value = 'Y'";
 									 underlineChecked = "checked";
-								 }else{
-									 underlineValue = "value = 'N'";
 								 }
 							 } 
 						}

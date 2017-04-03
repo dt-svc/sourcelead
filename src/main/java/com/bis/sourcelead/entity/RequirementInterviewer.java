@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,7 +35,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
     @JoinColumn(name="INTERVIEW_ID", nullable=false )        
     private RequirementInterview requirementInterview;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
     @JoinColumn(name="INTERVIEWER_USER_ID", nullable=false )        
     private User interviewerUser;
 	
@@ -61,6 +62,42 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	
 	@Transient
 	private String feedbackStatus;
+	
+	@Transient
+	private String interviewStartTime;
+	
+	@Transient
+	private String interviewEndTime;
+	
+	@Transient
+	private String requirementTitle;
+	
+	
+	@Transient
+	private String interviewType;
+
+	@Transient
+	private List<RequirementInterviewer> interviewerList;
+	
+	@Transient
+	private List<RequirementInterview> applicantsList;
+	
+	
+	public List<RequirementInterviewer> getInterviewerList() {
+		return interviewerList;
+	}
+
+	public void setInterviewerList(List<RequirementInterviewer> interviewerList) {
+		this.interviewerList = interviewerList;
+	}
+
+	public List<RequirementInterview> getApplicantsList() {
+		return applicantsList;
+	}
+
+	public void setApplicantsList(List<RequirementInterview> applicantsList) {
+		this.applicantsList = applicantsList;
+	}
 
 	public Long getId() {
 		return id;
@@ -149,4 +186,37 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	public void setFeedbackStatus(String feedbackStatus) {
 		this.feedbackStatus = feedbackStatus;
 	}
+
+	public String getInterviewStartTime() {
+		return interviewStartTime;
+	}
+
+	public void setInterviewStartTime(String interviewStartTime) {
+		this.interviewStartTime = interviewStartTime;
+	}
+
+	public String getInterviewEndTime() {
+		return interviewEndTime;
+	}
+
+	public void setInterviewEndTime(String interviewEndTime) {
+		this.interviewEndTime = interviewEndTime;
+	}
+
+	public String getRequirementTitle() {
+		return requirementTitle;
+	}
+
+	public void setRequirementTitle(String requirementTitle) {
+		this.requirementTitle = requirementTitle;
+	}
+
+	public String getInterviewType() {
+		return interviewType;
+	}
+
+	public void setInterviewType(String interviewType) {
+		this.interviewType = interviewType;
+	}
+	
 }

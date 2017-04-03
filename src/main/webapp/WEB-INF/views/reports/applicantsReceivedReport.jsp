@@ -115,7 +115,14 @@ function requirementReportPagination(){
 	$('#requirementReportPagination').DataTable({ 
 		 dom: 'Bfrtip',
 	        buttons: [
-	            'excel', 'pdf'
+	        	{
+	                extend: 'excel',
+	                title: 'Applicants Recieved',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Applicants Recieved',
+	            }
 	        ],
 		
     	"scrollCollapse": false,
@@ -128,6 +135,8 @@ function requirementReportPagination(){
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
+	$(".vendor_wrap_inn_table").find('a.buttons-excel').prop("title", "Excel");
+	$(".vendor_wrap_inn_table").find('a.buttons-pdf').prop("title", "PDF");
 }
 
 </script>
@@ -189,7 +198,7 @@ function toDate(selector) {
 			</div>
 		</div>
     </div>
-    <div class="pull-right brud-crum">Home &raquo; Vendor &raquo; Client Contact Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/requirementList'/>"> Requirement List</a> &raquo; Applicants Received</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
@@ -258,13 +267,13 @@ function toDate(selector) {
 				<span><i class="glyphicon glyphicon-send"></i></span><b id="submitToClientCount">0</b>
 			</li>
 			<li title="Interviews" id="interviewli" class="colorTwo">
-				<span><img src="images/interview1.png" alt=""/></span><b id="interviewCount">0</b>
+				<span><img src="resources/images/interview1.png" alt=""/></span><b id="interviewCount">0</b>
 			</li>
 			<li title="Offers" id="offermadeli">
 				<span><i class="fa fa-tags"></i></span><b id="offerCount">0</b>
 			</li>
 			<li title="Rejected" id="rejectedli" class="colorTwo">
-				<span><i class="glyphicon glyphicon-trash"></i></span><b id="rejectedCount">0</b>
+				<span><i class="fa fa-ban"></i></span><b id="rejectedCount">0</b>
 			</li>
 					<div class="clearfix"></div>
 		</ul>
@@ -726,33 +735,33 @@ Highcharts.chart('container', {
         }
     },
     series: [{
-        name: 'Applications',
+        name: 'Applicants',
         data: applicantData
 
     }, {
-        name: 'Shortlisted',
+    	name: 'Request Sent',
+        data: requestSentData
+
+    }, {
+    	name: 'Shortlisted',
         data: shortlistedData
 
     }, {
-        name: 'Interviewed',
-        data: interviewData
-
-    }, {
-        name: 'SubmitedToClient',
+        name: 'Submit To Client',
         data: submitedtoClientData
 
     }, {
-        name: 'Offered',
-        data: offeredData
+    	name: 'Interview',
+        data: interviewData
 
     },
 		{
-        name: 'Rejected',
-        data: rejectedData
+    	name: 'Offered',
+        data: offeredData
 
     },{
-        name: 'Request Sent',
-        data: requestSentData
+    	name: 'Rejected',
+        data: rejectedData
 
     }
     ]	

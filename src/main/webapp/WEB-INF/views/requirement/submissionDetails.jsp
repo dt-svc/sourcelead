@@ -35,6 +35,9 @@
  .demo {
    position: absolute; top: 40px; left: 0; z-index: 999999;
  }
+ .margnTop0 {
+ margin-top: 0;
+ }
  </style>
  
  
@@ -435,7 +438,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 					           result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Accepted by:</label><span class="col-md-9">'+json.submissionRequestUser+'</span></div>';
 		                   }
 				          if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
-					          result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Attachment:</label><span class="col-md-9"><a href=\"'+sourceleadUrl+'/downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'\">'+json.submissionRequestFileName+'</a></span></div>';
+					          result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Attachment:</label><span class="col-md-9"><a href=\"'+sourceleadUrl+'/downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'\" class="pull-left" style="color:#151B8D">'+json.submissionRequestFileName+'</a></span></div>';
 					          result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Comment:</label><span class="col-md-9">'+json.submissionRequestComment+'</span></div>';
 					          }
 		          //}
@@ -456,7 +459,6 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
         	  if(json.submissionRateStatus == 'REJECTED'){ 
         	  result = result + '<div class="clearfix">';
 				 result = result + '<div class="release-jobs alert alert-danger">';
-				 result = result + '<span class="close" data-dismiss="alert" aria-label="close">&times;</span>';
 			     result = result + '<div class="clearfix sub-details">';
 			     result = result + ' <p><strong>Rejected Reason</strong></p>';
 			     result = result + ' <div class="clearfix">';
@@ -528,6 +530,7 @@ $(document).ready(function() {
 function getInternalInterviewsList(submissionId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var parentRequirement = '${parentRequirement}';
+    
 	 $.ajax({  
          type : "POST",
          url: sourceleadUrl+"/getAllInternalInterviews?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
@@ -544,6 +547,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 
 	                    	 var report = json[i]; 
 	                    	 var notifiedDetails ="";
+	                    	                     	                     	 
 	                    	// var interviewers = "---";
 	                    	 var interviewTypeHeader = "";
 	                    	 var interviewType = "---";
@@ -565,6 +569,12 @@ function getInternalInterviewsList(submissionId){
 	                    	 if(notifiedDetails == ""){
 	                    		notifiedDetails = '---';
 	                    	 }
+	                    	 if(report.endTimeStr != null && report.endTimeStr != '' && report.endTimeStr != 'undefined'){
+	                    		 endTime = report.endTimeStr;
+	                    	 }else{
+	                    		 endTime = "";
+	                    	 }
+	                    	 
 	                    	 
 	                    	 /* if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
 	                    		 interviewers = report.interviewersList;
@@ -586,10 +596,16 @@ function getInternalInterviewsList(submissionId){
 		                     result = result + '</div>';
 		                     
 	   					     result = result + '<div id="accordion-sl" class="release-jobs positionRelative">';
-		   					  if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
-		   					    	result = result + '<i class="fa fa-handshake-o pull-right" title="FeedBack" onclick="interviewFeedback('+report.interviewId.id+',\''+report.interviewTemplateid+'\',\''+report.id+'\');"></i>';	 
-		   					  }
-		                    	 
+	   					   
+	   					   //This condition  is to enable the feedback  and reschedule icon for Own Interviews
+	   					     if(submissionId == report.interviewSubmissionId){
+	   					    	 if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
+			   						  if(report.interviewTemplateid != null && report.interviewTemplateid != '' && report.interviewTemplateid != 'undefined'){
+			   							result = result + '<i class="fa fa-handshake-o pull-right" title="FeedBack" onclick="interviewFeedback('+report.interviewId.id+',\''+report.interviewTemplateid+'\',\''+report.id+'\');"></i>';  
+			   						  }
+			   					  }
+	   					     }
+		   					 
 		   					  result = result + '<h2>Interview: <span>'+interviewTypeHeader+' '+report.interviewTimezoneDateStr+' '+report.interviewTimeZoneStartTimeStr+' </span></h2>';
 
 	   					     result = result + '<div class="content clearfix">';
@@ -599,13 +615,27 @@ function getInternalInterviewsList(submissionId){
 	                    	 result = result + '<div class="action-nav" >';
 	                    	 result = result + '<span id="'+report.interviewId.id+'actionDiv">';
 		                    	 if(report.interviewId.interviewStatus == null || report.interviewId.interviewStatus == '' || report.interviewId.interviewStatus =='undefined'){
-		                    		 if(report.feedbackStartTime != "feedbackStartTime" || report.feedbackEndTime != "feedbackEndTime"){
+		                    		 /* if(report.feedbackStartTime != "feedbackStartTime" || report.feedbackEndTime != "feedbackEndTime"){ */
+		                    	   //Latest interview for Reschedule  start
+		                    	   //This condition  is to enable the feedback  and reschedule icon for Own Interviews
+		                    	   if(submissionId == report.interviewSubmissionId){
+		                    		   if(i == 0){
+				                    		result = result + '		  <a title="Reschedule"><i  class="fa fa-retweet text-warning" onclick="rescheduleInterView(\''+report.interviewId.id+'\',\''+report.timezone+'\',\''+submissionId+'\');"></i>';
+											result = result + '			<div class="reSchPop" id="rescheduleInterViewdiv" >';
+											result = result + '			</div>';
+											result = result + '			 </a> ';
+				                    				                    		
+				                    	}
+		                    	   }
+		                    		  
+			                    	
+			                    	//Latest interview for Reschedule  ends
 		                    		 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Attending\');" title="Attending"><i class="fa fa-check text-success"></i></a>';
 		                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
-			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Not Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
+			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Not_Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
 			                    	 '</sec:authorize>';
 			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Maybe\');" title="Maybe"  class="brder-int"><i class="fa fa-question-circle text-muted"></i></a>';
-		                    	 }
+		                    	/*  } */
 		                    }
 	                    	 result = result + '</span>';
 	                    	 result = result + '<span id="'+report.interviewId.id+'showStatus"></span>';
@@ -660,7 +690,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 result = result + '<strong>Time</strong>';
 	                    	 result = result + '</label>';
                              if(report.endTimeStr != null && report.endTimeStr != 'undefined' && report.endTimeStr != ""){
-                            	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+' to '+report.endTimeStr+'</p>';
+                            	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+' to '+report.endTimeStr+' </p>';
 	                    	 }else{
 	                    		 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+'</p>';
 	                    	 }
@@ -690,6 +720,15 @@ function getInternalInterviewsList(submissionId){
 	                         result = result + '</label>';
 	                         result = result + '<p class="col-md-7 tbldata-dotdot-big"><span id="'+report.id+'notifiedDiv">'+notifiedDetails+'<span></p>';
 	                         result = result + '</div>';
+	                         
+	                         if(report.rescheduleComment != null && report.rescheduleComment != '' && report.rescheduleComment != 'undefined'){
+	                        	 result = result + '<div class="row clearfix">';
+		                         result = result + '<label class="col-md-5">';
+		                         result = result + '<strong>Reschedule Comment</strong>';
+		                         result = result + '</label>';
+		                         result = result + '<p class="col-md-7 tbldata-dotdot-big"><span title="'+report.rescheduleComment+'">'+report.rescheduleComment+'<span></p>';
+		                         result = result + '</div>';
+	                         }
 	                        
                              if(report.clientName != null && report.clientName != "" && report.clientName != 'undefined' && report.interviewSourceType !="INTERVIEW"){
 	                        	 result = result + '<div class="row clearfix">';
@@ -713,6 +752,7 @@ function getInternalInterviewsList(submissionId){
 	                    // $('#accordion-sl').find('.test2'+interviewId+'').addClass('active').next().slideDown('slow');
 	                     $('#accordion-sl h2:first').addClass('active').next().slideDown('slow'); 
 	                     $('#accordion-sl h2').click(function(id) {
+	                    	 $(".reSchPop").removeClass("reSchPopActive");
 	                    	 $('.demo').hide();
 	                    	 $(".interview-type").show();
 	                         if($(this).next().is(':hidden')) {
@@ -744,7 +784,7 @@ function changeInterviewStatus(submissionId,interviewId,interviewStatus){
 		    	 if(interviewStatus == "Attending"){
            		    $("#"+(interviewId)+"showStatus").html("<font color='green' >Attending</font>");
 	           	 }
-	           	 if(interviewStatus == "Not Attending"){
+	           	 if(interviewStatus == "Not_Attending"){
 	           		$("#"+(interviewId)+"showStatus").html("<font color='red' >Not Attending</font>");
 	           	 }
 	           	 if(interviewStatus == "Maybe"){
@@ -844,7 +884,7 @@ function getCustomerInterviewsList(submissionId,requirementId){
 		                    	 if(report.interviewStatus == null || report.interviewStatus == '' || report.interviewStatus =='undefined'){
 		                    		 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Attending\');" title="Attending"><i class="fa fa-check text-success"></i></a>';
 		                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
-			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Not Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
+			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Not_Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
 			                    	 '</sec:authorize>';
 			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Maybe\');" title="Maybe"><i class="fa fa-question-circle text-muted"></i></a>';
 		                    	 }
@@ -1322,11 +1362,23 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" data-validation="required validate_Space validate_length length2-250" field-name="Comment"></textarea>';
 		result = result + '				</div>';
 		result = result + '		    </div>';
-		result = result + '		    <div class="row">';
+		/* result = result + '		    <div class="row">';
 		result = result + '				<div class="col-md-8" id="docFileuploadFileGroup">';
-		result = result + '					<input type="file" multiple id="docFile" name="docFile" class="mt10" data-validation="required validate_Space validatedoc" field-name="Attachment">';
+		result = result + '					<input type="file"  id="docFile" name="docFile"  style="display: none;"  multiple="" class="mt10" data-validation="required validate_Space validatedoc" field-name="Attachment">';
+
 		result = result + '				</div>';
-		result = result + '			</div>';
+		result = result + '			</div>'; */
+		
+		result = result+'	                  <div class="clearfix mb10 row mt" id="docFileuploadFileGroup">';
+		result = result+'	                    <div class="col-md-12">';
+		result = result+'							<div class="input-group positionRelative" id="uploadFileGroup">';
+		result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+		result = result+'	                            <input type="file" name="docFile" id="docFile" style="display: none;"  multiple="" class="upload">';
+		result = result+'	                            </span> </label>';
+		result = result+'	                          <input type="text" class="form-control margnTop0" readonly id="uploadFile" name="docFile" placeholder="Attachment" field-name="Attachment" data-validation="required validate_Space validatedoc">';
+		result = result+'	                        </div>';
+		result = result+'	                    </div>  ';  
+		result = result+'	                  </div>   '; 
 		result = result + '			<div class="row">';
 		result = result + '				<div class="col-md-12"><input type="button" id="request_candidate" value="Submit" title="Sibmit" class="pull-right btn btn-primary mt10 btn-sm ml10" onclick="requestCandidate(\''+submissionId+'\',\'request\');">';
 		result = result + '				</div>';
@@ -1336,11 +1388,31 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		$('#request').append(result);
 		$('#accpet-div').fadeOut();
 		$('#reject').fadeOut();
-		attachmentValidationFun();
+		//attachmentValidationFun();
+		
+		/* upload file script for size validation 2MB*/
+	    var selectedFile = document.getElementById("docFile");
+	    selectedFile.addEventListener("change", function() {
+	      var docSize = this.files[0].size;
+	      $("#docFileuploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  document.getElementById("uploadFile").value = '';
+	    	  $("#docFileuploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
+	      }
+	    });
+	    
+	    
+	    document.getElementById("docFile").onchange = function () {
+			   //$("#uploadFile").dir(this.files[0]);
+		    	//document.getElementById("uploadFile").value = this.value;
+		    	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+		  
+		   }; 
 	};
 	$("#request, .acceptreject-pop, .labelsuccess").click(function(e){
 		 e.stopPropagation();
 	});
+	
 	
 </script>
 
@@ -1862,13 +1934,324 @@ function closefeedback(){
 	$(".bg_mask, #viewfeedbackdiv").fadeOut(200);
 }
 </script>
+<script>
+function rescheduleInterView(interviewId,timezone,submissionId){
+	$(".reSchPop").toggleClass("reSchPopActive");
+	var result ='';
+	var parentRequirement = '${parentRequirement}';
+	result = result	+ ' <form id="rescheduleInterview_form"  name="rescheduleInterview_form" method="post">';
+	result = result + '			  <div class="reSchPopInn">';
+	result = result + '			   <input type="hidden" id="interviewId" name="interviewId" value='+interviewId+' >';
+	result = result + '				  <h3>Reschedule</h3>';
+	result = result + '				  <div class="reSchPopCta">';									  	
+	result = result + '						<span>';
+	result = result + '						<input type="text" class="form-control input-sm" placeholder="Date" id="rescheduleDate" name="rescheduleDate" data-validation="required" field-name="Interview Date">';
+	result = result + '						<i class="fa fa-calendar"></i>';
+	result = result + '						</span>	';									  	
+	result = result + '						<span class="timeDiv" id="timeDiv">';
+	result = result + '						<input type="text" class="form-control input-sm" placeholder="Time" id="startTime" name="startTime" onBlur="validateEndTime();" data-validation="required" field-name="Start Time">';
+	//result = result + '						<i class="fa fa-clock-o"></i>';
+	//result = result + '						</span>';
+	//result = result + '						<span class="popTime">';
+	result = result + '						<input type="text" class="form-control input-sm" placeholder="Time" name="endTime" id="endTime" onBlur="validateEndTime();">';
+	//result = result + '						<i class="fa fa-clock-o"></i>';
+	result = result + '						</span>';
+	result = result + '				<div class="clearfix"></div> ';
+	result = result + '			<div class="form-group Pmess clearfix">';
+	result = result + '			          <label class="col-md-3 no_pad">Timezone <b class="text-danger">*</b></label> ';
+	result = result + '			          <div class="col-md-9 no_pad chosenWidth"> ';
+	result = result + '			            <select class="form-control chosen-select" id="rescheduleTimeZone" name="rescheduleTimeZone" onclick="validateTimeZone();" field-name="Timezone" data-validation="required">  ';
+	result = result + '			            </select> ';
+	result = result + '			          </div> ';
+	result = result + '				<div class="clearfix"></div> ';
+	result = result + '			        </div> ';
+	 
+	result = result + '			<div class="form-group Pmess">';
+	result = result + '			          <label class="col-md-3 no_pad">Comment <b class="text-danger">*</b></label> ';
+	result = result + '					  <div class="col-md-9 no_pad">';
+	result = result + '						  <textarea class="form-control reSchtextarea" placeholder="Enter Message"  id="reschedulComment" name="reschedulComment" data-validation="required  validate_length length2-500" field-name="Comment"></textarea> ';
+	result = result + '					  </div>  ';
+	result = result + '			</div>';
+	result = result + '			<div class="ne-ch">  ';
+	result = result + '				<label>  ';
+	result = result + '				  <input type="checkbox" name="notificationToApplicant" value="Y" checked="checked" > ';
+	result = result + '				  <b>Notify to Applicants</b></label>    ';
+	if(parentRequirement == 'Y'){
+		result = result + '				<label><input type="checkbox" name="notificationToSpoc" value="Y" checked="checked"><b>Notify to Vendors</b></label>';
+	}
+	result = result + '<label><input type="checkbox" name="notificationToOthers" id="notificationToOthers" onClick="getNotifyToOtersVal();showOthersDiv();"><b>Notify to Others</b></label>';
+	//result = result + '				<label id="notMail"><input type="checkbox" onClick="getNotifyToOtersVal();showOthersDiv();"><b>Notify to Others</b></label>';
+	result = result + '				<span class="Pmess" id="notifyOthersDiv" style="display: none;">';
+	result = result + '			    <input type="hidden" class="form-control input-sm" placeholder="mail id" id="notificationToOthersEmails" name="notificationToOthersEmails"> ';
+	result = result + '<ul id="mails" class="form-control" ></ul>';
+	result = result + '				</span>  ';
+	result = result + '			  </div>  ';
+	result = result + '						<div class="clearfix"></div> ';
+	result = result + '			<div class="clearfix mt"> ';
+	result = result + '				<div class="pull-right"> ';
+	result = result + '				  <button type="button" class="btn btn-sm btn-primary" onclick="rescheduleInterviewUpdate('+submissionId+')">Reschedule</button> ';
+	result = result + '				  <button type="button" class="btn btn-sm btn-danger" onclick="rescheduleInterClose();">Cancel</button> ';
+	result = result + '				</div> ';
+	result = result + '			  </div> ';
+	
+	result = result + '				  </div>   ';
+	result = result + '			  </div> ';
+	result = result	+ ' </form>';
+
+ TimezonesRescheduleList(timezone);
+	$("#rescheduleInterViewdiv").empty();
+    $("#rescheduleInterViewdiv").append(result);
+
+    
+	$("#startTime").timepicker({
+		'showDuration': true,
+		'disableTextInput': true
+	}).on('changeTime', function() {
+	    $("#endTime").timepicker('option', 'minTime', $(this).val());
+	});
+	
+	$("#endTime").timepicker({
+		'showDuration': true,
+		 'maxTime': '23:30:00',
+		'disableTextInput': true
+	}).on('changeTime', function() {
+	    $("#startTime").timepicker('option', 'maxTime', $(this).val());
+	}); 
+
+	
+var config = {
+		  '.chosen-select'           : {},
+		  '.chosen-select-deselect'  : {allow_single_deselect:true},
+		  '.chosen-select-no-single' : {disable_search_threshold:10},
+		  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+		  '.chosen-select-width'     : {width:"95%"}
+		}
+$('.chosen-select').each(function() {
+	var $this = $(this);
+	$this.next().css({'width':'100%'});
+})
+$('.chosen-container').css({'width': '100%'});
+$("#rescheduleTimeZone").chosen();
+$("#rescheduleTimeZone").trigger('chosen:update');
+
+$('#rescheduleDate').datepicker({
+	dateFormat : 'dd-mm-yy',
+	 changeMonth: true,
+	changeYear: true, 
+	minDate : 0,
+	onSelect : function(selected) {
+		var dt = new Date(selected);
+		dt.setDate(dt.getDate() + 1);
+	}
+	});
+	
+}
+function rescheduleInterClose(){
+	$(".reSchPop").removeClass("reSchPopActive");
+}
+</script>
+ <script>
+ function rescheduleInterviewUpdate(submissionId){
+		if ($('#rescheduleInterview_form').validate(false, validationSettings)) {
+			var frm = $('#rescheduleInterview_form').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
+			//It will escape all the special characters
+			var jsonData = encodeURIComponent(con);
+			var sourceleadUrl = '${sourceleadUrl}';
+
+			$.ajax({
+						type : "POST",
+						url: sourceleadUrl+"/updateRescheduleInterview?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
+						success : function(result) {
+							getInternalInterviewsList(submissionId);
+						},
+					});
+			return true;
+		} else {
+			return false;
+		}
+	 
+ }
+ </script>
+ <script>
+   function validateTimeZone(){
+	var timezoneVal = $("#rescheduleTimeZone").val();
+	if(timezoneVal !=null && timezoneVal != '' && timezoneVal != 'undefined'){
+		$('#rescheduleTimeZone_chosen').next("p").remove();
+	}
+	else{
+		$('#rescheduleTimeZone_chosen').next("p").remove();
+		$('#rescheduleTimeZone_chosen').after('<p class="jquery_form_error_message">Timezone is Required</p>');
+	}
+}
+</script>
+ 
+<script>
+function getNotifyToOtersVal(){
+    if(document.getElementById('notificationToOthers').checked) {
+        $("#notificationToOthers").val('Y');
+        $("#notifyOthersDiv").find('p.jquery_form_error_message').remove();
+    }else{
+        $("#notificationToOthers").val('N');
+        $("#notifyOthersDiv").find('p.jquery_form_error_message').remove();
+        $("#add_interview").removeAttr("disabled");
+    }
+}
+
+</script>
+<script>
+function showOthersDiv(){
+	var isNofityToOthers = document.getElementById("notificationToOthers").checked;
+	if (isNofityToOthers) {
+		document.getElementById("notifyOthersDiv").style.display = '';
+		 $('#mails').tagit({
+		       singleField: true,
+		       singleFieldNode: $('#notificationToOthersEmails')
+		       ,placeholderText:"Enter emails"
+		       ,allowDuplicates: false
+		    	,afterTagAdded: function(evt, ui){
+			              checkEmails();
+			              return false;
+			    }
+		       ,afterTagRemoved: function(evt, ui){
+	              checkEmails();
+	              return false;
+	         }
+		   });
+	}else {
+		document.getElementById("notifyOthersDiv").style.display = 'none';
+		$('#mails').tagit('removeAll');
+	}
+}
+</script>
+<script language="javascript">
+function checkEmail(email) {
+   var regExp = /^.+@.+\..{2,3}$/
+   return regExp.test(email);
+}
+
+function checkEmails(){
+	var emails = document.getElementById("notificationToOthersEmails").value;
+	var emailArray = emails.split(",");
+	var invEmails = "";
+	for(i = 0; i <= (emailArray.length - 1); i++){
+		if(checkEmail(emailArray[i])){
+			//Do what ever with the email.
+		}else{
+			invEmails += "'" +emailArray[i]+ "'"+ "\n";
+		}
+	}
+	
+	
+	if(invEmails != "" && invEmails.length != 3 && invEmails != null && invEmails !="undefined" && invEmails !="\n"){
+	      $("#add_interview").attr("disabled", "disabled");
+		  $('#notifyOthersDiv').find('p.jquery_form_error_message').remove();
+		  $("input#notificationToOthersEmails").after("<p class='jquery_form_error_message'>"  +invEmails+" Invalid emails</span>");
+		  document.getElementById("notificationToOthersEmails").setAttribute('record-exist','yes');
+		  document.getElementById("notificationToOthersEmails").setAttribute('record-exist-errorMsg',invEmails+' Invalid emails'); 
+	}else{
+		$('input#notificationToOthersEmails').removeAttr( "record-exist record-exist-errormsg");
+		$('#notifyOthersDiv').find('p.jquery_form_error_message').remove(); 
+        $("#add_interview").removeAttr("disabled");
+	}
+}
+</script> 
+<script>
+function validateOtherMail(){
+var dataNotify =document.getElementById("notificationToOthersEmails").value;
+var isNofityToOthers = document.getElementById("notificationToOthers").value;
+if((dataNotify == '' || dataNotify == 0)){
+	  $("#add_interview").attr("disabled", "disabled");
+	  $('#notifyOthersDiv').find('p.jquery_form_error_message').remove();
+	  $("input#notificationToOthersEmails").after("<p class='jquery_form_error_message'>Please enter Email</span>");
+	  document.getElementById("notificationToOthersEmails").setAttribute('record-exist','yes');
+	  document.getElementById("notificationToOthersEmails").setAttribute('record-exist-errorMsg','Please enter Email'); 
+}else{
+	$('input#notificationToOthersEmails').removeAttr( "record-exist record-exist-errormsg");
+	$('#notifyOthersDiv').find('p.jquery_form_error_message').remove(); 
+    $("#add_interview").removeAttr("disabled");
+}
+}
+</script>
+<script>
+function TimezonesRescheduleList(timezone){
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+	    	type: "POST",
+	    	url : sourceleadUrl+"/getTimezonesList?${_csrf.parameterName}=${_csrf.token}", 
+	        success: function(data) {
+	        var json = JSON.parse(data);
+	        var output = "";
+	        output = output + "<option value=''>--Select--</option>"; 
+	        	for (var i=0; i<json.length; i++){
+	        		var opt = json[i];
+	        		if(opt.timeZoneId == timezone){
+	        			output = output + "<option value='" +opt.id+ "' selected>"+opt.timeZoneId+"</option>";
+	        		}else{
+	        			output = output + "<option value='" +opt.id+ "'>"+opt.timeZoneId+"</option>";
+	        		}
+	        		
+				}
+	        	$("#rescheduleTimeZone").empty();
+	        	$("#rescheduleTimeZone").append(output);
+	        	$("#rescheduleTimeZone").trigger("chosen:updated");
+	        }
+	 });
+}
+</script>
+ 
+ <script type="text/javascript">
+	function validateEndTime() {
+		 var allStartTimes = [];
+		 var allEndTimes = [];
+		 $("#timeDiv").find('p.jquery_form_error_message').remove();
+			var startTime = $("#startTime").val();
+			 var endTime = $("#endTime").val();
+			if(endTime != null && endTime != '' && endTime != 'undefined'){
+				if(startTime == endTime){
+					$("#timeDiv").find('p.jquery_form_error_message').remove();
+			        $("#add_interview").removeAttr("disabled");
+			        $("#add_interview").attr("disabled", "disabled");
+			        $("#timeDiv").append("<p class='jquery_form_error_message'>End Time should greater than Start Time</span>");
+			    }else{
+			         $("#timeDiv").find('p.jquery_form_error_message').remove();
+			         $("#add_interview").removeAttr("disabled");
+			   	}
+			}
+			var startTime1 = $("#startTime").val();
+			 var endTime1 = $("#endTime").val();
+			if(endTime1 != null && endTime1 != '' && endTime1 != 'undefined'){
+				if(startTime1 == endTime1){
+					 $("#add_interview").attr("disabled", "disabled");
+				}
+			}
+		
+	}
+</script>
+ 
+<script>
+		
+/* $("#cli11").click(function(){
+	alert("hello"); 
+	$(".reSchPop").toggleClass("reSchPopActive");
+});		
+$("#CPop").click(function(){
+	$(".reSchPop").removeClass("reSchPopActive");
+});			
+		 */
+$("#notMail").click(function(){
+	$(this).next(".Pmess").slideToggle(300);
+});	
+	</script>	
+	
 <!-- this script using for interview feedback Ends -->
 <script type="text/javascript">
 function reActivateApplicant(submissionId,candidateId,requirementId){
 	var result = "";
 	var sourceleadUrl ='${sourceleadUrl}';
-	var message = confirm("You are choosing to ReActivate the Applicant");
-	if (message == true) {
+// 	var message = confirm("You are choosing to ReActivate the Applicant");
+// 	if (message == true) {
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 	        type : "POST",
@@ -1881,7 +2264,7 @@ function reActivateApplicant(submissionId,candidateId,requirementId){
 	                 },
 	              }); 
 		
-	}
+// 	}
 	
 }
 </script>
@@ -1889,6 +2272,7 @@ function reActivateApplicant(submissionId,candidateId,requirementId){
 
 <script>
 function feedback_close() {
+	$(".bg_mask, #viewfeedbackdiv").fadeOut(200);
 	$("#mask_inner").fadeOut();
 	$('.demo').fadeOut();
 }
@@ -1908,6 +2292,8 @@ function pipelineList(requirementId){
 	filterReq(requirementId,submissionType);
 }
 </script>
+
+
 
 
 

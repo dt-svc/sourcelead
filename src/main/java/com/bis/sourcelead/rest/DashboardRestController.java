@@ -253,6 +253,11 @@ public class DashboardRestController {
 	     		}else{
 	     			requirement.setIsRequirementReleasedByuser("N");
 	     		}
+	     		
+	     		
+	     		if(userRole.equalsIgnoreCase("ROLE_ADMIN") || userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
+         			requirement.setIsRequirementReleasedByuser("Y");
+         		}
 			}
 
 		}
@@ -547,7 +552,10 @@ public class DashboardRestController {
 			
 			Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 			RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirementId, loginUser.getId());
-		    
+			if(status.equalsIgnoreCase("REJECTED")  &&  !reason.equalsIgnoreCase("") && !reason.isEmpty()){
+		    	requirementApproverHierarchy.setRejectedReason(reason);
+		    	requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
+		    }
 			/*// to get  RequirementApproverHierarchy with maximum Level
 			Integer maxLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirementId);
 
@@ -622,7 +630,7 @@ public class DashboardRestController {
 									rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
 									requirement.setReqlevel2ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED.toString());
 								} else if (status.equalsIgnoreCase("REJECTED")) {
-									rah.setRejectedReason(reason);
+									//rah.setRejectedReason(reason);
 									rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
 									requirement.setReqlevel2ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED.toString());
 								}
@@ -743,7 +751,7 @@ public class DashboardRestController {
 				taskCurrentDateInTimezone = Constants.DMY.format(converteDate);
 			}
 			
-			List<Tasks> taklist = taskService.tasksListByIdAndOrgLocationIdAssignedUserId(loginOrgLocations.getId(),user.getId(),status,taskCurrentDateInTimezone,converteDate,timezone);
+			List<Tasks> taklist = taskService.tasksListByIdAndOrgLocationIdAssignedUserId(loginOrgLocations.getId(),user.getId(),status,dateRange,converteDate,timezone);
 			
 			DateFormat week_Day = new SimpleDateFormat ("EEEE");
 			

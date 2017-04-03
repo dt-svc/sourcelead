@@ -166,9 +166,9 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
     		'<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_EMPLOYEE\')">';
     		result = result +'<li>';
     		if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
-    			result = result +' <a id="export-pop" onClick="exportFun()"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';	
+    			result = result +' <a title="Export" id="export-pop" onClick="exportFun()"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>';	
     		}else{
-    			result = result +' <a><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>';
+    			result = result +' <a title="Export"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>';
     		}
     		
     		result = result +'<div class="" id="exportPop" style="display:none;">';
@@ -392,14 +392,14 @@ function inlineEditForEndDate(id,projectMemberId){
 
 <!-- this script is for Employee Terminate functionality at Projects screen -->
 <script>
-function deleteProject(projectMemberId, projectId,startDateStr,endDateStr){ 
+function deleteProject(projectMemberId,projectId,startDateStr,endDateStr){ 
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Employee delete message here</p>";
 	result = result +"		<textarea  id='reasonForProject' name='reasonForProject'  placeholder='Comments here' ></textarea>";
 	result = result + ' <div id="reasonForProjectDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Terminate' onclick='saveReason("+projectMemberId+", "+projectId+","+startDateStr+","+endDateStr+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Terminate" onclick="saveReason('+projectMemberId+',\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -411,17 +411,21 @@ function cancelTermination(){
 	 $(".project_inn_mask").fadeOut(200);
 }
 
-function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
+function saveReason(projectMemberId,projectId,startDateStr,endDateStr){
 	var sourceleadUrl = '${sourceleadUrl}';
-	var reason = document.getElementById("reasonForProject").value;
-	if(reason.match(/^[^\s-](.*)*$/) !== null){
+	var reason = $("#reasonForProject").val();
+	var con = JSON.stringify(reason);
+	con = con.replace(/[{}]/g, "");
+	//It will escape all the special characters
+	var jsonData = encodeURIComponent(con);
+	if(reason != null && reason != ''){
 		 $("#reasonForProjectDiv").empty();
 		if(reason.length > 250){
 		$("#reasonForProjectDiv").empty().append("<font color='red' style='padding: 5px 10px; '>The Entered values should not be more than 250 characters</font>") ; 
 		}else{
 			 $.ajax({
 				   	type: "POST",
-				    url: sourceleadUrl+"/saveReason?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&projectId="+projectId+"&reason="+reason,
+				    url: sourceleadUrl+"/saveReason?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&projectId="+projectId+"&reason="+jsonData,
 		   		    success: function(data) {
 		   		    	$("#popUp").empty();
 		   			 	$(".project_inn_mask").fadeOut(200);
@@ -436,12 +440,9 @@ function saveReason(projectMemberId, projectId,startDateStr,endDateStr){
 		}
 	}
 	else{
-		if(reason){
-			$("#reasonForProjectDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
-		}else{
 			$("#reasonForProjectDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
-		}
 	}
+	
 }
 </script>
 

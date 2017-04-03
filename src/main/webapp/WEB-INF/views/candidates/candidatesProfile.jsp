@@ -77,6 +77,8 @@ function editCandidate(candidateId){
 	  $("#profileEditPopup").show();
 	  var loginCountryName = '${loginCountryName}';
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  
+	  
 	/* 	var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -85,7 +87,6 @@ function editCandidate(candidateId){
 	         };  */
 		
  if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
-	  
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -142,7 +143,10 @@ function editCandidate(candidateId){
             			 		summary = json.summary;            			 		
             			 	}
             			 	
-            			 	
+            			 	var primarySkill = '';
+            			 	if(json.primarySkill != null && json.primarySkill != '' && json.primarySkill != 'undefined'){
+            			 		primarySkill = json.primarySkill;            			 		
+            			 	}
             			 	
 							var result ='';
 							result = result + '		    <div class="edit-details col-md-8 edit-candaite canprofile-popright"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
@@ -256,7 +260,6 @@ function editCandidate(candidateId){
 							result = result + '<div class="col-md-6">';
 							result = result + '<div class="input-group er ratetype">';
 							result = result + '<div class="input-group-btn tblminwidth-75 select-field">';
-			                  
 							result = result + ' <select class="selct-picker" id="currentRateCurrency" name="currentRateCurrency">';
 							result = result + ' <option '+(json.currentRateCurrency == "INR" ? "selected" : '') +'><a href="#">INR</a></option>';
 							result = result + '<option   '+(json.currentRateCurrency == "AUD" ? "selected" : '') +'><a href="#">AUD</a></option>';
@@ -372,10 +375,19 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							
 							
+							result = result + '		          <div class="col-md-6">';
+							result = result + '		            <input type="text" class="form-control input-sm" name="primarySkill" value="'+primarySkill+'" placeholder="Primary Skill" data-validation="validate_Space validate_length length1-100" data-validation-optional="true">';
+							result = result + '		          </div>';
+							
+							
+							result = result + '</div>';
+							
+							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6">';
 							result = result + '<textarea placeholder="Summary" class="form-control input-sm"  name="summary" rows="2" cols="5">'+summary+'</textarea>';
-							result = result + ' </div>';
-							result = result + '</div>';
+							result = result + ' </div>'; 
+							result = result + ' </div>'; 
+							
 							result = result + '</div>';
 							
 							
@@ -669,9 +681,10 @@ function removeCandidateAlertMessage(candidateId){
 function reActivateCandidateAlertMessage(candidateId){
 	var result = "";
 	var sourceleadUrl ='${sourceleadUrl}';
-	var message = confirm("You are choosing to ReActivate the Candidate");
-	if (message == true) {
+	/* var message = confirm("You are choosing to ReActivate the Candidate");
+	if (message == true) { */
 		var reactivate = '1';
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 	        type : "POST",
 	         url: sourceleadUrl+"/reActivateCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&reActivate="+reactivate,        
@@ -682,7 +695,7 @@ function reActivateCandidateAlertMessage(candidateId){
 	                 },
 	              }); 
 		
-	}
+// 	}
 	
 }
 </script>
@@ -700,7 +713,6 @@ function reActivateCandidateAlertMessage(candidateId){
 function candidateProfile(candidateId){
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var skillsList = '${skillsList}'; 
-	  
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -710,6 +722,7 @@ function candidateProfile(candidateId){
 							var result ="";
 							
 							result = result+'<div id="removeCandidateAlert" ></div>  ';
+							result = result+'<div id="loading" ></div>  ';
 							if(json.status == '0'){
 								'<sec:authorize access="hasAnyRole(\'ROLE_REACTIVATE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
 								result = result + '<div class="project_tabs_inn_head mt10"><div class="anchor-inline"><a href="#" class="positionRelative showInfo"><i class="glyphicon glyphicon-info-sign"></i>Terminated<span class="infoContent col-xs-12 col-md-5"> '+json.terminateReason+' </span></a><a href="javascript:void(0)" onClick="reActivateCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>ReActivate</a> </div>';
@@ -749,7 +762,27 @@ function candidateProfile(candidateId){
 							result = result +'<div class="clearfix">';
 							
 							result = result + '<select multiple class="chosen-select form-control" name="skillName" id="skillName" data-validation="validate_Space" data-validation-optional="true">';
-							<c:forEach var="skill" items="${skillsList}">
+							// here get lookup data skills and manually enter skills 
+							$.each( json.allAndCandidateSkills, function( i, skill ){
+								  var existed = 0;
+					                if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
+						                var res = [];
+						                res = json.skillsName.split(",");
+						                res.forEach(function(item) {
+						                	if(skill == item){
+						                		existed = 1;
+						                		result = result + ' <option selected value="'+skill+'">'+skill+'</option>';
+						                	}
+						                });
+					                }
+					                if(existed == 0){
+					                	result = result + ' <option value="'+skill+'">'+skill+'</option>';
+					                }
+								  
+								});
+							
+							
+							/* <c:forEach var="skill" items="${skillsList}">
 					                var existed = 0;
 					                if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
 						                var res = [];
@@ -764,7 +797,7 @@ function candidateProfile(candidateId){
 					                if(existed == 0){
 					                	result = result + ' <option value="${skill.name}">${skill.name}</option>';
 					                }
-			                </c:forEach>
+			                </c:forEach> */
 			                result = result + '</select>';
 							result = result +'</div>';
 							result = result +'<div class="clearfix"></div>';
@@ -830,6 +863,7 @@ function candidateProfile(candidateId){
 											  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 											  '.chosen-select-width'     : {width:"95%"}
 								    }
+									
 									for (var selector in config) {
 									  $(selector).chosen(config[selector]);
 									}
@@ -855,6 +889,7 @@ function candidateProfile(candidateId){
 									var $this = $(this);
 									$this.next().css({'width': '100%'});
 									})
+									
 								$("#skillName").chosen();
 								$("#skillName").prop('disabled', true).trigger("chosen:updated");
 								$(".close-div").click(function(){
@@ -863,6 +898,8 @@ function candidateProfile(candidateId){
 								$(".add-skills").click(function(e){
 									 e.stopPropagation();
 								});
+								
+								
 								
 								 $(".addUser-org").click(function(){
 									 $(".edit-details").toggleClass("edit-details-active");
@@ -915,6 +952,31 @@ function candidateProfile(candidateId){
 		$("#saveSkillBtnSpan").empty();
 		$("#saveSkillBtnSpan").append(result);
 		$("#saveSkillBtnSpan").show();
+		
+		//Adding Customized Skills to the list
+        var select, chosen;
+	    select = $("#skillName");
+	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
+	    chosen = select.data('chosen');
+	    chosen.search_field.on('keyup', function(e)
+	    {
+	    	var newSkill = this.value.replace(",","");
+	        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+	        {
+	        	var par = this.parent;
+	            var option = $("<option>").val(newSkill).text(newSkill);
+	            select.append(option);
+	            select.find(option).prop('selected', true);
+	          //to doesn't allow duplicates
+                $("#skillName option").each(function(){
+                      $(this).siblings("[value='"+ this.value+"']").remove();
+                });
+                //end
+        		$("#skillName").trigger("chosen:updated");
+        		
+	        }
+	    });
+	    //Adding Customized Skills to the list
 	}
 
 	function saveSkill(candidateId){

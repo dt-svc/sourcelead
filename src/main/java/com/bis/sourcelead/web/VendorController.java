@@ -42,6 +42,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.VendorImportService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -68,8 +69,11 @@ public class VendorController {
 	@Autowired
 	OrgSpocService orgSpocService;
 	
+//	@Autowired
+//	ClientImportsService clientImportsService;
+	
 	@Autowired
-	ClientImportsService clientImportsService;
+	private VendorImportService vendorImportService;
 
 	/* This method is used for landing page of vendors tab. So, who has vendors tab access they can see vendors list. No preAuthorize for this method */
 	@RequestMapping(value = "/vendorsList")
@@ -278,32 +282,28 @@ public class VendorController {
 			if(multipartFile != null){
 				String fn = multipartFile.getOriginalFilename(); // vendors_contacts_Import vendors_import_template.xls
 				String fileName = getFileName(fn);
-				if(!fileName.contains(Constants.CLIENTS_CONTACTS_IMPORT_XLS) && !fileName.contains(Constants.CLIENTS_CONTACTS_IMPORT_XLSX) && !fileName.contains(Constants.CLIENTS_IMPORT_TEMPLATE_XLS) && !fileName.contains(Constants.CLIENTS_IMPORT_TEMPLATE_XLSX)){
-					String isFileCreated = clientImportsService.clientBulkSaving(multipartFile,user,orgLocation,org,uploadedFile.getEmail(),responderType);
+//				if(!fileName.contains(Constants.CLIENTS_CONTACTS_IMPORT_XLS) && !fileName.contains(Constants.CLIENTS_CONTACTS_IMPORT_XLSX) && !fileName.contains(Constants.CLIENTS_IMPORT_TEMPLATE_XLS) && !fileName.contains(Constants.CLIENTS_IMPORT_TEMPLATE_XLSX)){
+					String isFileCreated = vendorImportService.vendorBulkSaving(multipartFile,user,orgLocation,org,uploadedFile.getEmail(),responderType);
 					
-					if (fileName.equalsIgnoreCase(isFileCreated)) {
+					if ("vendor_error.xls".equalsIgnoreCase(isFileCreated)) {
 						model.addAttribute("errorMessage", "Please download Error file here");
-			             model.addAttribute("fileName", fileName);
+			             model.addAttribute("fileName", "vendor_error.xls");
 						return "upload/uploadVendorForm";
-					}/*else if("FailureUsersForCheck.xls".equalsIgnoreCase(isFileCreated)){
+					}else if("vendor_error.xlsx".equalsIgnoreCase(isFileCreated)){
 						model.addAttribute("errorMessage", "Please download Error file here");
-			            model.addAttribute("fileName", "xls");
+			            model.addAttribute("fileName", "vendor_error.xlsx");
 						return "upload/uploadVendorForm";
-					}*/else if("worngFileName".equalsIgnoreCase(isFileCreated)){
+					}/*else if("worngFileName".equalsIgnoreCase(isFileCreated)){
 						model.addAttribute("fileNameWrong", "File name should follow as vendors_contacts_Import/vendors_import_template with .xls or .xlsx");
 			            model.addAttribute("fileName", "xls");
 						return "upload/uploadVendorForm";
-					}
-				}else{
-					model.addAttribute("fileNameWrong", "Oops.! It's Not Vendor template");
-		            model.addAttribute("fileName", "xls");
-					return "upload/uploadVendorForm";
-				}
-				
-			}else{
-				return "upload/uploadVendorForm";
+					}*/
+//				}else{
+//					model.addAttribute("fileNameWrong", "Oops.! It's Not Vendor template");
+//		            model.addAttribute("fileName", "xls");
+//					return "upload/uploadVendorForm";
+//				}
 			}
-			
 			SourceLeadSessionManager.setSessionAttribute(request, "vendorImport", "Success!! New vendors created ");
 			return "redirect:/vendorsList";
 			
@@ -320,14 +320,10 @@ public class VendorController {
 			
 				File file;
 				String fn = getFileName(fileName);
-					if(Constants.VENDORS_IMPORT_TEMPLATE_XLS.equalsIgnoreCase(fn)){
-						 file = new File("vendors_import_template.xls");
-					}else if(Constants.VENDORS_CONTACTS_IMPORT_XLS.equalsIgnoreCase(fn)){
-						 file = new File("vendors_contacts_Import.xls");
-					}else if(Constants.VENDORS_IMPORT_TEMPLATE_XLSX.equalsIgnoreCase(fn)){
-						file = new File("vendors_import_template.xlsx");
+					if(fileName.endsWith("xls")){
+						 file = new File("vendor_error.xls");
 					}else{
-						file = new File("vendors_import_template.xlsx");
+						file = new File("vendor_error.xlsx");
 					}
 				
 				String mimeType = URLConnection.guessContentTypeFromName(file.getName());

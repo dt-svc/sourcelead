@@ -615,7 +615,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -631,6 +631,14 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		//String url = null;
 		String actionLink = "";
 		emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getUser(), loginOrgLocation, notificationScenario);
+	}
+
+	@Override
+	public List<ProjectMembers> getAllProjectsByUserIdForCandidatesHotList(Long userId) throws Exception {
+
+		return projectMembersDao.getAllProjectsByUserIdForCandidatesHotList(userId)  ;
+		
+		
 	}
 
 }
