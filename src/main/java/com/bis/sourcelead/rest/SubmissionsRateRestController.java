@@ -144,7 +144,11 @@ public class SubmissionsRateRestController {
 				requirementSubmission.setSubmissionRateComment(rejectreason);
 			}
 			StringBuilder sb = new StringBuilder();
-			requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+			
+			// if candidate reject the requirement updated by name is candidate
+			Candidate candidate = requirementSubmission.getCandidate();
+			requirementSubmission.setUpdatedUser(sb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString());
+
 			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			
@@ -155,7 +159,7 @@ public class SubmissionsRateRestController {
 			
 			//this logic is for mail 
 			Requirement requirement = requirementSubmission.getRequirement();
-			Candidate candidate = requirementSubmission.getCandidate();
+			
 			OrgLocations orgLocations = requirementSubmission.getOrgLocations();
 			List<RequirementRateSubmissionNegotiation>  negotiationList = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId, candidate.getId());
 			StringBuilder tempHTML = requirementRateSubmissionNegotiationService.buildNegotiationHistory(negotiationList,requirement,candidate,submissionId,type);
