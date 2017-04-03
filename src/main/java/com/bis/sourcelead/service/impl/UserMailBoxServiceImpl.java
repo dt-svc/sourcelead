@@ -1,7 +1,10 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +16,9 @@ import com.bis.sourcelead.dao.UserMailBoxDao;
 import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.index.helper.CampaignIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.UserMailBox;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.UserMailBoxService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -32,6 +37,9 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	CandidateService candidateService;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -96,6 +104,10 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 			   	      	 e.printStackTrace();
 						    }
 			       }
+			 
+			 
+			String table = getRequestedHotListCandidatesTable(candidatesIds);
+			userMailBox.setBody(table);
 			
 			userMailBoxDao.saveUserMailBox(userMailBox);
 			
@@ -104,6 +116,94 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 			saveOrUpdateUserMailBoxELK(userMailBox);
 		}
 		
+	}
+	
+	
+	private String getRequestedHotListCandidatesTable(String candidateIds) throws Exception{
+		
+		
+		 String tempHTML = null;
+		 
+		 tempHTML = "<div class='clearfix project_wrap_table mail-table  mb'>";
+		 tempHTML = tempHTML+"<table>";
+		 tempHTML = tempHTML+"<tr align='center'>";
+		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='20%' bgcolor='#5bace8'><span>Name<span></th>";
+		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='15%' bgcolor='#5bace8'><span>Email<span></th>";
+		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='15%' bgcolor='#5bace8'><span>Phno<span></th>";
+		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='50%' bgcolor='#5bace8'><span>Experience<span></th>";
+		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='50%' bgcolor='#5bace8'><span>Position Type<span></th>";
+		 tempHTML = tempHTML+"</tr>";
+		 
+	    List<Long> candidateId = new ArrayList<Long>();
+		 for (String s : candidateIds.split(",")){
+			 candidateId.add(Long.parseLong(s));
+		 }
+		 
+		 List<Candidate> candidatesList = candidateService.getAllRequestedCandidatesForCampaign(candidateId);
+		 for(Candidate candidate : candidatesList){
+			
+			 String candidateName = null;
+			 String experienceInYears = null;
+			 String experienceInMonths = null;
+			 String totalExp = null;
+			 String phno = null;
+			 String designation = null;
+			 
+			 if(!isNullOrEmpty(candidate.getLastName())){
+				 StringBuilder name = new StringBuilder();
+				 candidateName = name.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString();
+		   	 }else{
+		   		candidateName = candidate.getFirstName();
+		   	 }
+			
+			 if(!isNullOrEmpty(candidate.getExperienceYears())){
+				 experienceInYears = candidate.getExperienceYears();
+			 }else{
+				 experienceInYears = "0";
+			 }
+			 
+			 if(!isNullOrEmpty(candidate.getExperienceMonths())){
+				 experienceInMonths = candidate.getExperienceMonths();
+			 }else{
+				 experienceInMonths = "0";
+			 }
+			 
+			 if(isNullOrEmpty(candidate.getExperienceMonths()) && isNullOrEmpty(candidate.getExperienceMonths())){
+				 totalExp = "-----";
+			 }else{
+				 StringBuilder exp = new StringBuilder();
+				 totalExp = exp.append(experienceInYears).append(" Years ").append(experienceInMonths).append(" Months").toString();
+			 }
+			 
+			 if(!isNullOrEmpty(candidate.getMobilePhone())){
+				 phno = candidate.getMobilePhone();
+			 }else{
+				 phno = "-----";
+			 }
+			 
+			 if(!isNullOrEmpty(candidate.getDesignation())){
+				 designation = candidate.getDesignation();
+			 }else{
+				 designation = "-----";
+			 }
+			 
+			 candidate.setCandidateName(candidateName);
+			 candidate.setTotalExp(totalExp);
+			 
+			 tempHTML = tempHTML+"<tr align='center'>";
+			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+candidateName.toString()+"</td>";
+			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+candidate.getEmail()+"</td>";
+			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+phno+"</td>";
+			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+totalExp+"</td>";
+			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+designation+"</td>";
+			 
+			 tempHTML = tempHTML+"</tr>";
+			 
+		 }
+		 tempHTML = tempHTML+"</table>";
+		 tempHTML = tempHTML+"</div>";
+		 
+		 return tempHTML;
 	}
 
 	@Override
