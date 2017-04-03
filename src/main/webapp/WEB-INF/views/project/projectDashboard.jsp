@@ -434,6 +434,7 @@ $(document).ready(function() {
 		  	result = result + '</div>';
 		  	
 		  	result = result + '<div id="tab-2" class="project_tabs_inn">';
+		  	result = result + '<p> "hi" </p>';
 		  	result = result + '</div>';
 		  	
 		  	result = result + '<div id="tab-3" class="project_tabs_inn">';

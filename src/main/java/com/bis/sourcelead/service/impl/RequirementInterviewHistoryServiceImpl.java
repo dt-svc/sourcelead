@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementInterviewDao;
 import com.bis.sourcelead.dao.RequirementInterviewHistoryDao;
+import com.bis.sourcelead.entity.InterviewFeedbackTemplate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementInterview;
@@ -24,6 +25,7 @@ import com.bis.sourcelead.entity.RequirementInterviewer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.InterviewFeedbackTemplateService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
@@ -57,6 +59,9 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 	
 	@Autowired
 	RequirementInterviewerService requirementInterviewerService;
+	
+	@Autowired
+	InterviewFeedbackTemplateService interviewFeedbackTemplateService;
 	
 	@Override
 	public RequirementInterviewHistory storeRequirementInterviewHistory(
@@ -272,6 +277,14 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			interviewHistory.setRequirementTitle(requirementTitle);
 			
 			interviewHistory.setRequirementId(interviewHistory.getSubmissionId().getRequirement().getId().toString());
+			
+			List<RequirementInterviewer> interviewers = requirementInterviewerService.getInterviwersListByInterviewId(interviewHistory.getInterviewId().getId());
+			for(RequirementInterviewer interviewer:interviewers){
+				InterviewFeedbackTemplate feedbackTemplate = interviewFeedbackTemplateService.getInterviewFeedbackTemplateById(interviewer.getId()) ;
+				if(null != feedbackTemplate){
+					interviewHistory.setFeedbackDate(Constants.DMY.format(feedbackTemplate.getCreatedDate()));	
+				}
+			}
 			
 			//changed as per the timezone
 			DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm aa");
