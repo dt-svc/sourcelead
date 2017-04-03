@@ -1169,6 +1169,9 @@ public class CandidateListRestController {
 					candidateService.saveOrUpdateCandidateElkDocument(can);
 					return "success";
 				}else{
+					can.setSkillsName("");
+					candidateService.saveOrUpdateCandidate(can);
+					candidateService.saveOrUpdateCandidateElkDocument(can);
 					return "failed";
 				}
 			 }
