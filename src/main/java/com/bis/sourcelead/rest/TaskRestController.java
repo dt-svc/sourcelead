@@ -99,8 +99,6 @@ public class TaskRestController {
 		}
 		
 		List<Tasks> taklist = taskService.tasksListByIdAndOrgLocationIdAssignedUserId(orgLocations.getId(),user.getId(),status,taskCurrentDateInTimezone,converteDate,timezone);
-		
-	
 		return commonUtil.toJSON(taklist);
 	} 
  

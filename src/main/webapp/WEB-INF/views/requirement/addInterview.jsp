@@ -314,7 +314,7 @@ function validateTimeZone(){
 </div>
 
 <div id="divTaskTd3" style="display: none; float: left;">
-   	 <select class="form-control input-sm"  id="REPLACEROWIDinterviewType" name="REPLACEROWIDinterviewType">
+   	 <select class="form-control input-sm"  id="REPLACEROWIDinterviewType" name="REPLACEROWIDinterviewType" onchange="interviewType(this);">
 		<option value="">--Select Type--</option>
 		<option value="F2F">F2F</option>
 		<option value="Telephonic">Telephonic</option>
@@ -324,6 +324,7 @@ function validateTimeZone(){
 		<option value="Webex/GoToMeeting">Webex/GoTo Meeting</option>
 		<option value="Other">Other</option>
 	</select>
+	<div id="REPLACEROWIDinterviewTypeCheck" style="display: none; "><input value=""  type="text" id="REPLACEROWIDinterviewTypeother" name="REPLACEROWIDinterviewTypeother" class="form-control input-sm pavInp" placeholder="Interview type" field-name="Interview type" data-validation-optional="true"></div>
 </div>
 
 <div id="divTaskTd5" style="display: none; float: left;">
@@ -1159,17 +1160,20 @@ function toggleEventCalender(){
 	$('.eventAlert').hide();
 }
 </script>
-<!-- <script>
-$('.fullCount').show();
-function tabOne(){ 
-	$('.fullCount').show();
-	$('.particalCount').hide();
-}
-function tabTwo(){ 
-	$('.fullCount').hide();
-	$('.particalCount').show();
+ <script>
+function interviewType(id){ 
+	 if(id.value=="Other"){
+		 document.getElementById(id.id+'Check').style.display="block";
+		 $('#'+id.id+'other').removeAttr('data-validation-optional');
+		 $('#'+id.id+'other').attr("data-validation","required validate_length length1-50"); 
+	 }
+	 else{
+		 document.getElementById(id.id+'Check').style.display="none";
+		 $('#'+id.id+'other').removeAttr("data-validation");
+		 $('#'+id.id+'other').attr('data-validation-optional',"true");
+	 }
 }
 
 </script>
- -->
+
 	  

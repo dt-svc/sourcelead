@@ -54,4 +54,6 @@ public interface CandidateDao {
 	
 	List<Candidate> getOwnersByCandidates(Long orgLocationId,String candidateType,String ownersList);
 	
+	List<Candidate> getHotCandidateListByTeamIdAndOrgLocationId(Long teamId,Long orgLocationId) throws Exception;
+	
 }
