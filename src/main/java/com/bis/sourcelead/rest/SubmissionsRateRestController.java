@@ -147,8 +147,11 @@ public class SubmissionsRateRestController {
 			
 			// if candidate reject the requirement updated by name is candidate
 			Candidate candidate = requirementSubmission.getCandidate();
+			if("Candidate".equalsIgnoreCase(type)){
 			requirementSubmission.setUpdatedUser(sb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString());
-
+			}else{
+			requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+			}
 			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			
