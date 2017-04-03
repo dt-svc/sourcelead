@@ -35,6 +35,9 @@
  .demo {
    position: absolute; top: 40px; left: 0; z-index: 999999;
  }
+ .margnTop0 {
+ margin-top: 0;
+ }
  </style>
  
  
@@ -435,7 +438,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 					           result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Accepted by:</label><span class="col-md-9">'+json.submissionRequestUser+'</span></div>';
 		                   }
 				          if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
-					          result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Attachment:</label><span class="col-md-9"><a href=\"'+sourceleadUrl+'/downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'\">'+json.submissionRequestFileName+'</a></span></div>';
+					          result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Attachment:</label><span class="col-md-9"><a href=\"'+sourceleadUrl+'/downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'\" class="pull-left" style="color:#151B8D">'+json.submissionRequestFileName+'</a></span></div>';
 					          result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Comment:</label><span class="col-md-9">'+json.submissionRequestComment+'</span></div>';
 					          }
 		          //}
@@ -629,7 +632,7 @@ function getInternalInterviewsList(submissionId){
 			                    	//Latest interview for Reschedule  ends
 		                    		 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Attending\');" title="Attending"><i class="fa fa-check text-success"></i></a>';
 		                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
-			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Not Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
+			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Not_Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
 			                    	 '</sec:authorize>';
 			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Maybe\');" title="Maybe"  class="brder-int"><i class="fa fa-question-circle text-muted"></i></a>';
 		                    	/*  } */
@@ -781,7 +784,7 @@ function changeInterviewStatus(submissionId,interviewId,interviewStatus){
 		    	 if(interviewStatus == "Attending"){
            		    $("#"+(interviewId)+"showStatus").html("<font color='green' >Attending</font>");
 	           	 }
-	           	 if(interviewStatus == "Not Attending"){
+	           	 if(interviewStatus == "Not_Attending"){
 	           		$("#"+(interviewId)+"showStatus").html("<font color='red' >Not Attending</font>");
 	           	 }
 	           	 if(interviewStatus == "Maybe"){
@@ -881,7 +884,7 @@ function getCustomerInterviewsList(submissionId,requirementId){
 		                    	 if(report.interviewStatus == null || report.interviewStatus == '' || report.interviewStatus =='undefined'){
 		                    		 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Attending\');" title="Attending"><i class="fa fa-check text-success"></i></a>';
 		                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
-			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Not Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
+			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Not_Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
 			                    	 '</sec:authorize>';
 			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Maybe\');" title="Maybe"><i class="fa fa-question-circle text-muted"></i></a>';
 		                    	 }
@@ -1359,11 +1362,23 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" data-validation="required validate_Space validate_length length2-250" field-name="Comment"></textarea>';
 		result = result + '				</div>';
 		result = result + '		    </div>';
-		result = result + '		    <div class="row">';
+		/* result = result + '		    <div class="row">';
 		result = result + '				<div class="col-md-8" id="docFileuploadFileGroup">';
-		result = result + '					<input type="file" multiple id="docFile" name="docFile" class="mt10" data-validation="required validate_Space validatedoc" field-name="Attachment">';
+		result = result + '					<input type="file"  id="docFile" name="docFile"  style="display: none;"  multiple="" class="mt10" data-validation="required validate_Space validatedoc" field-name="Attachment">';
+
 		result = result + '				</div>';
-		result = result + '			</div>';
+		result = result + '			</div>'; */
+		
+		result = result+'	                  <div class="clearfix mb10 row mt" id="docFileuploadFileGroup">';
+		result = result+'	                    <div class="col-md-12">';
+		result = result+'							<div class="input-group positionRelative" id="uploadFileGroup">';
+		result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+		result = result+'	                            <input type="file" name="docFile" id="docFile" style="display: none;"  multiple="" class="upload">';
+		result = result+'	                            </span> </label>';
+		result = result+'	                          <input type="text" class="form-control margnTop0" readonly id="uploadFile" name="docFile" placeholder="Attachment" field-name="Attachment" data-validation="required validate_Space validatedoc">';
+		result = result+'	                        </div>';
+		result = result+'	                    </div>  ';  
+		result = result+'	                  </div>   '; 
 		result = result + '			<div class="row">';
 		result = result + '				<div class="col-md-12"><input type="button" id="request_candidate" value="Submit" title="Sibmit" class="pull-right btn btn-primary mt10 btn-sm ml10" onclick="requestCandidate(\''+submissionId+'\',\'request\');">';
 		result = result + '				</div>';
@@ -1373,11 +1388,31 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		$('#request').append(result);
 		$('#accpet-div').fadeOut();
 		$('#reject').fadeOut();
-		attachmentValidationFun();
+		//attachmentValidationFun();
+		
+		/* upload file script for size validation 2MB*/
+	    var selectedFile = document.getElementById("docFile");
+	    selectedFile.addEventListener("change", function() {
+	      var docSize = this.files[0].size;
+	      $("#docFileuploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  document.getElementById("uploadFile").value = '';
+	    	  $("#docFileuploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
+	      }
+	    });
+	    
+	    
+	    document.getElementById("docFile").onchange = function () {
+			   //$("#uploadFile").dir(this.files[0]);
+		    	//document.getElementById("uploadFile").value = this.value;
+		    	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+		  
+		   }; 
 	};
 	$("#request, .acceptreject-pop, .labelsuccess").click(function(e){
 		 e.stopPropagation();
 	});
+	
 	
 </script>
 
@@ -2215,8 +2250,8 @@ $("#notMail").click(function(){
 function reActivateApplicant(submissionId,candidateId,requirementId){
 	var result = "";
 	var sourceleadUrl ='${sourceleadUrl}';
-	var message = confirm("You are choosing to ReActivate the Applicant");
-	if (message == true) {
+// 	var message = confirm("You are choosing to ReActivate the Applicant");
+// 	if (message == true) {
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 	        type : "POST",
@@ -2229,7 +2264,7 @@ function reActivateApplicant(submissionId,candidateId,requirementId){
 	                 },
 	              }); 
 		
-	}
+// 	}
 	
 }
 </script>

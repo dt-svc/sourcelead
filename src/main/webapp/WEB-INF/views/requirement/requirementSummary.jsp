@@ -596,7 +596,7 @@ function sideBar(requirementId){
                			else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined' && json.jobType != 'Other'){
      				     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'-'+json.jobType+'">'+json.jobTitle+'-'+json.jobType+'</span><i></i></h4></a>';
                			}else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined' && json.jobType == 'Other' ){
-        			     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'-'+json.jobType+'-'+json.otherJobType+'">'+json.jobTitle+'-'+json.jobType+'-'+json.otherJobType+'</span><i></i></h4></a>';
+           			     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'-'+json.jobId+'-'+json.jobType+'-'+json.otherJobType+'">'+json.jobTitle+'-'+json.jobId+'-'+json.jobType+'-'+json.otherJobType+'</span><i></i></h4></a>';
 	
                			}else{
                				result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'">'+json.jobTitle+'</span><i></i></h4></a>';
@@ -693,7 +693,7 @@ function sideBar(requirementId){
 					        for(var i=0; i<strNoticeArray.length; i++){
 					        	arrNotice[i] = strNoticeArray[i] +" ";
 					        }
-					        result = result+'<li class="noticePeriod"><i class="fa fa-bell"></i><span>'+arrNotice+'</span></li>';
+					        result = result+'<li class="noticePeriod"><i class="fa fa-bell" title="Notice Period"></i>'+arrNotice+'</li>';
 				        }
 					    else{
 						result = result+'<li><i class="fa fa-bell"></i><span> --- </span>';
@@ -720,16 +720,6 @@ function sideBar(requirementId){
 				        result = result+'          </div>';
 				        result = result+'        </div>';
 				        result = result+'      </div>';
-				        result = result+'    </div>';
-				        result = result+'    <div class="col-md-3">';
-				        result = result+'      <select class="selectpicker pull-right">';
-				        result = result+'        <option>Open</option>';
-				        result = result+'        <option>Draft</option>';
-				        result = result+'        <option>Filled Closed</option>';
-				        result = result+'        <option>Unfilled</option>';
-				        result = result+'        <option>On Hold</option>';
-				        result = result+'        <option>Cancel</option>';
-				        result = result+'      </select>';
 				        result = result+'    </div>';
 				        result = result+'  </div>';
 				        result = result+'</div>';
@@ -1370,7 +1360,7 @@ function rejectRequirementAlertMessage(status){
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
 	result = result +"	<div id='reasonDiv'/>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='updateReuqirementStatus(\""+ status+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert12();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='updateReuqirementStatusReject(\""+ status+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert12();'></b>";
 	result = result +"	</div>";
 	result = result +"	</div>";
 	$("#rejectRequirementAlert").append(result);
@@ -1379,7 +1369,51 @@ function rejectRequirementAlertMessage(status){
 }
 </script>
 
-
+<script>
+function updateReuqirementStatusReject(status){
+	
+	var sourceleadUrl = '${sourceleadUrl}';
+	var requirementId = '${requirementId}';
+	 
+	 var reason = document.getElementById("rejectReason").value;
+	  if(reason.match(/^[^\s-](.*)*$/) != null){
+	$('#reasonDiv').empty();
+ 	$.ajax({
+      type : "POST",
+      url: sourceleadUrl+"/requirementAcceptOrReject?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&reason="+reason, 
+    		  success :function(data) {  
+            if(data != null && data != 'undefined' && data != ""){  
+          		 if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+          		 else if (data.indexOf('exception') >= 0) {
+          			 location.replace(sourceleadUrl+"/errorPage");
+          		 }
+          		 else{ 
+          			 $("#selector11").removeAttr("style");
+           			 $("#selector11").css({ display: "block" });
+          			 if(status == "APPROVED"){
+          				$("#msgDiv").html("Requirement approved Successfully");
+          			 }else{
+          				$("#msgDiv").html("Requirement rejected Successfully");
+          			   }
+      				 requirementDetails(requirementId)
+             			msgFadein();
+               	 }
+            }
+       },
+	  }); 
+	  }
+	  else{
+		  if(reason){
+				$("#reasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+			}else{
+				$("#reasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+			}
+	  }
+	 
+}
+</script>
 <%-- 
      @author : Venkat Kesav
      this script is for Delete Candidate alert
@@ -3642,7 +3676,7 @@ function requirementRecommendations(requirementId){
 		    result = result +'<th>Number of req</th>';
 		    result = result +'<th>Updated Date</th>';
 		    result = result +'<th>Score</th>';
-		    //result = result +'<th>Action</th>';
+		    result = result +'<th>Action</th>';
 		    result = result +'</tr>';
 		    result = result +'</thead>';
 		    result = result +'<tbody>';
@@ -3745,7 +3779,7 @@ function requirementRecommendations(requirementId){
 		    result = result +'<div class="clearfix row">';
 		    
 		    result = result +'<div class="col-md-6 paddingRight">';
-		    result = result +'<label>NoticePeriod</label>';
+		    result = result +'<label>Notice Period</label>';
 		    result = result +'<div class="progress">';
 		    var noticePeriodGraph = (100 * report.noticePeriodPercentage)/report.totalNoticePeriodPercentage;
 		    result = result +'<div class="progress-bar progress-bar-danger" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+noticePeriodGraph+'%"> '+report.noticePeriodPercentage+'% ';
@@ -3754,7 +3788,7 @@ function requirementRecommendations(requirementId){
 		    result = result +' </div>';
 		    
 		    result = result +'<div class="col-md-6 paddingLeft">';
-		    result = result +'<label>KeyWord</label>';
+		    result = result +'<label>Keyword</label>';
 		    result = result +'<div class="progress">';
 		    var keywordGraph = (100 * report.totalKeyWordPerPercentage)/report.keyWordPerPercentage;
 		    result = result +'<div class="progress-bar progress-bar-primary" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+keywordGraph+'%"> '+report.totalKeyWordPerPercentage+'% ';
@@ -3767,7 +3801,16 @@ function requirementRecommendations(requirementId){
 		   
 		    result = result +'</div>';		    
 		    result = result +'</div></td>';
-		   /*  result = result +'<td><div><span>';
+		    
+		    if(report.isCandidateSubmitted == 'N'){
+		    	result = result +'<td class="text-center"><div id="recommendedCandidate'+report.candidateId+'"><a href="javascript:void(0)" title="" onclick="submitRecomendedApplicant('+requirementId+','+report.candidateId+');" class="add-applicant">Apply</a></div>';
+		    }else{
+		    	result = result +'<td class="text-center"><div class="text-success">Applied</div>';
+		    }
+		    
+		  
+		    
+		    /*  result = result +'<td><div><span>';
 		    if(report.isCandidateAdedd == true){
 		    	result = result +'<input type="button" value="Added" class="btn btn-primary btn-sm">';
 		    }else{

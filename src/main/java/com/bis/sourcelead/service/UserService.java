@@ -28,6 +28,8 @@ public interface UserService  {
 
 	public void sendEmail(User user, User loginUser, String password, Long orgLocationsId) throws Exception;
 	
+	public void sendEmailFromSourcelead(User user, User loginUser, String password, Long orgLocationsId,Long orgId) throws Exception;
+	
 	String validateEmailandCandidate(String website, String email,String sourceleadBLockedwebsites) throws Exception;
 	
 	User getUserById(Long Id) throws Exception;

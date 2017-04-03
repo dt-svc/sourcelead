@@ -571,9 +571,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public List<Candidate> getAllCandidatesForHotListingWhoAreTerminating(Long orgLocationId, Integer datRange)
+	public List<Candidate> getAllCandidatesForHotListingWhoAreTerminating(Long orgLocationId, Integer datRange,Long reportingManagerUserId)
 			throws Exception {
-		return candidateDao.getAllCandidatesForHotListingWhoAreTerminating(orgLocationId,datRange);
+		return candidateDao.getAllCandidatesForHotListingWhoAreTerminating(orgLocationId,datRange,reportingManagerUserId);
 	}
 	
 	@Override
@@ -835,6 +835,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			 can.setCandidateRequiementCount(requirementSubmissionCount);
 		}
 		return ownerByCandidatesList;
+	}
+
+	@Override
+	public List<Candidate> getHotCandidateListByTeamIdAndOrgLocationId(Long teamId, Long orgLocationId)
+			throws Exception {
+		return candidateDao.getHotCandidateListByTeamIdAndOrgLocationId(teamId, orgLocationId);
 	}
 
 

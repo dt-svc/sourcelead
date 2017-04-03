@@ -67,4 +67,10 @@ public interface ProjectMembersDao {
 
 	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndProjectIdAndStratDateAndEndDateAndStatus(String status,String startDate,String endDate,Long projectId);
 	
+	
+	public List<ProjectMembers> getAllProjectsByUserIdForCandidatesHotList(Long userId) throws Exception;
+	
+	
+	
+	
 }

@@ -115,7 +115,14 @@ function requirementReportPagination(){
 	$('#requirementReportPagination').DataTable({ 
 		 dom: 'Bfrtip',
 	        buttons: [
-	            'excel', 'pdf'
+	        	{
+	                extend: 'excel',
+	                title: 'Applicants Recieved',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Applicants Recieved',
+	            }
 	        ],
 		
     	"scrollCollapse": false,
@@ -260,13 +267,13 @@ function toDate(selector) {
 				<span><i class="glyphicon glyphicon-send"></i></span><b id="submitToClientCount">0</b>
 			</li>
 			<li title="Interviews" id="interviewli" class="colorTwo">
-				<span><img src="images/interview1.png" alt=""/></span><b id="interviewCount">0</b>
+				<span><img src="resources/images/interview1.png" alt=""/></span><b id="interviewCount">0</b>
 			</li>
 			<li title="Offers" id="offermadeli">
 				<span><i class="fa fa-tags"></i></span><b id="offerCount">0</b>
 			</li>
 			<li title="Rejected" id="rejectedli" class="colorTwo">
-				<span><i class="glyphicon glyphicon-trash"></i></span><b id="rejectedCount">0</b>
+				<span><i class="fa fa-ban"></i></span><b id="rejectedCount">0</b>
 			</li>
 					<div class="clearfix"></div>
 		</ul>

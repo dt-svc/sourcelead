@@ -71,7 +71,7 @@ function prepareReportDataDiv(data){
 	result = result + '    <th>Assigned To</th>';
 	result = result + '    <th>Assigned On</th>';
 	result = result + '    <th>Team Name</th>';
-	result = result + '    <th>Offered</th>';
+// 	result = result + '    <th>Offered</th>';
 	result = result + '   </tr>';
 	result = result + '	</thead>';
 	result = result + '	<tbody>';
@@ -137,7 +137,7 @@ function prepareReportDataDiv(data){
 			}
 			result = result + '</td>';
 
-			result = result + '<td>';
+			/* result = result + '<td>';
 			if (report.offered != null && report.offered != ''
 					&& report.offered != 'undefined') {
 				result = result + '<div><span>' + report.offered
@@ -145,7 +145,7 @@ function prepareReportDataDiv(data){
 			} else {
 				result = result + '<div><span>---</span></div>';
 			}
-			result = result + '</td>';
+			result = result + '</td>'; */
 
 			result = result + '</tr>';
 		}
@@ -162,7 +162,14 @@ function requirementReportPagination(){
 	$('#requirementReportPagination').DataTable({ 
 		 dom: 'Bfrtip',
 	        buttons: [
-	            'excel', 'pdf'
+	        	{
+	                extend: 'excel',
+	                title: 'Requirement Assign To',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Requirement Assign To',
+	            }
 	        ],
 		
     	"scrollCollapse": false,
@@ -315,7 +322,7 @@ function requirementReportPagination(){
 				<span><i class="fa fa-tags"></i></span><b id="offerCount">0</b>
 			</li>
 			<li title="Rejected" id="rejectedli" class="colorTwo">
-				<span><i class="glyphicon glyphicon-trash"></i></span><b id="rejectedCount">0</b>
+				<span><i class="fa fa-ban"></i></span><b id="rejectedCount">0</b>
 			</li>
 					<div class="clearfix"></div>
 		</ul>

@@ -681,9 +681,10 @@ function removeCandidateAlertMessage(candidateId){
 function reActivateCandidateAlertMessage(candidateId){
 	var result = "";
 	var sourceleadUrl ='${sourceleadUrl}';
-	var message = confirm("You are choosing to ReActivate the Candidate");
-	if (message == true) {
+	/* var message = confirm("You are choosing to ReActivate the Candidate");
+	if (message == true) { */
 		var reactivate = '1';
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 	        type : "POST",
 	         url: sourceleadUrl+"/reActivateCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&reActivate="+reactivate,        
@@ -694,7 +695,7 @@ function reActivateCandidateAlertMessage(candidateId){
 	                 },
 	              }); 
 		
-	}
+// 	}
 	
 }
 </script>
@@ -721,6 +722,7 @@ function candidateProfile(candidateId){
 							var result ="";
 							
 							result = result+'<div id="removeCandidateAlert" ></div>  ';
+							result = result+'<div id="loading" ></div>  ';
 							if(json.status == '0'){
 								'<sec:authorize access="hasAnyRole(\'ROLE_REACTIVATE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
 								result = result + '<div class="project_tabs_inn_head mt10"><div class="anchor-inline"><a href="#" class="positionRelative showInfo"><i class="glyphicon glyphicon-info-sign"></i>Terminated<span class="infoContent col-xs-12 col-md-5"> '+json.terminateReason+' </span></a><a href="javascript:void(0)" onClick="reActivateCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>ReActivate</a> </div>';

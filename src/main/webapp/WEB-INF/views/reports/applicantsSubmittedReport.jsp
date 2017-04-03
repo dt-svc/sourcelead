@@ -124,7 +124,14 @@ function requirementReportPagination(){
 	$('#requirementReportPagination').DataTable({ 
 		 dom: 'Bfrtip',
 	        buttons: [
-	            'excel', 'pdf'
+	        	{
+	                extend: 'excel',
+	                title: 'Applicants Submitted',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Applicants Submitted',
+	            }
 	        ],
 		
     	"scrollCollapse": false,
@@ -201,8 +208,8 @@ function requirementReportPagination(){
       <div class="timesheet_head">
 
 <div class="pull-left reportBtns">
-	  <div class="reportBtn">
-		<select class="form-control select-bg" id="reportTypeId" onChange="getDayWiseReports(); custDates(); flushCustomDates();">
+	  <div class="reportBtn select-field">
+		<select class="form-control" id="reportTypeId" onChange="getDayWiseReports(); custDates(); flushCustomDates();">
 		 <option value="">select</option>
 		  <option value="today">Today</option>
 		  <option value="yesterday">Yesterday</option>
@@ -275,7 +282,7 @@ function requirementReportPagination(){
 				<span><i class="fa fa-tags"></i></span><b id="offerCount">0</b>
 			</li>
 			<li title="Rejected" id="rejectedli" class="colorTwo">
-				<span><i class="glyphicon glyphicon-trash"></i></span><b id="rejectedCount">0</b>
+				<span><i class="fa fa-ban"></i></span><b id="rejectedCount">0</b>
 			</li>
 					<div class="clearfix"></div>
 		</ul>

@@ -347,7 +347,7 @@ function addContact(orgRelationID,clientLocationId) {
 	
 	result = result  +'	 <div class="clearfix mb10" id="EmailIdDiv">';
 	result = result  +'	  <div class="col-md-12">';
-	result = result  +'	    <input type="text" class="form-control input-sm" name="email" id="EmailId" value=""  onblur=" validateEmail('+orgRelationID+'); getSpocUserDetails('+clientLocationId+','+orgRelationID+');" field-name="Email" placeholder="Email Id *" data-validation="required validate_Space validate_length length2-100 validate_email">';
+	result = result  +'	    <input type="text" class="form-control input-sm" name="email" id="EmailId" value=""  onblur=" validateEmail('+orgRelationID+'); getSpocUserDetails('+clientLocationId+','+orgRelationID+'); getOwnersList();" field-name="Email" placeholder="Email Id *" data-validation="required validate_Space validate_length length2-100 validate_email">';
 	result = result  +'	   </div>';
 	result = result  +'	 </div>';
 	
@@ -491,7 +491,11 @@ $('html').click(function(){
 						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId+"&clientLocationId="+vendorLocationId+"&responderType=Vendor",
 						success : function(result) {
 							$("#popUpDivContact").removeClass("edit-details-active");
+							$("#vendorConactTerminateMsgDiv").removeAttr("style");
+				 			$("#vendorConactTerminateMsgDiv").css({ display: "block" });
+				 			$("#vendorConactTerminateMsg").html("Success !! New Contact Added");
 							vendorContactList(orgRelationId,vendorLocationId);
+							vendorConactTerminateMsgFadein();
 						},
 			});
 			return true;
@@ -724,7 +728,7 @@ function rejectSpocInvitation(spocId,orgRelationId,clientLocationId){
 
 <script type="text/javascript">
 function validateEmail(orgRelationID){
-	 getOwners(orgRelationID);
+	 //getOwners(orgRelationID);
 	var email = document.getElementById("EmailId").value;
 	var sourceleadUrl = '${sourceleadUrl}';
 	if(email != null){
@@ -765,4 +769,41 @@ function validateEmail(orgRelationID){
         $('#vendorConactTerminateMsgDiv').delay(2000).fadeOut('slow');
 	}
 </script> 
+
+<script type="text/javascript">
+ function getOwnersList() {
+	 var email = document.getElementById("email").value; 
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(email != null && email != "" && email != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getOwnersList?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type=Vendor", 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	for (var i=0; i<json.length; i++)
+					{
+		        		 var opt = json[i];
+			        		if(opt.id == SourceLeadWeb_userId){
+			        			output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		}
+			        		else{
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		}
+					}
+		        	$("#owner").empty();
+			        $("#owner").append(output);
+			        $('#owner').trigger("chosen:updated");
+		        },
+		    });
+	 }else{
+		 var output = "";
+     	 output = output + "<option value=''>-- Select Owner --</option>"; 
+     	 $("#owner").empty();
+	     $("#owner").append(output);
+	     $('#owner').trigger("chosen:updated");
+	 }
+	
+ }
+</script>
 <!-- End -->
