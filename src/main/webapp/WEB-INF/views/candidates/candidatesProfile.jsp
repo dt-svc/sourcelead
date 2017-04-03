@@ -1009,7 +1009,27 @@ function candidateProfile(candidateId){
  function saveSkils(candidateId){
 	 var skillName = $("#skillName").val();
 	 var jsonData = encodeURIComponent(skillName);
+	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(skillName != null && skillName != '' && skillName !='undefined'){
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+jsonData
+	 }else{
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+""
+	 }
+	 
+	 $.ajax({  
+         type : "POST",
+         url: Urlcheck,        
+         success :function(data) {
+              if(data != null && data != 'undefined' && data != "" && data == "success"){
+           	  //candidateProfile(candidateId);
+              }
+       },
+         
+    }); 
+	 
+	 
+	 
+/* 	 if(skillName != null && skillName != '' && skillName !='undefined'){
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({  
 	          type : "POST",
@@ -1023,7 +1043,7 @@ function candidateProfile(candidateId){
 	     }); 
 	 }else{
 		 
-	 }
+	 } */
 	 
  }  
 </script>
