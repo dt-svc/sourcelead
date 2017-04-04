@@ -266,7 +266,11 @@ public class VendorRestController {
 					
 				}
 				
-				
+				User createdUser = userService.getUserDetailsByUserCode(orgRelation.getCreatedBy());
+				 StringBuilder vendorCreatedName = new StringBuilder();
+				if(createdUser != null){
+					orgRelation.setCreatedBy(vendorCreatedName.append(createdUser.getFirstName()).append(" ").append(createdUser.getLastName()).toString());
+				}
 			}
 		    
 		    
