@@ -876,6 +876,29 @@ function candidateProfile(candidateId){
 <script>  
  function saveSkils(candidateId){
 	 var skillName = $("#skillName").val();
+	 var jsonData = encodeURIComponent(skillName);
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(skillName != null && skillName != '' && skillName !='undefined'){
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+jsonData
+	 }else{
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+""
+	 }
+	 
+	 $.ajax({  
+         type : "POST",
+         url: Urlcheck,        
+         success :function(data) {
+              if(data != null && data != 'undefined' && data != "" && data == "success"){
+           	  //candidateProfile(candidateId);
+              }
+       },
+         
+    }); 
+	 
+	 
+	 
+	/*  
+	 var skillName = $("#skillName").val();
 	 if(skillName != null && skillName != '' && skillName !='undefined'){
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({  
@@ -891,7 +914,7 @@ function candidateProfile(candidateId){
 	     }); 
 	 }else{
 		 alert("Enter Skill");
-	 }
+	 } */
 	 
  }  
 </script>

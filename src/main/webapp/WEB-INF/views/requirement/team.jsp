@@ -798,7 +798,7 @@ function getTeamOwners(){
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
-		        	output = output + "<option value=''>-Select Team Owners-</option>"; 
+		        	output = output + "<option value=''>-Select Team Lead-</option>"; 
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
