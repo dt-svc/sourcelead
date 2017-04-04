@@ -347,23 +347,37 @@ bottom:-14px;
 		    }); 
 		    //Adding Customized Educations to the list
 		    
-		    //Adding Customized Skills to the list
-           var select, chosen;
-           select = $("#skills");
-           select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
-           chosen = select.data('chosen');
-           chosen.search_field.on('keyup', function(e)
-           {
-        	   var newSkill = this.value.replace(",","");
-               if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-               {
-                   var option = $("<option>").val(newSkill).text(newSkill);
-                   select.append(option);
-                   select.find(option).prop('selected', true);
-                   $("#skills").trigger("chosen:updated");
-               }
-           });
-           //Adding Customized Skills to the list
+		     //Adding Customized Skills to the list
+	       var select, chosen;
+		    select = $("#skills");
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Email:' });
+		    chosen = select.data('chosen');
+		    chosen.search_field.on('keyup', function(e)
+		    {
+		    	   var skillsArray = this.value.split(",");
+			    	 if(skillsArray.length > 1){
+		        		 for (var i=0; i < skillsArray.length; i++) {
+		        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
+		        			 select.append(option);
+		 		             select.find(option).prop('selected', true);
+		 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
+		 	        		 $("#skills").trigger("chosen:updated");
+		                 }
+			    	 }else{
+		    			var newSkill = this.value.replace(","," ");
+		    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+		                {
+		    				 var option = $("<option>").val(newSkill).text(newSkill);
+		                     select.append(option);
+		                     select.find(option).prop('selected', true);
+		                     $("#skills option").each(function(){
+		                         $(this).siblings("[value='"+ this.value+"']").remove();
+		                   });
+		                   $("#skills").trigger("chosen:updated");
+		                }
+				       
+	    	         }
+		    });
            
 	       
 			for (var selector in config) {
