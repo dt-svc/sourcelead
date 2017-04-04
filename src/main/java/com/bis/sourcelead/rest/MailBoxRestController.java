@@ -294,55 +294,6 @@ public class MailBoxRestController {
 	    	
 	    	UserMailBox nextMail = userMailBoxService.getUserNextMail(userMailbox.getId(), user.getId(), orgLocation.getId(), type);
 	    	
-	    	List<Long> candidateId = new ArrayList<Long>();
-	    	if(null !=  userMailbox.getCandidateId()){
-			 for (String s : userMailbox.getCandidateId().split(",")){
-				 candidateId.add(Long.parseLong(s));
-			 }
-				
-				List<Candidate> candidatesList = candidateService.getAllRequestedCandidatesForCampaign(candidateId);
-				if(null != candidatesList){
-					
-					for(Candidate candidate : candidatesList){
-						
-						 String candidateName = null;
-						 String experienceInYears = null;
-						 String experienceInMonths = null;
-						 String totalExp = null;
-						 if(!isNullOrEmpty(candidate.getLastName())){
-							 StringBuilder name = new StringBuilder();
-							 candidateName = name.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString();
-					   	 }else{
-					   		candidateName = candidate.getFirstName();
-					   	 }
-						
-						 if(!isNullOrEmpty(candidate.getExperienceYears())){
-							 experienceInYears = candidate.getExperienceYears();
-						 }else{
-							 experienceInYears = "0";
-						 }
-						 
-						 if(!isNullOrEmpty(candidate.getExperienceMonths())){
-							 experienceInMonths = candidate.getExperienceMonths();
-						 }else{
-							 experienceInMonths = "0";
-						 }
-						 
-						 if(isNullOrEmpty(candidate.getExperienceMonths()) && isNullOrEmpty(candidate.getExperienceMonths())){
-							 totalExp = "-----";
-						 }else{
-							 StringBuilder exp = new StringBuilder();
-							 totalExp = exp.append(experienceInYears).append(" Years ").append(experienceInMonths).append(" Months").toString();
-						 }
-						 
-						 candidate.setCandidateName(candidateName);
-						 candidate.setTotalExp(totalExp);
-						 reqCandidatesList.add(candidate);
-					}
-					
-				}
-	    	  }
-	    	
 		    	userMailbox.setIsMailRead(1);
 				userMailBoxService.saveUserMailBox(userMailbox);
 				userMailBoxService.saveOrUpdateUserMailBoxELK(userMailbox);
