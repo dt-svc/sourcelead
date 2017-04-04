@@ -126,8 +126,7 @@
  }
  </script>
  
- 
- 
+
  
  <script>
  function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
@@ -154,7 +153,7 @@
 		result = result + '   	<div class="export_pipline filterLi" id="myModal">';
 		result = result + '       	<ul>';
 		result = result + '           	<li><input id="c5" type="checkbox" name="employeeStatus" value ="All" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c5">All</label></li>';
-		result = result + '				<li><input id="c6" type="checkbox" name="employeeStatus" value ="Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c6">Active</label></li>';
+		result = result + '				<li><input id="c6" type="checkbox"  checked="true" name="employeeStatus" value ="Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c6">Active</label></li>';
 		result = result + '				<li><input id="c7" name="employeeStatus" type="checkbox" value ="In-Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c7">In-Active</label></li> ';
 		result = result + '           </ul>';
 		result = result + '       </div>';                	
@@ -215,11 +214,16 @@
  <script>
  function getFilterEmployeeDetails(projectId,startDateStr,endDateStr,status,projectName){
 	 var values = [];
-	$('input:checkbox[name=employeeStatus]:checked').each(function() 
-    {
-		values.push($(this).val());
-    });
-	
+	 var chekbox = $('input:checkbox[name=employeeStatus]:checked').val();
+	 if(chekbox != 'undefined' && chekbox != '' && chekbox != null){
+			$('input:checkbox[name=employeeStatus]:checked').each(function() 
+				    {
+						values.push($(this).val());
+				    });
+	 }else{
+		 values = "Active";
+	 }
+
 	 var sourceleadUrl ='${sourceleadUrl}';
 	    $.ajax({
 	    	type: "POST",
