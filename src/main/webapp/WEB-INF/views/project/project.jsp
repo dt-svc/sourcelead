@@ -104,7 +104,7 @@ function validateTaskName(){
 						<div class="form-group">
 							<label class="col-md-3"> Project Description </label>
 							<div class="col-md-9">
-								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length10-5000"
+								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length2-250"
 									data-validation-optional="true"></textarea>
 								<span class="hidden">Project Description</span>
 							</div>
@@ -448,8 +448,8 @@ function getStatus(){
 			if(($('#taskName').val() != '' && $("#taskName").val().length < 2 )|| $("#taskName").val().length > 100){
 				$("input#taskName") .after( "<p class='jquery_form_error_message'>The values Entered must be between 2-100 characters</span>");
 			}
-			if (($("#taskDescription").val() != '' && $("#taskDescription").val().length < 10) || $("#taskDescription").val().length > 200) {
-				$("textarea#taskDescription") .after( "<p class='jquery_form_error_message'>The values Entered must be between10-200 characters</span>");
+			if (($("#taskDescription").val() != '' && $("#taskDescription").val().length < 2) || $("#taskDescription").val().length > 200) {
+				$("textarea#taskDescription") .after( "<p class='jquery_form_error_message'>The values Entered must be between2-250 characters</span>");
 			}
 			return true;
 		} 

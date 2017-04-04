@@ -641,4 +641,12 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		
 	}
 
+	@Override
+	public Collection<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId, String status)
+			throws Exception {
+		Collection<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectMembersByProjectIdAndStatus(projectId,status);
+		return projectMembersList;
+	}
+	
+
 }

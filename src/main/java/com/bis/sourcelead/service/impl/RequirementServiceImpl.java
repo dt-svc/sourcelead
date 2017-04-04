@@ -664,6 +664,14 @@ public class RequirementServiceImpl implements RequirementService {
 			
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
 		
+		if(!savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())){
+			 List<Requirement> parentrequirement = getAllReleasedRequirementsByParentId(savedRequirement.getId());
+		if(null != parentrequirement && !parentrequirement.isEmpty()){
+			for(Requirement parentrequirementList :parentrequirement){
+				releaseUpdatedMailScenario(user, savedRequirement, parentrequirementList.getSpocId(), orgLocations);
+			}
+		  }
+		}
 		//store recommended customizeScore
 		RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScoreService.saveCustomizeScore(requirement);
 	
@@ -757,6 +765,124 @@ public class RequirementServiceImpl implements RequirementService {
 			       requirementElkUtil.saveElkRequirement(savedRequirement,jsonObj);
 			    
 		return savedRequirement;
+	}
+
+	
+	
+private void releaseUpdatedMailScenario(User loginUser, Requirement requirement, OrgSpoc spoc,OrgLocations loginOrgLocation) throws Exception {
+	
+	User vendorUser = userService.getUserById(spoc.getVendorUser().getId());
+	
+	EmailMessage emailMessage = new EmailMessage();
+	 emailMessage.setFirstName(loginUser.getFirstName());
+	 emailMessage.setLastName(loginUser.getLastName());
+	 emailMessage.setToEmail(vendorUser.getEmail());
+	 emailMessage.setFromEmail(loginUser.getEmail());
+	 emailMessage.setCreatedBy(loginUser.getUserCode());
+	 StringBuilder msgBuild = new StringBuilder();
+	 emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+	 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+	//setting the class filed values
+	 Map<String, String> globalVarsMap = new HashMap<String, String>();
+	 if (requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle()) ) {
+		 globalVarsMap.put("RequirementTitle", requirement.getJobTitle());
+		 } else {
+			 globalVarsMap.put("RequirementTitle", "--");
+		}
+	 
+	 StringBuilder stringBuild = new StringBuilder();
+	 if(requirement.getCity()!= null && !"".equalsIgnoreCase(requirement.getCity())){
+		 globalVarsMap.put("RequirementLocation",stringBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).append(",").append(requirement.getCity()).toString());
+	 }else if(requirement.getState()!= null && !"".equalsIgnoreCase(requirement.getState())){
+		 globalVarsMap.put("RequirementLocation",stringBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).toString());
+	 }else if(requirement.getCountry()!= null && !"".equalsIgnoreCase(requirement.getCountry())){
+		 globalVarsMap.put("RequirementLocation",stringBuild.append(requirement.getCountry()).toString());
+	 }else{
+		 globalVarsMap.put("RequirementLocation", "--");
+	 }
+	 
+	 if (requirement.getRate() != null && !"".equalsIgnoreCase(requirement.getRate()) ) {
+		 globalVarsMap.put("RequirementRate", requirement.getRate());
+		 } else {
+			 globalVarsMap.put("RequirementRate", "--");
+		}
+	 if (vendorUser.getFirstName() != null && vendorUser.getLastName()!= null && !"".equalsIgnoreCase(vendorUser.getFirstName()) && !"".equalsIgnoreCase(vendorUser.getLastName())) {
+		 StringBuilder userBuild = new StringBuilder();
+		 globalVarsMap.put("clientContactname", userBuild.append(vendorUser.getFirstName()).append("").append(vendorUser.getLastName()).toString());
+		 } else {
+			 globalVarsMap.put("clientContactname", vendorUser.getFirstName());
+		}
+	 if((requirement.getMinExp()!= null  && !"".equalsIgnoreCase(requirement.getMinExp())) && (requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp()))){
+		 StringBuilder expBuild = new StringBuilder();
+		 globalVarsMap.put("Experience", expBuild.append(requirement.getMinExp()).append("-").append(requirement.getMaxExp()).toString());
+		 }else if(requirement.getMinExp()!= null  && !"".equalsIgnoreCase(requirement.getMinExp())){
+			 globalVarsMap.put("Experience", requirement.getMinExp());
+		 }else if(requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp())){
+			 globalVarsMap.put("Experience",requirement.getMaxExp());
+		 }else{
+			 globalVarsMap.put("Experience","--"); 
+		 }
+	 
+	 if (requirement.getRequirementSubmissionStatus() != null) {
+		 globalVarsMap.put("status", requirement.getRequirementSubmissionStatus().getValue());
+		 } else {
+			 globalVarsMap.put("status", "--");
+		}
+	 StringBuilder linkBuild = new StringBuilder();
+	 globalVarsMap.put("link",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+	
+	 if (loginUser.getFirstName() != null && loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())) {
+		 StringBuilder userBuild = new StringBuilder();
+		 globalVarsMap.put("LoginUser",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		 } else {
+			 globalVarsMap.put("LoginUser", loginUser.getFirstName());
+		}
+	 
+	 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
+		 globalVarsMap.put("LoginOrgName",loginOrgLocation.getOrg().getOrgName() );
+		 } else {
+			 globalVarsMap.put("LoginOrgName", "--");
+		}
+	 if (requirement.getManagerUserId() != null) {
+		 User managerUser = userService.getUserById(requirement.getManagerUserId().getId());
+		 globalVarsMap.put("requirementManagerName",managerUser.getFullName());
+		 } else {
+			 globalVarsMap.put("requirementManagerName", "--");
+		}
+	
+	 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+	
+	 //getting the current EmailScenario by EmailScenario unique name and entity type
+	 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATEDREQUIREMENTNOTIFICATIONTOVENDOR,Constants.ENTITY_TYPE_EMAIL);
+	 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATEDREQUIREMENTNOTIFICATIONTOVENDOR,Constants.ENTITY_TYPE_NOTIFICATION);
+
+	 
+	 //covert subject,body and signature
+	 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+	 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+	 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+	 String url = "";
+	 
+	 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+	 notificationScenario.setBody(notificationbody);
+
+	 
+	// OrgLocations vendorOrgLoc = requirement.getSpocId().getVendorLocationId();
+
+	 
+	 //construct HTML template using required data
+	 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+	 emailMessage.setSubject(subject);
+	 emailMessage.setMessageBody(emailTemplate);
+	 
+	 //calling the sendEmail method of emailScenerioUtil
+	 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+	 String actionLink="";
+	//emailScenerioUtil.sendNotification(actionLink, loginUser, vendorUser, vendorOrgLoc, notificationScenario);
+
+	
+	
+		
 	}
 
 /*	private void saveElkRequirement(Requirement requirement, JSONObject jsonObj) throws Exception {
@@ -2151,13 +2277,19 @@ public class RequirementServiceImpl implements RequirementService {
         if (jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())){
         	
         	  reqTemplate = requirementDao.getRequirementTemplateByRequirementId(Long.parseLong(jsonObj.getString("requirementId")), orgLocations.getId());
+        	  
+        	  if(reqTemplate == null){
+        		  reqTemplate = new Requirement();
+        	  }
 			
 		}else{
 			reqTemplate = new Requirement();
 		}
 		
+        if(jsonObj.getString("isTemplate") != null && !"".equalsIgnoreCase(jsonObj.getString("jobTitle"))){
 		 reqTemplate.setIsTemplate(jsonObj.getString("isTemplate"));
-		 
+        }
+        
 		 if(orgLocations != null){
 			 reqTemplate.setOrgLocationId(orgLocations);
 			}
