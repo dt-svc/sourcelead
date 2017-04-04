@@ -252,7 +252,7 @@ else{
 	             	 }
 	              result = result +"  <td><div ><span title='"+opt.email+"'>"+opt.email+"</span></div></td>";
 	             
-	              result = result +"  <td><div>"+mobilePhone+"</div></td>";
+	              result = result +"  <td><div class='tbldata-dotdot'>"+mobilePhone+"</div></td>";
 	              
 	              result = result +"  <td><div><span title='"+location+"'>"+location+"</span></div></td>";
 	

@@ -3271,7 +3271,7 @@ a.collpase-div .fa-angle-down:hover{
 	position:fixed;
 	right: 0px;
 	top: 90px;
-	z-index: 999999;
+	z-index: 1000;
 }
 .addTask .icon-addTask{
 	background:-webkit-linear-gradient(#2bddb8,#17aa8c);
@@ -3351,7 +3351,7 @@ ul.addTasUl li .fa{
  	transition: all 0.3s ease-in-out 0s;
 	width:1000px !important; 
  	padding:10px;
- 	z-index:99999;
+ 	z-index:0;
 	box-shadow: 0 0 4px #000000;
 }
 .addTask-widget:after {
@@ -6530,7 +6530,7 @@ margin-left: 15px;
     height: 45px;
     text-align: center;
     line-height: 45px; font-size: 20px;
-    color: #D5D5D5;
+    color: #707070;
     background: #fff;
     border-radius: 50%;
     transition: all 0.3s linear;
@@ -6810,7 +6810,12 @@ padding-top: 50px; box-shadow: 1px 1px 2px #707070; transition: 0.3s ease-in-out
     color: #fff;
 }
 CrowdSourcing New Header Styles */
-
+.success_color {
+    color: #4CAF50 !important;
+}
+.filterLi input[type=checkbox], .filterLi input[type=radio]{
+	margin-top: 1px; margin-right: 5px;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

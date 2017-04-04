@@ -222,8 +222,8 @@ function getUsersSearchResult(searchValue){
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
           <li><i class="fa fa-filter"></i>&nbsp;
                <select id="userState" onchange="flushAdvancedData();">
-				<option value="">--Select Status--</option>
 				<option value="ACTIVE" >Active</option>
+				<option value="">All</option>
 				<option value="INACTIVE" >In Active</option>
 				<option value="NOT_LOGGEDIN">Not Logged IN</option>
 			   </select>
