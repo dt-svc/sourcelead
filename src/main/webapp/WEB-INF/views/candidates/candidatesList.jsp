@@ -246,10 +246,15 @@ else{
 	              
 	              if(opt.designationType != null && opt.designationType != '' && opt.designationType != "undefined")
 	             	 {
-	                   result = result +"  <td><div>"+opt.designationType+"</div></td>";
+	            	  if(opt.designationOtherType !=null && opt.designationOtherType !='' && opt.designationOtherType !="undefined"){
+	                   result = result +"  <td><div>"+opt.designationOtherType+"</div></td>";
+	             	 }else{
+	             		result = result +"  <td><div>"+opt.designationType+"</div></td>"; 
+	             	 }
 	             	 }else{
 	             		 result = result +"  <td><div>----</div></td>"; 
 	             	 }
+	              
 	              result = result +"  <td><div ><span title='"+opt.email+"'>"+opt.email+"</span></div></td>";
 	             
 	              result = result +"  <td><div class='tbldata-dotdot'>"+mobilePhone+"</div></td>";

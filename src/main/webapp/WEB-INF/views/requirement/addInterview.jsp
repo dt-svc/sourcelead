@@ -73,7 +73,7 @@ function addInterview(requirementId){
 	result = result + '        <div id="scheduleCalendar"></div>                                                        ';
 	result = result + '        <div class="clearfix"></div>                                                             ';
 	result = result + '        <ul class="scheduleAvailable">                                                           ';
-	result = result + '          <li class="particalCount">Partly available<span class="bg-warning"></span></li>                              ';
+	result = result + '          <li class="particalCount">Partially available<span class="bg-warning"></span></li>                              ';
 	result = result + '          <li class="fullCount">Full<span class="bg-danger"></span></li>                                           ';
 	result = result + '        <div class="clearfix"></div> ';
 	result = result + '        </ul>                                                                                    ';
