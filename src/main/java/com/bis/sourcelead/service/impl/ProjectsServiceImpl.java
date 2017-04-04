@@ -1559,6 +1559,86 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 
 		 return myPM;
 	}
+	
+	
+	@Override
+	public ProjectMembers getProjectEmployeeListByProjectIdAndStatus(Long projectId,String status) throws Exception {
+		
+		ProjectMembers myPM =  new ProjectMembers();
+		
+		
+		Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdAndStatus(projectId,status);
+		Projects pr = projectsDao.getProjectById(projectId);
+		
+		ArrayList<ProjectMembers> projectMembersArrList = new ArrayList<ProjectMembers>();
+		 for(ProjectMembers pm : projectMembersList){
+			 if(pm.getEmployee() != null){
+				 StringBuilder membersListStringBuilder=new StringBuilder();
+				 pm.setEmpName(membersListStringBuilder.append(pm.getEmployee().getUser().getFirstName()).append(" ").append(pm.getEmployee().getUser().getLastName()).toString());	 
+				 pm.setEmpEmail(pm.getEmployee().getUser().getEmail());	 
+			 }
+			 pm.setProjectStatus(pr.getProjectStatus().getValue());
+			 
+			 ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm.getId());
+			 if(pmh == null){
+				 pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(pm.getId());
+			 }
+			 if(pmh != null && pmh.getProjectAssignedDate()!=null){
+				 pm.setProjectAssignedDateStr(Constants.DF_DMY.format(pmh.getProjectAssignedDate()));
+            }
+	       	 if(pmh != null && pmh.getProjectTerminationDate()!=null){
+	       		pm.setProjectEndDateStr(Constants.DF_DMY.format(pmh.getProjectTerminationDate()));
+	       	 }
+	       	 //to set actual project end date
+	       	 if(pm.getProjects().getEndDate() != null){
+	        		pm.setEndDate(Constants.DF_DMY.format(pm.getProjects().getEndDate()));
+	        	 }
+	       	 if(pm.getEmployee() != null && pm.getEmployee().getUser() != null && pm.getEmployee().getUser().getId() != null){
+	          		pm.setUserId(pm.getEmployee().getUser().getId().toString());
+	          	 }
+		      if(pm.getTerminateReason() != null){
+		    	  pm.setTerminateReason(pm.getTerminateReason());
+		      }
+	       	 
+	       	 if(pm.getEmployee()!=null){
+	
+	                Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(pm.getEmployee().getUser().getId(), projectId, "DRAFT");
+	    	      //  Float draftTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(pm.getEmployee().getUser().getId(), projectId, "DRAFT");
+	    	      //  Float draftTimesheetsSubmissionsCount =  draftTimesheetsSubmissionsCountAsEmployee + draftTimesheetsSubmissionsCountAsApprover;
+	    	        pm.setDraftHrs(draftTimesheetsSubmissionsCountAsEmployee.toString());
+	
+	    	        Float submittedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(pm.getEmployee().getUser().getId(), projectId, "SUBMITTED");
+	    	       // Float submittedTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(pm.getEmployee().getUser().getId(), projectId, "SUBMITTED");
+	    	       // Float submittedTimesheetsSubmissionsCount =  submittedTimesheetsSubmissionsCountAsEmployee + submittedTimesheetsSubmissionsCountAsApprover;
+	    	        pm.setSubmittedHrs(submittedTimesheetsSubmissionsCountAsEmployee.toString());
+	    			
+	    		    Float approvalTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(pm.getEmployee().getUser().getId(), projectId, "APPROVED");
+	    		   // Float approvalTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(pm.getEmployee().getUser().getId(), projectId, "APPROVED");
+	    	       // Float approvalTimesheetsSubmissionsCount =  approvalTimesheetsSubmissionsCountAsEmployee + approvalTimesheetsSubmissionsCountAsApprover;
+	    	        pm.setApprovedHrs(approvalTimesheetsSubmissionsCountAsEmployee.toString());
+	    			
+	    			Float rejectedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(pm.getEmployee().getUser().getId(), projectId, "REJECTED");
+	    		   // Float rejectedTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(pm.getEmployee().getUser().getId(), projectId, "REJECTED");
+	    		    //Float rejectedTimesheetsSubmissionsCount =  rejectedTimesheetsSubmissionsCountAsEmployee + rejectedTimesheetsSubmissionsCountAsApprover;
+	    		    pm.setRejectedHrs(rejectedTimesheetsSubmissionsCountAsEmployee.toString());
+	                
+	                
+	       	 }	
+			 projectMembersArrList.add(pm);
+		 }
+		 ObjectMapper mapper = new ObjectMapper();
+		 String jsonInString = mapper.writeValueAsString(projectMembersArrList);
+		 
+		 
+		 myPM.setProjectMembersList(projectMembersArrList);
+		 if(pr.getProjectStatus() != null){
+			 myPM.setStatus(pr.getProjectStatus().getValue());	 
+		 }
+		 
+		 
+		 return myPM;
+	}
+
 
 	/**
 	  * This method for save the  project by json
