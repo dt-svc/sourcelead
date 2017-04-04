@@ -4324,7 +4324,7 @@ function getRateListDiv(submissionId, candidateId){
 				                     } */
 				                     
 				                     if(report.rateReason != null && report.rateReason != 'undefined' && report.rateReason !=''){
-				                    	 result = result + '        <td><div class="tbldata-dotdot">'+report.rateReason+'</div></td>';
+				                    	 result = result + '        <td><div class="tbldata-dotdot" title="'+report.rateReason+'">'+report.rateReason+'</div></td>';
 				                     }else{
 				                    	 result = result + '        <td><div class="tbldata-dotdot">---</div></td>';
 				                     }
