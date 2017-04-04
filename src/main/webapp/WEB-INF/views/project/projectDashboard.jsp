@@ -341,6 +341,7 @@ function projectsList(searchValue,searchresult,projectId,projectName,startDate,e
 	  }else{
 		  	$('input[name=projectStatus]').attr('checked',false);
 		  	$("#c6").prop("checked", true);
+		  	$("#c7").prop("checked", true);
 			$('input[name=clientNameById]').attr('checked',false);
 			filter();
 		/* searchProject(); */
@@ -434,6 +435,7 @@ $(document).ready(function() {
 		  	result = result + '</div>';
 		  	
 		  	result = result + '<div id="tab-2" class="project_tabs_inn">';
+		  	result = result + '<p> "hi" </p>';
 		  	result = result + '</div>';
 		  	
 		  	result = result + '<div id="tab-3" class="project_tabs_inn">';

@@ -1226,9 +1226,9 @@ function preparedClientListFromElk(data){
 		   		var report = json[i];
 		   		var location = "";
 		   		if(report.city != null && report.city != '' && report.city != 'undefined'){
-		   			location = report.country+", "+report.state+", "+report.city;
+		   			location = report.city+", "+report.state+", "+report.country;
 		   		}else if(report.state != null && report.state != '' && report.state != 'undefined'){
-		   			location = report.country+", "+report.state;
+		   			location = report.state+", "+report.country;
 		   		}else{
 		   			location = report.country;
 		   		}
