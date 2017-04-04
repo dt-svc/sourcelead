@@ -3813,4 +3813,14 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		return requirementSubmissionDao.isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(candidateId, requirementId);
 	}
 
+	@Override
+	public List<Long> getcandidateListBySubmissionId(List<Long> submissionsIds,Long orgLocationId) {
+		return requirementSubmissionDao.getcandidateListBySubmissionId(submissionsIds,orgLocationId);
+	}
+
+	@Override
+	public List<Long> getSubmissionIdByCandidateId(List<Long> candidateIds, Long orgLocationId) {
+		return requirementSubmissionDao.getSubmissionIdByCandidateId(candidateIds,orgLocationId);
+	}
+
 }
