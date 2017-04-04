@@ -264,6 +264,7 @@ z-index: 9999999999 !important;
 	                              <div class="col-md-12" id="userEmailDiv">
 	                                <input type="text" data-validation="required validate_Space validate_length length2-100 validate_email"  field-name="Email" onblur="getUserByUserEmail(); validateUserEmail();" onKeyUp="validateUserEmail();"  name="userEmail" id="userEmail" class="form-control input-sm"  placeholder="Email">
 	                              	<input type="hidden" name="registeredOrgLocationId" value="${registeredOrgLocationId}">
+	                              	<input type="hidden" name="registredOrgId" value="${orgId}">
 	                              </div>
                               </div>
                               
