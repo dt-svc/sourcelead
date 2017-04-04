@@ -840,7 +840,7 @@ function getDayWiseAppRecReports(){
 	        	 }
         	 else{
         		 var result ="";
-	        		result = result + ' <div class="row">                                            ';
+	        		result = result + ' <div class="row pavEmp">                                            ';
 					result = result + '	<div class="dataTables_empty">                                     ';
 					result = result + '	</div>                                                      ';
 					result = result + ' </div>                                                      ';
