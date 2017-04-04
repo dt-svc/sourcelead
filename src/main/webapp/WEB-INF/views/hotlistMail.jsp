@@ -15,6 +15,10 @@ display: none;
 .nicEdit-main {
 	overflow: auto !important;
 }
+
+.mt40{
+ margin-top: 50px !important;
+}
 </style>
 
 
@@ -414,7 +418,7 @@ function getClientContacts(){
                			    var result = '';
 	                	    result = result +'<div class="modal-body clearfix">';
 	                		result = result +'     </div>';
-	                		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter">'; 
+	                		result = result +'     <div class="modal-bodyCustom mt40 clearfix popupFilter">'; 
 	                	    result = result +'       <table id="example" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
@@ -470,7 +474,7 @@ function getClientContacts(){
                 	var result ="";
 	    	        result = result +'<div class="modal-body clearfix">';
 	           		result = result +'     </div>';
-	           		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter">'; 
+	           		result = result +'     <div class="modal-bodyCustom mt40 clearfix popupFilter">'; 
 	           	    result = result +'       <table id="example" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
 	           		result = result +'           <thead>';
 	           		result = result +'           <tr>';
@@ -518,7 +522,7 @@ function getClientList(){
                			    var result = '';
 	                	    result = result +'<div class="modal-body clearfix">';
 	                		result = result +'     </div>';
-	                		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter">'; 
+	                		result = result +'     <div class="modal-bodyCustom mt40 clearfix popupFilter">'; 
 	                	    result = result +'       <table id="example" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
@@ -580,7 +584,7 @@ function getClientList(){
                  	var result ="";
  	    	        result = result +'<div class="modal-body clearfix">';
  	           		result = result +'     </div>';
- 	           		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter">'; 
+ 	           		result = result +'     <div class="modal-bodyCustom mt40 clearfix popupFilter">'; 
  	           	    result = result +'       <table id="example" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
  	           		result = result +'           <thead>';
  	           		result = result +'           <tr>';
