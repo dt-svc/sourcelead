@@ -173,9 +173,16 @@ display: none;
 			        success: function(data) {
 			        	var json = JSON.parse(data);
 			        	
+			        	
 			        	 $("input[name=subject]").val(json['subject']);
 			    		 
-			    		 nicEditors.findEditor('bodytext').setContent(json['body']);
+			        	 if(json['comments'] != '' && json['comments'] != null && json['comments'] != 'undefied'){
+			        		 nicEditors.findEditor('bodytext').setContent('<br/>'+json['comments']+'<br/><br/>'+json['body']); 
+			        	 }
+			        	 
+			        	 if(json['comments'] == null && json['body'] != '' && json['body'] != null && json['body'] != 'undefied'){
+			        		 nicEditors.findEditor('bodytext').setContent('<br/><br/>'+json['body']);
+			        	 }
 			        	
 			        }
 			 });

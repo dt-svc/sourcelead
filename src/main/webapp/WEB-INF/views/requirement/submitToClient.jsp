@@ -353,6 +353,8 @@ function addEmailtemplate(requirementId){
 			 
 			 if(selectedRate != '' && selectedRatePer == ''){
 				 isCountinue = false;
+			 }else if(selectedRate == '' && selectedRatePer != ''){
+				 isCountinue = false;
 			 }
 		});
 		 
