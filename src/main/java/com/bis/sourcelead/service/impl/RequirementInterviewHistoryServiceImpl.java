@@ -216,6 +216,15 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 					}
 					i++;
 				}
+				if(requirementInterview.getInterviewType() != null){
+					if(requirementInterview.getInterviewType().equalsIgnoreCase("Other")){
+						interviewHistory.setInterviewType(requirementInterview.getCustomInterviewType());
+					}
+					else{
+						interviewHistory.setInterviewType(requirementInterview.getInterviewType());
+					}
+					
+				}
 				interviewHistory.setInterviewersList(InterviewersList);
 				ineterviewList.add(interviewHistory);
 			}

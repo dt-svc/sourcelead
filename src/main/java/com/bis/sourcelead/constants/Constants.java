@@ -209,7 +209,8 @@ public class Constants {
 	public static String TIMESHEET_EMAIL_NOTIFICATION = "Timesheet Scheduler";
 	public static String TIMESHEET_MANAGER_NOTIFICATION = "Timesheet Scheduler Level1 Manager";
 	
-
+	public static String UPDATEDREQUIREMENTNOTIFICATIONTOVENDOR="updatedRequirementNotificationToVendor"; 
+	
 	public static String OFFERREJECT_EMAIL = "Vendor Offer Reject";
 	
 	public static String OFFERACCEPT_EMAIL = "VendorAcceptedOffer";
