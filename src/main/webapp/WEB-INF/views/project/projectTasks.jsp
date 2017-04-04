@@ -156,7 +156,7 @@ function taskNameValidation(){
 						result = result + '<th>Task name</th>';
 						result = result + '<th>Billable Type</th>';
 						result = result + '<th>Task description</th>';
-						result = result + '<th>Actin</th>';
+						result = result + '<th>Action</th>';
 						result = result + '</tr>';
 						result = result + '</thead>';
 						result = result + '<tbody>';
