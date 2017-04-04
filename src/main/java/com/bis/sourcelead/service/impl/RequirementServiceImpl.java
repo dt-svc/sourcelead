@@ -2151,13 +2151,19 @@ public class RequirementServiceImpl implements RequirementService {
         if (jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())){
         	
         	  reqTemplate = requirementDao.getRequirementTemplateByRequirementId(Long.parseLong(jsonObj.getString("requirementId")), orgLocations.getId());
+        	  
+        	  if(reqTemplate == null){
+        		  reqTemplate = new Requirement();
+        	  }
 			
 		}else{
 			reqTemplate = new Requirement();
 		}
 		
+        if(jsonObj.getString("isTemplate") != null && !"".equalsIgnoreCase(jsonObj.getString("jobTitle"))){
 		 reqTemplate.setIsTemplate(jsonObj.getString("isTemplate"));
-		 
+        }
+        
 		 if(orgLocations != null){
 			 reqTemplate.setOrgLocationId(orgLocations);
 			}

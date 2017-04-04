@@ -1086,7 +1086,7 @@ $(document).ready(function () {
                               </div>
                             </div>
                             <div class="form-group">
-                            <label class="col-lg-4">Team Owner <span class="text-danger">*</span></label>
+                            <label class="col-lg-4">Team Lead <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
                              <select class="form-control"  name="ownerUserId" id="ownerUserId" placeholder="Team Lead *" data-validation="required validate_Space" field-name="Team Lead"  onchange="getTeamMembers();">
 			                    	
@@ -1119,11 +1119,6 @@ $(document).ready(function () {
 
 <script type="text/javascript">
 	function storeRequirement(saveType) {
-		checkTemplateforDouplicate();
-		validateJobId();
-		$('#addClient').empty();
-		$('#addContact').empty();
-		//$('#addTeam').empty(); /* commented by Venkat Kesav because of issue #2673 */ 
 		
 		var validationSettings = {
 		        errorMessagePosition : 'element',
@@ -1132,6 +1127,11 @@ $(document).ready(function () {
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
 		
+		checkTemplateforDouplicate();
+		validateJobId();
+		$('#addClient').empty();
+		$('#addContact').empty();
+		//$('#addTeam').empty(); /* commented by Venkat Kesav because of issue #2673 */ 
 		
           if(saveType=='draft'){
 			
@@ -1555,6 +1555,7 @@ function getTemplateVal(){
 		checkTemplateforDouplicate();
 		
     }else{
+    	
         $("#isTemplate").val('N');
        /*  $('#jobTitle').removeAttr('data-validation');
 		$('#jobTitle').attr("data-validation-optional","true");  */
@@ -2299,7 +2300,7 @@ function getTeamOwners(){
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
-		        	output = output + "<option value=''>-Select Team Owners-</option>"; 
+		        	output = output + "<option value=''>-Select Team Lead-</option>"; 
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
@@ -2571,7 +2572,7 @@ function checkTemplateforDouplicate(){
 			        	}
 			        	else{
 			        		 $('input#jobTitle').removeAttr( "record-exist record-exist-errormsg");
-			        		 $('#jobTitleDiv').find('p.jquery_form_error_message').remove(); 
+			        		// $('#jobTitleDiv').find('p.jquery_form_error_message').remove(); 
 			        		 $("#requirement_form" ).addClass('button').val('Save');
 		                    $("#requirement_form").removeAttr("disabled");
 			        	}
