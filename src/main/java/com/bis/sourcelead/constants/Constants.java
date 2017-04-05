@@ -219,6 +219,9 @@ public class Constants {
 	
 	public static String UPDATEDREQUIREMENTNOTIFICATIONTOVENDOR="updatedRequirementNotificationToVendor"; 
 	
+	public static String UPDATED_REQUIREMENT_EMAIL_TO_MANAGER="updatedRequirementEmailToManager";
+	public static String UPDATED_REQUIREMENT_NOTIFICATION_TO_MANAGER="updatedRequirementNotificationToManager";
+	
 	public static String OFFERREJECT_EMAIL = "Vendor Offer Reject";
 	
 	public static String OFFERACCEPT_EMAIL = "VendorAcceptedOffer";
