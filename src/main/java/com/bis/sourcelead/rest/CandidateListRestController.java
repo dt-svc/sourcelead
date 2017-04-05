@@ -670,8 +670,10 @@ public class CandidateListRestController {
 	 @RequestMapping(value = "/getCandidateById" , method = RequestMethod.POST)
 	 public @ResponseBody  String getCandidateById(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
 			String resultJson ="" ;
-			 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			Countries countries = countriesService.getCountriesByCountryName(loginUser.getCountry());
+			
+			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			 Countries countries = countriesService.getCountriesByCountryName(loginOrgLocation.getCountry());
+			
 			Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
 			
 			LinkedHashSet<String> lhs = new LinkedHashSet<String>();
@@ -679,7 +681,7 @@ public class CandidateListRestController {
 			for(LookUpData lookUpData :skillsList){
 				lhs.add(lookUpData.getName());
 			}
-			if(StringUtils.isNotEmpty(can.getSkillsName())){
+			if(null != can.getSkillsName() && StringUtils.isNotEmpty(can.getSkillsName())){
 				String [] csl = can.getSkillsName().split(",");
 				for(String sl : csl){
 					lhs.add(sl);

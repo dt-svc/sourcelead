@@ -735,7 +735,7 @@ public class RequirementServiceImpl implements RequirementService {
 					       	for(RequirementAssignTo newly :newlyAddedList){
 					       		User newlyAddedUser = newly.getAssignUserId();
 					       		Set<RequirementAssignTo> updatedRequirementAssignToList = savedRequirement.getRequirementAssignTo();
-									if(updatedRequirementAssignToList != null  ){
+									if(updatedRequirementAssignToList != null && !user.getId().equals(newlyAddedUser.getId())){
 												AssignToTeamMembersEmail(user, newlyAddedUser, savedRequirement,location,orgLocations);
 											}
 										}
@@ -747,21 +747,40 @@ public class RequirementServiceImpl implements RequirementService {
 					//send mail to Assigned Team 
 					//condition : if login user as team member then mail not send
 					// this logic will execute when no approvers are selected for requirement.
-				  if(!savedRequirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED) && savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())){
+				  if(!savedRequirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED)){
 					Set<RequirementAssignTo> updatedRequirementAssignToList = savedRequirement.getRequirementAssignTo();
 					if(updatedRequirementAssignToList != null  ){
 						for(RequirementAssignTo requirementAssignTo : updatedRequirementAssignToList ){
-							if(requirementAssignTo.getAssignUserId() != null && !user.getId().equals(requirementAssignTo.getAssignUserId().getId())){
-								AssignToTeamMembersEmail(user, requirementAssignTo.getAssignUserId(), savedRequirement,location,orgLocations);
-							}
+							if(savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())){
+								if(requirementAssignTo.getAssignUserId() != null && !user.getId().equals(requirementAssignTo.getAssignUserId().getId())){
+									AssignToTeamMembersEmail(user, requirementAssignTo.getAssignUserId(), savedRequirement,location,orgLocations);
+								}
+							} 
 						 }
+					}
+				}
+				  
+				  	//send mail to modified Assigned Team 
+					//condition : if login user as team member then mail should not send
+				  if(!savedRequirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED)){
+						Set<RequirementAssignTo> updatedRequirementAssignToList = savedRequirement.getRequirementAssignTo();
+						if(updatedRequirementAssignToList != null  ){
+							for(RequirementAssignTo requirementAssignTo : updatedRequirementAssignToList ){
+								 if(!savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())){
+									if(requirementAssignTo.getAssignUserId() != null && !user.getId().equals(requirementAssignTo.getAssignUserId().getId())){
+										updatedRequirementMailToAssignedMembers(user,requirementAssignTo.getAssignUserId(), savedRequirement,location,orgLocations);
+									}
+								}
+							 }
 						}
 					}
 					//send mail to manger 
 					//condition : login user as manager then  mail shoul not forwared
-					if(savedRequirement.getManagerUserId() != null && !user.getId().equals(savedRequirement.getManagerUserId().getId())){
+					if(savedRequirement.getManagerUserId() != null && !user.getId().equals(savedRequirement.getManagerUserId().getId()) && savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())){
 						mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
-					}
+					}else if(!savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate()) && !user.getId().equals(savedRequirement.getManagerUserId().getId())){
+							updatedRequirementMailToManager(user,user, savedRequirement,location,orgLocations);
+				}
 		 }		
 			       
 			       requirementElkUtil.saveElkRequirement(savedRequirement,jsonObj);
@@ -769,8 +788,220 @@ public class RequirementServiceImpl implements RequirementService {
 		return savedRequirement;
 	}
 
+		
+private void updatedRequirementMailToAssignedMembers(User loginUser, User assUser, Requirement requirement,
+			StringBuilder location, OrgLocations loginOrgLocation) throws Exception {
 	
+	 assUser= userService.getUserById(assUser.getId());
+	 UserRole loginUserRole =  userRoleService.getUserDetailsByUserIdAndLocationId(loginUser.getId(), loginOrgLocation.getId());
 	
+	 EmailMessage emailMessage = new EmailMessage();
+	 emailMessage.setFirstName(loginUser.getFirstName());
+	 emailMessage.setLastName(loginUser.getLastName());
+	 emailMessage.setToEmail(assUser.getEmail());
+	 emailMessage.setFromEmail(loginUser.getEmail());
+	 emailMessage.setCreatedBy(loginUser.getUserCode());
+	// StringBuilder msgBuild = new StringBuilder();
+	// emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+	// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+	//setting the class filed values
+	 Map<String, String> globalVarsMap = new HashMap<String, String>();
+	 if (requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle()) ) {
+		 globalVarsMap.put("RequirementTitle", requirement.getJobTitle());
+		 } else {
+			 globalVarsMap.put("RequirementTitle", "--");
+		}
+	 
+	 StringBuilder stringBuild = new StringBuilder();
+	 if(requirement.getCity()!= null && !"".equalsIgnoreCase(requirement.getCity())){
+		 globalVarsMap.put("RequirementLocation",stringBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).append(",").append(requirement.getCity()).toString());
+	 }else if(requirement.getState()!= null && !"".equalsIgnoreCase(requirement.getState())){
+		 globalVarsMap.put("RequirementLocation",stringBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).toString());
+	 }else if(requirement.getCountry()!= null && !"".equalsIgnoreCase(requirement.getCountry())){
+		 globalVarsMap.put("RequirementLocation",stringBuild.append(requirement.getCountry()).toString());
+	 }else{
+		 globalVarsMap.put("RequirementLocation", "--");
+	 }
+	 
+	 if (requirement.getRate() != null && !"".equalsIgnoreCase(requirement.getRate()) ) {
+		 globalVarsMap.put("RequirementRate", requirement.getRate());
+		 } else {
+			 globalVarsMap.put("RequirementRate", "--");
+		}
+	 if (assUser.getFirstName() != null && assUser.getLastName()!= null && !"".equalsIgnoreCase(assUser.getFirstName()) && !"".equalsIgnoreCase(assUser.getLastName())) {
+		 StringBuilder userBuild = new StringBuilder();
+		 globalVarsMap.put("clientContactname", userBuild.append(assUser.getFirstName()).append("").append(assUser.getLastName()).toString());
+		 } else {
+			 globalVarsMap.put("clientContactname", assUser.getFirstName());
+		}
+	 if((requirement.getMinExp()!= null  && !"".equalsIgnoreCase(requirement.getMinExp())) && (requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp()))){
+		 StringBuilder expBuild = new StringBuilder();
+		 globalVarsMap.put("Experience", expBuild.append(requirement.getMinExp()).append("-").append(requirement.getMaxExp()).toString());
+		 }else if(requirement.getMinExp()!= null  && !"".equalsIgnoreCase(requirement.getMinExp())){
+			 globalVarsMap.put("Experience", requirement.getMinExp());
+		 }else if(requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp())){
+			 globalVarsMap.put("Experience",requirement.getMaxExp());
+		 }else{
+			 globalVarsMap.put("Experience","--"); 
+		 }
+	 
+	 if (requirement.getRequirementSubmissionStatus() != null) {
+		 globalVarsMap.put("status", requirement.getRequirementSubmissionStatus().getValue());
+		 } else {
+			 globalVarsMap.put("status", "--");
+		}
+	 StringBuilder linkBuild = new StringBuilder();
+	 globalVarsMap.put("link",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+	
+	 if (loginUser.getFirstName() != null && loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())) {
+		 StringBuilder userBuild = new StringBuilder();
+		 globalVarsMap.put("LoginUser",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		 } else {
+			 globalVarsMap.put("LoginUser", loginUser.getFirstName());
+		}
+	 
+	 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
+		 globalVarsMap.put("LoginOrgName",loginOrgLocation.getOrg().getOrgName() );
+		 } else {
+			 globalVarsMap.put("LoginOrgName", "--");
+		}
+	
+	 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+	
+	 //getting the current EmailScenario by EmailScenario unique name and entity type
+	 //using same migration which has been already used in updatedRequirementMailToManager method
+	 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATED_REQUIREMENT_EMAIL_TO_MANAGER,Constants.ENTITY_TYPE_EMAIL);
+	 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATED_REQUIREMENT_NOTIFICATION_TO_MANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
+
+	 
+	 //covert subject,body and signature
+	 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+	 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+	 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+	 String url = "";
+	 
+	 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+	 notificationScenario.setBody(notificationbody);
+
+	 //construct HTML template using required data
+	 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+	 emailMessage.setSubject(subject);
+	 emailMessage.setMessageBody(emailTemplate);
+	 
+	 //calling the sendEmail method of emailScenerioUtil
+	 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+	 String actionLink="";
+	 emailScenerioUtil.sendNotification(actionLink, loginUser, assUser, loginOrgLocation, notificationScenario);
+	}
+		
+
+
+private void updatedRequirementMailToManager(User loginUser,User managerUser, Requirement requirement,StringBuilder location,OrgLocations loginOrgLocation) throws Exception {
+	
+	if(requirement.getManagerUserId() != null ){
+		managerUser = userService.getUserById(requirement.getManagerUserId().getId());
+	 }
+	
+	 EmailMessage emailMessage = new EmailMessage();
+	 emailMessage.setFirstName(loginUser.getFirstName());
+	 emailMessage.setLastName(loginUser.getLastName());
+	 emailMessage.setToEmail(managerUser.getEmail());
+	 emailMessage.setFromEmail(loginUser.getEmail());
+	 emailMessage.setCreatedBy(loginUser.getUserCode());
+	// StringBuilder msgBuild = new StringBuilder();
+	// emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+	// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+	//setting the class filed values
+	 Map<String, String> globalVarsMap = new HashMap<String, String>();
+	 if (requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle()) ) {
+		 globalVarsMap.put("RequirementTitle", requirement.getJobTitle());
+		 } else {
+			 globalVarsMap.put("RequirementTitle", "--");
+		}
+	 
+	 StringBuilder stringBuild = new StringBuilder();
+	 if(requirement.getCity()!= null && !"".equalsIgnoreCase(requirement.getCity())){
+		 globalVarsMap.put("RequirementLocation",stringBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).append(",").append(requirement.getCity()).toString());
+	 }else if(requirement.getState()!= null && !"".equalsIgnoreCase(requirement.getState())){
+		 globalVarsMap.put("RequirementLocation",stringBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).toString());
+	 }else if(requirement.getCountry()!= null && !"".equalsIgnoreCase(requirement.getCountry())){
+		 globalVarsMap.put("RequirementLocation",stringBuild.append(requirement.getCountry()).toString());
+	 }else{
+		 globalVarsMap.put("RequirementLocation", "--");
+	 }
+	 
+	 if (requirement.getRate() != null && !"".equalsIgnoreCase(requirement.getRate()) ) {
+		 globalVarsMap.put("RequirementRate", requirement.getRate());
+		 } else {
+			 globalVarsMap.put("RequirementRate", "--");
+		}
+	 if (managerUser.getFirstName() != null && managerUser.getLastName()!= null && !"".equalsIgnoreCase(managerUser.getFirstName()) && !"".equalsIgnoreCase(managerUser.getLastName())) {
+		 StringBuilder userBuild = new StringBuilder();
+		 globalVarsMap.put("clientContactname", userBuild.append(managerUser.getFirstName()).append("").append(managerUser.getLastName()).toString());
+		 } else {
+			 globalVarsMap.put("clientContactname", managerUser.getFirstName());
+		}
+	 if((requirement.getMinExp()!= null  && !"".equalsIgnoreCase(requirement.getMinExp())) && (requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp()))){
+		 StringBuilder expBuild = new StringBuilder();
+		 globalVarsMap.put("Experience", expBuild.append(requirement.getMinExp()).append("-").append(requirement.getMaxExp()).toString());
+		 }else if(requirement.getMinExp()!= null  && !"".equalsIgnoreCase(requirement.getMinExp())){
+			 globalVarsMap.put("Experience", requirement.getMinExp());
+		 }else if(requirement.getMaxExp()!= null  && !"".equalsIgnoreCase(requirement.getMaxExp())){
+			 globalVarsMap.put("Experience",requirement.getMaxExp());
+		 }else{
+			 globalVarsMap.put("Experience","--"); 
+		 }
+	 
+	 if (requirement.getRequirementSubmissionStatus() != null) {
+		 globalVarsMap.put("status", requirement.getRequirementSubmissionStatus().getValue());
+		 } else {
+			 globalVarsMap.put("status", "--");
+		}
+	 StringBuilder linkBuild = new StringBuilder();
+	 globalVarsMap.put("link",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+	
+	 if (loginUser.getFirstName() != null && loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())) {
+		 StringBuilder userBuild = new StringBuilder();
+		 globalVarsMap.put("LoginUser",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		 } else {
+			 globalVarsMap.put("LoginUser", loginUser.getFirstName());
+		}
+	 
+	 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
+		 globalVarsMap.put("LoginOrgName",loginOrgLocation.getOrg().getOrgName() );
+		 } else {
+			 globalVarsMap.put("LoginOrgName", "--");
+		}
+	
+	 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+	
+	 //getting the current EmailScenario by EmailScenario unique name and entity type
+	 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATED_REQUIREMENT_EMAIL_TO_MANAGER,Constants.ENTITY_TYPE_EMAIL);
+	 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATED_REQUIREMENT_NOTIFICATION_TO_MANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
+
+	 
+	 //covert subject,body and signature
+	 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+	 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+	 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+	 String url = "";
+	 
+	 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+	 notificationScenario.setBody(notificationbody);
+
+	 //construct HTML template using required data
+	 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+	 emailMessage.setSubject(subject);
+	 emailMessage.setMessageBody(emailTemplate);
+	 
+	 //calling the sendEmail method of emailScenerioUtil
+	 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+	 String actionLink="";
+	 emailScenerioUtil.sendNotification(actionLink, loginUser, managerUser, loginOrgLocation, notificationScenario);
+	}
+
+
+
 private void releaseUpdatedMailScenario(User loginUser, Requirement requirement, OrgSpoc spoc,OrgLocations loginOrgLocation) throws Exception {
 	
 	User vendorUser = userService.getUserById(spoc.getVendorUser().getId());
