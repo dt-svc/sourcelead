@@ -89,8 +89,8 @@ function candidateShortList(requirementId){
 				        	result = result + '<td><div><span>--</span></div></td>';
 			    	     }
 			           
-			           if(report.finalizedRate != null && report.finalizedRate != '' && report.finalizedRate != 'undefined'){
-			        	   result = result + '<td><div><span>'+report.finalizedRate+'</span></div></td>';
+			           if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
+			        	   result = result + '<td><div><span>'+report.expectedCTC+'</span></div></td>';
 				           }
 				       else{
 				    	   result = result + '<td><div><span>--</span></div></td>';

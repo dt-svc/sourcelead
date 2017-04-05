@@ -371,7 +371,12 @@ public class RequirementInterviewRestController {
 					submissionsIds.add(Long.valueOf(subId));
 				}
 				
-				requirementInterview = requirementInterviewService.getRequirementInterviewsBySubmissionAndOrgLocId(submissionsIds,loginOrgLocations.getId(),startUTCDate,endUTCDate);
+				List<Long> candidateIds  = requirementSubmissionService.getcandidateListBySubmissionId(submissionsIds,loginOrgLocations.getId());
+				
+				List<Long> submissionsIdList = requirementSubmissionService.getSubmissionIdByCandidateId(candidateIds,loginOrgLocations.getId());
+				
+				
+				requirementInterview = requirementInterviewService.getRequirementInterviewsBySubmissionAndOrgLocId(submissionsIdList,loginOrgLocations.getId(),startUTCDate,endUTCDate);
 				for(RequirementInterview reqInterview : requirementInterview){
 					DateFormat eventstartTimrFroDashBoard = new SimpleDateFormat( "hh:mm aa");
 					reqInterview.setCandidateName(reqInterview.getSubmissionId().getCandidate().getFirstName());
@@ -391,7 +396,9 @@ public class RequirementInterviewRestController {
 						String eventstartTimrFroDashBoardStr = eventstartTimrFroDashBoard.format(converteDate);
 						reqInterview.setInterviewEndtDateTimeStr(eventstartTimrFroDashBoardStr);
 					}
-					
+					else{
+						reqInterview.setInterviewEndtDateTimeStr("");
+					}
 					/*reqInterview.setInterviewStartDateTimeStr(reqInterview.getStartTime().toString());
 					reqInterview.setInterviewEndtDateTimeStr(reqInterview.getEndTime().toString());*/
 					if(reqInterview.getInterviewType()!=null){
