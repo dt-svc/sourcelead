@@ -303,9 +303,9 @@ function prepareRequirementData(data){
         }
        
         if(opt.state!=null && opt.state !='' && opt.state !='undefined' &&  opt.city !='undefined' && opt.city !='' &&  opt.city!=null){
-            result = result +"<td><div><span title='"+opt.country+', '+opt.state+', '+opt.city+"'>"+opt.city+', '+opt.state+', '+opt.country+"</span></div></td>";
+            result = result +"<td><div><span title='"+opt.city+', '+opt.state+', '+opt.country+"'>"+opt.city+', '+opt.state+', '+opt.country+"</span></div></td>";
         }else if(opt.state!=null && opt.state !='' && opt.state !='undefined'){
-            result = result +"<td><div><span title='"+opt.country+', '+opt.state+"'>"+opt.state+', '+opt.country+"</span></div></td>";
+            result = result +"<td><div><span title='"+opt.state+', '+opt.country+"'>"+opt.state+', '+opt.country+"</span></div></td>";
 
         }else{
             result = result +"<td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
