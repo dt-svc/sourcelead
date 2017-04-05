@@ -1429,6 +1429,13 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 emailScenerioUtil.sendEmail(emailMessage,reqSubmission.getOrgLocations().getOrg().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 	
 	}
+
+
+	@Override
+	public RequirementInterview getinterviewBySubmissionId(Long submissionId) {
+		return requirementInterviewDao.getinterviewBySubmissionId(submissionId);
+		
+	}
 	
 	
 	/*@Override
