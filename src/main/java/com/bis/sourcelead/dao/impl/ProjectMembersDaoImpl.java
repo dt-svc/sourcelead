@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao.impl;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -551,8 +552,40 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		
 		
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Collection<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId, String status)
+			throws Exception {
+		 Session session = this.sessionFactory.getCurrentSession();
+	        List<ProjectMembers> projectsMembersList = null;
+	        String[] tokens = status.split(",");
+	        
+	        String subQuery2 = "";
+	        if (Arrays.asList(tokens).contains("All")) {
+				subQuery2 = subQuery2 + "pm.status ='1' or pm.status ='0' or ";
+			}
+	        if (Arrays.asList(tokens).contains("Active")) {
+				subQuery2 = subQuery2 + "pm.status ='1' or ";
+			}
+	        if (Arrays.asList(tokens).contains("In-Active")) {
+				subQuery2 = subQuery2 + "pm.status ='0' or ";
+			}
+	        
+	        if ((tokens[0] != null && tokens[0].length() > 0) ) {
+				subQuery2 = "and (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
+			} else if (subQuery2 != null && !"".equals(subQuery2)) {
+				subQuery2 = " (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
+			}
+	        
+		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :projectId  "+ subQuery2 + "");
+
+		projectsMembersList=projectsMembersListQuery.setLong("projectId", projectId).setCacheable(true).list();
+		return projectsMembersList;
 	
+	}
 	
+
 
 }
 

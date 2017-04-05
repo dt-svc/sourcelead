@@ -78,8 +78,18 @@ window.onload = function() {
 					 result = result + '                          <p><label class="text-muted small col-md-2">Req.:</label> <a href="'+sourceleadUrl+"/requirementSummary?requirementUUID="+report.requirementUUID+'">'+report.requirementTitle+'</a></p>';
 					 result = result + '                          <p><label class="text-muted small col-md-2">Client:</label> '+clientName+'</p>    ';
 					 result = result + '                          <div class="feedBack"> ';
+					
 					  if(report.interviewerId != null  &&  report.interviewerId !='' && report.interviewerId !='undefined' && report.interviewTemplateid != null && report.interviewTemplateid != '' && report.interviewTemplateid != 'undefined'){
-						  result = result+'	 <a  href="'+sourceleadUrl+'/'+'dashboardInterviewFeedBackTemplate?templateId='+report.interviewTemplateid+'&requirementInterviewid='+report.interviewerId+'" ><i class="fa fa-handshake-o"></i></a>';
+						  result = result+'	 <a  href="'+sourceleadUrl+'/'+'dashboardInterviewFeedBackTemplate?templateId='+report.interviewTemplateid+'&requirementInterviewid='+report.interviewerId+'" >';
+						  if(report.feedbackDate != null && report.feedbackDate != '' && report.feedbackDate != 'undefined'){
+                        	   result = result+'<i class="fa fa-handshake-o success_color"></i>';
+						  }else{
+							  result = result+'<i class="fa fa-handshake-o"></i>';
+						  }
+ 
+						 
+						  
+						  result = result+'</a>';
                       }  
 					 //result = result + '                          <a href="javascript:void(0)" title="FeedBack"><i class="fa fa-handshake-o"></i></a>    ';
 					 result = result + '                          </div>                                                                               ';

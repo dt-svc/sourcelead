@@ -335,6 +335,8 @@ public class RequirementServiceImpl implements RequirementService {
 				skillId = skillId.replaceAll("\"", "");
 		  	    requirement.setSkills(skillId);
 		  	 
+			}else{
+				requirement.setSkills(null);
 			}
 			
 			if(jsonObj.has("education")){
@@ -2277,13 +2279,19 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
         if (jsonObj.has("requirementId") && !(jsonObj.getString("requirementId").isEmpty())){
         	
         	  reqTemplate = requirementDao.getRequirementTemplateByRequirementId(Long.parseLong(jsonObj.getString("requirementId")), orgLocations.getId());
+        	  
+        	  if(reqTemplate == null){
+        		  reqTemplate = new Requirement();
+        	  }
 			
 		}else{
 			reqTemplate = new Requirement();
 		}
 		
+        if(jsonObj.getString("isTemplate") != null && !"".equalsIgnoreCase(jsonObj.getString("jobTitle"))){
 		 reqTemplate.setIsTemplate(jsonObj.getString("isTemplate"));
-		 
+        }
+        
 		 if(orgLocations != null){
 			 reqTemplate.setOrgLocationId(orgLocations);
 			}

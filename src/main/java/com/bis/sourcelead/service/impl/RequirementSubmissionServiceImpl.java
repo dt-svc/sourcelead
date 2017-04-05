@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -1740,7 +1741,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    			 clientSubmissionFields.setCurrentCTC(templateFields.getCurrentCTC()); 
    		 }
    		 
-   		 if(!isNullOrEmpty(clientShortlistsRate[i])){
+   		 if(clientShortlistsRate.length > 0 && !isNullOrEmpty(clientShortlistsRate[i])){
    			 clientSubmissionFields.setExpectedCTC(clientShortlistsRate[i]); 
    		 }
    		 
@@ -1833,6 +1834,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		StringBuilder emailBuild = new StringBuilder();
 		emailMessage.setFromName(emailBuild.append(user.getFirstName()).append("").append(user.getLastName()).toString());
 		InternetAddress[] iAdressArray = null;
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
 
 		if (jsonObj.has("toMailId")) {
 			String othermail = "";
@@ -1847,12 +1849,30 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			String body = "";
 			//String signature = user.getFirstName();
 			String url = "";
+			
+			RequirementSubmission reqSub=null;
+			List<String> submissionIsd = Arrays.asList(submissionId);
+			for(String subIds :submissionIsd){
+			 reqSub = getRequirementSubmissionById(Long.parseLong(subIds));
+			 if(reqSub.getRequirement().getJobTitle()!= null  && !"".equalsIgnoreCase(reqSub.getRequirement().getJobTitle())){
+				 globalVarsMap.put("RequirementTitle", reqSub.getRequirement().getJobTitle());
+				 }else{
+					 globalVarsMap.put("RequirementTitle","--"); 
+				 }
+			 
+			 if(reqSub.getRequirement().getSpocId().getVendorUser().getFirstName()!= null  && !"".equalsIgnoreCase(reqSub.getRequirement().getSpocId().getVendorUser().getFirstName())){
+				 globalVarsMap.put("vendorName", reqSub.getRequirement().getSpocId().getVendorUser().getFirstName());
+				 }else{
+					 globalVarsMap.put("vendorName","--"); 
+				 }
+			}
 
 			// getting the current EmailScenario by EmailScenario unique name
 			// and entity type
 			EmailScenario emailScenario = null;
 			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SUBMIT_TO_CLIENT,
 					Constants.ENTITY_TYPE_EMAIL);
+			EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.NOTIFICATION_TO_CLIENT,Constants.ENTITY_TYPE_NOTIFICATION);
 
 			// covert subject,body and signature
 
@@ -1867,10 +1887,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			}*/
 
 			// construct HTML template using required data
+			String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getSubject(),globalVarsMap);
+			notificationScenario.setBody(notificationbody);
+			
 			String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, null, url, loginOrgLocation.getOrg());
 			emailMessage.setSubject(subject);
 			emailMessage.setMessageBody(emailTemplate);
-
+			
 			String attcahmentMaxRowNumber = jsonObj.getString("attcahmentMaxRowNumber");
 			int attcahmentMaxRowNumberCount = Integer.parseInt(attcahmentMaxRowNumber);
 			if (submissionXls != null) {
@@ -1894,9 +1917,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				}
 			}
 			
-			
+			User toUser = userService.findByEmail(jsonObj.getString("toMailId"));
 			emailScenerioUtil.sendWithAttachmentEmail(emailMessage, loginOrgLocation.getId(), iAdressArray,attachmentList,submissionId);
-
+			String actionLink="";
+			emailScenerioUtil.sendNotification(actionLink, user, toUser,reqSub.getRequirement().getSpocId().getClientLocationId(), notificationScenario);
 		}
 
 	}
@@ -3811,6 +3835,16 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	public boolean isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(Long candidateId, Long requirementId)
 			throws Exception {
 		return requirementSubmissionDao.isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(candidateId, requirementId);
+	}
+
+	@Override
+	public List<Long> getcandidateListBySubmissionId(List<Long> submissionsIds,Long orgLocationId) {
+		return requirementSubmissionDao.getcandidateListBySubmissionId(submissionsIds,orgLocationId);
+	}
+
+	@Override
+	public List<Long> getSubmissionIdByCandidateId(List<Long> candidateIds, Long orgLocationId) {
+		return requirementSubmissionDao.getSubmissionIdByCandidateId(candidateIds,orgLocationId);
 	}
 
 }

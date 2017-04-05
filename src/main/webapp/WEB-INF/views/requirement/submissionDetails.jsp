@@ -581,7 +581,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 } */
 	                    	 
 	                    	 if(report.interviewId.interviewType != null && report.interviewId.interviewType != 'undefined' && report.interviewId.interviewType != ""){
-	                    		 interviewType = report.interviewId.interviewType;
+	                    		 interviewType = report.interviewType;
 	                    		 interviewTypeHeader = report.interviewId.interviewType;
 	                    	 }
 	                    	 

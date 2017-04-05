@@ -228,7 +228,7 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 	public List<RequirementInterview> getRequirementInterviewsBySubmissionAndOrgLocId(List<Long> submissionsList,
 			Long locationId, Date startUTCDate, Date endUTCDate) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = " from RequirementInterview interview where interview.submissionId.id IN(:submissionsList) and interview.startTime >= :startDateUTC and interview.endTime <= :endDateUTC)" ;
+		String query = " from RequirementInterview interview where interview.submissionId.id IN(:submissionsList) and interview.startTime >= :startDateUTC and interview.startTime <= :endDateUTC)" ;
 		List<RequirementInterview> interviewList =session.createQuery(query).setParameter("startDateUTC", startUTCDate).setParameter("endDateUTC", endUTCDate).setParameterList("submissionsList", submissionsList).setCacheable(true).list(); 
 		return interviewList;
 	}
