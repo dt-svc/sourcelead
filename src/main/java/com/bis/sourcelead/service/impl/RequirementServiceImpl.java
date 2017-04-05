@@ -335,6 +335,8 @@ public class RequirementServiceImpl implements RequirementService {
 				skillId = skillId.replaceAll("\"", "");
 		  	    requirement.setSkills(skillId);
 		  	 
+			}else{
+				requirement.setSkills(null);
 			}
 			
 			if(jsonObj.has("education")){

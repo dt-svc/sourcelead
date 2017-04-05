@@ -1621,7 +1621,7 @@ function requirementPipeline(requirementId,submissionType){
 							           }
 							      }   
 						           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.createdUser+''+orgName+'<br/>'+candidateSource+'</span></div></td>';
+						        	   result = result + '         <td><div><span title="'+report.createdUser+''+orgName+'">'+report.createdUser+''+orgName+'<br/>'+candidateSource+'</span></div></td>';
 							           }
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
@@ -4299,21 +4299,29 @@ function getRateListDiv(submissionId, candidateId){
 		                    		 isLastNegotiator = "false";
 		                    	 }
 	                    	 }
-						    	 if(report.rateAndType != null && report.rateAndType != '' && report.rateAndType != 'undefined'){
+					    	 
+						    	 if(report.rateAndType != null && report.rateAndType != 'undefined' && report.rateAndType !=''){
+						    		 rateAndType = report.rateAndType;
+						    	 }else{
+						    		 rateAndType = "---";
+						    	 }
+						    	 /*  if(report.rateAndType != null && report.rateAndType != '' && report.rateAndType != 'undefined'){  */
 				                     result = result + '      <tr class="redtxt">';
 				                     if(report.proposeByName != null && report.proposeByName != 'undefined' && report.proposeByName !=''){
 				                    	 result = result + '        <td><div class="tbldata-dotdot-sm">'+report.proposeByName+'</div></td>';
 				                     }else{
 				                    	 result = result + '        <td><div class="tbldata-dotdot-sm">---</div></td>';
 				                     }
+				                    
+				                     result = result + '        <td><div class="tblminwidth-75">'+rateAndType+'</div></td>';
 				                     
-				                     if(report.rateAndType != null && report.rateAndType != 'undefined' && report.rateAndType !=''){
+				                    /*  if(report.rateAndType != null && report.rateAndType != 'undefined' && report.rateAndType !=''){
 				                    	 result = result + '        <td><div class="tblminwidth-75">'+report.rateAndType+'</div></td>';
 				                     }else if(report.expectedRate != null && report.expectedRate != 'undefined' && report.expectedRate !=''){
 				                    	 result = result + '        <td><div class="tblminwidth-75">'+report.expectedRate+'</div></td>';
 				                     }else{
 				                    	 result = result + '        <td><div class="tblminwidth-75">---</div></td>';
-				                     }
+				                     } */
 				                     
 				                     if(report.rateReason != null && report.rateReason != 'undefined' && report.rateReason !=''){
 				                    	 result = result + '        <td><div class="tbldata-dotdot" title="'+report.rateReason+'">'+report.rateReason+'</div></td>';
@@ -4332,7 +4340,12 @@ function getRateListDiv(submissionId, candidateId){
 				                    	 var Accepted = 'Accepted';
 				                    	 var Rejected = 'Rejected';
 				                    	 if(null != report.submissionRateStatus && '' != report.submissionRateStatus && 'undefined' != report.submissionRateStatus && 'REJECTED' != report.submissionRateStatus){
-				                    		 result = result + '<a href="javascript:void(0)" class="text-primary" title="Accept" onclick="acceptRejectRate('+submissionId+',\''+Accepted+'\');"><i class="fa fa-check"></i></a> <a href="javascript:void(0)" class="text-danger" title="Reject" onclick="acceptRejectRate('+submissionId+',\''+Rejected+'\');"><i class="fa fa-times"></i></a>';
+				                    		 if(report.rateAndType != null && report.rateAndType != 'undefined' && report.rateAndType !=''){
+				                    			 result = result + '<a href="javascript:void(0)" class="text-primary" title="Accept" onclick="acceptRejectRate('+submissionId+',\''+Accepted+'\');"><i class="fa fa-check"></i></a> <a href="javascript:void(0)" class="text-danger" title="Reject" onclick="acceptRejectRate('+submissionId+',\''+Rejected+'\');"><i class="fa fa-times"></i></a>';	 
+				                    		 }else{
+				                    			 result = result + '--';
+				                    		 }
+				                    		 
 				                    	 }
 				                     	
 				                     }else{
@@ -4341,10 +4354,10 @@ function getRateListDiv(submissionId, candidateId){
 				                     	}else if(report.rateStage == 'REJECTED'){
 				                     		result = result + '<b class="text-danger"> Rejected </b>';
 				                     	}
-				                     }
+				                  /*    } */
 				                     result = result + '		</td>';
 				                     result = result + '      </tr>';
-						    	 }
+						    	  } 
 			   				}
 	                     result = result + '    </tbody>';
 	                     result = result + '  </table>';

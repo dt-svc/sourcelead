@@ -218,7 +218,7 @@ public class InterviewFeedbackRestController {
 			  requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.FEEDBACK);
 			  requirementSubmissionHistory.setInterviewerId(rqr);
 			  requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
-				 
+			  requirementInterviewerService.updatedFeedbackMailFromInterviewerToRequirementOwner(rqr,requirementSubmission,jsonObj,templateId);
 			   return "publicInterviewFeedBackTemplate";
 	    
 	   }

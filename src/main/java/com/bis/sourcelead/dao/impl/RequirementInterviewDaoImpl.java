@@ -228,9 +228,22 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 	public List<RequirementInterview> getRequirementInterviewsBySubmissionAndOrgLocId(List<Long> submissionsList,
 			Long locationId, Date startUTCDate, Date endUTCDate) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = " from RequirementInterview interview where interview.submissionId.id IN(:submissionsList) and interview.startTime >= :startDateUTC and interview.endTime <= :endDateUTC)" ;
+		String query = " from RequirementInterview interview where interview.submissionId.id IN(:submissionsList) and interview.startTime >= :startDateUTC and interview.startTime <= :endDateUTC)" ;
 		List<RequirementInterview> interviewList =session.createQuery(query).setParameter("startDateUTC", startUTCDate).setParameter("endDateUTC", endUTCDate).setParameterList("submissionsList", submissionsList).setCacheable(true).list(); 
 		return interviewList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementInterview getinterviewBySubmissionId(Long submissionId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from RequirementInterview interview where interview.submissionId.id = :submissionId and interview.id=(SELECT MAX(id) FROM RequirementInterview)" ;
+		List<RequirementInterview> interviewsList =session.createQuery(query).setLong("submissionId", submissionId).setCacheable(true).list(); 
+		RequirementInterview interview = null;
+		if(interviewsList != null && !interviewsList.isEmpty()){
+			interview = interviewsList.iterator().next();
+		}
+		return interview;
 	}
 
 	/*@Override
