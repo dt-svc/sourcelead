@@ -108,11 +108,6 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 				 globalVarsMap.put("interviewType","--");
 			 }
 		 
-		 if(json.has("Comment") ){	
-			 globalVarsMap.put("comments", json.getString("Comment"));
-			 }else{
-				 globalVarsMap.put("comments","--");
-			 }
 		 if(json.has("Selected for Interview") ){	
 			 globalVarsMap.put("selectedYesOrNo",json.getString("Selected for Interview"));
 			 }else{
@@ -132,21 +127,15 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 			 }else{
 				 globalVarsMap.put("applicantName",requirementSubmission.getCandidate().getFirstName());
 			 }
-		 if(requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate())){
-			 globalVarsMap.put("interviewerName", requirement.getRate());
-			 }else{
-				 globalVarsMap.put("interviewerName","--");
-			 }
-		 if(requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate())){
-			 globalVarsMap.put("interviewerName", requirement.getRate());
+		 if(interviewerUser.getFullName()!= null && !"".equalsIgnoreCase(interviewerUser.getFullName())){
+			 globalVarsMap.put("interviewerName", interviewerUser.getFullName());
 			 }else{
 				 globalVarsMap.put("interviewerName","--");
 			 }
 		 
 			 StringBuilder feedbackBuilder = new StringBuilder();
 			 globalVarsMap.put("feedBackLink", feedbackBuilder.append("<a href='").append(sourceleadUrl).append("/publicInterviewFeedBackTemplate?templateId=").append(templateId).append("&requirementInterviewid=").append(requirementInterviewer.getId()).append("'style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Feedback</div></a>").toString());
-		
-		
+			
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -164,7 +153,7 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 		 notificationScenario.setBody(notificationbody);
 
 		 
-		// OrgLocations vendorOrgLoc = requirement.getSpocId().getVendorLocationId();
+		OrgLocations OrgLoc = requirement.getOrgLocationId();
 
 		 
 		 //construct HTML template using required data
@@ -175,7 +164,7 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,requirementSubmission.getOrgLocations().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String actionLink="";
-		//emailScenerioUtil.sendNotification(actionLink, loginUser, vendorUser, vendorOrgLoc, notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, interviewerUser, requirementCreatorUser, OrgLoc, notificationScenario);
 		}
 
 }
