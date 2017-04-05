@@ -96,7 +96,7 @@ function taskNameValidation(){
 								<div class="col-md-9">
 									<textarea class="form-control"
 										placeholder="Enter Task Description" id="taskDescription"
-										name="taskDescription" rows="2"></textarea>
+										name="taskDescription" rows="2" field-name="Description Name" data-validation="validate_length length2-250" data-validation-optional="true"></textarea>
 								</div>
 							</div>
 							
@@ -156,7 +156,7 @@ function taskNameValidation(){
 						result = result + '<th>Task name</th>';
 						result = result + '<th>Billable Type</th>';
 						result = result + '<th>Task description</th>';
-						result = result + '<th>Actin</th>';
+						result = result + '<th>Action</th>';
 						result = result + '</tr>';
 						result = result + '</thead>';
 						result = result + '<tbody>';
