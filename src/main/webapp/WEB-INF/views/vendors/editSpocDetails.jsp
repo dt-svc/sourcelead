@@ -200,7 +200,7 @@
 						
 						result = result + '<div class="user_summary_edit_cta" id="mobilePhone">';
 						result = result + '<label>Phone No:</label>';
-						result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone" data-validation-optional="true" data-validation="validate_int validate_length length9-20" >';
+						result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone" data-validation-optional="true" data-validation="validate_length length9-20 validate_phone" >';
 						result = result + '</div>';
 						
 						}
