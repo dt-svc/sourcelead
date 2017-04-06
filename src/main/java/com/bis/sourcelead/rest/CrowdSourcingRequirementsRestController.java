@@ -133,13 +133,6 @@ public class CrowdSourcingRequirementsRestController {
 		return (str == null || "".equals(str.trim()));
 	}
 	
-	@RequestMapping(value = "/ws/greetService/{name}", method = RequestMethod.GET)
-	public String getAllOrgs(@PathVariable String name) {
-		
-		
-		return name;
-	}
-	
 	@RequestMapping(value = "/ws/getUserById/{id}", method = RequestMethod.GET)
 	public String getAllOrgs(@PathVariable Long id) throws Exception {
 		
@@ -154,8 +147,8 @@ public class CrowdSourcingRequirementsRestController {
 	}
 	
 	
-	//@PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
-	@RequestMapping(value = "/ws/getCrowdSourcingRequirements")
+	@PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+	@RequestMapping(value = "/getCrowdSourcingRequirements")
 	public @ResponseBody String getCrowdSourcingRequirements(@RequestParam(value = "requirementType", required = false) String requirementType,
 			@RequestParam(value = "offset", required = false) Integer offset,
 			@RequestParam(value = "postedOn", required = false) String postedOn,
