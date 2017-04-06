@@ -1791,6 +1791,13 @@ function getEndDatePickerById(projectId,localFieldName){
 			$(".clients_side_wrap").removeClass("clients_side_wrap_active");
 			$(".side_mask").fadeOut(200);
 			$("body").css('overflow-y', 'auto');
+			//update the details in list.
+			var vendorCont = document.getElementById('listOfVendors').value;
+			if(vendorCont == "listbyContact"){
+				getVendorContactListsELK();
+			}if(vendorCont == "listbyVendor" ){
+				getClientDetailsELK();
+	   		}
 		});
 	});
 
