@@ -53,7 +53,7 @@ function requirementTemplateList(){
            type : "POST",
            url: sourceleadUrl+"/getRequirementTemplateListByOrgLocationsId?${_csrf.parameterName}=${_csrf.token}",    
             success :function(data) {
-                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
+                 /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
                		
 			    	     $("#requirementTemplateList").removeAttr("style");
 	                	 $("#requirementTemplateList").empty();
@@ -127,7 +127,7 @@ function requirementTemplateList(){
 	                     $("#requirementTemplateList").append(result); 
 	                     pagination();
 			    	
-                 }else{
+                 /* } else{
                  	 $("#requirementTemplateList").removeAttr("style");
    	    	         var result ="";
   					 result = result+"		<div class='content-area clearfix'>"; 
@@ -138,7 +138,7 @@ function requirementTemplateList(){
   					 result = result+"		</div>"; 
   					$("#requirementTemplateList").empty();
   				    $("#requirementTemplateList").append(result); 
-                  }
+                  } */
           },
             
        }); 
