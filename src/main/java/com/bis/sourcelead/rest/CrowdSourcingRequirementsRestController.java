@@ -139,6 +139,13 @@ public class CrowdSourcingRequirementsRestController {
 		
 		return name;
 	}
+	
+	@RequestMapping(value = "/ws/getUserById/{id}", method = RequestMethod.GET)
+	public String getAllOrgs(@PathVariable Long id) throws Exception {
+		
+		
+		return commonUtil.toJSON(userService.getUserById(id));
+	}
 	@RequestMapping(value = "/ws/getAllUsers", method = RequestMethod.GET)
 	public @ResponseBody String getAllUsers() throws Exception {
 		//userService.getUsers()
