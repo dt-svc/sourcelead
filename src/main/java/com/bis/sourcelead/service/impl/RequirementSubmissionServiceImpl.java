@@ -2387,12 +2387,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 OrgLocations loginOrgLocation) throws Exception {
 		
 		 RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
+		 User assignedUser = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
 		
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(requirementSubmissionTemplateFields.getFirstName());
 		 emailMessage.setLastName(requirementSubmissionTemplateFields.getLastName());
 		 emailMessage.setToEmail(requirementSubmissionTemplateFields.getEmailId());
-		 emailMessage.setFromEmail(loginUser.getEmail());
+		 emailMessage.setFromEmail(assignedUser.getEmail());
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 
 		 if(null != loginUser.getLastName()){
@@ -2448,20 +2449,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 globalVarsMap.put("Rate","--");
 		 }
 		 
-		 if(loginUser.getFirstName()!= null && !"".equalsIgnoreCase(loginUser.getFirstName()) && loginUser.getLastName()!= null && !"".equalsIgnoreCase(loginUser.getLastName())){
+		 if(assignedUser.getFirstName()!= null && !"".equalsIgnoreCase(assignedUser.getFirstName()) && assignedUser.getLastName()!= null && !"".equalsIgnoreCase(assignedUser.getLastName())){
 			 StringBuilder assUser = new StringBuilder();
-			 globalVarsMap.put("AssignedUser", assUser.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 globalVarsMap.put("ManagerName", assUser.append(assignedUser.getFirstName()).append(" ").append(assignedUser.getLastName()).toString());
 		 }else{
-			 globalVarsMap.put("AssignedUser",loginUser.getFirstName());
+			 globalVarsMap.put("ManagerName",assignedUser.getFirstName());
 		 }
-		 
-		 if(requirementSubmission.getRequirement().getManagerUserId().getFirstName() != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getManagerUserId().getLastName())){
-			 StringBuilder managerName = new StringBuilder();
-			 globalVarsMap.put("ManagerName", managerName.append(requirementSubmission.getRequirement().getManagerUserId().getFirstName()).append(" ").append(requirementSubmission.getRequirement().getManagerUserId().getLastName()).toString());
-		 }else{
-			 globalVarsMap.put("ManagerName",requirementSubmission.getRequirement().getManagerUserId().getFirstName());
-		 }
-		 
 		 
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
@@ -2490,8 +2483,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			OrgLocations loginOrgLocation) throws Exception {
 		
 		 RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
-		 User assignedUser = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
+		
 		 EmailMessage emailMessage = new EmailMessage();
+		 User assignedUser = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
 		 if(null != requirementSubmission.getCreatedUser()){
 		 emailMessage.setFirstName(requirementSubmission.getCreatedUser());
 		 }else{
