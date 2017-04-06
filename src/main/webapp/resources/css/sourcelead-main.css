@@ -6814,6 +6814,9 @@ CrowdSourcing New Header Styles */
 .ratepop.negotiate_rate {
 	width: 680px;
 }
+#status-data .filter-position .dataTables_filter {
+    z-index: 99;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
