@@ -10,8 +10,8 @@
           <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
           <div class="clearfix require_wrap_table dashboard-data filter_position">
             <ul class="nav nav-tabs">
-              <li class="active" id="acceptedTab"><a data-toggle="tab" href="javascript:void(0)" onclick="flushDate(); ApplicantAuthorization('requestSent')">Request Sent</a></li>
-              <li id="requestSentTab"><a data-toggle="tab" href="javascript:void(0)" onclick="flushDate(); ApplicantAuthorization('accepted')">Accepted</a></li>
+              <li class="active" id="acceptedTab"><a data-toggle="tab" href="javascript:void(0)" onclick="ApplicantAuthorization('requestSent')">Request Sent</a></li>
+              <li id="requestSentTab"><a data-toggle="tab" href="javascript:void(0)" onclick="ApplicantAuthorization('accepted')">Accepted</a></li>
             </ul>
             
             <div class="tab-content clearfix mt">
@@ -30,7 +30,6 @@ $(document).ready(function(){
 </script>
 <script>
 function ApplicantAuthorization(status){
-	var resultToday ="";
 	var sourceleadUrl = '${sourceleadUrl}';
 	//$("#accepted").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
@@ -42,6 +41,7 @@ function ApplicantAuthorization(status){
 	              			$("#accepted").empty();
 	        	        	$("#requestSent").empty();
 	              			$("#accepted").removeAttr("style");
+	              			var resultToday ="";
 	              			//if(json.length > 0){
 	              				resultToday = resultToday+'<div id="rejectApplicantAlert" ></div>  ';
 	              				resultToday = resultToday+'	<table id="applicantsPagination" class="display" cellspacing="0" width="99.5%">';

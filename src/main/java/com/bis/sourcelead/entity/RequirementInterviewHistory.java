@@ -166,6 +166,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	@Transient
 	private String isOwnOrgTemplate;
 	
+	@Transient
+	private String feedbackDate;
+	
 	
 	public String getCandidateEmail() {
 		return candidateEmail;
@@ -531,4 +534,13 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	public void setInterviewSubmissionId(String interviewSubmissionId) {
 		this.interviewSubmissionId = interviewSubmissionId;
 	}
+
+	public String getFeedbackDate() {
+		return feedbackDate;
+	}
+
+	public void setFeedbackDate(String feedbackDate) {
+		this.feedbackDate = feedbackDate;
+	}
+	
 }

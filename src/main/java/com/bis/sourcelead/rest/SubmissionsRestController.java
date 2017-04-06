@@ -643,6 +643,8 @@ public class SubmissionsRestController {
 		EmailScenario emailScenario = null;
 		emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SHORTLIST_APPLICANTS,
 				Constants.ENTITY_TYPE_EMAIL);
+		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SHORTLIST_NOTIFICATION_MANAGER,
+				Constants.ENTITY_TYPE_NOTIFICATION);
 
 		// covert subject,body and signature
 		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
@@ -650,6 +652,9 @@ public class SubmissionsRestController {
 		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
 		String url = "";
 
+		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getSubject(),globalVarsMap);
+		notificationScenario.setBody(notificationbody);
+		
 		// construct HTML template using required data
 		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
 				signature, url, loginOrg);
@@ -659,6 +664,8 @@ public class SubmissionsRestController {
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocations.getId(), iAdressArray,
 				new ArrayList<EmailAttachment>());
+		String actionLink="";
+		emailScenerioUtil.sendNotification(actionLink, user,requirement.getManagerUserId(), loginOrgLocations, notificationScenario);
 
 	}
 
