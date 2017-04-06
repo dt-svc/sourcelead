@@ -2458,7 +2458,11 @@ function getLevel2Approvers(currentApproverId){
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
+			        		if(opt.lastName != null && opt.lastName !='undefined'){
 			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		}else{
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+"</option>";	
+			        		}
 					}
 		        	$("#sequentialApprover2").empty();
 			        $("#sequentialApprover2").append(output);
