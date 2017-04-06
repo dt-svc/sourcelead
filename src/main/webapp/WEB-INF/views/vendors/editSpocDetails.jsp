@@ -244,7 +244,7 @@
 					    //alert("json.userList.length"+json.userList.length);
 						 for (var j = 0; j < json.userList.length; j++) {
 							var user = json.userList[j];
-							   if(user.id == ownerId && user.id != json.tempSpocId){
+							   if(user.id == tempOwnerId && user.id != json.tempSpocId){
 								   selected = 'selected';
 								   result = result+"<option value="+user.id+" "+selected+" >"+user.firstName+" "+user.lastName+"</option>";
 							  }else if(user.id != json.tempSpocId){
@@ -343,7 +343,7 @@
 	   		 		$("#vendorEditMsgDiv").removeAttr("style");
 		 			$("#vendorEditMsgDiv").css({ display: "block" });
 		 			$("#vendorEditMsg").html("Contact Details Updated");
-	   		    	vendorDetailsbySpocId(spocId,newOwner,spocUserId,tempOwnerId);
+	   		    	vendorDetailsbySpocId(spocId,newOwner,spocUserId,ownerId);
 	   		    	//getVendorContactLists();
 	   		    	getVendorContactListsELK();
 	   		    	vendorEditMsgFadein();
