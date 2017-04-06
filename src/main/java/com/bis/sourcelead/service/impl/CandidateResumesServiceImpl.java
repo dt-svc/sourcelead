@@ -206,7 +206,7 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 		 /*
 		 * updating Candidate Resume DB data in existing candidateindex
 		 */
-	    saveOrUpdateCandidateElkDocumentWithResumeDetails(candidateResumes.getCandidateId());
+	   // saveOrUpdateCandidateElkDocumentWithResumeDetails(candidateResumes.getCandidateId());
 		return candidateResumes;
 		
 	}
