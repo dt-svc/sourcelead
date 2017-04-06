@@ -108,7 +108,6 @@ public class RequirementRateSubmissionNegotiation {
 	
 	@Transient
 	private String expectedRatePer;
-	
 
 	public Long getId() {
 		return id;

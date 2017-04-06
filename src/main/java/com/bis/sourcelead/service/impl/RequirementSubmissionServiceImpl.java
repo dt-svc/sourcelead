@@ -354,6 +354,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					
 					candidateDao.storeCandidate(candidate);
 					CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
+					
 					sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
 					
 					requirementSubmission.setCandidate(candidate);
@@ -398,6 +399,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 			 candidateResumes = candidateResumesDao.getCandidateResumeByResumeId(Long.parseLong(jsonObj.getString("candidateResume")));
 			 candidateResumes.setId(Long.parseLong(jsonObj.getString("candidateResume")));
 			 requirementSubmission.setCandidateResumes(candidateResumes);
+			 //insert the currentResumeId in ELK 
+			 insertResumeIdInELK(candidate);
+			 
 		 }else{
 			 
 			 if(multiFile != null && multiFile.getOriginalFilename() != null && !multiFile.getOriginalFilename().isEmpty()){
@@ -415,6 +419,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 				 candidateResumes.setOrgLocationId(orgLocations);
 				 candidateResumesDao.storeCandidateResumes(candidateResumes);
 				 requirementSubmission.setCandidateResumes(candidateResumes);
+				 //insert the currentResumeId in ELK				 
+				 insertResumeIdInELK(candidate);
 			 }
 		 }
 		 
@@ -578,6 +584,21 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 }
 		 
 		return requirementSubmission;
+		
+	}
+
+	private void insertResumeIdInELK(Candidate candidate) throws Exception {
+		 if(null != candidate && null != candidate.getId()){
+				CandidateIndex candidateIndex = new CandidateIndex();
+				candidateIndex.setCandidateId(candidate.getId());
+				CandidateResumes  candidateResumes =candidateResumesDao.getCandidateLatesResumes(candidate.getId(),Constants.CANDIDATE_SKILL_ACTIVE);
+				if(null != candidateResumes){
+					candidateIndex.setCurrentResumeId(candidateResumes.getId());
+					candidateIndex.setCurrentResumeName(candidateResumes.getFileName());
+					candidateIndex.setResumeContent("");
+				}
+				sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
+			}
 		
 	}
 
