@@ -625,7 +625,10 @@ public class RequirementListRestController {
 										requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
 									}
 									requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
-									requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
+									if(Constants.RECORD_ACTIVE ==  requirementSubmission.getCandidateResumes().getStatus()){
+										requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
+									}
+									
 									requirementSubmission.setResumeUUID(requirementSubmission.getCandidateResumes().getResumeUUID());
 									
 									if(null != requirementSubmission.getVendorLocationId()){
