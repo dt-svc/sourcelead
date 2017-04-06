@@ -520,7 +520,14 @@ private JSONObject populateJsonObject(CandidatesImport candidate,OrgLocations or
 			if(null != candidate.getExpectedRateType() && !"".equals(candidate.getExpectedRateType())){
 				jsonObj.put("rateType", candidate.getExpectedRateType());
 			}else{
-			jsonObj.put("rateType", "Hourly");
+			//jsonObj.put("rateType", "Hourly");
+			
+				String countryCheck = orgLocations.getCountry();  
+			    switch(countryCheck){  
+			    case "India": jsonObj.put("rateType", "Yearly");
+			    break;  
+			    default: jsonObj.put("rateType", "Hourly");  
+			    } 
 			}
 			
 			if("India".equals(orgLocations.getCountry())){
@@ -547,6 +554,39 @@ private JSONObject populateJsonObject(CandidatesImport candidate,OrgLocations or
 				
 				jsonObj.put("expectedRateCurrencey", "EUR");
 			}
+		}else{
+			 
+			if("India".equals(orgLocations.getCountry())){
+				
+				jsonObj.put("expectedRateCurrencey", "INR");
+				
+			}else if("Australia".equals(orgLocations.getCountry())){
+				
+				jsonObj.put("expectedRateCurrencey", "AUD");
+				
+			}else if("United States".equals(orgLocations.getCountry())){
+				
+				jsonObj.put("expectedRateCurrencey", "USD");
+				
+			}else if("Singapore".equals(orgLocations.getCountry())){
+				
+				jsonObj.put("expectedRateCurrencey", "SGD");
+				
+			}else if("United Kingdom".equals(orgLocations.getCountry())){
+				
+				jsonObj.put("expectedRateCurrencey", "GBP");
+				
+			}else if("France".equals(orgLocations.getCountry())){
+				
+				jsonObj.put("expectedRateCurrencey", "EUR");
+			}
+
+			String countryCheck = orgLocations.getCountry();  
+		    switch(countryCheck){  
+		    case "India": jsonObj.put("rateType", "Monthly");
+		    break;  
+		    default: jsonObj.put("rateType", "Hourly");  
+		    } 
 		}
 	}
 	
