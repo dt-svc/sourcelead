@@ -200,7 +200,7 @@
 						
 						result = result + '<div class="user_summary_edit_cta" id="mobilePhone">';
 						result = result + '<label>Phone No:</label>';
-						result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone" data-validation-optional="true" data-validation="validate_int validate_length length9-20" >';
+						result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone" data-validation-optional="true" data-validation="validate_length length9-20 validate_phone" >';
 						result = result + '</div>';
 						
 						}
@@ -244,7 +244,7 @@
 					    //alert("json.userList.length"+json.userList.length);
 						 for (var j = 0; j < json.userList.length; j++) {
 							var user = json.userList[j];
-							   if(user.id == tempOwnerId && user.id != json.tempSpocId){
+							   if(user.id == ownerId && user.id != json.tempSpocId){
 								   selected = 'selected';
 								   result = result+"<option value="+user.id+" "+selected+" >"+user.firstName+" "+user.lastName+"</option>";
 							  }else if(user.id != json.tempSpocId){
@@ -344,7 +344,8 @@
 		 			$("#vendorEditMsgDiv").css({ display: "block" });
 		 			$("#vendorEditMsg").html("Contact Details Updated");
 	   		    	vendorDetailsbySpocId(spocId,newOwner,spocUserId,tempOwnerId);
-	   		    	getVendorContactLists();
+	   		    	//getVendorContactLists();
+	   		    	getVendorContactListsELK();
 	   		    	vendorEditMsgFadein();
 	   		    }
 		 }); 
