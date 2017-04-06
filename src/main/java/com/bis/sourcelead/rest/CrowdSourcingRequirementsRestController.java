@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.PathParam;
 
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -31,6 +32,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -69,6 +71,7 @@ import com.bis.sourcelead.service.RequirementReferService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -122,14 +125,30 @@ public class CrowdSourcingRequirementsRestController {
 	@Autowired
 	RequirementOfferHistoryService requirementOfferHistoryService;
 	
+	@Autowired
+	UserService userService;
+	
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
-
 	
-	@PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
-	@RequestMapping(value = "/getCrowdSourcingRequirements")
+	@RequestMapping(value = "/ws/greetService/{name}", method = RequestMethod.GET)
+	public String getAllOrgs(@PathVariable String name) {
+		
+		
+		return name;
+	}
+	@RequestMapping(value = "/ws/getAllUsers", method = RequestMethod.GET)
+	public @ResponseBody String getAllUsers() throws Exception {
+		//userService.getUsers()
+		//getAllOrgLocations
+		return commonUtil.toJSON(userService.getUsers());
+	}
+	
+	
+	//@PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+	@RequestMapping(value = "/ws/getCrowdSourcingRequirements")
 	public @ResponseBody String getCrowdSourcingRequirements(@RequestParam(value = "requirementType", required = false) String requirementType,
 			@RequestParam(value = "offset", required = false) Integer offset,
 			@RequestParam(value = "postedOn", required = false) String postedOn,
