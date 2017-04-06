@@ -19,6 +19,7 @@
 					success : function(data) {
 						
 						var json = JSON.parse(data);
+						getClientSpocname(json.spocName);
 						var result = "";
 						result  = result + '<div class="success_pop" id="clientEditMsgDiv" style="display: none;">';
 					    result  = result + '<i class="fa fa-check-circle"></i><span id="clientEditMsg"></span>';
