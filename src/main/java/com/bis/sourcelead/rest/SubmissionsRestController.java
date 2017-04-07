@@ -491,7 +491,7 @@ public class SubmissionsRestController {
 		}
 		int shotListCount = submissionId.length;
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-		if (requirement.getManagerUserId().getEmail() != null) {
+		if (requirement.getManagerUserId().getEmail() != null && requirement.getManagerUserId().getId().longValue() != user.getId().longValue()) {
 			sendEmailToManages(requirement, orgLocations, user, shotListCount, loginOrg);
 		}
 		if(count>0){
