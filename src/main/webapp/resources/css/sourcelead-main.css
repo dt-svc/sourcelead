@@ -718,7 +718,7 @@ ul.timesheet-menu li a:hover, ul.backoffice-menu li a:hover {
 	cursor: pointer;
 }
 .custom-navbar .login-user span.image img {
-    position: relative; top: 5px;
+    position: relative; top: 0px;
 }
 .login-user {
 	position: relative;
@@ -3993,7 +3993,7 @@ p.comment-text{
     position: relative;
 }
 .pipeline-count ul li{
-	margin:0 5px !important;
+	margin:0 2px !important;
 	float:none;
     padding: 5px 6px 0px 6px !important;
 	line-height:20px;
@@ -4507,6 +4507,7 @@ import-tranhd  [class*="col-md-"]{
 	max-height: 200px;
 	overflow-y:auto;
 	background: #fff;
+
 	border:1px solid #ccc;
 	border-radius:3px !important;
 	z-index: 9999;
@@ -6824,10 +6825,10 @@ table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTa
     margin-top: 40px;
 }
 #shortlistedPagination tr td{
-	vertical-align: middle;
+    vertical-align: middle;
 }
 .overflow_Auto{
-	overflow: auto;
+    overflow: auto;
 }
 #status-data .filter-position .dataTables_filter {
     z-index: 99;
