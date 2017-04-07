@@ -239,8 +239,8 @@ public class CandidateController {
 	
 	
 	@PreAuthorize("hasRole('ROLE_CREATE_CANDIDATE')")
-	@RequestMapping(value = "/addConsultant")
-	public ModelAndView addConsultant(@RequestParam(value="type", required=false) String  type,HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/addAssociate")
+	public ModelAndView addAssociate(@RequestParam(value="type", required=false) String  type,HttpServletRequest request) throws Exception {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -266,7 +266,7 @@ public class CandidateController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		sessionData.setNav(Constants.Candidates);
+		sessionData.setNav(Constants.Associates);
 		
 		request.getSession().setAttribute("sessionData",sessionData);
 		

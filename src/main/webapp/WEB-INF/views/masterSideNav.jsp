@@ -73,6 +73,9 @@
 	                 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
 	                   <li class="${sessionData.nav == 'Candidates' ? 'side-nav-active' : ''}"><a href="<c:url value='/candidatesList'/>" title="Candidates"><span><i class="fa fa-user"></i></span>Candidates</a></li>
 	                 </c:if>
+	                 
+	                   <li class="${sessionData.nav == 'Associates' ? 'side-nav-active' : ''}"><a href="<c:url value='/associatesList'/>" title="Candidates"><span><i class="fa fa-black-tie"></i></span>Associates</a></li>
+	                 
 	                </c:if> 
                 
 	                <c:if test="${userTabs.tabName == 'Vendors'}">

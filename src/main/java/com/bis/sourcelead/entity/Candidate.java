@@ -167,6 +167,16 @@ public class Candidate implements Serializable{
 	@Column(name = "IS_PROFILE_PUBLIC")
 	private String isProfilePublic;
 	
+	@Column(name="IS_ASSOCIATE")
+	private String isAssociate;
+	
+	@ManyToOne
+    @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
+    private OrgRelations clientId;
+	    
+	@ManyToOne
+    @JoinColumn(name="SPOC_ID", nullable=false )        
+    private OrgSpoc spocId;
 	
 	@Transient
 	private String skills;
@@ -1050,5 +1060,34 @@ public class Candidate implements Serializable{
 	public void setCandidateRequiementCount(Integer candidateRequiementCount) {
 		this.candidateRequiementCount = candidateRequiementCount;
 	}
-	
+
+
+	public String getIsAssociate() {
+		return isAssociate;
+	}
+
+
+	public void setIsAssociate(String isAssociate) {
+		this.isAssociate = isAssociate;
+	}
+
+
+	public OrgRelations getClientId() {
+		return clientId;
+	}
+
+
+	public void setClientId(OrgRelations clientId) {
+		this.clientId = clientId;
+	}
+
+
+	public OrgSpoc getSpocId() {
+		return spocId;
+	}
+
+
+	public void setSpocId(OrgSpoc spocId) {
+		this.spocId = spocId;
+	}
 }

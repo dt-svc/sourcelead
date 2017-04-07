@@ -322,6 +322,7 @@ public class Constants {
 	public static  String Requirement = "Requirement";
 	public static  String Vendors = "Vendors";
 	public static  String Candidates = "Candidates";
+	public static  String Associates = "Associates";
 	
 	public static String SOURCELEAD_ORGCODE = "sourcelead.com";
 	public static String SOURCELEAD_LOCATIONCODE_IN = "in.sourcelead.com";
