@@ -25,8 +25,8 @@
 					type : "POST",
 					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&type=Vendor",
 					success : function(data) {
-						
 						var json = JSON.parse(data);
+						getVendorDashboardName(json.spocName);
 						var result = "";
 						result  = result + '<div class="success_pop" id="vendorEditMsgDiv" style="display: none;">';
 					    result  = result + '<i class="fa fa-check-circle"></i><span id="vendorEditMsg"></span>';
@@ -126,6 +126,9 @@
 				});
 	}
 </script>
+
+
+
 <script type="text/javascript">
 	function editVendorContactDetails(spocId,ownerId,spocUserId,tempOwnerId) {
 		var sourceleadUrl = '${sourceleadUrl}';

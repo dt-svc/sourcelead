@@ -131,7 +131,12 @@
                      </div>
                 </div>
                 
-            
+            <div class="form-group " id = "DayHoursDiv">
+                  <label class="col-md-3">Day hours</label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" id="DayHours" name="DayHours" data-validation="validate_Space validate_int validate_length length1-2" data-validation-optional="true" value="" onblur="validateDayHours();">
+                  </div>
+                </div>
             
             <div class="form-group">
 		             <label class="col-md-3"></label>
@@ -164,7 +169,21 @@
       <jsp:include page="../masterFooter.jsp" />
       <!-- Footer Area --> 
       
-      
+ <script type="text/javascript">
+ function validateDayHours() {
+	 var DayHours = document.getElementById("DayHours").value; 
+	 $('#DayHoursDiv').find('p.jquery_form_error_message').remove();
+	if(DayHours > 24){
+		 $("input#DayHours").after("<p class='jquery_form_error_message'>Day Hours should less than 24 Hours</span>");
+		 document.getElementById("DayHours").setAttribute('record-exist','yes');
+		 document.getElementById("DayHours").setAttribute('record-exist-errorMsg','Day Hours should less than 24 Hours');
+	}else{
+		 $('#DayHoursDiv').find('p.jquery_form_error_message').remove();
+		 $('input#DayHours').removeAttr( "record-exist record-exist-errormsg");
+	}
+	
+ }
+</script>
 <script type="text/javascript">
 (function ($) {
    $.fn.serializeFormJSON = function () {
