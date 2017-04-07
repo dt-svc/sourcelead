@@ -848,7 +848,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public LinkedHashSet<User> getUsersByTeamTypeAndTabId(Long id, String teamType, Long tabId) throws Exception {
+	public List<User> getUsersByTeamTypeAndTabId(Long id, String teamType, Long tabId) throws Exception {
 		return userDao.getUsersByTeamTypeAndTabId(id,teamType,tabId);
 	}
 
