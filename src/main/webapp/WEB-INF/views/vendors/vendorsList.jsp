@@ -48,9 +48,10 @@ overflow-x: auto;
 		<!-- Project -->
 		 <div id="loading"></div>
 
+<div class="timesheet_out timesheet_background">
  <!-- Advanced Search -->
   <div class="timesheet_bg">
-  <div class="cand-advsrch">
+  <div class="cand-advsrch pull-left">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
           <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop();"><i class="fa fa-close"></i></a>
           <form:form id="vendorList_form" name="vendorList_form"  enctype='multipart/form-data' >
@@ -246,7 +247,7 @@ overflow-x: auto;
             </div>  
               
             </div>
-            <div class="row form-footer mt">
+            <div class="row form-footer custom_formfooter">
               <div class="pull-right mr"> 
                 <input type="button" value="Search" id="search_vendor" onclick="searchVendor();" class="btn btn-sm btn-primary"/>
                 <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-default ml10"/>
@@ -260,8 +261,8 @@ overflow-x: auto;
 
 
 
-<div class="clearfix"></div>
-<div class="timesheet_out timesheet_background">
+
+
 <div class="vendor_wrap vendor_wrap_shadownone">
 
      
@@ -1010,7 +1011,7 @@ function pagination1(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -1462,7 +1463,7 @@ function pagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -1601,7 +1602,7 @@ function pagination1(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
