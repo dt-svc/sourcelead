@@ -97,6 +97,8 @@ public class Constants {
 	public static String INTERVIEWER_INVITATION = "Interviewer Invitation";
 	public static String INTERVIEWER_TEMPLATE = "Interviewer Template";
 	
+	public static String INTERVIEW_RESCHEDULEMAIL_TO_APPLICANT="interviewRescheduleMailToApplicant";
+	
 	public static String OFFER_ACCEPTED = "Offer Accepted";
 	public static String OFFER_ACCEPTED_NOTIFICATION = "Offer Accepted Notification";
 	
