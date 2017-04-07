@@ -411,8 +411,8 @@ public class UserServiceImpl implements UserService {
 		if(jsonObj.has("ratePer")){
 			employees.setRatePer(jsonObj.getString("ratePer"));
 		}
-		if(jsonObj.has("dayHours")){
-			employees.setDailyHours(jsonObj.getString("dayHours"));
+		if(jsonObj.has("DayHours")){
+			employees.setDailyHours(jsonObj.getString("DayHours"));
 		}
 		/*if(jsonObj.has("invoiceFrequency")){
 			if(jsonObj.getString("invoiceFrequency") != null && !"".equalsIgnoreCase(jsonObj.getString("invoiceFrequency"))){

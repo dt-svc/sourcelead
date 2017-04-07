@@ -418,7 +418,7 @@ $(document).ready(function () {
                  </c:if>
                 </select>
                 </div>
-                <input type="text" class="form-control" id="rate" name="rate" field-name="Rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true"  value="">
+                <input type="text" class="form-control" id="rate" name="rate" field-name="Rate" value="${requirement.rate}" data-validation="validate_Space validate_int validate_length length1-8" data-validation-optional="true"  value="">
                 <div class="input-group-btn selp-custom-min">
                   <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Type">
                     <option value="">Rate Per</option>
@@ -2230,7 +2230,7 @@ function pagination(){
     	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""

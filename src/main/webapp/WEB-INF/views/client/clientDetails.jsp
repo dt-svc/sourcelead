@@ -11,6 +11,7 @@
 					url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?${_csrf.parameterName}=${_csrf.token}&vendorLocationId="+clientLocationId+"&orgRelationId="+orgRelationID,
 					success : function(data) {
 						var json = JSON.parse(data);
+						getClientNeworgname(json.orgName);
 						var result = "";
 						var city = "";
 						var state = "";
@@ -313,6 +314,7 @@
 			    url: sourceleadUrl+"/clientDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&vendorLocationId="+clientLocationId+"&orgRelationId="+orgRelationId,
 	   		    success: function(data) {
 	   		    	clientDetails(clientLocationId,orgRelationId);
+	   		    	
 	   		    }
 		 }); 
 	     	return true;
