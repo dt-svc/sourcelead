@@ -87,9 +87,7 @@ function requirementList(){
 	                     result = result +"    <th>Submitted</th>"; 
 	                     result = result +"    <th>Interviewed</th>"; 
 	                     result = result +"    <th>Offered</th>"; 
-// 	                     '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
 	                     result = result +"<th>Actions</th>";
-// 	                    '</sec:authorize>';
 // 	                     result = result +"    <th>Release</th>"; 
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
@@ -143,6 +141,7 @@ function requirementList(){
 		                     result = result +"<td><div>"+opt.noOfOfferedApplicants+"</div></td>";
 
 		                     result = result +"<td>";
+		                     result = result + '<div class="tblminwidth-75">';
 		         	        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
 			         	       if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
 			         	    	  result = result +'<div class="text-center pull-left ml mr"><a href="javascript:void(0)" title="" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>';
@@ -160,6 +159,7 @@ function requirementList(){
 		                     }else{
 			                     result = result +"<div>----</div>";
 		                     }
+		                     result = result + '</div>';
 		                     result = result +"</td>";
 		                     result = result +"</tr>";
 		                     result = result +"</tr>";
