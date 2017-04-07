@@ -6814,6 +6814,21 @@ CrowdSourcing New Header Styles */
 .ratepop.negotiate_rate {
 	width: 680px;
 }
+table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc {
+    padding: 0px 15px !important; background-size: 15px;
+}
+.form-footer.custom_formfooter {
+    min-height: 45px; line-height: 45px;
+}
+.mt40 {
+    margin-top: 40px;
+}
+#shortlistedPagination tr td{
+	vertical-align: middle;
+}
+.overflow_Auto{
+	overflow: auto;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

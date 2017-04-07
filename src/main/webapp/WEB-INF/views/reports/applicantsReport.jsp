@@ -96,7 +96,7 @@ function prepareReportDataDiv(data){
         
         result = result + '<td>';
         if(report.submissionDate != null && report.submissionDate != '' && report.submissionDate !='undefined'){
-         result = result + '<div><span>'+report.submissionDate+'</span></div>';
+         result = result + '<div class="tbldata-dotdot-100">'+report.submissionDate+'</div>';
         }
         else{
 		 result = result + '<div><span>---</span></div>';
@@ -113,7 +113,7 @@ function prepareReportDataDiv(data){
          
          result = result + '<td>';
      	if(report.shortlistDate != null && report.shortlistDate != '' && report.shortlistDate !='undefined'){
-         result = result + "<div><span>"+report.shortlistDate+"</span></div>";
+         result = result + "<div class='tbldata-dotdot-100'>"+report.shortlistDate+"</div>";
      	}else{
    		 result = result + '<div><span>---</span></div>';
 	    }
@@ -121,7 +121,7 @@ function prepareReportDataDiv(data){
          
          result = result + '<td>';
      	if(report.submitToClientDate != null && report.submitToClientDate != '' && report.submitToClientDate !='undefined'){
-       	 result = result + "<div><span>"+report.submitToClientDate+"</span></div>";
+       	 result = result + "<div class='tbldata-dotdot-100'>"+report.submitToClientDate+"</div>";
      	}else{
    		 result = result + '<div><span>---</span></div>';
 	    }
@@ -129,7 +129,7 @@ function prepareReportDataDiv(data){
          
          result = result + '<td>';
          if(report.interviewDate != null && report.interviewDate != '' && report.interviewDate !='undefined'){
-         result = result + "<div><span>"+report.interviewDate+"</span></div> ";
+         result = result + "<div class='tbldata-dotdot-100'>"+report.interviewDate+"</div> ";
          }else{
        		 result = result + '<div><span>---</span></div>';
  	    }
@@ -138,7 +138,7 @@ function prepareReportDataDiv(data){
          
          result = result + '<td>';
          if(report.offerDate != null && report.offerDate != '' && report.offerDate !='undefined'){
-         result = result + "<div><span>"+report.offerDate+"</span></div> ";
+         result = result + "<div class='tbldata-dotdot-100'>"+report.offerDate+"</div> ";
          }else{
        		 result = result + '<div><span>---</span></div>';
   	    }
@@ -146,7 +146,7 @@ function prepareReportDataDiv(data){
          
          result = result + '<td>';
          if(report.rejectedDate != null && report.rejectedDate != '' && report.rejectedDate !='undefined'){
-       	 result = result + "<div><span>"+report.rejectedDate+"</span></div>";
+       	 result = result + "<div class='tbldata-dotdot-100'>"+report.rejectedDate+"</div>";
          }else{
        		 result = result + '<div><span>---</span></div>';
    	    }
@@ -189,7 +189,7 @@ function requirementReportPagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -256,7 +256,7 @@ function requirementReportPagination(){
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/requirementList'/>"> Requirement List</a> &raquo; Applicants</div>
   </section>
   <div class="timesheet_out">
-    <div class="vendor_wrap">
+    <div class="vendor_wrap overflow_Auto">
      
       <div class="timesheet_head">
 

@@ -75,7 +75,8 @@ function requirementList(){
 	                	 result = result +"<table id='requirementPagination' class='display' cellspacing='0' width='99.9%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
-	                     result = result +"    <th>ID-Title</th>";
+	                     result = result +"    <th>ID</th>";
+	                     result = result +"    <th>Title</th>";
 	                     if(orgATS == 'Y'){
 	                     result = result +"    <th>Client</th>";
 	                     }
@@ -86,10 +87,10 @@ function requirementList(){
 	                     result = result +"    <th>Submitted</th>"; 
 	                     result = result +"    <th>Interviewed</th>"; 
 	                     result = result +"    <th>Offered</th>"; 
-	                     '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
-	                     result = result +"<th>Action</th>";
-	                    '</sec:authorize>';
-	                     result = result +"    <th>Release</th>"; 
+// 	                     '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
+	                     result = result +"<th>Actions</th>";
+// 	                    '</sec:authorize>';
+// 	                     result = result +"    <th>Release</th>"; 
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
@@ -107,7 +108,13 @@ function requirementList(){
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
 	                    	 if(opt.jobId!=null && opt.jobId !='' && opt.jobId !='undefined'){
-	                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobId+"-"+opt.jobTitle+"'>"+opt.jobId+"-"+opt.jobTitle+"</span></a></div></td>";
+	                    		 result = result +"<td><div class=''><span title='"+opt.jobId+"'>"+opt.jobId+"</span></a></div></td>";
+	                    	 }
+	                    	 else{
+	                    		 result = result +"<td><div>-----</div></td>";
+	                    	 }
+	                    	 if(opt.jobId!=null && opt.jobId !='' && opt.jobId !='undefined'){
+	                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
 	                    	 }else{
 		                    	 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
 		                     }
@@ -135,23 +142,25 @@ function requirementList(){
 		                     result = result +"<td><div>"+opt.noOfInterviewedApplicants+"</div></td>";
 		                     result = result +"<td><div>"+opt.noOfOfferedApplicants+"</div></td>";
 
+		                     result = result +"<td>";
 		         	        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
 			         	       if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
-			         	    	  result = result +'<td><div class="text-center"><a href="javascript:void(0)" title="" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div></td>';
+			         	    	  result = result +'<div class="text-center pull-left ml mr"><a href="javascript:void(0)" title="" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>';
 			         	       }else{
-			         	    	  result = result +"<td><div class='text-center'>--</div></td>";
+			         	    	  result = result +"<div class='text-center'>--</div>";
 			         	       }
 		         	        '</sec:authorize>';
 		                     
 		                     if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
 		                    	 if(opt.isRequirementReleasedByuser == 'Y'){
-		                       		 result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success'></i></a></div></td>"; 
+		                       		 result = result +"<div class='pull-left'><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success'></i></a></div>"; 
 		                       	 }else{	
-		                       	 result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
+		                       	 result = result +"<div class='pull-left'><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn'></i></a></div>";
 		                       	 }
 		                     }else{
-			                     result = result +"<td><div>----</div></td>";
+			                     result = result +"<div>----</div>";
 		                     }
+		                     result = result +"</td>";
 		                     result = result +"</tr>";
 		                     result = result +"</tr>";
 	                     }
@@ -192,7 +201,7 @@ function pagination(){
     	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
             "sSearch": "",
             "sZeroRecords": "", "sEmptyTable": ""

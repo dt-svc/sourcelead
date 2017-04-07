@@ -28,7 +28,7 @@ function candidateShortList(requirementId){
 	    	   var json = JSON.parse(data);
 	           result = result + '     <div class="clearfix"></div>';
 	           result = result + '   </div>';
-	           result = result + '   <div class="require_wrap_table scroll_table">';
+	           result = result + '   <div class="require_wrap_table scroll_table mt40">';
 	           result = result + '     <table id="shortlistedPagination"  class="display" cellspacing="0" width="100%">';
 	           result = result + '       <thead>';
 	           result = result + '         <tr>';
@@ -119,6 +119,7 @@ function candidateShortList(requirementId){
 		    			
 		    			$("#shortlistDiv").empty();
 		    			$("#shortlistDiv").append(result);
+		    			shortListPagination();
 		   		}
 		   		}else{
 		    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-user'></i><h3>Submission List is Empty</h3></div>";
@@ -142,13 +143,14 @@ function candidateShortList(requirementId){
 
 
 <script>
-function pagination(){
+function shortListPagination(){
     $('#shortlistedPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"scrollX": true,
+     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      	"sSearch": "",
      	 "sZeroRecords": "", "sEmptyTable": ""
