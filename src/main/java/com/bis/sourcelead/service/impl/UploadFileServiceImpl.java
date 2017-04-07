@@ -357,26 +357,28 @@ public class UploadFileServiceImpl implements UploadFileService {
 						}
 					}
 				}
-				if (!isValidated || isUserFound) {
+				if (count > 0) {
 					FileOutputStream fos = null;
 					if(!fileName.endsWith("xlsx")){
 						fos = new FileOutputStream("FailureUsersForCheck.xls");
+						isFileCreated = "FailureUsersForCheck.xls";
 					}else{
 						 fos = new FileOutputStream("FailureUsersForCheck.xlsx");
+						 isFileCreated = "FailureUsersForCheck.xlsx";
 					}
 					
 					createExcelworkbook.write(fos);
 					fos.close();
 				}
-				if(count > 0){
-					if(!fileName.endsWith("xlsx")){
-					isFileCreated = "FailureUsersForCheck.xls";
-					}else{
-						isFileCreated = "FailureUsersForCheck.xlsx";
-					}
-				}else{
-					isFileCreated = "failed";
-				}
+//				if(count > 0){
+//					if(!fileName.endsWith("xlsx")){
+//					isFileCreated = "FailureUsersForCheck.xls";
+//					}else{
+//						isFileCreated = "FailureUsersForCheck.xlsx";
+//					}
+//				}else{
+//					isFileCreated = "failed";
+//				}
 			}
 			fis.close();
 		} catch (IOException e) {
@@ -467,7 +469,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				user1.setPassword(sourceleadPasswordEncoder.encode(password));
 				userService.addUser(user1);
 			}else{
-				userRole.setUserState(Status.ACTIVE);
+				userRole.setUserState(Status.NOT_LOGGEDIN);
 			}
 			userRole.setUser(user1);
 			userRoleService.addUserRole(userRole);

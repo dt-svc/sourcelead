@@ -298,7 +298,7 @@ function prepareRequirementData(data){
        	 result = result +"<td><div>-----</div></td>";
         }
         
-        if(opt.jobType!=null && opt.jobType !='' && opt.jobType !='undefined'){
+       /*  if(opt.jobType!=null && opt.jobType !='' && opt.jobType !='undefined'){
        	 if(opt.jobType=='Other'){
        		if(opt.otherJobType != null && opt.otherJobType !='' && opt.otherJobType !='undefined'){
        			result = result +"<td><div>"+opt.otherJobType+"</div></td>";
@@ -310,7 +310,19 @@ function prepareRequirementData(data){
        	 }
         }else{
        	 result = result +"<td><div>-----</div></td>";
-        }
+        } */
+        
+        
+      if(opt.jobType != null && opt.jobType != '' && opt.jobType != "undefined")
+    	 {
+   	  if(opt.otherJobType !=null && opt.otherJobType !='' && opt.otherJobType !="undefined"){
+          result = result +"  <td><div>"+opt.otherJobType+"</div></td>";
+    	 }else{
+    		result = result +"  <td><div>"+opt.jobType+"</div></td>"; 
+    	 }
+    	 }else{
+    		 result = result +"  <td><div>----</div></td>"; 
+    	 }
        
         if(opt.state!=null && opt.state !='' && opt.state !='undefined' &&  opt.city !='undefined' && opt.city !='' &&  opt.city!=null){
             result = result +"<td><div><span title='"+opt.city+', '+opt.state+', '+opt.country+"'>"+opt.city+', '+opt.state+', '+opt.country+"</span></div></td>";

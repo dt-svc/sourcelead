@@ -6829,6 +6829,9 @@ table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTa
 .overflow_Auto{
 	overflow: auto;
 }
+#status-data .filter-position .dataTables_filter {
+    z-index: 99;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

@@ -689,18 +689,35 @@ public class CandidateListRestController {
 			}
 			can.setAllAndCandidateSkills(lhs);
 			
-			if(null != can.getCurrentRateCurrency() && null != can.getExpectedRateCurrencey()){
-				can.setCurrentRateCurrency(can.getCurrentRateCurrency());
-				can.setExpectedRateCurrencey(can.getExpectedRateCurrencey());
+			if(null != can.getExpectedRateCurrencey()){
+				  can.setExpectedRateCurrencey(can.getExpectedRateCurrencey());
 			}else{
 				 if(null != countries && !countries.getCurrency().equalsIgnoreCase("")){
-				can.setCurrentRateCurrency(countries.getCurrency());	
-				
-				can.setExpectedRateCurrencey(countries.getCurrency());
+				   can.setExpectedRateCurrencey(countries.getCurrency());
 				 }
 			}
 			
+			if(null != can.getCurrentRateCurrency()){
+				can.setCurrentRateCurrency(can.getCurrentRateCurrency());
+			}else{
+				 if(null != countries && !countries.getCurrency().equalsIgnoreCase("")){
+				   can.setCurrentRateCurrency(countries.getCurrency());	
+				     
+				 }
+			}
 			
+			if(null != can.getCurrentRateType()){
+				can.setCurrentRateType(can.getCurrentRateType());
+			}else{
+				 if(null != countries && !countries.getCurrency().equalsIgnoreCase("")){
+				   String countryCheck = countries.getName();  
+				    switch(countryCheck){  
+				    case "India": can.setCurrentRateType("Monthly");
+				    break;  
+				    default: can.setCurrentRateType("Hourly");
+				    }  
+				 }
+			}
 			
 			resultJson = commonUtil.toJSON(can);
 			return resultJson;
