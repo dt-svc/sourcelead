@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,10 +20,15 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.States;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TimeZoneService;
@@ -57,6 +63,9 @@ public class AssociateController {
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	OrgRelationsService orgRelationsService;
 	
 /**
  * @author Laxman 
@@ -141,6 +150,53 @@ public class AssociateController {
 	}
 	
 	 
+	
+	
+	
+	@PreAuthorize("hasRole('ROLE_CREATE_CANDIDATE')")
+	@RequestMapping(value = "/addAssociate")
+	public ModelAndView addAssociate(@RequestParam(value="type", required=false) String  type,HttpServletRequest request) throws Exception {
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
+		ModelAndView model = new ModelAndView();
+		
+		List<Roles> rolesList = roleService.getOrgEnrolledRolesByOrgLocationId(org, orgLocations.getId());
+		model.addObject("rolesList", rolesList);
+		
+		model.setViewName("candidates/addConsultant");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("type", type);
+	
+		/* Based on Country Currency code will be set into Rate field */
+		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		if(null != countries){
+        model.addObject("loginCountryName", countries.getName());
+        model.addObject("currencyCode", countries.getCurrency());
+		}
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(null == sessionData)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Associates);
+		
+		request.getSession().setAttribute("sessionData",sessionData);
+		
+		/* educationsList,skillsList are used for autocompletes for education and skills in add consultant creation */
+		
+		 List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+		 model.addObject("educationsList", educationsList);
+		
+		 List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+		
+		 model.addObject("skillsList", skillsList);
+		 
+	return model;
+	}
+	
 	
 	private boolean isNullOrEmpty(String msg) {
 		// TODO Auto-generated method stub

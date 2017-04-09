@@ -45,6 +45,7 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
@@ -212,14 +213,43 @@ public class AssociatesRestController {
 			String resultJson = null;
 			List<OrgRelations> vendorList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
 			for(OrgRelations vendors:vendorList){
-				vendors.setOrgName(vendors.getResponderLocationId().getOrg().getOrgName());
+				if(vendors.getLocationId().getId() == orgLocations.getId()){
+					vendors.setOrgName(vendors.getResponderLocationId().getOrg().getOrgName());
+				}
+				if(vendors.getResponderLocationId().getId() == orgLocations.getId()){
+					vendors.setOrgName(vendors.getLocationId().getOrg().getOrgName());
+				}
+				
 			}
 			
 			resultJson = toJSON(vendorList);
 			return resultJson;
 
 		}
-	 
+	   
+	   
+	   @RequestMapping(value = "/getVendorsContactsByOrgLocation")
+		public String getVendorsContactsByOrgLocation(@RequestParam(value = "candidateId", required = false) Long candidateId,
+				HttpServletRequest request) throws Exception {
+		   User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
+		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			String resultJson = null;
+			List<OrgSpoc> vendorContactList = orgRelationsService.getAllVendorsContactListByOrgLocationId(loginUser.getId() , orgLocations.getId(), "Client");
+			 for (OrgSpoc orgSpoc : vendorContactList) {
+				 StringBuilder spocNameSB = new StringBuilder();
+				 if(null != orgSpoc.getVendorUser().getFirstName() && null != orgSpoc.getVendorUser().getLastName()){
+					spocNameSB.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName()).toString(); 
+				 }else{
+					spocNameSB.append(orgSpoc.getVendorUser().getFirstName());
+				 }
+				 orgSpoc.setSpocName(spocNameSB.toString());
+			 }
+			
+			resultJson = toJSON(vendorContactList);
+			return resultJson;
+
+		}
+	   
 	
 	public String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
