@@ -122,6 +122,8 @@ public class Constants {
 	
 	public static String EDIT_CLIENTCONTACT = "Edit SpocContact";
 	
+	public static String CLIENT_OWNER_UPDATEMAIL = "clientOwnerUpdateMail";
+	
 	public static String SHORTLIST_APPLICANTS = "ShortList Applicants";
 	public static String SHORTLIST_NOTIFICATION_MANAGER = "Notification To Manager";
 	
