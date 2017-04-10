@@ -4103,5 +4103,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	public List<Long> getSubmissionIdByCandidateId(List<Long> candidateIds, Long orgLocationId) {
 		return requirementSubmissionDao.getSubmissionIdByCandidateId(candidateIds,orgLocationId);
 	}
+	
+	@Override
+	public List<RequirementSubmission> getOfferAcceptedCandidatesListByOrgLocationId(Long orgLocationId) {
+		return requirementSubmissionDao.getOfferAcceptedCandidatesListByOrgLocationId(orgLocationId);
+	}
 
 }

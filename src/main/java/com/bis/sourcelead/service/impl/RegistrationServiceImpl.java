@@ -907,6 +907,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidate.setCreatedBy("sladmin");
 		candidate.setCreatedDate(new Date());
 		candidate.setUpdatedDate(new Date());
+		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		
 		candidateService.addCandidate(candidate);
 		candidateService.saveOrUpdateCandidateElkDocument(candidate);
@@ -1062,6 +1063,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidate.setCreatedBy("sladmin");
 		candidate.setCreatedDate(new Date());
 		candidate.setUpdatedDate(new Date());
+		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		
 		candidateService.addCandidate(candidate);
 		candidateService.saveOrUpdateCandidateElkDocument(candidate);
