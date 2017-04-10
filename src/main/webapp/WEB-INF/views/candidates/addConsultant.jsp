@@ -238,8 +238,7 @@
        <div class="form-group">
 			<label class="col-md-3">Vendor</label>
 			<div class="col-md-9">
-			     <select  class="form-control" name="vendors" id="vendors" field-name="Vendor">
-			     <div id="laxman"></div>
+			     <select  class="chosen-select form-control" name="vendors" id="vendors" field-name="Vendor">
                  </select>
 			</div>
 		</div>
@@ -247,7 +246,7 @@
 		 <div class="form-group">
 			<label class="col-md-3">Vendor Contact</label>
 			<div class="col-md-9">
-			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  >
+			     <select  class="form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  >
                  </select>
 			</div>
 		</div>
@@ -383,7 +382,7 @@
            </div>
          </div>
          
-        <div class="clearfix" id="associateResumeDivId" >
+        <div class="clearfix" id="newResumeDiv"  style="display: none;">
          <div class="form-group">
             <label class="col-md-3">Add Resume</label>
             <div class="col-md-9"> 
@@ -430,7 +429,7 @@
       <div class="col-lg-12">
         <div class="pull-right">
           <input type="button" value="Save" id="store_candidate" onclick="storeCandidate();" class="btn btn-primary">
-          <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/candidatesList'/>'" class="btn btn-default ml">
+          <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/associatesList'/>'" class="btn btn-default ml">
         </div>
       </div>
     </div>
@@ -573,6 +572,7 @@ function getAllCountries(){
 
 <script>
 function getStates(state){
+	
 	var countryName = $("#country").val();
 	if(countryName != null && countryName != "" && countryName !="undefined"){
 		$.ajax({
@@ -1155,7 +1155,7 @@ var currentRate = document.getElementById("currentRate").value;
 	 $('#sjfb-fields').find('p.jquery_form_error_message').remove();
 	 $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
 	 $('#uploadFileGroup1').find('p.jquery_form_error_message').remove();
-	 $('#associateResumeDivId').hide();
+	// $('#newResumeDiv').hide();
 	 
 	 $('#candidateId').removeAttr('data-validation-optional');
 	 $("#candidateId").attr("data-validation", "required");
@@ -1239,7 +1239,7 @@ var currentRate = document.getElementById("currentRate").value;
 	    	 $('#uploadFile').removeAttr('data-validation');
 			 $('#uploadFile').attr("data-validation-optional","true");
 			 
-			 document.getElementById("associateResumeDivId").style.display="block";
+			 //document.getElementById("associateResumeDivId").style.display="block";
 			 
 	    	 document.getElementById("newResumeDiv").style.display="";
 	    	 document.getElementById("skillsDiv").style.display="";
@@ -1502,7 +1502,7 @@ function getCandidateDetails(){
 			        	$("#candidateResumesList").empty();
 				        $("#candidateResumesList").append(output);
 				        
-				       /*  document.getElementById("newResumeDiv").style.display="none";
+				        document.getElementById("newResumeDiv").style.display="none";
 				        document.getElementById("skillsDiv").style.display="none";
 				        
 				       
@@ -1511,7 +1511,7 @@ function getCandidateDetails(){
 		        		$('#newUploadFile').attr("data-validation-optional","true"); 
 		        		
 		        		 $('#candidateResumesList').removeAttr('data-validation-optional');
-		    			 $("#candidateResumesList").attr("data-validation", "required"); */
+		    			 $("#candidateResumesList").attr("data-validation", "required"); 
 		        	}else{
 		        		
 		        		 $('#candidateResumesList').removeAttr('data-validation');
@@ -1613,17 +1613,38 @@ function getCandidateDetails(){
 		        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
-		        	var result = "";
-		        	result = result +'<option value="">--select Vendors--</option>';
-		             for(var i=0;i<json.length;i++){
-		            	 var opt = json[0];
-		            	 result = result +'<option >'+opt.orgName+'</option>';
-		            } 
-		            $("#vendors").append(result);
+		        	$('#vendors').append('<option value=""> --select Vendor --</option>');
+		            for(var i=0;i<json.length;i++){
+		            	  var opt = json[i];
+		            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');
+		            }
+		            $('#vendors').trigger("chosen:updated");
+		            getVendorContactList();
+		            
 		        }
 		 });
  }
- 
- 
- 
  </script>
+ 
+  <script>
+ function getVendorContactList(){
+	  var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getVendorsContactsByOrgLocation?", 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var result = "";
+		        	result = result +'<option value="">--select Vendor contact--</option>';
+		             for(var i=0;i<json.length;i++){
+		            	 var opt = json[i];
+		            	 result = result +'<option value='+opt.id+' >'+opt.spocName+'</option>';
+		            } 
+		            $("#vendorcontact").append(result);
+		            $('#vendorcontact').trigger("chosen:updated");
+		        }
+		 }); 
+ }
+ </script>
+ 
+ 
