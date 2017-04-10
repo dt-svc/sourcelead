@@ -171,5 +171,7 @@ public interface RequirementSubmissionDao {
 
 	List<Long> getSubmissionIdByCandidateId(List<Long> candidateIds, Long orgLocationId);
 	
+	List<RequirementSubmission> getOfferAcceptedCandidatesListByOrgLocationId(Long orgLocationId);
+	
 	
 }
