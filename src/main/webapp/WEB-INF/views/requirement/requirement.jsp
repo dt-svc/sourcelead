@@ -1944,10 +1944,6 @@ function popupWindow(reqId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $("#popupWindow").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $("#popupWindow").removeAttr("style");
-	  getTeamsList(reqId);
-	 // var teamType = $("#rolesDiv").val();
-	 // getUserList(teamType);
-	  getUserList();
 	  var result = '';
 	    result = result +'<div class="modal-body clearfix">';
         result = result +' <div class="form-horizontal custom-form">';
@@ -1973,6 +1969,8 @@ function popupWindow(reqId){
 		result = result +'     </div>';
 		$("#popupWindow").empty();
 	    $("#popupWindow").append(result); 
+	    
+	    getTeamsList(reqId);
 	    $("#rolesDiv").selectpicker("refresh");
 }
 </script>
@@ -2092,7 +2090,7 @@ function getUserList(teamType){
 	                 	   result = result +'	<span class="jquery_form_error_message" style="display:none;">Assign at least to a new member</span>';
 	                 	   result = result +'   <div class="modal-footer mt">';
 	                 	   result = result +'     <button class="btn btn-primary" type="button" id="assignbtnId" onClick="assignMembers();">Assign</button>';
-	                 	   result = result +'     <button class="btn btn-default" type="button" id="cancelbtnId" onClick="clearSelections();">Close</button>';
+	                 	   result = result +'     <button class="btn btn-default" type="button" id="cancelbtnId" onClick="clearSelections();">Clear</button>';
 	                 	   result = result +'   </div>'; 
 	                 	   $("#usersGrid").empty(); 
 	                       $("#usersGrid").append(result); 
@@ -2183,14 +2181,6 @@ function getTeamsList(reqId){
             success :function(data) {
             	var json = JSON.parse(data);
 				var output = "";
-				/* output = output +'     <option disabled>Select Role</option>'; */
-				
-
-				/* if(teamType == 'All'){
-					output = output +' <option value="All" selected>All</option>';
-				}else{
-					output = output +' <option value="All">All</option>';
-				} */
 			  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_TEAM\')">';
 			  if(json.teams.length > 0){
 				  output = output + "<optgroup label='Teams'>";
@@ -2228,6 +2218,11 @@ function getTeamsList(reqId){
 			    $("#rolesDiv").selectpicker("refresh");
             	
             },
+            complete: function (data) {
+            	var teamType = $("#rolesDiv").val();
+          		getUserList(teamType);
+            }
+            
       }); 
  } 
 </script>
@@ -2249,12 +2244,9 @@ function getTeamsList(reqId){
 	function clearSelections(){
 		$('#cancelbtnId').attr("data-dismiss","modal");
 		$('#closebtnId').attr("data-dismiss","modal");
-		/* ids = [];
 		$("#assignedToSavingDiv").empty();
-		teamRoleIds = []; */
-		//$("#rolesDiv").empty();
-		//assignMembers();
-		$("#assignedToSavingDiv").empty();
+		teamRoleIds = [];
+		$("#rolesDiv").empty();
 	}
 </script>
 
@@ -2302,10 +2294,10 @@ function assignMembers() {
 		$('#assignbtnId').attr("data-dismiss","modal");
 		rowcollection.each(function(index,elem){
 		    var checkbox_value = $(elem).val();
-		    result = result+ "<input type='hidden' class='defaultCheckBox' name='assignUserId"+count+"' id='assignUserId"+count+"' value='"+checkbox_value+"' />";
+		    result = result+ "<input  class='defaultCheckBox' name='assignUserId"+count+"' id='assignUserId"+count+"' value='"+checkbox_value+"' />";
 		    count++;
 		});
-		result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
+		result = result+"<input  name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
 		//$("#assignedToSavingDiv").empty();
 		$("#assignedToSavingDiv").append(result);
 		assignedToValidation();
@@ -2682,7 +2674,7 @@ var splitNotice = notice.split(",");
 for (var i = 0; i < splitNotice.length; i++) {
 	splitNotice[i] = splitNotice[i].replace(/^\s*/, "").replace(/\s*$/, "");
 }
-$("#noticePeriod").val(splitNotice).trigger("chosen:updated");
+	$("#noticePeriod").val(splitNotice).trigger("chosen:updated");
 }
 </script>
 
