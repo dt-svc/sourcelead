@@ -229,7 +229,7 @@ function educationPagination(){
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -271,7 +271,10 @@ function addEducation(candidateId) {
 											 <c:forEach var="edu" items="${educationsList}">
     result = result  +'	                        <option value="" disabled selected></option>';										 
 	result = result + ' 						<option value="${edu.name}">${edu.name}</option>';
-	                				    	 </c:forEach>
+	                				    	 </c:forEach> 
+	                				    	
+	                				    	 
+	                				    	 
     result = result + '						</select>';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
@@ -378,6 +381,33 @@ function addEducation(candidateId) {
 			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 			  '.chosen-select-width'     : {width:"95%"}
 			}
+	 
+	 
+	//Adding Customized Educations to the list
+     var selectone, chosenone;
+     selectone = $("#name");
+     selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
+     chosenone = selectone.data('chosen');
+     chosenone.search_field.on('keyup', function(e1)
+	    {
+	    	var newEducation = this.value.replace(",","");
+	        if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
+	        {
+	        	var par = this.parent;
+	            var option = $("<option>").val(newEducation).text(newEducation);
+	            selectone.append(option);
+	            selectone.find(option).prop('selected', true);
+	          //to doesn't allow duplicates
+             $("#name option").each(function(){
+                   $(this).siblings("[value='"+ this.value+"']").remove();
+             });
+             //end
+     		$("#name").trigger("chosen:updated");
+     		
+	        }
+	    }); 
+	    //Adding Customized Educations to the list
+	 
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
 			}
@@ -433,14 +463,32 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'   ';
 	result = result  +'                  <div class="clearfix mb10"> ';
 	result = result + "<select  class='chosen-select form-control' name='name' id='name' data-validation='validate_Space' data-validation-optional='true' onchange='validateEduname("+candidateId+");'>";
-	                 for (var j = 0; j < json.educationList.length; j++) {
-							var education = json.educationList[j];
-							   if(education.name == json.name){
-								   result = result+'<option value=\"'+education.name+'\" selected >'+education.name+'</option>';
-							  }else{
-								   result = result+'<option value=\"'+education.name+'\" >'+education.name+'</option>';
-			   		 	      } 
-						}
+		                /*  for (var j = 0; j < json.educationList.length; j++) {
+								var education = json.educationList[j];
+								   if(education.name == json.name){
+									   result = result+'<option value=\"'+education.name+'\" selected >'+education.name+'</option>';
+								  }else{
+									   result = result+'<option value=\"'+education.name+'\" >'+education.name+'</option>';
+				   		 	      } 
+							} */
+						
+				    	 $.each(json.allAndCandidateEducations, function( i, eduName){
+							  var existed = 0;
+				                if(json.name != null && json.name != 'undefined' && json.name != ''){
+					                var res = [];
+					                res = json.name.split(",");
+					                res.forEach(function(item) {
+					                	if(eduName == item){
+					                		existed = 1;
+					                		result = result + ' <option selected value="'+eduName+'">'+eduName+'</option>';
+					                	}
+					                });
+				                }
+				                if(existed == 0){
+				                	result = result + ' <option value="'+eduName+'">'+eduName+'</option>';
+				                }
+							  
+							});
     result = result + "</select>";
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';

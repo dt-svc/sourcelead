@@ -718,7 +718,7 @@ ul.timesheet-menu li a:hover, ul.backoffice-menu li a:hover {
 	cursor: pointer;
 }
 .custom-navbar .login-user span.image img {
-    position: relative; top: 5px;
+    position: relative; top: 0px;
 }
 .login-user {
 	position: relative;
@@ -3720,12 +3720,12 @@ text-wrap:none;
 font-style:normal;
 display:none;
 box-shadow: 0 0 10px rgba(0,0,0,0.6); -moz-box-shadow: 0 0 10px rgba(0,0,0,0.6); -webkit-box-shadow: 0 0 10px rgba(0,0,0,0.6); -o-box-shadow: 0 0 10px rgba(0,0,0,0.6);
-width: 600px;
+width: 680px;
 }
 .ratepop.rate_pop{
 top:30px;
 bottom:auto;
-left:30px;
+left:-65px;
 }
 .ratepop .select-field select{
 width: 100% !important;
@@ -3742,7 +3742,7 @@ margin-bottom: 10px;
 .ratepop section.tbl-scroll{
 	margin-bottom:15px;
 	height:175px;	
-	overflow-y:scroll !important;
+	overflow-y:auto !important;
 }
 .ratepop section.tbl-scroll .fa{
 	padding:0 2px;
@@ -3772,14 +3772,8 @@ height:35px !important;
 	color:#00527A;
 }
 .ratepop .close-ratepop{
-	background-color: #d94747;
-    color: #fff;
-    left: -10px;
-    padding: 4px 5px;
-    position: absolute;
-    top: -5px;
-	border-radius:3px;
-	cursor:pointer;
+	background-color: #d94747; color: #fff; right: -10px; padding: 4px 5px;
+    position: absolute; top: -5px; border-radius:3px; cursor:pointer;
 }
 /* Comments styles */
 .comments-div {
@@ -3999,7 +3993,7 @@ p.comment-text{
     position: relative;
 }
 .pipeline-count ul li{
-	margin:0 5px !important;
+	margin:0 2px !important;
 	float:none;
     padding: 5px 6px 0px 6px !important;
 	line-height:20px;
@@ -4513,6 +4507,7 @@ import-tranhd  [class*="col-md-"]{
 	max-height: 200px;
 	overflow-y:auto;
 	background: #fff;
+
 	border:1px solid #ccc;
 	border-radius:3px !important;
 	z-index: 9999;
@@ -6732,10 +6727,7 @@ font-size: 14px; font-weight: normal;
     max-width: 400px !important;
 }
 .select-rateper {
-    width: 135px !important;
-}
-.select-rateper {
-    width: 135px !important;
+    width: 130px !important;
 }
 #client_chosen .chosen-choices {
     min-height: 35px; max-height: 55px !important; overflow-y:auto !important; 
@@ -6815,6 +6807,31 @@ CrowdSourcing New Header Styles */
 }
 .filterLi input[type=checkbox], .filterLi input[type=radio]{
 	margin-top: 1px; margin-right: 5px;
+}
+.candidatewrap_Table {
+	background: #fff; margin: 15px; padding-top: 25px !important; width: auto !important; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius:3px;
+	-webkit-border-radius:3px; -moz-border-radius:3px; -o-border-radius:3px;
+}
+.ratepop.negotiate_rate {
+	width: 680px;
+}
+table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc {
+    padding: 0px 15px !important; background-size: 15px;
+}
+.form-footer.custom_formfooter {
+    min-height: 45px; line-height: 45px;
+}
+.mt40 {
+    margin-top: 40px;
+}
+#shortlistedPagination tr td{
+    vertical-align: middle;
+}
+.overflow_Auto{
+    overflow: auto;
+}
+#status-data .filter-position .dataTables_filter {
+    z-index: 99;
 }
 /* media 320px */
 @media (max-width: 320px) {

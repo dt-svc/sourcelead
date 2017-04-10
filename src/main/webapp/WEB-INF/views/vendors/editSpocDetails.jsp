@@ -25,8 +25,8 @@
 					type : "POST",
 					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&type=Vendor",
 					success : function(data) {
-						
 						var json = JSON.parse(data);
+						getVendorDashboardName(json.spocName);
 						var result = "";
 						result  = result + '<div class="success_pop" id="vendorEditMsgDiv" style="display: none;">';
 					    result  = result + '<i class="fa fa-check-circle"></i><span id="vendorEditMsg"></span>';
@@ -126,6 +126,9 @@
 				});
 	}
 </script>
+
+
+
 <script type="text/javascript">
 	function editVendorContactDetails(spocId,ownerId,spocUserId,tempOwnerId) {
 		var sourceleadUrl = '${sourceleadUrl}';
@@ -200,7 +203,7 @@
 						
 						result = result + '<div class="user_summary_edit_cta" id="mobilePhone">';
 						result = result + '<label>Phone No:</label>';
-						result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone" data-validation-optional="true" data-validation="validate_int validate_length length9-20" >';
+						result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone" data-validation-optional="true" data-validation="validate_length length9-20 validate_phone" >';
 						result = result + '</div>';
 						
 						}
@@ -343,8 +346,9 @@
 	   		 		$("#vendorEditMsgDiv").removeAttr("style");
 		 			$("#vendorEditMsgDiv").css({ display: "block" });
 		 			$("#vendorEditMsg").html("Contact Details Updated");
-	   		    	vendorDetailsbySpocId(spocId,newOwner,spocUserId,tempOwnerId);
-	   		    	getVendorContactLists();
+	   		    	vendorDetailsbySpocId(spocId,newOwner,spocUserId,ownerId);
+	   		    	//getVendorContactLists();
+	   		    	getVendorContactListsELK();
 	   		    	vendorEditMsgFadein();
 	   		    }
 		 }); 

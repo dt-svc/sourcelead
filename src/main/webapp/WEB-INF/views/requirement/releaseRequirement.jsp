@@ -346,9 +346,13 @@ function releaseToOneContact(contactscheckboxId){
 	$("#" + contactscheckboxId).prop('checked', true);
 	releaseTo();
 }
+
+function releaseToOneVendor(vendorcheckboxId){
+	$('input:checkbox[name="vendorcheckbox"]').prop('checked',false);
+	$("#" + vendorcheckboxId).prop('checked', true);
+	releaseTo();
+}
 </script>
-
-
 
 
 <script type="text/javascript">
@@ -694,6 +698,13 @@ function getVendorLists(){
 	        	       		result = result +'<td>';
 	        	       		if(report.noOfNonReleasedContacts == 0){
 	                			result = result +'<div><b class="proj_active">Released</b></div>';
+	                		}else if(report.noOfNonReleasedContacts > 0){
+									'<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
+										result = result +'<div><a href="javascript:void(0)"><i class="fa fa-bullhorn" onclick="releaseToOneVendor('+report.id+');"></i></a></div>';
+									'</sec:authorize>';
+									'<sec:authorize access="!hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
+										result = result +'<div class="fa fa-bullhorn"></div>';
+									'</sec:authorize>';
 	                		}
 	                		result = result +'</td>';
 	           	        	result = result +'</tr>';

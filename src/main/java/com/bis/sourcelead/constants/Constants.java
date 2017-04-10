@@ -97,6 +97,8 @@ public class Constants {
 	public static String INTERVIEWER_INVITATION = "Interviewer Invitation";
 	public static String INTERVIEWER_TEMPLATE = "Interviewer Template";
 	
+	public static String INTERVIEW_RESCHEDULEMAIL_TO_APPLICANT="interviewRescheduleMailToApplicant";
+	
 	public static String OFFER_ACCEPTED = "Offer Accepted";
 	public static String OFFER_ACCEPTED_NOTIFICATION = "Offer Accepted Notification";
 	
@@ -218,6 +220,11 @@ public class Constants {
 	public static String TIMESHEET_MANAGER_NOTIFICATION = "Timesheet Scheduler Level1 Manager";
 	
 	public static String UPDATEDREQUIREMENTNOTIFICATIONTOVENDOR="updatedRequirementNotificationToVendor"; 
+	
+	public static String UPDATED_REQUIREMENT_EMAIL_TO_MANAGER="updatedRequirementEmailToManager";
+	public static String UPDATED_REQUIREMENT_NOTIFICATION_TO_MANAGER="updatedRequirementNotificationToManager";
+	public static String  UPDATED_FEEDBACK_NOTIFICATIONTO_REQUIREMENTOWNER="updatedFeedbackNotificationToRequirementOwner";
+
 	
 	public static String OFFERREJECT_EMAIL = "Vendor Offer Reject";
 	
@@ -360,6 +367,8 @@ public class Constants {
 	
 	public static String Applicant_Acceptance_By_Manager_Of_Requirement = "ApplicantAcceptanceByManagerOfRequirement";
 	public static String Applicant_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager = "ApplicantWillReceiveMailAboutTheAcceptanceOfRequirementByManager";
+	
+	public static String Recruiter_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager = "RecruiterWillReceiveMailAboutTheAcceptanceOfRequirementByManager";
 	
 	public static String[] RATEPER_LIST = {"Daily","Hourly","Weekly","Bi-Weekly","Semi-Monthly","Monthly","Yearly"};
 	
@@ -610,5 +619,5 @@ public class Constants {
     public static String ONE_MONTH = "month";
     public static String TWO_MONTHS = "twomonths";
     
-   
+    public static  Long CANDIATE_RESUME_IN_ACTIVE = 0L;
 }	

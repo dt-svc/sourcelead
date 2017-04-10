@@ -156,7 +156,7 @@ function taskNameValidation(){
 						result = result + '<th>Task name</th>';
 						result = result + '<th>Billable Type</th>';
 						result = result + '<th>Task description</th>';
-						result = result + '<th>Actin</th>';
+						result = result + '<th>Action</th>';
 						result = result + '</tr>';
 						result = result + '</thead>';
 						result = result + '<tbody>';
@@ -411,7 +411,7 @@ function taskPagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"autoWidth": false,
     	"oLanguage": {
      		"sSearch": "",
