@@ -547,7 +547,6 @@ public class RequirementReleaseRestController {
 		
 //		requirement.setJobId(parentRequirement.getJobId());
 		requirement.setPositions(parentRequirement.getPositions());
-		requirement.setJobId(parentRequirement.getJobId());
 		requirement.setEducation(parentRequirement.getEducation());
 		requirement.setMinExp(parentRequirement.getMinExp());
 		requirement.setMaxExp(parentRequirement.getMaxExp());
