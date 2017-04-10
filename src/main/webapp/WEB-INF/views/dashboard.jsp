@@ -101,6 +101,9 @@ overflow-x: auto;
 	    </div>
 	    	
 	    	<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
+	    	
+	    			<jsp:include page="onboardingCandidatesList.jsp"></jsp:include> 
+	    	
 	    			<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 					<jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include> 
 					</sec:authorize>

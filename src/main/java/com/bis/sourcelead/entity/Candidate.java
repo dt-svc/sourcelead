@@ -166,6 +166,9 @@ public class Candidate implements Serializable{
 	
 	@Column(name = "IS_PROFILE_PUBLIC")
 	private String isProfilePublic;
+
+	@Column(name = "CANDIDATE_UUID")
+	private String candidateUUID;
 	
 	
 	@Transient
@@ -1049,6 +1052,16 @@ public class Candidate implements Serializable{
 
 	public void setCandidateRequiementCount(Integer candidateRequiementCount) {
 		this.candidateRequiementCount = candidateRequiementCount;
+	}
+
+
+	public String getCandidateUUID() {
+		return candidateUUID;
+	}
+
+
+	public void setCandidateUUID(String candidateUUID) {
+		this.candidateUUID = candidateUUID;
 	}
 	
 }
