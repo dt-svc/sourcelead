@@ -245,9 +245,7 @@ function prepareRequirementData(data){
     result = result +"    <th>Owner</th>"; 
     result = result +"    <th>Posted On</th>";
     result = result +"    <th>Status</th>"; 
-//     '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
        result = result +"<th>Actions</th>";
-//     '</sec:authorize>';
 //     result = result +"    <th>Release</th>"; 
     result = result +"  </tr>"; 
     result = result +"</thead>";
@@ -279,7 +277,7 @@ function prepareRequirementData(data){
 	
    	 if(opt.jobId != '' && opt.jobId != null){
    	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-        	result = result +"<td><a href='<c:url value='/requirementSummary?requirementUUID="+opt.requirementUUID+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobId+"-"+opt.jobTitle+"'>"+opt.jobId+"-"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+        	result = result +"<td><a href='<c:url value='/requirementSummary?requirementUUID="+opt.requirementUUID+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
         '</sec:authorize>';
         '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
         	result = result +"<td><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
