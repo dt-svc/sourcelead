@@ -6,7 +6,8 @@ import java.net.URLDecoder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
+import org.springframework.stereotype.Component;
+@Component
 public class slack {
 	processor pr = new processor();
 

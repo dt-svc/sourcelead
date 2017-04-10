@@ -6,7 +6,9 @@ import java.io.IOException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.stereotype.Component;
 
+@Component
 class outlook {
 	processor pr = new processor();
 	

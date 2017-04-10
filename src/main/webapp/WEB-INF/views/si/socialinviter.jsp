@@ -261,13 +261,10 @@
              },
              callbacks: {
                  "loaded": function (service, response) {
-                	 alert("called1....");
                  },
                  "back": function (event, service) {
-                	 alert("called2....");
                  },
                  "send": function (event, service, recipients) {
-                	 alert("called3....");
                      socialinviter.close();
                      if(socialinviter.getProduct()=="contactimporter"){
 	                     $("#selectedContacts").html("");

@@ -7,6 +7,8 @@ import java.util.StringTokenizer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.stereotype.Component;
+@Component
 class twitter {
 	processor pr = new processor();
 	

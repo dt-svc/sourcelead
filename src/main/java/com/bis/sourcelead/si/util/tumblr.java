@@ -6,6 +6,8 @@ import java.util.Calendar;
 import java.util.StringTokenizer;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.stereotype.Component;
+@Component
 class tumblr {
 	processor pr = new processor();
 

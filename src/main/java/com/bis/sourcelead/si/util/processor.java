@@ -23,7 +23,8 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.HttpsURLConnection;
 
 import org.json.JSONObject;
-
+import org.springframework.stereotype.Component;
+@Component
 public class processor {
 	
 	

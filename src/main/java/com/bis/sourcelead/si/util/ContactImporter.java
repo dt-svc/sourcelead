@@ -1,5 +1,7 @@
 package com.bis.sourcelead.si.util;
 import org.json.JSONObject;
+import org.springframework.stereotype.Component;
+@Component
 public class ContactImporter {
 	google goo = new google();
 	mailchimp mai = new mailchimp();

@@ -2,6 +2,8 @@ package com.bis.sourcelead.si.util;
 import java.util.StringTokenizer;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.stereotype.Component;
+@Component
 public class instagram {
 processor pr = new processor();
 	

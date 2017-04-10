@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,7 +30,7 @@ public class SocialInviterService {
 	private static final Logger logger = LoggerFactory.getLogger(SocialInviterService.class);
 	
 	
-	@RequestMapping(value = "/getAPIService")
+    @RequestMapping(value="/getAPIService", method=RequestMethod.GET, produces = "application/javascript;charset=UTF-8")
 	@ResponseBody
 	public String getAPIService(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 
@@ -224,8 +225,8 @@ public class SocialInviterService {
 	protected JSONObject getCredentials(String service) throws JSONException{
     	JSONObject APICredentials = new JSONObject();
     	if(service.equals("twitter")){
-        	APICredentials.put("consumerKey", "");
-        	APICredentials.put("consumerSecret", "");
+        	APICredentials.put("consumerKey", "V4P2tb6xkkjPNTVblTlkZa3E6");
+        	APICredentials.put("consumerSecret", "UVSn8ZaxvToCPy5jn7IDKLuQlA02nNTpAiXrzaKLOPFPoSYcab");
         }
     	else if (service.equals("facebook")){
         	APICredentials.put("consumerKey", "200281393793197");
@@ -240,8 +241,8 @@ public class SocialInviterService {
 	    	APICredentials.put("consumerSecret", "");
         }
     	else if(service.equals("hotmail") || service.equals("outlook")){
-       		APICredentials.put("consumerKey", "");
-       		APICredentials.put("consumerSecret", "");
+       		APICredentials.put("consumerKey", "09367f41-ab2e-49aa-8b4b-2868a8034074");
+       		APICredentials.put("consumerSecret", "QxWu8nsUQKLKA8QbF4j3co1");
         }
 		else if(service.equals("box")){
        		APICredentials.put("consumerKey", "");
@@ -272,24 +273,24 @@ public class SocialInviterService {
 	    	APICredentials.put("consumerSecret", "");
         }
 		else if(service.equals("linkedin")){
-        	APICredentials.put("consumerKey", "811b1hw3y5bw02");
-	    	APICredentials.put("consumerSecret", "lptiApADpyjdF1PZ");
+        	APICredentials.put("consumerKey", "81wdpepnlmef5o");
+	    	APICredentials.put("consumerSecret", "sWQwek2HiUjqrLBL");
         }
 		else if(service.equals("yahoo")){
-       		APICredentials.put("consumerKey", "");
-	    	APICredentials.put("consumerSecret", "");
+       		APICredentials.put("consumerKey", "dj0yJmk9THZweTRuYnY4d3hWJmQ9WVdrOWJHSTFUalJ2Tm1VbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD0yZQ--");
+	    	APICredentials.put("consumerSecret", "d6d481b6f2d7b6d448cd83401b3317518d30e452");
         }
 		else if(service.equals("foursquare")){
-        	APICredentials.put("consumerKey", "");
-			APICredentials.put("consumerSecret", "");
+        	APICredentials.put("consumerKey", "YUZNQ1BUKIFEJKXKCGLWKVNQCASW1G50O1TWTEM1KEK3S3VB");
+			APICredentials.put("consumerSecret", "1JF21FUR24MBXADKVC0RLP2XDFNTZDTXZ3MOWJNMCRF3TGKM");
         }
     	else if(service.equals("mailchimp")){
-        	APICredentials.put("consumerKey", "");
-        	APICredentials.put("consumerSecret", "");
+        	APICredentials.put("consumerKey", "153010893985");
+        	APICredentials.put("consumerSecret", "99ffca5cdb8047fdf9d97ba4fe8ef4878e5be4b12aabfeb684");
         }
 		else if(service.equals("eventbrite")){
-        	APICredentials.put("consumerKey", "");
-	    	APICredentials.put("consumerSecret", "");
+        	APICredentials.put("consumerKey", "6F4V5IMYFRCFJEKDWG");
+	    	APICredentials.put("consumerSecret", "LATRTU52ZHOQVT2KDOO4EMRXM54VM6WG7E75UJRJJCXF2XP7P7");
         }
     	else if(service.equals("mailru")){
         	APICredentials.put("consumerKey", "");
@@ -300,12 +301,12 @@ public class SocialInviterService {
 			APICredentials.put("consumerSecret", "");
         }
     	else if(service.equals("tumblr")){
-        	APICredentials.put("consumerKey", "");
-			APICredentials.put("consumerSecret", "");
+        	APICredentials.put("consumerKey", "1kosTR3wf5rHMYLr071sgsnxM1pE8WsujrIO7jcd62FdsDtqec");
+			APICredentials.put("consumerSecret", "jpNNnSL0YacVeKEIcccxZsbzPlX6gr3bAPST9Pq6ZM2RfEuGjD");
 		}
     	else{
-    		APICredentials.put("consumerKey", "");
-			APICredentials.put("consumerSecret", "");
+    		APICredentials.put("consumerKey", "63b2a3143bd306a4");
+			APICredentials.put("consumerSecret", "d46z1b2glf0blf2e");
     	}
     	return APICredentials;
     }

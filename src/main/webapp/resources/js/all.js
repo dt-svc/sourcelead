@@ -1769,7 +1769,6 @@ var authCallback = function (data) {
         }
     }
     else {
-    	alert(".....called authback else......");
         data = data.data;
         if ($.trim(data.authurl) == "")
             displayError("Something went wrong.");

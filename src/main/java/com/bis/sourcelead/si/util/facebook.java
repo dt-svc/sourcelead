@@ -1,9 +1,13 @@
 package com.bis.sourcelead.si.util;
 
 import java.util.StringTokenizer;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.stereotype.Component;
 
+@Component
 class facebook {
 	processor pr = new processor();
 	
@@ -53,7 +57,10 @@ class facebook {
 			//MAKE API CALL
 			String response = pr.executeGet(requrl);
 			
-			//PARSE DATA
+			
+			JSONObject jsnobject = new JSONObject(response);
+			
+			/*//PARSE DATA
 	        StringTokenizer st = new StringTokenizer(response.toString(), "&");
 			String currenttoken = "";
 			String oauth_token = "";
@@ -63,8 +70,12 @@ class facebook {
 				currenttoken = st.nextToken();
 				if(currenttoken.startsWith("access_token="))
 					oauth_token = currenttoken.substring(currenttoken.indexOf("=") + 1);
-			}
-	        data.put("token", oauth_token);
+			}*/
+			if(jsnobject.has("access_token"))
+	           data.put("token", jsnobject.getString("access_token"));
+			else
+				data.put("token", "");
+			
 			data.put("tokensecret", "");
 			data.put("tokenverifier", "");
 			data.put("service", "facebook");

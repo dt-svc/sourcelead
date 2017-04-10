@@ -1,7 +1,8 @@
 package com.bis.sourcelead.si.util;
 
 import org.json.JSONObject;
-
+import org.springframework.stereotype.Component;
+@Component
 public class FriendsInviter {
 	twitter twi = new twitter();
 	xing xi = new xing();

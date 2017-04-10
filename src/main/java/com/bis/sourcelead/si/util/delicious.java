@@ -2,7 +2,9 @@ package com.bis.sourcelead.si.util;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.stereotype.Component;
 
+@Component
 class delicious {
 	processor pr = new processor();
 	

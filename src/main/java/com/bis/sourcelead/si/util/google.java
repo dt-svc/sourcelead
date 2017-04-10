@@ -4,7 +4,8 @@ package com.bis.sourcelead.si.util;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
+import org.springframework.stereotype.Component;
+@Component
 class google {
 	processor pr = new processor();
 	
