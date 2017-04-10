@@ -27,6 +27,9 @@ float: none !important;
 .custom-datatble table{
  margin-top: 20px !important;
  }
+ #requirementList {
+	border-bottom: 1px solid #eae6e6;
+}
  .custom-datatble .dataTables_filter{
    top: -35px !important;
     padding: 0 !important;
