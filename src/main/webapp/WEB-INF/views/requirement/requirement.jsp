@@ -2294,10 +2294,10 @@ function assignMembers() {
 		$('#assignbtnId').attr("data-dismiss","modal");
 		rowcollection.each(function(index,elem){
 		    var checkbox_value = $(elem).val();
-		    result = result+ "<input  class='defaultCheckBox' name='assignUserId"+count+"' id='assignUserId"+count+"' value='"+checkbox_value+"' />";
+		    result = result+ "<input type='hidden' class='defaultCheckBox' name='assignUserId"+count+"' id='assignUserId"+count+"' value='"+checkbox_value+"' />";
 		    count++;
 		});
-		result = result+"<input  name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
+		result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
 		//$("#assignedToSavingDiv").empty();
 		$("#assignedToSavingDiv").append(result);
 		assignedToValidation();
