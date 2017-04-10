@@ -81,9 +81,13 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	    	   
 	    	   var designation = '';
 	    	   var experience = '';
+	    	   var noticeperiod = '';
 	    	   
+	    	   if(json.requirementSubmissionTemplateFields.noticePeriod != null && json.requirementSubmissionTemplateFields.noticePeriod != '' && json.requirementSubmissionTemplateFields.noticePeriod !='undefined'){
+	    		   noticeperiod = 'Notice Period -'+json.requirementSubmissionTemplateFields.noticePeriod;
+	    	   }
 	    	   if(json.requirementSubmissionTemplateFields.designation != null && json.requirementSubmissionTemplateFields.designation != '' && json.requirementSubmissionTemplateFields.designation !='undefined'){
-	    		   designation = json.requirementSubmissionTemplateFields.designation;
+	    		   designation ='Designation -'+json.requirementSubmissionTemplateFields.designation;
 	    	   }
 	    	   
 	    	   if(json.requirementSubmissionTemplateFields.workExperience != null && json.requirementSubmissionTemplateFields.workExperience != '' && json.requirementSubmissionTemplateFields.workExperience !='undefined'){
@@ -161,6 +165,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                result = result + ' <ul class="list-unstyled">';
                result = result + ' <li><strong>'+designation+'</strong></li>';
                result = result + ' <li>'+experience+'</li>';
+               result = result + ' <li>'+noticeperiod+'</li>';
                result = result + ' </ul>';
                result = result + '</div>';
                result = result + '</div>';
