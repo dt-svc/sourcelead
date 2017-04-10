@@ -67,7 +67,7 @@ function onboardingCandidatesList(){
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
 	                    	 
-	                    		 result = result +"<td><div class='tbldata-dotdot-sm'><span title='"+opt.candidateName+"'>"+opt.candidateName+"</span></a></div></td>";
+	                    		 result = result +"<td><div class='tbldata-dotdot-sm'><span title='"+opt.candidateName+"'>"+opt.candidateName+"</span></div></td>";
 	                    		
 	                    		 result = result +"<td><div><span title='"+opt.candidateEmail+"'>"+opt.candidateEmail+"</span></div></td>";
 	                    		 
@@ -87,7 +87,7 @@ function onboardingCandidatesList(){
 				                     result = result +"<td><div><span>-----</span></div></td>";
 			                     }
 			                     
-			                     result = result +"<td><div class=''> <a href='#'>Onboard</a>&nbsp;|&nbsp;<a href='#'>Decline</a></div></td>";
+			                     result = result +"<td><div class='tbldata-dotdot-sm'><a href='"+sourceleadUrl+"/candidateOnBoardingDetails?candidateUUId="+opt.candidateUUID+"'><span class='text-success'>On-board</span></a>&nbsp;&nbsp;<a href='#'><span class='text-danger'>Decline</span></a></div></td>";
 
 		                     
 		                     result = result +"</tr>";
