@@ -97,6 +97,8 @@ public class Constants {
 	public static String INTERVIEWER_INVITATION = "Interviewer Invitation";
 	public static String INTERVIEWER_TEMPLATE = "Interviewer Template";
 	
+	public static String INTERVIEW_RESCHEDULEMAIL_TO_APPLICANT="interviewRescheduleMailToApplicant";
+	
 	public static String OFFER_ACCEPTED = "Offer Accepted";
 	public static String OFFER_ACCEPTED_NOTIFICATION = "Offer Accepted Notification";
 	
@@ -366,6 +368,8 @@ public class Constants {
 	public static String Applicant_Acceptance_By_Manager_Of_Requirement = "ApplicantAcceptanceByManagerOfRequirement";
 	public static String Applicant_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager = "ApplicantWillReceiveMailAboutTheAcceptanceOfRequirementByManager";
 	
+	public static String Recruiter_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager = "RecruiterWillReceiveMailAboutTheAcceptanceOfRequirementByManager";
+	
 	public static String[] RATEPER_LIST = {"Daily","Hourly","Weekly","Bi-Weekly","Semi-Monthly","Monthly","Yearly"};
 	
 	public static String[] ROLE_LIST = {"Admin","Employee","Project Manager","Team Lead"};
@@ -615,5 +619,5 @@ public class Constants {
     public static String ONE_MONTH = "month";
     public static String TWO_MONTHS = "twomonths";
     
-   
+    public static  Long CANDIATE_RESUME_IN_ACTIVE = 0L;
 }	

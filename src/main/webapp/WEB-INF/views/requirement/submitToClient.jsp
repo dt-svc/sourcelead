@@ -45,8 +45,8 @@ function submitToClient(requirementId){
 		        
 	           result = result + '     <div class="clearfix"></div>';
 	           result = result + '   </div>';
-	           result = result + '   <div class="require_wrap_table scroll_table">';
-	           result = result + '     <table id="shortlistedPagination"  class="display" cellspacing="0" width="100%">';
+	           result = result + '   <div class="require_wrap_table scroll_table mt40">';
+	           result = result + '     <table id="SCPagination"  class="display" cellspacing="0" width="100%">';
 	           result = result + '       <thead>';
 	           result = result + '         <tr>';
 	           result = result + ' <th><input type="checkbox" onclick="selectAllSubmitToClient();"  id="selectallSTC" ></th>';
@@ -96,7 +96,7 @@ function submitToClient(requirementId){
 			    	     }
 			           
 			           if(report.candidateResumes != null && report.candidateResumes != '' && report.candidateResumes != 'undefined'){
- 			        	   result = result + '<td><div><span><a href="javascript:void(0)"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeId='+report.candidateResumes.id+'\"></a></span></div></td>';
+ 			        	   result = result + '<td><div><span><a href="javascript:void(0)"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.candidateResumes.resumeUUID+'\"></a></span></div></td>';
 				           }
 				       else{
 				    	   result = result + '<td><div>--</div></td>';
@@ -158,6 +158,7 @@ function submitToClient(requirementId){
 		    			
 		    			$("#submitToClientDiv").empty();
 		    			$("#submitToClientDiv").append(result);
+		    			SCpagination();
 		   		}
 		   		}else if(data != 'failed'){
 		    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-user'></i><h3>Shortlisted List is Empty</h3></div>";
@@ -207,13 +208,14 @@ function validateRate(evt, rateId) {
 </script> -->
 
 <script>
-function pagination(){  
-    $('#shortlistedPagination').DataTable( { 
+function SCpagination(){  
+    $('#SCPagination').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      	"sSearch": "",
      	 "sZeroRecords": "", "sEmptyTable": ""
