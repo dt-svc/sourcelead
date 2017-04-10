@@ -94,13 +94,10 @@ public class CandidateController {
             model.addObject("loginCountryName", countries.getName());
             model.addObject("currencyCode", countries.getCurrency());
 			}
-            
-            
             List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 			model.addObject("educationsList", educationsList);
 			
 			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
-			
 			model.addObject("skillsList", skillsList);
 			
 			return model;
@@ -128,7 +125,6 @@ public class CandidateController {
 				model.addObject("educationsList", educationsList);
 				
 				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
-				
 				model.addObject("skillsList", skillsList);
 				
 				return model;
@@ -186,6 +182,9 @@ public class CandidateController {
 		
 		List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		model.addObject("educationsList", educationsList);
+		
+		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+		model.addObject("documentsList", documentsList);
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(null == sessionData)
@@ -274,9 +273,8 @@ public class CandidateController {
 		
 		 List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		 model.addObject("educationsList", educationsList);
-		
+		 
 		 List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
-		
 		 model.addObject("skillsList", skillsList);
 		
 		return model;
