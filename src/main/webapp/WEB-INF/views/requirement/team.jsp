@@ -53,7 +53,7 @@ function teamList(){
 		  type : "POST",
             url: sourceleadUrl+"/getTeamListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}",       
             success :function(data) {
-                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
+                /*  if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
 			    	     $("#teamList").removeAttr("style");
 	                	 $("#teamList").empty();
 	                	 var result = "";
@@ -95,9 +95,10 @@ function teamList(){
 	                     }
 	                     result = result +" </tbody>";
 	                     result = result +"</table>"; 
+	                     $("#teamList").empty();
 	                     $("#teamList").append(result); 
 	                     pagination(); 
-                 }else{
+                 /* }else{
                 	 $("#teamList").removeAttr("style");
   	    	         var result ="";
 		    	    
@@ -108,7 +109,7 @@ function teamList(){
 					
 					$("#teamList").empty();
 				    $("#teamList").append(result); 
-                }
+                } */
           },
             
        }); 
@@ -716,7 +717,8 @@ function TeamMemberpagination(){
     <!-- Compnay details -->
     <div class="side_mask"><div class="proj_close"></div></div>
     <div class="clients_side_wrap">
-      <div class="clients_side_wrap_inn candidate_wrap_table">
+      <!-- <div class="clients_side_wrap_inn candidate_wrap_table"> -->
+      <div class="clients_side_wrap_inn candidate_wrap_table candidatewrap_Table">
       
       <div id="teamSideDiv">
 	  </div>
@@ -1150,7 +1152,7 @@ function getCandidateListForTeam(teamId,teamName){
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getHotCandidateListForTeamByTeamId?${_csrf.parameterName}=${_csrf.token}&teamId="+teamId,
 	    	  success: function(data) {
-	    		  if(data != null && data != 'undefined' && data != "" && data != '[]'){
+	    		/*   if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
 	               			 $("#teamSideDiv").removeAttr("style");
 		                	 $("#teamSideDiv").empty();
 		                	 var result = "";
@@ -1233,7 +1235,7 @@ function getCandidateListForTeam(teamId,teamName){
 		                     result = result +"</table>";
 		                     $("#teamSideDiv").append(result);
 		                     cpagination();
-	                 }else{
+	                 /* }else{
 	                	 $("#teamSideDiv").removeAttr("style");
 	  	    	         var result ="";
 						 result = result+"			<div class='blank-pages'>";
@@ -1242,7 +1244,7 @@ function getCandidateListForTeam(teamId,teamName){
 						 result = result+"			 </div>";
 						 $("#teamSideDiv").empty();
 						 $("#teamSideDiv").append(result); 
-	                 }
+	                 } */
 	    		  
 	    	  }
 	 });
