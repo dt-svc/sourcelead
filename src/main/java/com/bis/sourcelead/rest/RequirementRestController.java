@@ -509,7 +509,7 @@ public class RequirementRestController {
 	    // This is made static as requirment action id is 146
 		
 		ArrayList<User> mynewList =  new ArrayList<User>();
-		LinkedHashSet<User> usersList = userService.getUsersByTeamTypeAndTabId(orgLocation.getId(),teamType, Long.valueOf(Constants.TAB_REQUIREMENT));
+		List<User> usersList = userService.getUsersByTeamTypeAndTabId(orgLocation.getId(),teamType, Long.valueOf(Constants.TAB_REQUIREMENT));
        
 		//   Commented because Team Lead not required to show in team Members List By Default he is added in to the  RequirementAssignTo
 		

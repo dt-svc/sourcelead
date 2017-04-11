@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -151,6 +152,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 	
 	@Autowired
 	RequirementService requirementService;
+	
+	@Autowired
+	OrgDao orgDao;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -756,14 +760,14 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 * Saving USER DB data as ElasticSearch Documents
 		 */
 		userService.saveOrUpdateUserElkDocument(userRole,employees,orgUser.getUserCode());
-		sendEmail(orgUser,user,password,orgLocations.getId());
+		sendEmail(orgUser,user,password,orgLocations.getId(),jsonObj.getString("registredOrgId"));
 		
 		
 		
 	}
 	
 	
-	public void sendEmail(User user, User loginUser, String password, Long locationId) throws Exception {
+	public void sendEmail(User user, User loginUser, String password, Long locationId,String orgId) throws Exception {
 		
 		 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), locationId);
 		 if(userRole == null){
@@ -818,8 +822,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
 		 String url = sourceleadUrl;
 		 
+		 Org registredOrg = orgDao.findOrgByID(Long.parseLong(orgId));
+		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, registredOrg);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -901,6 +907,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidate.setCreatedBy("sladmin");
 		candidate.setCreatedDate(new Date());
 		candidate.setUpdatedDate(new Date());
+		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		
 		candidateService.addCandidate(candidate);
 		candidateService.saveOrUpdateCandidateElkDocument(candidate);
@@ -1056,6 +1063,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidate.setCreatedBy("sladmin");
 		candidate.setCreatedDate(new Date());
 		candidate.setUpdatedDate(new Date());
+		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		
 		candidateService.addCandidate(candidate);
 		candidateService.saveOrUpdateCandidateElkDocument(candidate);

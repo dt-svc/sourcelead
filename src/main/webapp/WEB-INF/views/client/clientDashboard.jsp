@@ -887,7 +887,7 @@ function pagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -947,8 +947,8 @@ function pagination(){
 		$("#clientSideDiv").empty();
 		$("#clientSideDiv").append(result);
 		
-		$("#clientNameDiv").empty();
-		$("#clientNameDiv").append(orgName);
+		/* $("#clientNameDiv").empty();
+		$("#clientNameDiv").append(orgName); */
 		
 		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
 		$(".side_mask").fadeIn(200);
@@ -957,6 +957,13 @@ function pagination(){
  
 		clientDetails(clientLocationId,orgRelationId);
 	}
+</script>
+
+<script>
+function getClientNeworgname(clientNewOrgname){
+	$("#clientNameDiv").empty();
+	$("#clientNameDiv").append(clientNewOrgname);
+}
 </script>
 
 <script>
@@ -1402,7 +1409,7 @@ function pagination1(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -1469,8 +1476,8 @@ function updateSpocStatus(spocId){
 		$("#clientSideDiv").empty();
 		$("#clientSideDiv").append(result);
 		
-		$("#clientNameDiv").empty();
-		$("#clientNameDiv").append(spocName);
+		/* $("#clientNameDiv").empty();
+		$("#clientNameDiv").append(spocName); */
 		
 		$(".clients_side_wrap").addClass("clients_side_wrap_active");
 		$(".side_mask").fadeIn(200);
@@ -1480,7 +1487,13 @@ function updateSpocStatus(spocId){
 	}
 </script>
 
+<script>
 
+function getClientSpocname(clientNewSpocname){
+	$("#clientNameDiv").empty();
+	$("#clientNameDiv").append(clientNewSpocname);
+}
+</script>
 
 <script>
 function listChange(sel){
@@ -1791,6 +1804,13 @@ function getEndDatePickerById(projectId,localFieldName){
 			$(".clients_side_wrap").removeClass("clients_side_wrap_active");
 			$(".side_mask").fadeOut(200);
 			$("body").css('overflow-y', 'auto');
+			//update the details in list.
+			var vendorCont = document.getElementById('listOfVendors').value;
+			if(vendorCont == "listbyContact"){
+				getVendorContactListsELK();
+			}if(vendorCont == "listbyVendor" ){
+				getClientDetailsELK();
+	   		}
 		});
 	});
 

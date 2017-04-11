@@ -33,6 +33,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
+import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
@@ -47,6 +48,7 @@ import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
+import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TaskService;
@@ -110,11 +112,19 @@ public class DashboardRestController {
 	 @Autowired
 	 TimeZoneService timeZoneService;
 	 
-	@Autowired
-	CommonUtil commonUtil;
+	 @Autowired
+	 CommonUtil commonUtil;
 	
-	@Autowired
-	TaskService taskService;
+	 @Autowired
+	 TaskService taskService;
+	 
+	 @Autowired
+	 RequirementOffersService requirementOffersService;
+	 
+	 protected static boolean isNullOrEmpty(String str) {
+			return (str == null || "".equals(str.trim()));
+		}
+	 
 	/****
 	 * This  controller method is   for getting TimesheetSubmission Counts in dashboard Landing Page Based on User Login
 	 * @author: Sammeta David
@@ -552,7 +562,10 @@ public class DashboardRestController {
 			
 			Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 			RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirementId, loginUser.getId());
-		    
+			if(status.equalsIgnoreCase("REJECTED")  &&  !reason.equalsIgnoreCase("") && !reason.isEmpty()){
+		    	requirementApproverHierarchy.setRejectedReason(reason);
+		    	requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
+		    }
 			/*// to get  RequirementApproverHierarchy with maximum Level
 			Integer maxLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirementId);
 
@@ -627,7 +640,7 @@ public class DashboardRestController {
 									rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
 									requirement.setReqlevel2ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED.toString());
 								} else if (status.equalsIgnoreCase("REJECTED")) {
-									rah.setRejectedReason(reason);
+									//rah.setRejectedReason(reason);
 									rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
 									requirement.setReqlevel2ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED.toString());
 								}
@@ -767,4 +780,62 @@ public class DashboardRestController {
 			resultJson = commonUtil.toJSON(reqInterviewHistory);
 			return resultJson;
 		}
+		
+		
+		
+		
+		
+		
+		
+		@RequestMapping(value = "/getOnboardingCandidatesList")
+		 public String getOnboardingCandidatesList(HttpServletRequest request) throws Exception {
+
+			String resultJson;
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			
+			List<RequirementSubmission> submissionList = requirementSubmissionService.getOfferAcceptedCandidatesListByOrgLocationId(loginOrgLocation.getId());
+			List<RequirementSubmission> requirementSubmissionList = new ArrayList<RequirementSubmission>();
+			
+			if(null != submissionList && submissionList.size() > 0){
+				
+				for(RequirementSubmission submission : submissionList){
+					StringBuilder candidateName = new StringBuilder();
+					if(!isNullOrEmpty(submission.getCandidate().getLastName())){
+						submission.setCandidateName(candidateName.append(submission.getCandidate().getFirstName()).append(" ").append(submission.getCandidate().getLastName()).toString());
+					}else{
+						submission.setCandidateName(candidateName.append(submission.getCandidate().getFirstName()).toString());
+					}
+					
+					submission.setCandidateEmail(submission.getCandidate().getEmail());
+					submission.setRequirementName(submission.getRequirement().getJobTitle());
+					submission.setCandidateUUID(submission.getCandidate().getCandidateUUID());
+					submission.setRequirementUUID(submission.getRequirement().getRequirementUUID());
+					
+					RequirementOffers requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(submission.getId());
+					submission.setOfferJoinDate(Constants.DMY.format(requirementOffers.getDateOfJoining()));
+					submission.setPositionType(requirementOffers.getPositionType());
+					submission.setRate(requirementOffers.getAmount());
+					submission.setRateType(requirementOffers.getPaymentMode());
+					submission.setPaymentType(requirementOffers.getPaymentType());
+					requirementSubmissionList.add(submission);
+					
+				}
+			}
+			
+			
+			resultJson = commonUtil.toJSON(requirementSubmissionList);
+			return resultJson;
+		 }
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 }

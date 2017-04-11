@@ -54,7 +54,7 @@ public class CandidateIndexHelper {
 				candidateIndex.setSkillsName(candidate.getSkillsName());
 			}
 			
-			if(null != candidate.getPrimarySkill() && !candidate.getPrimarySkill().isEmpty()){
+			if(null != candidate.getPrimarySkill()){
 				candidateIndex.setPrimarySkill(candidate.getPrimarySkill());
 			}
 			/*if(null != candidate.getCandidateSkills() && !candidate.getCandidateSkills().isEmpty()){
@@ -154,6 +154,8 @@ public class CandidateIndexHelper {
 			}
 			
 			candidateIndex.setUpdatedBy(candidate.getUpdatedBy());
+			
+			candidateIndex.setCandidateUUID(candidate.getCandidateUUID());
 			
 		}
 		

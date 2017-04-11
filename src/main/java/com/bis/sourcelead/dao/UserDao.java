@@ -93,7 +93,7 @@ public interface UserDao {
 
 	List<User> getUsersByTeamType(Long id, String teamType)throws Exception;
 	
-	LinkedHashSet<User> getUsersByTeamTypeAndTabId(Long id, String teamType, Long tabId)throws Exception;
+	List<User> getUsersByTeamTypeAndTabId(Long id, String teamType, Long tabId)throws Exception;
 
 	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId,Long orgLocationsId);
 

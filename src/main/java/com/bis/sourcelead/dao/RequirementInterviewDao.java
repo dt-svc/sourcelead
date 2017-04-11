@@ -44,6 +44,8 @@ public interface RequirementInterviewDao {
 	List<RequirementInterview> getRequirementInterviewsBySubmissionAndOrgLocId(List<Long> submissionsList,
 			Long locationId, Date startUTCDate, Date endUTCDate);
 
+	RequirementInterview getinterviewBySubmissionId(Long submissionId);
+
 	//List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime);
 
 }

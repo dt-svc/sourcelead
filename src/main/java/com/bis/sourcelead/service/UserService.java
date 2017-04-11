@@ -141,7 +141,7 @@ public interface UserService  {
 	 */
 	List<User> getUsersByTeamType(Long id, String teamType)throws Exception;
 	
-	LinkedHashSet<User> getUsersByTeamTypeAndTabId(Long id, String teamType, Long tabId)throws Exception;
+	List<User> getUsersByTeamTypeAndTabId(Long id, String teamType, Long tabId)throws Exception;
 	
 	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId,Long orgLocationsId)throws Exception;
 
@@ -181,9 +181,13 @@ public interface UserService  {
 
 	List<User> getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(Long id, Long valueOf, List<Long> ownersList) throws Exception;
 
+<<<<<<< HEAD
 	public List<User> getAllUsersWithRequirementTabAccessAndMemeberInRequirementMemberOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
 
 	LinkedHashSet<User> getUsersListAsReoprtingManagersByOrgLocationIdHavingTabAccess(Long orgLocationsId, User user,Long tabId) throws Exception;
+=======
+	void passwordResetMailToLoginUser(User user, OrgLocations orgLocations) throws Exception;
+>>>>>>> 2afa49c7fc3222227c1ce89eb65049e1ed776b36
 
 }	
 		

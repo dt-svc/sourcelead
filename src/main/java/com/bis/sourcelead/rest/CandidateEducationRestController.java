@@ -1,9 +1,11 @@
 package com.bis.sourcelead.rest;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -165,10 +167,25 @@ public class CandidateEducationRestController {
 			 if(candidatesEducationList.getEndDate() != null){
 				 candidatesEducationList.setEndDateStr(Constants.DF_DMY.format(candidatesEducationList.getEndDate())); 
 			 }
-			 List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS); 
-			 candidatesEducationList.setEducationList(educationsList);
-		     resultJson = commonUtil.toJSON(candidatesEducationList);
-		     return resultJson;
+			/* List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS); 
+			 candidatesEducationList.setEducationList(educationsList);*/
+			 
+				
+				 LinkedHashSet<String> lhs = new LinkedHashSet<String>();
+				 List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS); 
+					for(LookUpData lookUpData :educationsList){
+						lhs.add(lookUpData.getName());
+					}
+					if(StringUtils.isNotEmpty(candidatesEducationList.getName())){
+						String [] cel = candidatesEducationList.getName().split(",");
+						for(String el : cel){
+							lhs.add(el);
+						}
+					}
+					candidatesEducationList.setAllAndCandidateEducations(lhs);
+				
+				     resultJson = commonUtil.toJSON(candidatesEducationList);
+				     return resultJson;
 	}
 	
 	@RequestMapping(value = "/upDateCandidateEducationByCandidateIdAndCandidateEducationId")

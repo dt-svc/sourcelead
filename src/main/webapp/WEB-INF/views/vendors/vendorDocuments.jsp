@@ -206,7 +206,7 @@ function documentpagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""

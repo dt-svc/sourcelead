@@ -718,7 +718,7 @@ ul.timesheet-menu li a:hover, ul.backoffice-menu li a:hover {
 	cursor: pointer;
 }
 .custom-navbar .login-user span.image img {
-    position: relative; top: 5px;
+    position: relative; top: 0px;
 }
 .login-user {
 	position: relative;
@@ -738,12 +738,12 @@ ul.timesheet-menu li a:hover, ul.backoffice-menu li a:hover {
     -ms-transition:all 0.3s linear;
     -o-transition:all 0.3s linear;
     -webkit-transition:all 0.3s linear;
-    transition:all 0.3s linear;
+    transition:all 0.5s linear;
 }
 .login-user:hover .fa-caret-down{
-     -ms-transform: rotate(180deg); /* IE 9 */
-    -webkit-transform: rotate(180deg); /* Chrome, Safari, Opera */
-    transform: rotate(180deg);
+     -ms-transform: rotate(-180deg); /* IE 9 */
+    -webkit-transform: rotate(-180deg); /* Chrome, Safari, Opera */
+    transform: rotate(-180deg);
 }
 .user-details {
 	background: #3081cb;
@@ -3271,7 +3271,7 @@ a.collpase-div .fa-angle-down:hover{
 	position:fixed;
 	right: 0px;
 	top: 90px;
-	z-index: 9999;
+	z-index: 1000;
 }
 .addTask .icon-addTask{
 	background:-webkit-linear-gradient(#2bddb8,#17aa8c);
@@ -3351,7 +3351,7 @@ ul.addTasUl li .fa{
  	transition: all 0.3s ease-in-out 0s;
 	width:1000px !important; 
  	padding:10px;
- 	z-index:99999;
+ 	z-index:0;
 	box-shadow: 0 0 4px #000000;
 }
 .addTask-widget:after {
@@ -3380,7 +3380,7 @@ ul.addTasUl li .fa{
 .addTask-widget .nav li a:hover {
 	 color:#424242;
 }
-.addTask-widget table tr th {
+addTask-widget table tr th {
 	background:#c86636 !important;
 	border-right:1px solid #ad572d !important;
 }
@@ -3720,12 +3720,12 @@ text-wrap:none;
 font-style:normal;
 display:none;
 box-shadow: 0 0 10px rgba(0,0,0,0.6); -moz-box-shadow: 0 0 10px rgba(0,0,0,0.6); -webkit-box-shadow: 0 0 10px rgba(0,0,0,0.6); -o-box-shadow: 0 0 10px rgba(0,0,0,0.6);
-width: 600px;
+width: 680px;
 }
 .ratepop.rate_pop{
 top:30px;
 bottom:auto;
-left:30px;
+left:-65px;
 }
 .ratepop .select-field select{
 width: 100% !important;
@@ -3742,7 +3742,7 @@ margin-bottom: 10px;
 .ratepop section.tbl-scroll{
 	margin-bottom:15px;
 	height:175px;	
-	overflow-y:scroll !important;
+	overflow-y:auto !important;
 }
 .ratepop section.tbl-scroll .fa{
 	padding:0 2px;
@@ -3772,14 +3772,8 @@ height:35px !important;
 	color:#00527A;
 }
 .ratepop .close-ratepop{
-	background-color: #d94747;
-    color: #fff;
-    left: -10px;
-    padding: 4px 5px;
-    position: absolute;
-    top: -5px;
-	border-radius:3px;
-	cursor:pointer;
+	background-color: #d94747; color: #fff; right: -10px; padding: 4px 5px;
+    position: absolute; top: -5px; border-radius:3px; cursor:pointer;
 }
 /* Comments styles */
 .comments-div {
@@ -3999,7 +3993,7 @@ p.comment-text{
     position: relative;
 }
 .pipeline-count ul li{
-	margin:0 5px !important;
+	margin:0 2px !important;
 	float:none;
     padding: 5px 6px 0px 6px !important;
 	line-height:20px;
@@ -4513,6 +4507,7 @@ import-tranhd  [class*="col-md-"]{
 	max-height: 200px;
 	overflow-y:auto;
 	background: #fff;
+
 	border:1px solid #ccc;
 	border-radius:3px !important;
 	z-index: 9999;
@@ -6530,7 +6525,7 @@ margin-left: 15px;
     height: 45px;
     text-align: center;
     line-height: 45px; font-size: 20px;
-    color: #D5D5D5;
+    color: #707070;
     background: #fff;
     border-radius: 50%;
     transition: all 0.3s linear;
@@ -6542,20 +6537,12 @@ margin-left: 15px;
     color: #337ab7;
 }
 #eventCalendar .ui-widget.ui-widget-content, #scheduleCalendar .ui-widget.ui-widget-content   {
-    border: 1px solid #dedfe4;
-    box-shadow: none;
-    width: 100%;
-    border-radius: 0;
-    background: #ededed;
-    padding: 10px;
+    border: 1px solid #dedfe4; box-shadow: none; width: 100%; border-radius: 0;
+    background: #ededed; padding: 10px;
 }
 #eventCalendar .ui-widget-header, #scheduleCalendar .ui-widget-header {
-    background: #bbb !important;
-    border: none !important;
-    color: #333;
-    font-weight: bold;
-    height: 45px;
-    border-radius: 0;
+    background: #bbb !important; border: none !important; color: #333; font-weight: bold;
+    height: 45px; border-radius: 0; z-index: 9 !important;
 }
 #eventCalendar .ui-datepicker select.ui-datepicker-month, #eventCalendar .ui-datepicker select.ui-datepicker-year {
     color: #202020; height: 30px; margin-top: 4px;
@@ -6737,7 +6724,114 @@ text-overflow:ellipsis; overflow: hidden; white-space:nowrap !important; width: 
 font-size: 14px; font-weight: normal;
 }
 .noticePeriod span {
-max-width: 400px !important;
+    max-width: 400px !important;
+}
+.select-rateper {
+    width: 130px !important;
+}
+#client_chosen .chosen-choices {
+    min-height: 35px; max-height: 55px !important; overflow-y:auto !important; 
+}
+
+/* CrowdSourcing New Header Styles 
+
+.crowd-header .fa {
+    font-size: 1.2em; vertical-align: top;
+}
+.crowd-header .glyphicon {
+    font-size: 1.1em; vertical-align: top;
+}
+.crowd-header .title {
+    font-size: 12px;
+}
+.custom-navbar-inner.crowd-header li{
+    padding: 8px 12px !important; float: left;
+}
+.custom-navbar-inner.crowd-header li a{
+    margin-top:2px;
+}
+ul.crowd-header > li > a > .label {
+    right: 10px !important;  top: 5px !important;
+}
+.content-wraper.crowd-contentWraper {
+    margin-left: 0;
+}
+.main-header.crowdHeader span.logo {
+    line-height: 51px; height: 51px;
+}
+.crowed_sidebar {
+ background-color: #375d81; left: 0; min-height: 100%; position: absolute; top: 0; width: 100px; z-index: 810;
+padding-top: 50px; box-shadow: 1px 1px 2px #707070; transition: 0.3s ease-in-out; -moz-transition: 0.3s ease-in-out;
+-webkit-transition: 0.3s ease-in-out; overflow-x: hidden; overflow-y: auto; overflow: hidden;
+}
+.crowed_sidebar .side-nav ul li span {
+    width:100px; height: auto; text-align: center; }
+.crowed_sidebar .user-panel {
+    background: url(../images/userpanel-bg.jpg) no-repeat 0 0;
+    width: 100px; height: auto; padding: 10px 15px;
+    color: #fff; transition: all ease-in-out .3s;
+}
+.crowed_sidebar .side-nav ul li a {
+    color: #afd5f9; display: block; padding: 10px 0; transition:all 0.3s linear;
+}
+.crowed_sidebar .side-nav ul li {
+    border-bottom: 1px solid #2e5478;
+}
+.crowed_sidebar .side-nav ul li a:hover, .crowed_sidebar .side-nav ul li a.selected {
+    background: #4a7094; color: #fff; border-right: 5px solid #f60;
+}
+.crowed_sidebar .side-nav ul li .fa-2x {
+    font-size: 22px;
+}
+.crowed_sidebar .side-nav ul li .url {
+    font-size: 12px; text-shadow: none; padding: 2px 0;
+}
+.crowed_sidebarinner {
+    text-align: center;
+}
+.crowed_sidebarinner .text-logo span {
+    width: 80px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block;
+}
+.content-wraper.contentside-wraper {
+ margin-left: 100px;
+}
+.universalSrch_crowd .form-control {
+    background: #64b5f6; border: 1px solid #6cc4ff; border-radius: 5px;
+}
+.universalSrch_crowd .form-control::-moz-placeholder {
+    color: #fff;
+}
+CrowdSourcing New Header Styles */
+.success_color {
+    color: #4CAF50 !important;
+}
+.filterLi input[type=checkbox], .filterLi input[type=radio]{
+	margin-top: 1px; margin-right: 5px;
+}
+.candidatewrap_Table {
+	background: #fff; margin: 15px; padding-top: 25px !important; width: auto !important; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius:3px;
+	-webkit-border-radius:3px; -moz-border-radius:3px; -o-border-radius:3px;
+}
+.ratepop.negotiate_rate {
+	width: 680px;
+}
+table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc {
+    padding: 0px 15px !important; background-size: 15px;
+}
+.form-footer.custom_formfooter {
+    min-height: 45px; line-height: 45px;
+}
+.mt40 {
+    margin-top: 40px;
+}
+#shortlistedPagination tr td{
+    vertical-align: middle;
+}
+.overflow_Auto{
+    overflow: auto;
+}
+#status-data .filter-position .dataTables_filter {
+    z-index: 99;
 }
 /* media 320px */
 @media (max-width: 320px) {

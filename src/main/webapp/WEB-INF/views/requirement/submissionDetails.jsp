@@ -81,9 +81,13 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	    	   
 	    	   var designation = '';
 	    	   var experience = '';
+	    	   var noticeperiod = '';
 	    	   
+	    	   if(json.requirementSubmissionTemplateFields.noticePeriod != null && json.requirementSubmissionTemplateFields.noticePeriod != '' && json.requirementSubmissionTemplateFields.noticePeriod !='undefined'){
+	    		   noticeperiod = 'Notice Period -'+json.requirementSubmissionTemplateFields.noticePeriod;
+	    	   }
 	    	   if(json.requirementSubmissionTemplateFields.designation != null && json.requirementSubmissionTemplateFields.designation != '' && json.requirementSubmissionTemplateFields.designation !='undefined'){
-	    		   designation = json.requirementSubmissionTemplateFields.designation;
+	    		   designation ='Designation -'+json.requirementSubmissionTemplateFields.designation;
 	    	   }
 	    	   
 	    	   if(json.requirementSubmissionTemplateFields.workExperience != null && json.requirementSubmissionTemplateFields.workExperience != '' && json.requirementSubmissionTemplateFields.workExperience !='undefined'){
@@ -161,6 +165,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                result = result + ' <ul class="list-unstyled">';
                result = result + ' <li><strong>'+designation+'</strong></li>';
                result = result + ' <li>'+experience+'</li>';
+               result = result + ' <li>'+noticeperiod+'</li>';
                result = result + ' </ul>';
                result = result + '</div>';
                result = result + '</div>';
@@ -214,7 +219,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			    	    <c:if test="${isManager == true || isAdmin == true}">
 			    	   		result = result + '<ul class="list-unstyled list-inline">';
 			    	   		result = result + '<span id="statusDiv">';
-			    	    	if(json.submissionRateStatus != 'ACCEPTED' && json.submissionRateStatus != 'REJECTED' && json.submissionStatus != 'SUBMISSION' && json.submissionStatus != 'REJECTED' && json.submissionStatus != 'SHORTLIST' && json.submissionStatus != 'OFFERMADE'){   
+			    	   		if(json.submissionRateStatus != 'ACCEPTED' && json.submissionRateStatus != 'REJECTED' && json.submissionStatus != 'SUBMISSION' && json.submissionStatus != 'REJECTED' && json.submissionStatus != 'SHORTLIST' && json.submissionStatus != 'OFFERMADE' && json.submissionStatus != 'INTERVIEW' && json.submissionStatus != 'SUBMIT_TO_CLIENT'){   
 								result = result + '	<li><i class="fa fa-check labelsuccess" title="Accept Applicant Authorization" onClick="acceptCandidate(\''+submissionId+'\',\'accept\');"></i>';
 								result = result + '		<div class="acceptreject-pop" id="accpet-div">';
 								result = result + '		</div>';
@@ -285,7 +290,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 						   }else{
 							   <c:if test="${isTeamMember == true && isManager == false && isAdmin == false}">
 							   		result = result +'<span id= "requestsDiv">';
-							   if(json.submissionStatus != 'REJECTED' && json.submissionStatus != 'SHORTLIST' && json.submissionStatus != 'OFFERMADE'){
+							   		if(json.submissionStatus != 'REJECTED' && json.submissionStatus != 'SHORTLIST' && json.submissionStatus != 'OFFERMADE' && json.submissionStatus != 'INTERVIEW' && json.submissionStatus != 'SUBMIT_TO_CLIENT'){
 									result = result + '	<li><i class="glyphicon glyphicon-share-alt labelsuccess" title="Request" onClick="requestFun('+submissionId+');"></i>';
 							   }
 									result = result + '		<div class="acceptreject-pop" id="request">';
@@ -435,8 +440,14 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			          result = result + ' <div class="panel-body row">';
 			          result = result + ' <div class="clearfix"><label class="col-md-2 text-right paddingRight">Requested by:</label><span class="col-md-9">'+json.submittedBy+'</span></div>';
 				          if(json.submissionRateStatus == 'ACCEPTED'){
-					           result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Accepted by:</label><span class="col-md-9">'+json.submissionRequestUser+'</span></div>';
-		                   }
+					           
+				        	  if(json.submissionRequestUser != null && json.submissionRequestUser != 'undefined'){
+				        		  result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Accepted by:</label><span class="col-md-9">'+json.submissionRequestUser+'</span></div>';
+				        	  }else{
+				        		  result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Accepted by:</label><span class="col-md-9">'+json.requirementSubmissionTemplateFields.firstName+'</span></div>';
+				        	  }
+				        	 }
+				        	  
 				          if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
 					          result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Attachment:</label><span class="col-md-9"><a href=\"'+sourceleadUrl+'/downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'\" class="pull-left" style="color:#151B8D">'+json.submissionRequestFileName+'</a></span></div>';
 					          result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Comment:</label><span class="col-md-9">'+json.submissionRequestComment+'</span></div>';
@@ -581,7 +592,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 } */
 	                    	 
 	                    	 if(report.interviewId.interviewType != null && report.interviewId.interviewType != 'undefined' && report.interviewId.interviewType != ""){
-	                    		 interviewType = report.interviewId.interviewType;
+	                    		 interviewType = report.interviewType;
 	                    		 interviewTypeHeader = report.interviewId.interviewType;
 	                    	 }
 	                    	 

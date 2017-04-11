@@ -670,8 +670,10 @@ public class CandidateListRestController {
 	 @RequestMapping(value = "/getCandidateById" , method = RequestMethod.POST)
 	 public @ResponseBody  String getCandidateById(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
 			String resultJson ="" ;
-			 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			Countries countries = countriesService.getCountriesByCountryName(loginUser.getCountry());
+			
+			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			 Countries countries = countriesService.getCountriesByCountryName(loginOrgLocation.getCountry());
+			
 			Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
 			
 			LinkedHashSet<String> lhs = new LinkedHashSet<String>();
@@ -679,7 +681,7 @@ public class CandidateListRestController {
 			for(LookUpData lookUpData :skillsList){
 				lhs.add(lookUpData.getName());
 			}
-			if(StringUtils.isNotEmpty(can.getSkillsName())){
+			if(null != can.getSkillsName() && StringUtils.isNotEmpty(can.getSkillsName())){
 				String [] csl = can.getSkillsName().split(",");
 				for(String sl : csl){
 					lhs.add(sl);
@@ -687,18 +689,35 @@ public class CandidateListRestController {
 			}
 			can.setAllAndCandidateSkills(lhs);
 			
-			if(null != can.getCurrentRateCurrency() && null != can.getExpectedRateCurrencey()){
-				can.setCurrentRateCurrency(can.getCurrentRateCurrency());
-				can.setExpectedRateCurrencey(can.getExpectedRateCurrencey());
+			if(null != can.getExpectedRateCurrencey()){
+				  can.setExpectedRateCurrencey(can.getExpectedRateCurrencey());
 			}else{
 				 if(null != countries && !countries.getCurrency().equalsIgnoreCase("")){
-				can.setCurrentRateCurrency(countries.getCurrency());	
-				
-				can.setExpectedRateCurrencey(countries.getCurrency());
+				   can.setExpectedRateCurrencey(countries.getCurrency());
 				 }
 			}
 			
+			if(null != can.getCurrentRateCurrency()){
+				can.setCurrentRateCurrency(can.getCurrentRateCurrency());
+			}else{
+				 if(null != countries && !countries.getCurrency().equalsIgnoreCase("")){
+				   can.setCurrentRateCurrency(countries.getCurrency());	
+				     
+				 }
+			}
 			
+			if(null != can.getCurrentRateType()){
+				can.setCurrentRateType(can.getCurrentRateType());
+			}else{
+				 if(null != countries && !countries.getCurrency().equalsIgnoreCase("")){
+				   String countryCheck = countries.getName();  
+				    switch(countryCheck){  
+				    case "India": can.setCurrentRateType("Monthly");
+				    break;  
+				    default: can.setCurrentRateType("Hourly");
+				    }  
+				 }
+			}
 			
 			resultJson = commonUtil.toJSON(can);
 			return resultJson;
@@ -1169,6 +1188,9 @@ public class CandidateListRestController {
 					candidateService.saveOrUpdateCandidateElkDocument(can);
 					return "success";
 				}else{
+					can.setSkillsName("");
+					candidateService.saveOrUpdateCandidate(can);
+					candidateService.saveOrUpdateCandidateElkDocument(can);
 					return "failed";
 				}
 			 }

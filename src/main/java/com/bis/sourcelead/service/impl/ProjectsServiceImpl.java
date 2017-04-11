@@ -851,7 +851,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	  */
 	
 	
-	 private void sendProjectEditMailtoProjectManager(Projects projects, User loginUser, User approverUserId1, OrgLocations loginOrgLocation, String teamMembersList,String loginOrgCode) throws Exception {
+	 private void sendProjectEditMailtoProjectManager(Projects projects, User loginUser, User approverUserId1, OrgLocations loginOrgLocation, String teamMembersList,String loginOrgCode,Date changedEndDate) throws Exception {
 	  	 User projectManager = userService.getUserById(approverUserId1.getId());
 	  	 
 	  	 if(isNullOrEmpty(teamMembersList) && ("undefined".equals(teamMembersList))){
@@ -870,8 +870,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 
 		 
 		 projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
-		    if(projects.getEndDate() != null){
-		    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
+		    if(changedEndDate != null){
+		    	 projects.setEndDateStr(Constants.DF_DMY.format(changedEndDate));
 		    }
 			
 		    
@@ -927,7 +927,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	}
 	 
 	 
-	 private void sendProjectEditMailtoTeamMembers(Projects projects, Employees emp, User loginUser, User approverUserId1, OrgLocations loginOrgLocation,String loginOrgCode) throws Exception {
+	 private void sendProjectEditMailtoTeamMembers(Projects projects, Employees emp, User loginUser, User approverUserId1, OrgLocations loginOrgLocation,String loginOrgCode, Date changedEndDate) throws Exception {
 	  	 StringBuilder fromNameBuilder=new StringBuilder();
 	     EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(emp.getUser().getFirstName());
@@ -942,8 +942,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 
 		 
 		 projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
-		    if(projects.getEndDate() != null){
-		    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
+		    if(changedEndDate != null){
+		    	 projects.setEndDateStr(Constants.DF_DMY.format(changedEndDate));
 		    }
 			
 		    
@@ -1231,7 +1231,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		    	     SimpleDateFormat format = new SimpleDateFormat(pattern);
 		    	     if(!jsonObj.getString("endDateStr1").isEmpty() && jsonObj.getString("endDateStr1") != null && !"NO DATA".equalsIgnoreCase(jsonObj.getString("endDateStr1"))){
 				    		previousEndDate = projects.getEndDate();
-				    		Date endDate = format.parse(jsonObj.getString("endDateStr1"));
+				    		Date changedEndDate = format.parse(jsonObj.getString("endDateStr1"));
 							 
 				    		if(projects.getEndDate() != null ){
 				    			projects.getEndDate();
@@ -1257,13 +1257,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 		         						if( null != approverUserId1 && null != approverUserId2){
 		         							  if(approverUserId1.getId().longValue() != emp.getUser().getId().longValue() && approverUserId2.getId().longValue() != emp.getUser().getId().longValue()){
 		         								  if(user.getId().longValue() != emp.getUser().getId().longValue()){
-		         									  sendProjectEditMailtoTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation,loginOrgCode);
+		         									  sendProjectEditMailtoTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation,loginOrgCode, changedEndDate);
 		         								  }
 		         					    }
 		         							//if  we have   both level1 only One ProjectManagers
 		         						}else if(approverUserId1.getId().longValue() != emp.getUser().getId().longValue()){
 		         							 if(user.getId().longValue() != emp.getUser().getId().longValue()){
-		         								 sendProjectEditMailtoTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation,loginOrgCode);
+		         								 sendProjectEditMailtoTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation,loginOrgCode, changedEndDate);
 		         							 }
 		         							 
 		         							 }   
@@ -1277,7 +1277,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	         						String level1UserDetails[] = jsonObj.getString("level1Manager").split(",");
 	         						approverUserId111.setId(Long.valueOf(level1UserDetails[0]));
 	         						if(approverUserId111 != null && user.getId() != approverUserId111.getId()){
-	         							sendProjectEditMailtoProjectManager(projects, user, approverUserId111, loginOrgLocation,"",loginOrgCode);
+	         							sendProjectEditMailtoProjectManager(projects, user, approverUserId111, loginOrgLocation,"",loginOrgCode,changedEndDate);
 	         						}
 	         						
 	         					}
@@ -1293,7 +1293,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	         						approverUserId22.setId(Long.valueOf(jsonObj.getString("level2Manager")));
 	         						if(!jsonObj.getString("level2Manager").isEmpty() && null !=  approverUserId22 && user.getId() != approverUserId22.getId()){
 	         							 if(user.getId().longValue() != approverUserId22.getId().longValue()){
-	         								 	sendProjectEditMailtoProjectManager(projects, user, approverUserId22, loginOrgLocation,"",loginOrgCode);
+	         								 	sendProjectEditMailtoProjectManager(projects, user, approverUserId22, loginOrgLocation,"",loginOrgCode,changedEndDate);
 	         							 }
 	         						 }
 	         					}
@@ -1559,6 +1559,86 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 
 		 return myPM;
 	}
+	
+	
+	@Override
+	public ProjectMembers getProjectEmployeeListByProjectIdAndStatus(Long projectId,String status) throws Exception {
+		
+		ProjectMembers myPM =  new ProjectMembers();
+		
+		
+		Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdAndStatus(projectId,status);
+		Projects pr = projectsDao.getProjectById(projectId);
+		
+		ArrayList<ProjectMembers> projectMembersArrList = new ArrayList<ProjectMembers>();
+		 for(ProjectMembers pm : projectMembersList){
+			 if(pm.getEmployee() != null){
+				 StringBuilder membersListStringBuilder=new StringBuilder();
+				 pm.setEmpName(membersListStringBuilder.append(pm.getEmployee().getUser().getFirstName()).append(" ").append(pm.getEmployee().getUser().getLastName()).toString());	 
+				 pm.setEmpEmail(pm.getEmployee().getUser().getEmail());	 
+			 }
+			 pm.setProjectStatus(pr.getProjectStatus().getValue());
+			 
+			 ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm.getId());
+			 if(pmh == null){
+				 pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(pm.getId());
+			 }
+			 if(pmh != null && pmh.getProjectAssignedDate()!=null){
+				 pm.setProjectAssignedDateStr(Constants.DF_DMY.format(pmh.getProjectAssignedDate()));
+            }
+	       	 if(pmh != null && pmh.getProjectTerminationDate()!=null){
+	       		pm.setProjectEndDateStr(Constants.DF_DMY.format(pmh.getProjectTerminationDate()));
+	       	 }
+	       	 //to set actual project end date
+	       	 if(pm.getProjects().getEndDate() != null){
+	        		pm.setEndDate(Constants.DF_DMY.format(pm.getProjects().getEndDate()));
+	        	 }
+	       	 if(pm.getEmployee() != null && pm.getEmployee().getUser() != null && pm.getEmployee().getUser().getId() != null){
+	          		pm.setUserId(pm.getEmployee().getUser().getId().toString());
+	          	 }
+		      if(pm.getTerminateReason() != null){
+		    	  pm.setTerminateReason(pm.getTerminateReason());
+		      }
+	       	 
+	       	 if(pm.getEmployee()!=null){
+	
+	                Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(pm.getEmployee().getUser().getId(), projectId, "DRAFT");
+	    	      //  Float draftTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(pm.getEmployee().getUser().getId(), projectId, "DRAFT");
+	    	      //  Float draftTimesheetsSubmissionsCount =  draftTimesheetsSubmissionsCountAsEmployee + draftTimesheetsSubmissionsCountAsApprover;
+	    	        pm.setDraftHrs(draftTimesheetsSubmissionsCountAsEmployee.toString());
+	
+	    	        Float submittedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(pm.getEmployee().getUser().getId(), projectId, "SUBMITTED");
+	    	       // Float submittedTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(pm.getEmployee().getUser().getId(), projectId, "SUBMITTED");
+	    	       // Float submittedTimesheetsSubmissionsCount =  submittedTimesheetsSubmissionsCountAsEmployee + submittedTimesheetsSubmissionsCountAsApprover;
+	    	        pm.setSubmittedHrs(submittedTimesheetsSubmissionsCountAsEmployee.toString());
+	    			
+	    		    Float approvalTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(pm.getEmployee().getUser().getId(), projectId, "APPROVED");
+	    		   // Float approvalTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(pm.getEmployee().getUser().getId(), projectId, "APPROVED");
+	    	       // Float approvalTimesheetsSubmissionsCount =  approvalTimesheetsSubmissionsCountAsEmployee + approvalTimesheetsSubmissionsCountAsApprover;
+	    	        pm.setApprovedHrs(approvalTimesheetsSubmissionsCountAsEmployee.toString());
+	    			
+	    			Float rejectedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(pm.getEmployee().getUser().getId(), projectId, "REJECTED");
+	    		   // Float rejectedTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(pm.getEmployee().getUser().getId(), projectId, "REJECTED");
+	    		    //Float rejectedTimesheetsSubmissionsCount =  rejectedTimesheetsSubmissionsCountAsEmployee + rejectedTimesheetsSubmissionsCountAsApprover;
+	    		    pm.setRejectedHrs(rejectedTimesheetsSubmissionsCountAsEmployee.toString());
+	                
+	                
+	       	 }	
+			 projectMembersArrList.add(pm);
+		 }
+		 ObjectMapper mapper = new ObjectMapper();
+		 String jsonInString = mapper.writeValueAsString(projectMembersArrList);
+		 
+		 
+		 myPM.setProjectMembersList(projectMembersArrList);
+		 if(pr.getProjectStatus() != null){
+			 myPM.setStatus(pr.getProjectStatus().getValue());	 
+		 }
+		 
+		 
+		 return myPM;
+	}
+
 
 	/**
 	  * This method for save the  project by json

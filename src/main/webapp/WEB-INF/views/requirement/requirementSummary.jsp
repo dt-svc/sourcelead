@@ -595,9 +595,12 @@ function sideBar(requirementId){
                			}
                			else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined' && json.jobType != 'Other'){
      				     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'-'+json.jobType+'">'+json.jobTitle+'-'+json.jobType+'</span><i></i></h4></a>';
-               			}else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined' && json.jobType == 'Other' ){
+               			}else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined' && json.jobId != '' && json.jobId != null && json.jobId != 'undefined' && json.jobType == 'Other' &&  json.otherJobType != '' && json.otherJobType != null && json.otherJobType != 'undefined'){
            			     result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'-'+json.jobId+'-'+json.jobType+'-'+json.otherJobType+'">'+json.jobTitle+'-'+json.jobId+'-'+json.jobType+'-'+json.otherJobType+'</span><i></i></h4></a>';
-	
+               			}else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined' && json.jobType == 'Other' &&  json.otherJobType != '' && json.otherJobType != null && json.otherJobType != 'undefined'){
+              			 result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'-'+json.jobType+'-'+json.otherJobType+'">'+json.jobTitle+'-'+json.jobType+'-'+json.otherJobType+'</span><i></i></h4></a>';
+               			}else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined' && json.jobType == 'Other'){
+                 		result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'-'+json.jobType+'">'+json.jobTitle+'-'+json.jobType+'</span><i></i></h4></a>';
                			}else{
                				result = result+'<a href="#" onClick="openTopDiv();"><h4 id="id1"><span title="'+json.jobTitle+'">'+json.jobTitle+'</span><i></i></h4></a>';
 
@@ -628,63 +631,63 @@ function sideBar(requirementId){
 			        
 			        if(json.currencyCode == 'INR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined')
 			    	   {
-			        result = result+' <li><i class="fa fa-rupee"></i><span>'+json.rate+' - '+json.currencyCode+' / '+json.rateType+'</span></li>';
+			        result = result+' <li><i class="fa fa-rupee" title="Requirement Rate"></i><span>'+json.rate+' - '+json.currencyCode+' / '+json.rateType+'</span></li>';
 			    	   }
 			       else if(json.currencyCode  == 'USD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-				   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+' - '+json.rateType+'</span></li>';
+				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.rate+' - '+json.rateType+'</span></li>';
 
 			       }
 			       else if(json.currencyCode  == 'AUD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-				   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+' - '+json.currencyCode+' / '+json.rateType+'</span></li>';
+				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.rate+' - '+json.currencyCode+' / '+json.rateType+'</span></li>';
 			       }
 			       else if(json.currencyCode  == 'SGD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-				   result = result+'<li><i class="fa fa-dollar"></i><span>'+json.rate+' - '+json.currencyCode+' / '+json.rateType+'</span></li>';
+				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.rate+' - '+json.currencyCode+' / '+json.rateType+'</span></li>';
 
 			       }
 			       else if(json.currencyCode  == 'EUR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-				   result = result+'<li><i class="fa fa-eur"></i><span>'+json.rate+' - '+json.currencyCode+' / '+json.rateType+'</span></li>';
+				   result = result+'<li><i class="fa fa-eur" title="Requirement Rate"></i><span>'+json.rate+' - '+json.currencyCode+' / '+json.rateType+'</span></li>';
 
 			       }
 			       else if(json.currencyCode  == 'GBP' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-				   result = result+'<li><i class="fa fa-gbp"></i><span>'+json.rate+' - '+json.currencyCode+' / '+json.rateType+'</span></li>';
+				   result = result+'<li><i class="fa fa-gbp" title="Requirement Rate"></i><span>'+json.rate+' - '+json.currencyCode+' / '+json.rateType+'</span></li>';
 
 			       }
 			       else{
-				   result = result+'<li><i class="fa fa-money"></i><span> --- </span></li>';
+				   result = result+'<li><i class="fa fa-money" title="Requirement Rate"></i><span> --- </span></li>';
 
 			       }
 			       
 			        if(json.state != null && json.state !='' && json.state != 'undefined' && json.city !=null && json.city !='' && json.city != 'undefined')
 			        	{
-			        result = result+'<li><i class="fa fa-map-marker"></i><span title="'+json.city+', '+json.state+', '+json.country+'">'+json.city+', '+json.state+', '+json.country+'</span></li>';
+			        result = result+'<li><i class="fa fa-map-marker" title="Location"></i><span title="'+json.city+', '+json.state+', '+json.country+'">'+json.city+', '+json.state+', '+json.country+'</span></li>';
 			        	}
 			        else if(json.state != null && json.state !='' && json.state != 'undefined')
 			        	{
-				    result = result+' <li><i class="fa fa-map-marker"></i><span title="'+json.state+', '+json.country+'">'+json.state+', '+json.country+'</span></li>';
+				    result = result+' <li><i class="fa fa-map-marker" title="Location"></i><span title="'+json.state+', '+json.country+'">'+json.state+', '+json.country+'</span></li>';
 
 			        	}
 			        else{
-				     result = result+' <li><i class="fa fa-map-marker"></i><span title="'+json.country+'">'+json.country+'</span></li>';
+				     result = result+' <li><i class="fa fa-map-marker" title="Location"></i><span title="'+json.country+'">'+json.country+'</span></li>';
 			        }
 			        result = result+'</ul>';
 			        result = result+'</div>';
 			        result = result+'<div class="col-md-7">';
 			        result = result+'<ul class="list-unstyled can-perdt">';
 			        if(json.manager != null && json.manager != '' && json.manager != 'undefined'){
-			        result = result+'<li> <i class="fa fa-user" ></i><span id="canName">'+json.manager+'</span></li>';
+			        result = result+'<li> <i class="fa fa-user" title="Manager"></i><span id="canName">'+json.manager+'</span></li>';
 			        }
 			        else{
-			        	 result = result+'<li> <i class="fa fa-user"></i><span id="canName"> --- </span></li>';	
+			        	 result = result+'<li> <i class="fa fa-user" title="Manager"></i><span id="canName"> --- </span></li>';	
 			        }
 			        var mydate = json.requirementCreatedDateToString;
 			        var str = mydate.split("-");
 			        var strFormatedDate = (str[2]+"-"+str[1]+"-"+str[0]);
-			        result = result+'<li><i class="fa fa-clock-o"></i><span>'+strFormatedDate+'</span></li>';
+			        result = result+'<li><i class="fa fa-clock-o" title="Requirement Posted Date"></i><span>'+strFormatedDate+'</span></li>';
 				        if(json.priority != null && json.priority != '' && json.priority != 'undefined'){
-				        result = result+'<li><i class="fa fa-flag"></i><span>'+json.priority+'</span>';
+				        result = result+'<li><i class="fa fa-flag" title="Priority"></i><span>'+json.priority+'</span>';
 				        }
 				        else{
-					    result = result+'<li><i class="fa fa-flag"></i><span> --- </span>';
+					    result = result+'<li><i class="fa fa-flag" title="Priority"></i><span> --- </span>';
 				        }
 				        if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined'){
 					        var tempNoticePeriod = json.noticePeriod;
@@ -696,7 +699,7 @@ function sideBar(requirementId){
 					        result = result+'<li class="noticePeriod"><i class="fa fa-bell" title="Notice Period"></i>'+arrNotice+'</li>';
 				        }
 					    else{
-						result = result+'<li><i class="fa fa-bell"></i><span> --- </span>';
+						result = result+'<li><i class="fa fa-bell" title="Notice Period"></i><span> --- </span>';
 					    }
 				         result = result+'</li>';
 				        result = result+'</ul>';
@@ -1621,7 +1624,7 @@ function requirementPipeline(requirementId,submissionType){
 							           }
 							      }   
 						           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
-						        	   result = result + '         <td><div><span>'+report.createdUser+''+orgName+'<br/>'+candidateSource+'</span></div></td>';
+						        	   result = result + '         <td><div><span title="'+report.createdUser+''+orgName+'">'+report.createdUser+''+orgName+'<br/>'+candidateSource+'</span></div></td>';
 							           }
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
@@ -1717,7 +1720,7 @@ function documentpagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -1980,7 +1983,7 @@ function documentpaginationDA(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -2237,7 +2240,7 @@ function documentpaginationRS(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -2506,7 +2509,7 @@ function documentpaginationSL(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -2750,7 +2753,7 @@ function documentpaginationSC(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -2921,7 +2924,7 @@ function documentpaginationIN(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -3112,7 +3115,7 @@ function documentpaginationOffer(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -3358,7 +3361,7 @@ function documentpaginationRejected(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -3436,8 +3439,7 @@ function saveRejectApplicantReason(submissionId,requirementId,submissionType){
 	 else{
 		 reason = '';
 	 }
-	
-	if(rejectedReason.match(/^[^\s-](.*)*$/) != null){
+	if(reason.match(/^[^\s-](.*)*$/) != null){
 		$("#reasonForApplicantDiv").empty();
 		$.ajax({
 		   	type: "POST",
@@ -3863,7 +3865,7 @@ function recommendationpagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -4299,24 +4301,32 @@ function getRateListDiv(submissionId, candidateId){
 		                    		 isLastNegotiator = "false";
 		                    	 }
 	                    	 }
-						    	 if(report.rateAndType != null && report.rateAndType != '' && report.rateAndType != 'undefined'){
+					    	 
+						    	 if(report.rateAndType != null && report.rateAndType != 'undefined' && report.rateAndType !=''){
+						    		 rateAndType = report.rateAndType;
+						    	 }else{
+						    		 rateAndType = "---";
+						    	 }
+						    	 /*  if(report.rateAndType != null && report.rateAndType != '' && report.rateAndType != 'undefined'){  */
 				                     result = result + '      <tr class="redtxt">';
 				                     if(report.proposeByName != null && report.proposeByName != 'undefined' && report.proposeByName !=''){
 				                    	 result = result + '        <td><div class="tbldata-dotdot-sm">'+report.proposeByName+'</div></td>';
 				                     }else{
 				                    	 result = result + '        <td><div class="tbldata-dotdot-sm">---</div></td>';
 				                     }
+				                    
+				                     result = result + '        <td><div class="tblminwidth-75">'+rateAndType+'</div></td>';
 				                     
-				                     if(report.rateAndType != null && report.rateAndType != 'undefined' && report.rateAndType !=''){
+				                    /*  if(report.rateAndType != null && report.rateAndType != 'undefined' && report.rateAndType !=''){
 				                    	 result = result + '        <td><div class="tblminwidth-75">'+report.rateAndType+'</div></td>';
 				                     }else if(report.expectedRate != null && report.expectedRate != 'undefined' && report.expectedRate !=''){
 				                    	 result = result + '        <td><div class="tblminwidth-75">'+report.expectedRate+'</div></td>';
 				                     }else{
 				                    	 result = result + '        <td><div class="tblminwidth-75">---</div></td>';
-				                     }
+				                     } */
 				                     
 				                     if(report.rateReason != null && report.rateReason != 'undefined' && report.rateReason !=''){
-				                    	 result = result + '        <td><div class="tbldata-dotdot">'+report.rateReason+'</div></td>';
+				                    	 result = result + '        <td><div class="tbldata-dotdot" title="'+report.rateReason+'">'+report.rateReason+'</div></td>';
 				                     }else{
 				                    	 result = result + '        <td><div class="tbldata-dotdot">---</div></td>';
 				                     }
@@ -4332,7 +4342,12 @@ function getRateListDiv(submissionId, candidateId){
 				                    	 var Accepted = 'Accepted';
 				                    	 var Rejected = 'Rejected';
 				                    	 if(null != report.submissionRateStatus && '' != report.submissionRateStatus && 'undefined' != report.submissionRateStatus && 'REJECTED' != report.submissionRateStatus){
-				                    		 result = result + '<a href="javascript:void(0)" class="text-primary" title="Accept" onclick="acceptRejectRate('+submissionId+',\''+Accepted+'\');"><i class="fa fa-check"></i></a> <a href="javascript:void(0)" class="text-danger" title="Reject" onclick="acceptRejectRate('+submissionId+',\''+Rejected+'\');"><i class="fa fa-times"></i></a>';
+				                    		 if(report.rateAndType != null && report.rateAndType != 'undefined' && report.rateAndType !=''){
+				                    			 result = result + '<a href="javascript:void(0)" class="text-primary" title="Accept" onclick="acceptRejectRate('+submissionId+',\''+Accepted+'\');"><i class="fa fa-check"></i></a> <a href="javascript:void(0)" class="text-danger" title="Reject" onclick="acceptRejectRate('+submissionId+',\''+Rejected+'\');"><i class="fa fa-times"></i></a>';	 
+				                    		 }else{
+				                    			 result = result + '--';
+				                    		 }
+				                    		 
 				                    	 }
 				                     	
 				                     }else{
@@ -4341,10 +4356,10 @@ function getRateListDiv(submissionId, candidateId){
 				                     	}else if(report.rateStage == 'REJECTED'){
 				                     		result = result + '<b class="text-danger"> Rejected </b>';
 				                     	}
-				                     }
+				                  /*    } */
 				                     result = result + '		</td>';
 				                     result = result + '      </tr>';
-						    	 }
+						    	  } 
 			   				}
 	                     result = result + '    </tbody>';
 	                     result = result + '  </table>';

@@ -141,6 +141,9 @@ else{
 	     	 $("#candidateList").empty();
 	     	 var result = "";
 	     	  result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
+	     	 result  = result + '<div class="success_pop" id="hotlistCandidateMsg" style="display: none;">';
+	    	 result  = result + '<i class="fa fa-check-circle"></i><span id="hotlistCandidateMsgDiv"></span>';
+	    	 result  = result + '</div>';
 	          result = result +"<thead>"; 
 	          result = result +"  <tr>"; 
 	         /*  result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>";   */
@@ -213,7 +216,7 @@ else{
 	              result = result +"<td style='width : 25px;'>";
 	              result = result +"<div class='star-rating "+isFavClass+"' id='favourite"+opt.candidateId+"'>";
 	              '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_HOTLIST\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-	              result = result +"<input type='checkbox' id='fav"+opt.candidateId+"' "+isFavourite+" onclick='addFavourite("+opt.candidateId+")'></input>";
+	              result = result +"<input type='checkbox' id='fav"+opt.candidateId+"' "+isFavourite+" onclick='addFavourite("+opt.candidateId+",\""+opt.firstName+" "+opt.lastName+"\")'></input>";
 	              '</sec:authorize>';
 	             
 	              result = result +" <label></label>";
@@ -246,13 +249,18 @@ else{
 	              
 	              if(opt.designationType != null && opt.designationType != '' && opt.designationType != "undefined")
 	             	 {
-	                   result = result +"  <td><div>"+opt.designationType+"</div></td>";
+	            	  if(opt.designationOtherType !=null && opt.designationOtherType !='' && opt.designationOtherType !="undefined"){
+	                   result = result +"  <td><div>"+opt.designationOtherType+"</div></td>";
+	             	 }else{
+	             		result = result +"  <td><div>"+opt.designationType+"</div></td>"; 
+	             	 }
 	             	 }else{
 	             		 result = result +"  <td><div>----</div></td>"; 
 	             	 }
+	              
 	              result = result +"  <td><div ><span title='"+opt.email+"'>"+opt.email+"</span></div></td>";
 	             
-	              result = result +"  <td><div>"+mobilePhone+"</div></td>";
+	              result = result +"  <td><div class='tbldata-dotdot'>"+mobilePhone+"</div></td>";
 	              
 	              result = result +"  <td><div><span title='"+location+"'>"+location+"</span></div></td>";
 	
@@ -307,7 +315,7 @@ function cpagination(){
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -878,9 +886,14 @@ function refreshImageBlock(candidateId){
    }
 </script>
 
-
 <script>
-function addFavourite(candidateId){
+	function hotlistCandidateMsgFadein() {
+		$("#hotlistCandidateMsg").fadeIn(200);
+        $('#hotlistCandidateMsg').delay(2000).fadeOut('slow');
+	}
+</script>
+<script>
+function addFavourite(candidateId,candidate){
 	
 	var checked = document.getElementById("fav"+candidateId).checked;
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -893,6 +906,10 @@ function addFavourite(candidateId){
 				if(checked){
 					 document.getElementById("favourite"+candidateId).removeAttribute("class")
 					 document.getElementById("favourite"+candidateId).className = 'star-rating activestar-rating' 
+						$("#hotlistCandidateMsg").removeAttr("style");
+	          		    $("#hotlistCandidateMsg").css({ display: "block" });
+	          		    $("#hotlistCandidateMsgDiv").html(" "+candidate+" Hotlisted");
+	          		    hotlistCandidateMsgFadein();
 				}else{
 					 document.getElementById("favourite"+candidateId).removeAttribute("class")
 					 document.getElementById("favourite"+candidateId).className = 'star-rating' 

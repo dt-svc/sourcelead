@@ -2113,6 +2113,42 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			
 			
 		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<Long> getcandidateListBySubmissionId(List<Long> submissionsIds,Long orgLocationId) {
+			
+			Session session = this.sessionFactory.getCurrentSession();
+		     String query = "select rs.candidate.id from RequirementSubmission rs where  rs.id IN (:submissionsIds) and rs.orgLocations =:orgLocationId";
+		     List<Long> candidateList = session.createQuery(query).setParameterList("submissionsIds", submissionsIds).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		     Integer count = 0;
+				if(candidateList != null && !candidateList.isEmpty()){
+						count = candidateList.get(0).intValue();
+				}
+				return candidateList;
+		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<Long> getSubmissionIdByCandidateId(List<Long> candidateIds, Long orgLocationId) {
+			Session session = this.sessionFactory.getCurrentSession();
+		     String query = "select rs.id from RequirementSubmission rs where  rs.candidate.id IN (:candidateIds) and rs.orgLocations =:orgLocationId";
+		     List<Long> submissionIds = session.createQuery(query).setParameterList("candidateIds", candidateIds).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		     Integer count = 0;
+				if(submissionIds != null && !submissionIds.isEmpty()){
+						count = submissionIds.get(0).intValue();
+				}
+				return submissionIds;
+		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<RequirementSubmission> getOfferAcceptedCandidatesListByOrgLocationId(Long orgLocationId) {
+			 Session session = this.sessionFactory.getCurrentSession();
+			 String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate where rs.orgLocations.id = :orgLocationId and rs.submissionStatus = 'OFFERACCEPTED'";
+			 List<RequirementSubmission>  offerAcceptedCandidatesList = session.createQuery(query).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
+		     return offerAcceptedCandidatesList;
+		}
 		
 		
 		

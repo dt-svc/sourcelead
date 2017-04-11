@@ -480,7 +480,7 @@ public class PdfUtil {
                 table.completeRow();
             }
 	        
-	        document.addTitle("Candiate List Table");
+	        document.addTitle("Requirement List Table");
 	        table.setSpacingBefore(15f);
 	        document.add(table);
 	        logger.info("Pdf table created !!");
