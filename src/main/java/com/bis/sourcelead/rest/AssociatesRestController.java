@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -57,8 +58,10 @@ import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
@@ -150,6 +153,12 @@ public class AssociatesRestController {
     @Autowired
     OrgRelationsService orgRelationsService;
     
+    @Autowired
+    CandidateEducationService candidateEducationService;
+    
+    @Autowired
+    LookUpDataService lookUpDataService;
+    
     protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
@@ -227,30 +236,38 @@ public class AssociatesRestController {
 
 		}
 	   
-	   
-	   @RequestMapping(value = "/getVendorsContactsByOrgLocation")
-		public String getVendorsContactsByOrgLocation(@RequestParam(value = "candidateId", required = false) Long candidateId,
+	   @RequestMapping(value = "/getCandidateDetailsInAssociate")
+		public String getCandidateDetailsInAssociate(@RequestParam(value = "candidateId", required = false) Long candidateId,
 				HttpServletRequest request) throws Exception {
-		   User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
-		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+
 			String resultJson = null;
-			List<OrgSpoc> vendorContactList = orgRelationsService.getAllVendorsContactListByOrgLocationId(loginUser.getId() , orgLocations.getId(), "Client");
-			 for (OrgSpoc orgSpoc : vendorContactList) {
-				 StringBuilder spocNameSB = new StringBuilder();
-				 if(null != orgSpoc.getVendorUser().getFirstName() && null != orgSpoc.getVendorUser().getLastName()){
-					spocNameSB.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName()).toString(); 
-				 }else{
-					spocNameSB.append(orgSpoc.getVendorUser().getFirstName());
-				 }
-				 orgSpoc.setSpocName(spocNameSB.toString());
-			 }
+			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+			List<String> educationList = candidateEducationService.getCandidateEducationNamesByCandidateId(candidateId);
 			
-			resultJson = toJSON(vendorContactList);
+			/*List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+			LinkedHashSet<String> totSkils = new LinkedHashSet<String>();
+			if(!educationList.contains(null)){
+				totSkils.addAll(skillsList);
+				totSkils.addAll(educationList);
+				candidate.setAllAndCandidateEducation(totSkils);
+			}else{
+				candidate.setAllAndCandidateEducation((LinkedHashSet<String>) skillsList);
+			}*/
+			
+			
+			StringBuilder education = new StringBuilder();
+			if (educationList != null && educationList.size() > 0) {
+				for(String educationName : educationList){
+					education.append(educationName).append(", ");
+				}
+				
+				candidate.setCandidateEdu(education.substring(0,education.length()-2).toString());
+			}
+			resultJson = toJSON(candidate);
 			return resultJson;
 
 		}
 	   
-	
 	public String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
 	            public HierarchicalStreamWriter createWriter(Writer writer) {

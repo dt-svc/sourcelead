@@ -57,11 +57,11 @@
         <div class="row">
       
           <div class="col-md-6 radioInline">
-	          <label class="mr"><input type="radio"  id="canId" checked="true" value="Candidates" name="candidateType" onclick="getCandidatesList('Candidate');" >Candidates</label>
-	          <label class="mr"><input type="radio"  id="newId" value="Candidates" name="candidateType" onclick="getCandidatesList('New');" >Add New Associate </label>
-	          <label class="mr"><input type="radio"  id="parsId" value="Candidates" name="candidateType" onclick="getCandidatesList('parseCandidate');">Parse Associate</label>
+	          <label class="mr"><input type="radio"  id="canId" checked="true" value="Candidate" name="candidateType" onclick="getCandidatesList(this.value);" >Candidates</label>
+	          <label class="mr"><input type="radio"  id="newId" value="New" name="candidateType" onclick="getCandidatesList(this.value);" >Add New Associate </label>
+	          <label class="mr"><input type="radio"  id="parsId" value="parseCandidate" name="candidateType" onclick="getCandidatesList(this.value);">Parse Associate</label>
           </div>
-          
+          <input type="hidden" name="isAssociate" id="isAssociate" value="Y"/> 
           
           <div class="col-md-5 pull-right"> 
 			 <div class="col-md-12" id="browseDiv"  style="display: none;"> 
@@ -86,18 +86,6 @@
           <select id="candidateResumesList" name="candidateResume" field-name="Resume" class="form-control block"></select>
           </div>
           </div>
-          
-          
-          <%-- <c:if test="${type !='addConsultant'}">
-          <div class="input-group col-md-4" id="uploadFileGroup">
-            <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File<span class="text-danger">&nbsp;*</span>
-              <input type="file" name="uploadBtn" id="uploadBtn" class="hidden upload">
-              </span> 
-           </label>
-
-             <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validate_Space validatedoc " >
-         </div>
-          </c:if> --%>
           </div>
         </div>
         <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
@@ -192,13 +180,15 @@
        </div>
        
        <div class="form-group">
-         <label class="col-md-3">Employment type</label>
+         <label class="col-md-3">Employment type<span class="text-danger">&nbsp;*</span></label>
          <div class="col-md-9">
-             <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getDesignationType(this);">
+             <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getDesignationType(this);" data-validation="required" field-name="Employment type">
                 <option value="">--Select--</option>
                  <option>C2C</option>
+                 <option>C2C-1099</option>
                  <option>W-2</option>
                  <option>C2H</option>
+                 <option>C2H -1099</option>
                  <option>Part Time</option>
                  <option>Full Time</option>
                  <option>Other</option>
@@ -238,7 +228,7 @@
        <div class="form-group">
 			<label class="col-md-3">Vendor</label>
 			<div class="col-md-9">
-			     <select  class="chosen-select form-control" name="vendors" id="vendors" field-name="Vendor">
+			     <select  class="chosen-select form-control" name="vendors" id="vendors" field-name="Vendor" onchange="getVendorContactList();">
                  </select>
 			</div>
 		</div>
@@ -246,7 +236,7 @@
 		 <div class="form-group">
 			<label class="col-md-3">Vendor Contact</label>
 			<div class="col-md-9">
-			     <select  class="form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  >
+			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  >
                  </select>
 			</div>
 		</div>
@@ -382,21 +372,6 @@
            </div>
          </div>
          
-        <div class="clearfix" id="newResumeDiv"  style="display: none;">
-         <div class="form-group">
-            <label class="col-md-3">Add Resume</label>
-            <div class="col-md-9"> 
-			 <div class="input-group col-md-12 errorInptgroup"  id="addResumeId" style="margin:0 auto">
-               <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                <input type="file" style="display: none;" multiple name ="uploadBtn" id="uploadFileBtn"  class="upload">
-                 </span> </label>
-                 <input type="text" class="form-control" readonly id="uploadProfile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
-           </div>
-           <!-- <div class="clearfix mt10 text-muted"><i class="fa fa-question-circle text-info"></i>&nbsp; Upload .doc, .pdf, .txt formats only...</div> -->
-         </div>
-        </div>
-        </div>
-        
         <div class="form-group">
           <label class="col-md-3">Primary Skill</label>
           <div class="col-md-9">
@@ -411,7 +386,20 @@
           </div>
         </div>
         
-         
+         <div class="clearfix" id="newResumeDiv"  style="display: none;">
+         <div class="form-group">
+            <label class="col-md-3">Add Resume</label>
+            <div class="col-md-9"> 
+			 <div class="input-group col-md-12 errorInptgroup"  id="addResumeId" style="margin:0 auto">
+               <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                <input type="file" style="display: none;" multiple name ="uploadFileBtn" id="uploadFileBtn"  class="upload">
+                 </span> </label>
+                 <input type="text" class="form-control" readonly id="uploadProfile" name="docFile" type="file"  placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
+           </div>
+         </div>
+        </div>
+        </div>
+        
         <div class="form-group">
           <label class="col-md-3"></label>
          <!--  <div class="col-md-9 checkbox checkBox">
@@ -476,7 +464,6 @@
 			//It will escape all the special characters
 //			$("#store_candidate").attr("disabled", "disabled");
 	//		$("#store_candidate").addClass('button').val('Processing..');
-
 			$.ajax({
 						type : "POST",
 		        	    data: formData,
@@ -485,9 +472,9 @@
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						//url : sourceleadUrl+"/storeCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+"/storeCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 						success : function(result) {
-								location.replace(sourceleadUrl+"/candidatesList");
+								location.replace(sourceleadUrl+"/associatesList");
 						},
 					});
 			return true;
@@ -1076,7 +1063,7 @@ function getDesignationType(designationType){
 		  }
 	}
 	
-	if(designationType.value == 'C2C' || designationType.value == 'C2H'){
+	if(designationType.value == 'C2C' || designationType.value == 'C2C-1099'){
 		 document.getElementById("hideVendor").style.display="block";
 		 /*  $("#designationOtherType").attr("data-validation-optional", "true");
 		  $("#designationOtherType").attr("data-validation", "validate_Space validate_length length2-250"); */
@@ -1151,12 +1138,14 @@ var currentRate = document.getElementById("currentRate").value;
 
 <!-- =================================================Laxman =========================================== -->
 <script type="text/javascript">
- function getCandidatesList(candidateType) {
+ function getCandidatesList(value) {
+	 candidateType = value;
 	 $('#sjfb-fields').find('p.jquery_form_error_message').remove();
 	 $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
 	 $('#uploadFileGroup1').find('p.jquery_form_error_message').remove();
 	// $('#newResumeDiv').hide();
-	 
+	  $("#candidateEducation").val('').trigger("chosen:updated");
+      $("#candidateSkills").val('').trigger("chosen:updated");
 	 $('#candidateId').removeAttr('data-validation-optional');
 	 $("#candidateId").attr("data-validation", "required");
 	 var sourceleadUrl ='${sourceleadUrl}';
@@ -1182,15 +1171,16 @@ var currentRate = document.getElementById("currentRate").value;
 						{
 				        		var opt = json[i];
 				        		var lastName = "";
-				        		if(opt.lastName != null && opt.lastName != "" && opt.lastName != 'undefined'){
-				        			lastName = opt.lastName;
+				        		if(opt.isAssociate == 'N'){
+				        			if(opt.lastName != null && opt.lastName != "" && opt.lastName != 'undefined'){
+					        			lastName = opt.lastName;
+					        		}
+					        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+lastName+"</option>";
 				        		}
-				        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+lastName+"</option>";
 						}
 			        	$("#candidateId").empty();
 				        $("#candidateId").append(output);
 				        $('#candidateId').trigger("chosen:updated");
-				        
 				        getCandidateResumes();
 			        },
 			    }); 
@@ -1214,42 +1204,50 @@ var currentRate = document.getElementById("currentRate").value;
 	     $("#candidateResumesList").removeAttr("data-validation");
 	     $('#candidateResumesList').attr("data-validation-optional","true"); 
 	     
+	     $("#candidateEducation").val('').trigger("chosen:updated");
+   	     $("#candidateSkills").val('').trigger("chosen:updated");
+	     
 	     if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType == 'parseCandidate'){
+	    	 $("#candidate_form").val('').trigger("chosen:updated");
 	    	 document.getElementById("candidate_form").reset();
 	    	 $(".selectpicker").selectpicker('refresh');
 	    	 $('#state').trigger("chosen:updated");
-	    	 
+	    	 $( "#parsId" ).attr( "checked", true );
+	    	 $( "#newId" ).attr( "checked", false );
+	    	 $( "#canId" ).attr( "checked", false );
 	    	 document.getElementById("resumesDiv").style.display="none";
 	    	 document.getElementById("browseDiv").style.display="";
 	    	 $('#uploadFile').removeAttr('data-validation-optional');
 			 $('#uploadFile').attr("data-validation","required validatedoc "); 
-			 
+			 $("#email").removeAttr('readonly','readonly');
 			 document.getElementById("newResumeDiv").style.display="none";
 			 document.getElementById("skillsDiv").style.display="";
 			 document.getElementById("associateResumeDivId").style.display="none";
 		     $("#candidateSkills").val('').trigger("chosen:updated");
-			 $('#newUploadFile').removeAttr('data-validation');
-			 $('#newUploadFile').attr("data-validation-optional","true"); 
+			 $('#uploadProfile').removeAttr('data-validation');
+			 $('#uploadProfile').attr("data-validation-optional","true"); 
 	     }else if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType == 'New'){
-
+	    	 $("#candidate_form").val('').trigger("chosen:updated");
 	    	 document.getElementById("candidate_form").reset();
 	    	 $(".selectpicker").selectpicker('refresh');
+	    	 $( "#newId" ).attr( "checked", true );
+	    	 $( "#parsId" ).attr( "checked", false );
+	    	 $( "#canId" ).attr( "checked", false );
 	    	 document.getElementById("resumesDiv").style.display="none";
 	    	 document.getElementById("browseDiv").style.display="none";
 	    	 $('#uploadFile').removeAttr('data-validation');
 			 $('#uploadFile').attr("data-validation-optional","true");
 			 
 			 //document.getElementById("associateResumeDivId").style.display="block";
-			 
+			 $("#email").removeAttr('readonly','readonly');
 	    	 document.getElementById("newResumeDiv").style.display="";
 	    	 document.getElementById("skillsDiv").style.display="";
 		     $("#candidateSkills").val('').trigger("chosen:updated");
-			 $('#newUploadFile').removeAttr('data-validation-optional');
-			 $("#newUploadFile").attr("data-validation", "required validatedoc");
+			 $('#uploadProfile').removeAttr('data-validation-optional');
+			 $("#uploadProfile").attr("data-validation", "required validatedoc");
 	     }
 	     
 	     document.getElementById("resumesDiv").style.display="none";
-		 document.getElementById("orConditionDiv").style.display="none";
 		
 	 }
 	 
@@ -1272,7 +1270,7 @@ var currentRate = document.getElementById("currentRate").value;
 	 $("input[name=rateType]").val('');
 	 $("input[name=candidateEducation]").val('');
 	 
-	 $("#newUploadFile").val('');
+	 $("#uploadProfile").val('');
 	 $("#uploadFile").val(''); 
 	
  }
@@ -1287,7 +1285,7 @@ function getCandidateDetails(){
 	if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
+		        url: sourceleadUrl+"/getCandidateDetailsInAssociate?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	 
@@ -1328,13 +1326,38 @@ function getCandidateDetails(){
 		        		 $("#designationType").selectpicker('refresh');
 		        	 }
 		        	 
-		        	 if(json['candidateEdu'] != null && json['candidateEdu'] != "" && json['candidateEdu'] != 'undefined'){
-		        		 $("#candidateEducation").val(json['candidateEdu']);
-		        		 //$("input[name=candidateEducation]").val(json['candidateEdu']);
-		        		 $("#candidateEducation").val('').trigger("chosen:updated");
+		        	 
+		        	  if(json['candidateEdu'] != null && json['candidateEdu'] != "" && json['candidateEdu'] != 'undefined'){
+		        		var eduaction = json['candidateEdu'];
+				    	var customizeEducation = new Array();
+				    	customizeEducation = eduaction.split(",");
+				        for (var i = 0; i < customizeEducation.length; i++) { 
+				        	 var customEdu = customizeEducation[i];
+				        	 $('#candidateEducation').append('<option value=\''+customEdu+'\' selected>'+customEdu+'</option>');
+				        }
+ 		        		$("#candidateEducation").trigger("chosen:updated");
+		     
 		        	 }else{
+		        		 $("#candidateEducation").val('').trigger("chosen:updated");
 		        		 $("input[name=candidateEducation]").val(''); 
-		        	 }
+		        	 } 
+		        	 
+		        	 
+		        	  if(json['skillsName'] != null && json['skillsName'] != "" && json['skillsName'] != 'undefined'){
+			        		var skills = json['skillsName'];
+					    	var totalSkills = new Array();
+					    	totalSkills = skills.split(",");
+					        for (var i = 0; i < totalSkills.length; i++) { 
+					        	 var customSkill = totalSkills[i];
+					        	 $('#candidateSkills').append('<option value=\''+customSkill+'\' selected>'+customSkill+'</option>');
+					        }
+	 		        		$("#candidateSkills").trigger("chosen:updated");
+			     
+			        	 }else{
+			        		 $("#candidateSkills").val('').trigger("chosen:updated");
+			        		 $("input[name=candidateSkills]").val(''); 
+			        	 } 
+		        	 
 		        	 
 		        	 if(json['country'] != null && json['country'] != "" && json['country'] != 'undefined'){
 		        		 $("select[name=country]").val(json['country']);
@@ -1346,12 +1369,14 @@ function getCandidateDetails(){
 		        		 $("select[name=state]").val(json['state']);
 		        		 getStates(json['state']);
 		        	 }else{
+		        		 $("#state").val('').trigger("chosen:updated");
 		        		 $("select[name=state]").val('');
 		        	 }
 		        	 
 		        	 if(json['city'] != null && json['city'] != "" && json['city'] != 'undefined'){
 		        		 getCities(json['city']);
 		        	 }else{
+		        		 $("#city").val('').trigger("chosen:updated");
 		        		 $("select[name=city]").val('');
 		        	 }
 		        	
@@ -1447,7 +1472,7 @@ function getCandidateDetails(){
 		 $("input[name=rateType]").val('');
 		 $("input[name=candidateEducation]").val('');
 		 
-		 $("#newUploadFile").val('');
+		 $("#uploadProfile").val('');
 		 $("#uploadFile").val(''); 
 		 
 	 }
@@ -1465,11 +1490,12 @@ function getCandidateDetails(){
 	 if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
  		 document.getElementById("resumesDiv").style.display="";
  		/*	 document.getElementById("browseDiv").style.display="none";
-		 document.getElementById("orConditionDiv").style.display="none";
 		 $("#uploadFile").removeAttr("data-validation");
 		 $("#uploadFile").val('');
-		 $('.jquery_form_error_message').remove();
+		 
  */		 
+ 
+ $('.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getAssociateResumes?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
@@ -1507,8 +1533,8 @@ function getCandidateDetails(){
 				        
 				       
 				        
-				        $('#newUploadFile').removeAttr('data-validation');
-		        		$('#newUploadFile').attr("data-validation-optional","true"); 
+				        $('#uploadProfile').removeAttr('data-validation');
+		        		$('#uploadProfile').attr("data-validation-optional","true"); 
 		        		
 		        		 $('#candidateResumesList').removeAttr('data-validation-optional');
 		    			 $("#candidateResumesList").attr("data-validation", "required"); 
@@ -1519,13 +1545,12 @@ function getCandidateDetails(){
 		        		
 		        		 document.getElementById("resumesDiv").style.display="none";
 		        		 document.getElementById("browseDiv").style.display="none";
-		        		 document.getElementById("orConditionDiv").style.display="none";
 		        		
-		        		 document.getElementById("newResumeDiv").style.display="";
+		        		 document.getElementById("newResumeDiv").style.display="block";
 		        		 document.getElementById("skillsDiv").style.display="";
 		        		 
-		        		 $('#newUploadFile').removeAttr('data-validation-optional');
-		        		 $("#newUploadFile").attr("data-validation", "required validatedoc");
+		        		 $('#uploadProfile').removeAttr('data-validation-optional');
+		        		 $("#uploadProfile").attr("data-validation", "required validatedoc");
 		        		 
 		        		 $('#uploadFile').removeAttr('data-validation');
 		        		 $('#uploadFile').attr("data-validation-optional","true"); 
@@ -1540,7 +1565,6 @@ function getCandidateDetails(){
      	 $("#candidateResumesList").removeAttr("data-validation");
 		 document.getElementById("resumesDiv").style.display="none";
 		 document.getElementById("browseDiv").style.display="none";
-		 document.getElementById("orConditionDiv").style.display="none";
 		 $('#uploadFile').removeAttr('data-validation');
 		 $('#uploadFile').attr("data-validation-optional","true"); 
 	     $("#candidateResumesList").append(output);
@@ -1619,7 +1643,7 @@ function getCandidateDetails(){
 		            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');
 		            }
 		            $('#vendors').trigger("chosen:updated");
-		            getVendorContactList();
+		            //getVendorContactList();
 		            
 		        }
 		 });
@@ -1628,19 +1652,19 @@ function getCandidateDetails(){
  
   <script>
  function getVendorContactList(){
-	  var sourceleadUrl ='${sourceleadUrl}';
+	var orgRelationID = $('#vendors').val();
+	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
-		    	type: "GET",
-		        url: sourceleadUrl+"/getVendorsContactsByOrgLocation?", 
+			    type: "POST",
+		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
-		        	var result = "";
-		        	result = result +'<option value="">--select Vendor contact--</option>';
+		        	$('#vendorcontact').empty();
+		        	$('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
 		             for(var i=0;i<json.length;i++){
 		            	 var opt = json[i];
-		            	 result = result +'<option value='+opt.id+' >'+opt.spocName+'</option>';
+		            	 $('#vendorcontact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
 		            } 
-		            $("#vendorcontact").append(result);
 		            $('#vendorcontact').trigger("chosen:updated");
 		        }
 		 }); 

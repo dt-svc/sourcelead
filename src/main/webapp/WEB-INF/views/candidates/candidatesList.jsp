@@ -121,12 +121,12 @@ else{
 
 	var upcandidateStatus =   $('input[name=upcandidateStatus]:checked').val();
 	  
-	  
+	var isAssociate = "N";
 	  $("#candidateList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	 
 	  $.ajax({
            type : "POST",
-            url: sourceleadUrl+"/getCandidatesListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&updatedDateRange="+upcandidateStatus+"&candidateType="+candidateType,       
+            url: sourceleadUrl+"/getCandidatesListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&updatedDateRange="+upcandidateStatus+"&isAssociate="+isAssociate+"&candidateType="+candidateType,       
             success :function(data) {
                 	 prepareCandidateList(data);
            },
@@ -210,10 +210,14 @@ else{
 		            	
 		            	
 	              result = result +"<tr>";
-	              result = result +"<td style='width : 25px;'>";
-	              result = result +"<div class='star-rating "+isFavClass+"' id='favourite"+opt.candidateId+"'>";
+	              result = result +"<td style='width:40px; display: inline-block'>";
+	               
+	              if(opt.isAssociate == "Y"){
+	            	  result = result +"<i class='fa fa-black-tie pull-left mt10' title='Associate'></i> ";  
+	              }
+	              result = result +"<div class='iconClass pull-right  star-rating "+isFavClass+"' id='favourite"+opt.candidateId+"'>";
 	              '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_HOTLIST\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-	              result = result +"<input type='checkbox' id='fav"+opt.candidateId+"' "+isFavourite+" onclick='addFavourite("+opt.candidateId+")'></input>";
+	              result = result +"   <input type='checkbox' id='fav"+opt.candidateId+"' "+isFavourite+" onclick='addFavourite("+opt.candidateId+")'></input>";
 	              '</sec:authorize>';
 	             
 	              result = result +" <label></label>";
@@ -257,7 +261,7 @@ else{
 	              
 	              result = result +"  <td><div ><span title='"+opt.email+"'>"+opt.email+"</span></div></td>";
 	             
-	              result = result +"  <td><div class='tbldata-dotdot'>"+mobilePhone+"</div></td>";
+	              result = result +"  <td><div class='tbldata-dotdot-vsm'>"+mobilePhone+"</div></td>";
 	              
 	              result = result +"  <td><div><span title='"+location+"'>"+location+"</span></div></td>";
 	
@@ -897,10 +901,10 @@ function addFavourite(candidateId){
 			success : function(result) {
 				if(checked){
 					 document.getElementById("favourite"+candidateId).removeAttribute("class")
-					 document.getElementById("favourite"+candidateId).className = 'star-rating activestar-rating' 
+					 document.getElementById("favourite"+candidateId).className = 'iconClass pull-right star-rating activestar-rating' 
 				}else{
 					 document.getElementById("favourite"+candidateId).removeAttribute("class")
-					 document.getElementById("favourite"+candidateId).className = 'star-rating' 
+					 document.getElementById("favourite"+candidateId).className = 'iconClass pull-right star-rating' 
 				}
 				
 			},
@@ -1310,8 +1314,7 @@ function cancel(candidateId){
               	<div id="filter3ApprovedPop" class="approved_pop">
                   	<ul>
 	                    <li><input id="candidateTypeAll" type="radio" name="candidateType" checked value ="All" onclick="candidateList();"  ><label for="candidateTypeAll">All</label></li>
-						<li><input id="onlycandidate" type="radio" name="candidateType" value ="Candidate"  onclick="candidateList();"><label for="onlycandidate">Candidates</label></li>
-						<li><input id="consultant" type="radio"  name="candidateType" value ="Consultant"  onclick="candidateList();"><label for="consultant">Consultants</label></li>
+						<li><input id="onlycandidate" type="radio" name="candidateType" value ="1"  onclick="candidateList();"><label for="onlycandidate">Favourite</label></li>
                     </ul>
                   </div>                	
           </li>

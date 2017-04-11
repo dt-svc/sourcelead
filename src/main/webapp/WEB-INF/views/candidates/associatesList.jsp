@@ -113,10 +113,12 @@ else{
       }else{
           $("#canDiv").removeAttr("onClick");
       }
-	  
+	 
 	  
 	  var candTypeRadio = $('input[name=candidateType]');
-	  var candidateType = "consultant";
+	  var candidateType = candTypeRadio.filter(':checked').val();
+	  
+	  var isAssociate = "Y";
 	  
 
 	var upcandidateStatus =   $('input[name=upcandidateStatus]:checked').val();
@@ -126,7 +128,7 @@ else{
 	 
 	  $.ajax({
            type : "POST",
-            url: sourceleadUrl+"/getCandidatesListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&updatedDateRange="+upcandidateStatus+"&candidateType="+candidateType,       
+           url: sourceleadUrl+"/getCandidatesListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&updatedDateRange="+upcandidateStatus+"&isAssociate="+isAssociate+"&candidateType="+candidateType,       
             success :function(data) {
                 	 prepareCandidateList(data);
            },
@@ -161,7 +163,7 @@ else{
 	         	 var mobilePhone = "";
 	         	 var designation ="";
 	         	 var address="";
-	         	 var isFavourite = "";
+	         	 var isFavouriteAssociate = "";
 	         	 var isFavClass = "";
 	         	 var designationType = "";
 	         	 var candidateUpdateDateToString ="";
@@ -185,8 +187,8 @@ else{
 		            	
 		            	
 		            	
-		            	if(opt.isFavourite == '1'){
-		            		isFavourite = "checked";
+		            	if(opt.isFavouriteAssociate == '1'){
+		            		isFavouriteAssociate = "checked";
 		            		isFavClass = "activestar-rating";
 		            	}
 		            	if(opt.lastName != null && opt.lastName != "" && opt.lastName != 'undefined'){
@@ -212,7 +214,7 @@ else{
 	              result = result +"<td style='width : 25px;'>";
 	              result = result +"<div class='star-rating "+isFavClass+"' id='favourite"+opt.candidateId+"'>";
 	              '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_HOTLIST\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-	              result = result +"<input type='checkbox' id='fav"+opt.candidateId+"' "+isFavourite+" onclick='addFavourite("+opt.candidateId+")'></input>";
+	              result = result +"<input type='checkbox' id='fav"+opt.candidateId+"' "+isFavouriteAssociate+" onclick='addFavourite("+opt.candidateId+")'></input>";
 	              '</sec:authorize>';
 	             
 	              result = result +" <label></label>";
@@ -880,7 +882,7 @@ function addFavourite(candidateId){
 	
 	 	$.ajax({
 			type : "POST",
-			url : sourceleadUrl+"/saveCandidateAsFavourite?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
+			url : sourceleadUrl+"/saveAssociateAsFavourite?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
 			success : function(result) {
 				if(checked){
 					 document.getElementById("favourite"+candidateId).removeAttribute("class")
@@ -1285,8 +1287,8 @@ function cancel(candidateId){
            <li id="filter2ApprovePop"><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter2ApprovedPop" class="approved_pop">
                   	<ul>
-	                    <li><input id="candidateAll" type="radio" name="candidateStatus" checked  value ="2" onclick="candidateList();"  ><label for="candidateAll">All</label></li>
-						<li><input id="candidateActive" type="radio" name="candidateStatus" value ="1"  onclick="candidateList();"><label for="candidateActive">Active</label></li>
+	                    <li><input id="candidateAll" type="radio" name="candidateStatus"   value ="2" onclick="candidateList();"  ><label for="candidateAll">All</label></li>
+						<li><input id="candidateActive" type="radio" name="candidateStatus" checked value ="1"  onclick="candidateList();"><label for="candidateActive">Active</label></li>
 						<li><input id="candidateInActive" name="candidateStatus" type="radio" value ="0"  onclick="candidateList();"><label for="candidateInActive">In Active</label></li>
                     </ul>
                   </div>                	
@@ -1297,7 +1299,7 @@ function cancel(candidateId){
               	<div id="filter3ApprovedPop" class="approved_pop">
                   	<ul>
 	                    <li><input id="candidateTypeAll" type="radio" name="candidateType" checked value ="All" onclick="candidateList();"  ><label for="candidateTypeAll">All</label></li>
-						<li><input id="consultant" type="radio"  name="candidateType" value ="Consultant"  onclick="candidateList();"><label for="consultant">Favourite</label></li>
+						<li><input id="consultant" type="radio"  name="candidateType" value ="1"  onclick="candidateList();"><label for="favourite">Favourite</label></li>
                     </ul>
                   </div>                	
           </li>

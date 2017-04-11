@@ -147,7 +147,7 @@ public class CandidateListRestController {
 	 
 	 @RequestMapping(value = "/getCandidatesListByOrgLocationID")
 	 public String getCandidatesListByOrgLocationID(@RequestParam(value="candidateStatus", required=false) Integer  candidateStatus,@RequestParam(value="updatedDateRange", required=false) String  updatedDateRange,
-			 @RequestParam(value="candidateType", required=false) String  candidateType,
+			 @RequestParam(value="candidateType", required=false) String  candidateType,@RequestParam(value="isAssociate", required=false) String  isAssociate,
 			 HttpServletRequest request) throws Exception {
 
 		String resultJson;
@@ -178,10 +178,21 @@ public class CandidateListRestController {
 			
 			if(null != userRole && !userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
 				if(null != candidateType && !candidateType.isEmpty() && !candidateType.equalsIgnoreCase("All")){
-					boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", candidateType));
+					if(null != isAssociate && isAssociate.equalsIgnoreCase(Constants.NO)){
+						boolQueryBuilder.must(QueryBuilders.matchQuery("isFavourite", candidateType));
+					}
+					
 				}
 			}
 			
+			
+			if(null != isAssociate && isAssociate.equalsIgnoreCase(Constants.YES)){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", isAssociate));
+				if(null != candidateType && !candidateType.isEmpty() && !candidateType.equalsIgnoreCase("All")){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("isFavouriteAssociate", candidateType));
+				}
+				
+			}
 			
 			if(null != userRole && userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
 				boolQueryBuilder.must(QueryBuilders.matchQuery("recruiterUserId", user.getId()));
@@ -1366,4 +1377,33 @@ public class CandidateListRestController {
 					return reportsList;
 			 }
 
+		   
+		   
+	   /**
+	    * @author Laxman
+	    * store the Favourite Associate 
+	    * @param candidateId
+	    * @param request
+	    * @return success
+	    * @throws Exception
+	    */
+		   
+		   @PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_HOTLIST','ROLE_CROWDSOURCING_CANDIDATES')")
+		   @RequestMapping(value = "/saveAssociateAsFavourite", method = RequestMethod.POST)
+			public @ResponseBody String saveAssociateAsFavourite(@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
+				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+				if(null != candidate){
+					if(null == candidate.getIsFavouriteAssociate() || candidate.getIsFavouriteAssociate().equals(Constants.RECORD_ACTIVE)){
+						candidate.setIsFavouriteAssociate(Constants.RECORD_INACTIVE);
+					}else{
+						candidate.setIsFavouriteAssociate(Constants.RECORD_ACTIVE);
+					}
+					candidate.setTeamId(null);
+					candidateService.saveOrUpdateCandidate(candidate);
+					candidateService.saveOrUpdateCandidateElkDocument(candidate);
+					
+				}
+				
+				return "success";
+			}
 	}

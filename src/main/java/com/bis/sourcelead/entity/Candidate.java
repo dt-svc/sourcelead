@@ -149,6 +149,9 @@ public class Candidate implements Serializable{
 	@Column(name="IS_FAVOURITE")
 	private Integer isFavourite;
 	
+	@Column(name="IS_FAVOURITE_ASSOCIATE")
+	private Integer isFavouriteAssociate;
+	
 	@Column(name="TERMINATE_REASON")
 	private String terminateReason;
 
@@ -172,7 +175,7 @@ public class Candidate implements Serializable{
 	
 	@ManyToOne
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
-    private OrgRelations clientId;
+    private OrgRelations orgRelationId;
 	    
 	@ManyToOne
     @JoinColumn(name="SPOC_ID", nullable=false )        
@@ -287,6 +290,9 @@ public class Candidate implements Serializable{
 	 
 	 @Transient
 	 private LinkedHashSet<String> allAndCandidateSkills;
+	 
+	 @Transient
+	 private LinkedHashSet<String> allAndCandidateEducation;
 	 
 	 @Transient
 	 private Integer candidateRequiementCount;
@@ -759,6 +765,16 @@ public class Candidate implements Serializable{
 	}
 
 
+	public LinkedHashSet<String> getAllAndCandidateEducation() {
+		return allAndCandidateEducation;
+	}
+
+
+	public void setAllAndCandidateEducation(LinkedHashSet<String> allAndCandidateEducation) {
+		this.allAndCandidateEducation = allAndCandidateEducation;
+	}
+
+
 	public String getReqSubmissionId() {
 		return reqSubmissionId;
 	}
@@ -1066,19 +1082,17 @@ public class Candidate implements Serializable{
 		return isAssociate;
 	}
 
-
 	public void setIsAssociate(String isAssociate) {
 		this.isAssociate = isAssociate;
 	}
-
-
-	public OrgRelations getClientId() {
-		return clientId;
+	
+	public OrgRelations getOrgRelationId() {
+		return orgRelationId;
 	}
 
 
-	public void setClientId(OrgRelations clientId) {
-		this.clientId = clientId;
+	public void setOrgRelationId(OrgRelations orgRelationId) {
+		this.orgRelationId = orgRelationId;
 	}
 
 
@@ -1086,8 +1100,18 @@ public class Candidate implements Serializable{
 		return spocId;
 	}
 
-
 	public void setSpocId(OrgSpoc spocId) {
 		this.spocId = spocId;
 	}
+
+
+	public Integer getIsFavouriteAssociate() {
+		return isFavouriteAssociate;
+	}
+
+
+	public void setIsFavouriteAssociate(Integer isFavouriteAssociate) {
+		this.isFavouriteAssociate = isFavouriteAssociate;
+	}
+	
 }

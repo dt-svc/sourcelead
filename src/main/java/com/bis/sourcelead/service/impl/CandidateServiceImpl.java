@@ -8,11 +8,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -43,13 +41,16 @@ import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -57,7 +58,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableSet;
 
 /**
  * 
@@ -111,6 +111,13 @@ public class CandidateServiceImpl implements CandidateService {
 	
 	@Autowired
 	UserRoleService userRoleService;
+	
+	@Autowired
+	OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	OrgSpocService orgSpocService;
+	
 	/**
 	 * @author prasad k
 	 * @since  aug 26 2016
@@ -142,7 +149,7 @@ public class CandidateServiceImpl implements CandidateService {
         Candidate candidate = null;
 		if(jsonObj.has("candidateId") && jsonObj.getString("candidateId") != null && !"".equals(jsonObj.getString("candidateId"))){
 			candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(jsonObj.getString("candidateId")));
-		}else{
+		}else{	
 			candidate = new Candidate();
 			candidate.setCreatedDate(commonUtil.currentDate());
 			candidate.setCreatedBy(user.getUserCode());
@@ -267,6 +274,22 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setPrimarySkill(jsonObj.getString("primarySkill"));
 		}
 
+		if(jsonObj.has("isAssociate") && jsonObj.getString("isAssociate") != null){
+			candidate.setIsAssociate(Constants.YES);
+		}else{
+			candidate.setIsAssociate(Constants.NO);
+		}
+		
+		if(jsonObj.has("vendors") && jsonObj.getString("vendors") != null){
+			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("vendors")));
+			candidate.setOrgRelationId(orgRelation);
+		}
+		
+		if(jsonObj.has("vendorcontact") && jsonObj.getString("vendorcontact") != null){
+			OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(jsonObj.getString("vendorcontact")));
+			candidate.setSpocId(orgspoc);
+		}
+		
 		HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(jsonObj, orgLocations,candidate,user.getUserCode());
 		candidate.setCandidateEducation(candidateEducationList);
 		
@@ -290,6 +313,7 @@ public class CandidateServiceImpl implements CandidateService {
 		candidate.setUpdatedDate(commonUtil.currentDate());
 		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 		candidate.setIsFavourite(0);
+		candidate.setIsFavouriteAssociate(0);
 		
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		

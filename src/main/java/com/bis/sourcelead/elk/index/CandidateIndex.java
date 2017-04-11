@@ -5,8 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.RequirementSubmission;
 
 public class CandidateIndex implements Serializable {
@@ -101,6 +105,8 @@ public class CandidateIndex implements Serializable {
 	
 	private Integer isFavourite;
 	
+	private Integer isFavouriteAssociate;
+	
 	private String candidateName;
 	
 	private String candidateUpdateDateToString;
@@ -150,7 +156,13 @@ public class CandidateIndex implements Serializable {
 	private String isProfilePublic;
 	
 	private String isCandidateSubmitted;
+	
+	private Long orgRelationId;
+	
+	private Long spocId;
 		
+	private String isAssociate;
+	
 	public String getSearchType() {
 		return searchType;
 	}
@@ -717,6 +729,37 @@ public class CandidateIndex implements Serializable {
 		this.isCandidateSubmitted = isCandidateSubmitted;
 	}
 
+	public Long getOrgRelationId() {
+		return orgRelationId;
+	}
+
+	public void setOrgRelationId(Long orgRelationId) {
+		this.orgRelationId = orgRelationId;
+	}
+
+	public Long getSpocId() {
+		return spocId;
+	}
+
+	public void setSpocId(Long spocId) {
+		this.spocId = spocId;
+	}
+
+	public String getIsAssociate() {
+		return isAssociate;
+	}
+
+	public void setIsAssociate(String isAssociate) {
+		this.isAssociate = isAssociate;
+	}
+
+	public Integer getIsFavouriteAssociate() {
+		return isFavouriteAssociate;
+	}
+
+	public void setIsFavouriteAssociate(Integer isFavouriteAssociate) {
+		this.isFavouriteAssociate = isFavouriteAssociate;
+	}
 	
 }
 
