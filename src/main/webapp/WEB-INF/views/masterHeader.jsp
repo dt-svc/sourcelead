@@ -367,6 +367,9 @@ document.onkeydown=function(e){
 	                    	   <li><a href="<c:url value="/orgSubmissionTemplate" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Templates</a></li>
 	                     </sec:authorize>
 	                     
+	                     <li><a href="<c:url value="/onboardingTemplatesList" />"><i class="fa fa-file-text" aria-hidden="true"></i>On-boarding</a></li>
+	                    <%--  <li><a href="<c:url value="/onboardingTasksList" />"><i class="fa fa-file-text" aria-hidden="true"></i>Task Docs</a></li> --%>
+	                     
 	              </ul>
 	            </div>
 	          </li>

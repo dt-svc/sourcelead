@@ -10,7 +10,7 @@
 <div id="detailsLoading"></div>
         <section class="content-header clearfix">
           <div class="pull-left">
-            <h2>Onboarding</h2>
+            <h2>On-boarding</h2>
           </div>
         </section>
 </section>
