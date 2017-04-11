@@ -100,5 +100,11 @@ public interface OrgSpocDao {
 
 
 	OrgSpoc getValidateOwnersByVendorUserIdAndSpocOwnerUserId(Long spocUserId, Long spocOwnderUserId, Long responderLocationId)throws Exception;
+
+
+	List<OrgSpoc> getAllClientsByOrgLocationId(Long orgLocationId)throws Exception;
+
+
+	List<OrgSpoc> getSpoclistByDomain(Long orgRelationId, String domain)throws Exception;
 	
 }
