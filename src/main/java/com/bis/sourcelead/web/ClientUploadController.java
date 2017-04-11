@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,6 +19,7 @@ import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,14 +30,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.BulkClientDetails;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UploadedFile;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ClientImportsService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.validation.FileValidator;
 
@@ -46,12 +54,19 @@ import com.bis.sourcelead.validation.FileValidator;
  */
 
 
-@Controller
+@RestController
 public class ClientUploadController {
 	private static final Logger logger = LoggerFactory.getLogger(ClientUploadController.class);
 	
 	@Autowired
 	ClientImportsService clientImportsService;
+	
+	@Autowired
+	CommonUtil commonUtil;
+	
+//	@Value("${SourceLeadWeb_orgCode}")
+//	private String orgCode;
+//	
 	/**
 	 * Handles download templates for client and client contacts
 	 * @author Rajashekar
@@ -102,7 +117,7 @@ public class ClientUploadController {
 	 * @param request
 	 * @return
 	 * @throws Exception 
-	 */
+	 *//*
 	@PreAuthorize("hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')")
 	@RequestMapping("/clientFileUpload")
 	public String fileUploaded(@ModelAttribute("uploadedFile") UploadedFile uploadedFile,Model model, HttpServletRequest request,@RequestParam(value = "type", required = false) String responderType)throws Exception {
@@ -116,7 +131,8 @@ public class ClientUploadController {
 			String fn = multipartFile.getOriginalFilename();//clients_contacts_Import  clients_import_template.xls
 			String fileName = getFileName(fn);
 			//String isFileCreated = clientImportsService.clientBulkSaving(multipartFile,user,orgLocation,org,uploadedFile.getEmail(),responderType);
-			String isFileCreated = clientImportsService.clientBulkSavingImp(multipartFile,user,orgLocation,org,uploadedFile.getEmail(),responderType);
+//			String isFileCreated = clientImportsService.clientBulkSavingImp(multipartFile,user,orgLocation,org,uploadedFile.getEmail(),responderType);
+			String isFileCreated = clientImportsService.clientExcelDataSave(multipartFile,user,orgLocation,org,uploadedFile.getEmail(),responderType);
 			if ("client_error.xls".equalsIgnoreCase(isFileCreated)) {
 				model.addAttribute("errorMessage", "Please download Error file here");
 	             model.addAttribute("fileName", "client_error.xls");
@@ -132,8 +148,44 @@ public class ClientUploadController {
 	}
 		SourceLeadSessionManager.setSessionAttribute(request, "clientImport", "Success!! New clients created ");
 		return "redirect:/clientDashboard";
-	}
+	}*/
 	
+	
+	
+	/**
+	 * Handles saving for client uploads
+	 * @param uploadedFile
+	 * @param result
+	 * @param model
+	 * @param request
+	 * @return
+	 * @throws Exception 
+	 */
+	/*@PreAuthorize("hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')")
+	@RequestMapping(value = "/clientFileUpload")
+	@ResponseBody
+	public String fileUploaded(MultipartHttpServletRequest request,@RequestParam(value = "json", required = false) String json)throws Exception {
+				
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		MultipartFile multipartFile = null;
+		Iterator<String> itrator = request.getFileNames();
+		if (itrator.hasNext()) {
+			multipartFile = request.getFile(itrator.next());
+		}
+		
+		if(multipartFile != null){
+			String isFileCreated = clientImportsService.clientExcelDataSave(multipartFile,user,orgLocation,org,"N","Client");
+		}
+		List<BulkClientDetails> bulkClientDetailsList = clientImportsService.getbulkClientDetailsByOrgLocationId(orgLocation.getId());
+		
+		SourceLeadSessionManager.setSessionAttribute(request, "clientImport", "Success!! New clients created ");
+		
+		String jsonList = commonUtil.toJSON(bulkClientDetailsList);
+		return jsonList;
+	}*/
 	/**	
 	 * removing special charactes from file name
 	 * @param file
