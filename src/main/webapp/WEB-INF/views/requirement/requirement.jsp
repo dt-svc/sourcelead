@@ -418,7 +418,7 @@ $(document).ready(function () {
                  </c:if>
                 </select>
                 </div>
-                <input type="text" class="form-control" id="rate" name="rate" field-name="Rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true"  value="">
+                <input type="text" class="form-control" id="rate" name="rate" field-name="Rate" value="${requirement.rate}" data-validation="validate_Space validate_int validate_length length1-8" data-validation-optional="true"  value="">
                 <div class="input-group-btn selp-custom-min">
                   <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Type">
                     <option value="">Rate Per</option>
@@ -1086,7 +1086,7 @@ $(document).ready(function () {
                               </div>
                             </div>
                             <div class="form-group">
-                            <label class="col-lg-4">Team Owner <span class="text-danger">*</span></label>
+                            <label class="col-lg-4">Team Lead <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
                              <select class="form-control"  name="ownerUserId" id="ownerUserId" placeholder="Team Lead *" data-validation="required validate_Space" field-name="Team Lead"  onchange="getTeamMembers();">
 			                    	
@@ -1119,11 +1119,6 @@ $(document).ready(function () {
 
 <script type="text/javascript">
 	function storeRequirement(saveType) {
-		checkTemplateforDouplicate();
-		validateJobId();
-		$('#addClient').empty();
-		$('#addContact').empty();
-		//$('#addTeam').empty(); /* commented by Venkat Kesav because of issue #2673 */ 
 		
 		var validationSettings = {
 		        errorMessagePosition : 'element',
@@ -1132,6 +1127,11 @@ $(document).ready(function () {
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
 		
+		checkTemplateforDouplicate();
+		validateJobId();
+		$('#addClient').empty();
+		$('#addContact').empty();
+		//$('#addTeam').empty(); /* commented by Venkat Kesav because of issue #2673 */ 
 		
           if(saveType=='draft'){
 			
@@ -1555,6 +1555,7 @@ function getTemplateVal(){
 		checkTemplateforDouplicate();
 		
     }else{
+    	
         $("#isTemplate").val('N');
        /*  $('#jobTitle').removeAttr('data-validation');
 		$('#jobTitle').attr("data-validation-optional","true");  */
@@ -2229,7 +2230,7 @@ function pagination(){
     	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -2299,7 +2300,7 @@ function getTeamOwners(){
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
-		        	output = output + "<option value=''>-Select Team Owners-</option>"; 
+		        	output = output + "<option value=''>-Select Team Lead-</option>"; 
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
@@ -2457,7 +2458,11 @@ function getLevel2Approvers(currentApproverId){
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
+			        		if(opt.lastName != null && opt.lastName !='undefined'){
 			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		}else{
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+"</option>";	
+			        		}
 					}
 		        	$("#sequentialApprover2").empty();
 			        $("#sequentialApprover2").append(output);
@@ -2571,7 +2576,7 @@ function checkTemplateforDouplicate(){
 			        	}
 			        	else{
 			        		 $('input#jobTitle').removeAttr( "record-exist record-exist-errormsg");
-			        		 $('#jobTitleDiv').find('p.jquery_form_error_message').remove(); 
+			        		// $('#jobTitleDiv').find('p.jquery_form_error_message').remove(); 
 			        		 $("#requirement_form" ).addClass('button').val('Save');
 		                    $("#requirement_form").removeAttr("disabled");
 			        	}

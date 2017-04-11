@@ -129,7 +129,7 @@ function requirementReportPagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -705,10 +705,7 @@ Highcharts.chart('container', {
         type: 'column'
     },
     title: {
-        text: 'Monthly Average Rainfall'
-    },
-    subtitle: {
-        text: 'Source: WorldClimate.com'
+        text: 'Applicants Received'
     },
     xAxis: {
         categories: chartData,
@@ -843,7 +840,7 @@ function getDayWiseAppRecReports(){
 	        	 }
         	 else{
         		 var result ="";
-	        		result = result + ' <div class="row">                                            ';
+	        		result = result + ' <div class="row pavEmp">                                            ';
 					result = result + '	<div class="dataTables_empty">                                     ';
 					result = result + '	</div>                                                      ';
 					result = result + ' </div>                                                      ';

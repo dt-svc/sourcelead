@@ -119,12 +119,267 @@
            <!-- Add Team modal popup ends --> 
  
  
+ <script>
+ function filterStatus() {
+	 $(".export_pipline").toggle();
+	 //$("#exportPop").slideUp();	
+ }
+ </script>
  
+
+ 
+ <script>
+ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
+	 $("#employeesLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	 var result = "";
+	 result = result + '    	<div class="timesheet_head clearfix">';
+	 result = result	+ '<ul>';
+
+		if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
+			result = result +'<li>';
+ 		'<sec:authorize access="hasAnyRole(\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">';
+ 		result = result + '<a href="javascript:void(0)" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');"><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
+ 		'</sec:authorize>';
+ 		result = result +'</li>';
+		}else{
+			result = result +'<li>';
+ 		'<sec:authorize access="hasAnyRole(\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">';
+ 		result = result + '<a href="javascript:void(0)"  ><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
+ 		'</sec:authorize>';
+ 		result = result +'</li>';
+		}
+		
+	    result = result + '	<li><a onClick="filterStatus()"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>|';
+		result = result + '   	<div class="export_pipline filterLi" id="myModal">';
+		result = result + '       	<ul>';
+		result = result + '           	<li><input id="c5" type="checkbox" name="employeeStatus" value ="All" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c5">All</label></li>';
+		result = result + '				<li><input id="c6" type="checkbox"  checked="true" name="employeeStatus" value ="Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c6">Active</label></li>';
+		result = result + '				<li><input id="c7" name="employeeStatus" type="checkbox" value ="In-Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c7">In-Active</label></li> ';
+		result = result + '           </ul>';
+		result = result + '       </div>';                	
+		result = result + '   </li>';
+
+ 
+		'<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_EMPLOYEE\')">';
+		result = result +'<li>';
+		if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
+			result = result +' <a title="Export" id="export-pop" onClick="exportFun()"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>';	
+		}else{
+			result = result +' <a title="Export"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>';
+		}
+		
+		result = result +'<div class="" id="exportPop" style="display:none;">';
+		result = result +'<ul>';
+		if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
+			result = result +'<li onclick="exportToPdf(\''+projectId+'\',\''+projectName+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
+ 		result = result +'<li onclick="exportToExcel(\''+projectId+'\',\''+projectName+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+		}else{
+			result = result +'<li>PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
+ 		result = result +'<li>Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+		}
+		
+		result = result +'</ul>';
+		result = result +'</div>';
+		result = result +'</li> ';
+		'</sec:authorize>';
+		
+		result = result +'</ul>';
+		
+		getFilterEmployeeDetails(projectId,startDateStr,endDateStr,status,projectName);
+		result = result +'<div id="employeeDetailsDiv"> </div>';
+		result = result +'</div>';
+		
+		$("#tab-3").empty();  
+		$("#tab-2").empty();  
+	    $("#tab-1").empty();
+	    $("#employeesLoadingImg").empty();
+	    $("#tab-2").append(result);  
+	    
+	    $("#tab-2").show();
+		$(".project-tabs-menu a").click(function(event) {
+		     event.preventDefault();
+		     $(this).parent().addClass("current");
+		     $(this).parent().siblings().removeClass("current");
+		     var tab = $(this).attr("href");
+		     $(".project_tabs_inn").not(tab).css("display", "none");
+		     $(tab).fadeIn();
+		 });
+		
+		
+ }
+ </script>
+ 
+ 
+ 
+ <script>
+ function getFilterEmployeeDetails(projectId,startDateStr,endDateStr,status,projectName){
+	 var values = [];
+	 var chekbox = $('input:checkbox[name=employeeStatus]:checked').val();
+	 if(chekbox != 'undefined' && chekbox != '' && chekbox != null){
+			$('input:checkbox[name=employeeStatus]:checked').each(function() 
+				    {
+						values.push($(this).val());
+				    });
+	 }else{
+		 values = "Active";
+	 }
+
+	 var sourceleadUrl ='${sourceleadUrl}';
+	    $.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	var result = "";
+	        	result = result + '        <div class="project_tabs_inn_table">';
+	    		result = result + ' <div class="success_pop" id="selector3" style="display: none;">';
+	    		result = result + ' <i class="fa fa-check-circle"></i><span id="docMsgDiv3"></span>';
+	    		result = result + ' </div>';
+	    	    result = result + '        <div id="employeesLoadingImg"></div>';
+	    		/* if(json.projectMembersList.length!=null && json.projectMembersList.length!=''){ */
+	    	    result = result + '	<table id="projectEmployeePagination" class="display" cellspacing="0" width="100%">';
+	    		result = result + '	<thead>';
+	    		result = result + '		<tr>';
+	            result = result + '	 	<th>Emp Name</th>';
+	            result = result + '	 	<th>Emp Email</th>';
+	            result = result + '	     <th>Start Date</th>';
+	            result = result + '	     <th>End Date</th>';
+	            result = result + '	     <th>Approved hrs</th>';
+	            result = result + '	     <th>Rejected hrs</th>';
+	            result = result + '	     <th>Wait for Approval </th>';
+	            result = result + '	     <th>Saved hrs</th>';
+	            result = result + '	     <th>Action</th>';
+	            result = result + '	 </tr>';
+	            result = result + '	</thead>';
+	            result = result + '	<tbody>';
+	        	for (var i=0; i<json.projectMembersList.length; i++)
+				{      
+		        		var opt = json.projectMembersList[i];
+		        		var projectEndDateStr = "";
+		        		if(opt.projectEndDateStr != null && opt.projectEndDateStr != ''){
+		        			projectEndDateStr = opt.projectEndDateStr;
+		        		}else{
+		        			projectEndDateStr = "--"
+		        		}
+		        		
+		        		result = result + '	 <tr>';
+		                
+		                result = result + '	 	<td><div class="tbldata-dotdot-sm" title="'+opt.empName+'"><span title="'+opt.empName+'">'+opt.empName+'</span></div></td>';
+		                result = result + '	 	<td><div class="tbldata-dotdot-me" title="'+opt.empEmail+'"><span title="'+opt.empEmail+'">'+opt.empEmail+'</span></div></td>';
+		                result = result + '	     <td><div><span title="'+opt.projectAssignedDateStr+'">'+opt.projectAssignedDateStr+'</span></div></td>';
+		                if(status == 'COMPLETED'){
+		                	result = result + '<td><div>'+projectEndDateStr+'</div></td>';
+		                }else{
+		                	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\')">'; 
+		                	if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
+			                	result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field project_inline_field_enddate" id="endDate'+opt.id+'" name = "endDate'+opt.id+'"  readonly="readonly"></div></td>';
+			                }
+			                else{
+			                	  result = result + '	     <td><div><span title="'+projectEndDateStr+'">'+projectEndDateStr+'</span></div></td>';
+			                }
+		                	'</sec:authorize>';
+		                	
+		                	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\')">'; 
+		                	  result = result + '	     <td><div><span title="'+projectEndDateStr+'">'+projectEndDateStr+'</span></div></td>';
+	                	   '</sec:authorize>';
+		                	
+		                }
+		                result = result + '	     <td><div><span title="'+opt.approvedHrs+'">'+opt.approvedHrs+'</span></div></td>';
+		                result = result + '	     <td><div><span title="'+opt.rejectedHrs+'">'+opt.rejectedHrs+'</span></div></td>';
+		                result = result + '	     <td><div><span title="'+opt.submittedHrs+'">'+opt.submittedHrs+'</span></div></td>';
+		                result = result + '	     <td><div><span title="'+opt.draftHrs+'">'+opt.draftHrs+'</span></div></td>';
+		                if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
+		                	result = result + '	<td><div>';
+		                	if(status != 'COMPLETED'){
+		                		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
+		                		result = result + '<i class="glyphicon glyphicon-trash" onClick="deleteProject('+opt.id+'\,\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\')";></i>';
+		                		'</sec:authorize>';
+		                		
+		                		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
+		                		result = result + '---';
+		                		'</sec:authorize>';
+		                	}
+		                	result = result +'</div></td>';
+	                     }
+	                     else{
+	                    	 result = result + '<td><div class="tblminwidth-50">';
+	                    	 if(status != 'COMPLETED'){
+	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\',\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">'; 
+	                    		    result = result + '<a  onclick="reActiveProject(\''+opt.id+'\',\''+opt.empName+'\',\''+opt.projectAssignedDateStr+'\',\''+projectEndDateStr+'\',\''+opt.endDate+'\');flushReProject()" data-target="#Re-AssignProject" data-toggle="modal">Re-Assign &nbsp;</a><span class="show-reason">';
+		                    	if(opt.terminateReason != null && opt.terminateReason != '' && opt.terminateReason != 'undefined'){
+		                    		result = result + '<b class="glyphicon glyphicon-comment text-success"></b><b class="reason">'+opt.terminateReason+'</b>';
+		                    	}else{
+		                    		result = result + '';	
+		                    	}
+		                      '</sec:authorize>';
+		                      
+		                      '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\',\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">'; 
+		                        result = result + '---';
+		                      '</sec:authorize>';
+	                    	 
+	                    	 result = result + '</span>';
+	                    	 }else{
+	                    		 result = result + '<font color="red">&nbsp;Terminated</font>';	 
+	                    	 }
+	                    	 result = result +'</div></td>';
+	                     }
+	                    	 
+		                
+		                
+		                
+		                result = result + '	 </tr>';
+				}
+	        	result = result + '	     </tbody>';
+	    	    result = result + '	 </table>   ';
+	    		result = result + '	     </div>';
+	    		$("#employeeDetailsDiv").empty();  
+	    		$("#employeeDetailsDiv").append(result);  
+	    		 //pagination function
+	    	    projectEmployeePagination();
+	    		
+	    	    if(json.projectMembersList.length > 0)
+		   		{
+	    			for (var i=0; i<json.projectMembersList.length; i++)
+	    			{      
+	    	             var jsonData = json.projectMembersList[i];
+						 if(jsonData.status != null && jsonData.status != '' && jsonData.status !='undefined' && jsonData.status == 0)
+							   continue;
+						 //Assign date of project member
+						 var selected = jsonData.projectAssignedDateStr;
+						 var from = selected.split("-");
+						 var dt = new Date(from[2], from[1] - 1, from[0]);
+	 		             dt.setDate(dt.getDate() + 1);
+	 		             
+	 		             //Main project end date
+	 		             var projectEndDate = jsonData.endDate;
+	 		             var endDate = "";
+	 		             if(projectEndDate != null && projectEndDate != "" && projectEndDate != 'undefined'){
+	 		            	 endDate = new Date(projectEndDate);
+	 	 		             endDate.setDate(endDate.getDate()); 
+	 		             }
+	 		             
+						 $('#endDate'+jsonData.id).datepicker({
+				    		      dateFormat: 'dd-mm-yy',
+				    		      minDate: dt,
+				    		      maxDate: endDate,
+				    		      onClose: function() {
+				    		        	 var id = $(this).attr('id');
+										 var projectMemberId = $(this).attr('id').split('endDate')[1];
+				    		        	 inlineEditForEndDate(id,projectMemberId);
+				    		      }
+				    		  }); 
+	    			 }
+		   		}
+	        },
+	    	
+	    });
+ }
+ </script>
  
  <!-- this script is for Emplyee Listfunctionality at Projects screen -->
-<script>
+<!-- <script>
 function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
-	$("#employeesLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	
 	
 	var sourceleadUrl ='${sourceleadUrl}';
     $.ajax({
@@ -139,8 +394,8 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
         	result = result + '<input type="hidden" name="assignStatus" id="assignStatus" value="'+status+'" >';
 
         	result = result + '    	<div class="timesheet_head clearfix">';
-    		
-    		result = result	+ '<ul>';
+        	
+   			result = result	+ '<ul>';
 
     		if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
     			result = result +'<li>';
@@ -156,13 +411,17 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
         		result = result +'</li>';
     		}
     		
+   		    result = result + '	<li><a onClick="filterStatus()"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>|';
+   			result = result + '   	<div class="export_pipline filterLi" id="myModal">';
+   			result = result + '       	<ul>';
+   			result = result + '           	<li><input id="c5" type="checkbox" name="projectStatus" value ="All" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c5">All</label></li>';
+   			result = result + '				<li><input id="c6" type="checkbox" name="projectStatus" value ="STARTED"><label for="c6">Active</label></li>';
+   			result = result + '				<li><input id="c7" name="projectStatus" type="checkbox" value ="INPROGRESS"><label for="c7">In-Active</label></li> ';
+   			result = result + '           </ul>';
+   			result = result + '       </div>';                	
+   			result = result + '   </li>';
 
-    		/* result = result +'<li>';
-    		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_PROJECT_EMPLOYEES\')">';
-    		result = result + '<a href="javascript:void(0)" data-target="#addTeam" data-toggle="modal" onclick="flushEmployee();"  ><i class="glyphicon glyphicon-plus"></i>Add Emp</a>';
-    		result = result +'</sec:authorize>';
-    		result = result +'</li>'; */
-    	
+        
     		'<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_EMPLOYEE\')">';
     		result = result +'<li>';
     		if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
@@ -290,17 +549,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
 			}
         	result = result + '	     </tbody>';
     	    result = result + '	 </table>   ';
-    		/*  }else{
-    		
-    			 result = result + '<div class="table_nodata">';
-    			 result = result + '<div class="table_nodata_inn">';
-    			 result = result + '<img src="resources/images/no-data.png" />';
-    			 result = result + '<span>Nothing is here to show <b>Click on Add Emp btn to add employess... </b>';
-    			 result = result + '</span>';
-    			 result = result + '<div class="clearfix"></div>';
-    			 result = result + '</div>';
-    			 result = result + '</div>';
-    		 } */
+    		 
     		result = result + '	     </div>';
     		$("#tab-3").empty();  
     		$("#tab-2").empty();  
@@ -359,7 +608,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
     
     
     }	
-</script>
+</script> -->
 <script>
 function projectEmployeePagination(){
     $('#projectEmployeePagination').DataTable( { 
@@ -367,7 +616,7 @@ function projectEmployeePagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -602,7 +851,7 @@ function assignEmployeespagination(){
     	"lengthMenu": [[10000, 15, 20, -1], [10000, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -705,6 +954,7 @@ function flushEmployee(){
   function exportFun(){
 	  //$("#export-pop").next("div.export_pop").toggle();
 	  $("#exportPop").toggle();
+	  $(".export_pipline").slideUp();
   }
 </script> 
 

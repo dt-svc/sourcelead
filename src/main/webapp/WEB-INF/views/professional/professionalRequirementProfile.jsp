@@ -43,7 +43,9 @@ $(document).ready(function() {
 function requirementProfile(requirementUUID){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var candidateId = '${SourceLeadWeb_candidateId}'
-	$.ajax({
+    var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+	
+    $.ajax({
 	   	type: "GET",
 	    url: sourceleadUrl+"/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID, 	   
 		    success: function(data) {
@@ -164,10 +166,14 @@ function requirementProfile(requirementUUID){
 				 result = result +'         <div class="openPostBtns">';
 				 
 				 if(json.isJobApplied == 'N'){
-				 result = result +'<a href="javascript:void(0)" onclick="cancelReferPopUp();applyToJob('+json.id+');"  class="jobApply">Apply</a>';
+					 if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
+						 result = result +'<a href="javascript:void(0)" onclick="cancelReferPopUp();applyToJob('+json.id+');"  class="jobApply">Apply</a>';
+					 }
+					 if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
+						 result = result +'<a href="javascript:void(0)" onclick="cancelReferPopUp();applyToJob('+json.id+');"  class="jobApply">Submit</a>';
+					 }
 				 }else{
 					 result = result +'<a href="javascript:void(0)" onclick="cancelReferPopUp();getSubmissionDetailsSideBar('+json.submissionId+','+candidateId+','+json.id+');" class="jobApply">Applied</a>';
-					 
 				 }
 				 
 				 if(json.isCrowdSourcing == 'Y'){

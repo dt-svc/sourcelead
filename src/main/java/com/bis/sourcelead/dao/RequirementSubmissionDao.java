@@ -166,6 +166,10 @@ public interface RequirementSubmissionDao {
 	Integer getRequirementHistoryCountByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
 	
 	boolean isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(Long candidateId,Long requirementId) throws Exception;
+
+	List<Long> getcandidateListBySubmissionId(List<Long> submissionsIds, Long orgLocationId);
+
+	List<Long> getSubmissionIdByCandidateId(List<Long> candidateIds, Long orgLocationId);
 	
 	
 }

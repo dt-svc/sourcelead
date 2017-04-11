@@ -250,10 +250,15 @@ function editCandidate(candidateId){
 							
 							result = result + '</div>';
 							 
-							result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv" style="display:none">';
+							/*  result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv" style="display:none">';
+							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType1" value="'+designationOtherType+'" placeholder="Employment Other Type" field-name="Employment Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
+							result = result + '</div>';  */
+							
+							if(json.designationType == "Other"){
+							result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv">';
 							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType1" value="'+designationOtherType+'" placeholder="Employment Other Type" field-name="Employment Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
 							result = result + '</div>';
-						
+							  }
 							result = result + '</div>';
 							
 							result = result + '<div class="clearfix mb10">';
@@ -264,7 +269,7 @@ function editCandidate(candidateId){
 							result = result + ' <option '+(json.currentRateCurrency == "INR" ? "selected" : '') +'><a href="#">INR</a></option>';
 							result = result + '<option   '+(json.currentRateCurrency == "AUD" ? "selected" : '') +'><a href="#">AUD</a></option>';
 							result = result + ' <option  '+(json.currentRateCurrency == "USD" ? "selected" : '') +'><a href="#">USD</a></option>';
-							result = result + '  <option '+(json.currentRateCurrency == "GPB" ? "selected" : '') +'><a href="#">GPB</a></option>';
+							result = result + '  <option '+(json.currentRateCurrency == "GBP" ? "selected" : '') +'><a href="#">GBP</a></option>';
 							result = result + '  <option '+(json.currentRateCurrency == "SGD" ? "selected" : '') +'><a href="#">SGD</a></option>';
 							result = result + '<option   '+(json.currentRateCurrency == "EUR" ? "selected" : '') +'><a href="#">EUR</a></option>'; 
 			                result = result + ' </select>';
@@ -299,7 +304,7 @@ function editCandidate(candidateId){
 							result = result + ' <option '+(json.expectedRateCurrencey == "INR" ? "selected" : '') +'><a href="#">INR</a></option>';
 							result = result + '<option   '+(json.expectedRateCurrencey == "AUD" ? "selected" : '') +'><a href="#">AUD</a></option>';
 							result = result + ' <option  '+(json.expectedRateCurrencey == "USD" ? "selected" : '') +'><a href="#">USD</a></option>';
-							result = result + '  <option '+(json.expectedRateCurrencey == "GPB" ? "selected" : '') +'><a href="#">GPB</a></option>';
+							result = result + '  <option '+(json.expectedRateCurrencey == "GBP" ? "selected" : '') +'><a href="#">GBP</a></option>';
 							result = result + '  <option '+(json.expectedRateCurrencey == "SGD" ? "selected" : '') +'><a href="#">SGD</a></option>';
 							result = result + '<option   '+(json.expectedRateCurrencey == "EUR" ? "selected" : '') +'><a href="#">EUR</a></option>'; 
 			                result = result + ' </select>';
@@ -1009,7 +1014,27 @@ function candidateProfile(candidateId){
  function saveSkils(candidateId){
 	 var skillName = $("#skillName").val();
 	 var jsonData = encodeURIComponent(skillName);
+	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(skillName != null && skillName != '' && skillName !='undefined'){
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+jsonData
+	 }else{
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+""
+	 }
+	 
+	 $.ajax({  
+         type : "POST",
+         url: Urlcheck,        
+         success :function(data) {
+              if(data != null && data != 'undefined' && data != "" && data == "success"){
+           	  //candidateProfile(candidateId);
+              }
+       },
+         
+    }); 
+	 
+	 
+	 
+/* 	 if(skillName != null && skillName != '' && skillName !='undefined'){
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({  
 	          type : "POST",
@@ -1023,7 +1048,7 @@ function candidateProfile(candidateId){
 	     }); 
 	 }else{
 		 
-	 }
+	 } */
 	 
  }  
 </script>

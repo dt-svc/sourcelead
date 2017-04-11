@@ -76,4 +76,6 @@ public interface ProjectMembersService {
     
 	public List<ProjectMembers> getAllProjectMembersByProjectIdsList(List<Long> projectIds);
 	
+	public Collection<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId,String status) throws Exception;
+	
 }
