@@ -2132,6 +2132,15 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				}
 				return submissionIds;
 		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<RequirementSubmission> getOfferAcceptedCandidatesListByOrgLocationId(Long orgLocationId) {
+			 Session session = this.sessionFactory.getCurrentSession();
+			 String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate where rs.orgLocations.id = :orgLocationId and rs.submissionStatus = 'OFFERACCEPTED'";
+			 List<RequirementSubmission>  offerAcceptedCandidatesList = session.createQuery(query).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
+		     return offerAcceptedCandidatesList;
+		}
 		
   }
 

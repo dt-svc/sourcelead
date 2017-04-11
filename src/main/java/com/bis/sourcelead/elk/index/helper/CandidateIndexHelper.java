@@ -155,6 +155,8 @@ public class CandidateIndexHelper {
 			
 			candidateIndex.setUpdatedBy(candidate.getUpdatedBy());
 			
+			candidateIndex.setCandidateUUID(candidate.getCandidateUUID());
+			
 		}
 		
 		return candidateIndex;

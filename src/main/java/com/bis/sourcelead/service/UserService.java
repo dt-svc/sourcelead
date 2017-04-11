@@ -181,6 +181,8 @@ public interface UserService  {
 
 	List<User> getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(Long id, Long valueOf, List<Long> ownersList) throws Exception;
 
+	void passwordResetMailToLoginUser(User user, OrgLocations orgLocations) throws Exception;
+
 }	
 		
 	
