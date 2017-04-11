@@ -388,6 +388,7 @@ public class Constants {
 	
 	public static String EDUCATIONS = "Educations";
 	public static String SKILLS = "Skills";
+	public static String DOCUMENT_TYPE="Document Type";
 	
 	public static String ADMIN = "Admin";
 	
