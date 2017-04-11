@@ -2984,6 +2984,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
      	requirement.setJobType(requirementIndex.getJobType());
      	requirement.setOtherJobType(requirementIndex.getOtherJobType());
      	requirement.setJobTitle(requirementIndex.getJobTitle());
+     	requirement.setPostedDateStr(requirementIndex.getCreatedDate());
      	if(requirementIndex.getMinExperience() !=null){
      		requirement.setMinExp(requirementIndex.getMinExperience().toString());	
      	}
