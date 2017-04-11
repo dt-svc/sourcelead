@@ -160,8 +160,11 @@ public class CandidateIndex implements Serializable {
 	private Long orgRelationId;
 	
 	private Long spocId;
+
+	private String candidateUUID;
 		
 	private String isAssociate;
+	
 	
 	public String getSearchType() {
 		return searchType;
@@ -760,7 +763,15 @@ public class CandidateIndex implements Serializable {
 	public void setIsFavouriteAssociate(Integer isFavouriteAssociate) {
 		this.isFavouriteAssociate = isFavouriteAssociate;
 	}
-	
+
+	public String getCandidateUUID() {
+		return candidateUUID;
+	}
+
+	public void setCandidateUUID(String candidateUUID) {
+		this.candidateUUID = candidateUUID;
+	}
+
 }
 
 

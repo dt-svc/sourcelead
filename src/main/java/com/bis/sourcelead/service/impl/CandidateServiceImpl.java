@@ -56,6 +56,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -162,6 +163,7 @@ public class CandidateServiceImpl implements CandidateService {
 			}else{
 				candidate.setCandidateType("Candidate");
 			}
+			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			
 		}
         

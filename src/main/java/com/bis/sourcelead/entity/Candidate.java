@@ -169,6 +169,9 @@ public class Candidate implements Serializable{
 	
 	@Column(name = "IS_PROFILE_PUBLIC")
 	private String isProfilePublic;
+
+	@Column(name = "CANDIDATE_UUID")
+	private String candidateUUID;
 	
 	@Column(name="IS_ASSOCIATE")
 	private String isAssociate;
@@ -283,7 +286,6 @@ public class Candidate implements Serializable{
 	 
 	 @Transient
 	 private String postedDateStr;
-		
 	 
 	 @Transient
 	 private List<RequirementSubmission> requirementSubmisstions;
@@ -296,6 +298,7 @@ public class Candidate implements Serializable{
 	 
 	 @Transient
 	 private Integer candidateRequiementCount;
+	 
 	 
 	public Long getId() {
 		return id;
@@ -1112,6 +1115,13 @@ public class Candidate implements Serializable{
 
 	public void setIsFavouriteAssociate(Integer isFavouriteAssociate) {
 		this.isFavouriteAssociate = isFavouriteAssociate;
+	}
+	public String getCandidateUUID() {
+		return candidateUUID;
+	}
+
+	public void setCandidateUUID(String candidateUUID) {
+		this.candidateUUID = candidateUUID;
 	}
 	
 }
