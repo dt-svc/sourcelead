@@ -8,10 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.OnBoardingTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.service.OnBoardingTemplateService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -25,6 +28,9 @@ public class CandidateOnBoardController {
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	OnBoardingTemplateService onBoardingTemplateService;
 	
 	
 	@RequestMapping(value = "/candidateOnBoardingDetails")
@@ -55,4 +61,32 @@ public class CandidateOnBoardController {
  			model.addObject("sourceleadUrl", sourceleadUrl);
  			return model;
  	}
+	
+	
+	@RequestMapping(value = "/addNewOnboardTemplate")
+ 	public ModelAndView addNewOnboardTemplate(HttpServletRequest request) {
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		    ModelAndView model = new ModelAndView();
+ 			commonUtil.highLightMenu(Constants.OrgSettings, request);
+ 			
+ 			model.setViewName("onboard/addNewOnboardTemplate");
+ 			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			return model;
+ 	}
+	
+	@RequestMapping(value = "/viewOnboardTemplateByTemplateUUID")
+ 	public ModelAndView viewOnboardTemplateByTemplateUUID(@RequestParam(value="templateUUID", required=false) String templateUUID,
+ 			HttpServletRequest request) throws Exception {
+		   
+		    ModelAndView model = new ModelAndView();
+ 			commonUtil.highLightMenu(Constants.OrgSettings, request);
+ 			
+ 			OnBoardingTemplate template = onBoardingTemplateService.getOnBoardingTemplateByTemplateUUID(templateUUID);
+ 			
+ 			model.setViewName("onboard/addNewOnboardTemplate");
+ 			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			model.addObject("templateId", template.getId());
+ 			return model;
+ 	}
+	
 }

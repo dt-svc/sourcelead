@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OnBoardingTemplateDao;
 import com.bis.sourcelead.entity.OnBoardingTemplate;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
 public class OnBoardingTemplateDaoImpl implements OnBoardingTemplateDao{
@@ -44,6 +46,72 @@ public class OnBoardingTemplateDaoImpl implements OnBoardingTemplateDao{
 	    String query = "from OnBoardingTemplate template left join fetch template.orgLocationId where template.orgLocationId.id =:orgLocationId ";
 	    List<OnBoardingTemplate> onBoardingTemplateList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
         return onBoardingTemplateList;
+	}
+
+
+
+	@Override
+	@Transactional
+	public OnBoardingTemplate saveOnBoardingTemplate(OnBoardingTemplate onboardingTemplate) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (onboardingTemplate != null) {
+				session.saveOrUpdate(onboardingTemplate);
+			}
+			logger.debug("onboardingTemplate Added Successfully");
+		} catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ON_BOARDING_TEMPLATE"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return onboardingTemplate;
+	}
+
+
+
+	@Override
+	@Transactional
+	public OnBoardingTemplate getOnBoardingTemplateById(Long templateId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<OnBoardingTemplate> onBoardingTemplate = session.createQuery("from OnBoardingTemplate template where template.id =:templateId" ).setLong( "templateId", templateId ).setCacheable(true).list();
+		if (onBoardingTemplate.size() > 0) {
+			return onBoardingTemplate.get(0);
+		} else {
+			return null;
+		}
+	}
+
+
+
+	@Override
+	@Transactional
+	public OnBoardingTemplate getOnBoardingTemplateByTemplateNameAndOrgLocationId(String templateName,
+			Long orgLocationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<OnBoardingTemplate> onBoardingTemplate = session.createQuery("from OnBoardingTemplate template left join fetch template.orgLocationId "
+				+ " where template.templateName =:templateName and template.orgLocationId.id =:orgLocationId" ).setString("templateName", templateName).setLong( "orgLocationId", orgLocationId ).setCacheable(true).list();
+		if (onBoardingTemplate.size() > 0) {
+			return onBoardingTemplate.get(0);
+		} else {
+			return null;
+		}
+	}
+
+
+
+	@Override
+	@Transactional
+	public OnBoardingTemplate getOnBoardingTemplateByTemplateUUID(String templateUUID) throws Exception {
+	
+		Session session = this.sessionFactory.getCurrentSession();
+		List<OnBoardingTemplate> onBoardingTemplate = session.createQuery("from OnBoardingTemplate template where template.templateUUID =:templateUUID" ).setString( "templateUUID", templateUUID ).setCacheable(true).list();
+		if (onBoardingTemplate.size() > 0) {
+			return onBoardingTemplate.get(0);
+		} else {
+			return null;
+		}
 	}
 
 }

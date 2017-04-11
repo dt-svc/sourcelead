@@ -13,7 +13,7 @@
     <div id="onboardingLoading"></div>
     <section class="content-header clearfix">
           <div class="pull-left">
-            <h2>On-boarding Templates List</h2>
+            <h2>On-board Templates List</h2>
           </div>
     </section>
     
@@ -80,9 +80,7 @@ function onboardingTemplatesList(){
 	                    		 
 	                    		 result = result +"<td><div><span>"+opt.createdUser+"</span></div></td>";
 	                    		 
-	                    		 result = result +"<td><div><span>-----</span></div></td>";
-			                     
-			                    /*  result = result +"<td><div class='tbldata-dotdot-sm'><a href='"+sourceleadUrl+"/candidateOnBoardingDetails?candidateUUId="+opt.candidateUUID+"'><span class='text-success'>On-board</span></a>&nbsp;&nbsp;<a href='#'><span class='text-danger'>Decline</span></a></div></td>"; */
+			                     result = result +"<td><div class=''><a href='"+sourceleadUrl+"/viewOnboardTemplateByTemplateUUID?templateUUID="+opt.templateUUID+"'>View</a></div></td>"; 
 
 		                     
 		                     result = result +"</tr>";

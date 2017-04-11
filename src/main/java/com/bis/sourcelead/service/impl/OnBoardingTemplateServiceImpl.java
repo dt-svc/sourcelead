@@ -19,6 +19,27 @@ public class OnBoardingTemplateServiceImpl implements OnBoardingTemplateService{
 	public List<OnBoardingTemplate> getOnBoardingTemplatesList(Long orgLocationId) throws Exception {
 		return onBoardingTemplateDao.getOnBoardingTemplatesList(orgLocationId);
 	}
+
+	@Override
+	public OnBoardingTemplate saveOnBoardingTemplate(OnBoardingTemplate onboardingTemplate) throws Exception {
+		return onBoardingTemplateDao.saveOnBoardingTemplate(onboardingTemplate);
+	}
+
+	@Override
+	public OnBoardingTemplate getOnBoardingTemplateById(Long templateId) throws Exception {
+		return onBoardingTemplateDao.getOnBoardingTemplateById(templateId);
+	}
+
+	@Override
+	public OnBoardingTemplate getOnBoardingTemplateByTemplateNameAndOrgLocationId(String templateName,
+			Long orgLocationId) throws Exception {
+		return onBoardingTemplateDao.getOnBoardingTemplateByTemplateNameAndOrgLocationId(templateName, orgLocationId);
+	}
+
+	@Override
+	public OnBoardingTemplate getOnBoardingTemplateByTemplateUUID(String templateUUID) throws Exception {
+		return onBoardingTemplateDao.getOnBoardingTemplateByTemplateUUID(templateUUID);
+	}
 	
 	
 
