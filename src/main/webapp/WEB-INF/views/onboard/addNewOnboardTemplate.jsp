@@ -14,7 +14,7 @@
           <div class="pull-left">
             <h2>On-board Template</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; On-board Template </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='onboardingTemplatesList'/>">Templates List</a> &raquo; Create User </div>
     </section>
     
     <div class="content-area content-new clearfix">
@@ -67,39 +67,54 @@
             <!-- TAB 2 -->
             <div class="tab-pane" id="documents">
               <div class="form-horizontal">
+                <form id='templateDocuments_form' name='templateDocuments_form' enctype='multipart/form-data' >
+                 <input type="hidden" name="templateId" id="documentstemplateId" value=""/>
                 <p><strong>Acceptance Documents</strong> <br>
                   <small class="text-muted">These documents need to be accepted by the new hire as part of acceptance step  - Learn more</small> </p>
-                <div class="form-group">
-                  <label class="col-md-12"> <strong>Employment Contract</strong> </label>
-                  <label class="col-md-4 control-label"></label>
-                  <div class="col-md-7">
-                    <button type="button" class="btn btn-default btn-sm"><i class="fa fa-plus paddingRight"></i>Upload additional contract files</button>
-                  </div>
-                </div>
+                
                 <div class="form-group">
                   <label class="col-md-12"> <strong>Policies</strong> <br>
                   </label>
-                  <label class="col-md-4 control-label">These policies will be added to this offer:</label>
-                  <div class="col-md-7">
-                    <button type="button" class="btn btn-default btn-sm"><i class="fa fa-plus paddingRight"></i>Upload additional policies files</button>
-                  </div>
+                  <label class="col-md-4 control-label mt10">These policies will be added to this offer:</label>
+                     <div id="timesheetDocumentsId" class="timesheetDocs">
+                      <div class="col-md-7 commentFile timesheet_week_comm">
+				        <span> 
+				          <input type='hidden' name='policiesAttcahmentMaxRowNumber'  id='policiesAttcahmentMaxRowNumber' value='1' />
+			             <table class='timesheetAttachment' id='policiesAttachmentTable' cellpadding='0' cellspacing='0'>
+				          <tr id='divAttachmentTsRow0'>
+				             <td><div id='0docFileuploadFileGroup'><input type='file' name='0docFile' id='0docFile' field-name='Attachment' onchange='validateUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addPoliciesAttachment()'></i></div></td>
+					      </tr>
+				        </table>
+				        </span>
+                      </div>
+                      </div>
                 </div>
                 <div class="clearfix"></div>
                 <p><strong>Supporting Information</strong> <br>
                   <small class="text-muted">This is great place to upload a position description, commission structures, photo of the team , their desk or even a view from their new office.</small> </p>
                 <div class="form-group">
-                  <label class="col-md-4 control-label">These files will be available in the portal</label>
-                  <div class="col-md-7">
-                    <button type="button" class="btn btn-default btn-sm"><i class="fa fa-plus paddingRight"></i>Upload additional Information files</button>
-                  </div>
+                  <label class="col-md-4 control-label mt10">These files will be available in the portal:</label>
+                  <div id="timesheetDocumentsId" class="timesheetDocs">
+                      <div class="col-md-7 commentFile timesheet_week_comm">
+				        <span> 
+				          <input type='hidden' name='supportingAttcahmentMaxRowNumber'  id='supportingAttcahmentMaxRowNumber' value='1' />
+			             <table class='timesheetAttachment' id='supportingAttachmentTable' cellpadding='0' cellspacing='0'>
+				          <tr id='divAttachmentTsRow0'>
+				             <td><div id='0SupportingdocFileuploadFileGroup'><input type='file' name='0supportingdocFile' id='0supportingdocFile' field-name='Attachment' onchange='validateUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addSupportingAttachment()'></i></div></td>
+					      </tr>
+				        </table>
+				        </span>
+                      </div>
+                      </div>
                 </div>
                 <div class="form-footer">
                   <div class="pull-right mr">
-                    <input type="button" value="Cancel" class="btn btn-sm btn-default">
-                    <input type="button" value="Save" class="btn btn-sm btn-success">
-                    <input type="button" value="Save and Continue" class="btn btn-sm btn-primary">
+                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/dashboard/${SourceLeadWeb_orgLocationId}'">
+                    <input type="button" value="Save" id="save_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
+                    <input type="button" value="Save and Continue" id="save_continue_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
                 </div>
+                </form>
               </div>
             </div>
             <div class="tab-pane" id="tasks">
@@ -320,6 +335,8 @@
 		if(templateId != null && templateId != '' && templateId != 'undefined'){
 			$("#templateId").val(templateId);
   	        $("#onboardtemplateId").val(templateId);
+  	        $("#documentstemplateId").val(templateId);
+  	        
   	      document.getElementById("templateDocs").disabled = false;
 		}
 		
@@ -327,7 +344,184 @@
 	});
 </script>
 
+<div id="divAttachmentTd1" style="display: none; float: left;">
+			<div id='REPLACEROWIDdocFileuploadFileGroup'>
+	  			<input type='file' name='REPLACEROWIDdocFile' id='REPLACEROWIDdocFile' class="timesheetAttachmentValidation" onchange='validateUploadFile(REPLACEROWID)'> 
+	  			<i class="fa fa-times" onclick="removePoliciesAttachmentRow(REPLACEROWID);"></i>
+	  		</div>
+</div>
 
+<div id="divSupportingAttachmentTd1" style="display: none; float: left;">
+			<div id='REPLACEROWIDSupportingdocFileuploadFileGroup'>
+	  			<input type='file' name='REPLACEROWIDsupportingdocFile' id='REPLACEROWIDsupportingdocFile' class="timesheetAttachmentValidation" onchange='validateSupportingUploadFile(REPLACEROWID)'> 
+	  			<i class="fa fa-times" onclick="removeSupportingAttachmentRow(REPLACEROWID);"></i>
+	  		</div>
+</div>
+
+<script>
+function addPoliciesAttachment(){  
+			var checkMaxTsRowNum = $("#policiesAttcahmentMaxRowNumber").val();
+			var tbl = document.getElementById("policiesAttachmentTable");
+			var maxRowNum = parseInt($("input[name = 'policiesAttcahmentMaxRowNumber']").val());
+			$("input[name = 'policiesAttcahmentMaxRowNumber']").val(maxRowNum + 1);
+			
+			
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", "divAttachmentPoliciesRow" + maxRowNum);
+			
+			
+			var cell0 = row.insertCell(0);
+			var divAttachmentTdStr = document.getElementById("divAttachmentTd1").innerHTML;
+			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+			cell0.innerHTML = divAttachmentTdStr;
+			
+			
+}			
+</script>
+	
+<script type="text/javascript">
+	function removePoliciesAttachmentRow(rowId) {
+		 document.getElementById("divAttachmentPoliciesRow"+rowId).style.display = 'none';
+		 document.getElementById("divAttachmentPoliciesRow"+rowId).value= '';
+		 var  rId = "divAttachmentPoliciesRow"+rowId;
+		  var r = document.getElementById("policiesAttachmentTable").rows[rId];
+          var count = 2*(r.cells.length);
+		    for(i=0;i<=count;i++){
+		        r.deleteCell(0);
+		    } 
+		 
+	}
+</script>
+
+
+<script>
+function addSupportingAttachment(){  
+			var checkMaxTsRowNum = $("#supportingAttcahmentMaxRowNumber").val();
+			var tbl = document.getElementById("supportingAttachmentTable");
+			var maxRowNum = parseInt($("input[name = 'supportingAttcahmentMaxRowNumber']").val());
+			$("input[name = 'supportingAttcahmentMaxRowNumber']").val(maxRowNum + 1);
+			
+			
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", "divAttachmentSupportingRow" + maxRowNum);
+			
+			
+			var cell0 = row.insertCell(0);
+			var divAttachmentTdStr = document.getElementById("divSupportingAttachmentTd1").innerHTML;
+			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+			cell0.innerHTML = divAttachmentTdStr;
+			
+			
+}			
+</script>
+	
+<script type="text/javascript">
+	function removeSupportingAttachmentRow(rowId) {
+		 document.getElementById("divAttachmentSupportingRow"+rowId).style.display = 'none';
+		 document.getElementById("divAttachmentSupportingRow"+rowId).value= '';
+		 var  rId = "divAttachmentSupportingRow"+rowId;
+		  var r = document.getElementById("supportingAttachmentTable").rows[rId];
+          var count = 2*(r.cells.length);
+		    for(i=0;i<=count;i++){
+		        r.deleteCell(0);
+		    } 
+		 
+	}
+</script>
+
+
+<script type="text/javascript">
+function validate_fileupload(fileName)
+{
+
+    var allowed_extensions = new Array("ppt", "pptx", "pps", "ppsx", "doc", "docx", "pdf", "rtf", "odt", "xls", "xlsx", "csv", "zip", "txt", "jpg","jpeg","bmp","png","gif","eps","tiff","TGA","psd","svg","msg","wpd","wps");
+    var file_extension = fileName.split('.').pop(); 
+
+    for(var i = 0; i <= allowed_extensions.length; i++)
+    {
+        if(allowed_extensions[i] != null && allowed_extensions[i] != '' && allowed_extensions[i] != 'undefined' && allowed_extensions[i]==file_extension.toLowerCase())
+        {
+            return true; // valid file extension
+        }
+    }
+
+    return false;
+}
+</script>
+
+<script type="text/javascript">
+function validateSupportingUploadFile(id)
+{
+	 var selectedFile = $('#'+id+'supportingdocFile').val();
+	  if(validate_fileupload(selectedFile)){
+		   var docSize = $('#'+id+'supportingdocFile')[0].files[0].size;
+	       $("#"+id+"SupportingdocFileuploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  $('#'+id+'SupportingdocFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+	    	  $('#'+id+'SupportingdocFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+			  $('#'+id+'supportingdocFile').attr('record-exist','yes');
+			  $('#'+id+'supportingdocFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+	      }else{
+	    	 $('input#'+id+'supportingdocFile').removeAttr( "record-exist record-exist-errormsg");
+   		 $('#'+id+'SupportingdocFileuploadFileGroup').find('p.jquery_form_error_message').remove(); 
+	      }
+	  }
+	  else{
+		      $('#'+id+'SupportingdocFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+		      $('#'+id+'SupportingdocFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Invalid Format</span>");
+			  $('#'+id+'supportingdocFile').attr('record-exist','yes');
+			  $('#'+id+'supportingdocFile').attr('record-exist-errorMsg','Invalid Format'); 
+	  }
+	
+}
+</script>
+
+
+<script type="text/javascript">
+function validate_fileupload(fileName)
+{
+
+    var allowed_extensions = new Array("ppt", "pptx", "pps", "ppsx", "doc", "docx", "pdf", "rtf", "odt", "xls", "xlsx", "csv", "zip", "txt", "jpg","jpeg","bmp","png","gif","eps","tiff","TGA","psd","svg","msg","wpd","wps");
+    var file_extension = fileName.split('.').pop(); 
+
+    for(var i = 0; i <= allowed_extensions.length; i++)
+    {
+        if(allowed_extensions[i] != null && allowed_extensions[i] != '' && allowed_extensions[i] != 'undefined' && allowed_extensions[i]==file_extension.toLowerCase())
+        {
+            return true; // valid file extension
+        }
+    }
+
+    return false;
+}
+</script>
+
+<script type="text/javascript">
+function validateUploadFile(id)
+{
+	 var selectedFile = $('#'+id+'docFile').val();
+	  if(validate_fileupload(selectedFile)){
+		   var docSize = $('#'+id+'docFile')[0].files[0].size;
+	       $("#"+id+"docFileuploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+	    	  $('#'+id+'docFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+			  $('#'+id+'docFile').attr('record-exist','yes');
+			  $('#'+id+'docFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+	      }else{
+	    	 $('input#'+id+'docFile').removeAttr( "record-exist record-exist-errormsg");
+   		 $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove(); 
+	      }
+	  }
+	  else{
+		      $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+		      $('#'+id+'docFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Invalid Format</span>");
+			  $('#'+id+'docFile').attr('record-exist','yes');
+			  $('#'+id+'docFile').attr('record-exist-errorMsg','Invalid Format'); 
+	  }
+	
+}
+</script>
 
 <script>
 function createTemplate(saveType){
@@ -364,6 +558,7 @@ function createTemplate(saveType){
 		        	
 	     	        $("#templateId").val(templateId);
 	     	        $("#onboardtemplateId").val(templateId);
+	     	        $("#documentstemplateId").val(templateId);
 	     	        $("#loading").removeAttr("style");
 		        },
 		    }); 
@@ -378,6 +573,52 @@ $('body').on('blur', '#onboardTemplate_form', function() {
 	$("#onboardTemplate_form").showHelpOnFocus();
 	$("#onboardTemplate_form").validateOnBlur(false, validationSettings);  
 });
+</script>
+
+<script>
+function createTemplateDocs(saveType){
+	var validationSettings = {
+	        errorMessagePosition : 'element',
+	       borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+         }; 
+	
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  
+	  var frm = $('#templateDocuments_form').serializeFormJSON();
+      var con = JSON.stringify(frm);
+      con = con.replace(/[{}]/g, "");
+      
+      //It will escape all the special characters
+      var jsonData = encodeURIComponent(con);
+      
+	   var form = $('#templateDocuments_form')[0];
+	   var formData = new FormData(form); 
+	
+   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$.ajax({
+        type : "POST",
+	      data: formData,
+	      contentType : 'application/json; charset=utf-8',
+	      enctype: 'multipart/form-data',
+        processData: false,
+        contentType:false,
+	      dataType : 'json',
+    	  url: sourceleadUrl+"/saveOnboardingTemplateDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,		
+	      success :function(result) {
+	    	  
+	    	  if(saveType == 'saveAndContinue'){
+	        		var $tabs = $('.tabbable li');
+	     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
+	     	        document.getElementById("templateTasks").disabled = false;
+	        	}
+	    	  $("#loading").removeAttr("style");
+	    	  
+	      }
+    	  
+  });
+}
 </script>
 
 <script type="text/javascript">
@@ -637,5 +878,5 @@ $('#nexttab').on('click', function() {
     });
 
     </script>
-  
+
   <jsp:include page="../masterFooter.jsp" />
