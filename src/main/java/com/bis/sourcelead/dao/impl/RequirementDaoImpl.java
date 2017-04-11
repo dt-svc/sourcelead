@@ -410,6 +410,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		
 		String whereCondition = subQuery;
 		Query query = session.createQuery(from+" "+whereCondition+" ORDER BY requirement.id DESC");
+		query.setMaxResults(10);
 		for (String str : query.getNamedParameters())
         {
 			if(str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId")){
