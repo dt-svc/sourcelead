@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -55,9 +56,17 @@ public class ClientImportDaoImpl implements ClientImportDao{
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 	    BulkClientDetails bulkClientDetails = null;
+	    List<BulkClientDetails> bulkClientDetailsList = new ArrayList<>();
+		if(bulkClientVendors.getOrgName()!=null || !"".equalsIgnoreCase(bulkClientVendors.getOrgName())){
+			String query = "from BulkClientDetails bulkClientDetails  where orgLocationId =:orgLocationId and bulkClientDetails.email = :email and bulkClientDetails.ownerEmail = :ownerEmail and bulkClientDetails.orgName = :orgName  and bulkClientDetails.recordStatus ='0'";
+			bulkClientDetailsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("email", bulkClientVendors.getEmail()).setString("ownerEmail", bulkClientVendors.getOwnerEmail()).setString("orgName", bulkClientVendors.getOrgName()).setCacheable(true).list();
+		}
+		else{
+			String query = "from BulkClientDetails bulkClientDetails  where orgLocationId =:orgLocationId and bulkClientDetails.email = :email and bulkClientDetails.ownerEmail = :ownerEmail and  bulkClientDetails.recordStatus ='0'";
+			bulkClientDetailsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("email", bulkClientVendors.getEmail()).setString("ownerEmail", bulkClientVendors.getOwnerEmail()).setCacheable(true).list();
+			
+		}
 		
-		String query = "from BulkClientDetails bulkClientDetails  where orgLocationId =:orgLocationId and bulkClientDetails.email = :email and bulkClientDetails.ownerEmail = :ownerEmail and bulkClientDetails.orgName = :orgName  ";
-		List<BulkClientDetails> bulkClientDetailsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("email", bulkClientVendors.getEmail()).setString("ownerEmail", bulkClientVendors.getOwnerEmail()).setString("orgName", bulkClientVendors.getOrgName()).setCacheable(true).list();
 		if(null!= bulkClientDetailsList && bulkClientDetailsList.size() >0){
 			return bulkClientDetailsList.get(0);
 		}
