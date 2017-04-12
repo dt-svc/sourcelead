@@ -124,6 +124,7 @@ public class UserProfileRestController {
 	public String passwordSettings(@RequestParam(value = "json", required = false) String json,
 			HttpServletRequest request) throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		json = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json);
 		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
@@ -138,6 +139,7 @@ public class UserProfileRestController {
 			}
 			SourceLeadSessionManager.setSessionAttribute(request, "resetPwdMsg",
 					"Your password has reset successfully");
+			userService.passwordResetMailToLoginUser(user,orgLocations);
 			return "home";
 		} else {
 			return "Invalid Password";

@@ -17,6 +17,8 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.Team;
+import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 
@@ -120,6 +122,16 @@ public interface RequirementService {
 	public List<Requirement> getAllReleasedRequirementsByParentId(Long parentRequirementId)throws Exception;
 
 	public String getNoticePeriodByRequirementId(Long requirementId) throws Exception;
+	
+	// This method is if the user is requirement manager or approver or assignTo or creator   this method is for consolidated reports 
+	public List<Requirement> getAllRequirementsByOrglocationIdAndUserId(Long orgLocationId,User user)throws Exception;
+		
+	// This method is if the user is TeamLead this method is used for  consolidated reports
+	public List<Requirement> getAllRequirementsByOrglocationIdAndUserIdAsTeamLead(Long orgLocationId ,User user)throws Exception;
 
+	// This method is for  getting  the released requirements based on the user and orglocatinsId for consolidates reports for individual 
+	
+	Integer getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(Long orgLocationId, User user)	throws Exception ; 
 
+	public List<Requirement> getAllRequirementsByOrglocationIdAndRequirementWhoAreAssignedToRequirement(Long orgLocationId, TeamMembers teamMembers)	throws Exception ; 
 }

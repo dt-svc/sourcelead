@@ -227,6 +227,10 @@ public interface RequirementSubmissionService {
 	List<RequirementSubmission> getApplicantsListByOrgLocationAndUserId(OrgLocations loginOrgLocations,
 			List<Long> applicantsList, Date startUTCDate, Date endUTCDate);
 	
+	Integer  getConsolidatedReportsForMailingForIndividualUserForToday(User user, OrgLocations orgLocations,String status,Requirement requirement) throws Exception;
+ 
+	List<RequirementSubmission>  getAllSubmissionsfromVendorsBasedOnLocationIdAndUserId(User user, OrgLocations orgLocations,String status,Requirement requirement) throws Exception;
+	
 	Integer getRequirementHistoryCountByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
 	
 	boolean isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(Long candidateId,Long requirementId) throws Exception;
@@ -234,5 +238,7 @@ public interface RequirementSubmissionService {
 	List<Long> getcandidateListBySubmissionId(List<Long> submissionsIds, Long orgLocationId);
 
 	List<Long> getSubmissionIdByCandidateId(List<Long> candidateIds, Long orgLocationId);
+	
+	List<RequirementSubmission> getOfferAcceptedCandidatesListByOrgLocationId(Long orgLocationId);
 	
 }

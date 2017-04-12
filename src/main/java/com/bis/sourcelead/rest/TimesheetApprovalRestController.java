@@ -640,7 +640,7 @@ public class TimesheetApprovalRestController {
 						                                             .append("</span>");
 						 timesheetApprovalDiv.append("   <div>");
 						 timesheetApprovalDiv.append(" </td>");
-					     timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'>").append(projectMember.getProjects().getProjectName()).append("<span title='").append(projectMember.getProjects().getProjectName()).append("'>").append("</span></div></td>");
+					     timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append(projectMember.getProjects().getProjectName()).append("'>").append(projectMember.getProjects().getProjectName()).append("</b></span></div></td>");
 					     
 					     if(null != projectMember.getProjects().getOrgRelationId()){
 					    	 if(null != projectMember.getProjects().getOrgRelationId().getLocationId() && projectMember.getProjects().getOrgRelationId().getLocationId().getId() != null && projectMember.getProjects().getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){

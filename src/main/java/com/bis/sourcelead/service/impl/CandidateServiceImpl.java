@@ -55,6 +55,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableSet;
@@ -155,6 +156,7 @@ public class CandidateServiceImpl implements CandidateService {
 			}else{
 				candidate.setCandidateType("Candidate");
 			}
+			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			
 		}
         
@@ -762,6 +764,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			return savedCandidate;
 	}
 
+	@Override
+	public Integer getAllCandidatedsBasedOnCreatedByAndOrglocationCodeWhichAreCreatedToday(OrgLocations orgLocations,
+			User user) throws Exception {
+		
+		   return candidateDao.getAllCandidatedsBasedOnCreatedByAndOrglocationCodeWhichAreCreatedToday(orgLocations, user);
+	}
+			
 	@Override
 	public List<Candidate> getCandidateReportsListByOrgLocationID(Long orgLocationId, String candidateType)
 			throws Exception {
