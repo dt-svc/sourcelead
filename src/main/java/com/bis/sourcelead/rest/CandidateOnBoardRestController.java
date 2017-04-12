@@ -29,12 +29,16 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OnBoardingTemplate;
 import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
+import com.bis.sourcelead.entity.OnboardTasks;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.TimesheetEntriesForm;
 import com.bis.sourcelead.service.OnBoardingTemplateDocumentsService;
 import com.bis.sourcelead.service.OnBoardingTemplateService;
+import com.bis.sourcelead.service.OnboardTasksService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -55,6 +59,12 @@ public class CandidateOnBoardRestController {
 	
 	@Autowired
 	OnBoardingTemplateDocumentsService onBoardingTemplateDocumentsService;
+	
+	@Autowired
+	UserRoleService userRoleService;
+	
+	@Autowired
+	OnboardTasksService onboardTasksService;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -114,6 +124,7 @@ public class CandidateOnBoardRestController {
 			}else{
 				onBoardingTemplate.setCreatedUser(userName.append(user.getFirstName()).toString());
 			}
+			onBoardingTemplate.setTemplateStatus("Draft");
 			onBoardingTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
 			onBoardingTemplate.setTemplateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		 	onBoardingTemplate.setCreatedBy(user.getUserCode());
@@ -336,4 +347,99 @@ public class CandidateOnBoardRestController {
 	   
 	}
 	
+	
+	 @RequestMapping(value = "/getOnboardTasksAssignToUsersList", method = RequestMethod.POST)
+	 @ResponseBody String getOnboardTasksAssignToUsersList(HttpServletRequest request) throws Exception{
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 List<UserRole> userRoleList = userRoleService.getAllActiveUsersListByOrgLocationId(orgLocations.getId());
+			for(UserRole ur :userRoleList){
+				StringBuilder userName = new StringBuilder();
+				ur.setUserId(ur.getUser().getId());
+				if(null != ur.getUser()){
+					if(null != ur.getUser().getLastName()){
+						ur.setUserName(userName.append(ur.getUser().getFirstName()).append("").append(ur.getUser().getLastName()).toString());
+					}else{
+						ur.setUserName(userName.append(ur.getUser().getFirstName()).toString());
+					}
+				}
+			}
+			
+		return commonUtil.toJSON(userRoleList);
+		}
+	 
+	 
+	 
+	 @RequestMapping(value = "/saveOnBoardTasks" , method = RequestMethod.POST)
+	 public @ResponseBody  String saveOnBoardTasks(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+		
+		 
+		 json = "{"+json+"}";
+		 
+		 JSONObject jsonObj = new JSONObject(json);
+		 
+		
+		
+		 
+		 OnboardTasks onboardTasks = new OnboardTasks();
+		 
+		 
+		 if(jsonObj.has("taskName") && !isNullOrEmpty(jsonObj.getString("taskName"))){
+			 onboardTasks.setTaskName(jsonObj.getString("taskName"));
+		 }
+		 
+		 OnBoardingTemplate template = new OnBoardingTemplate();
+		 template.setId(Long.valueOf(jsonObj.getString("templateId")));
+		 onboardTasks.setOnboardingTemplateId(template);
+		 
+		 if(jsonObj.has("onboardAssignedTo") && !isNullOrEmpty(jsonObj.getString("onboardAssignedTo"))){
+			
+			 String userIds = jsonObj.getString("onboardAssignedTo");
+			 
+			 userIds = userIds.replaceAll("\\[", "").replaceAll("\\]","");
+			 userIds = userIds.replaceAll("\"", "");
+			 onboardTasks.setAssignToUsers(userIds);
+		 }else{
+			 onboardTasks.setAssignToCandidate(Constants.YES);
+		 }
+		 
+		 if(jsonObj.has("taskPriority") && !isNullOrEmpty(jsonObj.getString("taskPriority"))){
+			 onboardTasks.setPriority(jsonObj.getString("taskPriority"));
+		 }
+		 
+		 if(jsonObj.has("taskRepeat") && !isNullOrEmpty(jsonObj.getString("taskRepeat"))){
+			 onboardTasks.setTaskRepeat(jsonObj.getString("taskRepeat"));
+		 }
+		 
+		 if(jsonObj.has("taskMonths") && !isNullOrEmpty(jsonObj.getString("taskMonths"))){
+			 onboardTasks.setDueAfterMonths(Integer.parseInt(jsonObj.getString("taskMonths")));
+		 }
+		 
+		 if(jsonObj.has("taskDays") && !isNullOrEmpty(jsonObj.getString("taskDays"))){
+			 onboardTasks.setDueAfterDays(Integer.parseInt(jsonObj.getString("taskDays")));
+		 }
+		 
+		 if(jsonObj.has("taskHours") && !isNullOrEmpty(jsonObj.getString("taskHours"))){
+			 onboardTasks.setDueAfterHours(Integer.parseInt(jsonObj.getString("taskHours")));
+		 }
+		 
+		 if(jsonObj.has("taskMinutes") && !isNullOrEmpty(jsonObj.getString("taskMinutes"))){
+			 onboardTasks.setDueAfterMinutes(Integer.parseInt(jsonObj.getString("taskMinutes")));
+		 }
+		 
+		 if(jsonObj.has("taskNotification") && !isNullOrEmpty(jsonObj.getString("taskNotification"))){
+			 onboardTasks.setTaskNotification(jsonObj.getString("taskNotification"));
+		 }
+		 
+		 if(jsonObj.has("taskEmail") && !isNullOrEmpty(jsonObj.getString("taskEmail"))){
+			 onboardTasks.setTaskEmail(jsonObj.getString("taskEmail"));
+		 }
+		 
+		 if(jsonObj.has("taskdescription") && !isNullOrEmpty(jsonObj.getString("taskdescription"))){
+			 onboardTasks.setDescription(jsonObj.getString("taskdescription"));
+		 }
+		 
+		 onboardTasksService.saveOnboardTasks(onboardTasks);
+		
+		  return "success";
+	   }
 }

@@ -40,6 +40,9 @@ public class OnBoardingTemplate implements Serializable{
     
     @Column(name = "TEMPLATE_UUID")
    	private String templateUUID;
+    
+    @Column(name = "TEMPLATE_STATUS")
+   	private String templateStatus;
 	
 	@Column(name = "DESCRIPTION")
 	@Type(type="text")
@@ -162,6 +165,14 @@ public class OnBoardingTemplate implements Serializable{
 
 	public void setTemplateCreatedDate(String templateCreatedDate) {
 		this.templateCreatedDate = templateCreatedDate;
+	}
+
+	public String getTemplateStatus() {
+		return templateStatus;
+	}
+
+	public void setTemplateStatus(String templateStatus) {
+		this.templateStatus = templateStatus;
 	}
 
 	
