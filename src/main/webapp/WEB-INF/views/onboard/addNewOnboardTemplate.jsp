@@ -31,7 +31,7 @@
               <small>Template details</small> </a> </li>
             <li onclick="getTemplatePolicyDocumentsDetails();getTemplateSupportingDocumentsDetails();"><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
               <small>Acceptance &amp; Policy Documents</small> </a> </li>
-            <li onclick="getOnboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Taks</span> <br>
+            <li onclick="getOnboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Tasks</span> <br>
               <small>List of tasks</small> </a></li>
           </ul>
           <input type="hidden" name="templateId" id="templateId" value=""/>
