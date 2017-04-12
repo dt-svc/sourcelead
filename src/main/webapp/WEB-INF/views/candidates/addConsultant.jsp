@@ -59,11 +59,11 @@
           <div class="col-md-6 radioInline">
 	          <label class="mr"><input type="radio"  id="canId" checked="true" value="Candidate" name="candidateType" onclick="getCandidatesList(this.value);" >Candidates</label>
 	          <label class="mr"><input type="radio"  id="newId" value="New" name="candidateType" onclick="getCandidatesList(this.value);" >Add New Associate </label>
-	          <label class="mr"><input type="radio"  id="parsId" value="parseCandidate" name="candidateType" onclick="getCandidatesList(this.value);">Parse Associate</label>
+	          <label class="mr"><input type="radio"  id="parsId" value="parseCandidate" name="candidateType" onclick="parseResume();getCandidatesList(this.value);">Parse Associate</label>
           </div>
           <input type="hidden" name="isAssociate" id="isAssociate" value="Y"/> 
-          
-          <div class="col-md-5 pull-right"> 
+          <div id="parsResumeDivId"></div>
+          <!-- <div class="col-md-5 pull-right"> 
 			 <div class="col-md-12" id="browseDiv"  style="display: none;"> 
 				 <div class="input-group" id="uploadFileGroup"> 
 				 <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File 
@@ -72,7 +72,7 @@
 				 <input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume"> 
 				 </div> 
 			 </div> 	
-          </div>
+          </div> -->
           </div>
           
           <div class="row mt10">
@@ -792,109 +792,7 @@ function getCities(city){
          }
      });
  }
-	      var selectedFile = document.getElementById("uploadBtn");
-	      selectedFile.addEventListener("change", function() {
-	      	 $("#uploadFile").focus();
-	      	 if(validate_fileupload(this.value)){
-	      		 
-	      		 var docSize = this.files[0].size;
-	     	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-	     	      
-	     	      if(docSize > 2097152){
-	     	    	  document.getElementById("uploadFile").value = '';
-	     	    	 /*  $("#uploadFileGroup").append("<p class='jquery_form_error_message'></p>"); */
-	     	    	  $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
-	     			  $("input#uploadFile").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
-	     			  document.getElementById("uploadFile").setAttribute('record-exist','yes');
-	     			  document.getElementById("uploadFile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
-	     	      }else{
-	     	    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
-	        		 $('#uploadFileGroup').find('p.jquery_form_error_message').remove(); 
-	     		var form = $('#candidate_form')[0];
-	       		var formData = new FormData(form); 
-	     		var sourceleadUrl = '${sourceleadUrl}';
-	      	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	     		   $.ajax({
-	     					type : "POST",
-	     	        	    data: formData,
-	     	        	    contentType : 'application/json; charset=utf-8',
-	     	        	    enctype: 'multipart/form-data',
-	     	    	        processData: false,
-	     	    	        contentType:false,
-	     	        	    dataType : 'json',
-	     				 	url : sourceleadUrl+"/parseResume?${_csrf.parameterName}=${_csrf.token}", 
-	     					success : function(data) {
-	     						var json = JSON.parse(data);
-	     						var name = json.name;
-	    						var firstName = '';
-	    						var lastName = '';
-	    						if(name != null && name != 'undefined' && name != ''){
-	    							 firstName = name.split(".")[0]; 
-	    							 lastName = name.split(".")[1]; 
-	    							 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
-	    									 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
-	    								 firstName = name;
-	    							 }
-	    						}
-	    						
-	    						
-	    						 $("input[name=firstName]").val(firstName);
-	    			        	 $("input[name=lastName]").val(lastName);
-	    			        	 $("input[name=email]").val(json.email);
-	     						 var mobilePhone = $("#mobilePhone").val();
-	     						 if(mobilePhone == null || mobilePhone == '' || mobilePhone == 'undefined'){
-	     							$("#mobilePhone").val(json.phoneNumbers); 
-	     						}
-	     						
-	     						
-	     						validateCandidateEmail();
-	     						$("#candidateSkills").empty();
-	     						 var internalOutput = "";
-	     						 <c:forEach var="skill" items="${skillsList}">
-	     						    internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
-	     	                     </c:forEach>
-	     						var skills = json.skills;
-	     						if(skills != null && skills != 'undefined' && skills != ''){
-	     							var str_array = skills.split(',');
-	     							for(var i = 0; i < str_array.length; i++) {
-	     							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-	     							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
-	     							}
-	     						}
-	     						$("#candidateSkills").append(internalOutput);
-	     		        		$("#candidateSkills").trigger("chosen:updated");
-	     		        		
-	     		        		
-	     		        		$("#candidateEducation").empty();
-	     						 var internalOutput = "";
-	     						 <c:forEach var="edu" items="${educationsList}">
-	     						    internalOutput = internalOutput+"<option value='${edu.name}'>${edu.name}</option>";
-	     	                     </c:forEach>
-	     						var edu = json.edu;
-	     						if(edu != null && edu != 'undefined' && edu != ''){
-	     							var str_array = edu.split(',');
-	     							for(var i = 0; i < str_array.length; i++) {
-	     							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-	     							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
-	     							}
-	     						}
-	     						$("#candidateEducation").append(internalOutput);
-	     		        		$("#candidateEducation").trigger("chosen:updated");
-	     		        		
-	     		        		
-	     						$("#loading").removeAttr("style");
-	     						
-	     					},
-	     				});
-	      	 }
-	      	 }
-	      });
-
-	     /* upload file script */
-	     document.getElementById("uploadBtn").onchange = function () {
-	     	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
-	       // document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
-	     };
+	      
 
 </script>
 
@@ -1225,14 +1123,15 @@ var currentRate = document.getElementById("currentRate").value;
 	    	 $( "#newId" ).attr( "checked", true );
 	    	 $( "#parsId" ).attr( "checked", false );
 	    	 $( "#canId" ).attr( "checked", false );
+	    	 $("#email").removeAttr('readonly','readonly');
+	    	 document.getElementById("newResumeDiv").style.display="block";
 // 	    	 document.getElementById("resumesDiv").style.display="none";
-	    	 document.getElementById("browseDiv").style.display="none";
+	    	document.getElementById("browseDiv").style.display="none";
 	    	 //$('#uploadFile').removeAttr('data-validation');
 			 //$('#uploadFile').attr("data-validation-optional","true");
 			 
 			 //document.getElementById("associateResumeDivId").style.display="block";
-			 $("#email").removeAttr('readonly','readonly');
-	    	 document.getElementById("newResumeDiv").style.display="block";
+			
 	    	// document.getElementById("skillsDiv").style.display="";
 		     //$("#candidateSkills").val('').trigger("chosen:updated");
 			 //$('#uploadProfile').removeAttr('data-validation-optional');
@@ -1659,6 +1558,129 @@ function getCandidateDetails(){
 		        }
 		 }); 
  }
+ </script>
+ <script>
+ function parseResume(){
+	  var result = "";
+	result = result + ' 	 <div class="col-md-5 pull-right"> ';
+	result = result + ' 	 <div class="col-md-12" id="browseDiv"  style="display: none;"> ';
+	result = result + ' 		 <div class="input-group" id="uploadFileGroup"> ';
+	result = result + ' 		 <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File ';
+	result = result + ' 		 <input type="file" style="display: none;" name="locationMapFile" multiple id="uploadBtn"  class="upload"> ';
+	result = result + ' 		 </span> </label> ';
+	result = result + ' 		 <input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">'; 
+	result = result + ' 		 </div> ';
+	result = result + ' 	 </div> 	';
+	result = result + '   </div>  ';
+	$("#parsResumeDivId").append(result);   
+	
+	var selectedFile = document.getElementById("uploadBtn");
+    selectedFile.addEventListener("change", function() {
+    	 $("#uploadFile").focus();
+    	 if(validate_fileupload(this.value)){
+    		 
+    		 var docSize = this.files[0].size;
+   	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
+   	      
+   	      if(docSize > 2097152){
+   	    	  document.getElementById("uploadFile").value = '';
+   	    	 /*  $("#uploadFileGroup").append("<p class='jquery_form_error_message'></p>"); */
+   	    	  $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
+   			  $("input#uploadFile").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+   			  document.getElementById("uploadFile").setAttribute('record-exist','yes');
+   			  document.getElementById("uploadFile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+   	      }else{
+   	    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
+      		 $('#uploadFileGroup').find('p.jquery_form_error_message').remove(); 
+   		var form = $('#candidate_form')[0];
+     		var formData = new FormData(form); 
+   		var sourceleadUrl = '${sourceleadUrl}';
+    	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+   		   $.ajax({
+   					type : "POST",
+   	        	    data: formData,
+   	        	    contentType : 'application/json; charset=utf-8',
+   	        	    enctype: 'multipart/form-data',
+   	    	        processData: false,
+   	    	        contentType:false,
+   	        	    dataType : 'json',
+   				 	url : sourceleadUrl+"/parseResume?${_csrf.parameterName}=${_csrf.token}", 
+   					success : function(data) {
+   						var json = JSON.parse(data);
+   						var name = json.name;
+  						var firstName = '';
+  						var lastName = '';
+  						if(name != null && name != 'undefined' && name != ''){
+  							 firstName = name.split(".")[0]; 
+  							 lastName = name.split(".")[1]; 
+  							 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
+  									 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
+  								 firstName = name;
+  							 }
+  						}
+  						
+  						
+  						 $("input[name=firstName]").val(firstName);
+  			        	 $("input[name=lastName]").val(lastName);
+  			        	 $("input[name=email]").val(json.email);
+   						 var mobilePhone = $("#mobilePhone").val();
+   						 if(mobilePhone == null || mobilePhone == '' || mobilePhone == 'undefined'){
+   							$("#mobilePhone").val(json.phoneNumbers); 
+   						}
+   						
+   						
+   						validateCandidateEmail();
+   						$("#candidateSkills").empty();
+   						 var internalOutput = "";
+   						 <c:forEach var="skill" items="${skillsList}">
+   						    internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
+   	                     </c:forEach>
+   						var skills = json.skills;
+   						if(skills != null && skills != 'undefined' && skills != ''){
+   							var str_array = skills.split(',');
+   							for(var i = 0; i < str_array.length; i++) {
+   							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+   							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+   							}
+   						}
+   						$("#candidateSkills").append(internalOutput);
+   		        		$("#candidateSkills").trigger("chosen:updated");
+   		        		
+   		        		
+   		        		$("#candidateEducation").empty();
+   						 var internalOutput = "";
+   						 <c:forEach var="edu" items="${educationsList}">
+   						    internalOutput = internalOutput+"<option value='${edu.name}'>${edu.name}</option>";
+   	                     </c:forEach>
+   						var edu = json.edu;
+   						if(edu != null && edu != 'undefined' && edu != ''){
+   							var str_array = edu.split(',');
+   							for(var i = 0; i < str_array.length; i++) {
+   							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+   							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+   							}
+   						}
+   						$("#candidateEducation").append(internalOutput);
+   		        		$("#candidateEducation").trigger("chosen:updated");
+   		        		
+   		        		
+   						$("#loading").removeAttr("style");
+   						
+   					},
+   				});
+    	 }
+    	 }
+    });
+
+   /* upload file script */
+   document.getElementById("uploadBtn").onchange = function () {
+   	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+     // document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
+   };
+	
+ }
+ 
+ 
  </script>
  
  
