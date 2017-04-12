@@ -43,7 +43,7 @@ public class Constants {
 	public static final String CLIENT_NAME = "Client Name*";
 	public static final String PHONE = "Phone";
 	public static final String STATUS = "Status";
-	public static final String OWNER = "Owner";
+	public static final String OWNER = "Owner (Email)";
 	public static final String WEBSITE = "Website";
 	public static final String COUNTRY = "Country*";
 	public static final String SATATE = "State";
@@ -97,6 +97,14 @@ public class Constants {
 	public static String INTERVIEWER_INVITATION = "Interviewer Invitation";
 	public static String INTERVIEWER_TEMPLATE = "Interviewer Template";
 	
+	public static String INTERVIEW_RESCHEDULEMAIL_TO_APPLICANT="interviewRescheduleMailToApplicant";
+	
+	public static String OFFER_ACCEPTED = "Offer Accepted";
+	public static String OFFER_ACCEPTED_NOTIFICATION = "Offer Accepted Notification";
+	
+	public static String OFFER_REJECTED = "Offer Rejected";
+	public static String OFFER_REJECTED_NOTIFICATION = "Offer Rejected Notification";
+	
 	public static String HOT_LIST_CAMPAIGN = "HotListCampaign";
 	public static String EMAIL_TO_USERS = "EmailToUsers";
 	public static String EMAIL_CAMPAIGN = "EmailCampaign";
@@ -107,6 +115,7 @@ public class Constants {
 	
 	public static String SUBMIT_TO_CLIENT = "Submit To Client";
 	public static String ADD_OFFER_MAIL ="Forward the Mail";
+	public static String NOTIFICATION_TO_CLIENT = "Notification To Client";
 
 	public static String VENDOR_INTERVIEW = "Vendors Interview";
 	public static String VENDOR_INVITATION = "Vendor Invitation";
@@ -114,6 +123,7 @@ public class Constants {
 	public static String EDIT_CLIENTCONTACT = "Edit SpocContact";
 	
 	public static String SHORTLIST_APPLICANTS = "ShortList Applicants";
+	public static String SHORTLIST_NOTIFICATION_MANAGER = "Notification To Manager";
 	
 	public static String MAIL_PROJECT_MANAGER_TIMESHEET = "Mail To Manager At Timesheet Submission";
 	public static String MAIL_TEAM_MEMBERS_APPROVED_TIMESHEET = "Timesheet Approved By Approver";
@@ -140,12 +150,20 @@ public class Constants {
 	public static String TASK_STATUS_MYTASK = "myTask";
 	public static String TASK_STATUS_ASSIGNTASK = "assignedTasks";
 	public static String TASK_STATUS_CLOSEDTASK = "closedTasks";
+	
+	
+	public static String DEFAULT_INTERVIEW_FEEDBACK_TEMAPLATE = "Sourcelead Inerview Feedback Template";
 
 	public static String TASK_MECHANISM_EMAIL ="Task Mechanism";
     public static String TASK_MECHANISM_NOTIFICATION="Task Mechanism";
     
     public static String MODIFIED_REQUIREMENT_STATUS_EMAIL = "ModifiedRequirementStatusMailtoVendorContact";
     public static String MODIFIED_REQUIREMENT_STATUS_NOTIFICATION = "ModifiedRequirementStatusNotificationtoVendorContact";
+    
+    public static String HOTLIST_ALERT_EMAIL = "HotListAlertMail";
+    public static String HOTLIST_ALERT_NOTIFICATION = "HotListAlertNotification";
+    
+    public static long SOURCELEAD_ADMIN_USERID = 1;
 	
 	public static TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
 	
@@ -177,6 +195,22 @@ public class Constants {
 	public static String  PROJECT_MEMBER_HISTORY_CLOSED= "CLOSED";
 	public static String REQUIREMENT_EMAIL_NOTIFICATION = "Approval Mechanism";
 	
+	public static String APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR = "ApplicantAcceptMailToInterviewCreator";
+	
+	public static String APPLICANT_REJECT_MAILTO_INTERVIEW_CREATOR = "ApplicantRejectMailToInterviewCreator";
+	
+	public static String APPLICANT_TENTATIVE_MAILTO_INTERVIEWCREATOR ="ApplicantTentativeMailToInterviewCreator";
+	
+	public static String VENDOR_APPLICANT_REJECTMAIL_TO_INTERVIEWCREATOR="VendorApplicantRejectMailToInterviewCreator";
+	
+	public static String VENDOR_APPLICANT_ACCEPT_MAILTO_INTERVIEWCREATOR ="VendorApplicantAcceptMailToInterviewCreator";
+	
+	public static String VENDOR_APPLICANT_TENTATIVE_MAILTO_INTERVIEWCREATOR ="VendorApplicantTentativeMailToInterviewCreator";
+	
+	public static final long USERID = 1;
+	
+	public static String PASSWORD_RESET_MAIL_TO_USER = "passwordResetMailToUser";
+	
 	public static String REQUIREMENT_SEQUENTIAL_EMAIL_NOTIFICATION = "Approval Mechanism Sequential";
 	public static String APPROVED_EMAIL_NOTIFICATION = "Approved Requirement";
 	public static String REJECTED_EMAIL_NOTIFICATION ="Rejected Mail About The Requirement";
@@ -187,12 +221,20 @@ public class Constants {
 	public static String TIMESHEET_EMAIL_NOTIFICATION = "Timesheet Scheduler";
 	public static String TIMESHEET_MANAGER_NOTIFICATION = "Timesheet Scheduler Level1 Manager";
 	
+	public static String UPDATEDREQUIREMENTNOTIFICATIONTOVENDOR="updatedRequirementNotificationToVendor"; 
+	
+	public static String UPDATED_REQUIREMENT_EMAIL_TO_MANAGER="updatedRequirementEmailToManager";
+	public static String UPDATED_REQUIREMENT_NOTIFICATION_TO_MANAGER="updatedRequirementNotificationToManager";
+	public static String  UPDATED_FEEDBACK_NOTIFICATIONTO_REQUIREMENTOWNER="updatedFeedbackNotificationToRequirementOwner";
 
+	
 	public static String OFFERREJECT_EMAIL = "Vendor Offer Reject";
 	
 	public static String OFFERACCEPT_EMAIL = "VendorAcceptedOffer";
 	
 	public static String APPLICANT_RECEIVE_MAILABOUT_REQUIREMENT_EMAIL = "ApplicantReceiveMailAboutRequirement";
+	
+	public static String NOTIFY_APPLICANT_MAILABOUT_REQUIREMENT="notifyApplicantMailAboutRequirement";
 	
 	public static String APPLICANT_RECEIVE_MAILABOUT_REQUIREMENT_NOTIFICATION = "ApplicantReceiveMailAboutRequirement";
 	public static String APPLICANT_ACCEPT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION = "ApplicantAcceptRequirement";
@@ -223,7 +265,15 @@ public class Constants {
 	
 	public static String ADD_NEW_USER_CONTACT = "Add New User Contact";
 	
+	public static String CROWD_SOURCING_SOURCE_SELF = "SELF";
+	
+	public static String EMPLOYEE_TERMINATION = "Employee Termination";
+	public static String EMPLOYEE_TERMINATION_MAIL_TO_MANAGER = "Employee Termination Mail To Manager";
+	public static String EMPLOYEE_REASSIGN = "Employee Reassign";
+	
 	public static final DateFormat TMS = new SimpleDateFormat ("hh:mm a");
+	
+	public static final DateFormat TMS_FORMAT = new SimpleDateFormat ("HH:mm aa");
 
 	public static String INTERVIEWER_INVITATION_REDIFINED = "Interviewer InvitationRedifined";
 
@@ -268,7 +318,6 @@ public class Constants {
 	public static  String Projects = "Projects";
 	public static  String Clients = "Clients";
 	public static  String TimeSheet = "TimeSheet";
-	public static  String SocialInviter = "SocialInviter";
 	public static  String TimeSheetApproval = "TimeSheetApproval";
 	public static  String OrgSettings = "OrgSettings";
 	public static  String BackOffice = "BackOffice";
@@ -326,6 +375,8 @@ public class Constants {
 	public static String Applicant_Acceptance_By_Manager_Of_Requirement = "ApplicantAcceptanceByManagerOfRequirement";
 	public static String Applicant_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager = "ApplicantWillReceiveMailAboutTheAcceptanceOfRequirementByManager";
 	
+	public static String Recruiter_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager = "RecruiterWillReceiveMailAboutTheAcceptanceOfRequirementByManager";
+	
 	public static String[] RATEPER_LIST = {"Daily","Hourly","Weekly","Bi-Weekly","Semi-Monthly","Monthly","Yearly"};
 	
 	public static String[] ROLE_LIST = {"Admin","Employee","Project Manager","Team Lead"};
@@ -337,6 +388,7 @@ public class Constants {
 	
 	public static String EDUCATIONS = "Educations";
 	public static String SKILLS = "Skills";
+	public static String DOCUMENT_TYPE="Document Type";
 	
 	public static String ADMIN = "Admin";
 	
@@ -460,8 +512,8 @@ public class Constants {
     
     public static String[] PROJECT_ASSIGNED_EMPLOYEES = {"Employee","Email id","Project Start Date","Project End Date","Approved Hours","Rejected Hours","Wiating for Approval","Saved Hours"};	
 
-    public static String[] VENDOR_CONTACTS_HEADERS = {"Vendor Name*","First Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
-    public static String[] CLIENT_CONTACTS_HEADERS = {"Client Name*","First Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
+//    public static String[] VENDOR_CONTACTS_HEADERS = {"Vendor Name*","First Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
+//    public static String[] CLIENT_CONTACTS_HEADERS = {"Client Name*","First Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
 	
 	public static String[] VENDOR_HEADERS = {"Vendor Name*","Website","Country","State","City","Tier","First Name*","Last Name","Email*","Phone","Status","Owner(Email)"};
    
@@ -490,6 +542,7 @@ public class Constants {
     
     public static String REQ_SEARCHTYPE = "Requirement";
 
+    public static String TODAY ="Today";
     public static String ONE_DAY_AGO ="1 Day Ago";
     public static String THREE_DAY_AGO ="3 Days Ago";
     public static String ONE_WEEK_AGO ="1 Week Ago";
@@ -574,5 +627,5 @@ public class Constants {
     public static String ONE_MONTH = "month";
     public static String TWO_MONTHS = "twomonths";
     
-   
+    public static  Long CANDIATE_RESUME_IN_ACTIVE = 0L;
 }	
