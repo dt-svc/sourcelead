@@ -1,13 +1,21 @@
 package com.bis.sourcelead.rest;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +42,8 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @RestController
 public class CandidateOnBoardRestController {
 
-
+	private static final Logger logger = LoggerFactory.getLogger(TimesheetRestController.class);
+	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
@@ -170,6 +179,26 @@ public class CandidateOnBoardRestController {
 	}
 	
 	
+	
+	
+	@RequestMapping(value = "/getOnboardTemplateDocumentByTemplateId" , method = RequestMethod.POST)
+	 public @ResponseBody  String getOnboardTemplateDocumentByTemplateId(@RequestParam(value="templateId", required=false) Long templateId,
+			 @RequestParam(value="documentType", required=false) String documentType, HttpServletRequest request) throws Exception {
+		
+		String resultJson;
+		
+		List<OnBoardingTemplateDocuments> documentsList = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsByTemplateId(templateId,documentType);
+	 	 
+	 	resultJson = commonUtil.toJSON(documentsList);
+		return resultJson;
+	   
+	}
+	
+	
+	
+	
+	
+	
 	@RequestMapping(value = "/saveOnboardingTemplateDocuments", method = RequestMethod.POST)
 	public @ResponseBody String saveOnboardingTemplateDocuments(TimesheetEntriesForm timesheetEntriesForm,@RequestParam(value="json", required=false) String json,
 			MultipartHttpServletRequest request) throws Exception {
@@ -203,6 +232,7 @@ public class CandidateOnBoardRestController {
                        }
                        documents.setDocumentType("Policies");
                        documents.setStatus(Constants.CANDIDATE_ACTIVE);
+                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
                        documents.setCreatedDate(CommonUtil.currentDate());
                        documents.setCreatedBy(loginUser.getUserCode());
                        documents.setUpdatedDate(CommonUtil.currentDate());
@@ -244,6 +274,7 @@ public class CandidateOnBoardRestController {
 		                       }
 		                       documents.setDocumentType("Supported");
 		                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
+		                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		                       documents.setCreatedDate(CommonUtil.currentDate());
 		                       documents.setCreatedBy(loginUser.getUserCode());
 		                       documents.setUpdatedDate(CommonUtil.currentDate());
@@ -260,5 +291,49 @@ public class CandidateOnBoardRestController {
 			
 	}
 	
+	
+	
+	@RequestMapping(value = "/downloadTemplateDocument", method = RequestMethod.GET)
+    public void downloadTemplateDocument(@RequestParam(value="documentUUID", required=false) String documentUUID ,HttpServletResponse response) throws Exception {
+		
+		
+			OnBoardingTemplateDocuments	templateDocuments =	onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsBydocumentUUID(documentUUID);	
+		    
+		    response.setContentType("application/octet-stream");
+		    StringBuilder fileName = new StringBuilder();
+	        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(templateDocuments.getFileName()).append("\"").toString());
+			InputStream inputStream = new ByteArrayInputStream(templateDocuments.getDocFile());
+			try {
+				OutputStream outStream = response.getOutputStream();
+
+				byte[] buffer = new byte[4096];
+				int bytesRead = -1;
+
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outStream.write(buffer, 0, bytesRead);
+				}
+
+				inputStream.close();
+				outStream.close();
+
+			} catch (FileNotFoundException e) {
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			} 
+
+	}  
+	
+	
+	@RequestMapping(value = "/deleteTemplateDocumentByDocumentUUID" , method = RequestMethod.POST)
+	 public @ResponseBody  String deleteTemplateDocumentByDocumentUUID(@RequestParam(value="documentUUID", required=false) String documentUUID,
+			 HttpServletRequest request) throws Exception {
+		
+		OnBoardingTemplateDocuments	templateDocuments =	onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsBydocumentUUID(documentUUID);
+	 	 if(null != templateDocuments){
+	 		templateDocuments.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+	 		onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(templateDocuments);
+	 	 }
+		return "success";
+	   
+	}
 	
 }

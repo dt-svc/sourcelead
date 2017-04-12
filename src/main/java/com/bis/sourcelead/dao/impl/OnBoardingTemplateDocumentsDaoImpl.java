@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -52,6 +53,32 @@ public class OnBoardingTemplateDocumentsDaoImpl implements OnBoardingTemplateDoc
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return onBoardingTemplateDocuments;
+	}
+
+	@Override
+	@Transactional
+	public List<OnBoardingTemplateDocuments> getOnBoardingTemplateDocumentsByTemplateId(Long templateId,String documentType)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from OnBoardingTemplateDocuments documents left join fetch documents.onboardingTemplateId where documents.onboardingTemplateId.id = :templateId "
+	    		+ " and documents.documentType = :documentType and documents.status = '1' ";
+	    List<OnBoardingTemplateDocuments> documentsList = session.createQuery(query.toString()).setLong("templateId", templateId).setString("documentType", documentType).setCacheable(true).list();
+        return documentsList;
+	}
+
+	@Override
+	@Transactional
+	public OnBoardingTemplateDocuments getOnBoardingTemplateDocumentsBydocumentUUID(String documentUUID)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<OnBoardingTemplateDocuments> documents = session.createQuery("from OnBoardingTemplateDocuments documents where documents.documentUUID =:documentUUID" ).setString( "documentUUID", documentUUID ).setCacheable(true).list();
+		if (documents.size() > 0) {
+			return documents.get(0);
+		} else {
+			return null;
+		}
 	}
 
 }

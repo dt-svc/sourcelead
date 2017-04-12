@@ -29,7 +29,7 @@
           <ul class="nav nav-tabs" id="tab_bar">
             <li class="active" onclick="getTemplateDetails();"> <a href="#details" data-toggle="tab"> <i class="fa fa-th-list paddingRight"></i> <span>Details</span> <br>
               <small>Template details</small> </a> </li>
-            <li><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
+            <li onclick="getTemplatePolicyDocumentsDetails();getTemplateSupportingDocumentsDetails();"><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
               <small>Acceptance &amp; Policy Documents</small> </a> </li>
             <li> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Taks</span> <br>
               <small>List of tasks</small> </a></li>
@@ -79,12 +79,7 @@
                      <div id="timesheetDocumentsId" class="timesheetDocs">
                       <div class="col-md-7 commentFile timesheet_week_comm">
 				        <span> 
-				          <input type='hidden' name='policiesAttcahmentMaxRowNumber'  id='policiesAttcahmentMaxRowNumber' value='1' />
-			             <table class='timesheetAttachment' id='policiesAttachmentTable' cellpadding='0' cellspacing='0'>
-				          <tr id='divAttachmentTsRow0'>
-				             <td><div id='0docFileuploadFileGroup'><input type='file' name='0docFile' id='0docFile' field-name='Attachment' onchange='validateUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addPoliciesAttachment()'></i></div></td>
-					      </tr>
-				        </table>
+			              <div id="savedPociliesAttachments"></div>
 				        </span>
                       </div>
                       </div>
@@ -97,12 +92,7 @@
                   <div id="timesheetDocumentsId" class="timesheetDocs">
                       <div class="col-md-7 commentFile timesheet_week_comm">
 				        <span> 
-				          <input type='hidden' name='supportingAttcahmentMaxRowNumber'  id='supportingAttcahmentMaxRowNumber' value='1' />
-			             <table class='timesheetAttachment' id='supportingAttachmentTable' cellpadding='0' cellspacing='0'>
-				          <tr id='divAttachmentTsRow0'>
-				             <td><div id='0SupportingdocFileuploadFileGroup'><input type='file' name='0supportingdocFile' id='0supportingdocFile' field-name='Attachment' onchange='validateUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addSupportingAttachment()'></i></div></td>
-					      </tr>
-				        </table>
+			             <div id="savedSupportedAttachments"></div>
 				        </span>
                       </div>
                       </div>
@@ -554,6 +544,8 @@ function createTemplate(saveType){
 		        		var $tabs = $('.tabbable li');
 		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
 		     	        document.getElementById("templateDocs").disabled = false;
+		     	        getTemplatePolicyDocumentsDetails();
+		     	        getTemplateSupportingDocumentsDetails();
 		        	}
 		        	
 	     	        $("#templateId").val(templateId);
@@ -671,6 +663,114 @@ function getTemplateDetails(){
 	        },
 	    }); 
 	}
+}
+</script>
+
+
+<script>
+function getTemplatePolicyDocumentsDetails(){
+	var templateId = document.getElementById("templateId").value;
+	var documentType = "Policies"
+	if(templateId){
+		var sourceleadUrl ='${sourceleadUrl}';
+	     $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/getOnboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
+		        success: function(data) {
+		        	
+		        	 var json = JSON.parse(data);
+		        	 var result = "";
+		        	 
+                	 for (var i = 0; i < json.length; i++) { 
+                		 var opt = json[i]; 
+                		 result = result +"<strong id='policydocument"+opt.id+"'>";
+           				 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadTemplateDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
+           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
+           				 result = result +"</a>";
+           				 result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
+           				 result = result +"</strong>";
+                	 }
+                	
+                	 result = result +"<input type='hidden' name='policiesAttcahmentMaxRowNumber'  id='policiesAttcahmentMaxRowNumber' value='1' />";
+                	 result = result +"<table class='timesheetAttachment' id='policiesAttachmentTable' cellpadding='0' cellspacing='0'>";
+                	 result = result +"<tr id='divAttachmentTsRow0'>";
+                	 result = result +"<td><div id='0docFileuploadFileGroup'><input type='file' name='0docFile' id='0docFile' field-name='Attachment' onchange='validateUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addPoliciesAttachment()'></i></div></td>";
+                	 result = result +"</tr>";
+                	 result = result +"</table>";
+                	 $("#savedPociliesAttachments").empty();
+                	 
+                	 $("#savedPociliesAttachments").append(result);
+                	 
+                	 
+                	 
+			        
+		        },
+		    });
+	}
+}
+</script>
+
+
+<script>
+function getTemplateSupportingDocumentsDetails(){
+	var templateId = document.getElementById("templateId").value;
+	var documentType = "Supported"
+	if(templateId){
+		var sourceleadUrl ='${sourceleadUrl}';
+	     $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/getOnboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
+		        success: function(data) {
+		        	
+		        	 var json = JSON.parse(data);
+		        	 var result = "";
+		        	 
+                	 for (var i = 0; i < json.length; i++) { 
+                		 var opt = json[i]; 
+                		 result = result +"<strong id='supportdocument"+opt.id+"'>";
+                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadTemplateDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
+           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
+           				 result = result +"</a>";
+           				 result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
+           				 result = result +"</strong>";
+                	 }
+                	 
+                	 result = result +"<input type='hidden' name='supportingAttcahmentMaxRowNumber'  id='supportingAttcahmentMaxRowNumber' value='1' />";
+                	 result = result +"<table class='timesheetAttachment' id='supportingAttachmentTable' cellpadding='0' cellspacing='0'>";
+                	 result = result +"<tr id='divAttachmentTsRow0'>";
+                	 result = result +"<td><div id='0SupportingdocFileuploadFileGroup'><input type='file' name='0supportingdocFile' id='0supportingdocFile' field-name='Attachment' onchange='validateUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addSupportingAttachment()'></i></div></td>";
+                	 result = result +"</tr>";
+                	 result = result +"</table>";
+                	 $("#savedSupportedAttachments").empty();
+                	 $("#savedSupportedAttachments").append(result);
+                	 
+                	 
+			        
+		        },
+		    });
+	}
+}
+</script>
+
+<script>
+function deleteTemplateDocument(documentUUID,documentId,documentType){
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	   $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/deleteTemplateDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
+	        success: function(data) {
+	        	if(data == 'success'){
+	        		if(documentType == 'Policies'){
+	        			document.getElementById("policydocument"+documentId).remove();
+	        		}else if(documentType == 'Supported'){
+	        			document.getElementById("supportdocument"+documentId).remove();
+	        		}
+	        		
+	        	}
+	        },
+	    });
+	 
 }
 </script>
 

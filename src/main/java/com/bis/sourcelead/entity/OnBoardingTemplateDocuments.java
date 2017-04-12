@@ -48,6 +48,9 @@ private static final long serialVersionUID = 1L;
 	@Type(type="text")
 	private String fileName;
 	
+	@Column(name = "DOCUMENT_UUID")
+	private String documentUUID;
+	
     @Column(name = "STATUS")
 	private Integer status;
 		
@@ -152,5 +155,13 @@ private static final long serialVersionUID = 1L;
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getDocumentUUID() {
+		return documentUUID;
+	}
+
+	public void setDocumentUUID(String documentUUID) {
+		this.documentUUID = documentUUID;
 	}
 }

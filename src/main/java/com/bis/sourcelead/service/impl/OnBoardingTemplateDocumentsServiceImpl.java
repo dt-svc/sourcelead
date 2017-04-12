@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,18 @@ public class OnBoardingTemplateDocumentsServiceImpl implements OnBoardingTemplat
 	public OnBoardingTemplateDocuments saveOnBoardingTemplateDocuments(
 			OnBoardingTemplateDocuments onBoardingTemplateDocuments) throws Exception {
 		return onBoardingTemplateDocumentsDao.saveOnBoardingTemplateDocuments(onBoardingTemplateDocuments);
+	}
+
+	@Override
+	public List<OnBoardingTemplateDocuments> getOnBoardingTemplateDocumentsByTemplateId(Long templateId,String documentType)
+			throws Exception {
+		return onBoardingTemplateDocumentsDao.getOnBoardingTemplateDocumentsByTemplateId(templateId,documentType);
+	}
+
+	@Override
+	public OnBoardingTemplateDocuments getOnBoardingTemplateDocumentsBydocumentUUID(String documentUUID)
+			throws Exception {
+		return onBoardingTemplateDocumentsDao.getOnBoardingTemplateDocumentsBydocumentUUID(documentUUID);
 	}
 
 }
