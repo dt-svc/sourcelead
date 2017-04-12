@@ -6982,6 +6982,21 @@ margin-bottom: 0;
    margin: 0; font-size: 18px; background: #dcdcdc; padding: 5px 10px; margin-bottom: 15px;
 }
 /* Assign Template Styles */
+.list-description li label{
+	margin-right: 5px; border:1px solid rgba(3, 169, 244, 0.17); background-color:rgba(3, 169, 244, 0.1); border-radius:5px; padding: 4px 10px;
+}
+.add_Task .modal-body{
+	padding: 15px;
+}
+.add_Task .row {
+    margin-right: -15px !important; margin-left: -15px !important;
+}
+.onboardDocs strong a {
+    color: #fff;left: -10px; top: 10px;
+}
+.onboardDocs strong input.dele{
+width: 7%; top: 10px;	
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

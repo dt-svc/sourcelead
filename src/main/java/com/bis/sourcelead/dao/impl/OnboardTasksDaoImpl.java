@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OnboardTasksDao;
+import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
 import com.bis.sourcelead.entity.OnboardTasks;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -52,6 +54,18 @@ public class OnboardTasksDaoImpl implements OnboardTasksDao{
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return onboardTasks;
+	}
+
+
+	@Override
+	@Transactional
+	public List<OnboardTasks> getOnboardTasksByTemplateId(Long templateId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from OnboardTasks tasks left join fetch tasks.onboardingTemplateId where tasks.onboardingTemplateId.id = :templateId "
+	    		+ " and tasks.status = '1' ";
+	    List<OnboardTasks> tasksList = session.createQuery(query.toString()).setLong("templateId", templateId).setCacheable(true).list();
+        return tasksList;
 	}
 	
 }

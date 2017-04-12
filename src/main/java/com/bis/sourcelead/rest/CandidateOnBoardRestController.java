@@ -39,6 +39,7 @@ import com.bis.sourcelead.service.OnBoardingTemplateDocumentsService;
 import com.bis.sourcelead.service.OnBoardingTemplateService;
 import com.bis.sourcelead.service.OnboardTasksService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -65,6 +66,10 @@ public class CandidateOnBoardRestController {
 	
 	@Autowired
 	OnboardTasksService onboardTasksService;
+	
+	@Autowired
+	UserService userService;
+	
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -377,7 +382,7 @@ public class CandidateOnBoardRestController {
 		 
 		 JSONObject jsonObj = new JSONObject(json);
 		 
-		
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
 		 
 		 OnboardTasks onboardTasks = new OnboardTasks();
@@ -438,8 +443,85 @@ public class CandidateOnBoardRestController {
 			 onboardTasks.setDescription(jsonObj.getString("taskdescription"));
 		 }
 		 
+		 onboardTasks.setStatus(Constants.CANDIDATE_ACTIVE);
+		 onboardTasks.setCreatedDate(CommonUtil.currentDate());
+		 onboardTasks.setCreatedBy(user.getUserCode());
+		 onboardTasks.setUpdatedDate(CommonUtil.currentDate());
+		 onboardTasks.setUpdatedBy(user.getUserCode());
+		 
+		 
 		 onboardTasksService.saveOnboardTasks(onboardTasks);
 		
 		  return "success";
 	   }
+	 
+	 
+	 @RequestMapping(value = "/getOnboardTasksListByTemplateId", method = RequestMethod.POST)
+	 @ResponseBody String getOnboardTasksListByTemplateId(@RequestParam(value="templateId", required=false) Long templateId,HttpServletRequest request) throws Exception{
+		
+		 List<OnboardTasks> tasksList = onboardTasksService.getOnboardTasksByTemplateId(templateId);
+		 
+		 List<OnboardTasks> onboardtasksList = new ArrayList<OnboardTasks>();
+		 
+		 for(OnboardTasks tasks : tasksList){
+			 
+			 List<String> usersList = new ArrayList<String>();
+				 
+				 if(!isNullOrEmpty(tasks.getAssignToUsers())){
+					 String[] userIds = tasks.getAssignToUsers().split(",");
+					 
+					 for(int i = 0 ; i < userIds.length; i++ ){
+						 StringBuilder userName = new StringBuilder();
+						 User user = userService.getUserById(Long.valueOf(userIds[i]));
+						 String assignedUser = null;
+						 if(null != user.getLastName()){
+							 assignedUser = userName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
+							}else{
+								assignedUser = userName.append(user.getFirstName()).toString();
+							}
+						 usersList.add(assignedUser);
+					 }
+				 }
+				 
+				 StringBuilder dueAfter = new StringBuilder();
+				 
+				 if(null != tasks.getDueAfterMonths()){
+					 dueAfter = dueAfter.append(tasks.getDueAfterMonths()).append(" Months ");
+				 }
+				 
+				 if(null != tasks.getDueAfterDays()){
+					 dueAfter = dueAfter.append(tasks.getDueAfterDays()).append(" Days ");
+				 }
+				 
+				 if(null != tasks.getDueAfterHours()){
+					 dueAfter = dueAfter.append(tasks.getDueAfterHours()).append(" Hours ");
+				 }
+				 
+				 if(null != tasks.getDueAfterMinutes()){
+					 dueAfter = dueAfter.append(tasks.getDueAfterMinutes()).append(" Minutes");
+				 }
+				 
+				
+				 tasks.setDueAfterString(dueAfter.toString());
+				 tasks.setUsersList(usersList); 
+				 onboardtasksList.add(tasks);
+		 }
+			
+		return commonUtil.toJSON(onboardtasksList);
+		}
+	 
+	 
+	 
+	 @RequestMapping(value = "/saveAndFinishOnboardTemplate", method = RequestMethod.POST)
+	 @ResponseBody String saveAndFinishOnboardTemplate(@RequestParam(value="templateId", required=false) Long templateId,HttpServletRequest request) throws Exception{
+		
+		OnBoardingTemplate template = onBoardingTemplateService.getOnBoardingTemplateById(templateId);
+		if(null != template){
+			template.setTemplateStatus("Finished");
+			onBoardingTemplateService.saveOnBoardingTemplate(template);
+		}
+		return "success";
+		
+	 }
+	 
 }

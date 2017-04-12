@@ -31,7 +31,7 @@
               <small>Template details</small> </a> </li>
             <li onclick="getTemplatePolicyDocumentsDetails();getTemplateSupportingDocumentsDetails();"><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
               <small>Acceptance &amp; Policy Documents</small> </a> </li>
-            <li> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Taks</span> <br>
+            <li onclick="getOnboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Taks</span> <br>
               <small>List of tasks</small> </a></li>
           </ul>
           <input type="hidden" name="templateId" id="templateId" value=""/>
@@ -77,7 +77,7 @@
                   </label>
                   <label class="col-md-4 control-label mt10">These policies will be added to this offer:</label>
                      <div id="timesheetDocumentsId" class="timesheetDocs">
-                      <div class="col-md-7 commentFile timesheet_week_comm">
+                      <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
 				        <span> 
 			              <div id="savedPociliesAttachments"></div>
 				        </span>
@@ -90,7 +90,7 @@
                 <div class="form-group">
                   <label class="col-md-4 control-label mt10">These files will be available in the portal:</label>
                   <div id="timesheetDocumentsId" class="timesheetDocs">
-                      <div class="col-md-7 commentFile timesheet_week_comm">
+                      <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
 				        <span> 
 			             <div id="savedSupportedAttachments"></div>
 				        </span>
@@ -113,7 +113,7 @@
                 <div class="pull-right">
                   <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addTask" onclick="getAssignToUsersList();"><i class="fa fa-plus paddingRight"></i>Add Task</button>
                   <!-- Modal -->
-                  <div id="addTask" class="modal fade" role="dialog">
+                  <div id="addTask" class="modal fade add_Task" role="dialog">
                     <div class="modal-dialog modal-lg">
                       <div class="modal-content">
                         <div class="modal-header">
@@ -128,29 +128,16 @@
                              <form:form class="login-form clearfix"  id="addonboardTask_form"  name="addonboardTask_form" method="post" > 
                              <input type="hidden" name="templateId" id="taskstemplateId" value=""/>
                               <div class="row">
-                                <div class="col-md-6">
+                              
+                              <div class="col-md-6">
+                                <div class="row">
+                                
+                                <div class="col-md-12 mb10">
                                   <label>Subject <span class="text-danger paddingLeft">*</span></label>
                                   <input type="text" class="form-control input-sm" placeholder="Subject" field-name="Subject" id="taskName" name="taskName" data-validation="required" data-validation="required validate_Space validate_length length2-100">
                                 </div>
-                                <div class="col-md-6">
-                                  <label>Assign To <span class="text-danger paddingLeft">*</span></label>
-                                  
-                                  <div class="mt">
-                                    <label class="radio-inline">
-                                      <input type="radio"  name="assignedToType" checked="checked" onclick="validateAssignToType('assingToCandidate');">
-                                      Candidate </label>
-                                    <label class="checkbox-inline">
-                                      <input type="radio" name="assignedToType"  onclick="validateAssignToType('assingToUser');">
-                                      User </label>
-                                  </div>
-                                  
-                                  <div id="assignToUserDiv" style="display: none;">
-	                                  <select class="chosen-select" multiple data-placeholder="Select User" id="onboardAssignedTo" name="onboardAssignedTo" field-name="AssignTo"  data-validation-optional="true" >
-	                                  </select>
-                                  </div>
                                 
-                                </div>
-                                <div class="col-md-6 dropdown-select">
+                                <div class="col-md-12 dropdown-select mb10">
                                   <label>Priority</label>
                                   <select class="form-control" id="taskPriority" name="taskPriority">
                                     <option selected disabled>-- Select Priority --</option>
@@ -159,7 +146,57 @@
                                     <option>Mediam</option>
                                   </select>
                                 </div>
+                                
+                                <div class="col-md-12 dropdown-select mb10">
+                                  <label>Repeat</label>
+                                  <select class="form-control input-sm" id="taskRepeat" name="taskRepeat">
+                                    <option selected disabled>-- Select Repeat --</option>
+                                    <option>Never</option>
+                                    <option>Daily</option>
+                                    <option>Weekly</option>
+                                    <option>Monthly</option>
+                                    <option>Yearly</option>
+                                  </select>
+                                </div>
+                                
+                                <div class="col-md-12 mb10">
+                                  <div class="mt">
+                                    <label class="checkbox-inline">
+                                      <input type="checkbox" id="taskEmail" name="taskEmail" value="N" onclick="validateTaskEmail();">
+                                      Email </label>
+                                    <label class="checkbox-inline">
+                                      <input type="checkbox" id="taskNotification" name="taskNotification" value="N" onclick="validateTaskNotification();">
+                                      Notification </label>
+                                  </div>
+                                </div>
+                                
+                                </div>
+                                </div>
+                                
+                                
                                 <div class="col-md-6">
+	                                <div class="row">
+	                                
+	                                <div class="col-md-12 mb10">
+                                  <label>Assign To <span class="text-danger paddingLeft">*</span></label>
+                                  
+                                  <div class="">
+                                    <label class="radio-inline">
+                                      <input type="radio"  name="assignedToType" checked="checked" onclick="validateAssignToType('assingToCandidate');">
+                                      Candidate </label>
+                                    <label class="checkbox-inline">
+                                      <input type="radio" name="assignedToType"  onclick="validateAssignToType('assingToUser');">
+                                      User </label>
+                                  </div>
+                                  
+                                  <div id="assignToUserDiv" style="display: none;" class="mt10">
+	                                  <select class="chosen-select" multiple data-placeholder="Select User" id="onboardAssignedTo" name="onboardAssignedTo" field-name="AssignTo"  data-validation-optional="true" >
+	                                  </select>
+                                  </div>
+                                </div>
+	                                
+	                                
+	                               <div class="col-md-12 mb10">
                                   <div class="row">
                                     <div class="col-md-12">
                                       <label><strong>Due after:</strong><span class="text-danger paddingLeft">*</span></label>
@@ -195,33 +232,22 @@
                                     
                                   </div>
                                 </div>
-                                <div class="col-md-6 dropdown-select">
-                                  <label>Repeat</label>
-                                  <select class="form-control input-sm" id="taskRepeat" name="taskRepeat">
-                                    <option selected disabled>-- Select Repeat --</option>
-                                    <option>Never</option>
-                                    <option>Daily</option>
-                                    <option>Weekly</option>
-                                    <option>Monthly</option>
-                                    <option>Yearly</option>
-                                  </select>
-                                </div>
-                                <div class="col-md-6">
-                                  <div class="mt">
-                                    <label class="checkbox-inline">
-                                      <input type="checkbox" id="taskEmail" name="taskEmail" value="N" onclick="validateTaskEmail();">
-                                      Email </label>
-                                    <label class="checkbox-inline">
-                                      <input type="checkbox" id="taskNotification" name="taskNotification" value="N" onclick="validateTaskNotification();">
-                                      Notification </label>
-                                  </div>
-                                </div>
-                                <div class="col-md-6">
+	                               <div class="col-md-12 mb10">
                                   <label>Description</label>
                                   <textarea rows="2" placeholder="Description" id="taskdescription" name="taskdescription" class="form-control"></textarea>
                                 </div>
+	                                
+	                                </div>
+                                </div>
+                                
+                                
+                                
+                                
+                                
+                                
+                                
                                 <div class="clearfix"></div>
-                                <div class="clearfix mt col-md-12">
+                                <div class="clearfix mt col-md-12 form-footer">
                                   <div class="pull-right">
                                     <input type="button" id="onboardtask_submit" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="saveOnboardTask();"  value="Save">
                                     <input type="button" class="btn btn-default btn-sm ml10" value="Cancel" data-dismiss="modal" onclick="flushOnboardTask();">
@@ -238,79 +264,10 @@
                   </div>
                 </div>
               </div>
-              <div class="clearfix taskwidget_inner">
-                <div class="media-body">
-                  <div class="clearfix taskheder">
-                    <label> <span class="paddingRight">Subject:</span> <strong class="text-primary">Account Setup</strong> </label>
-                    <label class="small pull-right text-muted"> <span>Due after 15 days</span> </label>
-                  </div>
-                  <ul class="list-inline list-description">
-                    <li><span>Assign To:</span> Pramodkumar Mahagen</li>
-                    <li><span>Priority:</span> High</li>
-                    <li><span>Repeat:</span> Never</li>
-                  </ul>
-                </div>
-              </div>
-              <div class="clearfix taskwidget_inner">
-                <div class="media-body">
-                  <div class="clearfix taskheder">
-                    <label> <span class="paddingRight">Subject:</span> <strong class="text-primary">Desktop arriange</strong> </label>
-                    <label class="small pull-right text-muted"> <span>Due after 20 days</span> </label>
-                  </div>
-                  <ul class="list-inline list-description">
-                    <li><span>Assign To:</span> Pramodkumar Mahagen</li>
-                    <li><span>Priority:</span> High</li>
-                    <li><span>Repeat:</span> Never</li>
-                  </ul>
-                </div>
-              </div>
-              <div class="clearfix taskwidget_inner">
-                <div class="media-body">
-                  <div class="clearfix taskheder">
-                    <label> <span class="paddingRight">Subject:</span> <strong class="text-primary">Providing access</strong> </label>
-                    <label class="small pull-right text-muted"> <span>Due after 1 month</span> </label>
-                  </div>
-                  <ul class="list-inline list-description">
-                    <li><span>Assign To:</span> Pramodkumar Mahagen</li>
-                    <li><span>Priority:</span> High</li>
-                    <li><span>Repeat:</span> Never</li>
-                  </ul>
-                </div>
-              </div>
-              <div class="clearfix taskwidget_inner">
-                <div class="media-body">
-                  <div class="clearfix taskheder"> 
-                    <!--<label>Account Setup, Desk top Arriange, Providing access to the Candidate</label>-->
-                    <label> <span class="paddingRight">Subject:</span> <strong class="text-primary">Account Setup</strong> </label>
-                    <label class="small pull-right text-muted"> <span>Due after 2 months</span> </label>
-                  </div>
-                  <ul class="list-inline list-description">
-                    <li><span>Assign To:</span> Pramodkumar Mahagen</li>
-                    <li><span>Priority:</span> High</li>
-                    <li><span>Repeat:</span> Never</li>
-                  </ul>
-                </div>
-              </div>
-              <div class="clearfix taskwidget_inner">
-                <div class="media-body">
-                  <div class="clearfix taskheder"> 
-                    <!--<label>Account Setup, Desk top Arriange, Providing access to the Candidate</label>-->
-                    <label> <span class="paddingRight">Subject:</span> <strong class="text-primary">Account Setup</strong> </label>
-                    <label class="small pull-right text-muted"> <span>Due after 10 days</span> </label>
-                  </div>
-                  <ul class="list-inline list-description">
-                    <li><span>Assign To:</span> Pramodkumar Mahagen</li>
-                    <li><span>Priority:</span> High</li>
-                    <li><span>Repeat:</span> Never</li>
-                  </ul>
-                </div>
-              </div>
-              <div class="form-footer clearfix mt">
-                <div class="pull-right mr">
-                  <input type="button" value="Cancel" class="btn btn-sm btn-default">
-                  <input type="button" value="Finish" class="btn btn-sm btn-primary">
-                </div>
-              </div>
+              
+              <div id="onboardTasksList"></div>
+            
+            
             </div>
           </div>
           <!-- STYLED IN FORMS.CSS --> 
@@ -403,6 +360,7 @@
   	        $("#documentstemplateId").val(templateId);
   	        
   	      document.getElementById("templateDocs").disabled = false;
+  	    document.getElementById("templateTasks").disabled = false;
 		}
 		
 		getTemplateDetails();
@@ -708,6 +666,10 @@ function createTemplateDocs(saveType){
 	        		var $tabs = $('.tabbable li');
 	     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
 	     	        document.getElementById("templateTasks").disabled = false;
+	     	        getOnboardingTasksList();
+	        	}else{
+	        		getTemplatePolicyDocumentsDetails();
+	        		getTemplateSupportingDocumentsDetails();
 	        	}
 	    	  $("#loading").removeAttr("style");
 	    	  
@@ -749,6 +711,7 @@ function saveOnboardTask(){
 		        	if(result == 'success'){
 		        		$("#onboardtasksLoading").removeAttr("style");
 			        	flushOnboardTask();
+			        	getOnboardingTasksList();
 		        	}
 		        	
 		        },
@@ -965,6 +928,107 @@ function validateTemplateName(){
 	        }
 		 });
 	}
+}
+</script>
+
+
+<script>
+function getOnboardingTasksList(){
+	var templateId = document.getElementById("templateId").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	var locationId = '${SourceLeadWeb_orgLocationId}';
+	
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/getOnboardTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
+	    success: function(data) {
+	    	 var json = JSON.parse(data);
+        	 var result = "";
+        	 
+        	if(json.length > 0){ 
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var report = json[i];
+	        		
+	        		var prority = '';
+	        		var repeat = '';
+	        		
+	        		if(report.priority != null && report.priority != '' && report.priority != 'undefined'){
+	        			prority = report.priority;
+	        		}else{
+	        			prority = '----';
+	        		}
+	        		
+	        		if(report.taskRepeat != null && report.taskRepeat != '' && report.taskRepeat != 'undefined'){
+	        			repeat = report.taskRepeat;
+	        		}else{
+	        			repeat = '----';
+	        		}
+	        		
+	        		result = result +'<div class="clearfix taskwidget_inner">';
+	        		result = result +'<div class="media-body">';
+	        		result = result +'<div class="clearfix taskheder">';
+	        		result = result +'<label> <span class="paddingRight">Subject:</span> <strong class="text-primary">'+report.taskName+'</strong> </label>';
+	        		result = result +'<label class="small pull-right text-muted"> <span>'+report.dueAfterString+'</span> </label>';
+	        		result = result +'</div>';
+	        		result = result +'<ul class="list-inline list-description mt10">';
+	        		
+	        		result = result +'<li><span>Assign To:</span>';
+	        		
+	        		if(report.usersList.length > 0){
+	        			for(var j=0; j<report.usersList.length; j++){
+		 					result = result +'<label>'+report.usersList[j]+'</label>';
+		 				}
+	        		}else{
+	 					result = result +'Onboarding Candidate';
+	 				}
+	        		result = result +'</li>';
+	        		
+	        		result = result +'<li><span>Priority:</span>'+prority+'</li>';
+	        		result = result +'<li><span>Repeat:</span> '+repeat+'</li>';
+	        		result = result +'</ul>';
+	        		result = result +'</div>';
+	        		result = result +'</div>';
+				}
+        	}else{
+        		result = result +'<div><h4>No Tasks Found</h4></div>';
+        	}
+        	
+        	result = result +'<div class="form-footer clearfix mt">';
+    		result = result +'<div class="pull-right mr">';
+    		result = result +'<input type="button" value="Finish" onclick="saveAndFinishOnboardTemplate('+templateId+');" class="btn btn-sm btn-primary">';
+    		result = result +'</div>';
+    		result = result +'</div>';
+    		
+    		 $("#onboardTasksList").empty();
+           	 $("#onboardTasksList").append(result); 
+    		
+        	 
+	    }
+   }); 
+	
+  $("#loading").removeAttr("style");
+	
+}
+</script>
+
+
+<script>
+function saveAndFinishOnboardTemplate(templateId){
+	
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/saveAndFinishOnboardTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
+	    success: function(data) {
+       	 
+	    	 $("#loading").removeAttr("style");
+	    }
+  }); 
+	
+
 }
 </script>
 
