@@ -75,7 +75,10 @@ public class CandidateDocumentsDaoImpl implements CandidateDocumentsDao{
 		}
 		return candidateDocuments;
 	}
-
+   
+	/**
+	 * This method for to get Documents List.
+	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<CandidateDocuments> getCandidateDocumentsListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception {
