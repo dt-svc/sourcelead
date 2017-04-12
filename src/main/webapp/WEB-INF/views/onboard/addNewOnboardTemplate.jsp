@@ -544,8 +544,8 @@ function createTemplate(saveType){
 		        		var $tabs = $('.tabbable li');
 		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
 		     	        document.getElementById("templateDocs").disabled = false;
-		     	        getTemplatePolicyDocumentsDetails();
-		     	        getTemplateSupportingDocumentsDetails();
+		     	        getTemplatePolicyDocumentsDetails(templateId);
+		     	        getTemplateSupportingDocumentsDetails(templateId);
 		        	}
 		        	
 	     	        $("#templateId").val(templateId);
@@ -668,8 +668,10 @@ function getTemplateDetails(){
 
 
 <script>
-function getTemplatePolicyDocumentsDetails(){
-	var templateId = document.getElementById("templateId").value;
+function getTemplatePolicyDocumentsDetails(templateId){
+	if(templateId == '' || templateId == null || templateId =='undefined'){
+		templateId = document.getElementById("templateId").value;
+	}
 	var documentType = "Policies"
 	if(templateId){
 		var sourceleadUrl ='${sourceleadUrl}';
@@ -712,8 +714,10 @@ function getTemplatePolicyDocumentsDetails(){
 
 
 <script>
-function getTemplateSupportingDocumentsDetails(){
-	var templateId = document.getElementById("templateId").value;
+function getTemplateSupportingDocumentsDetails(templateId){
+	if(templateId == '' || templateId == null || templateId =='undefined'){
+		templateId = document.getElementById("templateId").value;
+	}
 	var documentType = "Supported"
 	if(templateId){
 		var sourceleadUrl ='${sourceleadUrl}';
