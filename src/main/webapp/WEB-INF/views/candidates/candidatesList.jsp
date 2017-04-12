@@ -47,7 +47,7 @@
  <sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">
 <jsp:include page="candidatesCommentsList.jsp"></jsp:include>
  </sec:authorize>
- 
+ <jsp:include page="candidatesQuickView.jsp"></jsp:include>
  
 <script>
  window.onload = function() {
@@ -222,7 +222,7 @@ else{
 	
 	             
 	              '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-	                result = result +"  <td><div class='proj_show divmax-width' onclick='candidateSideBar("+opt.candidateId+");'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
+	                result = result +"  <td><div class='proj_show divmax-width' onclick='candidateSideBar("+opt.candidateId+"); candidateQuickViewProfile("+opt.candidateId+");'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
 	              '</sec:authorize>';
 	              
 	              '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
@@ -636,7 +636,7 @@ function candidateSideBar(candidateId){
 			             result = result+'     <ul class="project-tabs-menu">'; 
 			             
 			             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-			              result = result+'<li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+');">Profile</a></li>';
+			              result = result+'<li id="candidateProfileTab" class=""><a href="#tab-1" onclick="candidateProfile('+candidateId+');">Profile</a></li>';
 			             '</sec:authorize>';
 			             
 			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_RESUMES\',\'ROLE_VIEW_CANDIDATE_RESUMES\',\'ROLE_VIEW_EDIT_CANDIDATE_RESUMES\',\'ROLE_VIEW_DELETE_CANDIDATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
@@ -1376,11 +1376,26 @@ function cancel(candidateId){
     <div class="side_mask">
        <div class="proj_close"></div>
     </div>
-    <div class="clients_side_wrap">
+ <div class="clients_side_wrap quickviewTabs">
+    
+ <ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#quickview">Quickview</a></li>
+    <li><a data-toggle="tab" href="#detailview">Detailview</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div id="quickview" class="tab-pane fade in active">
+	    <!-- resumeView Starts -->
+	    <div id="candidateQuickViewDiv"></div>
+	    <!-- resumeView -->
+    </div>
+    <div id="detailview" class="tab-pane fade">
 	    <div class="clients_side_wrap_inn">
-		             <div id="candidateSideDiv">
-				     </div>  
-	    </div>			     
+	             <div id="candidateSideDiv">
+			     </div>  
+	    </div>
+	     </div>
+  </div>			     
     </div>
     <!-- Compnay details Ends --> 
   </div>
