@@ -223,9 +223,6 @@ public class Constants {
 	
 	public static String ADD_NEW_USER_CONTACT = "Add New User Contact";
 	
-	public static String CROWD_SOURCING_SOURCE_SELF = "SELF";
-	
-	
 	public static final DateFormat TMS = new SimpleDateFormat ("hh:mm a");
 
 	public static String INTERVIEWER_INVITATION_REDIFINED = "Interviewer InvitationRedifined";

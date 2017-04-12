@@ -2,7 +2,6 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -15,9 +14,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ReferContactsDao;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.ReferContacts;
-import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -54,6 +52,26 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 			throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
 		}
 		return referContacts;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void saveAllReferContacts(List<ReferContacts> referContactsList) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if(referContactsList != null && !referContactsList.isEmpty()){
+				for(ReferContacts referContacts : referContactsList){
+					session.saveOrUpdate(referContacts);
+				}
+				
+			}
+			
+		}
+		catch(Exception exception)	{
+			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"REFER_CONTACTS"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		
 	}
 
 	@Override

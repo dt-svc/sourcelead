@@ -1,4 +1,6 @@
 package com.bis.sourcelead.si.util;
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 @Component
@@ -32,7 +34,7 @@ public class ContactImporter {
 		else if(service.equals("mailru")){
 			responseObj = maru.getAuthenticationUrl(service, consumerkey, redirecturl);
 		}
-		else if(service.equals("yahoo")){
+		else if(service.equals("mailru")){
 			responseObj = yah.getAuthenticationUrl(consumerkey, consumersecret, redirecturl, "sdct-r");
 		}
 		else if(service.equals("box")){
@@ -82,9 +84,9 @@ public class ContactImporter {
 		}
 		return responseObj;
 	}
-	public JSONObject getContactsObject(String service, String consumerkey, String consumersecret, String token, String tokensecret, String tokenverifier, String userid){
+	public JSONObject getContactsObject(String service, String consumerkey, String consumersecret, String token, String tokensecret, String tokenverifier, String userid,HttpServletRequest request){
 		if(service.equals("gmail")){
-			responseObj = goo.getContacts(consumerkey, consumersecret, token);
+			responseObj = goo.getContacts(consumerkey, consumersecret, token,request);
 		}
 		else if(service.equals("mailchimp")){
 			responseObj = mai.getContacts(consumerkey, consumersecret, token);

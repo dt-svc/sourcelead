@@ -1,12 +1,37 @@
 package com.bis.sourcelead.si.util;
 
 
+import java.util.ArrayList;
+import java.util.Date;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.stereotype.Component;
-@Component
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ReferContacts;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Contact_Source;
+import com.bis.sourcelead.service.ReferContactsService;
+import com.bis.sourcelead.service.impl.ReferContactsServiceImpl;
+import com.bis.sourcelead.util.SocialInviterUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
+@RestController
 class google {
+	
+	@Configuration
+	static class googleServiceContextConfiguration {
+		@Bean
+		public ReferContactsService referContactsService() {
+			return new ReferContactsServiceImpl();
+		}
+	}
+	
 	processor pr = new processor();
 	
 	/*
@@ -95,8 +120,13 @@ class google {
 	/*
 	 * GET CONTACTS
 	 */
-	protected JSONObject getContacts(String consumerkey, String consumersecret,String token) {
+	protected JSONObject getContacts(String consumerkey, String consumersecret,String token,HttpServletRequest request) {
 		JSONObject jsonresponse = new JSONObject();
+		
+		ArrayList<ReferContacts> refContactsList = new ArrayList<>();
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
 		try{
 			JSONObject data = new JSONObject();
 			JSONObject msg = new JSONObject();
@@ -120,6 +150,14 @@ class google {
 				 JSONObject thisObject = new JSONObject();
 				 thisObject = friendsary.getJSONObject(n);
 				 if(thisObject.has("gd$email")){
+					 ReferContacts referContacts = new ReferContacts();
+					 referContacts.setContactSource(Contact_Source.GOOGLE);
+					 referContacts.setReferFromUser(loginUser);
+					 referContacts.setOrgLocationId(orgLoc);
+					 referContacts.setCreatedDate(new Date());
+					 referContacts.setUpdatedDate(new Date());
+					 referContacts.setCreatedBy(loginUser.getUserCode());
+					 referContacts.setUpdatedBy(loginUser.getUserCode());
 					 JSONArray emailAry = thisObject.getJSONArray("gd$email");
 					 if(emailAry.length()>0){
 						//EMAIL
@@ -128,30 +166,43 @@ class google {
 						 for(int k=0;k<emailLen;k++){
 							 JSONObject emailObj = (JSONObject)emailAry.get(k);
 							 emails.put(emailObj.get("address").toString());
+							 if(k==0){
+								 referContacts.setContactUserEmail(emailObj.get("address").toString()); 
+							 }
+							 else if(k==1){
+								 referContacts.setContactUserEmail2(emailObj.get("address").toString()); 
+							 }
+							  
 						 }
 						 friend.put("email",emails);
-							 
+												 
 						 //NAME
 						 if(thisObject.has("gd$name")){
 							 JSONObject nameobj = thisObject.getJSONObject("gd$name");
 							 if(nameobj.has("gd$givenName")){
 								 JSONObject fnameobj = nameobj.getJSONObject("gd$givenName");
 								 name.put("first_name", fnameobj.get("$t").toString());
+								 referContacts.setFirstName(fnameobj.get("$t").toString());
 							 }
 							 else{
 								 name.put("first_name", "");
+								 referContacts.setFirstName("");
 							 }
 							 if(nameobj.has("gd$familyName")){
 								 JSONObject lnameobj = nameobj.getJSONObject("gd$familyName");
 								 name.put("last_name",  lnameobj.get("$t").toString());
+								 referContacts.setLastName(lnameobj.get("$t").toString());
 							 }
 							 else{
 								 name.put("last_name", "");
+								 referContacts.setLastName("");
 							 }
 						 }
 						 else{
 							 name.put("first_name", "");
 							 name.put("last_name",  "");
+							 referContacts.setFirstName("");
+							 referContacts.setLastName("");
 							
 						 }
 						 friend.put("name", name);
@@ -213,7 +264,15 @@ class google {
 							 for(int j=0;j<phoneLen;j++){
 								 JSONObject phoneobj = phoneAry.getJSONObject(j);
 								 phones.put(phoneobj.get("$t").toString());
+								 if(j==0){
+									 referContacts.setContactUserPhone(phoneobj.get("$t").toString());
+								 }
+								 else if(j==1){
+									 referContacts.setContactUserPhone(phoneobj.get("$t").toString());
+								 }
+								
 							 }
+							 
 						 }
 						 friend.put("phone", phones);
 						 
@@ -281,10 +340,12 @@ class google {
 							 friend.put("address", addresses);
 							 friends.put(friend);
 						 }
-					 
+						 referContacts.setContactSource(Contact_Source.GOOGLE);
+						 refContactsList.add(referContacts);
 					 }
 				 }
 			 }
+			SocialInviterUtil.storeReferContacts(refContactsList,request);
 			data.put("addressbook", friends);
 			data.put("service", "google");
 			msg.put("message", "");
@@ -301,6 +362,8 @@ class google {
 		return jsonresponse;
 	}
 	
+	   
+   
 	/*
 	 * GET FRIENDS
 	 */

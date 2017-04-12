@@ -840,7 +840,7 @@ var configureServicePanel = function () {
                     if (product == "friendsinviter") {
                         loadtext = socialinviter.getConfig().servicepanel.content.messages.fetchingfriends;
                     }
-                    socialinviter.modalSI.load({ "title": convertName(serv), icon: icons[serv], "body": "<div class='CI-loading'><span class='messagingicon'><img class='imgloading' src='//socialinviter.com/assets/img/icons/loadingwhite.gif'></span><span>" + loadtext + "</span></div>" }, "show");
+                   // socialinviter.modalSI.load({ "title": convertName(serv), icon: icons[serv], "body": "<div class='CI-loading'><span class='messagingicon'><img class='imgloading' src='//socialinviter.com/assets/img/icons/loadingwhite.gif'></span><span>" + loadtext + "</span></div>" }, "show");
                 }
                 var authData = socialinviter.getFromStore("authData");
                 authData = eval("(" + decodeURIComponent(decodeURIComponent(authData)) + ")");
@@ -876,13 +876,13 @@ var configureServicePanel = function () {
                 if (socialinviter.popuperror != "") {
                     errorStatDom = "<div class=\"error-stat\"><div class=\"model-err-msg\">" + decodeURIComponent(socialinviter.popuperror) + "</div></div>";
                 }
-                if (socialinviter.getConfig().servicepanel.showmodal == false && (productType == "socialpost" || productType == "socialconnect")) {
+                /*if (socialinviter.getConfig().servicepanel.showmodal == false && (productType == "socialpost" || productType == "socialconnect")) {
                     //No modal window
                 }
                 else {
                     socialinviter.modalSI.load({ "title": convertName(socialinviter.getService()), icon: icons[serv], "body": "<div class='CI-loading loaderror'><span class='messagingicon'><img class='imgloading' src='//socialinviter.com/assets/img/icons/alert-icon.png'></span><span>" + authmsg + " <a href=\"javascript:;\" onclick=\"" + authfunction + "('" + socialinviter.contactimporter.getService() + "','" + productType + "',true)\">" + linkmsg + "</a></span>" + errorStatDom + "</div>" }, "show");
                     $(".modal-SI-CI").find(".modal-SI-holder").addClass("modal-SI-small");
-                }
+                }*/
                 socialinviter.contactimporter.processLock("release");
 
                 socialinviter.putInToStore("authData", "");
@@ -2126,15 +2126,15 @@ var contactimporter = (function () {
                         if (socialinviter.getFromStore("product") == "friendsinviter") {
                             ldtext = socialinviter.getConfig().servicepanel.content.messages.loadingfriends;
                         }
-                        socialinviter.modalSI.load({ "title": convertName(data.data.service), "body": "<div class='CI-loading'><span class='messagingicon'><img class='imgloading' src='//socialinviter.com/assets/img/icons/loadingwhite.gif'></span><span>" + ldtext + "</span></div>" }, "show");
+                       // socialinviter.modalSI.load({ "title": convertName(data.data.service), "body": "<div class='CI-loading'><span class='messagingicon'><img class='imgloading' src='//socialinviter.com/assets/img/icons/loadingwhite.gif'></span><span>" + ldtext + "</span></div>" }, "show");
                         window.setTimeout(function () {
                             socialinviter.contactimporter.showStep1(data.data);
                         }, 1500);
                     }
-                    else {
+                    /*else {
                         ldtext = socialinviter.getConfig().servicepanel.content.messages.contactsimported;
                         socialinviter.modalSI.load({ "title": convertName(data.data.service), "body": "<div class='CI-loading'><span class='messagingicon'><img class='imgloading' src='//socialinviter.com/assets/img/icons/tickcomplete.png'></span><span>" + ldtext.replace("{0}", contactsData.addressbook.length) + "</span></div>" }, "show");
-                    }
+                    }*/
                 }
             }, 1);
         }
@@ -2222,7 +2222,7 @@ var contactimporter = (function () {
                 if (product == "friendsinviter") {
                     loadtext = socialinviter.getConfig().servicepanel.content.messages.fetchingfriends;
                 }
-                socialinviter.modalSI.load({ "title": convertName(serv), icon: icons[serv], "body": "<div class='CI-loading'><span class='messagingicon'><img class='imgloading' src='//socialinviter.com/assets/img/icons/loadingwhite.gif'></span><span>" + loadtext + "</span></div>" }, "show");
+                //socialinviter.modalSI.load({ "title": convertName(serv), icon: icons[serv], "body": "<div class='CI-loading'><span class='messagingicon'><img class='imgloading' src='//socialinviter.com/assets/img/icons/loadingwhite.gif'></span><span>" + loadtext + "</span></div>" }, "show");
             }
             var reqParam = "&token=" + authData.token + "&tokensecret=" + authData.tokensecret + "&tokenverifier=" + authData.tokenverifier + "&userid=" + ((authData.userid) ? authData.userid : (authData.user) ? authData.user : "");
             if (serv == "csv")
@@ -2231,23 +2231,23 @@ var contactimporter = (function () {
                 reqParam += "&uploadedfile=";
             var grabAPI = "";
             if (product == "socialconnect") {
-                if (socialinviter.getConfig().servicepanel.showmodal == false && (product == "socialpost" || product == "socialconnect")) {
+                /*if (socialinviter.getConfig().servicepanel.showmodal == false && (product == "socialpost" || product == "socialconnect")) {
                     //No modal window
                 }
                 else {
                     socialinviter.modalSI.load({ "title": convertName(serv), "body": "<div class='CI-loading'><span class='messagingicon'><img class='imgloading' src='//socialinviter.com/assets/img/icons/loadingwhite.gif'></span><span>" + socialinviter.getConfig().servicepanel.content.messages.fetchingprofile + "</span></div>" }, "show");
                     $(".modal-SI-CI").find(".modal-SI-holder").addClass("modal-SI-small");
-                }
+                }*/
                 grabAPI = endpoint + "?id=" + id + "&did=" + did + "&product=" + getFromStore("product") + "&key=" + key + "&service=" + serv + "&type=&callback=socialinviter.socialconnect.userinfoCallback" + reqParam;
             }
             else if (product == "socialpost") {
-                if (socialinviter.getConfig().servicepanel.showmodal == false && (product == "socialpost" || product == "socialconnect")) {
+               /* if (socialinviter.getConfig().servicepanel.showmodal == false && (product == "socialpost" || product == "socialconnect")) {
                     //No modal window
                 }
                 else {
                     socialinviter.modalSI.load({ "title": convertName(serv), "body": "<div class='CI-loading'><span class='messagingicon'><img class='imgloading' src='//socialinviter.com/assets/img/icons/loadingwhite.gif'></span><span>" + socialinviter.getConfig().servicepanel.content.messages.postingtowall + "</span></div>" }, "show");
                     $(".modal-SI-CI").find(".modal-SI-holder").addClass("modal-SI-small");
-                }
+                }*/
                 var spValues = socialinviter.socialpost.getPostValues();
                 reqParam += "&title=" + spValues.title + "&link=" + spValues.link + "&picture=" + spValues.picture + "&description=" + spValues.description + "&comment=" + spValues.comment;
                 grabAPI = endpoint + "?id=" + id + "&did=" + did + "&product=" + getFromStore("product") + "&key=" + key + "&service=" + serv + "&type=&callback=socialinviter.socialpost.postCallback" + reqParam;
@@ -2362,14 +2362,14 @@ var contactimporter = (function () {
             $(".modal-SI-CI").find(".modal-SI-holder").removeClass("modal-SI-small");
         }
         else {
-            if (socialinviter.getConfig().servicepanel.showmodal == false && (product == "socialpost" || product == "socialconnect")) {
+            /*if (socialinviter.getConfig().servicepanel.showmodal == false && (product == "socialpost" || product == "socialconnect")) {
                 //No modal window
             }
             else {
                 socialinviter.modalSI.load({ "title": socialinviter.getConfig().servicepanel.content.messages.authenticating, "icon": icons[service], "body": "<div class='CI-loading'><span class='messagingicon'><img class='imgloading' src='//socialinviter.com/assets/img/icons/loadingwhite.gif'></span><span>" + authmsg + "</span></div>" }, "show");
                 $(".modal-SI-CI").find(".modal-SI-holder").addClass("modal-SI-small");
                 scrollToWindow();
-            }
+            }*/
             var srcUrl = document.getElementById("apiscript").src;
             var id = getQueryString("id", srcUrl);
             var key = getQueryString("key", srcUrl);
@@ -2382,9 +2382,9 @@ var contactimporter = (function () {
                     key = data.licensekey;
                 }
                 else {
-                    socialinviter.modalSI.load({ "title": convertName(service), "icon": icons[service], "body": "<div class='CI-loading'><span class='messagingicon'><img class='imgloading' src='//socialinviter.com/assets/img/icons/alert-icon.png'></span><span>Unable to find " + product + " license key, please make sure you have added the license to script reference.</span></div>" }, "show");
+                    //socialinviter.modalSI.load({ "title": convertName(service), "icon": icons[service], "body": "<div class='CI-loading'><span class='messagingicon'><img class='imgloading' src='//socialinviter.com/assets/img/icons/alert-icon.png'></span><span>Unable to find " + product + " license key, please make sure you have added the license to script reference.</span></div>" }, "show");
                     //<div class='licensescripthighlighter'> &lt;script type=\"text/javascript\" id=\"apiscript\" src=\"all.js?keys=<span class='yourlic'>your license key here</span>\"&gt;&lt;/script&gt;</div>
-                    $(".modal-SI-CI").find(".modal-SI-holder").addClass("modal-SI-small");
+                   // $(".modal-SI-CI").find(".modal-SI-holder").addClass("modal-SI-small");
                     return true;
                 }
             }
@@ -2705,8 +2705,8 @@ var contactimporter = (function () {
                     else {
                         var authmsg = socialinviter.getConfig().servicepanel.content.messages.authenticationfailed;
                         var linkmsg = socialinviter.getConfig().servicepanel.content.messages.tryagain;
-                        socialinviter.modalSI.load({ "title": convertName(socialinviter.getFromStore("service")), "body": "<div class='CI-loading'><span class='messagingicon'><img src='//socialinviter.com/assets/img/icons/alert-icon.png'></span><span>" + authmsg + " <a href=\"javascript:;\" onclick=\"socialinviter.friendsinviter.auth('facebook')\">" + linkmsg + "</a></span></div>" }, "show");
-                        $(".modal-SI-CI").find(".modal-SI-holder").addClass("modal-SI-small");
+                       /* socialinviter.modalSI.load({ "title": convertName(socialinviter.getFromStore("service")), "body": "<div class='CI-loading'><span class='messagingicon'><img src='//socialinviter.com/assets/img/icons/alert-icon.png'></span><span>" + authmsg + " <a href=\"javascript:;\" onclick=\"socialinviter.friendsinviter.auth('facebook')\">" + linkmsg + "</a></span></div>" }, "show");
+                        $(".modal-SI-CI").find(".modal-SI-holder").addClass("modal-SI-small");*/
                     }
                 });
             }

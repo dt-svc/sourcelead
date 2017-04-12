@@ -170,7 +170,7 @@ public class SocialInviterService {
 		    	}
 		    	else if(requestType.equals("contacts")){
 		    		//Get contacts
-					obj = ci.getContactsObject(service, consumerkey, consumersecret, token, tokensecret, tokenverifier, userid);
+					obj = ci.getContactsObject(service, consumerkey, consumersecret, token, tokensecret, tokenverifier, userid,request);
 		    	}
 	    		else{
 					obj = getErrorResponse();
