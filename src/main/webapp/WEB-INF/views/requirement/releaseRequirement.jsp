@@ -144,7 +144,7 @@
                       </div>
                       <div class="col-md-7 paddingLeft">
                         <div class="form-group positionRelative iconHolder percentage" id="percentageReward"  style="display: none">
-                          <input type="text" class="form-control input-sm" field-name="Percentage" id="percentageRewardValue" name="percentageReward" placeholder="Percentage">
+                          <input type="text" class="form-control input-sm" field-name="Percentage" id="percentageRewardValue" name="percentageReward" onblur="getPercentageValue()" placeholder="Percentage">
                           <i class="fa fa-percent"></i> 
                         </div>
                         
@@ -218,7 +218,39 @@
 <!-- Content Area Starts -->
 
 
-
+<script>
+function getPercentageValue(){
+	var percentageValue = document.getElementById("percentageRewardValue").value;
+	if(percentageValue > 100 || percentageValue < 0){
+		$("#releaseToCWBtn").attr("disabled", "disabled");
+	    $('#percentageReward').find('p.jquery_form_error_message').remove(); 
+	   
+	    if(percentageValue < 0){
+	    	$("input#percentageRewardValue").after("<p class='jquery_form_error_message'>Percentage value should not in negitive</span>");
+	    }else{
+	    	$("input#percentageRewardValue").after("<p class='jquery_form_error_message'>Percentage value not more than 100</span>");
+	    }
+	    
+		$('input#percentageRewardValue').attr('record-exist','yes');
+		 if(percentageValue < 0){
+			 $('input#percentageRewardValue').attr('record-exist-errorMsg','Percentage value should not in negitive'); 
+		 }else{
+			 $('input#percentageRewardValue').attr('record-exist-errorMsg','Percentage value not more than 100'); 
+		 }
+		
+	}else{
+		 $("#releaseToCWBtn").removeAttr("disabled");
+		 $('input#percentageRewardValue').removeAttr( "record-exist record-exist-errormsg");
+		 $('#percentageReward').find('p.jquery_form_error_message').remove(); 
+		 $( "#releaseToCWBtn" ).removeAttr("style");
+		 $( "#releaseToCWBtn" ).click(function() {
+		 if ($(this).validate(false, validationSettings)){
+		 }
+		});
+	}
+	
+}
+</script>
 
 
 
@@ -314,9 +346,13 @@ function releaseToOneContact(contactscheckboxId){
 	$("#" + contactscheckboxId).prop('checked', true);
 	releaseTo();
 }
+
+function releaseToOneVendor(vendorcheckboxId){
+	$('input:checkbox[name="vendorcheckbox"]').prop('checked',false);
+	$("#" + vendorcheckboxId).prop('checked', true);
+	releaseTo();
+}
 </script>
-
-
 
 
 <script type="text/javascript">
@@ -570,9 +606,10 @@ function getRewardType(rewardType){
 		$('#flatRewardValue').removeAttr('data-validation-optional');
 		$('#percentageRewardValue').removeAttr('data-validation');
 		$('#percentageRewardValue').attr("data-validation-optional","true"); 
-		    	
 		
 	}
+	
+	 $("#releaseToCWBtn").removeAttr("disabled");
 }
 </script>
 
@@ -661,6 +698,13 @@ function getVendorLists(){
 	        	       		result = result +'<td>';
 	        	       		if(report.noOfNonReleasedContacts == 0){
 	                			result = result +'<div><b class="proj_active">Released</b></div>';
+	                		}else if(report.noOfNonReleasedContacts > 0){
+									'<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
+										result = result +'<div><a href="javascript:void(0)"><i class="fa fa-bullhorn" onclick="releaseToOneVendor('+report.id+');"></i></a></div>';
+									'</sec:authorize>';
+									'<sec:authorize access="!hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
+										result = result +'<div class="fa fa-bullhorn"></div>';
+									'</sec:authorize>';
 	                		}
 	                		result = result +'</td>';
 	           	        	result = result +'</tr>';

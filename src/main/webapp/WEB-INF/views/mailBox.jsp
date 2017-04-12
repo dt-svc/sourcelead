@@ -520,59 +520,11 @@ function getEmailDetails(uuid,type){
 	   			
 	   			if(opt.comments != null && opt.comments != 'undefined' && opt.comments != ""){
 	   				result = result +'<p>'+opt.comments+'</p>';
-	   			}else if(opt.body != null && opt.body != 'undefined' && opt.body != ""){
+	   			}
+	   			
+	   			if(opt.body != null && opt.body != 'undefined' && opt.body != ""){
 	   				result = result +'<p>'+opt.body+'</p><br/>';
 	   			}
-	   			
-	   			
-				if(opt.candidatesList.length > 0 ){
-	   			
-				result = result +'<div class="clearfix project_wrap_table mail-table  mb">';
-	   			result = result +'<table>';
-			  	
-	   			result = result +'<thead>';
-	   			result = result +'<tr>';
-	   			result = result +'<th>Name</th>';
-	   			result = result +'<th>Email</th>';
-	   			result = result +'<th>Ph</th>';
-	   			result = result +'<th>Experience</th>';
-	   			result = result +'<th>Postion Type</th>';
-	   			result = result +'</tr>';
-	   			result = result +'<tbody>';
-	   			
-	   			
-	   		 for (var i = 0; i < opt.candidatesList.length; i++) { 
-	   			 
-	   			var cand = opt.candidatesList[i]; 
-	   			
-	   			var mobile = '';
-	   			var designation = '';
-	   			
-	   			if(cand.mobilePhone != null && cand.mobilePhone != 'undefined' && cand.mobilePhone != ""){
-	   				mobile = cand.mobilePhone;
-	   			}else{
-	   				mobile = '------';
-	   			}
-	   			
-	   			if(cand.designation != null && cand.designation != 'undefined' && cand.designation != ""){
-	   				designation = cand.designation;
-	   			}else{
-	   				designation = '------';
-	   			}
-	   			
-	   			result = result +'<tr>';
-	   			result = result +'<td>'+cand.candidateName+'</td>';
-	   			result = result +'<td>'+cand.email+'</td>';
-	   			result = result +'<td>'+mobile+'</td>';
-	   			result = result +'<td>'+cand.totalExp+'</td>';
-	   			result = result +'<td>'+designation+'</td>';
-	   			result = result +'</tr>';
-	   		 } 	
-	   			result = result +'</tbody>';
-	   			result = result +'</thead>';
-	   			result = result +'</table>';
-	   			result = result +'</div>';
-				}
 	   			
 	   			if(opt.fileName != null && opt.fileName != "" && opt.fileName != 'undefined'){
 	   				result = result +'<div class="require_wrap_details_cta require_uploadfile"><b>Attachment:</b> <span>'+opt.fileName+'</span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadMailAttachment?UUID='+opt.uuid+'\"></a> ';
@@ -616,11 +568,7 @@ function deleteReadMail(uuid,nextMailUUID,type){
 		type : "POST",
 		url : sourceleadUrl+"/deleteReadMail?${_csrf.parameterName}=${_csrf.token}&UUID="+uuid+"&type="+type,
 		success : function(data) {
-			if(nextMailUUID != null && nextMailUUID != '' && nextMailUUID != 'undefined'){
-				getEmailDetails(nextMailUUID,type);
-			}else{
-				getMails(type);
-			}
+			getMails(type);
 		},
 	});   
 }

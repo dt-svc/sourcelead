@@ -42,7 +42,7 @@ overflow-x: auto;
        </div>
 			<div class="pull-left">
 				<h2>Clients<span class="select-fild">
-				    <select id="listOfVendors" onchange="listChange(this);">
+				    <select id="listOfVendors" onchange="listChange(this); flushCheckBoxVal();">
                   		 <option value="listbyVendor">List by client</option>
                         <option value="listbyContact" selected="selected">List by contact</option> 
                     </select>
@@ -114,7 +114,7 @@ overflow-x: auto;
 		                  <div class="clearfix">
 		                    <select class="chosen-select" name="country" id="countrySearch" field-name="Country"  >
 						     <c:forEach var="cntry" items="${countryList}">
-					                     <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
+					                     <option value="${cntry.name}">${cntry.name}</option>
 				             </c:forEach>
 				           </select>
 		                  </div>
@@ -700,8 +700,8 @@ function getClientUniversalSearchList(searchValue,searchType){
 			 document.getElementById("vendorListAdvanced").style.display="block";
 			 document.getElementById("vendorContactListAdvanced").style.display="none";
 		}
-		
-	    $('#countrySearch').val('${loginCountryName}'); 
+	    
+	    $('#countrySearch').val(''); 
 	    $('#stateSearch').val(''); 
 	    $('#citySearch').val(''); 
 	    
@@ -741,9 +741,9 @@ function getClientUniversalSearchList(searchValue,searchType){
     		var report = json[i];
     		var location = "";
     		if(report.city != null && report.city != '' && report.city != 'undefined'){
-    			location = report.country+", "+report.state+", "+report.city;
+    			location = report.city+", "+report.state+", "+report.country;
     		}else if(report.state != null && report.state != '' && report.state != 'undefined'){
-    			location = report.country+", "+report.state;
+    			location = report.state+", "+report.country;
     		}else{
     			location = report.country;
     		}
@@ -887,7 +887,7 @@ function pagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -947,8 +947,8 @@ function pagination(){
 		$("#clientSideDiv").empty();
 		$("#clientSideDiv").append(result);
 		
-		$("#clientNameDiv").empty();
-		$("#clientNameDiv").append(orgName);
+		/* $("#clientNameDiv").empty();
+		$("#clientNameDiv").append(orgName); */
 		
 		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
 		$(".side_mask").fadeIn(200);
@@ -957,6 +957,13 @@ function pagination(){
  
 		clientDetails(clientLocationId,orgRelationId);
 	}
+</script>
+
+<script>
+function getClientNeworgname(clientNewOrgname){
+	$("#clientNameDiv").empty();
+	$("#clientNameDiv").append(clientNewOrgname);
+}
 </script>
 
 <script>
@@ -1226,9 +1233,9 @@ function preparedClientListFromElk(data){
 		   		var report = json[i];
 		   		var location = "";
 		   		if(report.city != null && report.city != '' && report.city != 'undefined'){
-		   			location = report.country+", "+report.state+", "+report.city;
+		   			location = report.city+", "+report.state+", "+report.country;
 		   		}else if(report.state != null && report.state != '' && report.state != 'undefined'){
-		   			location = report.country+", "+report.state;
+		   			location = report.state+", "+report.country;
 		   		}else{
 		   			location = report.country;
 		   		}
@@ -1402,7 +1409,7 @@ function pagination1(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -1469,8 +1476,8 @@ function updateSpocStatus(spocId){
 		$("#clientSideDiv").empty();
 		$("#clientSideDiv").append(result);
 		
-		$("#clientNameDiv").empty();
-		$("#clientNameDiv").append(spocName);
+		/* $("#clientNameDiv").empty();
+		$("#clientNameDiv").append(spocName); */
 		
 		$(".clients_side_wrap").addClass("clients_side_wrap_active");
 		$(".side_mask").fadeIn(200);
@@ -1480,7 +1487,13 @@ function updateSpocStatus(spocId){
 	}
 </script>
 
+<script>
 
+function getClientSpocname(clientNewSpocname){
+	$("#clientNameDiv").empty();
+	$("#clientNameDiv").append(clientNewSpocname);
+}
+</script>
 
 <script>
 function listChange(sel){
@@ -1791,6 +1804,13 @@ function getEndDatePickerById(projectId,localFieldName){
 			$(".clients_side_wrap").removeClass("clients_side_wrap_active");
 			$(".side_mask").fadeOut(200);
 			$("body").css('overflow-y', 'auto');
+			//update the details in list.
+			var vendorCont = document.getElementById('listOfVendors').value;
+			if(vendorCont == "listbyContact"){
+				getVendorContactListsELK();
+			}if(vendorCont == "listbyVendor" ){
+				getClientDetailsELK();
+	   		}
 		});
 	});
 
@@ -2193,6 +2213,7 @@ $('#selector').delay(2000).fadeOut('slow');
 	    $("#citySearch").empty();
 	    $("#stateSearch").empty();
 	    $("#countrySearch").empty();
+	    $("#countrySearch").val('');
 	}
 </script>
 
@@ -2350,5 +2371,13 @@ function getCities(){
 	}
 }
 </script>  
+
+<script>
+function flushCheckBoxVal(){
+	$("input[type=checkbox]").each(function() { this.checked=false; });
+	
+}
+ </script>
+
 
 <jsp:include page="../masterFooter.jsp" />	

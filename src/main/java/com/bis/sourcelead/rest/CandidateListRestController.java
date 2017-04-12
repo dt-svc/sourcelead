@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
@@ -59,6 +60,7 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -668,21 +670,54 @@ public class CandidateListRestController {
 	 @RequestMapping(value = "/getCandidateById" , method = RequestMethod.POST)
 	 public @ResponseBody  String getCandidateById(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
 			String resultJson ="" ;
-			 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			Countries countries = countriesService.getCountriesByCountryName(loginUser.getCountry());
+			
+			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			 Countries countries = countriesService.getCountriesByCountryName(loginOrgLocation.getCountry());
+			
 			Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
-			if(null != can.getCurrentRateCurrency() && null != can.getExpectedRateCurrencey()){
-				can.setCurrentRateCurrency(can.getCurrentRateCurrency());
-				can.setExpectedRateCurrencey(can.getExpectedRateCurrencey());
+			
+			LinkedHashSet<String> lhs = new LinkedHashSet<String>();
+			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			for(LookUpData lookUpData :skillsList){
+				lhs.add(lookUpData.getName());
+			}
+			if(null != can.getSkillsName() && StringUtils.isNotEmpty(can.getSkillsName())){
+				String [] csl = can.getSkillsName().split(",");
+				for(String sl : csl){
+					lhs.add(sl);
+				}
+			}
+			can.setAllAndCandidateSkills(lhs);
+			
+			if(null != can.getExpectedRateCurrencey()){
+				  can.setExpectedRateCurrencey(can.getExpectedRateCurrencey());
 			}else{
 				 if(null != countries && !countries.getCurrency().equalsIgnoreCase("")){
-				can.setCurrentRateCurrency(countries.getCurrency());	
-				
-				can.setExpectedRateCurrencey(countries.getCurrency());
+				   can.setExpectedRateCurrencey(countries.getCurrency());
 				 }
 			}
 			
+			if(null != can.getCurrentRateCurrency()){
+				can.setCurrentRateCurrency(can.getCurrentRateCurrency());
+			}else{
+				 if(null != countries && !countries.getCurrency().equalsIgnoreCase("")){
+				   can.setCurrentRateCurrency(countries.getCurrency());	
+				     
+				 }
+			}
 			
+			if(null != can.getCurrentRateType()){
+				can.setCurrentRateType(can.getCurrentRateType());
+			}else{
+				 if(null != countries && !countries.getCurrency().equalsIgnoreCase("")){
+				   String countryCheck = countries.getName();  
+				    switch(countryCheck){  
+				    case "India": can.setCurrentRateType("Monthly");
+				    break;  
+				    default: can.setCurrentRateType("Hourly");
+				    }  
+				 }
+			}
 			
 			resultJson = commonUtil.toJSON(can);
 			return resultJson;
@@ -1153,6 +1188,9 @@ public class CandidateListRestController {
 					candidateService.saveOrUpdateCandidateElkDocument(can);
 					return "success";
 				}else{
+					can.setSkillsName("");
+					candidateService.saveOrUpdateCandidate(can);
+					candidateService.saveOrUpdateCandidateElkDocument(can);
 					return "failed";
 				}
 			 }

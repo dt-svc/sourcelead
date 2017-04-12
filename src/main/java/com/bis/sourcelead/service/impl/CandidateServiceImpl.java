@@ -55,6 +55,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableSet;
@@ -155,6 +156,7 @@ public class CandidateServiceImpl implements CandidateService {
 			}else{
 				candidate.setCandidateType("Candidate");
 			}
+			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			
 		}
         
@@ -571,9 +573,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public List<Candidate> getAllCandidatesForHotListingWhoAreTerminating(Long orgLocationId, Integer datRange)
+	public List<Candidate> getAllCandidatesForHotListingWhoAreTerminating(Long orgLocationId, Integer datRange,Long reportingManagerUserId)
 			throws Exception {
-		return candidateDao.getAllCandidatesForHotListingWhoAreTerminating(orgLocationId,datRange);
+		return candidateDao.getAllCandidatesForHotListingWhoAreTerminating(orgLocationId,datRange,reportingManagerUserId);
 	}
 	
 	@Override
@@ -763,6 +765,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
+	public Integer getAllCandidatedsBasedOnCreatedByAndOrglocationCodeWhichAreCreatedToday(OrgLocations orgLocations,
+			User user) throws Exception {
+		
+		   return candidateDao.getAllCandidatedsBasedOnCreatedByAndOrglocationCodeWhichAreCreatedToday(orgLocations, user);
+	}
+			
+	@Override
 	public List<Candidate> getCandidateReportsListByOrgLocationID(Long orgLocationId, String candidateType)
 			throws Exception {
 			List<Candidate> candidateList = candidateDao.getCandidateReportsListByOrgLocationID(orgLocationId,candidateType);
@@ -835,6 +844,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			 can.setCandidateRequiementCount(requirementSubmissionCount);
 		}
 		return ownerByCandidatesList;
+	}
+
+	@Override
+	public List<Candidate> getHotCandidateListByTeamIdAndOrgLocationId(Long teamId, Long orgLocationId)
+			throws Exception {
+		return candidateDao.getHotCandidateListByTeamIdAndOrgLocationId(teamId, orgLocationId);
 	}
 
 

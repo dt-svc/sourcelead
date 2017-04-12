@@ -189,7 +189,7 @@
                  <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
                  <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
                  <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+                 <option ${currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
                  <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
                  <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
                  
@@ -206,7 +206,7 @@
                     <option ${currentRateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
                     <option ${currentRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
                     <option ${currentRateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
-                    <option ${currentRateType  == 'others' ? 'selected' : ''}>Yearly</option>
+                    <option ${currentRateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
                   </select>
                 </div>
                  <div class="clearfix"></div> <div class="clearfix"></div>
@@ -227,7 +227,7 @@
                  <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
                  <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
                  <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+                 <option ${currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
                  <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
                  <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
                  
@@ -244,7 +244,7 @@
                     <option ${rateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
                     <option ${rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
                     <option ${rateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
-                    <option ${rateType  == 'others' ? 'selected' : ''}>Yearly</option>
+                    <option ${rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
                   </select>
                 </div>
                  <div class="clearfix"></div> <div class="clearfix"></div>

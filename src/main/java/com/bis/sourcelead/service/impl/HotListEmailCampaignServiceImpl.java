@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.mail.internet.InternetAddress;
 
@@ -83,6 +85,8 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	 String signature = "";
 	 String candidates = null;
 	 String emails = null;
+	 StringBuilder toRecipantsEmailsList = new StringBuilder();
+	 StringBuilder otherRecipantsEmailsList = new StringBuilder();
 	 
 	 String otherEmails = "";
 	 InternetAddress[] iAdressArray = null;
@@ -106,6 +110,16 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	    		  emails = emails.replaceAll("\"", "");
 	    	  }
 	    	 
+	    	  String[] recipantsEmails = emails.split(",");
+		    	 for(int i=0; i < recipantsEmails.length; i++){
+		    		 if(validateEmail(recipantsEmails[i])){
+		    			 toRecipantsEmailsList = toRecipantsEmailsList.append(recipantsEmails[i]);
+		    			 toRecipantsEmailsList.append(",");
+		    		 }
+		    	 }
+		    	 
+		    	 emails = toRecipantsEmailsList.toString();
+		    	 emails = emails.substring(0,emails.length()-1);
 		}
 		
 		
@@ -121,9 +135,29 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 				 otherEmails = otherEmails.replaceAll("\\[", "").replaceAll("\\]","");
 				 otherEmails = otherEmails.replaceAll("\"", "");
 			 }
+			 
+			 String[] recipantsEmails = otherEmails.split(",");
+	    	 for(int i=0; i < recipantsEmails.length; i++){
+	    		 if(validateEmail(recipantsEmails[i])){
+	    			 otherRecipantsEmailsList = otherRecipantsEmailsList.append(recipantsEmails[i]);
+	    			 otherRecipantsEmailsList.append(",");
+	    		 }
+	    	 }
+	    	 
+	    	 otherEmails = otherRecipantsEmailsList.toString();
+	    	 otherEmails = otherEmails.substring(0,otherEmails.length()-1);
 		}
+		
 		StringBuilder tomaillBuilder = new StringBuilder();
-		iAdressArray = InternetAddress.parse(tomaillBuilder.append(emails).append(",").append(otherEmails).toString());
+		
+		if(null != emails && null != otherEmails){
+			iAdressArray = InternetAddress.parse(tomaillBuilder.append(emails).append(",").append(otherEmails).toString());
+		}else if(null == emails && null != otherEmails){
+			iAdressArray = InternetAddress.parse(tomaillBuilder.append(otherEmails).toString());
+		}else if(null != emails && null == otherEmails){
+			iAdressArray = InternetAddress.parse(tomaillBuilder.append(emails).toString());
+		}
+		
 		
 		 emailMessage.setCreatedBy(user.getUserCode());
 		 emailMessage.setFromEmail(user.getEmail());
@@ -375,5 +409,12 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 		 
 		 return tempHTML;
 	}
+
+	private boolean validateEmail(String email) {
+			Pattern pattern = Pattern.compile(
+					"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+			Matcher matcher = pattern.matcher(email);
+			return matcher.matches();
+		}
 
 }

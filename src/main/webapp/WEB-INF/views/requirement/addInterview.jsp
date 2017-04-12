@@ -7,25 +7,19 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
-<!--  No auto completes are used in addInterview -->
-
-<!-- these files for autocomplete with tagit -->
-
-<!-- <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script> -->
-
-<!-- end files for autocomplete with tagit -->
-
-
 <style type="text/css">
-.add_inter .chosen-container{
+.addinterTable .chosen-container{
 width:125px !important;
 }
 #addInterviewTbl p.jquery_form_error_message{
 padding:0!important;
 }
+
+.fullCount, .particalCount {
+	display: none;
+}
+
+
 </style>
 <!-- For add New Interview -->
 
@@ -53,11 +47,11 @@ function addInterview(requirementId){
         result = result + '<label>&nbsp;&nbsp;<strong>Is Client Interview</strong>&nbsp;&nbsp;</label>';
 	} 
 	
-	result = result + '<table cellpadding="0" cellspacing="0" id="addInterviewTbl">';
+	result = result + '<table cellpadding="0" cellspacing="0" id="addInterviewTbl" class="addinterTable">';
 	result = result + '<tbody>';
 		result = result + '<tr id="divTsRow0">';
 			result = result + '<th>Applicant</th>';
-			result = result + '<th>Inteview Type</th>';
+			result = result + '<th>Interview Type</th>';
 			result = result + '<th>Interview Date</th>';
 			result = result + '<th>Start - End Time</th>';	
 			result = result + '<th>Time Zone</th>';
@@ -72,15 +66,16 @@ function addInterview(requirementId){
 	result = result + '<div class="schedule_widget clearfix mb eventAlert" style="display:none;" id="availbleDiv">        								        ';
 	result = result + '    <div class="row">                                                                            ';
 	result = result + '      <div class="col-xs-12 col-md-12 event_calendar">                                           ';
-	result = result + '        <h4>Availabile Slots</h4>                                                               ';
+	result = result + '        <h4>Available Slots</h4>                                                               ';
 	result = result + '      </div>                                                                                     ';
 	result = result + '      <!-- show Calendar -->                                                                     ';
 	result = result + '      <div class="col-xs-12 col-md-5 mb">                                                        ';
 	result = result + '        <div id="scheduleCalendar"></div>                                                        ';
 	result = result + '        <div class="clearfix"></div>                                                             ';
 	result = result + '        <ul class="scheduleAvailable">                                                           ';
-	result = result + '          <li>Partly available<span class="bg-warning"></span></li>                              ';
-	result = result + '          <li>Full<span class="bg-danger"></span></li>                                           ';
+	result = result + '          <li class="particalCount">Partially available<span class="bg-warning"></span></li>                              ';
+	result = result + '          <li class="fullCount">Full<span class="bg-danger"></span></li>                                           ';
+	result = result + '        <div class="clearfix"></div> ';
 	result = result + '        </ul>                                                                                    ';
 	result = result + '        <div class="clearfix">                                                                   ';
 	result = result + '      <div class="timeZT">Timezone : <b id="selectedTimeZoneId"></b></div>'; 
@@ -93,8 +88,8 @@ function addInterview(requirementId){
 	result = result + ' 	<i class="fa fa-calendar"></i><b id="selectedDate"></b><div class="clearfix"></div><p id="selectApp"></p> ';
 	result = result + '      </div>	';
 	result = result + '        <ul class="nav nav-tabs">                                                                ';
-	result = result + '          <li class="active"> <a href="#applicant" data-toggle="tab">Interviewer</a> </li>         ';
-	result = result + '          <li> <a href="#interviewer" data-toggle="tab">Applicant</a> </li>                    ';
+	result = result + '          <li class="active"> <a href="#interviewer" data-toggle="tab">Interviewer</a> </li>     ';
+	result = result + '          <li> <a href="#applicant" data-toggle="tab">Applicant</a> </li>         ';
 	result = result + '        </ul>                                                                                    ';
 	
 	result = result + '        <div class="tab-content">                                                                ';
@@ -129,7 +124,7 @@ function addInterview(requirementId){
 	
 	result = result + '<div id="emptyTemplate" style="dispaly:none">';
 	result = result + '<strong class="clearfix col-md-12">Interview Template</strong>';
-	result = result + '<div class="col-md-3 select-field">';
+	result = result + '<div class="chosen-select col-md-3 select-field">';
 	result = result + '<select class="form-control mt10" id="interviewSubmissionTemplate" name="interviewSubmissionTemplate">';
 	result = result + '</select>';
 	result = result + '</div>';
@@ -200,6 +195,8 @@ function addInterview(requirementId){
 		$("body").css('overflow-y', 'auto');
 	});	
 </script>
+
+
 
 <script>
 function showOthersDiv(){
@@ -317,7 +314,7 @@ function validateTimeZone(){
 </div>
 
 <div id="divTaskTd3" style="display: none; float: left;">
-   	 <select class="form-control input-sm"  id="REPLACEROWIDinterviewType" name="REPLACEROWIDinterviewType">
+   	 <select class="form-control input-sm"  id="REPLACEROWIDinterviewType" name="REPLACEROWIDinterviewType" onchange="interviewType(this);">
 		<option value="">--Select Type--</option>
 		<option value="F2F">F2F</option>
 		<option value="Telephonic">Telephonic</option>
@@ -327,6 +324,7 @@ function validateTimeZone(){
 		<option value="Webex/GoToMeeting">Webex/GoTo Meeting</option>
 		<option value="Other">Other</option>
 	</select>
+	<div id="REPLACEROWIDinterviewTypeCheck" style="display: none; "><input value=""  type="text" id="REPLACEROWIDinterviewTypeother" name="REPLACEROWIDinterviewTypeother" class="form-control input-sm pavInp" placeholder="Interview type" field-name="Interview type" data-validation-optional="true"></div>
 </div>
 
 <div id="divTaskTd5" style="display: none; float: left;">
@@ -349,109 +347,6 @@ function validateTimeZone(){
 	<input type="hidden" id="button_id" name="button_id" value="1Avail" />
 	 <a href="#" onclick="removeInterviewRow(REPLACEROWID);"><i class="text-danger glyphicon glyphicon-remove deme"></i></a>
 </div>  
- <!-- <div id="divTaskTd9" style="display: none; float: left;">
-	 <div>
-         <a href="#" onclick="removeInterviewRow(REPLACEROWID);"><i class="text-danger glyphicon glyphicon-remove deme"></i></a>
-    </div>
-</div>  --> 
-
-
- <!-- Show Availability section --->
-<!-- <div class="schedule_widget clearfix mb eventAlert"  style="display:none;">
-      <div class="clearfix">
-        <div class="col-xs-12 col-md-12 event_calendar">
-          <h4>Show Availability</h4>
-        </div>
-        show Calendar
-        <div class="col-xs-12 col-md-5 mb">
-          <div id="scheduleCalendar"></div>
-          <div class="clearfix"></div>
-          <ul class="scheduleAvailable">
-            <li>Available<span class="bg-success"></span></li>
-            <li>Partly available<span class="bg-warning"></span></li>
-            <li>Full<span class="bg-danger"></span></li>
-            <li>Day Off<span class="bg-primary"></span></li>
-          </ul>
-          <div class="clearfix">
-            <button type="button" class="btn btn-primary pull-right mt">Pick</button>
-          </div>
-        </div>
-        show Calendar
-        <div class="col-xs-12 col-md-7 mb alert alert-dismissable">
-          <ul class="nav nav-tabs">
-            <li class="active"> <a href="#applicant" data-toggle="tab">Applicant</a> </li>
-            <li> <a href="#interviewer" data-toggle="tab">Interviewer</a> </li>
-          </ul>
-          <div class="tab-content">
-            <div id="applicant" class="tab-pane fade in active"> 
-              Applicants Interview Details Table
-              <div class="require_wrap_table scheduleTable">
-                <table width="100%" cellpadding="0" cellspacing="0" class="table-responsive mt10">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Time</th>
-                      <th>Type</th>
-                      <th>Title</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <div class="tbldata-dotdot">Name</div>
-                      </td>
-                      <td>
-                        <div class="tblminwidth-75">Time</div>
-                      </td>
-                      <td>
-                        <div class="tbldata-dotdot-100">Telephonic</div>
-                      </td>
-                      <td>
-                        <div class="tbldata-dotdot-vsm">Title</div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            Applicants Interview Details Table 
-            Interviewer Details Table
-            <div id="interviewer" class="tab-pane fade">
-              <div class="require_wrap_table scheduleTable">
-                <table width="100%" cellpadding="0" cellspacing="0" class="table-responsive mt10">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Time</th>
-                      <th>Date</th>
-                      <th>Title</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <div class="tbldata-dotdot">Name</div>
-                      </td>
-                      <td>
-                        <div class="tblminwidth-75">Time</div>
-                      </td>
-                      <td>
-                        <div class="tbldata-dotdot-100">Telephonic</div>
-                      </td>
-                      <td>
-                        <div class="tbldata-dotdot-vsm">Title</div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            Interviewer Details Table 
-          </div>
-        </div>
-      </div>
-    </div> -->
-    <!-- Show Availability section Ends---> 
 
 
 
@@ -563,6 +458,7 @@ function validateTimeZone(){
 			  changeMonth: true,
 		      changeYear: true,
 		      dateFormat : 'dd-mm-yy',
+		      minDate: 0  ,
 			  onSelect : function(selected) {
 				checkAvailability();
 		 	  }
@@ -957,14 +853,19 @@ function interviewTemplate(){
 	        var json = JSON.parse(data);
 	        var output = "";
 	        if(json.length > 0){
-	        	 output = output + "<option value=''>-Select Template-</option>"; 
 	         	for (var i=0; i<json.length; i++)
 	 			{
 	 	        		var opt = json[i];
+	 	        		
 	 	        		output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
 	 			}
 	         	$("#interviewSubmissionTemplate").empty();
 	 	        $("#interviewSubmissionTemplate").append(output);
+	 	       
+	 	        $("#interviewSubmissionTemplate").chosen();
+	 			$("#interviewSubmissionTemplate").trigger('chosen:update');
+	 			$('.chosen-container').css({'width': '100% !important'});
+	 			
 	        }else{
 	        	$("#emptyTemplate").empty();
 	        }
@@ -1065,6 +966,8 @@ function checkAvailability(){
 	$("#selectedDate").empty();
 	$("#selectedTimeZoneId").empty();
 	$("#selectApp").empty();
+	 $('.fullCount').hide();
+		$('.particalCount').hide();
 	var timezone = '${timezone}';
 	var date = $("#scheduleCalendar").val();
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -1074,9 +977,7 @@ function checkAvailability(){
 	var applicantSubId = $("#"+bid+"applicant").val();
 	var interviewerIds = $("#"+bid+"interviewer").val(); 
 	var selectedInterviewDate = $("#"+bid+"dateOfInterview").val();
-	if(selectedInterviewDate!=''){
-		alert("fffffffffffffffffffffffffffffffff");
-	}
+	
 	$("#selectedTimeZoneId").append(timezone);
 	$("#selectedDate").append(date);
 	if(applicantSubId==null && interviewerIds==null ){
@@ -1093,7 +994,7 @@ function checkAvailability(){
 					        var result = "";
 					        if(json.interviewerList.length>0){
 						        result = result + '            <div class="require_wrap_table scheduleTable">                                       ';
-						    	result = result + '              <table width="100%" cellpadding="0" cellspacing="0" class="table-responsive mt10"> ';
+						    	result = result + '              <table id="requirementPagination11" width="100%" cellpadding="0" cellspacing="0" class="table-responsive mt10"> ';
 						    	result = result + '                <thead>                                                                          ';
 						    	result = result + '                  <tr>                                                                           ';
 						    	result = result + '                    <th>Name</th>                                                                ';
@@ -1126,6 +1027,14 @@ function checkAvailability(){
 						    	result = result + '                </tbody>                                                                         ';
 						    	result = result + '              </table>                                                                           ';
 						    	result = result + '            </div>                                                                               ';
+						    	 if(json.interviewerList.length>5 && json.interviewerList.length<=10){
+						    		$('.fullCount').hide();
+						    		$('.particalCount').show();
+						    	 }
+						    	 if(json.interviewerList.length>=10){
+						    		 $('.fullCount').show();
+						    		$('.particalCount').hide();
+						    	 }
 			        }
 			    	else{
 			    		result = result + ' <div class="row">                                            ';
@@ -1133,10 +1042,12 @@ function checkAvailability(){
 			    		result = result + '	</div>                                                      ';
 			    		result = result + ' </div>                                                      ';
 			    	}
-						    	var opt = "";
+					        $("#interviewer").append(result);
+					        interviewPagination(); 
+						  	var opt = "";
 						    	if(json.applicantsList.length>0){
 						    	opt = opt + '            <div class="require_wrap_table scheduleTable">                                       ';
-						    	opt = opt + '              <table width="100%" cellpadding="0" cellspacing="0" class="table-responsive mt10"> ';
+						    	opt = opt + '              <table id="applicantPagination" width="100%" cellpadding="0" cellspacing="0" class="table-responsive mt10"> ';
 						    	opt = opt + '                <thead>                                                                          ';
 						    	opt = opt + '                  <tr>                                                                           ';
 						    	opt = opt + '                    <th>Name</th>                                                                ';
@@ -1170,6 +1081,14 @@ function checkAvailability(){
 						    	opt = opt + '                </tbody>                                                                         ';
 						    	opt = opt + '              </table>                                                                           ';
 						    	opt = opt + '            </div>                                                                               '; 
+						    	if(json.applicantsList.length>5 && json.applicantsList.length<=10){
+						    		$('.fullCount').hide();
+						    		$('.particalCount').show();
+						    	 }
+						    	 if(json.applicantsList.length>=10){
+						    		 $('.fullCount').show();
+						    		$('.particalCount').hide();
+						    	 }
 						    	}
 						    	else{
 						    		opt = opt + ' <div class="row">                                            ';
@@ -1177,14 +1096,52 @@ function checkAvailability(){
 						    		opt = opt + '	</div>                                                      ';
 						    		opt = opt + ' </div>                                                      ';
 						    	}
-						    	$("#interviewer").append(result);
 					        	$("#applicant").append(opt); 
-			        
+					        	appPagination(); 
+					        
 			        }
 			 }); 
 	
 	}
 	  </script>
+	  
+ <script>
+   $('#applicantPagination').DataTable( { 
+		"autoWidth": false,
+		"scrollX": true,
+	});
+	function appPagination(){ 
+	    $('#applicantPagination').DataTable( { 
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[5, 15, 20, -1], [2, 15, 20, "All"]],
+	    	"bLengthChange": false,
+	    	"bDestroy": true,
+	    	"ordering": false,
+	    	"oLanguage": {
+	            "sSearch": "",
+	            "sZeroRecords": "", "sEmptyTable": ""
+	       }
+	    } );
+	} 
+	  
+ $('#requirementPagination11').DataTable( { 
+	"autoWidth": false,
+	"scrollX": true,
+}); 
+function interviewPagination(){ 
+    $('#requirementPagination11').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 15, 20, -1], [2, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    } );
+}
+</script>
 	  
 <script>
 function setDate(){
@@ -1203,5 +1160,20 @@ function toggleEventCalender(){
 	$('.eventAlert').hide();
 }
 </script>
+ <script>
+function interviewType(id){ 
+	 if(id.value=="Other"){
+		 document.getElementById(id.id+'Check').style.display="block";
+		 $('#'+id.id+'other').removeAttr('data-validation-optional');
+		 $('#'+id.id+'other').attr("data-validation","required validate_length length1-50"); 
+	 }
+	 else{
+		 document.getElementById(id.id+'Check').style.display="none";
+		 $('#'+id.id+'other').removeAttr("data-validation");
+		 $('#'+id.id+'other').attr('data-validation-optional',"true");
+	 }
 }
+
+</script>
+
 	  

@@ -11,7 +11,12 @@
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-
+<script>
+	function vendorEditMsgFadein() {
+		$("#vendorEditMsgDiv").fadeIn(200);
+        $('#vendorEditMsgDiv').delay(2000).fadeOut('slow');
+	}
+</script> 
 <script type="text/javascript">
 	function vendorDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId)
 	{
@@ -20,9 +25,12 @@
 					type : "POST",
 					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&type=Vendor",
 					success : function(data) {
-						
 						var json = JSON.parse(data);
+						getVendorDashboardName(json.spocName);
 						var result = "";
+						result  = result + '<div class="success_pop" id="vendorEditMsgDiv" style="display: none;">';
+					    result  = result + '<i class="fa fa-check-circle"></i><span id="vendorEditMsg"></span>';
+					    result  = result + '</div>';
 						if(json.msg != null && json.msg != "" && json.msg != 'undefined'){
 							result = result+ '<div class="success_pop" id="selector1" style="display: block;">';
 							result = result+ ' <i class="fa fa-check-circle"></i><span>'+json.msg+'</span>';
@@ -118,6 +126,9 @@
 				});
 	}
 </script>
+
+
+
 <script type="text/javascript">
 	function editVendorContactDetails(spocId,ownerId,spocUserId,tempOwnerId) {
 		var sourceleadUrl = '${sourceleadUrl}';
@@ -192,7 +203,7 @@
 						
 						result = result + '<div class="user_summary_edit_cta" id="mobilePhone">';
 						result = result + '<label>Phone No:</label>';
-						result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone" data-validation-optional="true" data-validation="validate_int validate_length length9-20" >';
+						result = result + '<input type="text"  id="mobilePhone" name="mobilePhone" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone" data-validation-optional="true" data-validation="validate_length length9-20 validate_phone" >';
 						result = result + '</div>';
 						
 						}
@@ -332,8 +343,13 @@
 	   		    	var newOwner = data;
 	   		    	$("#spocDetailsId").removeAttr("onClick")
 	   		    	$("#spocDetailsId").attr("onclick","vendorDetailsbySpocId('"+spocId+"', '"+newOwner+"', '"+spocUserId+"', '"+ownerId+"')");
-	   		    	vendorDetailsbySpocId(spocId,newOwner,spocUserId,tempOwnerId);
-	   		    	getVendorContactLists();
+	   		 		$("#vendorEditMsgDiv").removeAttr("style");
+		 			$("#vendorEditMsgDiv").css({ display: "block" });
+		 			$("#vendorEditMsg").html("Contact Details Updated");
+	   		    	vendorDetailsbySpocId(spocId,newOwner,spocUserId,ownerId);
+	   		    	//getVendorContactLists();
+	   		    	getVendorContactListsELK();
+	   		    	vendorEditMsgFadein();
 	   		    }
 		 }); 
 	     	return true;

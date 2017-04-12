@@ -5,21 +5,38 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<!-- <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> -->
+
+
+
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+ <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<script src="resources/js/formvalidator.js"></script>
 
 <div class="content-dashboard clearfix" id="assignedRequirementsDiv" style="display: none;"> 
       <!-- Assigned Requirements -->
-      <div class="clearfix dashboard-widget mb col-md-12 hdrPosition">
+      <div class="clearfix dashboard-widget mb col-md-12" >
         <h4 class="clearfix">
         Assigned Requirements
         &nbsp;&nbsp;<!-- <span title="Calendar"><i aria-hidden="true" class="fa fa-calendar" id="datepicker"></i>
         </span> -->
+        <div class="pull-right" id="viewmoresDiv" style="display: none;"> 
+      <a href="/sourcelead/requirementList" class="btn btn-sm btn-primary pull-right" title="View more"> View More</a>
+        </div>
         </h4>
       <!-- <a href="#" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
         <div class="clearfix require_wrap_table dashboard-data filter_position"> 
         		 <div id="requirementList"></div>
         </div>
+        
       </div>
+    </div>
+    
+    <div class="side_mask">
+      <div class="proj_close"></div>
     </div>
     
     
@@ -36,6 +53,12 @@ $(document).ready(function(){
 	requirementList();
 });
 </script>
+
+<style>
+#resumesDiv select{
+width: 100% !important;
+}
+</style>
 
 <script>
 function requirementList(){  
@@ -56,7 +79,8 @@ function requirementList(){
 	                	 result = result +"<table id='requirementPagination' class='display' cellspacing='0' width='99.9%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
-	                     result = result +"    <th>ID-Title</th>";
+	                     result = result +"    <th>ID</th>";
+	                     result = result +"    <th>Title</th>";
 	                     if(orgATS == 'Y'){
 	                     result = result +"    <th>Client</th>";
 	                     }
@@ -67,17 +91,39 @@ function requirementList(){
 	                     result = result +"    <th>Submitted</th>"; 
 	                     result = result +"    <th>Interviewed</th>"; 
 	                     result = result +"    <th>Offered</th>"; 
-	                     result = result +"    <th>Action</th>"; 
+	                     result = result +"<th>Actions</th>";
+// 	                     result = result +"    <th>Release</th>"; 
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
 	                     
-	                     var json = JSON.parse(data);
-	                     for (var i = 0; i < json.length; i++) { 
+	                     result = result + '<div class="new_side_wrap">';
+	                 	 result = result + '<div class="new_side_wrap_inn">';
+	                 	 result = result + '<div class="new_side_wrap_cta">';
+	                 	 result = result +'<div id="addApplicantDiv"></div>';
+	                 	 result = result +'</div>';
+	                 	 result = result +'</div>';
+	                 	 result = result +'</div>';
+	                 	 
+	                 	var json = JSON.parse(data);
+	                 	var checkSize = json.length;
+	                     if(checkSize>10){
+	                         checkSize = 10;
+	                     }
+	                     else{
+	                         checkSize = json.length;
+	                     }
+	                     for (var i = 0; i < checkSize; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
 	                    	 if(opt.jobId!=null && opt.jobId !='' && opt.jobId !='undefined'){
-	                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobId+"-"+opt.jobTitle+"'>"+opt.jobId+"-"+opt.jobTitle+"</span></a></div></td>";
+	                    		 result = result +"<td><div class=''><span title='"+opt.jobId+"'>"+opt.jobId+"</span></a></div></td>";
+	                    	 }
+	                    	 else{
+	                    		 result = result +"<td><div>-----</div></td>";
+	                    	 }
+	                    	 if(opt.jobId!=null && opt.jobId !='' && opt.jobId !='undefined'){
+	                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
 	                    	 }else{
 		                    	 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
 		                     }
@@ -104,15 +150,31 @@ function requirementList(){
 			                 result = result +"<td><div>"+opt.noOfSubmittedApplicants+"</div></td>";
 		                     result = result +"<td><div>"+opt.noOfInterviewedApplicants+"</div></td>";
 		                     result = result +"<td><div>"+opt.noOfOfferedApplicants+"</div></td>";
+
+		                     result = result +"<td>";
+		                     result = result + '<div class="tblminwidth-75">';
+		         	        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
+			         	       if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
+			         	    	  result = result +'<div class="text-center pull-left ml mr"><a href="javascript:void(0)" title="" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>';
+			         	       }else{
+			         	    	  result = result +"<div class='text-center'>--</div>";
+			         	       }
+		         	        '</sec:authorize>';
+		                     
 		                     if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
 		                    	 if(opt.isRequirementReleasedByuser == 'Y'){
-		                       		 result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success'></i></a></div></td>"; 
+		                       		 result = result +"<div class='pull-left'><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success'></i></a></div>"; 
 		                       	 }else{	
-		                       	 result = result +"<td><div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn'></i></a></div></td>";
+		                       	 result = result +"<div class='pull-left'><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn'></i></a></div>";
 		                       	 }
 		                     }else{
-			                     result = result +"<td><div>--</div></td>";
+			                     result = result +"<div>----</div>";
 		                     }
+		                     result = result + '</div>';
+		                     result = result +"</td>";
+		                     if(checkSize>=10 && i==9 ){
+		                    	 $("#viewmoresDiv").css("display", "block");
+			 	   	   	    	 } 
 		                     result = result +"</tr>";
 		                     result = result +"</tr>";
 	                     }
@@ -120,37 +182,35 @@ function requirementList(){
 	                     result = result +"</table>"; 
 	                     $("#requirementList").append(result); 
 	                     $("#assignedRequirementsDiv").css("display", "block");
+	                     
+	                	 $(".proj_close, .side_mask").click(function(){
+								$(".clients_side_wrap").removeClass("clients_side_wrap_active");
+								$(".side_mask").fadeOut(200);
+								$("body").css('overflow-y', 'auto');
+						 });	
+			 			 
 	                     pagination(); 
-                 }else{
-                	 $("#requirementList").removeAttr("style");
-  	    	      /*    var result ="";
-		    	    
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Requirement Found</p>";
-					 result = result+"			 </div>"; */
-					
-					$("#requirementList").empty();
-				    //$("#requirementList").append(result); 
-                }
+                 }
           },
             
        }); 
   } 
 </script>   
 
-<script>
+<!-- <script>
 function pagination(){ 
     $('#requirementPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
             "sSearch": "",
             "sZeroRecords": "", "sEmptyTable": ""
        }
     } );
 }
-</script>
+</script> -->
+
+<jsp:include page="addApplicantFromDashboard.jsp" />

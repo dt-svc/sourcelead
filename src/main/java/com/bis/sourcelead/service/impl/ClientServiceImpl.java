@@ -170,6 +170,7 @@ public class ClientServiceImpl implements ClientService{
 	 * 
 	 * @throws NullPointer
 	 */
+	@SuppressWarnings("unused")
 	@Override
 	public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,String responderType,Org loginOrg) throws Exception {
 			
@@ -297,7 +298,8 @@ public class ClientServiceImpl implements ClientService{
 					}
 				}
 			}
-			
+
+			// store default submission template in guest
 			if(org.getOrgType().equalsIgnoreCase("Guest")){
 				submissionTemplate = new SubmissionTemplate();
 				sourceLeadDefaultTemplate = submissionTemplateService.getSubmissionTemplateById(1L);
@@ -314,13 +316,33 @@ public class ClientServiceImpl implements ClientService{
 				submissionTemplate.setCreatedDate(new Date());
 				submissionTemplate.setUpdatedDate(new Date());
 				submissionTemplateService.addSubmissionTemplate(submissionTemplate);
+				
+				// store default interview feedback template in guest	
+				sourceLeadDefaultTemplate = submissionTemplateService.getSubmissionTemplateByTemplateNameByOrg(1L,Constants.DEFAULT_INTERVIEW_FEEDBACK_TEMAPLATE);
+				 StringBuilder templateStringBuilder=new StringBuilder();
+				 submissionTemplate = new SubmissionTemplate();
+				 submissionTemplate.setTemplateName(templateStringBuilder.append(org.getOrgName()).append("Interview Feedback Template").toString());
+				 submissionTemplate.setDescription(templateStringBuilder.append(org.getOrgName()).append("Interview Feedback Template").toString());
+				 submissionTemplate.setOrgLocationId(clientOrgLocations);
+				 submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
+				 submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+				 submissionTemplate.setUpdatedBy(user.getUserCode());
+				 submissionTemplate.setTemplateType("Feedback");
+				 submissionTemplate.setUpdatedDate(new Date());
+				 submissionTemplate.setCreatedBy(user.getUserCode());
+				 submissionTemplate.setCreatedDate(new Date());
+				 submissionTemplateService.addSubmissionTemplate(submissionTemplate);
+				 
+				 
 			}
+	
 			
 			submissionTemplate = submissionTemplateService.getDefaultSubmissionTemplateByClientLocationIdAndOrgLocationId(clientOrgLocations.getId(), orgLocations.getId());
+			// store default submission template in client & vedor	
 			if(submissionTemplate == null){
 				submissionTemplate = new SubmissionTemplate();
-				sourceLeadDefaultTemplate = submissionTemplateService.getSubmissionTemplateById(1L);
 				submissionTemplate.setTemplateName("Default Template");
+				sourceLeadDefaultTemplate = submissionTemplateService.getSubmissionTemplateById(1L);
 				submissionTemplate.setDescription("Default Template Description");
 				submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
 				submissionTemplate.setIsDefault("Y");
@@ -338,7 +360,25 @@ public class ClientServiceImpl implements ClientService{
 				submissionTemplate.setUpdatedBy(user.getUserCode());
 				submissionTemplate.setUpdatedDate(new Date());
 				submissionTemplateService.addSubmissionTemplate(submissionTemplate);
+				
+				// store default interview feedback template in client & vedor
+				sourceLeadDefaultTemplate = submissionTemplateService.getSubmissionTemplateByTemplateNameByOrg(1L,Constants.DEFAULT_INTERVIEW_FEEDBACK_TEMAPLATE);
+				 StringBuilder templateStringBuilder=new StringBuilder();
+				 submissionTemplate = new SubmissionTemplate();
+				 submissionTemplate.setTemplateName(templateStringBuilder.append(org.getOrgName()).append("Interview Feedback Template").toString());
+				 submissionTemplate.setDescription(templateStringBuilder.append(org.getOrgName()).append("Interview Feedback Template").toString());
+				 submissionTemplate.setIsDefault("Y");
+				 submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
+				 submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+				 submissionTemplate.setUpdatedBy(user.getUserCode());
+				 submissionTemplate.setTemplateType("Feedback");
+				 submissionTemplate.setUpdatedDate(new Date());
+				 submissionTemplate.setCreatedBy(user.getUserCode());
+				 submissionTemplate.setCreatedDate(new Date());
+				 submissionTemplateService.addSubmissionTemplate(submissionTemplate);
+				
 			}
+			
 			
 			for(OrgRelations orgRelation :orgRelationsList){
 				

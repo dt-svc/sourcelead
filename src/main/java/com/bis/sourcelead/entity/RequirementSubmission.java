@@ -337,6 +337,12 @@ public class RequirementSubmission implements Serializable{
 	@Transient
 	private String candidateSource;
 
+    @Transient
+	private String candidateUUID;
+    
+    @Transient
+	private String paymentType;
+	
 	
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
@@ -1108,5 +1114,21 @@ public class RequirementSubmission implements Serializable{
 
 	public void setCandidateSource(String candidateSource) {
 		this.candidateSource = candidateSource;
+	}
+
+	public String getCandidateUUID() {
+		return candidateUUID;
+	}
+
+	public void setCandidateUUID(String candidateUUID) {
+		this.candidateUUID = candidateUUID;
+	}
+
+	public String getPaymentType() {
+		return paymentType;
+	}
+
+	public void setPaymentType(String paymentType) {
+		this.paymentType = paymentType;
 	}
 }

@@ -82,7 +82,7 @@ function addOffer(requirementId){
 				result= result + '	              <div class="clearfix"></div>';
 				result= result + '<div class="clearfix">';
 				result = result + '<div class="pull-right">';
-				result = result +'				  <button type="submit" id="add_offer" class="btn btn-sm btn-primary mr">Submit</button>';
+				result = result +'				  <button type="submit" id="add_offer" onclick="validateRateAndRateType();" class="btn btn-sm btn-primary mr">Submit</button>';
 				result= result + '	              <input type="button" class="btn btn-sm btn-danger" value="Cancel" onclick="cancelAddOffer();" >';
 				result= result + '	            </div>';
 				result= result + '	          </div>';
@@ -151,8 +151,8 @@ function selectOfferApplicants(){
 
 
 <div id="divOfferTd3" style="display: none; float: left;">
-   	 <div class="positionRelative float">
-           <select class="form-control" id="REPLACEROWIDPaymentType" name="REPLACEROWIDPaymentType"  >
+   	 <div class="positionRelative float select-field">
+           <select class="form-control" id="REPLACEROWIDPaymentType" name="REPLACEROWIDPaymentType" style="height: 30px;">
 	          		 <option ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}>INR</option>
 	                 <option ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}>AUD</option>
 	                 <option ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}>USD</option>
@@ -161,12 +161,12 @@ function selectOfferApplicants(){
 	                 <option ${SourceLeadWeb_currencyCode == 'EUR' ? 'selected' : ''}>EUR</option>
            </select>
      </div>
-     <div class="positionRelative float">
-     	  <input type="text" value="" class="form-control input-sm" id="REPLACEROWIDAmount" name="REPLACEROWIDpaymentTypAmount" data-validation="validate_length length1-20" data-validation-optional="true">
+     <div class="positionRelative float select-field">
+     	  <input type="text" value="" class="form-control input-sm" id="REPLACEROWIDAmount" name="REPLACEROWIDpaymentTypAmount" field-name="Rate" data-validation="validate_length length1-20" data-validation-optional="true" onblur="validateRateAndRateType();">
      </div>
-   	 <div class="positionRelative float">
-           <select class="form-control" id="REPLACEROWIDPaymentMode" name="REPLACEROWIDPaymentMode">
-	                 <option value=" ">Rate Per</option>
+   	 <div class="positionRelative float select-rateper select-field">
+           <select class="form-control" id="REPLACEROWIDPaymentMode" name="REPLACEROWIDPaymentMode" field-name="Rate Type" style="height: 30px;" onblur="validateRateAndRateType();">
+	                 <option value="">Rate Per</option>
 	                 <option value="Hourly">Hourly</option>
 	                 <option value="Weekly">Weekly</option>
 	                 <option value="Bi-weekly">Bi-weekly</option>
@@ -178,7 +178,7 @@ function selectOfferApplicants(){
      </div>
 </div> 
 
-<div id="divOfferTd4" style="display: none; float: left;">
+<div id="divOfferTd4" style="display: none; float: left;" class="select-field">
  	<select class="form-control" id="REPLACEROWIDPositionType" name="REPLACEROWIDPositionType">
  	 				 <option value="" disabled selected>Select Type</option>
 	                 <option  ${requirement.jobType  == 'C2C' ? 'selected' : ''}>C2C</option>
@@ -338,6 +338,30 @@ function cancelAddOffer(){
 
 </script>  
 
+<script type="text/javascript">
+function validateRateAndRateType(){
+	
+	var offerAmount = document.getElementById("1Amount").value;
+		var paymentModeType = $("#1PaymentMode").val();
+	 if(paymentModeType != null && paymentModeType != "" && paymentModeType != 'undefined'){
+			$('#1Amount').removeAttr('data-validation-optional');
+			 $('#1Amount').attr("data-validation","required validate_Space validate_float validate_length length1-8"); 
+		 }else{
+			 $('#1Amount').removeAttr('data-validation');
+			 $('#1Amount').attr("data-validation-optional","true"); 
+		 }
+		 
+	 if(offerAmount != null && offerAmount != ""){
+		 $('#1PaymentMode').removeAttr('data-validation-optional');
+		 $('#1PaymentMode').attr("data-validation","required");
+		 $('#rate').attr("data-validation","required validate_Space validate_float validate_length length1-8");
+	 }else{
+		 $('#1PaymentMode').removeAttr('data-validation');
+		 $('#1PaymentMode').attr("data-validation-optional","true"); 
+	 }
+}
+
+</script>
 
 <script type="text/javascript">
 
@@ -363,7 +387,7 @@ function cancelAddOffer(){
   			isContinue = false;
   		}
   		
-  	 if(isContinue){
+//   	 if(isContinue){
   	  if(selectedOfferApplicants <= 50){
   		$("#add_offer").attr("disabled", "disabled");
   		$("#add_offer" ).addClass('button').val('Processing..');  
@@ -391,9 +415,9 @@ function cancelAddOffer(){
   		alertOfferMessage("<b>Selected Applicants should not more than 50</b>");
   	  }
   	  
-  	 }else{
-  		alertOfferMessage("<b>Rate Per is Required for given Rate</b>");
-  	 }
+//   	 }else{
+//   		alertOfferMessage("<b>Rate Per is Required for given Rate</b>");
+//   	 }
    		   
         return true;
       }

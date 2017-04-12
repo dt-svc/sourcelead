@@ -63,7 +63,10 @@ public interface RequirementInterviewService {
 	List<RequirementInterview> getRequirementInterviewsBySubmissionAndOrgLocId(List<Long> submissionsIds, Long locationId, Date startUTCDate,
 			Date endUTCDate);
 
+	void applicantInterviewAcceptmailToInterviewInitiator(String requirementInterviewId) throws Exception;
 
+	RequirementInterview getinterviewBySubmissionId(Long submissionId);
+	
 	//List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime);
 	
 

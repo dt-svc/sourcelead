@@ -164,6 +164,15 @@ public class User implements Serializable{
 	
 	@Transient
 	private String role;
+	
+	@Transient
+	private String assignedTeamId;
+	
+	@Transient
+	private String assignedTeam;
+	
+	@Transient
+	private String isAssignedOwner;
 
 	public Status getPreviousUserState() {
 		return previousUserState;
@@ -485,5 +494,29 @@ public class User implements Serializable{
 
 	public void setIsPrimaryAdmin(String isPrimaryAdmin) {
 		this.isPrimaryAdmin = isPrimaryAdmin;
+	}
+
+	public String getAssignedTeamId() {
+		return assignedTeamId;
+	}
+
+	public void setAssignedTeamId(String assignedTeamId) {
+		this.assignedTeamId = assignedTeamId;
+	}
+
+	public String getAssignedTeam() {
+		return assignedTeam;
+	}
+
+	public void setAssignedTeam(String assignedTeam) {
+		this.assignedTeam = assignedTeam;
+	}
+
+	public String getIsAssignedOwner() {
+		return isAssignedOwner;
+	}
+
+	public void setIsAssignedOwner(String isAssignedOwner) {
+		this.isAssignedOwner = isAssignedOwner;
 	}
 }

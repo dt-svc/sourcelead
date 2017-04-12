@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,8 +33,12 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CombinedList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.entity.UserRole;
@@ -42,7 +47,10 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailService;
 import com.bis.sourcelead.service.HotListEmailCampaignService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.RequirementAssignToService;
+import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadSignatureService;
+import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserMailBoxService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -77,9 +85,6 @@ public class MailBoxRestController {
 	@Autowired
 	private CommonUtil commonUtil;
 	
-	/*@Autowired
-	CandidateSkillsService candidateSkillsService;*/
-	
 	@Autowired
 	UserService userService;
 	
@@ -92,8 +97,14 @@ public class MailBoxRestController {
 	@Autowired
 	SourceleadSignatureService sourceleadSignatureService;
 	
+	@Autowired
+	private RequirementAssignToService requirementAssignToService;
 	
+	@Autowired
+	private RolesService roleService;
 	
+	@Autowired
+	TeamService teamService;
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -283,55 +294,6 @@ public class MailBoxRestController {
 	    	
 	    	UserMailBox nextMail = userMailBoxService.getUserNextMail(userMailbox.getId(), user.getId(), orgLocation.getId(), type);
 	    	
-	    	List<Long> candidateId = new ArrayList<Long>();
-	    	if(null !=  userMailbox.getCandidateId()){
-			 for (String s : userMailbox.getCandidateId().split(",")){
-				 candidateId.add(Long.parseLong(s));
-			 }
-				
-				List<Candidate> candidatesList = candidateService.getAllRequestedCandidatesForCampaign(candidateId);
-				if(null != candidatesList){
-					
-					for(Candidate candidate : candidatesList){
-						
-						 String candidateName = null;
-						 String experienceInYears = null;
-						 String experienceInMonths = null;
-						 String totalExp = null;
-						 if(!isNullOrEmpty(candidate.getLastName())){
-							 StringBuilder name = new StringBuilder();
-							 candidateName = name.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString();
-					   	 }else{
-					   		candidateName = candidate.getFirstName();
-					   	 }
-						
-						 if(!isNullOrEmpty(candidate.getExperienceYears())){
-							 experienceInYears = candidate.getExperienceYears();
-						 }else{
-							 experienceInYears = "0";
-						 }
-						 
-						 if(!isNullOrEmpty(candidate.getExperienceMonths())){
-							 experienceInMonths = candidate.getExperienceMonths();
-						 }else{
-							 experienceInMonths = "0";
-						 }
-						 
-						 if(isNullOrEmpty(candidate.getExperienceMonths()) && isNullOrEmpty(candidate.getExperienceMonths())){
-							 totalExp = "-----";
-						 }else{
-							 StringBuilder exp = new StringBuilder();
-							 totalExp = exp.append(experienceInYears).append(" Years ").append(experienceInMonths).append(" Months").toString();
-						 }
-						 
-						 candidate.setCandidateName(candidateName);
-						 candidate.setTotalExp(totalExp);
-						 reqCandidatesList.add(candidate);
-					}
-					
-				}
-	    	  }
-	    	
 		    	userMailbox.setIsMailRead(1);
 				userMailBoxService.saveUserMailBox(userMailbox);
 				userMailBoxService.saveOrUpdateUserMailBoxELK(userMailbox);
@@ -440,6 +402,7 @@ public class MailBoxRestController {
 					mailbox.setMailStatus(Constants.MAIL_TRASH);
 				}
 				userMailBoxService.saveUserMailBox(mailbox);
+				userMailBoxService.saveOrUpdateUserMailBoxELK(mailbox);
 			}
 			return "success";
 		}
@@ -672,6 +635,51 @@ public class MailBoxRestController {
     		return resultJson;
 
     	}
+        
+        
+        
+        @RequestMapping(value = "/getComposeMailTeamsList", method = RequestMethod.POST)
+    	public @ResponseBody String getComposeMailTeamsList(@RequestParam(value = "reqId", required = false) Long reqId, HttpServletRequest request) throws Exception {
+    		String resultJson;
+    		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+    		CombinedList combinedList = new CombinedList();
+    		
+    		List<RequirementAssignTo> requirementAssignTo = null;
+    		if(!Objects.isNull(reqId)){
+    			requirementAssignTo = requirementAssignToService.getAssignedToMembersByRequirementIdAndOrgLocationId(reqId, orgLocation.getId());
+    		}
+
+    		
+    			List<Team> teamsList = teamService.getTeamListByOrgLocationID(orgLocation.getId());
+    			if (null != teamsList) {
+    				for(Team team : teamsList){
+    					
+    					if(null != requirementAssignTo){
+    						if (requirementAssignTo.stream().anyMatch(t -> t.getTeamId() != null && t.getTeamId().getId().equals(team.getId()))) {
+    							team.setIsTeamAssigned("Y");
+    						}
+    					}
+    				}
+    				combinedList.setTeams(teamsList);
+    			}
+
+    		List<Roles> rolesList = roleService.getTabAccessRolesListByOrgLocationIdAndTabId(orgLocation.getId(),
+    				Long.valueOf(Constants.TAB_REQUIREMENT));
+    		if (null != rolesList) {
+    			for(Roles role : rolesList){
+    				if(null != requirementAssignTo){
+    					if (requirementAssignTo.stream().anyMatch(t -> t.getTeamId() == null && t.getRoleId() != null && t.getRoleId().getId().equals(role.getId()))) {
+    						role.setIsRoleAssigned("Y");
+    					}
+    				}
+    			}
+    			combinedList.setRoles(rolesList);
+    		}
+
+    		resultJson = commonUtil.toJSON(combinedList);
+    		return resultJson;
+    	}
+
 
 	 
 	 public String toJSON(Object obj){

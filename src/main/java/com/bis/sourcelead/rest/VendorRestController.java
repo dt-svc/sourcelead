@@ -266,7 +266,11 @@ public class VendorRestController {
 					
 				}
 				
-				
+				User createdUser = userService.getUserDetailsByUserCode(orgRelation.getCreatedBy());
+				 StringBuilder vendorCreatedName = new StringBuilder();
+				if(createdUser != null){
+					orgRelation.setCreatedBy(vendorCreatedName.append(createdUser.getFirstName()).append(" ").append(createdUser.getLastName()).toString());
+				}
 			}
 		    
 		    
@@ -444,7 +448,8 @@ public class VendorRestController {
 						orgRelation.setState(orgRelation.getLocationId().getState());
 						orgRelation.setCity(orgRelation.getLocationId().getCity());
 						orgRelation.setVendorlocationId(orgRelation.getLocationId().getId());
-						List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Vendor");
+//						List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Vendor");
+						List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgId(orgRelation.getId());
 						orgRelation.setNoOfContatcs(contactsList.size()); 
 						if(orgRelation.getResponderLevel()!=null){
 							orgRelation.setLevel(orgRelation.getResponderLevel());

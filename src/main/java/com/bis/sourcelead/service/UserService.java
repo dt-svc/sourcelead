@@ -28,6 +28,8 @@ public interface UserService  {
 
 	public void sendEmail(User user, User loginUser, String password, Long orgLocationsId) throws Exception;
 	
+	public void sendEmailFromSourcelead(User user, User loginUser, String password, Long orgLocationsId,Long orgId) throws Exception;
+	
 	String validateEmailandCandidate(String website, String email,String sourceleadBLockedwebsites) throws Exception;
 	
 	User getUserById(Long Id) throws Exception;
@@ -139,7 +141,7 @@ public interface UserService  {
 	 */
 	List<User> getUsersByTeamType(Long id, String teamType)throws Exception;
 	
-	LinkedHashSet<User> getUsersByTeamTypeAndTabId(Long id, String teamType, Long tabId)throws Exception;
+	List<User> getUsersByTeamTypeAndTabId(Long id, String teamType, Long tabId)throws Exception;
 	
 	public List<User> getUsersByTeamTypeAndNoCurrentUser(Long currentApproverId,Long orgLocationsId)throws Exception;
 
@@ -178,6 +180,11 @@ public interface UserService  {
 	User getUserByUserName(String userName) throws Exception;
 
 	List<User> getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(Long id, Long valueOf, List<Long> ownersList) throws Exception;
+
+	public List<User> getAllUsersWithRequirementTabAccessAndMemeberInRequirementMemberOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
+
+	LinkedHashSet<User> getUsersListAsReoprtingManagersByOrgLocationIdHavingTabAccess(Long orgLocationsId, User user,Long tabId) throws Exception;
+	void passwordResetMailToLoginUser(User user, OrgLocations orgLocations) throws Exception;
 
 }	
 		

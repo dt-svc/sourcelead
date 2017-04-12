@@ -243,6 +243,10 @@ public class RequirementListRestController {
 	         		}else{
 	         			requirement.setIsRequirementReleasedByuser("N");
 	         		}
+	         		
+	         		if(userRoleName.equalsIgnoreCase("ROLE_ADMIN") || userRoleName.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
+	         			requirement.setIsRequirementReleasedByuser("Y");
+	         		}
 				}
 				
          		
@@ -447,7 +451,11 @@ public class RequirementListRestController {
 						StringBuilder sb = new StringBuilder();
 						for(RequirementApproverHierarchy approverN :list ){
 							StringBuilder approverSB = new StringBuilder();
-							ar.add(approverSB.append(approverN.getApproverUserId().getFirstName()).append(" ").append(approverN.getApproverUserId().getLastName()).toString());
+							if(null != approverN.getApproverUserId().getLastName()){
+								ar.add(approverSB.append(approverN.getApproverUserId().getFirstName()).append(" ").append(approverN.getApproverUserId().getLastName()).toString());
+							}else{
+								ar.add(approverSB.append(approverN.getApproverUserId().getFirstName()).toString());	
+							}
 							requirement.setApprovalMechanismType(approverN.getHierarchyType().toString());
 							if(null != approverN.getRejectedReason() && !approverN.getRejectedReason().equalsIgnoreCase("") && Constants.REJECTED.equalsIgnoreCase(approverN.getRequirementApproverStatus().toString())){
 								requirement.setRejectReasonForRequirement(sb.append(approverN.getRejectedReason()).toString());
@@ -612,12 +620,15 @@ public class RequirementListRestController {
 										}else{
 											requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
 										}*/
-										
+										requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
 										requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
 										requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
 									}
 									requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
-									requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
+									if(Constants.RECORD_ACTIVE ==  requirementSubmission.getCandidateResumes().getStatus()){
+										requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
+									}
+									
 									requirementSubmission.setResumeUUID(requirementSubmission.getCandidateResumes().getResumeUUID());
 									
 									if(null != requirementSubmission.getVendorLocationId()){

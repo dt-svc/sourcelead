@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -152,6 +153,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Autowired
 	RequirementService requirementService;
 	
+	@Autowired
+	OrgDao orgDao;
+	
 	
 	protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -241,6 +245,7 @@ public class RegistrationServiceImpl implements RegistrationService{
  		  }*/
 		
 		saveDefaultSubmissionTemplate(org,orgLocations,user);
+		saveDefaultInterviewFeedbackTemplate(org,orgLocations,user);
 		
 		/*
 		 * Saving USER DB data as ElasticSearch Documents
@@ -478,6 +483,27 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
 		 submissionTemplate.setUpdatedBy(user.getUserCode());
 		 submissionTemplate.setTemplateType("Submission");
+		 submissionTemplate.setUpdatedDate(new Date());
+		 submissionTemplate.setCreatedBy(user.getUserCode());
+		 submissionTemplate.setCreatedDate(new Date());
+		 submissionTemplateService.addSubmissionTemplate(submissionTemplate);
+		 
+	 }
+	 
+	 
+	 
+	 public void  saveDefaultInterviewFeedbackTemplate(Org org,OrgLocations orgLocations,User user) throws Exception {
+		 SubmissionTemplate sourceLeadDefaultTemplate = submissionTemplateService.getSubmissionTemplateByTemplateNameByOrg(1L,Constants.DEFAULT_INTERVIEW_FEEDBACK_TEMAPLATE);
+		 
+		 StringBuilder templateStringBuilder=new StringBuilder();
+		 SubmissionTemplate submissionTemplate = new SubmissionTemplate();
+		 submissionTemplate.setTemplateName(templateStringBuilder.append(org.getOrgName()).append("Interview Feedback Template").toString());
+		 submissionTemplate.setDescription(templateStringBuilder.append(org.getOrgName()).append("Interview Feedback Template").toString());
+		 submissionTemplate.setOrgLocationId(orgLocations);
+		 submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
+		 submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+		 submissionTemplate.setUpdatedBy(user.getUserCode());
+		 submissionTemplate.setTemplateType("Feedback");
 		 submissionTemplate.setUpdatedDate(new Date());
 		 submissionTemplate.setCreatedBy(user.getUserCode());
 		 submissionTemplate.setCreatedDate(new Date());
@@ -734,14 +760,14 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 * Saving USER DB data as ElasticSearch Documents
 		 */
 		userService.saveOrUpdateUserElkDocument(userRole,employees,orgUser.getUserCode());
-		sendEmail(orgUser,user,password,orgLocations.getId());
+		sendEmail(orgUser,user,password,orgLocations.getId(),jsonObj.getString("registredOrgId"));
 		
 		
 		
 	}
 	
 	
-	public void sendEmail(User user, User loginUser, String password, Long locationId) throws Exception {
+	public void sendEmail(User user, User loginUser, String password, Long locationId,String orgId) throws Exception {
 		
 		 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), locationId);
 		 if(userRole == null){
@@ -758,7 +784,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+
+		// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setOrgLocationId(locationId);
 		 
@@ -773,9 +801,12 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		 globalVarsMap.put("userEmailId",user.getEmail());
 		 if(isUserActive == false){
+			 password = SourceLeadRandomCodeHelper.generateRandomPassword();
+			 user.setPassword(sourceleadPasswordEncoder.encode(password));
+			 userService.addUser(user);
 			 globalVarsMap.put("password",password);
 		 }else{
-			 globalVarsMap.put("password","Note : Login with your existing Sourcelead password");
+			 globalVarsMap.put("password","<font color='green'>Note : <b>Login with your existing Sourcelead password.</b></font>");
 		 }
 		 
 		
@@ -791,8 +822,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
 		 String url = sourceleadUrl;
 		 
+		 Org registredOrg = orgDao.findOrgByID(Long.parseLong(orgId));
+		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, registredOrg);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -874,6 +907,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidate.setCreatedBy("sladmin");
 		candidate.setCreatedDate(new Date());
 		candidate.setUpdatedDate(new Date());
+		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		
 		candidateService.addCandidate(candidate);
 		candidateService.saveOrUpdateCandidateElkDocument(candidate);
@@ -1029,6 +1063,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidate.setCreatedBy("sladmin");
 		candidate.setCreatedDate(new Date());
 		candidate.setUpdatedDate(new Date());
+		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		
 		candidateService.addCandidate(candidate);
 		candidateService.saveOrUpdateCandidateElkDocument(candidate);

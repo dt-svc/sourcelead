@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -94,6 +95,9 @@ public class CandidateEducation implements Serializable{
 	
 	@Transient
 	private List<LookUpData> educationList;
+	
+	@Transient
+	 private LinkedHashSet<String> allAndCandidateEducations;
 	
 	public long getCandidateEduId() {
 		return candidateEduId;
@@ -262,5 +266,14 @@ public class CandidateEducation implements Serializable{
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
+
+	public LinkedHashSet<String> getAllAndCandidateEducations() {
+		return allAndCandidateEducations;
+	}
+
+	public void setAllAndCandidateEducations(LinkedHashSet<String> allAndCandidateEducations) {
+		this.allAndCandidateEducations = allAndCandidateEducations;
+	}
+	
 	
 }

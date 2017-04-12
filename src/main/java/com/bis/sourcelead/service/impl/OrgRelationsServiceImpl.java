@@ -266,12 +266,18 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		List<OrgSpoc> vandorsContactsList =  orgRelationsDao.getAllVendorsContactFilterListByOrgLocationId(loginUserId,userIds,orgLocationId, relationType,status,vendorIds,invitationStatus);
 		if(vandorsContactsList != null && !vandorsContactsList.isEmpty()){
 		   for (OrgSpoc orgSpoc : vandorsContactsList) {
-			     StringBuilder spocNameSB = new StringBuilder();
+			     
 				 StringBuilder ownerNameSB = new StringBuilder();
 				 
 				 if("Vendor".equalsIgnoreCase(relationType)){
+					 StringBuilder spocNameSB = new StringBuilder();
 					 orgSpoc.setSpocEmail(orgSpoc.getClientUser().getEmail());
-					 orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()).toString());
+					 if(null != orgSpoc.getClientUser().getFirstName() && null != orgSpoc.getClientUser().getLastName()){
+						spocNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()).toString(); 
+					 }else{
+						spocNameSB.append(orgSpoc.getClientUser().getFirstName());
+					 }
+					 orgSpoc.setSpocName(spocNameSB.toString());
 					 orgSpoc.setSpocMobilePhone(orgSpoc.getClientUser().getMobilePhone());
 					 orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName()).toString());
 					
@@ -281,8 +287,14 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 					 orgSpoc.setSpocLocationId(orgSpoc.getClientLocationId().getId());
 					 orgSpoc.setOrgName(orgSpoc.getClientLocationId().getOrg().getOrgName());
 				 }else{
+					 StringBuilder spocNameSB = new StringBuilder();
 					 orgSpoc.setSpocEmail(orgSpoc.getVendorUser().getEmail());
-					 orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName()).toString());
+					 if(null != orgSpoc.getClientUser().getFirstName() && null != orgSpoc.getClientUser().getLastName()){
+							spocNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()).toString(); 
+						 }else{
+							spocNameSB.append(orgSpoc.getClientUser().getFirstName());
+						 }
+					 orgSpoc.setSpocName(spocNameSB.toString());
 					 orgSpoc.setSpocMobilePhone(orgSpoc.getVendorUser().getMobilePhone());
 					 orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()).toString());
 					 
@@ -461,6 +473,12 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	public Integer getAllVendorsCountByOrgLocationId(Long orgLocationId,String type) throws Exception {
 		return orgRelationsDao.getAllVendorsCountByOrgLocationId(orgLocationId,type);
 
+	}
+
+	@Override
+	public List<OrgRelations> getAllClientsByOrgLocationIdAndDomain(Long orgLocationId, String domain)
+	{
+		return orgRelationsDao.getAllClientsByOrgLocationIdAndDomain(orgLocationId,domain);
 	}
 	
 }

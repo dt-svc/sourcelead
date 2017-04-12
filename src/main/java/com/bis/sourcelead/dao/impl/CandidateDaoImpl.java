@@ -24,6 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.CandidateHotList;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -436,7 +439,7 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Candidate> getAllCandidatesForHotListingWhoAreTerminating(Long orgLocationId, Integer dateRange)
+	public List<Candidate> getAllCandidatesForHotListingWhoAreTerminating(Long orgLocationId, Integer dateRange,Long reportingManagerUserId)
 			throws Exception {
 		
 		
@@ -463,14 +466,15 @@ public class CandidateDaoImpl implements CandidateDao {
 	    Date parsed = dateFormat.parse(updatedDate);
 	    java.sql.Date endDate = new java.sql.Date(parsed.getTime());
 	   
-	    subQuery =   " from Candidate candidate where candidate.orgLocationId.id =:orgLocationId and  candidate.candidateType = 'Consultant' and candidate.isFavourite <> '1'  and candidate.consultantUser.id IN (select emp.user.id from Employees emp where emp.id IN (select pm.employee.id from ProjectMembers pm where pm.id IN ( select pmh.projectMemberId.id from ProjectMembersHistory pmh  where pmh.projectTerminationDate BETWEEN :sqlCurrentDate AND :endDate)  ) )"; 
+	    subQuery =   " from Candidate candidate where candidate.orgLocationId.id =:orgLocationId  and candidate.consultantUser.id IN (select userRole.user.id  from UserRole  userRole where userRole.reportingManager.id =:reportingManagerUserId )  and  candidate.candidateType = 'Consultant' and candidate.isFavourite <> '1'  and candidate.consultantUser.id IN (select emp.user.id from Employees emp where emp.id IN (select pm.employee.id from ProjectMembers pm where pm.id IN ( select pmh.projectMemberId.id from ProjectMembersHistory pmh  where  pmh.projectTerminationDate BETWEEN :sqlCurrentDate AND :endDate)  ) )"; 
 
 	    candidateList = session.createQuery(subQuery)
-					    		.setDate("sqlCurrentDate", sqlCurrentDate)
-					    		.setDate("endDate", endDate)
-				                .setLong("orgLocationId", orgLocationId)
-				                .setCacheable(true)
-				               .list();
+					    		 .setDate("sqlCurrentDate", sqlCurrentDate)
+					    		 .setDate("endDate", endDate)
+					    		 .setLong("reportingManagerUserId", reportingManagerUserId)
+				                 .setLong("orgLocationId", orgLocationId)
+				                 .setCacheable(true)
+				                .list();
 	  /*  System.err.println("das"+candidateList.size());*/
 	return candidateList;
 	}
@@ -520,6 +524,36 @@ public class CandidateDaoImpl implements CandidateDao {
 				+ "where submission.requirement.id = :requirementId) "+subQuery+" ORDER BY candidate.id DESC ");
 		candidatesList = candidateListQuery.setLong("orgLocationId", orgLocationId).setLong("requirementId", requirementId).setString("candidateType", candidateType).setCacheable(true).list();
 		return candidatesList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getAllCandidatedsBasedOnCreatedByAndOrglocationCodeWhichAreCreatedToday(OrgLocations orgLocations,
+			User user) throws Exception {
+		
+		
+		java.sql.Date sqlCurrentDate = null;
+		Date currentDate =  commonUtil.currentDate();
+		// for current Date Converting to Sql Date Format
+		 if(currentDate != null){
+				sqlCurrentDate = new java.sql.Date(currentDate.getTime());
+		 }
+		 
+		List<Long> candidatesList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select count(*)  from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId  and cnadidate.createdBy =:userCode and  DATE(cnadidate.createdDate) = :sqlCurrentDate   ORDER BY cnadidate.id DESC";  
+		candidatesList = session.createQuery(query)
+										       .setLong("orgLocationId", orgLocations.getId())
+										       .setString("userCode", user.getUserCode())
+										       .setDate("sqlCurrentDate", sqlCurrentDate)
+										       .setCacheable(true)
+										       .list();
+		
+		  Integer count = 0;
+	  		if(candidatesList != null && !candidatesList.isEmpty()){
+	  				count = candidatesList.get(0).intValue();
+	  		}
+	  		return count;
 	}
 
 	@Override
@@ -674,6 +708,15 @@ public class CandidateDaoImpl implements CandidateDao {
 		    return candidateList;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getHotCandidateListByTeamIdAndOrgLocationId(Long teamId, Long orgLocationId)
+			throws Exception {
+		
+		 Session session = this.sessionFactory.getCurrentSession();
+		 String query = "from Candidate candidate where candidate.teamId.id =:teamId and candidate.orgLocationId.id =:orgLocationId  ";
+		 List<Candidate> candidateHotList = session.createQuery(query.toString()).setLong( "teamId", teamId).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
+		 return candidateHotList;
+	}
 
-	
 }

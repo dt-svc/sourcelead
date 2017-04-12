@@ -172,7 +172,7 @@ public class TimesheetSubmissionListController {
 						                                             .append("</span>");
 						 sb.append("   <div>");
 						 sb.append(" </td>");
-						 sb.append("	<td><div class='tbldata-dotdot-sm'>").append(projectMember.getProjects().getProjectName()).append("<span title='").append(projectMember.getProjects().getProjectName()).append("'>").append("</span></div></td>");
+						 sb.append("	<td><div class='tbldata-dotdot-sm'>").append("<span title='").append(projectMember.getProjects().getProjectName()).append("'>").append(projectMember.getProjects().getProjectName()).append("</span></div></td>");
 					     
 					     sb.append("	<td><div>").append(((projectMember.getProjects().getOrgRelationId() != null) ?projectMember.getProjects().getOrgRelationId().getResponderLocationId().getOrg().getOrgName() : "--")).append("</div></td>");
 					     sb.append("	<td><div>").append(projectMember.getProjects().getInvoiceFrequency()).append("</div></td>");

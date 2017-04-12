@@ -173,9 +173,16 @@ display: none;
 			        success: function(data) {
 			        	var json = JSON.parse(data);
 			        	
+			        	
 			        	 $("input[name=subject]").val(json['subject']);
 			    		 
-			    		 nicEditors.findEditor('bodytext').setContent(json['body']);
+			        	 if(json['comments'] != '' && json['comments'] != null && json['comments'] != 'undefied'){
+			        		 nicEditors.findEditor('bodytext').setContent('<br/>'+json['comments']+'<br/><br/>'+json['body']); 
+			        	 }
+			        	 
+			        	 if(json['comments'] == null && json['body'] != '' && json['body'] != null && json['body'] != 'undefied'){
+			        		 nicEditors.findEditor('bodytext').setContent('<br/><br/>'+json['body']);
+			        	 }
 			        	
 			        }
 			 });
@@ -359,26 +366,20 @@ function getUserList(teamType){
             	
             	getTeamsList(teamType);
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
-               		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-               		 else if (data.indexOf('exception') >= 0) {
-               			 location.replace(sourceleadUrl+"/errorPage");
-               		 }
-               		 else{
+               		
 			    	     $("#userList").removeAttr("style");
 	                	    var result = '';
-	                	    result = result +'<div class="modal-body clearfix mail-body">';
-	                		result = result +'<div class="form-horizontal custom-form custom-mailform">';
+	                	    result = result +'<div class="modal-bodyCustom mt clearfix popupFilter">';
+	                	    result = result +'<div class="form-horizontal custom-form">';
 	                		result = result +'     <div class="row">';
-	                		result = result +'       <div class="col-xs-12 col-md-8 col-lg-8 selectpicker100">';
+	                		result = result +'       <div class="col-xs-12 col-md-5 col-lg-5 selectpicker100">';
 	                		result = result +'          <select id="rolesDiv" onchange="filterTeamMembers();" class="selectpicker form-control" style="display:block !important">';
 	                		result = result +'          </select>';
 	                		result = result +'     </div>';
 	                		result = result +'     </div>';
 	                		result = result +'     </div>';
 	                		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter"><br/><br/>'; 
-	                		result = result +'       <table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
+	                		result = result +'       <table id="example"  class="display table table-stripped table-bordered" cellspacing="0" width="100%"  >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
 	                		result = result +'             <th><input type="checkbox" id="checkAllUsers" onclick="toggleAll(this);"></th>';
@@ -413,12 +414,11 @@ function getUserList(teamType){
 	                 	 $("#userList").empty(); 
 	                     $("#userList").append(result); 
 	                     pagination(); 
-			    	} 
                  }else{
                 	 $("#userList").removeAttr("style");
   	    	         var result ="";
 		    	    
-  	    	       result = result +'<div class="modal-body clearfix">';
+  	    	       result = result +'<div class="modal-bodyCustom mt clearfix popupFilter">';
  	    	        result = result +'<div class="form-horizontal custom-form">';
 	           		result = result +'     <div class="row">';
 	           		result = result +'       <div class="col-xs-12 col-md-8 col-lg-8 hidden">';
@@ -433,7 +433,7 @@ function getUserList(teamType){
 	           		result = result +'     </div>';
 	           		result = result +'     </div>';
 	           		
-	           		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter">'; 
+	           		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter"><br/><br/>'; 
 	        		result = result +'       <table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
 	        		result = result +'           <thead>';
 	        		result = result +'           <tr>';
@@ -462,7 +462,7 @@ function getTeamsList(teamType){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getTeamsList?${_csrf.parameterName}=${_csrf.token}",    
+           url: sourceleadUrl+"/getComposeMailTeamsList?${_csrf.parameterName}=${_csrf.token}",    
             success :function(data) {
             	var json = JSON.parse(data);
 				var output = "";
@@ -618,6 +618,16 @@ function getEmails(){
 				$this.next().css({'width': '100%'});
 });
 </script> 
+
+<script>
+function validateEmail(email){
+	var re = /(\w+)\@(\w+)\.[a-zA-Z]/g;
+	var testEmail = emailRegularExp.test(email);
+	if(!testEmail){
+        alert("Please enter a valid email");
+    }
+}
+</script>
 
 
 
