@@ -15,5 +15,8 @@ public interface ClientImportDao {
 	public List<BulkClientDetails> getbulkClientDetailsByOrgLocationId(Long orgLocationId);
 
 	public BulkClientDetails isRecordExist(BulkClientDetails bulkClientVendors, Long orgLocationId) throws Exception;
+
+	public BulkClientDetails getbulkClientByrecordIdAndOrgLocationId(long recordId, Long orgLocationId)throws Exception;
+
 	
 }

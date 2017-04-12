@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.entity.BulkClientDetails;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
 
 public interface ClientImportsService {
@@ -25,5 +26,13 @@ public interface ClientImportsService {
 	String clientExcelDataSave(MultipartFile multipartFile, User user, OrgLocations orgLocation, Org org, String email, String responderType)throws Exception;
 
 	List<BulkClientDetails> getbulkClientDetailsByOrgLocationId(OrgLocations orgLocation, User user, Org org, String isMailSent, String responderType) throws Exception;
+
+	BulkClientDetails deleteDuplicateRecord(String recordId, OrgLocations orgLocation)throws Exception;
+
+	BulkClientDetails saveClientRecord(String recordId, OrgLocations orgLocation, Org org, User user) throws Exception;
+
+	OrgRelations getMatchedClientList(String recordId, OrgLocations orgLocation, Org org, User user) throws Exception;
+
+	String mergeSpocWithClient(String bulkRecordId, OrgLocations orgLocation, Org org, User user, String orgRelationId) throws Exception;
 	
 }

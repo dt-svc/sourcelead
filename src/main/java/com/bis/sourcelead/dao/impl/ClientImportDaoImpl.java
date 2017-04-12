@@ -64,6 +64,23 @@ public class ClientImportDaoImpl implements ClientImportDao{
 		return bulkClientDetails;
 		
 	}
+
+	@Override
+	@Transactional
+	public BulkClientDetails getbulkClientByrecordIdAndOrgLocationId(long recordId, Long orgLocationId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		BulkClientDetails bulkClientDetails = null;
+		
+		String query = "from BulkClientDetails bulkClientDetails  where orgLocationId =:orgLocationId and bulkClientDetails.id = :recordId";
+		List<BulkClientDetails> bulkClientDetailsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("recordId", recordId).setCacheable(true).list();
+		
+		if(null != bulkClientDetailsList && bulkClientDetailsList.size() >0){
+			bulkClientDetails = bulkClientDetailsList.get(0);
+		}
+		return bulkClientDetails;
+	}
+
 	
     
 

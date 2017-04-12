@@ -24,6 +24,8 @@ import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateService;
@@ -78,6 +80,72 @@ public class ClientImportRestController {
 		return commonUtil.toJSON(bulkClientDetailsList);
 //		return "success";
 	}
+	
+//	/deleteRecordFromBulk
+	
+	/*@PreAuthorize("hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')")*/
+	@RequestMapping(value = "/deleteRecordFromBulk", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean deleteRecordFromBulk(@RequestParam(value = "recordId", required = false) String recordId,HttpServletRequest request)throws Exception{
+
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		boolean isDeleted = false;
+		BulkClientDetails bulkClientDetails  = clientImportsService.deleteDuplicateRecord(recordId,orgLocation);
+		if(bulkClientDetails != null){
+			isDeleted = true;
+		}
+		return isDeleted;
+}
+	
+	
+	
+	
+	
+	@RequestMapping(value = "/addRecordFromBulk", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean addRecordFromBulk(@RequestParam(value = "recordId", required = false) String recordId,HttpServletRequest request)throws Exception{
+
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		boolean isDeleted = false;
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		BulkClientDetails bulkClientDetails  = clientImportsService.saveClientRecord(recordId,orgLocation,org,user);
+		if(bulkClientDetails != null){
+			isDeleted = true;
+		}
+		return isDeleted;
+}
+
+	@RequestMapping(value = "/getMatchedClientList", method = RequestMethod.POST)
+	@ResponseBody
+	public String getMatchedClientList(@RequestParam(value = "recordId", required = false) String recordId,HttpServletRequest request)throws Exception{
+
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgRelations orgRelations  = clientImportsService.getMatchedClientList(recordId,orgLocation,org,user);
+		return commonUtil.toJSON(orgRelations);
+}
+	
+	
+	
+	@RequestMapping(value = "/mergeRecordFromBulk", method = RequestMethod.POST)
+	@ResponseBody
+	public String mergeRecordFromBulk(@RequestParam(value = "recordId", required = false) String recordId,HttpServletRequest request)throws Exception{
+
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		String[] ids = recordId.split(",");
+		
+		String orgRelationId= ids[0];
+		String bulkRecordId = ids[1];
+		
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		return  clientImportsService.mergeSpocWithClient(bulkRecordId,orgLocation,org,user,orgRelationId);
+		
+}
 	
 }
 

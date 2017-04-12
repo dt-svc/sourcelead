@@ -148,9 +148,9 @@ margin:10px 220px 0;
         	
         	<div class="clearfix ml">
         	<ul class="list-inline">
-	        	<li class="text-success" title="Merge"><b class="fa fa-object-group paddingRight"></b>Merge with existing Client</li>
-	        	<li class="text-primary" title="Add"><b class="fa fa-plus paddingRight"></b>Merge with existing Client</li>
-	        	<li class="text-danger" title="Remove"><b class="fa fa-trash paddingRight"></b>Merge with existing Client</li>
+	        	<li class="text-success" title="Merge"><b class="fa fa-object-group paddingRight"></b>To merge with the existing Client</li>
+	        	<li class="text-primary" title="Add"><b class="fa fa-plus paddingRight"></b>To add the new client and contact</li>
+	        	<li class="text-danger" title="Remove"><b class="fa fa-trash paddingRight"></b>To remove the record</li>
         	</ul>
         </div>
         </div>
@@ -166,7 +166,21 @@ margin:10px 220px 0;
       </div>
     </div>
     </form:form>
-  </section>  
+  </section> 
+  
+  <div class="side_mask"></div>   
+  <section class="mergePopup">
+  <div class="mergeAA"><span onclick="mergeclose();"><i class="fa fa-times"></i></span></div>
+	<span><select class="chosen-select form-control mergePopupSel" id="clientListIds" onchange="flush();">
+    	       
+	</select></span>  
+	<input type="button" onclick="mergeWithRecord();" value="Merge" class="btn btn-primary mergePopupbtn" />
+	<div class="clearfix"></div>
+	<p id="clientError"></p>	
+	<p><i class="fa fa-info-circle"></i>The user will be created in the selected client</p>	
+  </section> 
+  
+  
  <script>
 /* $(document).ready(function(){
 	document.getElementById("uploadFile").value = '';
@@ -239,7 +253,7 @@ function prepareExcelDataDiv(data){
 	var json = JSON.parse(data);
     for (var i = 0; i < json.length; i++) {
     	var report= json[i];
-    	result = result + '<tr>';
+    	result = result + '<tr id="row'+report.id+'">';
         result = result + '<td>';
         if(report.orgName != null && report.orgName != '' && report.orgName !='undefined'){
            	result = result + '<div><span>'+report.orgName+'</span></div>';
@@ -311,11 +325,10 @@ function prepareExcelDataDiv(data){
         
          result = result + '<td>';
          if(report.reason == 'spoc existed' || report.reason == 'current org user'){
-        	 result = result + "<div><a class='text-danger fa fa-trash' title='Remove'></a></div>";  
+        	 result = result + '<div class="proj_active" id="removeStatus'+report.id+'"><a class="text-danger fa fa-trash" title="Remove" onclick="removeRecord('+report.id+');"></a></div>';  
          }else{
-        	 result = result + "<div class='tbldata-dotdot-100'><a class='text-success fa fa-object-group paddingRight' title='Merge'></a> <small>|</small> <a class='text-primary fa fa-plus paddingRight' title='Add'></a> <small>|</small> <a class='text-danger fa fa-trash' title='Remove'></a></div>";
+        	 result = result + '<div class="tbldata-dotdot-100" id="recordStatus'+report.id+'"><a class="text-success fa fa-object-group paddingRight aa" title="Merge" onclick="mergeRecord('+report.id+');"></a> <small>|</small> <a class="text-primary fa fa-plus paddingRight" title="Add" onclick="addRecord('+report.id+');"></a> <small>|</small> <a class="text-danger fa fa-trash" title="Remove" onclick="terminateRecord('+report.id+');"></a></div>';
          }
-         
        
         result = result + '</td>';
         result = result + '</tr>';
@@ -328,6 +341,132 @@ function prepareExcelDataDiv(data){
 }
 </script>
 
+<script>
+function removeRecord(recordId){
+	var rowHtmlContent =  $("#row"+recordId).html();
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+       type : "POST",
+        url: sourceleadUrl+"/deleteRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId,       
+        success :function(data) {
+        	$("#row"+recordId).empty();
+	    	$("#row"+recordId).html(rowHtmlContent);
+	        $("#removeStatus"+recordId).html("<b class='proj_closed'>Removed</b>");
+       },
+   }); 
+}
+
+</script>
+
+
+<script>
+function terminateRecord(recordId){
+	var rowHtmlContent =  $("#row"+recordId).html();
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+       type : "POST",
+        url: sourceleadUrl+"/deleteRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId,       
+        success :function(data) {
+        	$("#row"+recordId).empty();
+	    	$("#row"+recordId).html(rowHtmlContent);
+	        $("#recordStatus"+recordId).html("<b class='proj_closed'>Removed</b>");
+       },
+   }); 
+}
+
+</script>
+<script>
+function addRecord(recordId){
+	var rowHtmlContent =  $("#row"+recordId).html();
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+       type : "POST",
+        url: sourceleadUrl+"/addRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId,       
+        success :function(data) {
+        	$("#row"+recordId).empty();
+	    	$("#row"+recordId).html(rowHtmlContent);
+	        $("#recordStatus"+recordId).html("<b class='proj_active'>Added</b>");
+       },
+   }); 
+}
+
+</script>
+
+<script>
+function flush(){
+	$("#clientError").empty();
+}
+</script>
+<script>
+function mergeWithRecord(){
+	var recordId = document.getElementById("clientListIds").value;
+	if(recordId!=null && recordId !=''){
+	$("#clientError").empty();
+	var recordIdVal = recordId.split(',');
+	var rowHtmlContent =  $("#row"+recordIdVal[1]).html();
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+	   type : "POST",
+	    url: sourceleadUrl+"/mergeRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId,       
+	    success :function(data) {
+	    	$("#row"+recordIdVal[1]).empty();
+	    	$("#row"+recordIdVal[1]).html(rowHtmlContent);
+	        $("#recordStatus"+recordIdVal[1]).html("<b class='proj_process'>Merged</b>");
+	        $(".side_mask").hide();
+	   		$(".mergePopup").hide();
+	   },
+	}); 
+	 $(".side_mask").fadeIn(200);
+	 $(".mergePopup").fadeIn(100);
+	}
+	else{
+		$("#clientError").empty().append("Select the client") ; 
+	}
+}
+</script>
+
+
+<script>
+function mergeRecord(recordId){
+	flush();
+	 var rowHtmlContent =  $("#row"+recordId).html();
+	var sourceleadUrl ='${sourceleadUrl}';
+	$('#clientListIds').empty();
+	 $.ajax({
+       type : "POST",
+        url: sourceleadUrl+"/getMatchedClientList?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId,       
+        success :function(data) {
+        	var json = JSON.parse(data);
+        	var result = "";
+        	
+        	$('#clientListIds').append('<option value="">---select Client---</option>');
+        	for (var i=0; i<json.matchedDomainClientList.length; i++)
+			{ 
+        		var report = json.matchedDomainClientList[i];
+        		$('#clientListIds').append('<option value='+report.id+','+recordId+'>'+report.orgName+'</option>');
+			}
+        	for (var i=0; i<json.matchedClientNameList.length; i++)
+			{ 
+        		var report = json.matchedClientNameList[i];
+        		$('#clientListIds').append('<option value='+report.id+','+recordId+'>'+report.orgName+'</option>');
+			}
+        	
+        	$('#clientListIds').trigger("chosen:updated");
+        	
+        	
+        	/* $("#row"+recordId).empty();
+	    	$("#row"+recordId).html(rowHtmlContent);
+	        $("#recordStatus"+recordId).html("<b class='proj_active'>Merged</b>"); */
+       },
+   }); 
+	 $(".side_mask").fadeIn(200);
+   $(".mergePopup").fadeIn(100);
+}
+function mergeclose(){
+	$(".side_mask").fadeOut(200);
+	$(".mergePopup").fadeOut(100);
+}
+</script>
 
 <script>
 function excelimportDataPagination(){
@@ -344,6 +483,8 @@ function excelimportDataPagination(){
     } );
 }
 </script>
+
+
 <!-- <script type="text/javascript">
 
 document.getElementById("uploadBtn").onchange = function () {
