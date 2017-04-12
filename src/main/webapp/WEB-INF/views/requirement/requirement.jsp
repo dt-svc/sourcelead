@@ -83,12 +83,12 @@ $(document).ready(function() {
 			
 			for (i=0;i < requirementAssignedToIds.length;i++)
 	        {
-	        	 result = result+ "<input type='hidden' class='defaultCheckBox' name='assignUserId"+count+"' id='assignUserId"+count+"' value='"+requirementAssignedToIds[i]+"' />";
+	        	 result = result+ "<input type='hidden' class='defaultAssignCheckBox' name='defaultAssignUserId"+count+"' id='defaultAssignUserId"+count+"' value='"+requirementAssignedToIds[i]+"' />";
 	        	 count++;
 	        }
-			result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
-			$("#assignedToSavingDiv").empty();
-			$("#assignedToSavingDiv").append(result); 
+			result = result+"<input type='hidden' name='defaultAssignedToMaxCount' id='defaultAssignedToMaxCount' value='"+count+"'/>";
+			$("#defaultAssignedToSavingDiv").empty();
+			$("#defaultAssignedToSavingDiv").append(result); 
 			assignedToValidation();
 		}	
 	} 
@@ -418,7 +418,7 @@ $(document).ready(function () {
                  </c:if>
                 </select>
                 </div>
-                <input type="text" class="form-control" id="rate" name="rate" field-name="Rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true"  value="">
+                <input type="text" class="form-control" id="rate" name="rate" field-name="Rate" value="${requirement.rate}" data-validation="validate_Space validate_int validate_length length1-8" data-validation-optional="true"  value="">
                 <div class="input-group-btn selp-custom-min">
                   <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Type">
                     <option value="">Rate Per</option>
@@ -983,6 +983,7 @@ $(document).ready(function () {
           <div class="form-group">
              
             <div id="assignedToSavingDiv"></div>
+            <div id="defaultAssignedToSavingDiv"></div>
 													
             <label class="col-md-3">Assign To</label>
             <div class="col-md-9">
@@ -1943,10 +1944,6 @@ function popupWindow(reqId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $("#popupWindow").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $("#popupWindow").removeAttr("style");
-	  getTeamsList(reqId);
-	 // var teamType = $("#rolesDiv").val();
-	 // getUserList(teamType);
-	  getUserList();
 	  var result = '';
 	    result = result +'<div class="modal-body clearfix">';
         result = result +' <div class="form-horizontal custom-form">';
@@ -1972,6 +1969,8 @@ function popupWindow(reqId){
 		result = result +'     </div>';
 		$("#popupWindow").empty();
 	    $("#popupWindow").append(result); 
+	    
+	    getTeamsList(reqId);
 	    $("#rolesDiv").selectpicker("refresh");
 }
 </script>
@@ -1986,9 +1985,15 @@ function popupWindow(reqId){
 --%>
 <script>
 function getUserList(teamType){  
-	  var sourceleadUrl ='${sourceleadUrl}';
-	  $("#userList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	  $.ajax({
+	   var sourceleadUrl ='${sourceleadUrl}';
+	  
+	   var selectedUsersForAssign = [];
+	   $('input[name^="assignUserId"]').each(function() {
+	 		selectedUsersForAssign.push($(this).val());
+	   });
+	   
+ 	   $("#userList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	   $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getUserList?${_csrf.parameterName}=${_csrf.token}&teamType="+teamType,    
             success :function(data) {
@@ -2020,23 +2025,57 @@ function getUserList(teamType){
 		                    	 var opt = json[i]; 
 		                    	 result = result +'<tr>';
 		                    	 var localCheckedStatus = "";
-		                    	 $(".defaultCheckBox").each(function() {
+		                    	 $(".defaultAssignCheckBox").each(function() {
          							var localValue = this.value;
          							if(localValue == opt.id){
          								localCheckedStatus = "checked";
          							}  
 		                    	 });
-		                    	 if(ids.indexOf(''+opt.id) > -1){
-		                    		 refreshIds.push(''+opt.id);
-		                    		 result = result +'             <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" checked="checked" value="'+opt.id+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required"></td>';
-		                    	 }else{
-		                    		 result = result +'             <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" value="'+opt.id+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
-		                    	 }
+		                    	 
 		                    	 var lastName = '';
 		                    	 if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
 		                    		 lastName = ' '+opt.lastName;
 		                    	 }
-		                    	 result = result +'             <td><span class="tbldata-dotdot-me" title="'+opt.firstName+''+lastName+'">'+opt.firstName+''+lastName+'</span></td>';
+		                    	 var owner ='';
+		         				 if(null != opt.isAssignedOwner && 'undefined' != opt.isAssignedOwner){
+		         					 owner = opt.isAssignedOwner;
+		         				 }
+		         				 var assignedTeam = '';
+		         				 if(null != opt.assignedTeam && 'undefined' != opt.assignedTeam && '' != opt.assignedTeam){
+		         					 assignedTeam = opt.assignedTeam;
+		         				 }
+		                    	 
+		                    	 if(ids.indexOf(''+opt.id) > -1){
+		                    		 refreshIds.push(''+opt.id);
+		                    		 result = result +'             <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" checked="checked" value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required"></td>';
+		                    	 }else if('' != assignedTeam){
+		                    		 if(localCheckedStatus == "checked"){
+			                    		 result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
+		                    		 }else{
+		                    		 	 result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" checked="checked" value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
+		                    		 }
+		                    	 }else if(localCheckedStatus == "checked"){
+		                    		 result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
+		                    		 //result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" value="'+opt.id+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
+		                    	 }else{
+		                    		 if(localCheckedStatus == "checked"){
+			                    		 result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
+		                    		 }else{
+		                    			 
+		                    			 var selectedUserIdForAssign = "";
+		                    			 var iteratedUserValue = opt.id+","+opt.assignedTeamId;
+				                    	 $.each(selectedUsersForAssign, function (i, value)  
+		                                 {  
+				                    		 selectedUserIdForAssign = value;
+		                                     if(selectedUserIdForAssign == iteratedUserValue){
+		                                    	 localCheckedStatus = "checked";
+		                                     }
+		                                 });
+		                    			 result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
+		                    		 }
+		                    	 }
+		                    	 
+		                    	 result = result +'             <td><span class="tbldata-dotdot-me" title="'+opt.firstName+''+lastName+'">'+opt.firstName+''+lastName+''+assignedTeam+''+owner+'</span></td>';
 		                    	 result = result +'             <td><span class="tbldata-dotdot" title="'+opt.email+'">'+opt.email+'</span></td>';
 		                    	 result = result +'             <td><span class="tbldata-dotdot-100">'+opt.userType+'</span></td>';
 		                    	 result = result +'             <td><span class="tbldata-dotdot-100">'+opt.assignJobCount+'</span></td>';
@@ -2048,7 +2087,7 @@ function getUserList(teamType){
 	                       result = result +"</table>"; 
 	                       result = result +'   <div class="clearfix"></div>'; 
 	                 	   result = result +'   </div>'; 
-	                 	   result = result +'	<span class="jquery_form_error_message" style="display:none;">Assign at least to a member</span>';
+	                 	   result = result +'	<span class="jquery_form_error_message" style="display:none;">Assign at least to a new member</span>';
 	                 	   result = result +'   <div class="modal-footer mt">';
 	                 	   result = result +'     <button class="btn btn-primary" type="button" id="assignbtnId" onClick="assignMembers();">Assign</button>';
 	                 	   result = result +'     <button class="btn btn-default" type="button" id="cancelbtnId" onClick="clearSelections();">Clear</button>';
@@ -2142,21 +2181,13 @@ function getTeamsList(reqId){
             success :function(data) {
             	var json = JSON.parse(data);
 				var output = "";
-				/* output = output +'     <option disabled>Select Role</option>'; */
-				
-
-				/* if(teamType == 'All'){
-					output = output +' <option value="All" selected>All</option>';
-				}else{
-					output = output +' <option value="All">All</option>';
-				} */
 			  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_TEAM\')">';
 			  if(json.teams.length > 0){
 				  output = output + "<optgroup label='Teams'>";
 				  for (var i = 0; i < json.teams.length; i++) {
 						var opt = json.teams[i];
 						if('Y' == opt.isTeamAssigned){
-							output = output + "<option name='TeamAndRole' value='"+opt.id+"' selected disabled>"+ opt.name + "</option>";
+							output = output + "<option name='TeamAndRole' value='"+opt.id+"' selected >"+ opt.name + "</option>";
 						}else if($.inArray(''+opt.id, teamRoleIds) > -1){
 							output = output + "<option name='TeamAndRole' value='"+opt.id+"' selected>"+ opt.name + "</option>";	
 					    }else{
@@ -2173,7 +2204,7 @@ function getTeamsList(reqId){
 					for (var i = 0; i < json.roles.length; i++) {
 						var opt = json.roles[i];
 						if('Y' == opt.isRoleAssigned){
-							output = output + "<option name='TeamAndRole' value='"+opt.id+"role' selected disabled>"+ opt.displayName + "</option>";
+							output = output + "<option name='TeamAndRole' value='"+opt.id+"role' selected >"+ opt.displayName + "</option>";
 						}else if($.inArray(''+opt.id+'role', teamRoleIds) > -1){
 							output = output + "<option name='TeamAndRole' value='"+opt.id+"role' selected>"+ opt.displayName + "</option>";
 						}else{
@@ -2187,6 +2218,11 @@ function getTeamsList(reqId){
 			    $("#rolesDiv").selectpicker("refresh");
             	
             },
+            complete: function (data) {
+            	var teamType = $("#rolesDiv").val();
+          		getUserList(teamType);
+            }
+            
       }); 
  } 
 </script>
@@ -2208,11 +2244,9 @@ function getTeamsList(reqId){
 	function clearSelections(){
 		$('#cancelbtnId').attr("data-dismiss","modal");
 		$('#closebtnId').attr("data-dismiss","modal");
-		ids = [];
 		$("#assignedToSavingDiv").empty();
 		teamRoleIds = [];
-		//$("#rolesDiv").empty();
-		//assignMembers();
+		$("#rolesDiv").empty();
 	}
 </script>
 
@@ -2230,7 +2264,7 @@ function pagination(){
     	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -2256,6 +2290,7 @@ function assignMembers() {
 	if(totalCount == 0){
 		$('span.jquery_form_error_message').show();
 	}else{
+		$("#assignedToSavingDiv").empty();
 		$('#assignbtnId').attr("data-dismiss","modal");
 		rowcollection.each(function(index,elem){
 		    var checkbox_value = $(elem).val();
@@ -2263,7 +2298,7 @@ function assignMembers() {
 		    count++;
 		});
 		result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
-		$("#assignedToSavingDiv").empty();
+		//$("#assignedToSavingDiv").empty();
 		$("#assignedToSavingDiv").append(result);
 		assignedToValidation();
 		$("#assignedTeamId").val($("#rolesDiv").val());
@@ -2458,7 +2493,11 @@ function getLevel2Approvers(currentApproverId){
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
+			        		if(opt.lastName != null && opt.lastName !='undefined'){
 			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		}else{
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+"</option>";	
+			        		}
 					}
 		        	$("#sequentialApprover2").empty();
 			        $("#sequentialApprover2").append(output);
@@ -2635,7 +2674,7 @@ var splitNotice = notice.split(",");
 for (var i = 0; i < splitNotice.length; i++) {
 	splitNotice[i] = splitNotice[i].replace(/^\s*/, "").replace(/\s*$/, "");
 }
-$("#noticePeriod").val(splitNotice).trigger("chosen:updated");
+	$("#noticePeriod").val(splitNotice).trigger("chosen:updated");
 }
 </script>
 

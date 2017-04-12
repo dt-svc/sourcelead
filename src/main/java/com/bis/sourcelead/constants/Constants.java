@@ -97,6 +97,8 @@ public class Constants {
 	public static String INTERVIEWER_INVITATION = "Interviewer Invitation";
 	public static String INTERVIEWER_TEMPLATE = "Interviewer Template";
 	
+	public static String INTERVIEW_RESCHEDULEMAIL_TO_APPLICANT="interviewRescheduleMailToApplicant";
+	
 	public static String OFFER_ACCEPTED = "Offer Accepted";
 	public static String OFFER_ACCEPTED_NOTIFICATION = "Offer Accepted Notification";
 	
@@ -207,6 +209,8 @@ public class Constants {
 	
 	public static final long USERID = 1;
 	
+	public static String PASSWORD_RESET_MAIL_TO_USER = "passwordResetMailToUser";
+	
 	public static String REQUIREMENT_SEQUENTIAL_EMAIL_NOTIFICATION = "Approval Mechanism Sequential";
 	public static String APPROVED_EMAIL_NOTIFICATION = "Approved Requirement";
 	public static String REJECTED_EMAIL_NOTIFICATION ="Rejected Mail About The Requirement";
@@ -229,6 +233,8 @@ public class Constants {
 	public static String OFFERACCEPT_EMAIL = "VendorAcceptedOffer";
 	
 	public static String APPLICANT_RECEIVE_MAILABOUT_REQUIREMENT_EMAIL = "ApplicantReceiveMailAboutRequirement";
+	
+	public static String NOTIFY_APPLICANT_MAILABOUT_REQUIREMENT="notifyApplicantMailAboutRequirement";
 	
 	public static String APPLICANT_RECEIVE_MAILABOUT_REQUIREMENT_NOTIFICATION = "ApplicantReceiveMailAboutRequirement";
 	public static String APPLICANT_ACCEPT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION = "ApplicantAcceptRequirement";
@@ -261,6 +267,9 @@ public class Constants {
 	
 	public static String CROWD_SOURCING_SOURCE_SELF = "SELF";
 	
+	public static String EMPLOYEE_TERMINATION = "Employee Termination";
+	public static String EMPLOYEE_TERMINATION_MAIL_TO_MANAGER = "Employee Termination Mail To Manager";
+	public static String EMPLOYEE_REASSIGN = "Employee Reassign";
 	
 	public static final DateFormat TMS = new SimpleDateFormat ("hh:mm a");
 	
@@ -366,6 +375,8 @@ public class Constants {
 	public static String Applicant_Acceptance_By_Manager_Of_Requirement = "ApplicantAcceptanceByManagerOfRequirement";
 	public static String Applicant_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager = "ApplicantWillReceiveMailAboutTheAcceptanceOfRequirementByManager";
 	
+	public static String Recruiter_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager = "RecruiterWillReceiveMailAboutTheAcceptanceOfRequirementByManager";
+	
 	public static String[] RATEPER_LIST = {"Daily","Hourly","Weekly","Bi-Weekly","Semi-Monthly","Monthly","Yearly"};
 	
 	public static String[] ROLE_LIST = {"Admin","Employee","Project Manager","Team Lead"};
@@ -377,6 +388,7 @@ public class Constants {
 	
 	public static String EDUCATIONS = "Educations";
 	public static String SKILLS = "Skills";
+	public static String DOCUMENT_TYPE="Document Type";
 	
 	public static String ADMIN = "Admin";
 	
@@ -615,5 +627,5 @@ public class Constants {
     public static String ONE_MONTH = "month";
     public static String TWO_MONTHS = "twomonths";
     
-   
+    public static  Long CANDIATE_RESUME_IN_ACTIVE = 0L;
 }	

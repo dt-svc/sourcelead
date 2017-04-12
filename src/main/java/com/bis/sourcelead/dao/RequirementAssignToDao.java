@@ -29,4 +29,7 @@ public interface RequirementAssignToDao {
 
 	public List<RequirementAssignTo> getAllAssignedRequirementByDateRange(Long orgLocationId, String userId,Date startDateUTC, Date endDateUTC);
 	
+	public List<RequirementAssignTo> getAllAssignedRequirementByOrglocationIdAndTeamId(Long orgLocationId,Long teamId);
+
+	
 }

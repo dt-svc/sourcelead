@@ -620,9 +620,28 @@ public class RequirementServiceImpl implements RequirementService {
 					int MaxCount = Integer.parseInt(assignedToMaxCount);
 						for (int c = 1; c < MaxCount; c++) {
 							RequirementAssignTo  requirementAssignTo;
-							User assUser = userService.getUserById(Long.parseLong(jsonObj.getString("assignUserId"+c)));
+							//User assUser = userService.getUserById(Long.parseLong(jsonObj.getString("assignUserId"+c)));
+							
+							String [] selectedUser = jsonObj.getString("assignUserId"+c).split(",");
+							
+							//### to skip duplicate user IDs START>>>>>
+							boolean userExists = false;
+							for(RequirementAssignTo rat : requirementAssignToList){
+								userExists = rat.getAssignUserId().getId().equals(Long.parseLong(selectedUser[0]));
+								if(userExists){
+									break;
+								}
+							}
+							if(userExists){
+								continue;
+							}
+							//to skip duplicate user IDs END ######
+							
+							User assignedUser = new User();
+							assignedUser.setId(Long.parseLong(selectedUser[0]));
+							
 							if(requirement.getId() !=null){
-								 requirementAssignTo = requirementAssignToService.getRequirementAssignToByRequirementIdandAssignedUserId(requirement.getId(), assUser.getId());
+								 requirementAssignTo = requirementAssignToService.getRequirementAssignToByRequirementIdandAssignedUserId(requirement.getId(), assignedUser.getId());
 								if(requirementAssignTo == null){
 									requirementAssignTo = new RequirementAssignTo();
 								}
@@ -630,7 +649,23 @@ public class RequirementServiceImpl implements RequirementService {
 								requirementAssignTo = new RequirementAssignTo();
 							}
 							
-								Team team = new Team();
+							Team assignedTeam = null;
+							if(null != selectedUser[1] && !selectedUser[1].equalsIgnoreCase("") && !selectedUser[1].equalsIgnoreCase("undefined")){
+								assignedTeam = new Team();
+								assignedTeam.setId(Long.parseLong(selectedUser[1]));
+							}
+							requirementAssignTo.setTeamId(assignedTeam);
+							requirementAssignTo.setAssignUserId(assignedUser);
+							requirementAssignTo.setRequirementId(requirement);
+							UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assignedUser.getId(),orgLocations.getId());
+							requirementAssignTo.setRoleId(userRole.getRoles());
+							requirementAssignTo.setCreatedDate(commonUtil.currentDate());
+							requirementAssignTo.setCreatedBy(user.getUserCode());
+							requirementAssignTo.setUpdatedBy(user.getUserCode());
+							requirementAssignTo.setUpdatedDate(commonUtil.currentDate());
+							requirementAssignToList.add(requirementAssignTo);
+							
+								/*Team team = new Team();
 								Long teamId = 0L;
 								int teamReady = 0;
 								for(int count = teamCount; count > 0; count--){
@@ -655,7 +690,7 @@ public class RequirementServiceImpl implements RequirementService {
 								requirementAssignTo.setCreatedBy(user.getUserCode());
 								requirementAssignTo.setUpdatedBy(user.getUserCode());
 								requirementAssignTo.setUpdatedDate(commonUtil.currentDate());
-								requirementAssignToList.add(requirementAssignTo);
+								requirementAssignToList.add(requirementAssignTo);*/
 							}
 						}
 				     
@@ -2949,6 +2984,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
      	requirement.setJobType(requirementIndex.getJobType());
      	requirement.setOtherJobType(requirementIndex.getOtherJobType());
      	requirement.setJobTitle(requirementIndex.getJobTitle());
+     	requirement.setPostedDateStr(requirementIndex.getCreatedDate());
      	if(requirementIndex.getMinExperience() !=null){
      		requirement.setMinExp(requirementIndex.getMinExperience().toString());	
      	}
@@ -3231,5 +3267,28 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	public String getNoticePeriodByRequirementId(Long requirementId) throws Exception {
 		return requirementDao.getNoticePeriodByRequirementId(requirementId);
 	}
+	
+	@Override
+	public List<Requirement> getAllRequirementsByOrglocationIdAndUserId(Long orgLocationId, User user)
+			throws Exception {
+		return requirementDao.getAllRequirementsByOrglocationIdAndUserId(orgLocationId,user);
+	}
 
+	@Override
+	public List<Requirement> getAllRequirementsByOrglocationIdAndUserIdAsTeamLead(Long orgLocationId, User user)
+			throws Exception {
+		return requirementDao.getAllRequirementsByOrglocationIdAndUserIdAsTeamLead(orgLocationId,user);
+	}
+	
+	@Override
+	public Integer getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(Long orgLocationId, User user)	throws Exception {
+		return requirementDao.getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(orgLocationId,user);
+	}
+
+	@Override
+	public List<Requirement> getAllRequirementsByOrglocationIdAndRequirementWhoAreAssignedToRequirement(
+			Long orgLocationId,  TeamMembers teamMembers) throws Exception {
+		return requirementDao.getAllRequirementsByOrglocationIdAndRequirementWhoAreAssignedToRequirement(orgLocationId,teamMembers);
+	}
+	
 }
