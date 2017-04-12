@@ -240,16 +240,10 @@
 	                                </div>
                                 </div>
                                 
-                                
-                                
-                                
-                                
-                                
-                                
                                 <div class="clearfix"></div>
                                 <div class="clearfix mt col-md-12 form-footer">
                                   <div class="pull-right">
-                                    <input type="button" id="onboardtask_submit" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="saveOnboardTask();"  value="Save">
+                                    <input type="button" id="onboardtask_submit" class="btn btn-primary btn-sm" onclick="saveOnboardTask();"  value="Save">
                                     <input type="button" class="btn btn-default btn-sm ml10" value="Cancel" data-dismiss="modal" onclick="flushOnboardTask();">
                                   </div>
                                 </div>
@@ -711,6 +705,7 @@ function saveOnboardTask(){
 		        	if(result == 'success'){
 		        		$("#onboardtasksLoading").removeAttr("style");
 			        	flushOnboardTask();
+			        	getAssignToUsersList();
 			        	getOnboardingTasksList();
 		        	}
 		        	
