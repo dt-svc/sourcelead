@@ -943,8 +943,11 @@ public class EMailJobScheduler {
 	}
 	
 	
-	
-	@Scheduled(cron = "0 0/30 * 1/1 * ?")
+	/*
+	 * This method is for sending mail for Reporting manager 
+	 *  while creating user in an organization we assign a reporting manager for every individual user ,this is optional 
+	 
+	@Scheduled(cron = "0 0 12 1/1 * ? ")
 	@Async
 	public void consolidatedReportsofReportingManagerForHisUsers() throws Exception {
 		
@@ -1022,11 +1025,11 @@ public class EMailJobScheduler {
                							//conreport.setRequirementName(requirement.getJobTitle());
                							for (int i = 0; i < modules.length; i++) {
 
-               								/*
+               								
                								 * This is for checking the login Organization is
                								 * ATS or not And Get ALl received jobs Count
                								 * 
-               								 */
+               								 
                								if (modules[i].equalsIgnoreCase(Constants.MODULE_ATS_STR)) {
 
                									List<RequirementSubmission> submissionsRecievedList = requirementSubmissionService.getAllSubmissionsfromVendorsBasedOnLocationIdAndUserId(usr, orgLocations,
@@ -1088,7 +1091,7 @@ public class EMailJobScheduler {
 	public void sendEmailconsolidatedReportsofReportingManagerForHisUsers(List<ConsolidatedReport> list,User user) throws Exception {
 		
 		 StringBuilder  sb  = new StringBuilder();
-		/*
+		
 		 sb.append("<div>");
 		 sb.append("<span style='width:260px;display:inline-block;margin-bottom:5px'>Team Name:</span>");
 		 sb.append("<strong style='padding-left:10px'>");
@@ -1100,7 +1103,7 @@ public class EMailJobScheduler {
 		 sb.append("<strong style='padding-left:10px'>");
 		 sb.append(teamMembersCount);
 		 sb.append("</strong><div>");
-		 sb.append("<div>");*/
+		 sb.append("<div>");
 		
 	
    	sb.append("<table width='900' align='center' style='border-collapse: collapse; margin: 0 auto;border: 1px solid #375d81; text-align: center;' cellpadding='2px' cellspacing='0' border='0'>");
@@ -1163,7 +1166,6 @@ public class EMailJobScheduler {
 		 globalVarsMap.put("professionalName", professionalName);
 		 globalVarsMap.put("experience", experience);
 		 globalVarsMap.put("location", location);
-		 globalVarsMap.put("professionalEmail", "sammetadavid@gmail.com");
 		 
 		
 		 //setting the Recipient information
@@ -1188,7 +1190,14 @@ public class EMailJobScheduler {
 		
 	}
 	
-	@Scheduled(cron = "0 0/1 * 1/1 * ? ")
+	
+	
+	
+	 * This method is for sending mail for Every individual user  regarding requirement reports
+	 * 
+	 
+	
+	@Scheduled(cron = "0 0 12 1/1 * ? ")
 	@Async
 	public void scheduleUserMailForRequirementConsolidatedReports() throws Exception {
 		
@@ -1211,7 +1220,6 @@ public class EMailJobScheduler {
 							Integer  todayReleasedRequirementsCount  = 0;
 							
 							List<ConsolidatedReport> list = new ArrayList<ConsolidatedReport>();
-							System.out.println("UserName" + user.getFirstName());
 		
 							String[] modules = org.getModulesId().split(",");
 							for (int i = 0; i < modules.length; i++) {
@@ -1228,6 +1236,7 @@ public class EMailJobScheduler {
 							Integer numberOfActiveRequirementCount = 0;
 							Integer numberOfCreatedCandidatesCount = 0;
 		
+		
 							for (Requirement requirement : requirementList) {
 		
 										ConsolidatedReport conreport = new ConsolidatedReport();
@@ -1236,10 +1245,10 @@ public class EMailJobScheduler {
 										for (int i = 0; i < modules.length; i++) {
 				
 											
-											/*
+											
 											 * This is for checking the login Organization is
 											 * ATS or not And Get ALl Vendor Submitted Jobs
-											 * */
+											 * 
 											 
 											 
 											if (modules[i].equalsIgnoreCase(Constants.MODULE_ATS_STR)) {
@@ -1296,9 +1305,11 @@ public class EMailJobScheduler {
 
 
 	
-	// Team Lead
+	 * This method is for sending mail for Every Team Lead  regarding team members requirement reports 
+	 * 
+	 
 	
-	@Scheduled(cron = "0 0/1 * 1/1 * ? ")
+	@Scheduled(cron = "0 0 12 1/1 * ? ")
 	@Async
 	public void scheduleTeamLeadMailForRequirementConsolidatedReports() throws Exception {
 	
@@ -1385,9 +1396,9 @@ public class EMailJobScheduler {
                    							for (int i = 0; i < modules.length; i++) {
 
                    								
-                   								/* * This is for checking the login Organization is
+                   								 * This is for checking the login Organization is
                    								 * ATS or not And Get ALl received jobs Count
-                   								 * */
+                   								 * 
                    								 
                    								if (modules[i].equalsIgnoreCase(Constants.MODULE_ATS_STR)) {
 
@@ -1529,7 +1540,6 @@ public class EMailJobScheduler {
 		 globalVarsMap.put("professionalName", professionalName);
 		 globalVarsMap.put("experience", experience);
 		 globalVarsMap.put("location", location);
-		 globalVarsMap.put("professionalEmail", "sammetadavid@gmail.com");
 		 
 		
 		 //setting the Recipient information
@@ -1559,9 +1569,7 @@ public class EMailJobScheduler {
 		
 		 StringBuilder  sb  = new StringBuilder();
 		 
-			
-		 
-		 
+			 
 			 sb.append("<div>");
 			 sb.append("<span style='width:260px; display: inline-block; margin-bottom: 5px;'>Released Requirement Count:</span> <strong style='padding-left:10px;'>"+todayReleasedRequirementsCount+"</strong>");
 			 sb.append("<div>");
@@ -1627,7 +1635,6 @@ public class EMailJobScheduler {
 			 globalVarsMap.put("professionalName", professionalName);
 			 globalVarsMap.put("experience", experience);
 			 globalVarsMap.put("location", location);
-			 globalVarsMap.put("professionalEmail", "sammetadavid@gmail.com");
 			 
 			
 			 //setting the Recipient information
@@ -1651,6 +1658,6 @@ public class EMailJobScheduler {
 			 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
 		
 	}
-
+*/
 
 }
