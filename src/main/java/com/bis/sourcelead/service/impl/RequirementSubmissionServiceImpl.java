@@ -4076,6 +4076,19 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			throws Exception {
 		return requirementSubmissionDao.validateRecruiterSubmittedCandidateEmail(email, requirementId, userId);
 	}
+	
+	@Override
+	public Integer getConsolidatedReportsForMailingForIndividualUserForToday(User user,
+			 OrgLocations orgLocations,String status,Requirement requirement) throws Exception {
+		return requirementSubmissionDao.getConsolidatedReportsForMailingForIndividualUserForToday(user, orgLocations,status,requirement);
+	}
+
+	@Override
+	public List<RequirementSubmission> getAllSubmissionsfromVendorsBasedOnLocationIdAndUserId(User user,
+			OrgLocations orgLocations, String status, Requirement requirement) throws Exception {
+		return requirementSubmissionDao.getAllSubmissionsfromVendorsBasedOnLocationIdAndUserId(user, orgLocations,status,requirement);
+
+	}
 
 	@Override
 	public List<RequirementSubmission> getApplicantsListByOrgLocationAndUserId(OrgLocations loginOrgLocations,
@@ -4102,6 +4115,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	@Override
 	public List<Long> getSubmissionIdByCandidateId(List<Long> candidateIds, Long orgLocationId) {
 		return requirementSubmissionDao.getSubmissionIdByCandidateId(candidateIds,orgLocationId);
+	}
+	
+	@Override
+	public List<RequirementSubmission> getOfferAcceptedCandidatesListByOrgLocationId(Long orgLocationId) {
+		return requirementSubmissionDao.getOfferAcceptedCandidatesListByOrgLocationId(orgLocationId);
 	}
 
 }

@@ -18,16 +18,20 @@
 
 <div class="content-dashboard clearfix" id="assignedRequirementsDiv" style="display: none;"> 
       <!-- Assigned Requirements -->
-      <div class="clearfix dashboard-widget mb col-md-12 hdrPosition">
+      <div class="clearfix dashboard-widget mb col-md-12" >
         <h4 class="clearfix">
         Assigned Requirements
         &nbsp;&nbsp;<!-- <span title="Calendar"><i aria-hidden="true" class="fa fa-calendar" id="datepicker"></i>
         </span> -->
+        <div class="pull-right" id="viewmoresDiv" style="display: none;"> 
+      <a href="/sourcelead/requirementList" class="btn btn-sm btn-primary pull-right" title="View more"> View More</a>
+        </div>
         </h4>
       <!-- <a href="#" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
         <div class="clearfix require_wrap_table dashboard-data filter_position"> 
         		 <div id="requirementList"></div>
         </div>
+        
       </div>
     </div>
     
@@ -100,9 +104,16 @@ function requirementList(){
 	                 	 result = result +'</div>';
 	                 	 result = result +'</div>';
 	                 	 result = result +'</div>';
-	                     
-	                     var json = JSON.parse(data);
-	                     for (var i = 0; i < json.length; i++) { 
+	                 	 
+	                 	var json = JSON.parse(data);
+	                 	var checkSize = json.length;
+	                     if(checkSize>10){
+	                         checkSize = 10;
+	                     }
+	                     else{
+	                         checkSize = json.length;
+	                     }
+	                     for (var i = 0; i < checkSize; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
 	                    	 if(opt.jobId!=null && opt.jobId !='' && opt.jobId !='undefined'){
@@ -161,6 +172,9 @@ function requirementList(){
 		                     }
 		                     result = result + '</div>';
 		                     result = result +"</td>";
+		                     if(checkSize>=10 && i==9 ){
+		                    	 $("#viewmoresDiv").css("display", "block");
+			 	   	   	    	 } 
 		                     result = result +"</tr>";
 		                     result = result +"</tr>";
 	                     }
@@ -176,25 +190,14 @@ function requirementList(){
 						 });	
 			 			 
 	                     pagination(); 
-                 }else{
-                	 $("#requirementList").removeAttr("style");
-  	    	      /*    var result ="";
-		    	    
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Requirement Found</p>";
-					 result = result+"			 </div>"; */
-					
-					$("#requirementList").empty();
-				    //$("#requirementList").append(result); 
-                }
+                 }
           },
             
        }); 
   } 
 </script>   
 
-<script>
+<!-- <script>
 function pagination(){ 
     $('#requirementPagination').DataTable( { 
     	"scrollCollapse": false,
@@ -208,6 +211,6 @@ function pagination(){
        }
     } );
 }
-</script>
+</script> -->
 
 <jsp:include page="addApplicantFromDashboard.jsp" />

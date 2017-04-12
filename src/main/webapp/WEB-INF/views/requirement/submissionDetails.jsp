@@ -219,7 +219,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			    	    <c:if test="${isManager == true || isAdmin == true}">
 			    	   		result = result + '<ul class="list-unstyled list-inline">';
 			    	   		result = result + '<span id="statusDiv">';
-			    	    	if(json.submissionRateStatus != 'ACCEPTED' && json.submissionRateStatus != 'REJECTED' && json.submissionStatus != 'SUBMISSION' && json.submissionStatus != 'REJECTED' && json.submissionStatus != 'SHORTLIST' && json.submissionStatus != 'OFFERMADE'){   
+			    	   		if(json.submissionRateStatus != 'ACCEPTED' && json.submissionRateStatus != 'REJECTED' && json.submissionStatus != 'SUBMISSION' && json.submissionStatus != 'REJECTED' && json.submissionStatus != 'SHORTLIST' && json.submissionStatus != 'OFFERMADE' && json.submissionStatus != 'INTERVIEW' && json.submissionStatus != 'SUBMIT_TO_CLIENT'){   
 								result = result + '	<li><i class="fa fa-check labelsuccess" title="Accept Applicant Authorization" onClick="acceptCandidate(\''+submissionId+'\',\'accept\');"></i>';
 								result = result + '		<div class="acceptreject-pop" id="accpet-div">';
 								result = result + '		</div>';
@@ -290,7 +290,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 						   }else{
 							   <c:if test="${isTeamMember == true && isManager == false && isAdmin == false}">
 							   		result = result +'<span id= "requestsDiv">';
-							   if(json.submissionStatus != 'REJECTED' && json.submissionStatus != 'SHORTLIST' && json.submissionStatus != 'OFFERMADE'){
+							   		if(json.submissionStatus != 'REJECTED' && json.submissionStatus != 'SHORTLIST' && json.submissionStatus != 'OFFERMADE' && json.submissionStatus != 'INTERVIEW' && json.submissionStatus != 'SUBMIT_TO_CLIENT'){
 									result = result + '	<li><i class="glyphicon glyphicon-share-alt labelsuccess" title="Request" onClick="requestFun('+submissionId+');"></i>';
 							   }
 									result = result + '		<div class="acceptreject-pop" id="request">';
@@ -1386,7 +1386,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 		result = result+'	                            <input type="file" name="docFile" id="docFile" style="display: none;"  multiple="" class="upload">';
 		result = result+'	                            </span> </label>';
-		result = result+'	                          <input type="text" class="form-control margnTop0" readonly id="uploadFile" name="docFile" placeholder="Attachment" field-name="Attachment" data-validation="required validate_Space validatedoc">';
+		result = result+'	                          <input type="text" class="form-control margnTop0" readonly id="subUploadFile" name="subUploadFile" placeholder="Attachment" field-name="Attachment" data-validation="required validate_Space validatedoc">';
 		result = result+'	                        </div>';
 		result = result+'	                    </div>  ';  
 		result = result+'	                  </div>   '; 
@@ -1400,15 +1400,17 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		$('#accpet-div').fadeOut();
 		$('#reject').fadeOut();
 		//attachmentValidationFun();
-		
+		 
 		/* upload file script for size validation 2MB*/
 	    var selectedFile = document.getElementById("docFile");
 	    selectedFile.addEventListener("change", function() {
 	      var docSize = this.files[0].size;
-	      $("#docFileuploadFileGroup").find('p.jquery_form_error_message').remove();
+	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
+	      $("#request_candidate").attr("disabled", false);
 	      if(docSize > 2097152){
-	    	  document.getElementById("uploadFile").value = '';
-	    	  $("#docFileuploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
+	    	  document.getElementById("subUploadFile").value = '';
+	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
+	    	  $("#request_candidate").attr("disabled", true);
 	      }
 	    });
 	    
@@ -1416,7 +1418,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 	    document.getElementById("docFile").onchange = function () {
 			   //$("#uploadFile").dir(this.files[0]);
 		    	//document.getElementById("uploadFile").value = this.value;
-		    	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+		    	$('#subUploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
 		  
 		   }; 
 	};

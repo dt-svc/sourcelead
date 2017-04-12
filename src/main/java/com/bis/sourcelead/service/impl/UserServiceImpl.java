@@ -1067,5 +1067,67 @@ public class UserServiceImpl implements UserService {
 		 emailScenerioUtil.sendEmail(emailMessage,locationId,iAdressArray,new ArrayList<EmailAttachment>());
 		
 	}
+
+	@Override
+	public void passwordResetMailToLoginUser(User user,OrgLocations orgLocations) throws Exception {
+		
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(user.getFirstName());
+		 emailMessage.setLastName(user.getLastName());
+		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFromEmail("qa@sourcelead.com");
+		 emailMessage.setCreatedBy(user.getUserCode());
+		// StringBuilder msgBuild = new StringBuilder();
+		// emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 StringBuffer userNameStringBuffer =  new StringBuffer();
+		 if (user.getLastName() != null && !"".equalsIgnoreCase(user.getLastName()) ) {
+			 globalVarsMap.put("userName",userNameStringBuffer.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+			 } else {
+				 globalVarsMap.put("userName", user.getFirstName());
+			}
+		
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 //using same migration which has been already used in updatedRequirementMailToManager method
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.PASSWORD_RESET_MAIL_TO_USER,Constants.ENTITY_TYPE_EMAIL);
+		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.PASSWORD_RESET_MAIL_TO_USER,Constants.ENTITY_TYPE_NOTIFICATION);
+
+		 
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 notificationScenario.setBody(notificationbody);
+
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 String actionLink="";
+		 emailScenerioUtil.sendNotification(actionLink, user, user, orgLocations, notificationScenario);
+		}
+	
+	
+	@Override
+	public List<User> getAllUsersWithRequirementTabAccessAndMemeberInRequirementMemberOrgLocationIdAndTabId(
+			Long orgLocationsId, Long tabId) throws Exception {
+		return userDao.getAllUsersWithRequirementTabAccessAndMemeberInRequirementMemberOrgLocationIdAndTabId(orgLocationsId,tabId);
+	}
+
+	@Override
+	public LinkedHashSet<User> getUsersListAsReoprtingManagersByOrgLocationIdHavingTabAccess(Long orgLocationsId, User user, Long tabId) throws Exception
+		{
+		return userDao.getUsersListAsReoprtingManagersByOrgLocationIdHavingTabAccess(orgLocationsId,user,tabId);
+	}
 	
 }
