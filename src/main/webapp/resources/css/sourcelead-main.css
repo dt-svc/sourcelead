@@ -3993,7 +3993,7 @@ p.comment-text{
     position: relative;
 }
 .pipeline-count ul li{
-	margin:0 2px !important;
+	margin:0 5px !important;
 	float:none;
     padding: 5px 6px 0px 6px !important;
 	line-height:20px;
@@ -6832,6 +6832,170 @@ table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTa
 }
 #status-data .filter-position .dataTables_filter {
     z-index: 99;
+}
+.resumeView {
+    padding: 15px; background: rgba(241,240,240,1.00); margin:0; border-radius: 2px;
+    border:1px solid #ededed;
+    -moz-border-radius: 5px; -webkit-border-radius: 5px; -o-border-radius: 5px; -ms-border-radius: 5px;
+}
+.resume-header .media-heading {
+    margin-bottom: 2px;
+}
+.resume-header .media-body p {
+    font-size: 13px; line-height: 18px; margin-bottom: 2px;
+} 
+.resume-header {
+    border-bottom: 1px solid #f0ad4e; padding-bottom:0px;
+}
+.resume-header .media-object {
+    border-radius: 10px; border: 1px solid #ededed;
+}
+.resume-header i {
+    width: 20px; text-align:left;
+}
+.resume-widget {
+    padding-left: 10px; margin-bottom: 0px; position: relative; border-bottom: 1px dotted #cfd8dc;
+    padding-bottom: 5px;
+}
+.resume-widget:before{
+    position: absolute; clear: both; content: "";height: 0;left:-5px;
+	top:5px; background: #b0bec5; width: 3px; height: 40px;
+}
+.resume-widget p {
+    margin-bottom: 0px;
+}
+.resume-widget small {
+    color: #f4511e;
+}
+.resume-widget h4 {
+    font-size: 16px; margin-bottom: 3px; margin-top: 0; color: #8a6d3b;
+}
+.resume-widget h5 {
+    font-weight: normal; font-size: 14px; margin:0; margin-bottom: 0px;
+}
+.resume-widget .description {
+font-size: 13px; display: none;
+}
+.resume-widget.resumewidget {
+    border-left:transparent; padding-left: 0; border-bottom: 1px dotted #cfd8dc;
+    margin-bottom: 5px;
+}
+.resume-widget.resumewidget:before{
+    position: absolute; left:-5px; top:5px; background: transparent;
+	width: 3px; height: 40px; clear: both;content: "";height: 0; left:-16px;
+	top:0px; width: 0;
+}
+.skillsView  .progress {
+    margin-bottom: 10px;
+}
+.taskwidget_inner {
+    border-bottom: 1px dotted #ccc; margin-top: 10px;
+}
+.taskwidget_inner .media-left{
+    padding: 5px 10px; vertical-align: middle; color: #606060;
+}
+.taskwidget_inner strong {
+    font-size: 16px; font-weight: normal;
+}
+.taskheder label {
+margin-bottom: 0;
+}
+.list-description span {
+    color: #909090; padding-right: 5px; font-size: 14px;
+}
+.list-description li {
+    margin-right: 10px; list-style: circle;
+}
+.list-description li:before{
+    content: "\f00c";
+    font-family: Fontawesome; font-size: 12px; padding-right: 5px; color: #f60;
+}
+
+.applicant_accept {
+    padding: 15px; background: rgba(241,240,240,1.00); margin:0; border-radius: 5px;
+    -moz-border-radius: 5px; -webkit-border-radius: 5px; -o-border-radius: 5px; -ms-border-radius: 5px;
+}
+.applicant_accept h2{
+    font-size: 20px; margin-top: 10px; margin-bottom: 10px; color: #333; font-weight: normal;
+}
+.applicant_accept .tab-content {
+ padding: 15px; /*border: 1px solid #5cb85c; */border-top: transparent; border-radius: 3px; background: #f8f8f8;
+}
+.applicant_accept .nav-tabs {
+    border-bottom: 1px solid transparent;
+}
+.applicant_accept .nav-tabs > li {
+    margin-right: 10px;
+}
+.applicant_accept .nav-tabs > li > a {
+    color: #5C5C5C; border-bottom: 1px solid #ddd;
+}
+.applicant_accept .nav-tabs > li > a span{
+    font-size: 18px;
+}
+.applicant_accept .nav-tabs > li > a small {
+    color: #A39E9E;
+}
+.applicant_accept .nav-tabs > li > a:hover {
+    border-bottom: 1px solid #5cb85c;
+}
+.applicant_accept .nav > li > a:focus, .applicant_accept .nav > li > a:hover {
+    text-decoration: none; background-color: transparent; border: 1px solid transparent; border-bottom: 1px solid #4285f4;
+}
+.applicant_accept .nav-tabs > li > a {
+    margin-right: 2px; line-height: 1.42857143; border-radius: 4px 4px 0 0;
+}
+.applicant_accept .nav > li > a {
+    position: relative; display: block; padding: 10px 20px 10px 5px;
+}
+.applicant_accept .nav-tabs > li.active > a, .applicant_accept .nav-tabs > li.active > a:focus, .applicant_accept .nav-tabs > li.active > a:hover {
+    color: #5cb85c; cursor: pointer; background-color: transparent; border: 1px solid transparent;
+    border-bottom-color: #5cb85c;
+}
+.applicant_accept .nav-tabs > li.active > a:after {
+    position: absolute; border-top: 10px solid #5cb85c; border-left: 10px solid transparent;
+	border-right: 10px solid transparent; clear: both; content: ""; height: 0;
+	position: absolute; left: 50%; bottom: -10px; width: 0;
+}
+.onboardBtns .btn {
+    background: transparent; border: 1px solid #d5d5d5; border-radius: 2px; color: #375d81;
+}
+.onboardBtns .btn:hover {
+    background: #375d81; color: #fff; border-radius: 2px; 
+}
+.paddingRight{
+    padding-right: 5px;
+}
+.paddingLeft{padding-left: 5px;
+}
+.mt {
+    margin-top: 15px;
+}
+.calendar {
+    background-image:url("../images/calendar.png"); background-repeat:no-repeat; background-position:96% center; background-size:18px;
+ }
+
+
+/* Assign Template Styles */
+.assignTemplate {}
+.assignTemplate h4 {
+   margin: 0; font-size: 18px; background: #dcdcdc; padding: 5px 10px; margin-bottom: 15px;
+}
+/* Assign Template Styles */
+.list-description li label{
+	margin-right: 5px; border:1px solid rgba(3, 169, 244, 0.17); background-color:rgba(3, 169, 244, 0.1); border-radius:5px; padding: 4px 10px;
+}
+.add_Task .modal-body{
+	padding: 15px;
+}
+.add_Task .row {
+    margin-right: -15px !important; margin-left: -15px !important;
+}
+.onboardDocs strong a {
+    color: #fff;left: -10px; top: 10px;
+}
+.onboardDocs strong input.dele{
+width: 7%; top: 10px;	
 }
 /* media 320px */
 @media (max-width: 320px) {
