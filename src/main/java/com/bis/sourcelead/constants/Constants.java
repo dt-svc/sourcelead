@@ -269,6 +269,9 @@ public class Constants {
 	
 	public static String CROWD_SOURCING_SOURCE_SELF = "SELF";
 	
+	public static String EMPLOYEE_TERMINATION = "Employee Termination";
+	public static String EMPLOYEE_TERMINATION_MAIL_TO_MANAGER = "Employee Termination Mail To Manager";
+	public static String EMPLOYEE_REASSIGN = "Employee Reassign";
 	
 	public static final DateFormat TMS = new SimpleDateFormat ("hh:mm a");
 	
@@ -387,6 +390,7 @@ public class Constants {
 	
 	public static String EDUCATIONS = "Educations";
 	public static String SKILLS = "Skills";
+	public static String DOCUMENT_TYPE="Document Type";
 	
 	public static String ADMIN = "Admin";
 	

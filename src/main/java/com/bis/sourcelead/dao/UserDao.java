@@ -128,4 +128,12 @@ public interface UserDao {
 
 	List<User> getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(Long orgLocationsId, Long tabId,
 			List<Long> ownersList);
+	
+	
+	public List<User> getAllUsersWithRequirementTabAccessAndMemeberInRequirementMemberOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
+
+	public List<User> getUsersListAssignedToReoprtingManagersByOrgLocationId(Long orgLocationsId,User user,Long tabId) throws Exception;
+	
+	public LinkedHashSet<User> getUsersListAsReoprtingManagersByOrgLocationIdHavingTabAccess(Long orgLocationsId,User user,Long tabId) throws Exception;
+
 }

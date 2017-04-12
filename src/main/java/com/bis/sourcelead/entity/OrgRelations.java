@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -141,6 +142,13 @@ public class OrgRelations implements Serializable{
 	
 	@Transient
 	private String msg;
+	
+	@Transient
+	private List<OrgRelations> matchedDomainClientList;
+	
+	@Transient
+	private List<OrgRelations> matchedClientNameList;
+	
 	
 	public String getLevel() {
 		return level;
@@ -455,4 +463,26 @@ public class OrgRelations implements Serializable{
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
+
+	public List<OrgRelations> getMatchedDomainClientList()
+	{
+		return matchedDomainClientList;
+	}
+
+	public void setMatchedDomainClientList(List<OrgRelations> matchedDomainClientList)
+	{
+		this.matchedDomainClientList = matchedDomainClientList;
+	}
+
+	public List<OrgRelations> getMatchedClientNameList()
+	{
+		return matchedClientNameList;
+	}
+
+	public void setMatchedClientNameList(List<OrgRelations> matchedClientNameList)
+	{
+		this.matchedClientNameList = matchedClientNameList;
+	}
+
+	
 }

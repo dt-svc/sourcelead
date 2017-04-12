@@ -4076,6 +4076,19 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			throws Exception {
 		return requirementSubmissionDao.validateRecruiterSubmittedCandidateEmail(email, requirementId, userId);
 	}
+	
+	@Override
+	public Integer getConsolidatedReportsForMailingForIndividualUserForToday(User user,
+			 OrgLocations orgLocations,String status,Requirement requirement) throws Exception {
+		return requirementSubmissionDao.getConsolidatedReportsForMailingForIndividualUserForToday(user, orgLocations,status,requirement);
+	}
+
+	@Override
+	public List<RequirementSubmission> getAllSubmissionsfromVendorsBasedOnLocationIdAndUserId(User user,
+			OrgLocations orgLocations, String status, Requirement requirement) throws Exception {
+		return requirementSubmissionDao.getAllSubmissionsfromVendorsBasedOnLocationIdAndUserId(user, orgLocations,status,requirement);
+
+	}
 
 	@Override
 	public List<RequirementSubmission> getApplicantsListByOrgLocationAndUserId(OrgLocations loginOrgLocations,
