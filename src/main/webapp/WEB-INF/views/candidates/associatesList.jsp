@@ -1260,7 +1260,7 @@ function cancel(candidateId){
 							  </div>
 						  </div>
 						  
-						   <div class="col-md-4">
+						   <!-- <div class="col-md-4">
 							  <label>Applicant Type</label>
 							  <div class="clearfix">
 								   <select class="chosen-select" name="applicantType" id="applicantType" field-name="Applicant Type"  >
@@ -1269,7 +1269,7 @@ function cancel(candidateId){
 									  <option value="consultant">Consultant</option> 
 				                   </select>
 							  </div>
-						  </div>
+						  </div> -->
 						  </div>
 					  </div>
 					  </div>
@@ -1318,12 +1318,16 @@ function cancel(candidateId){
                     </ul>
                   </div>                	
           </li>  
-          <li><b id="addmore"><i class="fa fa-plus"></i>&nbsp;
-	          <span>
-	          		<a href="<c:url value='/addAssociate?type=addConsultant'/>" title="Add Associate">Add Associate</a>
-	          </span>
-	          </b>
-          
+          <li><b id="addmore"><i class="fa fa-plus"></i>&nbsp;<span>Add</span>&nbsp;<i class="glyphicon glyphicon-play"></i></b>
+          	<div id="addmorepop" class="approved_pop">
+	          <ul>
+	          <li><a href="<c:url value='/addAssociate?type=addConsultant'/>" title="Add Associate"><i class="fa fa-plus"></i>Add Associate</a></li>
+	          
+	          <sec:authorize access="hasAnyRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')">
+	              <li><a href="<c:url value='/assignHotListToTeam'/>" title=""><i class="fa fa-plus"></i>Assign To Team</a></li>
+	           </sec:authorize>
+	          </ul>
+           </div>
           </li>
           
           <!-- <li title="Import"><a href="uploadCandidateForm"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>  -->
@@ -2103,7 +2107,7 @@ function getCities(){
 			//It will escape all the special characters
 			$("#search_candidate").attr("disabled", "disabled");
 			$("#search_candidate").addClass('button').val('Processing..');
-
+			var isAssociate = "Y";
 			$.ajax({
 						type : "POST",
 		        	    data: formData,
@@ -2112,7 +2116,7 @@ function getCities(){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/searchCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+"/searchCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&isAssociate="+isAssociate,
 						success : function(data) {
 							$("#search_candidate").addClass('button').val('Search');
 							$("#search_candidate").removeAttr("disabled");

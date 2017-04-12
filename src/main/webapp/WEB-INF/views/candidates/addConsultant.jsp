@@ -122,7 +122,7 @@
         <div class="form-group" id="emailDiv">
           <label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="email" name="email" value="${email}"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateCandidateEmail();" onmouseout="validateCandidateEmail();"  readonly="true">
+            <input type="text" class="form-control" id="email" name="email" value="${email}"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateCandidateEmail();" readonly="true">
           <span class="hidden">Valid Email</span>
           </div>
         </div>
@@ -228,7 +228,7 @@
        <div class="form-group">
 			<label class="col-md-3">Vendor</label>
 			<div class="col-md-9">
-			     <select  class="chosen-select form-control" name="vendors" id="vendors" field-name="Vendor" onchange="getVendorContactList();">
+			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();">
                  </select>
 			</div>
 		</div>
@@ -236,7 +236,7 @@
 		 <div class="form-group">
 			<label class="col-md-3">Vendor Contact</label>
 			<div class="col-md-9">
-			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  >
+			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="select Vendor Contact">
                  </select>
 			</div>
 		</div>
@@ -398,7 +398,7 @@
            </div>
          </div>
         </div>
-        </div>
+        </div> 
         
         <div class="form-group">
           <label class="col-md-3"></label>
@@ -753,7 +753,7 @@ function getCities(city){
 		
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&candidateType=Consultant", 
+		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&candidateType=Y", 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
@@ -783,8 +783,8 @@ function getCities(city){
          if ($("#experienceYears").val() == '25'){
         	 $("#experienceMonths").val('');  
         	 $('#experienceMonths').selectpicker('refresh');
-        	 $('#experienceMonths').attr("disabled", true);
-             $('#experienceMonths').val("disabled", true);
+        	 /* $('#experienceMonths').attr("disabled", true);
+             $('#experienceMonths').val("disabled", true); */
          }else{
         	 $("#experienceMonths").val('');  
         	 $('#experienceMonths').selectpicker('refresh');
@@ -1065,11 +1065,14 @@ function getDesignationType(designationType){
 	
 	if(designationType.value == 'C2C' || designationType.value == 'C2C-1099'){
 		 document.getElementById("hideVendor").style.display="block";
-		 /*  $("#designationOtherType").attr("data-validation-optional", "true");
-		  $("#designationOtherType").attr("data-validation", "validate_Space validate_length length2-250"); */
+		 $('#vendors').attr("data-validation","required"); 
+		 $('#vendorcontact').attr("data-validation","required"); 
+		// $("#vendors").attr("data-validation", "true");
 		  getVendorsByOrgLocation();
 	}else{
 		 document.getElementById("hideVendor").style.display="none";
+		 $('#vendors').removeAttr("data-validation","required"); 
+		 $('#vendorcontact').removeAttr("data-validation","required"); 
 	}
 	
 }
@@ -1140,10 +1143,8 @@ var currentRate = document.getElementById("currentRate").value;
 <script type="text/javascript">
  function getCandidatesList(value) {
 	 candidateType = value;
-	 $('#sjfb-fields').find('p.jquery_form_error_message').remove();
 	 $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
-	 $('#uploadFileGroup1').find('p.jquery_form_error_message').remove();
-	// $('#newResumeDiv').hide();
+	 $('#newResumeDiv').hide();
 	  $("#candidateEducation").val('').trigger("chosen:updated");
       $("#candidateSkills").val('').trigger("chosen:updated");
 	 $('#candidateId').removeAttr('data-validation-optional');
@@ -1151,15 +1152,12 @@ var currentRate = document.getElementById("currentRate").value;
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType != 'New' && candidateType != 'parseCandidate'){
 		 $("#selectCandidateDiv").css("display","block");
-		
+		 document.getElementById("newResumeDiv").style.display="none";
 		 var skillsDiv = document.getElementById('skillsDiv'); 
 		 if(skillsDiv != null){
 			 document.getElementById("skillsDiv").style.display="none";
 			 $("#candidateSkills").val('').trigger("chosen:updated");
 		 }
-		 
-		 
-		 /* if(requirementId != null && requirementId != "" && requirementId != 'undefined'){ */
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/getAssociateList?${_csrf.parameterName}=${_csrf.token}&candidateType="+candidateType, 
@@ -1184,13 +1182,6 @@ var currentRate = document.getElementById("currentRate").value;
 				        getCandidateResumes();
 			        },
 			    }); 
-		 /* }else{
-			 var output = "";
-	     	 output = output + "<option value=''>-- Select Candidate --</option>"; 
-	     	 $("#candidateId").empty();
-		     $("#candidateId").append(output);
-		     $('#candidateId').trigger("chosen:updated");
-		 } */
 	 }else{
 		 var output = "";
      	 $("#candidateId").empty();
@@ -1215,12 +1206,13 @@ var currentRate = document.getElementById("currentRate").value;
 	    	 $( "#parsId" ).attr( "checked", true );
 	    	 $( "#newId" ).attr( "checked", false );
 	    	 $( "#canId" ).attr( "checked", false );
+	    	 
 	    	 document.getElementById("resumesDiv").style.display="none";
 	    	 document.getElementById("browseDiv").style.display="";
 	    	 $('#uploadFile').removeAttr('data-validation-optional');
 			 $('#uploadFile').attr("data-validation","required validatedoc "); 
 			 $("#email").removeAttr('readonly','readonly');
-			 document.getElementById("newResumeDiv").style.display="none";
+			 //document.getElementById("newResumeDiv").style.display="none";
 			 document.getElementById("skillsDiv").style.display="";
 			 document.getElementById("associateResumeDivId").style.display="none";
 		     $("#candidateSkills").val('').trigger("chosen:updated");
@@ -1233,18 +1225,18 @@ var currentRate = document.getElementById("currentRate").value;
 	    	 $( "#newId" ).attr( "checked", true );
 	    	 $( "#parsId" ).attr( "checked", false );
 	    	 $( "#canId" ).attr( "checked", false );
-	    	 document.getElementById("resumesDiv").style.display="none";
+// 	    	 document.getElementById("resumesDiv").style.display="none";
 	    	 document.getElementById("browseDiv").style.display="none";
-	    	 $('#uploadFile').removeAttr('data-validation');
-			 $('#uploadFile').attr("data-validation-optional","true");
+	    	 //$('#uploadFile').removeAttr('data-validation');
+			 //$('#uploadFile').attr("data-validation-optional","true");
 			 
 			 //document.getElementById("associateResumeDivId").style.display="block";
 			 $("#email").removeAttr('readonly','readonly');
-	    	 document.getElementById("newResumeDiv").style.display="";
-	    	 document.getElementById("skillsDiv").style.display="";
-		     $("#candidateSkills").val('').trigger("chosen:updated");
-			 $('#uploadProfile').removeAttr('data-validation-optional');
-			 $("#uploadProfile").attr("data-validation", "required validatedoc");
+	    	 document.getElementById("newResumeDiv").style.display="block";
+	    	// document.getElementById("skillsDiv").style.display="";
+		     //$("#candidateSkills").val('').trigger("chosen:updated");
+			 //$('#uploadProfile').removeAttr('data-validation-optional');
+			 //$("#uploadProfile").attr("data-validation", "required validatedoc");
 	     }
 	     
 	     document.getElementById("resumesDiv").style.display="none";
@@ -1524,14 +1516,12 @@ function getCandidateDetails(){
 							}
 			        	}
 			        	
-			        	
 			        	$("#candidateResumesList").empty();
 				        $("#candidateResumesList").append(output);
 				        
 				        document.getElementById("newResumeDiv").style.display="none";
 				        document.getElementById("skillsDiv").style.display="none";
 				        
-				       
 				        
 				        $('#uploadProfile').removeAttr('data-validation');
 		        		$('#uploadProfile').attr("data-validation-optional","true"); 
@@ -1539,14 +1529,13 @@ function getCandidateDetails(){
 		        		 $('#candidateResumesList').removeAttr('data-validation-optional');
 		    			 $("#candidateResumesList").attr("data-validation", "required"); 
 		        	}else{
-		        		
 		        		 $('#candidateResumesList').removeAttr('data-validation');
 		        		 $('#candidateResumesList').attr("data-validation-optional","true"); 
-		        		
-		        		 document.getElementById("resumesDiv").style.display="none";
-		        		 document.getElementById("browseDiv").style.display="none";
-		        		
 		        		 document.getElementById("newResumeDiv").style.display="block";
+		        		 document.getElementById("resumesDiv").style.display="none";
+		        		 //document.getElementById("browseDiv").style.display="none";
+		        		
+		        		 
 		        		 document.getElementById("skillsDiv").style.display="";
 		        		 
 		        		 $('#uploadProfile').removeAttr('data-validation-optional');
@@ -1637,7 +1626,8 @@ function getCandidateDetails(){
 		        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
-		        	$('#vendors').append('<option value=""> --select Vendor --</option>');
+		        	$('#vendors').empty();
+		        	$('#vendors').append('<option value="">--select Vendor --</option>');
 		            for(var i=0;i<json.length;i++){
 		            	  var opt = json[i];
 		            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');

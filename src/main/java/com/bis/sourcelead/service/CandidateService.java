@@ -122,5 +122,6 @@ public interface CandidateService {
 	
 	List<Candidate> getHotCandidateListByTeamIdAndOrgLocationId(Long teamId,Long orgLocationId) throws Exception;
 	
+	List<Candidate> getAllActiveCandidatesCountForCampaignByLocationAndStatus(Long orgLocationId)throws Exception;
 	
 }

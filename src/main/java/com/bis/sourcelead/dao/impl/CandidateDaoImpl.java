@@ -687,6 +687,17 @@ public class CandidateDaoImpl implements CandidateDao {
 		 return candidateHotList;
 	}
 
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getAllActiveCandidatesCountForCampaignByLocationAndStatus(Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.isFavouriteAssociate = '1' and candidate.isAssociate ='Y' and candidate.teamId IS NULL  ";  
+		List<Candidate> candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		
+		return candidateList;
+	}
+
 
 	
 }

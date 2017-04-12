@@ -269,7 +269,8 @@ public class CandidateListRestController {
 	   * @throws NullPointer
 	   */
 	 @RequestMapping(value = "/searchCandidate", method = RequestMethod.POST)
-	 public String searchCandidate(@RequestParam(value = "json", required = false) String json,@RequestParam(value="candidateStatus", required=false)Integer  candidateStatus,MultipartHttpServletRequest request) throws Exception {
+	 public String searchCandidate(@RequestParam(value = "json", required = false) String json,@RequestParam(value="candidateStatus", required=false)Integer  candidateStatus,
+			 @RequestParam(value="isAssociate", required=false) String  isAssociate,MultipartHttpServletRequest request) throws Exception {
 
 		    MultipartFile multiFile = null;
 			Iterator<String> itrator = request.getFileNames();
@@ -549,7 +550,9 @@ public class CandidateListRestController {
 				}
 				
 				
-				
+				if(null != isAssociate && isAssociate.equalsIgnoreCase(Constants.YES)){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", isAssociate));
+				}
 				
 				List<CandidateIndex> candidatesList = new ArrayList<CandidateIndex>();
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -660,7 +663,7 @@ public class CandidateListRestController {
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<Candidate> candList = new ArrayList<Candidate>();
-		List<Candidate>   candidatesList = candidateService.getHotListCandidatesListByOrgLocationID(loginOrgLocation.getId(), candidateType);
+		List<Candidate>   candidatesList = candidateService.getAllActiveCandidatesCountForCampaignByLocationAndStatus(loginOrgLocation.getId());
 		
 		resultJson = commonUtil.toJSON(candidatesList);
 		return resultJson;
@@ -971,10 +974,10 @@ public class CandidateListRestController {
 			
 			StringBuilder candidateCreateMsg = new StringBuilder();
 			candidate = candidateService.storeCandidate(jsonObj,loginOrgLocation,user,multiFile);
-				if(jsonObj.has("candidateId") && jsonObj.getString("candidateId") != null && !"".equals(jsonObj.getString("candidateId"))){
+				/*if(jsonObj.has("candidateId") && jsonObj.getString("candidateId") != null && !"".equals(jsonObj.getString("candidateId"))){
 					SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", candidateCreateMsg.append("Success!!  ").append(candidate.getFirstName()).append(" Details Updated").toString());
 
-				}
+				}*/
 
 			return "success";
 			

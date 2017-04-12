@@ -211,17 +211,19 @@ else{
 		            	
 	              result = result +"<tr>";
 	              result = result +"<td style='width:40px; display: inline-block'>";
-	               
+
 	              if(opt.isAssociate == "Y"){
-	            	  result = result +"<i class='fa fa-black-tie pull-left mt10' title='Associate'></i> ";  
+	            	  result = result +"<i class='fa fa-black-tie pull-right mt10' title='Associate'></i> ";  
 	              }
-	              result = result +"<div class='iconClass pull-right  star-rating "+isFavClass+"' id='favourite"+opt.candidateId+"'>";
+
+	              result = result +"<div class='iconClass pull-left star-rating "+isFavClass+"' id='favourite"+opt.candidateId+"'>";
 	              '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_HOTLIST\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
 	              result = result +"   <input type='checkbox' id='fav"+opt.candidateId+"' "+isFavourite+" onclick='addFavourite("+opt.candidateId+")'></input>";
 	              '</sec:authorize>';
 	             
 	              result = result +" <label></label>";
 	              result = result +"</div>";
+	              
 	              result = result +"</td>";
 	
 	             
@@ -901,10 +903,10 @@ function addFavourite(candidateId){
 			success : function(result) {
 				if(checked){
 					 document.getElementById("favourite"+candidateId).removeAttribute("class")
-					 document.getElementById("favourite"+candidateId).className = 'iconClass pull-right star-rating activestar-rating' 
+					 document.getElementById("favourite"+candidateId).className = 'iconClass pull-left star-rating activestar-rating' 
 				}else{
 					 document.getElementById("favourite"+candidateId).removeAttribute("class")
-					 document.getElementById("favourite"+candidateId).className = 'iconClass pull-right star-rating' 
+					 document.getElementById("favourite"+candidateId).className = 'iconClass pull-left star-rating' 
 				}
 				
 			},
@@ -1275,7 +1277,7 @@ function cancel(candidateId){
 							  </div>
 						  </div>
 						  
-						   <div class="col-md-4">
+						   <!-- <div class="col-md-4">
 							  <label>Applicant Type</label>
 							  <div class="clearfix">
 								   <select class="chosen-select" name="applicantType" id="applicantType" field-name="Applicant Type"  >
@@ -1284,7 +1286,7 @@ function cancel(candidateId){
 									  <option value="consultant">Consultant</option> 
 				                   </select>
 							  </div>
-						  </div>
+						  </div> -->
 						  </div>
 					  </div>
 					  </div>
@@ -1340,13 +1342,13 @@ function cancel(candidateId){
               <li><a  onClick="addCandidate();" ><i class="fa fa-plus"></i>Add Candidate</a></li>
            </sec:authorize>
            
-           <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE')">
+           <%-- <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE')">
               <li><a  onclick= "addConsultant();"><i class="fa fa-plus"></i>Add Consultant</a></li>
-           </sec:authorize>
+           </sec:authorize> --%>
            
-           <sec:authorize access="hasAnyRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')">
+         <%--   <sec:authorize access="hasAnyRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')">
               <li><a href="<c:url value='/assignHotListToTeam'/>" title=""><i class="fa fa-plus"></i>Assign To Team</a></li>
-           </sec:authorize>
+           </sec:authorize> --%>
            </ul>
            </div>
           </li>
@@ -2162,7 +2164,7 @@ function getCities(){
 			  </div>
       <div class="pop_mask"></div>
     
-    <div class="addconsultant-popup">
+    <%-- <div class="addconsultant-popup">
 				  <div class="row">
                       <div class="col-md-offset-2 col-md-8">
 				  <a href="javascript:void(0)" class="close-popdiv" onClick="closeConsultant()"><i class="fa fa-close"></i></a>
@@ -2202,7 +2204,7 @@ function getCities(){
                           </div>
                       </div>
 				  </div>
-			  </div>
+			  </div> --%>
     
     <script>
     //addcandidate-popup script
@@ -2219,7 +2221,7 @@ function getCities(){
     
      <script>
     //addConsultant-popup script
-    function addConsultant(){
+    /* function addConsultant(){
         $('.addconsultant-popup').fadeIn(200);
         $('.pop_mask').fadeIn(200);
         $('#addmorepop').slideUp(200);
@@ -2227,7 +2229,7 @@ function getCities(){
        function closeConsultant(){
         $('.addconsultant-popup').fadeOut(200);
         $('.pop_mask').fadeOut(200);
-       }
+       } */
     </script>
     
     
@@ -2269,7 +2271,7 @@ function getCities(){
 			//It will escape all the special characters
 			$("#search_candidate").attr("disabled", "disabled");
 			$("#search_candidate").addClass('button').val('Processing..');
-
+			var isAssociate = "N";
 			$.ajax({
 						type : "POST",
 		        	    data: formData,
@@ -2278,7 +2280,7 @@ function getCities(){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/searchCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+"/searchCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&isAssociate="+isAssociate,
 						success : function(data) {
 							$("#search_candidate").addClass('button').val('Search');
 							$("#search_candidate").removeAttr("disabled");

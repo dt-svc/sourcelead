@@ -164,7 +164,13 @@ public class CandidateServiceImpl implements CandidateService {
 				candidate.setCandidateType("Candidate");
 			}
 			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-			
+			candidate.setIsFavourite(0);
+			candidate.setIsFavouriteAssociate(0);
+			if(jsonObj.has("isAssociate") && jsonObj.getString("isAssociate") != null){
+				candidate.setIsAssociate(Constants.YES);
+			}else{
+				candidate.setIsAssociate(Constants.NO);
+			}
 		}
         
 		if(orgLocations != null){
@@ -276,18 +282,14 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setPrimarySkill(jsonObj.getString("primarySkill"));
 		}
 
-		if(jsonObj.has("isAssociate") && jsonObj.getString("isAssociate") != null){
-			candidate.setIsAssociate(Constants.YES);
-		}else{
-			candidate.setIsAssociate(Constants.NO);
-		}
 		
-		if(jsonObj.has("vendors") && jsonObj.getString("vendors") != null){
+		
+		if(jsonObj.has("vendors") && !"".equalsIgnoreCase(jsonObj.getString("vendors"))){
 			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("vendors")));
 			candidate.setOrgRelationId(orgRelation);
 		}
 		
-		if(jsonObj.has("vendorcontact") && jsonObj.getString("vendorcontact") != null){
+		if(jsonObj.has("vendorcontact") && !"".equalsIgnoreCase(jsonObj.getString("vendorcontact"))){
 			OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(jsonObj.getString("vendorcontact")));
 			candidate.setSpocId(orgspoc);
 		}
@@ -314,8 +316,7 @@ public class CandidateServiceImpl implements CandidateService {
 		candidate.setUpdatedBy(user.getUserCode());
 		candidate.setUpdatedDate(commonUtil.currentDate());
 		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
-		candidate.setIsFavourite(0);
-		candidate.setIsFavouriteAssociate(0);
+		
 		
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		
@@ -323,7 +324,7 @@ public class CandidateServiceImpl implements CandidateService {
 		 * Saving Candidate DB data as ElasticSearch Documents
 		 */
 		saveOrUpdateCandidateElkDocument(savedCandidate);
-		return savedCandidate;
+		return null;
 	}
 
 	@Override
@@ -867,6 +868,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public List<Candidate> getHotCandidateListByTeamIdAndOrgLocationId(Long teamId, Long orgLocationId)
 			throws Exception {
 		return candidateDao.getHotCandidateListByTeamIdAndOrgLocationId(teamId, orgLocationId);
+	}
+
+	@Override
+	public List<Candidate> getAllActiveCandidatesCountForCampaignByLocationAndStatus(Long orgLocationId) throws Exception {
+		return candidateDao.getAllActiveCandidatesCountForCampaignByLocationAndStatus(orgLocationId);
 	}
 
 
