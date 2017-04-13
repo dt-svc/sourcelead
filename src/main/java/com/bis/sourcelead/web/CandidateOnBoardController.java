@@ -96,7 +96,7 @@ public class CandidateOnBoardController {
 	
 	
 	@RequestMapping(value = "/candidateOnBoardingList")
-	public ModelAndView candidateOnBoardingList(HttpServletRequest request) {
+	public ModelAndView candidateOnBoardingList(HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -106,8 +106,13 @@ public class CandidateOnBoardController {
 		}
 		sessionData.setNav(Constants.Users);
 		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		
+		Integer onboardCount = candidateOnBoardingService.getCandidateOnBoardingListCountByOrgLocationId(orgLocations.getId());
+		
 		request.getSession().setAttribute("sessionData",sessionData);
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("onboardCount", onboardCount);
 		model.setViewName("onboard/candidateOnBoardingList");
 		return model;
 	}

@@ -187,4 +187,9 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		return candidateOnBoardingDao.getCandidateOnBoardingByUUID(onboardCandidateUUID);
 	}
 
+	@Override
+	public Integer getCandidateOnBoardingListCountByOrgLocationId(Long orgLocationId) throws Exception {
+		return candidateOnBoardingDao.getCandidateOnBoardingListCountByOrgLocationId(orgLocationId);
+	}
+
 }

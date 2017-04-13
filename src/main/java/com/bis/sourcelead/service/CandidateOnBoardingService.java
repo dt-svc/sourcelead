@@ -17,4 +17,6 @@ public interface CandidateOnBoardingService {
 	List<CandidateOnBoarding> getCandidateOnBoardingListByOrgLocationId(Long orgLocationId) throws Exception;
 	
 	CandidateOnBoarding getCandidateOnBoardingByUUID(String onboardCandidateUUID) throws Exception;
+	
+	Integer getCandidateOnBoardingListCountByOrgLocationId(Long orgLocationId) throws Exception;
 }

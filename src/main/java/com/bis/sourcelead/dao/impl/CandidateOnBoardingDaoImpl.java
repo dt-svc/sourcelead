@@ -81,4 +81,19 @@ public class CandidateOnBoardingDaoImpl  implements CandidateOnBoardingDao{
 		}
 	}
 
+
+	@Override
+	@Transactional
+	public Integer getCandidateOnBoardingListCountByOrgLocationId(Long orgLocationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query ="select count(*) from CandidateOnBoarding onboarding where onboarding.orgLocationId.id =:orgLocationId ";
+		List<Long> onboardCount = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
+			Integer count = 0;
+			if(onboardCount != null && !onboardCount.isEmpty()){
+					count = onboardCount.get(0).intValue();
+			}
+			return count;
+	}
+
 }

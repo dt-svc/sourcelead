@@ -13,6 +13,8 @@
 <script> 
 	$(document).ready(function(){
 		
+		$("#onboardCount").html('${onboardCount}');
+		
 		getOnboardCandidatesList();
 		
 	});
@@ -39,7 +41,7 @@
           <ul class="nav nav-tabs" id="tab_bar">
             
             <li class="active"> <a href="#" data-toggle="tab" class="onboardCount" onclick="getOnboardCandidatesList();" title="Current onboard count">
-              <div class="count"> 1 </div>
+              <div class="count" id="onboardCount"></div>
               <h4>Current onboard</h4>
               </a> 
             </li>
