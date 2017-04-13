@@ -43,6 +43,8 @@
 <jsp:include page="candidatesExperience.jsp"></jsp:include>
 <jsp:include page="candidatesEducation.jsp"></jsp:include>
 <jsp:include page="candidatesCertificates.jsp"></jsp:include>
+<jsp:include page="candidateDocuments.jsp"></jsp:include>
+
 <jsp:include page="requirementHistory.jsp"></jsp:include>
  <sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">
 <jsp:include page="candidatesCommentsList.jsp"></jsp:include>
@@ -141,6 +143,9 @@ else{
 	     	 $("#candidateList").empty();
 	     	 var result = "";
 	     	  result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
+	     	 result  = result + '<div class="success_pop" id="hotlistCandidateMsg" style="display: none;">';
+	    	 result  = result + '<i class="fa fa-check-circle"></i><span id="hotlistCandidateMsgDiv"></span>';
+	    	 result  = result + '</div>';
 	          result = result +"<thead>"; 
 	          result = result +"  <tr>"; 
 	         /*  result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>";   */
@@ -213,7 +218,7 @@ else{
 	              result = result +"<td style='width : 25px;'>";
 	              result = result +"<div class='star-rating "+isFavClass+"' id='favourite"+opt.candidateId+"'>";
 	              '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_HOTLIST\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-	              result = result +"<input type='checkbox' id='fav"+opt.candidateId+"' "+isFavourite+" onclick='addFavourite("+opt.candidateId+")'></input>";
+	              result = result +"<input type='checkbox' id='fav"+opt.candidateId+"' "+isFavourite+" onclick='addFavourite("+opt.candidateId+",\""+opt.firstName+" "+opt.lastName+"\")'></input>";
 	              '</sec:authorize>';
 	             
 	              result = result +" <label></label>";
@@ -655,13 +660,16 @@ function candidateSideBar(candidateId){
 			               result = result+'<li id="candidateCertificationsTab"><a href="#tab-5" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
 			             '</sec:authorize>';
 			             
+			             <%--- This is for Documents(tab-9) Tab in Candidate Summary -----%>
+			             result = result+'<li id="candidateDocumentsTab"><a href="#tab-9" onclick="candidateDocuments('+candidateId+');">Documents</a></li>';
+			            
 			             '<sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 			                result = result+'<li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateId+');">Comments</a></li>';
 			              '</sec:authorize>';
 			              
 			              
 			              result = result+'<li id="candidateHistoryTab"><a href="#tab-8" onclick="requirementHistory('+candidateId+');">Requirement History</a></li>';
-			              
+			             
 			             /* result = result+'       <li><a href="#tab-6" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; */
 			             result = result+'       <div class="clearfix"></div>';
 			             result = result+'     </ul>';
@@ -681,6 +689,9 @@ function candidateSideBar(candidateId){
 						 result = result + '<div id="tab-5" class="project_tabs_inn">';
 						 result = result + '</div>';
 						 
+						 result = result + '<div id="tab-9" class="project_tabs_inn">';
+			             result = result+'     </div>';
+						 
 						 result = result + '<div id="tab-8" class="project_tabs_inn" style="min-height:450px">';
 						 result = result + '</div>';
 						 
@@ -688,7 +699,7 @@ function candidateSideBar(candidateId){
 						 result = result + '</div>';
 						 result = result + '<div id="tab-7" class="project_tabs_inn">';
 						 result = result + '</div>';
-			             result = result+'     </div>';
+						 
 			             result = result+'   </div>';
 			             
 			             $("#candidateSideDiv").empty();  
@@ -883,9 +894,14 @@ function refreshImageBlock(candidateId){
    }
 </script>
 
-
 <script>
-function addFavourite(candidateId){
+	function hotlistCandidateMsgFadein() {
+		$("#hotlistCandidateMsg").fadeIn(200);
+        $('#hotlistCandidateMsg').delay(2000).fadeOut('slow');
+	}
+</script>
+<script>
+function addFavourite(candidateId,candidate){
 	
 	var checked = document.getElementById("fav"+candidateId).checked;
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -898,6 +914,10 @@ function addFavourite(candidateId){
 				if(checked){
 					 document.getElementById("favourite"+candidateId).removeAttribute("class")
 					 document.getElementById("favourite"+candidateId).className = 'star-rating activestar-rating' 
+						$("#hotlistCandidateMsg").removeAttr("style");
+	          		    $("#hotlistCandidateMsg").css({ display: "block" });
+	          		    $("#hotlistCandidateMsgDiv").html(" "+candidate+" Hotlisted");
+	          		    hotlistCandidateMsgFadein();
 				}else{
 					 document.getElementById("favourite"+candidateId).removeAttribute("class")
 					 document.getElementById("favourite"+candidateId).className = 'star-rating' 

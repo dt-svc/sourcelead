@@ -24,5 +24,6 @@ public interface TaskService {
 
 	void mailToUserTask(Tasks task) throws Exception;
 
+	Long getTasksCompletedTodayByLocationCodeandUserId(OrgLocations orglocationCode ,User user) throws Exception;
 	
 }

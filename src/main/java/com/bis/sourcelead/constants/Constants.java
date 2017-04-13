@@ -122,6 +122,8 @@ public class Constants {
 	
 	public static String EDIT_CLIENTCONTACT = "Edit SpocContact";
 	
+	public static String CLIENT_OWNER_UPDATEMAIL = "clientOwnerUpdateMail";
+	
 	public static String SHORTLIST_APPLICANTS = "ShortList Applicants";
 	public static String SHORTLIST_NOTIFICATION_MANAGER = "Notification To Manager";
 	
@@ -209,6 +211,8 @@ public class Constants {
 	
 	public static final long USERID = 1;
 	
+	public static String PASSWORD_RESET_MAIL_TO_USER = "passwordResetMailToUser";
+	
 	public static String REQUIREMENT_SEQUENTIAL_EMAIL_NOTIFICATION = "Approval Mechanism Sequential";
 	public static String APPROVED_EMAIL_NOTIFICATION = "Approved Requirement";
 	public static String REJECTED_EMAIL_NOTIFICATION ="Rejected Mail About The Requirement";
@@ -231,6 +235,8 @@ public class Constants {
 	public static String OFFERACCEPT_EMAIL = "VendorAcceptedOffer";
 	
 	public static String APPLICANT_RECEIVE_MAILABOUT_REQUIREMENT_EMAIL = "ApplicantReceiveMailAboutRequirement";
+	
+	public static String NOTIFY_APPLICANT_MAILABOUT_REQUIREMENT="notifyApplicantMailAboutRequirement";
 	
 	public static String APPLICANT_RECEIVE_MAILABOUT_REQUIREMENT_NOTIFICATION = "ApplicantReceiveMailAboutRequirement";
 	public static String APPLICANT_ACCEPT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION = "ApplicantAcceptRequirement";
@@ -263,6 +269,9 @@ public class Constants {
 	
 	public static String CROWD_SOURCING_SOURCE_SELF = "SELF";
 	
+	public static String EMPLOYEE_TERMINATION = "Employee Termination";
+	public static String EMPLOYEE_TERMINATION_MAIL_TO_MANAGER = "Employee Termination Mail To Manager";
+	public static String EMPLOYEE_REASSIGN = "Employee Reassign";
 	
 	public static final DateFormat TMS = new SimpleDateFormat ("hh:mm a");
 	
@@ -381,6 +390,7 @@ public class Constants {
 	
 	public static String EDUCATIONS = "Educations";
 	public static String SKILLS = "Skills";
+	public static String DOCUMENT_TYPE="Document Type";
 	
 	public static String ADMIN = "Admin";
 	

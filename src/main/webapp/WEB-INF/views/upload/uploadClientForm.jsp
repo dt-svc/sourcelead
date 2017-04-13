@@ -1,10 +1,10 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style type="text/css">
@@ -25,9 +25,11 @@ margin:10px 220px 0;
       <div class="pull-left">
         <h2>Import Client & Contacts</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="clientDashboard">Client & Contact List</a> &raquo; Client & Contact Import </div>
+      <%-- <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="clientDashboard">Client & Contact List</a> &raquo; Client & Contact Import </div> --%>
+    <div class="pull-right brud-crum"><a href="#">Home</a> &raquo; <a href="clientDashboard">Client & Contact List</a> &raquo; Client & Contact Import </div>
     </section>
-    <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="clientFileUpload?${_csrf.parameterName}=${_csrf.token}&type=Client">
+    <form:form id="upload_form" name="upload_form" enctype="multipart/form-data">
+    <%-- <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="clientFileUpload?${_csrf.parameterName}=${_csrf.token}&type=Client"> --%>
     <div class="content-area clearfix">
     <div id="loading"></div> 
       <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
@@ -35,39 +37,49 @@ margin:10px 220px 0;
           <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
 		  <!-- Download File button -->
 		  <div class="clearfix mb row">
-		  <sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS')">
-			<div class="col-xs-12 col-md-6 hidden">
+		 <%--  <sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS')"> --%>
+		<%-- 	<div class="col-xs-12 col-md-6 hidden">
 			 <a href="<c:url value='/downloadClientTemplate?name=client'/>">
 			 <button class="btn btn-success btn-block" type="button">
 					<i class="fa fa-download"></i>&nbsp;&nbsp;Download Client Template
 			</button>
 			</a>
-			</div>
-			</sec:authorize>
-			<sec:authorize access="hasAnyRole('ROLE_CLIENT_CONTACT_BULK_IMPORTS')">
-			<div class="col-xs-12 col-md-12">
+			</div> --%>
+			<%-- </sec:authorize> --%>
+			<%-- <sec:authorize access="hasAnyRole('ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> --%>
+			<div class="col-xs-8 col-md-8">
 			 <a href="<c:url value='/downloadClientTemplate?name=Contact'/>">
 			 <button class="btn btn-success btn-block" type="button">
 					<i class="fa fa-download"></i>&nbsp;&nbsp;Download Client Template
 			</button>
 			</a>
 			</div>
-			</sec:authorize>
+			<div class="col-xs-4 col-md-4">
+			<div class="btn-group btn-group-justified">
+			  <div class="btn-group">
+			  <input type="button" class="btn btn-primary" id="upload_button" name="upload_button"  onclick = "saveBulkImport();" value="Import">
+				</div>
+				<div class="btn-group">
+			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:location.href = '<c:url value='/clientDashboard'/>'">
+				</div>
+			  </div>
+			</div>
+			<%-- </sec:authorize> --%>
 			</div>
 			<!-- Attach File button -->
 			
 			<div class="dropzone">
 			  <div class="clearfix">
-			  <div class="btn-group pull-right">
-			  <button class="btn btn-sm btn-primary" id="upload_button" type="submit" onclick = "check();uploadSave();checkFile()" ">
+			<%--   <div class="btn-group pull-right hidden">
+			  <button class="btn btn-sm btn-primary" id="upload_button1" type="submit" onclick = "saveBulkImport(); check();uploadSave();checkFile()">
 				<i aria-hidden="true" class="fa fa-upload"></i>&nbsp;&nbsp;&nbsp;Import
 			  </button>
 			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:location.href = '<c:url value='/clientDashboard'/>'">
 				<i aria-hidden="true" class="fa fa-times"></i>&nbsp;&nbsp;&nbsp;Cancel
 			  </button>
+			  </div> --%>
 			  </div>
-			  </div>
-			<div class="file-upload clearfix mt text-center" id="fileDiv" onclick = "check();">
+			<div class="file-upload clearfix text-center" id="fileDiv" onclick = "check();">
 		<div class="col-md-12" id="clientNameDiv">
 			<label class="bg-default">
 			<i aria-hidden="true" class="fa fa-paperclip"></i> <br/>
@@ -82,9 +94,9 @@ margin:10px 220px 0;
         	
 			</div>
 			<!-- <p class="text-danger text-center mt hidden">Please Select the file &hellip;</p> -->
-			<p class="text-danger text-center mt" id="fileExist"><form:errors path="file" /></p>
-			<p class="text-danger text-center mt" id="success">${msg}</p> 
-			<div><span class="text-danger"><strong>${fileNameWrong}</strong></span></div>
+			<%-- <p class="text-danger text-center mt" id="fileExist"><form:errors path="file" /></p> --%>
+			<%-- <p class="text-danger text-center mt" id="success">${msg}</p> 
+			<div><span class="text-danger"><strong>${fileNameWrong}</strong></span></div> --%>
 		   	 
 		   	 <!--  Downloaded File show here -->
 		   	   <div class="col-xs-3 alert alert-success fade in hidden" style="position:absolute; top:10px;" id="fileAttached">
@@ -96,7 +108,7 @@ margin:10px 220px 0;
 			</div>
 			
 			<!-- =================== -->
-			 <div class="bgInfo bg-info clearfix">
+			 <div class="bgInfo bg-info clearfix hidden">
 			 <span class="pull-left"><i class="fa fa-question" aria-hidden="true"></i></span>
 			  <span class="info-msg pull-left">
 			  <p>
@@ -109,29 +121,40 @@ margin:10px 220px 0;
 			  </p>
 			  </span>
             </div>
-            <div class="panel-body checkbox div-checkbox">
+            <div class="panel-body checkbox div-checkbox hidden">
 				  <label><input type="checkbox" checked="checked" value="Y" name="email"></label><span>Send Emails</span>
 		    </div>
           </div>
 		  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-		  <div class="errInfo clearfix">
-		  <div id="errorFileDiv"  style="display: none;">
-		  <p class="text-danger"><strong>Error File Dowload</strong></p>
-		      <c:if test="${!empty errorMessage}">
-				   <div class="file-upload"> 
-				  <a href="<c:url value='/downloadErrorFile/${fileName}'/>" onclick="errorMsgAppend();"> 
-					<label class="btn btn-block">
-					<i class="fa fa-download" aria-hidden="true"></i> <br>
-		               ${errorMessage}
-		            </label>
-		            </a>
-					</div>
-		     </c:if>			
-          </div>
-         <!--  <div id="sucessMsg"><p class="text-success" ><strong>File downloaded successfully</strong></p></div> -->
-          </div>
+		  			 <div class="bgInfo bg-info clearfix text-center">
+			 <span><i class="fa fa-question" aria-hidden="true"></i></span>
+			  <span class="info-msg clearfix mt">
+			  <p class="clearfix mt">
+			  According this template, the Users need to <span class="text-danger"><strong>Import Required Fields</strong></span></p>
+			  </p>
+			  <p>
+			  <label><i class="fa fa-user"></i>&nbsp;&nbsp;Client Name</label>
+			  <!-- <label><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</label>
+			  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Role</label> -->
+			  </p>
+			  </span>
+            </div>
 		  </div>
         </div>
+        <div class="require_wrap_table filter-position mt25">
+        
+        	<div id="excelimportData"></div>
+        	
+        	
+        	<div class="clearfix ml">
+        	<ul class="list-inline">
+	        	<li class="text-success" title="Merge"><b class="fa fa-object-group paddingRight"></b>To merge with the existing Client</li>
+	        	<li class="text-primary" title="Add"><b class="fa fa-plus paddingRight"></b>To add the new client and contact</li>
+	        	<li class="text-danger" title="Remove"><b class="fa fa-trash paddingRight"></b>To remove the record</li>
+        	</ul>
+        </div>
+        </div>
+        
         <div class="form-footer clearfix row hidden">
           <div class="col-lg-12">
             <div class="pull-right">
@@ -143,26 +166,333 @@ margin:10px 220px 0;
       </div>
     </div>
     </form:form>
-  </section>  
+  </section> 
+  
+  <div class="side_mask"></div>   
+  <section class="mergePopup">
+  <div class="mergeAA"><span onclick="mergeclose();"><i class="fa fa-times"></i></span></div>
+	<span><select class="chosen-select form-control mergePopupSel" id="clientListIds" onchange="flush();">
+    	       
+	</select></span>  
+	<input type="button" onclick="mergeWithRecord();" value="Merge" class="btn btn-primary mergePopupbtn" />
+	<div class="clearfix"></div>
+	<p id="clientError"></p>	
+	<p><i class="fa fa-info-circle"></i>The user will be created in the selected client</p>	
+  </section> 
+  
+  
  <script>
-$(document).ready(function(){
+/* $(document).ready(function(){
 	document.getElementById("uploadFile").value = '';
 	var errormsg = '${errorMessage}';
 	$("#fileAttached").hide();
 	if(errormsg){
 		$("#errorFileDiv").show();
 	}
-});
+}); */
 </script>
 
+
+
 <script type="text/javascript">
+function saveBulkImport(){
+	
+	var frm = $('#upload_form').serializeFormJSON();
+	var con = JSON.stringify(frm);
+	con = con.replace(/[{}]/g, "");
+	
+	//It will escape all the special characters
+	var jsonData = encodeURIComponent(con);
+	var form = $('#upload_form')[0];
+	var formData = new FormData(form); 
+	var sourceleadUrl = '${sourceleadUrl}';
+	
+	/* $( "#submitForApproval" ).addClass('button').val('Processing..');
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	 */
+	
+	 $.ajax({
+		   	type: "POST",
+		   	data: formData,
+    	    contentType : 'application/json; charset=utf-8',
+    	    enctype: 'multipart/form-data',
+	        processData: false,
+	        contentType:false,
+    	    dataType : 'json',
+		    url : sourceleadUrl+"/clientExcelFileUpload?${_csrf.parameterName}=${_csrf.token}", 	   
+ 		    success : function(data) {
+ 		    	prepareExcelDataDiv(data);
+ 		    },
+ 		   error: function(e){
+ 			  alert(e);
+	        }
+	 });
+	 
+}
+</script>
+
+
+<script>
+function prepareExcelDataDiv(data){
+	var result = '';
+	result = result +  '<table id="excelimportDataTable" class="display" cellspacing="0" width="100%" >';
+	result = result + '	<thead>';
+	result = result + '   <tr>';
+	result = result + '     <th>Client Name</th>';
+	result = result + '    <th>Website</th>';
+	result = result + '    <th>Location</th>';
+	result = result + '    <th>Contact Name</th>';
+	result = result + '    <th>Email</th>';
+	result = result + '    <th>Status</th>';
+	result = result + '    <th>Owner(Email)</th>';
+	result = result + '    <th>Reason</th>';
+	result = result + '    <th>Action</th>';
+	result = result + '   </tr>';
+	result = result + '	</thead>';
+	result = result + '	<tbody>';
+	var json = JSON.parse(data);
+    for (var i = 0; i < json.length; i++) {
+    	var report= json[i];
+    	result = result + '<tr id="row'+report.id+'">';
+        result = result + '<td>';
+        if(report.orgName != null && report.orgName != '' && report.orgName !='undefined'){
+           	result = result + '<div><span>'+report.orgName+'</span></div>';
+     		} else{
+    		result = result + '<div><span>---</span></div>';
+    		    }
+        result = result + '</td>';
+    	result = result + '<td>';
+        if(report.website != null && report.website != '' && report.website !='undefined'){
+       	result = result + '<div><span>'+report.website+'</span></div>';
+ 		} else{
+		result = result + '<div><span>---</span></div>';
+		    }
+        result = result + '</td>';
+        result = result + '<td>';
+        if(report.country != null && report.country != '' && report.country !='undefined'){
+         result = result + '<div><span>'+report.country+'</span></div>';
+        }
+        else{
+		 result = result + '<div><span>---</span></div>';
+		    }
+         result = result + '</td>';
+        
+        result = result + '<td>';
+        if(report.firstName != null && report.firstName != '' && report.firstName !='undefined'){
+        		result = result + "<div><span>"+report.firstName+"</span></div> ";
+        }
+        else{
+		    	result = result + "<div><span>---</span></div>";
+		    }
+        result = result + '</td>';
+        
+        result = result + '<td>';
+        if(report.email != null && report.email != '' && report.email !='undefined'){
+       		 result = result + "<div><span>"+report.email+"</span></div>";
+        }
+        else{
+		    	result = result + "<div><span>---</span></div>";
+		    }
+        result = result + '</td>';
+        
+        result = result + '<td>';
+        if(report.status != null && report.status != '' && report.status !='undefined'){
+       		 result = result + "<div><span>"+report.status+"</span></div>";
+        }
+        else{
+		    	result = result + "<div><span>---</span></div>";
+		    }
+        result = result + '</td>';
+        
+        result = result + '<td>';
+        if(report.ownerEmail != null && report.ownerEmail != '' && report.ownerEmail !='undefined'){
+       		 result = result + "<div><span>"+report.ownerEmail+"</span></div>";
+        }
+        else{
+		    	result = result + "<div><span>---</span></div>";
+		    }
+        result = result + '</td>';
+        
+        result = result + '<td>';
+        if(report.reason != null && report.reason != '' && report.reason !='undefined'){
+       		 result = result + "<div><a class='text-danger' title='"+report.reason+"'>"+report.reason+"</a></div>";
+        }
+        else{
+		    	result = result + "<div><span>---</span></div>";
+		    }
+        
+        result = result + '</td>';
+        
+         result = result + '<td>';
+         if(report.reason == 'Spoc existed' || report.reason == 'Current org user' || report.reason ==  'Client name is mandatory' || report.reason ==  'Client name should contain above 2 char' || report.reason ==  'Invalid email' || report.reason ==  'Invalid moblie number'){
+        	 result = result + '<div class="proj_active" id="removeStatus'+report.id+'"><a class="text-danger fa fa-trash" title="Remove" onclick="removeRecord('+report.id+');"></a></div>';  
+         }else{
+        	 result = result + '<div class="tbldata-dotdot-100" id="recordStatus'+report.id+'"><a class="text-success fa fa-object-group paddingRight aa" title="Merge" onclick="mergeRecord('+report.id+');"></a> <small>|</small> <a class="text-primary fa fa-plus paddingRight" title="Add" onclick="addRecord('+report.id+');"></a> <small>|</small> <a class="text-danger fa fa-trash" title="Remove" onclick="terminateRecord('+report.id+');"></a></div>';
+         }
+       
+        result = result + '</td>';
+        result = result + '</tr>';
+    }
+	result = result + '	</tbody>';
+	result = result + '</table>';
+	  $("#excelimportData").empty();
+    $("#excelimportData").append(result);
+    excelimportDataPagination();
+}
+</script>
+
+<script>
+function removeRecord(recordId){
+	var rowHtmlContent =  $("#row"+recordId).html();
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+       type : "POST",
+        url: sourceleadUrl+"/deleteRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId,       
+        success :function(data) {
+        	$("#row"+recordId).empty();
+	    	$("#row"+recordId).html(rowHtmlContent);
+	        $("#removeStatus"+recordId).html("<b class='proj_closed'>Removed</b>");
+       },
+   }); 
+}
+
+</script>
+
+
+<script>
+function terminateRecord(recordId){
+	var rowHtmlContent =  $("#row"+recordId).html();
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+       type : "POST",
+        url: sourceleadUrl+"/deleteRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId,       
+        success :function(data) {
+        	$("#row"+recordId).empty();
+	    	$("#row"+recordId).html(rowHtmlContent);
+	        $("#recordStatus"+recordId).html("<b class='proj_closed'>Removed</b>");
+       },
+   }); 
+}
+
+</script>
+<script>
+function addRecord(recordId){
+	var rowHtmlContent =  $("#row"+recordId).html();
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+       type : "POST",
+        url: sourceleadUrl+"/addRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId,       
+        success :function(data) {
+        	$("#row"+recordId).empty();
+	    	$("#row"+recordId).html(rowHtmlContent);
+	        $("#recordStatus"+recordId).html("<b class='proj_active'>Added</b>");
+       },
+   }); 
+}
+
+</script>
+
+<script>
+function flush(){
+	$("#clientError").empty();
+}
+</script>
+<script>
+function mergeWithRecord(){
+	var recordId = document.getElementById("clientListIds").value;
+	if(recordId!=null && recordId !=''){
+	$("#clientError").empty();
+	var recordIdVal = recordId.split(',');
+	var rowHtmlContent =  $("#row"+recordIdVal[1]).html();
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+	   type : "POST",
+	    url: sourceleadUrl+"/mergeRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId,       
+	    success :function(data) {
+	    	$("#row"+recordIdVal[1]).empty();
+	    	$("#row"+recordIdVal[1]).html(rowHtmlContent);
+	        $("#recordStatus"+recordIdVal[1]).html("<b class='proj_process'>Merged</b>");
+	        $(".side_mask").hide();
+	   		$(".mergePopup").hide();
+	   },
+	}); 
+	 $(".side_mask").fadeIn(200);
+	 $(".mergePopup").fadeIn(100);
+	}
+	else{
+		$("#clientError").empty().append("Select the client") ; 
+	}
+}
+</script>
+
+
+<script>
+function mergeRecord(recordId){
+	flush();
+	 var rowHtmlContent =  $("#row"+recordId).html();
+	var sourceleadUrl ='${sourceleadUrl}';
+	$('#clientListIds').empty();
+	 $.ajax({
+       type : "POST",
+        url: sourceleadUrl+"/getMatchedClientList?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId,       
+        success :function(data) {
+        	var json = JSON.parse(data);
+        	var result = "";
+        	
+        	$('#clientListIds').append('<option value="">---select Client---</option>');
+        	for (var i=0; i<json.matchedDomainClientList.length; i++)
+			{ 
+        		var report = json.matchedDomainClientList[i];
+        		$('#clientListIds').append('<option value='+report.id+','+recordId+'>'+report.orgName+'</option>');
+			}
+        	for (var i=0; i<json.matchedClientNameList.length; i++)
+			{ 
+        		var report = json.matchedClientNameList[i];
+        		$('#clientListIds').append('<option value='+report.id+','+recordId+'>'+report.orgName+'</option>');
+			}
+        	
+        	$('#clientListIds').trigger("chosen:updated");
+        	
+        	
+        	/* $("#row"+recordId).empty();
+	    	$("#row"+recordId).html(rowHtmlContent);
+	        $("#recordStatus"+recordId).html("<b class='proj_active'>Merged</b>"); */
+       },
+   }); 
+	 $(".side_mask").fadeIn(200);
+   $(".mergePopup").fadeIn(100);
+}
+function mergeclose(){
+	$(".side_mask").fadeOut(200);
+	$(".mergePopup").fadeOut(100);
+}
+</script>
+
+<script>
+function excelimportDataPagination(){
+	$('#excelimportDataTable').DataTable({ 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    } );
+}
+</script>
+
+
+<!-- <script type="text/javascript">
 
 document.getElementById("uploadBtn").onchange = function () {
     document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
 };
-</script>
+</script> -->
 
-<script>
+<!-- <script>
 function check(){
 	var errormsg = '${errorMessage}';
 		$("#errorFileDiv").hide();
@@ -253,7 +583,7 @@ function uploadSave() {
 		});
 	   
     }
-</script> 
+</script>  -->
 
   <!-- Footer Area -->
   <jsp:include page="../masterFooter.jsp" />
