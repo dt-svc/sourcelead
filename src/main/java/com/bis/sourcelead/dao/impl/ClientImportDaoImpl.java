@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ClientImportDao;
 import com.bis.sourcelead.entity.BulkClientDetails;
 
@@ -44,7 +45,7 @@ public class ClientImportDaoImpl implements ClientImportDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<BulkClientDetails> bulkClientDetailsList = null;
 		
-		String query = "from BulkClientDetails bulkClientDetails  where orgLocationId =:orgLocationId and bulkClientDetails.recordStatus = '0'";
+		String query = "from BulkClientDetails bulkClientDetails  where orgLocationId =:orgLocationId and bulkClientDetails.recordStatus = '0' and bulkClientDetails.type ="+Constants.CLIENT+"";
 		bulkClientDetailsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		
 		return bulkClientDetailsList;
@@ -58,11 +59,11 @@ public class ClientImportDaoImpl implements ClientImportDao{
 	    BulkClientDetails bulkClientDetails = null;
 	    List<BulkClientDetails> bulkClientDetailsList = new ArrayList<>();
 		if(bulkClientVendors.getOrgName()!=null || !"".equalsIgnoreCase(bulkClientVendors.getOrgName())){
-			String query = "from BulkClientDetails bulkClientDetails  where orgLocationId =:orgLocationId and bulkClientDetails.email = :email and bulkClientDetails.ownerEmail = :ownerEmail and bulkClientDetails.orgName = :orgName  and bulkClientDetails.recordStatus ='0'";
+			String query = "from BulkClientDetails bulkClientDetails  where orgLocationId =:orgLocationId and bulkClientDetails.email = :email and bulkClientDetails.ownerEmail = :ownerEmail and bulkClientDetails.orgName = :orgName  and bulkClientDetails.recordStatus ='0' and bulkClientDetails.type ="+Constants.CLIENT+" ";
 			bulkClientDetailsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("email", bulkClientVendors.getEmail()).setString("ownerEmail", bulkClientVendors.getOwnerEmail()).setString("orgName", bulkClientVendors.getOrgName()).setCacheable(true).list();
 		}
 		else{
-			String query = "from BulkClientDetails bulkClientDetails  where orgLocationId =:orgLocationId and bulkClientDetails.email = :email and bulkClientDetails.ownerEmail = :ownerEmail and  bulkClientDetails.recordStatus ='0'";
+			String query = "from BulkClientDetails bulkClientDetails  where orgLocationId =:orgLocationId and bulkClientDetails.email = :email and bulkClientDetails.ownerEmail = :ownerEmail and  bulkClientDetails.recordStatus ='0' and bulkClientDetails.type ="+Constants.CLIENT+"";
 			bulkClientDetailsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("email", bulkClientVendors.getEmail()).setString("ownerEmail", bulkClientVendors.getOwnerEmail()).setCacheable(true).list();
 			
 		}
@@ -81,7 +82,7 @@ public class ClientImportDaoImpl implements ClientImportDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		BulkClientDetails bulkClientDetails = null;
 		
-		String query = "from BulkClientDetails bulkClientDetails  where orgLocationId =:orgLocationId and bulkClientDetails.id = :recordId";
+		String query = "from BulkClientDetails bulkClientDetails  where orgLocationId =:orgLocationId and bulkClientDetails.id = :recordId and bulkClientDetails.type ="+Constants.CLIENT+"";
 		List<BulkClientDetails> bulkClientDetailsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("recordId", recordId).setCacheable(true).list();
 		
 		if(null != bulkClientDetailsList && bulkClientDetailsList.size() >0){
