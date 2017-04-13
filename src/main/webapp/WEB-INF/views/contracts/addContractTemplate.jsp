@@ -202,18 +202,6 @@ function contractTemplateType(){
 }
 
 </script>
-<textarea id="txt" rows="15" cols="70">There is some text here.</textarea>
-<input type="button" id="btn" value="OK" />
-<script>
-jQuery("#btn").on('click', function() {
-    var $txt = jQuery("#txt");
-    var caretPos = $txt[0].selectionStart;
-    var textAreaTxt = $txt.val();
-    var txtToAdd = "stuff";
-    $txt.val(textAreaTxt.substring(0, caretPos) + txtToAdd + textAreaTxt.substring(caretPos) );
-});
-</script>
-
 
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
