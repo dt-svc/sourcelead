@@ -613,7 +613,6 @@ function getCandidateCities(){
 
 <script>
 function deleteCandidate(candidateId){
-	
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var reason = document.getElementById("rejectReason").value;
 	  
@@ -629,7 +628,12 @@ function deleteCandidate(candidateId){
          url: sourceleadUrl+"/deleteCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&reason="+reason,        
          success :function(data) {
               if(data != null && data != 'undefined' && data != ""){
-            			 location.replace(sourceleadUrl+"/candidatesList");
+            	  var json = JSON.parse(data);
+            	  if(json.isAssociate == 'Y'){
+            		  location.replace(sourceleadUrl+"/associatesList");
+            	  }else{
+            		  location.replace(sourceleadUrl+"/candidatesList");
+            	  }
                 }
                  },
               }); 

@@ -1321,7 +1321,7 @@ function cancel(candidateId){
           <li><b id="addmore"><i class="fa fa-plus"></i>&nbsp;<span>Add</span>&nbsp;<i class="glyphicon glyphicon-play"></i></b>
           	<div id="addmorepop" class="approved_pop">
 	          <ul>
-	          <li><a href="<c:url value='/addAssociate?type=addConsultant'/>" title="Add Associate"><i class="fa fa-plus"></i>Add Associate</a></li>
+	          <li><a href="<c:url value='/addAssociate'/>" title="Add Associate"><i class="fa fa-plus"></i>Add Associate</a></li>
 	          
 	          <sec:authorize access="hasAnyRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')">
 	              <li><a href="<c:url value='/assignHotListToTeam'/>" title=""><i class="fa fa-plus"></i>Assign To Team</a></li>

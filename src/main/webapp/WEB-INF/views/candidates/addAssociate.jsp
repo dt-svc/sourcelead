@@ -462,8 +462,8 @@
 			var form = $('#candidate_form')[0];
       		var formData = new FormData(form); 
 			//It will escape all the special characters
-//			$("#store_candidate").attr("disabled", "disabled");
-	//		$("#store_candidate").addClass('button').val('Processing..');
+			$("#store_candidate").attr("disabled", "disabled");
+			$("#store_candidate").addClass('button').val('Processing..');
 			$.ajax({
 						type : "POST",
 		        	    data: formData,
@@ -947,6 +947,7 @@ document.getElementById("uploadFileBtn").onchange = function () {
 
 <script>
 function getDesignationType(designationType){
+	$('#vendorcontact').val('').trigger("chosen:updated");
 	var existingDesignationType = '${requirement.designationType}';
 	if(designationType.value == 'Other'){
 		 document.getElementById("designationTypeDiv").style.display="block";

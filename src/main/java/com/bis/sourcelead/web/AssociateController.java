@@ -159,13 +159,12 @@ public class AssociateController {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
 		ModelAndView model = new ModelAndView();
 		
 		List<Roles> rolesList = roleService.getOrgEnrolledRolesByOrgLocationId(org, orgLocations.getId());
 		model.addObject("rolesList", rolesList);
 		
-		model.setViewName("candidates/addConsultant");
+		model.setViewName("candidates/addAssociate");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("type", type);
 	

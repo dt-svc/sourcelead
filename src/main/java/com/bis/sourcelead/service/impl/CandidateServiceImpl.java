@@ -166,11 +166,7 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			candidate.setIsFavourite(0);
 			candidate.setIsFavouriteAssociate(0);
-			if(jsonObj.has("isAssociate") && jsonObj.getString("isAssociate") != null){
-				candidate.setIsAssociate(Constants.YES);
-			}else{
-				candidate.setIsAssociate(Constants.NO);
-			}
+			
 		}
         
 		if(orgLocations != null){
@@ -313,6 +309,11 @@ public class CandidateServiceImpl implements CandidateService {
 			}
 		}*/
 		
+		if(jsonObj.has("isAssociate") && jsonObj.getString("isAssociate") != null && Constants.YES.equalsIgnoreCase(jsonObj.getString("isAssociate"))){
+			candidate.setIsAssociate(Constants.YES);
+		}else{
+			candidate.setIsAssociate(Constants.NO);
+		}
 		candidate.setUpdatedBy(user.getUserCode());
 		candidate.setUpdatedDate(commonUtil.currentDate());
 		candidate.setStatus(Constants.CANDIDATE_ACTIVE);

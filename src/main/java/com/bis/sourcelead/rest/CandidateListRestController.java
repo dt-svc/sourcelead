@@ -187,7 +187,7 @@ public class CandidateListRestController {
 			
 			
 			if(null != isAssociate && isAssociate.equalsIgnoreCase(Constants.YES)){
-				boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", isAssociate));
+				boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", "Y"));
 				if(null != candidateType && !candidateType.isEmpty() && !candidateType.equalsIgnoreCase("All")){
 					boolQueryBuilder.must(QueryBuilders.matchQuery("isFavouriteAssociate", candidateType));
 				}
@@ -996,7 +996,7 @@ public class CandidateListRestController {
 	   public @ResponseBody  String deleteCandidateByCandidateId(@RequestParam(value="candidateId", required=false) String  candidateId,@RequestParam(value="reason", required=false) String  reason, HttpServletRequest request) throws Exception {
 		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			 
+			String resultJson;
 			Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),loginOrgLocation.getId());
 			if(candidate != null){
 				
@@ -1004,7 +1004,10 @@ public class CandidateListRestController {
 					if(StringUtils.isNotEmpty(reason)){
 						candidate.setTerminateReason(reason);
 					}
-				
+					if(Constants.YES.equalsIgnoreCase(candidate.getIsAssociate())){
+						candidate.setIsAssociate(Constants.NO);
+					}
+					
 				candidate.setUpdatedBy(user.getUserCode());
 				candidate.setUpdatedDate(commonUtil.currentDate());
 				candidate.setIsFavourite(0);
@@ -1016,7 +1019,8 @@ public class CandidateListRestController {
 	
 			
 			}
-			return "success";
+			resultJson = commonUtil.toJSON(candidate);
+			return resultJson;
 		 }
 	   
 	   
