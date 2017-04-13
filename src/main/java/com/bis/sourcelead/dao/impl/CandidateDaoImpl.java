@@ -639,6 +639,27 @@ public class CandidateDaoImpl implements CandidateDao {
 	}
 	
 	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getAllActiveAssociatesByOrglocationId(Long orgLocationId , String employeementType) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "";
+		List<Candidate> candidateList = null;
+		if(employeementType != null && employeementType != "" && employeementType != "undefined"){
+			query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.isAssociate ='Y'  and candidate.designationType =:employeementType ";
+			candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("employeementType", employeementType).setCacheable(true).list();
+		}else{
+			query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.isAssociate ='Y' "; 
+			candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		}
+		  
+		 
+		
+		return candidateList;
+	}
+	
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Candidate> getOwnersByCandidates(Long orgLocationId, String candidateType,String ownersList) {
@@ -731,5 +752,20 @@ public class CandidateDaoImpl implements CandidateDao {
 		return candidateList;
 	}
 
-	
+		
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateById(Long candidateId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Candidate> candidate = new ArrayList<Candidate>();
+		logger.debug("getCandidateById start");
+		candidate = session.createQuery("from Candidate where id=:id" ).setCacheable(true).setLong( "id", candidateId ).setCacheable(true).list();
+		logger.debug("getCandidateById end");
+		if (candidate.size() > 0) {
+			return candidate.get(0);
+		} else {
+			return null;
+		}
+   	}
 }

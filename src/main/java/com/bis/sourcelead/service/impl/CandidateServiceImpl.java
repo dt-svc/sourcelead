@@ -835,7 +835,19 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			}
 		return candidateReportsList;
 	}
-
+	
+	@Override
+	public List<Candidate> getAllActiveAssociatesByOrglocationId(Long orgLocationId,String employeementType) throws Exception
+	{
+		return candidateDao.getAllActiveAssociatesByOrglocationId(orgLocationId,employeementType);
+	}
+	
+	@Override
+	public Candidate getCandidateById(Long candidateId) throws Exception
+	{
+		return candidateDao.getCandidateById(candidateId);
+	}
+	
 	@Override
 	public List<User> getAllCandidateOwnersByLocationIdAndCandidateType(Long orgLocationId, String candidateType)
 			throws Exception {
@@ -881,6 +893,4 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public List<Candidate> getAllActiveCandidatesCountForCampaignByLocationAndStatus(Long orgLocationId) throws Exception {
 		return candidateDao.getAllActiveCandidatesCountForCampaignByLocationAndStatus(orgLocationId);
 	}
-
-
 }
