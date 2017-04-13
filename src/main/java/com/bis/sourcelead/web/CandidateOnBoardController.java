@@ -89,4 +89,40 @@ public class CandidateOnBoardController {
  			return model;
  	}
 	
+	
+	@RequestMapping(value = "/candidateOnBoardingList")
+	public ModelAndView candidateOnBoardingList(HttpServletRequest request) {
+		ModelAndView model = new ModelAndView();
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Users);
+		
+		request.getSession().setAttribute("sessionData",sessionData);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("onboard/candidateOnBoardingList");
+		return model;
+	}
+	
+	
+	@RequestMapping(value = "/candidateOnBoardCreation")
+	public ModelAndView candidateOnBoardCreation(HttpServletRequest request) {
+		ModelAndView model = new ModelAndView();
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Users);
+		
+		request.getSession().setAttribute("sessionData",sessionData);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("onboard/candidateOnBoardCreation");
+		return model;
+	}
+	
 }

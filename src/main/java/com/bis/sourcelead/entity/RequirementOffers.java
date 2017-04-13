@@ -90,6 +90,15 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	@Transient
     private Boolean requirementReleasedOrNot;
 	
+	@Transient
+    private String jobTitle;
+	
+	@Transient
+    private Long candidateId;
+	
+	@Transient
+    private String candidateName;
+	
 	
 	public Long getId() {
 		return id;
@@ -249,6 +258,30 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 	public void setRequirementReleasedOrNot(Boolean requirementReleasedOrNot) {
 		this.requirementReleasedOrNot = requirementReleasedOrNot;
+	}
+
+	public String getJobTitle() {
+		return jobTitle;
+	}
+
+	public void setJobTitle(String jobTitle) {
+		this.jobTitle = jobTitle;
+	}
+
+	public Long getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
+	}
+
+	public String getCandidateName() {
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
 	}
 	
 	

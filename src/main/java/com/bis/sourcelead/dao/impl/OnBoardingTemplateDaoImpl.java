@@ -114,4 +114,17 @@ public class OnBoardingTemplateDaoImpl implements OnBoardingTemplateDao{
 		}
 	}
 
+
+
+	@Override
+	@Transactional
+	public List<OnBoardingTemplate> getOnBoardingFinishedTemplatesList(Long orgLocationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from OnBoardingTemplate template left join fetch template.orgLocationId where template.orgLocationId.id =:orgLocationId "
+	    		+ " and template.templateStatus = 'Finished' and template.status = '1' ";
+	    List<OnBoardingTemplate> onBoardingTemplateList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+        return onBoardingTemplateList;
+	}
+
 }

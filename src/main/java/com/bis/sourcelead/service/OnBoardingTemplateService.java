@@ -15,4 +15,6 @@ public interface OnBoardingTemplateService {
 	OnBoardingTemplate getOnBoardingTemplateByTemplateNameAndOrgLocationId(String templateName,Long orgLocationId) throws Exception;
 	
 	OnBoardingTemplate getOnBoardingTemplateByTemplateUUID(String templateUUID) throws Exception;
+	
+	List<OnBoardingTemplate> getOnBoardingFinishedTemplatesList(Long orgLocationId) throws Exception;
 }

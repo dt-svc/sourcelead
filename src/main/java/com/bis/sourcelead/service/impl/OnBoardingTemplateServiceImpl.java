@@ -40,6 +40,11 @@ public class OnBoardingTemplateServiceImpl implements OnBoardingTemplateService{
 	public OnBoardingTemplate getOnBoardingTemplateByTemplateUUID(String templateUUID) throws Exception {
 		return onBoardingTemplateDao.getOnBoardingTemplateByTemplateUUID(templateUUID);
 	}
+
+	@Override
+	public List<OnBoardingTemplate> getOnBoardingFinishedTemplatesList(Long orgLocationId) throws Exception {
+		return onBoardingTemplateDao.getOnBoardingFinishedTemplatesList(orgLocationId);
+	}
 	
 	
 

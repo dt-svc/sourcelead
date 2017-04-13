@@ -27,17 +27,26 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.OnBoardingTemplate;
 import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
 import com.bis.sourcelead.entity.OnboardTasks;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
+import com.bis.sourcelead.entity.RequirementOffers;
+import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.TimesheetEntriesForm;
+import com.bis.sourcelead.service.CandidateOnBoardingService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OnBoardingTemplateDocumentsService;
 import com.bis.sourcelead.service.OnBoardingTemplateService;
 import com.bis.sourcelead.service.OnboardTasksService;
+import com.bis.sourcelead.service.RequirementOffersService;
+import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -69,6 +78,22 @@ public class CandidateOnBoardRestController {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	RequirementOffersService requirementOffersService;
+	
+	@Autowired
+	CandidateService candidateService;
+	
+	@Autowired
+	RolesService rolesService;
+	
+	@Autowired
+	TeamService teamService;
+	
+	@Autowired
+	CandidateOnBoardingService candidateOnBoardingService;
+	
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -523,5 +548,125 @@ public class CandidateOnBoardRestController {
 		return "success";
 		
 	 }
+	 
+	 
+	 @RequestMapping(value = "/getOfferAcceptedCandidatesForOnBoard")
+	 public String getOfferAcceptedCandidatesForOnBoard(HttpServletRequest request) throws Exception {
+
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		
+		List<RequirementOffers> candidateOffersList = requirementOffersService.getOfferAcceptedCandidatesByOrgLocationId(loginOrgLocation.getId());
+		List<RequirementOffers> offersList = new ArrayList<RequirementOffers>();
+		
+		
+		if(null != candidateOffersList  && candidateOffersList.size() > 0){
+			
+			for(RequirementOffers offers : candidateOffersList){
+				
+				StringBuilder candidateName = new StringBuilder();
+				
+					if(null != offers.getSubmissionId().getCandidate().getFirstName()){
+						offers.setCandidateName(candidateName.append(offers.getSubmissionId().getCandidate().getFirstName()).append(" ").append(offers.getSubmissionId().getCandidate().getLastName()).toString());
+					}else{
+						offers.setCandidateName(candidateName.append(offers.getSubmissionId().getCandidate().getFirstName()).toString());
+					}
+					
+					offers.setCandidateId(offers.getSubmissionId().getCandidate().getId());
+					offers.setJobTitle(offers.getSubmissionId().getRequirement().getJobTitle());
+					
+					offersList.add(offers);
+			}
+			
+			}
+		
+		
+		return commonUtil.toJSON(offersList);
+	 
+	 }
+	 
+	 
+	 
+	 @RequestMapping(value = "/getOnBoardingCandidateDetails")
+		public String getOnBoardingCandidateDetails(@RequestParam(value = "candidateId", required = false) Long candidateId,
+				HttpServletRequest request) throws Exception {
+
+			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+			
+			return commonUtil.toJSON(candidate);
+
+		}
+	 
+	 
+	 
+	 @RequestMapping(value = "/getOnBoardingCandidateOfferDetails")
+		public String getOnBoardingCandidateOfferDetails(@RequestParam(value = "offerId", required = false) Long offerId,
+				HttpServletRequest request) throws Exception {
+
+			RequirementOffers offer = requirementOffersService.getRequirementOfferId(offerId);
+			if(null != offer.getDateOfJoining()){
+				offer.setDateOfJoiningStr(Constants.DMY.format(offer.getDateOfJoining()));
+			}
+			
+			
+			return commonUtil.toJSON(offer);
+
+		}
+	 
+	 
+	 
+	 @RequestMapping(value = "/getRolesListForCandidateOnBoarding")
+		public String getRolesListForCandidateOnBoarding(HttpServletRequest request) throws Exception {
+
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<Roles> rolesList = rolesService.getRoles(loginOrgLocation.getId());
+			
+			return commonUtil.toJSON(rolesList);
+
+		}
+	 
+	 
+	 @RequestMapping(value = "/getTeamsListForCandidateOnBoarding")
+		public String getTeamsListForCandidateOnBoarding(HttpServletRequest request) throws Exception {
+
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<Team> teamList = teamService.getTeamListByOrgLocationID(loginOrgLocation.getId());
+			
+			return commonUtil.toJSON(teamList);
+
+		}
+	 
+	 
+	 @RequestMapping(value = "/getOnboardingTemplatesForCandidateOnBoarding")
+		public String getOnboardingTemplatesForCandidateOnBoarding(HttpServletRequest request) throws Exception {
+
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<OnBoardingTemplate> teamplatesList = onBoardingTemplateService.getOnBoardingFinishedTemplatesList(loginOrgLocation.getId());
+			
+			return commonUtil.toJSON(teamplatesList);
+
+		}
+	 
+	 
+	 
+	 @RequestMapping(value = "/saveOnboardingCandidateDetails" , method = RequestMethod.POST)
+	 public @ResponseBody  String saveOnboardingCandidateDetails(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+		
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 
+		 String resultJson;
+		 
+		 json = "{"+json+"}";
+		 
+		 JSONObject jsonObj = new JSONObject(json);
+		 
+		 CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.saveOnBoardingCandidatesDetails(jsonObj, loginOrgLocation, user);
+		 	
+	 	resultJson = commonUtil.toJSON(Long.valueOf(candidateOnBoarding.getId()));
+		return resultJson;
+	   }
+	 
+	 
+	 
 	 
 }
