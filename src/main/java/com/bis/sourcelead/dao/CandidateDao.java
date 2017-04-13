@@ -47,6 +47,8 @@ public interface CandidateDao {
 	
 	Candidate getCandidateByEmailAndRecruiterUserId(String email,Long recruiterUserId) throws Exception;
 	
+	public List<Candidate> getAllActiveAssociatesByOrglocationId(Long orgLocationId,String employeementType) throws Exception;
+	
 	public List<Candidate> getCandidatesByOrgLocationIDAndSearchText(Long orgLocationId,Long requirementId, String candidateType,String searchApplicant) throws Exception;
     
 	public Long getCandidatesCountByCandidateTypeOrgLocationID(Long orgLocationId,String candidateType);
@@ -63,5 +65,8 @@ public interface CandidateDao {
 
 	public Integer getAllCandidatedsBasedOnCreatedByAndOrglocationCodeWhichAreCreatedToday(OrgLocations orgLocations,
 			User user) throws Exception;
+
+	public Candidate getCandidateById(Long candidateId) throws Exception;
+
 
 }
