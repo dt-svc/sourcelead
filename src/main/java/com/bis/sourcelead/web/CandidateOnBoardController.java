@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.OnBoardingTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.OnBoardingTemplateService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
@@ -31,6 +33,9 @@ public class CandidateOnBoardController {
 	
 	@Autowired
 	OnBoardingTemplateService onBoardingTemplateService;
+	
+	@Autowired
+	CandidateOnBoardingService candidateOnBoardingService;
 	
 	
 	@RequestMapping(value = "/candidateOnBoardingDetails")
@@ -124,5 +129,28 @@ public class CandidateOnBoardController {
 		model.setViewName("onboard/candidateOnBoardCreation");
 		return model;
 	}
+	
+	
+	
+	@RequestMapping(value = "/viewOnboardCandidateDetails")
+ 	public ModelAndView viewOnboardCandidateDetails(@RequestParam(value="onboardUUID", required=false) String onboardUUID,
+ 			HttpServletRequest request) throws Exception {
+		   
+		    ModelAndView model = new ModelAndView();
+ 			
+		    SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.Users);
+ 			
+ 			CandidateOnBoarding onBoarding = candidateOnBoardingService.getCandidateOnBoardingByUUID(onboardUUID);
+ 			
+ 			model.setViewName("onboard/candidateOnBoardCreation");
+ 			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			model.addObject("onBoardingId", onBoarding.getId());
+ 			return model;
+ 	}
 	
 }

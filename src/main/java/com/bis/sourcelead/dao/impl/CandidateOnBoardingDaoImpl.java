@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -53,6 +54,31 @@ public class CandidateOnBoardingDaoImpl  implements CandidateOnBoardingDao{
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return candidateOnBoarding;
+	}
+
+
+	@Override
+	@Transactional
+	public List<CandidateOnBoarding> getCandidateOnBoardingListByOrgLocationId(Long orgLocationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from CandidateOnBoarding onboarding left join fetch onboarding.orgLocationId where onboarding.orgLocationId.id =:orgLocationId ";
+	    List<CandidateOnBoarding> candidateOnBoardingList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+        return candidateOnBoardingList;
+	}
+
+
+	@Override
+	@Transactional
+	public CandidateOnBoarding getCandidateOnBoardingByUUID(String onboardCandidateUUID) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<CandidateOnBoarding> candidateOnBoarding = session.createQuery("from CandidateOnBoarding onboarding where onboarding.onboardCandidateUUID =:onboardCandidateUUID" ).setString( "onboardCandidateUUID", onboardCandidateUUID ).setCacheable(true).list();
+		if (candidateOnBoarding.size() > 0) {
+			return candidateOnBoarding.get(0);
+		} else {
+			return null;
+		}
 	}
 
 }

@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -142,6 +143,12 @@ private static final long serialVersionUID = 1L;
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Transient
+	private String joiningDateStr;
+	
+	@Transient
+	private String candidateName;
 	
 	
 	
@@ -424,6 +431,22 @@ private static final long serialVersionUID = 1L;
 
 	public void setCandidateOnBoardStatus(String candidateOnBoardStatus) {
 		this.candidateOnBoardStatus = candidateOnBoardStatus;
+	}
+
+	public String getJoiningDateStr() {
+		return joiningDateStr;
+	}
+
+	public void setJoiningDateStr(String joiningDateStr) {
+		this.joiningDateStr = joiningDateStr;
+	}
+
+	public String getCandidateName() {
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
 	}
 	    
 }

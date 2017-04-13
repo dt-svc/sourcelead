@@ -15,6 +15,14 @@
 		document.getElementById("templateDocs").disabled = true;
 		document.getElementById("templateTasks").disabled = true;
 		
+		
+		var onBoardingId = '${onBoardingId}';
+		if(onBoardingId != null && onBoardingId != '' && onBoardingId != 'undefined'){
+			$("#candidateOnBoardId").val(onBoardingId);
+  	        document.getElementById("templateDocs").disabled = false;
+  	        document.getElementById("templateTasks").disabled = false;
+		}
+		
 		loadOnboardingDetails();
 		
 	});

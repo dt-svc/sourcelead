@@ -34,6 +34,7 @@ import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
 import com.bis.sourcelead.entity.OnboardTasks;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
@@ -565,7 +566,7 @@ public class CandidateOnBoardRestController {
 				
 				StringBuilder candidateName = new StringBuilder();
 				
-					if(null != offers.getSubmissionId().getCandidate().getFirstName()){
+					if(null != offers.getSubmissionId().getCandidate().getLastName()){
 						offers.setCandidateName(candidateName.append(offers.getSubmissionId().getCandidate().getFirstName()).append(" ").append(offers.getSubmissionId().getCandidate().getLastName()).toString());
 					}else{
 						offers.setCandidateName(candidateName.append(offers.getSubmissionId().getCandidate().getFirstName()).toString());
@@ -667,6 +668,38 @@ public class CandidateOnBoardRestController {
 	   }
 	 
 	 
-	 
+	 @RequestMapping(value = "/getOnboardCandidateList")
+	 public String getOnboardCandidateList(HttpServletRequest request) throws Exception {
+
+		String resultJson;
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		
+		List<CandidateOnBoarding> candidateOnBoardingList = candidateOnBoardingService.getCandidateOnBoardingListByOrgLocationId(loginOrgLocation.getId());
+		List<CandidateOnBoarding> onBoardingList = new ArrayList<CandidateOnBoarding>();
+		
+		if(null != candidateOnBoardingList && candidateOnBoardingList.size() > 0){
+			for(CandidateOnBoarding candidateOnBoarding : candidateOnBoardingList){
+				if(null != candidateOnBoarding.getStartDate()){
+					candidateOnBoarding.setJoiningDateStr(Constants.DMY.format(candidateOnBoarding.getStartDate()));
+				}
+				
+				StringBuilder candidateName = new StringBuilder();
+				
+				if(null != candidateOnBoarding.getLastName()){
+					candidateOnBoarding.setCandidateName(candidateName.append(candidateOnBoarding.getFirstName()).append(" ").append(candidateOnBoarding.getLastName()).toString());
+				}else{
+					candidateOnBoarding.setCandidateName(candidateName.append(candidateOnBoarding.getFirstName()).toString());
+				}
+				
+				onBoardingList.add(candidateOnBoarding);
+				
+			}
+		}
+		
+		resultJson = commonUtil.toJSON(onBoardingList);
+		
+		return resultJson;
+	 }
+	
 	 
 }

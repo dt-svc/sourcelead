@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.List;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -173,6 +175,16 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		candidateOnBoardingDao.saveCandidateOnBoarding(candidateOnBoarding);
 		
 		return candidateOnBoarding;
+	}
+
+	@Override
+	public List<CandidateOnBoarding> getCandidateOnBoardingListByOrgLocationId(Long orgLocationId) throws Exception {
+		return candidateOnBoardingDao.getCandidateOnBoardingListByOrgLocationId(orgLocationId);
+	}
+
+	@Override
+	public CandidateOnBoarding getCandidateOnBoardingByUUID(String onboardCandidateUUID) throws Exception {
+		return candidateOnBoardingDao.getCandidateOnBoardingByUUID(onboardCandidateUUID);
 	}
 
 }
