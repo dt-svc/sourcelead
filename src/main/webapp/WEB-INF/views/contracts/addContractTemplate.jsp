@@ -26,27 +26,27 @@
 	
 <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal">
-       
+       <form:form id="template_form" name="template_form" method="post">
         <div class="row newContrWrap">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
            
             <div class="form-group">
               <label class="col-md-4">Template name<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="Company Name" value="">
+                <input type="text"  id="companyName" name="companyName" value="" field-name="Company Name" data-validation="required" type="text" class="form-control">
               </div>
             </div>
             
             <div class="form-group">
               <label class="col-md-4">Template Type<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="contractType" onchange="contractTemplateType();">
-                    <option>Client MSA</option>
-                    <option>Vendor MSA</option>
-                    <option>Client SOW</option>
-                    <option>Vendor SOW</option>
-                    <option>NDA</option>
-                    <option>NSA</option>
+                  <select class="chosen-select form-control" id="contractType" field-name="Template Type"  name="contractType" onchange="contractTemplateType();">
+                    <option value="Client MSA">Client MSA</option>
+                    <option value="Vendor MSA">Vendor MSA</option>
+                    <option value="Client SOW">Client SOW</option>
+                    <option value="Vendor SOW">Vendor SOW</option>
+                    <option value="NDA">NDA</option>
+                    <option value="NSA">NSA</option>
                   </select>
             </div>
             </div>
@@ -55,11 +55,9 @@
           <div class="form-group">
               <label class="col-md-4">Letter head</label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control">
-                    <option>Letter head</option>
-                    <option>Letter head-1</option>
-                    <option>Letter head-2</option>
-                    <option>Letter head-3</option>
+                  <select class="chosen-select form-control" id="letterHead" name="letterHead">
+                    <option value="Letter head">Letter head</option>
+                    <option value="Letter head-1">Letter head-1</option>
                   </select>
               </div>
           </div>             
@@ -67,7 +65,7 @@
             <div class="form-group">
               <label class="col-md-4">Description</label>
               <div class="col-md-8">
-					<textarea class="form-control" rows="3" name="Project Description"></textarea>
+					<textarea class="form-control" rows="3" id ="description"  name="description"></textarea>
               </div>
             </div>            
             
@@ -77,14 +75,14 @@
 <div class="row newContrWrap">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 		<div class="col-md-9">
-			<textarea id="txtEditor" class="form-control newContrtextarea"></textarea>
+			<textarea id="txtEditor" name="templateContent" class="form-control newContrtextarea"></textarea>
 		</div>  
 		
 		
 		<div class="col-md-3 contrCus">
 			<h3>Custom Files</h3>
 			<ul id="clientmsa" style="display:block">
-				<li><i></i>Client Name</li>
+				<li onclick="copyToClipboard('text_element')"><i></i><p class="copyText" id="text_element"> {Client Name} </p></li>
 				<li><i></i>Client Contact</li>
 				<li><i></i>Client location</li>
 			</ul>
@@ -96,7 +94,7 @@
 			</ul>
 			
 			<ul id="clientsow" style="display:none">
-				<li><i></i>Client Name</li>
+				<li onclick="copyToClipboard('text_element')"><i></i><p class="copyText" id="text_element">{Client Name}</p></li>
 				<li><i></i>Client Contact</li>
 				<li><i></i>Client Location</li>
 				<li><i></i>Requirement Title</li>
@@ -129,21 +127,39 @@
       <div class="form-footer clearfix contrFoot">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input type="button" value="Back" class="btn btn-danger">
-			<a href="add-contract-template-preview.html"><input type="button" value="Next" class="btn btn-primary ml10"></a>
+          	<input type="button" value="Back" class="btn btn-danger">
+            <input type="button" value="Next" id="save_template" onclick="saveTemplate(); " class="btn btn-primary"> 
+           <!--  <input type="button" value="Back" class="btn btn-danger">
+			<a href="add-contract-template-preview.html"><input type="button" value="Next" class="btn btn-primary ml10"></a> -->
           </div>
         </div>
       </div>
 
 <!-- Content Area Ends-->
-
- <script src="js/editor.js"></script>
-    <link href="css/editor.css" type="text/css" rel="stylesheet"/>
+</form:form>
+</div>
+</div>
+ <script src="resources/js/editor.js"></script>
+    <link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
 		<script>
 			$(document).ready(function() {
 				$("#txtEditor").Editor();
 			});
-</script>   
+</script> 
+
+<script>
+function copyToClipboard(elementId) {
+	  var aux = document.createElement("input");
+	  aux.setAttribute("value", document.getElementById(elementId).innerHTML);
+	  document.body.appendChild(aux);
+	  aux.select();
+	  document.execCommand("copy");
+	  document.body.removeChild(aux);
+	}
+	function log(){
+		console.log('---')
+	}
+</script>
 
 
 <script type="text/javascript">
@@ -202,6 +218,43 @@ function contractTemplateType(){
 }
 
 </script>
+
+
+
+
+
+<script type="text/javascript">
+	function saveTemplate() {
+		if ($('#template_form').validate(false, validationSettings)) {
+			var frm = $('#template_form').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
+			  //It will escape all the special characters
+	        var jsonData = encodeURIComponent(con);
+			var sourceleadUrl = '${sourceleadUrl}';
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	 		$.ajax({
+						type : "POST",
+						url : sourceleadUrl
+								+ "/saveTemplate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						success : function(result) {
+							/* if (result == 'clientDashboard') {
+								location.replace(sourceleadUrl
+										+ "/clientDashboard");
+							} */
+						},
+					}); 
+			return true;
+		} else {
+			return false;
+		}
+	}
+	$('body').on('blur', '#template_form', function() {
+		$("#template_form").showHelpOnFocus();
+		$("#template_form").validateOnBlur(false, validationSettings);
+	});
+</script>
+
 
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
