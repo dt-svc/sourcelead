@@ -1,4 +1,6 @@
 package com.bis.sourcelead.si.util;
+import java.io.InputStream;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
@@ -104,23 +106,23 @@ public class ContactImporter {
 			responseObj = ao.getContacts(token, service);
 		}
 		else if(service.equals("hotmail") || service.equals("outlook")){
-			responseObj = hot.getContacts(token, service);
+			responseObj = hot.getContacts(token, service,request);
 		}
 		else if(service.equals("mailru")){
 			responseObj = maru.getContacts(token, consumerkey, consumersecret);
 		}
 		else if(service.equals("yahoo")){
-			responseObj = yah.getContacts(consumerkey, consumersecret, "", token, tokensecret, tokenverifier, userid);
+			responseObj = yah.getContacts(consumerkey, consumersecret, "", token, tokensecret, tokenverifier, userid,request);
 		}
 		else{
 			responseObj = pr.serviceNotAvailable();
 		}
 		return responseObj;
 	}
-	public JSONObject getContactsObject(String service, String uploadurl){
+	public JSONObject getContactsObject(String service, InputStream is,HttpServletRequest request){
 		if(service.equals("csv")){
 			outlook ou = new outlook();
-			responseObj = ou.getContacts(uploadurl);
+			responseObj = ou.getContacts(is,request);
 		}
 		else{
 			responseObj = pr.serviceNotAvailable();

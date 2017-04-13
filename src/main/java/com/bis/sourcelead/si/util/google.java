@@ -336,12 +336,14 @@ class google {
 							 }
 						 }
 						 if(emails.length()>0){
+							 referContacts.setJsonOutPut(friend.toString());
+							 refContactsList.add(referContacts);
+							 
 							 friend.put("imageurl", imageurl);
 							 friend.put("address", addresses);
 							 friends.put(friend);
 						 }
-						 referContacts.setContactSource(Contact_Source.GOOGLE);
-						 refContactsList.add(referContacts);
+						 
 					 }
 				 }
 			 }

@@ -2849,15 +2849,14 @@ var contactimporter = (function () {
         var csvStr = csvFront + "<div class=\"file-SI-upload\">";
 
 
-
         csvStr += "<div class=\"file-SI-upload-left fl break\">";
         csvStr += "<div><iframe src=\"\" id=\"fuploadframe\" name=\"fuploadframe\" height=\"0px\" width=\"0px\" frameborder=\"0\" scrolling=\"no\"></iframe></div>";
-        csvStr += "<form action=\"" + socialinviter.endpoints.upoader + "\" id=\"fuploadform\" method=\"post\" target=\"fuploadframe\" onsubmit=\"javascript:return socialinviter.contactimporter.submitUploading()\" enctype=\"multipart/form-data\">";
+        csvStr += "<form action=\"" + socialinviter.endpoints.upoader + "\" id=\"fuploadform\" method=\"post\" target=\"fuploadframe\"  enctype=\"multipart/form-data\">";
         csvStr += "<div><div><div class=\"fl\"><label for=\"fupload\" class=\"upload-SI-label\">" + socialinviter.getConfig().servicepanel.content.csv.label + "</label></div>";
         csvStr += "<div class=\"upload-SI-control\"><input type=\"file\" name=\"fupload\" id=\"fupload\"/><input type=\"hidden\" id=\"pluginloc\" name=\"pluginloc\" /></div></div>";
         csvStr += "<div class='fl'><div class='file-upload-label'></div><div class=\"upload-SI-button-holder fl\">";
-        csvStr += "<button type=\"submit\" class=\"upload-SI-button\">" + socialinviter.getConfig().servicepanel.content.csv.button.upload + "</button>";
-        csvStr += "<div class=\"upload-SI-loading fl\"><img src=\"" + tgturl + "assets/img/icons/processing.gif\" /></div></div></div>";
+        csvStr += "<button type=\"button\" onclick=\"uploadCsv();\" class=\"upload-SI-button\">" + socialinviter.getConfig().servicepanel.content.csv.button.upload + "</button>";
+        csvStr += "<div id=\"store_csv\" class=\"upload-SI-loading fl\"><img src=\"" + tgturl + "assets/img/icons/processing.gif\" /></div></div></div>";
         csvStr += "</div></form></div>";
 
         csvStr += "<div class=\"break upload-SI-error-panel\">";

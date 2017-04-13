@@ -195,4 +195,31 @@
  
 </script>
 
+<script type="text/javascript">
+	function uploadCsv() {
+			var sourceleadUrl = '${sourceleadUrl}';
+			var frm = $('#fuploadform').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, ""); 
+		    var jsonData = encodeURIComponent(con);
+			var form = $('#fuploadform')[0];
+      		var formData = new FormData(form); 
+			//It will escape all the special characters
+			$("#store_csv").attr("disabled", "disabled");
+			$.ajax({
+						type : "POST",
+		        	    data: formData,
+		        	    contentType : 'application/json; charset=utf-8',
+		        	    enctype: 'multipart/form-data',
+		    	        processData: false,
+		    	        contentType:false,
+		        	    dataType : 'json',
+						url : sourceleadUrl+"/storeCsv?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						success : function(result) {
+								
+						},
+					});
+	 } 
+	
+</script>
 

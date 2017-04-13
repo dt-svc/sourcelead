@@ -8,6 +8,7 @@ public enum Contact_Source {
 	GOOGLE("GOOGLE"),
 	YAHOO("YAHOO"),
 	HOTMAIL("HOTMAIL"),
+	CSV("CSV"),
 	TWITTER("TWITTER"),
 	FOURSQUARE("FOURSQUARE"),
 	TUMBLR("TUMBLR"),

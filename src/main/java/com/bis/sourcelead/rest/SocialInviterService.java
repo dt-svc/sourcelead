@@ -1,6 +1,9 @@
 package com.bis.sourcelead.rest;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.Writer;
+import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.si.util.ContactImporter;
 import com.bis.sourcelead.si.util.FriendsInviter;
@@ -30,7 +35,7 @@ public class SocialInviterService {
 	private static final Logger logger = LoggerFactory.getLogger(SocialInviterService.class);
 	
 	
-    @RequestMapping(value="/getAPIService", method=RequestMethod.GET, produces = "application/javascript;charset=UTF-8")
+    @RequestMapping(value="/getAPIService",  method =  RequestMethod.GET, produces = "application/javascript;charset=UTF-8")
 	@ResponseBody
 	public String getAPIService(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 
@@ -195,6 +200,38 @@ public class SocialInviterService {
         	return toJSON(obj);
         }
 	}
+    
+    
+    @RequestMapping(value = "/storeCsv", method = RequestMethod.POST)
+	public @ResponseBody String storeCsv(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
+		
+		MultipartFile multiFile = null;
+		Iterator<String> itrator = request.getFileNames();
+		if(itrator.hasNext()){
+	        multiFile = request.getFile(itrator.next());
+		}
+		JSONObject obj = new JSONObject();
+		String callback ="";
+		processor pr = new processor();
+		if(request.getParameter("callback")!=null){
+			callback = request.getParameter("callback").toString();
+			
+		}
+		ContactImporter ci = new ContactImporter();
+		byte [] byteArr=multiFile.getBytes();
+		InputStream inputStream = new ByteArrayInputStream(byteArr);;
+		obj = ci.getContactsObject("csv", inputStream,request);
+        if(callback!=""){
+	        String responseString = pr.encode(pr.encode(obj.toString()));
+	        String strResponse = callback + "('" + responseString + "')";
+	        return strResponse;
+        }
+        else{
+        	return toJSON(obj);
+        }
+        
+	}
+	
 	private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
             public HierarchicalStreamWriter createWriter(Writer writer) {

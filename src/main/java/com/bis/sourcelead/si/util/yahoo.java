@@ -2,12 +2,24 @@ package com.bis.sourcelead.si.util;
 
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.StringTokenizer;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
+
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ReferContacts;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Contact_Source;
+import com.bis.sourcelead.util.SocialInviterUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 @Component
 class yahoo {
 	processor pr = new processor();
@@ -172,7 +184,10 @@ class yahoo {
 	/*
 	 * GET CONTACTS
 	 */
-	protected JSONObject getContacts(String consumerkey,String consumersecret,String redirecturl,String token,String tokensecret,String tokenverifier, String userid){
+	protected JSONObject getContacts(String consumerkey,String consumersecret,String redirecturl,String token,String tokensecret,String tokenverifier, String userid,HttpServletRequest request){
+		ArrayList<ReferContacts> refContactsList = new ArrayList<>();
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		//DECLARATION
 		JSONObject jsonresponse = new JSONObject();
 		JSONObject data = new JSONObject();
@@ -205,7 +220,6 @@ class yahoo {
 				String notes = "";
 				for(int j=0;j<Objlen;j++){
 					JSONObject contObj = fieldsObj.getJSONObject(j);
-					
 					if(contObj.get("type").equals("name")){ //NAME
 						if(contObj.has("value")){
 							JSONObject nameObj = contObj.getJSONObject("value");
@@ -280,8 +294,46 @@ class yahoo {
 					aBook.put("phone", phone);
 					aBook.put("website", website);
 					addressbook.put(aBook);
+					ReferContacts referContacts = new ReferContacts();
+					 referContacts.setContactSource(Contact_Source.YAHOO);
+					 
+					 for(int k=0;k< email.length();k++){
+						 if(k==0){
+							 referContacts.setContactUserEmail(email.getString(k)); 
+						 }
+						 else if(k==1){
+							 referContacts.setContactUserEmail2(email.getString(k)); 
+						 }
+						  
+					 }
+					 
+					 referContacts.setReferFromUser(loginUser);
+					 referContacts.setOrgLocationId(orgLoc);
+					 referContacts.setCreatedDate(new Date());
+					 referContacts.setUpdatedDate(new Date());
+					 referContacts.setCreatedBy(loginUser.getUserCode());
+					 referContacts.setUpdatedBy(loginUser.getUserCode());
+					 if(name.length() > 0 && name.get("first_name") != null)
+					 referContacts.setFirstName(name.get("first_name").toString());
+					 if(name.length() > 0 && name.get("last_name") != null)
+					 referContacts.setLastName(name.get("last_name").toString());
+					 if(phone.length() > 0){
+						 for(int k=0;k< phone.length();k++){
+							 if(k==0){
+								 referContacts.setContactUserPhone(phone.getString(k)); 
+							 }
+							 else if(k==1){
+								 referContacts.setContactUserPhone2(phone.getString(k)); 
+							 }
+							  
+						 }
+					 }
+					 referContacts.setJsonOutPut(aBook.toString());
+					
+					 refContactsList.add(referContacts);
 				}
 			}
+			SocialInviterUtil.storeReferContacts(refContactsList,request);
 			data.put("addressbook", addressbook);
 			data.put("service", "yahoo");
 			jsonresponse.put("data", data);

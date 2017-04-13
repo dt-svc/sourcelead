@@ -3,7 +3,10 @@ package com.bis.sourcelead.dao.impl;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -15,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ReferContactsDao;
 import com.bis.sourcelead.entity.ReferContacts;
-import com.bis.sourcelead.entity.TimesheetSubmissions;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -61,7 +64,25 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 		try {
 			if(referContactsList != null && !referContactsList.isEmpty()){
 				for(ReferContacts referContacts : referContactsList){
-					session.saveOrUpdate(referContacts);
+					if(referContacts.getContactUserEmail() != null){
+						ReferContacts refContact = getReferContactsByEmails(referContacts.getReferFromUser().getId(),referContacts.getContactUserEmail());
+						if(refContact == null)
+						{
+							if(
+								    (StringUtils.isEmpty(referContacts.getFirstName()) && StringUtils.isEmpty(referContacts.getLastName()))
+							     || (StringUtils.isNotEmpty(referContacts.getFirstName()) && isNameContainsSpecialCharacters(referContacts.getFirstName()))
+							     || (StringUtils.isNotEmpty(referContacts.getLastName()) && isNameContainsSpecialCharacters(referContacts.getLastName()))
+							){
+								referContacts.setFirstName(getNameFromEmail(referContacts.getContactUserEmail()));
+								referContacts.setLastName("");
+							}
+							
+							session.saveOrUpdate(referContacts);
+						}
+					}
+					
+					
+					
 				}
 				
 			}
@@ -73,6 +94,27 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 		}
 		
 	}
+	
+	protected boolean isNameContainsSpecialCharacters(String name){
+		 Pattern pattern = Pattern.compile("[a-zA-Z0-9]*");
+	      Matcher matcher = pattern.matcher(name);
+	      if (!matcher.matches()) {
+	    	  return true;
+	      } else {
+	    	  return false;
+	      }
+	}
+	protected String getNameFromEmail(String email){
+		String name = "";
+		 if(StringUtils.isNotEmpty(email)){
+			 String[] For_split_email=email.split("[@]");
+			 if(For_split_email != null && For_split_email.length >0){
+				 name = For_split_email[0];  
+			 }
+		 }
+		 return name;
+	}
+	
 
 	@Override
 	@Transactional
