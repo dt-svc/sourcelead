@@ -24,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.CandidateHotList;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
@@ -526,6 +528,36 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
+	public Integer getAllCandidatedsBasedOnCreatedByAndOrglocationCodeWhichAreCreatedToday(OrgLocations orgLocations,
+			User user) throws Exception {
+		
+		
+		java.sql.Date sqlCurrentDate = null;
+		Date currentDate =  commonUtil.currentDate();
+		// for current Date Converting to Sql Date Format
+		 if(currentDate != null){
+				sqlCurrentDate = new java.sql.Date(currentDate.getTime());
+		 }
+		 
+		List<Long> candidatesList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select count(*)  from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId  and cnadidate.createdBy =:userCode and  DATE(cnadidate.createdDate) = :sqlCurrentDate   ORDER BY cnadidate.id DESC";  
+		candidatesList = session.createQuery(query)
+										       .setLong("orgLocationId", orgLocations.getId())
+										       .setString("userCode", user.getUserCode())
+										       .setDate("sqlCurrentDate", sqlCurrentDate)
+										       .setCacheable(true)
+										       .list();
+		
+		  Integer count = 0;
+	  		if(candidatesList != null && !candidatesList.isEmpty()){
+	  				count = candidatesList.get(0).intValue();
+	  		}
+	  		return count;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public Long getCandidatesCountByCandidateTypeOrgLocationID(Long orgLocationId, String candidateType) {
 		
 		logger.debug("..getCandidatesCount() Method Started..");
@@ -687,6 +719,4 @@ public class CandidateDaoImpl implements CandidateDao {
 		 return candidateHotList;
 	}
 
-
-	
 }

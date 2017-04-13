@@ -1199,6 +1199,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 									   }else{
 										   bulkClientVendors.setOwnerEmail(user.getEmail());
 									   }  
+									   bulkClientVendors.setType(Constants.CLIENT);
 									   bulkClientVendors.setOrgLocationId(orgLocation.getId());
 									   bulkClientVendors.setCreatedDate(new Date());
 									   bulkClientVendors.setUpdatedDate(new Date());
