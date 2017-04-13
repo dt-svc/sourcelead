@@ -41,19 +41,12 @@
               
                 <div class="col-md-12 clearfix">
         <div class="well clearfix">
-          <div class="col-md-4">
-           <select class="chosen-select" id="employeementType" name="employeementType" field-name="EmployeementType" onchange="getAssociateUserDetails();" data-validation-optional="true" >
-	          <!--   <option value="">-Select Employment Type-</option> -->
-	            <option value=" " selected>-Select Associate-</option>
-	            <c:forEach var="option" items="${associateList}">
-					<option value="${option.id}">${option.displayName}</option>
-				</c:forEach>
-           </select>
-          </div>
-          <div class="col-md-4">
-           <div class="col-md-9">
-             <select class="chosen-select" id="employmentDesignationType" name="employmentDesignationType" onChange="getDesignationType(this);">
-                <option value="">--All--</option>
+          
+          <div class="col-md-6 er selectUser col-md-offset-3">
+          <div class="row">
+          <div class="col-md-4 paddingRight">
+             <select class="selectpicker pull-left form-control" id="employmentDesignationType" name="employmentDesignationType" onChange="getDesignationType(this);">
+                <option value="">All</option>
                  <option>C2C</option>
                  <option>C2C-1099</option>
                  <option>W-2</option>
@@ -63,8 +56,18 @@
                  <option>Full Time</option>
                  <option>Other</option>
              </select>
-         </div>
+             </div>
+             <div class="col-md-8 paddingLeft">
+           <select class="chosen-select pull-left" id="employeementType" name="employeementType" field-name="EmployeementType" onchange="getAssociateUserDetails();" data-validation-optional="true" >
+	          <!--   <option value="">-Select Employment Type-</option> -->
+	            <option value=" " selected>-Select Associate-</option>
+	            <c:forEach var="option" items="${associateList}">
+					<option value="${option.id}">${option.displayName}</option>
+				</c:forEach>
+           </select>
+          </div> </div>
           </div>
+      
           </div>
         </div>
               
