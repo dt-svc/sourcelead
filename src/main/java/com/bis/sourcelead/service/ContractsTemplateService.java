@@ -8,6 +8,8 @@ import com.bis.sourcelead.entity.User;
 
 public interface ContractsTemplateService {
 
-	ContractsTemplate saveContractTemplate(JSONObject jsonObj, User user, OrgLocations orgLocation);
+	ContractsTemplate saveContractTemplate(JSONObject jsonObj, User user, OrgLocations orgLocation) throws Exception;
+
+	String generatePDFContractTemplate(JSONObject jsonObj, User user, OrgLocations orgLocation) throws Exception;
 	
 }

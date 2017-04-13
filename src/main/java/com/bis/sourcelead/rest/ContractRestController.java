@@ -39,14 +39,25 @@ public class ContractRestController {
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		
 		contractsTemplateService.saveContractTemplate(jsonObj, user, orgLocation);
 		
-			return "clientDashboard";
+			return "success";
 	} 
+	@RequestMapping(value = "/generatePDF", method = RequestMethod.POST)
+	public @ResponseBody String generatePDF(@RequestParam(value = "json", required = false) String json,
+			HttpServletRequest request) throws Exception {
 
+		String json1 = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json1);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		
+		return contractsTemplateService.generatePDFContractTemplate(jsonObj, user, orgLocation);
+		
+	} 
 	
 }

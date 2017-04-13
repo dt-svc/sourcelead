@@ -33,7 +33,7 @@
             <div class="form-group">
               <label class="col-md-4">Template name<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                <input type="text"  id="companyName" name="companyName" value="" field-name="Company Name" data-validation="required" type="text" class="form-control">
+                <input type="text"  id="templateName" name="templateName" value="" field-name="Template Name" data-validation="required" type="text" class="form-control">
               </div>
             </div>
             
@@ -127,9 +127,9 @@
       <div class="form-footer clearfix contrFoot">
         <div class="col-lg-12">
           <div class="pull-right">
-          	<input type="button" value="Back" class="btn btn-danger">
-            <input type="button" value="Next" id="save_template" onclick="saveTemplate(); " class="btn btn-primary"> 
-           <!--  <input type="button" value="Back" class="btn btn-danger">
+          	<input type="button" value="Preview" id="save_Preview" class="btn btn-success" onclick="previewshow(); generatePDF();"> 
+            <input type="button" value="Save Template" id="save_template" onclick="saveTemplate(); " class="btn btn-primary"> 
+          <!--  <input type="button" value="Back" class="btn btn-danger">
 			<a href="add-contract-template-preview.html"><input type="button" value="Next" class="btn btn-primary ml10"></a> -->
           </div>
         </div>
@@ -139,12 +139,32 @@
 </form:form>
 </div>
 </div>
+
+<div class="side_mask"></div>
+<div class="prevPop">
+	<div class="prevPopClose" onclick="previewclose();"><i class="fa fa-times"></i></div>
+	<iframe id="iFrame" ></iframe>
+</div>
+
  <script src="resources/js/editor.js"></script>
     <link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
 		<script>
 			$(document).ready(function() {
 				$("#txtEditor").Editor();
 			});
+</script> 
+
+<script>
+function previewshow(){
+	
+	
+	$(".side_mask").fadeIn(200);
+	$(".prevPop").fadeIn(100);
+}
+function previewclose(){
+	$(".side_mask").fadeOut(200);
+	$(".prevPop").fadeOut(100);
+}
 </script> 
 
 <script>
@@ -221,10 +241,39 @@ function contractTemplateType(){
 
 
 
-
+<script type="text/javascript">
+function generatePDF() {
+	 var ee = $("#txtEditor").val($('.Editor-editor').html()); 
+	if ($('#template_form').validate(false, validationSettings)) {
+		var frm = $('#template_form').serializeFormJSON();
+		var con = JSON.stringify(frm);
+		con = con.replace(/[{}]/g, "");
+		  //It will escape all the special characters
+       var jsonData = encodeURIComponent(con);
+		var sourceleadUrl = '${sourceleadUrl}';
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$.ajax({
+					type : "POST",
+					url : sourceleadUrl
+							+ "/generatePDF?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+					success : function(result) {
+						alert("fff"+sourceleadUrl);
+						 document.getElementById("iFrame").src = "http://localhost:8080/resources/TestSample.pdf";
+						/* if (result == 'clientDashboard') {
+							location.replace(sourceleadUrl
+									+ "/clientDashboard");
+						} */
+					},
+				}); 
+		return true;
+	} else {
+		return false;
+	}
+}</script>
 
 <script type="text/javascript">
 	function saveTemplate() {
+		 var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 		if ($('#template_form').validate(false, validationSettings)) {
 			var frm = $('#template_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -253,7 +302,13 @@ function contractTemplateType(){
 		$("#template_form").showHelpOnFocus();
 		$("#template_form").validateOnBlur(false, validationSettings);
 	});
+	
+	
+	
+	
 </script>
+
+
 
 
 <!-- Footer Area -->
