@@ -21,9 +21,9 @@
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Onboard Dashboard</h2>
+        <h2>Onboard & Offboard Dashboard</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Employee onboarding</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/usersList'/>">Users List</a> &raquo; Onboard & Offboard List </div>
  </section>
  
  <div class="content-area content-new clearfix">
@@ -56,89 +56,9 @@
           
           
           <div class="candidate_wrap_table">
-           <div id="onboardingLoading"></div>
-          <div id="onboardingCandidatesList"></div>
-                    <!-- <table>
-                      <thead>
-                        <tr>
-                          <th>Name</th>
-                          <th>Type</th>
-                          <th>Effective date</th>
-                          <th>Stage</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>
-                            <div class="width300px">
-                              <div class="tbldata-dotdot-big pull-left"> Vannam vannam vannam vannamVannam vannam vannam vannamVannam vannam vannam vannamVannam vannam vannam vannam </div>
-                              <b class="pull-right proj_show"> <a href="onboardcandidate_view.html" title="Onboard candidate view" target="_blank"> <i class="fa fa-binoculars"></i> </a> </b> </div>
-                          </td>
-                          <td>
-                            <div class="tbldata-dotdot-100">onboard</div>
-                          </td>
-                          <td>
-                            <div class="tbldata-dotdot-100">23/06/2017</div>
-                          </td>
-                          <td>
-                            <div class="tbldata-dotdot-125">Waiting for approval</div>
-                          </td>
-                          <td>
-                            <div class="tblminwidth-50 ml">
-                              <div class="pull-left mr"><a href="javascript:void(0)" title="Accept"><i class="fa fa-check text-success"></i></a></div>
-                              <div class="pull-left"><a href="javascript:void(0)" title="Reject"><i class="fa fa-close text-danger"></i></a></div>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="width300px">
-                              <div class="tbldata-dotdot-big pull-left"> Vannam vannam vannam vannamVannam vannam vannam vannamVannam vannam vannam vannamVannam vannam vannam vannam </div>
-                              <b class="pull-right proj_show"> <a href="onboardcandidate_view.html" title="Onboard candidate view" target="_blank"> <i class="fa fa-binoculars"></i> </a> </b> </div>
-                          </td>
-                          <td>
-                            <div class="tbldata-dotdot-100">onboard</div>
-                          </td>
-                          <td>
-                            <div class="tbldata-dotdot-100">23/06/2017</div>
-                          </td>
-                          <td>
-                            <div class="tbldata-dotdot-125">Waiting for approval</div>
-                          </td>
-                          <td>
-                            <div class="tblminwidth-50 ml">
-                              <div class="pull-left mr"><a href="javascript:void(0)" title="Accept"><i class="fa fa-check text-success"></i></a></div>
-                              <div class="pull-left"><a href="javascript:void(0)" title="Reject"><i class="fa fa-close text-danger"></i></a></div>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="width300px">
-                              <div class="tbldata-dotdot-big pull-left"> Vannam vannam vannam vannamVannam vannam vannam vannamVannam vannam vannam vannamVannam vannam vannam vannam </div>
-                              <b class="pull-right proj_show"> <a href="onboardcandidate_view.html" title="Onboard candidate view" target="_blank"> <i class="fa fa-binoculars"></i> </a> </b> </div>
-                          </td>
-                          <td>
-                            <div class="tbldata-dotdot-100">onboard</div>
-                          </td>
-                          <td>
-                            <div class="tbldata-dotdot-100">23/06/2017</div>
-                          </td>
-                          <td>
-                            <div class="tbldata-dotdot-125">Declain</div>
-                          </td>
-                          <td>
-                            <div class="tblminwidth-50 ml">
-                              <div class="pull-left mr"><a href="javascript:void(0)" title="Accept"><i class="fa fa-check text-success"></i></a></div>
-                              <div class="pull-left"><a href="javascript:void(0)" title="Reject"><i class="fa fa-close text-danger"></i></a></div>
-                            </div>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table> -->
-                  </div>
-          <!-- STYLED IN FORMS.CSS --> 
+	          <div id="onboardingLoading"></div>
+	          <div id="onboardingCandidatesList"></div>
+          </div>
         
       </div>
     </div>
