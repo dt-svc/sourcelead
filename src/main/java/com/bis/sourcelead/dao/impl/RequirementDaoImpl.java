@@ -24,7 +24,6 @@ import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
-import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -979,6 +978,17 @@ public class RequirementDaoImpl implements RequirementDao {
 	         List<Requirement> requirementList = session.createQuery(query).setLong("userId", teamMembers.getMemberUserId().getId()).setLong("teamId", teamMembers.getTeamId().getId()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	 		return requirementList;
 	 	}
+
+		@Override
+		 @Transactional(rollbackFor = { Exception.class })
+		public Long getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user,String timePeriod)
+				throws Exception {
+			String query ="select count(*)from Requirement requirement where requirement.orgLocationId.id =:orgLocationId and requirement.createdBy =:userCode";
+			Session session = this.sessionFactory.getCurrentSession();
+			 long count = ((Long)session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("userCode",user.getUserCode()).uniqueResult()).intValue();
+			return count;
+				
+		}
 	
 	
 }

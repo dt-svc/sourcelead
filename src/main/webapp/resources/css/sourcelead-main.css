@@ -6833,6 +6833,26 @@ table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTa
 #status-data .filter-position .dataTables_filter {
     z-index: 99;
 }
+.richtext-editor .Editor-editor {
+	height: auto !important;
+	min-height: 125px;
+	max-height: 250px;
+	overflow-y:auto;
+}
+.custom-navbar-inner .reportsH .fa-pie-chart {
+	color:#fff; padding: 0;
+}
+.custom-navbar-inner .RePop a{
+	color:#333;
+}
+.custom-navbar-inner div.RePop{
+	top: 51px;
+}
+.custom-navbar-inner .RePop ul { padding: 0px;}
+.custom-navbar-inner .RePop ul li {padding:10px !important;}
+.main-header .navbar .custom-navbar ul.custom-navbar-inner .RePop ul li:hover{
+	background:transparent;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

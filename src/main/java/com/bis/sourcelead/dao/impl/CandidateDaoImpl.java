@@ -719,4 +719,16 @@ public class CandidateDaoImpl implements CandidateDao {
 		 return candidateHotList;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, String timePeriod)
+			throws Exception {
+			
+		    String query ="select count(*)from Candidate candidate where candidate.orgLocationId.id =:orgLocationId and candidate.createdBy =:userCode";
+			Session session = this.sessionFactory.getCurrentSession();
+		    long count = ((Long)session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("userCode",user.getUserCode()).uniqueResult()).intValue();
+		    
+		    return count;
+	}
+
 }

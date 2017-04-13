@@ -4122,4 +4122,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		return requirementSubmissionDao.getOfferAcceptedCandidatesListByOrgLocationId(orgLocationId);
 	}
 
+	@Override
+	public Long getCountOfAllApplicantsByCreatedUserAndOrglocationId(Long orgLocationId, User user,String stage, String timePeriod)
+			throws Exception {
+		return requirementSubmissionDao.getCountOfAllApplicantsByCreatedUserAndOrglocationId(orgLocationId, user,stage,timePeriod);
+	}
+
 }
