@@ -58,7 +58,7 @@ public class ClientImportRestController {
 	/*@PreAuthorize("hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')")*/
 	@RequestMapping(value = "/clientExcelFileUpload", method = RequestMethod.POST)
 	@ResponseBody
-	public String fileUploaded(MultipartHttpServletRequest request)throws Exception{
+	public String fileUploaded(MultipartHttpServletRequest request,@RequestParam(value = "responderType", required = false) String responderType)throws Exception{
 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -71,9 +71,9 @@ public class ClientImportRestController {
 		}
 		
 		if(multipartFile != null){
-		String isFileCreated = clientImportsService.clientExcelDataSave(multipartFile,user,orgLocation,org,"Y","Client");
+		String isFileCreated = clientImportsService.clientExcelDataSave(multipartFile,user,orgLocation,org,"Y",responderType);
 		}
-		List<BulkClientDetails> bulkClientDetailsList = clientImportsService.getbulkClientDetailsByOrgLocationId(orgLocation,user,org,"Y","Client");
+		List<BulkClientDetails> bulkClientDetailsList = clientImportsService.getbulkClientDetailsByOrgLocationId(orgLocation,user,org,"Y",responderType);
 		
 		//SourceLeadSessionManager.setSessionAttribute(request, "clientImport", "Success!! New clients created ");
 		
