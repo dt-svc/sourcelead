@@ -760,7 +760,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Candidate> candidate = new ArrayList<Candidate>();
 		logger.debug("getCandidateById start");
-		candidate = session.createQuery("from Candidate where id=:id" ).setCacheable(true).setLong( "id", candidateId ).setCacheable(true).list();
+		candidate = session.createQuery("from Candidate where id=:candidateId" ).setCacheable(true).setLong( "candidateId", candidateId ).setCacheable(true).list();
 		logger.debug("getCandidateById end");
 		if (candidate.size() > 0) {
 			return candidate.get(0);
