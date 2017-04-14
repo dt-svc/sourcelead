@@ -15,7 +15,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -33,6 +35,9 @@ public class ContractController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private OrgRelationsService orgRelationsService;
 	/**
 	 * display contract template list page
 	 * @return model
@@ -83,7 +88,20 @@ public class ContractController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		commonUtil.highLightMenu(Constants.List_by_status, request);
 		List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocation.getId(),Long.valueOf(Constants.TAB_CLIENT));
+		List<OrgRelations> orgRelationsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
+		
+		for (OrgRelations orgRelations : orgRelationsList) {
+			String orgName = "";
+			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+				orgName = orgRelations.getLocationId().getOrg().getOrgName();
+			}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+				orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+			}
+			orgRelations.setOrgName(orgName);
+		}
+		
 		model.addObject("userList", userList);
+		model.addObject("orgRelationsList", orgRelationsList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("contracts/addNewContract");
 		return model;

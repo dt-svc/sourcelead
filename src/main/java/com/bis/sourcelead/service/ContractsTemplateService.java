@@ -17,5 +17,7 @@ public interface ContractsTemplateService {
 	ContractsTemplate getContractTemplateById(Long contractTemplateId);
 
 	List<ContractsTemplate> getAllContractsTemplatesByOrgLocationid(OrgLocations orgLocation)throws Exception;
+
+	List<ContractsTemplate> getAllContractsTemplatesByContractTypeLandLocationId(Long orgLocationId, String contractType)throws Exception;
 	
 }

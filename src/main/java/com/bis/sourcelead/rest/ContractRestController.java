@@ -35,8 +35,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ContractsTemplateService;
+import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -61,6 +64,10 @@ public class ContractRestController {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private OrgSpocService orgSpocService;
+	
 	
 	@RequestMapping(value = "/saveTemplate", method = RequestMethod.POST)
 	public @ResponseBody String saveClient(@RequestParam(value = "json", required = false) String json,
@@ -111,7 +118,7 @@ public class ContractRestController {
           sos.close();
 	}
 	
-//	/getAllTemplatesByOrgLocationId
+
 	
 	@RequestMapping(value = "/getAllTemplatesByOrgLocationId", method = RequestMethod.GET)
 	public @ResponseBody String getAllTemplates(HttpServletRequest request,HttpServletResponse response) throws Exception {
@@ -119,6 +126,42 @@ public class ContractRestController {
 		List<ContractsTemplate> contractsTemplate = contractsTemplateService.getAllContractsTemplatesByOrgLocationid(orgLocation);
 		return commonUtil.toJSON(contractsTemplate);
 	} 
+	
+	
+//	/getVendorContactsByOrgRelationId
+	
+	
+	@RequestMapping(value = "/getVendorContactsByOrgRelationId", method = RequestMethod.GET)
+	public @ResponseBody String getVendorContactsByOrgRelationId(@RequestParam(value = "orgRelationId", required = false) String orgRelationId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(Long.parseLong(orgRelationId));
+		for(OrgSpoc orgSpoc : orgSpocList){
+			StringBuilder sb = new StringBuilder();
+			if(null != orgSpoc.getVendorUser().getFirstName() && null != orgSpoc.getVendorUser().getLastName()){
+				sb.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName());
+			}else{
+				sb.append(orgSpoc.getVendorUser().getFirstName());
+			}
+			orgSpoc.setSpocName(sb.toString());
+		}
+		return commonUtil.toJSON(orgSpocList);
+	} 
+	
+	
+	@RequestMapping(value = "/getContractsTemplatesByContractType", method = RequestMethod.GET)
+	public @ResponseBody String getContractsTemplatesByContractType(@RequestParam(value = "contractType", required = false) String contractType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		List<ContractsTemplate> contractsTemplateList = contractsTemplateService.getAllContractsTemplatesByContractTypeLandLocationId(orgLocation.getId(),contractType);
+		return commonUtil.toJSON(contractsTemplateList);
+	} 
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -152,5 +195,7 @@ public class ContractRestController {
 			file.delete();
 		}
 	}
+	
+	
 
 }

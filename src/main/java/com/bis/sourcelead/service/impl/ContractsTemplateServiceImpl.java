@@ -94,5 +94,11 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		return contractsTemplateDao.getAllContractsTemplatesByOrgLocationid(orgLocation);
 	}
 
+	@Override
+	public List<ContractsTemplate> getAllContractsTemplatesByContractTypeLandLocationId(Long orgLocationId, String contractType) throws Exception
+	{
+		return contractsTemplateDao.getAllContractsTemplatesByContractTypeLandLocationId(orgLocationId,contractType);
+	}
+
 	
 }

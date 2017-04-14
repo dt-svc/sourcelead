@@ -28,11 +28,14 @@
             <div class="form-group">
               <label class="col-md-4">Contract Type<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control">
-                    <option>MSA</option>
+                  <select class="chosen-select form-control" id="contractType" name="contractType" onchange="getContractTemplates();" data-validation="required" field-name="Contract Type">
+                    <option>Contract Type</option>
+                    <option>Client MSA</option>
+                    <option>Vendor MSA</option>
+                    <option>Client SOW</option>
+                    <option>Vendor SOW</option>
                     <option>NDA</option>
                     <option>NCA</option>
-                    <option>SOW</option>
                   </select>
             </div>
             </div>				
@@ -43,27 +46,24 @@
               <label class="col-md-4">Select template<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
                 <div class="form-icon">
-                  <select class="chosen-select form-control">
-                    <option>Select template</option>
-                    <option>Template-1</option>
-                    <option>Template-2</option>
-                    <option>Template-3</option>
+                  <select class="chosen-select form-control" id="template" name="template"  data-validation="required" field-name="Template">
                   </select>
-                  <!-- <i data-target="#addLevel" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new"></i>  --></div>
+               </div>
               </div>
             </div>  
                      
             <div class="form-group">
               <label class="col-md-4">Contract title<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="Company Name" value="">
+                <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="" data-validation="required" field-name="Contract Title">
               </div>
             </div>
              
           <div class="form-group">
               <label class="col-md-4">Owner<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control">
+                  <select class="chosen-select form-control" id="owner" name="owner" data-validation="required" field-name="Owner">
+                  <option>Select Owner</option>
                   <c:forEach var="user" items="${userList}">
 	                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
                   </c:forEach>
@@ -81,7 +81,7 @@
 					<div class="row">
 					  <div class="col-lg-6">
 						<div class="input-group" id="startDateDiv"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-						  <input type="text" class="form-control" id="startDate" name="startDate" placeholder="Start date">
+						  <input type="text" class="form-control" id="startDate" name="startDate" placeholder="Start date" data-validation="required" field-name="Start Date">
 						</div>
 					  </div>
 					  <div class="col-lg-6">
@@ -96,11 +96,15 @@
           <div class="form-group">
               <label class="col-md-4">Vendor<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control">
-                    <option>Select Vendor</option>
-                    <option>Vendor-1</option>
+                  <select class="chosen-select form-control" id="orgRelationId" name="orgRelationId" onchange="getVendorContacts();" data-validation="required" field-name="Vendor Name">
+                    <option>Select Vendor</option> 
+                   <c:forEach var="orgrelations" items="${orgRelationsList}">
+	                     <option value="${orgrelations.id}">${orgrelations.orgName}</option>
+                  </c:forEach>
+                  
+                   <!--  <option>Vendor-1</option>
                     <option>Vendor-2</option>
-                    <option>Vendor-3</option>
+                    <option>Vendor-3</option> -->
                   </select>
               </div>
           </div>                      
@@ -108,11 +112,7 @@
             <div class="form-group">
               <label class="col-md-4">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control">
-                    <option>Select Vendor Contact</option>
-                    <option>Vendor Contact-1</option>
-                    <option>Vendor Contact-2</option>
-                    <option>Vendor Contact-3</option>
+                  <select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact">
                   </select>
               </div>
             </div>
@@ -120,14 +120,11 @@
           <div class="form-group">
               <label class="col-md-4">Approver</label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control">
+                  <select class="chosen-select form-control" id="approver" name="approver">
+                  <option>Select Owner</option>
                   <c:forEach var="user" items="${userList}">
 	                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
                   </c:forEach>
-                    <!-- <option>Select Approver</option>
-                    <option>Approver-1</option>
-                    <option>Approver-2</option>
-                    <option>Approver-3</option> -->
                   </select>
               </div>
           </div> 
@@ -135,7 +132,7 @@
             <div class="form-group">
               <label class="col-md-4">Description</label>
               <div class="col-md-8">
-					<textarea class="form-control" rows="3" name="Project Description"></textarea>
+					<textarea class="form-control" rows="3" id="description" name="description"></textarea>
               </div>
             </div>            
             
@@ -151,51 +148,64 @@
               <div class="col-md-8">
 					<div class="row">
 					  <div class="col-lg-8">
-					  	<input type="text" class="form-control" name="" value="" placeholder="Enter Amount">
+					  	<input type="text" class="form-control" id="billingAmount" name="billingAmount" value="" placeholder="Enter Amount" data-validation="required" field-name="Billing Amount">
 					  </div>
 					  <div class="col-lg-4">
-						<select class="form-control selectpicker">
+						<select class="form-control selectpicker" id="billingPer" name="billingPer">
 						  <option>India</option>
 						  <option>USA</option>
 						  <option>UK</option>
 						</select>
 					  </div>
-					  <span class="hidden">Enter Project Id</span>
 					</div>
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-4">invoice frequency<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control">
-                    <option>Select frequency</option>
-                    <option>Frequency-1</option>
-                    <option>Frequency-2</option>
-                    <option>Frequency-3</option>
+                  <select class="chosen-select form-control" id="invoiceFrequency" name="invoiceFrequency" data-validation="required" field-name="Invoice Frequency">
+                    <option value="">Select frequency</option>
+                    <option value="Weekly">Weekly</option>
+                    <option value="Bi-Weekly">Bi-Weekly</option>
+                    <option value="Semi-Monthly">Semi-Monthly</option>
+                    <option value="Monthly">Monthly</option>
                   </select>
               </div>
             </div>
             
-            <div class="form-group">
+              <div class="form-group">
+              <label class="col-md-4">Payment frequency<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-8">
+                  <select class="chosen-select form-control" id="paymentFrequency" name="paymentFrequency" data-validation="required" field-name="Payment Frequency">
+                    <option value="">Select frequency</option>
+                    <option value="Weekly">10 days</option>
+                    <option value="Bi-Weekly">15 days</option>
+                    <option value="Semi-Monthly">30 days</option>
+                    <option value="Monthly">45 days</option>
+                     <option value="Monthly">60 days</option>
+                  </select>
+              </div>
+            </div>
+           <!--  <div class="form-group">
               <label class="col-md-4">Payment frequency<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
               	<input type="text" class="form-control" name="Company Name" value="">
             </div>
-            </div>
+            </div> -->
             <div class="form-group">
               <label class="col-md-4">Tax</label>
               <div class="col-md-8">
 					<div class="row">
 					  <div class="col-lg-8">
-					  	<input type="text" class="form-control" name="Company Name" value="">
+					  	<input type="text" class="form-control" id="tax" name="tax" value="">
 					  </div>
 					  <div class="col-lg-4">
-						<select class="form-control selectpicker">
+						<select class="form-control selectpicker" id="taxType"  name="taxType">
 						  <option>%</option>
 						  <option>INR</option>
 						</select>
 					  </div>
-					  <span class="hidden">Enter Project Id</span>
+					 <!--  <span class="hidden">Enter Project Id</span> -->
 					</div>
               </div>
 		</div>         
@@ -290,6 +300,69 @@
 		 }
 }
 </script>
+
+<script>
+function getVendorContacts(){
+	var orgRelationId = $("#orgRelationId").val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+      type : "GET",
+       url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,       
+       success :function(data) {
+    	var json = JSON.parse(data);
+       	var output = "";
+       	output = output + "<option>Select Vendor Contact</option>";
+       	for (var i=0; i<json.length; i++)
+			{
+	        var opt = json[i];
+	            // need to use in edit
+       			//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
+       			output = output + "<option value='" +opt.vendorUser.id+ "'>"+opt.spocName+"</option>";
+			}
+       	    $("#vendorContact").empty();
+	        $("#vendorContact").append(output);
+	        $('#vendorContact').trigger("chosen:updated");
+      },
+  }); 
+	
+}
+
+
+</script>
+
+<script>
+function getContractTemplates(){
+	var contractType = $("#contractType").val();
+ 	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+     type : "GET",
+      url: sourceleadUrl+"/getContractsTemplatesByContractType?${_csrf.parameterName}=${_csrf.token}&contractType="+contractType,       
+      success :function(data) {
+    	var json = JSON.parse(data);
+      	var output = "";
+      	output = output + "<option>Select Vendor Contact</option>";
+      	for (var i=0; i<json.length; i++)
+			{
+	        var opt = json[i];
+	            // need to use in edit
+      			//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
+      			output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
+			}
+      	    $("#template").empty();
+	        $("#template").append(output);
+	        $('#template').trigger("chosen:updated"); 
+     },
+ }); 
+	
+}
+
+</script>
+
+
+
+
+
+
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->

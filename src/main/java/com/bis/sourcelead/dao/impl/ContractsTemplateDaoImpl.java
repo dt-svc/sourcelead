@@ -81,5 +81,14 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		List<ContractsTemplate>  contractsTemplateList = session.createQuery("from ContractsTemplate ct where ct.orgLocationId.id =:orgLocationId and ct.templateStatus = '0'" ).setLong("orgLocationId", orgLocationId ).setCacheable(true).list();
 			return contractsTemplateList;
 		}
+
+	@Override
+	@Transactional
+	public List<ContractsTemplate> getAllContractsTemplatesByContractTypeLandLocationId(Long orgLocationId, String contractType) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ContractsTemplate>  contractsTemplateList = session.createQuery("from ContractsTemplate ct where ct.orgLocationId.id =:orgLocationId and ct.templateType = :contractType and ct.templateStatus = '0'" ).setLong("orgLocationId", orgLocationId ).setString("contractType", contractType).setCacheable(true).list();
+		return contractsTemplateList;
+	}
 	
 }

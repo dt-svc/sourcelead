@@ -12,5 +12,7 @@ public interface ContractsTemplateDao {
 	ContractsTemplate saveContractTemplate(Long contractTemplateId);
 
 	List<ContractsTemplate> getAllContractsTemplatesByOrgLocationid(OrgLocations orgLocation)throws Exception;
+
+	List<ContractsTemplate> getAllContractsTemplatesByContractTypeLandLocationId(Long orgLocationId, String contractType)throws Exception;
 	
 }
