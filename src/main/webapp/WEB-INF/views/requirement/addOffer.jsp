@@ -162,10 +162,10 @@ function selectOfferApplicants(){
            </select>
      </div>
      <div class="positionRelative float select-field">
-     	  <input type="text" value="" class="form-control input-sm" id="REPLACEROWIDAmount" name="REPLACEROWIDpaymentTypAmount" field-name="Rate" data-validation="validate_length length1-20" data-validation-optional="true" onblur="validateRateAndRateType();">
+     	  <input type="text" value="" class="form-control input-sm" id="REPLACEROWIDAmount" name="REPLACEROWIDpaymentTypAmount" field-name="Rate" data-validation="required validate_int validate_length length1-28" onclick="validateRateAndRateType();">
      </div>
    	 <div class="positionRelative float select-rateper select-field">
-           <select class="form-control" id="REPLACEROWIDPaymentMode" name="REPLACEROWIDPaymentMode" field-name="Rate Type" style="height: 30px;" onblur="validateRateAndRateType();">
+           <select class="form-control" id="REPLACEROWIDPaymentMode" name="REPLACEROWIDPaymentMode" field-name="Rate Type" style="height: 30px;" onchange="validateRateAndRateType();">
 	                 <option value="">Rate Per</option>
 	                 <option value="Hourly">Hourly</option>
 	                 <option value="Weekly">Weekly</option>
@@ -343,19 +343,24 @@ function validateRateAndRateType(){
 	
 	var offerAmount = document.getElementById("1Amount").value;
 		var paymentModeType = $("#1PaymentMode").val();
-	 if(paymentModeType != null && paymentModeType != "" && paymentModeType != 'undefined'){
+	 /* if(paymentModeType != null && paymentModeType != "" && paymentModeType != 'undefined'){
 			$('#1Amount').removeAttr('data-validation-optional');
 			 $('#1Amount').attr("data-validation","required validate_Space validate_float validate_length length1-8"); 
 		 }else{
 			 $('#1Amount').removeAttr('data-validation');
 			 $('#1Amount').attr("data-validation-optional","true"); 
-		 }
+		 } */
 		 
 	 if(offerAmount != null && offerAmount != ""){
+		 alert("hii")
+		 $('#1PaymentMode').find('p.jquery_form_error_message').remove();	
+		 alert("2")
 		 $('#1PaymentMode').removeAttr('data-validation-optional');
 		 $('#1PaymentMode').attr("data-validation","required");
-		 $('#rate').attr("data-validation","required validate_Space validate_float validate_length length1-8");
+		 $('#1PaymentMode').attr("data-validation","required validate_Space validate_float validate_length length1-8");
 	 }else{
+		 alert("else")
+		 $('#1Amount').append('p.jquery_form_error_message');	
 		 $('#1PaymentMode').removeAttr('data-validation');
 		 $('#1PaymentMode').attr("data-validation-optional","true"); 
 	 }
