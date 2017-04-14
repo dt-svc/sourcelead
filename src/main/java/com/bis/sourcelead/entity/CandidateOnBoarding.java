@@ -47,11 +47,11 @@ private static final long serialVersionUID = 1L;
 	
 	@Column(name = "ADDRESS_1")
 	@Type(type="text")
-	private String Address1;
+	private String address1;
 	
 	@Column(name = "ADDRESS_2")
 	@Type(type="text")
-	private String Address2;
+	private String address2;
 	
 	@Column(name = "COUNTRY")
 	private String country;
@@ -150,6 +150,29 @@ private static final long serialVersionUID = 1L;
 	@Transient
 	private String candidateName;
 	
+	@Transient
+	private Long onBoardCandidateId;
+	
+	@Transient
+	private Long onBoardOfferId;
+	
+	@Transient
+	private Long onBoardDepartmentId;
+	
+	@Transient
+	private Long onBoardRoleId;
+	
+	@Transient
+	private Long onBoardManagerId;
+	
+	@Transient
+	private Long onBoardTeamId;
+	
+	@Transient
+	private String endDateStr;
+	
+	@Transient
+	private String dueDateStr;
 	
 	
 
@@ -186,19 +209,19 @@ private static final long serialVersionUID = 1L;
 	}
 
 	public String getAddress1() {
-		return Address1;
+		return address1;
 	}
 
 	public void setAddress1(String address1) {
-		Address1 = address1;
+		this.address1 = address1;
 	}
 
 	public String getAddress2() {
-		return Address2;
+		return address2;
 	}
 
 	public void setAddress2(String address2) {
-		Address2 = address2;
+		this.address2 = address2;
 	}
 
 	public String getCountry() {
@@ -447,6 +470,70 @@ private static final long serialVersionUID = 1L;
 
 	public void setCandidateName(String candidateName) {
 		this.candidateName = candidateName;
+	}
+
+	public Long getOnBoardCandidateId() {
+		return onBoardCandidateId;
+	}
+
+	public void setOnBoardCandidateId(Long onBoardCandidateId) {
+		this.onBoardCandidateId = onBoardCandidateId;
+	}
+
+	public Long getOnBoardOfferId() {
+		return onBoardOfferId;
+	}
+
+	public void setOnBoardOfferId(Long onBoardOfferId) {
+		this.onBoardOfferId = onBoardOfferId;
+	}
+
+	public Long getOnBoardDepartmentId() {
+		return onBoardDepartmentId;
+	}
+
+	public void setOnBoardDepartmentId(Long onBoardDepartmentId) {
+		this.onBoardDepartmentId = onBoardDepartmentId;
+	}
+
+	public Long getOnBoardRoleId() {
+		return onBoardRoleId;
+	}
+
+	public void setOnBoardRoleId(Long onBoardRoleId) {
+		this.onBoardRoleId = onBoardRoleId;
+	}
+
+	public Long getOnBoardManagerId() {
+		return onBoardManagerId;
+	}
+
+	public void setOnBoardManagerId(Long onBoardManagerId) {
+		this.onBoardManagerId = onBoardManagerId;
+	}
+
+	public Long getOnBoardTeamId() {
+		return onBoardTeamId;
+	}
+
+	public void setOnBoardTeamId(Long onBoardTeamId) {
+		this.onBoardTeamId = onBoardTeamId;
+	}
+
+	public String getEndDateStr() {
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr) {
+		this.endDateStr = endDateStr;
+	}
+
+	public String getDueDateStr() {
+		return dueDateStr;
+	}
+
+	public void setDueDateStr(String dueDateStr) {
+		this.dueDateStr = dueDateStr;
 	}
 	    
 }

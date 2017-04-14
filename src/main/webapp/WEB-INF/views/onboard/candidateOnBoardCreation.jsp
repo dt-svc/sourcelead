@@ -21,9 +21,15 @@
 			$("#candidateOnBoardId").val(onBoardingId);
   	        document.getElementById("templateDocs").disabled = false;
   	        document.getElementById("templateTasks").disabled = false;
+  	        $("#candidateOnBoardUUID").val('${onBoardingUUID}');
+  	        
+  	        loadOnboardingCandidate('${onBoardingUUID}');
+  	        
+		}else{
+			loadOnboardingDetails();
 		}
 		
-		loadOnboardingDetails();
+		
 		
 	});
 </script>
@@ -44,7 +50,7 @@
         </div>
         <div class="tabbable">
           <ul class="nav nav-tabs" id="tab_bar">
-            <li class="active"> <a href="#details" data-toggle="tab"> <i class="fa fa-th-list paddingRight"></i> <span>Details</span> <br>
+            <li class="active" onclick="loadOnboardingCandidate();"> <a href="#details" data-toggle="tab"> <i class="fa fa-th-list paddingRight"></i> <span>Details</span> <br>
               <small>Employee details &amp; Postion details</small> </a> </li>
             <li><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
               <small>Acceptance &amp; Policy Documents</small> </a> </li>
@@ -52,12 +58,14 @@
               <small>List of tasks</small> </a></li>
           </ul>
           <input type="hidden" name="candidateOnBoardId" id="candidateOnBoardId" value=""/>
+          <input type="hidden" name="candidateOnBoardUUID" id="candidateOnBoardUUID" value=""/>
           <div class="tab-content"> 
             
             <!-- Employee Details -->
             <div class="tab-pane active" id="details">
               <div class="form-horizontal">
                <form:form class="login-form clearfix"  id="onboardCandidate_form"  name="onboardCandidate_form" method="post" >
+               <input type="hidden" name="savedonboardId" id="savedonboardId" value=""/>
                 <p><strong>Employee Details</strong></p>
                 <div class="form-group">
                   <label class="col-md-3 control-label">Select Candidate <span class="text-danger paddingLeft">*</span></label>
@@ -167,7 +175,7 @@
                   <div class="form-group">
                   <label class="col-md-3 control-label">Date Of Join<span class="text-danger paddingLeft">*</span></label>
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Date Of Join" id="startDate" name="dateOfJo" readonly="readonly">
+                    <input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Date Of Join" id="startDate" name="startDate" readonly="readonly">
                   </div>
                 </div>
                   <div class="form-group">
@@ -560,8 +568,7 @@
   
   
   <script>
-  function loadOfferAcceptedCandidates(){
-	  
+  function loadOfferAcceptedCandidates(candidateId){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 		   	type: "POST",
@@ -574,7 +581,13 @@
 	        	for (var i=0; i<json.length; i++)
 				{
 	        		var report = json[i];
-	        		result = result +'<option value='+report.candidateId+","+report.id+' >'+report.candidateName+' ('+report.jobTitle+')</option>';
+	        		var selected = '';
+	        		if(candidateId != null && candidateId != '' && candidateId != 'undefind'){
+	        			if(candidateId == report.candidateId){
+	        				selected = 'selected';
+	        			}
+	        		}
+	        		result = result +'<option value='+report.candidateId+","+report.id+' '+selected+' >'+report.candidateName+' ('+report.jobTitle+')</option>';
 				}
 	        	 
 	        	 $("#onboardCandiate").empty();
@@ -768,7 +781,7 @@ function getOnBoardCandidateCities(country,state,city){
 
 
 <script>
-function loadCandidateRoles(){
+function loadCandidateRoles(onBoardRoleId){
 	
 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
@@ -782,7 +795,11 @@ function loadCandidateRoles(){
         	for (var i=0; i<json.length; i++)
 			{
         		var report = json[i];
-        		result = result +'<option value='+report.id+' >'+report.displayName+'</option>';
+        		var selected = '';
+        		if(onBoardRoleId != null && onBoardRoleId != "" && onBoardRoleId !="undefined" && onBoardRoleId == report.id){
+            		selected = 'selected';
+            	}
+        		result = result +'<option value='+report.id+' '+selected+' >'+report.displayName+'</option>';
 			}
         	 
         	 $("#onboardCandidateRole").empty();
@@ -794,7 +811,7 @@ function loadCandidateRoles(){
 </script>
 
 <script>
-function loadTeams(){
+function loadTeams(onboardTeamId){
 	
 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
@@ -808,7 +825,11 @@ function loadTeams(){
         	for (var i=0; i<json.length; i++)
 			{
         		var report = json[i];
-        		result = result +'<option value='+report.id+' >'+report.name+'</option>';
+        		var selected = '';
+        		if(onboardTeamId != null && onboardTeamId != "" && onboardTeamId !="undefined" && onboardTeamId == report.id){
+            		selected = 'selected';
+            	}
+        		result = result +'<option value='+report.id+' '+selected+' >'+report.name+'</option>';
 			}
         	 
         	 $("#team").empty();
@@ -821,7 +842,7 @@ function loadTeams(){
 
 
 <script>
-function loadOnBoardingTemplates(){
+function loadOnBoardingTemplates(onboardTemplateId){
 	
 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
@@ -834,7 +855,18 @@ function loadOnBoardingTemplates(){
         	for (var i=0; i<json.length; i++)
 			{
         		var report = json[i];
-        		result = result +'<option value='+report.id+' >'+report.templateName+'</option>';
+        		if(onboardTemplateId != null && onboardTemplateId != "" && onboardTemplateId !="undefined"){
+        			var templateId = onboardTemplateId.split(",");
+        			var selected = '';
+        			for(var j=0; j<templateId.length; j++){
+        				if(templateId[j] == report.id){
+        					selected = 'selected';
+        				}
+        			}
+        			
+        		}
+        		
+        		result = result +'<option value='+report.id+' '+selected+'>'+report.templateName+'</option>';
 			}
         	 
         	 $("#onboardingTemplate").empty();
@@ -846,8 +878,14 @@ function loadOnBoardingTemplates(){
 </script>
 
 <script type="text/javascript">
- function getReportingManager() {
-	 var role = document.getElementById("onboardCandidateRole").value; 
+ function getReportingManager(roleId,onBoardManagerId) {
+	 var role= '';
+	 if(roleId != null && roleId != "" && roleId != 'undefined'){
+		 role = roleId;
+	 }else{
+		 role = document.getElementById("onboardCandidateRole").value; 
+	 }
+	 
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(role != null && role != "" && role != 'undefined'){
 		 $.ajax({
@@ -860,7 +898,11 @@ function loadOnBoardingTemplates(){
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
-			        		output = output +'<option value='+opt.id+' >'+opt.firstName+' '+opt.lastName+' ('+opt.userType+')</option>';
+			        		var selected = '';
+			        		if(onBoardManagerId != null && onBoardManagerId != "" && onBoardManagerId !="undefined" && onBoardManagerId == opt.id){
+			            		selected = 'selected';
+			            	}
+			        		output = output +'<option value='+opt.id+'  '+selected+'>'+opt.firstName+' '+opt.lastName+' ('+opt.userType+')</option>';
 					}
 		        	$("#reportingManager").empty();
 			        $("#reportingManager").append(output);
@@ -953,5 +995,112 @@ function loadOnBoardingTemplates(){
 		$("#onboardCandidate_form").validateOnBlur(false, validationSettings);  
 	});
  </script> 
+ 
+ 
+ <script>
+ function loadOnboardingCandidate(onBoardingUUID){
+	 
+	 if(onBoardingUUID != null && onBoardingUUID != "" && onBoardingUUID !="undefined"){
+		 onBoardingUUID 
+	 }else{
+		 onBoardingUUID = document.getElementById("candidateOnBoardUUID").value;
+	 }
+	 
+	 if(onBoardingUUID){
+	
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	    $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/loadOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID, 
+	        success: function(data) {
+	        	
+	        	var json = JSON.parse(data);
+	        	loadOfferAcceptedCandidates(json['onBoardCandidateId']);
+	        	
+	        	$("#firstName").val(json['firstName']);
+	        	
+	        	if(json['lastName'] != null && json['lastName'] != "" && json['lastName'] !="undefined"){
+	        		$("#lastName").val(json['lastName']);
+	        	}
+	        	
+	        	$("#address1").val(json['address1']);
+	        	
+	        	if(json['address2'] != null && json['address2'] != "" && json['address2'] !="undefined"){
+	        		$("#address2").val(json['address2']);
+	        	}
+	        	
+	        	
+	        	$("#mobileNumber").val(json['mobileNumber']);
+		    	$("#personalEmail").val(json['personalEmail']);
+		    	
+		    	if(json['companyEmail'] != null && json['companyEmail'] != "" && json['companyEmail'] !="undefined"){
+		    		$("#companyEmail").val(json['companyEmail']);
+		    	}
+		    	
+		    	if(json['zipCode'] != null && json['zipCode'] != "" && json['zipCode'] !="undefined"){
+		    		$("#zipCode").val(json['zipCode']);
+		    	}
+		    	
+		    	getOnBoardCandidateCountry(json['country']);
+		    	getOnBoardCandidateStates(json['country'],json['state']);
+		    	getOnBoardCandidateStates(json['state'],json['city']);
+		    	getOnBoardCandidateCities(json['country'],json['state'],json['city']);
+		    	
+		    	loadCandidateRoles(json['onBoardRoleId']);
+		    	$("#startDate").val(json['joiningDateStr']);
+		    	
+		    	if(json['endDateStr'] != null && json['endDateStr'] != "" && json['endDateStr'] !="undefined"){
+		    		$("#endDate").val(json['endDateStr']);
+		    	}
+		    	
+		    	$("#salaryRate").val(json['salaryRate']);
+		    	
+		    	if(json['onBoardManagerId'] != null && json['onBoardManagerId'] != "" && json['onBoardManagerId'] !="undefined"){
+		    		getReportingManager(json['onBoardRoleId'],json['onBoardManagerId']);
+		    	}
+		    	
+		    	if(json['onBoardTeamId'] != null && json['onBoardTeamId'] != "" && json['onBoardTeamId'] !="undefined"){
+		    		loadTeams(json['onBoardTeamId']);
+		    	}
+		    	
+		    	if(json['employmentType'] != null && json['employmentType'] != "" && json['employmentType'] !="undefined"){
+		    		$("#employmentType").val(json['employmentType']);
+			    	$('#employmentType').trigger("chosen:updated");
+		    	}
+		    	
+		    	if(json['probationNotice'] != null && json['probationNotice'] != "" && json['probationNotice'] !="undefined"){
+		    		$("#probationNotice").val(json['probationNotice']);
+			    	$('#probationNotice').trigger("chosen:updated");
+		    	}
+		    	
+		    	
+		    	if(json['terminationNotice'] != null && json['terminationNotice'] != "" && json['terminationNotice'] !="undefined"){
+		    		$("#terminationNotice").val(json['terminationNotice']);
+			    	$('#terminationNotice').trigger("chosen:updated");
+		    	}
+		    	
+		    	
+		    	if(json['dueDateStr'] != null && json['dueDateStr'] != "" && json['dueDateStr'] !="undefined"){
+		    		$("#dueDate").val(json['dueDateStr']);
+		    	}
+		    	
+		    	if(json['specialConditions'] != null && json['specialConditions'] != "" && json['specialConditions'] !="undefined"){
+		    		$("#specialConditions").val(json['specialConditions']);
+		    	}
+		    	
+		    	if(json['onboardTemplateId'] != null && json['onboardTemplateId'] != "" && json['onboardTemplateId'] !="undefined"){
+		    		loadOnBoardingTemplates(json['onboardTemplateId']);
+		    	}
+		    	
+		    	$("#savedonboardId").val(json['id']);
+		    	
+		    	$("#loading").removeAttr("style");
+	        },
+	    });
+	 }
+ }
+ </script>
   
   

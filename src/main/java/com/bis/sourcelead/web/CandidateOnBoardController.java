@@ -155,6 +155,7 @@ public class CandidateOnBoardController {
  			model.setViewName("onboard/candidateOnBoardCreation");
  			model.addObject("sourceleadUrl", sourceleadUrl);
  			model.addObject("onBoardingId", onBoarding.getId());
+ 			model.addObject("onBoardingUUID", onBoarding.getOnboardCandidateUUID());
  			return model;
  	}
 	

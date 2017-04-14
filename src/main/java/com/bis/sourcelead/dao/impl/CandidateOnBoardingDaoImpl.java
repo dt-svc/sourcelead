@@ -73,7 +73,8 @@ public class CandidateOnBoardingDaoImpl  implements CandidateOnBoardingDao{
 	public CandidateOnBoarding getCandidateOnBoardingByUUID(String onboardCandidateUUID) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		List<CandidateOnBoarding> candidateOnBoarding = session.createQuery("from CandidateOnBoarding onboarding where onboarding.onboardCandidateUUID =:onboardCandidateUUID" ).setString( "onboardCandidateUUID", onboardCandidateUUID ).setCacheable(true).list();
+		List<CandidateOnBoarding> candidateOnBoarding = session.createQuery("from CandidateOnBoarding onboarding left join fetch onboarding.candidateId left join fetch onboarding.offerId "
+				+ " left join fetch onboarding.departmentId left join fetch onboarding.roleId left join fetch onboarding.managerUserId left join fetch onboarding.teamId where onboarding.onboardCandidateUUID =:onboardCandidateUUID" ).setString( "onboardCandidateUUID", onboardCandidateUUID ).setCacheable(true).list();
 		if (candidateOnBoarding.size() > 0) {
 			return candidateOnBoarding.get(0);
 		} else {
@@ -94,6 +95,20 @@ public class CandidateOnBoardingDaoImpl  implements CandidateOnBoardingDao{
 					count = onboardCount.get(0).intValue();
 			}
 			return count;
+	}
+
+
+	@Override
+	@Transactional
+	public CandidateOnBoarding getCandidateOnBoardingById(Long Id) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<CandidateOnBoarding> candidateOnBoarding = session.createQuery("from CandidateOnBoarding onboarding where onboarding.id =:id" ).setLong( "id", Id ).setCacheable(true).list();
+		if (candidateOnBoarding.size() > 0) {
+			return candidateOnBoarding.get(0);
+		} else {
+			return null;
+		}
 	}
 
 }

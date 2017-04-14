@@ -44,7 +44,12 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		
 		CandidateOnBoarding candidateOnBoarding = null;
 		
-		candidateOnBoarding = new CandidateOnBoarding();
+		if(jsonObj.has("savedonboardId") && !isNullOrEmpty(jsonObj.getString("savedonboardId"))){
+			candidateOnBoarding = candidateOnBoardingDao.getCandidateOnBoardingById(Long.valueOf(jsonObj.getString("savedonboardId")));
+		}else{
+			candidateOnBoarding = new CandidateOnBoarding();
+			candidateOnBoarding.setOnboardCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		}
 		
 		String[] onboardCandiate = jsonObj.getString("onboardCandiate").split(",");
 		
@@ -164,7 +169,6 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		
 		candidateOnBoarding.setOrgLocationId(orgLocations);
 		candidateOnBoarding.setStatus(Constants.CANDIDATE_ACTIVE);
-		candidateOnBoarding.setOnboardCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		candidateOnBoarding.setCandidateOnBoardStatus("Draft");
 		candidateOnBoarding.setCreatedDate(CommonUtil.currentDate());
 		candidateOnBoarding.setCreatedBy(user.getUserCode());
@@ -190,6 +194,11 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 	@Override
 	public Integer getCandidateOnBoardingListCountByOrgLocationId(Long orgLocationId) throws Exception {
 		return candidateOnBoardingDao.getCandidateOnBoardingListCountByOrgLocationId(orgLocationId);
+	}
+
+	@Override
+	public CandidateOnBoarding getCandidateOnBoardingById(Long Id) throws Exception {
+		return candidateOnBoardingDao.getCandidateOnBoardingById(Id);
 	}
 
 }

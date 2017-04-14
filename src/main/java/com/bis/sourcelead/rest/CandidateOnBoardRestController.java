@@ -34,7 +34,6 @@ import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
 import com.bis.sourcelead.entity.OnboardTasks;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
-import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
@@ -700,6 +699,53 @@ public class CandidateOnBoardRestController {
 		
 		return resultJson;
 	 }
+	 
+	 
+	 
+	 
+	 
+	 
+	 @RequestMapping(value = "/loadOnboardingCandidateDetails")
+	 public String loadOnboardingCandidateDetails(@RequestParam(value="onBoardingUUID", required=false) String onBoardingUUID,HttpServletRequest request) throws Exception {
+
+		String resultJson;
+		
+		CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUUID(onBoardingUUID);
+		if(null != candidateOnBoarding){
+			candidateOnBoarding.setOnBoardCandidateId(candidateOnBoarding.getCandidateId().getId());
+			candidateOnBoarding.setOnBoardOfferId(candidateOnBoarding.getOfferId().getId());
+			candidateOnBoarding.setOnBoardRoleId(candidateOnBoarding.getRoleId().getId());
+			
+			if(null != candidateOnBoarding.getManagerUserId()){
+				candidateOnBoarding.setOnBoardManagerId(candidateOnBoarding.getManagerUserId().getId());
+			}
+			
+			if(null != candidateOnBoarding.getTeamId()){
+				candidateOnBoarding.setOnBoardTeamId(candidateOnBoarding.getTeamId().getId());
+			}
+			
+			
+			candidateOnBoarding.setJoiningDateStr(Constants.DMY.format(candidateOnBoarding.getStartDate()));
+			
+			if(null != candidateOnBoarding.getEndDate()){
+				candidateOnBoarding.setEndDateStr(Constants.DMY.format(candidateOnBoarding.getEndDate()));
+			}
+			
+			if(null != candidateOnBoarding.getDueDate()){
+				candidateOnBoarding.setDueDateStr(Constants.DMY.format(candidateOnBoarding.getDueDate()));
+			}
+			
+		}
+		
+		resultJson = commonUtil.toJSON(candidateOnBoarding);
+		
+		return resultJson;
+	 }
+	 
+	 
+	 
+	 
+	 
 	
 	 
 }
