@@ -93,4 +93,17 @@ public class OnBoardingTemplateDocumentsDaoImpl implements OnBoardingTemplateDoc
         return documentsList;
 	}
 
+	@Override
+	@Transactional
+	public OnBoardingTemplateDocuments getOnBoardingTemplateDocumentsById(Long Id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<OnBoardingTemplateDocuments> documents = session.createQuery("from OnBoardingTemplateDocuments documents where documents.id =:id" ).setLong( "id", Id ).setCacheable(true).list();
+		if (documents.size() > 0) {
+			return documents.get(0);
+		} else {
+			return null;
+		}
+	
+	}
+
 }

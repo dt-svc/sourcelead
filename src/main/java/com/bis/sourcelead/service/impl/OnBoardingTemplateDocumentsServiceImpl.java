@@ -39,4 +39,9 @@ public class OnBoardingTemplateDocumentsServiceImpl implements OnBoardingTemplat
 		return onBoardingTemplateDocumentsDao.getCandidateOnBoardingTemplateDocumentsByTemplateId(templateIds, documentType);
 	}
 
+	@Override
+	public OnBoardingTemplateDocuments getOnBoardingTemplateDocumentsById(Long Id) throws Exception {
+		return onBoardingTemplateDocumentsDao.getOnBoardingTemplateDocumentsById(Id);
+	}
+
 }

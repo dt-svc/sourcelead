@@ -22,6 +22,7 @@
   	        document.getElementById("templateDocs").disabled = false;
   	        document.getElementById("templateTasks").disabled = false;
   	        $("#candidateOnBoardUUID").val('${onBoardingUUID}');
+  	        $("#documentstemplateId").val(onBoardingId);
   	        
   	        loadOnboardingCandidate('${onBoardingUUID}');
   	        
@@ -281,7 +282,7 @@
               
             <div class="form-horizontal">
               <form id='templateDocuments_form' name='templateDocuments_form' enctype='multipart/form-data' >
-                 <input type="hidden" name="onboardingtemplateId" id="documentstemplateId" value=""/>
+                 <input type="hidden" name="candidateonboardingId" id="documentstemplateId" value=""/>
                 <p><strong>Acceptance Documents</strong> <br>
                   <small class="text-muted">These documents need to be accepted by the new hire as part of acceptance step  - Learn more</small> </p>
                 
@@ -552,6 +553,93 @@
  </section>
  
   <jsp:include page="../masterFooter.jsp" />
+  
+  
+<div id="divAttachmentTd1" style="display: none; float: left;">
+			<div id='REPLACEROWIDdocFileuploadFileGroup'>
+	  			<input type='file' name='REPLACEROWIDdocFile' id='REPLACEROWIDdocFile' class="timesheetAttachmentValidation" onchange='validateUploadFile(REPLACEROWID)'> 
+	  			<i class="fa fa-times" onclick="removePoliciesAttachmentRow(REPLACEROWID);"></i>
+	  		</div>
+</div>
+
+<div id="divSupportingAttachmentTd1" style="display: none; float: left;">
+			<div id='REPLACEROWIDSupportingdocFileuploadFileGroup'>
+	  			<input type='file' name='REPLACEROWIDsupportingdocFile' id='REPLACEROWIDsupportingdocFile' class="timesheetAttachmentValidation" onchange='validateSupportingUploadFile(REPLACEROWID)'> 
+	  			<i class="fa fa-times" onclick="removeSupportingAttachmentRow(REPLACEROWID);"></i>
+	  		</div>
+</div>
+
+<script>
+function addPoliciesAttachment(){  
+			var checkMaxTsRowNum = $("#policiesAttcahmentMaxRowNumber").val();
+			var tbl = document.getElementById("policiesAttachmentTable");
+			var maxRowNum = parseInt($("input[name = 'policiesAttcahmentMaxRowNumber']").val());
+			$("input[name = 'policiesAttcahmentMaxRowNumber']").val(maxRowNum + 1);
+			
+			
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", "divAttachmentPoliciesRow" + maxRowNum);
+			
+			
+			var cell0 = row.insertCell(0);
+			var divAttachmentTdStr = document.getElementById("divAttachmentTd1").innerHTML;
+			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+			cell0.innerHTML = divAttachmentTdStr;
+			
+			
+}			
+</script>
+	
+<script type="text/javascript">
+	function removePoliciesAttachmentRow(rowId) {
+		 document.getElementById("divAttachmentPoliciesRow"+rowId).style.display = 'none';
+		 document.getElementById("divAttachmentPoliciesRow"+rowId).value= '';
+		 var  rId = "divAttachmentPoliciesRow"+rowId;
+		  var r = document.getElementById("policiesAttachmentTable").rows[rId];
+          var count = 2*(r.cells.length);
+		    for(i=0;i<=count;i++){
+		        r.deleteCell(0);
+		    } 
+		 
+	}
+</script>
+
+
+<script>
+function addSupportingAttachment(){  
+			var checkMaxTsRowNum = $("#supportingAttcahmentMaxRowNumber").val();
+			var tbl = document.getElementById("supportingAttachmentTable");
+			var maxRowNum = parseInt($("input[name = 'supportingAttcahmentMaxRowNumber']").val());
+			$("input[name = 'supportingAttcahmentMaxRowNumber']").val(maxRowNum + 1);
+			
+			
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", "divAttachmentSupportingRow" + maxRowNum);
+			
+			
+			var cell0 = row.insertCell(0);
+			var divAttachmentTdStr = document.getElementById("divSupportingAttachmentTd1").innerHTML;
+			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+			cell0.innerHTML = divAttachmentTdStr;
+			
+			
+}			
+</script>
+	
+<script type="text/javascript">
+	function removeSupportingAttachmentRow(rowId) {
+		 document.getElementById("divAttachmentSupportingRow"+rowId).style.display = 'none';
+		 document.getElementById("divAttachmentSupportingRow"+rowId).value= '';
+		 var  rId = "divAttachmentSupportingRow"+rowId;
+		  var r = document.getElementById("supportingAttachmentTable").rows[rId];
+          var count = 2*(r.cells.length);
+		    for(i=0;i<=count;i++){
+		        r.deleteCell(0);
+		    } 
+		 
+	}
+</script>
+  
   
   
   <script>
@@ -977,6 +1065,8 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		     	        
 		     	       getTemplatePolicyDocumentsDetails(onboardId);
 		     	       getTemplateSupportingDocumentsDetails(onboardId);
+		     	       
+		     	       $("#documentstemplateId").val(onboardId);
 		        	}
 		        	
 	     	        $("#candidateOnBoardId").val(onboardId);
@@ -1126,8 +1216,9 @@ function getTemplatePolicyDocumentsDetails(onboardId){
            				 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadTemplateDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
            				 result = result +"<input type='button' value='"+opt.fileName+"'>";
            				 result = result +"</a>";
-           				 result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
+           				 result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument("+opt.id+",\""+documentType+"\");' >";
            				 result = result +"</strong>";
+           				 result = result +"<input type='hidden' name='savedPoliciesAttcahments' id='policyAttachment"+opt.id+"' value='"+opt.id+"' />";
                 	 }
                 	
                 	 result = result +"<input type='hidden' name='policiesAttcahmentMaxRowNumber'  id='policiesAttcahmentMaxRowNumber' value='1' />";
@@ -1171,8 +1262,9 @@ function getTemplateSupportingDocumentsDetails(onboardId){
                 		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadTemplateDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
            				 result = result +"<input type='button' value='"+opt.fileName+"'>";
            				 result = result +"</a>";
-           				 result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
+           				 result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument("+opt.id+",\""+documentType+"\");' >";
            				 result = result +"</strong>";
+           				result = result +"<input type='hidden' name='savedSupportedAttcahments' id='supportedAttachment"+opt.id+"' value='"+opt.id+"' />";
                 	 }
                 	 
                 	 result = result +"<input type='hidden' name='supportingAttcahmentMaxRowNumber'  id='supportingAttcahmentMaxRowNumber' value='1' />";
@@ -1193,3 +1285,79 @@ function getTemplateSupportingDocumentsDetails(onboardId){
 </script>
   
   
+  
+<script>
+function deleteTemplateDocument(documentId,documentType){
+	
+	if(documentType == 'Policies'){
+		document.getElementById("policydocument"+documentId).remove();
+		document.getElementById("policyAttachment"+documentId).remove();
+	}else if(documentType == 'Supported'){
+		document.getElementById("supportdocument"+documentId).remove();
+		document.getElementById("supportedAttachment"+documentId).remove();
+	}
+	
+	 
+}
+</script>
+
+
+
+
+
+<script>
+function createTemplateDocs(saveType){
+	var validationSettings = {
+	        errorMessagePosition : 'element',
+	       borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+         }; 
+	
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  
+	  var frm = $('#templateDocuments_form').serializeFormJSON();
+      var con = JSON.stringify(frm);
+      con = con.replace(/[{}]/g, "");
+      
+      //It will escape all the special characters
+      var jsonData = encodeURIComponent(con);
+      
+	   var form = $('#templateDocuments_form')[0];
+	   var formData = new FormData(form); 
+	
+   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$.ajax({
+        type : "POST",
+	      data: formData,
+	      contentType : 'application/json; charset=utf-8',
+	      enctype: 'multipart/form-data',
+        processData: false,
+        contentType:false,
+	      dataType : 'json',
+    	  url: sourceleadUrl+"/saveCandidatedOnboardingTemplateDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,		
+	      success :function(result) {
+	    	  
+	    	  if(saveType == 'saveAndContinue'){
+	        		var $tabs = $('.tabbable li');
+	     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
+	     	        document.getElementById("templateTasks").disabled = false;
+	     	        //getOnboardingTasksList();
+	        	}else{
+	        		getTemplatePolicyDocumentsDetails();
+	        		getTemplateSupportingDocumentsDetails();
+	        	}
+	    	  $("#loading").removeAttr("style");
+	    	  
+	      }
+    	  
+  });
+}
+</script>
+
+
+
+
+
+
+

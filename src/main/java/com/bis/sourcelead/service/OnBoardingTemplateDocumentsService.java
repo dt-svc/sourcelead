@@ -13,4 +13,6 @@ public interface OnBoardingTemplateDocumentsService {
 	OnBoardingTemplateDocuments getOnBoardingTemplateDocumentsBydocumentUUID(String documentUUID) throws Exception;
 	
 	List<OnBoardingTemplateDocuments> getCandidateOnBoardingTemplateDocumentsByTemplateId(List<Long> templateIds,String documentType) throws Exception;
+	
+	OnBoardingTemplateDocuments getOnBoardingTemplateDocumentsById(Long Id) throws Exception;
 }

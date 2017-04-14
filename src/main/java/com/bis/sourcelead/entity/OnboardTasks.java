@@ -38,6 +38,10 @@ private static final long serialVersionUID = 1L;
 	@JoinColumn(name = "ON_BOARDING_TEMPLATE_ID", nullable = false)
 	private OnBoardingTemplate onboardingTemplateId;
     
+    @ManyToOne(fetch = FetchType.LAZY)
+   	@JoinColumn(name = "CANDIDATE_ON_BOARDING_ID", nullable = false)
+   	private CandidateOnBoarding candidateOnBoardingId;
+    
 	@Column(name = "ASSIGN_TO_USERS")
    	private String assignToUsers;
 	
@@ -260,6 +264,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setDueAfterString(String dueAfterString) {
 		this.dueAfterString = dueAfterString;
+	}
+
+	public CandidateOnBoarding getCandidateOnBoardingId() {
+		return candidateOnBoardingId;
+	}
+
+	public void setCandidateOnBoardingId(CandidateOnBoarding candidateOnBoardingId) {
+		this.candidateOnBoardingId = candidateOnBoardingId;
 	}
 
 }
