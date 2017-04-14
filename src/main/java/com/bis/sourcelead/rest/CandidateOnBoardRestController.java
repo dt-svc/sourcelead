@@ -743,7 +743,27 @@ public class CandidateOnBoardRestController {
 	 }
 	 
 	 
-	 
+		@RequestMapping(value = "/getCandidateOnboardTemplateDocumentByOnboardId" , method = RequestMethod.POST)
+		 public @ResponseBody  String getCandidateOnboardTemplateDocumentByOnboardId(@RequestParam(value="onboardId", required=false) Long onboardId,
+				 @RequestParam(value="documentType", required=false) String documentType, HttpServletRequest request) throws Exception {
+			
+			String resultJson;
+			
+			CandidateOnBoarding onboarding = candidateOnBoardingService.getCandidateOnBoardingById(onboardId);
+			
+			 List<Long> templateIdsList = new ArrayList<Long>();
+			 for (String s : onboarding.getOnboardTemplateId().split(",")){
+				 templateIdsList.add(Long.parseLong(s));
+			 }
+			 
+			 
+			List<OnBoardingTemplateDocuments> documentsList = onBoardingTemplateDocumentsService.getCandidateOnBoardingTemplateDocumentsByTemplateId(templateIdsList,documentType);
+		 	 
+		 	resultJson = commonUtil.toJSON(documentsList);
+			return resultJson;
+		   
+		}
+		
 	 
 	 
 	

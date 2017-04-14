@@ -52,7 +52,7 @@
           <ul class="nav nav-tabs" id="tab_bar">
             <li class="active" onclick="loadOnboardingCandidate();"> <a href="#details" data-toggle="tab"> <i class="fa fa-th-list paddingRight"></i> <span>Details</span> <br>
               <small>Employee details &amp; Postion details</small> </a> </li>
-            <li><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
+            <li onclick="getTemplatePolicyDocumentsDetails();getTemplateSupportingDocumentsDetails();"><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
               <small>Acceptance &amp; Policy Documents</small> </a> </li>
             <li> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Taks</span> <br>
               <small>List of tasks</small> </a></li>
@@ -279,48 +279,45 @@
             <!-- TAB 2 -->
             <div class="tab-pane" id="documents">
               
-                <div class="form-horizontal">
+            <div class="form-horizontal">
+              <form id='templateDocuments_form' name='templateDocuments_form' enctype='multipart/form-data' >
+                 <input type="hidden" name="onboardingtemplateId" id="documentstemplateId" value=""/>
                 <p><strong>Acceptance Documents</strong> <br>
                   <small class="text-muted">These documents need to be accepted by the new hire as part of acceptance step  - Learn more</small> </p>
                 
                 <div class="form-group">
-                  <label class="col-md-12">
-                    <strong>Employment Contract</strong>
-                    </label>
-                    <label class="col-md-4 control-label"></label>
-                  <div class="col-md-7">
-                      <button type="button" class="btn btn-default btn-sm"><i class="fa fa-plus paddingRight"></i>Upload additional contract files</button>
-                  </div>
+                  <label class="col-md-12"> <strong>Policies</strong> <br>
+                  </label>
+                  <label class="col-md-4 control-label mt10">These policies will be added to this offer:</label>
+                     <div id="timesheetDocumentsId" class="timesheetDocs">
+                      <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
+				        <span> 
+			              <div id="savedPociliesAttachments"></div>
+				        </span>
+                      </div>
+                      </div>
                 </div>
-                  
-                  
-                <div class="form-group">
-                  <label class="col-md-12">
-                      <strong>Policies</strong> <br>
-                    </label>
-
-                    <label class="col-md-4 control-label">These policies will be added to this offer:</label>
-                  <div class="col-md-7">
-                      <button type="button" class="btn btn-default btn-sm"><i class="fa fa-plus paddingRight"></i>Upload additional policies files</button>
-                  </div>
-                </div>
-                    
                 <div class="clearfix"></div>
                 <p><strong>Supporting Information</strong> <br>
                   <small class="text-muted">This is great place to upload a position description, commission structures, photo of the team , their desk or even a view from their new office.</small> </p>
                 <div class="form-group">
-                  <label class="col-md-4 control-label">These files will be available in the portal</label>
-                  <div class="col-md-7">
-                    <button type="button" class="btn btn-default btn-sm"><i class="fa fa-plus paddingRight"></i>Upload additional Information files</button>
-                  </div>
+                  <label class="col-md-4 control-label mt10">These files will be available in the portal:</label>
+                  <div id="timesheetDocumentsId" class="timesheetDocs">
+                      <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
+				        <span> 
+			             <div id="savedSupportedAttachments"></div>
+				        </span>
+                      </div>
+                      </div>
                 </div>
                 <div class="form-footer">
                   <div class="pull-right mr">
-                    <input type="button" value="Cancel" class="btn btn-sm btn-default">
-                    <input type="button" value="Save" class="btn btn-sm btn-success">
-                    <input type="button" value="Save and Continue" class="btn btn-sm btn-primary">
+                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/dashboard/${SourceLeadWeb_orgLocationId}'">
+                    <input type="button" value="Save" id="save_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
+                    <input type="button" value="Save and Continue" id="save_continue_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
                 </div>
+                </form>
               </div>
                 
                 
@@ -977,6 +974,9 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		        		var $tabs = $('.tabbable li');
 		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
 		     	        document.getElementById("templateDocs").disabled = false;
+		     	        
+		     	       getTemplatePolicyDocumentsDetails(onboardId);
+		     	       getTemplateSupportingDocumentsDetails(onboardId);
 		        	}
 		        	
 	     	        $("#candidateOnBoardId").val(onboardId);
@@ -1102,5 +1102,94 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	 }
  }
  </script>
+ 
+ 
+ <script>
+function getTemplatePolicyDocumentsDetails(onboardId){
+	if(onboardId == '' || onboardId == null || onboardId =='undefined'){
+		onboardId = document.getElementById("candidateOnBoardId").value;
+	}
+	var documentType = "Policies"
+	if(onboardId){
+		var sourceleadUrl ='${sourceleadUrl}';
+	     $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByOnboardId?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&documentType="+documentType, 
+		        success: function(data) {
+		        	
+		        	 var json = JSON.parse(data);
+		        	 var result = "";
+		        	 
+                	 for (var i = 0; i < json.length; i++) { 
+                		 var opt = json[i]; 
+                		 result = result +"<strong id='policydocument"+opt.id+"'>";
+           				 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadTemplateDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
+           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
+           				 result = result +"</a>";
+           				 result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
+           				 result = result +"</strong>";
+                	 }
+                	
+                	 result = result +"<input type='hidden' name='policiesAttcahmentMaxRowNumber'  id='policiesAttcahmentMaxRowNumber' value='1' />";
+                	 result = result +"<table class='timesheetAttachment' id='policiesAttachmentTable' cellpadding='0' cellspacing='0'>";
+                	 result = result +"<tr id='divAttachmentTsRow0'>";
+                	 result = result +"<td><div id='0docFileuploadFileGroup'><input type='file' name='0docFile' id='0docFile' field-name='Attachment' onchange='validateUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addPoliciesAttachment()'></i></div></td>";
+                	 result = result +"</tr>";
+                	 result = result +"</table>";
+                	 $("#savedPociliesAttachments").empty();
+                	 
+                	 $("#savedPociliesAttachments").append(result);
+                	 
+                	 
+                	 
+			        
+		        },
+		    });
+	}
+}
+</script>
+
+<script>
+function getTemplateSupportingDocumentsDetails(onboardId){
+	if(onboardId == '' || onboardId == null || onboardId =='undefined'){
+		onboardId = document.getElementById("candidateOnBoardId").value;
+	}
+	var documentType = "Supported"
+	if(onboardId){
+		var sourceleadUrl ='${sourceleadUrl}';
+	     $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByOnboardId?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&documentType="+documentType, 
+		        success: function(data) {
+		        	
+		        	 var json = JSON.parse(data);
+		        	 var result = "";
+		        	 
+                	 for (var i = 0; i < json.length; i++) { 
+                		 var opt = json[i]; 
+                		 result = result +"<strong id='supportdocument"+opt.id+"'>";
+                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadTemplateDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
+           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
+           				 result = result +"</a>";
+           				 result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
+           				 result = result +"</strong>";
+                	 }
+                	 
+                	 result = result +"<input type='hidden' name='supportingAttcahmentMaxRowNumber'  id='supportingAttcahmentMaxRowNumber' value='1' />";
+                	 result = result +"<table class='timesheetAttachment' id='supportingAttachmentTable' cellpadding='0' cellspacing='0'>";
+                	 result = result +"<tr id='divAttachmentTsRow0'>";
+                	 result = result +"<td><div id='0SupportingdocFileuploadFileGroup'><input type='file' name='0supportingdocFile' id='0supportingdocFile' field-name='Attachment' onchange='validateUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addSupportingAttachment()'></i></div></td>";
+                	 result = result +"</tr>";
+                	 result = result +"</table>";
+                	 $("#savedSupportedAttachments").empty();
+                	 $("#savedSupportedAttachments").append(result);
+                	 
+                	 
+			        
+		        },
+		    });
+	}
+}
+</script>
   
   
