@@ -34,8 +34,7 @@ public class SocialInviterService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(SocialInviterService.class);
 	
-	
-    @RequestMapping(value="/getAPIService",  method =  RequestMethod.GET, produces = "application/javascript;charset=UTF-8")
+    @RequestMapping(value="/getAPIService",  method =  RequestMethod.GET )
 	@ResponseBody
 	public String getAPIService(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 
