@@ -94,7 +94,7 @@ public interface OrgSpocDao {
 
 	List<Long> getOwnerListByUserIdAndOrglocationId(User user, OrgLocations orgLocations, String type);
 	
-	OrgSpoc getValidateOwnersBySpocUserIdAndSpocOwnerUserId(Long spocUserId, Long spocOwnderUserId, Long responderLocationId) throws Exception;
+	OrgSpoc getValidateOwnersBySpocUserIdAndSpocOwnerUserId(Long spocUserId, Long spocOwnderUserId, Long responderLocationId, String responderType) throws Exception;
 
 	List<OrgSpoc> getOrgSpocContactEmailsByOrgRelationIdAndUserId(Long userId,Long orgRelationId,Long orgLocationId) throws Exception;
 

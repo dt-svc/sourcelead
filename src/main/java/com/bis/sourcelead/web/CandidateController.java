@@ -226,7 +226,7 @@ public class CandidateController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		sessionData.setNav(Constants.Candidates);
+		sessionData.setNav(Constants.Associates);
 		
 		request.getSession().setAttribute("sessionData",sessionData);
 		
@@ -234,7 +234,6 @@ public class CandidateController {
 		return model;
 
 	}
-	
 	
 	
 	@PreAuthorize("hasRole('ROLE_CREATE_CANDIDATE')")

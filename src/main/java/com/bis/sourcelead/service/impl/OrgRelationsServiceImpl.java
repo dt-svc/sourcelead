@@ -476,9 +476,9 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	}
 
 	@Override
-	public List<OrgRelations> getAllClientsByOrgLocationIdAndDomain(Long orgLocationId, String domain)
+	public List<OrgRelations> getAllClientsByOrgLocationIdAndDomain(Long orgLocationId, String domain, String responderType)
 	{
-		return orgRelationsDao.getAllClientsByOrgLocationIdAndDomain(orgLocationId,domain);
+		return orgRelationsDao.getAllClientsByOrgLocationIdAndDomain(orgLocationId,domain,responderType);
 	}
 	
 }

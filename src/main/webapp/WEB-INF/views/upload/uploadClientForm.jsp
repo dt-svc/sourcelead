@@ -219,7 +219,7 @@ function saveBulkImport(){
 	        processData: false,
 	        contentType:false,
     	    dataType : 'json',
-		    url : sourceleadUrl+"/clientExcelFileUpload?${_csrf.parameterName}=${_csrf.token}", 	   
+		    url : sourceleadUrl+"/clientExcelFileUpload?${_csrf.parameterName}=${_csrf.token}&responderType=Client", 	   
  		    success : function(data) {
  		    	prepareExcelDataDiv(data);
  		    },

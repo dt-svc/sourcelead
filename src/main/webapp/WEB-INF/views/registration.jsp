@@ -19,9 +19,10 @@
      <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
     <%@page session="true"%>
 </head>
-
+<jsp:include page="socialinviterscripts.jsp" />
 <script>
 window.onload = function () {
+	    resetCredentials('Professional');
 		var contactUUID = '${contactUUID}';
 		if(contactUUID != null && contactUUID != '' && contactUUID != 'undefined'){
 			validateEmail('Professional');
@@ -29,6 +30,91 @@ window.onload = function () {
 	};
 </script>
 
+<script>
+    function closeProfileDetailsPop(){
+    	$(".logMask").fadeOut(200);
+		$(".logPop").fadeOut(100);
+    }
+	/* $(".loPopClose, .logMask").click(function(){
+		$(".logMask").fadeOut(200);
+		$(".logPop").fadeOut(100);
+	});	 */
+</script>
+<div class="logMask"></div>
+	<div class="logPop">
+	<div class="sc_regform-holder fl break">
+    <div class="break sc_formheader">
+        <div class="fl sc_dp"><img src="http://socialinviter.com/assets/img/icons/avator.JPG" id="profileimage"></div>
+        <div class="fl sc_formheader-desc ng-binding" id="aboutme"></div>
+    </div>
+   <!--  <div class="sc_row">
+        <div class="fl sc_row-left">Profile url</div>
+        <div class="fl sc_row-sep">:</div>
+        <div class="fl sc_row-right sr_row-profurl">
+            <a target="_blank" href="#" id="profileurl"></a>
+        </div>
+    </div>
+    <div class="sc_row">
+        <div class="fl sc_row-left">Id</div>
+        <div class="fl sc_row-sep">:</div>
+        <div class="fl sc_row-right">
+            <input type="text" placeholder="Not available" class="input-xlarge ng-pristine ng-valid" id="loginid">
+        </div>
+    </div> -->
+    <div class="sc_row">
+        <div class="fl sc_row-left">Display name</div>
+        <div class="fl sc_row-sep">:</div>
+        <div class="fl sc_row-right">
+            <input type="text" placeholder="Not available" class="input-xlarge ng-pristine ng-valid" id="logindisplayname">
+        </div>
+    </div>
+    <div class="sc_row">
+        <div class="fl sc_row-left">First name</div>
+        <div class="fl sc_row-sep">:</div>
+        <div class="fl sc_row-right">
+            <input type="text" placeholder="Not available" class="input-xlarge ng-pristine ng-valid" id="loginfirstname">
+        </div>
+    </div>
+    <div class="sc_row">
+        <div class="fl sc_row-left">Last name</div>
+        <div class="fl sc_row-sep">:</div>
+        <div class="fl sc_row-right">
+            <input type="text" placeholder="Not available" class="input-xlarge ng-pristine ng-valid" id="loginlastname">
+        </div>
+    </div>
+    <div class="sc_row">
+        <div class="fl sc_row-left">Email id</div>
+        <div class="fl sc_row-sep">:</div>
+        <div class="fl sc_row-right">
+            <input type="text" placeholder="Not available" class="input-xlarge ng-pristine ng-valid" id="loginemail">
+        </div>
+    </div>
+    <div class="sc_row">
+        <div class="fl sc_row-left">Gender</div>
+        <div class="fl sc_row-sep">:</div>
+        <div class="fl sc_row-right">
+            <input type="text" placeholder="Not available" class="input-xlarge ng-pristine ng-valid" id="logingender">
+        </div>
+    </div>
+    <div class="sc_row">
+        <div class="fl sc_row-left">Date of birth</div>
+        <div class="fl sc_row-sep">:</div>
+        <div class="fl sc_row-right">
+            <input type="text" placeholder="Not available" class="input-xlarge ng-pristine ng-valid" id="logindob">
+        </div>
+    </div>
+    <div class="sc_row sc_row-last">
+        <div class="fl sc_row-left">Location</div>
+        <div class="fl sc_row-sep">:</div>
+        <div class="fl sc_row-right">
+            <input type="text" placeholder="Not available" class="input-xlarge ng-pristine ng-valid" id="loginlocation">
+        </div>
+    </div>
+</div>
+<br/>
+<br/>
+		<div class="loPopClose" onclick="hello()"><i class="fa fa-times"></i></div>
+	</div>
 <body>
 <div class="regis_bg">
   <div class="container">
@@ -37,9 +123,9 @@ window.onload = function () {
         <div class="company_logo pull-left"><img src="resources/images/mail-logo.png" alt="Sourcelead Logo" class="img-responsive" width="250"></div>
       <div class="clearfix"></div>
       <ul class="nav nav-tabs">
-          <li class="active"><a data-toggle="tab" href="#professional" onclick="resetCredentials()"><i class="fa fa-user"></i>&nbsp;&nbsp;Professional</a></li>
+          <li class="active"><a data-toggle="tab" href="#professional" onclick="resetCredentials('Professional')"><i class="fa fa-user"></i>&nbsp;&nbsp;Professional</a></li>
           <c:if test="${empty contactUUID}">
-          <li><a data-toggle="tab" href="#recruiter" onclick="resetCredentials()"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Individual Recruiter</a></li>
+          <li><a data-toggle="tab" href="#recruiter" onclick="resetCredentials('Recruiter')"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Individual Recruiter</a></li>
           </c:if>
       </ul>
         <div class="regis_wrap_styles">
@@ -88,8 +174,10 @@ window.onload = function () {
             
             <div class="clearfix mt25">
                 <div class="pull-left">
-                    <span class="small text-muted">Already have an Account:</span><a href="${sourceleadUrl}" class="btn" title="Login">Login</a>
+                    <span class="small text-muted">Already have an Account:</span><a href="${sourceleadUrl}" class="btn" title="Login">Login</a><br/>
+                    <span class="small text-muted">Register With:</span>
                 </div>
+                <div id ="proffessionalConnect"></div>
                 <div class="pull-right">
                     <button type="submit" id="register_button"  class="btn btn-primary btn_styles mr" title="Register">
                         <i class="fa fa-paper-plane"></i>Register</button>
@@ -138,10 +226,11 @@ window.onload = function () {
             </div>
             
             <div class="clearfix mt25">
-                                <div class="pull-left">
-                    <span class="small text-muted">Already have an Account:</span><a href="${sourceleadUrl}" class="btn" title="Login">Login</a>
+                 <div class="pull-left">
+                    <span class="small text-muted">Already have an Account:</span><a href="${sourceleadUrl}" class="btn" title="Login">Login</a><br/>
+                     <span class="small text-muted">Register With:</span>
                 </div>
-
+                  <div id="recruiterConnect"  ></div>
                 <div class="pull-right">
                     <button type="submit" class="btn btn-primary btn_styles mr" id="recruiter_register" title="Register">
                         <i class="fa fa-paper-plane"></i>Register</button>
@@ -161,16 +250,30 @@ window.onload = function () {
 </body>
 
 <script>
-function resetCredentials(){
+function resetCredentials(type){
 	$("#firstName").val('');
 	$("#lastName").val('');
 	$("#email").val('');
 	$("#location").val('');
-	
+
 	$("#recruiterFirstName").val('');
 	$("#recruiterLastName").val('');
 	$("#recruiterEmail").val('');
 	$("#recruiterLocation").val('');
+	
+	$("#proffessionalConnect").removeAttr('class');
+	$("#recruiterConnect").removeAttr('class');
+	$("#proffessionalConnect").removeAttr('type');
+	$("#recruiterConnect").removeAttr('type');
+	
+	if(type != null && type != '' && type != 'undefined' && type == 'Recruiter'){
+		$("#recruiterConnect").attr('class','socialinviter holder break');
+		$("#recruiterConnect").attr('type','socialconnect');
+	}
+	else{
+		$("#proffessionalConnect").attr('class','socialinviter holder break');
+		$("#proffessionalConnect").attr('type','socialconnect');
+	}
 }
 </script>
 

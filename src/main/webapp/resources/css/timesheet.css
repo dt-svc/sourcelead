@@ -3587,8 +3587,14 @@ font-size: 20px; color: #FF4141; padding: 4px 0px 0px 0px; display: inline-block
 .propWrapHead span:hover {
 	background-color: #368ee0; color: #fff;
 }
+.propWrapLeft tr td {
+	padding:7px 10px !important;
+}
+.propWrapLeft tr th {
+	text-align:center;
+}
 .propWrapRight {
-	background-color: #f5f5f5; min-height: 500px; width: 45%; float: left; border-left: 2px solid #f1f1f1;
+	background-color: #f5f5f5; min-height: 500px; width: 45%; float: left; border-left: 2px solid #fff;
 	padding: 20px;
 }
 .propWrapRight h2 {
@@ -3609,23 +3615,32 @@ font-size: 20px; color: #FF4141; padding: 4px 0px 0px 0px; display: inline-block
 .propWrapRight ul li b i {
 	display: inline-block; color: #8e8e8e; padding: 0px 8px 0px 0px;
 }
+.propHelp {
+	padding:10px 15px; background-color: #dcffdc; font-size: 13px; font-weight: 400; color: #3a543a; line-height: 20px;
+	border-radius: 4px; border: 1px solid #abeaab; margin: 30% 0px 25px 0px;
+}
+.propBtn {
+	text-align: right;
+}
 
-
-
-.propCheck input[type=checkbox] {
+.propCheck input[type=checkbox], .propCheck_red input[type=checkbox] {
 	visibility: hidden;
 }
-.propCheck {
-	width: 20px; height: 20px; background: #bdbdbd; border-radius: 5px; position: relative;
+.propCheck, .propCheck_red {
+	width: 17px; height: 17px; background: #bdbdbd; border-radius: 5px; position: relative; margin: 0px auto;
 }
-.propCheck label {
-	display: block; width: 16px; height: 16px; border-radius: 6px;
+.propCheck label, .propCheck_red label {
+	display: block; width: 15px; height: 15px; border-radius: 4px;
 	-webkit-transition: all .2s ease; -moz-transition: all .2s ease; -ms-transition: all .2s ease; transition: all .2s ease;
-	cursor: pointer; position: absolute; top: 2px; left: 2px; z-index: 1; background: #f1f1f1;
+	cursor: pointer; position: absolute; top: 1px; left: 1px; z-index: 1; background: #f1f1f1;
 }
 .propCheck input[type=checkbox]:checked + label {
-	background: #368ee0;
+	background: #0cc2aa;
 }
+.propCheck_red input[type=checkbox]:checked + label {
+	background: #f05959;
+}
+
 
 
 /*  Add Contract  */
@@ -3658,15 +3673,79 @@ font-size: 20px; color: #FF4141; padding: 4px 0px 0px 0px; display: inline-block
 	list-style-type:none; float: left;
 }
 .contrHead ul li a {
-	display: block; padding: 8px 20px; background-color: #fff; border-radius: 2px; box-shadow: 0px 0px 3px rgba(0,0,0,0.2);
-	margin: 0px 6px 0px 0px; font-size: 14px; font-weight: 400; color: #666;
+	display: block; padding: 8px 21px 8px 20px; background-color: #fff; border-radius: 2px; box-shadow: 0px 0px 3px rgba(0,0,0,0.2);
+	margin: 0px 6px 0px 0px; font-size: 14px; font-weight: 400; color: #666; position: relative;
 }
-.contrHead ul li a.active {
-	color: #fff; background-color: #0cc2aa; position: relative;
+.contrHead ul li i {
+	display:inline-block; padding: 0px 10px 0px 0px; color: #787878;
 }
-.contrHead ul li a.active:after {
+.contrHead ul li a:hover {
+	background-color: #f1f1f1;
+}
+
+.contrHead ul li a.draft {
+	background-color: #666; color: #fff;
+}
+.contrHead ul li a.draft:after {
 	top: 100%; left: 50%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
-	border-color: rgba(136, 183, 213, 0); border-top-color: #0cc2aa; border-width: 8px; margin-left: -8px;
+	border-color: rgba(136, 183, 213, 0); border-top-color: #666; border-width: 10px; margin-left: -10px;
+}
+
+.contrHead ul li a.wApp {
+	background-color: #e38925; color: #fff;
+}
+.contrHead ul li a.wApp i {
+	color:#fff;
+}
+.contrHead ul li a.wApp:after {
+	top: 100%; left: 50%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
+	border-color: rgba(136, 183, 213, 0); border-top-color: #e38925; border-width: 10px; margin-left: -10px;
+}
+
+.contrHead ul li a.wSig {
+	background-color: #368ee0; color: #fff;
+}
+.contrHead ul li a.wSig i {
+	color:#fff;
+}
+.contrHead ul li a.wSig:after {
+	top: 100%; left: 50%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
+	border-color: rgba(136, 183, 213, 0); border-top-color: #368ee0; border-width: 10px; margin-left: -10px;
+}
+
+.contrHead ul li a.wVer {
+	background-color: #0cc2aa; color: #fff;
+}
+.contrHead ul li a.wVer i {
+	color:#fff;
+}
+.contrHead ul li a.wVer:after {
+	top: 100%; left: 50%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
+	border-color: rgba(136, 183, 213, 0); border-top-color: #0cc2aa; border-width: 10px; margin-left: -10px;
+}
+
+.contrHead ul li a.fin {
+	background-color: #39af39; color: #fff;
+}
+.contrHead ul li a.fin:after {
+	top: 100%; left: 50%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
+	border-color: rgba(136, 183, 213, 0); border-top-color: #39af39; border-width: 10px; margin-left: -10px;
+}
+
+.contrHead ul li a.exp {
+	background-color: #ef5b4c; color: #fff;
+}
+.contrHead ul li a.exp:after {
+	top: 100%; left: 50%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
+	border-color: rgba(136, 183, 213, 0); border-top-color: #ef5b4c; border-width: 10px; margin-left: -10px;
+}
+
+.contrHead ul li a.rej {
+	background-color: #e83535; color: #fff;
+}
+.contrHead ul li a.rej:after {
+	top: 100%; left: 50%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
+	border-color: rgba(136, 183, 213, 0); border-top-color: #e83535; border-width: 10px; margin-left: -10px;
 }
 
 .conBtn {
@@ -3721,7 +3800,7 @@ font-size: 20px; color: #FF4141; padding: 4px 0px 0px 0px; display: inline-block
 .pdfView {
 	margin: 30px 40px;
 }
-.pdfView iframe {
+.pdfView embed, .pdfView iframe {
 	width:100%; height: 600px; border: 10px solid #ccc; border-radius: 3px;
 }
 
@@ -3744,3 +3823,46 @@ font-size: 20px; color: #FF4141; padding: 4px 0px 0px 0px; display: inline-block
 
 /*  Add Contract  */
 
+
+.impConPop {
+	width: 450px; padding: 15px; background-color: #fff; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); position: fixed;
+	left: 0px; right: 0px; display: none; z-index: 10000; margin: 0px auto; top: 25%; border-radius: 5px;
+}
+.impConPop ul {
+	padding: 0px 0px; margin: 0px 0px;
+}
+.impConPop ul li {
+	list-style-type: none; width: 46%; margin: 2%; float: left; border-radius: 2px; font-size: 15px; font-weight: 500; color: #fff;
+}
+.impConPop ul li i {
+	display: inline-block; padding: 0px 10px 0px 0px;
+}
+.impConPop span {
+	font-size: 18px; position: absolute; right: -10px; display: inline-block; top: -10px; background-color: #fff;
+	width: 30px; height: 30px; text-align: center; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); border-radius: 50%;
+	color: #e04e4e; padding: 2px 0px 0px 0px; cursor: pointer;
+}
+
+.ContrBut {
+	width: auto; float: left; margin: 4px 0px 0px 6px; border: 1px solid #368ee0; padding: 2px; border-radius: 3px;
+}
+.ContrBut a {
+	display: inline-block; padding: 5px 20px; font-size: 14px; color: #666; border-radius: 2px;
+}
+.ContrBut a.active {
+	background-color: #368ee0; color: #fff;
+}
+
+
+
+.prevPop {
+position: fixed; left: 0px; right: 0px; width: 1000px; height: 90%; padding: 20px; margin: 0px auto; display:none;
+top: 5%; z-index: 10000; background-color: #fff; border-radius:5px; box-shadow:0px 0px 10px rgba(0,0,0,0.5);
+}
+.prevPopClose {
+position: absolute; width: 35px; height: 35px; background-color: #fff; border-radius:50%; box-shadow:0px 0px 3px rgba(0,0,0,0.2);
+right: -15px; top:-15px; text-align: center; cursor: pointer; color: #e35454; font-size: 18px; padding: 5px 0px 0px 0px;
+}
+.prevPop iframe {
+width:100%; height: 100%; border: 10px solid #ccc; border-radius: 3px;
+}
