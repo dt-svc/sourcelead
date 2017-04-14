@@ -213,6 +213,7 @@ var services = [
         classRef: "email"
     }
 ]
+
 var icons = {
     "gmail": "//socialinviter.com/assets/img/icons/gmail-icon.png",
     "yahoo": "//socialinviter.com/assets/img/icons/yahoo-icon.png",
@@ -901,7 +902,7 @@ var serviceNotIn = function (productType, serv) {
     else if ((productType == "contactimporter" || productType == "default") && serv != "email" && serv != "mailchimp" && serv != "box" && serv != "eventbrite" && serv != "yammer"  && serv != "mailru"  && serv != "aol" && serv != "instagram" && serv != "pinterest" && serv != "github" && serv != "xing" && serv != "skyrock" && serv != "google" && serv != "facebook" && serv != "twitter" && serv != "slack" && serv != "foursquare" && serv != "linkedin" && serv != "googleplus" && serv != "tumblr" && serv != "delicious" && serv != "salesforce" && serv != "office365" && serv != "base" && serv != "hubspot" && serv != "nimble" && serv != "podio" && serv != "onepage" && serv != "karma" && serv != "xero" && serv != "contactually" && serv != "pipedrive" && serv != "zoho") {
         return true;
     }
-    else if (productType == "socialconnect" && serv != "csv" && serv != "email" && serv != "google" && serv != "aol" && serv != "box" && serv != "yammer" && serv != "xing" && serv != "skyrock" && serv != "gmail" && serv != "tumblr" && serv != "delicious" && serv != "slack" && serv != "mailru" && serv != "eventbrite" && serv != "mailchimp" && serv != "salesforce" && serv != "office365" && serv != "base" && serv != "hubspot" && serv != "nimble" && serv != "podio" && serv != "onepage" && serv != "karma" && serv != "xero" && serv != "contactually" && serv != "pipedrive" && serv != "zoho") {
+    else if (productType == "socialconnect" && serv != "github" && serv != "foursquare"  && serv != "instagram" && serv != "pinterest"  && serv != "outlook" && serv != "yahoo" && serv != "csv" && serv != "email" && serv != "google" && serv != "aol" && serv != "box" && serv != "yammer" && serv != "xing" && serv != "skyrock" && serv != "gmail" && serv != "tumblr" && serv != "delicious" && serv != "slack" && serv != "mailru" && serv != "eventbrite" && serv != "mailchimp" && serv != "salesforce" && serv != "office365" && serv != "base" && serv != "hubspot" && serv != "nimble" && serv != "podio" && serv != "onepage" && serv != "karma" && serv != "xero" && serv != "contactually" && serv != "pipedrive" && serv != "zoho") {
         return true;
     }
     else if (productType == "socialpost" && serv != "outlook" && serv != "instagram" && serv != "pinterest" && serv != "aol" && serv != "github" && serv != "csv" && serv != "email" && serv != "box" && serv != "yammer" && serv != "google" && serv != "skyrock" && serv != "googleplus" && serv != "gmail" && serv != "slack" && serv != "yahoo" && serv != "hotmail" && serv != "foursquare" && serv != "mailru" && serv != "eventbrite" && serv != "mailchimp" && serv != "salesforce" && serv != "office365" && serv != "base" && serv != "hubspot" && serv != "nimble" && serv != "podio" && serv != "onepage" && serv != "karma" && serv != "xero" && serv != "contactually" && serv != "pipedrive" && serv != "zoho") {
@@ -1119,11 +1120,11 @@ var buildServicePanel = function (dockFlag) {
                     if (conf.iconsep == false) {
                         SCDom1 += "<div class=\"fl SC-service-text sc_nosep\">" + configuration.text.replace("{0}", services[i].title) + "</div>";
                     }
-                    else {
+                   /* else {
                         SCDom1 += "<div class=\"fl SC-service-sep\"></div>";
                         var descrpn = configuration.text.replace("{0}", services[i].title);
                         SCDom1 += "<div class=\"fl SC-service-text\">" + descrpn + "</div>";
-                    }
+                    }*/
                     SCDom1 += "</div>";
                     SCDom1 += "</li>";
                     servicePanelDom += SCDom1;
