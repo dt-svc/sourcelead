@@ -674,13 +674,13 @@ function requirementsList(offset){
 			 				
 			 				if(requirementType != "AppliedJobs"){
 			 					result = result +'<div class="openCtaRight">';
-				 				/* result = result +'<p>Share Requirement</p>';
+				 			  result = result +'<p>Share Requirement</p>';
 				 				result = result +'<span>';
 				 				result = result +'<a href="javascript:void(0)"><i class="fa fa-linkedin-square"></i></a>';
 				 				result = result +'<a href="javascript:void(0)"><i class="fa fa-twitter-square"></i></a>';				  
 				 				result = result +'<a href="javascript:void(0)"><i class="fa fa-facebook-square"></i></a>';
 				 				result = result +'<a href="javascript:void(0)"><i class="fa fa-envelope-square"></i></a>';
-				 				result = result +'</span>'; */
+				 				result = result +'</span>'; 
 				 				result = result +'<div class="openPostBtns">';
 				 				
 				 				if((requirementType == "OpenJobs")|| ((requirementType == "CrowdSourcingJobs" || requirementType == "ReferredToMe" || requirementType == "ReferredByMe") && requirements.isJobApplied == 'N')){
@@ -956,13 +956,13 @@ function searchRequirement(offset){
 									 				
 									 				if(requirementType != "AppliedJobs"){
 									 					result = result +'<div class="openCtaRight">';
-										 				/* result = result +'<p>Share Requirement</p>';
+										 				 result = result +'<p>Share Requirement</p>';
 										 				result = result +'<span>';
 										 				result = result +'<a href="javascript:void(0)"><i class="fa fa-linkedin-square"></i></a>';
 										 				result = result +'<a href="javascript:void(0)"><i class="fa fa-twitter-square"></i></a>';				  
 										 				result = result +'<a href="javascript:void(0)"><i class="fa fa-facebook-square"></i></a>';
 										 				result = result +'<a href="javascript:void(0)"><i class="fa fa-envelope-square"></i></a>';
-										 				result = result +'</span>'; */
+										 				result = result +'</span>'; 
 										 				result = result +'<div class="openPostBtns">';
 										 				
 										 				if((requirementType == "OpenJobs") || (requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'N')){

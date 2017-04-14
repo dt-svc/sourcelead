@@ -104,9 +104,7 @@ a { cursor:pointer;}
 .export_pop ul li i.fa-file-word-o{ color:#454545;}       
 .export_pop ul li:hover, .approved_pop ul li:hover {
     background-color:#efefef;
-    }
-      
-         
+    }      
              
 .timesheet_table {
     width:100%; font-size:14px; font-weight:400; max-height:430px; overflow-y:auto;
@@ -2182,8 +2180,9 @@ margin-bottom:15px !important;
 }
 #assignEmployeePagination_paginate { display: none !important;} 
 #assignEmployeePagination_info { display: none !important;} 
-.wrap_employeeTable  { height: 380px !important; overflow-y:scroll !important; overflow-x:hidden !important;}           
-#assignEmployeePagination_wrapper .dataTables_filter {position: fixed !important; top: 69px !important; right: 3px !important;} 
+.wrap_employeeTable  { height: 380px !important; overflow-y:scroll !important; overflow-x:hidden !important;}  
+
+#assignEmployeePagination_wrapper .dataTables_filter {position: fixed !important; top: 62px !important; right: 3px !important;} 
 #assignTeam .modal-footer { border-top: none;}  
     
     
@@ -3416,3 +3415,348 @@ border: 1px solid rgb(204, 204, 204);
 	padding: 5px; margin: 0px 0px; position: absolute; top: -15px; font-size: 16px; color: #17324c; cursor: pointer;
 	left: 0px;
 }
+.pavEmp {
+    width: 400px; margin: 0px auto;
+}
+
+.mergePopup {
+position: fixed; width: 400px; margin: 0px auto; left: 0px; right: 0px; top: 30%; background-color: #fff;
+border-radius:5px; box-shadow:0px 0px 5px rgba(0,0,0,0.5); padding: 20px 20px 18px 20px; display: none; z-index: 10000;
+}
+.mergePopup p {
+padding: 0px 0px; margin: 6px 0px 0px 0px; font-size: 13px; font-weight: 400;
+color: #449345;
+}
+.mergePopup p i {
+display: inline-block; padding: 0px 5px 0px 0px; position: relative; top: 1px; font-size: 15px;
+}
+.mergePopup span {
+width: 75%; display: block; float: left; padding: 0px 2% 0px 0px;
+}
+#clientError {
+color: #CC5757; margin: 3px 0px 0px 0px;
+}
+.mergePopupbtn {
+width: 25%;
+}
+.mergeAA {
+position: relative;
+}
+.mergeAA span {
+position: absolute; right: -33px; top: -33px; width: 30px; height: 30px; background-color: #fff; border-radius:50%;
+text-align: center; cursor: pointer; box-shadow:0px 0px 2px rgba(0,0,0,0.3); display: block; padding: 0px 0px;
+}
+.mergeAA .fa-times {
+font-size: 20px; color: #FF4141; padding: 4px 0px 0px 0px; display: inline-block;
+}
+
+/*   Welcome CSS   */
+
+
+.welcoBg {
+	width:100%; height: 100%; position: fixed; background-image: url(../images/mainBg.jpg); background-repeat: no-repeat;
+	background-position: center; background-attachment: fixed; top: 0px; left: 0px; overflow-y: auto;
+}
+.welcoInn {
+	width:1000px; margin: 10px auto;
+}
+.welcoHead {
+	background-color: rgba(255,255,255,0.9); border-radius: 2px; box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
+}
+.welLogo {
+	width:260px; float: left; padding: 16px 15px;
+}
+.welLogo img {
+	width:100%;
+}
+.welcoHead ul {
+	float:right; margin: 0px; padding: 8px 20px 0px 0px;
+}
+.welcoHead ul li {
+	float:left; list-style-type: none; text-align: center; width: 80px; margin: 0px 1px;  position: relative;
+}
+.welcoHead ul li span {
+	display:block; width: 35px; height: 35px; background-color: #fff; border-radius: 50%; margin: 3px auto;
+	padding: 5px 0px 0px 0px; font-size: 14px; font-weight: 500; color: #787878; border: 2px solid #bdbdbd; position: relative;
+	z-index: 100;
+}
+.line {
+	position:absolute;  width: 80px; height: 6px; background-color: #bdbdbd; left: 0px; top: 17px; border-radius: 2px;
+	z-index: 50;
+}
+.welcoHead ul li b {
+	display:block; font-size: 11px; font-weight: 500; color: #666;
+}
+.welcoHead ul li.actLi {	
+}
+.welcoHead ul li.actLi span {
+	background-color: #fff; color: #368ee0; border: 2px solid #247ac9;
+}
+.welcoHead ul li.actLi span.fill {
+	background-color: #247ac9; color: #fff;
+}
+.welcoHead ul li.actLi .line {
+	background-color: #247ac9;
+}
+
+.welCo1 {
+	background-color: rgba(255,255,255,0.9); border-radius: 2px; padding: 20px 20px; margin: 3px 0px 0px 0px;
+	box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
+}
+.welCo1 h2 {
+	margin:0px 0px; padding: 0px 0px 6px 0px; font-size: 20px; font-weight: 400; color: #454545; border-bottom: 1px dotted #999;
+}
+.welCo1 h3, .welCo1 h4 {
+	margin:0px 0px; padding: 15px 0px 10px; font-size: 18px; font-weight: 400; color: #454545;
+}
+.welCo1 h4 {
+	border-top: 1px dotted #999;
+}
+.welCoInn {
+	padding: 0px 0px 15px 0px;
+}
+.welCoInnLeft {
+	float: left; background-color: #fff; padding: 15px 15px 10px; width: 20%; border-radius: 2px; cursor: pointer;
+	box-shadow: 0px 0px 3px rgba(0,0,0,0.1);
+}
+.welCoInnLeft img {
+	width:100%; border: 1px solid #dedede;
+}
+.welCoInnLeft span {
+	display:block; text-align: center; padding: 4px 0px 3px 0px; font-weight: 500; color: #454545;
+}
+.welCoInnLeft span i {
+	display:inline-block; padding: 0px 5px 0px 0px;
+}
+.welCoInnRight {
+	float: left; width: 62%; padding: 10px 0px 0px 4%;
+}
+.welCoInnRight p, .welCo1 p {
+	font-size:14px; font-weight: 500; color: #454545; padding: 5px 0px; margin: 0px 0px;
+}
+
+.welBtns {
+	background-color: rgba(255,255,255,0.9); border-radius: 2px; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); margin: 3px 0px 0px 0px;
+	padding: 10px 20px;
+}
+.welBtns a {
+	float:left; background-color: #666; padding: 5px 20px; border-radius: 2px; color: #fff; font-size: 14px; font-weight: 400;
+	border: 1px solid #454545;
+}
+.welBtns a:hover {
+	background-color:#454545;
+}
+.welBtns a.Brig {
+	background-color: #247ac9; border: 1px solid #1269b8; float: right;
+}
+.welBtns a.Brig:hover {
+	background-color:#1269b8;
+}
+
+.docu {}
+.docu a {
+	display:inline-block; background-color: #fff; box-shadow: 0px 0px 3px rgba(0,0,0,0.1); padding: 5px;
+	margin: 10px 10px 0px 0px; width: 100px; border-radius: 2px;
+}
+.docu a img {
+	width: 100%;
+}
+
+
+
+
+.propWrap {
+	background-color: #fff; box-shadow: 0px 0px 3px rgba(0,0,0,0.2); border-radius: 3px;
+}
+.propWrapLeft {
+	width: 55%; float: right; padding: 25px 25px;
+}
+.propWrapHead {
+	text-align:center; margin: 0px 0px 0px 0px; background-color: #dedede; position: relative; padding: 7px 0px 0px; min-height: 32px;
+}
+.propWrapHead b {
+	font-weight:500; color:#454545;
+}
+.propWrapHead span {
+	position:absolute; left: 0px; top: 0px; width: 30px; height: 32px; background-color: #bdbdbd; cursor: pointer;
+	font-size: 17px; padding: 5px 0px 0px 0px;
+}
+.propWrapHead span.rightSp {
+	right: 0px; left: inherit;
+}
+.propWrapHead span:hover {
+	background-color: #368ee0; color: #fff;
+}
+.propWrapRight {
+	background-color: #f5f5f5; min-height: 500px; width: 45%; float: left; border-left: 2px solid #f1f1f1;
+	padding: 20px;
+}
+.propWrapRight h2 {
+	padding:0px 0px 8px; margin: 0px 0px 8px; font-size: 18px; font-weight: 400; color: #545454; border-bottom: 1px dotted #ccc;
+}
+.propWrapRight ul {
+	margin: 0px 0px; padding: 0px 0px;
+}
+.propWrapRight ul li {
+	list-style-type: none; padding: 6px 0px;
+}
+.propWrapRight ul li span {
+	display: block; width: 40%; float: left; color: #666;
+}
+.propWrapRight ul li b {
+	display: block; width: 55%; float: left; font-weight: 500; color: #454545;
+}
+.propWrapRight ul li b i {
+	display: inline-block; color: #8e8e8e; padding: 0px 8px 0px 0px;
+}
+
+
+
+.propCheck input[type=checkbox] {
+	visibility: hidden;
+}
+.propCheck {
+	width: 20px; height: 20px; background: #bdbdbd; border-radius: 5px; position: relative;
+}
+.propCheck label {
+	display: block; width: 16px; height: 16px; border-radius: 6px;
+	-webkit-transition: all .2s ease; -moz-transition: all .2s ease; -ms-transition: all .2s ease; transition: all .2s ease;
+	cursor: pointer; position: absolute; top: 2px; left: 2px; z-index: 1; background: #f1f1f1;
+}
+.propCheck input[type=checkbox]:checked + label {
+	background: #368ee0;
+}
+
+
+/*  Add Contract  */
+
+.newContrWrap {
+	padding: 15px 0px 20px;
+}
+
+.newContrBill {
+	padding: 0px 0px 20px; width: auto; margin: 0px;
+}
+.newContrBill .myForm {
+	padding: 0px;
+}
+.myForm h2 {
+	padding: 0px 0px 6px; margin: 0px 15px 15px; font-size: 18px; font-weight: 400; border-bottom: 1px dotted #bdbdbd;
+}
+.contrFoot {
+	min-height:60px; line-height: 60px;
+}
+
+
+.contrHead {
+	padding: 0px 0px 15px 0px;
+}
+.contrHead ul {
+	padding:0px 0px; margin: 0px 0px;
+}
+.contrHead ul li {
+	list-style-type:none; float: left;
+}
+.contrHead ul li a {
+	display: block; padding: 8px 20px; background-color: #fff; border-radius: 2px; box-shadow: 0px 0px 3px rgba(0,0,0,0.2);
+	margin: 0px 6px 0px 0px; font-size: 14px; font-weight: 400; color: #666;
+}
+.contrHead ul li a.active {
+	color: #fff; background-color: #0cc2aa; position: relative;
+}
+.contrHead ul li a.active:after {
+	top: 100%; left: 50%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
+	border-color: rgba(136, 183, 213, 0); border-top-color: #0cc2aa; border-width: 8px; margin-left: -8px;
+}
+
+.conBtn {
+	position:relative; float: right;
+}
+.conBtn span {
+	display: inline-block; background-color: #368ee0; padding: 8px 15px; cursor: pointer; border-radius: 2px;
+	 color: #fff; font-size: 14px; font-weight: 400;
+}
+.conBtn span i {
+	display: inline-block; padding: 0px 0px 0px 10px;
+}
+.conBtn:hover span {
+	background-color: #267ac8; 
+}
+.conBtn ul {
+	position: absolute; z-index: 100; background-color: #fff; right: 0px; top: 34px; width: 150px; border-radius: 3px;
+	box-shadow: 0px 0px 5px rgba(0,0,0,0.2); padding: 5px 0px; opacity: 0; visibility: hidden;
+}
+.conBtn ul li {
+	list-style-type: none; width: 100%;
+}
+.conBtn ul li a {
+	display: block; padding: 5px 10px; color: #666; box-shadow: 0px 0px 0px rgba(0,0,0,0.2); margin: 0px;
+}
+.conBtn ul li a i {
+	display:inline-block; padding: 0px 5px 0px 0px;
+}
+.conBtn ul li a:hover {
+	background-color: #ededed; color: #454545;
+}
+.conBtn:hover ul {
+	 opacity: 1; visibility: visible;
+}
+
+.pinCo {
+	font-size: 15px; color: #666;
+}
+
+.addcontrHead {
+	background-color: #fff; box-shadow: 0px 0px 5px rgba(0,0,0,0.2); border-radius: 3px; margin: 0px 0px 15px 0px;
+}
+.addcontrHead a {
+	display: inline-block; padding: 10px 50px; font-size: 15px; font-weight: 400; color: #666;
+}
+.addcontrHead a.active {
+	color: #fff; background-color: #0cc2aa; position: relative; border-right: 1px solid #07a893;
+}
+.newContrtextarea {
+	min-height: 350px; max-height: 500px;
+}
+.pdfView {
+	margin: 30px 40px;
+}
+.pdfView iframe {
+	width:100%; height: 600px; border: 10px solid #ccc; border-radius: 3px;
+}
+
+.contrCus {
+}
+.contrCus h3 {
+	padding: 0px 0px 10px 0px; margin: 0px 0px; font-size: 16px; font-weight: 500; color: #454545;
+}
+.contrCus ul {
+	margin:0px 0px; padding: 0px 0px;
+}
+.contrCus ul li {
+	list-style-type: none; background-color: #fff; width: 95%; padding: 4px 40px 4px 10px; margin: 0px 0px 5px;
+	border-left: 2px solid #368ee0; box-shadow: 0px 0px 2px rgba(0,0,0,0.15); cursor: pointer; position: relative;
+	font-size: 14px; font-weight: 400; color: #666;
+}
+.contrCus ul li i {
+	display:inline-block; width: 16px; height: 16px; position: absolute; border: 1px dotted #ccc; right: 8px; top: 6px;
+}
+
+/*  Add Contract  */
+
+
+.impConPop {
+	width: 400px; padding: 15px; background-color: #fff; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); position: fixed;
+	left: 0px; right: 0px; display: none; z-index: 10000; margin: 0px auto; top: 25%; border-radius: 5px;
+}
+.impConPop ul {
+	padding: 0px 0px; margin: 0px 0px;
+}
+.impConPop ul li {
+	list-style-type: none; width: 46%; margin: 2%; float: left;
+	border-radius: 2px; font-size: 15px; font-weight: 500; color: #fff;
+}
+.impConPop ul li i {
+	display: inline-block; padding: 0px 10px 0px 0px;
+}
+
