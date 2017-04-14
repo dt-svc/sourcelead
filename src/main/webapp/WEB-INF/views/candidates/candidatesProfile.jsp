@@ -612,10 +612,9 @@ function getCandidateCities(){
 --%>
 
 <script>
-function deleteCandidate(candidateId){
+function deleteCandidate(candidateId,candidateType){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var reason = document.getElementById("rejectReason").value;
-	  
 	  if(reason == null || reason == '' || reason == 'undefined'){
 		      
 		      $(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
@@ -625,11 +624,11 @@ function deleteCandidate(candidateId){
 		  $(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/deleteCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&reason="+reason,        
+         url: sourceleadUrl+"/deleteCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&reason="+reason+"&candidateType="+candidateType,        
          success :function(data) {
               if(data != null && data != 'undefined' && data != ""){
             	  var json = JSON.parse(data);
-            	  if(json.isAssociate == 'Y'){
+            	  if(candidateType == 'Associates'){
             		  location.replace(sourceleadUrl+"/associatesList");
             	  }else{
             		  location.replace(sourceleadUrl+"/candidatesList");
@@ -663,7 +662,7 @@ function cancelAlert(){
      1.usage     : used in saveOrCancel() / alertMessage removeAlertMessage()
 --%>
 <script type="text/javascript">
-function removeCandidateAlertMessage(candidateId){
+function removeCandidateAlertMessage(candidateId,candidateType){
 	$("#profileEditPopup").fadeOut();
 	var result = "";
 	
@@ -671,7 +670,7 @@ function removeCandidateAlertMessage(candidateId){
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
 	result = result +"		<div class='rejectErrorMsgs'/>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteCandidate("+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="deleteCandidate('+candidateId+',\''+candidateType+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelAlert();"></b>';
 	result = result +"	</div>";
 	$("#removeCandidateAlert").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -721,7 +720,7 @@ function reActivateCandidateAlertMessage(candidateId){
      3.ajax url implementation in CandidateListRestController.
 --%>
 <script>
-function candidateProfile(candidateId){
+function candidateProfile(candidateId,candidateType){
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var skillsList = '${skillsList}'; 
 	  $.ajax({
@@ -739,7 +738,7 @@ function candidateProfile(candidateId){
 								result = result + '<div class="project_tabs_inn_head mt10"><div class="anchor-inline"><a href="#" class="positionRelative showInfo"><i class="glyphicon glyphicon-info-sign"></i>Terminated<span class="infoContent col-xs-12 col-md-5"> '+json.terminateReason+' </span></a><a href="javascript:void(0)" onClick="reActivateCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>ReActivate</a> </div>';
 								'</sec:authorize>';
 							}else{
-								   result = result + '<div class="project_tabs_inn_head mt10"> <div class="anchor-inline"> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a></sec:authorize> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> </sec:authorize></div>';
+								   result = result + '<div class="project_tabs_inn_head mt10"> <div class="anchor-inline"> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a></sec:authorize> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a> </sec:authorize></div>';
 							}
 							result = result + '<div id="profileEditPopup"></div>';
 							result = result +'<div class="require_wrap_details candidate_wrap_details">';	 

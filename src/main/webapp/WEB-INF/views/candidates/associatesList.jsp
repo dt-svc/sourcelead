@@ -326,7 +326,7 @@ var candidateStatusGlobal ="";
 function candidateSideBar(candidateId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var loginUserId = '${SourceLeadWeb_userId}';
-	  var lo
+	  var candidateType = "Associates";
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -625,7 +625,7 @@ function candidateSideBar(candidateId){
 			             result = result+'     <ul class="project-tabs-menu">'; 
 			             
 			             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-			              result = result+'<li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+');">Profile</a></li>';
+			              result = result+'<li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+',\''+candidateType+'\');">Profile</a></li>';
 			             '</sec:authorize>';
 			             
 			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_RESUMES\',\'ROLE_VIEW_CANDIDATE_RESUMES\',\'ROLE_VIEW_EDIT_CANDIDATE_RESUMES\',\'ROLE_VIEW_DELETE_CANDIDATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
@@ -685,7 +685,7 @@ function candidateSideBar(candidateId){
 				 		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
 						 $(".side_mask").fadeIn(200);
 						 $("body").css('overflow-y', 'hidden');
-						 candidateProfile(candidateId);
+						 candidateProfile(candidateId,candidateType);
 			 			 
                 }else{
                	 $("#candidateSideDiv").removeAttr("style");
@@ -1284,7 +1284,7 @@ function cancel(candidateId){
       </div>
       <div class="timesheet_head  customtimesheet-head hdr-styles pull-right">
         <ul>
-           <li id="filter2ApprovePop"><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" ></i>|
+           <li id="filter2ApprovePop" style="display: none;"><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter2ApprovedPop" class="approved_pop">
                   	<ul>
 	                    <li><input id="candidateAll" type="radio" name="candidateStatus"   value ="2" onclick="candidateList();"  ><label for="candidateAll">All</label></li>

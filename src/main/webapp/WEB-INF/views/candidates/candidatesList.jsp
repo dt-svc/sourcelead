@@ -344,7 +344,7 @@ var candidateStatusGlobal ="";
 function candidateSideBar(candidateId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var loginUserId = '${SourceLeadWeb_userId}';
-	  var lo
+	  var candidateType = "Candidates";
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -643,7 +643,7 @@ function candidateSideBar(candidateId){
 			             result = result+'     <ul class="project-tabs-menu">'; 
 			             
 			             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-			              result = result+'<li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+');">Profile</a></li>';
+			              result = result+'<li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+',\''+candidateType+'\');">Profile</a></li>';
 			             '</sec:authorize>';
 			             
 			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_RESUMES\',\'ROLE_VIEW_CANDIDATE_RESUMES\',\'ROLE_VIEW_EDIT_CANDIDATE_RESUMES\',\'ROLE_VIEW_DELETE_CANDIDATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
@@ -708,7 +708,7 @@ function candidateSideBar(candidateId){
 				 		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
 						 $(".side_mask").fadeIn(200);
 						 $("body").css('overflow-y', 'hidden');
-						 candidateProfile(candidateId);
+						 candidateProfile(candidateId,candidateType);
 			 			 
                 }else{
                	 $("#candidateSideDiv").removeAttr("style");

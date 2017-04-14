@@ -993,21 +993,30 @@ public class CandidateListRestController {
 		 * @throws NullPointerException
 		 */ 
 	   @RequestMapping(value = "/deleteCandidateByCandidateId")
-	   public @ResponseBody  String deleteCandidateByCandidateId(@RequestParam(value="candidateId", required=false) String  candidateId,@RequestParam(value="reason", required=false) String  reason, HttpServletRequest request) throws Exception {
+	   public @ResponseBody  String deleteCandidateByCandidateId(@RequestParam(value="candidateId", required=false) String  candidateId,
+			   @RequestParam(value="candidateType", required=false) String  candidateType,
+			   @RequestParam(value="reason", required=false) String  reason, HttpServletRequest request) throws Exception {
 		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			String resultJson;
 			Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),loginOrgLocation.getId());
 			if(candidate != null){
 				
-					candidate.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+				
+					if(Constants.Associates.equalsIgnoreCase(candidateType)){
+						candidate.setIsAssociate(Constants.NO);
+						candidate.setStatus(Constants.CANDIDATE_ACTIVE);
+					}
+						
+					if(Constants.Candidates.equalsIgnoreCase(candidateType)){
+						candidate.setIsAssociate(Constants.NO);
+						candidate.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+					}
+				
+					//candidate.setStatus(Constants.CANDIDATE_IN_ACTIVE);
 					if(StringUtils.isNotEmpty(reason)){
 						candidate.setTerminateReason(reason);
 					}
-					if(Constants.YES.equalsIgnoreCase(candidate.getIsAssociate())){
-						candidate.setIsAssociate(Constants.NO);
-					}
-					
 				candidate.setUpdatedBy(user.getUserCode());
 				candidate.setUpdatedDate(commonUtil.currentDate());
 				candidate.setIsFavourite(0);
