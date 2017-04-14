@@ -65,6 +65,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "TIER")
 	private String tier;
 	
+	@Column(name = "TYPE")
+	private String type;
+	
 	@Column(name = "FIRST_NAME")
 	private String firstName;
 	
@@ -179,6 +182,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	public void setTier(String tier)
 	{
 		this.tier = tier;
+	}
+	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public String getFirstName()

@@ -12,9 +12,9 @@ public interface ClientImportDao {
 	
 	public BulkClientDetails saveClientVendorExcelData(BulkClientDetails bulkClientDetails) throws Exception;
 
-	public List<BulkClientDetails> getbulkClientDetailsByOrgLocationId(Long orgLocationId);
+	public List<BulkClientDetails> getbulkClientDetailsByOrgLocationId(Long orgLocationId, String responderType);
 
-	public BulkClientDetails isRecordExist(BulkClientDetails bulkClientVendors, Long orgLocationId) throws Exception;
+	public BulkClientDetails isRecordExist(BulkClientDetails bulkClientVendors, Long orgLocationId, String responderType) throws Exception;
 
 	public BulkClientDetails getbulkClientByrecordIdAndOrgLocationId(long recordId, Long orgLocationId)throws Exception;
 

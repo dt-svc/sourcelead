@@ -60,7 +60,7 @@ public interface OrgRelationsService {
 	
 	public Integer getAllVendorsCountByOrgLocationId(Long orgLocationId,String type) throws Exception;
 
-	public List<OrgRelations> getAllClientsByOrgLocationIdAndDomain(Long orgLocationId, String domain);
+	public List<OrgRelations> getAllClientsByOrgLocationIdAndDomain(Long orgLocationId, String domain, String responderType);
 
 
 }

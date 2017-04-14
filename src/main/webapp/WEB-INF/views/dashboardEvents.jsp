@@ -6,17 +6,21 @@
       <div class="dashboard-widget clearfix mb eventAlert">
         <div class="row">
         <div class="col-xs-12 col-md-12 event_calendar">
-            <h4>Events</h4>
-              <!-- <b class="dashboard-datepkr"><input class="input-sm" id="dasboardEventDatpicker" readonly="readonly" type="text"><i class="fa fa-calendar"></i></b> -->  
+            <h4 class="pull-left mb10">Events</h4>
+            <button class="btn btn-primary pull-right btn-sm mb10" onclick="dashboardAddInterview();" type="button">Schedule Interview</button>
         </div>
       <!-- show Calendar -->
         <div class="col-xs-12 col-md-5 mb">
             <div id="eventCalendar"></div>    
         </div>
+        
       <!-- show Calendar -->
             <div class="col-xs-12 col-md-7 mb eventCalendr_content alert alert-dismissable" id ="dashboardEventsDiv">
 	     </div>
       </div>
+		<div class="add_inter_wrap">
+			<div class="new_side_wrap_inn" id="addInterviewDiv"></div>
+		</div> 
     </div>
     
 <script type="text/javascript">
@@ -68,13 +72,13 @@ window.onload = function() {
 					 result = result + '                  </figure>                                                                   ';
 					 result = result + '                      <div class="pull-left event_details form-horizontal">                   ';
 					 result = result + '                          <p><label class="text-muted small col-md-2">Name:</label>'+report.candidateName+' </p>    ';
-					result = result + '									 <div class="personalInfo pull-right">                                          ';
-					result = result + ' 									<i class="fa fa-ellipsis-v" title="Email & Phone"></i>                         ';
-					result = result + '										<div class="userdetails">                                                      ';
-					result = result + ' 									<p><i class="fa fa-envelope"></i><label>'+report.candidateEmail+'</label></p>     ';
-					result = result + ' 									<p><i class="fa fa-phone"></i><label>'+report.candidatePhoneNumber+'</label></p>                 ';
-					result = result + ' 									</div>                                                                         ';
-					result = result + ' 								</div>                                                                         ';
+					 result = result + '									 <div class="personalInfo pull-right">                                          ';
+					 result = result + ' 									<i class="fa fa-ellipsis-v" title="Email & Phone"></i>                         ';
+					 result = result + '										<div class="userdetails">                                                      ';
+					 result = result + ' 									<p><i class="fa fa-envelope"></i><label>'+report.candidateEmail+'</label></p>     ';
+					 result = result + ' 									<p><i class="fa fa-phone"></i><label>'+report.candidatePhoneNumber+'</label></p>                 ';
+					 result = result + ' 									</div>                                                                         ';
+					 result = result + ' 								</div>                                                                         ';
 					 result = result + '                          <p><label class="text-muted small col-md-2">Req.:</label> <a href="'+sourceleadUrl+"/requirementSummary?requirementUUID="+report.requirementUUID+'">'+report.requirementTitle+'</a></p>';
 					 result = result + '                          <p><label class="text-muted small col-md-2">Client:</label> '+clientName+'</p>    ';
 					 result = result + '                          <div class="feedBack"> ';
@@ -164,11 +168,426 @@ window.onload = function() {
 		});
 		
 	}
+</script>
+
+
+<script>
+function dashboardAddInterview(){
+	var selectedDate = $("#eventCalendar").val();
+	$('.action-pop').slideUp();
+	var result = "";
+	result = result + '<div class="add_inter addinterview_dashboard">';
+	result = result + '<form id="addInterview_form" name="addInterview_form" >';
+	result = result + '<div class="add_inter_head"> <span>Add Interview</span>';
+	result = result + '<div class="clearfix"></div>';   
+	result = result + '</div>';
+	
+	
+	result = result + '<div class="clearfix form-group row">';
+	
+	result = result + '<div class="col-md-5">';
+	result = result + '<span class="col-md-3 paddingLeft">Requirement</span>';
+	result = result + '<div class="col-md-9 req_list">';
+	result = result + '<select class="form-control mt10" id="requirementsList" name="requirementsList" onchange="selectAndGetApplicantsForRequirement();">';
+	
+	result = result + '</select>';
+	result = result + '</div>';
+	result = result + '</div>';
+	
+		result = result + '<div class="col-md-5" id="isClientInterviewDiv" style="display: none;">';
+	    result = result + '<input type="checkbox" name="isClientInterview" id="isClientInterview" class="isClient" onclick="myFunction();">';
+        result = result + '<label>&nbsp;&nbsp;<strong>Is Client Interview</strong>&nbsp;&nbsp;</label>';
+        result = result + '</div>';
+	
+	result = result + '</div>';
+
+	result = result + '		<input value="2" style="display: none;" type="text" id="maxTsRowNum" name="maxTsRowNum">';
+	
+	
+	result = result + '<table cellpadding="0" cellspacing="0" id="addInterviewTbl" class="addinterTable">';
+		result = result + '<thead>';
+			result = result + '<tr id="divTsRow0">';
+				result = result + '<th>Applicant</th>';
+				result = result + '<th>Interview Type</th>';
+				result = result + '<th>Interview Date</th>';
+				result = result + '<th>Start - End Time</th>';	
+				result = result + '<th>Time Zone</th>';
+				result = result + '<th>Details</th>';
+				result = result + '<th>Interviewer</th>';
+			result = result + '</tr>';
+		result = result + '</thead>';
+		
+		result = result + '       <tbody>';
+		result = result + '       <tr>';
+		result = result + '		  <td>';
+		result = result + '  		<select  multiple data-placeholder="Select Applicants" onchange="selectInterviewApplicants()" class="blminwidth-50" id="1applicant" name="1applicant" field-name="Applicant" data-validation="required" >';
+		result = result + ' 		</select>';
+		result = result + '		  </td>';
+		
+		result = result + '		<td>';
+		result = result + '		<select class="form-control"  id="1interviewType" name="1interviewType" onchange="interviewType(this);">';
+		result = result + '			<option value="">--Select Type--</option>';
+		result = result + '			<option value="F2F">F2F</option>';
+		result = result + '			<option value="Telephonic">Telephonic</option>';
+		result = result + '			<option value="Technical">Technical</option>';
+		result = result + '			<option value="Screening">Screening</option>';
+		result = result + '			<option value="Skype">Skype</option>';
+		result = result + '			<option value="Webex/GoToMeeting">Webex/GoTo Meeting</option>';
+		result = result + '			<option value="Other">Other</option>';
+		result = result + '		</select>';
+		result = result + '		<div id="1interviewTypeCheck" style="display: none;"><input value=""  type="text" id="1interviewTypeother" name="1interviewTypeother" class="form-control input-sm pavInp" placeholder="Interview type" field-name="Interview type" data-validation-optional="true"></div>';
+		result = result + '		</td>';
+		
+		result = result + '		<td>';
+		result = result +  '		<input class="form-control input-sm" type="text" id="1dateOfInterview" name="1dateOfInterview" value="'+selectedDate+'" readonly>';
+		result = result + '		</td>';
+
+		result = result + '		<td>';
+		result = result + '			<div class="pull-left timeZone" id="timeDiv"> <span class="positionRelative"><input class="form-control input-sm timepicker" placeholder="Start Time" name="1startTime" id="1startTime" onBlur="validateEndTime();" type="text" data-validation="required" field-name="Start Time"/></span> <span class="positionRelative"><input class="form-control input-sm timepicker" placeholder="End Time" name="1endTime" id="1endTime" onBlur="validateEndTime();" type="text" field-name="End Time"/></span></div>';
+		result = result + '		</td>';
+
+		result = result + '		<td>';
+		result = result + '			<select class="form-control"  id="1timeZone" name="1timeZone">';
+		result = result + '			</select>';
+		result = result + '		</td>';
+		
+		result = result + '		<td>';
+		result = result + ' 		 <input value="" type="text" id="1location" name="1location" class="form-control input-sm location" placeholder="Details" field-name="Details" >';
+		result = result + '		</td>';
+		
+		result = result + '		 <td>';
+		result = result + '  		<select  multiple data-placeholder="Select Interviewers" class="blminwidth-50" id="interviewer" name="interviewer" field-name="Interviewer">';
+		result = result + ' 		</select>';
+		result = result + '		 </td>';
+		
+		result = result + '      </tr>';
+		result = result + '      </tbody>';
+		
+	result = result + '</table>';
+	
+	result = result + '<div class="clearfix"></div>';  
+	
+	result = result + '<div class="row pad2">';
+	result = result + '<div class="col-md-12 mt10">';
+	result = result + '<div class="ne-ch">';
+	result = result + '<label><input type="checkbox" name="notificationToApplicant" value="Y" checked="checked" ><b>Notify to Applicants</b></label>';
+	result = result + '</div>';
+	result = result + '</div>';
+	result = result + '</div>';
+	
+	result = result + '<div class="pull-right">';
+	result = result + '<button type="submit" id="add_interview" class="btn btn-sm btn-primary mr">Submit</button>';
+	result = result + '<button type="button" class="btn btn-sm btn-danger" onClick="cancelAddInterviewDiv();">Cancel</button>';
+	result = result + '</div>';
+	result = result + '<div class="clearfix"></div>'; 
+	result = result + '</form>';
+	result = result + '<div id="interviewLoading"></div>';
+	result = result + '</div>';
+	$("#addInterviewDiv").empty();
+  	$("#addInterviewDiv").append(result); 
+  	
+  	$("#1applicant").chosen();
+	$("#1applicant").trigger('chosen:update');
+    $("#1interviewType").chosen();
+	$("#1interviewType").trigger('chosen:update');
+
+  	
+	$(".add_inter_wrap").addClass("add_inter_wrap_active");
+	$(".side_mask").fadeIn(200);
+	$("body").css('overflow-y', 'hidden');
+	getRequirements();
+	getTimezonesList();
+	getInterviewers();
+	
+	$("#1startTime").timepicker({
+		'showDuration': true,
+		'disableTextInput': true
+	}).on('changeTime', function() {
+        $("#1endTime").timepicker('option', 'minTime', $(this).val());
+    });
+	
+	$("#1endTime").timepicker({
+		'showDuration': true,
+		 'maxTime': '23:30:00',
+		'disableTextInput': true
+	}).on('changeTime', function() {
+        $("#1startTime").timepicker('option', 'maxTime', $(this).val());
+    });
+}
+</script>
+
+<script>
+function interviewType(id){ 
+	var selectedReqId = $("#1interviewType").val();
+	 if(selectedReqId=="Other"){
+		 document.getElementById("#1interviewTypeCheck").style.display="block";
+		 $("#1interviewTypeother").removeAttr('data-validation-optional');
+		 $("#1interviewTypeother").attr("data-validation","required validate_length length1-50"); 
+	 }
+	 else{
+		 document.getElementById("#1interviewTypeCheck").style.display="none";
+		 $("#1interviewTypeother").removeAttr("data-validation");
+		 $("#1interviewTypeother").attr("data-validation-optional","true");
+	 }
+}
+</script>
+
+<script>
+function selectInterviewApplicants(){
+	/* $('.eventAlert').hide(); */
+	var selectedInterviewApplicants =  $('#1applicant_chosen  span').size();
+	$("#selectedInterviewApplicantsCount").html(selectedInterviewApplicants);
+	$('#1applicant_chosen').next('p.jquery_form_error_message').remove();
+	
+	$('.search-choice-close').click(function() {
+		var interviewApplicants =  $('#1applicant_chosen  span').size();
+		$('#1applicant_chosen').next('p.jquery_form_error_message').remove();
+		if(interviewApplicants <1){
+			$('#1applicant_chosen').after('<p class="jquery_form_error_message">Applicant is Required</p>');
+		}
+		$("#selectedInterviewApplicantsCount").html(interviewApplicants);
+	});
+	
+	getSeheduledInterviewsList();
+}
+</script>
+
+
+<script>
+function getSeheduledInterviewsList(){
+	/* %%%%%%%%%%to do implementation for fetch interview interviews list%%%%%%%%%%%%%% */
+}
+</script>
+
+
+<script>
+function getRequirements(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+        type : "POST",
+        url: sourceleadUrl+"/getAssignedRequirementListByOrgLocationIDAndUserId?${_csrf.parameterName}=${_csrf.token}",    
+         success :function(data) {
+              if(data != null && data != 'undefined' && data != "" && data != '[]'){
+            	  var json = JSON.parse(data);
+            	  var result = "";
+            	  result = result + '<option value="">--- Select Requirement ---</option>';
+                  for (var i = 0; i < json.length; i++) {
+                 	 var opt = json[i]; 
+                 	 result = result +  '<option value="'+opt.id+'"> '+opt.jobTitle+'</option>';
+                  }
+                  $("#requirementsList").empty();
+                  $("#requirementsList").append(result);
+                  $("#requirementsList").chosen();
+              	  $("#requirementsList").trigger('chosen:update');
+              }
+       },
+    });
+
+}
+</script>
+
+<script>
+function selectAndGetApplicantsForRequirement(){
+		$('#isClientInterview').attr('checked', false);
+		$("#isClientInterviewDiv").hide();
+		getApplicantsForRequirement();
+	}
+</script>
+
+<script>
+function getApplicantsForRequirement(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var selectedReqId = $("#requirementsList").val();
+	if(selectedReqId != ""){
+		 var isClientInterview = "";
+		 if(document.getElementById('isClientInterview').checked) {
+		    isClientInterview = 'Y';
+	     }else{
+	    	isClientInterview = 'N';
+	     }
+		 var existingApplicantsIds = [];
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getAllShortListCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+selectedReqId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientInterview="+isClientInterview,  
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	for (var i=0; i<json.length; i++)
+					{
+		        		var opt = json[i];
+		        		if(opt.createdUser !=null && opt.createdUser !='' && opt.createdUser != 'undefined'){
+		        			output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+" ("+opt.createdUser+")</option>";	
+		        		}else{
+		        			output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+"</option>";
+		        		}
+		        		
+		        		if(opt.isClientSubmission == 'Y'){
+		        			$("#isClientInterviewDiv").css("display","block");
+		        		}else{
+		        			$('#isClientInterview').attr('checked', false);
+		        			$("#isClientInterviewDiv").hide();
+		        		}
+					}
+		        	$("#1applicant").empty();
+		        	$("#1applicant").append(output);
+		        	$("#1applicant").trigger("chosen:updated");
+			       
+		        },
+		    });
+	}else{
+		$('#isClientInterview').attr('checked', false);
+		$("#isClientInterviewDiv").hide();
+		$("#1applicant").empty();
+    	$("#1applicant").trigger("chosen:updated");
+	}
+}
+</script>
+
+<script>
+function myFunction(){
+	getApplicantsForRequirement();
+}
+</script>
+
+<script>
+function getTimezonesList(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var timezone = '${timezone}';
+	 $.ajax({
+	    	type: "POST",
+	    	url : sourceleadUrl+"/getTimezonesList?${_csrf.parameterName}=${_csrf.token}", 
+	        success: function(data) {
+	        var json = JSON.parse(data);
+	        var output = "";
+	        output = output + "<option value=''>--Select--</option>"; 
+	        	for (var i=0; i<json.length; i++){
+	        		var opt = json[i];
+	        		if(opt.timeZoneId == timezone){
+	        			output = output + "<option value='" +opt.id+ "' selected>"+opt.timeZoneId+"</option>";
+	        		}else{
+	        			output = output + "<option value='" +opt.id+ "'>"+opt.timeZoneId+"</option>";
+	        		}
+	        		
+				}
+	        	$("#1timeZone").empty();
+	        	$("#1timeZone").append(output);
+	        	$("#1timeZone").chosen();
+            	$("#1timeZone").trigger('chosen:update');
+	        }
+	 });
+}
+</script>
+
+<script type="text/javascript">
+ function getInterviewers() {
+	 var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getAllInterviewers?${_csrf.parameterName}=${_csrf.token}", 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	for (var i=0; i<json.length; i++)
+					{
+		        		var opt = json[i];
+		        		if(opt.lastName != 'undefined' && opt.lastName != null && opt.lastName!=""){
+		        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+		        		}else{
+		        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+"</option>";
+		        		}
+					}
+		        	$("#interviewer").empty();
+		        	$("#interviewer").append(output);
+		        	$("#interviewer").chosen();
+		        	$("#interviewer").trigger("chosen:updated");
+		        },
+		    });
+ 	}
+</script>
+
+<script type="text/javascript">
+	function validateEndTime() {
+		 	$("#timeDiv").find('p.jquery_form_error_message').remove();
+			var startTime = $("#1startTime").val();
+			var endTime = $("#1endTime").val();
+			if(endTime != null && endTime != '' && endTime != 'undefined'){
+				if(startTime == endTime){
+					$("#timeDiv").find('p.jquery_form_error_message').remove();
+			        $("#add_interview").removeAttr("disabled");
+			        $("#add_interview").attr("disabled", "disabled");
+			        $("#timeDiv").append("<p class='jquery_form_error_message'>End Time should greater than Start Time</span>");
+			    }else{
+			         $("#timeDiv").find('p.jquery_form_error_message').remove();
+			         $("#add_interview").removeAttr("disabled");
+			   	}
+			}
+			
+			var startTime1 = $("1startTime").val();
+			var endTime1 = $("#1endTime").val();
+			if(endTime1 != null && endTime1 != '' && endTime1 != 'undefined'){
+				if(startTime1 == endTime1){
+					 $("#add_interview").attr("disabled", "disabled");
+				}
+			}
+		}
+</script>
+
+
+<script type="text/javascript">
+   	$('body').on('submit', '#addInterview_form', function(e){
+   	/* var isNofityToOthers = document.getElementById("notificationToOthers").value;
+   		if(isNofityToOthers == "Y"){
+   			validateOtherMail();
+   		} */
+	  if ($(this).validate(false, validationSettings)){
+        e.preventDefault();
+        var frm = $('#addInterview_form').serializeFormJSON();
+        var con = JSON.stringify(frm);
+        con = con.replace(/[{}]/g, "");
+        var jsonData = encodeURIComponent(con);
+        var sourceleadUrl ='${sourceleadUrl}';
+        var requirementId = '${requirementId}';
+        
+        var selectedInterviewApplicants =  $('#1applicant_chosen  span').size();
+        
+        if(selectedInterviewApplicants <= 50){
+	        $("#add_interview").attr("disabled", "disabled");
+	 		$("#add_interview" ).addClass('button').val('Processing..');
+	 		$("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	   	     $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/saveInterview?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
+		        success: function(result) {
+		        	    $(".add_inter_wrap").removeClass("add_inter_wrap_active");
+		        		$(".side_mask").fadeOut(200);
+		        		$("body").css('overflow-y', 'auto');
+		        		/* var allApplicants = 'all';
+			    		requirementPipeline(requirementId,allApplicants); 
+			    		pipelineList(requirementId); */
+		        },
+		    });     
+        }else{
+        	alertInterviewMessage("<b>Selected Applicants should not more than 50</b>");
+        }
+        return true;
+      }
+      else{
+      	return false;	
+         }
+    });
+    	
+   	$('#addInterview_form').showHelpOnFocus();
+    $('#addInterview_form').validateOnBlur(false, validationSettings); 
+</script>
 
 	
-	
-	
-	</script>
+<script>
+    $(".addInterview_close, .side_mask").click(function() {
+    	$(".add_inter_wrap").removeClass("add_inter_wrap_active");
+		$(".side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
+	});	
+</script>
 	
   <script>
   $(function() {

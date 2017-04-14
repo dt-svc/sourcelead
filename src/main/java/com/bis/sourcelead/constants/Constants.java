@@ -272,6 +272,7 @@ public class Constants {
 	public static String EMPLOYEE_TERMINATION = "Employee Termination";
 	public static String EMPLOYEE_TERMINATION_MAIL_TO_MANAGER = "Employee Termination Mail To Manager";
 	public static String EMPLOYEE_REASSIGN = "Employee Reassign";
+	public static  String SocialInviter = "SocialInviter";
 	
 	public static final DateFormat TMS = new SimpleDateFormat ("hh:mm a");
 	
