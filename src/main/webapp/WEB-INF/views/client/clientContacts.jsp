@@ -262,7 +262,7 @@ function contactPagination(){
         "lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
         "bLengthChange": false,
         "bDestroy": true,
-        "ordering": false,
+        "ordering": true,
         "oLanguage": {
              "sSearch": "",
              "sZeroRecords": "", "sEmptyTable": ""
@@ -541,7 +541,11 @@ function closePopupDiv(){
 						url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId+"&clientLocationId="+clientLocationId+"&responderType=Client",
 						success : function(result) {
 							 $("#popUpDivContact").removeClass("edit-details-active");
+							 $("#clientTerminateMsgDiv").removeAttr("style");
+					 			$("#clientTerminateMsgDiv").css({ display: "block" });
+					 			$("#clientTerminateMsg").html("Success!! New Contact Added");
 							 clientContactList(orgRelationId,clientLocationId);
+							 clientTerminateMsgFadein();
 						},
 			});
 			return true;

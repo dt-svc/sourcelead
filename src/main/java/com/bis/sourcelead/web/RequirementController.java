@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -148,6 +149,13 @@ public class RequirementController {
 					requirement.setReqSkillsList(skillsList);
 					requirement.setReqSkillsListString(requirement.getSkills());
 			}
+			
+			if(requirement != null && requirement.getId() != null){
+				String storedNoticeperiodList = requirementService.getNoticePeriodByRequirementId(requirement.getId());
+						model.addObject("noticePeriod", storedNoticeperiodList);
+			}
+			
+			
 			String requirementAssignedIds = "";
 			if(null != requirement.getRequirementAssignTo()){
 				List<RequirementAssignTo> requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(requirement.getId());
@@ -235,6 +243,8 @@ public class RequirementController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirement");
 		
+		model.addObject("loginOrgLocCoolingOffPeriod", orgLocations.getCoolingOffPeriod());
+		
 		//OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		
@@ -251,7 +261,7 @@ public class RequirementController {
 
 			List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirement.getId());
 				List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
-				List<String> totSkils = new ArrayList<String>();
+				LinkedHashSet<String> totSkils = new LinkedHashSet<String>();
 				if(!allReqSkills.contains(null)){
 					totSkils.addAll(skillsList);
 					totSkils.addAll(allReqSkills);
@@ -316,15 +326,17 @@ public class RequirementController {
 		if(null != requirement.getClientId()){
 			List<SubmissionTemplate>   clientSubmissionTempletesList = submissionTemplateService.getSubmissionTemplateByClientLocationIdAndOrgLocationIdAndTemplateType(requirement.getClientId().getResponderLocationId().getId(), orgLocations.getId(),"Submission");
 			model.addObject("clientSubmissionTempletesList", clientSubmissionTempletesList);
-		}
+/*		}
 		
-		if(null != requirement.getClientId()){
+		if(null != requirement.getClientId()){*/
 			if(null != requirement.getParentRequirement() && null != requirement.getParentRequirement().getSubmissionTemplateId()){
 				SubmissionTemplate   clientSubmissionTemplete = submissionTemplateService.getSubmissionTemplateById(requirement.getParentRequirement().getSubmissionTemplateId().getId());
 				model.addObject("clientSubmissionTemplete", clientSubmissionTemplete);
 			}else{
-				SubmissionTemplate   clientSubmissionTemplete = submissionTemplateService.getSubmissionTemplateById(requirement.getClientSubmissionTemplateId().getId());
-				model.addObject("clientSubmissionTemplete", clientSubmissionTemplete);
+				if(null != requirement.getClientSubmissionTemplateId()){
+					SubmissionTemplate   clientSubmissionTemplete = submissionTemplateService.getSubmissionTemplateById(requirement.getClientSubmissionTemplateId().getId());
+					model.addObject("clientSubmissionTemplete", clientSubmissionTemplete);
+				}
 			}
 		}
 

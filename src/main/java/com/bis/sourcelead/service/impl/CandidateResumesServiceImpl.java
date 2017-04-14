@@ -206,7 +206,7 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 		 /*
 		 * updating Candidate Resume DB data in existing candidateindex
 		 */
-	    saveOrUpdateCandidateElkDocumentWithResumeDetails(candidateResumes.getCandidateId());
+	   // saveOrUpdateCandidateElkDocumentWithResumeDetails(candidateResumes.getCandidateId());
 		return candidateResumes;
 		
 	}
@@ -261,6 +261,11 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	@Override
 	public Integer getCandidateResumeCountByResumeId(Long resumeId) throws Exception {
 		return candidateResumesDao.getCandidateResumeCountByResumeId(resumeId);
+	}
+
+	@Override
+	public Integer getCandidateResumeCountByCandidateId(Long candidateId) throws Exception {
+		return candidateResumesDao.getCandidateResumeCountByCandidateId(candidateId);
 	}
 
 }

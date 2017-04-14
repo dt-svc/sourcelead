@@ -16,6 +16,7 @@ public interface RequirementInterviewService {
 
 	void saveRequirementInterview(JSONObject jsonObj, User user, OrgLocations orgLocations, Org loginOrg) throws Exception;
 
+	void updateRescheduleInterview(JSONObject jsonObj, User user, OrgLocations orgLocations, Org loginOrg) throws Exception;
 	
 	List<RequirementInterview> getRequirementInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception;
 	
@@ -59,6 +60,13 @@ public interface RequirementInterviewService {
 	Integer getInterviewCountByCandidateId(Long candidateId,String submissionStatus,Date startDate,Date endDate) throws Exception;
 
 
+	List<RequirementInterview> getRequirementInterviewsBySubmissionAndOrgLocId(List<Long> submissionsIds, Long locationId, Date startUTCDate,
+			Date endUTCDate);
+
+	void applicantInterviewAcceptmailToInterviewInitiator(String requirementInterviewId) throws Exception;
+
+	RequirementInterview getinterviewBySubmissionId(Long submissionId);
+	
 	//List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime);
 	
 

@@ -45,8 +45,8 @@ public class RequirementSubmission implements Serializable{
 	@JoinColumn(name = "CANDIDATE_ID")
    	private Candidate candidate;
 	
-	@ManyToOne
-	@JoinColumn(name = "SOURCE_SUBMISSION_ID")
+	@ManyToOne 
+	@JoinColumn(name = "SOURCE_SUBMISSION_ID") 
    	private RequirementSubmission sourceSubmission;
 	
 	@ManyToOne
@@ -333,7 +333,16 @@ public class RequirementSubmission implements Serializable{
 	
 	@Transient
 	private List<RequirementSubmission> requirementSubmissionList;
+	
+	@Transient
+	private String candidateSource;
 
+    @Transient
+	private String candidateUUID;
+    
+    @Transient
+	private String paymentType;
+	
 	
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
@@ -1097,5 +1106,29 @@ public class RequirementSubmission implements Serializable{
 
 	public void setRequirementSubmissionList(List<RequirementSubmission> requirementSubmissionList) {
 		this.requirementSubmissionList = requirementSubmissionList;
+	}
+
+	public String getCandidateSource() {
+		return candidateSource;
+	}
+
+	public void setCandidateSource(String candidateSource) {
+		this.candidateSource = candidateSource;
+	}
+
+	public String getCandidateUUID() {
+		return candidateUUID;
+	}
+
+	public void setCandidateUUID(String candidateUUID) {
+		this.candidateUUID = candidateUUID;
+	}
+
+	public String getPaymentType() {
+		return paymentType;
+	}
+
+	public void setPaymentType(String paymentType) {
+		this.paymentType = paymentType;
 	}
 }

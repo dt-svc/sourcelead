@@ -43,6 +43,8 @@ public class RequirementIndex {
 	
 	private String[] skills;
 	
+	private String[] noticePeriod;
+	
 	private String[] appliedProfessionals;
 	
 	private String[] appliedRecruiters;
@@ -127,7 +129,7 @@ public class RequirementIndex {
 	
 	private Long submissionId;
 	
-	
+	private String reqCoolingOffPeriod;
 	
 	
 	public String getManagerUserId() {
@@ -613,6 +615,23 @@ public class RequirementIndex {
 
 	public void setSubmissionId(Long submissionId) {
 		this.submissionId = submissionId;
+	}
+
+
+	public String getReqCoolingOffPeriod() {
+		return reqCoolingOffPeriod;
+	}
+
+	public void setReqCoolingOffPeriod(String reqCoolingOffPeriod) {
+		this.reqCoolingOffPeriod = reqCoolingOffPeriod;
+	}
+	public String[] getNoticePeriod() {
+		return noticePeriod;
+	}
+
+	public void setNoticePeriod(String[] noticePeriod) {
+		this.noticePeriod = noticePeriod;
+
 	}
 	
 }

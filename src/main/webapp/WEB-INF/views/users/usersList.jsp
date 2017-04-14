@@ -93,14 +93,19 @@ function getUsersSearchResult(searchValue){
   </div>
       <section class="clearfix usersHeader positionRelative">
       
-      <div class="pull-left cand-advsrche">
+      <div class="pull-left cand-advsrche onboardBtn">
        <input id="searchElement" type="hidden"></input>
        
-			  <!-- <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
+       
+              <a href="<c:url value='/candidateOnBoardingList'/>" class="btn btn-primary btn-sm" > 
+			  <i class="fa fa-user paddingRight"></i>ONBOARD & OFFBOARD 
+			  </a>
+			  
+			  <%--<a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
 			  Advanced Search&nbsp;&nbsp;
 			  <i class="fa fa-search"></i>
-			  </a>  -->
-			  <form id="user_forms" name="user_forms"  >
+			  </a> 
+			   <form id="user_forms" name="user_forms"  >
 				  <div class="cand-advsrch-popup userAdvsrch" >
 					  <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
 					  <div class="row">
@@ -212,7 +217,7 @@ function getUsersSearchResult(searchValue){
 						  </div>
 					  </div>
 				  </div>
-			  </form>
+			  </form> --%>
       </div>
        
        
@@ -222,8 +227,8 @@ function getUsersSearchResult(searchValue){
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
           <li><i class="fa fa-filter"></i>&nbsp;
                <select id="userState" onchange="flushAdvancedData();">
-				<option value="">--Select Status--</option>
 				<option value="ACTIVE" >Active</option>
+				<option value="">All</option>
 				<option value="INACTIVE" >In Active</option>
 				<option value="NOT_LOGGEDIN">Not Logged IN</option>
 			   </select>
@@ -250,9 +255,13 @@ function getUsersSearchResult(searchValue){
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_USER')"> 
 	           <li><a href="<c:url value='/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Create</a></li>
 	       </sec:authorize>
+
+		     <sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
+	                      <li title="Import"><a href="<c:url value='/uploadForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
+	         </sec:authorize>		  
 		  
 		   <sec:authorize access="hasRole('ROLE_EXPORT_USERS')"> 
-		   <li><a  id="export-pop"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>
+		   <li title="Export"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
 			    <div id="exportPop" class="user_exp">
 				   <ul class="ul_padding">
 				   <li onclick="exportToPdf();" title="PDF"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
@@ -262,9 +271,6 @@ function getUsersSearchResult(searchValue){
 		   </li>
 		    </sec:authorize>
 		   
-		     <sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
-	                      <li><a href="<c:url value='/uploadForm'/>"><i class="fa fa-upload"></i>&nbsp;Bulk Imports</a></li>
-	         </sec:authorize>
         </ul>
       </div>
       </div>
@@ -557,6 +563,7 @@ function exportToPdf(){
             	var result ="";
 	         	result = result + '<div id="loadMoreDiv" >No More Records..</div>';
 	         	$('#loadMoreDiv').append(result);
+	         	$("#noUsers").val("")
             }else{
             	$("#noUsers").val("nousers")
             	$('#loadMoreDiv').empty(); 

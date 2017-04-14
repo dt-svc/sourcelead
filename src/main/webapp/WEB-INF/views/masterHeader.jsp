@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!-- <link href="resources/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"> -->
 <link href="resources/css/dataTablePagination.css" rel="stylesheet" type="text/css">
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/font-awesome.min.css">
@@ -99,6 +100,45 @@ width: 11.5%;
 
 </style>
 
+<!-- <script>
+$(window).load(function() {
+	var url = window.location.href;
+      alert("window load occurred!"+url);
+});
+</script> -->
+
+<!-- <script>
+var BM = 2; // button middle
+var BR = 3; // button right
+var msg ="MOUSE RIGHT CLICK IS NOT SUPPORTED ON THIS PAGE";
+function mouseDown(e) 
+{ 
+  try { if (event.button==BM||event.button==BR) {return false;} }  
+  catch (e) { if (e.which == BR) {return false;} } 
+}
+document.oncontextmenu = function() { alert(msg); return false; }
+document.ondragstart   = function() {alert(msg);return false; }
+document.onmousedown   = mouseDown;
+</script> 
+<script>
+var isCtrl = false;
+document.onkeyup=function(e){
+    if(e.which == 17) isCtrl=false;
+}
+document.onkeydown=function(e){
+    if(e.which == 17) isCtrl=true;
+    if(e.which == 85 && isCtrl == true) {
+    	e.preventDefault();
+        alert('CTRL + U IS NOT SUPPORTED ON THIS PAGE');
+        return false;
+    }
+    else if(e.which == 123){
+    	e.preventDefault();
+    	 alert('F12 IS NOT SUPPORTED ON THIS PAGE');
+         return false;
+     }
+}
+</script>  -->
 
 <script>
 	function predefineOrgImage(imageId){
@@ -139,7 +179,18 @@ width: 11.5%;
 <div class="wraper"> 
   <!-- Header Area -->
   <header class="main-header">
-  <span class="logo"> <a href="dashboard/${SourceLeadWeb_orgLocationId}" title="Source Lead">
+  <span class="logo"> 
+  <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+  <a href="dashboard/${SourceLeadWeb_orgLocationId}" title="Source Lead">
+  </c:if>
+  
+  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+  <a href="${sourceleadUrl}/professionalDashboard" title="Source Lead">
+  </c:if>
+  
+  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+  <a href="${sourceleadUrl}/recruiterDashboard" title="Source Lead">
+  </c:if>
   <i>
  <img src="resources/images/logo-sourceld.png" alt="Source Lead"> </i>
     <h1>Source Lead</h1>
@@ -259,6 +310,7 @@ width: 11.5%;
 	          </li>
 	          </c:if>
          
+          <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
           <li id="alert"> 
           <a href="#" title="Alerts" id="alert" onmouseover="notificationStatusAsRead();" > <i class="fa fa-bell bell" ></i> <span class="label label-warning">${SourceLeadWeb_notificationCount}</span></a>
             <div class="header-widget alert-area">
@@ -276,9 +328,17 @@ width: 11.5%;
                     <img class="img-circle" title="${report.notificationFrom.firstName} ${report.notificationFrom.lastName}" alt="${report.notificationFrom.userType}" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage/${report.notificationFrom.id}'/>">
                     </span> </div>
                     <div class="msg-content">
-                      <p>${report.body}</p>
+                    <c:if test="${report.actionLink != ''  && report.actionLink !='undefined' && ! empty report.actionLink}">
+                     <a href="${report.actionLink}"><p>${report.body}</p>
                      <c:out value="${userId}" />
-                      <span>${report.calDays} days ago at ${report.time} ${report.dateValue}</span> </div>
+                      <span>${report.calDays} days ago at ${report.time} ${report.dateValue}</span></a> 
+                      </c:if>
+                    <c:if test="${empty report.actionLink}">
+                     <a href="#"><p>${report.body}</p>
+                     <c:out value="${userId}" />
+                      <span>${report.calDays} days ago at ${report.time} ${report.dateValue}</span></a> 
+                  	</c:if>
+                   </div>
                   </div>
                 </li>
                 </c:forEach>
@@ -287,6 +347,7 @@ width: 11.5%;
               <div class="headerwidget-footer"> <a href="<c:url value='/notificationsList'/>">View All</a> </div>
             </div>
           </li>
+          </c:if>
           
           <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG','ROLE_ENROLL_NEW_ROLE','ROLE_VIEW_ORG_SETTINGS','ROLE_EDIT_ORG_SETTINGS','ROLE_ORG_SUBMISSION_TEMPLATE')"> 
 	            <li id="settingArea"> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
@@ -305,6 +366,9 @@ width: 11.5%;
 	               		 <sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE')"> 
 	                    	   <li><a href="<c:url value="/orgSubmissionTemplate" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Templates</a></li>
 	                     </sec:authorize>
+	                     
+	                     <li><a href="<c:url value="/onboardingTemplatesList" />"><i class="fa fa-file-text" aria-hidden="true"></i>On-boarding</a></li>
+	                    <%--  <li><a href="<c:url value="/onboardingTasksList" />"><i class="fa fa-file-text" aria-hidden="true"></i>Task Docs</a></li> --%>
 	                     
 	              </ul>
 	            </div>
@@ -1026,7 +1090,7 @@ function myTasksPagination(){
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -1042,7 +1106,7 @@ function assignedTasksPagination(){
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -1057,7 +1121,7 @@ function closedTasksPagination(){
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""

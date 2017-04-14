@@ -1,5 +1,7 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+
+
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
@@ -49,6 +51,12 @@ float: left; width: 70%;
 float: left;
 position: absolute;
 left:0;
+}
+.viewTemplate .sjfb-field select {
+-webkit-appearance: none; -moz-appearance: none; -ms-appearance: none; -o-appearance: none;
+}
+.viewTemplate .sjfb-field select::-ms-expand {
+    display: none;
 }
 </style>
 
@@ -702,4 +710,4 @@ function generateTemplateForm(sourceleadUrl,templateId) {
 
 
 </script>
-
+<jsp:include page="../masterFooter.jsp" />	

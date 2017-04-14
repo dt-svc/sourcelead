@@ -383,4 +383,18 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 		 List<RequirementRefer>  referCountList = session.createQuery(query).setLong("userId", userId) .setLong("requirementId", requirementId).setCacheable(true).list();
 		return referCountList;
 	}
+
+
+	@Override
+	@Transactional
+	public List<RequirementRefer> getLoginUserReferToMeListByUserId(Long userId) throws Exception {
+		
+		 Session session = this.sessionFactory.getCurrentSession();
+		 String subQuery = "";
+		 
+		 String query = "from RequirementRefer refer left join fetch refer.requirementId left join fetch refer.referToUser where refer.referToUser.id = :userId ";
+		 List<RequirementRefer>  referList = session.createQuery(query).setLong("userId", userId).setCacheable(true).list();
+		return referList;
+	
+	}
 }

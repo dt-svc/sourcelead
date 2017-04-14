@@ -193,6 +193,14 @@ $(document).ready(function(){
 		            	submissionCountsResult = submissionCountsResult +'<p>Open Timesheets<strong class="label label-info">'+totalOpenTimeSheetCount+'</strong></p>';
 					    
 			    }
+			    
+			    var userName = '';
+			    
+			    if(json.user.lastName != null && json.user.lastName != '' && json.user.lastName != 'undefined'){
+			    	userName = json.user.firstName+" "+json.user.lastName;
+			    }else{
+			    	userName = json.user.firstName
+			    }
 			   
 			   
 				result = result + '<div class="project_tabs_inn_table">';
@@ -256,7 +264,7 @@ $(document).ready(function(){
 				result = result + '		       <div class="user_change_img">';
 				result = result +                  "<img onerror='predefineProfileImage(this);' src='"+sourceleadUrl+"/displayUserImage/"+userId+"' alt='image'>";
 				result = result + ' 		  </div>';
-				result = result + '             <span>'+json.user.firstName+"&nbsp"+json.user.lastName+'</span>';
+				result = result + '             <span>'+userName+'</span>';
 				result = result + ' <div class="user_badg" id="counts">';
 				result = result +socialLinks;
 				result = result +submissionCountsResult;

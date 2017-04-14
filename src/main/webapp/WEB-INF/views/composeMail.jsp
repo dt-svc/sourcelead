@@ -10,13 +10,33 @@
 .modal-backdrop{
 display: none;
 }
+
+.nicEdit-main {
+	overflow: auto !important;
+}
 </style>
 
-<!-- <script>
- window.onload = function() {
-	 getTeamsList('All');
-};
-</script> -->
+ <script>
+ $(document).ready(function(){
+	 var UUID = '${UUID}';
+	
+	 if(null != UUID && UUID != '' && UUID != 'undefined'){
+		 
+		 var mailType = '${mailType}';
+		 
+		 if(null != mailType && mailType != '' && mailType != 'undefined'){
+			 loadMailBoxDetails(UUID);
+		 }else{
+			 $("input[name=subject]").val('${subject}');
+			 var fromEmail = '${fromEmail}';
+			 
+			 $("#emailsList").empty();
+			 $("#emailsList").append("<option value='" +fromEmail+ "' selected>"+fromEmail+"</option>");
+			 $("#emailsList").trigger("chosen:updated");
+		 }
+	 }
+});
+</script> 
 
 
 <section class="content-wraper">
@@ -33,8 +53,9 @@ display: none;
     <div class="content-area clearfix">
     <div id="mailLoading"></div>
      <div id ="popUp"></div>
+      <div id ="textBoxPopUp"></div>
       <div class="form-horizontal compose-mail col-md-10 col-md-offset-1">
-       <form:form id="email_form" name="email_form"  enctype='multipart/form-data' >
+       <form:form id="email_form" name="email_form" content="text/html" enctype='multipart/form-data' >
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-muted small">From</label>
           <div class="col-md-10">
@@ -58,7 +79,7 @@ display: none;
                   </div>
                   
                    <div class="modal-body mail-body clearfix">
-                    <div class="modal-body-custom mailerpopup mt clearfix">
+                    <div class="modal-body-custom mailerpopup mt25 clearfix filter-position">
                      <div id="userList"></div>
                     </div>
                   </div> 
@@ -72,16 +93,15 @@ display: none;
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-danger small">Subject</label>
           <div class="col-md-10">
-            <input type="text" name="subject" data-validation="required" field-name="Subject" id="subject" class="form-control input-sm">
+            <input type="text" name="subject" data-validation="required" field-name="Subject" id="subject" value="" class="form-control input-sm">
           </div>
         </div>
         <div class="clearfix">
           <div class="col-md-6">
-            <label class="col-md-4 control-label text-info small">Saluation</label>
+            <label class="col-md-4 control-label text-info small">Salutation</label>
             <div class="col-md-8 saluation field-border">
               <select id="saluation" name="saluation">
-               <option value="Dear" selected>Dear</option>
-                <option value="Hi">Hi</option>
+                <option value="Hi" selected>Hi</option>
                 <option value="Hello">Hello</option>
               </select>
             </div>
@@ -92,9 +112,11 @@ display: none;
         <div class="col-md-12 clearfix mb10 mt10">
           <div class="col-md-12">
             <div class="clearfix txt-area">
-              <textarea id="compose-textarea" id="bodytext" name="bodytext" class="form-control" rows="5" placeholder="Message" style="height: 250px">
+              <textarea  id="bodytext" name="bodytext" class="form-control" rows="5" placeholder="Message" style="height: 250px; overflow: auto;">
                     
-			  </textarea>
+			  </textarea> 
+			  
+			  
             </div>
           </div>
         </div>
@@ -134,11 +156,39 @@ display: none;
   </section>
   
   
-  <script type="text/javascript" src="resources/js/bootstrap-multiselect.js"></script>
-  <script src="resources/js/bootstrap3-wysihtml5.all.min.js"></script> 
+  <!-- <script type="text/javascript" src="resources/js/bootstrap-multiselect.js"></script>
+  <script src="resources/js/bootstrap3-wysihtml5.all.min.js"></script>  -->
+  
+  <script src="resources/js/nicEdit.js"></script> 
   
   
-  
+   <script>
+  function loadMailBoxDetails(UUID){
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  
+			 $.ajax({
+				 
+				 type: "POST",
+			        url: sourceleadUrl+"/getUserMailBoxDetailsByUUID?${_csrf.parameterName}=${_csrf.token}&UUID="+UUID, 
+			        success: function(data) {
+			        	var json = JSON.parse(data);
+			        	
+			        	
+			        	 $("input[name=subject]").val(json['subject']);
+			    		 
+			        	 if(json['comments'] != '' && json['comments'] != null && json['comments'] != 'undefied'){
+			        		 nicEditors.findEditor('bodytext').setContent('<br/>'+json['comments']+'<br/><br/>'+json['body']); 
+			        	 }
+			        	 
+			        	 if(json['comments'] == null && json['body'] != '' && json['body'] != null && json['body'] != 'undefied'){
+			        		 nicEditors.findEditor('bodytext').setContent('<br/><br/>'+json['body']);
+			        	 }
+			        	
+			        }
+			 });
+	  
+  }
+  </script> 
  
 
 <script type="text/javascript">
@@ -166,44 +216,54 @@ $(function(){
   <script type="text/javascript">
 	function sendEmails() {
 		if ($('#email_form').validate(false, validationSettings)){ 
-		var sourceleadUrl = '${sourceleadUrl}';
-		var frm = $('#email_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, ""); 
-	    var jsonData = encodeURIComponent(con);
-	    var form = $('#email_form')[0];
-  		var formData = new FormData(form)
-  		
-  		var toEmails =  $('#emailsList_chosen span').size();
-  		 
-  		if(toEmails < 1){
-   	    	
-   	    	alertMailerMsg();
-   	    }
-  		else{
-  			$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-  		 	$.ajax({
-  				type : "POST",
-  	    	    data: formData,
-  	    	    contentType : 'application/json; charset=utf-8',
-  	    	    enctype: 'multipart/form-data',
-  		        processData: false,
-  		        contentType:false, 
-  	    	    dataType : 'json',
-  				url : sourceleadUrl+"/sendEmailToUsers?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
-  				success : function(result) {
-  						location.replace(sourceleadUrl+"/mailBox");
-  				},
-  			});
-  		}
-  		  
-		 return true
+			
+				var sourceleadUrl = '${sourceleadUrl}';
+				nicEditors.findEditor('bodytext').saveContent();
+				
+				var frm = $('#email_form').serializeFormJSON();
+				var con = JSON.stringify(frm);
+				con = con.replace(/[{}]/g, ""); 
+			    var jsonData = encodeURIComponent(con);
+			    var form = $('#email_form')[0];
+		  		var formData = new FormData(form);
+		  		
+		  		var toEmails =  $('#emailsList_chosen span').size();
+		  		 
+		  		if(toEmails < 1){
+		   	    	alertMailerMsg("Provide at least one To mail");
+		   	    }
+		  		else{
+		  			var bodytext = nicEditors.findEditor('bodytext').getContent();
+		  			 if(bodytext.length < 60000){ 	
+		  			
+			  			$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			  		 	$.ajax({
+			  				type : "POST",
+			  	    	    data: formData,
+			  	    	    contentType : 'application/json; charset=utf-8',
+			  	    	    enctype: 'multipart/form-data',
+			  		        processData: false,
+			  		        contentType:false, 
+			  	    	    dataType : 'json',
+			  				url : sourceleadUrl+"/sendEmailToUsers?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+			  				success : function(result) {
+			  						location.replace(sourceleadUrl+"/mailBox");
+			  				},
+			  			}); 
+			  		  }else{
+			  			alertTextboxMsg("Message body is too large. If you have more data, Plz go with attachment");
+			  		 }  
+		  		}
+		  		  
+				 return true
+		 
 		 
 		}else{
 			return false;
 		  }
 		
 	}
+		
 	
 	$('body').on('blur', '#email_form', function() {
 		$("#email_form").showHelpOnFocus();
@@ -213,12 +273,12 @@ $(function(){
 
 
 <script type="text/javascript">
-function alertMailerMsg(){
+function alertMailerMsg(msgText){
 	
 	var result = "";
 	result = result +"<div class='project_inn_mask'></div>";
 	result = result +"<div id='mailerPopup' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"<p><strong>Provide at least one To mail</strong></p>";
+	result = result +"<p><strong>"+msgText+"</strong></p>";
 	result = result +"<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"<b href='javascript:void(0)'><input type='button'  value='Ok' onclick='cancel();' style='background-color:#1ab394;width:100%'/></b>";
 	result = result +"</div>";
@@ -232,6 +292,31 @@ function alertMailerMsg(){
 <script type="text/javascript">
 function cancel(){
 	$("#mailerPopup").slideUp(200);
+	$(".project_inn_mask").hide();
+}
+</script>
+
+
+<script type="text/javascript">
+function alertTextboxMsg(msgText){
+	
+	var result = "";
+	result = result +"<div class='project_inn_mask'></div>";
+	result = result +"<div id='textBoxmailerPopup' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"<p><strong>"+msgText+"</strong></p>";
+	result = result +"<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"<b href='javascript:void(0)'><input type='button'  value='Ok' onclick='textBoxCancel();' style='background-color:#1ab394;width:100%'/></b>";
+	result = result +"</div>";
+	$("#textBoxPopUp").append(result);
+	$("#textBoxmailerPopup").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+
+<script type="text/javascript">
+function textBoxCancel(){
+	$("#textBoxmailerPopup").slideUp(200);
 	$(".project_inn_mask").hide();
 }
 </script>
@@ -281,26 +366,20 @@ function getUserList(teamType){
             	
             	getTeamsList(teamType);
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
-               		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-               		 else if (data.indexOf('exception') >= 0) {
-               			 location.replace(sourceleadUrl+"/errorPage");
-               		 }
-               		 else{
+               		
 			    	     $("#userList").removeAttr("style");
 	                	    var result = '';
-	                	    result = result +'<div class="modal-body clearfix mail-body">';
-	                		result = result +'<div class="form-horizontal custom-form custom-mailform">';
+	                	    result = result +'<div class="modal-bodyCustom mt clearfix popupFilter">';
+	                	    result = result +'<div class="form-horizontal custom-form">';
 	                		result = result +'     <div class="row">';
-	                		result = result +'       <div class="col-xs-12 col-md-8 col-lg-8 selectpicker100">';
+	                		result = result +'       <div class="col-xs-12 col-md-5 col-lg-5 selectpicker100">';
 	                		result = result +'          <select id="rolesDiv" onchange="filterTeamMembers();" class="selectpicker form-control" style="display:block !important">';
 	                		result = result +'          </select>';
 	                		result = result +'     </div>';
 	                		result = result +'     </div>';
 	                		result = result +'     </div>';
 	                		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter"><br/><br/>'; 
-	                		result = result +'       <table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
+	                		result = result +'       <table id="example"  class="display table table-stripped table-bordered" cellspacing="0" width="100%"  >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
 	                		result = result +'             <th><input type="checkbox" id="checkAllUsers" onclick="toggleAll(this);"></th>';
@@ -335,12 +414,11 @@ function getUserList(teamType){
 	                 	 $("#userList").empty(); 
 	                     $("#userList").append(result); 
 	                     pagination(); 
-			    	} 
                  }else{
                 	 $("#userList").removeAttr("style");
   	    	         var result ="";
 		    	    
-  	    	       result = result +'<div class="modal-body clearfix">';
+  	    	       result = result +'<div class="modal-bodyCustom mt clearfix popupFilter">';
  	    	        result = result +'<div class="form-horizontal custom-form">';
 	           		result = result +'     <div class="row">';
 	           		result = result +'       <div class="col-xs-12 col-md-8 col-lg-8 hidden">';
@@ -355,7 +433,7 @@ function getUserList(teamType){
 	           		result = result +'     </div>';
 	           		result = result +'     </div>';
 	           		
-	           		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter">'; 
+	           		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter"><br/><br/>'; 
 	        		result = result +'       <table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
 	        		result = result +'           <thead>';
 	        		result = result +'           <tr>';
@@ -384,7 +462,7 @@ function getTeamsList(teamType){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getTeamsList?${_csrf.parameterName}=${_csrf.token}",    
+           url: sourceleadUrl+"/getComposeMailTeamsList?${_csrf.parameterName}=${_csrf.token}",    
             success :function(data) {
             	var json = JSON.parse(data);
 				var output = "";
@@ -541,6 +619,16 @@ function getEmails(){
 });
 </script> 
 
+<script>
+function validateEmail(email){
+	var re = /(\w+)\@(\w+)\.[a-zA-Z]/g;
+	var testEmail = emailRegularExp.test(email);
+	if(!testEmail){
+        alert("Please enter a valid email");
+    }
+}
+</script>
+
 
 
 <script>
@@ -576,5 +664,21 @@ document.getElementById("attachfileBtn").onchange = function () {
 	}
 	</script> 
   
+  
+<script>
+	wysihtml5.dom.getPastedHtml = function(event) {
+	var html;
+	if (event.clipboardData) {
+	html = event.clipboardData.getData('text/plain');
+	}
+	return html;
+	};
+</script>
+
+<script type="text/javascript">
+	bkLib.onDomLoaded(function() { nicEditors.allTextAreas() });
+</script>
+
+
   
 <jsp:include page="masterFooter.jsp" />

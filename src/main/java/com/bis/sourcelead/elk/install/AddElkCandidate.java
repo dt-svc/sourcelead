@@ -81,6 +81,8 @@ public class AddElkCandidate{
 					candidateIndex.setAddress(rs.getString("ADDRESS"));
 					candidateIndex.setSummary(rs.getString("SUMMARY"));
 					candidateIndex.setCandidateType(rs.getString("CANDIDATE_TYPE"));
+					candidateIndex.setCandidateUUID(rs.getString("CANDIDATE_UUID"));
+					
 					if(!isNullOrEmpty(rs.getLong("RECRUITER_USER_ID"))){
 						candidateIndex.setRecruiterUserId(rs.getLong("RECRUITER_USER_ID"));
 					}else{
@@ -143,6 +145,12 @@ public class AddElkCandidate{
 						DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 						candidateIndex.setUpdatedDate(df.format(new java.util.Date(updatedDateTimestamp.getTime())));
 				    }
+					
+					if(StringUtils.isNotEmpty(rs.getString("IS_PROFILE_PUBLIC"))){
+						candidateIndex.setIsProfilePublic(rs.getString("IS_PROFILE_PUBLIC"));
+					}
+					
+					
 					candidateIndex.setUpdatedBy(rs.getString("UPDATED_BY"));
 				    
 				    Long candidateId = rs.getLong("ID");

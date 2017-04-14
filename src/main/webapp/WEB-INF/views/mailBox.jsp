@@ -505,8 +505,8 @@ function getEmailDetails(uuid,type){
 	   			result = result +'<div class="pull-left">';
 	   			result = result +'<div class="btn-group">';
 	   			result = result +'<button class="btn btn-danger" type="button" title="Delete" onclick="deleteReadMail(\''+uuid+'\',\''+opt.nextMailUUID+'\',\''+type+'\');"><i class="fa fa-trash-o"></i></button>';
-	   		 /* result = result +'<button class="btn btn-warning" type="button" title="Reply"><i class="fa fa-reply"></i></button>';
-	   			result = result +'<button class="btn btn-info" type="button" title="Forward"><i class="fa fa-share"></i></button>'; */
+	   		    result = result +'<button class="btn btn-warning" type="button" title="Reply" onclick="replayToMail(\''+uuid+'\');"><i class="fa fa-reply"></i></button>';
+	   		    result = result +'<button class="btn btn-info" type="button" title="Forward" onclick="forwardEmail(\''+uuid+'\');"><i class="fa fa-share"></i></button>'; 
 	   			result = result +'</div>';
 	   			result = result +'</div>';
 	   			/* result = result +'<div class="pull-right">';
@@ -517,63 +517,14 @@ function getEmailDetails(uuid,type){
 	   			  
 	   			result = result +'<div class="mailbox-read-message clearfix borderbottm-none">';
 	   			
-	   			result = result +'<p>Dear,</p><br/>';
 	   			
 	   			if(opt.comments != null && opt.comments != 'undefined' && opt.comments != ""){
 	   				result = result +'<p>'+opt.comments+'</p>';
-	   			}else if(opt.body != null && opt.body != 'undefined' && opt.body != ""){
+	   			}
+	   			
+	   			if(opt.body != null && opt.body != 'undefined' && opt.body != ""){
 	   				result = result +'<p>'+opt.body+'</p><br/>';
 	   			}
-	   			
-	   			
-				if(opt.candidatesList.length > 0 ){
-	   			
-				result = result +'<div class="clearfix project_wrap_table mail-table  mb">';
-	   			result = result +'<table>';
-			  	
-	   			result = result +'<thead>';
-	   			result = result +'<tr>';
-	   			result = result +'<th>Name</th>';
-	   			result = result +'<th>Email</th>';
-	   			result = result +'<th>Ph</th>';
-	   			result = result +'<th>Experience</th>';
-	   			result = result +'<th>Postion Type</th>';
-	   			result = result +'</tr>';
-	   			result = result +'<tbody>';
-	   			
-	   			
-	   		 for (var i = 0; i < opt.candidatesList.length; i++) { 
-	   			 
-	   			var cand = opt.candidatesList[i]; 
-	   			
-	   			var mobile = '';
-	   			var designation = '';
-	   			
-	   			if(cand.mobilePhone != null && cand.mobilePhone != 'undefined' && cand.mobilePhone != ""){
-	   				mobile = cand.mobilePhone;
-	   			}else{
-	   				mobile = '------';
-	   			}
-	   			
-	   			if(cand.designation != null && cand.designation != 'undefined' && cand.designation != ""){
-	   				designation = cand.designation;
-	   			}else{
-	   				designation = '------';
-	   			}
-	   			
-	   			result = result +'<tr>';
-	   			result = result +'<td>'+cand.candidateName+'</td>';
-	   			result = result +'<td>'+cand.email+'</td>';
-	   			result = result +'<td>'+mobile+'</td>';
-	   			result = result +'<td>'+cand.totalExp+'</td>';
-	   			result = result +'<td>'+designation+'</td>';
-	   			result = result +'</tr>';
-	   		 } 	
-	   			result = result +'</tbody>';
-	   			result = result +'</thead>';
-	   			result = result +'</table>';
-	   			result = result +'</div>';
-				}
 	   			
 	   			if(opt.fileName != null && opt.fileName != "" && opt.fileName != 'undefined'){
 	   				result = result +'<div class="require_wrap_details_cta require_uploadfile"><b>Attachment:</b> <span>'+opt.fileName+'</span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadMailAttachment?UUID='+opt.uuid+'\"></a> ';
@@ -617,13 +568,24 @@ function deleteReadMail(uuid,nextMailUUID,type){
 		type : "POST",
 		url : sourceleadUrl+"/deleteReadMail?${_csrf.parameterName}=${_csrf.token}&UUID="+uuid+"&type="+type,
 		success : function(data) {
-			if(nextMailUUID != null && nextMailUUID != '' && nextMailUUID != 'undefined'){
-				getEmailDetails(nextMailUUID,type);
-			}else{
-				getMails(type);
-			}
+			getMails(type);
 		},
 	});   
+}
+</script>
+
+
+<script>
+function replayToMail(uuid){
+	var sourceleadUrl = '${sourceleadUrl}';
+	location.replace(sourceleadUrl+"/composeMail?UUID="+uuid);  
+}
+</script>
+
+<script>
+function forwardEmail(uuid){
+	var sourceleadUrl = '${sourceleadUrl}';
+	location.replace(sourceleadUrl+"/forwardEmail?UUID="+uuid);  
 }
 </script>
 

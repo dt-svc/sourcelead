@@ -1,7 +1,9 @@
 package com.bis.sourcelead.dao;
 
+import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementInterviewer;
 
 public interface RequirementInterviewerDao {
@@ -11,5 +13,10 @@ public interface RequirementInterviewerDao {
 	List<RequirementInterviewer> getInterviwersListByInterviewId(Long requirementInterviewId);
 	
 	RequirementInterviewer getInterviwerstByInterviewId(Long requirementInterviewerId);
+	
+	RequirementInterviewer getInterviwerByInterviewIdAndUserId(Long requirementInterviewerId,Long userId);
+
+	List<RequirementInterviewer> getinterviewListByOrgLocationAndUserId(OrgLocations loginOrgLocations,
+			List<Long> interviewerIds,Date startUTCDate, Date endUTCDate);
 	
 }

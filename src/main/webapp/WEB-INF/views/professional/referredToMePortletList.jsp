@@ -198,7 +198,7 @@ function portletListFilter(requirementStatus){
 		        	   }
 		        	   
 		        	   if(report.city != null && report.city != '' && report.city != 'undefined'){
-		        		   report.city = ' , '+report.city;
+		        		   city = ' , '+report.city;
 		        	   }else{
 		        		   city = "";
 		        	   }
@@ -238,6 +238,7 @@ function portletListFilter(requirementStatus){
 		        	   
 	  				}
 	           }else{
+	        	  
 	        	    for (var i=0; i<json.referToMeList.length; i++)
 	  				{ 
 		        	   var report = json.referToMeList[i];
@@ -264,14 +265,19 @@ function portletListFilter(requirementStatus){
 		        	   }else{
 		        		   city = "";
 		        	   }
-		        	   
-		        	   if(report.requirementRat != null && report.requirementRat != '' && report.requirementRat != 'undefined'){
-		        		   rate = report.requirementRat;
+		        	   if(report.requirementJobType != null && report.requirementJobType != '' && report.requirementJobType != 'undefined'){
+		        		   requirementJobType = report.requirementJobType;
+		        	   }else{
+		        		   requirementJobType = "--"
+		        	   }
+
+		        	   if(report.requirementRate != null && report.requirementRate != '' && report.requirementRate != 'undefined'){
+		        		   rate = report.requirementRate;
 		        	   }else{
 		        		   rate = "--";
 		        	   }
-		        	   if(report.RequirementRateType != null && report.RequirementRateType != '' && report.RequirementRateType != 'undefined'){
-		        		   rateType =report.RequirementRateType;
+		        	   if(report.requirementRateType != null && report.requirementRateType != '' && report.requirementRateType != 'undefined'){
+		        		   rateType =report.requirementRateType;
 		        	   }else{
 		        		   rateType = "";
 		        	   }
@@ -289,7 +295,7 @@ function portletListFilter(requirementStatus){
 		        	   result = result +'         <tr>';
 		        	   result = result +'         <td><a href="<c:url value="/requirementProfile/'+report.requirementUUID+'"/>"><div class="tbldata-dotdot-sm" title="'+requirementJobId+' '+report.requirementName+'">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
 		        	   result = result +'         <td><div class="tbldata-dotdot" title="'+report.requirementOrgName+'">'+report.requirementOrgName+'</div></td>';
-		        	   result = result +'         <td><div class="tblminwidth-50">'+employeeType+'</div></td>';
+		        	   result = result +'         <td><div class="tblminwidth-50">'+requirementJobType+'</div></td>';
 		        	   result = result +'         <td><div class="tbldata-dotdot-100">'+report.requirementCountry+' '+state+' '+city+'</div></td>';
 		        	   result = result +'         <td><div class="tblminwidth-dotdot">'+rate+' '+rateType+'</div></td>';
 		        	   result = result +'         <td><div class="tblminwidth-50">'+report.requirementSubmissionStatus+'</div></td>';

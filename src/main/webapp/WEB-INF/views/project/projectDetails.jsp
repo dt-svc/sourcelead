@@ -348,6 +348,7 @@
 						}
 							result = result + '<label> Manager 2 </label>';
 							result = result	+ '<select id="level2Manager" name="level2Manager">';
+							result = result    +'<option value="">-Select Manager-</option>';
 							for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
 								var manager = json.managersListwithoutManager1[j];
 								if (json.manager2 == manager.id) {
@@ -396,7 +397,7 @@
 						result = result + '<div class="user_summary_edit_cta">';
 						result = result + '	<label>Start date <span class="text-danger">*</span></label>';
 						result = result
-								+ '	<input class="calendar" value='+json.startDateStr+' type="text" disabled="disabled">';
+								+ '	<input class="calendar" value='+json.startDateStr+' type="text" disabled="disabled" id="startDateStr1">';
 						result = result + '</div>	';
 						
 						
@@ -452,8 +453,8 @@
 
 						//Assign date of project member
 						var selected = json.startDateStr;
-						var dt = new Date(selected);
-						dt.setDate(dt.getDate());
+						var dt = toDate("#startDateStr1");
+						dt.setDate(dt.getDate() + 1);
 
 						//Main project end date
 						var projectEndDate = json.endDateStr;
@@ -781,3 +782,12 @@ function showLevel2Div(){
         $('#selector2').delay(2000).fadeOut('slow');
 	}
 </script> 
+
+<!-- script for converting dateformat in datepicker -->
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
+<!-- script for dateformat in datepicker End -->

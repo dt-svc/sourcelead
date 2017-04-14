@@ -132,7 +132,7 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
         	params.put("startDate",startUTCDate);
         }else{
         	//query = subQueryCommon+ " (rih.interviewId.dateOfInterview between :startDate and :endDate)"; 
-        	query = subQueryCommon+ "( rih.interviewId.startTime >= :startDate and rih.interviewId.startTime <= :endDate) ";
+        	query = subQueryCommon+ "( rih.interviewId.startTime >= :startDate and rih.interviewId.startTime <= :endDate) "+subQuery;
         	params.put("startDate",startUTCDate);
         	params.put("endDate",endUTCDate);
         }
@@ -258,6 +258,33 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
         }
 		
 		return queryExe.setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementInterviewHistory> getCrowdSorurcingInterviews(Long submissionId) throws Exception {
+		
+		logger.debug("In RequirementInterviewHistoryDaoImpl class getCrowdSorurcingInterviews method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementInterviewHistory rih left join fetch rih.interviewId  where rih.submissionId.id = :submissionId  ORDER BY rih.createdDate DESC";
+		List<RequirementInterviewHistory> interviewsList =  session.createQuery(query).setLong("submissionId", submissionId).setCacheable(true).list();
+		
+		return interviewsList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementInterviewHistory getRequirementInterviewHistoryByInterviewId(Long interviewId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementInterviewHistory rih  where rih.interviewId.id = :interviewId ";
+		List<RequirementInterviewHistory> requirementInterviewHistory = session.createQuery(query).setLong("interviewId", interviewId).setCacheable(true).list();
+		RequirementInterviewHistory interviewHistory = null;
+		RequirementInterview interview = null;
+		if(requirementInterviewHistory != null && !requirementInterviewHistory.isEmpty()){
+			interviewHistory = requirementInterviewHistory.iterator().next();
+		}
+		return interviewHistory;
+		
 	}
 
 	

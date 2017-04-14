@@ -42,7 +42,7 @@ overflow-x: auto;
        </div>
 			<div class="pull-left">
 				<h2>Clients<span class="select-fild">
-				    <select id="listOfVendors" onchange="listChange(this);">
+				    <select id="listOfVendors" onchange="listChange(this); flushCheckBoxVal();">
                   		 <option value="listbyVendor">List by client</option>
                         <option value="listbyContact" selected="selected">List by contact</option> 
                     </select>
@@ -230,7 +230,7 @@ overflow-x: auto;
 											<option value="In-Active">In-Active</option>
 											<option value="New">New</option>
 											<option value="Negotiation">Negotiation</option>
-											<option value="Contracted">Contracted</option>
+											<option value="Contract">Contract</option>
 									</select>
 						 </div>  
               	</div>
@@ -263,7 +263,7 @@ overflow-x: auto;
 		<div class="clients_wrap vendor_wrap_shadownone">
 				<div class="timesheet_head datatbl-filters customtimesheet-head hdr-styles hdrStyles">
 					<ul>
-		                  <li  id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="clientsList" ></i>|
+		                  <%-- <li  id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="clientsList" ></i>|
 		                	<div id="filter1ApprovedPop" class="approved_pop">
 		                    	<ul>
 		                    	  <c:forEach var="report" items="${clientsList}">  
@@ -271,7 +271,7 @@ overflow-x: auto;
 								  </c:forEach>
 		                        </ul>
 		                    </div>                	
-		                </li>
+		                </li> --%>
 	               
 		                <li  id="filter3ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="clientSatatus"></i>|
 	                	<div id="filter3ApprovedPop" class="approved_pop">
@@ -280,7 +280,7 @@ overflow-x: auto;
 								<li><input id="c6" type="checkbox"  name="clientStatus"  value ="In-Active"   onclick="getVendorContactLists();"><label>In-Active</label></li>
 								<li><input id="c7" type="checkbox"  name="clientStatus"  value ="New"         onclick="getVendorContactLists();"><label>New</label></li>
 								<li><input id="c8" type="checkbox"  name="clientStatus"  value ="Negotiation" onclick="getVendorContactLists();"><label>Negotiation</label></li>
-	               				<li><input id="c9" type="checkbox"  name="clientStatus"  value ="Contracted"  onclick="getVendorContactLists();"><label>Contracted</label></li>
+	               				<li><input id="c9" type="checkbox"  name="clientStatus"  value ="Contract"  onclick="getVendorContactLists();"><label>Contract</label></li>
 	                        </ul>
 	                      </div>                	
 	                  </li>
@@ -314,15 +314,15 @@ overflow-x: auto;
                         <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
 							<li><a href="<c:url value='/client'/>"><i class="fa fa-plus"></i>Client</a></li>
 						</sec:authorize>
-						 <sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> 
-						 <li><a href="<c:url value='/uploadClientForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>
-						 </sec:authorize>
+						<%--  <sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> 
+						 <li title="Import"><a href="<c:url value='/uploadClientForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
+						 </sec:authorize> --%>
 						
 						 <sec:authorize access="hasRole('ROLE_EXPORT_CLIENTS')"> 
-						   <li id="clientImports" style="display:none">
-		                      <a  id="client-imports"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>
+						   <li id="clientImports" style="display:none" title="Export">
+		                      <a  id="client-imports"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
 			                    <div class="export_pop">
-				                   <ul>
+				                   <ul class="widScr">
 				                     <li onclick="exportClientToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
 				                     <li onclick="exportClientToExcel();"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;Excel </li>
 				                   </ul>
@@ -331,10 +331,10 @@ overflow-x: auto;
 		            </sec:authorize>
 		            
 		             <sec:authorize access="hasRole('ROLE_EXPORT_CLIENT_CONTACTS')"> 
-		            <li id="ContactImports">
-		                     <a  id="export-popcon"><i class="glyphicon glyphicon-export"></i>&nbsp;Export</a>
+		            <li id="ContactImports" title="Export">
+		                     <a  id="export-popcon"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
 			                    <div class="export_pop">
-				                <ul>
+				                <ul class="widScr">
 				                <li onclick="exportContactToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp; PDF</li>
 				                <li onclick="exportContactToExcel();"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp; Excel</li>
 				       </ul>
@@ -347,7 +347,7 @@ overflow-x: auto;
 					<div class="clearfix"></div>
 				</div>
 				
-				<div class="clients_wrap_table filter_position datatable_scroll" id ="vendorListFilter">
+				<div class="clients_wrap_table datatable_scroll" id ="vendorListFilter">
 			      <input type="hidden" name="clientContactLength" id="clientContactLength" >
 			      <input type="hidden" name="emptyClientList" id="emptyClientList" >
 			      
@@ -856,7 +856,6 @@ function getClientDetailsELK(){
     {
 			values.push($(this).val());
     });
-	
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	var responderType = "Client";
@@ -888,7 +887,7 @@ function pagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -948,8 +947,8 @@ function pagination(){
 		$("#clientSideDiv").empty();
 		$("#clientSideDiv").append(result);
 		
-		$("#clientNameDiv").empty();
-		$("#clientNameDiv").append(orgName);
+		/* $("#clientNameDiv").empty();
+		$("#clientNameDiv").append(orgName); */
 		
 		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
 		$(".side_mask").fadeIn(200);
@@ -958,6 +957,13 @@ function pagination(){
  
 		clientDetails(clientLocationId,orgRelationId);
 	}
+</script>
+
+<script>
+function getClientNeworgname(clientNewOrgname){
+	$("#clientNameDiv").empty();
+	$("#clientNameDiv").append(clientNewOrgname);
+}
 </script>
 
 <script>
@@ -1010,7 +1016,7 @@ function preparedClientContacts(data){
 					result = result + ' <option '+(report.spocStatus == "In-Active" ? "selected" : '') +'>In-Active</option>';
 					result = result + ' <option '+(report.spocStatus == "New" ? "selected" : '') +'>New</option>';
 					result = result + ' <option '+(report.spocStatus == "Negotiation" ? "selected" : '') +'>Negotiation</option>';
-					result = result + ' <option '+(report.spocStatus == "Contracted" ? "selected" : '') +'>Contracted</option>';
+					result = result + ' <option '+(report.spocStatus == "Contract" ? "selected" : '') +'>Contract</option>';
 					result = result + ' </select>';
 					
 					result = result + '<span id="spocSpanState'+report.id+'"> </span>';
@@ -1138,7 +1144,7 @@ function preparedClientContactListFromElk(data){
 					result = result + ' <option '+(report.spocStatus == "In-Active" ? "selected" : '') +'>In-Active</option>';
 					result = result + ' <option '+(report.spocStatus == "New" ? "selected" : '') +'>New</option>';
 					result = result + ' <option '+(report.spocStatus == "Negotiation" ? "selected" : '') +'>Negotiation</option>';
-					result = result + ' <option '+(report.spocStatus == "Contracted" ? "selected" : '') +'>Contracted</option>';
+					result = result + ' <option '+(report.spocStatus == "Contract" ? "selected" : '') +'>Contract</option>';
 					result = result + ' </select>';
 					
 					result = result + '<span id="spocSpanState'+report.id+'"> </span>';
@@ -1227,9 +1233,9 @@ function preparedClientListFromElk(data){
 		   		var report = json[i];
 		   		var location = "";
 		   		if(report.city != null && report.city != '' && report.city != 'undefined'){
-		   			location = report.country+", "+report.state+", "+report.city;
+		   			location = report.city+", "+report.state+", "+report.country;
 		   		}else if(report.state != null && report.state != '' && report.state != 'undefined'){
-		   			location = report.country+", "+report.state;
+		   			location = report.state+", "+report.country;
 		   		}else{
 		   			location = report.country;
 		   		}
@@ -1403,7 +1409,7 @@ function pagination1(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -1470,8 +1476,8 @@ function updateSpocStatus(spocId){
 		$("#clientSideDiv").empty();
 		$("#clientSideDiv").append(result);
 		
-		$("#clientNameDiv").empty();
-		$("#clientNameDiv").append(spocName);
+		/* $("#clientNameDiv").empty();
+		$("#clientNameDiv").append(spocName); */
 		
 		$(".clients_side_wrap").addClass("clients_side_wrap_active");
 		$(".side_mask").fadeIn(200);
@@ -1481,7 +1487,13 @@ function updateSpocStatus(spocId){
 	}
 </script>
 
+<script>
 
+function getClientSpocname(clientNewSpocname){
+	$("#clientNameDiv").empty();
+	$("#clientNameDiv").append(clientNewSpocname);
+}
+</script>
 
 <script>
 function listChange(sel){
@@ -1491,7 +1503,7 @@ function listChange(sel){
 		 document.getElementById("vendorContactList").style.display="none";
 		 document.getElementById("vendorContactList_wrapper").style.display="none";
 		 document.getElementById("contactLevel").style.display="block";
-		 document.getElementById("clientsList").style.display="none";
+// 		 document.getElementById("clientsList").style.display="none";
 		 document.getElementById("clientSatatus").style.display="none";
 		 document.getElementById("clientInvitation").style.display="none";
 		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_CLIENTS\')">'; 
@@ -1503,7 +1515,7 @@ function listChange(sel){
 		 document.getElementById("vendorContactList_paginate").style.display="none";
 		 document.getElementById("vendorContactList_info").style.display="none";
 		 document.getElementById("vendorContactList_filter").style.display="none";
-		 document.getElementById("filter1ApprovePop").style.display="none";
+// 		 document.getElementById("filter1ApprovePop").style.display="none";
 		 document.getElementById("filter3ApprovePop").style.display="none";
 		 document.getElementById("filter4ApprovePop").style.display="none";
 		 
@@ -1517,7 +1529,7 @@ function listChange(sel){
 		 document.getElementById("clientList_wrapper").style.display="none";
 // 		 document.getElementById("vendorContactList_wrapper").style.display="block";
 		 document.getElementById("contactLevel").style.display="none";
-		 document.getElementById("clientsList").style.display="block";
+// 		 document.getElementById("clientsList").style.display="block";
 		 document.getElementById("clientSatatus").style.display="block";
 		 document.getElementById("clientInvitation").style.display="block";
 		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_CLIENTS\')">'; 
@@ -1526,7 +1538,7 @@ function listChange(sel){
 		'<sec:authorize access="hasRole(\'ROLE_EXPORT_CLIENT_CONTACTS\')">'; 
 		 document.getElementById("ContactImports").style.display="block";
 		'</sec:authorize> ';	 
-		document.getElementById("filter1ApprovePop").style.display="block";
+// 		document.getElementById("filter1ApprovePop").style.display="block";
 		 document.getElementById("filter3ApprovePop").style.display="block";
 		 document.getElementById("filter4ApprovePop").style.display="block";
 		 
@@ -1792,6 +1804,13 @@ function getEndDatePickerById(projectId,localFieldName){
 			$(".clients_side_wrap").removeClass("clients_side_wrap_active");
 			$(".side_mask").fadeOut(200);
 			$("body").css('overflow-y', 'auto');
+			//update the details in list.
+			var vendorCont = document.getElementById('listOfVendors').value;
+			if(vendorCont == "listbyContact"){
+				getVendorContactListsELK();
+			}if(vendorCont == "listbyVendor" ){
+				getClientDetailsELK();
+	   		}
 		});
 	});
 
@@ -2251,7 +2270,6 @@ $('#selector').delay(2000).fadeOut('slow');
 				}); 
 		      return true;
 			}else if(selectedList == "listbyContact"){
-				
 				$.ajax({
 					type : "POST",
 	        	    data: formData,
@@ -2352,5 +2370,13 @@ function getCities(){
 	}
 }
 </script>  
+
+<script>
+function flushCheckBoxVal(){
+	$("input[type=checkbox]").each(function() { this.checked=false; });
+	
+}
+ </script>
+
 
 <jsp:include page="../masterFooter.jsp" />	

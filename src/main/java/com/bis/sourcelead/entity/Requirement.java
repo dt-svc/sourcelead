@@ -96,6 +96,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "DESCRIPTION" , columnDefinition = "TEXT default NULL")
 	private String description;
 	
+	@Column(name = "NOTICEPERIOD", columnDefinition = "TEXT default NULL")
+	private String noticePeriod;
+	
 	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
 	@Lob
 	private  byte[] docFile;
@@ -224,6 +227,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Column(name = "REQ_COOLINGOFF_PERIOD")
+	private String reqCoolingOffPeriod;
 	
 	@Transient
 	private String clientSubmissionTemplate;
@@ -1224,6 +1230,24 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	public void setSubmissionId(Long submissionId) {
 		this.submissionId = submissionId;
 	}
+
+
+	public String getReqCoolingOffPeriod() {
+		return reqCoolingOffPeriod;
+	}
+
+	public void setReqCoolingOffPeriod(String reqCoolingOffPeriod) {
+		this.reqCoolingOffPeriod = reqCoolingOffPeriod;
+	}
+
+	public String getNoticePeriod() {
+		return noticePeriod;
+	}
+
+	public void setNoticePeriod(String noticePeriod) {
+		this.noticePeriod = noticePeriod;
+	}
+
 
 	
 }

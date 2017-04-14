@@ -383,7 +383,8 @@ public class SubmissionsRestController {
 		
 		if(null != requirement){
 			if(null != requirement.getParentRequirement() && requirement.getIsClientJob().equalsIgnoreCase("Y")){
-				if(!requirement.getParentRequirement().getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.OPEN)){
+				if(!requirement.getParentRequirement().getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.OPEN) && 
+						!requirement.getParentRequirement().getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.NEW)){
 					submitToClient = false;
 				}
 			}
@@ -490,7 +491,7 @@ public class SubmissionsRestController {
 		}
 		int shotListCount = submissionId.length;
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-		if (requirement.getManagerUserId().getEmail() != null) {
+		if (requirement.getManagerUserId().getEmail() != null && requirement.getManagerUserId().getId().longValue() != user.getId().longValue()) {
 			sendEmailToManages(requirement, orgLocations, user, shotListCount, loginOrg);
 		}
 		if(count>0){
@@ -642,6 +643,8 @@ public class SubmissionsRestController {
 		EmailScenario emailScenario = null;
 		emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SHORTLIST_APPLICANTS,
 				Constants.ENTITY_TYPE_EMAIL);
+		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SHORTLIST_NOTIFICATION_MANAGER,
+				Constants.ENTITY_TYPE_NOTIFICATION);
 
 		// covert subject,body and signature
 		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
@@ -649,15 +652,20 @@ public class SubmissionsRestController {
 		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
 		String url = "";
 
+		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getSubject(),globalVarsMap);
+		notificationScenario.setBody(notificationbody);
+		
 		// construct HTML template using required data
 		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
-				signature, url, new Org());
+				signature, url, loginOrg);
 		emailMessage.setSubject(subject);
 		emailMessage.setMessageBody(emailTemplate);
 
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocations.getId(), iAdressArray,
 				new ArrayList<EmailAttachment>());
+		String actionLink="";
+		emailScenerioUtil.sendNotification(actionLink, user,requirement.getManagerUserId(), loginOrgLocations, notificationScenario);
 
 	}
 
@@ -741,7 +749,13 @@ public class SubmissionsRestController {
 			requirement.setSubmitToClientToMailId(requirement.getSpocId().getOwnerUser().getEmail());
 		}*/
 		StringBuilder subjectSB = new StringBuilder();
-		requirement.setSubmitToClientMailSubject(subjectSB.append("New applicants received for the").append(" ").append(requirement.getJobTitle()).toString());
+		if(null != requirement.getCity() && !"".equalsIgnoreCase(requirement.getCity())){
+			requirement.setSubmitToClientMailSubject(subjectSB.append("Applicants received for the").append(" ").append(requirement.getJobTitle()).append("/").append(requirement.getCity()).append(",").append(requirement.getState()).append(",").append(requirement.getCountry()).toString());	
+		}else if(null != requirement.getState() && !"".equalsIgnoreCase(requirement.getState())){
+			requirement.setSubmitToClientMailSubject(subjectSB.append("Applicants received for the").append(" ").append(requirement.getJobTitle()).append("/").append(requirement.getState()).append(",").append(requirement.getCountry()).toString());	
+		}else{
+			requirement.setSubmitToClientMailSubject(subjectSB.append("Applicants received for the").append(" ").append(requirement.getJobTitle()).append("/").append(requirement.getCountry()).toString());
+		}
 
 		if (requirement != null && requirement.getParentRequirement() != null) {
 			if(requirement != null && requirement.getParentRequirement().getManagerUserId() != null){
@@ -749,8 +763,29 @@ public class SubmissionsRestController {
 				.append(requirement.getParentRequirement().getManagerUserId().getLastName()).append("</p>")
 				.append("<p>").append(fullName).append(" submitted the applicants for the").append(" ")
 				.append(requirement.getJobTitle()).append("</p>")
-				.append("<p>").append("Total no.of submitted applicants :").append(submissions.length).append("<p>")
-				.append("<p>").append("Best Regards,").append("</p>")
+				.append("<p>").append("Total no.of submitted applicants :").append(submissions.length).append("<p>");
+				if(null != requirement.getCity() && !"".equalsIgnoreCase(requirement.getCity())){
+				sb.append("<p>").append("Location :").append(requirement.getCity()).append(",").append(requirement.getState()).append(",").append(requirement.getCountry()).append("<p>");
+				}else if(null != requirement.getState() && !"".equalsIgnoreCase(requirement.getState())){
+				sb.append("<p>").append("Location :").append(requirement.getState()).append(",").append(requirement.getCountry()).append("<p>");
+				}else if((null != requirement.getCountry())){
+				sb.append("<p>").append("Location :").append(requirement.getCountry()).append("<p>");
+				}else{
+				sb.append("<p>").append("Location :").append("--").append("<p>");
+				}
+				if(null !=requirement.getMaxExp() && !"".equalsIgnoreCase(requirement.getMaxExp())){
+				sb.append("<p>").append("Experience :").append(requirement.getMaxExp()).append("-").append(requirement.getMinExp()).append("<p>");
+				}else if(null !=requirement.getMinExp() && !"".equalsIgnoreCase(requirement.getMinExp())){
+				sb.append("<p>").append("Experience :").append(requirement.getMinExp()).append("<p>");
+				}else{
+				sb.append("<p>").append("Experience :").append("--").append("<p>");	
+				}
+				if(null !=requirement.getReqSkillsListString() && !"".equalsIgnoreCase(requirement.getReqSkillsListString())){
+				sb.append("<p>").append("Skills :").append(requirement.getReqSkillsListString()).append("<p>");
+				}else{
+				sb.append("<p>").append("Skills :").append("--").append("<p>");	
+				}
+				sb.append("<p>").append("Best Regards,").append("</p>")
 				.append("<p>").append(fullName).append("</p>");
 				requirement.setMailBody(sb.toString());
 			}

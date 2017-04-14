@@ -176,12 +176,17 @@ public class RequirementDaoImpl implements RequirementDao {
 			}
 		}
 		
+		String subQuery7 = "";
+		if((null == status || "".equals(status)) && (null == clients || "".equals(clients))){
+			subQuery7 = " and (requirement.requirementSubmissionStatus ='NEW' or requirement.requirementSubmissionStatus = 'SUBMITTED' or requirement.requirementSubmissionStatus = 'DRAFT' or requirement.requirementSubmissionStatus = 'OPEN') ";
+		}
+		
 		Query query = null;
 		if(clientsList.isEmpty()){
-			query = session.createQuery(from+" "+subQuery+" ORDER BY requirement.id DESC");
+			query = session.createQuery(from+" "+subQuery+" "+subQuery7+" ORDER BY requirement.id DESC");
 		}
 		else{
-			query = session.createQuery(from+" "+subQuery+"and requirement.clientId.id IN (:clientList) ORDER BY requirement.id DESC");
+			query = session.createQuery(from+" "+subQuery+" "+subQuery7+"and requirement.clientId.id IN (:clientList) ORDER BY requirement.id DESC");
 		}
 		
 		for (String str : query.getNamedParameters())
@@ -644,7 +649,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	public Boolean validateRequirementTitle(String jobName,Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		boolean flag = false;
-		String query ="from Requirement requirement left join fetch requirement.parentRequirement  where requirement.jobTitle = :jobName and requirement.orgLocationId.id =:orgLocationId";
+		String query ="from Requirement requirement left join fetch requirement.parentRequirement  where requirement.jobTitle = :jobName and requirement.isTemplate = 'Y' and requirement.orgLocationId.id =:orgLocationId";
 		List<Requirement> requirementList = session.createQuery(query).setString("jobName", jobName).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		if(requirementList !=null && requirementList.size() >0){
 			flag = true;
@@ -869,7 +874,22 @@ public class RequirementDaoImpl implements RequirementDao {
 			String query = "from Requirement requirement where requirement.orgLocationId.id = :orgLocationId";
 			return session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	}
-
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Requirement> getAllReleasedRequirementsByParentId(Long parentRequirementId) throws Exception {
+		 Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Requirement requirement where requirement.parentRequirement.id = :parentRequirementId";
+			return session.createQuery(query).setLong("parentRequirementId", parentRequirementId).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String getNoticePeriodByRequirementId(Long requirementId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select req.noticePeriod from Requirement req where req.id =:requirementId";
+	    List<String> noticePeriodList = session.createQuery(query).setLong( "requirementId", requirementId).setCacheable(true).list();
+	    return noticePeriodList.get(0);
+	}
 	
 }

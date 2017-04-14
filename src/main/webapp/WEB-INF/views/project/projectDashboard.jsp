@@ -341,6 +341,7 @@ function projectsList(searchValue,searchresult,projectId,projectName,startDate,e
 	  }else{
 		  	$('input[name=projectStatus]').attr('checked',false);
 		  	$("#c6").prop("checked", true);
+		  	$("#c7").prop("checked", true);
 			$('input[name=clientNameById]').attr('checked',false);
 			filter();
 		/* searchProject(); */
@@ -434,6 +435,7 @@ $(document).ready(function() {
 		  	result = result + '</div>';
 		  	
 		  	result = result + '<div id="tab-2" class="project_tabs_inn">';
+		  	result = result + '<p> "hi" </p>';
 		  	result = result + '</div>';
 		  	
 		  	result = result + '<div id="tab-3" class="project_tabs_inn">';
@@ -510,7 +512,7 @@ function pagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		"sZeroRecords": "", "sEmptyTable": ""
@@ -569,12 +571,17 @@ function filter(){
    		    		}else{
    		    			projectSequeneNumber = "---";
    		    		}
+   		    		if(report.employeeEndDateStr != null && report.employeeEndDateStr != '' && report.employeeEndDateStr != 'undefined'){
+   		    			employeeEndDateStr = report.employeeEndDateStr;
+   		    		}else{
+   		    			employeeEndDateStr = "";
+   		    		}
    		    		result = result +'<tr>';
    		    		result = result +'<td data-title="Id"><div><span title='+projectSequeneNumber+'>'+projectSequeneNumber+'</span></div></td>';
 
    		    		
    		    		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'
-   		    		  result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.employeeStartDateStr+'\',\''+report.employeeEndDateStr+'\',\''+report.projectStatus+'\');"><span title="'+report.projectName+'">'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   		    		  result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.employeeStartDateStr+'\',\''+employeeEndDateStr+'\',\''+report.projectStatus+'\');"><span title="'+report.projectName+'">'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';
    		    		'</sec:authorize>';
    		    		
    		    		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'

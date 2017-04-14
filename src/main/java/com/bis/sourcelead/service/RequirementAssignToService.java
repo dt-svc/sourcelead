@@ -1,9 +1,12 @@
 package com.bis.sourcelead.service;
 
+import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.beans.AssignedRequirementReports;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.Timezone;
 
 public interface RequirementAssignToService {
 
@@ -22,5 +25,9 @@ public interface RequirementAssignToService {
 	public List<RequirementAssignTo> getAssignedToMembersByRequirementIdAndOrgLocationId(Long requirementId,Long orgLocation) throws Exception;
 
 	public RequirementAssignTo getRequirementAssignToByRequirementIdandAssignedUserId(Long assignedUserId, Long requirementId) throws Exception;
+
+	List<AssignedRequirementReports>  getAllAssignedRequirementByOrglocationId(Long orgLocationId, Timezone timezone) throws Exception;
+
+	public List<RequirementAssignTo> getAllAssignedRequirementByDateRange(Long orgLocationId, String userId, Date startDateUTC,Date endDateUTC)throws Exception;
 	
 }

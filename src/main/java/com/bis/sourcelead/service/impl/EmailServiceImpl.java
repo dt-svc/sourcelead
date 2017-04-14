@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.mail.internet.InternetAddress;
 
@@ -74,6 +76,8 @@ public class EmailServiceImpl implements EmailService {
 		 String fullName = null;
 		 String signature = "";
 		 String emails = null;
+		 StringBuilder recipantsEmailsList = new StringBuilder();
+		 
 		 InternetAddress[] iAdressArray = null;
 		 	StringBuilder lastName=new StringBuilder();
 		 Set<String> recipantsList = new HashSet<String>();
@@ -96,6 +100,18 @@ public class EmailServiceImpl implements EmailService {
 		    		  emails = emails.replaceAll("\\[", "").replaceAll("\\]","");
 		    		  emails = emails.replaceAll("\"", "");
 		    	  }
+		    	 
+		    	 String[] recipantsEmails = emails.split(",");
+		    	 for(int i=0; i < recipantsEmails.length; i++){
+		    		 if(validateEmail(recipantsEmails[i])){
+		    			 recipantsEmailsList = recipantsEmailsList.append(recipantsEmails[i]);
+		    			 recipantsEmailsList.append(",");
+		    		 }
+		    	 }
+		    	 
+		    	 emails = recipantsEmailsList.toString();
+		    	 emails = emails.substring(0,emails.length()-1);
+		    	
 		    	  iAdressArray = InternetAddress.parse(emails);
 		    	 
 			}
@@ -122,7 +138,7 @@ public class EmailServiceImpl implements EmailService {
 			 String url = sourceleadUrl;
 			 
 			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocation.getOrg());
 			 emailMessage.setSubject(subject);
 			 emailMessage.setMessageBody(emailTemplate);
 			 emailMessage.setOrgLocationId(orgLocation.getId());
@@ -249,5 +265,10 @@ public class EmailServiceImpl implements EmailService {
 		}
 	}
 
-	
+	private boolean validateEmail(String email) {
+  		Pattern pattern = Pattern.compile(
+  				"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+  		Matcher matcher = pattern.matcher(email);
+  		return matcher.matches();
+  	}
 }

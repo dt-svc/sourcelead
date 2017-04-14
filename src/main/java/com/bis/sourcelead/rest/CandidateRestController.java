@@ -16,6 +16,7 @@ import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -69,6 +70,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.PrimarySkillUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.SourceleadResumeParser;
 import com.thoughtworks.xstream.XStream;
@@ -500,6 +502,55 @@ public class CandidateRestController {
 			return resultJson;
 		}
 	 
+	 /**
+		 * @author Venkat Kesav
+		 * @ this method is uses for verify Cooling Off Period
+		 * @param 
+		 * @param request
+		 * @return
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/verifyCoolingOffPeriod")
+		public String verifyCoolingOffPeriod(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateEmail", required = false) String candidateEmail, @RequestParam(value = "reqCoolingOffPeriod", required = false) String reqCoolingOffPeriod, HttpServletRequest request) throws Exception {
+			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			 String resultJson ="false";
+			 
+			 String [] coolingOffArr = reqCoolingOffPeriod.split(" ");
+			 String reqCoolingOffPeriodDays;
+			 int Days;
+			 switch (coolingOffArr[1]) {
+				 case "Week" :
+					 reqCoolingOffPeriodDays = "7";
+				      break;
+				 case "Weeks" :
+					 Days  = (Integer.parseInt(coolingOffArr[0]) * 7);
+					 reqCoolingOffPeriodDays = Integer.toString(Days);
+				     break;
+				 case "Month" :
+					 reqCoolingOffPeriodDays = "30";
+				     break;
+				 case "Months" :
+					 Days  = (Integer.parseInt(coolingOffArr[0]) * 30);
+					 reqCoolingOffPeriodDays = Integer.toString(Days);
+				     break;
+				 case "Year" :
+					 reqCoolingOffPeriodDays = "365";
+				     break;
+				 default:
+					 reqCoolingOffPeriodDays = "0";
+			 }
+			 
+			 RequirementSubmissionHistory requirementSubmissionHistory = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(candidateEmail, loginOrgLocation, reqCoolingOffPeriodDays, requirementId);
+			 if(null != requirementSubmissionHistory){
+				 if(requirementSubmissionHistory.getIsInCoolingOffPeriod()){
+					 resultJson = commonUtil.toJSON(requirementSubmissionHistory.getIsInCoolingOffPeriod());
+				 }else{
+					 resultJson = commonUtil.toJSON("false");
+				 }
+			 }
+			 return resultJson;
+		}
+	 
 	 
 	/**
 	 * @author Laxman
@@ -534,7 +585,6 @@ public class CandidateRestController {
 					 req.setClientName(req.getRequirement().getSpocId().getClientUser().getFirstName());
 				 }
 			 }
-			
 			 
 		 }
 		 resultJson = commonUtil.toJSON(requirementSubmission);
@@ -755,6 +805,19 @@ public class CandidateRestController {
 			 }
 			return null;
 	}
+	
+	
+	@RequestMapping(value = "/profileBySkillSet", method = RequestMethod.POST)
+	public @ResponseBody String profileBySkillSet(
+			@RequestParam(value = "allSkills", required = false) String allSkills, HttpServletRequest request) throws Exception {
+		
+		String[] mySkills= allSkills.split(",");
+		
+		
+		
+		return PrimarySkillUtil.returnMyskill(mySkills);
+	}
+	
 
 	public String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

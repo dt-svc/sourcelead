@@ -29,7 +29,7 @@ public class RequirementSubmissionHistory implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
     @JoinColumn(name="REQUIREMENT_SUBMISSION_ID", nullable=false )        
     private RequirementSubmission submissionId;
 	
@@ -105,6 +105,12 @@ public class RequirementSubmissionHistory implements Serializable{
     
     @Transient
     private String clientName;
+    
+    @Transient
+    private Boolean isInCoolingOffPeriod;
+    
+    @Transient
+    private String coolingOffPeriodEndDateStr;
     
     
     @Transient
@@ -335,5 +341,21 @@ public class RequirementSubmissionHistory implements Serializable{
 
 	public void setCreatedUser(String createdUser) {
 		this.createdUser = createdUser;
+	}
+
+	public Boolean getIsInCoolingOffPeriod() {
+		return isInCoolingOffPeriod;
+	}
+
+	public void setIsInCoolingOffPeriod(Boolean isInCoolingOffPeriod) {
+		this.isInCoolingOffPeriod = isInCoolingOffPeriod;
+	}
+
+	public String getCoolingOffPeriodEndDateStr() {
+		return coolingOffPeriodEndDateStr;
+	}
+
+	public void setCoolingOffPeriodEndDateStr(String coolingOffPeriodEndDateStr) {
+		this.coolingOffPeriodEndDateStr = coolingOffPeriodEndDateStr;
 	}
 }

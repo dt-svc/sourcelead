@@ -62,6 +62,9 @@ public class RequirementRefer implements Serializable {
 	@Column(name = "REFER_TO_EMAIL")
 	private String referToEmail;
 	
+	@Column(name = "PHONE_NUMBER")
+	private String phoneNumber;
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -145,6 +148,9 @@ public class RequirementRefer implements Serializable {
 	
 	@Transient
 	private String requirementCity;
+	
+	@Transient
+	private String requirementJobType;
 	
 	@Transient
 	private String requirementRate;
@@ -566,4 +572,19 @@ public class RequirementRefer implements Serializable {
 		this.userName = userName;
 	}
 
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getRequirementJobType() {
+		return requirementJobType;
+	}
+
+	public void setRequirementJobType(String requirementJobType) {
+		this.requirementJobType = requirementJobType;
+	}
 }

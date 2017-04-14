@@ -144,7 +144,7 @@
                       </div>
                       <div class="col-md-7 paddingLeft">
                         <div class="form-group positionRelative iconHolder percentage" id="percentageReward"  style="display: none">
-                          <input type="text" class="form-control input-sm" field-name="Percentage" id="percentageRewardValue" name="percentageReward" placeholder="Percentage">
+                          <input type="text" class="form-control input-sm" field-name="Percentage" id="percentageRewardValue" name="percentageReward" onblur="getPercentageValue()" placeholder="Percentage">
                           <i class="fa fa-percent"></i> 
                         </div>
                         
@@ -191,7 +191,7 @@
         <div class="form-footer clearfix row mt" id="releaseToCrowdSourcing" style="display: none">
         <div class="col-lg-12">
           <div class="pull-right">
-            <span class="jquery_form_error_message" style="display:none;">Vendor/Contact/Open Network selection is mandatory</span>
+            <span id="openNetworkRelease" class="text-danger small" style="font-size: 11px; display: none;">Public / Crowdsourcing  is mandatory</span>
            	<input type="button" class="btn btn-primary ml" onclick="releaseToCrowdSourcing();" id="releaseToCWBtn" value="Release">
             <input type="button" class="btn btn-default ml" id="releaseCancelBtn" value="Cancel" onClick="javascript:location.href = '<c:url value='requirementList'/>'">
           </div>
@@ -205,6 +205,7 @@
           <div class="pull-right">
          
             <sec:authorize access="hasAnyRole('ROLE_RELEASE_REQUIREMENT')">
+            <span class="jquery_form_error_message" style="display:none;">Vendor/Contact selection is mandatory</span>
             	<input type="button" class="btn btn-primary ml" id="releaseBtn" onclick="releaseTo();" value="Release">
 			</sec:authorize>
 			
@@ -217,7 +218,39 @@
 <!-- Content Area Starts -->
 
 
-
+<script>
+function getPercentageValue(){
+	var percentageValue = document.getElementById("percentageRewardValue").value;
+	if(percentageValue > 100 || percentageValue < 0){
+		$("#releaseToCWBtn").attr("disabled", "disabled");
+	    $('#percentageReward').find('p.jquery_form_error_message').remove(); 
+	   
+	    if(percentageValue < 0){
+	    	$("input#percentageRewardValue").after("<p class='jquery_form_error_message'>Percentage value should not in negitive</span>");
+	    }else{
+	    	$("input#percentageRewardValue").after("<p class='jquery_form_error_message'>Percentage value not more than 100</span>");
+	    }
+	    
+		$('input#percentageRewardValue').attr('record-exist','yes');
+		 if(percentageValue < 0){
+			 $('input#percentageRewardValue').attr('record-exist-errorMsg','Percentage value should not in negitive'); 
+		 }else{
+			 $('input#percentageRewardValue').attr('record-exist-errorMsg','Percentage value not more than 100'); 
+		 }
+		
+	}else{
+		 $("#releaseToCWBtn").removeAttr("disabled");
+		 $('input#percentageRewardValue').removeAttr( "record-exist record-exist-errormsg");
+		 $('#percentageReward').find('p.jquery_form_error_message').remove(); 
+		 $( "#releaseToCWBtn" ).removeAttr("style");
+		 $( "#releaseToCWBtn" ).click(function() {
+		 if ($(this).validate(false, validationSettings)){
+		 }
+		});
+	}
+	
+}
+</script>
 
 
 
@@ -225,7 +258,12 @@
 $(document).ready(function(){
 	getVendorLists();
 	
-    openVendors();
+	if('${SourceLeadWeb_vms}'  == 'Y'){
+		openVendors();
+	}else{
+		opennetwork();
+	}
+    
 	
 	if('${requirementType}' != null && '${requirementType}' != '' && '${requirementType}' != 'undefined'){
 		$("#jobType").html('${requirementType}');
@@ -284,6 +322,7 @@ function releaseTo(){
 	    
 	    	 if(contactsIds.length > 0 || vendorIds.length > 0 || isPublic == "Y" || isCrowdScourcing == "Y" || (isPublicGlobel != isPublic && isPublicGlobel != "") || (isCrowdScourcingGlobel != isCrowdScourcing && isCrowdScourcingGlobel != "")){
 	 	    	$('span.jquery_form_error_message').hide();
+	 	    	$('#vendorRelease').find('span.jquery_form_error_message').remove();
 	 	    	$("#releaseBtn").prop('disabled', true);
 	 	    	$("#releaseCancelBtn").prop('disabled', true);
 	 			$("#releaseBtn").prop('value', 'Processing');
@@ -307,14 +346,17 @@ function releaseToOneContact(contactscheckboxId){
 	$("#" + contactscheckboxId).prop('checked', true);
 	releaseTo();
 }
+
+function releaseToOneVendor(vendorcheckboxId){
+	$('input:checkbox[name="vendorcheckbox"]').prop('checked',false);
+	$("#" + vendorcheckboxId).prop('checked', true);
+	releaseTo();
+}
 </script>
-
-
 
 
 <script type="text/javascript">
  function releaseToCrowdSourcing() {
-	 
 	 
 	   if ($('#releaseToCrowdSourcing_form').validate(false, validationSettings)){ 
 		    var frm = $('#releaseToCrowdSourcing_form').serializeFormJSON();
@@ -328,17 +370,30 @@ function releaseToOneContact(contactscheckboxId){
 	        var requirementUUID = '${requirementUUID}';
        	    var requirementId = '${requirementId}';
 	        
-     		$("#releaseToCWBtn" ).addClass('button').val('Processing..');
+     		var isPublicGlobel = document.getElementById("isPublicGlobel").value;
+     		var isCrowdScourcingGlobel = document.getElementById("isCrowdScourcingGlobel").value;
+     		var isContinue = false;
+     		
+     		if(isPublicGlobel == 'Y' || isCrowdScourcingGlobel == 'Y'){
+     			 isContinue = true;
+     			 document.getElementById("openNetworkRelease").style.display="none";
+     			 $("#releaseToCWBtn").attr("disabled", "disabled");
+     			 $("#releaseToCWBtn" ).addClass('button').val('Processing..');
+     		}else{
+     			 document.getElementById("openNetworkRelease").style.display="";
+     		}
+     		
        	    
-	        
-       	    $.ajax({
-		    	type: "POST",
-		    	 url: sourceleadUrl+"/releaseToCrowdSourcingNetwork?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&requirementId="+requirementId, 
-		        success: function(result) {
-		        	location.replace(sourceleadUrl+"/releaseRequirementToClientOrVendors?requirementUUID="+requirementUUID);
-		        },
-		    }); 
-	        return true;
+	        if(isContinue){
+	       	     $.ajax({
+			    	type: "POST",
+			    	 url: sourceleadUrl+"/releaseToCrowdSourcingNetwork?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&requirementId="+requirementId, 
+			        success: function(result) {
+			        	location.replace(sourceleadUrl+"/releaseRequirementToClientOrVendors?requirementUUID="+requirementUUID);
+			        },
+			    });  
+		        return true;
+	        } 
 		
 	  }else{
 		return false;
@@ -551,9 +606,10 @@ function getRewardType(rewardType){
 		$('#flatRewardValue').removeAttr('data-validation-optional');
 		$('#percentageRewardValue').removeAttr('data-validation');
 		$('#percentageRewardValue').attr("data-validation-optional","true"); 
-		    	
 		
 	}
+	
+	 $("#releaseToCWBtn").removeAttr("disabled");
 }
 </script>
 
@@ -642,6 +698,13 @@ function getVendorLists(){
 	        	       		result = result +'<td>';
 	        	       		if(report.noOfNonReleasedContacts == 0){
 	                			result = result +'<div><b class="proj_active">Released</b></div>';
+	                		}else if(report.noOfNonReleasedContacts > 0){
+									'<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
+										result = result +'<div><a href="javascript:void(0)"><i class="fa fa-bullhorn" onclick="releaseToOneVendor('+report.id+');"></i></a></div>';
+									'</sec:authorize>';
+									'<sec:authorize access="!hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
+										result = result +'<div class="fa fa-bullhorn"></div>';
+									'</sec:authorize>';
 	                		}
 	                		result = result +'</td>';
 	           	        	result = result +'</tr>';
@@ -774,11 +837,17 @@ $(document).ready(function(){
 
 <script>
 function toggle(source) {
-    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    var checkboxes = [];
+    checkboxes = document.querySelectorAll('input[name="vendorcheckbox"]');
+    if(checkboxes.length < 1){
+    	checkboxes = [];
+    }
+    var contactCheckboxes = [];
+    contactCheckboxes = document.querySelectorAll('input[name="contactscheckbox"]');
+    $.merge( checkboxes, contactCheckboxes)
     for (var i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i] != source)
             checkboxes[i].checked = source.checked;
-        
     }
 $('input:checkbox:not(#contactscheckbox)').click(function() {
     if(!this.checked) {

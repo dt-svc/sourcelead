@@ -104,7 +104,7 @@ function validateTaskName(){
 						<div class="form-group">
 							<label class="col-md-3"> Project Description </label>
 							<div class="col-md-9">
-								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length10-5000"
+								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length2-250"
 									data-validation-optional="true"></textarea>
 								<span class="hidden">Project Description</span>
 							</div>
@@ -181,8 +181,7 @@ function validateTaskName(){
 														<div class="form-group" id="descriptionDiv">
 															<label class="col-md-3">Description</label>
 															<div class="col-md-9">
-																<textarea class="form-control" placeholder="Enter Task Description" data-validation="validate_length length10-5000"
-									data-validation-optional="true" id="taskDescription" name="taskDescription"></textarea>
+																<textarea class="form-control" placeholder="Enter Task Description"  id="taskDescription" name="taskDescription"></textarea>
 															</div>
 														</div>
 													</div>
@@ -234,7 +233,7 @@ function validateTaskName(){
 					 <c:if test="${not empty user_List}">
 						<div class="form-group">
 							<label class="col-md-3" for="Project Manager">Manager <span
-								class="text-danger">*&nbsp;<i class=" text-info fa fa-info-circle" title="Before Selecting The Manager Project Start Date is Mandatory"></i></span></label>
+								class="text-danger">*&nbsp;</span></label>
 							<div class="col-md-9">
 								<div class="form-icon-min" id="chosen-level1Manager">
 									<select class="form-control chosen-select" name="level1Manager" id="level1Manager" field-name="Select Manager" data-validation="required" onchange="getLevel2Approvers();">
@@ -272,7 +271,7 @@ function validateTaskName(){
 						
 				   <sec:authorize access="hasAnyRole('ROLE_ASSIGN_EMPLOYEE_TO_PROJECT')"> 		
 						<div class="form-group">
-							<label class="col-md-3">Assign Team &nbsp;<i class=" text-info fa fa-info-circle" title="Before Assinging Team Project Start Date is Mandatory"></i></label>
+							<label class="col-md-3">Assign Team &nbsp;<i class=" text-info fa fa-info-circle" title="Before Assinging Team Project Start Date & Manager is Mandatory"></i></label>
 
 							<div id="assignTeamSavingDiv" style="display: none;"></div>
 							<input type="hidden" name="team" value="" />
@@ -442,15 +441,15 @@ function getStatus(){
 	function addTasks() {
 		$('#taskNameDIV').find('p.jquery_form_error_message').remove();
 		$('#descriptionDiv').find('p.jquery_form_error_message').remove();
-		if ($('#taskName').val() == '' || $("#taskDescription").val().length > 200 || $("#taskName").val().length > 100) {
+		if ($('#taskName').val() == '' || $("#taskDescription").val().length > 200 || $("#taskDescription").val().length < 10 || $("#taskName").val().length > 100 || $("#taskName").val().length < 2) {
 			if ($('#taskName').val() == '') {
 				$("input#taskName") .after( "<p class='jquery_form_error_message'>Task Name is required</span>");
 			}
-			if($("#taskName").val().length > 100){
-				$("input#taskName") .after( "<p class='jquery_form_error_message'>The values Entered must be between10-100 characters</span>");
+			if(($('#taskName').val() != '' && $("#taskName").val().length < 2 )|| $("#taskName").val().length > 100){
+				$("input#taskName") .after( "<p class='jquery_form_error_message'>The values Entered must be between 2-100 characters</span>");
 			}
-			if ($("#taskDescription").val().length > 200) {
-				$("textarea#taskDescription") .after( "<p class='jquery_form_error_message'>The values Entered must be between10-200 characters</span>");
+			if (($("#taskDescription").val() != '' && $("#taskDescription").val().length < 2) || $("#taskDescription").val().length > 200) {
+				$("textarea#taskDescription") .after( "<p class='jquery_form_error_message'>The values Entered must be between2-250 characters</span>");
 			}
 			return true;
 		} 
@@ -511,6 +510,7 @@ function getStatus(){
 </script>
 <script type="text/javascript">
 	function editTask(rowId) {
+		$('#addTask').find('p.jquery_form_error_message').remove();	 	
 		var updateTaskName = $("#" + rowId + "taskName").val();
 		var updateTaskDescription = $("#" + rowId + "taskDescription").val();
 		var updateTaskBillableType = $("#" + rowId + "taskBillableType").val();
@@ -658,6 +658,7 @@ function getStatus(){
 <script type="text/javascript">
 function flushProjectTasks(){
 	$("#taskName").val('');
+	$("#taskDescription").val('');
 	$('#addTask').find('p.jquery_form_error_message').remove();	
 }
 </script>
@@ -821,6 +822,9 @@ function flushProjectTasks(){
 									var projectStartDate = $("#StartDate").val();
 									var projectEndDate = $("#EndDate").val();
 									
+									var datepickerStartDate = toDate("#StartDate");
+									datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
+									
 									$('#startDate'+opt.id).datepicker({
 										dateFormat : 'dd-mm-yy',
 										changeMonth: true,
@@ -828,12 +832,11 @@ function flushProjectTasks(){
 										minDate:projectStartDate,
 										maxDate:projectEndDate,
 										onSelect : function(selected) {
-											var dt = new Date(selected);
-											var id = $(this).attr('id');
 											var actualId = $(this).attr('id').split('startDate')[1];
+											var dt = toDate('#startDate'+actualId);
+											//var id = $(this).attr('id');
 											dt.setDate(dt.getDate() + 1);
 											$("#endDate"+actualId).datepicker("option", "minDate", dt);
-											
 										}
 									});
 		
@@ -842,11 +845,11 @@ function flushProjectTasks(){
 										changeMonth: true,
 										changeYear: true, 
 										maxDate:projectEndDate,
-										minDate:projectStartDate,
+										minDate: datepickerStartDate,
 										onSelect : function(selected) {
-											var dt = new Date(selected);
-											var id = $(this).attr('id');
 											var actualId = $(this).attr('id').split('endDate')[1];
+											var dt = toDate('#endDate'+actualId);
+											//var id = $(this).attr('id');
 											dt.setDate(dt.getDate() - 1);
 											$("#startDate"+actualId).datepicker("option", "maxDate", dt);
 										}
@@ -946,7 +949,8 @@ function assignEmployeeCancel(){
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
-				var dt = new Date(selected);
+				//var dt = new Date(selected);
+				var dt = toDate("#StartDate");
 				dt.setDate(dt.getDate() + 1);
 				$("#EndDate").datepicker("option", "minDate", dt);
 				addValidClass();
@@ -958,7 +962,8 @@ function assignEmployeeCancel(){
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
-				var dt = new Date(selected);
+				//var dt = new Date(selected);
+				var dt = toDate("#EndDate");
 				dt.setDate(dt.getDate() - 1);
 				$("#StartDate").datepicker("option", "maxDate", dt);
 				addValidClass();
@@ -1111,3 +1116,12 @@ function getChildLevel1Approvers(currentApproverId){
 				$this.next().css({'width': '100%'});
 				});
 </script>
+
+<!-- script for converting dateformat in datepicker -->
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
+<!-- script for dateformat in datepicker End -->

@@ -66,6 +66,8 @@ public class CandidateIndex implements Serializable {
 	private String terminateReason;
 	
 	private String skillsName ;
+	
+	private String primarySkill ;
 
 	private ArrayList<String> education;
 
@@ -145,6 +147,11 @@ public class CandidateIndex implements Serializable {
 	
 	private double finalScore;
 	
+	private String isProfilePublic;
+	
+	private String isCandidateSubmitted;
+	
+	private String candidateUUID;
 		
 	public String getSearchType() {
 		return searchType;
@@ -622,6 +629,15 @@ public class CandidateIndex implements Serializable {
 		this.skillsName = skillsName;
 	}
 	
+	
+
+	public String getPrimarySkill() {
+		return primarySkill;
+	}
+
+	public void setPrimarySkill(String primarySkill) {
+		this.primarySkill = primarySkill;
+	}
 
 	public double getFinalScore() {
 		return finalScore;
@@ -686,6 +702,32 @@ public class CandidateIndex implements Serializable {
 	public void setTotalExpPercentage(int totalExpPercentage) {
 		this.totalExpPercentage = totalExpPercentage;
 	}
+
+	public String getIsProfilePublic() {
+		return isProfilePublic;
+	}
+
+	public void setIsProfilePublic(String isProfilePublic) {
+		this.isProfilePublic = isProfilePublic;
+	}
+
+	public String getIsCandidateSubmitted() {
+		return isCandidateSubmitted;
+	}
+
+	public void setIsCandidateSubmitted(String isCandidateSubmitted) {
+		this.isCandidateSubmitted = isCandidateSubmitted;
+	}
+
+	public String getCandidateUUID() {
+		return candidateUUID;
+	}
+
+	public void setCandidateUUID(String candidateUUID) {
+		this.candidateUUID = candidateUUID;
+	}
+
+	
 }
 
 

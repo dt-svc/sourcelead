@@ -170,6 +170,7 @@ public class ClientServiceImpl implements ClientService{
 	 * 
 	 * @throws NullPointer
 	 */
+	@SuppressWarnings("unused")
 	@Override
 	public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,String responderType,Org loginOrg) throws Exception {
 			
@@ -297,7 +298,8 @@ public class ClientServiceImpl implements ClientService{
 					}
 				}
 			}
-			
+
+			// store default submission template in guest
 			if(org.getOrgType().equalsIgnoreCase("Guest")){
 				submissionTemplate = new SubmissionTemplate();
 				sourceLeadDefaultTemplate = submissionTemplateService.getSubmissionTemplateById(1L);
@@ -314,13 +316,33 @@ public class ClientServiceImpl implements ClientService{
 				submissionTemplate.setCreatedDate(new Date());
 				submissionTemplate.setUpdatedDate(new Date());
 				submissionTemplateService.addSubmissionTemplate(submissionTemplate);
+				
+				// store default interview feedback template in guest	
+				sourceLeadDefaultTemplate = submissionTemplateService.getSubmissionTemplateByTemplateNameByOrg(1L,Constants.DEFAULT_INTERVIEW_FEEDBACK_TEMAPLATE);
+				 StringBuilder templateStringBuilder=new StringBuilder();
+				 submissionTemplate = new SubmissionTemplate();
+				 submissionTemplate.setTemplateName(templateStringBuilder.append(org.getOrgName()).append("Interview Feedback Template").toString());
+				 submissionTemplate.setDescription(templateStringBuilder.append(org.getOrgName()).append("Interview Feedback Template").toString());
+				 submissionTemplate.setOrgLocationId(clientOrgLocations);
+				 submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
+				 submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+				 submissionTemplate.setUpdatedBy(user.getUserCode());
+				 submissionTemplate.setTemplateType("Feedback");
+				 submissionTemplate.setUpdatedDate(new Date());
+				 submissionTemplate.setCreatedBy(user.getUserCode());
+				 submissionTemplate.setCreatedDate(new Date());
+				 submissionTemplateService.addSubmissionTemplate(submissionTemplate);
+				 
+				 
 			}
+	
 			
 			submissionTemplate = submissionTemplateService.getDefaultSubmissionTemplateByClientLocationIdAndOrgLocationId(clientOrgLocations.getId(), orgLocations.getId());
+			// store default submission template in client & vedor	
 			if(submissionTemplate == null){
 				submissionTemplate = new SubmissionTemplate();
-				sourceLeadDefaultTemplate = submissionTemplateService.getSubmissionTemplateById(1L);
 				submissionTemplate.setTemplateName("Default Template");
+				sourceLeadDefaultTemplate = submissionTemplateService.getSubmissionTemplateById(1L);
 				submissionTemplate.setDescription("Default Template Description");
 				submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
 				submissionTemplate.setIsDefault("Y");
@@ -338,7 +360,25 @@ public class ClientServiceImpl implements ClientService{
 				submissionTemplate.setUpdatedBy(user.getUserCode());
 				submissionTemplate.setUpdatedDate(new Date());
 				submissionTemplateService.addSubmissionTemplate(submissionTemplate);
+				
+				// store default interview feedback template in client & vedor
+				sourceLeadDefaultTemplate = submissionTemplateService.getSubmissionTemplateByTemplateNameByOrg(1L,Constants.DEFAULT_INTERVIEW_FEEDBACK_TEMAPLATE);
+				 StringBuilder templateStringBuilder=new StringBuilder();
+				 submissionTemplate = new SubmissionTemplate();
+				 submissionTemplate.setTemplateName(templateStringBuilder.append(org.getOrgName()).append("Interview Feedback Template").toString());
+				 submissionTemplate.setDescription(templateStringBuilder.append(org.getOrgName()).append("Interview Feedback Template").toString());
+				 submissionTemplate.setIsDefault("Y");
+				 submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
+				 submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+				 submissionTemplate.setUpdatedBy(user.getUserCode());
+				 submissionTemplate.setTemplateType("Feedback");
+				 submissionTemplate.setUpdatedDate(new Date());
+				 submissionTemplate.setCreatedBy(user.getUserCode());
+				 submissionTemplate.setCreatedDate(new Date());
+				 submissionTemplateService.addSubmissionTemplate(submissionTemplate);
+				
 			}
+			
 			
 			for(OrgRelations orgRelation :orgRelationsList){
 				
@@ -883,7 +923,7 @@ public class ClientServiceImpl implements ClientService{
 			 String url = "";
 			 
 			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocation.getOrg());
 			 emailMessage.setSubject(subject);
 			 emailMessage.setMessageBody(emailTemplate);
 			 
@@ -924,11 +964,11 @@ public class ClientServiceImpl implements ClientService{
 				 emailMessage.setLastName(orgSpoc.getOwnerUser().getLastName());	 
 			 }
 			 emailMessage.setToEmail(orgSpoc.getOwnerUser().getEmail());
-			 emailMessage.setFromEmail(loginUser.getEmail());
+			 emailMessage.setFromEmail("qa@sourcelead.com");
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 StringBuilder emailMsgBuilder = new StringBuilder();
-			 emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+			 emailMessage.setFromName("Sourcelead");
+			// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -936,20 +976,20 @@ public class ClientServiceImpl implements ClientService{
 			 if(Constants.CLIENT.equals(orgSpoc.getOrgRelations().getResponderType())){
 				 globalVarsMap.put("firstName", emailMessage.getFirstName());
 				 globalVarsMap.put("lastName",emailMessage.getLastName());
-				 globalVarsMap.put("vendorFirstName",orgSpoc.getVendorUser().getFirstName());
-				 globalVarsMap.put("vendorLastName",orgSpoc.getVendorUser().getLastName());
+				 globalVarsMap.put("vendorFirstName",orgSpoc.getClientUser().getFirstName());
+				 globalVarsMap.put("vendorLastName",orgSpoc.getClientUser().getLastName());
 				 globalVarsMap.put("vendorOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
-				  
+				 globalVarsMap.put("signature","Sourcelead Team");
 				 StringBuilder loginBuilder = new StringBuilder();
 				 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 				
 			 }else if(Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())){
 					 globalVarsMap.put("firstName", emailMessage.getFirstName());
 					 globalVarsMap.put("lastName",emailMessage.getLastName());
-					 globalVarsMap.put("clientFirstName", loginUser.getFirstName());
-					 globalVarsMap.put("clientLastName",loginUser.getLastName());
+					 globalVarsMap.put("clientFirstName", orgSpoc.getVendorUser().getFirstName());
+					 globalVarsMap.put("clientLastName",orgSpoc.getVendorUser().getLastName());
 					 globalVarsMap.put("clientOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
-					  
+					 globalVarsMap.put("signature","Sourcelead Team"); 
 					 StringBuilder loginBuilder = new StringBuilder();
 					 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			}
@@ -974,7 +1014,7 @@ public class ClientServiceImpl implements ClientService{
 			 String url = sourceleadUrl;
 			 
 			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
 			 emailMessage.setSubject(subject);
 			 emailMessage.setMessageBody(emailTemplate);
 			 emailMessage.setOrgLocationId(orgLocations.getId());
@@ -993,11 +1033,10 @@ public class ClientServiceImpl implements ClientService{
 				 emailMessage.setLastName(orgSpoc.getOwnerUser().getLastName());	 
 			 }
 			 emailMessage.setToEmail(orgSpoc.getOwnerUser().getEmail());
-			 emailMessage.setFromEmail(loginUser.getEmail());
+			 emailMessage.setFromEmail("qa@sourcelead.com");
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 StringBuilder emailMsgBuilder = new StringBuilder();
 			 emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1005,16 +1044,17 @@ public class ClientServiceImpl implements ClientService{
 			 if(Constants.CLIENT.equals(orgSpoc.getOrgRelations().getResponderType())){
 				 globalVarsMap.put("firstName", emailMessage.getFirstName());
 				 globalVarsMap.put("lastName",emailMessage.getLastName());
-				 globalVarsMap.put("vendorFirstName",orgSpoc.getVendorUser().getFirstName());
-				 globalVarsMap.put("vendorLastName",orgSpoc.getVendorUser().getLastName());
+				 globalVarsMap.put("vendorFirstName",orgSpoc.getClientUser().getFirstName());
+				 globalVarsMap.put("vendorLastName",orgSpoc.getClientUser().getLastName());
 				 globalVarsMap.put("vendorOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
-				 
+				 globalVarsMap.put("signature","Sourcelead Team");
 			 }else if( Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())){
 					 globalVarsMap.put("firstName", emailMessage.getFirstName());
 					 globalVarsMap.put("lastName",emailMessage.getLastName());
-					 globalVarsMap.put("clientFirstName", orgSpoc.getClientUser().getFirstName());
-					 globalVarsMap.put("clientLastName",orgSpoc.getClientUser().getLastName());
+					 globalVarsMap.put("clientFirstName", orgSpoc.getVendorUser().getFirstName());
+					 globalVarsMap.put("clientLastName",orgSpoc.getVendorUser().getLastName());
 					 globalVarsMap.put("clientOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
+					 globalVarsMap.put("signature","Sourcelead Team");
 				}
 
 			 // changed the logic of adding to emails in InetAddress Array
@@ -1036,7 +1076,7 @@ public class ClientServiceImpl implements ClientService{
 			 String url = "";
 			 
 			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
 			 emailMessage.setSubject(subject);
 			 emailMessage.setMessageBody(emailTemplate);
 			 emailMessage.setOrgLocationId(orgLocations.getId());

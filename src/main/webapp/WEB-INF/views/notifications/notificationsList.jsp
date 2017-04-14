@@ -142,7 +142,12 @@ function getNotificationtLists(){
 				    
 				   result = result +'   <td>';
 					result = result +'			<div class="mailbox-subject tbldata-dotdot-big">';
-					result = result +'				<span><a href="#" title='+report.body+'><b>'+report.body+'</b></a></span>';
+
+					if(report.actionLink != null && report.actionLink != '' && report.actionLink != 'undefined'){
+						result = result +'<span><a href="'+report.actionLink+'" title="'+report.body+'"><b>'+report.body+'</b></a></span>';
+					}else{
+						result = result +'<span><a href="#" title="'+report.body+'"><b>'+report.body+'</b></a></span>';
+					}
 					result = result +'			</div>';
 				    result = result +'   </td>';
 				    

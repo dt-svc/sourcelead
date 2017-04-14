@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -132,8 +133,91 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	@Transient
 	private String interviewTimezoneDateStr;
 	
+	@Transient
+	private Long interviewerId;
+	
+	@Transient
+	private List<RequirementInterviewHistory> interviewerList;
+	
+	@Transient
+	private List<Tasks> tasksList;
+	
+	@Transient
+	private String dayOfweek;
+
+	@Transient
+	private String selectedDate;
+	
+	@Transient
+	private String candidateEmail;
+		
+	@Transient
+	private String candidatePhoneNumber;
+	
+	@Transient
+	private String rescheduleComment;
+	
+	@Transient
+	private String timezone;
+	
+	@Transient
+	private String interviewSubmissionId;
+	
+	@Transient
+	private String isOwnOrgTemplate;
+	
+	@Transient
+	private String feedbackDate;
 	
 	
+	public String getCandidateEmail() {
+		return candidateEmail;
+	}
+
+	public void setCandidateEmail(String candidateEmail) {
+		this.candidateEmail = candidateEmail;
+	}
+
+	public String getCandidatePhoneNumber() {
+		return candidatePhoneNumber;
+	}
+
+	public void setCandidatePhoneNumber(String candidatePhoneNumber) {
+		this.candidatePhoneNumber = candidatePhoneNumber;
+	}
+
+	public String getDayOfweek() {
+		return dayOfweek;
+	}
+
+	public void setDayOfweek(String dayOfweek) {
+		this.dayOfweek = dayOfweek;
+	}
+
+	public String getSelectedDate() {
+		return selectedDate;
+	}
+
+	public void setSelectedDate(String selectedDate) {
+		this.selectedDate = selectedDate;
+	}
+
+	public List<RequirementInterviewHistory> getInterviewerList() {
+		return interviewerList;
+	}
+
+	public void setInterviewerList(List<RequirementInterviewHistory> interviewerList) {
+		this.interviewerList = interviewerList;
+	}
+
+	public List<Tasks> getTasksList() {
+		return tasksList;
+	}
+
+	public void setTasksList(List<Tasks> tasksList) {
+		this.tasksList = tasksList;
+	}
+
 	public String getInterviewTimeZoneStartTimeStr() {
 		return interviewTimeZoneStartTimeStr;
 	}
@@ -410,4 +494,53 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	public void setRequirementUUID(String requirementUUID) {
 		this.requirementUUID = requirementUUID;
 	}
+
+	public Long getInterviewerId() {
+		return interviewerId;
+	}
+
+	public void setInterviewerId(Long interviewerId) {
+		this.interviewerId = interviewerId;
+	}
+
+	public String getTimezone() {
+		return timezone;
+	}
+
+	public void setTimezone(String timezone) {
+		this.timezone = timezone;
+	}
+
+	public String getRescheduleComment() {
+		return rescheduleComment;
+	}
+
+	public void setRescheduleComment(String rescheduleComment) {
+		this.rescheduleComment = rescheduleComment;
+	}
+
+	public String getIsOwnOrgTemplate() {
+		return isOwnOrgTemplate;
+	}
+
+	public void setIsOwnOrgTemplate(String isOwnOrgTemplate) {
+		this.isOwnOrgTemplate = isOwnOrgTemplate;
+	}
+
+	public String getInterviewSubmissionId() {
+		return interviewSubmissionId;
+	}
+
+	public void setInterviewSubmissionId(String interviewSubmissionId) {
+		this.interviewSubmissionId = interviewSubmissionId;
+	}
+
+	public String getFeedbackDate() {
+		return feedbackDate;
+	}
+
+	public void setFeedbackDate(String feedbackDate) {
+		this.feedbackDate = feedbackDate;
+	}
+	
 }

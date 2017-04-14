@@ -9,7 +9,9 @@ import com.bis.sourcelead.entity.Timezone;
 public interface RequirementInterviewHistoryDao {
 	
 	RequirementInterviewHistory storeRequirementInterviewHistory(RequirementInterviewHistory requirementInterviewHistory)throws Exception;
-
+	
+	RequirementInterviewHistory getRequirementInterviewHistoryByInterviewId(Long interviewId)throws Exception;
+	
 	List<RequirementInterviewHistory> getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(
 			Long submissionId, Long orgLocationsId) throws Exception;
 
@@ -41,4 +43,6 @@ public interface RequirementInterviewHistoryDao {
 	Integer getRequirementInternalAndIsClientInterviewsCountBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception;
 	
 	List<RequirementInterviewHistory> getAllRecruiterSubmittedInterviews(String dateRange, Long userId)throws Exception;
+	
+	List<RequirementInterviewHistory> getCrowdSorurcingInterviews(Long submissionId) throws Exception;
 }

@@ -5,7 +5,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -22,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateHotList;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -434,7 +437,7 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Candidate> getAllCandidatesForHotListingWhoAreTerminating(Long orgLocationId, Integer dateRange)
+	public List<Candidate> getAllCandidatesForHotListingWhoAreTerminating(Long orgLocationId, Integer dateRange,Long reportingManagerUserId)
 			throws Exception {
 		
 		
@@ -461,14 +464,15 @@ public class CandidateDaoImpl implements CandidateDao {
 	    Date parsed = dateFormat.parse(updatedDate);
 	    java.sql.Date endDate = new java.sql.Date(parsed.getTime());
 	   
-	    subQuery =   " from Candidate candidate where candidate.orgLocationId.id =:orgLocationId and  candidate.candidateType = 'Consultant' and candidate.isFavourite <> '1'  and candidate.consultantUser.id IN (select emp.user.id from Employees emp where emp.id IN (select pm.employee.id from ProjectMembers pm where pm.id IN ( select pmh.projectMemberId.id from ProjectMembersHistory pmh  where pmh.projectTerminationDate BETWEEN :sqlCurrentDate AND :endDate)  ) )"; 
+	    subQuery =   " from Candidate candidate where candidate.orgLocationId.id =:orgLocationId  and candidate.consultantUser.id IN (select userRole.user.id  from UserRole  userRole where userRole.reportingManager.id =:reportingManagerUserId )  and  candidate.candidateType = 'Consultant' and candidate.isFavourite <> '1'  and candidate.consultantUser.id IN (select emp.user.id from Employees emp where emp.id IN (select pm.employee.id from ProjectMembers pm where pm.id IN ( select pmh.projectMemberId.id from ProjectMembersHistory pmh  where  pmh.projectTerminationDate BETWEEN :sqlCurrentDate AND :endDate)  ) )"; 
 
 	    candidateList = session.createQuery(subQuery)
-					    		.setDate("sqlCurrentDate", sqlCurrentDate)
-					    		.setDate("endDate", endDate)
-				                .setLong("orgLocationId", orgLocationId)
-				                .setCacheable(true)
-				               .list();
+					    		 .setDate("sqlCurrentDate", sqlCurrentDate)
+					    		 .setDate("endDate", endDate)
+					    		 .setLong("reportingManagerUserId", reportingManagerUserId)
+				                 .setLong("orgLocationId", orgLocationId)
+				                 .setCacheable(true)
+				                .list();
 	  /*  System.err.println("das"+candidateList.size());*/
 	return candidateList;
 	}
@@ -520,6 +524,169 @@ public class CandidateDaoImpl implements CandidateDao {
 		return candidatesList;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getCandidatesCountByCandidateTypeOrgLocationID(Long orgLocationId, String candidateType) {
+		
+		logger.debug("..getCandidatesCount() Method Started..");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String subQuery  = null;
+		if(null != candidateType && !candidateType.isEmpty() && candidateType.equalsIgnoreCase(Constants.CONSULTANT)){
+			subQuery = "and candidateType = 'Consultant'"; 
+		}else{
+			subQuery = "and candidateType = 'Candidate'"; 
+		}
+			
+		
+		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId "+subQuery+" ";
+		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		logger.debug("..getCandidatesCount() Method Ended..");
+		return results.get(0);
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getCandidateReports(Long orgLocationId, String candidateType, String filterDate,
+			Date startDateUTC, Date endDateUTC,String ownersList) {
+		
+		List<String> userCodesList = new ArrayList<String>();
+		if(null != ownersList && !"".equals(ownersList)){
+			for (String s : ownersList.split(",")){
+				 userCodesList.add(s);
+	   	    }
+		}
+		
+		 Session session = this.sessionFactory.getCurrentSession();
+		 Map<String, Object> params = new HashMap<String,Object>();
+		
+		String subQuery1 = "";
+		 if(userCodesList != null && userCodesList.size() >0){
+			 subQuery1 =  " and candidate.createdBy IN (:userCodesList)";
+			 params.put("userCodesList", userCodesList);
+		 }
+		 
+		
+		String dateSubQuery = "";
+		if(null != startDateUTC && null != endDateUTC){
+			 dateSubQuery = "and (candidate.createdDate >= :startDateUTC and candidate.createdDate <= :endDateUTC)";
+			  params.put("startDateUTC",startDateUTC);
+			  params.put("endDateUTC",endDateUTC);
+		}
+		
+		 
+		 
+		String subQuery  = "";
+		if(null != candidateType && !candidateType.isEmpty() && candidateType.equalsIgnoreCase(Constants.CONSULTANT)){
+			subQuery = "and candidateType = 'Consultant'"; 
+		}else{
+			subQuery = "and candidateType = 'Candidate'"; 
+		}
+		
+		String from = "from Candidate candidate where candidate.orgLocationId.id =:orgLocationId "+subQuery+" "+subQuery1+" "+dateSubQuery;  
+		params.put("orgLocationId",orgLocationId);
+		
+		Query query = session.createQuery(from);
+		for (String str : query.getNamedParameters())
+        {
+			if(str.equalsIgnoreCase("orgLocationId")){
+				query.setParameter(str, (long) params.get(str));
+			}if(str.equalsIgnoreCase("startDateUTC")){
+				query.setParameter( str, (Date) params.get(str) );
+			}
+			if(str.equalsIgnoreCase("endDateUTC")){
+				query.setParameter( str, (Date) params.get(str) );
+			}
+			if(str.equalsIgnoreCase("userCodesList")){
+				query.setParameterList("userCodesList", userCodesList);
+			}
+			
+        }
+		
+		return query.setCacheable(true).list();
+	}
 	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getOwnersByCandidates(Long orgLocationId, String candidateType,String ownersList) {
+		
+		
+		 List<String> userCodesList = new ArrayList<String>();
+		 if(!"".equalsIgnoreCase(ownersList) && ownersList != null ){
+			for (String s : ownersList.split(",")){
+			 userCodesList.add(s);
+    	    }
+		 }
+		 
+		Session session = this.sessionFactory.getCurrentSession();
+		Map<String, Object> params = new HashMap<String,Object>();
+		
+		String subQuery1 = null;
+		 if(userCodesList != null && userCodesList.size() >0){
+			 subQuery1 =  " and candidate.createdBy IN (:userCodesList)";
+			 params.put("userCodesList", userCodesList);
+		 }
+		 
+		 
+		String subQuery  = null;
+		if(null != candidateType && !candidateType.isEmpty() && candidateType.equalsIgnoreCase(Constants.CONSULTANT)){
+			subQuery = "and candidateType = 'Consultant'"; 
+		}else{
+			subQuery = "and candidateType = 'Candidate'"; 
+		}
+		
+		String from = "from Candidate candidate where candidate.orgLocationId.id =:orgLocationId "+subQuery+"  "+subQuery1;  
+		params.put("orgLocationId",orgLocationId);
+		
+		Query query = session.createQuery(from);
+		for (String str : query.getNamedParameters())
+        {
+			if(str.equalsIgnoreCase("orgLocationId")){
+				query.setParameter(str, (long) params.get(str));
+			}
+			if(str.equalsIgnoreCase("userCodesList")){
+				query.setParameterList("userCodesList", userCodesList);
+			}
+        }
+		
+		return query.setCacheable(true).list();
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getCandidateReportsListByOrgLocationID(Long orgLocationId, String candidateType)
+			throws Exception {
+			
+		    
+			//Checking for Candidate Status 
+		    Session session = this.sessionFactory.getCurrentSession();
+			
+			String subQuery  = null;
+			if(null != candidateType && !candidateType.isEmpty() && candidateType.equalsIgnoreCase(Constants.CONSULTANT)){
+				subQuery = "and candidateType = 'Consultant'"; 
+			}else{
+				subQuery = "and candidateType = 'Candidate'"; 
+			}
+			
+			String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId "+subQuery+" ";
+			List<Candidate> candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		
+		
+		    return candidateList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getHotCandidateListByTeamIdAndOrgLocationId(Long teamId, Long orgLocationId)
+			throws Exception {
+		
+		 Session session = this.sessionFactory.getCurrentSession();
+		 String query = "from Candidate candidate where candidate.teamId.id =:teamId and candidate.orgLocationId.id =:orgLocationId  ";
+		 List<Candidate> candidateHotList = session.createQuery(query.toString()).setLong( "teamId", teamId).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
+		 return candidateHotList;
+	}
+
+
 	
 }

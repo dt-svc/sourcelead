@@ -41,6 +41,11 @@ public interface RequirementInterviewDao {
 	
 	Integer getInterviewCountByCandidateId(Long candidateId,String submissionStatus,Date startDate,Date endDate) throws Exception;
 
+	List<RequirementInterview> getRequirementInterviewsBySubmissionAndOrgLocId(List<Long> submissionsList,
+			Long locationId, Date startUTCDate, Date endUTCDate);
+
+	RequirementInterview getinterviewBySubmissionId(Long submissionId);
+
 	//List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime);
 
 }

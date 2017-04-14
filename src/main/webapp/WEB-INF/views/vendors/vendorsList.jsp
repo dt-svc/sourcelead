@@ -48,9 +48,10 @@ overflow-x: auto;
 		<!-- Project -->
 		 <div id="loading"></div>
 
+<div class="timesheet_out timesheet_background">
  <!-- Advanced Search -->
   <div class="timesheet_bg">
-  <div class="cand-advsrch">
+  <div class="cand-advsrch pull-left">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
           <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop();"><i class="fa fa-close"></i></a>
           <form:form id="vendorList_form" name="vendorList_form"  enctype='multipart/form-data' >
@@ -226,7 +227,7 @@ overflow-x: auto;
 											<option value="In-Active">In-Active</option>
 											<option value="New">New</option>
 											<option value="Negotiation">Negotiation</option>
-											<option value="Contracted">Contracted</option>
+											<option value="Contract">Contract</option>
 									</select>
 						 </div>  
               	</div>
@@ -246,7 +247,7 @@ overflow-x: auto;
             </div>  
               
             </div>
-            <div class="row form-footer mt">
+            <div class="row form-footer custom_formfooter">
               <div class="pull-right mr"> 
                 <input type="button" value="Search" id="search_vendor" onclick="searchVendor();" class="btn btn-sm btn-primary"/>
                 <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-default ml10"/>
@@ -260,8 +261,8 @@ overflow-x: auto;
 
 
 
-<div class="clearfix"></div>
-<div class="timesheet_out timesheet_background">
+
+
 <div class="vendor_wrap vendor_wrap_shadownone">
 
      
@@ -286,7 +287,7 @@ overflow-x: auto;
 								<li><input id="c6" type="checkbox"  name="vendorStatus"  value ="In-Active"   onclick="getVendorContactLists();"><label>In-Active</label></li>
 								<li><input id="c7" type="checkbox"  name="vendorStatus"  value ="New"         onclick="getVendorContactLists();"><label>New</label></li>
 								<li><input id="c8" type="checkbox"  name="vendorStatus"  value ="Negotiation" onclick="getVendorContactLists();"><label>Negotiation</label></li>
-	               				<li><input id="c9" type="checkbox"  name="vendorStatus"  value ="Contracted"  onclick="getVendorContactLists();"><label>Contracted</label></li>
+	               				<li><input id="c9" type="checkbox"  name="vendorStatus"  value ="Contract"  onclick="getVendorContactLists();"><label>Contract</label></li>
 	                        </ul>
 	                      </div>                	
 	                  </li>
@@ -322,13 +323,13 @@ overflow-x: auto;
 				<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
                        <li><a href="<c:url value='/addVendor'/>"><i class="fa fa-plus"></i>Vendor</a></li>	
                        </sec:authorize>
-                        <sec:authorize access="hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_VENDOR_CONTACT_BULK_IMPORTS')">
-                       <li><a href="<c:url value='/uploadVendorForm'/>"><i class="fa fa-upload"></i>&nbsp;Imports</a></li>
-                 </sec:authorize> 
+                        <%-- <sec:authorize access="hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_VENDOR_CONTACT_BULK_IMPORTS')">
+                       <li title="Import"><a href="<c:url value='/uploadVendorForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
+                 </sec:authorize>  --%>
                  
                  <sec:authorize access="hasRole('ROLE_EXPORT_VENDORS')"> 
-                       	 <li id="vendorImports" style="display:none">
-		                     <a  id="vendor-imports"><i class="glyphicon glyphicon-export"></i>&nbsp;ExportVendor</a>
+                       	 <li title="Export" id="vendorImports" style="display:none">
+		                     <a  id="vendor-imports"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
 			                    <div class="export_pop">
 				                <ul>
 				                <li onclick="exportVendorToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp; PDF </li>
@@ -339,8 +340,8 @@ overflow-x: auto;
 		          </sec:authorize>
 		           
 		          <sec:authorize access="hasRole('ROLE_EXPORT_VENDOR_CONTACTS')"> 
-		            <li id="VendorContactImports">
-		                     <a  id="export-popcon"><i class="glyphicon glyphicon-export"></i>&nbsp;ExportContact</a>
+		            <li title="Export" id="VendorContactImports">
+		                     <a  id="export-popcon"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
 			                    <div class="export_pop">
 				                <ul>
 				                <li onclick="exportVendorContactToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp; PDF</li>
@@ -780,9 +781,9 @@ function preparedVendorsListFromElk(data){
 		   		
 		   		var location = "";
 		   		if(report.city != null && report.city != '' && report.city != 'undefined'){
-		   			location = report.country+", "+report.state+", "+report.city;
+		   			location = report.city+", "+report.state+", "+report.country;
 		   		}else if(report.state != null && report.state != '' && report.state != 'undefined'){
-		   			location = report.country+", "+report.state;
+		   			location = report.state+", "+report.country;
 		   		}else{
 		   			location = report.country;
 		   		}
@@ -1010,7 +1011,7 @@ function pagination1(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -1163,7 +1164,7 @@ function preparedVendorContactListFromElk(data){
    						result = result + ' <option '+(report.spocStatus == "In-Active" ? "selected" : '') +'>In-Active</option>';
    						result = result + ' <option '+(report.spocStatus == "New" ? "selected" : '') +'>New</option>';
    						result = result + ' <option '+(report.spocStatus == "Negotiation" ? "selected" : '') +'>Negotiation</option>';
-   						result = result + ' <option '+(report.spocStatus == "Contracted" ? "selected" : '') +'>Contracted</option>';
+   						result = result + ' <option '+(report.spocStatus == "Contract" ? "selected" : '') +'>Contract</option>';
    						result = result + ' </select>';
    						
    						result = result + '<span id="spocSpanState'+report.id+'"> </span>';
@@ -1283,7 +1284,7 @@ function preparedVendorContactList(data){
 						result = result + ' <option '+(report.spocStatus == "In-Active" ? "selected" : '') +'>In-Active</option>';
 						result = result + ' <option '+(report.spocStatus == "New" ? "selected" : '') +'>New</option>';
 						result = result + ' <option '+(report.spocStatus == "Negotiation" ? "selected" : '') +'>Negotiation</option>';
-						result = result + ' <option '+(report.spocStatus == "Contracted" ? "selected" : '') +'>Contracted</option>';
+						result = result + ' <option '+(report.spocStatus == "Contract" ? "selected" : '') +'>Contract</option>';
 						result = result + ' </select>';
 						
 						result = result + '<span id="spocSpanState'+report.id+'"> </span>';
@@ -1462,7 +1463,7 @@ function pagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -1601,7 +1602,7 @@ function pagination1(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -1651,9 +1652,9 @@ function pagination1(){
 		$("#vendorSideDiv").empty();
 		$("#vendorSideDiv").append(result);
 		
-		$("#vendorNameDiv").empty();
+		/* $("#vendorNameDiv").empty();
 		$("#vendorNameDiv").append(spocName);
-		
+		 */
 		$(".clients_side_wrap").addClass("clients_side_wrap_active");
 		$(".side_mask").fadeIn(200);
 		$("body").css('overflow-y', 'hidden');
@@ -1662,6 +1663,14 @@ function pagination1(){
 	}
 </script>
 
+
+<script>
+function getVendorDashboardName(vendorDashboardName){
+	$("#vendorNameDiv").empty();
+	$("#vendorNameDiv").append(vendorDashboardName);
+}
+
+</script>
 
 
 
@@ -1701,8 +1710,8 @@ function pagination1(){
 		$("#vendorSideDiv").empty();
 		$("#vendorSideDiv").append(result);
 		
-		$("#vendorNameDiv").empty();
-		$("#vendorNameDiv").append(orgName);
+		/* $("#vendorNameDiv").empty();
+		$("#vendorNameDiv").append(orgName); */
 		
 		$(".clients_side_wrap").addClass("clients_side_wrap_active");
 		$(".side_mask").fadeIn(200);
@@ -1711,6 +1720,15 @@ function pagination1(){
 		vendorDetailsbyLocationId(vendorLocationId,orgRelationId);
 	}
 </script>
+
+<script>
+function getVendorOrgname(vendorOrgname){
+	$("#vendorNameDiv").empty();
+	$("#vendorNameDiv").append(vendorOrgname);	
+}
+
+</script>
+
 
 <script type="text/javascript">
 	function vendorDetailsbyLocationId(vendorLocationId,orgRelationId) {
@@ -1721,6 +1739,7 @@ function pagination1(){
 					success : function(data) {
 						
 						var json = JSON.parse(data);
+						getVendorOrgname(json.orgName);
 						var result = "";
 						var city = "";
 						var state = "";
@@ -1988,6 +2007,13 @@ $(document).ready(function() {
 		$(".clients_side_wrap").removeClass("clients_side_wrap_active");
 		$(".side_mask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
+		//update the details in list.
+		var vendorCont = document.getElementById('listOfVendors').value;
+		if(vendorCont == "listbyContact"){
+			getVendorContactListsELK();
+		}if(vendorCont == "listbyVendor" ){
+			getVendorListsElk();
+   		}
 	});	
 });
 

@@ -54,6 +54,9 @@ public class RequirementHelper {
 			requirementIndex.setJobTitle(requirement.getJobTitle());
 			requirementIndex.setJobType(requirement.getJobType());
 			requirementIndex.setOtherJobType(requirement.getOtherJobType());
+			
+			requirementIndex.setReqCoolingOffPeriod(requirement.getReqCoolingOffPeriod());
+			
 			if (null != requirement.getRate() && !"".equals(requirement.getRate())) {
 				requirementIndex.setRate(Float.parseFloat(requirement.getRate()));
 			}
@@ -202,6 +205,10 @@ public class RequirementHelper {
 			if (null != requirement.getSkills()) {
 				String[] skills = requirement.getSkills().split(",");
 				requirementIndex.setSkills(skills);
+			}
+			if(null != requirement.getNoticePeriod()){
+				String[] noticePeriod = requirement.getNoticePeriod().split(",");
+				requirementIndex.setNoticePeriod(noticePeriod);
 			}
 			requirementIndex.setJobId(requirement.getJobId());
 			requirementIndex.setPriority(requirement.getPriority());

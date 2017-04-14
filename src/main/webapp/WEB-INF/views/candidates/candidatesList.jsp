@@ -141,15 +141,19 @@ else{
 	     	 $("#candidateList").empty();
 	     	 var result = "";
 	     	  result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
+	     	 result  = result + '<div class="success_pop" id="hotlistCandidateMsg" style="display: none;">';
+	    	 result  = result + '<i class="fa fa-check-circle"></i><span id="hotlistCandidateMsgDiv"></span>';
+	    	 result  = result + '</div>';
 	          result = result +"<thead>"; 
 	          result = result +"  <tr>"; 
 	         /*  result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>";   */
 	          result = result +"    <th>&nbsp;</th>";
 	          result = result +"    <th>Name</th>"; 
-	          result = result +"    <th>Skills</th>"; 
+	          result = result +"    <th>Primary Skill</th>"; 
+	         /*  result = result +"    <th>Skills</th>";  */
 	          result = result +"    <th>Employment Type</th>"; 
 	          result = result +"    <th>Email</th>"; 
-	          result = result +"    <th>Mobile</th>"; 
+	          result = result +"    <th>Mobile Number</th>"; 
 	          result = result +"    <th>Location</th>"; 
 	          result = result +"    <th>Last Update</th>"; 
 	          result = result +"  </tr>"; 
@@ -212,7 +216,7 @@ else{
 	              result = result +"<td style='width : 25px;'>";
 	              result = result +"<div class='star-rating "+isFavClass+"' id='favourite"+opt.candidateId+"'>";
 	              '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_HOTLIST\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-	              result = result +"<input type='checkbox' id='fav"+opt.candidateId+"' "+isFavourite+" onclick='addFavourite("+opt.candidateId+")'></input>";
+	              result = result +"<input type='checkbox' id='fav"+opt.candidateId+"' "+isFavourite+" onclick='addFavourite("+opt.candidateId+",\""+opt.firstName+" "+opt.lastName+"\")'></input>";
 	              '</sec:authorize>';
 	             
 	              result = result +" <label></label>";
@@ -227,23 +231,36 @@ else{
 	              '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
 	               result = result +"  <td><div class='proj_show' onclick='#'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span></div></td>";
 	              '</sec:authorize>';
-	            
-	              if(opt.skillsName != null && opt.skillsName != '' && opt.skillsName != "undefined"){
-	            	  result = result +"  <td><div><span title='"+opt.skillsName+"'>"+opt.skillsName+"</span></div></td>";
+	              
+	              if(opt.primarySkill != null && opt.primarySkill != '' && opt.primarySkill != "undefined"){
+	            	  result = result +"  <td><div><span title='"+opt.primarySkill+"'>"+opt.primarySkill+"</span></div></td>";
 	              }else{
 	            	  
 	            	  result = result +"  <td><div>----</div></td>";
 	              }
+	            
+	             /*  if(opt.skillsName != null && opt.skillsName != '' && opt.skillsName != "undefined"){
+	            	  result = result +"  <td><div><span title='"+opt.skillsName+"'>"+opt.skillsName+"</span></div></td>";
+	              }else{
+	            	  
+	            	  result = result +"  <td><div>----</div></td>";
+	              } */
 	             
 	              
 	              if(opt.designationType != null && opt.designationType != '' && opt.designationType != "undefined")
 	             	 {
-	                   result = result +"  <td><div>"+opt.designationType+"</div></td>";
+	            	  if(opt.designationOtherType !=null && opt.designationOtherType !='' && opt.designationOtherType !="undefined"){
+	                   result = result +"  <td><div>"+opt.designationOtherType+"</div></td>";
+	             	 }else{
+	             		result = result +"  <td><div>"+opt.designationType+"</div></td>"; 
+	             	 }
 	             	 }else{
 	             		 result = result +"  <td><div>----</div></td>"; 
 	             	 }
+	              
 	              result = result +"  <td><div ><span title='"+opt.email+"'>"+opt.email+"</span></div></td>";
-	              result = result +"  <td><div>"+mobilePhone+"</div></td>";
+	             
+	              result = result +"  <td><div class='tbldata-dotdot'>"+mobilePhone+"</div></td>";
 	              
 	              result = result +"  <td><div><span title='"+location+"'>"+location+"</span></div></td>";
 	
@@ -298,7 +315,7 @@ function cpagination(){
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -526,18 +543,22 @@ function candidateSideBar(candidateId){
 			             result = result+'</ul>';
 			             
 			             result = result+'<div class="clearfix">';
-			             result = result+'<div class="professinal-details">';
+			             result = result+'<div class="">';
 			             
 			            
 			             result = result+'<ul class="list-inline list-unstyled">';
-			             if(json.skillsList != null && json.skillsList != '' && json.skillsList != 'undefined'){
+			            /*  if(json.skillsList != null && json.skillsList != '' && json.skillsList != 'undefined'){
 			              for (i=0;i < skills.length;i++)
 			             {
 			            	  result = result+'<li>'+skills[i]+'</li>';
 			             } 
+			             } */
+			             
+			             if(json.primarySkill != null && json.primarySkill != '' && json.primarySkill != 'undefined'){
+			            	 result = result+'<li>Primary Skill -'+json.primarySkill+' </li>';
+			             }else{
+			            	 result = result+'<li>Primary Skill ----</li>';  
 			             }
-			             
-			             
 			             
 			             result = result+'</ul>';
 			             
@@ -865,9 +886,14 @@ function refreshImageBlock(candidateId){
    }
 </script>
 
-
 <script>
-function addFavourite(candidateId){
+	function hotlistCandidateMsgFadein() {
+		$("#hotlistCandidateMsg").fadeIn(200);
+        $('#hotlistCandidateMsg').delay(2000).fadeOut('slow');
+	}
+</script>
+<script>
+function addFavourite(candidateId,candidate){
 	
 	var checked = document.getElementById("fav"+candidateId).checked;
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -880,6 +906,10 @@ function addFavourite(candidateId){
 				if(checked){
 					 document.getElementById("favourite"+candidateId).removeAttribute("class")
 					 document.getElementById("favourite"+candidateId).className = 'star-rating activestar-rating' 
+						$("#hotlistCandidateMsg").removeAttr("style");
+	          		    $("#hotlistCandidateMsg").css({ display: "block" });
+	          		    $("#hotlistCandidateMsgDiv").html(" "+candidate+" Hotlisted");
+	          		    hotlistCandidateMsgFadein();
 				}else{
 					 document.getElementById("favourite"+candidateId).removeAttribute("class")
 					 document.getElementById("favourite"+candidateId).className = 'star-rating' 
@@ -996,6 +1026,16 @@ function cancel(candidateId){
       <h2>Candidate List</h2>
     </div>
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Candidate List</div>
+    
+    <div class=" pull-left reportsH">
+			<a title="Reports"><i class="fa fa-pie-chart"></i>Reports</a>
+			<div class="RePop">
+				<ul>
+					<li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
+				</ul>
+			</div>
+		</div>  
+		
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap" style="overflow-X:auto;">
@@ -1006,8 +1046,9 @@ function cancel(candidateId){
 			  <i class="fa fa-search"></i>
 			  </a> 
 			  <form:form id="candidatelist_form" name="candidatelist_form"  enctype='multipart/form-data' >
-				  <div class="cand-advsrch-popup" >
+				  <div class="cand-advsrch-popup cand-advsrchPopup">
 					  <a href="javascript:void(0)" class="close-div" onclick="closePop();"><i class="fa fa-close"></i></a>
+					  <div class="candAdvsrchPop">
 					  <div class="row">
 						  <div class="col-md-4">
 							  <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
@@ -1036,6 +1077,29 @@ function cancel(candidateId){
 					  <div class="col-md-12">
 						  <h4>Details:</h4>
 					  </div>
+					  <div class="clearfix">
+						<div class="col-md-8">
+						<label>Skills</label>
+							<div class="clearfix">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Skills" id="candidateSkills" name="candidateSkills">
+								<c:forEach var="skill" items="${skillsList}">
+								<option value="${skill.name}">${skill.name}</option>
+								</c:forEach>
+								</select>
+							 </div>
+						</div>
+						
+						<div class="col-md-4">
+						<label>Primary Skill</label>
+							<div class="clearfix">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Primary Skill" id="primarySkill" name="primarySkill">
+                                 </select>
+							 </div>
+						</div>
+						
+						 
+					 </div>
+						
 						<div class="clearfix">
 						  <div class="col-md-4">
 						    <label>Designation</label>
@@ -1068,9 +1132,6 @@ function cancel(candidateId){
 							<div class="col-md-6">
 								<label>&nbsp;</label> 
 								<div class="input-group error-field">
-								    <div id="maxRateDiv">
-									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
-									</div>
 									<div id="rateTypeDiv" class="input-group-btn selp-custom-min custommin">
 									      <select class="selectpicker" name="rateType" id="rateType" field-name="Rate Type"  >
 									            <option value="">Rate Type</option>
@@ -1082,6 +1143,9 @@ function cancel(candidateId){
 												<option value="Bi-Monthly">Bi-Monthly</option>
 												<option value="Yearly">Yearly</option>
 				                            </select> 
+									</div>
+								    <div id="maxRateDiv">
+									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
 									</div>
 								</div>
 							</div>
@@ -1112,7 +1176,6 @@ function cancel(candidateId){
 							  <div class="row" id="expId">
 				                  <input type="hidden" name="expValidation" id="expValidation">
 				              </div>
-							  
 						  </div>
 						  
 						  <div class="col-md-4">
@@ -1231,20 +1294,9 @@ function cancel(candidateId){
 							  </div>
 						  </div>
 						  </div>
-						    <div class="clearfix">
-							    <div class="col-md-12">
-								  <label>Skills</label>
-								  <div class="clearfix">
-									 <select class="chosen-select form-control input-sm" multiple data-placeholder="Skills" id="candidateSkills" name="candidateSkills">
-                                          <c:forEach var="skill" items="${skillsList}">
-							                     <option value="${skill.name}">${skill.name}</option>
-						                </c:forEach>
-                                     </select>
-								  </div>
-							  </div>
-						    </div>
 					  </div>
-					  <div class="row form-footer mt">
+					  </div>
+					  <div class="form-footer">
 						  <div class="pull-right mr">
 							   <input type="button" value="Search" id="search_candidate" onclick="searchCandidate();" class="btn btn-sm btn-primary"/>
                                <input type="button"  value="Clear"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-default ml10"/>
@@ -1255,19 +1307,6 @@ function cancel(candidateId){
       </div>
       <div class="timesheet_head  customtimesheet-head hdr-styles pull-right">
         <ul>
-          <sec:authorize access="hasAnyRole('ROLE_EXPORT_CANDIDATES')">
-          <li id="candidate-export"><i class="glyphicon glyphicon-export"></i><span>Export</span>&nbsp;<i class="glyphicon glyphicon-play" ></i>
-            <div class="export_pop">
-              <ul>
-                <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
-                <li onclick="exportToExcel();"><i class="fa fa-file-excel-o"></i>&nbsp; Excel</li>
-              </ul>
-            </div>
-          </li>
-          </sec:authorize>
-          
-             <li><a href="uploadCandidateForm"><i class="fa fa-upload"></i>&nbsp;Imports</a></li> 
-	      
            <li id="filter2ApprovePop"><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter2ApprovedPop" class="approved_pop">
                   	<ul>
@@ -1321,8 +1360,19 @@ function cancel(candidateId){
            </div>
           </li>
           
+          <li title="Import"><a href="uploadCandidateForm"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li> 
           
-         
+          <sec:authorize access="hasAnyRole('ROLE_EXPORT_CANDIDATES')">
+          <li title="Export" id="candidate-export" class="mrPOP"><i class="glyphicon glyphicon-export expIcon"></i>
+            <div class="export_pop">
+              <ul>
+                <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
+                <li onclick="exportToExcel();"><i class="fa fa-file-excel-o"></i>&nbsp; Excel</li>
+              </ul>
+            </div>
+          </li>
+          </sec:authorize>
+          
           <div class="clearfix"></div>
         </ul>
         
@@ -1830,6 +1880,7 @@ function getCities(){
 	    $("#excludeEmployers").val('').trigger("chosen:updated");
 	    $("#candidateSkills").val('').trigger("chosen:updated");
 	    $("#noticePeriod").val('').trigger("chosen:updated");
+	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
 	    $("#anyOfKeyword").empty();
 	    $("#allKeywords").empty();
@@ -1981,6 +2032,27 @@ function getCities(){
 		        }
 		    });
 		    
+		    var selectzero, chosenzero;
+		    selectzero = $("#primarySkill");
+		    selectzero.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Primary Skill:' });
+		    chosenzero = selectzero.data('chosen');
+		    chosenzero.search_field.on('keyup', function(e10)
+		    {
+		    	var prmSkill = this.value.replace(",","");
+		        if ((e10.which == 13 || e10.which == 188) && (prmSkill != null  && prmSkill != '' && prmSkill != 'undefined'))
+		        {
+		        	var par = this.parent;
+		            var option = $("<option>").val(prmSkill).text(prmSkill);
+		            selectzero.append(option);
+		            selectzero.find(option).prop('selected', true);
+                    $("#primarySkill option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#primarySkill").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
 		    var selecteight, choseneight;
 		    selecteight = $("#excludeEmployers");
 		    selecteight.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Employer:' });
@@ -2022,6 +2094,10 @@ function getCities(){
 	        		
 		        }
 		    });
+		    
+		    
+		  
+		    
 		      $("#country").on('change', function (e) {
 		    	   getStates();
 		       });
@@ -2273,6 +2349,8 @@ function minMaxExperience(){
 	    $("#excludeEmployers").val('').trigger("chosen:updated");
 	    $("#applicantType").val('').trigger("chosen:updated");
 	    $("#candidateSkills").val('').trigger("chosen:updated");
+	    $("#primarySkill").val('').trigger("chosen:updated");
+	    
 	    $("#designationType").val('').trigger("chosen:updated");
 	    
 	    
@@ -2311,6 +2389,7 @@ function minMaxExperience(){
 	     $("#excludeEmployers").val(''); 
 	     $("#applicantType").val('');
 	     $("#candidateSkills").val('');
+	     $("#primarySkill").val('');
 	    
 	}
 </script>

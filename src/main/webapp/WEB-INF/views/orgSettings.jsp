@@ -22,6 +22,12 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<style type="text/css">
+.selectChosen .chosen-container {
+width: 100% !important;
+}
+</style>
+
 <!-- end files for autocomplete with tagit -->
 <script type="text/javascript">
 window.onload = function () {
@@ -155,12 +161,13 @@ function cancelOrgImg(){
       <ul class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#orgsetting">Settings</a></li>
         <li><a data-toggle="tab" href="#emailSign" onclick="loadSignature();">Email Signature</a></li>
+        <li><a data-toggle="tab" href="#configCoolingOff" onclick="configCoolingOff();">Configure</a></li>
       </ul>
       <!-- Tab Pills navbar -->
       <div class="tab-content">
         <div id="orgsetting" class="tab-pane fade in active">   
         <div class="row">
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <div class="clearfix">
 		    <!-- Tab for Profile setting-area -->
 		  <div class="accountsettings-tab org-settings-area">
 		  <div class="tab-content panel-body">
@@ -278,7 +285,7 @@ function cancelOrgImg(){
 						<div class="form-group mt">
 							<label class="col-md-3">Fax</label>
 							<div class="col-md-9">
-							<input type="text"  class="form-control" name="fax" field-name="fax" data-validation="validate_phone validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.fax}" />
+							<input type="text"  class="form-control" name="fax" id="faxId" field-name="fax" data-validation="validate_phone validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.fax}" />
 							</div>
 						</div>
 						
@@ -296,7 +303,7 @@ function cancelOrgImg(){
 					<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_ORG_SETTINGS')">
 					<input type="submit" value="Save" id="save_button" class="btn btn-primary mr">
 					</sec:authorize>
-					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/sourcelead/dashboard'">
+					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/sourcelead/dashboard/${SourceLeadWeb_orgLocationId}'">
 					</div>
 					</div>
 					</div>
@@ -331,13 +338,27 @@ function cancelOrgImg(){
                                          &nbsp;&nbsp;Preview</button>
                                 </div>
                             </div>
-                            
-                <div id="campaignSignatrue"></div>            
-                                        
-            </div>
-        </div>
-    </div>
-  </div>
+                			<div id="campaignSignatrue"></div>            
+            			</div>
+        			</div>
+    		</div>
+    
+    		<div id="configCoolingOff" class="tab-pane fade form-horizontal"> 
+                <!-- Tab for Profile setting-area -->
+                    <div class="accountsettings-tab">
+                        <div class="tab-content panel-body">
+                            <div class="clearfix mb">
+                                <div class="pull-left">
+                                    <h4 id="coolingOffHeading">Configure Cooling-Off Period</h4>
+                                    <div id="coolingOffLoading"></div>
+                                </div>
+                            </div>
+                			<div id="coolingOffPeriodDiv"></div>            
+            			</div>
+        			</div>
+    			</div>
+    
+  	</div>
   </div>
 		</div>
 		
@@ -348,6 +369,12 @@ function cancelOrgImg(){
   <!-- Content Area Ends-->
 
 </body>
+
+<script>
+$("#faxId").keyup(function () {
+    this.value = this.value.replace(/ /g, "-");
+});
+</script>
 
 <script type="text/javascript">
 function validateCompanyName(){
@@ -621,6 +648,73 @@ $(function(){
 });
 </script>
 
+<script>
+function configCoolingOff(){
+	$("#coolingOffPeriodDiv").empty(); 
+	var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getCoolingOffPeriod?${_csrf.parameterName}=${_csrf.token}", 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+					var result = "";
+					var coolingOffPeriod = 0;
+					if(null != json.coolingOffPeriod && '' != json.coolingOffPeriod && 'undefined' != json.coolingOffPeriod){
+						coolingOffPeriod = json.coolingOffPeriod;
+					}
+					result = result + '<form id="coolingOff_form"  name="coolingOff_form" method="post">'; 
+					
+					result = result + '<div class="form-group">';
+					result = result + '<label class="col-md-3">Cooling Off Period</label>';
+					result = result + '<div class="col-md-4 select-field selectChosen">';
+					result = result + '<select  class="form-control" name="coolingOff" id="coolingOff" field-name="CoolingOff">';
+					result = result + '		<option value="'+coolingOffPeriod+'" selected>'+coolingOffPeriod+'</option>';
+					result = result + '		<option value="0 Days">0 Days</option>';
+                    result = result + '		<option value="1 Week">1 Week</option>';
+                    result = result + '		<option value="2 Weeks">2 Weeks</option>';
+                    result = result + '		<option value="3 Weeks">3 Weeks</option>';
+                    result = result + '		<option value="1 Month">1 Month</option>';
+                    result = result + '		<option value="2 Months">2 Months</option>';
+                    result = result + '		<option value="3 Months">3 Months</option>';
+                    result = result + '		<option value="4 Months">4 Months</option>';
+                    result = result + '		<option value="5 Months">5 Months</option>';
+                    result = result + '		<option value="6 Months">6 Months</option>';
+                    result = result + '		<option value="7 Months">7 Months</option>';
+                    result = result + '		<option value="8 Months">8 Months</option>';
+                    result = result + '		<option value="9 Months">9 Months</option>';
+                    result = result + '		<option value="10 Months">10 Months</option>';
+                    result = result + '		<option value="11 Months">11 Months</option>';
+                    result = result + '		<option value="1 Year">1 Year</option>';
+					result = result + '</select>';
+					result = result + '</div>';
+					result = result + '</div>';
+					
+					result = result + '<div class="pull-right">';
+					result = result + '<input type="submit" value="Save" id="saveCoolingOff_button" class="btn btn-primary mr">';
+					result = result + '</div>';
+					result = result + ' </form>';
+					
+					$("#coolingOffPeriodDiv").append(result);
+					
+					 var config = {
+							  '.chosen-select'           : {},
+							  '.chosen-select-deselect'  : {allow_single_deselect:true},
+							  '.chosen-select-no-single' : {disable_search_threshold:10},
+							  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+							  '.chosen-select-width'     : {width:"95%"}
+							}
+					       $('.chosen-select').each(function() {
+								var $this = $(this);
+								$this.next().css({'width': '100%'});
+						  })
+						  $('.chosen-container').css({'width': '100%'});
+					 
+				       $("#coolingOff").chosen();
+				       $("#coolingOff").trigger('chosen:update');
+		        },
+		 });
+}
+</script>
 
 <script>
 function loadSignature(){
@@ -661,30 +755,25 @@ function loadSignature(){
 						var italicChecked = "";
 						var underlineChecked = "";
 
-						if(opt.fontStyle != null){
+						if(null != opt.fontStyle){
 							 var fontStyle = opt.fontStyle.split(',');
 							  for(var fn = 0; fn < fontStyle.length; fn++) {
 								 if(fontStyle[fn] == "Bold"){
 									 boldClass = "btn-active";
 									 boldValue = "value = 'Y'";
 									 boldChecked = "checked";
-								 }else{
-									 boldValue = "value = 'N'";
-								 } 
+								 }
 								  
 								 if(fontStyle[fn] == "Italic"){
 									 italicClass = "btn-active";
 									 italicValue = "value = 'Y'";
 									 italicChecked = "checked";
-								 }else{
-									 italicValue = "value = 'N'";
 								 }
+								 
 								 if(fontStyle[fn] == "Underline"){
 									 underlineClass = "btn-active";
 									 underlineValue = "value = 'Y'";
 									 underlineChecked = "checked";
-								 }else{
-									 underlineValue = "value = 'N'";
 								 }
 							 } 
 						}
@@ -934,6 +1023,42 @@ function getitalicStyle(id){
 }
 </script>
 
+
+<script type="text/javascript">
+var validationSettings = {
+        errorMessagePosition : 'element',
+        borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   };  
+   $('body').on('submit', '#coolingOff_form', function(e){
+  	  if ($(this).validate(false, validationSettings)){
+  		    e.preventDefault(); 
+     		
+  		    var sourceleadUrl = '${sourceleadUrl}';
+  			var frm = $('#coolingOff_form').serializeFormJSON();
+  			var con = JSON.stringify(frm);
+  			con = con.replace(/[{}]/g, ""); 
+  		    var jsonData = encodeURIComponent(con);
+  		    $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+      		
+  		     $.ajax({
+  				type : "POST",
+  				url : sourceleadUrl+"/saveCoolingOffPeriod?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+  				success : function(result) {
+  					configCoolingOff();
+  				},
+  			});  
+          
+      	    return true;
+      }
+      else{
+      	return false;	
+         }
+      });
+      $('#coolingOff_form').showHelpOnFocus();
+      $('#coolingOff_form').validateOnBlur(false, validationSettings); 
+</script>
 
 
 <script type="text/javascript">

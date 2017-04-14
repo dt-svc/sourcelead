@@ -23,7 +23,7 @@
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
-      <div class="timesheet_head hdr-styles hotlist-header">
+      <div class="timesheet_head hdr-styles">
         <ul>
           
             <li id="teamDiv" style="display: none">
@@ -120,7 +120,12 @@
 				            	
 		                     result = result +"<tr id='hotList"+opt.id+"'>";
 		                     result = result + '<td><input type="checkbox" onclick="selectedHotList();"  class="hotlistedChecks" value='+opt.id+' name="hotlist[]" ></td>';
-		                     result = result +"  <td><div class='proj_show'><span title='"+opt.firstName+" "+opt.lastName+"'>"+opt.firstName+" "+opt.lastName+"</span></div></td>";
+		                     if(opt.lastName !='' && opt.lastName != 'undefined' && opt.lastName != null){
+		                    	 result = result +"  <td><div class='proj_show'><span title='"+opt.firstName+" "+opt.lastName+"'>"+opt.firstName+" "+opt.lastName+"</span></div></td>";
+		                     }else{
+		                    	 result = result +"  <td><div class='proj_show'><span title='"+opt.firstName+"'>"+opt.firstName+"</span></div></td>";
+		                     }
+		                     
 
 			                 result = result +"  <td><div><span>"+designation+"</span></div></td>";
 			                 if(opt.designationType != null && opt.designationType != '' && opt.designationType != "undefined")
@@ -134,12 +139,11 @@
 			                 result = result +"  <td><div>"+opt.candidateType+"</div></td>";
 			                 
 			                 
-			                 if(opt.state !='' && opt.state != 'undefined' && opt.city !='' && opt.city != 'undefined'){
+			                 if(opt.state != null && opt.state !='' && opt.state != 'undefined' && opt.city != null && opt.city !='' && opt.city != 'undefined'){
 	                             result = result +"  <td><div><span title='"+opt.country+", "+opt.state+", "+opt.city+"'>"+opt.country+", "+opt.state+", "+opt.city+"</span></div></td>";
-	                              } else if(opt.state !='' && opt.state != 'undefined')
-	                            {
+	                         }else if(opt.state != null && opt.state !='' && opt.state != 'undefined'){
 	                             result = result +"  <td><div><span title='"+opt.country+", "+opt.state+"'>"+opt.country+", "+opt.state+"</span></div></td>";
-	                            }
+	                         }
 	                            else{
 	                            result = result +"  <td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
 	                            }
@@ -314,10 +318,10 @@ function assignHotListToTeam(){
 $(document).ready(function() {
     
     $("#filter3ApprovePop").click(function(){
-		$("#filter3ApprovedPop").slideToggle(200);
+		$("#filter3ApprovedPop").slideToggle(100);
 	});
     $("html").click(function() {
-        $("#filter3ApprovedPop").slideUp(200);
+        $("#filter3ApprovedPop").slideUp(100);
     });
     $("#filter3ApprovedPop, #filter3ApprovePop").click(function(e) {  
         e.stopPropagation();

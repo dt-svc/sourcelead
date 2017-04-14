@@ -8,9 +8,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -41,17 +43,22 @@ import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * 
@@ -73,6 +80,9 @@ public class CandidateServiceImpl implements CandidateService {
 	private CommonUtil commonUtil;
 	
 	@Autowired
+	private UserService userService;
+	
+	@Autowired
 	CandidateEducationService candidateEducationService;
 	
 	@Autowired
@@ -89,6 +99,9 @@ public class CandidateServiceImpl implements CandidateService {
 	
 	@Autowired
 	CandidateIndexHelper candidateIndexHelper;
+	
+	@Autowired
+	RequirementSubmissionService requirementSubmissionService;
 	
 	
 	@Autowired
@@ -143,6 +156,7 @@ public class CandidateServiceImpl implements CandidateService {
 			}else{
 				candidate.setCandidateType("Candidate");
 			}
+			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			
 		}
         
@@ -251,6 +265,10 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setSkillsName(candidateSkills);
 		}
 		
+		if(jsonObj.has("primarySkill") && jsonObj.getString("primarySkill") != null){
+			candidate.setPrimarySkill(jsonObj.getString("primarySkill"));
+		}
+
 		HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(jsonObj, orgLocations,candidate,user.getUserCode());
 		candidate.setCandidateEducation(candidateEducationList);
 		
@@ -522,7 +540,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getCandidatesCountByOrgLocationID(orgLocationId,candidateStatus);
 	}
 
-
+	@Override
+	public Long getCandidatesCountByCandidateTypeOrgLocationID(Long orgLocationId,String candidateType) {
+		return candidateDao.getCandidatesCountByCandidateTypeOrgLocationID(orgLocationId,candidateType);
+	}
+	
+	
 	@Override
 	public Integer getHotlistCandidatesCountByTeamIdAndOrgLocationId(Long teamId, Long orgLocationId) throws Exception {
 		return candidateDao.getHotlistCandidatesCountByTeamIdAndOrgLocationId(teamId, orgLocationId);
@@ -550,9 +573,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public List<Candidate> getAllCandidatesForHotListingWhoAreTerminating(Long orgLocationId, Integer datRange)
+	public List<Candidate> getAllCandidatesForHotListingWhoAreTerminating(Long orgLocationId, Integer datRange,Long reportingManagerUserId)
 			throws Exception {
-		return candidateDao.getAllCandidatesForHotListingWhoAreTerminating(orgLocationId,datRange);
+		return candidateDao.getAllCandidatesForHotListingWhoAreTerminating(orgLocationId,datRange,reportingManagerUserId);
 	}
 	
 	@Override
@@ -722,6 +745,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				candidate.setSkillsName(candidateSkills);
 			}
 			
+			
 			HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(jsonObj, orgLocations,candidate,user.getUserCode());
 			candidate.setCandidateEducation(candidateEducationList);
 			
@@ -740,13 +764,86 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			return savedCandidate;
 	}
 
-//	private ArrayList<String> getSearchValuesFromChosenSelectField(String searchValue) {
-//		 ArrayList<String> keyWordList = null;
-//		 if(searchValue !=null && !"".equalsIgnoreCase(searchValue)){
-//			 String searchKeywordString = searchValue.replaceAll("\\[", "").replaceAll("\\]","");
-//		     keyWordList = new ArrayList<String>(Arrays.asList(searchKeywordString.split(",")));
-//		 }
-//        return keyWordList;
-//	}
+	@Override
+	public List<Candidate> getCandidateReportsListByOrgLocationID(Long orgLocationId, String candidateType)
+			throws Exception {
+			List<Candidate> candidateList = candidateDao.getCandidateReportsListByOrgLocationID(orgLocationId,candidateType);
+			for(Candidate can :candidateList){
+				if(can.getUpdatedDate() != null){
+				 can.setCandidateUpdateDateToString(Constants.DF_DMY.format(can.getUpdatedDate()));
+				}
+				User user  = userService.getUserByUserCode(can.getCreatedBy());
+				if(!"".equalsIgnoreCase(user.getLastName()) && user.getLastName()!=null && !user.getLastName().isEmpty() ){
+					
+					StringBuilder sb =  new StringBuilder();
+					can.setCreatedBy(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+				}else{
+					
+					StringBuilder sb =  new StringBuilder();
+					can.setCreatedBy(sb.append(user.getFirstName()).append(" ").toString());
+				}
+				
+				 Integer requirementSubmissionCount = requirementSubmissionService.getRequirementHistoryCountByCandidateIdAndOrgLocationID(can.getId(), orgLocationId);
+				 can.setCandidateRequiementCount(requirementSubmissionCount);
+			}
+			
+		return candidateList;
+	}
+
+	@Override
+	public List<Candidate> getCandidateReports(Long orgLocationId, String candidateType, String filterDate,
+			Date startDateUTC, Date endDateUTC,String ownersList) throws Exception {
+		List<Candidate> candidateReportsList = candidateDao.getCandidateReports(orgLocationId, candidateType, filterDate, startDateUTC, endDateUTC,ownersList);
+		for(Candidate can : candidateReportsList){
+			if(can.getUpdatedDate() != null){
+				 can.setCandidateUpdateDateToString(Constants.DF_DMY.format(can.getUpdatedDate()));
+				}
+			 Integer requirementSubmissionCount = requirementSubmissionService.getRequirementHistoryCountByCandidateIdAndOrgLocationID(can.getId(), orgLocationId);
+			 can.setCandidateRequiementCount(requirementSubmissionCount);
+			}
+		return candidateReportsList;
+	}
+
+	@Override
+	public List<User> getAllCandidateOwnersByLocationIdAndCandidateType(Long orgLocationId, String candidateType)
+			throws Exception {
+		
+		List<Candidate> candidatesList = candidateDao.getCandidateReportsListByOrgLocationID(orgLocationId, candidateType);
+		List<Long> tempOwnersIds = new ArrayList<Long>();
+		List<User> owners = new ArrayList<User>();
+		
+		if(null != candidatesList && candidatesList.size() >0){
+			for(Candidate can  : candidatesList){
+				
+				User usr = userService.getUserByUserCode(can.getCreatedBy());
+				tempOwnersIds.add(usr.getId());
+			}
+		}
+		
+		Set<Long> setWithUniqueValues = new HashSet<>(tempOwnersIds);
+        for(Long ind :setWithUniqueValues){
+        	
+        	User usr = userService.getUserById(ind);
+        	owners.add(usr);
+        }
+		return owners;
+	}
+
+	@Override
+	public List<Candidate> getOwnersByCandidates(Long orgLocationId, String candidateType,  String ownersList) throws Exception {
+		List<Candidate> ownerByCandidatesList = candidateDao.getOwnersByCandidates(orgLocationId, candidateType, ownersList);
+		for(Candidate can : ownerByCandidatesList){
+			 Integer requirementSubmissionCount = requirementSubmissionService.getRequirementHistoryCountByCandidateIdAndOrgLocationID(can.getId(), orgLocationId);
+			 can.setCandidateRequiementCount(requirementSubmissionCount);
+		}
+		return ownerByCandidatesList;
+	}
+
+	@Override
+	public List<Candidate> getHotCandidateListByTeamIdAndOrgLocationId(Long teamId, Long orgLocationId)
+			throws Exception {
+		return candidateDao.getHotCandidateListByTeamIdAndOrgLocationId(teamId, orgLocationId);
+	}
+
 
 }

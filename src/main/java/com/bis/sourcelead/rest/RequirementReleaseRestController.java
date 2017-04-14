@@ -542,6 +542,9 @@ public class RequirementReleaseRestController {
 		if(null != parentRequirement.getJobType() &&  parentRequirement.getJobType() != "" &&  parentRequirement.getJobType() != "undefined" && parentRequirement.getJobType().equalsIgnoreCase("Other")){
 			requirement.setOtherJobType(parentRequirement.getOtherJobType());
 		}
+		
+		requirement.setReqCoolingOffPeriod(parentRequirement.getReqCoolingOffPeriod());
+		
 //		requirement.setJobId(parentRequirement.getJobId());
 		requirement.setPositions(parentRequirement.getPositions());
 		requirement.setEducation(parentRequirement.getEducation());
@@ -549,12 +552,14 @@ public class RequirementReleaseRestController {
 		requirement.setMaxExp(parentRequirement.getMaxExp());
 		requirement.setCurrencyCode(parentRequirement.getCurrencyCode());
 		requirement.setRate(parentRequirement.getRate());
+		requirement.setPriority(parentRequirement.getPriority());
 		requirement.setRateType(parentRequirement.getRateType());
 		requirement.setCountry(parentRequirement.getCountry());
 		requirement.setState(parentRequirement.getState());
 		requirement.setCity(parentRequirement.getCity());
 		requirement.setSkills(parentRequirement.getSkills());
 		requirement.setDescription(parentRequirement.getDescription());
+		requirement.setNoticePeriod(parentRequirement.getNoticePeriod());
 		requirement.setDocFile(parentRequirement.getDocFile());
 		requirement.setFileContentType(parentRequirement.getFileContentType());
 		requirement.setFileName(parentRequirement.getFileName());
@@ -599,7 +604,6 @@ public class RequirementReleaseRestController {
 	}
 	
 	
-	 @PreAuthorize("hasRole('ROLE_RELEASE_REQUIREMENT')")
 	 @RequestMapping(value = "/releaseToCrowdSourcingNetwork" , method = RequestMethod.POST)
 	 public  String releaseToCrowdSourcingNetwork(@RequestParam(value="json", required=false) String json,
 			 @RequestParam(value = "requirementId", required = false) Long requirementId,

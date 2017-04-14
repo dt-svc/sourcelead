@@ -83,12 +83,12 @@ $(document).ready(function() {
 			
 			for (i=0;i < requirementAssignedToIds.length;i++)
 	        {
-	        	 result = result+ "<input type='hidden' class='defaultCheckBox' name='assignUserId"+count+"' id='assignUserId"+count+"' value='"+requirementAssignedToIds[i]+"' />";
+	        	 result = result+ "<input type='hidden' class='defaultAssignCheckBox' name='defaultAssignUserId"+count+"' id='defaultAssignUserId"+count+"' value='"+requirementAssignedToIds[i]+"' />";
 	        	 count++;
 	        }
-			result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
-			$("#assignedToSavingDiv").empty();
-			$("#assignedToSavingDiv").append(result); 
+			result = result+"<input type='hidden' name='defaultAssignedToMaxCount' id='defaultAssignedToMaxCount' value='"+count+"'/>";
+			$("#defaultAssignedToSavingDiv").empty();
+			$("#defaultAssignedToSavingDiv").append(result); 
 			assignedToValidation();
 		}	
 	} 
@@ -98,6 +98,7 @@ $(document).ready(function() {
 
 <script type="text/javascript">
 		window.onload = function () {
+			getNoticePeriodList();
 			var jobType = '${requirement.jobType}';
 			if(jobType !=null && jobType != "" && jobType != "undefined" && jobType == 'Other'){
 				  document.getElementById("jobTypeDiv").style.display="block";
@@ -417,7 +418,7 @@ $(document).ready(function () {
                  </c:if>
                 </select>
                 </div>
-                <input type="text" class="form-control" id="rate" name="rate" field-name="Rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true"  value="">
+                <input type="text" class="form-control" id="rate" name="rate" field-name="Rate" value="${requirement.rate}" data-validation="validate_Space validate_int validate_length length1-8" data-validation-optional="true"  value="">
                 <div class="input-group-btn selp-custom-min">
                   <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Type">
                     <option value="">Rate Per</option>
@@ -509,6 +510,65 @@ $(document).ready(function () {
              <textarea rows="5" class="form-control" id="description" name="description" value="${requirement.description}" field-name="Description"  data-validation-optional="true">${requirement.description}</textarea>
             </div>
           </div>
+          
+          <div class="form-group">
+              <label class="col-md-3">Notice Period</label>
+              <div class="col-md-9">
+                <select multiple class="chosen-select form-control" name="noticePeriod" id="noticePeriod" data-validation-optional="true" onclick="getNoticeperiod();">
+					     <option  selected value="${noticePrd}">${noticePrd}</option>
+					        <option  ${requirement.noticePeriod  == 'Immediately Available' ? 'selected' : ''}>Immediately Available</option>
+	                		 <option  ${requirement.noticePeriod  == '15-Days' ? 'selected' : ''}>15-Days</option>
+	               			  <option  ${requirement.noticePeriod  == '1-Month' ? 'selected' : ''}>1-Month</option>
+	                		 <option  ${requirement.noticePeriod  == '2-Month' ? 'selected' : ''}>2-Month</option>
+	                 		<option  ${requirement.noticePeriod  == '3-Month' ? 'selected' : ''}>3-Month</option>
+                </select>
+              </div>
+            </div>
+          
+          <div class="form-group">
+	         <label class="col-md-3">Cooling-Off Period</label>
+	         <div class="col-md-9">
+	             <select class="selectpicker form-control" id="coolingOff" name="coolingOff" >
+	             
+	             		<c:if test="${requirement.requirementSubmissionStatus == 'OPEN' ||  requirement.requirementSubmissionStatus == 'ONHOLD'}">
+	                     	 <option ${requirement.reqCoolingOffPeriod  == '0 Days' ? 'selected' : ''} value="0 Days">0 Days</option>
+	                    	 <option ${requirement.reqCoolingOffPeriod  == '1 Week' ? 'selected' : ''} value="1 Week">1 Week</option>
+	                     	 <option ${requirement.reqCoolingOffPeriod  == '2 Weeks' ? 'selected' : ''} value="2 Weeks">2 Weeks</option>
+	                     	 <option ${requirement.reqCoolingOffPeriod  == '3 Weeks' ? 'selected' : ''} value="3 Weeks">3 Weeks</option>
+	                     	 <option ${requirement.reqCoolingOffPeriod  == '1 Month' ? 'selected' : ''} value="1 Month">1 Month</option>
+	                     	 <option ${requirement.reqCoolingOffPeriod  == '2 Months' ? 'selected' : ''} value="2 Months">2 Months</option>
+		                     <option ${requirement.reqCoolingOffPeriod  == '3 Months' ? 'selected' : ''} value="3 Months" >3 Months</option>
+	                     	 <option ${requirement.reqCoolingOffPeriod  == '4 Months' ? 'selected' : ''} value="4 Months">4 Months</option>
+	                     	 <option ${requirement.reqCoolingOffPeriod  == '5 Months' ? 'selected' : ''} value="5 Months">5 Months</option>
+	                     	 <option ${requirement.reqCoolingOffPeriod  == '6 Months' ? 'selected' : ''} value="6 Months">6 Months</option>
+	                    	 <option ${requirement.reqCoolingOffPeriod  == '7 Months' ? 'selected' : ''} value="7 Months">7 Months</option>
+	                     	 <option ${requirement.reqCoolingOffPeriod  == '8 Months' ? 'selected' : ''} value="8 Months">8 Months</option>
+	                     	 <option ${requirement.reqCoolingOffPeriod  == '9 Months' ? 'selected' : ''} value="9 Months">9 Months</option>
+	                     	 <option ${requirement.reqCoolingOffPeriod  == '10 Months' ? 'selected' : ''} value="10 Months">10 Months</option>
+	                     	 <option ${requirement.reqCoolingOffPeriod  == '11 Months' ? 'selected' : ''} value="11 Months">11 Months</option>
+	                      	 <option ${requirement.reqCoolingOffPeriod  == '1 Year' ? 'selected' : ''} value="1 Year">1 Year</option>
+                     	 </c:if>
+                     	 <c:if test="${requirement.requirementSubmissionStatus != 'OPEN'  &&  requirement.requirementSubmissionStatus != 'ONHOLD'}">
+		                	 <option ${loginOrgLocCoolingOffPeriod  == '0 Days' ? 'selected' : ''} value="0 Days">0 Days</option>
+	                    	 <option ${loginOrgLocCoolingOffPeriod  == '1 Week' ? 'selected' : ''} value="1 Week">1 Week</option>
+	                     	 <option ${loginOrgLocCoolingOffPeriod  == '2 Weeks' ? 'selected' : ''} value="2 Weeks">2 Weeks</option>
+	                     	 <option ${loginOrgLocCoolingOffPeriod  == '3 Weeks' ? 'selected' : ''} value="3 Weeks">3 Weeks</option>
+	                     	 <option ${loginOrgLocCoolingOffPeriod  == '1 Month' ? 'selected' : ''} value="1 Month">1 Month</option>
+	                     	 <option ${loginOrgLocCoolingOffPeriod  == '2 Months' ? 'selected' : ''} value="2 Months">2 Months</option>
+		                     <option ${loginOrgLocCoolingOffPeriod  == '3 Months' ? 'selected' : ''} value="3 Months" >3 Months</option>
+	                     	 <option ${loginOrgLocCoolingOffPeriod  == '4 Months' ? 'selected' : ''} value="4 Months">4 Months</option>
+	                     	 <option ${loginOrgLocCoolingOffPeriod  == '5 Months' ? 'selected' : ''} value="5 Months">5 Months</option>
+	                     	 <option ${loginOrgLocCoolingOffPeriod  == '6 Months' ? 'selected' : ''} value="6 Months">6 Months</option>
+	                    	 <option ${loginOrgLocCoolingOffPeriod  == '7 Months' ? 'selected' : ''} value="7 Months">7 Months</option>
+	                     	 <option ${loginOrgLocCoolingOffPeriod  == '8 Months' ? 'selected' : ''} value="8 Months">8 Months</option>
+	                     	 <option ${loginOrgLocCoolingOffPeriod  == '9 Months' ? 'selected' : ''} value="9 Months">9 Months</option>
+	                     	 <option ${loginOrgLocCoolingOffPeriod  == '10 Months' ? 'selected' : ''} value="10 Months">10 Months</option>
+	                     	 <option ${loginOrgLocCoolingOffPeriod  == '11 Months' ? 'selected' : ''} value="11 Months">11 Months</option>
+	                      	 <option ${loginOrgLocCoolingOffPeriod  == '1 Year' ? 'selected' : ''} value="1 Year">1 Year</option>
+		                 </c:if>
+		             </select>
+	         </div>
+       	 </div>
           
          <div class="form-group">
 				<div class="ml">
@@ -923,6 +983,7 @@ $(document).ready(function () {
           <div class="form-group">
              
             <div id="assignedToSavingDiv"></div>
+            <div id="defaultAssignedToSavingDiv"></div>
 													
             <label class="col-md-3">Assign To</label>
             <div class="col-md-9">
@@ -1026,7 +1087,7 @@ $(document).ready(function () {
                               </div>
                             </div>
                             <div class="form-group">
-                            <label class="col-lg-4">Team Owner <span class="text-danger">*</span></label>
+                            <label class="col-lg-4">Team Lead <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
                              <select class="form-control"  name="ownerUserId" id="ownerUserId" placeholder="Team Lead *" data-validation="required validate_Space" field-name="Team Lead"  onchange="getTeamMembers();">
 			                    	
@@ -1059,11 +1120,6 @@ $(document).ready(function () {
 
 <script type="text/javascript">
 	function storeRequirement(saveType) {
-		checkTemplateforDouplicate();
-		validateJobId();
-		$('#addClient').empty();
-		$('#addContact').empty();
-		//$('#addTeam').empty(); /* commented by Venkat Kesav because of issue #2673 */ 
 		
 		var validationSettings = {
 		        errorMessagePosition : 'element',
@@ -1072,6 +1128,11 @@ $(document).ready(function () {
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
 		
+		checkTemplateforDouplicate();
+		validateJobId();
+		$('#addClient').empty();
+		$('#addContact').empty();
+		//$('#addTeam').empty(); /* commented by Venkat Kesav because of issue #2673 */ 
 		
           if(saveType=='draft'){
 			
@@ -1093,14 +1154,14 @@ $(document).ready(function () {
 			 
 			 //for client details in draft
 			 
-			 $('#addClientId').removeAttr('data-validation');
+			 /* $('#addClientId').removeAttr('data-validation');
 			 $('#addClientId').attr("data-validation-optional","true");
 			 
 			 $('#selectContact').removeAttr('data-validation');
 			 $('#selectContact').attr("data-validation-optional","true");
 			 
 			 $('#clientSubmissionForm').removeAttr('data-validation');
-			 $('#clientSubmissionForm').attr("data-validation-optional","true");
+			 $('#clientSubmissionForm').attr("data-validation-optional","true"); */
 		}
 		
           var rateType = document.getElementById("rateType").value; 
@@ -1495,6 +1556,7 @@ function getTemplateVal(){
 		checkTemplateforDouplicate();
 		
     }else{
+    	
         $("#isTemplate").val('N');
        /*  $('#jobTitle').removeAttr('data-validation');
 		$('#jobTitle').attr("data-validation-optional","true");  */
@@ -1551,6 +1613,8 @@ function setTemplateValues(){
 		    		
 			    	$("#jobTitle").val(json.jobTitle);
 			    	$("#jobType").val(json.jobType);
+			    	
+			    	$("#coolingOff").val(json.reqCoolingOffPeriod);
 			    	
 			    	$("#jobOtherType").val(json.otherJobType);
 			    	$('.selectpicker').selectpicker('refresh');
@@ -1880,10 +1944,6 @@ function popupWindow(reqId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $("#popupWindow").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $("#popupWindow").removeAttr("style");
-	  getTeamsList(reqId);
-	 // var teamType = $("#rolesDiv").val();
-	 // getUserList(teamType);
-	  getUserList();
 	  var result = '';
 	    result = result +'<div class="modal-body clearfix">';
         result = result +' <div class="form-horizontal custom-form">';
@@ -1909,6 +1969,8 @@ function popupWindow(reqId){
 		result = result +'     </div>';
 		$("#popupWindow").empty();
 	    $("#popupWindow").append(result); 
+	    
+	    getTeamsList(reqId);
 	    $("#rolesDiv").selectpicker("refresh");
 }
 </script>
@@ -1923,9 +1985,15 @@ function popupWindow(reqId){
 --%>
 <script>
 function getUserList(teamType){  
-	  var sourceleadUrl ='${sourceleadUrl}';
-	  $("#userList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	  $.ajax({
+	   var sourceleadUrl ='${sourceleadUrl}';
+	  
+	   var selectedUsersForAssign = [];
+	   $('input[name^="assignUserId"]').each(function() {
+	 		selectedUsersForAssign.push($(this).val());
+	   });
+	   
+ 	   $("#userList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	   $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getUserList?${_csrf.parameterName}=${_csrf.token}&teamType="+teamType,    
             success :function(data) {
@@ -1957,23 +2025,57 @@ function getUserList(teamType){
 		                    	 var opt = json[i]; 
 		                    	 result = result +'<tr>';
 		                    	 var localCheckedStatus = "";
-		                    	 $(".defaultCheckBox").each(function() {
+		                    	 $(".defaultAssignCheckBox").each(function() {
          							var localValue = this.value;
          							if(localValue == opt.id){
          								localCheckedStatus = "checked";
          							}  
 		                    	 });
-		                    	 if(ids.indexOf(''+opt.id) > -1){
-		                    		 refreshIds.push(''+opt.id);
-		                    		 result = result +'             <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" checked="checked" value="'+opt.id+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required"></td>';
-		                    	 }else{
-		                    		 result = result +'             <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" value="'+opt.id+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
-		                    	 }
+		                    	 
 		                    	 var lastName = '';
 		                    	 if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
 		                    		 lastName = ' '+opt.lastName;
 		                    	 }
-		                    	 result = result +'             <td><span class="tbldata-dotdot-me" title="'+opt.firstName+''+lastName+'">'+opt.firstName+''+lastName+'</span></td>';
+		                    	 var owner ='';
+		         				 if(null != opt.isAssignedOwner && 'undefined' != opt.isAssignedOwner){
+		         					 owner = opt.isAssignedOwner;
+		         				 }
+		         				 var assignedTeam = '';
+		         				 if(null != opt.assignedTeam && 'undefined' != opt.assignedTeam && '' != opt.assignedTeam){
+		         					 assignedTeam = opt.assignedTeam;
+		         				 }
+		                    	 
+		                    	 if(ids.indexOf(''+opt.id) > -1){
+		                    		 refreshIds.push(''+opt.id);
+		                    		 result = result +'             <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" checked="checked" value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required"></td>';
+		                    	 }else if('' != assignedTeam){
+		                    		 if(localCheckedStatus == "checked"){
+			                    		 result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
+		                    		 }else{
+		                    		 	 result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" checked="checked" value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
+		                    		 }
+		                    	 }else if(localCheckedStatus == "checked"){
+		                    		 result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
+		                    		 //result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" value="'+opt.id+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
+		                    	 }else{
+		                    		 if(localCheckedStatus == "checked"){
+			                    		 result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
+		                    		 }else{
+		                    			 
+		                    			 var selectedUserIdForAssign = "";
+		                    			 var iteratedUserValue = opt.id+","+opt.assignedTeamId;
+				                    	 $.each(selectedUsersForAssign, function (i, value)  
+		                                 {  
+				                    		 selectedUserIdForAssign = value;
+		                                     if(selectedUserIdForAssign == iteratedUserValue){
+		                                    	 localCheckedStatus = "checked";
+		                                     }
+		                                 });
+		                    			 result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
+		                    		 }
+		                    	 }
+		                    	 
+		                    	 result = result +'             <td><span class="tbldata-dotdot-me" title="'+opt.firstName+''+lastName+'">'+opt.firstName+''+lastName+''+assignedTeam+''+owner+'</span></td>';
 		                    	 result = result +'             <td><span class="tbldata-dotdot" title="'+opt.email+'">'+opt.email+'</span></td>';
 		                    	 result = result +'             <td><span class="tbldata-dotdot-100">'+opt.userType+'</span></td>';
 		                    	 result = result +'             <td><span class="tbldata-dotdot-100">'+opt.assignJobCount+'</span></td>';
@@ -1985,7 +2087,7 @@ function getUserList(teamType){
 	                       result = result +"</table>"; 
 	                       result = result +'   <div class="clearfix"></div>'; 
 	                 	   result = result +'   </div>'; 
-	                 	   result = result +'	<span class="jquery_form_error_message" style="display:none;">Assign at least to a member</span>';
+	                 	   result = result +'	<span class="jquery_form_error_message" style="display:none;">Assign at least to a new member</span>';
 	                 	   result = result +'   <div class="modal-footer mt">';
 	                 	   result = result +'     <button class="btn btn-primary" type="button" id="assignbtnId" onClick="assignMembers();">Assign</button>';
 	                 	   result = result +'     <button class="btn btn-default" type="button" id="cancelbtnId" onClick="clearSelections();">Clear</button>';
@@ -2079,21 +2181,13 @@ function getTeamsList(reqId){
             success :function(data) {
             	var json = JSON.parse(data);
 				var output = "";
-				/* output = output +'     <option disabled>Select Role</option>'; */
-				
-
-				/* if(teamType == 'All'){
-					output = output +' <option value="All" selected>All</option>';
-				}else{
-					output = output +' <option value="All">All</option>';
-				} */
 			  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_TEAM\')">';
 			  if(json.teams.length > 0){
 				  output = output + "<optgroup label='Teams'>";
 				  for (var i = 0; i < json.teams.length; i++) {
 						var opt = json.teams[i];
 						if('Y' == opt.isTeamAssigned){
-							output = output + "<option name='TeamAndRole' value='"+opt.id+"' selected disabled>"+ opt.name + "</option>";
+							output = output + "<option name='TeamAndRole' value='"+opt.id+"' selected >"+ opt.name + "</option>";
 						}else if($.inArray(''+opt.id, teamRoleIds) > -1){
 							output = output + "<option name='TeamAndRole' value='"+opt.id+"' selected>"+ opt.name + "</option>";	
 					    }else{
@@ -2110,7 +2204,7 @@ function getTeamsList(reqId){
 					for (var i = 0; i < json.roles.length; i++) {
 						var opt = json.roles[i];
 						if('Y' == opt.isRoleAssigned){
-							output = output + "<option name='TeamAndRole' value='"+opt.id+"role' selected disabled>"+ opt.displayName + "</option>";
+							output = output + "<option name='TeamAndRole' value='"+opt.id+"role' selected >"+ opt.displayName + "</option>";
 						}else if($.inArray(''+opt.id+'role', teamRoleIds) > -1){
 							output = output + "<option name='TeamAndRole' value='"+opt.id+"role' selected>"+ opt.displayName + "</option>";
 						}else{
@@ -2124,6 +2218,11 @@ function getTeamsList(reqId){
 			    $("#rolesDiv").selectpicker("refresh");
             	
             },
+            complete: function (data) {
+            	var teamType = $("#rolesDiv").val();
+          		getUserList(teamType);
+            }
+            
       }); 
  } 
 </script>
@@ -2145,11 +2244,9 @@ function getTeamsList(reqId){
 	function clearSelections(){
 		$('#cancelbtnId').attr("data-dismiss","modal");
 		$('#closebtnId').attr("data-dismiss","modal");
-		ids = [];
 		$("#assignedToSavingDiv").empty();
 		teamRoleIds = [];
-		//$("#rolesDiv").empty();
-		//assignMembers();
+		$("#rolesDiv").empty();
 	}
 </script>
 
@@ -2167,7 +2264,7 @@ function pagination(){
     	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -2193,6 +2290,7 @@ function assignMembers() {
 	if(totalCount == 0){
 		$('span.jquery_form_error_message').show();
 	}else{
+		$("#assignedToSavingDiv").empty();
 		$('#assignbtnId').attr("data-dismiss","modal");
 		rowcollection.each(function(index,elem){
 		    var checkbox_value = $(elem).val();
@@ -2200,7 +2298,7 @@ function assignMembers() {
 		    count++;
 		});
 		result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
-		$("#assignedToSavingDiv").empty();
+		//$("#assignedToSavingDiv").empty();
 		$("#assignedToSavingDiv").append(result);
 		assignedToValidation();
 		$("#assignedTeamId").val($("#rolesDiv").val());
@@ -2237,7 +2335,7 @@ function getTeamOwners(){
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
-		        	output = output + "<option value=''>-Select Team Owners-</option>"; 
+		        	output = output + "<option value=''>-Select Team Lead-</option>"; 
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
@@ -2395,7 +2493,11 @@ function getLevel2Approvers(currentApproverId){
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
+			        		if(opt.lastName != null && opt.lastName !='undefined'){
 			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		}else{
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+"</option>";	
+			        		}
 					}
 		        	$("#sequentialApprover2").empty();
 			        $("#sequentialApprover2").append(output);
@@ -2509,7 +2611,7 @@ function checkTemplateforDouplicate(){
 			        	}
 			        	else{
 			        		 $('input#jobTitle').removeAttr( "record-exist record-exist-errormsg");
-			        		 $('#jobTitleDiv').find('p.jquery_form_error_message').remove(); 
+			        		// $('#jobTitleDiv').find('p.jquery_form_error_message').remove(); 
 			        		 $("#requirement_form" ).addClass('button').val('Save');
 		                    $("#requirement_form").removeAttr("disabled");
 			        	}
@@ -2564,5 +2666,16 @@ function checkcheckbox(){
 }
 </script> -->
 
+
+<script>
+function getNoticePeriodList(){
+var notice = '${requirement.noticePeriod}';	
+var splitNotice = notice.split(",");
+for (var i = 0; i < splitNotice.length; i++) {
+	splitNotice[i] = splitNotice[i].replace(/^\s*/, "").replace(/\s*$/, "");
+}
+	$("#noticePeriod").val(splitNotice).trigger("chosen:updated");
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />

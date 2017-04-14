@@ -10,6 +10,8 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
 	
+	<link href="resources/css/candidate-common.css" rel="stylesheet">
+	
 	<script type="text/javascript">
 		window.onload = function () {
 			getAllCountries();
@@ -22,44 +24,7 @@
 			document.getElementById("addcandidate_form").reset();
 		});
 	</script>
-	 
-	<style>
 	
-	.er .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn){
-	width:100px;
-	}
-	.er .btn-default{
-	background:#337ab7;
-	color:#fff;
-	text-shadow: none;
-	}
-	.clsDatePicker {
-		z-index: 100000 !important;
-	}
-	#uploadFileGroup p.jquery_form_error_message{
-	position: absolute;
-	left:0;
-	bottom:-16px;
-	}
-	.selp-custom-min .btn-default{
-	/* z-index: -55 !important; */
-	-webkit-border-radius:0 3px 3px 0;
-	-moz-border-radius:0 3px 3px 0;
-	-ms-border-radius:0 3px 3px 0;
-	border-radius:0 3px 3px 0;
-	}
-	.selp-custom-min .open {
-	z-index: 999999999 !important;
-	}
-	.ratetype p {
-	bottom: -14px;
-	left:0px !important;
-	position: absolute;
-	}
-	.pras.req-title p{
-	bottom:-14px;
-	}
-	</style>
 
 <!-- Content Area -->
 <section class="content-wraper">
@@ -78,7 +43,7 @@
         <div class="form-group">
           <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="firstName" name="firstName" value="${firstName}"  field-name="First Name" data-validation="required validate_AlphaNumber validate_Space validate_length length1-100" value="">
+            <input type="text" class="form-control" id="firstName" name="firstName" value="${firstName}"  field-name="First Name" data-validation="required validate_AlphaNumber validate_length length1-100" value="">
             <div class="input-group hidden">
               <div class="input-group-btn">
                 <button type="button" class="btn btn-danger dropdown-toggle"
@@ -100,13 +65,13 @@
         <div class="form-group">
           <label class="col-md-3">Last Name</label>
           <div class="col-md-9">
-           <input type="text" class="form-control" id="lastName" name="lastName" value="${lastName}"  field-name="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true" value="">
+           <input type="text" class="form-control" id="lastName" name="lastName" value="${lastName}"  field-name="Last Name" data-validation="validate_AlphaNumber validate_length length1-100" data-validation-optional="true" value="">
           </div>
         </div>
         <div class="form-group" id="emailDiv">
           <label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="email" name="email" value="${email}"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateCandidateEmail();" onmouseout="validateCandidateEmail();" value="">
+            <input type="text" class="form-control" id="email" name="email" value="${email}"  field-name="Email" data-validation="required validate_length length2-100 validate_email" onblur="validateCandidateEmail();" onmouseout="validateCandidateEmail();" value="">
           <span class="hidden">Valid Email</span>
           </div>
         </div>
@@ -114,14 +79,14 @@
         <div class="form-group">
           <label class="col-md-3">Mobile</label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="mobilePhone" name="mobilePhone" value="${phone}"  field-name="Mobile Number" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true" value="">
+            <input type="text" class="form-control" id="mobilePhone" name="mobilePhone" value="${phone}"  field-name="Mobile Number" data-validation="validate_length length9-20 validate_phone" data-validation-optional="true" value="">
           </div>
         </div>
         
         <div class="form-group">
           <label class="col-md-3">Alternative Number</label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="alternateMobilePhone" name="alternateMobilePhone"   field-name="Alternative Number" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true" value="">
+            <input type="text" class="form-control" id="alternateMobilePhone" name="alternateMobilePhone"   field-name="Alternative Number" data-validation="validate_length length9-20 validate_phone" data-validation-optional="true" value="">
           </div>
         </div>
         
@@ -224,7 +189,7 @@
                  <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
                  <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
                  <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+                 <option ${currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
                  <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
                  <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
                  
@@ -241,7 +206,7 @@
                     <option ${currentRateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
                     <option ${currentRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
                     <option ${currentRateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
-                    <option ${currentRateType  == 'others' ? 'selected' : ''}>Yearly</option>
+                    <option ${currentRateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
                   </select>
                 </div>
                  <div class="clearfix"></div> <div class="clearfix"></div>
@@ -262,7 +227,7 @@
                  <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
                  <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
                  <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+                 <option ${currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
                  <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
                  <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
                  
@@ -279,7 +244,7 @@
                     <option ${rateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
                     <option ${rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
                     <option ${rateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
-                    <option ${rateType  == 'others' ? 'selected' : ''}>Yearly</option>
+                    <option ${rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
                   </select>
                 </div>
                  <div class="clearfix"></div> <div class="clearfix"></div>
@@ -311,7 +276,7 @@
         <div class="form-group">
               <label class="col-md-3">Skills</label>
               <div class="col-md-9">
-                <select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">
+                <select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true" >
                 <c:forEach var="skill" items="${skillsList}">
 	                     <option value="${skill.name}">${skill.name}</option>
                 </c:forEach>
@@ -331,12 +296,7 @@
          </div>
         </div>
         
-         <div class="form-group">
-          <label class="col-md-3">Summary</label>
-          <div class="col-md-9">
-            <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true"></textarea>
-          </div>
-        </div>
+         
         
         <div class="form-group">
          <label class="col-md-3">Notice Period</label>
@@ -351,7 +311,21 @@
                 </select>
              
            </div>
+          </div> 
+           <div class="form-group">
+          <label class="col-md-3">Primary Skill</label>
+          <div class="col-md-9">
+            <input type="text" class="form-control" id="primarySkill" name="primarySkill" value="${primarySkill}"  field-name="Primary Skill" data-validation="validate_Space validate_length length2-200" data-validation-optional="true">
+          </div>
          </div>
+         
+         
+         <div class="form-group">
+          <label class="col-md-3">Summary</label>
+          <div class="col-md-9">
+            <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true"></textarea>
+          </div>
+        </div>
          
           <div class="clearfix"></div>
           
@@ -608,6 +582,24 @@ function getCities(){
 		    select = $("#candidateSkills");
 		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
 		    chosen = select.data('chosen');
+		    
+		    $("#candidateSkills").chosen().change(function(event) {
+		    	 var sourceleadUrl ='${sourceleadUrl}';
+		    	var allSkills = $(event.target).val();
+		   
+		    	
+		    	$.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+			        success: function(data) {
+			        	var primarySkill = data;
+			        	      $("#primarySkill").val(primarySkill);
+			        	
+			        },
+			    });
+		    	
+		    });
+		    
 		    chosen.search_field.on('keyup', function(e)
 		    {
 		    	var newSkill = this.value.replace(",","");
@@ -828,3 +820,5 @@ var currentRate = document.getElementById("currentRate").value;
 	 
 }
 </script>
+
+
