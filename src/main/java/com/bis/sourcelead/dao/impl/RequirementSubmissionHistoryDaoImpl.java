@@ -24,6 +24,7 @@ import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Timezone;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -123,6 +124,17 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementSubmissionHistory rsh where rsh.submissionId.id IN (:submissionIds)";
 		return session.createQuery(query).setParameterList("submissionIds", submissionIds).setCacheable(true).list();
+	}
+
+	@Override
+	public Long getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(Long orgLocationId, User user,
+			String submissionStage, String timePeriod) throws Exception {
+		
+		 String query ="select count(*)from RequirementSubmissionHistory rsh where rsh.orgLocations.id =:orgLocationId and rsh.createdBy =:userCode ";
+		Session session = this.sessionFactory.getCurrentSession();
+	    long count = ((Long)session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("userCode",user.getUserCode()).uniqueResult()).intValue();
+    
+       return count;
 	}
 
 }

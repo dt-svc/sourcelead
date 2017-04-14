@@ -123,7 +123,7 @@ public class Candidate implements Serializable{
 	@Column(name = "EXPECTED_RATE_CURRENCY")
 	private String expectedRateCurrencey;
 	
-	@Column(name = "SUMMARY")
+	@Column(name = "SUMMARY", columnDefinition = "TEXT default NULL")
 	private String summary;
 	
 	@Column(name = "DOC_FILE",columnDefinition="mediumblob")

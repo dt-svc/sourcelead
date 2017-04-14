@@ -173,6 +173,15 @@ public class User implements Serializable{
 	
 	@Transient
 	private String isAssignedOwner;
+	
+	@Transient
+    private long userRequirementsCount;
+	
+	@Transient
+    private long userApplicantsCount;
+	
+	@Transient
+    private long userCandidatesCount;
 
 	public Status getPreviousUserState() {
 		return previousUserState;
@@ -519,4 +528,30 @@ public class User implements Serializable{
 	public void setIsAssignedOwner(String isAssignedOwner) {
 		this.isAssignedOwner = isAssignedOwner;
 	}
+
+	public long getUserRequirementsCount() {
+		return userRequirementsCount;
+	}
+
+	public void setUserRequirementsCount(long userRequirementsCount) {
+		this.userRequirementsCount = userRequirementsCount;
+	}
+
+	public long getUserCandidatesCount() {
+		return userCandidatesCount;
+	}
+
+	public void setUserCandidatesCount(long userCandidatesCount) {
+		this.userCandidatesCount = userCandidatesCount;
+	}
+
+	public long getUserApplicantsCount() {
+		return userApplicantsCount;
+	}
+
+	public void setUserApplicantsCount(long userApplicantsCount) {
+		this.userApplicantsCount = userApplicantsCount;
+	}
+	
+	
 }
