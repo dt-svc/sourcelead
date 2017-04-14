@@ -1394,13 +1394,13 @@ function cancel(candidateId){
     
     <!-- Compnay details -->
     <div class="side_mask">
-       <div class="proj_close"></div>
+       <div class="proj_close" onclick="activeTab();"></div>
     </div>
  <div class="clients_side_wrap quickviewTabs">
     
  <ul class="nav nav-tabs">
-    <li class="active"><a data-toggle="tab" href="#quickview">Quickview</a></li>
-    <li><a data-toggle="tab" href="#detailview">Detailview</a></li>
+    <li class="active" id="candQuickView"><a data-toggle="tab" href="#quickview">Quickview</a></li>
+    <li id="candDetailView"><a data-toggle="tab" href="#detailview">Detailview</a></li>
   </ul>
 
   <div class="tab-content">
@@ -1428,6 +1428,17 @@ function cancel(candidateId){
   <textarea placeholder="Enter message"></textarea>
   <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
 <!--   Error Message   --> 
+
+
+<script>
+function activeTab(){
+	$("#candDetailView").removeClass("active");
+	$("#candQuickView").addClass("active");
+	$("#quickview").addClass("active in");
+	$("#detailview").removeClass("active in");
+}
+</script>
+
  
 <!-- BELOW SCRIPTS ARE USED TO SHOW / HIDE POPUP'S --> 
 <script>

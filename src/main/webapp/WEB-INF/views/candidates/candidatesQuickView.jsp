@@ -75,8 +75,9 @@ function candidateQuickViewProfile(candidateId){
 	         			 		var qvSkills = "";
 	         			 		var res = [];
 	         			 		res = skill.split(',');
+	         			 		var minSkills = res.slice(1,20);
 				                qvSkills = "<ul>";
-				                for(i = 0; i<=res.length ; i++){
+				                for(i = 0; i<=minSkills.length ; i++){
 				                		if(res[i] != null && res[i] != '' && res[i] != 'undefined'){
 					                		qvSkills += "<li>" + res[i] + "</li>";
 					                	}
@@ -112,7 +113,7 @@ function candidateQuickViewProfile(candidateId){
 					result = result+'                  <ul class="list-unstyled">                                                                                                                  ';
 					result = result+'                      <li><i class="fa fa fa-envelope paddingRight text-warning" title="'+json.email+'"></i>'+json.email+'';
 					result = result+'                      </li>                                                                                                                                   ';
-					result = result+'                      <li><i class="fa fa-phone paddingRight text-warning" title="'+mobilePhone+'"></i>'+mobilePhone+'</li>                                              ';
+// 					result = result+'                      <li><i class="fa fa-phone paddingRight text-warning" title="'+mobilePhone+'"></i>'+mobilePhone+'</li>                                              ';
 					result = result+'                      <li><i class="fa fa-map-marker paddingRight text-warning" title="'+city+''+state+''+country+'"></i>'+city+''+state+''+country+'</li>';
 // 					result = result+'                      <li><i class="fa fa-skype paddingRight text-info" title="Skype"></i>candidate.sky</li>                                                  ';
 					result = result+'                  </ul>                                                                                                                                       ';
@@ -358,10 +359,17 @@ function qwikCertificates(candidateId){
 								if(i < 3){
 		                    	var opt = json[i];  
 								result = result +'<div class="resume-widget resumewidget">';
+								
+								if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != '' && opt.candidatevalidFromDateToString !='undefined'){
+									candidatevalidFromDateToString = opt.candidatevalidFromDateToString;
+								}else{
+									candidatevalidFromDateToString = "";
+								}
+								
 								if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != "" && opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
 									result = result +'  <p><small>'+opt.candidatevalidFromDateToString+' - '+opt.candidatevalidToDateToString+'</small></p>';
 								}else{
-									result = result +'  <p><small>'+opt.candidatevalidFromDateToString+' </small></p>';
+									result = result +'  <p><small>'+candidatevalidFromDateToString+' </small></p>';
 								}
 								if(opt.name != null && opt.name != 'undefined' && opt.name != ""){
 									name = opt.name;
