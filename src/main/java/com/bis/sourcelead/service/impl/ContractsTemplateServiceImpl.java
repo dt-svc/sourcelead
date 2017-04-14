@@ -50,7 +50,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		
 		if(jsonObj.has("templateContent") && !isNullOrEmpty(jsonObj.getString("templateContent"))){
 			String content = jsonObj.getString("templateContent");
-			String header = "<h5><b>"+jsonObj.getString("templateName")+"</b></h5><br>";
+			String header = "<div style='text-align: center;'>"+jsonObj.getString("templateName")+"<br></div><br>";
 			String totalBody = header + content;
 			contractsTemplate.setTemplateContent(totalBody);
 		}
@@ -78,6 +78,11 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
     	    document.close();
     	    file.close();
 			return "Success";		
+	}
+
+	@Override
+	public ContractsTemplate getContractTemplateById(Long contractTemplateId) {
+		return contractsTemplateDao.saveContractTemplate(contractTemplateId);
 	}
 
 	
