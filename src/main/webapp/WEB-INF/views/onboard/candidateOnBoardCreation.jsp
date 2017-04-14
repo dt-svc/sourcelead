@@ -1216,9 +1216,19 @@ function getTemplatePolicyDocumentsDetails(onboardId){
            				 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadTemplateDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
            				 result = result +"<input type='button' value='"+opt.fileName+"'>";
            				 result = result +"</a>";
-           				 result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument("+opt.id+",\""+documentType+"\");' >";
+           				
+           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+           					result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument("+opt.id+",\""+documentType+"\");' >"; 
+           				 }else{
+           					result = result +"<input class='dele' type='button' onClick='deleteCandidateOnboardDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
+           				 }
+           				 
            				 result = result +"</strong>";
-           				 result = result +"<input type='hidden' name='savedPoliciesAttcahments' id='policyAttachment"+opt.id+"' value='"+opt.id+"' />";
+           				
+           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+           					result = result +"<input type='hidden' name='savedPoliciesAttcahments' id='policyAttachment"+opt.id+"' value='"+opt.id+"' />";
+           				}
+           				 
                 	 }
                 	
                 	 result = result +"<input type='hidden' name='policiesAttcahmentMaxRowNumber'  id='policiesAttcahmentMaxRowNumber' value='1' />";
@@ -1262,9 +1272,19 @@ function getTemplateSupportingDocumentsDetails(onboardId){
                 		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadTemplateDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
            				 result = result +"<input type='button' value='"+opt.fileName+"'>";
            				 result = result +"</a>";
-           				 result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument("+opt.id+",\""+documentType+"\");' >";
+           				
+           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+            					result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument("+opt.id+",\""+documentType+"\");' >"; 
+           				 }else{
+           					result = result +"<input class='dele' type='button' onClick='deleteCandidateOnboardDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
+           				 }
+           				
            				 result = result +"</strong>";
-           				result = result +"<input type='hidden' name='savedSupportedAttcahments' id='supportedAttachment"+opt.id+"' value='"+opt.id+"' />";
+           				 
+           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+           					result = result +"<input type='hidden' name='savedSupportedAttcahments' id='supportedAttachment"+opt.id+"' value='"+opt.id+"' />";
+           				 }
+           				
                 	 }
                 	 
                 	 result = result +"<input type='hidden' name='supportingAttcahmentMaxRowNumber'  id='supportingAttcahmentMaxRowNumber' value='1' />";
@@ -1300,6 +1320,29 @@ function deleteTemplateDocument(documentId,documentType){
 	 
 }
 </script>
+
+<script>
+function deleteCandidateOnboardDocument(documentUUID,documentId,documentType){
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	   $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/deleteTemplateDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
+	        success: function(data) {
+	        	if(data == 'success'){
+	        		if(documentType == 'Policies'){
+	        			document.getElementById("policydocument"+documentId).remove();
+	        		}else if(documentType == 'Supported'){
+	        			document.getElementById("supportdocument"+documentId).remove();
+	        		}
+	        		
+	        	}
+	        },
+	    });
+	 
+}
+</script>
+
 
 
 

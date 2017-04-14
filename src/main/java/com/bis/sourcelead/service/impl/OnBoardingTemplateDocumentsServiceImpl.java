@@ -44,4 +44,15 @@ public class OnBoardingTemplateDocumentsServiceImpl implements OnBoardingTemplat
 		return onBoardingTemplateDocumentsDao.getOnBoardingTemplateDocumentsById(Id);
 	}
 
+	@Override
+	public Integer getCandidateOnboardingDocumentsByCandidateOnboardingId(Long candidateOnBoardingId) throws Exception {
+		return onBoardingTemplateDocumentsDao.getCandidateOnboardingDocumentsByCandidateOnboardingId(candidateOnBoardingId);
+	}
+
+	@Override
+	public List<OnBoardingTemplateDocuments> getOnBoardingTemplateDocumentsByCandidateOnBoardingId(
+			Long candidateOnBoardingId, String documentType) throws Exception {
+		return onBoardingTemplateDocumentsDao.getOnBoardingTemplateDocumentsByCandidateOnBoardingId(candidateOnBoardingId, documentType);
+	}
+
 }

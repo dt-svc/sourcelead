@@ -748,18 +748,42 @@ public class CandidateOnBoardRestController {
 				 @RequestParam(value="documentType", required=false) String documentType, HttpServletRequest request) throws Exception {
 			
 			String resultJson;
+			List<OnBoardingTemplateDocuments> documentsList = null;
+			List<OnBoardingTemplateDocuments> onboardingDocumentsList = new ArrayList<OnBoardingTemplateDocuments>();
 			
-			CandidateOnBoarding onboarding = candidateOnBoardingService.getCandidateOnBoardingById(onboardId);
+			Integer documentsCount = onBoardingTemplateDocumentsService.getCandidateOnboardingDocumentsByCandidateOnboardingId(onboardId);
 			
-			 List<Long> templateIdsList = new ArrayList<Long>();
-			 for (String s : onboarding.getOnboardTemplateId().split(",")){
-				 templateIdsList.add(Long.parseLong(s));
-			 }
-			 
-			 
-			List<OnBoardingTemplateDocuments> documentsList = onBoardingTemplateDocumentsService.getCandidateOnBoardingTemplateDocumentsByTemplateId(templateIdsList,documentType);
-		 	 
-		 	resultJson = commonUtil.toJSON(documentsList);
+			if(documentsCount > 0){
+				documentsList = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsByCandidateOnBoardingId(onboardId,documentType);
+				if(null != documentsList && documentsList.size() > 0){
+					for(OnBoardingTemplateDocuments  documents : documentsList ){
+						documents.setOnboardDocumentType("Candidate Documents");
+						onboardingDocumentsList.add(documents);
+					}
+				}
+				
+				
+			}else{
+				 
+				CandidateOnBoarding onboarding = candidateOnBoardingService.getCandidateOnBoardingById(onboardId);
+				 List<Long> templateIdsList = new ArrayList<Long>();
+				 
+				 if(!isNullOrEmpty(onboarding.getOnboardTemplateId())){
+					 for (String s : onboarding.getOnboardTemplateId().split(",")){
+						 templateIdsList.add(Long.parseLong(s));
+					 }
+					 
+					documentsList = onBoardingTemplateDocumentsService.getCandidateOnBoardingTemplateDocumentsByTemplateId(templateIdsList,documentType);
+					if(null != documentsList && documentsList.size() > 0){
+						for(OnBoardingTemplateDocuments  documents : documentsList ){
+							documents.setOnboardDocumentType("Template Documents");
+							onboardingDocumentsList.add(documents);
+						}
+					}
+				 }
+			}
+			
+		 	resultJson = commonUtil.toJSON(onboardingDocumentsList);
 			return resultJson;
 		   
 		}

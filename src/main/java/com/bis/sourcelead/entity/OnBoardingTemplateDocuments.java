@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -70,6 +71,8 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Transient
+	private String onboardDocumentType;
 	
 	
 
@@ -175,5 +178,13 @@ private static final long serialVersionUID = 1L;
 
 	public void setCandidateOnBoardingId(CandidateOnBoarding candidateOnBoardingId) {
 		this.candidateOnBoardingId = candidateOnBoardingId;
+	}
+
+	public String getOnboardDocumentType() {
+		return onboardDocumentType;
+	}
+
+	public void setOnboardDocumentType(String onboardDocumentType) {
+		this.onboardDocumentType = onboardDocumentType;
 	}
 }

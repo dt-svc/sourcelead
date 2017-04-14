@@ -15,4 +15,8 @@ public interface OnBoardingTemplateDocumentsDao {
 	List<OnBoardingTemplateDocuments> getCandidateOnBoardingTemplateDocumentsByTemplateId(List<Long> templateIds,String documentType) throws Exception;
 	
 	OnBoardingTemplateDocuments getOnBoardingTemplateDocumentsById(Long Id) throws Exception;
+	
+	Integer getCandidateOnboardingDocumentsByCandidateOnboardingId(Long candidateOnBoardingId) throws Exception;
+	
+	List<OnBoardingTemplateDocuments> getOnBoardingTemplateDocumentsByCandidateOnBoardingId(Long candidateOnBoardingId,String documentType) throws Exception;
 }
