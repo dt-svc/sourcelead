@@ -147,7 +147,7 @@ public class CandidateListRestController {
 	 
 	 @RequestMapping(value = "/getCandidatesListByOrgLocationID")
 	 public String getCandidatesListByOrgLocationID(@RequestParam(value="candidateStatus", required=false) Integer  candidateStatus,@RequestParam(value="updatedDateRange", required=false) String  updatedDateRange,
-			 @RequestParam(value="candidateType", required=false) String  candidateType,
+			 @RequestParam(value="candidateType", required=false) String  candidateType,@RequestParam(value="isAssociate", required=false) String  isAssociate,
 			 HttpServletRequest request) throws Exception {
 
 		String resultJson;
@@ -178,10 +178,21 @@ public class CandidateListRestController {
 			
 			if(null != userRole && !userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
 				if(null != candidateType && !candidateType.isEmpty() && !candidateType.equalsIgnoreCase("All")){
-					boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", candidateType));
+					if(null != isAssociate && isAssociate.equalsIgnoreCase(Constants.NO)){
+						boolQueryBuilder.must(QueryBuilders.matchQuery("isFavourite", candidateType));
+					}
+					
 				}
 			}
 			
+			
+			if(null != isAssociate && isAssociate.equalsIgnoreCase(Constants.YES)){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", "Y"));
+				if(null != candidateType && !candidateType.isEmpty() && !candidateType.equalsIgnoreCase("All")){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("isFavouriteAssociate", candidateType));
+				}
+				
+			}
 			
 			if(null != userRole && userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
 				boolQueryBuilder.must(QueryBuilders.matchQuery("recruiterUserId", user.getId()));
@@ -258,7 +269,8 @@ public class CandidateListRestController {
 	   * @throws NullPointer
 	   */
 	 @RequestMapping(value = "/searchCandidate", method = RequestMethod.POST)
-	 public String searchCandidate(@RequestParam(value = "json", required = false) String json,@RequestParam(value="candidateStatus", required=false)Integer  candidateStatus,MultipartHttpServletRequest request) throws Exception {
+	 public String searchCandidate(@RequestParam(value = "json", required = false) String json,@RequestParam(value="candidateStatus", required=false)Integer  candidateStatus,
+			 @RequestParam(value="isAssociate", required=false) String  isAssociate,MultipartHttpServletRequest request) throws Exception {
 
 		    MultipartFile multiFile = null;
 			Iterator<String> itrator = request.getFileNames();
@@ -538,7 +550,9 @@ public class CandidateListRestController {
 				}
 				
 				
-				
+				if(null != isAssociate && isAssociate.equalsIgnoreCase(Constants.YES)){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", isAssociate));
+				}
 				
 				List<CandidateIndex> candidatesList = new ArrayList<CandidateIndex>();
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -649,7 +663,7 @@ public class CandidateListRestController {
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<Candidate> candList = new ArrayList<Candidate>();
-		List<Candidate>   candidatesList = candidateService.getHotListCandidatesListByOrgLocationID(loginOrgLocation.getId(), candidateType);
+		List<Candidate>   candidatesList = candidateService.getAllActiveCandidatesCountForCampaignByLocationAndStatus(loginOrgLocation.getId());
 		
 		resultJson = commonUtil.toJSON(candidatesList);
 		return resultJson;
@@ -960,10 +974,10 @@ public class CandidateListRestController {
 			
 			StringBuilder candidateCreateMsg = new StringBuilder();
 			candidate = candidateService.storeCandidate(jsonObj,loginOrgLocation,user,multiFile);
-				if(jsonObj.has("candidateId") && jsonObj.getString("candidateId") != null && !"".equals(jsonObj.getString("candidateId"))){
+				/*if(jsonObj.has("candidateId") && jsonObj.getString("candidateId") != null && !"".equals(jsonObj.getString("candidateId"))){
 					SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", candidateCreateMsg.append("Success!!  ").append(candidate.getFirstName()).append(" Details Updated").toString());
 
-				}
+				}*/
 
 			return "success";
 			
@@ -979,18 +993,30 @@ public class CandidateListRestController {
 		 * @throws NullPointerException
 		 */ 
 	   @RequestMapping(value = "/deleteCandidateByCandidateId")
-	   public @ResponseBody  String deleteCandidateByCandidateId(@RequestParam(value="candidateId", required=false) String  candidateId,@RequestParam(value="reason", required=false) String  reason, HttpServletRequest request) throws Exception {
+	   public @ResponseBody  String deleteCandidateByCandidateId(@RequestParam(value="candidateId", required=false) String  candidateId,
+			   @RequestParam(value="candidateType", required=false) String  candidateType,
+			   @RequestParam(value="reason", required=false) String  reason, HttpServletRequest request) throws Exception {
 		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			 
+			String resultJson;
 			Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),loginOrgLocation.getId());
 			if(candidate != null){
 				
-					candidate.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+				
+					if(Constants.Associates.equalsIgnoreCase(candidateType)){
+						candidate.setIsAssociate(Constants.NO);
+						candidate.setStatus(Constants.CANDIDATE_ACTIVE);
+					}
+						
+					if(Constants.Candidates.equalsIgnoreCase(candidateType)){
+						candidate.setIsAssociate(Constants.NO);
+						candidate.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+					}
+				
+					//candidate.setStatus(Constants.CANDIDATE_IN_ACTIVE);
 					if(StringUtils.isNotEmpty(reason)){
 						candidate.setTerminateReason(reason);
 					}
-				
 				candidate.setUpdatedBy(user.getUserCode());
 				candidate.setUpdatedDate(commonUtil.currentDate());
 				candidate.setIsFavourite(0);
@@ -1002,7 +1028,8 @@ public class CandidateListRestController {
 	
 			
 			}
-			return "success";
+			resultJson = commonUtil.toJSON(candidate);
+			return resultJson;
 		 }
 	   
 	   
@@ -1366,4 +1393,33 @@ public class CandidateListRestController {
 					return reportsList;
 			 }
 
+		   
+		   
+	   /**
+	    * @author Laxman
+	    * store the Favourite Associate 
+	    * @param candidateId
+	    * @param request
+	    * @return success
+	    * @throws Exception
+	    */
+		   
+		   @PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_HOTLIST','ROLE_CROWDSOURCING_CANDIDATES')")
+		   @RequestMapping(value = "/saveAssociateAsFavourite", method = RequestMethod.POST)
+			public @ResponseBody String saveAssociateAsFavourite(@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
+				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+				if(null != candidate){
+					if(null == candidate.getIsFavouriteAssociate() || candidate.getIsFavouriteAssociate().equals(Constants.RECORD_ACTIVE)){
+						candidate.setIsFavouriteAssociate(Constants.RECORD_INACTIVE);
+					}else{
+						candidate.setIsFavouriteAssociate(Constants.RECORD_ACTIVE);
+					}
+					candidate.setTeamId(null);
+					candidateService.saveOrUpdateCandidate(candidate);
+					candidateService.saveOrUpdateCandidateElkDocument(candidate);
+					
+				}
+				
+				return "success";
+			}
 	}
