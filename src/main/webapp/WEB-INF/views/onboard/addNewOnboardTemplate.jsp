@@ -961,10 +961,10 @@ function getOnboardingTasksList(){
 	        			repeat = '----';
 	        		}
 	        		
-	        		result = result +'<div class="clearfix taskwidget_inner">';
+	        		result = result +'<div class="clearfix taskwidget_inner" id="onboardTask'+report.id+'">';
 	        		result = result +'<div class="media-body">';
 	        		result = result +'<div class="clearfix taskheder">';
-	        		result = result +'<label> <span class="paddingRight">Subject:</span> <strong class="text-primary">'+report.taskName+'</strong> </label>';
+	        		result = result +'<label> <span class="paddingRight">Subject:</span> <strong class="text-primary">'+report.taskName+'</strong><i class="fa fa-trash text-danger paddingLeft" onClick="deleteTask('+report.id+');"></i> </label>';
 	        		result = result +'<label class="small pull-right text-muted"> <span>'+report.dueAfterString+'</span> </label>';
 	        		result = result +'</div>';
 	        		result = result +'<ul class="list-inline list-description mt10">';
@@ -1005,6 +1005,24 @@ function getOnboardingTasksList(){
 	
   $("#loading").removeAttr("style");
 	
+}
+</script>
+
+
+
+<script>
+function deleteTask(taskId){
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	   $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/deleteOnboardTaskByTaskId?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
+	        success: function(data) {
+	        	if(data == 'success'){
+	        		document.getElementById("onboardTask"+taskId).remove();
+	        	}
+	        },
+	    });
 }
 </script>
 

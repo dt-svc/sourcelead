@@ -939,5 +939,236 @@ public class CandidateOnBoardRestController {
 				
 		}
 		
+		
+		
+		 @RequestMapping(value = "/getCandidateOnboardTasksList", method = RequestMethod.POST)
+		 @ResponseBody String getCandidateOnboardTasksList(@RequestParam(value="onboardId", required=false) Long onboardId,HttpServletRequest request) throws Exception{
+			
+			 
+			 List<OnboardTasks> templateTasksList = null;
+			 
+			 List<OnboardTasks> tasksList = new ArrayList<OnboardTasks>();;
+			 
+		     List<OnboardTasks> candidateTasksList = onboardTasksService.getOnBoardTasksListByCandidateOnBoardingId(onboardId);
+		     tasksList.addAll(candidateTasksList);
+		 
+			 CandidateOnBoarding onboarding = candidateOnBoardingService.getCandidateOnBoardingById(onboardId);
+			 List<Long> templateIdsList = new ArrayList<Long>();
+			 
+			 if(!isNullOrEmpty(onboarding.getOnboardTemplateId())){
+				 for (String s : onboarding.getOnboardTemplateId().split(",")){
+					 templateIdsList.add(Long.parseLong(s));
+				 }
+				
+				 templateTasksList = onboardTasksService.getOnboardTasksByTemplateIdList(templateIdsList);
+			 }
+			 
+			 tasksList.addAll(templateTasksList);
+			 
+			 
+			 List<OnboardTasks> onboardtasksList = new ArrayList<OnboardTasks>();
+			 
+			 for(OnboardTasks tasks : tasksList){
+				 
+				 List<String> usersList = new ArrayList<String>();
+					 
+					 if(!isNullOrEmpty(tasks.getAssignToUsers())){
+						 String[] userIds = tasks.getAssignToUsers().split(",");
+						 
+						 for(int i = 0 ; i < userIds.length; i++ ){
+							 StringBuilder userName = new StringBuilder();
+							 User user = userService.getUserById(Long.valueOf(userIds[i]));
+							 String assignedUser = null;
+							 if(null != user.getLastName()){
+								 assignedUser = userName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
+								}else{
+									assignedUser = userName.append(user.getFirstName()).toString();
+								}
+							 usersList.add(assignedUser);
+						 }
+					 }
+					 
+					 StringBuilder dueAfter = new StringBuilder();
+					 
+					 if(null != tasks.getDueAfterMonths()){
+						 dueAfter = dueAfter.append(tasks.getDueAfterMonths()).append(" Months ");
+					 }
+					 
+					 if(null != tasks.getDueAfterDays()){
+						 dueAfter = dueAfter.append(tasks.getDueAfterDays()).append(" Days ");
+					 }
+					 
+					 if(null != tasks.getDueAfterHours()){
+						 dueAfter = dueAfter.append(tasks.getDueAfterHours()).append(" Hours ");
+					 }
+					 
+					 if(null != tasks.getDueAfterMinutes()){
+						 dueAfter = dueAfter.append(tasks.getDueAfterMinutes()).append(" Minutes");
+					 }
+					 
+					
+					 tasks.setDueAfterString(dueAfter.toString());
+					 tasks.setUsersList(usersList); 
+					 
+					 if(null != tasks.getCandidateOnBoardingId()){
+						 tasks.setOnboardTaskType("Candidate Task");
+					 }else  if(null != tasks.getOnboardingTemplateId()){
+						 tasks.setOnboardTaskType("Template Task");
+					 }
+					 
+					 onboardtasksList.add(tasks);
+			 }
+				
+			return commonUtil.toJSON(onboardtasksList);
+			}
+		 
+		 
+		
+		
+		 
+		 @RequestMapping(value = "/saveCandidateOnBoardTasks" , method = RequestMethod.POST)
+		 public @ResponseBody  String saveCandidateOnBoardTasks(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+			
+			 
+			 json = "{"+json+"}";
+			 
+			 JSONObject jsonObj = new JSONObject(json);
+			 
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+			 
+			 OnboardTasks onboardTasks = new OnboardTasks();
+			 
+			 
+			 if(jsonObj.has("taskName") && !isNullOrEmpty(jsonObj.getString("taskName"))){
+				 onboardTasks.setTaskName(jsonObj.getString("taskName"));
+			 }
+			 
+			 CandidateOnBoarding onBoarding = new CandidateOnBoarding();
+			 onBoarding.setId(Long.valueOf(jsonObj.getString("onboardTaskId")));
+			 onboardTasks.setCandidateOnBoardingId(onBoarding);
+			 
+			 if(jsonObj.has("onboardAssignedTo") && !isNullOrEmpty(jsonObj.getString("onboardAssignedTo"))){
+				
+				 String userIds = jsonObj.getString("onboardAssignedTo");
+				 
+				 userIds = userIds.replaceAll("\\[", "").replaceAll("\\]","");
+				 userIds = userIds.replaceAll("\"", "");
+				 onboardTasks.setAssignToUsers(userIds);
+			 }else{
+				 onboardTasks.setAssignToCandidate(Constants.YES);
+			 }
+			 
+			 if(jsonObj.has("taskPriority") && !isNullOrEmpty(jsonObj.getString("taskPriority"))){
+				 onboardTasks.setPriority(jsonObj.getString("taskPriority"));
+			 }
+			 
+			 if(jsonObj.has("taskRepeat") && !isNullOrEmpty(jsonObj.getString("taskRepeat"))){
+				 onboardTasks.setTaskRepeat(jsonObj.getString("taskRepeat"));
+			 }
+			 
+			 if(jsonObj.has("taskMonths") && !isNullOrEmpty(jsonObj.getString("taskMonths"))){
+				 onboardTasks.setDueAfterMonths(Integer.parseInt(jsonObj.getString("taskMonths")));
+			 }
+			 
+			 if(jsonObj.has("taskDays") && !isNullOrEmpty(jsonObj.getString("taskDays"))){
+				 onboardTasks.setDueAfterDays(Integer.parseInt(jsonObj.getString("taskDays")));
+			 }
+			 
+			 if(jsonObj.has("taskHours") && !isNullOrEmpty(jsonObj.getString("taskHours"))){
+				 onboardTasks.setDueAfterHours(Integer.parseInt(jsonObj.getString("taskHours")));
+			 }
+			 
+			 if(jsonObj.has("taskMinutes") && !isNullOrEmpty(jsonObj.getString("taskMinutes"))){
+				 onboardTasks.setDueAfterMinutes(Integer.parseInt(jsonObj.getString("taskMinutes")));
+			 }
+			 
+			 if(jsonObj.has("taskNotification") && !isNullOrEmpty(jsonObj.getString("taskNotification"))){
+				 onboardTasks.setTaskNotification(jsonObj.getString("taskNotification"));
+			 }
+			 
+			 if(jsonObj.has("taskEmail") && !isNullOrEmpty(jsonObj.getString("taskEmail"))){
+				 onboardTasks.setTaskEmail(jsonObj.getString("taskEmail"));
+			 }
+			 
+			 if(jsonObj.has("taskdescription") && !isNullOrEmpty(jsonObj.getString("taskdescription"))){
+				 onboardTasks.setDescription(jsonObj.getString("taskdescription"));
+			 }
+			 
+			 onboardTasks.setStatus(Constants.CANDIDATE_ACTIVE);
+			 onboardTasks.setCreatedDate(CommonUtil.currentDate());
+			 onboardTasks.setCreatedBy(user.getUserCode());
+			 onboardTasks.setUpdatedDate(CommonUtil.currentDate());
+			 onboardTasks.setUpdatedBy(user.getUserCode());
+			 
+			 
+			 onboardTasksService.saveOnboardTasks(onboardTasks);
+			
+			  return "success";
+		   }
+		 
+		 
+		 @RequestMapping(value = "/deleteOnboardTaskByTaskId" , method = RequestMethod.POST)
+		 public @ResponseBody  String deleteOnboardTaskByTaskId(@RequestParam(value="taskId", required=false) Long taskId,
+				 HttpServletRequest request) throws Exception {
+			
+			OnboardTasks onboardTasks =	onboardTasksService.getOnboardTasksByTaskId(taskId);
+		 	 if(null != onboardTasks){
+		 		onboardTasks.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+		 		onboardTasksService.saveOnboardTasks(onboardTasks);
+		 	 }
+			return "success";
+		   
+		}
+		 
+		 
+		 @RequestMapping(value = "/saveAndFinishCandidateOnboard" , method = RequestMethod.POST)
+		 public @ResponseBody  String saveAndFinishCandidateOnboard(@RequestParam(value="onboardId", required=false) Long onboardId,
+				 @RequestParam(value="tasks", required=false) String tasks,
+				 HttpServletRequest request) throws Exception {
+			 
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 
+			 if(!isNullOrEmpty(tasks)){
+				 String[] taksIds = tasks.split(",");
+				 for(int i=0; i<taksIds.length; i++){
+					 OnboardTasks onboardTasks = onboardTasksService.getOnboardTasksByTaskId(Long.valueOf(taksIds[i]));
+					 
+					 OnboardTasks candidateTask = new OnboardTasks();
+					 candidateTask.setTaskName(onboardTasks.getTaskName());
+					 CandidateOnBoarding onboarding = new CandidateOnBoarding();
+					 onboarding.setId(onboardId);
+					 candidateTask.setCandidateOnBoardingId(onboarding);
+					 candidateTask.setAssignToUsers(onboardTasks.getAssignToUsers());
+					 candidateTask.setAssignToCandidate(onboardTasks.getAssignToCandidate());
+					 candidateTask.setPriority(onboardTasks.getPriority());
+					 candidateTask.setTaskRepeat(onboardTasks.getTaskRepeat());
+					 candidateTask.setDueAfterMonths(onboardTasks.getDueAfterMonths());
+					 candidateTask.setDueAfterDays(onboardTasks.getDueAfterDays());
+					 candidateTask.setDueAfterHours(onboardTasks.getDueAfterHours());
+					 candidateTask.setDueAfterMinutes(onboardTasks.getDueAfterMinutes());
+					 candidateTask.setTaskNotification(onboardTasks.getTaskNotification());
+					 candidateTask.setTaskEmail(onboardTasks.getTaskEmail());
+					 candidateTask.setDescription(onboardTasks.getDescription());
+					 candidateTask.setStatus(Constants.CANDIDATE_ACTIVE);
+					 candidateTask.setCreatedDate(CommonUtil.currentDate());
+					 candidateTask.setCreatedBy(user.getUserCode());
+					 candidateTask.setUpdatedDate(CommonUtil.currentDate());
+					 candidateTask.setUpdatedBy(user.getUserCode());
+					 onboardTasksService.saveOnboardTasks(candidateTask);
+				 }
+			 }
+			
+			 CandidateOnBoarding onBoarding = candidateOnBoardingService.getCandidateOnBoardingById(onboardId);
+			 onBoarding.setCandidateOnBoardStatus("Finished");
+			 candidateOnBoardingService.saveCandidateOnBoarding(onBoarding);
+			
+			return "success";
+		   
+		}
+		 
+		 
+		 
+		 
 	 
 }

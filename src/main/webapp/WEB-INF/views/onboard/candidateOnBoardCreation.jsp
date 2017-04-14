@@ -55,7 +55,7 @@
               <small>Employee details &amp; Postion details</small> </a> </li>
             <li onclick="getTemplatePolicyDocumentsDetails();getTemplateSupportingDocumentsDetails();"><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
               <small>Acceptance &amp; Policy Documents</small> </a> </li>
-            <li> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Taks</span> <br>
+            <li onclick="getOnboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Taks</span> <br>
               <small>List of tasks</small> </a></li>
           </ul>
           <input type="hidden" name="candidateOnBoardId" id="candidateOnBoardId" value=""/>
@@ -326,91 +326,47 @@
             </div>
             <div class="tab-pane" id="tasks">
               <div class="clearfix">
-                  <h4 class="pull-left">Task List</h4>
+                <h4 class="pull-left">Task List</h4>
                 <div class="pull-right">
-                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addTask"><i class="fa fa-plus paddingRight"></i>Add Task</button>
+                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addTask" onclick="getAssignToUsersList();"><i class="fa fa-plus paddingRight"></i>Add Task</button>
                   <!-- Modal -->
-                  <div id="addTask" class="modal fade" role="dialog">
+                  <div id="addTask" class="modal fade add_Task" role="dialog">
                     <div class="modal-dialog modal-lg">
                       <div class="modal-content">
                         <div class="modal-header">
-                          <button type="button" class="close" data-dismiss="modal">&times;</button>
+                          <button type="button" class="close" data-dismiss="modal" onclick="flushOnboardTask()">&times;</button>
                           <h4 class="modal-title">Add Tasks</h4>
                         </div>
                         <div class="modal-body clearfix"> 
                           
- <!-- Add New Task Widget -->
+                          <!-- Add New Task Widget -->
                           <div class="col-md-12 clearfix">
-                            <form class="form-horizontal clearfix task-widget">
+                          <div id="onboardtasksLoading"></div>
+                             <form:form class="login-form clearfix"  id="addonboardTask_form"  name="addonboardTask_form" method="post" > 
+                             <input type="hidden" name="onboardTaskId" id="candidateOnboardTaskId" value=""/>
                               <div class="row">
-                                <div class="col-md-6">
+                              
+                              <div class="col-md-6">
+                                <div class="row">
+                                
+                                <div class="col-md-12 mb10">
                                   <label>Subject <span class="text-danger paddingLeft">*</span></label>
-                                  <input type="text" class="form-control input-sm" placeholder="Subject">
+                                  <input type="text" class="form-control input-sm" placeholder="Subject" field-name="Subject" id="taskName" name="taskName" data-validation="required" data-validation="required validate_Space validate_length length2-100">
                                 </div>
-                                <div class="col-md-6">
-                                  <label>Assign To <span class="text-danger paddingLeft">*</span></label>
-                                  <select class="chosen-select" multiple data-placeholder="Select Priority" id="priority">
-                                    <option>High</option>
-                                    <option>Low</option>
-                                    <option>Mediam</option>
-                                  </select>
-                                </div>
-                                <div class="col-md-6 dropdown-select">
+                                
+                                <div class="col-md-12 dropdown-select mb10">
                                   <label>Priority</label>
-                                  <select class="form-control">
+                                  <select class="form-control" id="taskPriority" name="taskPriority">
                                     <option selected disabled>-- Select Priority --</option>
                                     <option>High</option>
                                     <option>Low</option>
                                     <option>Mediam</option>
                                   </select>
                                 </div>
-                                <div class="col-md-6">
-                                  <div class="row">
-                                    <div class="col-md-12">
-                                        <label><strong>Due after:</strong><span class="text-danger paddingLeft">*</span></label>
-                                      <div class="input-group hidden">
-                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                        <input class="form-control" value="" name="Date" id="datepicker2" type="text">
-                                      </div>
-                                        
-                                        <!-- Form inline Due after -->
-                                        
-                        <div class="row">
-                            <div class="col-md-3 paddingRight">
-                                <label class="small">Months</label> <br>
-                                <input class="form-control input-sm" type="text">
-                            </div>
-                            <div class="col-md-3 paddingRight paddingLeft">
-                                <label class="small">Days</label> <br>
-                                <input class="form-control input-sm" type="text">
-                            </div>
-                            <div class="col-md-3 paddingRight paddingLeft">
-                                <label class="small">Hours</label> <br>
-                                <input type="text" class="form-control input-sm">
-                            </div>
-                            <div class="col-md-3 paddingRight paddingLeft">
-                                <label class="small">Minutes</label> <br>
-                                <input type="text" class="form-control input-sm">
-                            </div>
-                        </div>
-                                        
-                                        <!-- Form inline Due after -->
-                                        
-                                        
-                                        
-                                        
-                                    </div>
-                                    <div class="col-md-6 hidden">
-                                      <label>Time</label>
-                                      <div class="input-group"> <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
-                                        <input class="form-control" value="" name="Time" id="example" type="text">
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="col-md-6 dropdown-select">
+                                
+                                <div class="col-md-12 dropdown-select mb10">
                                   <label>Repeat</label>
-                                  <select class="form-control input-sm">
+                                  <select class="form-control input-sm" id="taskRepeat" name="taskRepeat">
                                     <option selected disabled>-- Select Repeat --</option>
                                     <option>Never</option>
                                     <option>Daily</option>
@@ -419,131 +375,110 @@
                                     <option>Yearly</option>
                                   </select>
                                 </div>
-                                <div class="col-md-6">
+                                
+                                <div class="col-md-12 mb10">
                                   <div class="mt">
                                     <label class="checkbox-inline">
-                                      <input type="checkbox" name="chkbox">
+                                      <input type="checkbox" id="taskEmail" name="taskEmail" value="N" onclick="validateTaskEmail();">
                                       Email </label>
                                     <label class="checkbox-inline">
-                                      <input type="checkbox" name="chkbox">
+                                      <input type="checkbox" id="taskNotification" name="taskNotification" value="N" onclick="validateTaskNotification();">
                                       Notification </label>
                                   </div>
                                 </div>
-                                <div class="col-md-6">
-                                  <label>Description</label>
-                                  <textarea rows="2" placeholder="Description" class="form-control"></textarea>
+                                
                                 </div>
+                                </div>
+                                
+                                
+                                <div class="col-md-6">
+	                                <div class="row">
+	                                
+	                                <div class="col-md-12 mb10">
+                                  <label>Assign To <span class="text-danger paddingLeft">*</span></label>
+                                  
+                                  <div class="">
+                                    <label class="radio-inline">
+                                      <input type="radio"  name="assignedToType" checked="checked" onclick="validateAssignToType('assingToCandidate');">
+                                      Candidate </label>
+                                    <label class="checkbox-inline">
+                                      <input type="radio" name="assignedToType"  onclick="validateAssignToType('assingToUser');">
+                                      User </label>
+                                  </div>
+                                  
+                                  <div id="assignToUserDiv" style="display: none;" class="mt10">
+	                                  <select class="chosen-select" multiple data-placeholder="Select User" id="onboardAssignedTo" name="onboardAssignedTo" field-name="AssignTo"  data-validation-optional="true" >
+	                                  </select>
+                                  </div>
+                                </div>
+	                                
+	                                
+	                               <div class="col-md-12 mb10">
+                                  <div class="row">
+                                    <div class="col-md-12">
+                                      <label><strong>Due after:</strong><span class="text-danger paddingLeft">*</span></label>
+                                                                            
+                                      <!-- Form inline Due after -->
+                                      
+                                      <div class="row" id="dueAfterDiv">
+                                        <div class="col-md-3 paddingRight">
+                                          <label class="small">Months</label>
+                                          <br>
+                                          <input class="form-control input-sm" type="text" id="taskMonths" data-validation="required" field-name="Due after" name="taskMonths" onblur="validateDueAfter();">
+                                        </div>
+                                        <div class="col-md-3 paddingRight paddingLeft">
+                                          <label class="small">Days</label>
+                                          <br>
+                                          <input class="form-control input-sm" type="text" id="taskDays" name="taskDays" onblur="validateDueAfter();">
+                                        </div>
+                                        <div class="col-md-3 paddingRight paddingLeft">
+                                          <label class="small">Hours</label>
+                                          <br>
+                                          <input type="text" class="form-control input-sm" id="taskHours" name="taskHours" onblur="validateDueAfter();">
+                                        </div>
+                                        <div class="col-md-3 paddingRight paddingLeft">
+                                          <label class="small">Minutes</label>
+                                          <br>
+                                          <input type="text" class="form-control input-sm" id="taskMinutes" name="taskMinutes" onblur="validateDueAfter();">
+                                        </div>
+                                      </div>
+                                      
+                                      <!-- Form inline Due after --> 
+                                      
+                                    </div>
+                                    
+                                  </div>
+                                </div>
+	                               <div class="col-md-12 mb10">
+                                  <label>Description</label>
+                                  <textarea rows="2" placeholder="Description" id="taskdescription" name="taskdescription" class="form-control"></textarea>
+                                </div>
+	                                
+	                                </div>
+                                </div>
+                                
                                 <div class="clearfix"></div>
-                                <div class="clearfix mt col-md-12">
+                                <div class="clearfix mt col-md-12 form-footer">
                                   <div class="pull-right">
-                                    <input type="button" class="btn btn-primary btn-sm" value="Save">
-                                    <input type="button" class="btn btn-default btn-sm ml10" value="Cancel">
+                                    <input type="button" id="onboardtask_submit" class="btn btn-primary btn-sm" onclick="saveOnboardTask();"  value="Save">
+                                    <input type="button" class="btn btn-default btn-sm ml10" value="Cancel" data-dismiss="modal" onclick="flushOnboardTask();">
                                   </div>
                                 </div>
                               </div>
-                            </form>
+                            </form:form>
                           </div>
-                          <!-- Add New Task Widget -->                           
+                          <!-- Add New Task Widget --> 
+                          
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-                
-                <div class="clearfix taskwidget_inner">
-                    <div class="media-body">
-                    <div class="clearfix taskheder">
-                        <label>
-                            <span class="paddingRight">Subject:</span> <strong class="text-primary">Account Setup</strong>
-                        </label>
-                        <label class="small pull-right text-muted">
-                            <span>Due after 15days</span>
-                        </label>
-                    </div>
-                    <ul class="list-inline list-description">
-                        <li><span>Assign To:</span> Pramodkumar Mahagen</li>
-                        <li><span>Priority:</span> High</li>
-                        <li><span>Repeat:</span> Never</li>
-                    </ul>
-                    </div>
-                </div>
-                <div class="clearfix taskwidget_inner">
-                    <div class="media-body">
-                    <div class="clearfix taskheder">
-                        <label>
-                            <span class="paddingRight">Subject:</span> <strong class="text-primary">Desktop arriange</strong>
-                        </label>
-                        <label class="small pull-right text-muted">
-                            <span>Due after 2 months</span>
-                        </label>
-                    </div>
-                    <ul class="list-inline list-description">
-                        <li><span>Assign To:</span> Pramodkumar Mahagen</li>
-                        <li><span>Priority:</span> High</li>
-                        <li><span>Repeat:</span> Never</li>
-                    </ul>
-                    </div>
-                </div>
-                <div class="clearfix taskwidget_inner">
-                    <div class="media-body">
-                    <div class="clearfix taskheder">
-                        <label>
-                            <span class="paddingRight">Subject:</span> <strong class="text-primary">Providing access</strong>
-                        </label>
-                        <label class="small pull-right text-muted">
-                            <span>Due after 3 months</span>
-                        </label>
-                    </div>
-                    <ul class="list-inline list-description">
-                        <li><span>Assign To:</span> Pramodkumar Mahagen</li>
-                        <li><span>Priority:</span> High</li>
-                        <li><span>Repeat:</span> Never</li>
-                    </ul>
-                    </div>
-                </div>
-                <div class="clearfix taskwidget_inner">
-                    <div class="media-body">
-                    <div class="clearfix taskheder">
-                        <!--<label>Account Setup, Desk top Arriange, Providing access to the Candidate</label>-->
-                        <label>
-                            <span class="paddingRight">Subject:</span> <strong class="text-primary">Account Setup</strong>
-                        </label>
-                        <label class="small pull-right text-muted">
-                            <span>Due after 3 months</span>
-                        </label>
-                    </div>
-                    <ul class="list-inline list-description">
-                        <li><span>Assign To:</span> Pramodkumar Mahagen</li>
-                        <li><span>Priority:</span> High</li>
-                        <li><span>Repeat:</span> Never</li>
-                    </ul>
-                    </div>
-                </div>
-                <div class="clearfix taskwidget_inner">
-                    <div class="media-body">
-                    <div class="clearfix taskheder">
-                        <!--<label>Account Setup, Desk top Arriange, Providing access to the Candidate</label>-->
-                        <label>
-                            <span class="paddingRight">Subject:</span> <strong class="text-primary">Account Setup</strong>
-                        </label>
-                        <label class="small pull-right text-muted">
-                            <span>Due after 15 days</span>
-                        </label>
-                    </div>
-                    <ul class="list-inline list-description">
-                        <li><span>Assign To:</span> Pramodkumar Mahagen</li>
-                        <li><span>Priority:</span> High</li>
-                        <li><span>Repeat:</span> Never</li>
-                    </ul>
-                    </div>
-                </div>
-                              <div class="form-footer clearfix mt">
-                <div class="pull-right mr">
-                  <input type="button" value="Cancel" class="btn btn-sm btn-default">
-                  <input type="button" value="Finish" class="btn btn-sm btn-primary">
-                </div>
-              </div>
+              
+              <div id="onboardTasksList"></div>
+            
+            
             </div>
           </div>
           <!-- STYLED IN FORMS.CSS --> 
@@ -1385,7 +1320,7 @@ function createTemplateDocs(saveType){
 	        		var $tabs = $('.tabbable li');
 	     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
 	     	        document.getElementById("templateTasks").disabled = false;
-	     	        //getOnboardingTasksList();
+	     	        getOnboardingTasksList();
 	        	}else{
 	        		getTemplatePolicyDocumentsDetails();
 	        		getTemplateSupportingDocumentsDetails();
@@ -1400,7 +1335,286 @@ function createTemplateDocs(saveType){
 
 
 
+<script>
+  function validateTaskEmail(){
+	  var taskEmail = document.getElementById("taskEmail").checked;
+	  if(taskEmail == 1){
+		  document.getElementById("taskEmail").value = 'Y';
+	  }else{
+		  document.getElementById("taskEmail").value = 'N';
+	  }
+	  
+  }
+  </script>
+  
+  <script>
+  function validateTaskNotification(){
+	  var taskEmail = document.getElementById("taskNotification").checked;
+	  if(taskEmail == 1){
+		  document.getElementById("taskNotification").value = 'Y';
+	  }else{
+		  document.getElementById("taskNotification").value = 'N';
+	  }
+	  
+  }
+  </script>
+  
+  <script>
+  function flushOnboardTask(){
+	  document.getElementById("addonboardTask_form").reset();
+	
+  }
+  </script>
+  
+  <script>
+  function validateAssignToType(assignToType){
+	  if(assignToType == 'assingToUser'){
+		  document.getElementById("assignToUserDiv").style.display="";
+		  $('#onboardAssignedTo').removeAttr('data-validation-optional');
+		  $("#onboardAssignedTo").attr("data-validation", "required");
+		 
+	  }else{
+		  document.getElementById("assignToUserDiv").style.display="none";
+		  $('#onboardAssignedTo').removeAttr('data-validation');
+		  $("#onboardAssignedTo").attr("data-validation-optional", "true");
+		  getAssignToUsersList();
+	  }
+  }
+  </script>
+  
+  
+  <script>
+  function validateDueAfter(){
+	  
+	  var taskMonths = document.getElementById("taskMonths").value;
+	  var taskDays = document.getElementById("taskDays").value;
+	  var taskHours = document.getElementById("taskHours").value;
+	  var taskMinutes = document.getElementById("taskMinutes").value;
+	  
+	  
+	  if(taskMonths == '' && taskDays == '' && taskHours == '' && taskMinutes == ''){
+			  $('#taskMonths').removeAttr('data-validation-optional');
+			  $("#taskMonths").attr("data-validation", "required");
+		    
+	  }else{
+		  $('#taskMonths').removeAttr('data-validation');
+		  $("#taskMonths").attr("data-validation-optional", "true");
+		    
+	  }  
+	  
+  }
+  </script>
+
+<script>
+function getAssignToUsersList(){
+	var candidateOnBoardId = document.getElementById("candidateOnBoardId").value;
+    $("#candidateOnboardTaskId").val(candidateOnBoardId);
+    
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
+	    success: function(data) {
+	    	 var json = JSON.parse(data);
+        	 var result = "";
+        	for (var i=0; i<json.length; i++)
+			{
+        		var report = json[i];
+        		result = result +'<option value='+report.userId+' >'+report.userName+'</option>';
+			}
+        	 $("#onboardAssignedTo").empty();
+           	 $("#onboardAssignedTo").append(result); 
+           	 $('#onboardAssignedTo').trigger("chosen:updated");
+	    }
+   }); 
+}
+</script>
+
+<script>
+function saveOnboardTask(){
+	
+	var validationSettings = {
+	        errorMessagePosition : 'element',
+	       borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+         }; 
+	
+	  if ($('#addonboardTask_form').validate(false, validationSettings)){ 
+		    var frm = $('#addonboardTask_form').serializeFormJSON();
+	        var con = JSON.stringify(frm);
+	        con = con.replace(/[{}]/g, "");
+	        
+	        //It will escape all the special characters
+	        var jsonData = encodeURIComponent(con);
+	        
+	        var sourceleadUrl ='${sourceleadUrl}';
+	        
+	       
+	        $("#onboardtasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	        $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/saveCandidateOnBoardTasks?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+		        success: function(result) {
+		        	
+		        	if(result == 'success'){
+		        		$("#onboardtasksLoading").removeAttr("style");
+			        	flushOnboardTask();
+			        	getAssignToUsersList();
+			        	getOnboardingTasksList();
+		        	}
+		        	
+		        },
+		    });  
+	        return true;
+		
+	  }else{
+		return false;
+	  }
+}
+
+$('body').on('blur', '#addonboardTask_form', function() {
+	$("#addonboardTask_form").showHelpOnFocus();
+	$("#addonboardTask_form").validateOnBlur(false, validationSettings);  
+});
+</script>
+
+<script>
+function getOnboardingTasksList(){
+	var onboardId = document.getElementById("candidateOnBoardId").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	var locationId = '${SourceLeadWeb_orgLocationId}';
+	
+	
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/getCandidateOnboardTasksList?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId,	    	   
+	    success: function(data) {
+	    	 var json = JSON.parse(data);
+        	 var result = "";
+        	 
+        	if(json.length > 0){ 
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var report = json[i];
+	        		
+	        		var prority = '';
+	        		var repeat = '';
+	        		
+	        		if(report.priority != null && report.priority != '' && report.priority != 'undefined'){
+	        			prority = report.priority;
+	        		}else{
+	        			prority = '----';
+	        		}
+	        		
+	        		if(report.taskRepeat != null && report.taskRepeat != '' && report.taskRepeat != 'undefined'){
+	        			repeat = report.taskRepeat;
+	        		}else{
+	        			repeat = '----';
+	        		}
+	        		
+	        		result = result +'<div class="clearfix taskwidget_inner" id="onboardTask'+report.id+'">';
+	        		result = result +'<div class="media-body">';
+	        		result = result +'<div class="clearfix taskheder">';
+	        		
+	        		result = result +"<label> <span class='paddingRight'>Subject:</span> <strong class='text-primary'>"+report.taskName+"</strong><i class='fa fa-trash text-danger paddingLeft' onClick='deleteTask("+report.id+",\""+report.onboardTaskType+"\");'></i></label>";
+	        		
+	        		result = result +'<label class="small pull-right text-muted"> <span>'+report.dueAfterString+'</span> </label>';
+	        		result = result +'</div>';
+	        		result = result +'<ul class="list-inline list-description mt10">';
+	        		
+	        		result = result +'<li><span>Assign To:</span>';
+	        		
+	        		if(report.usersList.length > 0){
+	        			for(var j=0; j<report.usersList.length; j++){
+		 					result = result +'<label>'+report.usersList[j]+'</label>';
+		 				}
+	        		}else{
+	 					result = result +'Onboarding Candidate';
+	 				}
+	        		result = result +'</li>';
+	        		
+	        		result = result +'<li><span>Priority:</span>'+prority+'</li>';
+	        		result = result +'<li><span>Repeat:</span> '+repeat+'</li>';
+	        		result = result +'</ul>';
+	        		result = result +'</div>';
+	        		result = result +'</div>';
+        		   
+	        		if(report.onboardTaskType != 'Candidate Task'){
+       					result = result +"<input type='hidden' name='savedTemplateTask' id='templateTask"+report.id+"' value='"+report.id+"' />";
+       				}
+				}
+        	}else{
+        		result = result +'<div><h4>No Tasks Found</h4></div>';
+        	}
+        	
+        	result = result +'<div class="form-footer clearfix mt">';
+    		result = result +'<div class="pull-right mr">';
+    		result = result +'<input type="button" value="Finish" onclick="saveAndFinishOnboardTemplate('+onboardId+');" class="btn btn-sm btn-primary">';
+    		result = result +'</div>';
+    		result = result +'</div>';
+    		
+    		 $("#onboardTasksList").empty();
+           	 $("#onboardTasksList").append(result); 
+    		
+        	 
+	    }
+   }); 
+	
+  $("#loading").removeAttr("style");
+	
+}
+</script>
 
 
+<script>
+function deleteTask(taskId,taskType){
+	
+	if(taskType != 'Candidate Task'){
+		document.getElementById("onboardTask"+taskId).remove();
+		document.getElementById("templateTask"+taskId).remove()
+	}else{
+		
+		var sourceleadUrl ='${sourceleadUrl}';
+		   $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/deleteOnboardTaskByTaskId?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
+		        success: function(data) {
+		        	if(data == 'success'){
+		        		document.getElementById("onboardTask"+taskId).remove();
+		        		
+		        	}
+		        },
+		    });
+	}
+}
+</script>
 
 
+<script>
+function saveAndFinishOnboardTemplate(onboardId){
+	
+	var tasksIds = document.getElementsByName("savedTemplateTask");
+	var tasks = '';
+	for(var i=0; i < tasksIds.length; i++){
+		tasks = tasks+tasksIds[i].value+",";
+	}
+	
+	tasks = tasks.substring(0, tasks.length - 1);
+	
+	
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/saveAndFinishCandidateOnboard?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&tasks="+tasks, 	    	   
+	    success: function(data) {
+       	 
+	    	location.replace(sourceleadUrl+"/candidateOnBoardingList");  
+	    }
+  });  
+	
+
+}
+</script>

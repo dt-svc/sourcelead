@@ -97,6 +97,9 @@ private static final long serialVersionUID = 1L;
    	@Transient
    	private String dueAfterString;
    	
+	@Transient
+   	private String onboardTaskType;
+   	
 
 	public Long getId() {
 		return id;
@@ -272,6 +275,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setCandidateOnBoardingId(CandidateOnBoarding candidateOnBoardingId) {
 		this.candidateOnBoardingId = candidateOnBoardingId;
+	}
+
+	public String getOnboardTaskType() {
+		return onboardTaskType;
+	}
+
+	public void setOnboardTaskType(String onboardTaskType) {
+		this.onboardTaskType = onboardTaskType;
 	}
 
 }
