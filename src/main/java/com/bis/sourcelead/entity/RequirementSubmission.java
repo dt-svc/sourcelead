@@ -342,6 +342,9 @@ public class RequirementSubmission implements Serializable{
     
     @Transient
 	private String paymentType;
+    
+    @Transient
+	private String isClientSubmission;
 	
 	
 	public OrgLocations getVendorLocationId() {
@@ -1130,5 +1133,13 @@ public class RequirementSubmission implements Serializable{
 
 	public void setPaymentType(String paymentType) {
 		this.paymentType = paymentType;
+	}
+
+	public String getIsClientSubmission() {
+		return isClientSubmission;
+	}
+
+	public void setIsClientSubmission(String isClientSubmission) {
+		this.isClientSubmission = isClientSubmission;
 	}
 }
