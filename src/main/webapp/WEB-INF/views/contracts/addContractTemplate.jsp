@@ -127,13 +127,15 @@
       <div class="form-footer clearfix contrFoot">
         <div class="col-lg-12">
           <div class="pull-right">
-          	<input type="button" value="Preview" id="save_Preview" class="btn btn-success" onclick="previewshow(); generatePDF();"> 
+          	<!-- <input type="button" value="Preview" id="save_Preview" class="btn btn-success" onclick="generatePDF();">  -->
             <input type="button" value="Save Template" id="save_template" onclick="saveTemplate(); " class="btn btn-primary"> 
           <!--  <input type="button" value="Back" class="btn btn-danger">
 			<a href="add-contract-template-preview.html"><input type="button" value="Next" class="btn btn-primary ml10"></a> -->
           </div>
         </div>
       </div>
+      
+      
 
 <!-- Content Area Ends-->
 </form:form>
@@ -143,7 +145,7 @@
 <div class="side_mask"></div>
 <div class="prevPop">
 	<div class="prevPopClose" onclick="previewclose();"><i class="fa fa-times"></i></div>
-	<iframe id="iFrame" ></iframe>
+	<embed id="iFrame"  src="<c:url value='/testController'/>"></embed>
 </div>
 
  <script src="resources/js/editor.js"></script>
@@ -156,8 +158,6 @@
 
 <script>
 function previewshow(){
-	
-	
 	$(".side_mask").fadeIn(200);
 	$(".prevPop").fadeIn(100);
 }
@@ -242,33 +242,15 @@ function contractTemplateType(){
 
 
 <script type="text/javascript">
-function generatePDF() {
-	 var ee = $("#txtEditor").val($('.Editor-editor').html()); 
-	if ($('#template_form').validate(false, validationSettings)) {
-		var frm = $('#template_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, "");
-		  //It will escape all the special characters
-       var jsonData = encodeURIComponent(con);
-		var sourceleadUrl = '${sourceleadUrl}';
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-		$.ajax({
-					type : "POST",
-					url : sourceleadUrl
-							+ "/generatePDF?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
-					success : function(result) {
-						alert("fff"+sourceleadUrl);
-						 document.getElementById("iFrame").src = "http://localhost:8080/resources/TestSample.pdf";
-						/* if (result == 'clientDashboard') {
-							location.replace(sourceleadUrl
-									+ "/clientDashboard");
-						} */
-					},
-				}); 
-		return true;
-	} else {
-		return false;
-	}
+function generatePDF(id) {
+	var ee = $("#txtEditor").val($('.Editor-editor').html())
+	var frm = $('#template_form').serializeFormJSON();
+	var con = JSON.stringify(frm);
+	con = con.replace(/[{}]/g, "");
+	  //It will escape all the special characters
+   var jsonData = encodeURIComponent(con);
+	window.open('http://localhost:8080/sourcelead/testController/'+id+'','_newtab');
+
 }</script>
 
 <script type="text/javascript">
@@ -287,10 +269,9 @@ function generatePDF() {
 						url : sourceleadUrl
 								+ "/saveTemplate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 						success : function(result) {
-							/* if (result == 'clientDashboard') {
-								location.replace(sourceleadUrl
-										+ "/clientDashboard");
-							} */
+							 /* generatePDF(result);  */
+							location.replace(sourceleadUrl
+									+ "/orgContractTemplate");
 						},
 					}); 
 			return true;
@@ -302,10 +283,6 @@ function generatePDF() {
 		$("#template_form").showHelpOnFocus();
 		$("#template_form").validateOnBlur(false, validationSettings);
 	});
-	
-	
-	
-	
 </script>
 
 

@@ -1,6 +1,8 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ContractsTemplateDao;
 import com.bis.sourcelead.entity.ContractsTemplate;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -50,6 +53,22 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return contractsTemplate;
+	}
+
+	@Override
+	@Transactional
+	public ContractsTemplate saveContractTemplate(Long contractTemplateId) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ContractsTemplate> contractsTemplateList = new ArrayList<>();
+		logger.debug("getOrgSpocById start");
+		contractsTemplateList = session.createQuery("from ContractsTemplate ct where id=:contractTemplateId " ).setCacheable(true).setLong( "contractTemplateId", contractTemplateId ).setCacheable(true).list();
+		logger.debug("getOrgSpocById end");
+		if (contractsTemplateList.size() > 0) {
+			return contractsTemplateList.get(0);
+		} else {
+			return null;
+		}
 	}
 	
 }
