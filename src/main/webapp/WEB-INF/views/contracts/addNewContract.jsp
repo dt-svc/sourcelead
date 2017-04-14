@@ -19,6 +19,8 @@
       <div class="pull-right brud-crum">Home &raquo; New Contract</div>
     </section>
     <div class="content-area content-new clearfix">
+     <div id="loading"></div>
+     <form:form id="newcontract_form" name="newcontract_form" method="post">
       <div class="clearfix form-horizontal">
        
         <div class="row newContrWrap">
@@ -216,8 +218,8 @@
       <div class="form-footer clearfix contrFoot">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input type="button" value="Save" class="btn btn-primary">
-            <input type="button" value="View" class="btn btn-success ml10">
+            <input type="button" value="Draft" id="draft_template" onclick="saveNewContract('draft'); " class="btn btn-primary">
+            <input type="button" value="Save" class="btn btn-success ml10">
             <input type="button" value="Cancel" class="btn btn-danger ml10">
           </div>
         </div>
@@ -225,6 +227,7 @@
       
       <!-- Content Area Ends--> 
     </div>
+    </form:form>
   </section>
 
 
@@ -359,6 +362,34 @@ function getContractTemplates(){
 </script>
 
 
+<script type="text/javascript">
+	function saveNewContract(saveType) {
+		alert("hi");
+		if ($('#newcontract_form').validate(false, validationSettings)) {
+			var frm = $('#newcontract_form').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
+			  //It will escape all the special characters
+	        var jsonData = encodeURIComponent(con);
+			var sourceleadUrl = '${sourceleadUrl}';
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	 		$.ajax({
+						type : "POST",
+						url : sourceleadUrl+ "/saveNewContract?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"saveType="+saveType,
+						success : function(result) {
+							
+						},
+					}); 
+			return true;
+		} else {
+			return false;
+		}
+	}
+	$('body').on('blur', '#newcontract_form', function() {
+		$("#newcontract_form").showHelpOnFocus();
+		$("#newcontract_form").validateOnBlur(false, validationSettings);
+	});
+</script>
 
 
 
