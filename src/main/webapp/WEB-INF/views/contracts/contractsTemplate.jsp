@@ -65,7 +65,6 @@ function getTemplateList(){
 <script>
 function preparedTemplateList(data){
 	var sourceleadUrl ='${sourceleadUrl}';
-	alert("sourceleadUrl "+sourceleadUrl);
 	var result = '';
 	result = result +  '<table id="contractTemplateTable" class="display" cellspacing="0" width="100%" >';
 	result = result + '	<thead>';
@@ -148,7 +147,6 @@ function previewPDF(id) {
  <script>
 function downloadPdfTemplate(templateId){
 	var sourceleadUrl ='${sourceleadUrl}';
-	alert("downloadPdfTemplate"+templateId);
 	window.location.href = sourceleadUrl+"/downloadContractsTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId;
 	/* window.location.href = sourceleadUrl+"/downloadContractsTemplate&templateId="+templateId; */
 }
