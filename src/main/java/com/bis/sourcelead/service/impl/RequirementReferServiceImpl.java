@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Contact_Source;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.service.RequirementReferService;
@@ -151,7 +152,7 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 			referContacts.setUpdatedDate(new Date());
 			referContacts.setCreatedBy(user.getUserCode());
 			referContacts.setUpdatedBy(user.getUserCode());
-			referContacts.setContactSource(Constants.CROWD_SOURCING_SOURCE_SELF);
+			referContacts.setContactSource(Contact_Source.SELF);
 			
 			referContactsDao.addReferContacts(referContacts);
 			

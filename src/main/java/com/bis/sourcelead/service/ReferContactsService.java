@@ -20,6 +20,8 @@ public interface ReferContactsService {
 
 	public void saveuserContacts(User user, OrgLocations orgLocations,JSONObject jsonObj) throws Exception;
 	
+	 void saveAllReferContacts(List<ReferContacts> referContactsList) throws Exception;
+	
 	List<ReferContacts> getUserContactsListByUserIdAndRequirementId(Long userId,Long requirementId) throws Exception;
 	
 	ReferContacts getReferContactsById(Long id) throws Exception;

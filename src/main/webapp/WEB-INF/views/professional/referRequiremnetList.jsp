@@ -1,5 +1,7 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+<jsp:include page="../socialinviterscripts.jsp" />
+
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
@@ -29,7 +31,7 @@ $(document).ready(function() {
           <ul>
             <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>
             </li>
-            
+            <li><a href="javascript:void(0)" id="imCon"><i class="fa fa-plus"></i>Import Contacts</a></li>
             <li><a id="addPop" href="javascript:void(0)"><i class="fa fa-plus"></i>Add Contact</a>
             
             <form:form id="addcontact_form"  name="addcontact_form" method="post"> 
@@ -278,18 +280,44 @@ function flushContactDetails(){
 
         
 </script> 
- 
 
-
-
+  
+	
 <script>	
     $("#addPop").click(function(){
 		$(this).parent("li").find(".referWrap").toggleClass("referWrapActive");
+		$(".side_mask").fadeOut(200);
+		$(".impConPop").fadeOut(100);
 	});
     $(".canBtn").click(function(){
 		$(".referWrap").removeClass("referWrapActive");
 	});		
-</script> 	
+</script> 
+	
+<div class="side_mask"></div>
+   <div class="impConPop">
+      <div class="socialinviter" type="contactimporter"></div>
+	<!-- <ul> -->
+		<!-- <li><i class="fa fa-facebook-official"></i>Facebook</li>
+		<li><i class="fa fa-facebook-official"></i>Facebook</li>
+		<li><i class="fa fa-facebook-official"></i>Facebook</li>
+		<li><i class="fa fa-facebook-official"></i>Facebook</li>
+		<li><i class="fa fa-facebook-official"></i>Facebook</li>
+		<li><i class="fa fa-facebook-official"></i>Facebook</li>
+		<div class="clearfix"></div> -->
+	<!-- </ul> -->
+</div>
+<script>	
+	$("#imCon").click(function(){
+		$(".referWrap").removeClass("referWrapActive");
+		$(".side_mask").fadeIn(200);
+		$(".impConPop").fadeIn(100);
+	});
+	$(".side_mask").click(function(){
+		$(".side_mask").fadeOut(200);
+		$(".impConPop").fadeOut(100);
+	});	
+</script> 
 
 
 <script>
