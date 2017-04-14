@@ -89,19 +89,21 @@ function candidateQuickViewProfile(candidateId){
 					result = result+'  <div class="resumeView">                                                                                                                                    ';
 					result = result+'                                                                                                                                                              ';
 					result = result+'      <!-- Candiate Header -->                                                                                                                                ';
-					result = result+'      <div class="row">                                                                                                                                       ';
+					result = result+'      <div class="row">';
 					result = result+'          <div class="resume-header clearfix">                                                                                                                ';
 					result = result+'        <div class="col-md-7">                                                                                                                                ';
 					result = result+'            <div class="media">                                                                                                                               ';
 					result = result+'                <div class="media-body">                                                                                                                      ';
 					result = result+'                    <h4 class="media-heading text-warning">'+json.firstName+' '+lastName+'<small> '+designationType+'</small></h4>';
 					if(json.summary != null && json.summary != '' && json.summary != 'undifined'){
-						result = result+'<p class="summary" title='+json.summary+'>'+json.summary+'</p>';
+						
+						result = result+'      <div class="trimTxt">';
+						result = result+'<p title="'+json.summary+'"><i class="fa fa-quote-left text-muted"></i>'+json.summary+'</p>';
+						result = result+'      </div>';
 					}else{
 						result = result+'<p>---</p>';
 					}
 					
-					result = result+'                    <div class="text-info">Rate Per: <span class="paddingRight"></span>'+expectedRate+' '+rateType+''+expectedRateCurrencey+'</div>';
 					result = result+'                </div>                                                                                                                                        ';
 					result = result+'                <div class="media-right">                                                                                                                     ';
 					result = result+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class="media-object" style="width:65px">';
@@ -113,9 +115,10 @@ function candidateQuickViewProfile(candidateId){
 					result = result+'                  <ul class="list-unstyled">                                                                                                                  ';
 					result = result+'                      <li><i class="fa fa fa-envelope paddingRight text-warning" title="'+json.email+'"></i>'+json.email+'';
 					result = result+'                      </li>                                                                                                                                   ';
-// 					result = result+'                      <li><i class="fa fa-phone paddingRight text-warning" title="'+mobilePhone+'"></i>'+mobilePhone+'</li>                                              ';
+					result = result+'                      <li><i class="fa fa-phone paddingRight text-warning" title="'+json.mobilePhone+'"></i>'+json.mobilePhone+'</li>                                              ';
 					result = result+'                      <li><i class="fa fa-map-marker paddingRight text-warning" title="'+city+''+state+''+country+'"></i>'+city+''+state+''+country+'</li>';
-// 					result = result+'                      <li><i class="fa fa-skype paddingRight text-info" title="Skype"></i>candidate.sky</li>                                                  ';
+// 					result = result+'                      <li><i class="fa fa-skype paddingRight text-info" title="Skype"></i>candidate.sky</li>';
+					result = result+'                    <li><i class="fa fa-usd paddingRight text-warning" title="'+expectedRate+' '+rateType+''+expectedRateCurrencey+'"></i>'+expectedRate+' '+rateType+''+expectedRateCurrencey+'</li>';
 					result = result+'                  </ul>                                                                                                                                       ';
 					result = result+'              </div>                                                                                                                                          ';
 					result = result+'          </div>                                                                                                                                              ';
@@ -142,7 +145,7 @@ function candidateQuickViewProfile(candidateId){
 					result = result+'          <div class="col-md-5 col-md-offset-1 paddingLeft">                                                                                                              ';
 					result = result+'              <div class="row">                                                                                                                               ';
 					result = result+'              <div class="col-md-12">                                                                                                                         ';
-					result = result+'                  <h4>Skills &amp; Competences</h4>                                                                                                           ';
+					result = result+'                  <h4>Skills</h4>                                                                                                           ';
 					result = result+'                  <div class="skillsView row">                                                                                                                ';
 					result = result+'                  <div class="panel panel-default">                                                                                                                ';
 					result = result+'                  <div class="panel-body" id="skillsView"> '+qvSkills+'';
@@ -353,7 +356,7 @@ function qwikCertificates(candidateId){
 	                	 var result = "";
 	                	 
 	                	 result = result +'<div class="col-md-12">';
-						 result = result +' <h4>Achievements &amp; Certificates</h4>';
+						 result = result +' <h4>Certificates</h4>';
 							var json = JSON.parse(data);
 							for (var i = 0; i < json.length; i++) { 
 								if(i < 3){
@@ -392,3 +395,17 @@ function qwikCertificates(candidateId){
      });
 }
 </script>
+<!-- <script>
+function lineclamp() {
+	   var lineheight = parseFloat($('div.trimTxt p').css('line-height'));
+	   alert(lineheight)
+		var articleheight = $('div.trimTxt').height(); 
+		alert(articleheight)
+		var calc = parseInt(articleheight/lineheight);
+		alert(calc)
+		$("div.trimTxt p").css({
+	  	"-webkit-box-orient": "" + calc + ""
+		});
+	}
+</script>
+ -->
