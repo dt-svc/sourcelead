@@ -64,6 +64,8 @@ function getTemplateList(){
 
 <script>
 function preparedTemplateList(data){
+	var sourceleadUrl ='${sourceleadUrl}';
+	alert("sourceleadUrl "+sourceleadUrl);
 	var result = '';
 	result = result +  '<table id="contractTemplateTable" class="display" cellspacing="0" width="100%" >';
 	result = result + '	<thead>';
@@ -106,7 +108,7 @@ function preparedTemplateList(data){
          result = result + '<div><span onclick="previewPDF('+report.id+')">previews/edit</span></div>';
          result = result + '</td>';
          result = result + '<td>';
-         result = result + '<div><a href="" class="glyphicon glyphicon-paperclip pinCo"></a></div>';
+         result = result + '<div><a class="glyphicon glyphicon-paperclip pinCo" href="" onclick="downloadPdfTemplate('+report.id+')"></a></div>';
          result = result + '</td>';
         result = result + '</tr>';
     }
@@ -139,10 +141,19 @@ function listTemplatePagination(){
 
 <script type="text/javascript">
 function previewPDF(id) {
-	window.open('http://localhost:8080/sourcelead/testController/'+id+'','_newtab');
+	var sourceleadUrl ='${sourceleadUrl}';
+	window.open(sourceleadUrl+'/testController/'+id+'','_newtab');
 }</script>
 
+ <script>
+function downloadPdfTemplate(templateId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	alert("downloadPdfTemplate"+templateId);
+	window.location.href = sourceleadUrl+"/downloadContractsTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId;
+	/* window.location.href = sourceleadUrl+"/downloadContractsTemplate&templateId="+templateId; */
+}
 
+</script> 
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
