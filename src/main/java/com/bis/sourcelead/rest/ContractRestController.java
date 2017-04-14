@@ -2,6 +2,7 @@ package com.bis.sourcelead.rest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
+import java.util.List;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +24,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
@@ -41,6 +43,8 @@ public class ContractRestController {
 	@Autowired
 	ContractsTemplateService contractsTemplateService;
 	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	@RequestMapping(value = "/saveTemplate", method = RequestMethod.POST)
 	public @ResponseBody String saveClient(@RequestParam(value = "json", required = false) String json,
@@ -73,17 +77,6 @@ public class ContractRestController {
 	@RequestMapping(value = "/testController/{id}", method = RequestMethod.GET)
 	public @ResponseBody  void testController(@PathVariable("id") String id,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-    	/*String k = "<h5><b>Business Intelli Service aggrement</b></h5><br>THIS PROFESSIONAL SERVICES AGREEMENT (this 'Agreement') is "
-				+ " Contractor which may render services to BIS or BIS's clients in the future. Contractor shall<br><div style='text-align: center;'><span style='font-weight: bold;'>Business Intelli Solutions Inc.</span><br>--------------------------------------------------------------------------------------------------------------------------------------------<br></div><div style='text-align: center;'><span style='color: rgb(61, 133, 198);'>3535 Victory Group Way, Building 4, Frisco, TX 75034.<br>PH: 214 295 5535 FAX: 972 559 3641<br>Email: info@businessintelli.com, www.businessintelli.com</span></div>"*/; 
-    	
-				
-		/*String json1 = "{" + id + "}";
-		JSONObject jsonObj = new JSONObject(json1);
-		
-		String content = jsonObj.getString("templateContent");
-		String header = "<h5><b>"+jsonObj.getString("templateName")+"</b></h5><br>";
-		String totalBody = header + content;*/
-				
 		ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateById(Long.parseLong(id));		
     	ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
   	    Document document = new Document();
@@ -102,4 +95,12 @@ public class ContractRestController {
           sos.close();
 	}
 	
+//	/getAllTemplatesByOrgLocationId
+	
+	@RequestMapping(value = "/getAllTemplatesByOrgLocationId", method = RequestMethod.GET)
+	public @ResponseBody String getAllTemplates(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<ContractsTemplate> contractsTemplate = contractsTemplateService.getAllContractsTemplatesByOrgLocationid(orgLocation);
+		return commonUtil.toJSON(contractsTemplate);
+	} 
 }

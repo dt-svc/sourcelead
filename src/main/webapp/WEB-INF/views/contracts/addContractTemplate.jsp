@@ -287,7 +287,6 @@ function generatePDF(id) {
 
 
 
-
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->

@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ContractsTemplateDao;
 import com.bis.sourcelead.entity.ContractsTemplate;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -62,7 +63,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<ContractsTemplate> contractsTemplateList = new ArrayList<>();
 		logger.debug("getOrgSpocById start");
-		contractsTemplateList = session.createQuery("from ContractsTemplate ct where id=:contractTemplateId " ).setCacheable(true).setLong( "contractTemplateId", contractTemplateId ).setCacheable(true).list();
+		contractsTemplateList = session.createQuery("from ContractsTemplate ct where id=:contractTemplateId " ).setLong( "contractTemplateId", contractTemplateId ).setCacheable(true).list();
 		logger.debug("getOrgSpocById end");
 		if (contractsTemplateList.size() > 0) {
 			return contractsTemplateList.get(0);
@@ -70,5 +71,15 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 			return null;
 		}
 	}
+
+	@Override
+	@Transactional
+	public List<ContractsTemplate> getAllContractsTemplatesByOrgLocationid(OrgLocations orgLocation) throws Exception
+	{
+		Long orgLocationId = orgLocation.getId();
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ContractsTemplate>  contractsTemplateList = session.createQuery("from ContractsTemplate ct where ct.orgLocationId.id =:orgLocationId and ct.templateStatus = '0'" ).setLong("orgLocationId", orgLocationId ).setCacheable(true).list();
+			return contractsTemplateList;
+		}
 	
 }

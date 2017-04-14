@@ -19,6 +19,14 @@
   <div class="pull-right brud-crum">Home &raquo; List by status</div>
 </section>
 	
+	
+<script type="text/javascript">
+$(document).ready(function(){
+   getTemplateList();
+});
+</script>
+	
+	
 <div class="content-area content-new clearfix">
  <div class="project_wrap">
 	<div class="timesheet_head">
@@ -34,99 +42,106 @@
             
         </div>
     <div class="project_wrap_table">
-    	<table>
-        	<tbody>
-			</tbody><thead>
-            	<tr>
-                	<th>Template name</th>
-                    <th>Template type</th>
-                    <th>Description</th>
-                    <th>Document</th>
-                </tr>
-			</thead>	
-                <tbody>
-                <tr>
-                	<td><div>Template name</div></td>
-                    <td><div>Template type</div></td>
-                    <td><div>Description Description</div></td>
-					<td><div><a href="" class="glyphicon glyphicon-paperclip pinCo"></a></div></td>
-                </tr>
-                <tr>
-                	<td><div>Template name</div></td>
-                    <td><div>Template type</div></td>
-                    <td><div>Description Description</div></td>
-					<td><div><a href="" class="glyphicon glyphicon-paperclip pinCo"></a></div></td>
-                </tr>
-                <tr>
-                	<td><div>Template name</div></td>
-                    <td><div>Template type</div></td>
-                    <td><div>Description Description</div></td>
-					<td><div><a href="" class="glyphicon glyphicon-paperclip pinCo"></a></div></td>
-                </tr>
-                <tr>
-                	<td><div>Template name</div></td>
-                    <td><div>Template type</div></td>
-                    <td><div>Description Description</div></td>
-					<td><div><a href="" class="glyphicon glyphicon-paperclip pinCo"></a></div></td>
-                </tr>
-                <tr>
-                	<td><div>Template name</div></td>
-                    <td><div>Template type</div></td>
-                    <td><div>Description Description</div></td>
-					<td><div><a href="" class="glyphicon glyphicon-paperclip pinCo"></a></div></td>
-                </tr>
-                <tr>
-                	<td><div>Template name</div></td>
-                    <td><div>Template type</div></td>
-                    <td><div>Description Description</div></td>
-					<td><div><a href="" class="glyphicon glyphicon-paperclip pinCo"></a></div></td>
-                </tr>
-                <tr>
-                	<td><div>Template name</div></td>
-                    <td><div>Template type</div></td>
-                    <td><div>Description Description</div></td>
-					<td><div><a href="" class="glyphicon glyphicon-paperclip pinCo"></a></div></td>
-                </tr>
-                <tr>
-                	<td><div>Template name</div></td>
-                    <td><div>Template type</div></td>
-                    <td><div>Description Description</div></td>
-					<td><div><a href="" class="glyphicon glyphicon-paperclip pinCo"></a></div></td>
-                </tr>
-                <tr>
-                	<td><div>Template name</div></td>
-                    <td><div>Template type</div></td>
-                    <td><div>Description Description</div></td>
-					<td><div><a href="" class="glyphicon glyphicon-paperclip pinCo"></a></div></td>
-                </tr>
-                <tr>
-                	<td><div>Template name</div></td>
-                    <td><div>Template type</div></td>
-                    <td><div>Description Description</div></td>
-					<td><div><a href="" class="glyphicon glyphicon-paperclip pinCo"></a></div></td>
-                </tr>
-                			
-            </tbody>
-        </table>
+    <div id="templateList"></div>
 	</div>
-	
-<nav>
-<ul id="paging" class="pagination">
-	<li><a href="#">Previous</a></li>
-	<li><a href="#">2</a></li>
-	<li><a href="#">3</a></li>
-	<li><a href="#">4</a></li>
-	<li><a href="#">5</a></li>
-	<li class="disabled"><a href="#">6</a></li>
-	<li data-page="last"><a href="#">Next</a></li>
-	</ul>
-	<div class="clearfix"></div>
-</nav>	
     
 </div>
       
-
+<script type="text/javascript">
+function getTemplateList(){
+		var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+	       type : "GET",
+	        url: sourceleadUrl+"/getAllTemplatesByOrgLocationId?${_csrf.parameterName}=${_csrf.token}",       
+	        success :function(data) {
+	       	 preparedTemplateList(data);
+	       },
+	   }); 
+}
+</script>
 <!-- Content Area Ends-->
+
+
+<script>
+function preparedTemplateList(data){
+	var result = '';
+	result = result +  '<table id="contractTemplateTable" class="display" cellspacing="0" width="100%" >';
+	result = result + '	<thead>';
+	result = result + '   <tr>';
+	result = result + '     <th>Template name</th>';
+	result = result + '    <th>Template type</th>';
+	result = result + '    <th>Description</th>';
+	result = result + '    <th>Document Preview</th>';
+	result = result + '    <th>Document</th>';
+	result = result + '   </tr>';
+	result = result + '	</thead>';
+	result = result + '	<tbody>';
+	var json = JSON.parse(data);
+    for (var i = 0; i < json.length; i++) {
+    	var report= json[i];
+    	result = result + '<tr id="row'+report.id+'">';
+        result = result + '<td>';
+        if(report.templateName != null && report.templateName != '' && report.templateName !='undefined'){
+           	result = result + '<div><span>'+report.templateName+'</span></div>';
+     		} else{
+    		result = result + '<div><span>---</span></div>';
+    		    }
+        result = result + '</td>';
+    	result = result + '<td>';
+        if(report.templateType != null && report.templateType != '' && report.templateType !='undefined'){
+       	result = result + '<div><span>'+report.templateType+'</span></div>';
+ 		} else{
+		result = result + '<div><span>---</span></div>';
+		    }
+        result = result + '</td>';
+        result = result + '<td>';
+        if(report.description != null && report.description != '' && report.description !='undefined'){
+         result = result + '<div><span>'+report.description+'</span></div>';
+        }
+        else{
+		 result = result + '<div><span>---</span></div>';
+		    }
+         result = result + '</td>';
+         result = result + '<td>';
+         result = result + '<div><span onclick="previewPDF('+report.id+')">previews/edit</span></div>';
+         result = result + '</td>';
+         result = result + '<td>';
+         result = result + '<div><a href="" class="glyphicon glyphicon-paperclip pinCo"></a></div>';
+         result = result + '</td>';
+        result = result + '</tr>';
+    }
+	result = result + '	</tbody>';
+	result = result + '</table>';
+	$("#templateList").empty();
+    $("#templateList").append(result);
+    listTemplatePagination();	
+	
+}
+
+</script>
+
+
+<script>
+function listTemplatePagination(){
+	$('#contractTemplateTable').DataTable({ 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    } );
+}
+</script>
+
+<script type="text/javascript">
+function previewPDF(id) {
+	window.open('http://localhost:8080/sourcelead/testController/'+id+'','_newtab');
+}</script>
+
 
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />

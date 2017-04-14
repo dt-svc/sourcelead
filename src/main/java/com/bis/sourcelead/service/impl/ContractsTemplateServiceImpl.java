@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.util.Date;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,6 +59,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		contractsTemplate.setCreatedBy(user.getUserCode());
 		contractsTemplate.setUpdatedDate(new Date());
 		contractsTemplate.setUpdatedBy(user.getUserCode());
+		// for active templates status is 0
+		contractsTemplate.setTemplateStatus("0");
 		return contractsTemplateDao.saveContractTemplate(contractsTemplate);
 	}
 	
@@ -83,6 +86,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	@Override
 	public ContractsTemplate getContractTemplateById(Long contractTemplateId) {
 		return contractsTemplateDao.saveContractTemplate(contractTemplateId);
+	}
+
+	@Override
+	public List<ContractsTemplate> getAllContractsTemplatesByOrgLocationid(OrgLocations orgLocation) throws Exception
+	{
+		return contractsTemplateDao.getAllContractsTemplatesByOrgLocationid(orgLocation);
 	}
 
 	
