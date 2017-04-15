@@ -1,0 +1,1620 @@
+<jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterSideNav.jsp" />
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+<script src="resources/js/chosen.jquery.min.js"></script> 
+<script src="resources/js/jquery-fun.js"></script> 
+<script src="resources/js/formvalidator.js"></script>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+
+<script> 
+	$(document).ready(function(){
+		document.getElementById("templateDocs").disabled = true;
+		document.getElementById("templateTasks").disabled = true;
+		
+		
+		var onBoardingId = '${onBoardingId}';
+		if(onBoardingId != null && onBoardingId != '' && onBoardingId != 'undefined'){
+			$("#candidateOnBoardId").val(onBoardingId);
+  	        document.getElementById("templateDocs").disabled = false;
+  	        document.getElementById("templateTasks").disabled = false;
+  	        $("#candidateOnBoardUUID").val('${onBoardingUUID}');
+  	        $("#documentstemplateId").val(onBoardingId);
+  	        
+  	        loadOnboardingCandidate('${onBoardingUUID}');
+  	        
+		}else{
+			loadOnboardingDetails();
+		}
+		
+		
+		
+	});
+</script>
+
+<section class="content-wraper">
+<div id="loading"></div>
+  <section class="content-header clearfix">
+      <div class="pull-left">
+        <h2>Employee Onboarding</h2>
+      </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/usersList'/>">Users List</a> &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Employee Onboarding </div>
+ </section>
+ 
+ 
+ <div class="content-area content-new clearfix">
+      <div class="applicant_accept">
+        <div class="clearfix onboardBtns">
+        </div>
+        <div class="tabbable">
+          <ul class="nav nav-tabs" id="tab_bar">
+            <li class="active" onclick="loadOnboardingCandidate();"> <a href="#details" data-toggle="tab"> <i class="fa fa-th-list paddingRight"></i> <span>Details</span> <br>
+              <small>Employee details &amp; Postion details</small> </a> </li>
+            <li onclick="getTemplatePolicyDocumentsDetails();getTemplateSupportingDocumentsDetails();"><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
+              <small>Acceptance &amp; Policy Documents</small> </a> </li>
+            <li onclick="getOnboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Taks</span> <br>
+              <small>List of tasks</small> </a></li>
+          </ul>
+          <input type="hidden" name="candidateOnBoardId" id="candidateOnBoardId" value=""/>
+          <input type="hidden" name="candidateOnBoardUUID" id="candidateOnBoardUUID" value=""/>
+          <div class="tab-content"> 
+            
+            <!-- Employee Details -->
+            <div class="tab-pane active" id="details">
+              <div class="form-horizontal">
+               <form:form class="login-form clearfix"  id="onboardCandidate_form"  name="onboardCandidate_form" method="post" >
+               <input type="hidden" name="savedonboardId" id="savedonboardId" value=""/>
+                <p><strong>Employee Details</strong></p>
+                <div class="form-group">
+                  <label class="col-md-3 control-label">Select Candidate <span class="text-danger paddingLeft">*</span></label>
+                  <div class="col-md-6">
+                    <select class="chosen-select" id="onboardCandiate" name="onboardCandiate" data-validation="required" onchange="getCandidateDetails();getOfferDetails();" field-name="Candidate">
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-3 control-label">First Name <span class="text-danger paddingLeft">*</span></label>
+                  <div class="col-md-6">
+                    <input type="text" class="form-control input-sm" id="firstName" name="firstName" filed-name="First Name" readonly="readonly">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-3 control-label">Last Name</label>
+                  <div class="col-md-6">
+                    <input type="text" class="form-control input-sm" id="lastName" name="lastName" value="" filed-name="Last Name" data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-3 control-label">Street Addess 1 <span class="text-danger paddingLeft">*</span></label>
+                  <div class="col-md-6">
+                    <input type="text" class="form-control input-sm" id="address1" name="address1" field-name="Address 1" data-validation="required validate_Space">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-3 control-label">Street Addess 2</label>
+                  <div class="col-md-6">
+                    <input type="text" class="form-control input-sm" id="address2" name="address2" field-name="Address 2" data-validation-optional="true"  data-validation="validate_Space">
+                  </div>
+                </div>
+                  
+                 <div class="form-group">
+                  <label class="col-md-3 control-label">Country <span class="text-danger paddingLeft">*</span></label>
+                  <div class="col-md-6">
+                    <select class="chosen-select" data-placeholder="Select Country" id="country" onchange="getStates();" name="country">
+                      <option disabled>Select Country</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-md-3 control-label">State</label>
+                  <div class="col-md-6">
+                    <select class="chosen-select" data-placeholder="Select State" onchange="getCities();" id="state" name="state">
+                      <option disabled>Select State</option>
+                      
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-3 control-label">City</label>
+                  <div class="col-md-6">
+                    <select class="chosen-select" data-placeholder="Select City" id="city" name="city">
+                      <option disabled>Select City</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-3 control-label">Zipcode</label>
+                  <div class="col-md-6">
+                    <input type="text" class="form-control input-sm" id="zipCode" name="zipCode"  data-validation-optional="true"  data-validation="validate_Space validate_length length1-10" >
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-md-3 control-label">Mobile number <span class="text-danger paddingLeft">*</span></label>
+                  <div class="col-md-6">
+                    <input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber" readonly="readonly">
+                  </div>
+                </div>
+
+                  
+                <div class="form-group">
+                  <label class="col-md-3 control-label">Personal Email <span class="text-danger paddingLeft">*</span></label>
+                  <div class="col-md-6">
+                    <input type="text" class="form-control input-sm" id="personalEmail" name="personalEmail" readonly="readonly">
+                  </div>
+                </div>
+                  
+                <div class="form-group">
+                  <label class="col-md-3 control-label">Company Email</label>
+                  <div class="col-md-6">
+                    <input type="text" class="form-control input-sm" id="companyEmail" name="companyEmail" data-validation-optional="true"data-validation="validate_Space validate_length length2-100 validate_email">
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+                <p><strong>Position Details</strong></p>
+                <!-- <div class="form-group">
+                  <label class="col-md-3 control-label">Department</label>
+                  <div class="col-md-6">
+                      <select class="form-control selectpicker">
+                          
+                      </select>
+                  </div>
+                </div> -->
+
+                <div class="form-group">
+                  <label class="col-md-3 control-label">Role<span class="text-danger paddingLeft">*</span></label>
+                  <div class="col-md-6">
+                      <select class="chosen-select" data-placeholder="Select Role" onchange="getReportingManager();"  id="onboardCandidateRole" name="onboardCandidateRole" data-validation="required"  field-name="Role">
+                    </select>
+                  </div>
+                </div>
+
+                  <div class="form-group">
+                  <label class="col-md-3 control-label">Date Of Join<span class="text-danger paddingLeft">*</span></label>
+                  <div class="col-md-6">
+                    <input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Date Of Join" id="startDate" name="startDate" readonly="readonly">
+                  </div>
+                </div>
+                  <div class="form-group">
+                  <label class="col-md-3 control-label">End Date</label>
+                  <div class="col-md-6">
+                    <input type="text" class="form-control input-sm calendar" data-validation-optional="true" id="endDate" name="endDate" readonly="readonly">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-3 control-label">Rate / Salary <span class="text-danger paddingLeft">*</span></label>
+                  <div class="col-md-6">
+                    <input type="text" class="form-control input-sm" id="salaryRate" name="salaryRate">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-3 control-label">Manager</label>
+                  <div class="col-md-6">
+                   <select class="chosen-select" data-placeholder="Select Manager" id="reportingManager" name="reportingManager" data-validation-optional="true">
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-3 control-label">Team</label>
+                  <div class="col-md-6">
+                    <select class="chosen-select" data-placeholder="Select Team" id="team" name="team">
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-3 control-label">Employment Type</label>
+                  <div class="col-md-6">
+                    <select class="chosen-select" data-placeholder="Select Employment Type" id="employmentType" name="employmentType">
+                      <option value="" disabled selected="selected">Select Employment Type</option>
+                      <option value="C2C">C2C</option>
+                      <option value="W-2">W-2</option>
+                      <option value="C2H">C2H</option>
+                      <option value="Part Time">Part Time</option>
+                      <option value="Full Time">Full Time</option>
+                    </select>
+                  </div>
+                </div>
+                  
+                  <div class="form-group">
+                  <label class="col-md-3 control-label">Probation Notice</label>
+                  <div class="col-md-6">
+                    <select class="chosen-select" data-placeholder="Select Probation Notice" id="probationNotice" name="probationNotice">
+                      <option disabled selected="selected">Select Probation Notice</option>
+                      <option>15 Days</option>
+                      <option>1 Month</option>
+                      <option>2 Months</option>
+                      <option>3 Months</option>
+                    </select>
+                  </div>
+                </div>
+                  <div class="form-group">
+                  <label class="col-md-3 control-label">Termination Notice</label>
+                  <div class="col-md-6">
+                    <select class="chosen-select" data-placeholder="Select Termination Notice" id="terminationNotice" name="terminationNotice">
+                      <option disabled selected="selected">Select Termination Notice</option>
+                      <option>15 Days</option>
+                      <option>1 Month</option>
+                      <option>2 Months</option>
+                      <option>3 Months</option>
+                    </select>
+                  </div>
+                </div>
+                  
+                  
+                  <div class="form-group">
+                  <label class="col-md-3 control-label">Due Date</label>
+                  <div class="col-md-6">
+                   <input type="text" class="form-control input-sm calendar" id="dueDate" name="dueDate" readonly="readonly">
+                  </div>
+                </div>
+
+                  <div class="form-group">
+                  <label class="col-md-3 control-label">Speical Conditions</label>
+                  <div class="col-md-6">
+                      <textarea rows="2" class="form-control" id="specialConditions" name="specialConditions" data-validation-optional="true"></textarea>
+                  </div>
+                </div>
+                   <div class="form-group">
+                       <label class="col-md-3 control-label">Onboard Template</label>
+                  <div class="col-md-6">
+                      <select class="chosen-select" multiple data-placeholder="Select Template" data-validation-optional="true" id="onboardingTemplate" name="onboardingTemplate" data-validation="required">
+                       </select>
+                  </div>
+                </div>
+                  
+                <div class="form-footer">
+                  <div class="pull-right mr">
+                    <input type="button" value="Cancel" class="btn btn-sm btn-default">
+                    <input type="button" value="Save" onclick="saveOnboardingCandidateDetails('save');" class="btn btn-sm btn-success">
+                    <input type="button" value="Save and Continue" onclick="saveOnboardingCandidateDetails('saveAndContinue');"  class="btn btn-sm btn-primary">
+                  </div>
+                </div>
+             </form:form>
+              </div>
+            </div>
+            
+            <!-- TAB 2 -->
+            <div class="tab-pane" id="documents">
+              
+            <div class="form-horizontal">
+              <form id='templateDocuments_form' name='templateDocuments_form' enctype='multipart/form-data' >
+                 <input type="hidden" name="candidateonboardingId" id="documentstemplateId" value=""/>
+                <p><strong>Acceptance Documents</strong> <br>
+                  <small class="text-muted">These documents need to be accepted by the new hire as part of acceptance step  - Learn more</small> </p>
+                
+                <div class="form-group">
+                  <label class="col-md-12"> <strong>Policies</strong> <br>
+                  </label>
+                  <label class="col-md-4 control-label mt10">These policies will be added to this offer:</label>
+                     <div id="timesheetDocumentsId" class="timesheetDocs">
+                      <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
+				        <span> 
+			              <div id="savedPociliesAttachments"></div>
+				        </span>
+                      </div>
+                      </div>
+                </div>
+                <div class="clearfix"></div>
+                <p><strong>Supporting Information</strong> <br>
+                  <small class="text-muted">This is great place to upload a position description, commission structures, photo of the team , their desk or even a view from their new office.</small> </p>
+                <div class="form-group">
+                  <label class="col-md-4 control-label mt10">These files will be available in the portal:</label>
+                  <div id="timesheetDocumentsId" class="timesheetDocs">
+                      <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
+				        <span> 
+			             <div id="savedSupportedAttachments"></div>
+				        </span>
+                      </div>
+                      </div>
+                </div>
+                <div class="form-footer">
+                  <div class="pull-right mr">
+                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/dashboard/${SourceLeadWeb_orgLocationId}'">
+                    <input type="button" value="Save" id="save_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
+                    <input type="button" value="Save and Continue" id="save_continue_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
+                  </div>
+                </div>
+                </form>
+              </div>
+                
+                
+                
+            </div>
+            <div class="tab-pane" id="tasks">
+              <div class="clearfix">
+                <h4 class="pull-left">Task List</h4>
+                <div class="pull-right">
+                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addTask" onclick="getAssignToUsersList();"><i class="fa fa-plus paddingRight"></i>Add Task</button>
+                  <!-- Modal -->
+                  <div id="addTask" class="modal fade add_Task" role="dialog">
+                    <div class="modal-dialog modal-lg">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" onclick="flushOnboardTask()">&times;</button>
+                          <h4 class="modal-title">Add Tasks</h4>
+                        </div>
+                        <div class="modal-body clearfix"> 
+                          
+                          <!-- Add New Task Widget -->
+                          <div class="col-md-12 clearfix">
+                          <div id="onboardtasksLoading"></div>
+                             <form:form class="login-form clearfix"  id="addonboardTask_form"  name="addonboardTask_form" method="post" > 
+                             <input type="hidden" name="onboardTaskId" id="candidateOnboardTaskId" value=""/>
+                              <div class="row">
+                              
+                              <div class="col-md-6">
+                                <div class="row">
+                                
+                                <div class="col-md-12 mb10">
+                                  <label>Subject <span class="text-danger paddingLeft">*</span></label>
+                                  <input type="text" class="form-control input-sm" placeholder="Subject" field-name="Subject" id="taskName" name="taskName" data-validation="required" data-validation="required validate_Space validate_length length2-100">
+                                </div>
+                                
+                                <div class="col-md-12 dropdown-select mb10">
+                                  <label>Priority</label>
+                                  <select class="form-control" id="taskPriority" name="taskPriority">
+                                    <option selected disabled>-- Select Priority --</option>
+                                    <option>High</option>
+                                    <option>Low</option>
+                                    <option>Mediam</option>
+                                  </select>
+                                </div>
+                                
+                                <div class="col-md-12 dropdown-select mb10">
+                                  <label>Repeat</label>
+                                  <select class="form-control input-sm" id="taskRepeat" name="taskRepeat">
+                                    <option selected disabled>-- Select Repeat --</option>
+                                    <option>Never</option>
+                                    <option>Daily</option>
+                                    <option>Weekly</option>
+                                    <option>Monthly</option>
+                                    <option>Yearly</option>
+                                  </select>
+                                </div>
+                                
+                                <div class="col-md-12 mb10">
+                                  <div class="mt">
+                                    <label class="checkbox-inline">
+                                      <input type="checkbox" id="taskEmail" name="taskEmail" value="N" onclick="validateTaskEmail();">
+                                      Email </label>
+                                    <label class="checkbox-inline">
+                                      <input type="checkbox" id="taskNotification" name="taskNotification" value="N" onclick="validateTaskNotification();">
+                                      Notification </label>
+                                  </div>
+                                </div>
+                                
+                                </div>
+                                </div>
+                                
+                                
+                                <div class="col-md-6">
+	                                <div class="row">
+	                                
+	                                <div class="col-md-12 mb10">
+                                  <label>Assign To <span class="text-danger paddingLeft">*</span></label>
+                                  
+                                  <div class="">
+                                    <label class="radio-inline">
+                                      <input type="radio"  name="assignedToType" checked="checked" onclick="validateAssignToType('assingToCandidate');">
+                                      Candidate </label>
+                                    <label class="checkbox-inline">
+                                      <input type="radio" name="assignedToType"  onclick="validateAssignToType('assingToUser');">
+                                      User </label>
+                                  </div>
+                                  
+                                  <div id="assignToUserDiv" style="display: none;" class="mt10">
+	                                  <select class="chosen-select" multiple data-placeholder="Select User" id="onboardAssignedTo" name="onboardAssignedTo" field-name="AssignTo"  data-validation-optional="true" >
+	                                  </select>
+                                  </div>
+                                </div>
+	                                
+	                                
+	                               <div class="col-md-12 mb10">
+                                  <div class="row">
+                                    <div class="col-md-12">
+                                      <label><strong>Due after:</strong><span class="text-danger paddingLeft">*</span></label>
+                                                                            
+                                      <!-- Form inline Due after -->
+                                      
+                                      <div class="row" id="dueAfterDiv">
+                                        <div class="col-md-3 paddingRight">
+                                          <label class="small">Months</label>
+                                          <br>
+                                          <input class="form-control input-sm" type="text" id="taskMonths" data-validation="required" field-name="Due after" name="taskMonths" onblur="validateDueAfter();">
+                                        </div>
+                                        <div class="col-md-3 paddingRight paddingLeft">
+                                          <label class="small">Days</label>
+                                          <br>
+                                          <input class="form-control input-sm" type="text" id="taskDays" name="taskDays" onblur="validateDueAfter();">
+                                        </div>
+                                        <div class="col-md-3 paddingRight paddingLeft">
+                                          <label class="small">Hours</label>
+                                          <br>
+                                          <input type="text" class="form-control input-sm" id="taskHours" name="taskHours" onblur="validateDueAfter();">
+                                        </div>
+                                        <div class="col-md-3 paddingRight paddingLeft">
+                                          <label class="small">Minutes</label>
+                                          <br>
+                                          <input type="text" class="form-control input-sm" id="taskMinutes" name="taskMinutes" onblur="validateDueAfter();">
+                                        </div>
+                                      </div>
+                                      
+                                      <!-- Form inline Due after --> 
+                                      
+                                    </div>
+                                    
+                                  </div>
+                                </div>
+	                               <div class="col-md-12 mb10">
+                                  <label>Description</label>
+                                  <textarea rows="2" placeholder="Description" id="taskdescription" name="taskdescription" class="form-control"></textarea>
+                                </div>
+	                                
+	                                </div>
+                                </div>
+                                
+                                <div class="clearfix"></div>
+                                <div class="clearfix mt col-md-12 form-footer">
+                                  <div class="pull-right">
+                                    <input type="button" id="onboardtask_submit" class="btn btn-primary btn-sm" onclick="saveOnboardTask();"  value="Save">
+                                    <input type="button" class="btn btn-default btn-sm ml10" value="Cancel" data-dismiss="modal" onclick="flushOnboardTask();">
+                                  </div>
+                                </div>
+                              </div>
+                            </form:form>
+                          </div>
+                          <!-- Add New Task Widget --> 
+                          
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div id="onboardTasksList"></div>
+            
+            
+            </div>
+          </div>
+          <!-- STYLED IN FORMS.CSS --> 
+        </div>
+      </div>
+    </div>
+ </section>
+ 
+  <jsp:include page="../masterFooter.jsp" />
+  
+  
+<div id="divAttachmentTd1" style="display: none; float: left;">
+			<div id='REPLACEROWIDdocFileuploadFileGroup'>
+	  			<input type='file' name='REPLACEROWIDdocFile' id='REPLACEROWIDdocFile' class="timesheetAttachmentValidation" onchange='validateUploadFile(REPLACEROWID)'> 
+	  			<i class="fa fa-times" onclick="removePoliciesAttachmentRow(REPLACEROWID);"></i>
+	  		</div>
+</div>
+
+<div id="divSupportingAttachmentTd1" style="display: none; float: left;">
+			<div id='REPLACEROWIDSupportingdocFileuploadFileGroup'>
+	  			<input type='file' name='REPLACEROWIDsupportingdocFile' id='REPLACEROWIDsupportingdocFile' class="timesheetAttachmentValidation" onchange='validateSupportingUploadFile(REPLACEROWID)'> 
+	  			<i class="fa fa-times" onclick="removeSupportingAttachmentRow(REPLACEROWID);"></i>
+	  		</div>
+</div>
+
+<script>
+function addPoliciesAttachment(){  
+			var checkMaxTsRowNum = $("#policiesAttcahmentMaxRowNumber").val();
+			var tbl = document.getElementById("policiesAttachmentTable");
+			var maxRowNum = parseInt($("input[name = 'policiesAttcahmentMaxRowNumber']").val());
+			$("input[name = 'policiesAttcahmentMaxRowNumber']").val(maxRowNum + 1);
+			
+			
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", "divAttachmentPoliciesRow" + maxRowNum);
+			
+			
+			var cell0 = row.insertCell(0);
+			var divAttachmentTdStr = document.getElementById("divAttachmentTd1").innerHTML;
+			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+			cell0.innerHTML = divAttachmentTdStr;
+			
+			
+}			
+</script>
+	
+<script type="text/javascript">
+	function removePoliciesAttachmentRow(rowId) {
+		 document.getElementById("divAttachmentPoliciesRow"+rowId).style.display = 'none';
+		 document.getElementById("divAttachmentPoliciesRow"+rowId).value= '';
+		 var  rId = "divAttachmentPoliciesRow"+rowId;
+		  var r = document.getElementById("policiesAttachmentTable").rows[rId];
+          var count = 2*(r.cells.length);
+		    for(i=0;i<=count;i++){
+		        r.deleteCell(0);
+		    } 
+		 
+	}
+</script>
+
+
+<script>
+function addSupportingAttachment(){  
+			var checkMaxTsRowNum = $("#supportingAttcahmentMaxRowNumber").val();
+			var tbl = document.getElementById("supportingAttachmentTable");
+			var maxRowNum = parseInt($("input[name = 'supportingAttcahmentMaxRowNumber']").val());
+			$("input[name = 'supportingAttcahmentMaxRowNumber']").val(maxRowNum + 1);
+			
+			
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", "divAttachmentSupportingRow" + maxRowNum);
+			
+			
+			var cell0 = row.insertCell(0);
+			var divAttachmentTdStr = document.getElementById("divSupportingAttachmentTd1").innerHTML;
+			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+			cell0.innerHTML = divAttachmentTdStr;
+			
+			
+}			
+</script>
+	
+<script type="text/javascript">
+	function removeSupportingAttachmentRow(rowId) {
+		 document.getElementById("divAttachmentSupportingRow"+rowId).style.display = 'none';
+		 document.getElementById("divAttachmentSupportingRow"+rowId).value= '';
+		 var  rId = "divAttachmentSupportingRow"+rowId;
+		  var r = document.getElementById("supportingAttachmentTable").rows[rId];
+          var count = 2*(r.cells.length);
+		    for(i=0;i<=count;i++){
+		        r.deleteCell(0);
+		    } 
+		 
+	}
+</script>
+  
+  
+  
+  <script>
+  function loadOnboardingDetails(){
+	  loadOfferAcceptedCandidates();
+	  loadCandidateRoles();
+	  loadTeams();
+	  loadOnBoardingTemplates();
+  }
+  </script>
+  
+  
+  <script>
+  function loadOfferAcceptedCandidates(candidateId){
+		var sourceleadUrl = '${sourceleadUrl}';
+		$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/getOfferAcceptedCandidatesForOnBoard?${_csrf.parameterName}=${_csrf.token}",	    	   
+		    success: function(data) {
+		    	 var json = JSON.parse(data);
+	        	 var result = "";
+	        	
+	        	result = result +'<option disabled selected>--Select Candidate--</option>';
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var report = json[i];
+	        		var selected = '';
+	        		if(candidateId != null && candidateId != '' && candidateId != 'undefind'){
+	        			if(candidateId == report.candidateId){
+	        				selected = 'selected';
+	        			}
+	        		}
+	        		result = result +'<option value='+report.candidateId+","+report.id+' '+selected+' >'+report.candidateName+' ('+report.jobTitle+')</option>';
+				}
+	        	 
+	        	 $("#onboardCandiate").empty();
+	           	 $("#onboardCandiate").append(result); 
+	           	 $('#onboardCandiate').trigger("chosen:updated");
+		    }
+	   });
+	  
+  }
+  </script>
+  
+  <script>
+  function getCandidateDetails(){
+	  
+	  var onboardCandiate = document.getElementById("onboardCandiate").value;
+	  var candidate = onboardCandiate.split(",");
+	  var candidateId = candidate[0];
+	  
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  
+	  if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
+		  
+		  $.ajax({
+			   	type: "POST",
+			    url: sourceleadUrl+"/getOnBoardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,	    	   
+			    success: function(data) {
+			    	 var json = JSON.parse(data);
+		        	
+			    	 $("#firstName").val(json['firstName']);
+			    	 $("#lastName").val(json['lastName']);
+			    	 $("#mobileNumber").val(json['mobilePhone']);
+			    	 $("#personalEmail").val(json['email']);
+			    	 getOnBoardCandidateCountry(json['country'])
+			    	 getOnBoardCandidateStates(json['country'],json['state']);
+			    	 getOnBoardCandidateStates(json['state'],json['city']);
+			    	 getOnBoardCandidateCities(json['country'],json['state'],json['city']);
+			    }
+		   });
+	  }
+	  
+	  
+  }
+  </script>
+  
+   <script>
+  function getOfferDetails(){
+	  
+	  var onboardCandiate = document.getElementById("onboardCandiate").value;
+	  var offer = onboardCandiate.split(",");
+	  var offerId = offer[1];
+	  
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  
+	  if(offerId != null && offerId != "" && offerId != 'undefined'){
+		  
+		  $.ajax({
+			   	type: "POST",
+			    url: sourceleadUrl+"/getOnBoardingCandidateOfferDetails?${_csrf.parameterName}=${_csrf.token}&offerId="+offerId,	    	   
+			    success: function(data) {
+			    	 var json = JSON.parse(data);
+		        	
+			    	 if(json['amount'] != null && json['amount'] != "" && json['amount'] != 'undefined'){
+			    		 $("#salaryRate").val(json['amount']);
+			    	 }
+			    	 
+			    	 if(json['dateOfJoiningStr'] != null && json['dateOfJoiningStr'] != "" && json['dateOfJoiningStr'] != 'undefined'){
+			    		 $("#startDate").val(json['dateOfJoiningStr']);
+			    	 }
+			    	 
+			    	 if(json['positionType'] != null && json['positionType'] != "" && json['positionType'] != 'undefined'){
+			    		 $("#employmentType").val(json['positionType']);
+			    		 $('#employmentType').trigger("chosen:updated");
+			    	 }
+			    	 
+			    }
+		   });
+	  }
+	  
+  }
+  </script> 
+  
+  
+  
+  <script>
+  function getStates(){
+	  var countryName = $("#country").val();
+	  getOnBoardCandidateStates(countryName);
+  }
+  </script>
+  
+  <script>
+  function getCities(){
+	  var countryName = $("#country").val();
+	  var stateName = $("#state").val();
+	  getOnBoardCandidateCities(countryName,stateName);
+  }
+  </script>
+  
+<script type="text/javascript">
+function getOnBoardCandidateCountry(country){
+	$.ajax({
+    	type: "POST",
+    	dataType: "json",
+    	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+          success: function(data) {
+        	var json = JSON.parse(data);
+        	$('#country').empty();
+        	$('#country').append('<option value="">---Select---</option>');
+            for(var i=0;i<json.length;i++){
+            	if(json[i] == country){
+            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+            	}
+            	else{
+            		$('#country').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+            	}
+            	
+            }
+            $('#country').trigger("chosen:updated");
+        },
+        error: function(e){
+        }
+    }); 
+} 
+</script>
+
+
+<script>
+function getOnBoardCandidateStates(country,state){
+	
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+country, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#state').empty();
+	        	$('#state').append('<option value="">---Select---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	if(state != null && state != 'undefined' && json[i] == state){
+	            		$('#state').append('<option value="'+state+'" selected>'+json[i]+'</option>');
+	            	}
+	            	else{
+	            		$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	}
+	            }
+	            $('#state').trigger("chosen:updated");
+	            
+	            $('#city').empty();
+	            $('#city').trigger("chosen:updated");
+	        },
+	        error: function(e){
+	        }
+	    });
+	
+}
+</script>
+
+
+<script>
+function getOnBoardCandidateCities(country,state,city){
+	
+	
+	if(country != null && country != "" && country !="undefined" && state != null && state != "" && state !="undefined" ){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+country+"&stateName="+state, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#city').empty();
+	        	$('#city').append('<option value="">---Select---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	var selected = '';
+	            	if(city != null && city != "" && city !="undefined" && json[i] == city){
+	            		selected = 'selected';
+	            	}
+	            	$('#city').append('<option value="'+json[i]+'" '+selected+'>'+json[i]+'</option>');
+	            }
+	            $('#city').trigger("chosen:updated");
+	        },
+	        error: function(e){
+	        }
+	    });
+	}else{
+		$('#city').empty();
+    	$('#city').append('<option value="">---Select---</option>');
+    	$('#city').trigger("chosen:updated");
+	}
+}
+</script> 
+
+
+<script>
+function loadCandidateRoles(onBoardRoleId){
+	
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/getRolesListForCandidateOnBoarding?${_csrf.parameterName}=${_csrf.token}",	    	   
+	    success: function(data) {
+	    	 var json = JSON.parse(data);
+        	 var result = "";
+        	
+        	result = result +'<option disabled selected>--Select Role--</option>';
+        	for (var i=0; i<json.length; i++)
+			{
+        		var report = json[i];
+        		var selected = '';
+        		if(onBoardRoleId != null && onBoardRoleId != "" && onBoardRoleId !="undefined" && onBoardRoleId == report.id){
+            		selected = 'selected';
+            	}
+        		result = result +'<option value='+report.id+' '+selected+' >'+report.displayName+'</option>';
+			}
+        	 
+        	 $("#onboardCandidateRole").empty();
+           	 $("#onboardCandidateRole").append(result); 
+           	 $('#onboardCandidateRole').trigger("chosen:updated");
+	    }
+   });
+}
+</script>
+
+<script>
+function loadTeams(onboardTeamId){
+	
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/getTeamsListForCandidateOnBoarding?${_csrf.parameterName}=${_csrf.token}",	    	   
+	    success: function(data) {
+	    	 var json = JSON.parse(data);
+        	 var result = "";
+        	
+        	result = result +'<option disabled selected>--Select Team--</option>';
+        	for (var i=0; i<json.length; i++)
+			{
+        		var report = json[i];
+        		var selected = '';
+        		if(onboardTeamId != null && onboardTeamId != "" && onboardTeamId !="undefined" && onboardTeamId == report.id){
+            		selected = 'selected';
+            	}
+        		result = result +'<option value='+report.id+' '+selected+' >'+report.name+'</option>';
+			}
+        	 
+        	 $("#team").empty();
+           	 $("#team").append(result); 
+           	 $('#team').trigger("chosen:updated");
+	    }
+   });
+}
+</script>
+
+
+<script>
+function loadOnBoardingTemplates(onboardTemplateId){
+	
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/getOnboardingTemplatesForCandidateOnBoarding?${_csrf.parameterName}=${_csrf.token}",	    	   
+	    success: function(data) {
+	    	 var json = JSON.parse(data);
+        	 var result = "";
+        	
+        	for (var i=0; i<json.length; i++)
+			{
+        		var report = json[i];
+        		if(onboardTemplateId != null && onboardTemplateId != "" && onboardTemplateId !="undefined"){
+        			var templateId = onboardTemplateId.split(",");
+        			var selected = '';
+        			for(var j=0; j<templateId.length; j++){
+        				if(templateId[j] == report.id){
+        					selected = 'selected';
+        				}
+        			}
+        			
+        		}
+        		
+        		result = result +'<option value='+report.id+' '+selected+'>'+report.templateName+'</option>';
+			}
+        	 
+        	 $("#onboardingTemplate").empty();
+           	 $("#onboardingTemplate").append(result); 
+           	 $('#onboardingTemplate').trigger("chosen:updated");
+	    }
+   });
+}
+</script>
+
+<script type="text/javascript">
+ function getReportingManager(roleId,onBoardManagerId) {
+	 var role= '';
+	 if(roleId != null && roleId != "" && roleId != 'undefined'){
+		 role = roleId;
+	 }else{
+		 role = document.getElementById("onboardCandidateRole").value; 
+	 }
+	 
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(role != null && role != "" && role != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getReportingManager?${_csrf.parameterName}=${_csrf.token}&role="+role, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option value=''>-- Select Manager --</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		var selected = '';
+			        		if(onBoardManagerId != null && onBoardManagerId != "" && onBoardManagerId !="undefined" && onBoardManagerId == opt.id){
+			            		selected = 'selected';
+			            	}
+			        		output = output +'<option value='+opt.id+'  '+selected+'>'+opt.firstName+' '+opt.lastName+' ('+opt.userType+')</option>';
+					}
+		        	$("#reportingManager").empty();
+			        $("#reportingManager").append(output);
+			        $('#reportingManager').trigger("chosen:updated");
+		        },
+		    });
+	 }else{
+		 var output = "";
+     	 output = output + "<option value=''>-- Select Manager --</option>"; 
+     	 $("#reportingManager").empty();
+	     $("#reportingManager").append(output);
+	     $('#reportingManager').trigger("chosen:updated");
+	 }
+	
+ }
+</script>
+
+
+<script>
+  $( function() {
+	  
+	  $('#startDate').datepicker({
+	      dateFormat: 'dd-mm-yy',
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  });
+	  
+	  $('#endDate').datepicker({
+	      dateFormat: 'dd-mm-yy',
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  });
+	  
+	  $('#dueDate').datepicker({
+	      dateFormat: 'dd-mm-yy',
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  });
+	  
+  } );
+</script>
+  
+  
+ <script>
+ function saveOnboardingCandidateDetails(saveType){
+	 
+	 var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+	         }; 
+	 
+	 if ($('#onboardCandidate_form').validate(false, validationSettings)){ 
+		    var frm = $('#onboardCandidate_form').serializeFormJSON();
+	        var con = JSON.stringify(frm);
+	        con = con.replace(/[{}]/g, "");
+	        
+	        //It will escape all the special characters
+	        var jsonData = encodeURIComponent(con);
+	        
+	        var sourceleadUrl ='${sourceleadUrl}';
+	        
+	       
+	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/saveOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+		        success: function(onboardId) {
+		        	
+		        	if(saveType == 'saveAndContinue'){
+		        		var $tabs = $('.tabbable li');
+		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
+		     	        document.getElementById("templateDocs").disabled = false;
+		     	        
+		     	       getTemplatePolicyDocumentsDetails(onboardId);
+		     	       getTemplateSupportingDocumentsDetails(onboardId);
+		     	       
+		     	       $("#documentstemplateId").val(onboardId);
+		        	}
+		        	
+	     	        $("#candidateOnBoardId").val(onboardId);
+	     	        $("#loading").removeAttr("style");
+		        },
+		    }); 
+	        return true;
+		
+	  }else{
+		return false;
+	  }
+ }
+ 
+ $('body').on('blur', '#onboardCandidate_form', function() {
+		$("#onboardCandidate_form").showHelpOnFocus();
+		$("#onboardCandidate_form").validateOnBlur(false, validationSettings);  
+	});
+ </script> 
+ 
+ 
+ <script>
+ function loadOnboardingCandidate(onBoardingUUID){
+	 
+	 if(onBoardingUUID != null && onBoardingUUID != "" && onBoardingUUID !="undefined"){
+		 onBoardingUUID 
+	 }else{
+		 onBoardingUUID = document.getElementById("candidateOnBoardUUID").value;
+	 }
+	 
+	 if(onBoardingUUID){
+	
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	    $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/loadOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID, 
+	        success: function(data) {
+	        	
+	        	var json = JSON.parse(data);
+	        	loadOfferAcceptedCandidates(json['onBoardCandidateId']);
+	        	
+	        	$("#firstName").val(json['firstName']);
+	        	
+	        	if(json['lastName'] != null && json['lastName'] != "" && json['lastName'] !="undefined"){
+	        		$("#lastName").val(json['lastName']);
+	        	}
+	        	
+	        	$("#address1").val(json['address1']);
+	        	
+	        	if(json['address2'] != null && json['address2'] != "" && json['address2'] !="undefined"){
+	        		$("#address2").val(json['address2']);
+	        	}
+	        	
+	        	
+	        	$("#mobileNumber").val(json['mobileNumber']);
+		    	$("#personalEmail").val(json['personalEmail']);
+		    	
+		    	if(json['companyEmail'] != null && json['companyEmail'] != "" && json['companyEmail'] !="undefined"){
+		    		$("#companyEmail").val(json['companyEmail']);
+		    	}
+		    	
+		    	if(json['zipCode'] != null && json['zipCode'] != "" && json['zipCode'] !="undefined"){
+		    		$("#zipCode").val(json['zipCode']);
+		    	}
+		    	
+		    	getOnBoardCandidateCountry(json['country']);
+		    	getOnBoardCandidateStates(json['country'],json['state']);
+		    	getOnBoardCandidateStates(json['state'],json['city']);
+		    	getOnBoardCandidateCities(json['country'],json['state'],json['city']);
+		    	
+		    	loadCandidateRoles(json['onBoardRoleId']);
+		    	$("#startDate").val(json['joiningDateStr']);
+		    	
+		    	if(json['endDateStr'] != null && json['endDateStr'] != "" && json['endDateStr'] !="undefined"){
+		    		$("#endDate").val(json['endDateStr']);
+		    	}
+		    	
+		    	$("#salaryRate").val(json['salaryRate']);
+		    	
+		    	if(json['onBoardManagerId'] != null && json['onBoardManagerId'] != "" && json['onBoardManagerId'] !="undefined"){
+		    		getReportingManager(json['onBoardRoleId'],json['onBoardManagerId']);
+		    	}
+		    	
+		    	if(json['onBoardTeamId'] != null && json['onBoardTeamId'] != "" && json['onBoardTeamId'] !="undefined"){
+		    		loadTeams(json['onBoardTeamId']);
+		    	}
+		    	
+		    	if(json['employmentType'] != null && json['employmentType'] != "" && json['employmentType'] !="undefined"){
+		    		$("#employmentType").val(json['employmentType']);
+			    	$('#employmentType').trigger("chosen:updated");
+		    	}
+		    	
+		    	if(json['probationNotice'] != null && json['probationNotice'] != "" && json['probationNotice'] !="undefined"){
+		    		$("#probationNotice").val(json['probationNotice']);
+			    	$('#probationNotice').trigger("chosen:updated");
+		    	}
+		    	
+		    	
+		    	if(json['terminationNotice'] != null && json['terminationNotice'] != "" && json['terminationNotice'] !="undefined"){
+		    		$("#terminationNotice").val(json['terminationNotice']);
+			    	$('#terminationNotice').trigger("chosen:updated");
+		    	}
+		    	
+		    	
+		    	if(json['dueDateStr'] != null && json['dueDateStr'] != "" && json['dueDateStr'] !="undefined"){
+		    		$("#dueDate").val(json['dueDateStr']);
+		    	}
+		    	
+		    	if(json['specialConditions'] != null && json['specialConditions'] != "" && json['specialConditions'] !="undefined"){
+		    		$("#specialConditions").val(json['specialConditions']);
+		    	}
+		    	
+		    	if(json['onboardTemplateId'] != null && json['onboardTemplateId'] != "" && json['onboardTemplateId'] !="undefined"){
+		    		loadOnBoardingTemplates(json['onboardTemplateId']);
+		    	}
+		    	
+		    	$("#savedonboardId").val(json['id']);
+		    	
+		    	$("#loading").removeAttr("style");
+	        },
+	    });
+	 }
+ }
+ </script>
+ 
+ 
+ <script>
+function getTemplatePolicyDocumentsDetails(onboardId){
+	if(onboardId == '' || onboardId == null || onboardId =='undefined'){
+		onboardId = document.getElementById("candidateOnBoardId").value;
+	}
+	var documentType = "Policies"
+	if(onboardId){
+		var sourceleadUrl ='${sourceleadUrl}';
+	     $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByOnboardId?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&documentType="+documentType, 
+		        success: function(data) {
+		        	
+		        	 var json = JSON.parse(data);
+		        	 var result = "";
+		        	 
+                	 for (var i = 0; i < json.length; i++) { 
+                		 var opt = json[i]; 
+                		 result = result +"<strong id='policydocument"+opt.id+"'>";
+           				 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadTemplateDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
+           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
+           				 result = result +"</a>";
+           				
+           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+           					result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument("+opt.id+",\""+documentType+"\");' >"; 
+           				 }else{
+           					result = result +"<input class='dele' type='button' onClick='deleteCandidateOnboardDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
+           				 }
+           				 
+           				 result = result +"</strong>";
+           				
+           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+           					result = result +"<input type='hidden' name='savedPoliciesAttcahments' id='policyAttachment"+opt.id+"' value='"+opt.id+"' />";
+           				}
+           				 
+                	 }
+                	
+                	 result = result +"<input type='hidden' name='policiesAttcahmentMaxRowNumber'  id='policiesAttcahmentMaxRowNumber' value='1' />";
+                	 result = result +"<table class='timesheetAttachment' id='policiesAttachmentTable' cellpadding='0' cellspacing='0'>";
+                	 result = result +"<tr id='divAttachmentTsRow0'>";
+                	 result = result +"<td><div id='0docFileuploadFileGroup'><input type='file' name='0docFile' id='0docFile' field-name='Attachment' onchange='validateUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addPoliciesAttachment()'></i></div></td>";
+                	 result = result +"</tr>";
+                	 result = result +"</table>";
+                	 $("#savedPociliesAttachments").empty();
+                	 
+                	 $("#savedPociliesAttachments").append(result);
+                	 
+                	 
+                	 
+			        
+		        },
+		    });
+	}
+}
+</script>
+
+<script>
+function getTemplateSupportingDocumentsDetails(onboardId){
+	if(onboardId == '' || onboardId == null || onboardId =='undefined'){
+		onboardId = document.getElementById("candidateOnBoardId").value;
+	}
+	var documentType = "Supported"
+	if(onboardId){
+		var sourceleadUrl ='${sourceleadUrl}';
+	     $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByOnboardId?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&documentType="+documentType, 
+		        success: function(data) {
+		        	
+		        	 var json = JSON.parse(data);
+		        	 var result = "";
+		        	 
+                	 for (var i = 0; i < json.length; i++) { 
+                		 var opt = json[i]; 
+                		 result = result +"<strong id='supportdocument"+opt.id+"'>";
+                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadTemplateDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
+           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
+           				 result = result +"</a>";
+           				
+           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+            					result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument("+opt.id+",\""+documentType+"\");' >"; 
+           				 }else{
+           					result = result +"<input class='dele' type='button' onClick='deleteCandidateOnboardDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
+           				 }
+           				
+           				 result = result +"</strong>";
+           				 
+           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+           					result = result +"<input type='hidden' name='savedSupportedAttcahments' id='supportedAttachment"+opt.id+"' value='"+opt.id+"' />";
+           				 }
+           				
+                	 }
+                	 
+                	 result = result +"<input type='hidden' name='supportingAttcahmentMaxRowNumber'  id='supportingAttcahmentMaxRowNumber' value='1' />";
+                	 result = result +"<table class='timesheetAttachment' id='supportingAttachmentTable' cellpadding='0' cellspacing='0'>";
+                	 result = result +"<tr id='divAttachmentTsRow0'>";
+                	 result = result +"<td><div id='0SupportingdocFileuploadFileGroup'><input type='file' name='0supportingdocFile' id='0supportingdocFile' field-name='Attachment' onchange='validateUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addSupportingAttachment()'></i></div></td>";
+                	 result = result +"</tr>";
+                	 result = result +"</table>";
+                	 $("#savedSupportedAttachments").empty();
+                	 $("#savedSupportedAttachments").append(result);
+                	 
+                	 
+			        
+		        },
+		    });
+	}
+}
+</script>
+  
+  
+  
+<script>
+function deleteTemplateDocument(documentId,documentType){
+	
+	if(documentType == 'Policies'){
+		document.getElementById("policydocument"+documentId).remove();
+		document.getElementById("policyAttachment"+documentId).remove();
+	}else if(documentType == 'Supported'){
+		document.getElementById("supportdocument"+documentId).remove();
+		document.getElementById("supportedAttachment"+documentId).remove();
+	}
+	
+	 
+}
+</script>
+
+<script>
+function deleteCandidateOnboardDocument(documentUUID,documentId,documentType){
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	   $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/deleteTemplateDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
+	        success: function(data) {
+	        	if(data == 'success'){
+	        		if(documentType == 'Policies'){
+	        			document.getElementById("policydocument"+documentId).remove();
+	        		}else if(documentType == 'Supported'){
+	        			document.getElementById("supportdocument"+documentId).remove();
+	        		}
+	        		
+	        	}
+	        },
+	    });
+	 
+}
+</script>
+
+
+
+
+
+
+<script>
+function createTemplateDocs(saveType){
+	var validationSettings = {
+	        errorMessagePosition : 'element',
+	       borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+         }; 
+	
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  
+	  var frm = $('#templateDocuments_form').serializeFormJSON();
+      var con = JSON.stringify(frm);
+      con = con.replace(/[{}]/g, "");
+      
+      //It will escape all the special characters
+      var jsonData = encodeURIComponent(con);
+      
+	   var form = $('#templateDocuments_form')[0];
+	   var formData = new FormData(form); 
+	
+   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$.ajax({
+        type : "POST",
+	      data: formData,
+	      contentType : 'application/json; charset=utf-8',
+	      enctype: 'multipart/form-data',
+        processData: false,
+        contentType:false,
+	      dataType : 'json',
+    	  url: sourceleadUrl+"/saveCandidatedOnboardingTemplateDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,		
+	      success :function(result) {
+	    	  
+	    	  if(saveType == 'saveAndContinue'){
+	        		var $tabs = $('.tabbable li');
+	     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
+	     	        document.getElementById("templateTasks").disabled = false;
+	     	        getOnboardingTasksList();
+	        	}else{
+	        		getTemplatePolicyDocumentsDetails();
+	        		getTemplateSupportingDocumentsDetails();
+	        	}
+	    	  $("#loading").removeAttr("style");
+	    	  
+	      }
+    	  
+  });
+}
+</script>
+
+
+
+<script>
+  function validateTaskEmail(){
+	  var taskEmail = document.getElementById("taskEmail").checked;
+	  if(taskEmail == 1){
+		  document.getElementById("taskEmail").value = 'Y';
+	  }else{
+		  document.getElementById("taskEmail").value = 'N';
+	  }
+	  
+  }
+  </script>
+  
+  <script>
+  function validateTaskNotification(){
+	  var taskEmail = document.getElementById("taskNotification").checked;
+	  if(taskEmail == 1){
+		  document.getElementById("taskNotification").value = 'Y';
+	  }else{
+		  document.getElementById("taskNotification").value = 'N';
+	  }
+	  
+  }
+  </script>
+  
+  <script>
+  function flushOnboardTask(){
+	  document.getElementById("addonboardTask_form").reset();
+	
+  }
+  </script>
+  
+  <script>
+  function validateAssignToType(assignToType){
+	  if(assignToType == 'assingToUser'){
+		  document.getElementById("assignToUserDiv").style.display="";
+		  $('#onboardAssignedTo').removeAttr('data-validation-optional');
+		  $("#onboardAssignedTo").attr("data-validation", "required");
+		 
+	  }else{
+		  document.getElementById("assignToUserDiv").style.display="none";
+		  $('#onboardAssignedTo').removeAttr('data-validation');
+		  $("#onboardAssignedTo").attr("data-validation-optional", "true");
+		  getAssignToUsersList();
+	  }
+  }
+  </script>
+  
+  
+  <script>
+  function validateDueAfter(){
+	  
+	  var taskMonths = document.getElementById("taskMonths").value;
+	  var taskDays = document.getElementById("taskDays").value;
+	  var taskHours = document.getElementById("taskHours").value;
+	  var taskMinutes = document.getElementById("taskMinutes").value;
+	  
+	  
+	  if(taskMonths == '' && taskDays == '' && taskHours == '' && taskMinutes == ''){
+			  $('#taskMonths').removeAttr('data-validation-optional');
+			  $("#taskMonths").attr("data-validation", "required");
+		    
+	  }else{
+		  $('#taskMonths').removeAttr('data-validation');
+		  $("#taskMonths").attr("data-validation-optional", "true");
+		    
+	  }  
+	  
+  }
+  </script>
+
+<script>
+function getAssignToUsersList(){
+	var candidateOnBoardId = document.getElementById("candidateOnBoardId").value;
+    $("#candidateOnboardTaskId").val(candidateOnBoardId);
+    
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
+	    success: function(data) {
+	    	 var json = JSON.parse(data);
+        	 var result = "";
+        	for (var i=0; i<json.length; i++)
+			{
+        		var report = json[i];
+        		result = result +'<option value='+report.userId+' >'+report.userName+'</option>';
+			}
+        	 $("#onboardAssignedTo").empty();
+           	 $("#onboardAssignedTo").append(result); 
+           	 $('#onboardAssignedTo').trigger("chosen:updated");
+	    }
+   }); 
+}
+</script>
+
+<script>
+function saveOnboardTask(){
+	
+	var validationSettings = {
+	        errorMessagePosition : 'element',
+	       borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+         }; 
+	
+	  if ($('#addonboardTask_form').validate(false, validationSettings)){ 
+		    var frm = $('#addonboardTask_form').serializeFormJSON();
+	        var con = JSON.stringify(frm);
+	        con = con.replace(/[{}]/g, "");
+	        
+	        //It will escape all the special characters
+	        var jsonData = encodeURIComponent(con);
+	        
+	        var sourceleadUrl ='${sourceleadUrl}';
+	        
+	       
+	        $("#onboardtasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	        $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/saveCandidateOnBoardTasks?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+		        success: function(result) {
+		        	
+		        	if(result == 'success'){
+		        		$("#onboardtasksLoading").removeAttr("style");
+			        	flushOnboardTask();
+			        	getAssignToUsersList();
+			        	getOnboardingTasksList();
+		        	}
+		        	
+		        },
+		    });  
+	        return true;
+		
+	  }else{
+		return false;
+	  }
+}
+
+$('body').on('blur', '#addonboardTask_form', function() {
+	$("#addonboardTask_form").showHelpOnFocus();
+	$("#addonboardTask_form").validateOnBlur(false, validationSettings);  
+});
+</script>
+
+<script>
+function getOnboardingTasksList(){
+	var onboardId = document.getElementById("candidateOnBoardId").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	var locationId = '${SourceLeadWeb_orgLocationId}';
+	
+	
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/getCandidateOnboardTasksList?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId,	    	   
+	    success: function(data) {
+	    	 var json = JSON.parse(data);
+        	 var result = "";
+        	 
+        	if(json.length > 0){ 
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var report = json[i];
+	        		
+	        		var prority = '';
+	        		var repeat = '';
+	        		
+	        		if(report.priority != null && report.priority != '' && report.priority != 'undefined'){
+	        			prority = report.priority;
+	        		}else{
+	        			prority = '----';
+	        		}
+	        		
+	        		if(report.taskRepeat != null && report.taskRepeat != '' && report.taskRepeat != 'undefined'){
+	        			repeat = report.taskRepeat;
+	        		}else{
+	        			repeat = '----';
+	        		}
+	        		
+	        		result = result +'<div class="clearfix taskwidget_inner" id="onboardTask'+report.id+'">';
+	        		result = result +'<div class="media-body">';
+	        		result = result +'<div class="clearfix taskheder">';
+	        		
+	        		result = result +"<label> <span class='paddingRight'>Subject:</span> <strong class='text-primary'>"+report.taskName+"</strong><i class='fa fa-trash text-danger paddingLeft' onClick='deleteTask("+report.id+",\""+report.onboardTaskType+"\");'></i></label>";
+	        		
+	        		result = result +'<label class="small pull-right text-muted"> <span>'+report.dueAfterString+'</span> </label>';
+	        		result = result +'</div>';
+	        		result = result +'<ul class="list-inline list-description mt10">';
+	        		
+	        		result = result +'<li><span>Assign To:</span>';
+	        		
+	        		if(report.usersList.length > 0){
+	        			for(var j=0; j<report.usersList.length; j++){
+		 					result = result +'<label>'+report.usersList[j]+'</label>';
+		 				}
+	        		}else{
+	 					result = result +'Onboarding Candidate';
+	 				}
+	        		result = result +'</li>';
+	        		
+	        		result = result +'<li><span>Priority:</span>'+prority+'</li>';
+	        		result = result +'<li><span>Repeat:</span> '+repeat+'</li>';
+	        		result = result +'</ul>';
+	        		result = result +'</div>';
+	        		result = result +'</div>';
+        		   
+	        		if(report.onboardTaskType != 'Candidate Task'){
+       					result = result +"<input type='hidden' name='savedTemplateTask' id='templateTask"+report.id+"' value='"+report.id+"' />";
+       				}
+				}
+        	}else{
+        		result = result +'<div><h4>No Tasks Found</h4></div>';
+        	}
+        	
+        	result = result +'<div class="form-footer clearfix mt">';
+    		result = result +'<div class="pull-right mr">';
+    		result = result +'<input type="button" value="Finish" onclick="saveAndFinishOnboardTemplate('+onboardId+');" class="btn btn-sm btn-primary">';
+    		result = result +'</div>';
+    		result = result +'</div>';
+    		
+    		 $("#onboardTasksList").empty();
+           	 $("#onboardTasksList").append(result); 
+    		
+        	 
+	    }
+   }); 
+	
+  $("#loading").removeAttr("style");
+	
+}
+</script>
+
+
+<script>
+function deleteTask(taskId,taskType){
+	
+	if(taskType != 'Candidate Task'){
+		document.getElementById("onboardTask"+taskId).remove();
+		document.getElementById("templateTask"+taskId).remove()
+	}else{
+		
+		var sourceleadUrl ='${sourceleadUrl}';
+		   $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/deleteOnboardTaskByTaskId?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
+		        success: function(data) {
+		        	if(data == 'success'){
+		        		document.getElementById("onboardTask"+taskId).remove();
+		        		
+		        	}
+		        },
+		    });
+	}
+}
+</script>
+
+
+<script>
+function saveAndFinishOnboardTemplate(onboardId){
+	
+	var tasksIds = document.getElementsByName("savedTemplateTask");
+	var tasks = '';
+	for(var i=0; i < tasksIds.length; i++){
+		tasks = tasks+tasksIds[i].value+",";
+	}
+	
+	tasks = tasks.substring(0, tasks.length - 1);
+	
+	
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/saveAndFinishCandidateOnboard?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&tasks="+tasks, 	    	   
+	    success: function(data) {
+       	 
+	    	location.replace(sourceleadUrl+"/candidateOnBoardingList");  
+	    }
+  });  
+	
+
+}
+</script>
