@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.io.FileUtils;
@@ -4123,9 +4122,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public Long getCountOfAllApplicantsByCreatedUserAndOrglocationId(Long orgLocationId, User user,String stage, String timePeriod)
+	public Long getCountOfAllApplicantsByCreatedUserAndOrglocationIdByStage(Long orgLocationId, User user,String stage, String timePeriod)
 			throws Exception {
-		return requirementSubmissionDao.getCountOfAllApplicantsByCreatedUserAndOrglocationId(orgLocationId, user,stage,timePeriod);
+		return requirementSubmissionDao.getCountOfAllApplicantsByCreatedUserAndOrglocationIdByStage(orgLocationId, user,stage,timePeriod);
 	}
 
 	@Override

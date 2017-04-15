@@ -1,13 +1,13 @@
 package com.bis.sourcelead.dao.impl;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -16,16 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementSubmissionHistoryDao;
-import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Requirement;
-import com.bis.sourcelead.entity.RequirementOffers;
-import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
-import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
@@ -127,14 +120,52 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 	}
 
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public Long getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(Long orgLocationId, User user,
-			String submissionStage, String timePeriod) throws Exception {
+			String submissionStage, Date startDateUTC, Date endDateUTC) throws Exception {
 		
-		 String query ="select count(*)from RequirementSubmissionHistory rsh where rsh.orgLocations.id =:orgLocationId and rsh.createdBy =:userCode ";
+		Map<String, Object> params = new HashMap<String,Object>();
+		String subQueryDateRange = "";
+		
+		if(null != startDateUTC && null != endDateUTC){
+			subQueryDateRange = "and (rsh.createdDate >= :startDateUTC and rsh.createdDate <= :endDateUTC)";
+			  params.put("startDateUTC",startDateUTC);
+			  params.put("endDateUTC",endDateUTC);
+		}
+		
+		 String queryString ="select count(*)from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations.id =:orgLocationId and rsh.toStage =:submissionStage and rsh.submissionId.submissionStatus = rsh.toStage and rsh.createdBy =:userCode "+subQueryDateRange+" ";
 		Session session = this.sessionFactory.getCurrentSession();
-	    long count = ((Long)session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("userCode",user.getUserCode()).uniqueResult()).intValue();
-    
-       return count;
+	    //long count = ((Long)session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("submissionStage",submissionStage).setString("userCode",user.getUserCode()).uniqueResult()).intValue();
+	    params.put("orgLocationId",orgLocationId);
+	    params.put("submissionStage",submissionStage);
+	    params.put("userCode",user.getUserCode());
+	  
+	    
+	    Query query = session.createQuery(queryString);
+	    for (String str : query.getNamedParameters())
+        {
+			if(str.equalsIgnoreCase("startDateUTC")){
+				query.setParameter( str, (Date) params.get(str) );
+			}
+			if(str.equalsIgnoreCase("endDateUTC")){
+				query.setParameter( str, (Date) params.get(str) );
+			}
+			
+			if(str.equalsIgnoreCase("orgLocationId")){
+				query.setParameter(str, (long) params.get(str));
+			}
+			
+			if(str.equalsIgnoreCase("submissionStage")){
+				query.setParameter(str, params.get(submissionStage));
+			}
+			
+			if(str.equalsIgnoreCase("userCode")){
+				query.setParameter(str, params.get(str));
+			}
+			
+			
+        }
+       return (Long)query.uniqueResult();
 	}
 
 }

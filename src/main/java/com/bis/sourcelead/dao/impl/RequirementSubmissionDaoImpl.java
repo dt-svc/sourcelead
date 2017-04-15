@@ -2279,13 +2279,22 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 
 		@Override
 		@Transactional(rollbackFor = { Exception.class })
-		public Long getCountOfAllApplicantsByCreatedUserAndOrglocationId(Long orgLocationId, User user,String stage,
+		public Long getCountOfAllApplicantsByCreatedUserAndOrglocationIdByStage(Long orgLocationId, User user,String stage,
 				String timePeriod) throws Exception {
-				
-			    String query ="select count(*)from RequirementSubmission rs where rs.submissionStatus =:stage  and rs.orgLocations.id =:orgLocationId and rs.createdBy =:userCode";
+				String subQuery = "";
+				if(stage == ""){
+					subQuery = "";
+				}else{
+					subQuery = "rs.submissionStatus =:stage  and";
+				}
+			    String query ="select count(*)from RequirementSubmission rs where "+subQuery+"  rs.orgLocations.id =:orgLocationId and rs.createdBy =:userCode";
 				Session session = this.sessionFactory.getCurrentSession();
-			    long count = ((Long)session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("userCode",user.getUserCode()).setString("stage",stage).uniqueResult()).intValue();
-		    
+				long count = 0;
+				if(stage == ""){
+					count = ((Long)session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("userCode",user.getUserCode()).uniqueResult()).intValue();
+				}else{
+					count = ((Long)session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("userCode",user.getUserCode()).setString("stage",stage).uniqueResult()).intValue();
+				}
 		       return count;
 		}
 

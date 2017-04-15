@@ -21,4 +21,6 @@ public interface CandidateOnBoardingService {
 	Integer getCandidateOnBoardingListCountByOrgLocationId(Long orgLocationId) throws Exception;
 	
 	CandidateOnBoarding getCandidateOnBoardingById(Long Id) throws Exception;
+	
+	public void createOnboardingUser(CandidateOnBoarding candidateOnBoarding,User user,OrgLocations orgLocations) throws Exception;
 }

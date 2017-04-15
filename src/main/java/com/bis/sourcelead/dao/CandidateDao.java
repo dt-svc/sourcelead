@@ -69,5 +69,7 @@ public interface CandidateDao {
 	Long getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, String timePeriod) throws Exception ;
 
 	public Candidate getCandidateById(Long candidateId) throws Exception;
+	
+	Long getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC) throws Exception ;
 
 }

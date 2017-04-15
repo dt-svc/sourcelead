@@ -981,12 +981,49 @@ public class RequirementDaoImpl implements RequirementDao {
 
 		@Override
 		 @Transactional(rollbackFor = { Exception.class })
-		public Long getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user,String timePeriod)
+		public Long getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user,Date startDateUTC, Date endDateUTC)
 				throws Exception {
-			String query ="select count(*)from Requirement requirement where requirement.orgLocationId.id =:orgLocationId and requirement.createdBy =:userCode";
+			
+			Map<String, Object> params = new HashMap<String,Object>();
+			String subQueryDateRange = "";
+			
+			if(null != startDateUTC && null != endDateUTC){
+				subQueryDateRange = "and (requirement.createdDate >= :startDateUTC and requirement.createdDate <= :endDateUTC)";
+				  params.put("startDateUTC",startDateUTC);
+				  params.put("endDateUTC",endDateUTC);
+			}
+			
+			
+		    String queryString ="select count(*)from Requirement requirement where requirement.orgLocationId.id =:orgLocationId and requirement.createdBy =:userCode "+subQueryDateRange+" ";
 			Session session = this.sessionFactory.getCurrentSession();
-			 long count = ((Long)session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("userCode",user.getUserCode()).uniqueResult()).intValue();
-			return count;
+		    params.put("orgLocationId",orgLocationId);
+		    params.put("userCode",user.getUserCode());
+			
+			/*String query ="select count(*)from Requirement requirement where requirement.orgLocationId.id =:orgLocationId and requirement.createdBy =:userCode";
+			Session session = this.sessionFactory.getCurrentSession();
+			long count = ((Long)session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("userCode",user.getUserCode()).uniqueResult()).intValue();*/
+			    
+			    Query query = session.createQuery(queryString);
+			    for (String str : query.getNamedParameters())
+		        {
+					if(str.equalsIgnoreCase("startDateUTC")){
+						query.setParameter( str, (Date) params.get(str) );
+					}
+					if(str.equalsIgnoreCase("endDateUTC")){
+						query.setParameter( str, (Date) params.get(str) );
+					}
+					
+					if(str.equalsIgnoreCase("orgLocationId")){
+						query.setParameter(str, (long) params.get(str));
+					}
+					
+					if(str.equalsIgnoreCase("userCode")){
+						query.setParameter(str, params.get(str));
+					}
+					
+					
+		        }
+			    return (Long)query.uniqueResult();
 				
 		}
 	

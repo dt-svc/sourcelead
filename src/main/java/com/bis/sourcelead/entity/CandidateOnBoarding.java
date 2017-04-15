@@ -174,6 +174,11 @@ private static final long serialVersionUID = 1L;
 	@Transient
 	private String dueDateStr;
 	
+	@Transient
+	private String jobTitle;
+	
+	
+	
 	
 
 	public Long getId() {
@@ -534,6 +539,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setDueDateStr(String dueDateStr) {
 		this.dueDateStr = dueDateStr;
+	}
+
+	public String getJobTitle() {
+		return jobTitle;
+	}
+
+	public void setJobTitle(String jobTitle) {
+		this.jobTitle = jobTitle;
 	}
 	    
 }

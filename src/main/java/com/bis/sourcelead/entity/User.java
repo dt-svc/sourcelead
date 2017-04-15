@@ -182,6 +182,23 @@ public class User implements Serializable{
 	
 	@Transient
     private long userCandidatesCount;
+	
+	@Transient
+    private long userShortlisteApplicantsCount;
+	
+	@Transient
+    private long userSubmittedApplicantsCount;
+	
+	@Transient
+    private long userInterviewedApplicantsCount;
+	
+	@Transient
+    private long userOfferedApplicantsCount;
+	
+	@Transient
+    private long userRejectedApplicantsCount;
+	
+	
 
 	public Status getPreviousUserState() {
 		return previousUserState;
@@ -552,6 +569,47 @@ public class User implements Serializable{
 	public void setUserApplicantsCount(long userApplicantsCount) {
 		this.userApplicantsCount = userApplicantsCount;
 	}
+
+	public long getUserShortlisteApplicantsCount() {
+		return userShortlisteApplicantsCount;
+	}
+
+	public void setUserShortlisteApplicantsCount(long userShortlisteApplicantsCount) {
+		this.userShortlisteApplicantsCount = userShortlisteApplicantsCount;
+	}
+
+	public long getUserSubmittedApplicantsCount() {
+		return userSubmittedApplicantsCount;
+	}
+
+	public void setUserSubmittedApplicantsCount(long userSubmittedApplicantsCount) {
+		this.userSubmittedApplicantsCount = userSubmittedApplicantsCount;
+	}
+
+	public long getUserInterviewedApplicantsCount() {
+		return userInterviewedApplicantsCount;
+	}
+
+	public void setUserInterviewedApplicantsCount(long userInterviewedApplicantsCount) {
+		this.userInterviewedApplicantsCount = userInterviewedApplicantsCount;
+	}
+
+	public long getUserOfferedApplicantsCount() {
+		return userOfferedApplicantsCount;
+	}
+
+	public void setUserOfferedApplicantsCount(long userOfferedApplicantsCount) {
+		this.userOfferedApplicantsCount = userOfferedApplicantsCount;
+	}
+
+	public long getUserRejectedApplicantsCount() {
+		return userRejectedApplicantsCount;
+	}
+
+	public void setUserRejectedApplicantsCount(long userRejectedApplicantsCount) {
+		this.userRejectedApplicantsCount = userRejectedApplicantsCount;
+	}
+	
 	
 	
 }

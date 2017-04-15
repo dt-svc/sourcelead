@@ -35,85 +35,118 @@ window.onload = function () {
     	$(".logMask").fadeOut(200);
 		$(".logPop").fadeOut(100);
     }
-	/* $(".loPopClose, .logMask").click(function(){
-		$(".logMask").fadeOut(200);
-		$(".logPop").fadeOut(100);
-	});	 */
 </script>
 <div class="logMask"></div>
 	<div class="logPop">
-	<div class="sc_regform-holder fl break">
-    <div class="break sc_formheader">
-        <div class="fl sc_dp"><img src="http://socialinviter.com/assets/img/icons/avator.JPG" id="profileimage"></div>
-        <div class="fl sc_formheader-desc ng-binding" id="aboutme"></div>
-    </div>
-   <!--  <div class="sc_row">
-        <div class="fl sc_row-left">Profile url</div>
-        <div class="fl sc_row-sep">:</div>
-        <div class="fl sc_row-right sr_row-profurl">
-            <a target="_blank" href="#" id="profileurl"></a>
+		<div class="loPopClose" onclick="closeProfileDetailsPop();"><i class="fa fa-times"></i></div>
+		<div class="row mt10">
+		    <div id = "professionalRegistrationPopup" style="display:block;">
+				    <form:form class="login-form clearfix"  id="popprofessionalRegistration_form"  name="popprofessionalRegistration_form" method="post" >
+				    <div class="col-md-3">
+						<div class="userImg">
+					      <img src="http://socialinviter.com/assets/img/icons/avator.JPG" id="popProfessionalprofileimage">
+					   </div>
+				    </div>
+		            <div class="col-md-9">
+		            <div class="form-group clearfix">
+		                  <label  class="col-md-4">First Name <span class="text-danger">*</span></label>
+		                  <span class="col-md-8">
+		                    <input type="text" class="form-control" name="firstName" field-name="First Name" id="popfirstName" value='${firstName}' data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
+		                     <b></b>
+		                  </span>
+		            </div>
+		            <div class="form-group clearfix">
+		              <label class="col-md-4">Last Name</label>
+		              <span class="col-md-8">
+		                 <input type="text"  class="form-control" name="lastName" field-name="Last Name" id="poplastName" value='${lastName}'  data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
+		                 <b></b>
+		              </span>
+		            </div>
+		            <div class="form-group clearfix">
+		              <label class="col-md-4">Email<span class="text-danger">&nbsp;*</span></label>
+		              <span class="col-md-8" id="popemailDiv">
+		                 <input type="text" class="form-control" name="email" field-name="Email" value='${email}' onblur="validateEmail('Professional');" id="popemail"  data-validation="required validate_Space validate_length length2-100 validate_email" >
+		                  <b></b>
+		              </span>
+		            </div>
+		            <div class="form-group clearfix">
+		              <label class="col-md-4">Location<span class="text-danger">&nbsp;*</span></label>
+		              <div class="col-md-8">
+		                  <select class="form-control chosen-select" name="location" id="poplocation" field-name="Country" data-validation="required">
+		                       <option disabled selected>Country</option>
+		                       <option value="Australia">Australia</option>
+			                <option value="France">France</option>
+			                <option value="India">India</option>
+			                <option value="Singapore">Singapore</option>
+			                <option value="United Kingdom">United Kingdom</option>
+			                <option value="United States">United States</option>
+		                   </select>
+		                   <b></b>
+		              </div>
+		            </div>
+		            <div class="form-group clearfix">
+		                <div class="pull-right">
+		                     <button type="submit" id="popregister_button"  class="btn btn-primary btn_styles mr" title="Register">
+		                        <i class="fa fa-paper-plane"></i>Register</button>
+		                </div>
+		            </div>                                                                                                          
+		        </div>
+		        </form:form>
         </div>
-    </div>
-    <div class="sc_row">
-        <div class="fl sc_row-left">Id</div>
-        <div class="fl sc_row-sep">:</div>
-        <div class="fl sc_row-right">
-            <input type="text" placeholder="Not available" class="input-xlarge ng-pristine ng-valid" id="loginid">
+        <div id = "recruiterRegistrationPopup" style="display:none;">
+		      <form:form class="login-form clearfix"  id="poprecruiterRegistration_form"  name="poprecruiterRegistration_form" method="post" >
+				     <div class="col-md-3">
+						<div class="userImg">
+					      <img src="http://socialinviter.com/assets/img/icons/avator.JPG" id="popRecruiterprofileimage">
+					   </div>
+				    </div>   
+		            <div class="col-md-9">
+		            <div class="form-group clearfix">
+		                  <label  class="col-md-4">First Name <span class="text-danger">*</span></label>
+		                  <span class="col-md-8">
+		                     <input type="text" class="form-control" name="firstName" field-name="First Name" id="poprecruiterFirstName" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
+		                     <b></b>
+		                  </span>
+		            </div>
+		            <div class="form-group clearfix">
+		              <label class="col-md-4">Last Name</label>
+		              <span class="col-md-8">
+		                 <input type="text"  class="form-control" name="lastName" field-name="Last Name" id="poprecruiterLastName" value='${lastName}'  data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
+		                 <b></b>
+		              </span>
+		            </div>
+		            <div class="form-group clearfix">
+		              <label class="col-md-4">Email<span class="text-danger">&nbsp;*</span></label>
+		              <span class="col-md-8" id="poprecruiterEmailDiv">
+		                 <input type="text" class="form-control" name="email" field-name="Email"  id="poprecruiterEmail"  onblur="validateRecruiterEmail('Recruiter');" data-validation="required validate_Space validate_length length2-100 validate_email" >
+		                  <b></b>
+		              </span>
+		            </div>
+		            <div class="form-group clearfix">
+		              <label class="col-md-4">Location<span class="text-danger">&nbsp;*</span></label>
+		              <div class="col-md-8">
+		                  <select class="form-control chosen-select" name="location" id="poprecruiterLocation" field-name="Country" data-validation="required">
+		                       <option disabled selected>Country</option>
+		                       <option value="Australia">Australia</option>
+			                <option value="France">France</option>
+			                <option value="India">India</option>
+			                <option value="Singapore">Singapore</option>
+			                <option value="United Kingdom">United Kingdom</option>
+			                <option value="United States">United States</option>
+		                   </select>
+		                   <b></b>
+		              </div>
+		            </div>
+		            <div class="form-group clearfix">
+		                <div class="pull-right">
+		                     <button type="submit" id="poprecruiter_register"  class="btn btn-primary btn_styles mr" title="Register">
+		                        <i class="fa fa-paper-plane"></i>Register</button>
+		                </div>
+		            </div>                                                                                                          
+		        </div>
+		    </form:form>
         </div>
-    </div> -->
-    <div class="sc_row">
-        <div class="fl sc_row-left">Display name</div>
-        <div class="fl sc_row-sep">:</div>
-        <div class="fl sc_row-right">
-            <input type="text" placeholder="Not available" class="input-xlarge ng-pristine ng-valid" id="logindisplayname">
-        </div>
-    </div>
-    <div class="sc_row">
-        <div class="fl sc_row-left">First name</div>
-        <div class="fl sc_row-sep">:</div>
-        <div class="fl sc_row-right">
-            <input type="text" placeholder="Not available" class="input-xlarge ng-pristine ng-valid" id="loginfirstname">
-        </div>
-    </div>
-    <div class="sc_row">
-        <div class="fl sc_row-left">Last name</div>
-        <div class="fl sc_row-sep">:</div>
-        <div class="fl sc_row-right">
-            <input type="text" placeholder="Not available" class="input-xlarge ng-pristine ng-valid" id="loginlastname">
-        </div>
-    </div>
-    <div class="sc_row">
-        <div class="fl sc_row-left">Email id</div>
-        <div class="fl sc_row-sep">:</div>
-        <div class="fl sc_row-right">
-            <input type="text" placeholder="Not available" class="input-xlarge ng-pristine ng-valid" id="loginemail">
-        </div>
-    </div>
-    <div class="sc_row">
-        <div class="fl sc_row-left">Gender</div>
-        <div class="fl sc_row-sep">:</div>
-        <div class="fl sc_row-right">
-            <input type="text" placeholder="Not available" class="input-xlarge ng-pristine ng-valid" id="logingender">
-        </div>
-    </div>
-    <div class="sc_row">
-        <div class="fl sc_row-left">Date of birth</div>
-        <div class="fl sc_row-sep">:</div>
-        <div class="fl sc_row-right">
-            <input type="text" placeholder="Not available" class="input-xlarge ng-pristine ng-valid" id="logindob">
-        </div>
-    </div>
-    <div class="sc_row sc_row-last">
-        <div class="fl sc_row-left">Location</div>
-        <div class="fl sc_row-sep">:</div>
-        <div class="fl sc_row-right">
-            <input type="text" placeholder="Not available" class="input-xlarge ng-pristine ng-valid" id="loginlocation">
-        </div>
-    </div>
-</div>
-<br/>
-<br/>
-		<div class="loPopClose" onclick="hello()"><i class="fa fa-times"></i></div>
+      </div>		
 	</div>
 <body>
 <div class="regis_bg">
@@ -131,7 +164,6 @@ window.onload = function () {
         <div class="regis_wrap_styles">
         <div class="tab-content">
         <div id="professional" class="tab-pane fade in active">
-            
            <form:form class="login-form clearfix"  id="professionalRegistration_form"  name="professionalRegistration_form" method="post" >     
             <div class="row">
             <div class="form-group clearfix">
@@ -186,57 +218,57 @@ window.onload = function () {
             </form:form>
         </div>
         <div id="recruiter" class="tab-pane fade">
-           <form:form class="login-form clearfix"  id="recruiterRegistration_form"  name="recruiterRegistration_form" method="post" >   
-            <div class="row">
-            <div class="form-group clearfix">
-                <div class="col-xs-12 col-md-6">
-                    <i class="fa fa-user-circle"></i>
-                    <label>First Name <span class="text-danger">*</span></label>
-                    <input type="text" name="firstName" field-name="First Name" id="recruiterFirstName" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
-                    <b></b>
-                </div>
-                <div class="col-xs-12 col-md-6">
-                    <i class="fa fa-user-circle"></i>
-                    <label>Last Name</label>
-                    <input type="text" name="lastName" field-name="Last Name" id="recruiterLastName" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
-                    <b></b>
-                </div>
-                </div>
-                <div class="form-group clearfix">
-                <div class="col-xs-12 col-md-6" id="recruiterEmailDiv">
-                    <i class="fa fa-envelope"></i>
-                    <label>Email <span class="text-danger">*</span></label>
-                    <input type="text" name="email" field-name="Email"  id="recruiterEmail"  onblur="validateRecruiterEmail('Recruiter');" data-validation="required validate_Space validate_length length2-100 validate_email" >
-                    <b></b>
-                </div>
-                <div class="col-xs-12 col-md-6 select-field">
-                    <i class="fa fa-map-marker"></i>
-                    <select class="form-control chosen-select" name="location" id="recruiterLocation" field-name="Location" data-validation="required">
-                        <option disabled selected>Location</option>
-                        <option value="Australia">Australia</option>
-		                <option value="France">France</option>
-		                <option value="India">India</option>
-		                <option value="Singapore">Singapore</option>
-		                <option value="United Kingdom">United Kingdom</option>
-		                <option value="United States">United States</option>
-                    </select>
-                    <b></b>
-                </div>
-                </div>
-            </div>
-            
-            <div class="clearfix mt25">
-                 <div class="pull-left">
-                    <span class="small text-muted">Already have an Account:</span><a href="${sourceleadUrl}" class="btn" title="Login">Login</a><br/>
-                     <span class="small text-muted">Register With:</span>
-                </div>
-                  <div id="recruiterConnect"  ></div>
-                <div class="pull-right">
-                    <button type="submit" class="btn btn-primary btn_styles mr" id="recruiter_register" title="Register">
-                        <i class="fa fa-paper-plane"></i>Register</button>
-                </div>
-            </div>
-      </form:form>
+          <form:form class="login-form clearfix"  id="recruiterRegistration_form"  name="recruiterRegistration_form" method="post" >    
+	            <div class="row">
+	            <div class="form-group clearfix">
+	                <div class="col-xs-12 col-md-6">
+	                    <i class="fa fa-user-circle"></i>
+	                    <label>First Name <span class="text-danger">*</span></label>
+	                    <input type="text" name="firstName" field-name="First Name" id="recruiterFirstName" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
+	                    <b></b>
+	                </div>
+	                <div class="col-xs-12 col-md-6">
+	                    <i class="fa fa-user-circle"></i>
+	                    <label>Last Name</label>
+	                    <input type="text" name="lastName" field-name="Last Name" id="recruiterLastName" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
+	                    <b></b>
+	                </div>
+	                </div>
+	                <div class="form-group clearfix">
+	                <div class="col-xs-12 col-md-6" id="recruiterEmailDiv">
+	                    <i class="fa fa-envelope"></i>
+	                    <label>Email <span class="text-danger">*</span></label>
+	                    <input type="text" name="email" field-name="Email"  id="recruiterEmail"  onblur="validateRecruiterEmail('Recruiter');" data-validation="required validate_Space validate_length length2-100 validate_email" >
+	                    <b></b>
+	                </div>
+	                <div class="col-xs-12 col-md-6 select-field">
+	                    <i class="fa fa-map-marker"></i>
+	                    <select class="form-control chosen-select" name="location" id="recruiterLocation" field-name="Location" data-validation="required">
+	                        <option disabled selected>Location</option>
+	                        <option value="Australia">Australia</option>
+			                <option value="France">France</option>
+			                <option value="India">India</option>
+			                <option value="Singapore">Singapore</option>
+			                <option value="United Kingdom">United Kingdom</option>
+			                <option value="United States">United States</option>
+	                    </select>
+	                    <b></b>
+	                </div>
+	                </div>
+	            </div>
+	            
+	            <div class="clearfix mt25">
+	                 <div class="pull-left">
+	                    <span class="small text-muted">Already have an Account:</span><a href="${sourceleadUrl}" class="btn" title="Login">Login</a><br/>
+	                     <span class="small text-muted">Register With:</span>
+	                </div>
+	                  <div id="recruiterConnect"  ></div>
+	                <div class="pull-right">
+	                    <button type="submit" class="btn btn-primary btn_styles mr" id="recruiter_register" title="Register">
+	                        <i class="fa fa-paper-plane"></i>Register</button>
+	                </div>
+	            </div>
+        </form:form>
         </div>
       </div>
         </div>
@@ -260,6 +292,16 @@ function resetCredentials(type){
 	$("#recruiterLastName").val('');
 	$("#recruiterEmail").val('');
 	$("#recruiterLocation").val('');
+	
+	$("#popfirstName").val('');
+	$("#poplastName").val('');
+	$("#popemail").val('');
+	$("#poplocation").val('');
+
+	$("#poprecruiterFirstName").val('');
+	$("#poprecruiterLastName").val('');
+	$("#poprecruiterEmail").val('');
+	$("#poprecruiterLocation").val('');
 	
 	$("#proffessionalConnect").removeAttr('class');
 	$("#recruiterConnect").removeAttr('class');
@@ -338,9 +380,87 @@ function validateRecruiterEmail(type){
 				       	else{
 				       		 $("#recruiter_register").removeAttr("disabled");
 							 $('input#recruiterEmail').removeAttr( "record-exist record-exist-errormsg");
-			        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+			        		 $('#recruiterEmailDiv').find('p.jquery_form_error_message').remove(); 
 							 $( "#recruiter_register" ).removeAttr("style");
 							 $( "#recruiter_register" ).click(function() {
+							 if ($(this).validate(false, validationSettings)){
+							 }
+							});
+				       	}
+			       	}
+		    	   
+		      },
+		       
+		}); 
+	   }
+}
+</script>
+
+
+<script type="text/javascript">
+function validatepopEmail(type){
+	
+    var email = document.getElementById("popemail").value;
+    var sourceleadUrl ='${sourceleadUrl}';
+		if(email != null && email != ''){
+			$("#popregister_button").attr("disabled", "disabled");
+		$.ajax({
+		   	type: "GET",
+		       url: sourceleadUrl+"/validateCrowdSourcingEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
+		       success: function(data) {
+		    		if(data != null && data != ''){
+					     if(data == 'Invalid'){
+					    	    $('#popemailDiv').find('p.jquery_form_error_message').remove(); 
+					    	    $("input#popemail").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+			    				$('input#popemail').attr('record-exist','yes');
+			    				$('input#popemail').attr('record-exist-errorMsg',email+' is Invalid'); 
+					     } 
+					     
+				       	else{
+				       		 $("#popregister_button").removeAttr("disabled");
+							 $('input#popemail').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#poprecruiterEmailDiv').find('p.jquery_form_error_message').remove(); 
+							 $( "#popregister_button" ).removeAttr("style");
+							 $( "#popregister_button" ).click(function() {
+							 if ($(this).validate(false, validationSettings)){
+							 }
+							});
+				       	}
+			       	}
+		    	   
+		      },
+		       
+		}); 
+	   }
+}
+</script>
+
+
+<script type="text/javascript">
+function validatepopRecruiterEmail(type){
+	
+    var email = document.getElementById("poprecruiterEmail").value;
+    var sourceleadUrl ='${sourceleadUrl}';
+		if(email != null && email != ''){
+			$("#poprecruiter_register").attr("disabled", "disabled");
+		$.ajax({
+		   	type: "GET",
+		       url: sourceleadUrl+"/validateCrowdSourcingEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
+		       success: function(data) {
+		    		if(data != null && data != ''){
+					     if(data == 'Invalid'){
+					    	    $('#poprecruiterEmailDiv').find('p.jquery_form_error_message').remove(); 
+					    	    $("input#poprecruiterEmail").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+			    				$('input#poprecruiterEmail').attr('record-exist','yes');
+			    				$('input#poprecruiterEmail').attr('record-exist-errorMsg',email+' is Invalid'); 
+					     } 
+					     
+				       	else{
+				       		 $("#poprecruiter_register").removeAttr("disabled");
+							 $('input#poprecruiterEmail').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#popemailDiv').find('p.jquery_form_error_message').remove(); 
+							 $( "#poprecruiter_register" ).removeAttr("style");
+							 $( "#poprecruiter_register" ).click(function() {
 							 if ($(this).validate(false, validationSettings)){
 							 }
 							});
@@ -448,6 +568,102 @@ var validationSettings = {
                }
             });
          $('#recruiterRegistration_form').showHelpOnFocus();
+            
+     
+	</script>
+	
+	<script type="text/javascript">
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   };  
+         $('body').on('submit', '#popprofessionalRegistration_form', function(e){
+        	  if ($(this).validate(false, validationSettings)){
+        		e.preventDefault();
+            	var frm = $('#popprofessionalRegistration_form').serializeFormJSON();
+			    
+			    var con = JSON.stringify(frm);
+		        con = con.replace(/[{}]/g, "");
+		        
+		        var jsonData = encodeURIComponent(con);
+			    
+         		var sourceleadUrl ='${sourceleadUrl}';
+         		var contactUUID = '${contactUUID}';
+         		
+         	 	$("#popregister_button").attr("disabled", "disabled");
+         		
+           	 
+         		$.ajax({
+          	      type: "POST",
+          	      contentType : 'application/json; charset=utf-8',
+          	      dataType : 'json',
+                	  url: sourceleadUrl+"/registerAsProfessional?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&contactUUID="+contactUUID,		  
+                  	success: function(result) {
+			        	if((result == 'success')){
+			        		location.replace(sourceleadUrl+"/resetloginCredentials");  
+			        	}
+			        	
+			        },  
+              }); 
+                
+            	    return true;
+            }
+            else{
+            	return false;	
+               }
+            });
+         $('#popprofessionalRegistration_form').showHelpOnFocus();
+            
+     
+	</script>
+	
+	
+	
+	<script type="text/javascript">
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   };  
+         $('body').on('submit', '#poprecruiterRegistration_form', function(e){
+        	  if ($(this).validate(false, validationSettings)){
+        		e.preventDefault();
+            	var frm = $('#poprecruiterRegistration_form').serializeFormJSON();
+			    
+			    var con = JSON.stringify(frm);
+		        con = con.replace(/[{}]/g, "");
+		        
+		        var jsonData = encodeURIComponent(con);
+		        
+			    
+         		var sourceleadUrl ='${sourceleadUrl}';
+         	 	$("#poprecruiter_register").attr("disabled", "disabled");
+         		
+           	 
+         		$.ajax({
+          	      type: "POST",
+          	      contentType : 'application/json; charset=utf-8',
+          	      dataType : 'json',
+                	  url: sourceleadUrl+"/registerAsIndividualRecruiter?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+                			  
+                  	success: function(result) {
+			        	if((result == 'success')){
+			        		location.replace(sourceleadUrl+"/resetloginCredentials");  
+			        	}
+			        	
+			        },  
+              }); 
+                
+            	    return true;
+            }
+            else{
+            	return false;	
+               }
+            });
+         $('#poprecruiterRegistration_form').showHelpOnFocus();
             
      
 	</script>

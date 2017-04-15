@@ -2,6 +2,7 @@ package com.bis.sourcelead.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import org.codehaus.jackson.JsonParseException;
@@ -135,5 +136,5 @@ public interface RequirementService {
 
 	public List<Requirement> getAllRequirementsByOrglocationIdAndRequirementWhoAreAssignedToRequirement(Long orgLocationId, TeamMembers teamMembers)	throws Exception ; 
 	
-	Long getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user, String timePeriod) throws Exception ;
+	Long getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC) throws Exception ;
 }

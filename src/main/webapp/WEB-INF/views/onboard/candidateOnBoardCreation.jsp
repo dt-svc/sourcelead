@@ -53,7 +53,7 @@
           <ul class="nav nav-tabs" id="tab_bar">
             <li class="active" onclick="loadOnboardingCandidate();"> <a href="#details" data-toggle="tab"> <i class="fa fa-th-list paddingRight"></i> <span>Details</span> <br>
               <small>Employee details &amp; Postion details</small> </a> </li>
-            <li onclick="getTemplatePolicyDocumentsDetails();getTemplateSupportingDocumentsDetails();"><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
+            <li onclick="getTemplatePolicyDocumentsDetails();getTemplateSupportingDocumentsDetails();getTemplateContractsDocumentsDetails();getTemplateFormsDocumentsDetails();"><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
               <small>Acceptance &amp; Policy Documents</small> </a> </li>
             <li onclick="getOnboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Taks</span> <br>
               <small>List of tasks</small> </a></li>
@@ -148,10 +148,10 @@
                   </div>
                 </div>
                   
-                <div class="form-group">
+                <div class="form-group" id="emailDiv">
                   <label class="col-md-3 control-label">Company Email</label>
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="companyEmail" name="companyEmail" data-validation-optional="true"data-validation="validate_Space validate_length length2-100 validate_email">
+                    <input type="text" class="form-control input-sm" id="companyEmail" name="companyEmail" data-validation-optional="true" onblur="validateUserEmail();"  data-validation="validate_Space validate_length length2-100 validate_email">
                   </div>
                 </div>
                 <div class="clearfix"></div>
@@ -268,9 +268,9 @@
                   
                 <div class="form-footer">
                   <div class="pull-right mr">
-                    <input type="button" value="Cancel" class="btn btn-sm btn-default">
-                    <input type="button" value="Save" onclick="saveOnboardingCandidateDetails('save');" class="btn btn-sm btn-success">
-                    <input type="button" value="Save and Continue" onclick="saveOnboardingCandidateDetails('saveAndContinue');"  class="btn btn-sm btn-primary">
+                    <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/candidateOnBoardingList'">
+                    <input type="button" value="Save" id="save_onboardUser" onclick="saveOnboardingCandidateDetails('save');" class="btn btn-sm btn-success">
+                    <input type="button" value="Save and Continue" id="saveAndContinue_onboardUser" onclick="saveOnboardingCandidateDetails('saveAndContinue');"  class="btn btn-sm btn-primary">
                   </div>
                 </div>
              </form:form>
@@ -285,6 +285,35 @@
                  <input type="hidden" name="candidateonboardingId" id="documentstemplateId" value=""/>
                 <p><strong>Acceptance Documents</strong> <br>
                   <small class="text-muted">These documents need to be accepted by the new hire as part of acceptance step  - Learn more</small> </p>
+                
+                
+                <div class="form-group">
+                  <label class="col-md-12"> <strong>Contracts</strong> <br>
+                  </label>
+                  <label class="col-md-4 control-label mt10">These contracts will be added to this offer:</label>
+                     <div id="timesheetDocumentsId" class="timesheetDocs">
+                      <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
+				        <span> 
+			              <div id="savedContractsAttachments"></div>
+				        </span>
+                      </div>
+                      </div>
+                </div>
+                
+                
+                <div class="form-group">
+                  <label class="col-md-12"> <strong>Forms</strong> <br>
+                  </label>
+                  <label class="col-md-4 control-label mt10">These forms will be added to this offer:</label>
+                     <div id="timesheetDocumentsId" class="timesheetDocs">
+                      <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
+				        <span> 
+			              <div id="savedFormsAttachments"></div>
+				        </span>
+                      </div>
+                      </div>
+                </div>
+                
                 
                 <div class="form-group">
                   <label class="col-md-12"> <strong>Policies</strong> <br>
@@ -313,7 +342,7 @@
                 </div>
                 <div class="form-footer">
                   <div class="pull-right mr">
-                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/dashboard/${SourceLeadWeb_orgLocationId}'">
+                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/candidateOnBoardingList'">
                     <input type="button" value="Save" id="save_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="save_continue_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
@@ -431,7 +460,7 @@
                                           <br>
                                           <input class="form-control input-sm" type="text" id="taskDays" name="taskDays" onblur="validateDueAfter();">
                                         </div>
-                                        <div class="col-md-3 paddingRight paddingLeft">
+                                       <!--  <div class="col-md-3 paddingRight paddingLeft">
                                           <label class="small">Hours</label>
                                           <br>
                                           <input type="text" class="form-control input-sm" id="taskHours" name="taskHours" onblur="validateDueAfter();">
@@ -440,7 +469,7 @@
                                           <label class="small">Minutes</label>
                                           <br>
                                           <input type="text" class="form-control input-sm" id="taskMinutes" name="taskMinutes" onblur="validateDueAfter();">
-                                        </div>
+                                        </div> -->
                                       </div>
                                       
                                       <!-- Form inline Due after --> 
@@ -501,6 +530,20 @@
 			<div id='REPLACEROWIDSupportingdocFileuploadFileGroup'>
 	  			<input type='file' name='REPLACEROWIDsupportingdocFile' id='REPLACEROWIDsupportingdocFile' class="timesheetAttachmentValidation" onchange='validateSupportingUploadFile(REPLACEROWID)'> 
 	  			<i class="fa fa-times" onclick="removeSupportingAttachmentRow(REPLACEROWID);"></i>
+	  		</div>
+</div>
+
+<div id="divContractsAttachmentTd1" style="display: none; float: left;">
+			<div id='REPLACEROWIDContractsdocFileuploadFileGroup'>
+	  			<input type='file' name='REPLACEROWIDcontractsdocFile' id='REPLACEROWIDcontractsdocFile' class="timesheetAttachmentValidation" onchange='validateContractsUploadFile(REPLACEROWID)'> 
+	  			<i class="fa fa-times" onclick="removeContractsAttachmentRow(REPLACEROWID);"></i>
+	  		</div>
+</div>
+
+<div id="divFormsAttachmentTd1" style="display: none; float: left;">
+			<div id='REPLACEROWIDFormsdocFileuploadFileGroup'>
+	  			<input type='file' name='REPLACEROWIDformsdocFile' id='REPLACEROWIDformsdocFile' class="timesheetAttachmentValidation" onchange='validateFormsUploadFile(REPLACEROWID)'> 
+	  			<i class="fa fa-times" onclick="removeFormsAttachmentRow(REPLACEROWID);"></i>
 	  		</div>
 </div>
 
@@ -573,6 +616,217 @@ function addSupportingAttachment(){
 		    } 
 		 
 	}
+</script>
+  
+  
+  
+  
+  <script>
+function addContractsAttachment(){  
+			var checkMaxTsRowNum = $("#contractsAttcahmentMaxRowNumber").val();
+			var tbl = document.getElementById("contractsAttachmentTable");
+			var maxRowNum = parseInt($("input[name = 'contractsAttcahmentMaxRowNumber']").val());
+			$("input[name = 'contractsAttcahmentMaxRowNumber']").val(maxRowNum + 1);
+			
+			
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", "divAttachmentContractsRow" + maxRowNum);
+			
+			
+			var cell0 = row.insertCell(0);
+			var divAttachmentTdStr = document.getElementById("divContractsAttachmentTd1").innerHTML;
+			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+			cell0.innerHTML = divAttachmentTdStr;
+			
+			
+}			
+</script>
+	
+<script type="text/javascript">
+	function removeContractsAttachmentRow(rowId) {
+		 document.getElementById("divAttachmentContractsRow"+rowId).style.display = 'none';
+		 document.getElementById("divAttachmentContractsRow"+rowId).value= '';
+		 var  rId = "divAttachmentContractsRow"+rowId;
+		  var r = document.getElementById("contractsAttachmentTable").rows[rId];
+          var count = 2*(r.cells.length);
+		    for(i=0;i<=count;i++){
+		        r.deleteCell(0);
+		    } 
+		 
+	}
+</script>
+
+
+
+<script type="text/javascript">
+function validateContractsUploadFile(id)
+{
+	 var selectedFile = $('#'+id+'contractsdocFile').val();
+	  if(validate_fileupload(selectedFile)){
+		   var docSize = $('#'+id+'contractsdocFile')[0].files[0].size;
+	       $("#"+id+"ContractsdocFileuploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  $('#'+id+'ContractsdocFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+	    	  $('#'+id+'ContractsdocFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+			  $('#'+id+'contractsdocFile').attr('record-exist','yes');
+			  $('#'+id+'contractsdocFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+	      }else{
+	    	 $('input#'+id+'contractsdocFile').removeAttr( "record-exist record-exist-errormsg");
+   		 $('#'+id+'ContractsdocFileuploadFileGroup').find('p.jquery_form_error_message').remove(); 
+	      }
+	  }
+	  else{
+		      $('#'+id+'ContractsdocFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+		      $('#'+id+'ContractsdocFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Invalid Format</span>");
+			  $('#'+id+'contractsdocFile').attr('record-exist','yes');
+			  $('#'+id+'contractsdocFile').attr('record-exist-errorMsg','Invalid Format'); 
+	  }
+	
+}
+</script>
+
+
+
+<script>
+function addFormsAttachment(){  
+			var checkMaxTsRowNum = $("#formsAttcahmentMaxRowNumber").val();
+			var tbl = document.getElementById("formsAttachmentTable");
+			var maxRowNum = parseInt($("input[name = 'formsAttcahmentMaxRowNumber']").val());
+			$("input[name = 'formsAttcahmentMaxRowNumber']").val(maxRowNum + 1);
+			
+			
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", "divAttachmentFormsRow" + maxRowNum);
+			
+			
+			var cell0 = row.insertCell(0);
+			var divAttachmentTdStr = document.getElementById("divFormsAttachmentTd1").innerHTML;
+			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+			cell0.innerHTML = divAttachmentTdStr;
+			
+			
+}			
+</script>
+	
+<script type="text/javascript">
+	function removeFormsAttachmentRow(rowId) {
+		 document.getElementById("divAttachmentFormsRow"+rowId).style.display = 'none';
+		 document.getElementById("divAttachmentFormsRow"+rowId).value= '';
+		 var  rId = "divAttachmentFormsRow"+rowId;
+		  var r = document.getElementById("formsAttachmentTable").rows[rId];
+          var count = 2*(r.cells.length);
+		    for(i=0;i<=count;i++){
+		        r.deleteCell(0);
+		    } 
+		 
+	}
+</script>
+
+
+
+<script type="text/javascript">
+function validateFormsUploadFile(id)
+{
+	 var selectedFile = $('#'+id+'formsdocFile').val();
+	  if(validate_fileupload(selectedFile)){
+		   var docSize = $('#'+id+'formsdocFile')[0].files[0].size;
+	       $("#"+id+"FormsdocFileuploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  $('#'+id+'FormsdocFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+	    	  $('#'+id+'FormsdocFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+			  $('#'+id+'formsdocFile').attr('record-exist','yes');
+			  $('#'+id+'formsdocFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+	      }else{
+	    	 $('input#'+id+'formsdocFile').removeAttr( "record-exist record-exist-errormsg");
+   		 $('#'+id+'FormsdocFileuploadFileGroup').find('p.jquery_form_error_message').remove(); 
+	      }
+	  }
+	  else{
+		      $('#'+id+'FormsdocFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+		      $('#'+id+'FormsdocFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Invalid Format</span>");
+			  $('#'+id+'formsdocFile').attr('record-exist','yes');
+			  $('#'+id+'formsdocFile').attr('record-exist-errorMsg','Invalid Format'); 
+	  }
+	
+}
+</script>
+
+
+
+
+<script type="text/javascript">
+function validate_fileupload(fileName)
+{
+
+    var allowed_extensions = new Array("ppt", "pptx", "pps", "ppsx", "doc", "docx", "pdf", "rtf", "odt", "xls", "xlsx", "csv", "zip", "txt", "jpg","jpeg","bmp","png","gif","eps","tiff","TGA","psd","svg","msg","wpd","wps");
+    var file_extension = fileName.split('.').pop(); 
+
+    for(var i = 0; i <= allowed_extensions.length; i++)
+    {
+        if(allowed_extensions[i] != null && allowed_extensions[i] != '' && allowed_extensions[i] != 'undefined' && allowed_extensions[i]==file_extension.toLowerCase())
+        {
+            return true; // valid file extension
+        }
+    }
+
+    return false;
+}
+</script>
+
+<script type="text/javascript">
+function validateSupportingUploadFile(id)
+{
+	 var selectedFile = $('#'+id+'supportingdocFile').val();
+	  if(validate_fileupload(selectedFile)){
+		   var docSize = $('#'+id+'supportingdocFile')[0].files[0].size;
+	       $("#"+id+"SupportingdocFileuploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  $('#'+id+'SupportingdocFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+	    	  $('#'+id+'SupportingdocFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+			  $('#'+id+'supportingdocFile').attr('record-exist','yes');
+			  $('#'+id+'supportingdocFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+	      }else{
+	    	 $('input#'+id+'supportingdocFile').removeAttr( "record-exist record-exist-errormsg");
+   		 $('#'+id+'SupportingdocFileuploadFileGroup').find('p.jquery_form_error_message').remove(); 
+	      }
+	  }
+	  else{
+		      $('#'+id+'SupportingdocFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+		      $('#'+id+'SupportingdocFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Invalid Format</span>");
+			  $('#'+id+'supportingdocFile').attr('record-exist','yes');
+			  $('#'+id+'supportingdocFile').attr('record-exist-errorMsg','Invalid Format'); 
+	  }
+	
+}
+</script>
+
+
+
+<script type="text/javascript">
+function validateUploadFile(id)
+{
+	 var selectedFile = $('#'+id+'docFile').val();
+	  if(validate_fileupload(selectedFile)){
+		   var docSize = $('#'+id+'docFile')[0].files[0].size;
+	       $("#"+id+"docFileuploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+	    	  $('#'+id+'docFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+			  $('#'+id+'docFile').attr('record-exist','yes');
+			  $('#'+id+'docFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+	      }else{
+	    	 $('input#'+id+'docFile').removeAttr( "record-exist record-exist-errormsg");
+   		 $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove(); 
+	      }
+	  }
+	  else{
+		      $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+		      $('#'+id+'docFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Invalid Format</span>");
+			  $('#'+id+'docFile').attr('record-exist','yes');
+			  $('#'+id+'docFile').attr('record-exist-errorMsg','Invalid Format'); 
+	  }
+	
+}
 </script>
   
   
@@ -1000,6 +1254,8 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		     	        
 		     	       getTemplatePolicyDocumentsDetails(onboardId);
 		     	       getTemplateSupportingDocumentsDetails(onboardId);
+		     	       getTemplateContractsDocumentsDetails(onboardId);
+		     	       getTemplateFormsDocumentsDetails(onboardId);
 		     	       
 		     	       $("#documentstemplateId").val(onboardId);
 		        	}
@@ -1041,8 +1297,15 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	    	 url: sourceleadUrl+"/loadOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID, 
 	        success: function(data) {
 	        	
-	        	var json = JSON.parse(data);
-	        	loadOfferAcceptedCandidates(json['onBoardCandidateId']);
+	        	 var json = JSON.parse(data);
+	        	
+	        	 var result = "";
+	        	 var selected = 'selected';
+	        	 result = result +'<option disabled selected>--Select Candidate--</option>';
+	        	 result = result +'<option value='+json['onBoardCandidateId']+","+json['onBoardOfferId']+' '+selected+' >'+json['candidateName']+' ('+json['jobTitle']+')</option>';
+	        	 $("#onboardCandiate").empty();
+	           	 $("#onboardCandiate").append(result); 
+	           	 $('#onboardCandiate').trigger("chosen:updated");
 	        	
 	        	$("#firstName").val(json['firstName']);
 	        	
@@ -1225,7 +1488,7 @@ function getTemplateSupportingDocumentsDetails(onboardId){
                 	 result = result +"<input type='hidden' name='supportingAttcahmentMaxRowNumber'  id='supportingAttcahmentMaxRowNumber' value='1' />";
                 	 result = result +"<table class='timesheetAttachment' id='supportingAttachmentTable' cellpadding='0' cellspacing='0'>";
                 	 result = result +"<tr id='divAttachmentTsRow0'>";
-                	 result = result +"<td><div id='0SupportingdocFileuploadFileGroup'><input type='file' name='0supportingdocFile' id='0supportingdocFile' field-name='Attachment' onchange='validateUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addSupportingAttachment()'></i></div></td>";
+                	 result = result +"<td><div id='0SupportingdocFileuploadFileGroup'><input type='file' name='0supportingdocFile' id='0supportingdocFile' field-name='Attachment' onchange='validateSupportingUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addSupportingAttachment()'></i></div></td>";
                 	 result = result +"</tr>";
                 	 result = result +"</table>";
                 	 $("#savedSupportedAttachments").empty();
@@ -1238,6 +1501,120 @@ function getTemplateSupportingDocumentsDetails(onboardId){
 	}
 }
 </script>
+
+
+
+<script>
+function getTemplateContractsDocumentsDetails(onboardId){
+	if(onboardId == '' || onboardId == null || onboardId =='undefined'){
+		onboardId = document.getElementById("candidateOnBoardId").value;
+	}
+	var documentType = "Contracts"
+	if(onboardId){
+		var sourceleadUrl ='${sourceleadUrl}';
+	     $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByOnboardId?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&documentType="+documentType, 
+		        success: function(data) {
+		        	
+		        	 var json = JSON.parse(data);
+		        	 var result = "";
+		        	 
+                	 for (var i = 0; i < json.length; i++) { 
+                		 var opt = json[i]; 
+                		 result = result +"<strong id='contractsdocument"+opt.id+"'>";
+                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadTemplateDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
+           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
+           				 result = result +"</a>";
+           				
+           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+            					result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument("+opt.id+",\""+documentType+"\");' >"; 
+           				 }else{
+           					result = result +"<input class='dele' type='button' onClick='deleteCandidateOnboardDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
+           				 }
+           				
+           				 result = result +"</strong>";
+           				 
+           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+           					result = result +"<input type='hidden' name='savedContractsAttcahments' id='contractsAttachment"+opt.id+"' value='"+opt.id+"' />";
+           				 }
+           				
+                	 }
+                	 
+                	 result = result +"<input type='hidden' name='contractsAttcahmentMaxRowNumber'  id='contractsAttcahmentMaxRowNumber' value='1' />";
+                	 result = result +"<table class='timesheetAttachment' id='contractsAttachmentTable' cellpadding='0' cellspacing='0'>";
+                	 result = result +"<tr id='divAttachmentTsRow0'>";
+                	 result = result +"<td><div id='0ContractsdocFileuploadFileGroup'><input type='file' name='0contractsdocFile' id='0contractsdocFile' field-name='Attachment' onchange='validateContractsUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addContractsAttachment()'></i></div></td>";
+                	 result = result +"</tr>";
+                	 result = result +"</table>";
+                	 $("#savedContractsAttachments").empty();
+                	 $("#savedContractsAttachments").append(result);
+                	 
+                	 
+			        
+		        },
+		    });
+	}
+}
+</script>
+
+
+
+
+<script>
+function getTemplateFormsDocumentsDetails(onboardId){
+	if(onboardId == '' || onboardId == null || onboardId =='undefined'){
+		onboardId = document.getElementById("candidateOnBoardId").value;
+	}
+	var documentType = "Forms"
+	if(onboardId){
+		var sourceleadUrl ='${sourceleadUrl}';
+	     $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByOnboardId?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&documentType="+documentType, 
+		        success: function(data) {
+		        	
+		        	 var json = JSON.parse(data);
+		        	 var result = "";
+		        	 
+                	 for (var i = 0; i < json.length; i++) { 
+                		 var opt = json[i]; 
+                		 result = result +"<strong id='formsdocument"+opt.id+"'>";
+                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadTemplateDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
+           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
+           				 result = result +"</a>";
+           				
+           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+            					result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument("+opt.id+",\""+documentType+"\");' >"; 
+           				 }else{
+           					result = result +"<input class='dele' type='button' onClick='deleteCandidateOnboardDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
+           				 }
+           				
+           				 result = result +"</strong>";
+           				 
+           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+           					result = result +"<input type='hidden' name='savedFormsAttcahments' id='formsAttachment"+opt.id+"' value='"+opt.id+"' />";
+           				 }
+           				
+                	 }
+                	 
+                	 result = result +"<input type='hidden' name='formsAttcahmentMaxRowNumber'  id='formsAttcahmentMaxRowNumber' value='1' />";
+                	 result = result +"<table class='timesheetAttachment' id='formsAttachmentTable' cellpadding='0' cellspacing='0'>";
+                	 result = result +"<tr id='divAttachmentTsRow0'>";
+                	 result = result +"<td><div id='0FormsdocFileuploadFileGroup'><input type='file' name='0formsdocFile' id='0formsdocFile' field-name='Attachment' onchange='validateFormsUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addFormsAttachment()'></i></div></td>";
+                	 result = result +"</tr>";
+                	 result = result +"</table>";
+                	 $("#savedFormsAttachments").empty();
+                	 $("#savedFormsAttachments").append(result);
+                	 
+                	 
+			        
+		        },
+		    });
+	}
+}
+</script>
+
   
   
   
@@ -1247,9 +1624,18 @@ function deleteTemplateDocument(documentId,documentType){
 	if(documentType == 'Policies'){
 		document.getElementById("policydocument"+documentId).remove();
 		document.getElementById("policyAttachment"+documentId).remove();
-	}else if(documentType == 'Supported'){
+	}
+	else if(documentType == 'Supported'){
 		document.getElementById("supportdocument"+documentId).remove();
 		document.getElementById("supportedAttachment"+documentId).remove();
+	}
+	else if(documentType == 'Contracts'){
+		document.getElementById("contractsdocument"+documentId).remove();
+		document.getElementById("contractsAttachment"+documentId).remove();
+	}
+	else if(documentType == 'Forms'){
+		document.getElementById("formsdocument"+documentId).remove();
+		document.getElementById("formsAttachment"+documentId).remove();
 	}
 	
 	 
@@ -1267,8 +1653,15 @@ function deleteCandidateOnboardDocument(documentUUID,documentId,documentType){
 	        	if(data == 'success'){
 	        		if(documentType == 'Policies'){
 	        			document.getElementById("policydocument"+documentId).remove();
-	        		}else if(documentType == 'Supported'){
+	        		}
+	        		else if(documentType == 'Supported'){
 	        			document.getElementById("supportdocument"+documentId).remove();
+	        		}
+	        		else if(documentType == 'Contracts'){
+	        			document.getElementById("contractsdocument"+documentId).remove();
+	        		}
+	        		else if(documentType == 'Forms'){
+	        			document.getElementById("formsdocument"+documentId).remove();
 	        		}
 	        		
 	        	}
@@ -1324,6 +1717,8 @@ function createTemplateDocs(saveType){
 	        	}else{
 	        		getTemplatePolicyDocumentsDetails();
 	        		getTemplateSupportingDocumentsDetails();
+	        		getTemplateContractsDocumentsDetails();
+		     	    getTemplateFormsDocumentsDetails();
 	        	}
 	    	  $("#loading").removeAttr("style");
 	    	  
@@ -1388,11 +1783,11 @@ function createTemplateDocs(saveType){
 	  
 	  var taskMonths = document.getElementById("taskMonths").value;
 	  var taskDays = document.getElementById("taskDays").value;
-	  var taskHours = document.getElementById("taskHours").value;
-	  var taskMinutes = document.getElementById("taskMinutes").value;
+	  /* var taskHours = document.getElementById("taskHours").value;
+	  var taskMinutes = document.getElementById("taskMinutes").value; */
 	  
 	  
-	  if(taskMonths == '' && taskDays == '' && taskHours == '' && taskMinutes == ''){
+	  if(taskMonths == '' && taskDays == '' ){
 			  $('#taskMonths').removeAttr('data-validation-optional');
 			  $("#taskMonths").attr("data-validation", "required");
 		    
@@ -1618,3 +2013,34 @@ function saveAndFinishOnboardTemplate(onboardId){
 
 }
 </script>
+
+
+<script type="text/javascript">
+ function validateUserEmail() {
+	 var EmailId = document.getElementById("companyEmail").value;
+	 $('#emailDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(EmailId != null && EmailId != ""){
+		 $("#save_onboardUser").attr("disabled", "disabled");
+		 $("#saveAndContinue_onboardUser" ).attr("disabled", "disabled");
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateUserEmail?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
+		        success: function(data) {
+		        	if(data == 'true'){
+		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
+						  $("input#companyEmail").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
+						  document.getElementById("companyEmail").setAttribute('record-exist','yes');
+						  document.getElementById("companyEmail").setAttribute('record-exist-errorMsg',EmailId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#companyEmail').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+                         $("#save_onboardUser").removeAttr("disabled");
+                         $("#saveAndContinue_onboardUser").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>  
