@@ -186,8 +186,20 @@
 						  </li>
 	                 </c:if>
 	                 
+
           </c:forEach>
-             <li class="${sessionData.nav == 'SocialInviter' ? 'side-nav-active' : ''}"><a href="<c:url value='/socialinviter'/>" title="SocialInviter"><span><i class="fa fa-bar-chart"></i></span>Social Inviter</a></li>
+          				 <li class="side-nav-active"> 
+				            <!-- Contracts --> 
+				            <a href="#" class="tree-view-new"> <span><i class="fa fa-object-ungroup"></i></span>
+				              Contracts <i class="fa fa-object-ungroup fa-caret-down"></i> </a>
+				              <a href="#" class="tree-view"> <span><i class="fa fa-object-ungroup"></i></span> Contracts <i class="fa fa-caret-down"></i> </a>
+				            <ul class="collapses">
+				              <li><a href="graphicalView.html" title="Contracts Overview">Graphical view</a></li>
+				              <li class="${sessionData.nav == 'Contract' || sessionData.nav == 'Contract' ? 'side-nav-active' : ''}"><a href="<c:url value='/contractListbyStatus'/>">List by status</a></li>
+				            </ul>
+	          			</li>
+      <li class="${sessionData.nav == 'SocialInviter' ? 'side-nav-active' : ''}"><a href="<c:url value='/socialinviter'/>" title="SocialInviter"><span><i class="fa fa-bar-chart"></i></span>Social Inviter</a></li>
+
         </ul>
       </div>
     </div>
