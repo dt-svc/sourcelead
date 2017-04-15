@@ -778,5 +778,49 @@ public class CandidateDaoImpl implements CandidateDao {
 			return null;
 		}
    	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC)
+			throws Exception {
+		
+			Map<String, Object> params = new HashMap<String,Object>();
+			String subQueryDateRange = "";
+			
+			if(null != startDateUTC && null != endDateUTC){
+				  subQueryDateRange = "and (candidate.createdDate >= :startDateUTC and candidate.createdDate <= :endDateUTC)";
+				  params.put("startDateUTC",startDateUTC);
+				  params.put("endDateUTC",endDateUTC);
+			}
+			
+			String queryString ="select count(*)from Candidate candidate where candidate.orgLocationId.id =:orgLocationId and candidate.createdBy =:userCode "+subQueryDateRange+" ";
+			Session session = this.sessionFactory.getCurrentSession();
+		    params.put("orgLocationId",orgLocationId);
+		    params.put("userCode",user.getUserCode());
+			
+		    /*String query ="select count(*)from Candidate candidate where candidate.orgLocationId.id =:orgLocationId and candidate.createdBy =:userCode";
+			Session session = this.sessionFactory.getCurrentSession();
+		    long count = ((Long)session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("userCode",user.getUserCode()).uniqueResult()).intValue();*/
+		    
+		    Query query = session.createQuery(queryString);
+		    for (String str : query.getNamedParameters())
+	        {
+				if(str.equalsIgnoreCase("startDateUTC")){
+					query.setParameter( str, (Date) params.get(str) );
+				}
+				if(str.equalsIgnoreCase("endDateUTC")){
+					query.setParameter( str, (Date) params.get(str) );
+				}
+				
+				if(str.equalsIgnoreCase("orgLocationId")){
+					query.setParameter(str, (long) params.get(str));
+				}
+				
+				if(str.equalsIgnoreCase("userCode")){
+					query.setParameter(str, params.get(str));
+				}
+	        }
+		    return (Long)query.uniqueResult();
+	}
 
 }

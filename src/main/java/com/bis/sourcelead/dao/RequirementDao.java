@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.OrgLocations;
@@ -85,5 +86,5 @@ public interface RequirementDao {
 
 	List<Requirement> getAllRequirementsByOrglocationIdAndRequirementWhoAreAssignedToRequirement(Long orgLocationId,  TeamMembers teamMembers) throws Exception ;
 	
-	Long getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user, String timePeriod) throws Exception ;
+	Long getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC) throws Exception ;
 }

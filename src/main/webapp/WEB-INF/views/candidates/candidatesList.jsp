@@ -1029,14 +1029,14 @@ function cancel(candidateId){
     </div>
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Candidate List</div>
     
-    <%--   <div class=" pull-left reportsH">
+     <div class=" pull-left reportsH">
 			<a title="Reports"><i class="fa fa-pie-chart"></i>Reports</a>
 			<div class="RePop">
 				<ul>
 					<li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
 				</ul>
 			</div>
-		</div>   --%>
+		</div>   
 		
   </section>
   <div class="timesheet_out">

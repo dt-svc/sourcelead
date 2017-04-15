@@ -175,5 +175,6 @@ public interface RequirementSubmissionDao {
 	
 	List<RequirementSubmission> getAllSubmissionsfromVendorsBasedOnLocationIdAndUserId(User user,OrgLocations orgLocations, String status, Requirement requirement) throws Exception;
 	
-	Long getCountOfAllApplicantsByCreatedUserAndOrglocationId(Long orgLocationId, User user,String stage,String timePeriod) throws Exception ;
+	Long getCountOfAllApplicantsByCreatedUserAndOrglocationIdByStage(Long orgLocationId, User user,String stage,String timePeriod) throws Exception ;
+	
 }

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
@@ -20,6 +21,6 @@ public interface RequirementSubmissionHistoryDao {
 
 	List<RequirementSubmissionHistory> getAllRequirementSubmissionHistoryBySubmissionId(List<Long> submissionIds)throws Exception;
 	
-	Long getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(Long orgLocationId, User user, String submissionStage ,String timePeriod) throws Exception ;
+	Long getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(Long orgLocationId, User user, String submissionStage ,Date startDateUTC, Date endDateUTC) throws Exception ;
 
 }

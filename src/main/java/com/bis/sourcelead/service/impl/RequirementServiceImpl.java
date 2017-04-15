@@ -3294,9 +3294,9 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 
 	@Override
 	public Long getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user,
-			String timePeriod) throws Exception {
+			 Date startDateUTC, Date endDateUTC) throws Exception {
 		
-		return requirementDao.getCountOfAllRequirementsByCreatedUserAndOrglocationId(orgLocationId, user, timePeriod);
+		return requirementDao.getCountOfAllRequirementsByCreatedUserAndOrglocationId(orgLocationId, user, startDateUTC, endDateUTC);
 	}
 	
 }
