@@ -162,7 +162,9 @@ function editCandidate(candidateId){
 							result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+lastName+'" placeholder="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
-							
+							if(json.isAssociate == 'Y'){
+							result = result + '	           <input type="hidden" name="isAssociate" id="isAssociate" value="Y"/>';
+							}
 							// If Candidate Type equals Consultant email field should be Disable mode
 							
 							result = result + '<div class="clearfix mb10">';

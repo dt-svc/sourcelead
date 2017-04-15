@@ -11,7 +11,7 @@
 		}
 		#selectedContacts,#selectedFriends{width:715px;height:200px;margin-top: 20px;}
 		.holder{
-			width: 735px;
+			/* width: 735px; */
 	    	float: left;
 		}
 		.center{margin:0 auto;text-align:center}
@@ -107,11 +107,13 @@
 <script type="text/javascript">
 	var loadProfileInformation = function(response){
 		if(response.responseStatus.type=="success"){
+			$(".logMask").fadeIn(200);
+    		 $(".logPop").fadeIn(100);
 			var details = response.data.details;
 			$("#profileimage").attr("src",details.photo);
 			$("#aboutme").html(details.aboutMe);
-			$("#profileurl").html(details.profileUrl).attr("href",details.profileUrl);
-			$("#loginid").val(details.id);
+			//$("#profileurl").html(details.profileUrl).attr("href",details.profileUrl);
+			//$("#loginid").val(details.id);
 			$("#logindisplayname").val(details.displayName);
 			$("#loginfirstname").val(details.firstName);
 			$("#loginlastname").val(details.lastName);
@@ -168,6 +170,7 @@
 
                  },
                  "login": function (service, response) {
+                	 alert("hello....");
                 	 loadProfileInformation(response);
                 	 $("body,html").animate({scrollTop:$(".sc_regform-holder").offset().top-20});
                  }

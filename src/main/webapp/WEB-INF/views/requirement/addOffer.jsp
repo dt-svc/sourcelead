@@ -352,14 +352,10 @@ function validateRateAndRateType(){
 		 } */
 		 
 	 if(offerAmount != null && offerAmount != ""){
-		 alert("hii")
 		 $('#1PaymentMode').find('p.jquery_form_error_message').remove();	
-		 alert("2")
 		 $('#1PaymentMode').removeAttr('data-validation-optional');
 		 $('#1PaymentMode').attr("data-validation","required");
-		 $('#1PaymentMode').attr("data-validation","required validate_Space validate_float validate_length length1-8");
 	 }else{
-		 alert("else")
 		 $('#1Amount').append('p.jquery_form_error_message');	
 		 $('#1PaymentMode').removeAttr('data-validation');
 		 $('#1PaymentMode').attr("data-validation-optional","true"); 
