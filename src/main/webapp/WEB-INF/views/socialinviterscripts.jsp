@@ -107,20 +107,52 @@
 <script type="text/javascript">
 	var loadProfileInformation = function(response){
 		if(response.responseStatus.type=="success"){
+			var activeElement = $('.tab-pane.fade.in.active').attr('id');
+			if(activeElement != null && activeElement != ''  && activeElement != 'undefined' &&  activeElement == 'recruiter'){
+				$("#recruiterRegistrationPopup").removeAttr();
+				$("#professionalRegistrationPopup").removeAttr();
+				$("#recruiterRegistrationPopup").attr("style","display:block");
+				$("#professionalRegistrationPopup").attr("style","display:none");
+				
+				
+				var details = response.data.details;
+				$("#popRecruiterprofileimage").attr("src",details.photo);
+				/* $("#aboutme").html(details.aboutMe); */
+				//$("#profileurl").html(details.profileUrl).attr("href",details.profileUrl);
+				//$("#loginid").val(details.id);
+				/* $("#logindisplayname").val(details.displayName); */
+				$("#poprecruiterFirstName").val(details.firstName);
+				$("#poprecruiterLastName").val(details.lastName);
+				$("#poprecruiterEmail").val(details.email);
+				/* $("#logingender").val(details.gender);
+				$("#logindob").val(details.dob); */
+				$("#loginlocation").val(details.location);
+				
+			}
+			else{
+				$("#recruiterRegistrationPopup").removeAttr();
+				$("#professionalRegistrationPopup").removeAttr();
+				$("#recruiterRegistrationPopup").attr("style","display:none");
+				$("#professionalRegistrationPopup").attr("style","display:block");
+				
+
+				var details = response.data.details;
+				$("#popProfessionalprofileimage").attr("src",details.photo);
+				/* $("#aboutme").html(details.aboutMe); */
+				//$("#profileurl").html(details.profileUrl).attr("href",details.profileUrl);
+				//$("#loginid").val(details.id);
+				/* $("#logindisplayname").val(details.displayName); */
+				$("#popfirstName").val(details.firstName);
+				$("#poplastName").val(details.lastName);
+				$("#popemail").val(details.email);
+				/* $("#logingender").val(details.gender);
+				$("#logindob").val(details.dob); */
+				$("#loginlocation").val(details.location);
+				
+			}
 			$(".logMask").fadeIn(200);
     		 $(".logPop").fadeIn(100);
-			var details = response.data.details;
-			$("#profileimage").attr("src",details.photo);
-			$("#aboutme").html(details.aboutMe);
-			//$("#profileurl").html(details.profileUrl).attr("href",details.profileUrl);
-			//$("#loginid").val(details.id);
-			$("#logindisplayname").val(details.displayName);
-			$("#loginfirstname").val(details.firstName);
-			$("#loginlastname").val(details.lastName);
-			$("#loginemail").val(details.email);
-			$("#logingender").val(details.gender);
-			$("#logindob").val(details.dob);
-			$("#loginlocation").val(details.location);
+			
 		}
 	}
 	 $(document).ready(function () {
@@ -170,7 +202,6 @@
 
                  },
                  "login": function (service, response) {
-                	 alert("hello....");
                 	 loadProfileInformation(response);
                 	 $("body,html").animate({scrollTop:$(".sc_regform-holder").offset().top-20});
                  }
