@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ContractsTemplateDao;
+import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -105,12 +106,25 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		return contractsTemplate;
 	}
 
+
 	@Override
-	public ContractsTemplate saveNewContract(JSONObject jsonObj, OrgLocations orgLocation, String saveType) throws Exception
+	@Transactional
+	public Contracts saveNewContract(Contracts contracts) throws Exception
 	{
-		// TODO Auto-generated method stub
-		return null;
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (contracts != null) {
+				session.saveOrUpdate(contracts);
+			}
+			logger.debug("contractsTemplate Added Successfully");
+		} catch (Exception exception) {
+			   StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ORG_SPOC"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return contracts;
 	}
+
+	
 
 	
 }

@@ -31,7 +31,7 @@
               <label class="col-md-4">Contract Type<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
                   <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();getContractTemplates();" data-validation="required" field-name="Contract Type">
-                    <option>Contract Type</option>
+                    <option value=''>Contract Type</option>
                     <option>Client MSA</option>
                     <option>Vendor MSA</option>
                     <option>Client SOW</option>
@@ -65,7 +65,7 @@
               <label class="col-md-4">Owner<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
                   <select class="chosen-select form-control" id="owner" name="owner" data-validation="required" field-name="Owner">
-                  <option>Select Owner</option>
+                  <option value=''>Select Owner</option>
                   <c:forEach var="user" items="${userList}">
 	                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
                   </c:forEach>
@@ -99,7 +99,7 @@
               <label class="col-md-4">Vendor<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
                   <select class="chosen-select form-control" id="orgRelationId" name="orgRelationId" onchange="getVendorContacts();" data-validation="required" field-name="Vendor Name">
-                    <option value="">Select Vendor</option>
+                    <option value=''>Select Vendor</option>
                    <c:forEach var="orgrelations" items="${orgRelationsList}">
                          <option value="${orgrelations.id}">${orgrelations.orgName}</option>
                   </c:forEach>
@@ -124,14 +124,10 @@
               <label class="col-md-4">Client<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
                   <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();" data-validation="required" field-name="Vendor Name">
-                    <option value="">Select Client</option>
+                    <option value=''>Select Client</option>
                    <c:forEach var="orgrelations" items="${clientList}">
                          <option value="${orgrelations.id}">${orgrelations.orgName}</option>
                   </c:forEach>
-                  
-                   <!--  <option>Vendor-1</option>
-                    <option>Vendor-2</option>
-                    <option>Vendor-3</option> -->
                   </select>
               </div>
           </div>                      
@@ -340,7 +336,7 @@ function getVendorContacts(){
        success :function(data) {
     	var json = JSON.parse(data);
        	var output = "";
-       	output = output + "<option value="">Select Vendor Contact</option>";
+       	output = output + "<option value=''>Select Vendor Contact</option>";
        	for (var i=0; i<json.length; i++)
 			{
 	        var opt = json[i];
@@ -357,7 +353,6 @@ function getVendorContacts(){
 }
 
 function getClientContacts(){
-	alert("Fff");
 	var orgRelationId = $("#clientOrgRelationId").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
@@ -366,7 +361,7 @@ function getClientContacts(){
 	success :function(data) {
 	var json = JSON.parse(data);
 	var output = "";
-	output = output + "<option value="">Select Client Contact</option>";
+	output = output + "<option value=''>Select Client Contact</option>";
 	for (var i=0; i<json.length; i++)
 	{
 	var opt = json[i];

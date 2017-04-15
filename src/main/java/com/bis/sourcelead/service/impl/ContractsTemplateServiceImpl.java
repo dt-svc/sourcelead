@@ -162,9 +162,11 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			User vendorUser = userService.getUserById(Long.parseLong(jsonObj.getString("clientContact")));
 			contracts.setContactUser(vendorUser);
 		}
+		if(jsonObj.has("approver") && null != jsonObj.getString("approver") && !"".equals(jsonObj.getString("approver"))){
+			User approverUser = userService.getUserById(Long.parseLong(jsonObj.getString("approver")));
+			contracts.setApproverUser(approverUser);
+		}
 		
-		User approverUser = userService.getUserById(Long.parseLong(jsonObj.getString("approver")));
-		contracts.setApproverUser(approverUser);
 		if(jsonObj.has("endDate") && null != jsonObj.getString("billingAmount") && !"".equals(jsonObj.getString("billingAmount")) ){
 			contracts.setBillingAmount(jsonObj.getString("billingAmount"));	
 		}
@@ -188,7 +190,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		contracts.setCreatedBy(user.getUserCode());
 		contracts.setUpdatedDate(new Date());
 		contracts.setUpdatedBy(user.getUserCode());
-		return contracts;
+		return contractsTemplateDao.saveNewContract(contracts);
 	}
 
 	

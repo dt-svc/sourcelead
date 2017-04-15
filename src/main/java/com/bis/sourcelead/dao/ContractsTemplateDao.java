@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
 
@@ -17,8 +18,9 @@ public interface ContractsTemplateDao {
 
 	List<ContractsTemplate> getAllContractsTemplatesByContractTypeLandLocationId(Long orgLocationId, String contractType)throws Exception;
 
-	ContractsTemplate saveNewContract(JSONObject jsonObj, OrgLocations orgLocation, String saveType) throws Exception;
-
 	ContractsTemplate getContractTemplateById(long parseLong)throws Exception;
+
+	Contracts saveNewContract(Contracts contracts)throws Exception;
+
 	
 }
