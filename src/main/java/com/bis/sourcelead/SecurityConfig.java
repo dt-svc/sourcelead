@@ -101,6 +101,8 @@ public class SecurityConfig  {
     			.antMatchers("/resetPasswordWithUserName").permitAll() 
     			.antMatchers("/resetPassword").permitAll() 
     			.antMatchers("/referRequirementToProfessional").permitAll() 
+    			.antMatchers("/getAPIService").permitAll() 
+    			.antMatchers("/storeCsv").permitAll() 
     			.antMatchers("/getRequirementProfessionalProfileDetails").permitAll() 
     			.antMatchers("/ws/**").permitAll() 
     			.antMatchers("/verifyResetPassword").permitAll() 

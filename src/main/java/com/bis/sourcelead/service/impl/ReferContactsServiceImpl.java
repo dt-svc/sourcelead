@@ -23,6 +23,8 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Contact_Source;
+import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -103,8 +105,7 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 		referContacts.setUpdatedDate(new Date());
 		referContacts.setCreatedBy(user.getUserCode());
 		referContacts.setUpdatedBy(user.getUserCode());
-		referContacts.setContactSource(Constants.CROWD_SOURCING_SOURCE_SELF);
-		
+		referContacts.setContactSource(Contact_Source.SELF);
 		referContactsDao.addReferContacts(referContacts);
 		
 		sendEmailToReferedContact(user,jsonObj,contactUUID);
@@ -175,6 +176,11 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 	@Override
 	public ReferContacts getReferContactsById(Long id) throws Exception {
 		return referContactsDao.getReferContactsById(id);
+	}
+
+	@Override
+	public void saveAllReferContacts(List<ReferContacts> referContactsList) throws Exception {
+		  referContactsDao.saveAllReferContacts(referContactsList);
 	}
 
 }
