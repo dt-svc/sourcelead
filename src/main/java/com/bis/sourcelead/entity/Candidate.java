@@ -288,6 +288,18 @@ public class Candidate implements Serializable{
 	 private String postedDateStr;
 	 
 	 @Transient
+	 private String vendorName;
+	 
+	 @Transient
+	 private String vendorContactName;
+	 
+	@Transient
+	private String vendorOrgRelationId;
+	
+	@Transient
+	private String vendorSpocId;
+	 
+	 @Transient
 	 private List<RequirementSubmission> requirementSubmisstions;
 	 
 	 @Transient
@@ -738,6 +750,26 @@ public class Candidate implements Serializable{
 	}
 
 
+	public String getVendorOrgRelationId() {
+		return vendorOrgRelationId;
+	}
+
+
+	public void setVendorOrgRelationId(String vendorOrgRelationId) {
+		this.vendorOrgRelationId = vendorOrgRelationId;
+	}
+
+
+	public String getVendorSpocId() {
+		return vendorSpocId;
+	}
+
+
+	public void setVendorSpocId(String vendorSpocId) {
+		this.vendorSpocId = vendorSpocId;
+	}
+
+
 	public boolean getIsCandidateAdedd() {
 		return isCandidateAdedd;
 	}
@@ -1096,6 +1128,25 @@ public class Candidate implements Serializable{
 
 	public void setOrgRelationId(OrgRelations orgRelationId) {
 		this.orgRelationId = orgRelationId;
+	}
+
+	public String getVendorName() {
+		return vendorName;
+	}
+
+
+	public void setVendorName(String vendorName) {
+		this.vendorName = vendorName;
+	}
+
+
+	public String getVendorContactName() {
+		return vendorContactName;
+	}
+
+
+	public void setVendorContactName(String vendorContactName) {
+		this.vendorContactName = vendorContactName;
 	}
 
 
