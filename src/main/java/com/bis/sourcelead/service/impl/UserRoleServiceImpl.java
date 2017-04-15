@@ -525,4 +525,9 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return userRoleDao.isUserAdminByOrgLocationId(userId,orgLocationId);
 	}
 
+	@Override
+	public List<UserRole> getAllActiveUsersListByOrgLocationId(Long orgLocationId) throws Exception {
+		return userRoleDao.getAllActiveUsersListByOrgLocationId(orgLocationId);
+	}
+
 }

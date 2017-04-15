@@ -1,6 +1,9 @@
 
 package com.bis.sourcelead;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
@@ -9,6 +12,9 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.Ordered;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -85,12 +91,12 @@ public class WebAppConfig extends WebMvcConfigurationSupport {
 	 * messageSource.setBasename("messages"); return messageSource; }
 	 */
 	
-	/*@Override
+    @Override
 	protected void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
 		converters.add(mappingJackson2HttpMessageConverter());
 
 		super.configureMessageConverters(converters);
-	}*/
+	}
 
 	public ObjectMapper objectMapper() {
 		ObjectMapper mapper = new ObjectMapper();
@@ -98,11 +104,11 @@ public class WebAppConfig extends WebMvcConfigurationSupport {
 		return mapper;
 	}
 
-/*	public HttpMessageConverter<Object> mappingJackson2HttpMessageConverter() {
+  public HttpMessageConverter<Object> mappingJackson2HttpMessageConverter() {
 		MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
 		mappingJackson2HttpMessageConverter.setPrefixJson(false);
 		mappingJackson2HttpMessageConverter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON_UTF8));
 		mappingJackson2HttpMessageConverter.setObjectMapper(objectMapper());
 		return mappingJackson2HttpMessageConverter;
-	}*/
+	}
 }

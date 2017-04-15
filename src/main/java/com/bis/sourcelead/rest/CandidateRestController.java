@@ -187,14 +187,14 @@ public class CandidateRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Candidate candidate = candidateService.storeCandidate(jsonObj,orgLocation,user,multiFile);
 		
-		if(candidate.getCandidateType().equalsIgnoreCase("Candidate")){
+		/*if(candidate.getCandidateType().equalsIgnoreCase("Candidate")){
 			StringBuilder candidateCreateMsg = new StringBuilder();
 		    SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", candidateCreateMsg.append("Success !! ").append(candidate.getFirstName()).append(" Candidate Added").toString());
 		}
 		else{
 			StringBuilder consultantCreateMsg = new StringBuilder();
 			SourceLeadSessionManager.setSessionAttribute(request, "consultantCreateMsg", consultantCreateMsg.append("Success !! ").append(candidate.getFirstName()).append(" Consultant Added").toString());
-		}
+		}*/
 		return "success";
 	}
 	
@@ -226,7 +226,7 @@ public class CandidateRestController {
 		 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	Candidate candidate = candidateService.findByCandidateEmail(email,orgLocation.getId());
 		 	
-		 	if (null != candidate && candidateType.equalsIgnoreCase(candidate.getCandidateType())) {
+		 	if (null != candidate) {
 				result = "true";
 			}else{
 				result = "false";
@@ -248,7 +248,7 @@ public class CandidateRestController {
 	 @RequestMapping(value = "/getCandidatesList", method = RequestMethod.POST)
 		public @ResponseBody String getCandidatesList(
 				@RequestParam(value = "requirementId", required = false) Long requirementId,
-				@RequestParam(value = "candidateType", required = false) String candidateType, HttpServletRequest request) throws Exception {
+				@RequestParam(value = "candidateType", required = false) String candidateType,@RequestParam(value="isAssociate", required=false) String  isAssociate, HttpServletRequest request) throws Exception {
 			String resultJson = null;
 			String candidateStatus = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -263,7 +263,7 @@ public class CandidateRestController {
 			    df.setTimeZone(TimeZone.getTimeZone("GMT"));
 		        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 		        boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
-		        boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", candidateType));
+		        //boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", candidateType));
 		        boolQueryBuilder.must(QueryBuilders.matchQuery("status", 1));
 		        
 		        //Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocations.getId(),candidateStatus);
@@ -284,7 +284,9 @@ public class CandidateRestController {
 				}
 				boolQueryBuilder.must(skillsBoolQuery);
 			}
-			
+			if(null != isAssociate && isAssociate.equalsIgnoreCase(Constants.YES)){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", isAssociate));
+			}
 	        try {
 				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,Constants.MAX_RESULTS_200,boolQueryBuilder).getHits();
 				    if(null != searchHits && searchHits.length >0){

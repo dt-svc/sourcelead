@@ -39,8 +39,8 @@ function getAddApplicant(requirementId){
 	result = result + '<div class="row">';
 	result = result + '<div class="venk clearfix">';
 	result = result + '<div class="col-md-7 radioInline">';
-	result = result + '<label class="mr"><input type="radio" checked="checked" value="Candidates" name="candidateType" onClick="getCandidatesList('+requirementId+',\'Candidate\');">Candidates</label>';
-	result = result + '<label class="mr"><input type="radio" value="Consultants" name="candidateType" onClick="getCandidatesList('+requirementId+',\'Consultant\');">Consultants</label>';
+	result = result + '<label class="mr"><input type="radio" checked="checked" value="N" name="candidateType" onClick="getCandidatesList('+requirementId+',\'N\');">Candidates</label>';
+	result = result + '<label class="mr"><input type="radio" value="Y" name="candidateType" onClick="getCandidatesList('+requirementId+',\'Y\');">Associates</label>';
 	result = result + '<label class="mr"><input type="radio" value="New candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'New\');getCandidateSelectionType();">Add New Candidate</label>';
 	result = result + '<label class="mr"><input type="radio" value="Parese candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'parseCandidate\');getCandidateSelectionType();">Parse Candidate</label>';
 	result = result + '</div>';	
@@ -145,7 +145,7 @@ function getAddApplicant(requirementId){
 	
 	
 	 
-	getCandidatesList(requirementId,'Candidate');
+	getCandidatesList(requirementId,'N');
 	
 	
 	$("#addApplicantDiv").empty();
@@ -442,9 +442,17 @@ function discordApplicant(){
 		 
 		 
 		 if(requirementId != null && requirementId != "" && requirementId != 'undefined'){
+			 if(candidateType == "N" ){
+				 isAssociate = "N";
+				 candidateType = "Candidate";
+			 }
+			 if(candidateType == "Y" ){
+				 isAssociate = "Y";
+				 candidateType = "Associate";
+			 }
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/getCandidatesList?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&candidateType="+candidateType, 
+			        url: sourceleadUrl+"/getCandidatesList?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&isAssociate="+isAssociate, 
 			        success: function(data) {
 			        	var json = JSON.parse(data);
 			        	var output = "";

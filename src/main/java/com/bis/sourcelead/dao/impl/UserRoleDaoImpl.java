@@ -633,5 +633,14 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		return usersList;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<UserRole> getAllActiveUsersListByOrgLocationId(Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserRole userRole where userRole.orgLocations.id = :orgLocationId and userRole.userState = 'ACTIVE' ";
+		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
+		return userRoleList;
+	}
+
 	
 }
