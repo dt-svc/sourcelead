@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -135,15 +136,23 @@ public class ContractRestController {
 	public @ResponseBody String getVendorContactsByOrgRelationId(@RequestParam(value = "orgRelationId", required = false) String orgRelationId,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(Long.parseLong(orgRelationId));
+		
 		for(OrgSpoc orgSpoc : orgSpocList){
 			StringBuilder sb = new StringBuilder();
+			StringBuilder clientSb = new StringBuilder();
 			if(null != orgSpoc.getVendorUser().getFirstName() && null != orgSpoc.getVendorUser().getLastName()){
-				sb.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName());
+			sb.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName());
 			}else{
-				sb.append(orgSpoc.getVendorUser().getFirstName());
+			sb.append(orgSpoc.getVendorUser().getFirstName());
+			}
+			if(null != orgSpoc.getClientUser().getFirstName() && null != orgSpoc.getClientUser().getLastName()){
+			clientSb.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName());
+			}else{
+			clientSb.append(orgSpoc.getClientUser().getFirstName());
 			}
 			orgSpoc.setSpocName(sb.toString());
-		}
+			orgSpoc.setOwnerName(clientSb.toString());
+			}
 		return commonUtil.toJSON(orgSpocList);
 	} 
 	
@@ -157,9 +166,18 @@ public class ContractRestController {
 	} 
 	
 	
+//	/saveNewContract
 	
-	
-	
+	@RequestMapping(value = "/saveNewContract", method = RequestMethod.POST)
+	public @ResponseBody String saveNewContract(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "saveType", required = false) String saveType,HttpServletRequest request) throws Exception {
+
+		String json1 = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json1);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Contracts contracts = contractsTemplateService.saveNewContract(jsonObj,orgLocation,saveType,user);
+	   return "done";
+	}
 	
 	
 	

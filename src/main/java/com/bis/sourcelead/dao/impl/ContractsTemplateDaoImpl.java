@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,5 +91,26 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		List<ContractsTemplate>  contractsTemplateList = session.createQuery("from ContractsTemplate ct where ct.orgLocationId.id =:orgLocationId and ct.templateType = :contractType and ct.templateStatus = '0'" ).setLong("orgLocationId", orgLocationId ).setString("contractType", contractType).setCacheable(true).list();
 		return contractsTemplateList;
 	}
+
+	@Override
+	@Transactional
+	public ContractsTemplate getContractTemplateById(long templateId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		ContractsTemplate  contractsTemplate =  null;
+		List<ContractsTemplate>  contractsTemplateList = session.createQuery("from ContractsTemplate ct where ct.id =:templateId").setLong("templateId", templateId).setCacheable(true).list();
+		if(null != contractsTemplateList && contractsTemplateList.size() >0){
+			contractsTemplate = contractsTemplateList.get(0);
+		}
+		return contractsTemplate;
+	}
+
+	@Override
+	public ContractsTemplate saveNewContract(JSONObject jsonObj, OrgLocations orgLocation, String saveType) throws Exception
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 }
