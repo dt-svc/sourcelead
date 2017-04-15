@@ -527,5 +527,36 @@ public class OrgRelations implements Serializable{
 	public void setSubmittedCount(Integer submittedCount) {
 		this.submittedCount = submittedCount;
 	}
-	
+
+	public Integer getShortlistedCount() {
+		return shortlistedCount;
+	}
+
+	public void setShortlistedCount(Integer shortlistedCount) {
+		this.shortlistedCount = shortlistedCount;
+	}
+
+	public Integer getInterviewedCount() {
+		return interviewedCount;
+	}
+
+	public void setInterviewedCount(Integer interviewedCount) {
+		this.interviewedCount = interviewedCount;
+	}
+
+	public Integer getOfferedCount() {
+		return offeredCount;
+	}
+
+	public void setOfferedCount(Integer offeredCount) {
+		this.offeredCount = offeredCount;
+	}
+
+	public Integer getRejectedCount() {
+		return rejectedCount;
+	}
+
+	public void setRejectedCount(Integer rejectedCount) {
+		this.rejectedCount = rejectedCount;
+	}
 }

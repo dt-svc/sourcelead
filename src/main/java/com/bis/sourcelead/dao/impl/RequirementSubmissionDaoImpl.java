@@ -2291,11 +2291,11 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 
 		@Override
 		@Transactional(rollbackFor = { Exception.class })
-		public Integer getApplicantCountSubmittedByVendor(Long orgLocationId, Long orgRelationId) {
+		public List<RequirementSubmission> getApplicantCountSubmittedByVendor(Long orgLocationId, Long orgRelationId) {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query ="select count(*) from RequirementSubmission rs where rs.orgLocations.id =:orgLocationId and rs.vendorLocationId.id =:orgRelationId";
-		    List<Long> count = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
-		    return count.get(0).intValue();
+			String query =" from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.orgLocations left join fetch rs.candidateResumes where rs.orgLocations.id =:orgLocationId and rs.vendorLocationId.id =:orgRelationId and rs.sourceSubmission <> NULL";
+			List<RequirementSubmission>  subList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+		    return subList;
 		}
 		
   }

@@ -36,17 +36,20 @@ window.onload = function() {
 
 <script>
 function getVendorsReportList(){
-		var sourceleadUrl ='${sourceleadUrl}';
-	    var status = "";
-	    var clients = "";
-		$.ajax({
-	         type : "POST",
-	          url: sourceleadUrl+"/getVendorRequirementReports?${_csrf.parameterName}=${_csrf.token}",    
-	          success :function(data) {
-	        	 prepareReportDataDiv(data);
-	         },
-	          
-	     }); 
+	$('#reportStartDate').empty();
+	$('#reportEndDate').empty();
+	var reportType = $("#reportTypeId").val();
+	var startDate = $("#ExportStartDate").val();
+	var endDate = $("#ExportEndDate").val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+         type : "POST",
+          url: sourceleadUrl+"/getVendorRequirementReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&customStartDate="+startDate+"&customEndDate="+endDate,    
+          success :function(data) {
+        	 prepareReportDataDiv(data);
+         },
+          
+     }); 
 }
 </script>
 <script>
@@ -73,26 +76,25 @@ function prepareReportDataDiv(data){
         result = result + '<td>';
         result = result + '<div><span>'+report.vendorName+'</span></div> ';
         result = result + '</td>';
-
         result = result + '<td>';
         if(report.reqReleasedCount != null && report.reqReleasedCount != '' && report.reqReleasedCount !='undefined'){
        	result = result + '<div><span>'+report.reqReleasedCount+'</span></div>';
  		} else{
-		result = result + '<div><span>---</span></div>';
+		result = result + '<div><span>0</span></div>';
 		    }
         result = result + '</td>';
         result = result + '<td>';
         if(report.submittedCount != null && report.submittedCount != '' && report.submittedCount !='undefined'){
            	result = result + '<div><span>'+report.submittedCount+'</span></div>';
      		} else{
-    		result = result + '<div><span>---</span></div>';
+    		result = result + '<div><span>0</span></div>';
     		    }
         result = result + '</td>';
        	result = result + '<td>';
        	if(report.shortlistedCount != null && report.shortlistedCount != '' && report.shortlistedCount !='undefined'){
            	result = result + '<div><span>'+report.shortlistedCount+'</span></div>';
      		} else{
-    		result = result + '<div><span>---</span></div>';
+    		result = result + '<div><span>0</span></div>';
     		    }
        	result = result + '</td>';
         
@@ -100,7 +102,7 @@ function prepareReportDataDiv(data){
          if(report.interviewedCount != null && report.interviewedCount != '' && report.interviewedCount !='undefined'){
             	result = result + '<div><span>'+report.interviewedCount+'</span></div>';
       		} else{
-     		result = result + '<div><span>---</span></div>';
+     		result = result + '<div><span>0</span></div>';
      		    }
         result = result + '</td>';
         
@@ -108,7 +110,7 @@ function prepareReportDataDiv(data){
         if(report.offeredCount != null && report.offeredCount != '' && report.offeredCount !='undefined'){
            	result = result + '<div><span>'+report.offeredCount+'</span></div>';
      		} else{
-    		result = result + '<div><span>---</span></div>';
+    		result = result + '<div><span>0</span></div>';
     		    }       		 
         result = result + '</td>';
         
@@ -116,7 +118,7 @@ function prepareReportDataDiv(data){
         if(report.rejectedCount != null && report.rejectedCount != '' && report.rejectedCount !='undefined'){
            	result = result + '<div><span>'+report.rejectedCount+'</span></div>';
      		} else{
-    		result = result + '<div><span>---</span></div>';
+    		result = result + '<div><span>0</span></div>';
     		    }
         result = result + '</td>';
         
@@ -220,9 +222,8 @@ function toDate(selector) {
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
-              <h2>Requirement List</h2>
+              <h2>Vendor Reports</h2>
             </div>
-    <div class="pull-right brud-crum">Home &raquo; Requirement</div>
   </section>
   
   <div class="timesheet_out">
@@ -232,7 +233,7 @@ function toDate(selector) {
 
 <div class="pull-left reportBtns">
 	  <div class="reportBtn">
-		<select class="form-control select-bg" id="reportTypeId" onChange="flushCustomDates(); getDayWiseReports(); custDates();">
+		<select class="form-control select-bg" id="reportTypeId" onChange="flushCustomDates(); getVendorsReportList(); custDates();">
 		 <option value="">select</option>
 		  <option value="today">Today</option>
 		  <option value="yesterday">Yesterday</option>
@@ -656,9 +657,9 @@ function getCustomReports(){
 	else{
 		$.ajax({
 	         type : "POST",
-	          url: sourceleadUrl+"/getRequirementReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,    
+	          url: sourceleadUrl+"/getVendorRequirementReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&customStartDate="+startDate+"&customEndDate="+endDate,    
 	          success :function(data) {
-	        	 prepareReportDataDiv(data);
+	        	  prepareReportDataDiv(data);
 	         },
 	          
 	     }); 
