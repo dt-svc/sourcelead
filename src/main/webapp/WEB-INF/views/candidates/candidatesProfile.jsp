@@ -1034,6 +1034,7 @@ function candidateProfile(candidateId,candidateType){
          success :function(data) {
               if(data != null && data != 'undefined' && data != "" && data == "success"){
            	  //candidateProfile(candidateId);
+            	  candidateQuickViewProfile(candidateId);
               }
        },
          
@@ -1111,6 +1112,7 @@ function candidateProfile(candidateId,candidateType){
 						success : function(result) {
 							/* location.replace(sourceleadUrl+"/candidatesList");  */
 							candidateSideBar(candidateId);
+							candidateQuickViewProfile(candidateId);
 						},
 					});
 			return true;
