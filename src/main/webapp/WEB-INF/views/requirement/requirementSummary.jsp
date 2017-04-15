@@ -309,9 +309,9 @@ function rejectedCount(requirementId){
     
     
 <div class="side_mask">
-      <div class="proj_close"></div>
-    </div>
-  </div>
+  <div class="proj_close" onClick="activeTab();"></div>
+</div>
+   
 </section>
  
 <div class="success_pop" id="selector11" style="display: none;">
@@ -797,11 +797,32 @@ function sideBar(requirementId){
 							result = result +'</div>';
 							
                              //Candidate submissions details Div
-							 result = result +' <div class="clients_side_wrap">';
+							 result = result +' <div class="clients_side_wrap quickviewTabs">';
+							 
+							 result = result + '<ul class="nav nav-tabs">';
+							 result = result +' <li class="active" id="pipelineQuickviewTabsqv"><a data-toggle="tab" href="#quickview">Quickview</a></li>';
+							 result = result +'<li id="pipelineQuickviewTabsdetails"><a data-toggle="tab" href="#detailview">Detailview</a></li>';
+							 result = result +'</ul>';
+							 
+							 
+						     result = result +'<div class="tab-content">';
+							 
+							 result = result +'<div id="quickview" class="tab-pane fade in active">';
+							 
+							 result = result +'<div id="applicantQuickViewDiv"></div>';
+							 
+							 result = result +'</div>';
+							 
+							 result = result +'<div id="detailview" class="tab-pane fade">';
+							 
 							 result = result +'<div class="clients_side_wrap_inn">';
 							 result = result +' <div class="project_side_wrap_inn_tabs"> ';
 							 result = result + '<div id="viewCandidateDiv"></div>';
 							 result = result +'</div>';
+							 result = result +'</div>';
+							 
+							 result = result +'</div>';
+							 
 							 result = result +'</div>';
 							 result = result +'</div>';
 							 
@@ -900,6 +921,20 @@ function sideBar(requirementId){
            
       }); 
 				
+}
+</script>
+
+<script type="text/javascript">
+function activeTab(){
+	$("#quickviewTabsdetails").removeClass("active");
+	$("#quickviewTabsqv").addClass("active");
+	$("#quickresume_view").addClass("active in");
+	$("#detailrecommondations").removeClass("active in");
+	
+	$("#pipelineQuickviewTabsdetails").removeClass("active");
+	$("#pipelineQuickviewTabsqv").addClass("active");
+	$("#quickview").addClass("active in");
+	$("#detailview").removeClass("active in");
 }
 </script>
 
@@ -1505,7 +1540,7 @@ function requirementPipeline(requirementId,submissionType){
 
 						           result = result + '       <tr>';
 						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           		result = result + '         <td><div onclick="applicantQuickViewProfile('+report.candidateId+'); getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
 						           '</sec:authorize>';
 						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
 						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
@@ -1799,7 +1834,7 @@ function requirementPipelineDA(requirementId,submissionType){
 
 						           result = result + '       <tr>';
 						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           		result = result + '         <td><div onclick="applicantQuickViewProfile('+report.candidateId+'); getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
 						           '</sec:authorize>';
 						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
 						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
@@ -2063,7 +2098,7 @@ function requirementPipelineRS(requirementId,submissionType){
 
 						           result = result + '<tr>';
 						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           		result = result + '         <td><div onclick="applicantQuickViewProfile('+report.candidateId+'); getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
 						           '</sec:authorize>';
 						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
 						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
@@ -2319,7 +2354,7 @@ function requirementPipelineSL(requirementId,submissionType){
 
 						           result = result + '       <tr>';
 						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           		result = result + '         <td><div onclick="applicantQuickViewProfile('+report.candidateId+'); getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
 						           '</sec:authorize>';
 						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
 						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
@@ -2586,7 +2621,7 @@ function requirementPipelineSC(requirementId,submissionType){
 
 						           result = result + '       <tr>';
 						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           		result = result + '         <td><div onclick="applicantQuickViewProfile('+report.candidateId+'); getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
 						           '</sec:authorize>';
 						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
 						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
@@ -2820,7 +2855,7 @@ function requirementPipelineIN(requirementId,submissionType){
 
 						           result = result + '       <tr>';
 						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           		result = result + '         <td><div onclick="applicantQuickViewProfile('+report.candidateId+'); getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
 						           '</sec:authorize>';
 						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
 						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
@@ -2992,7 +3027,7 @@ function requirementPipelineOffer(requirementId,submissionType){
 
 						           result = result + '       <tr>';
 						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           		result = result + '         <td><div onclick="applicantQuickViewProfile('+report.candidateId+'); getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
 						           '</sec:authorize>';
 						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
 						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
@@ -3192,7 +3227,7 @@ function requirementPipelineRejected(requirementId,submissionType){
 
 						           result = result + '       <tr>';
 						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div onclick="getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
+						           		result = result + '         <td><div onclick="applicantQuickViewProfile('+report.candidateId+'); getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
 						           '</sec:authorize>';
 						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
 						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
@@ -3644,10 +3679,30 @@ function requirementRecommendations(requirementId){
     	    var result = '';
     	    
     	     result = result +' <div class="clients_side_wrap">';
-			 result = result +'<div class="clients_side_wrap_inn">';
+			 result = result +'<div class="clients_side_wrap_inn quickviewTabs">';
+
+			 result = result + '<ul class="nav nav-tabs">';
+			 result = result +' <li id="quickviewTabsqv"class="active"><a data-toggle="tab" href="#quickresume_view">Quickview</a></li>';
+			 result = result +'<li id="quickviewTabsdetails"><a data-toggle="tab" href="#detailrecommondations">Detailview</a></li>';
+			 result = result +'</ul>';
+			 
+			 
+		     result = result +'<div class="tab-content">';
+			 
+			 result = result +'<div id="quickresume_view" class="tab-pane fade in active">';
+			 
+			 result = result +'<div id="recapplicantQuickViewDiv"></div>';
+			 
+			 result = result +'</div>';
+			 
+			 result = result +'<div id="detailrecommondations" class="tab-pane fade">';			 
+			 
 			 result = result +' <div class="project_side_wrap_inn_tabs"> ';
 			 result = result + '<div id="candidateSideDiv"></div>';
 			 result = result +'</div>';
+			 result = result +'</div>';
+			 result = result +'</div>';
+
 			 result = result +'</div>';
 			 result = result +'</div>';
     	    
@@ -3696,7 +3751,7 @@ function requirementRecommendations(requirementId){
 		    	lastName = "";
 		    } 
 		    result = result +'<tr>';
-		    result = result + '<td><div onclick="clientSideBar('+report.candidateId+');" class="proj_show"><span>'+firstName+" "+lastName+'</span><i class="fa fa-binoculars"></i></div></td>';
+		    result = result + '<td><div onclick="applicantQuickViewProfile('+report.candidateId+'); clientSideBar('+report.candidateId+');" class="proj_show"><span>'+firstName+" "+lastName+'</span><i class="fa fa-binoculars"></i></div></td>';
 /* 		    result = result +'<td><div class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>'; */
 		    if(report.email != null && report.email !='' && report.email !='undefined'){
 		    	result = result +'<td><div title='+report.email+'><span>'+report.email+'</span></div></td>';
@@ -5407,6 +5462,7 @@ function recommendationAlertCancel(candidateId){
 <jsp:include page="recommendCandidatesCertificates.jsp"></jsp:include>
 <jsp:include page="recommendedCandidateDocuments.jsp"></jsp:include>
 <jsp:include page="recommendCandidatesHistory.jsp"></jsp:include>
+<jsp:include page="applicantQuickView.jsp"></jsp:include>
 
 
 

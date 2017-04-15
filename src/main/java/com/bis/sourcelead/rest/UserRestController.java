@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -44,6 +46,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -110,6 +113,9 @@ public class UserRestController {
 	RolesService rolesService;
 	
 	@Autowired
+	private CandidateService candidateService;
+	
+	@Autowired
 	 ProjectsIndexHelper projectsIndexHelper;
 	 
 	@Autowired
@@ -155,6 +161,40 @@ public class UserRestController {
 		 resultJson = toJSON(projectsList);
 		 return resultJson;
 	   }
+	
+	@RequestMapping(value = "/getActiveAssociateList", method = RequestMethod.POST)
+	public @ResponseBody String getCandidatesList(
+		   @RequestParam(value = "employeementType", required = false) String employeementType, HttpServletRequest request) throws Exception {
+		String resultJson = null;
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		List<Candidate> candidateIdsList = candidateService.getAllActiveAssociatesByOrglocationId(orgLocations.getId(),employeementType);
+		resultJson = toJSON(candidateIdsList);
+		return resultJson;
+	}
+	
+	@RequestMapping(value = "/getActiveAssociateDetails",  method = RequestMethod.POST)
+    public @ResponseBody String getAssociateDetailsById(@RequestParam(value="candidateId", required=false) Long candidateId) {
+		
+	   ArrayList<String> associateList = new ArrayList<String>();
+	   Candidate candidate = null;
+		try {
+			candidate = candidateService.getCandidateById(candidateId);
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		
+		if(null != candidate)
+		{
+			associateList.add(candidate.getFirstName());
+			associateList.add(candidate.getLastName());
+			associateList.add(candidate.getEmail());
+			associateList.add(candidate.getMobilePhone());
+			
+		}
+		
+		return commonUtil.toJSON(associateList);
+		
+	}
 
 	/**
 	 * To Create user
