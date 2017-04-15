@@ -88,6 +88,8 @@ public interface UserRoleDao {
 	
 	public HashSet<UserRole> getAllUserTimeSheetSubmissionStatusCurrentWeek();
 	
+	List<UserRole> getAllActiveUsersListByOrgLocationId(Long orgLocationId) throws Exception;
+	
 	List<Long> getAllAssignedUsersIdsByReportingManagerId(Long reportingManagerId,Long orgLocationId);
 	
 	List<UserRole> getAllAssignedUsersByReportingManagerId(Long reportingManagerId,Long orgLocationId);

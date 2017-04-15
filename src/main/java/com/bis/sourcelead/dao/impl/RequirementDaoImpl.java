@@ -24,7 +24,6 @@ import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
-import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -979,6 +978,54 @@ public class RequirementDaoImpl implements RequirementDao {
 	         List<Requirement> requirementList = session.createQuery(query).setLong("userId", teamMembers.getMemberUserId().getId()).setLong("teamId", teamMembers.getTeamId().getId()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	 		return requirementList;
 	 	}
+
+		@Override
+		 @Transactional(rollbackFor = { Exception.class })
+		public Long getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user,Date startDateUTC, Date endDateUTC)
+				throws Exception {
+			
+			Map<String, Object> params = new HashMap<String,Object>();
+			String subQueryDateRange = "";
+			
+			if(null != startDateUTC && null != endDateUTC){
+				subQueryDateRange = "and (requirement.createdDate >= :startDateUTC and requirement.createdDate <= :endDateUTC)";
+				  params.put("startDateUTC",startDateUTC);
+				  params.put("endDateUTC",endDateUTC);
+			}
+			
+			
+		    String queryString ="select count(*)from Requirement requirement where requirement.orgLocationId.id =:orgLocationId and requirement.createdBy =:userCode "+subQueryDateRange+" ";
+			Session session = this.sessionFactory.getCurrentSession();
+		    params.put("orgLocationId",orgLocationId);
+		    params.put("userCode",user.getUserCode());
+			
+			/*String query ="select count(*)from Requirement requirement where requirement.orgLocationId.id =:orgLocationId and requirement.createdBy =:userCode";
+			Session session = this.sessionFactory.getCurrentSession();
+			long count = ((Long)session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("userCode",user.getUserCode()).uniqueResult()).intValue();*/
+			    
+			    Query query = session.createQuery(queryString);
+			    for (String str : query.getNamedParameters())
+		        {
+					if(str.equalsIgnoreCase("startDateUTC")){
+						query.setParameter( str, (Date) params.get(str) );
+					}
+					if(str.equalsIgnoreCase("endDateUTC")){
+						query.setParameter( str, (Date) params.get(str) );
+					}
+					
+					if(str.equalsIgnoreCase("orgLocationId")){
+						query.setParameter(str, (long) params.get(str));
+					}
+					
+					if(str.equalsIgnoreCase("userCode")){
+						query.setParameter(str, params.get(str));
+					}
+					
+					
+		        }
+			    return (Long)query.uniqueResult();
+				
+		}
 	
 	
 }
