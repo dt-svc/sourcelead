@@ -173,6 +173,32 @@ public class User implements Serializable{
 	
 	@Transient
 	private String isAssignedOwner;
+	
+	@Transient
+    private long userRequirementsCount;
+	
+	@Transient
+    private long userApplicantsCount;
+	
+	@Transient
+    private long userCandidatesCount;
+	
+	@Transient
+    private long userShortlisteApplicantsCount;
+	
+	@Transient
+    private long userSubmittedApplicantsCount;
+	
+	@Transient
+    private long userInterviewedApplicantsCount;
+	
+	@Transient
+    private long userOfferedApplicantsCount;
+	
+	@Transient
+    private long userRejectedApplicantsCount;
+	
+	
 
 	public Status getPreviousUserState() {
 		return previousUserState;
@@ -519,4 +545,71 @@ public class User implements Serializable{
 	public void setIsAssignedOwner(String isAssignedOwner) {
 		this.isAssignedOwner = isAssignedOwner;
 	}
+
+	public long getUserRequirementsCount() {
+		return userRequirementsCount;
+	}
+
+	public void setUserRequirementsCount(long userRequirementsCount) {
+		this.userRequirementsCount = userRequirementsCount;
+	}
+
+	public long getUserCandidatesCount() {
+		return userCandidatesCount;
+	}
+
+	public void setUserCandidatesCount(long userCandidatesCount) {
+		this.userCandidatesCount = userCandidatesCount;
+	}
+
+	public long getUserApplicantsCount() {
+		return userApplicantsCount;
+	}
+
+	public void setUserApplicantsCount(long userApplicantsCount) {
+		this.userApplicantsCount = userApplicantsCount;
+	}
+
+	public long getUserShortlisteApplicantsCount() {
+		return userShortlisteApplicantsCount;
+	}
+
+	public void setUserShortlisteApplicantsCount(long userShortlisteApplicantsCount) {
+		this.userShortlisteApplicantsCount = userShortlisteApplicantsCount;
+	}
+
+	public long getUserSubmittedApplicantsCount() {
+		return userSubmittedApplicantsCount;
+	}
+
+	public void setUserSubmittedApplicantsCount(long userSubmittedApplicantsCount) {
+		this.userSubmittedApplicantsCount = userSubmittedApplicantsCount;
+	}
+
+	public long getUserInterviewedApplicantsCount() {
+		return userInterviewedApplicantsCount;
+	}
+
+	public void setUserInterviewedApplicantsCount(long userInterviewedApplicantsCount) {
+		this.userInterviewedApplicantsCount = userInterviewedApplicantsCount;
+	}
+
+	public long getUserOfferedApplicantsCount() {
+		return userOfferedApplicantsCount;
+	}
+
+	public void setUserOfferedApplicantsCount(long userOfferedApplicantsCount) {
+		this.userOfferedApplicantsCount = userOfferedApplicantsCount;
+	}
+
+	public long getUserRejectedApplicantsCount() {
+		return userRejectedApplicantsCount;
+	}
+
+	public void setUserRejectedApplicantsCount(long userRejectedApplicantsCount) {
+		this.userRejectedApplicantsCount = userRejectedApplicantsCount;
+	}
+	
+	
+	
 }
