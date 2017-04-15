@@ -186,9 +186,9 @@ function dashboardAddInterview(){
 	result = result + '<div class="clearfix form-group row">';
 	
 	result = result + '<div class="col-md-5">';
-	result = result + '<span class="col-md-3 paddingLeft">Requirement</span>';
+	result = result + '<span class="col-md-3 paddingLeft">Requirement<span class="text-danger">&nbsp;*</span></span>';
 	result = result + '<div class="col-md-9 req_list">';
-	result = result + '<select class="form-control mt10" id="requirementsList" name="requirementsList" onchange="selectAndGetApplicantsForRequirement();">';
+	result = result + '<select class="form-control mt10" id="requirementsList" name="requirementsList" onchange="selectAndGetApplicantsForRequirement();" field-name="Requirement" data-validation="required">';
 	
 	result = result + '</select>';
 	result = result + '</div>';
@@ -256,7 +256,7 @@ function dashboardAddInterview(){
 		result = result + '		</td>';
 		
 		result = result + '		 <td>';
-		result = result + '  		<select  multiple data-placeholder="Select Interviewers" class="blminwidth-50" id="interviewer" name="interviewer" field-name="Interviewer">';
+		result = result + '  		<select  multiple data-placeholder="Select Interviewers" class="blminwidth-50" id="1interviewer" name="1interviewer" field-name="Interviewer">';
 		result = result + ' 		</select>';
 		result = result + '		 </td>';
 		
@@ -282,6 +282,8 @@ function dashboardAddInterview(){
 	result = result + '<div class="clearfix"></div>'; 
 	result = result + '</form>';
 	result = result + '<div id="interviewLoading"></div>';
+	result = result + '<div class="mt25" id="scheduledInterviewsList" style="overflow:auto;"></div>';
+	result = result + '<div class="clearfix"></div>';
 	result = result + '</div>';
 	$("#addInterviewDiv").empty();
   	$("#addInterviewDiv").append(result); 
@@ -334,7 +336,6 @@ function interviewType(id){
 
 <script>
 function selectInterviewApplicants(){
-	/* $('.eventAlert').hide(); */
 	var selectedInterviewApplicants =  $('#1applicant_chosen  span').size();
 	$("#selectedInterviewApplicantsCount").html(selectedInterviewApplicants);
 	$('#1applicant_chosen').next('p.jquery_form_error_message').remove();
@@ -355,7 +356,105 @@ function selectInterviewApplicants(){
 
 <script>
 function getSeheduledInterviewsList(){
-	/* %%%%%%%%%%to do implementation for fetch interview interviews list%%%%%%%%%%%%%% */
+	var sourceleadUrl ='${sourceleadUrl}';
+	var selectedReqId = $("#requirementsList").val();
+	var selectedSubmissions = $("#1applicant").val();
+	$("#scheduledInterviewsList").empty();
+	$.ajax({
+        type : "POST",
+        url: sourceleadUrl+"/getScheduledInterviewsListForSelectedApplicants?${_csrf.parameterName}=${_csrf.token}&selectedReqId="+selectedReqId+"&selectedSubmissions="+selectedSubmissions,    
+         success :function(data) {
+              if(data != null && data != 'undefined' && data != "" && data != '[]'){
+            	  var json = JSON.parse(data);
+            	  var result = "";
+            	  var jsonLength = json.length;
+            	  if(jsonLength > 0){
+		        	
+	            	result = result + '<table cellpadding="0" cellspacing="0" id="addInterviewTbl" class="addinterTable">';
+	          		result = result + '<thead>';
+          			result = result + '<tr id="divTsRow0">';
+        				result = result + '<th>Applicant</th>';
+        				result = result + '<th>Interview Type</th>';
+        				result = result + '<th>Start Date</th>';
+        				result = result + '<th>End Date</th>';	
+        				result = result + '<th>Time Zone</th>';
+        				result = result + '<th>Details</th>';
+        				result = result + '<th>Interviewer</th>';
+          			result = result + '</tr>';
+	          		result = result + '</thead>';
+	          		result = result + '       <tbody>';
+	          		
+                  for (var i = 0; i < jsonLength; i++) {
+                 	 	var opt = json[i]; 
+                 	 	result = result + '       <tr>';
+	                 	result = result + '       <td>';
+	                 	if(null != opt.candidateName && '' != opt.candidateName && 'undefined' != opt.candidateName){
+	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">'+opt.candidateName+'</div>';
+	                 	}else{
+	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">---</div>';
+	                 	}
+	                 	result = result + '       </td>';
+	                 	
+	                 	result = result + '       <td>';
+	                 	if(null != opt.interviewType && '' != opt.interviewType && 'undefined' != opt.interviewType){
+	                 		result = result + '			<div class="tbldata-dotdot-100 text-center">'+opt.interviewType+'</div>';
+	                 	}else{
+	                 		result = result + '			<div class="tbldata-dotdot-100 text-center">---</div>';
+	                 	}
+	                 	result = result + '       </td>';
+	                 	
+	                 	result = result + '       <td>';
+	                 	if(null != opt.interviewTimeZoneStartTimeStr && '' != opt.interviewTimeZoneStartTimeStr && 'undefined' != opt.interviewTimeZoneStartTimeStr){
+	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">'+opt.interviewTimeZoneStartTimeStr+'</div>';
+	                 	}else{
+	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">---</div>';
+	                 	}
+	                 	result = result + '       </td>';
+	                 	
+	                 	result = result + '       <td>';
+	                 	if(null != opt.interviewTimeZoneEndTimeStr && '' != opt.interviewTimeZoneEndTimeStr && 'undefined' != opt.interviewTimeZoneEndTimeStr){
+	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">'+opt.interviewTimeZoneEndTimeStr+'</div>';
+	                 	}else{
+	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">---</div>';
+	                 	}
+	                 	result = result + '       </td>';
+	                 	
+	                 	result = result + '       <td>';
+	                 	if(null != opt.timezone && '' != opt.timezone && 'undefined' != opt.timezone){
+	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">'+opt.timezone+'</div>';
+	                 	}else{
+	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">---</div>';
+	                 	}
+	                 	result = result + '       </td>';
+	                 	
+	                 	result = result + '       <td>';
+	                 	if(null != opt.location && '' != opt.location && 'undefined' != opt.location){
+	                 		result = result + '			<div class="tbldata-dotdot text-center">'+opt.location+'</div>';
+	                 	}else{
+	                 		result = result + '			<div class="tbldata-dotdot text-center">---</div>';
+	                 	}
+	                 	result = result + '       </td>';
+                 	
+	                 	result = result + '       <td>';
+	                 	if(null != opt.interviewersList && '' != opt.interviewersList && 'undefined' != opt.interviewersList){
+	                 		result = result + '			<div class="tbldata-dotdot text-center">'+opt.interviewersList+'</div>';
+	                 	}else{
+	                 		result = result + '			<div class="tbldata-dotdot text-center">---</div>';
+	                 	}
+	                 	result = result + '       </td>';
+	                 	result = result + '      </tr>';
+                  }
+		          
+		          result = result + '      </tbody>';
+		          result = result + '</table>';
+		          result = result + '<div class="clearfix"></div>'; 
+                  $("#scheduledInterviewsList").empty();
+                  $("#scheduledInterviewsList").append(result);
+                  
+              }
+	       }
+       },
+    });
 }
 </script>
 
@@ -391,6 +490,7 @@ function selectAndGetApplicantsForRequirement(){
 		$('#isClientInterview').attr('checked', false);
 		$("#isClientInterviewDiv").hide();
 		getApplicantsForRequirement();
+		$("#scheduledInterviewsList").empty();
 	}
 </script>
 
@@ -496,10 +596,10 @@ function getTimezonesList(){
 		        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+"</option>";
 		        		}
 					}
-		        	$("#interviewer").empty();
-		        	$("#interviewer").append(output);
-		        	$("#interviewer").chosen();
-		        	$("#interviewer").trigger("chosen:updated");
+		        	$("#1interviewer").empty();
+		        	$("#1interviewer").append(output);
+		        	$("#1interviewer").chosen();
+		        	$("#1interviewer").trigger("chosen:updated");
 		        },
 		    });
  	}
@@ -539,6 +639,7 @@ function getTimezonesList(){
    		if(isNofityToOthers == "Y"){
    			validateOtherMail();
    		} */
+   		
 	  if ($(this).validate(false, validationSettings)){
         e.preventDefault();
         var frm = $('#addInterview_form').serializeFormJSON();
