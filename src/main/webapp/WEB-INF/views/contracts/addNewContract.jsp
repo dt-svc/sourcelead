@@ -1,0 +1,372 @@
+<jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterSideNav.jsp" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<script src="resources/js/formvalidator.js"></script>
+<!-- <script src="resources/js/chosen.jquery.min.js"></script> --> 
+
+
+<!-- these files for autocomplete with tagit -->
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<!-- end files for autocomplete with tagit -->
+
+<!-- Content Area -->
+ <section class="content-wraper">
+    <section class="content-header clearfix">
+      <div class="pull-left">
+        <h2>New Contract</h2>
+      </div>
+      <div class="pull-right brud-crum">Home &raquo; New Contract</div>
+    </section>
+    <div class="content-area content-new clearfix">
+      <div class="clearfix form-horizontal">
+       
+        <div class="row newContrWrap">
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+           
+           <h2>Contract Details</h2>
+            <div class="form-group">
+              <label class="col-md-4">Contract Type<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-8">
+                  <select class="chosen-select form-control" id="contractType" name="contractType" onchange="getContractTemplates();" data-validation="required" field-name="Contract Type">
+                    <option>Contract Type</option>
+                    <option>Client MSA</option>
+                    <option>Vendor MSA</option>
+                    <option>Client SOW</option>
+                    <option>Vendor SOW</option>
+                    <option>NDA</option>
+                    <option>NCA</option>
+                  </select>
+            </div>
+            </div>				
+			</div>
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+                       
+            <div class="form-group">
+              <label class="col-md-4">Select template<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-8">
+                <div class="form-icon">
+                  <select class="chosen-select form-control" id="template" name="template"  data-validation="required" field-name="Template">
+                  </select>
+               </div>
+              </div>
+            </div>  
+                     
+            <div class="form-group">
+              <label class="col-md-4">Contract title<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="" data-validation="required" field-name="Contract Title">
+              </div>
+            </div>
+             
+          <div class="form-group">
+              <label class="col-md-4">Owner<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-8">
+                  <select class="chosen-select form-control" id="owner" name="owner" data-validation="required" field-name="Owner">
+                  <option>Select Owner</option>
+                  <c:forEach var="user" items="${userList}">
+	                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+                  </c:forEach>
+                   <!--  <option>Select Owner</option>
+                    <option>Owner-1</option>
+                    <option>Owner-2</option>
+                    <option>Owner-3</option> -->
+                  </select>
+              </div>
+          </div>             
+            
+            <div class="form-group">
+              <label class="col-md-4">Start & End date<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-8">
+					<div class="row">
+					  <div class="col-lg-6">
+						<div class="input-group" id="startDateDiv"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+						  <input type="text" class="form-control" id="startDate" name="startDate" placeholder="Start date" data-validation="required" field-name="Start Date">
+						</div>
+					  </div>
+					  <div class="col-lg-6">
+						<div class="input-group" id="endDateDiv"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+						  <input type="text" class="form-control" id="endDate" name="endDate" placeholder="End date">
+						</div>
+					  </div>
+					</div>
+              </div>
+            </div>
+          
+          <div class="form-group">
+              <label class="col-md-4">Vendor<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-8">
+                  <select class="chosen-select form-control" id="orgRelationId" name="orgRelationId" onchange="getVendorContacts();" data-validation="required" field-name="Vendor Name">
+                    <option>Select Vendor</option> 
+                   <c:forEach var="orgrelations" items="${orgRelationsList}">
+	                     <option value="${orgrelations.id}">${orgrelations.orgName}</option>
+                  </c:forEach>
+                  
+                   <!--  <option>Vendor-1</option>
+                    <option>Vendor-2</option>
+                    <option>Vendor-3</option> -->
+                  </select>
+              </div>
+          </div>                      
+                      
+            <div class="form-group">
+              <label class="col-md-4">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-8">
+                  <select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact">
+                  </select>
+              </div>
+            </div>
+            
+          <div class="form-group">
+              <label class="col-md-4">Approver</label>
+              <div class="col-md-8">
+                  <select class="chosen-select form-control" id="approver" name="approver">
+                  <option>Select Owner</option>
+                  <c:forEach var="user" items="${userList}">
+	                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+                  </c:forEach>
+                  </select>
+              </div>
+          </div> 
+                       
+            <div class="form-group">
+              <label class="col-md-4">Description</label>
+              <div class="col-md-8">
+					<textarea class="form-control" rows="3" id="description" name="description"></textarea>
+              </div>
+            </div>            
+            
+        </div>
+      </div>
+      
+      
+<div class="row newContrBill">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+           <h2>Billing Details</h2>
+            <div class="form-group">
+              <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-8">
+					<div class="row">
+					  <div class="col-lg-8">
+					  	<input type="text" class="form-control" id="billingAmount" name="billingAmount" value="" placeholder="Enter Amount" data-validation="required" field-name="Billing Amount">
+					  </div>
+					  <div class="col-lg-4">
+						<select class="form-control selectpicker" id="billingPer" name="billingPer">
+						  <option>India</option>
+						  <option>USA</option>
+						  <option>UK</option>
+						</select>
+					  </div>
+					</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-4">invoice frequency<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-8">
+                  <select class="chosen-select form-control" id="invoiceFrequency" name="invoiceFrequency" data-validation="required" field-name="Invoice Frequency">
+                    <option value="">Select frequency</option>
+                    <option value="Weekly">Weekly</option>
+                    <option value="Bi-Weekly">Bi-Weekly</option>
+                    <option value="Semi-Monthly">Semi-Monthly</option>
+                    <option value="Monthly">Monthly</option>
+                  </select>
+              </div>
+            </div>
+            
+              <div class="form-group">
+              <label class="col-md-4">Payment frequency<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-8">
+                  <select class="chosen-select form-control" id="paymentFrequency" name="paymentFrequency" data-validation="required" field-name="Payment Frequency">
+                    <option value="">Select frequency</option>
+                    <option value="Weekly">10 days</option>
+                    <option value="Bi-Weekly">15 days</option>
+                    <option value="Semi-Monthly">30 days</option>
+                    <option value="Monthly">45 days</option>
+                     <option value="Monthly">60 days</option>
+                  </select>
+              </div>
+            </div>
+           <!--  <div class="form-group">
+              <label class="col-md-4">Payment frequency<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-8">
+              	<input type="text" class="form-control" name="Company Name" value="">
+            </div>
+            </div> -->
+            <div class="form-group">
+              <label class="col-md-4">Tax</label>
+              <div class="col-md-8">
+					<div class="row">
+					  <div class="col-lg-8">
+					  	<input type="text" class="form-control" id="tax" name="tax" value="">
+					  </div>
+					  <div class="col-lg-4">
+						<select class="form-control selectpicker" id="taxType"  name="taxType">
+						  <option>%</option>
+						  <option>INR</option>
+						</select>
+					  </div>
+					 <!--  <span class="hidden">Enter Project Id</span> -->
+					</div>
+              </div>
+		</div>         
+            
+        </div>
+      </div>      
+      
+      <div class="form-footer clearfix contrFoot">
+        <div class="col-lg-12">
+          <div class="pull-right">
+            <input type="button" value="Save" class="btn btn-primary">
+            <input type="button" value="View" class="btn btn-success ml10">
+            <input type="button" value="Cancel" class="btn btn-danger ml10">
+          </div>
+        </div>
+      </div>
+      
+      <!-- Content Area Ends--> 
+    </div>
+  </section>
+
+
+<script type="text/javascript">
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				})
+				$(document).ready(function(){
+					$("#cd").click(function(){
+						$(".clientDetails").toggleClass('hidden', 500);
+					});
+	
+	});
+ 		</script>
+    <script>
+    $("#uasrch").selectpicker('refresh');
+    </script>
+
+
+<script>
+	$(function() {
+
+		$('#startDate').datepicker({
+			dateFormat : 'dd-mm-yy',
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				//var dt = new Date(selected);
+				var dt = toDate("#startDate");
+				dt.setDate(dt.getDate() + 1);
+				$("#endDate").datepicker("option", "minDate", dt);
+				addValidClass();
+			}
+		});
+		
+		$('#endDate').datepicker({
+			dateFormat : 'dd-mm-yy',
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				//var dt = new Date(selected);
+				var dt = toDate("#endDate");
+				dt.setDate(dt.getDate() + 1);
+				$("#endDate").datepicker("option", "minDate", dt);
+				addValidClass(); 
+			}
+		});
+});
+</script>
+
+
+<script type="text/javascript"> 
+	function addValidClass(){
+		 var StartDate = document.getElementById("startDate").value;
+		 if(StartDate){
+			 $('#startDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+		 
+		 var EndDate = document.getElementById("endDate").value;
+		 if(EndDate){
+			 $('#endDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+}
+</script>
+
+<script>
+function getVendorContacts(){
+	var orgRelationId = $("#orgRelationId").val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+      type : "GET",
+       url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,       
+       success :function(data) {
+    	var json = JSON.parse(data);
+       	var output = "";
+       	output = output + "<option>Select Vendor Contact</option>";
+       	for (var i=0; i<json.length; i++)
+			{
+	        var opt = json[i];
+	            // need to use in edit
+       			//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
+       			output = output + "<option value='" +opt.vendorUser.id+ "'>"+opt.spocName+"</option>";
+			}
+       	    $("#vendorContact").empty();
+	        $("#vendorContact").append(output);
+	        $('#vendorContact').trigger("chosen:updated");
+      },
+  }); 
+	
+}
+
+
+</script>
+
+<script>
+function getContractTemplates(){
+	var contractType = $("#contractType").val();
+ 	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+     type : "GET",
+      url: sourceleadUrl+"/getContractsTemplatesByContractType?${_csrf.parameterName}=${_csrf.token}&contractType="+contractType,       
+      success :function(data) {
+    	var json = JSON.parse(data);
+      	var output = "";
+      	output = output + "<option>Select Vendor Contact</option>";
+      	for (var i=0; i<json.length; i++)
+			{
+	        var opt = json[i];
+	            // need to use in edit
+      			//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
+      			output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
+			}
+      	    $("#template").empty();
+	        $("#template").append(output);
+	        $('#template').trigger("chosen:updated"); 
+     },
+ }); 
+	
+}
+
+</script>
+
+
+
+
+
+
+<!-- Footer Area -->
+<jsp:include page="../masterFooter.jsp" />
+<!-- Footer Area -->
+
+
+
+
