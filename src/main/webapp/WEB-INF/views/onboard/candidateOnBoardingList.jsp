@@ -109,7 +109,14 @@
 	                    	 result = result +"<td>";
 	                    	 result = result +"<div class='width300px'>";
 	                    	 result = result +"<div class='tbldata-dotdot-big pull-left'>"+opt.candidateName+"</div>";
-	                    	 result = result +"<b class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOnboardCandidateDetails?onboardUUID="+opt.onboardCandidateUUID+"'> <i class='fa fa-binoculars'></i> </a> </b> </div>";
+	                    	 
+	                    	 if(opt.candidateOnBoardStatus == 'Draft'){
+	                    		 result = result +"<b class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOnboardCandidateDetails?onboardUUID="+opt.onboardCandidateUUID+"'> <i class='fa fa-binoculars'></i> </a> </b> </div>";
+	                    	 }else if(opt.candidateOnBoardStatus == 'Finished'){
+	                    		 result = result +"<b class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOnboardCandidateSummary?onboardUUID="+opt.onboardCandidateUUID+"'> <i class='fa fa-binoculars'></i> </a> </b> </div>";
+	                    	 }
+	                    	 
+	                    	 
 	                    	 result = result +"</td>";
 	                    	 
 	                    	 
