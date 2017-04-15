@@ -1,0 +1,384 @@
+<jsp:include page="masterHeader.jsp" />
+<jsp:include page="masterSideNav.jsp" />
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<script src="resources/js/formvalidator.js"></script>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<section class="content-wraper">
+    <section class="content-header clearfix">
+      <div class="pull-left">
+        <h2>Department List</h2>
+      </div>
+      <div class="pull-right brud-crum"><a href="orgRolesList">Roles List</a> &raquo; Add Department </div>
+    </section>
+<script type="text/javascript">
+$(document).ready(function(){
+	getDepartmentList();
+});
+</script>
+
+
+<div class="timesheet_out">
+      <div class="vendor_wrap">
+        
+        <div class="timesheet_head minHeight candidateHead pull-right">
+          <ul class="pull-right">
+          <li>&nbsp;</li>
+            <li class="addcon-pop mt"><a href="javascript:void(0)" title="" onclick="flushDepartment();"><i class="fa fa-plus"></i>Add Department</a>
+
+			<form:form id="department_form" name="department_form" method="post">
+				<div class="collapse-div-adduser col-md-4 depPW" id="departmentCloseDiv"> <i class="fa fa-close close-div"></i>
+                    <div class="form-horizontal clearfix">
+                      <div class="clearfix mb10">
+                        <div class="col-md-12" id="departmentNameDiv">
+                          <input type="text" class="form-control input-sm" value="" placeholder="Name *" name="departmentName" id="departmentName" data-validation="required validate_length length2-100" field-name="Department Name" onkeyup="validDepartmentname();">
+                        </div>
+                      </div>
+                      <div class="clearfix mb10">
+                        <div class="col-md-12">
+                          <textarea rows="2" placeholder="Description" class="form-control" name="departmentDesc" id="departmentDesc" data-validation="validate_length length2-250"
+									data-validation-optional="true"></textarea>
+                        </div>
+                      </div>
+                      <div class="clearfix mr">
+                        <button type="button" class="btn btn-sm btn-primary pull-right" onclick="saveDepartment();">Add</button>
+                      </div>
+                    </div>
+				</div>
+            </form:form>
+            
+            </li>
+            <div class="clearfix"></div>
+          </ul>
+           
+        </div>
+        <div class="candidate_wrap_table">
+          <div id="departmentresultId"></div>
+        </div>
+        
+        <div class="vendor_wrap_mask"></div>
+		<div id="editDepartmentId"></div>
+         
+      </div>
+    </div>
+		<div id="popUp"></div>
+
+  </section>
+  <!-- Content Area Ends-->
+ 
+ <script>
+ function getDepartmentList(){
+	 var sourceleadUrl = '${sourceleadUrl}';
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl+ "/getDepartmentList?${_csrf.parameterName}=${_csrf.token}",
+			success : function(data) {
+				var json = JSON.parse(data);
+   	        	var result = "";
+   	        	result = result +'<table id="departmentPagination">';
+   		    	result = result +'<thead>';
+   		    	result = result +'	<tr>';
+   		    	result = result +'	<th>Deparment Name</th>';
+   		    	result = result +'    <th>Description</th>'; 
+   		    	result = result +'     <th>Action</th>';
+   		    	result = result +'    </tr>';
+   		    	result = result +'</thead>	';
+   		    	result = result +'<tbody>';
+   		    	for (var i=0; i<json.length; i++)
+   				{
+   		    		var report = json[i];
+   		    		if(report.description != null && report.description !='' && report.description != 'undefined'){
+   		    			description = report.description
+   		    		}else{
+   		    			description = "---";
+   		    		}
+   		    		
+   		    		result = result +'<tr>';
+   		    		result = result +'<td>'
+   		    		result = result +'<div class="tbldata-dotdot-big">'+report.departmentName+'</div>';
+   		    		result = result +'</td>';
+   		    		
+   		    		result = result +'<td>'
+   		    		result = result +'<div class="tbldata-dotdot-big">'+description+'</div>';
+   		    		result = result +'</td>';
+   		    		
+   		    		result = result +'<td>'
+   		    		result = result +'  <div class="tbldata-dotdot-100 text-center"><a class="glyphicon glyphicon-edit" title="Edit" onclick="editDepartment(\''+report.id+'\',\''+report.departmentName+'\',\''+description+'\');"></a><a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onclick="deleteProject('+report.id+');"></a></div>';
+   		    		result = result +'</td>';
+   		    		
+   		    		result = result +'</tr>';
+   		    		
+   				}
+   		    	
+   		    	$("#departmentresultId").empty();  
+   	    	    $("#departmentresultId").append(result);
+   	    	    departmentPagination();
+			},
+		});
+ }
+ </script>
+ 
+ <script>
+function departmentPagination(){  
+    $('#departmentPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		"sZeroRecords": "", "sEmptyTable": ""
+     	}
+    } );
+}
+</script>
+
+  
+ <script>
+	  $(".addcon-pop").click(function(){
+			 $(".collapse-div-adduser").toggleClass("show-div");
+			 $(".collapse-div").removeClass("show-div");
+		 });
+		 $(".close-div").click(function(){
+			 $(this).parent().removeClass("show-div");
+			 });
+		 $(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div").click(function(e){
+			 e.stopPropagation();
+		 });
+		 $('html').click(function(){
+		    $(".collapse-div-adduser").removeClass("show-div");
+			$(".collapse-div").removeClass("show-div");
+		   });	
+  </script>
+
+<script>
+function saveDepartment(){
+	if ($('#department_form').validate(false, validationSettings)) {
+		var frm = $('#department_form').serializeFormJSON();
+		var con = JSON.stringify(frm);
+		con = con.replace(/[{}]/g, "");
+		var jsonData = encodeURIComponent(con);
+		var sourceleadUrl = '${sourceleadUrl}';
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl+ "/storeDepartment?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
+			success : function(result) {
+				 $("#departmentCloseDiv").toggleClass('show-div');
+				 location.reload();
+			},
+		});
+		return true;
+	}else {
+		return false;
+	}
+}
+$('body').on('blur', '#department_form', function() {
+	$("#department_form").showHelpOnFocus();
+	$("#department_form").validateOnBlur(false, validationSettings);
+});
+</script>
+
+
+
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 
+<script type="text/javascript">
+	(function($) {
+		$.fn.serializeFormJSON = function() {
+
+			var o = {};
+			var a = this.serializeArray();
+			$.each(a, function() {
+				if (o[this.name]) {
+					if (!o[this.name].push) {
+						o[this.name] = [ o[this.name] ];
+					}
+					o[this.name].push(this.value || '');
+				} else {
+					o[this.name] = this.value || '';
+				}
+			});
+			return o;
+		};
+	})(jQuery);
+</script>
+<script>
+function flushDepartment(){
+	 $("#departmentName").val('');
+	 $("#departmentDesc").val('');
+	 $("department_form").validate().resetForm();
+}
+</script>
+<script>
+function editDepartment(departmentId,departmentName,description){
+	 var result = "";
+	 if(description !="---"){
+		  descriptions = description;
+	 }else{
+		 descriptions = "";
+	 }
+		result = result + '	<div class="settPop departmentPop">';
+		result = result + '<form id="editDepartment_form" name="editDepartment_form">';
+		result = result + '	<h3>Edit Department<i class="fa fa-times" onclick="editCancel();"></i></h3>  ';
+		result = result + '	<div class="settPopInn"> ';
+		result = result + '		<div class="form-group col-md-12"> ';
+		result = result + '		  <label class="col-md-4" for="Project Id">Department Name <span class="text-danger">*</span></label> ';
+		result = result + '		  <div class="col-md-8" id="eidtdepartmentNameDIV"> ';
+		result = result + '			<input type="text" class="form-control input-sm" id="eidtdepartmentName" name="departmentName"  value="'+departmentName+'" data-validation="required validate_length length2-100" field-name="Department Name" onkeyup="validateDepartmentname('+departmentId+');"> ';
+		result = result + '		   </div>';
+		result = result + '		</div>  ';
+		result = result + '		<div class="form-group col-md-12">  ';
+		result = result + '		  <label class="col-md-4" for="Project Id">Department description</label> ';
+		result = result + '		  <div class="col-md-8 taskdesp">   ';
+		result = result + '			<textarea class="form-control" name="departmentDesc"  value="'+descriptions+'" colspan="5">'+descriptions+'</textarea>';
+		result = result + '			<span class="hidden">Enter Project Id</span> </div>  ';
+		result = result + '		</div>   ';
+		result = result + '		<div class="col-md-12 mt5 clearfix"> ';
+		result = result + '		<div class="pull-right">  ';
+		result = result + '		  <input type="button" value="Save" class="btn btn-primary" onclick="saveEditDepartment('+departmentId+');">';
+		result = result + '		  <input type="button" value="Cancel" class="btn btn-default ml10" onclick="editCancel();">';
+		result = result + '		</div>';
+		result = result + '		</div>';
+		result = result + '		<div class="clearfix"></div>   ';
+		result = result + '	</div>  ';
+		result = result + '</form>';
+		result = result + '	</div>';
+	    $("#editDepartmentId").empty();
+	    $("#editDepartmentId").append(result);
+	    
+		$(".settPop").slideDown(200);
+		$(".vendor_wrap_mask").fadeIn(200);
+	
+}
+
+</script>
+<script>
+function editCancel(){
+	$(".settPop").slideUp(200);
+	$(".vendor_wrap_mask").fadeOut(200);
+}
+</script>
+
+<script>
+function saveEditDepartment(departmentId){
+	if ($('#editDepartment_form').validate(false, validationSettings)) {
+		var frm = $('#editDepartment_form').serializeFormJSON();
+		var con = JSON.stringify(frm);
+		con = con.replace(/[{}]/g, "");
+		var jsonData = encodeURIComponent(con);
+		var sourceleadUrl = '${sourceleadUrl}';
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl+ "/updateDepartment?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&departmentId="+departmentId,
+			success : function(result) {
+				cancelTermination();
+				location.reload();
+			},
+		});
+		return true;
+		
+	}else {
+		return false;
+	}
+}
+$('body').on('blur', '#editDepartment_form', function() {
+	$("#editDepartment_form").showHelpOnFocus();
+	$("#editDepartment_form").validateOnBlur(false, validationSettings);
+});
+</script>
+
+
+<script>
+function deleteProject(departmentId){ 
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Do you want to delete department ?</p>";
+	result = result + ' <div id="reasonForProjectDiv"/>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Terminate" onclick="deleteDepartment('+departmentId+')"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function cancelTermination(){
+	$("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+}
+
+function deleteDepartment(departmentId){
+	var sourceleadUrl = '${sourceleadUrl}';
+			 $.ajax({
+				   	type: "GET",
+				    url: sourceleadUrl+"/saveDepartmentReason?${_csrf.parameterName}=${_csrf.token}&departmentId="+departmentId,
+		   		    success: function(data) {
+		   		    	$("#popUp").empty();
+		   			 	$(".project_inn_mask").fadeOut(200);
+		   			 location.reload();
+		   		    }
+			     });
+	
+}
+</script>
+
+
+<script>
+function validateDepartmentname(departmentId){
+	var DepartmentName = document.getElementById("eidtdepartmentName").value.trim();
+	var sourceleadUrl = '${sourceleadUrl}';
+	$('#eidtdepartmentNameDIV').find('p.jquery_form_error_message').remove();
+	$.ajax({
+		type : "GET",
+		url : sourceleadUrl+ "/validateDepartmentname?${_csrf.parameterName}=${_csrf.token}&departmentName="+DepartmentName+"&departmentId="+departmentId,
+		success : function(data) {
+			 if (data == true ) {
+				$("input#eidtdepartmentName").after("<p class='jquery_form_error_message'>"+ DepartmentName+ " is Already Existed</span>");
+				document.getElementById("eidtdepartmentName").setAttribute('record-exist', 'yes');
+				document.getElementById("eidtdepartmentName").setAttribute('record-exist-errorMsg',DepartmentName+ ' is Already Existed');
+				//$('input#eidtdepartmentName').removeAttr( "record-exist record-exist-errormessage");
+			} else {
+				$('input#eidtdepartmentName').removeAttr("record-exist record-exist-errormsg");
+			} 
+		},
+	});
+}
+</script>
+
+
+
+<script>
+function validDepartmentname(){
+	var DepartmentName = document.getElementById("departmentName").value.trim();
+	var sourceleadUrl = '${sourceleadUrl}';
+	$('#departmentNameDiv').find('p.jquery_form_error_message').remove();
+	$.ajax({
+		type : "GET",
+		url : sourceleadUrl+ "/validateDepartmentname?${_csrf.parameterName}=${_csrf.token}&departmentName="+DepartmentName,
+		success : function(data) {
+			 if (data == true) {
+				$("input#departmentName").after("<p class='jquery_form_error_message'>"+ DepartmentName+ " is Already Existed</span>");
+				document.getElementById("departmentName").setAttribute('record-exist', 'yes');
+				document.getElementById("departmentName").setAttribute('record-exist-errorMsg',DepartmentName+ ' is Already Existed');
+			} else {
+				$('input#departmentName').removeAttr("record-exist record-exist-errormsg");
+			} 
+		},
+	});
+}
+</script>
+
+
+
+ <jsp:include page="masterFooter.jsp" />	
+ 
+  
