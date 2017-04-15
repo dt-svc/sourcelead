@@ -5850,6 +5850,9 @@ table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTa
 .resume-header {
     border-bottom: 1px solid #f0ad4e; padding-bottom:0px;
 }
+.resume-header div.col-md-5 .pull-right li {
+padding-bottom: 5px; font-size: 13px;	
+}
 .resume-header .media-object {
     border-radius: 10px; border: 1px solid #ededed;
 }
@@ -5857,12 +5860,12 @@ table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTa
     width: 20px; text-align:left;
 }
 .resume-widget {
-    padding-left: 10px; margin-bottom: 0px; position: relative; border-bottom: 1px dotted #cfd8dc;
-    padding-bottom: 5px;
+    padding-left: 10px; margin-bottom: 2px; position: relative; border-bottom: 1px dotted #cfd8dc;
+    padding-bottom: 5px; min-height: 35px;
 }
 .resume-widget:before{
     position: absolute; clear: both; content: "";height: 0;left:-5px;
-	top:5px; background: #b0bec5; width: 3px; height: 40px;
+	top:2px; background: #b0bec5; width: 3px; min-height: 25px;
 }
 .resume-widget p {
     margin-bottom: 5px;
@@ -5871,7 +5874,7 @@ table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTa
     color: #f4511e;
 }
 .resume-widget h4 {
-  font-size: 15px !important;  margin-bottom: 3px; margin-top: 5px; color: #8a6d3b;
+    font-size: 15px !important;  margin-bottom: 3px; margin-top: 5px; color: #8a6d3b; font-weight: normal;
 }
 .resume-widget h5 {
     font-weight: normal; font-size: 14px; margin:0; margin-bottom: 0px; color:#616161;
@@ -6215,7 +6218,7 @@ text-align: left; padding:10px 15px; border-bottom: 1px solid #ddd;
     background: #CFD8DC; border-bottom: 1px solid #90A4AE;
 }
 .trimTxt {
-  height:60px; width: 80%; overflow: hidden; margin-bottom: 5px;
+  height:70px; width: 80%; overflow: hidden; margin-bottom: 5px;
  }
 .trimTxt p {
   margin:0; line-height:18px; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;
