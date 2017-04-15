@@ -636,7 +636,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	     	  if(name == "WorkExperience"){
 	     		 var monthExp = document.getElementById("monthExp").value; 
 	     		  if(null != inputValue){
-	     			  if(inputValue == "25+"){
+	     			  if(inputValue == "25"){
 	     				 inputValue = inputValue+" Years";
 	     			  }else{
 	     				 inputValue = inputValue+" Years"+" "+monthExp+" Months" ;
@@ -799,7 +799,7 @@ $('body').on('submit', '#submitRecomendedApplicant_form', function(e){
 	     	  if(name == "WorkExperience"){
 	     		 var monthExp = document.getElementById("monthExp").value; 
 	     		  if(null != inputValue){
-	     			  if(inputValue == "25+"){
+	     			  if(inputValue == "25"){
 	     				 inputValue = inputValue+" Years";
 	     			  }else{
 	     				 inputValue = inputValue+" Years"+" "+monthExp+" Months" ;
@@ -1188,7 +1188,7 @@ function getCandidateDetails(){
 		        	 
 		        	 if(json['experienceYears'] != null && json['experienceYears'] != "" && json['experienceYears'] != 'undefined'){
 		        		 $("select[name=WorkExperience]").val(json['experienceYears']);
-		        		 if(json['experienceYears'] == "25+"){
+		        		 if(json['experienceYears'] == "25"){
 		        			 $("#monthExp").attr("disabled", "disabled");
 		        		 }else{
 		        			 $("#monthExp").removeAttr("disabled");
@@ -1345,7 +1345,7 @@ function getRecomededCandidateDetails(candidateId){
 		        	 
 		        	 if(json['experienceYears'] != null && json['experienceYears'] != "" && json['experienceYears'] != 'undefined'){
 		        		 $("select[name=WorkExperience]").val(json['experienceYears']);
-		        		 if(json['experienceYears'] == "25+"){
+		        		 if(json['experienceYears'] == "25"){
 		        			 $("#monthExp").attr("disabled", "disabled");
 		        		 }else{
 		        			 $("#monthExp").removeAttr("disabled");
@@ -1430,8 +1430,8 @@ function getRecomededCandidateDetails(candidateId){
 <script>
 function getExpYears(){
 	var expYears = $("select[name=WorkExperience]").val();
-	 if(expYears == "25+"){
-		 $("#monthExp").attr("disabled", "disabled");
+	 if(expYears == "25"){
+		/*  $("#monthExp").attr("disabled", "disabled"); */
 	 }else{
 		 $("#monthExp").removeAttr("disabled");
 	 }

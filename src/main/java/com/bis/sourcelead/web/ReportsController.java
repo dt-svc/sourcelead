@@ -39,6 +39,20 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	@Autowired
 	private UserService userService;
 	
+	
+	@RequestMapping(value = "/recruitersReports")
+	public ModelAndView recruitersReports(HttpServletRequest request,HttpServletResponse response) throws Exception {
+	 
+	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 ModelAndView model = new ModelAndView();
+	 List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+	 model.addObject("userList", userList);
+	 model.addObject("sourceleadUrl", sourceleadUrl);
+	 model.setViewName("reports/userReports");
+	 return model;
+		
+    }	
+	
 	 @RequestMapping(value = "/applicantsListForReports")
 		public ModelAndView applicantsListForReports() throws Exception {
 		 ModelAndView model = new ModelAndView();

@@ -280,6 +280,14 @@ document.onkeydown=function(e){
 	            </div>
 	          </li>
             </c:if> --%>
+            <li class="reportsH">
+				<a title="Reports" title="Reports"><i class="fa fa-pie-chart"></i></a>
+				<div class="RePop">
+					<ul>
+						<li><a href="<c:url value='${sourceleadUrl}/recruitersReports'/>"><span><i class="fa fa-briefcase"></i></span>Recruiters Report</a></li>
+					</ul>
+				</div>
+            </li>
             <sec:authorize access="hasAnyRole('ROLE_MAIL_BOX','ROLE_HOTLIST_CAMPAIGN')">
             	<li><a href="<c:url value='${sourceleadUrl}/mailBox'/>" title="Mailbox" id="mailbox"><i class="fa fa-envelope"></i>  <span class="label label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </a></li>
             </sec:authorize>
