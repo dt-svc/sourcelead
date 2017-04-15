@@ -31,7 +31,7 @@
               <label class="col-md-4">Contract Type<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
                   <select class="chosen-select form-control" id="contractType" name="contractType" onchange="getContractTemplates();" data-validation="required" field-name="Contract Type">
-                    <option>Contract Type</option>
+                    <option value = "">Contract Type</option>
                     <option>Client MSA</option>
                     <option>Vendor MSA</option>
                     <option>Client SOW</option>
@@ -57,7 +57,7 @@
             <div class="form-group">
               <label class="col-md-4">Contract title<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="" data-validation="required" field-name="Contract Title">
+                <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="" data-validation="required validate_Space validate_length length1-250" field-name="Contract Title">
               </div>
             </div>
              
@@ -83,12 +83,12 @@
 					<div class="row">
 					  <div class="col-lg-6">
 						<div class="input-group" id="startDateDiv"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-						  <input type="text" class="form-control" id="startDate" name="startDate" placeholder="Start date" data-validation="required" field-name="Start Date">
+						  <input type="text" class="form-control" id="startDate" name="startDate" placeholder="Start date" data-validation="required" field-name="Start Date" readonly="readonly">
 						</div>
 					  </div>
 					  <div class="col-lg-6">
 						<div class="input-group" id="endDateDiv"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-						  <input type="text" class="form-control" id="endDate" name="endDate" placeholder="End date">
+						  <input type="text" class="form-control" id="endDate" name="endDate" placeholder="End date" readonly="readonly">
 						</div>
 					  </div>
 					</div>
@@ -98,8 +98,8 @@
           <div class="form-group">
               <label class="col-md-4">Vendor<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="orgRelationId" name="orgRelationId" onchange="getVendorContacts();" data-validation="required" field-name="Vendor Name">
-                    <option>Select Vendor</option> 
+                  <select class="chosen-select form-control" id="orgRelationId" name="orgRelationId"  data-validation="required" field-name="Vendor Name" onchange="getVendorContacts();">
+                    <option value="">Select Vendor</option> 
                    <c:forEach var="orgrelations" items="${orgRelationsList}">
 	                     <option value="${orgrelations.id}">${orgrelations.orgName}</option>
                   </c:forEach>
@@ -134,7 +134,7 @@
             <div class="form-group">
               <label class="col-md-4">Description</label>
               <div class="col-md-8">
-					<textarea class="form-control" rows="3" id="description" name="description"></textarea>
+					<textarea class="form-control" rows="3" id="description" name="description" data-validation-optional="true" data-validation="validate_Space validate_length length1-250"></textarea>
               </div>
             </div>            
             
@@ -150,7 +150,7 @@
               <div class="col-md-8">
 					<div class="row">
 					  <div class="col-lg-8">
-					  	<input type="text" class="form-control" id="billingAmount" name="billingAmount" value="" placeholder="Enter Amount" data-validation="required" field-name="Billing Amount">
+					  	<input type="text" class="form-control" id="billingAmount" name="billingAmount" value="" placeholder="Enter Amount" data-validation="required validate_Space validate_float validate_length length1-50" field-name="Billing Amount">
 					  </div>
 					  <div class="col-lg-4">
 						<select class="form-control selectpicker" id="billingPer" name="billingPer">
@@ -198,14 +198,15 @@
               <label class="col-md-4">Tax</label>
               <div class="col-md-8">
 					<div class="row">
-					  <div class="col-lg-8">
-					  	<input type="text" class="form-control" id="tax" name="tax" value="">
-					  </div>
-					  <div class="col-lg-4">
-						<select class="form-control selectpicker" id="taxType"  name="taxType">
-						  <option>%</option>
-						  <option>INR</option>
+					  <div class="col-lg-4" id = "taxTypeDiv">
+						<select class="form-control selectpicker" id="taxType"  name="taxType" onchange = "selectTaxType();clearSearchKey();">
+						 <option value="Percentage">%</option>
+						  <option value="INR">INR</option>
+						  
 						</select>
+					  </div>					
+					  <div class="col-lg-8" id = "taxDiv">
+					  	<input type="text" class="form-control" id="tax" name="tax" value="" onchange = "selectTaxType();">
 					  </div>
 					 <!--  <span class="hidden">Enter Project Id</span> -->
 					</div>
@@ -219,7 +220,7 @@
         <div class="col-lg-12">
           <div class="pull-right">
             <input type="button" value="Draft" id="draft_template" onclick="saveNewContract('draft'); " class="btn btn-primary">
-            <input type="button" value="Save" class="btn btn-success ml10">
+            <input type="button" value="Save" id="save_template" class="btn btn-success ml10">
             <input type="button" value="Cancel" class="btn btn-danger ml10">
           </div>
         </div>
@@ -283,14 +284,14 @@
 				var dt = toDate("#endDate");
 				dt.setDate(dt.getDate() + 1);
 				$("#endDate").datepicker("option", "minDate", dt);
-				addValidClass(); 
+				addValidClass();
 			}
 		});
 });
 </script>
 
 
-<script type="text/javascript"> 
+<!-- <script type="text/javascript"> 
 	function addValidClass(){
 		 var StartDate = document.getElementById("startDate").value;
 		 if(StartDate){
@@ -303,7 +304,7 @@
 		 }
 }
 </script>
-
+ -->
 <script>
 function getVendorContacts(){
 	var orgRelationId = $("#orgRelationId").val();
@@ -325,6 +326,8 @@ function getVendorContacts(){
        	    $("#vendorContact").empty();
 	        $("#vendorContact").append(output);
 	        $('#vendorContact').trigger("chosen:updated");
+	        $('#orgRelationId').parent().find('p.jquery_form_error_message').remove();
+
       },
   }); 
 	
@@ -354,6 +357,7 @@ function getContractTemplates(){
       	    $("#template").empty();
 	        $("#template").append(output);
 	        $('#template').trigger("chosen:updated"); 
+	        $('#contractType').parent().find('p.jquery_form_error_message').remove();
      },
  }); 
 	
@@ -361,10 +365,40 @@ function getContractTemplates(){
 
 </script>
 
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+
+        
+</script> 
+
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>
 
 <script type="text/javascript">
 	function saveNewContract(saveType) {
-		alert("hi");
 		if ($('#newcontract_form').validate(false, validationSettings)) {
 			var frm = $('#newcontract_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -390,8 +424,37 @@ function getContractTemplates(){
 		$("#newcontract_form").validateOnBlur(false, validationSettings);
 	});
 </script>
+<script>
+function clearSearchKey() {
+	   $('#tax').val('');
+	   $('#taxDiv').parent().find('p.jquery_form_error_message').remove();
 
-
+}
+</script>  
+<script type="text/javascript">
+function selectTaxType(){
+	 var taxType = document.getElementById("taxType").value;
+	 
+	 var tax = document.getElementById("tax").value;
+	 $('#taxDiv').parent().find('p.jquery_form_error_message').remove(); 
+	 if(taxType =='Percentage'){
+		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+		  if(tax.match(floatNum)){
+			  $("#draft_template").removeAttr("disabled");  
+			  $("#save_template").removeAttr("disabled"); 
+			  return true;
+		  }		  
+		 else{
+				$("input#tax").parent().after("<p class='jquery_form_error_message'><span>Enter your Valid Percentage</span>");
+				 $("#draft_template").attr("disabled", "disabled");
+				 $("#save_template").attr("disabled", "disabled");
+				return false; 
+		 	 }
+	  }
+	 
+		 }
+	  
+</script>
 
 
 <!-- Footer Area -->
