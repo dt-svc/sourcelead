@@ -35,10 +35,7 @@ $(document).ready(function(){
                 <div class="clearfix"></div>
             </ul>
             <div class="clearfix"></div>
-            
-            <div class="remove_search">
-            	<input placeholder="search" type="text">
-            </div>              
+                         
             
         </div>
     <div class="project_wrap_table">
