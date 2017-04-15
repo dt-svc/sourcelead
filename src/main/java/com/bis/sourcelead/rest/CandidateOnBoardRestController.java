@@ -1350,6 +1350,7 @@ public class CandidateOnBoardRestController {
 				 HttpServletRequest request) throws Exception {
 			 
 			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			 
 			 if(!isNullOrEmpty(tasks)){
 				 String[] taksIds = tasks.split(",");
@@ -1382,6 +1383,9 @@ public class CandidateOnBoardRestController {
 			 }
 			
 			 CandidateOnBoarding onBoarding = candidateOnBoardingService.getCandidateOnBoardingById(onboardId);
+			 
+			 candidateOnBoardingService.createOnboardingUser(onBoarding,user,loginOrgLocation);
+			 
 			 onBoarding.setCandidateOnBoardStatus("Finished");
 			 candidateOnBoardingService.saveCandidateOnBoarding(onBoarding);
 			
