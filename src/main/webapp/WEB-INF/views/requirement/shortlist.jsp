@@ -147,10 +147,14 @@ function shortListPagination(){
     $('#shortlistedPagination').DataTable( { 
     	"scrollCollapse": false,
     	"scrollX": true,
-     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bPaginate": false,
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 0
+			}],
     	"oLanguage": {
      	"sSearch": "",
      	 "sZeroRecords": "", "sEmptyTable": ""

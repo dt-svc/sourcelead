@@ -117,6 +117,7 @@ public class RequirementInterviewRestController {
 			}else{
 				sub.setCandidateName(requirementSubmissionTemplateFields.getFirstName());
 			}
+			sub.setIsClientSubmission(sub.getRequirement().getIsClientJob());
 		}
 		resultJson = commonUtil.toJSON(shortListCandidatesList);
 		return resultJson;

@@ -127,7 +127,7 @@ max-width:220px;
 display: inline;
 }
 .require_wrap_table {
-overflow: visible;
+overflow: auto;
 }
 .require_wrap_table select {
 width:100% !important;
@@ -269,7 +269,7 @@ function prepareRequirementData(data){
    	 
    	result = result +"<td>";
    	if(opt.jobId != '' && opt.jobId != null){
-	   	result = result +"<div class='' title='"+opt.jobId+"'>"+opt.jobId+"</span></div>";
+	   	result = result +"<div class='tbldata-dotdot-100' title='"+opt.jobId+"'>"+opt.jobId+"</span></div>";
    	}else{
    		result = result +"<div>-----</div>";
    	}
@@ -472,7 +472,7 @@ function prepareRequirementData(data){
            
 	        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
 		        if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
-		        	result = result +'<div class="text-center pull-left ml mr"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>';
+		        	result = result +'<div class="text-center pull-left mr"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>';
 		        }
 	        
 	        '</sec:authorize>';
@@ -1291,7 +1291,7 @@ function requirementPipeline(requirementId){
   </section>
   
   <div class="timesheet_out">
-    <div class="vendor_wrap" style="overflow-x:auto;">
+    <div class="vendor_wrap">
       <div class="timesheet_head timesheetHead_Custom">
        <div class="pull-left cand-advsrch advsrch_chosen">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenRequirementScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
