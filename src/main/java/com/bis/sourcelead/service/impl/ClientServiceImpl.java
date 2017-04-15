@@ -885,10 +885,66 @@ public class ClientServiceImpl implements ClientService{
 				throw new SourceLeadObjectNotFoundException(message.toString());
 			}
 			
-			
+			User changedUser= userService.getUserById(Long.parseLong(jsonObj.getString(owner)));
+			if(!loginUser.getId().equals(changedUser.getId())){
+			sendupdatedownerMailTopocUser(loginUser,spocId,jsonObj.getString(owner),orgLocation);
+			}
 			return orgSpoc;
 
 		}
+
+		private void sendupdatedownerMailTopocUser(User loginUser, Long spocId, String owner, OrgLocations orgLocation) throws NumberFormatException, Exception {
+			User changedUser = userService.getUserById(Long.parseLong(owner));
+			OrgSpoc orgSpocLocation  = orgSpocService.getOrgSpocById(spocId);
+			 EmailMessage emailMessage = new EmailMessage();
+			 emailMessage.setFirstName(changedUser.getFirstName());
+			 emailMessage.setLastName(changedUser.getLastName());
+			 emailMessage.setToEmail(changedUser.getEmail());
+			 emailMessage.setFromEmail(loginUser.getEmail());
+			 emailMessage.setCreatedBy(loginUser.getUserCode());
+			 StringBuilder fromName=new StringBuilder();
+			 emailMessage.setFromName(fromName.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+			//setting the class filed values
+			Map<String, String> globalVarsMap = new HashMap<String, String>();
+				 globalVarsMap.put("orgContactName", orgSpocLocation.getClientUser().getFullName());
+				 globalVarsMap.put("clientOrgName",orgSpocLocation.getClientLocationId().getOrg().getOrgName());
+				 globalVarsMap.put("ownerName", loginUser.getFullName());
+				 globalVarsMap.put("changedOwnerName", changedUser.getFullName());
+				 globalVarsMap.put("loginUser", loginUser.getFirstName());
+				 StringBuilder loginBuilder = new StringBuilder();
+				 globalVarsMap.put("loginLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+				 //setting the Recipient information
+				 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+			
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+			 EmailScenario  emailScenario = null;
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.CLIENT_OWNER_UPDATEMAIL,Constants.ENTITY_TYPE_EMAIL);
+			
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			 String url = "";
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocation.getOrg());
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 
+			 
+			 //calling the sendEmail method of emailScenerioUtil
+			 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+			 
+			 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.CLIENT_OWNER_UPDATEMAIL,Constants.ENTITY_TYPE_NOTIFICATION); 
+			 String actionLink = "";
+			 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
+			 noificationEmailScenario.setBody(notificationbody);
+			 
+			 emailScenerioUtil.sendNotification(actionLink, loginUser,changedUser,orgLocation, noificationEmailScenario);
+			
+		}
+
 
 		private void sendEmailToClientContact(User user, User editUser, OrgLocations orgLocation,User loginUser) throws Exception {
 			 EmailMessage emailMessage = new EmailMessage();

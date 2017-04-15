@@ -42,7 +42,7 @@ $(document).ready(function() {
 	function timesheetEntriesDiv(){ 
 	               var sourceleadUrl ='${sourceleadUrl}';
 	               $("#timesheetEntriesDiv").empty();
-	               $("#loadTime").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100; background-position:center; background-repeat:no-repeat; background-size:50px;');
+	               $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;');
 	        	   $.ajax({
 		      	          type : "POST",
 		          	      dataType : 'json',
@@ -99,7 +99,7 @@ $(document).ready(function() {
 	         var sourceleadUrl ='${sourceleadUrl}';
 	         var projectMemberId = $("#projectMemberId").val();
 	         $("#timesheetEntriesDivByProjectMemberId").empty();
-	         $("#loadTime").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100; background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;');
 	         $.ajax({
      	          type : "POST",
          	      dataType : 'json',
@@ -131,8 +131,7 @@ $(document).ready(function() {
 	         var timesheetFrequency = $("#timesheetFrequency").val();
 	         var projectMemberId = $("#projectMemberId").val();
 	         $("#timesheetDivByFrequency").empty();
-	         $("#loadTime").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100; background-position:center; background-repeat:no-repeat; background-size:50px;');
-	        
+	         $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;');
 	         $.ajax({
      	          type : "POST",
          	      dataType : 'json',
@@ -189,7 +188,7 @@ $(document).ready(function() {
 	         var projectMemberId = $("#projectMemberId").val();
 	         var timesheetFrequency = $("#timesheetFrequency").val();
 	         $("#timesheetDivByTab").empty();
-	         $("#loadTime").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100; background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;');
 	         $.ajax({
     	          type : "POST",
         	      dataType : 'json',
@@ -880,7 +879,7 @@ function addAttachment(){
           </div>
           <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; My Timesheets</div>
         </section>
-         <div class="loadTime" id="loadTime"></div> 
+         <div  id="loadTime"></div> 
          <div id="timesheetEntriesDiv"> 
            
          </div>
@@ -1065,7 +1064,7 @@ function cancel(){
 function newSaveTimesheet(status,savingType){ 
 	
 	 $(".time_btn").attr("disabled", "disabled");
-	 $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;'); 
+	 $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;');
 	 checkHours();
 	 var isTimesheetAttachmentRequired = $("#isTimesheetAttachmentRequired").val();
 	 if(isTimesheetAttachmentRequired != null && isTimesheetAttachmentRequired != "" && isTimesheetAttachmentRequired !="undefined" && isTimesheetAttachmentRequired == "Y"){

@@ -249,6 +249,82 @@ public class CandidateOnBoardRestController {
 		json = "{"+json+"}";
 		JSONObject jsonObj = new JSONObject(json);
 		
+		
+		//save  mutliple attachment for contracts Documents.
+		if ((jsonObj.has("contractsAttcahmentMaxRowNumber"))){
+	    	String contractsAttcahmentMaxRowNumber = jsonObj.getString("contractsAttcahmentMaxRowNumber");
+			int contractsAttcahmentMaxRowNumberCount = Integer.parseInt(contractsAttcahmentMaxRowNumber);
+			
+			OnBoardingTemplate template = onBoardingTemplateService.getOnBoardingTemplateById(Long.valueOf(jsonObj.getString("templateId")));
+			
+	    	for (int a = 0; a < contractsAttcahmentMaxRowNumberCount; a++) {
+				   
+				   OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
+				   final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
+       		       final Map files = multiRequest.getFileMap();
+       		       
+       		       documents.setOnboardingTemplateId(template);
+                   MultipartFile  multiFile = (MultipartFile)files.get(a+"contractsdocFile");
+                   if(multiFile != null && !multiFile.isEmpty()){
+                	   documents.setDocFile(multiFile.getBytes());
+                	   documents.setFileName(multiFile.getOriginalFilename());
+                       
+                       if(multiFile.getContentType()!=null){
+                    	   documents.setFileContentType(multiFile.getContentType());
+                       }
+                       documents.setDocumentType("Contracts");
+                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
+                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+                       documents.setCreatedDate(CommonUtil.currentDate());
+                       documents.setCreatedBy(loginUser.getUserCode());
+                       documents.setUpdatedDate(CommonUtil.currentDate());
+                       documents.setUpdatedBy(loginUser.getUserCode());
+                       onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
+					   
+                   }
+                 
+	    	}
+		}
+		
+		
+		
+		//save  mutliple attachment for forms Documents.
+				if ((jsonObj.has("formsAttcahmentMaxRowNumber"))){
+			    	String formsAttcahmentMaxRowNumber = jsonObj.getString("formsAttcahmentMaxRowNumber");
+					int formsAttcahmentMaxRowNumberCount = Integer.parseInt(formsAttcahmentMaxRowNumber);
+					
+					OnBoardingTemplate template = onBoardingTemplateService.getOnBoardingTemplateById(Long.valueOf(jsonObj.getString("templateId")));
+					
+			    	for (int a = 0; a < formsAttcahmentMaxRowNumberCount; a++) {
+						   
+						   OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
+						   final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
+		       		       final Map files = multiRequest.getFileMap();
+		       		       
+		       		       documents.setOnboardingTemplateId(template);
+		                   MultipartFile  multiFile = (MultipartFile)files.get(a+"formsdocFile");
+		                   if(multiFile != null && !multiFile.isEmpty()){
+		                	   documents.setDocFile(multiFile.getBytes());
+		                	   documents.setFileName(multiFile.getOriginalFilename());
+		                       
+		                       if(multiFile.getContentType()!=null){
+		                    	   documents.setFileContentType(multiFile.getContentType());
+		                       }
+		                       documents.setDocumentType("Forms");
+		                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
+		                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		                       documents.setCreatedDate(CommonUtil.currentDate());
+		                       documents.setCreatedBy(loginUser.getUserCode());
+		                       documents.setUpdatedDate(CommonUtil.currentDate());
+		                       documents.setUpdatedBy(loginUser.getUserCode());
+		                       onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
+							   
+		                   }
+		                 
+			    	}
+				}
+		
+		
 		//save  mutliple attachment for policies Documents.
 		if ((jsonObj.has("policiesAttcahmentMaxRowNumber"))){
 	    	String policiesAttcahmentMaxRowNumber = jsonObj.getString("policiesAttcahmentMaxRowNumber");
@@ -709,12 +785,14 @@ public class CandidateOnBoardRestController {
 	 public String loadOnboardingCandidateDetails(@RequestParam(value="onBoardingUUID", required=false) String onBoardingUUID,HttpServletRequest request) throws Exception {
 
 		String resultJson;
+		StringBuilder candidateName = new StringBuilder();
 		
 		CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUUID(onBoardingUUID);
 		if(null != candidateOnBoarding){
 			candidateOnBoarding.setOnBoardCandidateId(candidateOnBoarding.getCandidateId().getId());
 			candidateOnBoarding.setOnBoardOfferId(candidateOnBoarding.getOfferId().getId());
 			candidateOnBoarding.setOnBoardRoleId(candidateOnBoarding.getRoleId().getId());
+			candidateOnBoarding.setJobTitle(candidateOnBoarding.getOfferId().getSubmissionId().getRequirement().getJobTitle());
 			
 			if(null != candidateOnBoarding.getManagerUserId()){
 				candidateOnBoarding.setOnBoardManagerId(candidateOnBoarding.getManagerUserId().getId());
@@ -735,6 +813,13 @@ public class CandidateOnBoardRestController {
 				candidateOnBoarding.setDueDateStr(Constants.DMY.format(candidateOnBoarding.getDueDate()));
 			}
 			
+			
+			if(null != candidateOnBoarding.getLastName()){
+				candidateOnBoarding.setCandidateName(candidateName.append(candidateOnBoarding.getFirstName()).append(" ").append(candidateOnBoarding.getLastName()).toString());
+			}else{
+				candidateOnBoarding.setCandidateName(candidateName.append(candidateOnBoarding.getFirstName()).toString());
+			}
+			
 		}
 		
 		resultJson = commonUtil.toJSON(candidateOnBoarding);
@@ -743,9 +828,569 @@ public class CandidateOnBoardRestController {
 	 }
 	 
 	 
+		@RequestMapping(value = "/getCandidateOnboardTemplateDocumentByOnboardId" , method = RequestMethod.POST)
+		 public @ResponseBody  String getCandidateOnboardTemplateDocumentByOnboardId(@RequestParam(value="onboardId", required=false) Long onboardId,
+				 @RequestParam(value="documentType", required=false) String documentType, HttpServletRequest request) throws Exception {
+			
+			String resultJson;
+			List<OnBoardingTemplateDocuments> documentsList = null;
+			List<OnBoardingTemplateDocuments> onboardingDocumentsList = new ArrayList<OnBoardingTemplateDocuments>();
+			
+			Integer documentsCount = onBoardingTemplateDocumentsService.getCandidateOnboardingDocumentsByCandidateOnboardingId(onboardId);
+			
+			if(documentsCount > 0){
+				documentsList = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsByCandidateOnBoardingId(onboardId,documentType);
+				if(null != documentsList && documentsList.size() > 0){
+					for(OnBoardingTemplateDocuments  documents : documentsList ){
+						documents.setOnboardDocumentType("Candidate Documents");
+						onboardingDocumentsList.add(documents);
+					}
+				}
+				
+				
+			}else{
+				 
+				CandidateOnBoarding onboarding = candidateOnBoardingService.getCandidateOnBoardingById(onboardId);
+				 List<Long> templateIdsList = new ArrayList<Long>();
+				 
+				 if(!isNullOrEmpty(onboarding.getOnboardTemplateId())){
+					 for (String s : onboarding.getOnboardTemplateId().split(",")){
+						 templateIdsList.add(Long.parseLong(s));
+					 }
+					 
+					documentsList = onBoardingTemplateDocumentsService.getCandidateOnBoardingTemplateDocumentsByTemplateId(templateIdsList,documentType);
+					if(null != documentsList && documentsList.size() > 0){
+						for(OnBoardingTemplateDocuments  documents : documentsList ){
+							documents.setOnboardDocumentType("Template Documents");
+							onboardingDocumentsList.add(documents);
+						}
+					}
+				 }
+			}
+			
+		 	resultJson = commonUtil.toJSON(onboardingDocumentsList);
+			return resultJson;
+		   
+		}
+		
 	 
 	 
-	 
-	
+		@RequestMapping(value = "/saveCandidatedOnboardingTemplateDocuments", method = RequestMethod.POST)
+		public @ResponseBody String saveCandidatedOnboardingTemplateDocuments(TimesheetEntriesForm timesheetEntriesForm,@RequestParam(value="json", required=false) String json,
+				MultipartHttpServletRequest request) throws Exception {
+			
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+			json = "{"+json+"}";
+			JSONObject jsonObj = new JSONObject(json);
+			
+			CandidateOnBoarding onBoarding = candidateOnBoardingService.getCandidateOnBoardingById(Long.valueOf(jsonObj.getString("candidateonboardingId")));
+			
+			
+			if(jsonObj.has("savedPoliciesAttcahments") && !isNullOrEmpty(jsonObj.getString("savedPoliciesAttcahments"))){
+				 String templateIds = jsonObj.getString("savedPoliciesAttcahments");
+				 templateIds = templateIds.replaceAll("\\[", "").replaceAll("\\]","");
+				 templateIds = templateIds.replaceAll("\"", "");
+				 
+				 String[] savedTemplateIds = templateIds.split(",");
+				 for(int i=0; i < savedTemplateIds.length; i++){
+					 OnBoardingTemplateDocuments templateDocument = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsById(Long.valueOf(savedTemplateIds[i]));
+					 
+				 
+					    OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
+	       		        documents.setCandidateOnBoardingId(onBoarding);
+	       		       
+	       		        documents.setDocFile(templateDocument.getDocFile());
+          	            documents.setFileName(templateDocument.getFileName());
+          	            documents.setFileContentType(templateDocument.getFileContentType());
+	                  
+		       		    documents.setDocumentType("Policies");
+	                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
+	                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+	                    documents.setCreatedDate(CommonUtil.currentDate());
+	                    documents.setCreatedBy(loginUser.getUserCode());
+	                    documents.setUpdatedDate(CommonUtil.currentDate());
+	                    documents.setUpdatedBy(loginUser.getUserCode());
+	                    onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
+				 
+				 }
+				 
+			}
+			
+			//save  mutliple attachment for policies Documents.
+			if ((jsonObj.has("policiesAttcahmentMaxRowNumber"))){
+		    	String policiesAttcahmentMaxRowNumber = jsonObj.getString("policiesAttcahmentMaxRowNumber");
+				int policiesAttcahmentMaxRowNumberCount = Integer.parseInt(policiesAttcahmentMaxRowNumber);
+				
+		    	for (int a = 0; a < policiesAttcahmentMaxRowNumberCount; a++) {
+					   
+					   OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
+					   final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
+	       		       final Map files = multiRequest.getFileMap();
+	       		       
+	       		       documents.setCandidateOnBoardingId(onBoarding);
+	                   MultipartFile  multiFile = (MultipartFile)files.get(a+"docFile");
+	                   if(multiFile != null && !multiFile.isEmpty()){
+	                	   documents.setDocFile(multiFile.getBytes());
+	                	   documents.setFileName(multiFile.getOriginalFilename());
+	                       
+	                       if(multiFile.getContentType()!=null){
+	                    	   documents.setFileContentType(multiFile.getContentType());
+	                       }
+	                       documents.setDocumentType("Policies");
+	                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
+	                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+	                       documents.setCreatedDate(CommonUtil.currentDate());
+	                       documents.setCreatedBy(loginUser.getUserCode());
+	                       documents.setUpdatedDate(CommonUtil.currentDate());
+	                       documents.setUpdatedBy(loginUser.getUserCode());
+	                       onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
+						   
+	                   }
+	                   
+	                 
+		    	}
+			}
+			
+			
+			
+			if(jsonObj.has("savedSupportedAttcahments") && !isNullOrEmpty(jsonObj.getString("savedSupportedAttcahments"))){
+				 String templateIds = jsonObj.getString("savedSupportedAttcahments");
+				 templateIds = templateIds.replaceAll("\\[", "").replaceAll("\\]","");
+				 templateIds = templateIds.replaceAll("\"", "");
+				 
+				 String[] savedTemplateIds = templateIds.split(",");
+				 for(int i=0; i < savedTemplateIds.length; i++){
+					 OnBoardingTemplateDocuments templateDocument = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsById(Long.valueOf(savedTemplateIds[i]));
+					 
+				 
+					    OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
+	       		        documents.setCandidateOnBoardingId(onBoarding);
+	       		       
+	       		        documents.setDocFile(templateDocument.getDocFile());
+         	            documents.setFileName(templateDocument.getFileName());
+         	            documents.setFileContentType(templateDocument.getFileContentType());
+	                  
+		       		    documents.setDocumentType("Supported");
+	                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
+	                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+	                    documents.setCreatedDate(CommonUtil.currentDate());
+	                    documents.setCreatedBy(loginUser.getUserCode());
+	                    documents.setUpdatedDate(CommonUtil.currentDate());
+	                    documents.setUpdatedBy(loginUser.getUserCode());
+	                    onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
+				 
+				 }
+				 
+			}
+			
+			
+			//save  mutliple attachment for supported Documents.
+					if ((jsonObj.has("supportingAttcahmentMaxRowNumber"))){
+				    	String supportingAttcahmentMaxRowNumber = jsonObj.getString("supportingAttcahmentMaxRowNumber");
+						int supportedAttcahmentMaxRowNumberCount = Integer.parseInt(supportingAttcahmentMaxRowNumber);
+						
+				    	for (int a = 0; a < supportedAttcahmentMaxRowNumberCount; a++) {
+							   
+							   OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
+							   final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
+			       		       final Map files = multiRequest.getFileMap();
+			       		       
+			       		       documents.setCandidateOnBoardingId(onBoarding);
+			                   MultipartFile  multiFile = (MultipartFile)files.get(a+"supportingdocFile");
+			                   if(multiFile != null && !multiFile.isEmpty()){
+			                	   documents.setDocFile(multiFile.getBytes());
+			                	   documents.setFileName(multiFile.getOriginalFilename());
+			                       
+			                       if(multiFile.getContentType()!=null){
+			                    	   documents.setFileContentType(multiFile.getContentType());
+			                       }
+			                       documents.setDocumentType("Supported");
+			                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
+			                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			                       documents.setCreatedDate(CommonUtil.currentDate());
+			                       documents.setCreatedBy(loginUser.getUserCode());
+			                       documents.setUpdatedDate(CommonUtil.currentDate());
+			                       documents.setUpdatedBy(loginUser.getUserCode());
+			                       onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
+								   
+			                   }
+			                   
+			                 
+				    	}
+					}
+					
+					
+					
+					
+					
+					
+					
+					if(jsonObj.has("savedContractsAttcahments") && !isNullOrEmpty(jsonObj.getString("savedContractsAttcahments"))){
+						 String templateIds = jsonObj.getString("savedContractsAttcahments");
+						 templateIds = templateIds.replaceAll("\\[", "").replaceAll("\\]","");
+						 templateIds = templateIds.replaceAll("\"", "");
+						 
+						 String[] savedTemplateIds = templateIds.split(",");
+						 for(int i=0; i < savedTemplateIds.length; i++){
+							 OnBoardingTemplateDocuments templateDocument = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsById(Long.valueOf(savedTemplateIds[i]));
+							 
+						 
+							    OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
+			       		        documents.setCandidateOnBoardingId(onBoarding);
+			       		       
+			       		        documents.setDocFile(templateDocument.getDocFile());
+		         	            documents.setFileName(templateDocument.getFileName());
+		         	            documents.setFileContentType(templateDocument.getFileContentType());
+			                  
+				       		    documents.setDocumentType("Contracts");
+			                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
+			                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			                    documents.setCreatedDate(CommonUtil.currentDate());
+			                    documents.setCreatedBy(loginUser.getUserCode());
+			                    documents.setUpdatedDate(CommonUtil.currentDate());
+			                    documents.setUpdatedBy(loginUser.getUserCode());
+			                    onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
+						 
+						 }
+						 
+					}
+					
+					
+					//save  mutliple attachment for supported Documents.
+							if ((jsonObj.has("contractsAttcahmentMaxRowNumber"))){
+						    	String contractsAttcahmentMaxRowNumber = jsonObj.getString("contractsAttcahmentMaxRowNumber");
+								int contractsAttcahmentMaxRowNumberCount = Integer.parseInt(contractsAttcahmentMaxRowNumber);
+								
+						    	for (int a = 0; a < contractsAttcahmentMaxRowNumberCount; a++) {
+									   
+									   OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
+									   final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
+					       		       final Map files = multiRequest.getFileMap();
+					       		       
+					       		       documents.setCandidateOnBoardingId(onBoarding);
+					                   MultipartFile  multiFile = (MultipartFile)files.get(a+"contractsdocFile");
+					                   if(multiFile != null && !multiFile.isEmpty()){
+					                	   documents.setDocFile(multiFile.getBytes());
+					                	   documents.setFileName(multiFile.getOriginalFilename());
+					                       
+					                       if(multiFile.getContentType()!=null){
+					                    	   documents.setFileContentType(multiFile.getContentType());
+					                       }
+					                       documents.setDocumentType("Contracts");
+					                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
+					                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+					                       documents.setCreatedDate(CommonUtil.currentDate());
+					                       documents.setCreatedBy(loginUser.getUserCode());
+					                       documents.setUpdatedDate(CommonUtil.currentDate());
+					                       documents.setUpdatedBy(loginUser.getUserCode());
+					                       onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
+										   
+					                   }
+					                   
+					                 
+						    	}
+							}
+					
+					
+							if(jsonObj.has("savedFormsAttcahments") && !isNullOrEmpty(jsonObj.getString("savedFormsAttcahments"))){
+								 String templateIds = jsonObj.getString("savedFormsAttcahments");
+								 templateIds = templateIds.replaceAll("\\[", "").replaceAll("\\]","");
+								 templateIds = templateIds.replaceAll("\"", "");
+								 
+								 String[] savedTemplateIds = templateIds.split(",");
+								 for(int i=0; i < savedTemplateIds.length; i++){
+									 OnBoardingTemplateDocuments templateDocument = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsById(Long.valueOf(savedTemplateIds[i]));
+									 
+								 
+									    OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
+					       		        documents.setCandidateOnBoardingId(onBoarding);
+					       		       
+					       		        documents.setDocFile(templateDocument.getDocFile());
+				         	            documents.setFileName(templateDocument.getFileName());
+				         	            documents.setFileContentType(templateDocument.getFileContentType());
+					                  
+						       		    documents.setDocumentType("Forms");
+					                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
+					                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+					                    documents.setCreatedDate(CommonUtil.currentDate());
+					                    documents.setCreatedBy(loginUser.getUserCode());
+					                    documents.setUpdatedDate(CommonUtil.currentDate());
+					                    documents.setUpdatedBy(loginUser.getUserCode());
+					                    onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
+								 
+								 }
+								 
+							}
+							
+							
+							//save  mutliple attachment for supported Documents.
+									if ((jsonObj.has("formsAttcahmentMaxRowNumber"))){
+								    	String formsAttcahmentMaxRowNumber = jsonObj.getString("formsAttcahmentMaxRowNumber");
+										int formsAttcahmentMaxRowNumberCount = Integer.parseInt(formsAttcahmentMaxRowNumber);
+										
+								    	for (int a = 0; a < formsAttcahmentMaxRowNumberCount; a++) {
+											   
+											   OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
+											   final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
+							       		       final Map files = multiRequest.getFileMap();
+							       		       
+							       		       documents.setCandidateOnBoardingId(onBoarding);
+							                   MultipartFile  multiFile = (MultipartFile)files.get(a+"formsdocFile");
+							                   if(multiFile != null && !multiFile.isEmpty()){
+							                	   documents.setDocFile(multiFile.getBytes());
+							                	   documents.setFileName(multiFile.getOriginalFilename());
+							                       
+							                       if(multiFile.getContentType()!=null){
+							                    	   documents.setFileContentType(multiFile.getContentType());
+							                       }
+							                       documents.setDocumentType("Forms");
+							                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
+							                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+							                       documents.setCreatedDate(CommonUtil.currentDate());
+							                       documents.setCreatedBy(loginUser.getUserCode());
+							                       documents.setUpdatedDate(CommonUtil.currentDate());
+							                       documents.setUpdatedBy(loginUser.getUserCode());
+							                       onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
+												   
+							                   }
+								    	}
+									}
+			
+			return "success";
+				
+		}
+		
+		
+		
+		 @RequestMapping(value = "/getCandidateOnboardTasksList", method = RequestMethod.POST)
+		 @ResponseBody String getCandidateOnboardTasksList(@RequestParam(value="onboardId", required=false) Long onboardId,HttpServletRequest request) throws Exception{
+			
+			 
+			 List<OnboardTasks> templateTasksList = null;
+			 
+			 List<OnboardTasks> tasksList = new ArrayList<OnboardTasks>();;
+			 
+		     List<OnboardTasks> candidateTasksList = onboardTasksService.getOnBoardTasksListByCandidateOnBoardingId(onboardId);
+		     tasksList.addAll(candidateTasksList);
+		 
+			 CandidateOnBoarding onboarding = candidateOnBoardingService.getCandidateOnBoardingById(onboardId);
+			 List<Long> templateIdsList = new ArrayList<Long>();
+			 
+			 if(!isNullOrEmpty(onboarding.getOnboardTemplateId())){
+				 for (String s : onboarding.getOnboardTemplateId().split(",")){
+					 templateIdsList.add(Long.parseLong(s));
+				 }
+				
+				 templateTasksList = onboardTasksService.getOnboardTasksByTemplateIdList(templateIdsList);
+			 }
+			 
+			 tasksList.addAll(templateTasksList);
+			 
+			 
+			 List<OnboardTasks> onboardtasksList = new ArrayList<OnboardTasks>();
+			 
+			 for(OnboardTasks tasks : tasksList){
+				 
+				 List<String> usersList = new ArrayList<String>();
+					 
+					 if(!isNullOrEmpty(tasks.getAssignToUsers())){
+						 String[] userIds = tasks.getAssignToUsers().split(",");
+						 
+						 for(int i = 0 ; i < userIds.length; i++ ){
+							 StringBuilder userName = new StringBuilder();
+							 User user = userService.getUserById(Long.valueOf(userIds[i]));
+							 String assignedUser = null;
+							 if(null != user.getLastName()){
+								 assignedUser = userName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
+								}else{
+									assignedUser = userName.append(user.getFirstName()).toString();
+								}
+							 usersList.add(assignedUser);
+						 }
+					 }
+					 
+					 StringBuilder dueAfter = new StringBuilder();
+					 
+					 if(null != tasks.getDueAfterMonths()){
+						 dueAfter = dueAfter.append(tasks.getDueAfterMonths()).append(" Months ");
+					 }
+					 
+					 if(null != tasks.getDueAfterDays()){
+						 dueAfter = dueAfter.append(tasks.getDueAfterDays()).append(" Days ");
+					 }
+					 
+					 if(null != tasks.getDueAfterHours()){
+						 dueAfter = dueAfter.append(tasks.getDueAfterHours()).append(" Hours ");
+					 }
+					 
+					 if(null != tasks.getDueAfterMinutes()){
+						 dueAfter = dueAfter.append(tasks.getDueAfterMinutes()).append(" Minutes");
+					 }
+					 
+					
+					 tasks.setDueAfterString(dueAfter.toString());
+					 tasks.setUsersList(usersList); 
+					 
+					 if(null != tasks.getCandidateOnBoardingId()){
+						 tasks.setOnboardTaskType("Candidate Task");
+					 }else  if(null != tasks.getOnboardingTemplateId()){
+						 tasks.setOnboardTaskType("Template Task");
+					 }
+					 
+					 onboardtasksList.add(tasks);
+			 }
+				
+			return commonUtil.toJSON(onboardtasksList);
+			}
+		 
+		 
+		
+		
+		 
+		 @RequestMapping(value = "/saveCandidateOnBoardTasks" , method = RequestMethod.POST)
+		 public @ResponseBody  String saveCandidateOnBoardTasks(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+			
+			 
+			 json = "{"+json+"}";
+			 
+			 JSONObject jsonObj = new JSONObject(json);
+			 
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+			 
+			 OnboardTasks onboardTasks = new OnboardTasks();
+			 
+			 
+			 if(jsonObj.has("taskName") && !isNullOrEmpty(jsonObj.getString("taskName"))){
+				 onboardTasks.setTaskName(jsonObj.getString("taskName"));
+			 }
+			 
+			 CandidateOnBoarding onBoarding = new CandidateOnBoarding();
+			 onBoarding.setId(Long.valueOf(jsonObj.getString("onboardTaskId")));
+			 onboardTasks.setCandidateOnBoardingId(onBoarding);
+			 
+			 if(jsonObj.has("onboardAssignedTo") && !isNullOrEmpty(jsonObj.getString("onboardAssignedTo"))){
+				
+				 String userIds = jsonObj.getString("onboardAssignedTo");
+				 
+				 userIds = userIds.replaceAll("\\[", "").replaceAll("\\]","");
+				 userIds = userIds.replaceAll("\"", "");
+				 onboardTasks.setAssignToUsers(userIds);
+			 }else{
+				 onboardTasks.setAssignToCandidate(Constants.YES);
+			 }
+			 
+			 if(jsonObj.has("taskPriority") && !isNullOrEmpty(jsonObj.getString("taskPriority"))){
+				 onboardTasks.setPriority(jsonObj.getString("taskPriority"));
+			 }
+			 
+			 if(jsonObj.has("taskRepeat") && !isNullOrEmpty(jsonObj.getString("taskRepeat"))){
+				 onboardTasks.setTaskRepeat(jsonObj.getString("taskRepeat"));
+			 }
+			 
+			 if(jsonObj.has("taskMonths") && !isNullOrEmpty(jsonObj.getString("taskMonths"))){
+				 onboardTasks.setDueAfterMonths(Integer.parseInt(jsonObj.getString("taskMonths")));
+			 }
+			 
+			 if(jsonObj.has("taskDays") && !isNullOrEmpty(jsonObj.getString("taskDays"))){
+				 onboardTasks.setDueAfterDays(Integer.parseInt(jsonObj.getString("taskDays")));
+			 }
+			 
+			 if(jsonObj.has("taskHours") && !isNullOrEmpty(jsonObj.getString("taskHours"))){
+				 onboardTasks.setDueAfterHours(Integer.parseInt(jsonObj.getString("taskHours")));
+			 }
+			 
+			 if(jsonObj.has("taskMinutes") && !isNullOrEmpty(jsonObj.getString("taskMinutes"))){
+				 onboardTasks.setDueAfterMinutes(Integer.parseInt(jsonObj.getString("taskMinutes")));
+			 }
+			 
+			 if(jsonObj.has("taskNotification") && !isNullOrEmpty(jsonObj.getString("taskNotification"))){
+				 onboardTasks.setTaskNotification(jsonObj.getString("taskNotification"));
+			 }
+			 
+			 if(jsonObj.has("taskEmail") && !isNullOrEmpty(jsonObj.getString("taskEmail"))){
+				 onboardTasks.setTaskEmail(jsonObj.getString("taskEmail"));
+			 }
+			 
+			 if(jsonObj.has("taskdescription") && !isNullOrEmpty(jsonObj.getString("taskdescription"))){
+				 onboardTasks.setDescription(jsonObj.getString("taskdescription"));
+			 }
+			 
+			 onboardTasks.setStatus(Constants.CANDIDATE_ACTIVE);
+			 onboardTasks.setCreatedDate(CommonUtil.currentDate());
+			 onboardTasks.setCreatedBy(user.getUserCode());
+			 onboardTasks.setUpdatedDate(CommonUtil.currentDate());
+			 onboardTasks.setUpdatedBy(user.getUserCode());
+			 
+			 
+			 onboardTasksService.saveOnboardTasks(onboardTasks);
+			
+			  return "success";
+		   }
+		 
+		 
+		 @RequestMapping(value = "/deleteOnboardTaskByTaskId" , method = RequestMethod.POST)
+		 public @ResponseBody  String deleteOnboardTaskByTaskId(@RequestParam(value="taskId", required=false) Long taskId,
+				 HttpServletRequest request) throws Exception {
+			
+			OnboardTasks onboardTasks =	onboardTasksService.getOnboardTasksByTaskId(taskId);
+		 	 if(null != onboardTasks){
+		 		onboardTasks.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+		 		onboardTasksService.saveOnboardTasks(onboardTasks);
+		 	 }
+			return "success";
+		   
+		}
+		 
+		 
+		 @RequestMapping(value = "/saveAndFinishCandidateOnboard" , method = RequestMethod.POST)
+		 public @ResponseBody  String saveAndFinishCandidateOnboard(@RequestParam(value="onboardId", required=false) Long onboardId,
+				 @RequestParam(value="tasks", required=false) String tasks,
+				 HttpServletRequest request) throws Exception {
+			 
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 
+			 if(!isNullOrEmpty(tasks)){
+				 String[] taksIds = tasks.split(",");
+				 for(int i=0; i<taksIds.length; i++){
+					 OnboardTasks onboardTasks = onboardTasksService.getOnboardTasksByTaskId(Long.valueOf(taksIds[i]));
+					 
+					 OnboardTasks candidateTask = new OnboardTasks();
+					 candidateTask.setTaskName(onboardTasks.getTaskName());
+					 CandidateOnBoarding onboarding = new CandidateOnBoarding();
+					 onboarding.setId(onboardId);
+					 candidateTask.setCandidateOnBoardingId(onboarding);
+					 candidateTask.setAssignToUsers(onboardTasks.getAssignToUsers());
+					 candidateTask.setAssignToCandidate(onboardTasks.getAssignToCandidate());
+					 candidateTask.setPriority(onboardTasks.getPriority());
+					 candidateTask.setTaskRepeat(onboardTasks.getTaskRepeat());
+					 candidateTask.setDueAfterMonths(onboardTasks.getDueAfterMonths());
+					 candidateTask.setDueAfterDays(onboardTasks.getDueAfterDays());
+					 candidateTask.setDueAfterHours(onboardTasks.getDueAfterHours());
+					 candidateTask.setDueAfterMinutes(onboardTasks.getDueAfterMinutes());
+					 candidateTask.setTaskNotification(onboardTasks.getTaskNotification());
+					 candidateTask.setTaskEmail(onboardTasks.getTaskEmail());
+					 candidateTask.setDescription(onboardTasks.getDescription());
+					 candidateTask.setStatus(Constants.CANDIDATE_ACTIVE);
+					 candidateTask.setCreatedDate(CommonUtil.currentDate());
+					 candidateTask.setCreatedBy(user.getUserCode());
+					 candidateTask.setUpdatedDate(CommonUtil.currentDate());
+					 candidateTask.setUpdatedBy(user.getUserCode());
+					 onboardTasksService.saveOnboardTasks(candidateTask);
+				 }
+			 }
+			
+			 CandidateOnBoarding onBoarding = candidateOnBoardingService.getCandidateOnBoardingById(onboardId);
+			 onBoarding.setCandidateOnBoardStatus("Finished");
+			 candidateOnBoardingService.saveCandidateOnBoarding(onBoarding);
+			
+			return "success";
+		   
+		}
+		 
+		 
+		 
+		 
 	 
 }

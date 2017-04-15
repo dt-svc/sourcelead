@@ -14,7 +14,7 @@ body {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#40aef5', endColorstr='#156ea8',GradientType=1 ); 
 	}
 .regis_logo {
-	width:190px; margin:70px auto 35px;
+	width:190px; margin:60px auto 35px;
 	}
 .regis_logo.regis_logo_a {
 	margin:40px auto 35px;
@@ -30,7 +30,7 @@ body {
 	width:750px;
 	}	
 .signin_wrap {
-	width:auto; padding:30px 40px 40px;
+	width:auto; padding:30px 40px 30px;
 	}
 .signin_wrap h1 {
 	margin:0px 0px; padding:0px 0px 25px 0px; font-weight:400; color:#2980b9; font-size:28px; text-align:center;
@@ -96,7 +96,7 @@ body {
 	box-shadow:0px 0px 0px #146193; margin:2px 5px 0px 5px;
 	}	
 .signin_wrap p {
-	padding:0px; margin:0px; font-size:12px; color:#f12929; font-weight:500; 
+	padding:0px; margin:0px; font-size:12px; color:#f12929; font-weight:500;
 	}
 .for-pas-text {
 	text-align:right; color:#333;
@@ -167,6 +167,47 @@ left:12px
  }
 
 
+.logSocial {
+	width:auto; text-align: center; padding: 15px 0px 0px 0px;
+}
+.logSocial a {
+	display:inline-block; padding: 6px 20px; background-color:#4b75bd; color: #fff; box-shadow: 1px 1px 0px rgba(0,0,0,0.6);
+	border-radius: 2px; margin: 0px 2px; font-size: 16px; 
+}
+.logSocial a.tw {
+	background-color:#02c4ff;
+}
+.logSocial a.gp {
+	background-color:#fd543f;
+}
+.logSocial a.li {
+	background-color:#0888c7;
+}
+.logSocial u {
+	text-decoration: none;
+}
+
+.logMask {
+    position:fixed; width:100%; height:100%; background-color:rgba(0,0,0,0.6); top:0px; left:0px; z-index:9999; display:none;
+    }
+.logPop {
+	position: absolute; left: 0px; right: 0px; width: 650px; height: auto; padding: 20px; margin: 0px auto; display:none;
+	top: 20%; z-index: 10000; background-color: #fff; border-radius:5px; box-shadow:0px 0px 10px rgba(0,0,0,0.5);
+}
+.loPopClose {
+	position: absolute; width: 35px; height: 35px; background-color: #fff; border-radius:50%; box-shadow:0px 0px 3px rgba(0,0,0,0.2);
+	right: -15px; top:-15px; text-align: center; cursor: pointer; color: #e35454; font-size: 18px; padding: 5px 0px 0px 0px;
+}
+
+.plaI {
+	padding: 0px 10px 0px 0px;
+}
+.userImg {
+}
+.userImg img {
+	width:100%; border-radius: 2px; border: 5px solid #ccc;
+}
+
 @media screen and (max-width: 767px){
 .regis_wrap.regis_wrap_a {
 	width:430px;
@@ -202,8 +243,6 @@ left:12px
 }				
 	
 }			
-
-
 
 
 

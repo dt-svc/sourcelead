@@ -109,7 +109,7 @@ overflow-x: auto;
                   <div class="clearfix">
                     <select class="chosen-select" name="country" id="country" field-name="Country"  >
 						     <c:forEach var="cntry" items="${countryList}">
-					                     <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
+					                     <option value="${cntry.name}">${cntry.name}</option>
 				             </c:forEach>
 				     </select>
                   </div>
@@ -323,9 +323,9 @@ overflow-x: auto;
 				<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
                        <li><a href="<c:url value='/addVendor'/>"><i class="fa fa-plus"></i>Vendor</a></li>	
                        </sec:authorize>
-                        <%-- <sec:authorize access="hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_VENDOR_CONTACT_BULK_IMPORTS')">
+                        <sec:authorize access="hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_VENDOR_CONTACT_BULK_IMPORTS')">
                        <li title="Import"><a href="<c:url value='/uploadVendorForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
-                 </sec:authorize>  --%>
+                 	   </sec:authorize> 
                  
                  <sec:authorize access="hasRole('ROLE_EXPORT_VENDORS')"> 
                        	 <li title="Export" id="vendorImports" style="display:none">
@@ -889,9 +889,9 @@ function preparedVendorsLists(data){
 		   		
 		   		var location = "";
 		   		if(report.city != null && report.city != '' && report.city != 'undefined'){
-		   			location = report.country+", "+report.state+", "+report.city;
+		   			location = report.city+", "+report.state+", "+report.country;
 		   		}else if(report.state != null && report.state != '' && report.state != 'undefined'){
-		   			location = report.country+", "+report.state;
+		   			location = report.state+", "+report.country;
 		   		}else{
 		   			location = report.country;
 		   		}
@@ -1503,9 +1503,9 @@ function getClientDetails(){
    	        		
    	        		var location = "";
    	        		if(report.city != null && report.city != '' && report.city != 'undefined'){
-   	        			location = report.country+", "+report.state+", "+report.city;
+   	        			location = report.city+", "+report.state+", "+report.country;
    	        		}else if(report.state != null && report.state != '' && report.state != 'undefined'){
-   	        			location = report.country+", "+report.state;
+   	        			location = report.state+", "+report.country;
    	        		}else{
    	        			location = report.country;
    	        		}

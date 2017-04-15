@@ -25,4 +25,26 @@ public class OnboardTasksServiceImpl implements OnboardTasksService{
 		return onboardTasksDao.getOnboardTasksByTemplateId(templateId);
 	}
 
+	@Override
+	public Integer getOnBoardTasksCountByCandidateOnBoardingId(Long candidateOnBoardingId) throws Exception {
+		return onboardTasksDao.getOnBoardTasksCountByCandidateOnBoardingId(candidateOnBoardingId);
+	}
+
+	@Override
+	public List<OnboardTasks> getOnBoardTasksListByCandidateOnBoardingId(Long candidateOnBoardingId) throws Exception {
+		return onboardTasksDao.getOnBoardTasksListByCandidateOnBoardingId(candidateOnBoardingId);
+	}
+
+	@Override
+	public List<OnboardTasks> getOnboardTasksByTemplateIdList(List<Long> templateId) throws Exception {
+		return onboardTasksDao.getOnboardTasksByTemplateIdList(templateId);
+	}
+
+	@Override
+	public OnboardTasks getOnboardTasksByTaskId(Long Id) throws Exception {
+		return onboardTasksDao.getOnboardTasksByTaskId(Id);
+	}
+
+	
+
 }

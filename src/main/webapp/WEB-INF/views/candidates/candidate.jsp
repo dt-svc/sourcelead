@@ -149,8 +149,10 @@
               <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getDesignationType(this);">
                 <option value="">--Select--</option>
                  <option>C2C</option>
+                 <option>C2C-1099</option>
                  <option>W-2</option>
                  <option>C2H</option>
+                 <option>C2H -1099</option>
                  <option>Part Time</option>
                  <option>Full Time</option>
                  <option>Other</option>
@@ -168,7 +170,6 @@
              		  <c:forEach begin="0" end="25" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
-             		     <option>25+</option>
              		</select>
              </div>
              
@@ -191,7 +192,24 @@
             </div>
           </div>
        
-       
+       <div class="clearfix" id="hideVendor" style="display:none">
+       <div class="form-group">
+			<label class="col-md-3">Vendor</label>
+			<div class="col-md-9">
+			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();">
+                 </select>
+			</div>
+		</div>
+		
+		 <div class="form-group">
+			<label class="col-md-3">Vendor Contact</label>
+			<div class="col-md-9">
+			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="select Vendor Contact">
+                 </select>
+			</div>
+		</div>
+		</div>
+		
        <div class="form-group">
             <label class="col-md-3">Current Rate</label>
             <div class="col-md-9">
@@ -820,6 +838,17 @@ function getDesignationType(designationType){
 			  $("#designationOtherType").val('');
 		  }
 	}
+	
+	if(designationType.value == 'C2C' || designationType.value == 'C2C-1099'){
+		 document.getElementById("hideVendor").style.display="block";
+		 $('#vendors').attr("data-validation","required"); 
+		 $('#vendorcontact').attr("data-validation","required"); 
+		  getVendorsByOrgLocation();
+	}else{
+		 document.getElementById("hideVendor").style.display="none";
+		 $('#vendors').removeAttr("data-validation","required"); 
+		 $('#vendorcontact').removeAttr("data-validation","required"); 
+	}
 }
 </script>
 
@@ -877,3 +906,46 @@ var currentRate = document.getElementById("currentRate").value;
 	 
 }
 </script>
+
+<script>
+ function getVendorsByOrgLocation(){
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	$('#vendors').empty();
+		        	$('#vendors').append('<option value="">--select Vendor --</option>');
+		            for(var i=0;i<json.length;i++){
+		            	  var opt = json[i];
+		            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');
+		            }
+		            $('#vendors').trigger("chosen:updated");
+		            //getVendorContactList();
+		            
+		        }
+		 });
+ }
+ </script>
+ 
+  <script>
+ function getVendorContactList(){
+	var orgRelationID = $('#vendors').val();
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+			    type: "POST",
+		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	$('#vendorcontact').empty();
+		        	$('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
+		             for(var i=0;i<json.length;i++){
+		            	 var opt = json[i];
+		            	 $('#vendorcontact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
+		            } 
+		            $('#vendorcontact').trigger("chosen:updated");
+		        }
+		 }); 
+ }
+ </script>

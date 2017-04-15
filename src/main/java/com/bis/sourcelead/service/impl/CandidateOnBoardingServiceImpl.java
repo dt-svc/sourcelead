@@ -65,6 +65,8 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		
 		if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
 			candidateOnBoarding.setLastName(jsonObj.getString("lastName"));
+		}else{
+			candidateOnBoarding.setLastName(null);
 		}
 		
 		if(jsonObj.has("address1") && !isNullOrEmpty(jsonObj.getString("address1"))){
@@ -73,6 +75,8 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		
 		if(jsonObj.has("address2") && !isNullOrEmpty(jsonObj.getString("address2"))){
 			candidateOnBoarding.setAddress2(jsonObj.getString("address2"));
+		}else{
+			candidateOnBoarding.setAddress2(null);
 		}
 		
 		if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
@@ -81,14 +85,20 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		
 		if(jsonObj.has("state") && !isNullOrEmpty(jsonObj.getString("state"))){
 			candidateOnBoarding.setState(jsonObj.getString("state"));
+		}else{
+			candidateOnBoarding.setState(null);
 		}
 		
 		if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
 			candidateOnBoarding.setCity(jsonObj.getString("city"));
+		}else{
+			candidateOnBoarding.setCity(null);
 		}
 		
 		if(jsonObj.has("zipCode") && !isNullOrEmpty(jsonObj.getString("zipCode"))){
 			candidateOnBoarding.setZipCode(jsonObj.getString("zipCode"));
+		}else{
+			candidateOnBoarding.setZipCode(null);
 		}
 		
 		if(jsonObj.has("mobileNumber") && !isNullOrEmpty(jsonObj.getString("mobileNumber"))){
@@ -101,6 +111,8 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		
 		if(jsonObj.has("companyEmail") && !isNullOrEmpty(jsonObj.getString("companyEmail"))){
 			candidateOnBoarding.setCompanyEmail(jsonObj.getString("companyEmail"));
+		}else{
+			candidateOnBoarding.setCompanyEmail(null);
 		}
 		
 		
@@ -116,6 +128,8 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		
 		if(jsonObj.has("endDate") && !isNullOrEmpty(jsonObj.getString("endDate"))){
 			candidateOnBoarding.setEndDate(commonUtil.getDateFormat(jsonObj.getString("endDate")));
+		}else{
+			candidateOnBoarding.setEndDate(null);
 		}
 		
 		if(jsonObj.has("salaryRate") && !isNullOrEmpty(jsonObj.getString("salaryRate"))){
@@ -132,31 +146,40 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			Team team = new Team();
 			team.setId(Long.valueOf(jsonObj.getString("team")));
 			candidateOnBoarding.setTeamId(team);
+		}else{
+			candidateOnBoarding.setTeamId(null);
 		}
 		
 		if(jsonObj.has("employmentType") && !isNullOrEmpty(jsonObj.getString("employmentType"))){
 			candidateOnBoarding.setEmploymentType(jsonObj.getString("employmentType"));
+		}else{
+			candidateOnBoarding.setEmploymentType(null);
 		}
 		
-		if(jsonObj.has("employmentType") && !isNullOrEmpty(jsonObj.getString("employmentType"))){
-			candidateOnBoarding.setEmploymentType(jsonObj.getString("employmentType"));
-		}
 		
 		if(jsonObj.has("probationNotice") && !isNullOrEmpty(jsonObj.getString("probationNotice"))){
 			candidateOnBoarding.setProbationNotice(jsonObj.getString("probationNotice"));
+		}else{
+			candidateOnBoarding.setProbationNotice(null);
 		}
 		
 		if(jsonObj.has("terminationNotice") && !isNullOrEmpty(jsonObj.getString("terminationNotice"))){
 			candidateOnBoarding.setTerminationNotice(jsonObj.getString("terminationNotice"));
+		}else{
+			candidateOnBoarding.setTerminationNotice(null);
 		}
 		
 		if(jsonObj.has("dueDate") && !isNullOrEmpty(jsonObj.getString("dueDate"))){
 			candidateOnBoarding.setDueDate(commonUtil.getDateFormat(jsonObj.getString("dueDate")));
+		}else{
+			candidateOnBoarding.setDueDate(null);
 		}
 		
 		
 		if(jsonObj.has("specialConditions") && !isNullOrEmpty(jsonObj.getString("specialConditions"))){
 			candidateOnBoarding.setSpecialConditions(jsonObj.getString("specialConditions"));
+		}else{
+			candidateOnBoarding.setSpecialConditions(null);
 		}
 		
 		if(jsonObj.has("onboardingTemplate") && !isNullOrEmpty(jsonObj.getString("onboardingTemplate"))){
@@ -165,6 +188,8 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			templateIds = templateIds.replaceAll("\\[", "").replaceAll("\\]","");
 			templateIds = templateIds.replaceAll("\"", "");
 			candidateOnBoarding.setOnboardTemplateId(templateIds);
+		}else{
+			candidateOnBoarding.setOnboardTemplateId(null);
 		}
 		
 		candidateOnBoarding.setOrgLocationId(orgLocations);
