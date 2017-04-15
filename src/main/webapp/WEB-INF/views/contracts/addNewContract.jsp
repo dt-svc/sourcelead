@@ -283,28 +283,26 @@
 	$(function() {
 
 		$('#startDate').datepicker({
-			dateFormat : 'dd-mm-yy',
-			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
-				//var dt = new Date(selected);
-				var dt = toDate("#startDate");
-				dt.setDate(dt.getDate() + 1);
-				$("#endDate").datepicker("option", "minDate", dt);
-			}
-		});
-		
-		$('#endDate').datepicker({
-			dateFormat : 'dd-mm-yy',
-			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
-				//var dt = new Date(selected);
-				var dt = toDate("#endDate");
-				dt.setDate(dt.getDate() -1);
-				$("#endDate").datepicker("option", "minDate", dt);
-			}
-		});
+            dateFormat: 'dd-mm-yy',
+            changeMonth: true,
+              changeYear: true,
+            onSelect: function (selected) {
+                  var dt = toDate("#startDate");
+                  dt.setDate(dt.getDate() + 1);
+                  $("#endDate").datepicker("option", "minDate", dt);
+              }
+        });
+        
+        $('#endDate').datepicker({
+            dateFormat: 'dd-mm-yy',
+            changeMonth: true,
+              changeYear: true,
+              onSelect: function (selected) {
+                  var dt = toDate("#endDate");
+                  dt.setDate(dt.getDate() - 1);
+                  $("#startDate").datepicker("option", "maxDate", dt);
+              }
+        });
 });
 </script>
 
