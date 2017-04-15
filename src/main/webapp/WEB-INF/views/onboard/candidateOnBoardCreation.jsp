@@ -460,7 +460,7 @@
                                           <br>
                                           <input class="form-control input-sm" type="text" id="taskDays" name="taskDays" onblur="validateDueAfter();">
                                         </div>
-                                        <div class="col-md-3 paddingRight paddingLeft">
+                                       <!--  <div class="col-md-3 paddingRight paddingLeft">
                                           <label class="small">Hours</label>
                                           <br>
                                           <input type="text" class="form-control input-sm" id="taskHours" name="taskHours" onblur="validateDueAfter();">
@@ -469,7 +469,7 @@
                                           <label class="small">Minutes</label>
                                           <br>
                                           <input type="text" class="form-control input-sm" id="taskMinutes" name="taskMinutes" onblur="validateDueAfter();">
-                                        </div>
+                                        </div> -->
                                       </div>
                                       
                                       <!-- Form inline Due after --> 
@@ -1783,11 +1783,11 @@ function createTemplateDocs(saveType){
 	  
 	  var taskMonths = document.getElementById("taskMonths").value;
 	  var taskDays = document.getElementById("taskDays").value;
-	  var taskHours = document.getElementById("taskHours").value;
-	  var taskMinutes = document.getElementById("taskMinutes").value;
+	  /* var taskHours = document.getElementById("taskHours").value;
+	  var taskMinutes = document.getElementById("taskMinutes").value; */
 	  
 	  
-	  if(taskMonths == '' && taskDays == '' && taskHours == '' && taskMinutes == ''){
+	  if(taskMonths == '' && taskDays == '' ){
 			  $('#taskMonths').removeAttr('data-validation-optional');
 			  $("#taskMonths").attr("data-validation", "required");
 		    
