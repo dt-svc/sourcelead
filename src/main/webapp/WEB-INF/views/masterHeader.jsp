@@ -285,6 +285,7 @@ document.onkeydown=function(e){
 				<div class="RePop">
 					<ul>
 						<li><a href="<c:url value='${sourceleadUrl}/recruitersReports'/>"><span><i class="fa fa-briefcase"></i></span>Recruiters Report</a></li>
+						<li><a href="<c:url value='${sourceleadUrl}/vendorsReports'/>"><span><i class="fa fa-briefcase"></i></span>Vendor Report</a></li>
 					</ul>
 				</div>
             </li>

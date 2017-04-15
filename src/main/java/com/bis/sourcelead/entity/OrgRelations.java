@@ -149,6 +149,26 @@ public class OrgRelations implements Serializable{
 	@Transient
 	private List<OrgRelations> matchedClientNameList;
 	
+	@Transient
+	private Integer reqReleasedCount;
+	
+	@Transient
+	private Integer submittedCount;
+	
+	@Transient
+	private Integer shortlistedCount;
+	
+	@Transient
+	private Integer interviewedCount;
+	
+	@Transient
+	private Integer offeredCount;
+	
+	@Transient
+	private Integer rejectedCount;
+	
+	@Transient
+	private String vendorName;
 	
 	public String getLevel() {
 		return level;
@@ -484,5 +504,28 @@ public class OrgRelations implements Serializable{
 		this.matchedClientNameList = matchedClientNameList;
 	}
 
+	public Integer getReqReleasedCount() {
+		return reqReleasedCount;
+	}
+
+	public void setReqReleasedCount(Integer reqReleasedCount) {
+		this.reqReleasedCount = reqReleasedCount;
+	}
+
+	public String getVendorName() {
+		return vendorName;
+	}
+
+	public void setVendorName(String vendorName) {
+		this.vendorName = vendorName;
+	}
+
+	public Integer getSubmittedCount() {
+		return submittedCount;
+	}
+
+	public void setSubmittedCount(Integer submittedCount) {
+		this.submittedCount = submittedCount;
+	}
 	
 }

@@ -4128,4 +4128,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		return requirementSubmissionDao.getCountOfAllApplicantsByCreatedUserAndOrglocationId(orgLocationId, user,stage,timePeriod);
 	}
 
+	@Override
+	public Integer getApplicantCountSubmittedByVendor(Long orgLocationId, Long orgRelationId) {
+		return requirementSubmissionDao.getApplicantCountSubmittedByVendor(orgLocationId,orgRelationId);
+	}
+
 }

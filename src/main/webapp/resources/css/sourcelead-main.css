@@ -7081,6 +7081,21 @@ margin-top:6px; margin-right:-5px;
 .richtext-editor .Editor-editor {
     height: auto !important; min-height: 125px; max-height: 250px; overflow-y:auto;
 }
+.custom-navbar-inner .reportsH a .fa-pie-chart {
+    color:#fff; padding: 0;
+}
+.custom-navbar-inner .RePop a{
+    color:#333;
+}
+.custom-navbar-inner div.RePop{
+    top: 51px;
+}
+.custom-navbar-inner .RePop ul { padding: 0px;}
+.custom-navbar-inner .RePop ul li {padding:10px !important;}
+.main-header .navbar .custom-navbar ul.custom-navbar-inner .RePop ul li:hover{
+    background:transparent;
+}
+
 .mt5{
 margin-top: 5px;
 }
@@ -7113,6 +7128,103 @@ padding: 0px 5px; border: 1px solid #ccc; margin-bottom: 5px; background: #edede
 }
 .resumeView .summary {
 	width: 450px; text-align: left; margin-top: 2px; margin-bottom: 0px !important;
+}
+.onboardBtn{
+position: relative; z-index: 9;
+}
+.add_inter.addinterview_dashboard .chosen-container {
+width: 150px !important;
+}
+.addinterview_dashboard .location {
+width: 150px !important;
+}
+.add_inter.addinterview_dashboard .req_list .chosen-container {
+width: 100% !important;
+}
+.er .btn-default {
+    background: #337ab7;
+    color: #fff;
+    text-shadow: none;
+}
+.selectUser .paddingRight {
+padding-right: 0;    
+}
+.selectUser .btn-default {
+    border-color:#337ab7; border-radius: 3px 0 0 3px;
+}
+.selectUser .paddingLeft {
+padding-left: 0;    
+}
+.selectUser .chosen-container-single .chosen-single {
+    border-radius: 0px 3px 3px 0px;
+}
+
+.accordionPanel {
+   background: #f5f5f5; display: none;
+}
+.accordionPanel a:hover {
+   background: #f60;
+}
+.accordionToggle {
+    padding:0px; background: #fff;
+}
+.accordionToggle table tr td, .accordionToggle table tr th {
+    padding: 0;
+}
+.accordionLink {
+    margin: 0px; padding: 0px; box-sizing: border-box;
+}
+.accordionLink a {
+   display: block; padding: 0; position: relative; font-size: 15px; font-weight: 500;color: #333;
+}
+.accordionLink span {
+    position: absolute;
+    background: #37474F;
+    width: 1px;
+    height: 11px;
+    top: 5px;
+    right: 25px;
+    transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+    -o-transition: all 0.3s;
+}
+.accordionLink span:after {
+    content: '';
+    position: absolute;
+    background: #37474F;
+    height: 1px;
+    width: 11px;
+    top: 5px;
+    left: -5px;
+    transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+    -o-transition: all 0.3s;
+}
+.accordion-on.accordionLink span:after {
+    opacity: 0;
+}
+.accordion-on.accordionLink span {
+    transform: rotate(90deg);
+}
+.accordionToggle table {
+   position: relative;
+}
+.accordionToggle  table thead.parentHeader {
+ background: #375d81; color: #fff; height:40px; padding: 0 10px;
+ }
+.accordionToggle table th:first-child {
+    position: relative; width: 250px; padding: 10px
+}
+ .accordionPanel tr td:first-child {
+    position: relative; width: 220px; padding: 10px;
+}
+.accordionPanel tr td {
+text-align: left; padding:10px 15px; border-bottom: 1px solid #ddd;
+}
+.accordionLink {
+    background: #CFD8DC; border-bottom: 1px solid #90A4AE;
 }
 /* media 320px */
 @media (max-width: 320px) {

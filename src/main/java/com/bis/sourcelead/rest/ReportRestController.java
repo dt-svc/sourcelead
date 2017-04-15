@@ -16,10 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
@@ -60,8 +64,6 @@ public class ReportRestController {
 	@Autowired
 	CommonUtil commonUtil;
 
-
-
 	@Autowired
 	OrgSpocService orgSpocService;
 
@@ -82,6 +84,9 @@ public class ReportRestController {
 
 	@Autowired
 	TabsService tabsService;
+	
+	@Autowired
+	OrgRelationsService orgRelationService;
 
 	@Autowired
 	RequirementSubmissionService requirementSubmissionService;
@@ -140,6 +145,31 @@ public class ReportRestController {
 	}
 	
 
+	@RequestMapping(value = "/getVendorRequirementReports")
+	public @ResponseBody String getVendorRequirementReports(HttpServletRequest request) throws Exception {
+		
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+	    List<OrgRelations> vendorslist = orgRelationService.getAllVendorsListByOrgLocationId(orgLocations.getId());
+	    
+	    for(OrgRelations orgrel : vendorslist){
+	    	List<Requirement> reqList = requirementService.getAllReleasedJobsForVendor(orgLocations.getId(), orgrel.getId(), null, null);
+	    	Integer submittedCount = requirementSubmissionService.getApplicantCountSubmittedByVendor(orgLocations.getId(),orgrel.getId());
+	    	orgrel.setSubmittedCount(submittedCount);
+	    	orgrel.setReqReleasedCount(reqList.size());
+	    	if(orgrel.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+	    		orgrel.setVendorName(orgrel.getLocationId().getOrg().getOrgName());
+			}if(orgrel.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+				orgrel.setVendorName(orgrel.getResponderLocationId().getOrg().getOrgName());
+			}
+	    }
+	    
+		return commonUtil.toJSON(vendorslist);
+	}
+	
+	
+	
+	
 	private String toJSON(Object obj) {
 		XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
 			public HierarchicalStreamWriter createWriter(Writer writer) {
