@@ -1,0 +1,25 @@
+package com.bis.sourcelead.dao;
+
+import java.util.List;
+
+import com.bis.sourcelead.entity.Department;
+
+public interface DepartmentDao {
+	
+	/**
+	 * @author Laxman
+	 * @param department
+	 * @return
+	 * @throws Exception
+	 */
+	 Department saveDepartment(Department department) throws Exception;
+	
+	 Department getDepartmentById(Long departmentId) throws Exception;
+	
+	 List<Department>  getDepartmentByOrgLocationId(Long orgLocationId) throws Exception;
+	 
+	 Department validateDepartmentnameByDepartmentIdAndDepartmentName(Long departmentId,String departmentName) throws Exception;
+		
+	 Boolean validateDepartmentnameByOrgLocationIdAndDepartmentName(Long orgLocationId,String departmentName) throws Exception;
+	
+}
