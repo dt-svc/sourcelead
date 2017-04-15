@@ -122,8 +122,6 @@ public class ReportRestController {
 	@Autowired
 	ClientVendorContactsIndexHelper clientVendorContactsIndexHelper;
 	
-	@Autowired
-	TimeZoneService timeZoneService;
 	
 	/**
 	 * To get All the Users by filtering

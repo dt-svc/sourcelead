@@ -15,7 +15,6 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
 
-
 <script type="text/javascript">
 		window.onload = function () {
 			usersList();
@@ -78,6 +77,9 @@
   </div>
       <div class="candidate_wrap_table recruiterReports_table">
         <div id="usersList"></div>
+      </div> 
+      <div class="candidate_wrap_table recruiterReports_table mt40">
+        <div id="vendorReports"></div>
       </div> 
  </div>
   </section>    
@@ -450,5 +452,6 @@ function getCustomReports(){
 }
 </script>
 
+<jsp:include page="vendorsReport.jsp" />
 
 <jsp:include page="../masterFooter.jsp" />

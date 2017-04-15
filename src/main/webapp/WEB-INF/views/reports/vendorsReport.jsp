@@ -1,33 +1,5 @@
-<jsp:include page="../masterHeader.jsp" />
-<jsp:include page="../masterSideNav.jsp" />
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
- <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
- <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<!-- <script src="resources/js/formvalidator.js"></script>
-<script src="resources/js/jquery.dataTables.min.js"></script> -->
-<!-- <link href="resources/css/dataTablePagination.css" rel="stylesheet" type="text/css"> -->
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-<!-- end files for autocomplete with tagit -->
 
-<!-- these files for export -->
-<link href="https://cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css" rel="stylesheet">
-<script src="https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.flash.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.print.min.js" type="text/javascript" charset="utf-8"></script>
-<!-- ends files of export -->
-<!-- Content Area -->
 <script type="text/javascript">
 window.onload = function() { 
 	getVendorsReportList();
@@ -55,6 +27,38 @@ function getVendorsReportList(){
 <script>
 function prepareReportDataDiv(data){
 	var result = '';
+	
+	
+	/* result = result +  '<div class="pull-left reportBtns">';
+	result = result +  ' <div class="reportBtn">';
+	result = result +  '	<select class="form-control select-bg" id="reportTypeId" onChange="flushVendorCustomDates(); getVendorsReportList(); custvendorDates();">';
+	result = result +  '	 <option value="">select</option>';
+	result = result +  '	  <option value="today">Today</option>';
+	result = result +  '  <option value="yesterday">Yesterday</option>';
+	result = result +  '  <option value="week">1 week</option>';
+	result = result +  '  <option value="twoweeks">2 weeks</option>';
+	result = result +  '  <option value="month">1 month</option>';
+	result = result +  '  <option value="twomonths">2 months</option>';
+	result = result +  '   <option value="custom">Custom</option> ';
+	result = result +  '	</select>';
+	result = result +  ' </div>	';
+	 
+	result = result +  ' <span class="dashboard-datepkr cusShow">';
+	result = result +  ' <input type="text" class="form-control" value="" id="ExportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>';
+	result = result +  ' <p id="reportStartDate" class="ReError"></p>';
+	result = result +  ' </span>';
+	result = result +  '<span class="dashboard-datepkr cusShow">';
+	result = result +  '<input type="text"  class="form-control" value="" id="ExportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>';
+	result = result +  '<p id="reportEndDate" class="ReError"></p>';
+	result = result +  '</span>';
+	result = result +  '<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>';
+	
+	result = result +  '</div>'; */
+	
+	
+	
+	
+	
 	result = result +  '<table id="vendorReportPagination" class="display" cellspacing="0" width="100%" >';
 	result = result + '	<thead class="parentHeader">';
 	result = result + '   <tr>';
@@ -126,8 +130,8 @@ function prepareReportDataDiv(data){
     }
 	result = result + '	</tbody>';
 	result = result + '</table>';
-	$("#vendorReportsDiv").empty();
-    $("#vendorReportsDiv").append(result);
+	$("#vendorReports").empty();
+    $("#vendorReports").append(result);
     vendorReportPagination();
 }
 
@@ -601,7 +605,7 @@ $(".reminder").click(function(){
 	</script> 
 
 <script type="text/javascript">
-	function flushCustomDates() {
+	function flushVendorCustomDates() {
 		$('#ExportStartDate').val('');
 		$('#ExportEndDate').val('');
 		$.datepicker._clearDate('#ExportStartDate');
@@ -631,7 +635,7 @@ function getDayWiseReports(){
 
 </script>
 <script>
-function custDates(){
+function custvendorDates(){
 	var reportType = $("#reportTypeId").val();
 	if(reportType=="custom"){
 	    $(".cusShow").show();
