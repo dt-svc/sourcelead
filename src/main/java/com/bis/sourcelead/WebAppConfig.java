@@ -91,7 +91,7 @@ public class WebAppConfig extends WebMvcConfigurationSupport {
 	 * messageSource.setBasename("messages"); return messageSource; }
 	 */
 	
-	@Override
+    @Override
 	protected void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
 		converters.add(mappingJackson2HttpMessageConverter());
 
@@ -104,10 +104,10 @@ public class WebAppConfig extends WebMvcConfigurationSupport {
 		return mapper;
 	}
 
-	public HttpMessageConverter<Object> mappingJackson2HttpMessageConverter() {
+  public HttpMessageConverter<Object> mappingJackson2HttpMessageConverter() {
 		MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
 		mappingJackson2HttpMessageConverter.setPrefixJson(false);
-		mappingJackson2HttpMessageConverter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON));
+		mappingJackson2HttpMessageConverter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON_UTF8));
 		mappingJackson2HttpMessageConverter.setObjectMapper(objectMapper());
 		return mappingJackson2HttpMessageConverter;
 	}

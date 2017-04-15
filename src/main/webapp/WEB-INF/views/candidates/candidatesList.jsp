@@ -44,12 +44,11 @@
 <jsp:include page="candidatesEducation.jsp"></jsp:include>
 <jsp:include page="candidatesCertificates.jsp"></jsp:include>
 <jsp:include page="candidateDocuments.jsp"></jsp:include>
-
 <jsp:include page="requirementHistory.jsp"></jsp:include>
  <sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">
 <jsp:include page="candidatesCommentsList.jsp"></jsp:include>
  </sec:authorize>
- 
+ <jsp:include page="candidatesQuickView.jsp"></jsp:include>
  
 <script>
  window.onload = function() {
@@ -123,12 +122,12 @@ else{
 
 	var upcandidateStatus =   $('input[name=upcandidateStatus]:checked').val();
 	  
-	  
+	var isAssociate = "N";
 	  $("#candidateList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	 
 	  $.ajax({
            type : "POST",
-            url: sourceleadUrl+"/getCandidatesListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&updatedDateRange="+upcandidateStatus+"&candidateType="+candidateType,       
+            url: sourceleadUrl+"/getCandidatesListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&updatedDateRange="+upcandidateStatus+"&isAssociate="+isAssociate+"&candidateType="+candidateType,       
             success :function(data) {
                 	 prepareCandidateList(data);
            },
@@ -143,9 +142,6 @@ else{
 	     	 $("#candidateList").empty();
 	     	 var result = "";
 	     	  result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
-	     	 result  = result + '<div class="success_pop" id="hotlistCandidateMsg" style="display: none;">';
-	    	 result  = result + '<i class="fa fa-check-circle"></i><span id="hotlistCandidateMsgDiv"></span>';
-	    	 result  = result + '</div>';
 	          result = result +"<thead>"; 
 	          result = result +"  <tr>"; 
 	         /*  result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>";   */
@@ -215,19 +211,25 @@ else{
 		            	
 		            	
 	              result = result +"<tr>";
-	              result = result +"<td style='width : 25px;'>";
-	              result = result +"<div class='star-rating "+isFavClass+"' id='favourite"+opt.candidateId+"'>";
+	              result = result +"<td style='width:40px; display: inline-block'>";
+
+	              if(opt.isAssociate == "Y"){
+	            	  result = result +"<i class='fa fa-black-tie pull-right mt10' title='Associate'></i> ";  
+	              }
+
+	              result = result +"<div class='iconClass pull-left star-rating "+isFavClass+"' id='favourite"+opt.candidateId+"'>";
 	              '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_HOTLIST\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-	              result = result +"<input type='checkbox' id='fav"+opt.candidateId+"' "+isFavourite+" onclick='addFavourite("+opt.candidateId+",\""+opt.firstName+" "+opt.lastName+"\")'></input>";
+	              result = result +"   <input type='checkbox' id='fav"+opt.candidateId+"' "+isFavourite+" onclick='addFavourite("+opt.candidateId+")'></input>";
 	              '</sec:authorize>';
 	             
 	              result = result +" <label></label>";
 	              result = result +"</div>";
+	              
 	              result = result +"</td>";
 	
 	             
 	              '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-	                result = result +"  <td><div class='proj_show divmax-width' onclick='candidateSideBar("+opt.candidateId+");'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
+	                result = result +"  <td><div class='proj_show divmax-width' onclick='candidateQuickViewProfile("+opt.candidateId+"); candidateSideBar("+opt.candidateId+");'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
 	              '</sec:authorize>';
 	              
 	              '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
@@ -262,7 +264,7 @@ else{
 	              
 	              result = result +"  <td><div ><span title='"+opt.email+"'>"+opt.email+"</span></div></td>";
 	             
-	              result = result +"  <td><div class='tbldata-dotdot'>"+mobilePhone+"</div></td>";
+	              result = result +"  <td><div class='tbldata-dotdot-vsm'>"+mobilePhone+"</div></td>";
 	              
 	              result = result +"  <td><div><span title='"+location+"'>"+location+"</span></div></td>";
 	
@@ -342,7 +344,7 @@ var candidateStatusGlobal ="";
 function candidateSideBar(candidateId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var loginUserId = '${SourceLeadWeb_userId}';
-	  var lo
+	  var candidateType = "Candidates";
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -641,7 +643,9 @@ function candidateSideBar(candidateId){
 			             result = result+'     <ul class="project-tabs-menu">'; 
 			             
 			             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-			              result = result+'<li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+');">Profile</a></li>';
+
+			              result = result+'<li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+',\''+candidateType+'\');">Profile</a></li>';
+
 			             '</sec:authorize>';
 			             
 			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_RESUMES\',\'ROLE_VIEW_CANDIDATE_RESUMES\',\'ROLE_VIEW_EDIT_CANDIDATE_RESUMES\',\'ROLE_VIEW_DELETE_CANDIDATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
@@ -669,7 +673,7 @@ function candidateSideBar(candidateId){
 			              
 			              
 			              result = result+'<li id="candidateHistoryTab"><a href="#tab-8" onclick="requirementHistory('+candidateId+');">Requirement History</a></li>';
-			             
+
 			             /* result = result+'       <li><a href="#tab-6" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; */
 			             result = result+'       <div class="clearfix"></div>';
 			             result = result+'     </ul>';
@@ -699,7 +703,6 @@ function candidateSideBar(candidateId){
 						 result = result + '</div>';
 						 result = result + '<div id="tab-7" class="project_tabs_inn">';
 						 result = result + '</div>';
-						 
 			             result = result+'   </div>';
 			             
 			             $("#candidateSideDiv").empty();  
@@ -707,7 +710,7 @@ function candidateSideBar(candidateId){
 				 		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
 						 $(".side_mask").fadeIn(200);
 						 $("body").css('overflow-y', 'hidden');
-						 candidateProfile(candidateId);
+						 candidateProfile(candidateId,candidateType);
 			 			 
                 }else{
                	 $("#candidateSideDiv").removeAttr("style");
@@ -894,14 +897,9 @@ function refreshImageBlock(candidateId){
    }
 </script>
 
+
 <script>
-	function hotlistCandidateMsgFadein() {
-		$("#hotlistCandidateMsg").fadeIn(200);
-        $('#hotlistCandidateMsg').delay(2000).fadeOut('slow');
-	}
-</script>
-<script>
-function addFavourite(candidateId,candidate){
+function addFavourite(candidateId){
 	
 	var checked = document.getElementById("fav"+candidateId).checked;
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -913,14 +911,10 @@ function addFavourite(candidateId,candidate){
 			success : function(result) {
 				if(checked){
 					 document.getElementById("favourite"+candidateId).removeAttribute("class")
-					 document.getElementById("favourite"+candidateId).className = 'star-rating activestar-rating' 
-						$("#hotlistCandidateMsg").removeAttr("style");
-	          		    $("#hotlistCandidateMsg").css({ display: "block" });
-	          		    $("#hotlistCandidateMsgDiv").html(" "+candidate+" Hotlisted");
-	          		    hotlistCandidateMsgFadein();
+					 document.getElementById("favourite"+candidateId).className = 'iconClass pull-left star-rating activestar-rating' 
 				}else{
 					 document.getElementById("favourite"+candidateId).removeAttribute("class")
-					 document.getElementById("favourite"+candidateId).className = 'star-rating' 
+					 document.getElementById("favourite"+candidateId).className = 'iconClass pull-left star-rating' 
 				}
 				
 			},
@@ -1291,7 +1285,7 @@ function cancel(candidateId){
 							  </div>
 						  </div>
 						  
-						   <div class="col-md-4">
+						   <!-- <div class="col-md-4">
 							  <label>Applicant Type</label>
 							  <div class="clearfix">
 								   <select class="chosen-select" name="applicantType" id="applicantType" field-name="Applicant Type"  >
@@ -1300,7 +1294,7 @@ function cancel(candidateId){
 									  <option value="consultant">Consultant</option> 
 				                   </select>
 							  </div>
-						  </div>
+						  </div> -->
 						  </div>
 					  </div>
 					  </div>
@@ -1330,8 +1324,7 @@ function cancel(candidateId){
               	<div id="filter3ApprovedPop" class="approved_pop">
                   	<ul>
 	                    <li><input id="candidateTypeAll" type="radio" name="candidateType" checked value ="All" onclick="candidateList();"  ><label for="candidateTypeAll">All</label></li>
-						<li><input id="onlycandidate" type="radio" name="candidateType" value ="Candidate"  onclick="candidateList();"><label for="onlycandidate">Candidates</label></li>
-						<li><input id="consultant" type="radio"  name="candidateType" value ="Consultant"  onclick="candidateList();"><label for="consultant">Consultants</label></li>
+						<li><input id="onlycandidate" type="radio" name="candidateType" value ="1"  onclick="candidateList();"><label for="onlycandidate">Favourite</label></li>
                     </ul>
                   </div>                	
           </li>
@@ -1357,13 +1350,13 @@ function cancel(candidateId){
               <li><a  onClick="addCandidate();" ><i class="fa fa-plus"></i>Add Candidate</a></li>
            </sec:authorize>
            
-           <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE')">
+           <%-- <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE')">
               <li><a  onclick= "addConsultant();"><i class="fa fa-plus"></i>Add Consultant</a></li>
-           </sec:authorize>
+           </sec:authorize> --%>
            
-           <sec:authorize access="hasAnyRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')">
+         <%--   <sec:authorize access="hasAnyRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')">
               <li><a href="<c:url value='/assignHotListToTeam'/>" title=""><i class="fa fa-plus"></i>Assign To Team</a></li>
-           </sec:authorize>
+           </sec:authorize> --%>
            </ul>
            </div>
           </li>
@@ -1394,13 +1387,28 @@ function cancel(candidateId){
     
     <!-- Compnay details -->
     <div class="side_mask">
-       <div class="proj_close"></div>
+       <div class="proj_close" onclick="activeTab();"></div>
     </div>
-    <div class="clients_side_wrap">
+ <div class="clients_side_wrap quickviewTabs">
+    
+ <ul class="nav nav-tabs">
+    <li class="active" id="candQuickView"><a data-toggle="tab" href="#quickview">Quickview</a></li>
+    <li id="candDetailView"><a data-toggle="tab" href="#detailview">Detailview</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div id="quickview" class="tab-pane fade in active">
+	    <!-- resumeView Starts -->
+	    <div id="candidateQuickViewDiv"></div>
+	    <!-- resumeView -->
+    </div>
+    <div id="detailview" class="tab-pane fade">
 	    <div class="clients_side_wrap_inn">
-		             <div id="candidateSideDiv">
-				     </div>  
-	    </div>			     
+	             <div id="candidateSideDiv">
+			     </div>  
+	    </div>
+	     </div>
+  </div>			     
     </div>
     <!-- Compnay details Ends --> 
   </div>
@@ -1413,6 +1421,17 @@ function cancel(candidateId){
   <textarea placeholder="Enter message"></textarea>
   <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
 <!--   Error Message   --> 
+
+
+<script>
+function activeTab(){
+	$("#candDetailView").removeClass("active");
+	$("#candQuickView").addClass("active");
+	$("#quickview").addClass("active in");
+	$("#detailview").removeClass("active in");
+}
+</script>
+
  
 <!-- BELOW SCRIPTS ARE USED TO SHOW / HIDE POPUP'S --> 
 <script>
@@ -2179,7 +2198,7 @@ function getCities(){
 			  </div>
       <div class="pop_mask"></div>
     
-    <div class="addconsultant-popup">
+    <%-- <div class="addconsultant-popup">
 				  <div class="row">
                       <div class="col-md-offset-2 col-md-8">
 				  <a href="javascript:void(0)" class="close-popdiv" onClick="closeConsultant()"><i class="fa fa-close"></i></a>
@@ -2219,7 +2238,7 @@ function getCities(){
                           </div>
                       </div>
 				  </div>
-			  </div>
+			  </div> --%>
     
     <script>
     //addcandidate-popup script
@@ -2236,7 +2255,7 @@ function getCities(){
     
      <script>
     //addConsultant-popup script
-    function addConsultant(){
+    /* function addConsultant(){
         $('.addconsultant-popup').fadeIn(200);
         $('.pop_mask').fadeIn(200);
         $('#addmorepop').slideUp(200);
@@ -2244,7 +2263,7 @@ function getCities(){
        function closeConsultant(){
         $('.addconsultant-popup').fadeOut(200);
         $('.pop_mask').fadeOut(200);
-       }
+       } */
     </script>
     
     
@@ -2286,7 +2305,7 @@ function getCities(){
 			//It will escape all the special characters
 			$("#search_candidate").attr("disabled", "disabled");
 			$("#search_candidate").addClass('button').val('Processing..');
-
+			var isAssociate = "N";
 			$.ajax({
 						type : "POST",
 		        	    data: formData,
@@ -2295,7 +2314,7 @@ function getCities(){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/searchCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+"/searchCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&isAssociate="+isAssociate,
 						success : function(data) {
 							$("#search_candidate").addClass('button').val('Search');
 							$("#search_candidate").removeAttr("disabled");

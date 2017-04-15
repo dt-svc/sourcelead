@@ -41,12 +41,16 @@ import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -108,6 +112,13 @@ public class CandidateServiceImpl implements CandidateService {
 	
 	@Autowired
 	UserRoleService userRoleService;
+	
+	@Autowired
+	OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	OrgSpocService orgSpocService;
+	
 	/**
 	 * @author prasad k
 	 * @since  aug 26 2016
@@ -139,7 +150,7 @@ public class CandidateServiceImpl implements CandidateService {
         Candidate candidate = null;
 		if(jsonObj.has("candidateId") && jsonObj.getString("candidateId") != null && !"".equals(jsonObj.getString("candidateId"))){
 			candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(jsonObj.getString("candidateId")));
-		}else{
+		}else{	
 			candidate = new Candidate();
 			candidate.setCreatedDate(commonUtil.currentDate());
 			candidate.setCreatedBy(user.getUserCode());
@@ -153,6 +164,8 @@ public class CandidateServiceImpl implements CandidateService {
 				candidate.setCandidateType("Candidate");
 			}
 			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			candidate.setIsFavourite(0);
+			candidate.setIsFavouriteAssociate(0);
 			
 		}
         
@@ -267,6 +280,18 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setPrimarySkill(jsonObj.getString("primarySkill"));
 		}
 
+		
+		
+		if(jsonObj.has("vendors") && !"".equalsIgnoreCase(jsonObj.getString("vendors"))){
+			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("vendors")));
+			candidate.setOrgRelationId(orgRelation);
+		}
+		
+		if(jsonObj.has("vendorcontact") && !"".equalsIgnoreCase(jsonObj.getString("vendorcontact"))){
+			OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(jsonObj.getString("vendorcontact")));
+			candidate.setSpocId(orgspoc);
+		}
+		
 		HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(jsonObj, orgLocations,candidate,user.getUserCode());
 		candidate.setCandidateEducation(candidateEducationList);
 		
@@ -286,10 +311,15 @@ public class CandidateServiceImpl implements CandidateService {
 			}
 		}*/
 		
+		if(jsonObj.has("isAssociate") && jsonObj.getString("isAssociate") != null && Constants.YES.equalsIgnoreCase(jsonObj.getString("isAssociate"))){
+			candidate.setIsAssociate(Constants.YES);
+		}else{
+			candidate.setIsAssociate(Constants.NO);
+		}
 		candidate.setUpdatedBy(user.getUserCode());
 		candidate.setUpdatedDate(commonUtil.currentDate());
 		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
-		candidate.setIsFavourite(0);
+		
 		
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		
@@ -297,7 +327,7 @@ public class CandidateServiceImpl implements CandidateService {
 		 * Saving Candidate DB data as ElasticSearch Documents
 		 */
 		saveOrUpdateCandidateElkDocument(savedCandidate);
-		return savedCandidate;
+		return null;
 	}
 
 	@Override
@@ -808,7 +838,19 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			}
 		return candidateReportsList;
 	}
-
+	
+	@Override
+	public List<Candidate> getAllActiveAssociatesByOrglocationId(Long orgLocationId,String employeementType) throws Exception
+	{
+		return candidateDao.getAllActiveAssociatesByOrglocationId(orgLocationId,employeementType);
+	}
+	
+	@Override
+	public Candidate getCandidateById(Long candidateId) throws Exception
+	{
+		return candidateDao.getCandidateById(candidateId);
+	}
+	
 	@Override
 	public List<User> getAllCandidateOwnersByLocationIdAndCandidateType(Long orgLocationId, String candidateType)
 			throws Exception {
@@ -855,5 +897,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getCountOfAllCandidatesByCreatedUserAndOrglocationId(orgLocationId, user, timePeriod);
 	}
 
+	@Override
+	public List<Candidate> getAllActiveCandidatesCountForCampaignByLocationAndStatus(Long orgLocationId) throws Exception {
+		return candidateDao.getAllActiveCandidatesCountForCampaignByLocationAndStatus(orgLocationId);
+	}
 
 }

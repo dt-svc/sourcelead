@@ -101,6 +101,25 @@ public class AddElkCandidate{
 						candidateIndex.setIsFavourite(0);
 					}
 					
+					if(!isNullOrEmpty(rs.getString("IS_FAVOURITE_ASSOCIATE"))){
+					    candidateIndex.setIsFavouriteAssociate(rs.getInt("IS_FAVOURITE_ASSOCIATE"));
+					}else{
+						candidateIndex.setIsFavouriteAssociate(0);
+					}
+					
+					if(!isNullOrEmpty(rs.getString("IS_ASSOCIATE"))){
+					    candidateIndex.setIsAssociate(rs.getString("IS_ASSOCIATE"));
+					}
+					
+					if(!isNullOrEmpty(rs.getLong("ORG_RELATION_ID"))){
+					    candidateIndex.setOrgRelationId(rs.getLong("ORG_RELATION_ID"));
+					}
+					
+					if(!isNullOrEmpty(rs.getLong("SPOC_ID"))){
+					    candidateIndex.setSpocId(rs.getLong("SPOC_ID"));
+					}
+					
+					
 					if(StringUtils.isNotEmpty(rs.getString("EXPERIENCE_YEARS"))){
 						if(rs.getString("EXPERIENCE_YEARS").equalsIgnoreCase("25+")){
 							candidateIndex.setExperienceYears(Constants.EXPERIENCE_26YEARS.toString());
