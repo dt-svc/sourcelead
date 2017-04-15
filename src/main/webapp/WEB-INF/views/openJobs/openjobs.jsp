@@ -207,6 +207,8 @@
 			</div>-->
 			
 			<div id= "openJobsRequirementsList"></div>
+			<div id= "openJobsRequirementsSummary"></div>
+			
 			
 <section class="loadJob"><i class="fa fa-spinner fa-spin"></i>View more</section>			
 			
@@ -461,7 +463,7 @@ function getOpenJobsELKList(){
 	 				var result = "";
 	 				result = result +'	<div class="jobResultsCta">';
 					result = result +'	<div class="jobResultsInn">';
-					result = result +'	<a href="<c:url value="/openRequirementsSummary?requirementUUID='+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3>';
+					result = result +'	<a href="#" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');"><h3 style="font-size:20px;color:#368ee0;">'+requirements.jobTitle+'</h3></a>';
 					result = result +'	<h4>'+requirements.postedOrg+'</h4>';
 					result = result +'	<div class="skills">';
 					result = result +'	<strong>Skills :</strong>';
@@ -508,6 +510,104 @@ function getOpenJobsELKList(){
 	 }); 
  }
 </script>
+
+
+
+
+ <script>
+function getOpenJobsRequirementSummary(requirementsUUID){
+	 var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+		 type: "POST",
+		   	url: sourceleadUrl+"/openRequirementsSummary?${_csrf.parameterName}=${_csrf.token}&requirementsUUID="+requirementsUUID,
+		    success: function(data) {
+	    	if(data != null && data !='undefined' && data !=null &&  data != [] ){ 	
+	    	  var json = JSON.parse(data);
+		      var result = "";
+		        result = result +'  <a href="#" class="fa fa-arrow-circle-left fa-3x" aria-hidden="true" onclick="requirementBack();"></a>';
+				result = result +'	<section class="innerContent">';
+				result = result +'  <div class="jobDetails">';
+				result = result +'	<div class="jobResultsInn">';
+		    	result = result +'	<h3>'+json.jobTitle+'</h3>';
+				result = result +'	<h4>'+json.requirementOrgName+'</h4>';
+				result = result +'	<div class="skills"><strong>Skills :</strong>';
+				result = result +'	<span>'+json.skills+'</span>';
+				result = result +'	</div>';					
+				result = result +'	<span>';
+				result = result +'	<b><i class="fa fa-clock-o"></i>'+json.jobType+'</b>';
+				result = result +'	<b><i class="fa fa-briefcase"></i>'+json.minExp+' to '+json.maxExp+'</b>';
+				if(null != json.city && json.city!='undefined'){
+				result = result +'	<b><i class="fa fa-map-marker"></i>'+json.country+','+json.state +','+json.city+'</b>';
+				}else if(null != json.state && json.state!='undefined'){
+				result = result +'	<b><i class="fa fa-map-marker"></i>'+json.country+','+json.state +'</b>';	
+				}else{
+				result = result +'	<b><i class="fa fa-map-marker"></i>'+json.country+'</b>';	
+				}
+				result = result +'	</span>';
+				result = result +'    </div>';			
+				result = result +'    <div class="jobDetailsLogo">';
+				result = result +'	<a href="#">Apply</a>';
+				if (json.isCrowdSourcing == 'Y'){
+				result = result +'	<a href="#" class="btn2" style="background-color:#eb821c;">Refer</a>';
+				}
+				result = result +'	<div class="clear"></div>';
+				result = result +'	<div class="share mt10">';
+				result = result +'	<a href="javascript:void(0)">Share</a>';
+				result = result +'	<a href="javascript:void(0)"><i class="fa fa-linkedin-square"></i></a>';
+				result = result +'	<a href="javascript:void(0)"><i class="fa fa-twitter-square"></i></a>';			  
+				result = result +'	<a href="javascript:void(0)"><i class="fa fa-facebook-square"></i></a>';
+				result = result +'	<a href="javascript:void(0)"><i class="fa fa-envelope-square"></i></a>';				  	
+				result = result +'	</div>';
+				result = result +'    </div>';
+				result = result +'    <div class="clear"></div>';
+				result = result +'	<div class="jobDesc">';
+				result = result +'	<h3>Job Descriptions :</h3>';
+				result = result +'	<p>"'+json.description+'"</p>'; 
+				result = result +'	<h4>Other details:</h4>';
+				result = result +'	<b><i class="fa fa-caret-right"></i>Work Location : </b>';	
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>No. of positions :</label>'+json.positions+'</b>';
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>Education :</label>'+json.education+'</b>';
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>Posted :'+json.requirementCreatedDateToString+'</label></b>';
+				result = result +'	</div>';
+				result = result +'	<div class="jobShare">';
+				result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i><label>Posted :'+json.requirementCreatedDateToString+'</label></div>';
+				result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
+				result = result +'	<div class="share">';
+				result = result +'	<a href="javascript:void(0)"><i class="fa fa-linkedin-square"></i></a>';
+				result = result +'	<a href="javascript:void(0)"><i class="fa fa-twitter-square"></i></a>';				  
+				result = result +'	<a href="javascript:void(0)"><i class="fa fa-facebook-square"></i></a>';
+				result = result +'	<a href="javascript:void(0)"><i class="fa fa-envelope-square"></i></a>';					  	
+				result = result +'	</div>';
+				result = result +'	<div class="clear"></div>';
+				result = result +'	</div>';  	
+				result = result +'	</div>';
+				result = result +'	<div class="clear"></div>';		
+				result = result +'	</section>'; 
+				$("#openJobsRequirementsList").empty();
+				$("#openJobsRequirementsSummary").empty();
+				$("#openJobsRequirementsSummary").append(result);  
+				
+	   	   	   }
+	   	   	}
+		});  
+}
+</script>
+
+<script>
+
+function requirementBack(){
+	getOpenJobsELKList();
+	$("#openJobsRequirementsSummary").empty();
+}
+
+</script>
+
+
+
+
+
+
+
 
 <script>
 var validationSettings = {

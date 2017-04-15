@@ -517,11 +517,13 @@ public class OpenJobsRestController {
 		}
 	 }
 	 
-	 /*@RequestMapping(value = "/openRequirementsSummary")
+	 @RequestMapping(value = "/openRequirementsSummary")
 	 public @ResponseBody  String openRequirementsSummary(@RequestParam(value = "requirementsUUID", required = false) String requirementsUUID) throws Exception{
 		 Requirement requirementDeatils = requirementService.getRequirementByRequirementUUID(requirementsUUID);
 		 Requirement requirementDeatilsSummary = requirementService.getRequirementByRequirementId(requirementDeatils.getId());
+		 requirementDeatilsSummary.setRequirementOrgName(requirementDeatilsSummary.getOrgLocationId().getOrg().getOrgName());
+		 requirementDeatilsSummary.setRequirementCreatedDateToString(Constants.DMY.format(requirementDeatilsSummary.getCreatedDate()));
 		 return commonUtil.toJSON(requirementDeatilsSummary);
 		 
-	 }*/
+	 }
 }
