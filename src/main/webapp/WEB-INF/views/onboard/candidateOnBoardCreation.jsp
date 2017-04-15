@@ -148,10 +148,10 @@
                   </div>
                 </div>
                   
-                <div class="form-group">
+                <div class="form-group" id="emailDiv">
                   <label class="col-md-3 control-label">Company Email</label>
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="companyEmail" name="companyEmail" data-validation-optional="true"data-validation="validate_Space validate_length length2-100 validate_email">
+                    <input type="text" class="form-control input-sm" id="companyEmail" name="companyEmail" data-validation-optional="true" onblur="validateUserEmail();"  data-validation="validate_Space validate_length length2-100 validate_email">
                   </div>
                 </div>
                 <div class="clearfix"></div>
@@ -269,8 +269,8 @@
                 <div class="form-footer">
                   <div class="pull-right mr">
                     <input type="button" value="Cancel" class="btn btn-sm btn-default">
-                    <input type="button" value="Save" onclick="saveOnboardingCandidateDetails('save');" class="btn btn-sm btn-success">
-                    <input type="button" value="Save and Continue" onclick="saveOnboardingCandidateDetails('saveAndContinue');"  class="btn btn-sm btn-primary">
+                    <input type="button" value="Save" id="save_onboardUser" onclick="saveOnboardingCandidateDetails('save');" class="btn btn-sm btn-success">
+                    <input type="button" value="Save and Continue" id="saveAndContinue_onboardUser" onclick="saveOnboardingCandidateDetails('saveAndContinue');"  class="btn btn-sm btn-primary">
                   </div>
                 </div>
              </form:form>
@@ -1041,8 +1041,15 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	    	 url: sourceleadUrl+"/loadOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID, 
 	        success: function(data) {
 	        	
-	        	var json = JSON.parse(data);
-	        	loadOfferAcceptedCandidates(json['onBoardCandidateId']);
+	        	 var json = JSON.parse(data);
+	        	
+	        	 var result = "";
+	        	 var selected = 'selected';
+	        	 result = result +'<option disabled selected>--Select Candidate--</option>';
+	        	 result = result +'<option value='+json['onBoardCandidateId']+","+json['onBoardOfferId']+' '+selected+' >'+json['candidateName']+' ('+json['jobTitle']+')</option>';
+	        	 $("#onboardCandiate").empty();
+	           	 $("#onboardCandiate").append(result); 
+	           	 $('#onboardCandiate').trigger("chosen:updated");
 	        	
 	        	$("#firstName").val(json['firstName']);
 	        	
@@ -1618,3 +1625,34 @@ function saveAndFinishOnboardTemplate(onboardId){
 
 }
 </script>
+
+
+<script type="text/javascript">
+ function validateUserEmail() {
+	 var EmailId = document.getElementById("companyEmail").value;
+	 $('#emailDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(EmailId != null && EmailId != ""){
+		 $("#save_onboardUser").attr("disabled", "disabled");
+		 $("#saveAndContinue_onboardUser" ).attr("disabled", "disabled");
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateUserEmail?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
+		        success: function(data) {
+		        	if(data == 'true'){
+		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
+						  $("input#companyEmail").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
+						  document.getElementById("companyEmail").setAttribute('record-exist','yes');
+						  document.getElementById("companyEmail").setAttribute('record-exist-errorMsg',EmailId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#companyEmail').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+                         $("#save_onboardUser").removeAttr("disabled");
+                         $("#saveAndContinue_onboardUser").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>  

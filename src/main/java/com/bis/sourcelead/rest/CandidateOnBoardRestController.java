@@ -709,12 +709,14 @@ public class CandidateOnBoardRestController {
 	 public String loadOnboardingCandidateDetails(@RequestParam(value="onBoardingUUID", required=false) String onBoardingUUID,HttpServletRequest request) throws Exception {
 
 		String resultJson;
+		StringBuilder candidateName = new StringBuilder();
 		
 		CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUUID(onBoardingUUID);
 		if(null != candidateOnBoarding){
 			candidateOnBoarding.setOnBoardCandidateId(candidateOnBoarding.getCandidateId().getId());
 			candidateOnBoarding.setOnBoardOfferId(candidateOnBoarding.getOfferId().getId());
 			candidateOnBoarding.setOnBoardRoleId(candidateOnBoarding.getRoleId().getId());
+			candidateOnBoarding.setJobTitle(candidateOnBoarding.getOfferId().getSubmissionId().getRequirement().getJobTitle());
 			
 			if(null != candidateOnBoarding.getManagerUserId()){
 				candidateOnBoarding.setOnBoardManagerId(candidateOnBoarding.getManagerUserId().getId());
@@ -733,6 +735,13 @@ public class CandidateOnBoardRestController {
 			
 			if(null != candidateOnBoarding.getDueDate()){
 				candidateOnBoarding.setDueDateStr(Constants.DMY.format(candidateOnBoarding.getDueDate()));
+			}
+			
+			
+			if(null != candidateOnBoarding.getLastName()){
+				candidateOnBoarding.setCandidateName(candidateName.append(candidateOnBoarding.getFirstName()).append(" ").append(candidateOnBoarding.getLastName()).toString());
+			}else{
+				candidateOnBoarding.setCandidateName(candidateName.append(candidateOnBoarding.getFirstName()).toString());
 			}
 			
 		}
