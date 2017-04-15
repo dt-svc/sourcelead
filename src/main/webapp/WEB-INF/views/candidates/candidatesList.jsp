@@ -1393,7 +1393,7 @@ function cancel(candidateId){
     
  <ul class="nav nav-tabs">
     <li class="active" id="candQuickView"><a data-toggle="tab" href="#quickview">Quickview</a></li>
-    <li id="candDetailView"><a data-toggle="tab" href="#detailview">Detailview</a></li>
+    <li id="candDetailView"><a data-toggle="tab" href="#detailview">Detailedview</a></li>
   </ul>
 
   <div class="tab-content">
