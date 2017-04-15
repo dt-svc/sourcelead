@@ -107,6 +107,8 @@ public class SecurityConfig  {
     			.antMatchers("/openJobsRequiremetsAdvancedSearch").permitAll()
     			.antMatchers("/getStatesByCountry").permitAll()
     			.antMatchers("/getCitiesByStateAndCountry").permitAll()
+    			.antMatchers("/getAPIService").permitAll() 
+    			.antMatchers("/storeCsv").permitAll() 
     			.antMatchers("/getRequirementProfessionalProfileDetails").permitAll() 
     			.antMatchers("/ws/**").permitAll() 
     			.antMatchers("/verifyResetPassword").permitAll() 

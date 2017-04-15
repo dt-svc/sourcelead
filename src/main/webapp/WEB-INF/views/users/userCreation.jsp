@@ -12,7 +12,11 @@
 		masklist();
 	});
 </script>  -->
-
+<script type="text/javascript">
+		window.onload = function () {
+			getAssociateList();
+		 };
+	</script>
 <script>
 	$(document).ready(function() {
 		document.getElementById("createUser_form").reset();
@@ -34,6 +38,39 @@
           <form:form id="createUser_form"  name="createUser_form" method="post">
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+              
+                <div class="col-md-12 clearfix">
+        <div class="well clearfix">
+          
+          <div class="col-md-6 er selectUser col-md-offset-3">
+          <div class="row">
+          <div class="col-md-4 paddingRight">
+             <select class="selectpicker pull-left form-control" id="employmentDesignationType" name="employmentDesignationType" onChange="getDesignationType(this);">
+                <option value="">All</option>
+                 <option>C2C</option>
+                 <option>C2C-1099</option>
+                 <option>W-2</option>
+                 <option>C2H</option>
+                 <option>C2H -1099</option>
+                 <option>Part Time</option>
+                 <option>Full Time</option>
+                 <option>Other</option>
+             </select>
+             </div>
+             <div class="col-md-8 paddingLeft">
+           <select class="chosen-select pull-left" id="employeementType" name="employeementType" field-name="EmployeementType" onchange="getAssociateUserDetails();" data-validation-optional="true" >
+	          <!--   <option value="">-Select Employment Type-</option> -->
+	            <option value=" " selected>-Select Associate-</option>
+	            <c:forEach var="option" items="${associateList}">
+					<option value="${option.id}">${option.displayName}</option>
+				</c:forEach>
+           </select>
+          </div> </div>
+          </div>
+      
+          </div>
+        </div>
+              
                 <div class="form-group" id="EmployeeIdDiv">
                   <label class="col-md-3">Employee Id</label>
                   <div class="col-md-9">
@@ -355,7 +392,7 @@
 			        			$("#lastName").val(json.lastName);
 					        	$("#lastName").attr("disabled", true);
 			        		}else{
-			        			 $("#lastName").attr("disabled", false);
+			        			$("#lastName").attr("disabled", false);
 			        			 $("#lastName").val('');
 			        		}
 			        		
@@ -391,7 +428,101 @@
 		 $("#phone").val('');
 	 }
  }
- </script>     
+ </script>   
+ 
+ <script>
+function getAssociateUserDetails(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var employeementType = document.getElementById("employeementType").value;
+		$.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getActiveAssociateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+employeementType, 
+	        contentType: "application/json; charset=utf-8",
+	        dataType: "json",
+	        success: function(data) {
+	        	if(data != null && data != ''){
+	        		var json = JSON.parse(data);
+	        		  $("#FirstName").val(json[0]);
+	        		  $("#lastName").val(json[1]);
+	        		  $("#EmailId").val(json[2]);
+	        		  $("#phone").val(json[3]);
+	        		  validateUserEmail();
+	        	}
+			 },
+	        error: function(e){
+	        }
+	    });
+
+	
+}
+</script>
+ 
+ <script>
+ function getAssociateList(){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var employeementType = document.getElementById("employeementType").value;
+	 $.ajax({
+	    	type: "POST",
+	    	url: sourceleadUrl+"/getActiveAssociateList?${_csrf.parameterName}=${_csrf.token}&employeementType="+employeementType,
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	var output = "";
+	        	output = output + "<option value=''>-- Select Associate --</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var opt = json[i];
+	        		var name = '';
+	        		if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
+	        			name = opt.firstName+" "+opt.lastName;
+	        		}else{
+	        			name = opt.firstName;
+	        		}
+		        		
+	        		output = output + "<option value='" +opt.id+ "'>"+name+"</option>";
+				}
+	        	$("#employeementType").empty();
+		        $("#employeementType").append(output);
+		        $('#employeementType').trigger("chosen:updated");
+	        },
+	    });
+ }
+ 
+ </script>  
+ 
+ <script>
+ function getDesignationType(){
+	var employmentDesignationType = $("#employmentDesignationType").val();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+	    	type: "POST",
+	    	url: sourceleadUrl+"/getActiveAssociateList?${_csrf.parameterName}=${_csrf.token}&employeementType="+employmentDesignationType,
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	var output = "";
+	        	output = output + "<option value=''>-- Select Associate --</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var opt = json[i];
+	        		var name = '';
+	        		if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
+	        			name = opt.firstName+" "+opt.lastName;
+	        		}else{
+	        			name = opt.firstName;
+	        		}
+		        		
+	        		output = output + "<option value='" +opt.id+ "'>"+name+"</option>";
+				}
+	        	$("#employeementType").empty();
+		        $("#employeementType").append(output);
+		        $('#employeementType').trigger("chosen:updated");
+	        },
+	    });
+	 
+ }
+ 
+ 
+ </script>
+ 
  
 <!-- start script for datepicker -->
 <script>
@@ -462,3 +593,6 @@ $(function(){
 		  })
 });
 </script>
+
+
+

@@ -275,19 +275,15 @@ public class RequirementController {
 			List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
 			model.addObject("skillsList", skillsList);
 		}
-		 
 		
         List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		model.addObject("educationsList", educationsList);
-		
 		
 		List<User> usersList = userService.getOwnersByOrgLocationId(orgLocations.getId());
 		model.addObject("usersList", usersList);
 		
 		List<User> allusersList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
 		model.addObject("all_users_List", allusersList);
-		
-		
 		
 		List<Requirement> jobsTemplateList = requirementService.getJobTitleByJobTemplateStatusAndOrgLocationId(orgLocations.getId());
 		model.addObject("jobsTemplateList", jobsTemplateList);	
@@ -380,6 +376,9 @@ public class RequirementController {
 			
 			List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 			model.addObject("educationsList", educationsList);
+			
+			List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+			model.addObject("documentsList", documentsList);
 	
 			// This code is commented as not in use 
 	

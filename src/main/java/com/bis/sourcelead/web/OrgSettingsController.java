@@ -127,6 +127,32 @@ public class OrgSettingsController {
 	
 	
 	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
+	@RequestMapping(value = "/addDepartment")
+ 	public ModelAndView addDepartment(HttpServletRequest request) throws Exception {
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
+		    ModelAndView model = new ModelAndView();
+ 			commonUtil.highLightMenu(Constants.OrgSettings, request);
+ 			/*List<RoleHierarchy> hierarchyList = roleHierarchyService.getRoleHierarchyByOrgLocationId(orgLocations.getId());
+ 			List<RoleHierarchy> rolesHierarchyList = new ArrayList<RoleHierarchy>();
+ 			
+ 			if(null != hierarchyList){
+ 				for(RoleHierarchy hierarchy : hierarchyList){
+ 					List<Roles> rolesList = rolesService.getUserRolesListByRoleHierarchyIdAndOrgLocationId(orgLocations.getId(), hierarchy.getId(),org.getOrgCode());
+ 					hierarchy.setRolesList(rolesList);
+ 					rolesHierarchyList.add(hierarchy);
+ 				}
+ 			}
+ 			
+ 			model.addObject("rolesHierarchyList", rolesHierarchyList);
+ 			*/
+ 			model.setViewName("department");
+ 			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			return model;
+ 	}
+	
+	
+	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
 	@RequestMapping(value = "/enrollRoleActions")
 	public ModelAndView enrollRoleActions(HttpServletRequest request,
 			@RequestParam(value = "roleId", required = false) Long roleId) throws Exception {

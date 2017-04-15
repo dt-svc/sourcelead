@@ -93,14 +93,19 @@ function getUsersSearchResult(searchValue){
   </div>
       <section class="clearfix usersHeader positionRelative">
       
-      <div class="pull-left cand-advsrche">
+      <div class="pull-left cand-advsrche onboardBtn">
        <input id="searchElement" type="hidden"></input>
        
-			  <!-- <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
+       
+              <a href="<c:url value='/candidateOnBoardingList'/>" class="btn btn-primary btn-sm" > 
+			  <i class="fa fa-user paddingRight"></i>ONBOARD & OFFBOARD 
+			  </a>
+			  
+			  <%--<a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
 			  Advanced Search&nbsp;&nbsp;
 			  <i class="fa fa-search"></i>
-			  </a>  -->
-			  <form id="user_forms" name="user_forms"  >
+			  </a> 
+			   <form id="user_forms" name="user_forms"  >
 				  <div class="cand-advsrch-popup userAdvsrch" >
 					  <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
 					  <div class="row">
@@ -212,7 +217,7 @@ function getUsersSearchResult(searchValue){
 						  </div>
 					  </div>
 				  </div>
-			  </form>
+			  </form> --%>
       </div>
        
        

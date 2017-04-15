@@ -209,9 +209,11 @@ function addDocument(candidateId, documentUUID) {
 	
 	result = result  +'<div class="clearfix mb10 col-md-12"> ';
 	result = result  +'	<select label=" " class="chosen-select form-control" field-name="Document Type" data-placeholder = "Select Document Type" name="name" id="name" data-validation="required" onchange="getDocumentType(this);">';
-					   <c:forEach var="doctype" items="${documentsList}">
-    result = result +'<option value="" disabled selected></option>';										 
-	result = result + '<option value="${doctype.name}">${doctype.name}</option>';
+					   
+	
+	                   <c:forEach var="doctype" items="${documentsList}">
+    result = result +'<option value="" disabled selected></option>';	
+	result = result + '<option value="${doctype.name}" >${doctype.name}</option>';
 	                   </c:forEach>  
     result = result + '</select>';
 	result = result  +' </div> ';
@@ -418,9 +420,18 @@ function getDocument(candidateId, documentId){
         			 $("#docName").append(json.fileName);
         			 $("#docUpdateButton").show();
         			 if(json.documentType != null && json.documentType != "undefined" && json.documentType != ""){
-        				 document.getElementById("name").value = json.documentType;
-
-        				$("#name option:selected").val();
+        				
+	                     $("select#name").val(json.documentType);
+	                     $("#name").trigger("chosen:updated");
+	                     
+	                    //here documentType is Other then documentOtherType  also display in Edit.
+	                   
+	                     if(json.documentType == 'Other'){
+		        				 if(json.documentOtherType !=null && json.documentOtherType !='' && json.documentOtherType !="undefined"){
+		        					 document.getElementById("documentTypeDiv").style.display="block";
+		        					 $("#documentOtherType").val(json.documentOtherType);
+			    	             }
+	        			 }
 
         			 }
         			 

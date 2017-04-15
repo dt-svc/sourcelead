@@ -16,4 +16,6 @@ public interface RequirementOffersDao {
 	RequirementOffers getRequirementOfferId(Long offerId)throws Exception;
 
 	List<RequirementOffers> getRequirementOfferSubmissionByIdAndOrgLocationId(Long submissionId, Long orgLocationId)throws Exception;
+	
+	List<RequirementOffers> getOfferAcceptedCandidatesByOrgLocationId(Long orgLocationId) throws Exception;
 }
