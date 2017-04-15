@@ -103,7 +103,8 @@ public class CandidateOnBoardingDaoImpl  implements CandidateOnBoardingDao{
 	public CandidateOnBoarding getCandidateOnBoardingById(Long Id) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		List<CandidateOnBoarding> candidateOnBoarding = session.createQuery("from CandidateOnBoarding onboarding where onboarding.id =:id" ).setLong( "id", Id ).setCacheable(true).list();
+		List<CandidateOnBoarding> candidateOnBoarding = session.createQuery("from CandidateOnBoarding onboarding left join fetch onboarding.roleId left join fetch onboarding.managerUserId "
+				+ " left join fetch onboarding.teamId where onboarding.id =:id" ).setLong( "id", Id ).setCacheable(true).list();
 		if (candidateOnBoarding.size() > 0) {
 			return candidateOnBoarding.get(0);
 		} else {
