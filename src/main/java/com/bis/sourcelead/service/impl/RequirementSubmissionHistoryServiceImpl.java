@@ -6,6 +6,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +25,9 @@ import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
 public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmissionHistoryService {
@@ -28,7 +37,7 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 	
 	@Autowired
 	TimeZoneDao timeZoneDao;
-
+	
 	/**
 	 * updating the Requirement Submission Hostory
 	 * @param requirementSubmission
@@ -149,6 +158,13 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 	public List<RequirementSubmissionHistory> getAllRequirementSubmissionHistoryBySubmissionId(List<Long> submissionIds)
 			throws Exception {
 		return requirementSubmissionHistoryDao.getAllRequirementSubmissionHistoryBySubmissionId(submissionIds);
+	}
+
+	@Override
+	public Long getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(Long orgLocationId, User user,
+			String submissionStage, Date startDateUTC, Date endDateUTC) throws Exception {
+		
+		return requirementSubmissionHistoryDao.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocationId, user, submissionStage, startDateUTC, endDateUTC);
 	}
 
 }

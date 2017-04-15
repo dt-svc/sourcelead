@@ -159,4 +159,25 @@ public class CandidateOnBoardController {
  			return model;
  	}
 	
+	
+	@RequestMapping(value = "/viewOnboardCandidateSummary")
+ 	public ModelAndView viewOnboardCandidateSummary(@RequestParam(value="onboardUUID", required=false) String onboardUUID,
+ 			HttpServletRequest request) throws Exception {
+		   
+		    ModelAndView model = new ModelAndView();
+ 			
+		    SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.Users);
+ 			
+ 			
+ 			model.setViewName("onboard/viewOnboardCandidateSummary");
+ 			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			model.addObject("onBoardingUUID", onboardUUID);
+ 			return model;
+ 	}
+	
 }
