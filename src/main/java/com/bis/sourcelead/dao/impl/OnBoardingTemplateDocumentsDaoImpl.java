@@ -81,4 +81,55 @@ public class OnBoardingTemplateDocumentsDaoImpl implements OnBoardingTemplateDoc
 		}
 	}
 
+	@Override
+	@Transactional
+	public List<OnBoardingTemplateDocuments> getCandidateOnBoardingTemplateDocumentsByTemplateId(List<Long> templateIds,
+			String documentType) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from OnBoardingTemplateDocuments documents left join fetch documents.onboardingTemplateId where documents.onboardingTemplateId.id IN (:templateIds) "
+	    		+ " and documents.documentType = :documentType and documents.status = '1' ";
+	    List<OnBoardingTemplateDocuments> documentsList = session.createQuery(query.toString()).setParameterList("templateIds", templateIds).setString("documentType", documentType).setCacheable(true).list();
+        return documentsList;
+	}
+
+	@Override
+	@Transactional
+	public OnBoardingTemplateDocuments getOnBoardingTemplateDocumentsById(Long Id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<OnBoardingTemplateDocuments> documents = session.createQuery("from OnBoardingTemplateDocuments documents where documents.id =:id" ).setLong( "id", Id ).setCacheable(true).list();
+		if (documents.size() > 0) {
+			return documents.get(0);
+		} else {
+			return null;
+		}
+	
+	}
+
+	@Override
+	@Transactional
+	public Integer getCandidateOnboardingDocumentsByCandidateOnboardingId(Long candidateOnBoardingId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query ="select count(*) from OnBoardingTemplateDocuments documents where documents.candidateOnBoardingId.id =:candidateOnBoardingId ";
+		List<Long> onboardCount = session.createQuery(query.toString()).setLong("candidateOnBoardingId", candidateOnBoardingId).list();
+			Integer count = 0;
+			if(onboardCount != null && !onboardCount.isEmpty()){
+					count = onboardCount.get(0).intValue();
+			}
+			return count;
+	}
+
+	@Override
+	@Transactional
+	public List<OnBoardingTemplateDocuments> getOnBoardingTemplateDocumentsByCandidateOnBoardingId(
+			Long candidateOnBoardingId, String documentType) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from OnBoardingTemplateDocuments documents left join fetch documents.candidateOnBoardingId where documents.candidateOnBoardingId.id = :candidateOnBoardingId "
+	    		+ " and documents.documentType = :documentType and documents.status = '1' ";
+	    List<OnBoardingTemplateDocuments> documentsList = session.createQuery(query.toString()).setLong("candidateOnBoardingId", candidateOnBoardingId).setString("documentType", documentType).setCacheable(true).list();
+        return documentsList;
+	}
+
 }

@@ -1027,6 +1027,12 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	}
 
 
+	@Override
+	public List<RequirementOffers> getOfferAcceptedCandidatesByOrgLocationId(Long orgLocationId) throws Exception {
+		return requirementOffersDao.getOfferAcceptedCandidatesByOrgLocationId(orgLocationId);
+	}
+
+
 
 
 }
