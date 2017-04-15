@@ -94,11 +94,17 @@ public interface OrgSpocDao {
 
 	List<Long> getOwnerListByUserIdAndOrglocationId(User user, OrgLocations orgLocations, String type);
 	
-	OrgSpoc getValidateOwnersBySpocUserIdAndSpocOwnerUserId(Long spocUserId, Long spocOwnderUserId, Long responderLocationId) throws Exception;
+	OrgSpoc getValidateOwnersBySpocUserIdAndSpocOwnerUserId(Long spocUserId, Long spocOwnderUserId, Long responderLocationId, String responderType) throws Exception;
 
 	List<OrgSpoc> getOrgSpocContactEmailsByOrgRelationIdAndUserId(Long userId,Long orgRelationId,Long orgLocationId) throws Exception;
 
 
 	OrgSpoc getValidateOwnersByVendorUserIdAndSpocOwnerUserId(Long spocUserId, Long spocOwnderUserId, Long responderLocationId)throws Exception;
+
+
+	List<OrgSpoc> getAllClientsByOrgLocationId(Long orgLocationId)throws Exception;
+
+
+	List<OrgSpoc> getSpoclistByDomain(Long orgRelationId, String domain)throws Exception;
 	
 }

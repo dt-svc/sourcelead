@@ -22,6 +22,7 @@
   	        document.getElementById("templateDocs").disabled = false;
   	        document.getElementById("templateTasks").disabled = false;
   	        $("#candidateOnBoardUUID").val('${onBoardingUUID}');
+  	        $("#documentstemplateId").val(onBoardingId);
   	        
   	        loadOnboardingCandidate('${onBoardingUUID}');
   	        
@@ -52,9 +53,9 @@
           <ul class="nav nav-tabs" id="tab_bar">
             <li class="active" onclick="loadOnboardingCandidate();"> <a href="#details" data-toggle="tab"> <i class="fa fa-th-list paddingRight"></i> <span>Details</span> <br>
               <small>Employee details &amp; Postion details</small> </a> </li>
-            <li><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
+            <li onclick="getTemplatePolicyDocumentsDetails();getTemplateSupportingDocumentsDetails();getTemplateContractsDocumentsDetails();getTemplateFormsDocumentsDetails();"><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
               <small>Acceptance &amp; Policy Documents</small> </a> </li>
-            <li> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Taks</span> <br>
+            <li onclick="getOnboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Taks</span> <br>
               <small>List of tasks</small> </a></li>
           </ul>
           <input type="hidden" name="candidateOnBoardId" id="candidateOnBoardId" value=""/>
@@ -147,10 +148,10 @@
                   </div>
                 </div>
                   
-                <div class="form-group">
+                <div class="form-group" id="emailDiv">
                   <label class="col-md-3 control-label">Company Email</label>
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="companyEmail" name="companyEmail" data-validation-optional="true"data-validation="validate_Space validate_length length2-100 validate_email">
+                    <input type="text" class="form-control input-sm" id="companyEmail" name="companyEmail" data-validation-optional="true" onblur="validateUserEmail();"  data-validation="validate_Space validate_length length2-100 validate_email">
                   </div>
                 </div>
                 <div class="clearfix"></div>
@@ -268,8 +269,8 @@
                 <div class="form-footer">
                   <div class="pull-right mr">
                     <input type="button" value="Cancel" class="btn btn-sm btn-default">
-                    <input type="button" value="Save" onclick="saveOnboardingCandidateDetails('save');" class="btn btn-sm btn-success">
-                    <input type="button" value="Save and Continue" onclick="saveOnboardingCandidateDetails('saveAndContinue');"  class="btn btn-sm btn-primary">
+                    <input type="button" value="Save" id="save_onboardUser" onclick="saveOnboardingCandidateDetails('save');" class="btn btn-sm btn-success">
+                    <input type="button" value="Save and Continue" id="saveAndContinue_onboardUser" onclick="saveOnboardingCandidateDetails('saveAndContinue');"  class="btn btn-sm btn-primary">
                   </div>
                 </div>
              </form:form>
@@ -279,48 +280,74 @@
             <!-- TAB 2 -->
             <div class="tab-pane" id="documents">
               
-                <div class="form-horizontal">
+            <div class="form-horizontal">
+              <form id='templateDocuments_form' name='templateDocuments_form' enctype='multipart/form-data' >
+                 <input type="hidden" name="candidateonboardingId" id="documentstemplateId" value=""/>
                 <p><strong>Acceptance Documents</strong> <br>
                   <small class="text-muted">These documents need to be accepted by the new hire as part of acceptance step  - Learn more</small> </p>
                 
+                
                 <div class="form-group">
-                  <label class="col-md-12">
-                    <strong>Employment Contract</strong>
-                    </label>
-                    <label class="col-md-4 control-label"></label>
-                  <div class="col-md-7">
-                      <button type="button" class="btn btn-default btn-sm"><i class="fa fa-plus paddingRight"></i>Upload additional contract files</button>
-                  </div>
+                  <label class="col-md-12"> <strong>Contracts</strong> <br>
+                  </label>
+                  <label class="col-md-4 control-label mt10">These contracts will be added to this offer:</label>
+                     <div id="timesheetDocumentsId" class="timesheetDocs">
+                      <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
+				        <span> 
+			              <div id="savedContractsAttachments"></div>
+				        </span>
+                      </div>
+                      </div>
                 </div>
-                  
-                  
+                
+                
                 <div class="form-group">
-                  <label class="col-md-12">
-                      <strong>Policies</strong> <br>
-                    </label>
-
-                    <label class="col-md-4 control-label">These policies will be added to this offer:</label>
-                  <div class="col-md-7">
-                      <button type="button" class="btn btn-default btn-sm"><i class="fa fa-plus paddingRight"></i>Upload additional policies files</button>
-                  </div>
+                  <label class="col-md-12"> <strong>Forms</strong> <br>
+                  </label>
+                  <label class="col-md-4 control-label mt10">These forms will be added to this offer:</label>
+                     <div id="timesheetDocumentsId" class="timesheetDocs">
+                      <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
+				        <span> 
+			              <div id="savedFormsAttachments"></div>
+				        </span>
+                      </div>
+                      </div>
                 </div>
-                    
+                
+                
+                <div class="form-group">
+                  <label class="col-md-12"> <strong>Policies</strong> <br>
+                  </label>
+                  <label class="col-md-4 control-label mt10">These policies will be added to this offer:</label>
+                     <div id="timesheetDocumentsId" class="timesheetDocs">
+                      <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
+				        <span> 
+			              <div id="savedPociliesAttachments"></div>
+				        </span>
+                      </div>
+                      </div>
+                </div>
                 <div class="clearfix"></div>
                 <p><strong>Supporting Information</strong> <br>
                   <small class="text-muted">This is great place to upload a position description, commission structures, photo of the team , their desk or even a view from their new office.</small> </p>
                 <div class="form-group">
-                  <label class="col-md-4 control-label">These files will be available in the portal</label>
-                  <div class="col-md-7">
-                    <button type="button" class="btn btn-default btn-sm"><i class="fa fa-plus paddingRight"></i>Upload additional Information files</button>
-                  </div>
+                  <label class="col-md-4 control-label mt10">These files will be available in the portal:</label>
+                  <div id="timesheetDocumentsId" class="timesheetDocs">
+                      <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
+				        <span> 
+			             <div id="savedSupportedAttachments"></div>
+				        </span>
+                      </div>
+                      </div>
                 </div>
                 <div class="form-footer">
                   <div class="pull-right mr">
-                    <input type="button" value="Cancel" class="btn btn-sm btn-default">
-                    <input type="button" value="Save" class="btn btn-sm btn-success">
-                    <input type="button" value="Save and Continue" class="btn btn-sm btn-primary">
+                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/dashboard/${SourceLeadWeb_orgLocationId}'">
+                    <input type="button" value="Save" id="save_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
+                    <input type="button" value="Save and Continue" id="save_continue_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
                 </div>
+                </form>
               </div>
                 
                 
@@ -328,91 +355,47 @@
             </div>
             <div class="tab-pane" id="tasks">
               <div class="clearfix">
-                  <h4 class="pull-left">Task List</h4>
+                <h4 class="pull-left">Task List</h4>
                 <div class="pull-right">
-                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addTask"><i class="fa fa-plus paddingRight"></i>Add Task</button>
+                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addTask" onclick="getAssignToUsersList();"><i class="fa fa-plus paddingRight"></i>Add Task</button>
                   <!-- Modal -->
-                  <div id="addTask" class="modal fade" role="dialog">
+                  <div id="addTask" class="modal fade add_Task" role="dialog">
                     <div class="modal-dialog modal-lg">
                       <div class="modal-content">
                         <div class="modal-header">
-                          <button type="button" class="close" data-dismiss="modal">&times;</button>
+                          <button type="button" class="close" data-dismiss="modal" onclick="flushOnboardTask()">&times;</button>
                           <h4 class="modal-title">Add Tasks</h4>
                         </div>
                         <div class="modal-body clearfix"> 
                           
- <!-- Add New Task Widget -->
+                          <!-- Add New Task Widget -->
                           <div class="col-md-12 clearfix">
-                            <form class="form-horizontal clearfix task-widget">
+                          <div id="onboardtasksLoading"></div>
+                             <form:form class="login-form clearfix"  id="addonboardTask_form"  name="addonboardTask_form" method="post" > 
+                             <input type="hidden" name="onboardTaskId" id="candidateOnboardTaskId" value=""/>
                               <div class="row">
-                                <div class="col-md-6">
+                              
+                              <div class="col-md-6">
+                                <div class="row">
+                                
+                                <div class="col-md-12 mb10">
                                   <label>Subject <span class="text-danger paddingLeft">*</span></label>
-                                  <input type="text" class="form-control input-sm" placeholder="Subject">
+                                  <input type="text" class="form-control input-sm" placeholder="Subject" field-name="Subject" id="taskName" name="taskName" data-validation="required" data-validation="required validate_Space validate_length length2-100">
                                 </div>
-                                <div class="col-md-6">
-                                  <label>Assign To <span class="text-danger paddingLeft">*</span></label>
-                                  <select class="chosen-select" multiple data-placeholder="Select Priority" id="priority">
-                                    <option>High</option>
-                                    <option>Low</option>
-                                    <option>Mediam</option>
-                                  </select>
-                                </div>
-                                <div class="col-md-6 dropdown-select">
+                                
+                                <div class="col-md-12 dropdown-select mb10">
                                   <label>Priority</label>
-                                  <select class="form-control">
+                                  <select class="form-control" id="taskPriority" name="taskPriority">
                                     <option selected disabled>-- Select Priority --</option>
                                     <option>High</option>
                                     <option>Low</option>
                                     <option>Mediam</option>
                                   </select>
                                 </div>
-                                <div class="col-md-6">
-                                  <div class="row">
-                                    <div class="col-md-12">
-                                        <label><strong>Due after:</strong><span class="text-danger paddingLeft">*</span></label>
-                                      <div class="input-group hidden">
-                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                        <input class="form-control" value="" name="Date" id="datepicker2" type="text">
-                                      </div>
-                                        
-                                        <!-- Form inline Due after -->
-                                        
-                        <div class="row">
-                            <div class="col-md-3 paddingRight">
-                                <label class="small">Months</label> <br>
-                                <input class="form-control input-sm" type="text">
-                            </div>
-                            <div class="col-md-3 paddingRight paddingLeft">
-                                <label class="small">Days</label> <br>
-                                <input class="form-control input-sm" type="text">
-                            </div>
-                            <div class="col-md-3 paddingRight paddingLeft">
-                                <label class="small">Hours</label> <br>
-                                <input type="text" class="form-control input-sm">
-                            </div>
-                            <div class="col-md-3 paddingRight paddingLeft">
-                                <label class="small">Minutes</label> <br>
-                                <input type="text" class="form-control input-sm">
-                            </div>
-                        </div>
-                                        
-                                        <!-- Form inline Due after -->
-                                        
-                                        
-                                        
-                                        
-                                    </div>
-                                    <div class="col-md-6 hidden">
-                                      <label>Time</label>
-                                      <div class="input-group"> <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
-                                        <input class="form-control" value="" name="Time" id="example" type="text">
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="col-md-6 dropdown-select">
+                                
+                                <div class="col-md-12 dropdown-select mb10">
                                   <label>Repeat</label>
-                                  <select class="form-control input-sm">
+                                  <select class="form-control input-sm" id="taskRepeat" name="taskRepeat">
                                     <option selected disabled>-- Select Repeat --</option>
                                     <option>Never</option>
                                     <option>Daily</option>
@@ -421,131 +404,110 @@
                                     <option>Yearly</option>
                                   </select>
                                 </div>
-                                <div class="col-md-6">
+                                
+                                <div class="col-md-12 mb10">
                                   <div class="mt">
                                     <label class="checkbox-inline">
-                                      <input type="checkbox" name="chkbox">
+                                      <input type="checkbox" id="taskEmail" name="taskEmail" value="N" onclick="validateTaskEmail();">
                                       Email </label>
                                     <label class="checkbox-inline">
-                                      <input type="checkbox" name="chkbox">
+                                      <input type="checkbox" id="taskNotification" name="taskNotification" value="N" onclick="validateTaskNotification();">
                                       Notification </label>
                                   </div>
                                 </div>
-                                <div class="col-md-6">
-                                  <label>Description</label>
-                                  <textarea rows="2" placeholder="Description" class="form-control"></textarea>
+                                
                                 </div>
+                                </div>
+                                
+                                
+                                <div class="col-md-6">
+	                                <div class="row">
+	                                
+	                                <div class="col-md-12 mb10">
+                                  <label>Assign To <span class="text-danger paddingLeft">*</span></label>
+                                  
+                                  <div class="">
+                                    <label class="radio-inline">
+                                      <input type="radio"  name="assignedToType" checked="checked" onclick="validateAssignToType('assingToCandidate');">
+                                      Candidate </label>
+                                    <label class="checkbox-inline">
+                                      <input type="radio" name="assignedToType"  onclick="validateAssignToType('assingToUser');">
+                                      User </label>
+                                  </div>
+                                  
+                                  <div id="assignToUserDiv" style="display: none;" class="mt10">
+	                                  <select class="chosen-select" multiple data-placeholder="Select User" id="onboardAssignedTo" name="onboardAssignedTo" field-name="AssignTo"  data-validation-optional="true" >
+	                                  </select>
+                                  </div>
+                                </div>
+	                                
+	                                
+	                               <div class="col-md-12 mb10">
+                                  <div class="row">
+                                    <div class="col-md-12">
+                                      <label><strong>Due after:</strong><span class="text-danger paddingLeft">*</span></label>
+                                                                            
+                                      <!-- Form inline Due after -->
+                                      
+                                      <div class="row" id="dueAfterDiv">
+                                        <div class="col-md-3 paddingRight">
+                                          <label class="small">Months</label>
+                                          <br>
+                                          <input class="form-control input-sm" type="text" id="taskMonths" data-validation="required" field-name="Due after" name="taskMonths" onblur="validateDueAfter();">
+                                        </div>
+                                        <div class="col-md-3 paddingRight paddingLeft">
+                                          <label class="small">Days</label>
+                                          <br>
+                                          <input class="form-control input-sm" type="text" id="taskDays" name="taskDays" onblur="validateDueAfter();">
+                                        </div>
+                                        <div class="col-md-3 paddingRight paddingLeft">
+                                          <label class="small">Hours</label>
+                                          <br>
+                                          <input type="text" class="form-control input-sm" id="taskHours" name="taskHours" onblur="validateDueAfter();">
+                                        </div>
+                                        <div class="col-md-3 paddingRight paddingLeft">
+                                          <label class="small">Minutes</label>
+                                          <br>
+                                          <input type="text" class="form-control input-sm" id="taskMinutes" name="taskMinutes" onblur="validateDueAfter();">
+                                        </div>
+                                      </div>
+                                      
+                                      <!-- Form inline Due after --> 
+                                      
+                                    </div>
+                                    
+                                  </div>
+                                </div>
+	                               <div class="col-md-12 mb10">
+                                  <label>Description</label>
+                                  <textarea rows="2" placeholder="Description" id="taskdescription" name="taskdescription" class="form-control"></textarea>
+                                </div>
+	                                
+	                                </div>
+                                </div>
+                                
                                 <div class="clearfix"></div>
-                                <div class="clearfix mt col-md-12">
+                                <div class="clearfix mt col-md-12 form-footer">
                                   <div class="pull-right">
-                                    <input type="button" class="btn btn-primary btn-sm" value="Save">
-                                    <input type="button" class="btn btn-default btn-sm ml10" value="Cancel">
+                                    <input type="button" id="onboardtask_submit" class="btn btn-primary btn-sm" onclick="saveOnboardTask();"  value="Save">
+                                    <input type="button" class="btn btn-default btn-sm ml10" value="Cancel" data-dismiss="modal" onclick="flushOnboardTask();">
                                   </div>
                                 </div>
                               </div>
-                            </form>
+                            </form:form>
                           </div>
-                          <!-- Add New Task Widget -->                           
+                          <!-- Add New Task Widget --> 
+                          
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-                
-                <div class="clearfix taskwidget_inner">
-                    <div class="media-body">
-                    <div class="clearfix taskheder">
-                        <label>
-                            <span class="paddingRight">Subject:</span> <strong class="text-primary">Account Setup</strong>
-                        </label>
-                        <label class="small pull-right text-muted">
-                            <span>Due after 15days</span>
-                        </label>
-                    </div>
-                    <ul class="list-inline list-description">
-                        <li><span>Assign To:</span> Pramodkumar Mahagen</li>
-                        <li><span>Priority:</span> High</li>
-                        <li><span>Repeat:</span> Never</li>
-                    </ul>
-                    </div>
-                </div>
-                <div class="clearfix taskwidget_inner">
-                    <div class="media-body">
-                    <div class="clearfix taskheder">
-                        <label>
-                            <span class="paddingRight">Subject:</span> <strong class="text-primary">Desktop arriange</strong>
-                        </label>
-                        <label class="small pull-right text-muted">
-                            <span>Due after 2 months</span>
-                        </label>
-                    </div>
-                    <ul class="list-inline list-description">
-                        <li><span>Assign To:</span> Pramodkumar Mahagen</li>
-                        <li><span>Priority:</span> High</li>
-                        <li><span>Repeat:</span> Never</li>
-                    </ul>
-                    </div>
-                </div>
-                <div class="clearfix taskwidget_inner">
-                    <div class="media-body">
-                    <div class="clearfix taskheder">
-                        <label>
-                            <span class="paddingRight">Subject:</span> <strong class="text-primary">Providing access</strong>
-                        </label>
-                        <label class="small pull-right text-muted">
-                            <span>Due after 3 months</span>
-                        </label>
-                    </div>
-                    <ul class="list-inline list-description">
-                        <li><span>Assign To:</span> Pramodkumar Mahagen</li>
-                        <li><span>Priority:</span> High</li>
-                        <li><span>Repeat:</span> Never</li>
-                    </ul>
-                    </div>
-                </div>
-                <div class="clearfix taskwidget_inner">
-                    <div class="media-body">
-                    <div class="clearfix taskheder">
-                        <!--<label>Account Setup, Desk top Arriange, Providing access to the Candidate</label>-->
-                        <label>
-                            <span class="paddingRight">Subject:</span> <strong class="text-primary">Account Setup</strong>
-                        </label>
-                        <label class="small pull-right text-muted">
-                            <span>Due after 3 months</span>
-                        </label>
-                    </div>
-                    <ul class="list-inline list-description">
-                        <li><span>Assign To:</span> Pramodkumar Mahagen</li>
-                        <li><span>Priority:</span> High</li>
-                        <li><span>Repeat:</span> Never</li>
-                    </ul>
-                    </div>
-                </div>
-                <div class="clearfix taskwidget_inner">
-                    <div class="media-body">
-                    <div class="clearfix taskheder">
-                        <!--<label>Account Setup, Desk top Arriange, Providing access to the Candidate</label>-->
-                        <label>
-                            <span class="paddingRight">Subject:</span> <strong class="text-primary">Account Setup</strong>
-                        </label>
-                        <label class="small pull-right text-muted">
-                            <span>Due after 15 days</span>
-                        </label>
-                    </div>
-                    <ul class="list-inline list-description">
-                        <li><span>Assign To:</span> Pramodkumar Mahagen</li>
-                        <li><span>Priority:</span> High</li>
-                        <li><span>Repeat:</span> Never</li>
-                    </ul>
-                    </div>
-                </div>
-                              <div class="form-footer clearfix mt">
-                <div class="pull-right mr">
-                  <input type="button" value="Cancel" class="btn btn-sm btn-default">
-                  <input type="button" value="Finish" class="btn btn-sm btn-primary">
-                </div>
-              </div>
+              
+              <div id="onboardTasksList"></div>
+            
+            
             </div>
           </div>
           <!-- STYLED IN FORMS.CSS --> 
@@ -555,6 +517,318 @@
  </section>
  
   <jsp:include page="../masterFooter.jsp" />
+  
+  
+<div id="divAttachmentTd1" style="display: none; float: left;">
+			<div id='REPLACEROWIDdocFileuploadFileGroup'>
+	  			<input type='file' name='REPLACEROWIDdocFile' id='REPLACEROWIDdocFile' class="timesheetAttachmentValidation" onchange='validateUploadFile(REPLACEROWID)'> 
+	  			<i class="fa fa-times" onclick="removePoliciesAttachmentRow(REPLACEROWID);"></i>
+	  		</div>
+</div>
+
+<div id="divSupportingAttachmentTd1" style="display: none; float: left;">
+			<div id='REPLACEROWIDSupportingdocFileuploadFileGroup'>
+	  			<input type='file' name='REPLACEROWIDsupportingdocFile' id='REPLACEROWIDsupportingdocFile' class="timesheetAttachmentValidation" onchange='validateSupportingUploadFile(REPLACEROWID)'> 
+	  			<i class="fa fa-times" onclick="removeSupportingAttachmentRow(REPLACEROWID);"></i>
+	  		</div>
+</div>
+
+<div id="divContractsAttachmentTd1" style="display: none; float: left;">
+			<div id='REPLACEROWIDContractsdocFileuploadFileGroup'>
+	  			<input type='file' name='REPLACEROWIDcontractsdocFile' id='REPLACEROWIDcontractsdocFile' class="timesheetAttachmentValidation" onchange='validateContractsUploadFile(REPLACEROWID)'> 
+	  			<i class="fa fa-times" onclick="removeContractsAttachmentRow(REPLACEROWID);"></i>
+	  		</div>
+</div>
+
+<div id="divFormsAttachmentTd1" style="display: none; float: left;">
+			<div id='REPLACEROWIDFormsdocFileuploadFileGroup'>
+	  			<input type='file' name='REPLACEROWIDformsdocFile' id='REPLACEROWIDformsdocFile' class="timesheetAttachmentValidation" onchange='validateFormsUploadFile(REPLACEROWID)'> 
+	  			<i class="fa fa-times" onclick="removeFormsAttachmentRow(REPLACEROWID);"></i>
+	  		</div>
+</div>
+
+<script>
+function addPoliciesAttachment(){  
+			var checkMaxTsRowNum = $("#policiesAttcahmentMaxRowNumber").val();
+			var tbl = document.getElementById("policiesAttachmentTable");
+			var maxRowNum = parseInt($("input[name = 'policiesAttcahmentMaxRowNumber']").val());
+			$("input[name = 'policiesAttcahmentMaxRowNumber']").val(maxRowNum + 1);
+			
+			
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", "divAttachmentPoliciesRow" + maxRowNum);
+			
+			
+			var cell0 = row.insertCell(0);
+			var divAttachmentTdStr = document.getElementById("divAttachmentTd1").innerHTML;
+			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+			cell0.innerHTML = divAttachmentTdStr;
+			
+			
+}			
+</script>
+	
+<script type="text/javascript">
+	function removePoliciesAttachmentRow(rowId) {
+		 document.getElementById("divAttachmentPoliciesRow"+rowId).style.display = 'none';
+		 document.getElementById("divAttachmentPoliciesRow"+rowId).value= '';
+		 var  rId = "divAttachmentPoliciesRow"+rowId;
+		  var r = document.getElementById("policiesAttachmentTable").rows[rId];
+          var count = 2*(r.cells.length);
+		    for(i=0;i<=count;i++){
+		        r.deleteCell(0);
+		    } 
+		 
+	}
+</script>
+
+
+<script>
+function addSupportingAttachment(){  
+			var checkMaxTsRowNum = $("#supportingAttcahmentMaxRowNumber").val();
+			var tbl = document.getElementById("supportingAttachmentTable");
+			var maxRowNum = parseInt($("input[name = 'supportingAttcahmentMaxRowNumber']").val());
+			$("input[name = 'supportingAttcahmentMaxRowNumber']").val(maxRowNum + 1);
+			
+			
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", "divAttachmentSupportingRow" + maxRowNum);
+			
+			
+			var cell0 = row.insertCell(0);
+			var divAttachmentTdStr = document.getElementById("divSupportingAttachmentTd1").innerHTML;
+			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+			cell0.innerHTML = divAttachmentTdStr;
+			
+			
+}			
+</script>
+	
+<script type="text/javascript">
+	function removeSupportingAttachmentRow(rowId) {
+		 document.getElementById("divAttachmentSupportingRow"+rowId).style.display = 'none';
+		 document.getElementById("divAttachmentSupportingRow"+rowId).value= '';
+		 var  rId = "divAttachmentSupportingRow"+rowId;
+		  var r = document.getElementById("supportingAttachmentTable").rows[rId];
+          var count = 2*(r.cells.length);
+		    for(i=0;i<=count;i++){
+		        r.deleteCell(0);
+		    } 
+		 
+	}
+</script>
+  
+  
+  
+  
+  <script>
+function addContractsAttachment(){  
+			var checkMaxTsRowNum = $("#contractsAttcahmentMaxRowNumber").val();
+			var tbl = document.getElementById("contractsAttachmentTable");
+			var maxRowNum = parseInt($("input[name = 'contractsAttcahmentMaxRowNumber']").val());
+			$("input[name = 'contractsAttcahmentMaxRowNumber']").val(maxRowNum + 1);
+			
+			
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", "divAttachmentContractsRow" + maxRowNum);
+			
+			
+			var cell0 = row.insertCell(0);
+			var divAttachmentTdStr = document.getElementById("divContractsAttachmentTd1").innerHTML;
+			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+			cell0.innerHTML = divAttachmentTdStr;
+			
+			
+}			
+</script>
+	
+<script type="text/javascript">
+	function removeContractsAttachmentRow(rowId) {
+		 document.getElementById("divAttachmentContractsRow"+rowId).style.display = 'none';
+		 document.getElementById("divAttachmentContractsRow"+rowId).value= '';
+		 var  rId = "divAttachmentContractsRow"+rowId;
+		  var r = document.getElementById("contractsAttachmentTable").rows[rId];
+          var count = 2*(r.cells.length);
+		    for(i=0;i<=count;i++){
+		        r.deleteCell(0);
+		    } 
+		 
+	}
+</script>
+
+
+
+<script type="text/javascript">
+function validateContractsUploadFile(id)
+{
+	 var selectedFile = $('#'+id+'contractsdocFile').val();
+	  if(validate_fileupload(selectedFile)){
+		   var docSize = $('#'+id+'contractsdocFile')[0].files[0].size;
+	       $("#"+id+"ContractsdocFileuploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  $('#'+id+'ContractsdocFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+	    	  $('#'+id+'ContractsdocFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+			  $('#'+id+'contractsdocFile').attr('record-exist','yes');
+			  $('#'+id+'contractsdocFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+	      }else{
+	    	 $('input#'+id+'contractsdocFile').removeAttr( "record-exist record-exist-errormsg");
+   		 $('#'+id+'ContractsdocFileuploadFileGroup').find('p.jquery_form_error_message').remove(); 
+	      }
+	  }
+	  else{
+		      $('#'+id+'ContractsdocFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+		      $('#'+id+'ContractsdocFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Invalid Format</span>");
+			  $('#'+id+'contractsdocFile').attr('record-exist','yes');
+			  $('#'+id+'contractsdocFile').attr('record-exist-errorMsg','Invalid Format'); 
+	  }
+	
+}
+</script>
+
+
+
+<script>
+function addFormsAttachment(){  
+			var checkMaxTsRowNum = $("#formsAttcahmentMaxRowNumber").val();
+			var tbl = document.getElementById("formsAttachmentTable");
+			var maxRowNum = parseInt($("input[name = 'formsAttcahmentMaxRowNumber']").val());
+			$("input[name = 'formsAttcahmentMaxRowNumber']").val(maxRowNum + 1);
+			
+			
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", "divAttachmentFormsRow" + maxRowNum);
+			
+			
+			var cell0 = row.insertCell(0);
+			var divAttachmentTdStr = document.getElementById("divFormsAttachmentTd1").innerHTML;
+			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+			cell0.innerHTML = divAttachmentTdStr;
+			
+			
+}			
+</script>
+	
+<script type="text/javascript">
+	function removeFormsAttachmentRow(rowId) {
+		 document.getElementById("divAttachmentFormsRow"+rowId).style.display = 'none';
+		 document.getElementById("divAttachmentFormsRow"+rowId).value= '';
+		 var  rId = "divAttachmentFormsRow"+rowId;
+		  var r = document.getElementById("formsAttachmentTable").rows[rId];
+          var count = 2*(r.cells.length);
+		    for(i=0;i<=count;i++){
+		        r.deleteCell(0);
+		    } 
+		 
+	}
+</script>
+
+
+
+<script type="text/javascript">
+function validateFormsUploadFile(id)
+{
+	 var selectedFile = $('#'+id+'formsdocFile').val();
+	  if(validate_fileupload(selectedFile)){
+		   var docSize = $('#'+id+'formsdocFile')[0].files[0].size;
+	       $("#"+id+"FormsdocFileuploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  $('#'+id+'FormsdocFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+	    	  $('#'+id+'FormsdocFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+			  $('#'+id+'formsdocFile').attr('record-exist','yes');
+			  $('#'+id+'formsdocFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+	      }else{
+	    	 $('input#'+id+'formsdocFile').removeAttr( "record-exist record-exist-errormsg");
+   		 $('#'+id+'FormsdocFileuploadFileGroup').find('p.jquery_form_error_message').remove(); 
+	      }
+	  }
+	  else{
+		      $('#'+id+'FormsdocFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+		      $('#'+id+'FormsdocFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Invalid Format</span>");
+			  $('#'+id+'formsdocFile').attr('record-exist','yes');
+			  $('#'+id+'formsdocFile').attr('record-exist-errorMsg','Invalid Format'); 
+	  }
+	
+}
+</script>
+
+
+
+
+<script type="text/javascript">
+function validate_fileupload(fileName)
+{
+
+    var allowed_extensions = new Array("ppt", "pptx", "pps", "ppsx", "doc", "docx", "pdf", "rtf", "odt", "xls", "xlsx", "csv", "zip", "txt", "jpg","jpeg","bmp","png","gif","eps","tiff","TGA","psd","svg","msg","wpd","wps");
+    var file_extension = fileName.split('.').pop(); 
+
+    for(var i = 0; i <= allowed_extensions.length; i++)
+    {
+        if(allowed_extensions[i] != null && allowed_extensions[i] != '' && allowed_extensions[i] != 'undefined' && allowed_extensions[i]==file_extension.toLowerCase())
+        {
+            return true; // valid file extension
+        }
+    }
+
+    return false;
+}
+</script>
+
+<script type="text/javascript">
+function validateSupportingUploadFile(id)
+{
+	 var selectedFile = $('#'+id+'supportingdocFile').val();
+	  if(validate_fileupload(selectedFile)){
+		   var docSize = $('#'+id+'supportingdocFile')[0].files[0].size;
+	       $("#"+id+"SupportingdocFileuploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  $('#'+id+'SupportingdocFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+	    	  $('#'+id+'SupportingdocFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+			  $('#'+id+'supportingdocFile').attr('record-exist','yes');
+			  $('#'+id+'supportingdocFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+	      }else{
+	    	 $('input#'+id+'supportingdocFile').removeAttr( "record-exist record-exist-errormsg");
+   		 $('#'+id+'SupportingdocFileuploadFileGroup').find('p.jquery_form_error_message').remove(); 
+	      }
+	  }
+	  else{
+		      $('#'+id+'SupportingdocFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+		      $('#'+id+'SupportingdocFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Invalid Format</span>");
+			  $('#'+id+'supportingdocFile').attr('record-exist','yes');
+			  $('#'+id+'supportingdocFile').attr('record-exist-errorMsg','Invalid Format'); 
+	  }
+	
+}
+</script>
+
+
+
+<script type="text/javascript">
+function validateUploadFile(id)
+{
+	 var selectedFile = $('#'+id+'docFile').val();
+	  if(validate_fileupload(selectedFile)){
+		   var docSize = $('#'+id+'docFile')[0].files[0].size;
+	       $("#"+id+"docFileuploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+	    	  $('#'+id+'docFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+			  $('#'+id+'docFile').attr('record-exist','yes');
+			  $('#'+id+'docFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+	      }else{
+	    	 $('input#'+id+'docFile').removeAttr( "record-exist record-exist-errormsg");
+   		 $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove(); 
+	      }
+	  }
+	  else{
+		      $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+		      $('#'+id+'docFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Invalid Format</span>");
+			  $('#'+id+'docFile').attr('record-exist','yes');
+			  $('#'+id+'docFile').attr('record-exist-errorMsg','Invalid Format'); 
+	  }
+	
+}
+</script>
+  
   
   
   <script>
@@ -977,6 +1251,13 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		        		var $tabs = $('.tabbable li');
 		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
 		     	        document.getElementById("templateDocs").disabled = false;
+		     	        
+		     	       getTemplatePolicyDocumentsDetails(onboardId);
+		     	       getTemplateSupportingDocumentsDetails(onboardId);
+		     	       getTemplateContractsDocumentsDetails(onboardId);
+		     	       getTemplateFormsDocumentsDetails(onboardId);
+		     	       
+		     	       $("#documentstemplateId").val(onboardId);
 		        	}
 		        	
 	     	        $("#candidateOnBoardId").val(onboardId);
@@ -1016,8 +1297,15 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	    	 url: sourceleadUrl+"/loadOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID, 
 	        success: function(data) {
 	        	
-	        	var json = JSON.parse(data);
-	        	loadOfferAcceptedCandidates(json['onBoardCandidateId']);
+	        	 var json = JSON.parse(data);
+	        	
+	        	 var result = "";
+	        	 var selected = 'selected';
+	        	 result = result +'<option disabled selected>--Select Candidate--</option>';
+	        	 result = result +'<option value='+json['onBoardCandidateId']+","+json['onBoardOfferId']+' '+selected+' >'+json['candidateName']+' ('+json['jobTitle']+')</option>';
+	        	 $("#onboardCandiate").empty();
+	           	 $("#onboardCandiate").append(result); 
+	           	 $('#onboardCandiate').trigger("chosen:updated");
 	        	
 	        	$("#firstName").val(json['firstName']);
 	        	
@@ -1102,5 +1390,657 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	 }
  }
  </script>
+ 
+ 
+ <script>
+function getTemplatePolicyDocumentsDetails(onboardId){
+	if(onboardId == '' || onboardId == null || onboardId =='undefined'){
+		onboardId = document.getElementById("candidateOnBoardId").value;
+	}
+	var documentType = "Policies"
+	if(onboardId){
+		var sourceleadUrl ='${sourceleadUrl}';
+	     $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByOnboardId?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&documentType="+documentType, 
+		        success: function(data) {
+		        	
+		        	 var json = JSON.parse(data);
+		        	 var result = "";
+		        	 
+                	 for (var i = 0; i < json.length; i++) { 
+                		 var opt = json[i]; 
+                		 result = result +"<strong id='policydocument"+opt.id+"'>";
+           				 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadTemplateDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
+           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
+           				 result = result +"</a>";
+           				
+           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+           					result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument("+opt.id+",\""+documentType+"\");' >"; 
+           				 }else{
+           					result = result +"<input class='dele' type='button' onClick='deleteCandidateOnboardDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
+           				 }
+           				 
+           				 result = result +"</strong>";
+           				
+           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+           					result = result +"<input type='hidden' name='savedPoliciesAttcahments' id='policyAttachment"+opt.id+"' value='"+opt.id+"' />";
+           				}
+           				 
+                	 }
+                	
+                	 result = result +"<input type='hidden' name='policiesAttcahmentMaxRowNumber'  id='policiesAttcahmentMaxRowNumber' value='1' />";
+                	 result = result +"<table class='timesheetAttachment' id='policiesAttachmentTable' cellpadding='0' cellspacing='0'>";
+                	 result = result +"<tr id='divAttachmentTsRow0'>";
+                	 result = result +"<td><div id='0docFileuploadFileGroup'><input type='file' name='0docFile' id='0docFile' field-name='Attachment' onchange='validateUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addPoliciesAttachment()'></i></div></td>";
+                	 result = result +"</tr>";
+                	 result = result +"</table>";
+                	 $("#savedPociliesAttachments").empty();
+                	 
+                	 $("#savedPociliesAttachments").append(result);
+                	 
+                	 
+                	 
+			        
+		        },
+		    });
+	}
+}
+</script>
+
+<script>
+function getTemplateSupportingDocumentsDetails(onboardId){
+	if(onboardId == '' || onboardId == null || onboardId =='undefined'){
+		onboardId = document.getElementById("candidateOnBoardId").value;
+	}
+	var documentType = "Supported"
+	if(onboardId){
+		var sourceleadUrl ='${sourceleadUrl}';
+	     $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByOnboardId?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&documentType="+documentType, 
+		        success: function(data) {
+		        	
+		        	 var json = JSON.parse(data);
+		        	 var result = "";
+		        	 
+                	 for (var i = 0; i < json.length; i++) { 
+                		 var opt = json[i]; 
+                		 result = result +"<strong id='supportdocument"+opt.id+"'>";
+                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadTemplateDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
+           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
+           				 result = result +"</a>";
+           				
+           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+            					result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument("+opt.id+",\""+documentType+"\");' >"; 
+           				 }else{
+           					result = result +"<input class='dele' type='button' onClick='deleteCandidateOnboardDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
+           				 }
+           				
+           				 result = result +"</strong>";
+           				 
+           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+           					result = result +"<input type='hidden' name='savedSupportedAttcahments' id='supportedAttachment"+opt.id+"' value='"+opt.id+"' />";
+           				 }
+           				
+                	 }
+                	 
+                	 result = result +"<input type='hidden' name='supportingAttcahmentMaxRowNumber'  id='supportingAttcahmentMaxRowNumber' value='1' />";
+                	 result = result +"<table class='timesheetAttachment' id='supportingAttachmentTable' cellpadding='0' cellspacing='0'>";
+                	 result = result +"<tr id='divAttachmentTsRow0'>";
+                	 result = result +"<td><div id='0SupportingdocFileuploadFileGroup'><input type='file' name='0supportingdocFile' id='0supportingdocFile' field-name='Attachment' onchange='validateSupportingUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addSupportingAttachment()'></i></div></td>";
+                	 result = result +"</tr>";
+                	 result = result +"</table>";
+                	 $("#savedSupportedAttachments").empty();
+                	 $("#savedSupportedAttachments").append(result);
+                	 
+                	 
+			        
+		        },
+		    });
+	}
+}
+</script>
+
+
+
+<script>
+function getTemplateContractsDocumentsDetails(onboardId){
+	if(onboardId == '' || onboardId == null || onboardId =='undefined'){
+		onboardId = document.getElementById("candidateOnBoardId").value;
+	}
+	var documentType = "Contracts"
+	if(onboardId){
+		var sourceleadUrl ='${sourceleadUrl}';
+	     $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByOnboardId?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&documentType="+documentType, 
+		        success: function(data) {
+		        	
+		        	 var json = JSON.parse(data);
+		        	 var result = "";
+		        	 
+                	 for (var i = 0; i < json.length; i++) { 
+                		 var opt = json[i]; 
+                		 result = result +"<strong id='contractsdocument"+opt.id+"'>";
+                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadTemplateDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
+           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
+           				 result = result +"</a>";
+           				
+           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+            					result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument("+opt.id+",\""+documentType+"\");' >"; 
+           				 }else{
+           					result = result +"<input class='dele' type='button' onClick='deleteCandidateOnboardDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
+           				 }
+           				
+           				 result = result +"</strong>";
+           				 
+           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+           					result = result +"<input type='hidden' name='savedContractsAttcahments' id='contractsAttachment"+opt.id+"' value='"+opt.id+"' />";
+           				 }
+           				
+                	 }
+                	 
+                	 result = result +"<input type='hidden' name='contractsAttcahmentMaxRowNumber'  id='contractsAttcahmentMaxRowNumber' value='1' />";
+                	 result = result +"<table class='timesheetAttachment' id='contractsAttachmentTable' cellpadding='0' cellspacing='0'>";
+                	 result = result +"<tr id='divAttachmentTsRow0'>";
+                	 result = result +"<td><div id='0ContractsdocFileuploadFileGroup'><input type='file' name='0contractsdocFile' id='0contractsdocFile' field-name='Attachment' onchange='validateContractsUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addContractsAttachment()'></i></div></td>";
+                	 result = result +"</tr>";
+                	 result = result +"</table>";
+                	 $("#savedContractsAttachments").empty();
+                	 $("#savedContractsAttachments").append(result);
+                	 
+                	 
+			        
+		        },
+		    });
+	}
+}
+</script>
+
+
+
+
+<script>
+function getTemplateFormsDocumentsDetails(onboardId){
+	if(onboardId == '' || onboardId == null || onboardId =='undefined'){
+		onboardId = document.getElementById("candidateOnBoardId").value;
+	}
+	var documentType = "Forms"
+	if(onboardId){
+		var sourceleadUrl ='${sourceleadUrl}';
+	     $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByOnboardId?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&documentType="+documentType, 
+		        success: function(data) {
+		        	
+		        	 var json = JSON.parse(data);
+		        	 var result = "";
+		        	 
+                	 for (var i = 0; i < json.length; i++) { 
+                		 var opt = json[i]; 
+                		 result = result +"<strong id='formsdocument"+opt.id+"'>";
+                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadTemplateDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
+           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
+           				 result = result +"</a>";
+           				
+           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+            					result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument("+opt.id+",\""+documentType+"\");' >"; 
+           				 }else{
+           					result = result +"<input class='dele' type='button' onClick='deleteCandidateOnboardDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
+           				 }
+           				
+           				 result = result +"</strong>";
+           				 
+           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+           					result = result +"<input type='hidden' name='savedFormsAttcahments' id='formsAttachment"+opt.id+"' value='"+opt.id+"' />";
+           				 }
+           				
+                	 }
+                	 
+                	 result = result +"<input type='hidden' name='formsAttcahmentMaxRowNumber'  id='formsAttcahmentMaxRowNumber' value='1' />";
+                	 result = result +"<table class='timesheetAttachment' id='formsAttachmentTable' cellpadding='0' cellspacing='0'>";
+                	 result = result +"<tr id='divAttachmentTsRow0'>";
+                	 result = result +"<td><div id='0FormsdocFileuploadFileGroup'><input type='file' name='0formsdocFile' id='0formsdocFile' field-name='Attachment' onchange='validateFormsUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addFormsAttachment()'></i></div></td>";
+                	 result = result +"</tr>";
+                	 result = result +"</table>";
+                	 $("#savedFormsAttachments").empty();
+                	 $("#savedFormsAttachments").append(result);
+                	 
+                	 
+			        
+		        },
+		    });
+	}
+}
+</script>
+
   
   
+  
+<script>
+function deleteTemplateDocument(documentId,documentType){
+	
+	if(documentType == 'Policies'){
+		document.getElementById("policydocument"+documentId).remove();
+		document.getElementById("policyAttachment"+documentId).remove();
+	}
+	else if(documentType == 'Supported'){
+		document.getElementById("supportdocument"+documentId).remove();
+		document.getElementById("supportedAttachment"+documentId).remove();
+	}
+	else if(documentType == 'Contracts'){
+		document.getElementById("contractsdocument"+documentId).remove();
+		document.getElementById("contractsAttachment"+documentId).remove();
+	}
+	else if(documentType == 'Forms'){
+		document.getElementById("formsdocument"+documentId).remove();
+		document.getElementById("formsAttachment"+documentId).remove();
+	}
+	
+	 
+}
+</script>
+
+<script>
+function deleteCandidateOnboardDocument(documentUUID,documentId,documentType){
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	   $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/deleteTemplateDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
+	        success: function(data) {
+	        	if(data == 'success'){
+	        		if(documentType == 'Policies'){
+	        			document.getElementById("policydocument"+documentId).remove();
+	        		}
+	        		else if(documentType == 'Supported'){
+	        			document.getElementById("supportdocument"+documentId).remove();
+	        		}
+	        		else if(documentType == 'Contracts'){
+	        			document.getElementById("contractsdocument"+documentId).remove();
+	        		}
+	        		else if(documentType == 'Forms'){
+	        			document.getElementById("formsdocument"+documentId).remove();
+	        		}
+	        		
+	        	}
+	        },
+	    });
+	 
+}
+</script>
+
+
+
+
+
+
+<script>
+function createTemplateDocs(saveType){
+	var validationSettings = {
+	        errorMessagePosition : 'element',
+	       borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+         }; 
+	
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  
+	  var frm = $('#templateDocuments_form').serializeFormJSON();
+      var con = JSON.stringify(frm);
+      con = con.replace(/[{}]/g, "");
+      
+      //It will escape all the special characters
+      var jsonData = encodeURIComponent(con);
+      
+	   var form = $('#templateDocuments_form')[0];
+	   var formData = new FormData(form); 
+	
+   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$.ajax({
+        type : "POST",
+	      data: formData,
+	      contentType : 'application/json; charset=utf-8',
+	      enctype: 'multipart/form-data',
+        processData: false,
+        contentType:false,
+	      dataType : 'json',
+    	  url: sourceleadUrl+"/saveCandidatedOnboardingTemplateDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,		
+	      success :function(result) {
+	    	  
+	    	  if(saveType == 'saveAndContinue'){
+	        		var $tabs = $('.tabbable li');
+	     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
+	     	        document.getElementById("templateTasks").disabled = false;
+	     	        getOnboardingTasksList();
+	        	}else{
+	        		getTemplatePolicyDocumentsDetails();
+	        		getTemplateSupportingDocumentsDetails();
+	        		getTemplateContractsDocumentsDetails();
+		     	    getTemplateFormsDocumentsDetails();
+	        	}
+	    	  $("#loading").removeAttr("style");
+	    	  
+	      }
+    	  
+  });
+}
+</script>
+
+
+
+<script>
+  function validateTaskEmail(){
+	  var taskEmail = document.getElementById("taskEmail").checked;
+	  if(taskEmail == 1){
+		  document.getElementById("taskEmail").value = 'Y';
+	  }else{
+		  document.getElementById("taskEmail").value = 'N';
+	  }
+	  
+  }
+  </script>
+  
+  <script>
+  function validateTaskNotification(){
+	  var taskEmail = document.getElementById("taskNotification").checked;
+	  if(taskEmail == 1){
+		  document.getElementById("taskNotification").value = 'Y';
+	  }else{
+		  document.getElementById("taskNotification").value = 'N';
+	  }
+	  
+  }
+  </script>
+  
+  <script>
+  function flushOnboardTask(){
+	  document.getElementById("addonboardTask_form").reset();
+	
+  }
+  </script>
+  
+  <script>
+  function validateAssignToType(assignToType){
+	  if(assignToType == 'assingToUser'){
+		  document.getElementById("assignToUserDiv").style.display="";
+		  $('#onboardAssignedTo').removeAttr('data-validation-optional');
+		  $("#onboardAssignedTo").attr("data-validation", "required");
+		 
+	  }else{
+		  document.getElementById("assignToUserDiv").style.display="none";
+		  $('#onboardAssignedTo').removeAttr('data-validation');
+		  $("#onboardAssignedTo").attr("data-validation-optional", "true");
+		  getAssignToUsersList();
+	  }
+  }
+  </script>
+  
+  
+  <script>
+  function validateDueAfter(){
+	  
+	  var taskMonths = document.getElementById("taskMonths").value;
+	  var taskDays = document.getElementById("taskDays").value;
+	  var taskHours = document.getElementById("taskHours").value;
+	  var taskMinutes = document.getElementById("taskMinutes").value;
+	  
+	  
+	  if(taskMonths == '' && taskDays == '' && taskHours == '' && taskMinutes == ''){
+			  $('#taskMonths').removeAttr('data-validation-optional');
+			  $("#taskMonths").attr("data-validation", "required");
+		    
+	  }else{
+		  $('#taskMonths').removeAttr('data-validation');
+		  $("#taskMonths").attr("data-validation-optional", "true");
+		    
+	  }  
+	  
+  }
+  </script>
+
+<script>
+function getAssignToUsersList(){
+	var candidateOnBoardId = document.getElementById("candidateOnBoardId").value;
+    $("#candidateOnboardTaskId").val(candidateOnBoardId);
+    
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
+	    success: function(data) {
+	    	 var json = JSON.parse(data);
+        	 var result = "";
+        	for (var i=0; i<json.length; i++)
+			{
+        		var report = json[i];
+        		result = result +'<option value='+report.userId+' >'+report.userName+'</option>';
+			}
+        	 $("#onboardAssignedTo").empty();
+           	 $("#onboardAssignedTo").append(result); 
+           	 $('#onboardAssignedTo').trigger("chosen:updated");
+	    }
+   }); 
+}
+</script>
+
+<script>
+function saveOnboardTask(){
+	
+	var validationSettings = {
+	        errorMessagePosition : 'element',
+	       borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+         }; 
+	
+	  if ($('#addonboardTask_form').validate(false, validationSettings)){ 
+		    var frm = $('#addonboardTask_form').serializeFormJSON();
+	        var con = JSON.stringify(frm);
+	        con = con.replace(/[{}]/g, "");
+	        
+	        //It will escape all the special characters
+	        var jsonData = encodeURIComponent(con);
+	        
+	        var sourceleadUrl ='${sourceleadUrl}';
+	        
+	       
+	        $("#onboardtasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	        $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/saveCandidateOnBoardTasks?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+		        success: function(result) {
+		        	
+		        	if(result == 'success'){
+		        		$("#onboardtasksLoading").removeAttr("style");
+			        	flushOnboardTask();
+			        	getAssignToUsersList();
+			        	getOnboardingTasksList();
+		        	}
+		        	
+		        },
+		    });  
+	        return true;
+		
+	  }else{
+		return false;
+	  }
+}
+
+$('body').on('blur', '#addonboardTask_form', function() {
+	$("#addonboardTask_form").showHelpOnFocus();
+	$("#addonboardTask_form").validateOnBlur(false, validationSettings);  
+});
+</script>
+
+<script>
+function getOnboardingTasksList(){
+	var onboardId = document.getElementById("candidateOnBoardId").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	var locationId = '${SourceLeadWeb_orgLocationId}';
+	
+	
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/getCandidateOnboardTasksList?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId,	    	   
+	    success: function(data) {
+	    	 var json = JSON.parse(data);
+        	 var result = "";
+        	 
+        	if(json.length > 0){ 
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var report = json[i];
+	        		
+	        		var prority = '';
+	        		var repeat = '';
+	        		
+	        		if(report.priority != null && report.priority != '' && report.priority != 'undefined'){
+	        			prority = report.priority;
+	        		}else{
+	        			prority = '----';
+	        		}
+	        		
+	        		if(report.taskRepeat != null && report.taskRepeat != '' && report.taskRepeat != 'undefined'){
+	        			repeat = report.taskRepeat;
+	        		}else{
+	        			repeat = '----';
+	        		}
+	        		
+	        		result = result +'<div class="clearfix taskwidget_inner" id="onboardTask'+report.id+'">';
+	        		result = result +'<div class="media-body">';
+	        		result = result +'<div class="clearfix taskheder">';
+	        		
+	        		result = result +"<label> <span class='paddingRight'>Subject:</span> <strong class='text-primary'>"+report.taskName+"</strong><i class='fa fa-trash text-danger paddingLeft' onClick='deleteTask("+report.id+",\""+report.onboardTaskType+"\");'></i></label>";
+	        		
+	        		result = result +'<label class="small pull-right text-muted"> <span>'+report.dueAfterString+'</span> </label>';
+	        		result = result +'</div>';
+	        		result = result +'<ul class="list-inline list-description mt10">';
+	        		
+	        		result = result +'<li><span>Assign To:</span>';
+	        		
+	        		if(report.usersList.length > 0){
+	        			for(var j=0; j<report.usersList.length; j++){
+		 					result = result +'<label>'+report.usersList[j]+'</label>';
+		 				}
+	        		}else{
+	 					result = result +'Onboarding Candidate';
+	 				}
+	        		result = result +'</li>';
+	        		
+	        		result = result +'<li><span>Priority:</span>'+prority+'</li>';
+	        		result = result +'<li><span>Repeat:</span> '+repeat+'</li>';
+	        		result = result +'</ul>';
+	        		result = result +'</div>';
+	        		result = result +'</div>';
+        		   
+	        		if(report.onboardTaskType != 'Candidate Task'){
+       					result = result +"<input type='hidden' name='savedTemplateTask' id='templateTask"+report.id+"' value='"+report.id+"' />";
+       				}
+				}
+        	}else{
+        		result = result +'<div><h4>No Tasks Found</h4></div>';
+        	}
+        	
+        	result = result +'<div class="form-footer clearfix mt">';
+    		result = result +'<div class="pull-right mr">';
+    		result = result +'<input type="button" value="Finish" onclick="saveAndFinishOnboardTemplate('+onboardId+');" class="btn btn-sm btn-primary">';
+    		result = result +'</div>';
+    		result = result +'</div>';
+    		
+    		 $("#onboardTasksList").empty();
+           	 $("#onboardTasksList").append(result); 
+    		
+        	 
+	    }
+   }); 
+	
+  $("#loading").removeAttr("style");
+	
+}
+</script>
+
+
+<script>
+function deleteTask(taskId,taskType){
+	
+	if(taskType != 'Candidate Task'){
+		document.getElementById("onboardTask"+taskId).remove();
+		document.getElementById("templateTask"+taskId).remove()
+	}else{
+		
+		var sourceleadUrl ='${sourceleadUrl}';
+		   $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/deleteOnboardTaskByTaskId?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
+		        success: function(data) {
+		        	if(data == 'success'){
+		        		document.getElementById("onboardTask"+taskId).remove();
+		        		
+		        	}
+		        },
+		    });
+	}
+}
+</script>
+
+
+<script>
+function saveAndFinishOnboardTemplate(onboardId){
+	
+	var tasksIds = document.getElementsByName("savedTemplateTask");
+	var tasks = '';
+	for(var i=0; i < tasksIds.length; i++){
+		tasks = tasks+tasksIds[i].value+",";
+	}
+	
+	tasks = tasks.substring(0, tasks.length - 1);
+	
+	
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/saveAndFinishCandidateOnboard?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&tasks="+tasks, 	    	   
+	    success: function(data) {
+       	 
+	    	location.replace(sourceleadUrl+"/candidateOnBoardingList");  
+	    }
+  });  
+	
+
+}
+</script>
+
+
+<script type="text/javascript">
+ function validateUserEmail() {
+	 var EmailId = document.getElementById("companyEmail").value;
+	 $('#emailDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(EmailId != null && EmailId != ""){
+		 $("#save_onboardUser").attr("disabled", "disabled");
+		 $("#saveAndContinue_onboardUser" ).attr("disabled", "disabled");
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateUserEmail?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
+		        success: function(data) {
+		        	if(data == 'true'){
+		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
+						  $("input#companyEmail").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
+						  document.getElementById("companyEmail").setAttribute('record-exist','yes');
+						  document.getElementById("companyEmail").setAttribute('record-exist-errorMsg',EmailId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#companyEmail').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+                         $("#save_onboardUser").removeAttr("disabled");
+                         $("#saveAndContinue_onboardUser").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>  

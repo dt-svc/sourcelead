@@ -67,5 +67,58 @@ public class OnboardTasksDaoImpl implements OnboardTasksDao{
 	    List<OnboardTasks> tasksList = session.createQuery(query.toString()).setLong("templateId", templateId).setCacheable(true).list();
         return tasksList;
 	}
+
+
+	@Override
+	@Transactional
+	public Integer getOnBoardTasksCountByCandidateOnBoardingId(Long candidateOnBoardingId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query ="select count(*) from OnboardTasks tasks where tasks.candidateOnBoardingId.id =:candidateOnBoardingId ";
+		List<Long> tasksCount = session.createQuery(query.toString()).setLong("candidateOnBoardingId", candidateOnBoardingId).list();
+			Integer count = 0;
+			if(tasksCount != null && !tasksCount.isEmpty()){
+					count = tasksCount.get(0).intValue();
+			}
+			return count;
+	}
+
+
+	@Override
+	@Transactional
+	public List<OnboardTasks> getOnBoardTasksListByCandidateOnBoardingId(Long candidateOnBoardingId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from OnboardTasks tasks left join fetch tasks.candidateOnBoardingId where tasks.candidateOnBoardingId.id = :candidateOnBoardingId "
+	    		+ " and tasks.status = '1' ";
+	    List<OnboardTasks> tasksList = session.createQuery(query.toString()).setLong("candidateOnBoardingId", candidateOnBoardingId).setCacheable(true).list();
+        return tasksList;
+	}
+
+
+	@Override
+	@Transactional
+	public List<OnboardTasks> getOnboardTasksByTemplateIdList(List<Long> templateId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from OnboardTasks tasks left join fetch tasks.onboardingTemplateId where tasks.onboardingTemplateId.id IN (:templateId) "
+	    		+ " and tasks.status = '1' ";
+	    List<OnboardTasks> tasksList = session.createQuery(query.toString()).setParameterList("templateId", templateId).setCacheable(true).list();
+        return tasksList;
+	}
+
+
+	@Override
+	@Transactional
+	public OnboardTasks getOnboardTasksByTaskId(Long Id) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<OnboardTasks> onboardTasks = session.createQuery("from OnboardTasks tasks where tasks.id =:id" ).setLong( "id", Id ).setCacheable(true).list();
+		if (onboardTasks.size() > 0) {
+			return onboardTasks.get(0);
+		} else {
+			return null;
+		}
+	}
 	
 }

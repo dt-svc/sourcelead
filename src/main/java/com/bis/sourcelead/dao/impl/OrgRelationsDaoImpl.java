@@ -757,6 +757,28 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		return count.intValue();
 
 	}
+
+	@Override
+	@Transactional
+	public List<OrgRelations> getAllClientsByOrgLocationIdAndDomain(Long orgLocationId, String domain, String responderType)
+	{
+		logger.debug("In OrgRelations getAllClientsByOrgLocationId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		List<OrgRelations> clientsList = null;
+		// Prasanna vadla : query changed to get new client list for ATS_VMS  
+		//Query clientsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where orgrelation.locationId = :orgLocationId");
+		
+		Query clientsListQuery;
+		if("".equalsIgnoreCase(responderType) || "Client".equalsIgnoreCase(responderType)){
+			clientsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where  orgrelation.id IN(  select DISTINCT spoc.orgRelations.id  from OrgSpoc spoc  where spoc.clientUser.email like '%"+domain+"%' ) and  (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Vendor') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Vendor' )");
+			clientsList = clientsListQuery.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		}else{
+			clientsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where  orgrelation.id IN(  select DISTINCT spoc.orgRelations.id  from OrgSpoc spoc  where spoc.clientUser.email like '%"+domain+"%' ) and  (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Client') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Client' )");
+			clientsList = clientsListQuery.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		}
+		
+		return clientsList;
+	}
 	
 	
 }

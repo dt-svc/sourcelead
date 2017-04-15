@@ -1,141 +1,66 @@
+#termination mail to employee
+INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('employeeTermination', 'Email');
 
-DROP TABLE IF EXISTS `sourcelead`.`ON_BOARDING_TEMPLATE`;
-CREATE TABLE `sourcelead`.`ON_BOARDING_TEMPLATE` (
-  ID BIGINT NOT NULL AUTO_INCREMENT,
-  TEMPLATE_NAME VARCHAR(100) DEFAULT NULL,
-  DESCRIPTION TEXT,
-  TEMPLATE_UUID VARCHAR(20) DEFAULT NULL,
-  CREATED_USER VARCHAR(200) DEFAULT NULL,
-  TEMPLATE_STATUS VARCHAR(20) DEFAULT NULL,
-  STATUS INT,
-  ORG_LOCATION_ID BIGINT,
-  CREATED_DATE DATE,
-  CREATED_BY VARCHAR(10),
-  UPDATED_DATE DATE,
-  UPDATED_BY VARCHAR(10),
-  PRIMARY KEY (`ID`),
-  FOREIGN KEY(ORG_LOCATION_ID) REFERENCES `sourcelead`.`ORG_LOCATIONS`(ID)
-  
-) ;
+#CLASS_FIELD
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'Employee Name', '{{employeeTermination.EmployeeName}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'Project Name', '{{employeeTermination.ProjectName}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'Project StartDate', '{{employeeTermination.ProjectStartDate}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'Project EndDate', '{{employeeTermination.ProjectEndDate}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'Manager', '{{employeeTermination.Manager}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'LoginUser', '{{employeeTermination.LoginUser}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'LoginOrg', '{{employeeTermination.LoginOrg}}');
+
+#email_scenario
+INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`) VALUES
+			('Employee Termination','Email', 'Employee Termination', 'notify termination of employee', '{{employeeTermination.EmployeeName}} your project have been end','org', '\nBest Regards,\n{{employeeTermination.LoginUser}}\n{{employeeTermination.LoginOrg}}.', 'Dear {{employeeTermination.EmployeeName}},\n Your {{employeeTermination.ProjectName}} project have been end.\n The brief details of the project are following,\n Project StartDate : {{employeeTermination.ProjectStartDate}}\n Project EndDate : {{employeeTermination.ProjectEndDate}}\n Manager : {{employeeTermination.Manager}}','N', 'SLADMIN', 'slead', 'sleadIN');
 
 
-
-DROP TABLE IF EXISTS `sourcelead`.`DEPARTMENT`;
-CREATE TABLE `sourcelead`.`DEPARTMENT` (
-  ID BIGINT NOT NULL AUTO_INCREMENT,
-  DEPARTMENT_NAME VARCHAR(100) DEFAULT NULL,
-  DESCRIPTION TEXT,
-  ORG_LOCATION_ID BIGINT,
-  STATUS INT,
-  CREATED_DATE DATE,
-  CREATED_BY VARCHAR(10),
-  UPDATED_DATE DATE,
-  UPDATED_BY VARCHAR(10),
-  PRIMARY KEY (`ID`),
-  FOREIGN KEY(ORG_LOCATION_ID) REFERENCES `sourcelead`.`ORG_LOCATIONS`(ID)
-  
-) ;
+#notification
+INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('employeeTermination', 'Notification');
+INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`,`CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`) VALUES
+			('Employee Termination', 'Notification', 'Employee Termination', 'notification to employee about termination', '{{employeeTermination.EmployeeName}} your project have been end', 'sourcelead', '', '{{employeeTermination.EmployeeName}} your project have been end','N','SLADMIN', 'sourceLead.com', 'in.sourceLead.com');
 
 
+			
+			
+#Employee Termination Mail To Manager
+INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('employeeTerminationmailtomanager', 'Email');
 
-DROP TABLE IF EXISTS `sourcelead`.`CANDIDATE_ON_BOARDING`;
-CREATE TABLE `sourcelead`.`CANDIDATE_ON_BOARDING` (
-  ID BIGINT NOT NULL AUTO_INCREMENT,
-  CANDIDATE_ID BIGINT,  
-  OFFER_ID BIGINT,  
-  FIRST_NAME VARCHAR(100) DEFAULT NULL,
-  LAST_NAME VARCHAR(100) DEFAULT NULL,
-  ADDRESS_1 TEXT,
-  ADDRESS_2 TEXT,
-  COUNTRY VARCHAR(200) DEFAULT NULL,
-  STATE VARCHAR(200) DEFAULT NULL,
-  CITY VARCHAR(200) DEFAULT NULL,
-  ZIPCODE VARCHAR(20) DEFAULT NULL,
-  MOBILE_NUMBER VARCHAR(20) DEFAULT NULL,
-  PERSONAL_EMAIL VARCHAR(100) DEFAULT NULL,
-  COMPANY_EMAIL VARCHAR(100) DEFAULT NULL,
-  DEPARTMENT_ID BIGINT,
-  ROLE_ID BIGINT,
-  START_DATE DATE,
-  END_DATE DATE,
-  SALARY_RATE VARCHAR(20) DEFAULT NULL,
-  MANAGER_USER_ID BIGINT,
-  TEAM_ID BIGINT,
-  EMPLOYMENT_TYPE VARCHAR(50) DEFAULT NULL,
-  PROBATION_NOTICE VARCHAR(50) DEFAULT NULL,
-  TERMINATION_NOTICE VARCHAR(50) DEFAULT NULL,
-  DUE_DATE DATE,
-  SPECIAL_CONDITIONS TEXT,
-  ONBOARD_TEMPLATE_ID TEXT,
-  ORG_LOCATION_ID BIGINT,
-  CANDIDATE_ONBOARD_UUID VARCHAR(20) DEFAULT NULL,
-  CANDIDATE_ONBOARD_STATUS VARCHAR(20) DEFAULT NULL,
-  STATUS INT,
-  CREATED_DATE DATE,
-  CREATED_BY VARCHAR(10),
-  UPDATED_DATE DATE,
-  UPDATED_BY VARCHAR(10),
-  PRIMARY KEY (`ID`),
-  FOREIGN KEY(CANDIDATE_ID) REFERENCES `sourcelead`.`CANDIDATE`(ID),
-  FOREIGN KEY(OFFER_ID) REFERENCES `sourcelead`.`REQUIREMENT_OFFERS`(ID),
-  FOREIGN KEY(DEPARTMENT_ID) REFERENCES `sourcelead`.`DEPARTMENT`(ID),
-  FOREIGN KEY(ROLE_ID) REFERENCES `sourcelead`.`ROLES`(ID),
-  FOREIGN KEY(MANAGER_USER_ID) REFERENCES `sourcelead`.`USER`(ID),
-  FOREIGN KEY(TEAM_ID) REFERENCES `sourcelead`.`TEAM`(ID),
-  FOREIGN KEY(ORG_LOCATION_ID) REFERENCES `sourcelead`.`ORG_LOCATIONS`(ID)
-  
-) ;
+#CLASS_FIELD
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'Employee Name', '{{employeeTerminationmailtomanager.EmployeeName}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'Manager', '{{employeeTerminationmailtomanager.Manager}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'LoginUser', '{{employeeTerminationmailtomanager.LoginUser}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'Reason', '{{employeeTerminationmailtomanager.Reason}}');
+
+#email_scenario
+INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`) VALUES
+			('Employee Termination Mail To Manager','Email', 'Employee Termination Mail To Manager', 'notify termination of employee to manager', '{{employeeTerminationmailtomanager.EmployeeName}} have been terminated from the project','org', '\nBest Regards,\n{{employeeTerminationmailtomanager.LoginUser}}.', 'Dear {{employeeTerminationmailtomanager.Manager}},\n {{employeeTerminationmailtomanager.EmployeeName}} have been terminated from the project, Due to following reason\n Reason : {{employeeTerminationmailtomanager.Reason}}','N', 'SLADMIN', 'slead', 'sleadIN');
+
+#notification
+INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('employeeTerminationmailtomanager', 'Notification');
+INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`,`CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`) VALUES
+			('Employee Termination Mail To Manager', 'Notification', 'Employee Termination Mail To Manager', 'notification to manager about employee termination', '{{employeeTerminationmailtomanager.EmployeeName}} have been terminated from the project', 'sourcelead', '', '{{employeeTerminationmailtomanager.EmployeeName}} have been terminated from the project','N','SLADMIN', 'sourceLead.com', 'in.sourceLead.com');
+
+		
+			
+#Reassign mail to employee
+INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('employeeReassign', 'Email');
+
+#CLASS_FIELD
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'Employee Name', '{{employeeReassign.EmployeeName}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'Project Name', '{{employeeReassign.ProjectName}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'Project StartDate', '{{employeeReassign.ProjectStartDate}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'Project EndDate', '{{employeeReassign.ProjectEndDate}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'Manager', '{{employeeReassign.Manager}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'LoginUser', '{{employeeReassign.LoginUser}}');
+
+#email_scenario
+INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`) VALUES
+			('Employee Reassign','Email', 'Employee Reassign', 'notify reassign of employee', 'You have reassigned for the project {{employeeReassign.ProjectName}}','org', '\nBest Regards,\n{{employeeReassign.LoginUser}}', 'Dear {{employeeReassign.EmployeeName}},\n You are reassigned for the project {{employeeReassign.ProjectName}}.\n The brief details of the project are following,\n Project StartDate : {{employeeReassign.ProjectStartDate}}\n Project EndDate : {{employeeReassign.ProjectEndDate}}\n Manager : {{employeeReassign.Manager}}','N', 'SLADMIN', 'slead', 'sleadIN');
 
 
-
-DROP TABLE IF EXISTS `sourcelead`.`ON_BOARDING_TEMPLATE_DOCUMENTS`;
-CREATE TABLE `sourcelead`.`ON_BOARDING_TEMPLATE_DOCUMENTS` (
-  ID BIGINT NOT NULL AUTO_INCREMENT,
-  ON_BOARDING_TEMPLATE_ID BIGINT,  
-  DOCUMENT_TYPE VARCHAR(50) DEFAULT NULL,
-  DOC_FILE MEDIUMBLOB,
-  FILE_CONTENT_TYPE VARCHAR(500),
-  FILE_NAME TEXT,
-  DOCUMENT_UUID VARCHAR(20) DEFAULT NULL,
-  STATUS INT,
-  CREATED_DATE DATE,
-  CREATED_BY VARCHAR(10),
-  UPDATED_DATE DATE,
-  UPDATED_BY VARCHAR(10),
-  PRIMARY KEY (`ID`),
-  FOREIGN KEY(ON_BOARDING_TEMPLATE_ID) REFERENCES `sourcelead`.`ON_BOARDING_TEMPLATE`(ID)
- 
-) ;
-
-
-DROP TABLE IF EXISTS `sourcelead`.`ONBOARD_TASKS`;
-CREATE TABLE `sourcelead`.`ONBOARD_TASKS` (
-  ID BIGINT NOT NULL AUTO_INCREMENT,
-  TASK_NAME VARCHAR(100) DEFAULT NULL,
-  ON_BOARDING_TEMPLATE_ID BIGINT,  
-  ASSIGN_TO_USERS VARCHAR(500) DEFAULT NULL,
-  ASSIGN_TO_CANDIDATE VARCHAR(10) DEFAULT NULL,
-  PRIORITY VARCHAR(20) DEFAULT NULL,
-  DUE_AFTER_MONTHS INT,
-  DUE_AFTER_DAYS INT,
-  DUE_AFTER_HOURS INT,
-  DUE_AFTER_MINUTES INT,
-  TASK_REPEAT VARCHAR(20) DEFAULT NULL,
-  TASK_EMAIL VARCHAR(10) DEFAULT NULL,
-  TASK_NOTIFICATION VARCHAR(10) DEFAULT NULL,
-  DESCRIPTION TEXT DEFAULT NULL,
-  STATUS INT,
-  CREATED_DATE DATE,
-  CREATED_BY VARCHAR(10),
-  UPDATED_DATE DATE,
-  UPDATED_BY VARCHAR(10),
-  PRIMARY KEY (`ID`),
-  FOREIGN KEY(ON_BOARDING_TEMPLATE_ID) REFERENCES `sourcelead`.`ON_BOARDING_TEMPLATE`(ID)
-); 
-
-
-
-
-
-
+#notification
+INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('employeeReassign', 'Notification');
+INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`,`CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`) VALUES
+			('Employee Reassign', 'Notification', 'Employee Reassign', 'notification to employee about reassign', 'You have reassigned for the project {{employeeReassign.ProjectName}}', 'sourcelead', '', 'You have reassigned for the project {{employeeReassign.ProjectName}}','N','SLADMIN', 'sourceLead.com', 'in.sourceLead.com');
 
