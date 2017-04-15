@@ -22,5 +22,7 @@ public interface ContractsTemplateService {
 	List<ContractsTemplate> getAllContractsTemplatesByContractTypeLandLocationId(Long orgLocationId, String contractType)throws Exception;
 
 	Contracts saveNewContract(JSONObject jsonObj, OrgLocations orgLocation, String saveType, User user)throws Exception;
+
+	List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType)throws Exception;
 	
 }

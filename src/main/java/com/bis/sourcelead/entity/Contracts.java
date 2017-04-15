@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -43,7 +44,7 @@ public class Contracts {
 	@Column(name = "TYPE_OF_CONTRACT")
 	private String typeOfContract;
 	
-	@ManyToOne
+	@ManyToOne 
     @JoinColumn(name="TEMPLATE_ID", nullable=false )  
 	private ContractsTemplate contractsTemplate;
 	
@@ -123,6 +124,19 @@ public class Contracts {
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Transient
+	private String ownerName;
+	
+	@Transient
+	private String vendorContactName;
+	
+
+	@Transient
+	private String startDateStr;
+	
+	@Transient
+	private String endDateStr;
 
 	public Date getCreatedDate()
 	{
@@ -358,6 +372,46 @@ public class Contracts {
 	public void setTemplateSubmissionStatus(String templateSubmissionStatus)
 	{
 		this.templateSubmissionStatus = templateSubmissionStatus;
+	}
+
+	public String getOwnerName()
+	{
+		return ownerName;
+	}
+
+	public void setOwnerName(String ownerName)
+	{
+		this.ownerName = ownerName;
+	}
+
+	public String getVendorContactName()
+	{
+		return vendorContactName;
+	}
+
+	public void setVendorContactName(String vendorContactName)
+	{
+		this.vendorContactName = vendorContactName;
+	}
+
+	public String getStartDateStr()
+	{
+		return startDateStr;
+	}
+
+	public void setStartDateStr(String startDateStr)
+	{
+		this.startDateStr = startDateStr;
+	}
+
+	public String getEndDateStr()
+	{
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr)
+	{
+		this.endDateStr = endDateStr;
 	}
 	
 	

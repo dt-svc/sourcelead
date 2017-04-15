@@ -13,6 +13,11 @@
 <!-- Content Area -->
 <!-- Content Area -->
 
+<script type="text/javascript">
+$(document).ready(function(){
+   getTemplateList();
+});
+</script>
 
 <section class="content-wraper">
 <section class="content-header clearfix">
@@ -24,9 +29,9 @@
 
 <section class="contrHead">
 <ul>
-<li title="Draft"><a href="Listby_Status.html">Draft</a></li>
+<li title="Draft"><a href="Listby_Status.html"  class="wSig">Draft</a></li>
 <li title="Waiting for Approval"><a href="Listby_Status-waitingforapproval.html"><i class="fa fa-clock-o fa-2"></i>Approve</a></li>
-<li title="Waiting to be sign"><a href="Listby_Status-waitingtosigned.html" class="wSig"><i class="fa fa-clock-o fa-2"></i>Sign</a></li>
+<li title="Waiting to be sign"><a href="Listby_Status-waitingtosigned.html"><i class="fa fa-clock-o fa-2"></i>Sign</a></li>
 <li title="Waiting for Verify"><a href="Listby_Status-waitingforverify.html"><i class="fa fa-clock-o fa-2"></i>Verify</a></li>
 <li title="Finalised"><a href="Listby_Status-finalised.html">Finalised</a></li>
 <li title="Expired"><a href="Listby_Status-expired.html">Expired</a></li>
@@ -70,112 +75,7 @@
             
 	</div>
     <div class="project_wrap_table">
-    	<table>
-        	<tbody>
-			</tbody><thead>
-            	<tr>
-                	<th>Id</th>
-                    <th>Name</th>
-                    <th>Manager</th>
-                    <th>Date</th>
-                    <th>Client</th>
-                    <th>Team</th>
-                    <th>Status</th>
-                </tr>
-			</thead>	
-                <tbody><tr>
-                	<td><div>BIS2616464165</div></td>
-                    <td><div>Vannam</div></td>
-                    <td><div>Mahesh</div></td>
-                    <td><div>form 15/9 to 20/9</div></td>
-                    <td><div>Client 1</div></td>
-                    <td><div>Team a</div></td>
-                    <td><div><b class="proj_active">Active</b></div></td>
-                </tr>
-                <tr>
-                	<td><div>BIS2616464165</div></td>
-                    <td><div>Vannam</div></td>
-                    <td><div>Mahesh</div></td>
-                    <td><div>form 15/9 to 20/9</div></td>
-                    <td><div>Client 1</div></td>
-                    <td><div>Team a</div></td>
-                    <td><div><b class="proj_active">Active</b></div></td>
-                </tr>
-                <tr>
-                	<td><div>BIS2616464165</div></td>
-                    <td><div>Vannam</div></td>
-                    <td><div>Mahesh</div></td>
-                    <td><div>form 15/9 to 20/9</div></td>
-                    <td><div>Client 1</div></td>
-                    <td><div>Team a</div></td>
-                    <td><div><b class="proj_deactivate">Deactivate</b></div></td>
-                </tr>
-                <tr>
-                	<td><div>BIS2616464165</div></td>
-                    <td><div>Vannam</div></td>
-                    <td><div>Mahesh</div></td>
-                    <td><div>form 15/9 to 20/9</div></td>
-                    <td><div>Client 1</div></td>
-                    <td><div>Team a</div></td>
-                    <td><div><b class="proj_active">Active</b></div></td>
-                </tr>
-                <tr>
-                	<td><div>BIS2616464165</div></td>
-                    <td><div>Vannam</div></td>
-                    <td><div>Mahesh</div></td>
-                    <td><div>form 15/9 to 20/9</div></td>
-                    <td><div>Client 1</div></td>
-                    <td><div>Team a</div></td>
-                    <td><div><b>Option</b></div></td>
-                </tr> 
-                <tr>
-                	<td><div>BIS2616464165</div></td>
-                    <td><div>Vannam</div></td>
-                    <td><div>Mahesh</div></td>
-                    <td><div>form 15/9 to 20/9</div></td>
-                    <td><div>Client 1</div></td>
-                    <td><div>Team a</div></td>
-                    <td><div><b class="proj_process">Process</b></div></td>
-                </tr> 
-                <tr>
-                	<td><div>BIS2616464165</div></td>
-                    <td><div>Vannam</div></td>
-                    <td><div>Mahesh</div></td>
-                    <td><div>form 15/9 to 20/9</div></td>
-                    <td><div>Client 1</div></td>
-                    <td><div>Team a</div></td>
-                    <td><div><b class="proj_active">Active</b></div></td>
-                </tr>
-                <tr>
-                	<td><div>BIS2616464165</div></td>
-                    <td><div>Vannam</div></td>
-                    <td><div>Mahesh</div></td>
-                    <td><div>form 15/9 to 20/9</div></td>
-                    <td><div>Client 1</div></td>
-                    <td><div>Team a</div></td>
-                    <td><div><b class="proj_active">Active</b></div></td>
-                </tr>
-                <tr>
-                	<td><div>BIS2616464165</div></td>
-                    <td><div>Vannam</div></td>
-                    <td><div>Mahesh</div></td>
-                    <td><div>form 15/9 to 20/9</div></td>
-                    <td><div>Client 1</div></td>
-                    <td><div>Team a</div></td>
-                    <td><div><b class="proj_active">Active</b></div></td>
-                </tr>
-                <tr>
-                	<td><div>BIS2616464165</div></td>
-                    <td><div>Vannam</div></td>
-                    <td><div>Mahesh</div></td>
-                    <td><div>form 15/9 to 20/9</div></td>
-                    <td><div>Client 1</div></td>
-                    <td><div>Team a</div></td>
-                    <td><div><b class="proj_active">Active</b></div></td>
-                </tr>
-                			
-            </tbody>
-        </table>
+    <div id="contractsList"></div>
 	</div>
 	
 <nav>
@@ -195,44 +95,7 @@
 	
 </div>
  
-  <!--<div class="clearfix contracts">
-      <ul class="nav nav-tabs">
-          <li class="active"><a href="#draft" data-toggle="tab">Draft</a></li>
-          <li><a href="#signed" data-toggle="tab">Waiting to be signed</a></li>
-          <li><a href="#approval" data-toggle="tab">Waiting for Approval</a></li>
-          <li><a href="#finalised" data-toggle="tab">Finalised</a></li>
-          <li><a href="#expired" data-toggle="tab">Expired</a></li>
-		  <div class="conBtn">
-			  <span>Add Contract <i class="fa fa-caret-down"></i></span>
-			  <ul>
-				  <li><a href="new-contract.html"><i class="fa fa-caret-right"></i>New Contract</a></li>
-				  <li><a href="existing-contract.html"><i class="fa fa-caret-right"></i>Existing Contract</a></li>
-			  </ul>
-		  </div>
-      </ul>
-      <div class="tab-content">
-          <div id="draft" class="tab-pane fade in active">
-              <div class="tab_filterArea">
-                <div class="remove_search pull-right">
-            	<input type="text" placeholder="search" />
-            </div>
-              </div>
-              <h4>Draft:</h4> This is a database language that you will use to extract and manipulate data.
-          </div>
-          <div id="signed" class="tab-pane">
-              <h4>Waiting to be signed:</h4> This is a database language that you will use to extract and manipulate data.
-          </div>
-          <div id="approval" class="tab-pane">
-              <h4>Waiting to be approval:</h4> This is a database language that you will use to extract and manipulate data.
-          </div>
-          <div id="finalised" class="tab-pane">
-              <h4>Finalised:</h4> This is a database language that you will use to extract and manipulate data.
-          </div>
-          <div id="expired" class="tab-pane">
-              <h4>Expired:</h4> This is a database language that you will use to extract and manipulate data.
-          </div>
-      </div>
-  </div>-->
+  
 </div>
 </section>
 <script type="text/javascript">
@@ -279,8 +142,91 @@ $(document).ready(function() {
         e.stopPropagation();
     });	
 });		
+</script>
+
+<script type="text/javascript">
+function getTemplateList(){
+	var contractSubmissionType = "draft";
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+      type : "GET",
+       url: sourceleadUrl+"/getAllContractsByOrgLocationIdandStatus?${_csrf.parameterName}=${_csrf.token}&contractSubmissionType="+contractSubmissionType,       
+       success :function(data) {
+      	preparedContractList(data);
+      },
+  }); 
+}
+</script>
+
+<script>
+function preparedContractList(data){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var result = '';
+	result = result +  '<table id="contractListTable" class="display" cellspacing="0" width="100%" >';
+	result = result + '	<thead>';
+	result = result + '   <tr>';
+	result = result + '    <th>Contract Title</th>';
+	result = result + '    <th>Owner</th>';
+	result = result + '    <th>Start date</th>';
+	result = result + '    <th>End date</th>'; 
+	result = result + '    <th>Type Of the Contract</th>';
+	result = result + '    <th>Vendor Contact</th>';
+	result = result + '   </tr>';
+	result = result + '	</thead>';
+	result = result + '	<tbody>';
+	var json = JSON.parse(data);
+    for (var i = 0; i < json.length; i++) {
+    	var report= json[i];
+    	result = result + '<tr id="row'+report.id+'">';
+        result = result + '<td>';
+           	result = result + '<div><span>'+report.contractTitle+'</span></div>';
+         result = result + '</td>';
+    	 result = result + '<td>';
+       	 result = result + '<div><span>'+report.ownerName+'</span></div>';
+         result = result + '</td>';
+         result = result + '<td>';
+         result = result + '<div><span>'+report.startDateStr+'</span></div>';
+         result = result + '</td>';
+         result = result + '<td>';
+         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
+        	 result = result + '<div><span>'+report.endDateStr+'</span></div>';
+         }else{
+        	 result = result + '<div><span>--</span></div>';
+         }
+         result = result + '<td>';
+         result = result + '<div><span>'+report.contractType+'</span></div>';
+         result = result + '</td>';
+         result = result + '<td>';
+         result = result + '<div><span>'+report.vendorContactName+'</span></div>';
+         result = result + '</td>';
+         result = result + '</td>';
+        
+        result = result + '</tr>';
+    }
+	result = result + '	</tbody>';
+	result = result + '</table>';
+	$("#contractsList").empty();
+    $("#contractsList").append(result);
+    listContractsPagination();	
 	
-    </script>
+}
+</script>
+
+<script>
+function listContractsPagination(){
+	$('#contractListTable').DataTable({ 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    } );
+}
+</script>
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->

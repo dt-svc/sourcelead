@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.entity.Contracts;
@@ -184,6 +185,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		if(jsonObj.has("taxType") && null != jsonObj.getString("taxType") && !"".equals(jsonObj.getString("taxType")) ){
 			contracts.setTaxType(jsonObj.getString("taxType"));
 		}
+		if(jsonObj.has("description") && null != jsonObj.getString("description") && !"".equals(jsonObj.getString("description"))){
+			contracts.setDescription(jsonObj.getString("description"));
+		}
 		contracts.setStatus("0");
 		contracts.setTemplateSubmissionStatus(saveType);
 		contracts.setCreatedDate(new Date());
@@ -191,6 +195,35 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		contracts.setUpdatedDate(new Date());
 		contracts.setUpdatedBy(user.getUserCode());
 		return contractsTemplateDao.saveNewContract(contracts);
+	}
+
+	@Override
+	public List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType) throws Exception
+	{
+		List<Contracts> contractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType);
+		
+		
+		for(Contracts contracts :contractsList ){
+			StringBuilder ownerName = new StringBuilder();
+			StringBuilder vendorName = new StringBuilder();
+			if(null != contracts.getOwnerUserId().getFirstName() && null != contracts.getOwnerUserId().getFirstName()){
+				ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
+			}else{
+				ownerName.append(contracts.getOwnerUserId().getFirstName());	
+			}
+			contracts.setOwnerName(ownerName.toString());
+			if(null != contracts.getContactUser().getFirstName() && null != contracts.getContactUser().getFirstName()){
+				vendorName.append(contracts.getContactUser().getFirstName()).append((contracts.getContactUser().getLastName()));
+			}else{
+				vendorName.append(contracts.getContactUser().getFirstName());	
+			}
+			contracts.setVendorContactName(vendorName.toString());
+			contracts.setStartDateStr(Constants.DF_DMY.format(contracts.getStartDate()));
+			if(null != contracts.getEndDate()){
+				contracts.setEndDateStr(Constants.DF_DMY.format(contracts.getEndDate()));	
+			}
+		}
+		return contractsList;
 	}
 
 	

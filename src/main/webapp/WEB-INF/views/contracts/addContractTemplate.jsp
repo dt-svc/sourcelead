@@ -270,8 +270,7 @@ function generatePDF(id) {
 								+ "/saveTemplate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 						success : function(result) {
 							 /* generatePDF(result);  */
-							location.replace(sourceleadUrl
-									+ "/orgContractTemplate");
+							location.replace(sourceleadUrl+ "/orgContractTemplate");
 						},
 					}); 
 			return true;

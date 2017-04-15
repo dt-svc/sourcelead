@@ -169,19 +169,35 @@ public class ContractRestController {
 //	/saveNewContract
 	
 	@RequestMapping(value = "/saveNewContract", method = RequestMethod.POST)
-	public @ResponseBody String saveNewContract(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "saveType", required = false) String saveType,HttpServletRequest request) throws Exception {
+	public @ResponseBody boolean saveNewContract(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "saveType", required = false) String saveType,HttpServletRequest request) throws Exception {
 
+		boolean isContractSaved = false;
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Contracts contracts = contractsTemplateService.saveNewContract(jsonObj,orgLocation,saveType,user);
-	   return "done";
+	   if(null != contracts){
+		   isContractSaved = true;
+	   }
+		return isContractSaved;
 	}
 	
-	
-	
-	
+	/**
+	 * Get all contracts list by submission status
+	 * @param contractType
+	 * @param request
+	 * @param response
+	 * @return json
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getAllContractsByOrgLocationIdandStatus", method = RequestMethod.GET)
+	public @ResponseBody String getAllContractsByOrgLocationIdandStatus(@RequestParam(value = "contractSubmissionType", required = false) String contractSubmissionType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<Contracts> contractsTemplateList = contractsTemplateService.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType);
+		return commonUtil.toJSON(contractsTemplateList);
+	} 
 	
 	@RequestMapping(value = "/downloadContractsTemplate", method = RequestMethod.GET)
 	public void downloadContractsTemplate(@RequestParam(value="templateId", required=false) String templateId,HttpServletRequest request, HttpServletResponse response) throws Exception

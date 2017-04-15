@@ -124,6 +124,16 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		return contracts;
 	}
 
+	@Override
+	@Transactional
+	public List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String submissionType) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Contracts contracts left join fetch contracts.contractsTemplate left join fetch contracts.ownerUserId left join fetch contracts.orgLocationId left join fetch contracts.orgRelations where contracts.orgLocationId.id = :orgLocationId and contracts.templateSubmissionStatus = :submissionType";
+		List<Contracts>  ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setString("submissionType", submissionType).setCacheable(true).list();
+		return ContractsList;
+	}
+
 	
 
 	
