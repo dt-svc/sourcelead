@@ -441,10 +441,11 @@ function getAssociateUserDetails(){
 	        dataType: "json",
 	        success: function(data) {
 	        	if(data != null && data != ''){
-	        		  $("#FirstName").val(data[0]);
-	        		  $("#lastName").val(data[1]);
-	        		  $("#EmailId").val(data[2]);
-	        		  $("#phone").val(data[3]);
+	        		var json = JSON.parse(data);
+	        		  $("#FirstName").val(json[0]);
+	        		  $("#lastName").val(json[1]);
+	        		  $("#EmailId").val(json[2]);
+	        		  $("#phone").val(json[3]);
 	        		  validateUserEmail();
 	        	}
 			 },

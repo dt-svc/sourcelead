@@ -5850,9 +5850,6 @@ table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTa
 .resume-header {
     border-bottom: 1px solid #f0ad4e; padding-bottom:0px;
 }
-.resume-header div.col-md-5 .pull-right li {
-padding-bottom: 5px; font-size: 13px;	
-}
 .resume-header .media-object {
     border-radius: 10px; border: 1px solid #ededed;
 }
@@ -5860,12 +5857,12 @@ padding-bottom: 5px; font-size: 13px;
     width: 20px; text-align:left;
 }
 .resume-widget {
-    padding-left: 10px; margin-bottom: 2px; position: relative; border-bottom: 1px dotted #cfd8dc;
-    padding-bottom: 5px; min-height: 35px;
+    padding-left: 10px; margin-bottom: 0px; position: relative; border-bottom: 1px dotted #cfd8dc;
+    padding-bottom: 5px;
 }
 .resume-widget:before{
     position: absolute; clear: both; content: "";height: 0;left:-5px;
-	top:2px; background: #b0bec5; width: 3px; min-height: 25px;
+	top:5px; background: #b0bec5; width: 3px; height: 40px;
 }
 .resume-widget p {
     margin-bottom: 5px;
@@ -5874,7 +5871,7 @@ padding-bottom: 5px; font-size: 13px;
     color: #f4511e;
 }
 .resume-widget h4 {
-  font-size: 15px !important;  margin-bottom: 3px; margin-top: 5px; color: #8a6d3b; font-weight: normal;
+  font-size: 15px !important;  margin-bottom: 3px; margin-top: 5px; color: #8a6d3b;
 }
 .resume-widget h5 {
     font-weight: normal; font-size: 14px; margin:0; margin-bottom: 0px; color:#616161;
@@ -6218,13 +6215,13 @@ text-align: left; padding:10px 15px; border-bottom: 1px solid #ddd;
     background: #CFD8DC; border-bottom: 1px solid #90A4AE;
 }
 .trimTxt {
-  height:70px; width: 80%; overflow: hidden; margin-bottom: 5px;
+  height:60px; width: 80%; overflow: hidden; margin-bottom: 5px;
  }
 .trimTxt p {
   margin:0; line-height:18px; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;
   }
 .candidate_wrap_table.recruiterReports_table table tr th {
-    padding: 10px 15px 5px 15px;
+    padding: 10px 15px 5px 15px !important;
     transition: all 0.3s; -moz-transition: all 0.3s; -webkit-transition: all 0.3s; -o-transition: all 0.3s;
 }
 .candidate_wrap_table.recruiterReports_table table tr th .fa {
@@ -6253,9 +6250,6 @@ text-align: left; padding:10px 15px; border-bottom: 1px solid #ddd;
 }
 .settPop.departmentPop .form-control {
 height: auto;
-}
-.newdate .fa-calendar {
-    top: 8px !important; right: 18px !important;
 }
 /* media 320px */
 @media (max-width: 320px) {
