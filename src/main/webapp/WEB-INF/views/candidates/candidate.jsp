@@ -706,20 +706,22 @@ function getCities(){
  
  <!-- Experience Years and Months validation Script years greater than  20 the months dropdown disabled script here -->
  <script type="text/javascript">
- function disableMonths() {
-     $("#experienceYears").change(function() {
-         if ($("#experienceYears").val() == '25'){
-        	 $("#experienceMonths").val('');  
-        	 $('#experienceMonths').selectpicker('refresh');
-        	 $('#experienceMonths').attr("disabled", true);
-             $('#experienceMonths').val("disabled", true);
-         }else{
-        	 $("#experienceMonths").val('');  
-        	 $('#experienceMonths').selectpicker('refresh');
-        	 $("#experienceMonths").attr("disabled", false); 
-         }
-     });
- }
+		 function disableMonths() {
+		     $("#experienceYears").change(function() {
+		         if ($("#experienceYears").val() == '25'){
+		        	 $("#experienceMonths").val('');  
+		        	 $('#experienceMonths').selectpicker('refresh');
+		        	/*  $('#experienceMonths').attr("disabled", true);
+		             $('#experienceMonths').val("disabled", true); */
+		         }else{
+		        	 $("#experienceMonths").val('');  
+		        	 $('#experienceMonths').selectpicker('refresh');
+		        	 $("#experienceMonths").attr("disabled", false); 
+		         }
+		     });
+		 }
+		   
+ 
 	      var selectedFile = document.getElementById("uploadBtn");
 	      selectedFile.addEventListener("change", function() {
 	      	 $("#uploadFile").focus();
