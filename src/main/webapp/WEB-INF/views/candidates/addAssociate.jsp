@@ -228,7 +228,7 @@
        <div class="form-group">
 			<label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
 			<div class="col-md-9">
-			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList(this);">
+			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();">
                  </select>
 			</div>
 		</div>
@@ -1558,10 +1558,9 @@ function getCandidateDetails(){
  </script>
  
   <script>
- function getVendorContactList(id){
+ function getVendorContactList(){
 	 $('#vendorcontact').val('').trigger("chosen:updated");
 	 var orgRelationID = $('#vendors').val();
-	 alert("orgRelationID>>>>>>>"+orgRelationID);
 	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 			    type: "POST",
@@ -1731,7 +1730,7 @@ if(type == 'C2C' || type == 'C2C-1099'){
 		            for(var i=0;i<json.length;i++){
 		            	  var opt = json[i];
 		            	  if(vendorName != null && vendorName != 'undefined' && vendorName  != ''){
-		            		  $('#vendors').append('<option '+ (opt.id == vendorOrgRelationId ? "selected" : '') +' value="'+vendorOrgRelationId+'">'+opt.orgName+'</option>');
+		            		  $('#vendors').append('<option '+ (opt.id == vendorOrgRelationId ? "selected" : '') +' value="'+opt.id+'">'+opt.orgName+'</option>');
 			            	}else{
 			            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');	
 			            	}
@@ -1743,7 +1742,6 @@ if(type == 'C2C' || type == 'C2C-1099'){
  </script>
  <script>
  function vendorContactList(vendorContactName,vendorOrgRelationId,vendorSpocId){
-	 alert("111111111111");
 	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 			    type: "POST",
@@ -1755,7 +1753,7 @@ if(type == 'C2C' || type == 'C2C-1099'){
 		             for(var i=0;i<json.length;i++){
 		            	 var opt = json[i];
 		            	 if(vendorContactName != null && vendorContactName != 'undefined' && vendorContactName  != ''){
-		            		 $('#vendorcontact').append('<option '+ (opt.id == vendorSpocId ? "selected" : '') +' value="'+vendorSpocId+'">'+opt.spocName+'</option>');
+		            		 $('#vendorcontact').append('<option '+ (opt.id == vendorSpocId ? "selected" : '') +' value="'+opt.id+'">'+opt.spocName+'</option>');
 			            	}else{
 			            		$('#vendorcontact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
 			            	}

@@ -147,7 +147,11 @@ function editCandidate(candidateId){
             			 	if(json.primarySkill != null && json.primarySkill != '' && json.primarySkill != 'undefined'){
             			 		primarySkill = json.primarySkill;            			 		
             			 	}
-            			 	
+            			 	if(json.vendorName != null && json.vendorName != '' && json.vendorName != 'undefined'){
+            			 		vendorName = json.vendorName;
+            			 	}else{
+            			 		vendorName = "";
+            			 	}
 							var result ='';
 							result = result + '		    <div class="edit-details col-md-8 edit-candaite canprofile-popright"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
 							result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
@@ -239,7 +243,7 @@ function editCandidate(candidateId){
 							
                             result = result + '<div class="col-md-6 custom-fields">';
 							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
-							result = result + '<select class="form-control" id="designationType1" name="designationType" field-name="Designation Type"  onchange="updateDesignationOtherType(this);">';
+							result = result + '<select class="form-control" id="designationType1" name="designationType" field-name="Designation Type"  onchange="updateDesignationOtherType();">';
 							result = result + '<option value="">--Select Employment Type--</option>';
 							result = result + ' <option '+(json.designationType == "C2C" ? "selected" : '') +'>C2C</option>';
 							result = result + ' <option '+(json.designationType == "C2C-1099" ? "selected" : '') +'>C2C-1099</option>';
@@ -254,9 +258,22 @@ function editCandidate(candidateId){
 							
 							result = result + '</div>';
 							 
-							/*  result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv" style="display:none">';
-							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType1" value="'+designationOtherType+'" placeholder="Employment Other Type" field-name="Employment Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
-							result = result + '</div>';  */
+							
+							/* result = result + '<div class="clearfix" id="hideVendor" style="display:none">'; */
+							result = result + '<div class="col-md-6 custom-fields select-arrow">';
+							result = result + '<select  class="chosen-select form-control select-bg" name="vendors"  id="vendorName" value="'+vendorName+'" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();">';
+							result = result + '</select>';
+							result = result + '<input type="hidden" name="updateVendorName" id="updateVendorName" value="'+vendorName+'" />';
+							result = result + '<input type="hidden" name="updateVendorOrgRelationId" id="updateVendorOrgRelationId" value="'+json.vendorOrgRelationId+'" />';
+							result = result + '</div>';
+							
+							result = result + '<div class="col-md-6 custom-fields select-arrow">';
+							result = result + '<select  class="chosen-select form-control select-bg" name="vendorcontact"  value="'+json.vendorContactName+'" id="vendorcontactName" field-name="Vendor Contact"  placeholder="select Vendor Contact">';
+							result = result + '</select>';
+							result = result + '</div>';
+							/* result = result + '</div>'; */
+							
+							
 							
 							if(json.designationType == "Other"){
 							result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv">';
@@ -416,6 +433,7 @@ function editCandidate(candidateId){
 							$("#profileEditPopup").append(result); 
 							/* updateDesignationType(json.designationType); */
 							getAllCandidateCountries();
+							getVendorsByOrgLocation();
 							 getAllCandidateStates();
 							$(".edit-details").toggleClass("edit-details-active");
 							$(".collapse-div").removeClass("edit-details-active");
@@ -432,7 +450,12 @@ function editCandidate(candidateId){
 							    $("#candidateCountry").chosen();
 							    $("#candidateState").chosen();
 							    $("#candidateCity").chosen();
+							    
+							    $("#vendorName").chosen();
+							    $("#vendorcontactName").chosen();
 							   
+							    
+							    
 							    
 							    $("#candidateCountry").on('change', function (e) {
 							 	   getAllCandidateStates();
@@ -1610,8 +1633,10 @@ $('.selectpicker').selectpicker('refresh');
   
 <!-- Employment Type equals Other then Text Box will Open script here -->
 <script>
-function updateDesignationOtherType(typeVal){
+function updateDesignationOtherType(){
+	
 	 var candidateType = $('#designationType1').val(); 
+	alert("candidateType>>>>>>>>>>"+candidateType); 
 	
 	if(candidateType == 'Other' &&  candidateType != '' && candidateType !='undefined'){
 		  document.getElementById("designationTypeDiv").style.display="block";
@@ -1622,6 +1647,20 @@ function updateDesignationOtherType(typeVal){
 		  $("#designationOtherType").attr("data-validation-optional", "true");
 		  $("#designationTypeDiv").find('p.jquery_form_error_message').remove();
 	} 
+	
+	if(candidateType == 'C2C' || candidateType == 'C2C-1099'){
+		alert("hello");
+// 		 document.getElementById("hideVendor").style.display="block";
+// 		 $('#vendors').attr("data-validation","required"); 
+// 		 $('#vendorcontact').attr("data-validation","required"); 
+// 		  getVendorsByOrgLocation();
+	}else{
+// 		 document.getElementById("hideVendor").style.display="none";
+// 		 $('#vendors').removeAttr("data-validation","required"); 
+// 		 $('#vendorcontact').removeAttr("data-validation","required"); 
+	}
+	
+	
 	 
 }
 </script>
@@ -1710,3 +1749,59 @@ var currentRate = document.getElementById("currentRate").value;
 	 }
 }
 </script>
+
+
+<script>
+ function getVendorsByOrgLocation(){
+	 var vendorName = $("#updateVendorName").val();
+	 var vendorOrgRelationId = $("#updateVendorOrgRelationId").val();
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	$('#vendorName').empty();
+		        	$('#vendorName').append('<option value="">--select Vendor --</option>');
+		            for(var i=0;i<json.length;i++){
+		            	  var opt = json[i];
+		            	  if(vendorName != null && vendorName != 'undefined' && vendorName  != ''){
+		            		  $('#vendorName').append('<option '+ (opt.id == vendorOrgRelationId ? "selected" : '') +' value="'+opt.id+'">'+opt.orgName+'</option>');
+			            	}else{
+			            		$('#vendorName').append('<option value='+opt.id+' >'+opt.orgName+'</option>');	
+			            	}
+		            	  
+		            }
+		            $('#vendorName').trigger("chosen:updated");
+		           // getVendorContactList();
+		            
+		        }
+		 });
+ }
+ </script>
+ 
+  <script>
+ function getVendorContactList(){
+	// $('#vendorcontactName').val('').trigger("chosen:updated");
+		// var orgRelationID = $('#vendorName').val();
+		 
+		 var orgRelationID = $("#updateVendorOrgRelationId").val();
+		 
+	 alert("hello"+orgRelationID);
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+			    type: "POST",
+		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	$('#vendorcontactName').empty();
+		        	$('#vendorcontactName').append('<option value="">--select Vendor contact--</option>');
+		             for(var i=0;i<json.length;i++){
+		            	 var opt = json[i];
+		            	 $('#vendorcontactName').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
+		            } 
+		            $('#vendorcontactName').trigger("chosen:updated");
+		        }
+		 });  
+ }
+ </script>
