@@ -137,7 +137,7 @@
                 <div class="form-group">
                   <label class="col-md-3 control-label">Mobile number <span class="text-danger paddingLeft">*</span></label>
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber" readonly="readonly">
+                    <input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber" >
                   </div>
                 </div>
 
