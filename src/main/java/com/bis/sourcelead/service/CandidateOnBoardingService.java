@@ -25,4 +25,6 @@ public interface CandidateOnBoardingService {
 	public void createOnboardingUser(CandidateOnBoarding candidateOnBoarding,User user,OrgLocations orgLocations) throws Exception;
 	
 	CandidateOnBoarding getCandidateOnBoardingByEmailAndLocationId(String email,Long orgLocationId) throws Exception;
+	
+	CandidateOnBoarding getCandidateOnBoardingByUserIdAndLocationId(Long onboardingUser,Long orgLocationId) throws Exception;
 }
