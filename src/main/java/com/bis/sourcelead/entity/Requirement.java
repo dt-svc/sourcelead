@@ -383,6 +383,18 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private Long submissionId;
 
+	@Transient
+	private String requirementOrgName;
+	
+	
+	public String getRequirementOrgName() {
+		return requirementOrgName;
+	}
+
+	public void setRequirementOrgName(String requirementOrgName) {
+		this.requirementOrgName = requirementOrgName;
+	}
+
 	public String getSearchType() {
 		return searchType;
 	}

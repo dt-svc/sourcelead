@@ -2984,7 +2984,11 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
      	requirement.setJobType(requirementIndex.getJobType());
      	requirement.setOtherJobType(requirementIndex.getOtherJobType());
      	requirement.setJobTitle(requirementIndex.getJobTitle());
-     	requirement.setPostedDateStr(requirementIndex.getCreatedDate());
+     	String convertedStirng = requirementIndex.getCreatedDate();
+     	String convertedStirngArray[]  = convertedStirng.split("-");
+     	StringBuilder dateString = new StringBuilder();
+     	String dateConverted = dateString.append(convertedStirngArray[2]).append("-").append(convertedStirngArray[1]).append("-").append(convertedStirngArray[0]).toString();
+     	requirement.setPostedDateStr(dateConverted);
      	if(requirementIndex.getMinExperience() !=null){
      		requirement.setMinExp(requirementIndex.getMinExperience().toString());	
      	}

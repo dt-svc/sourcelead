@@ -110,6 +110,7 @@ function closeCertificatePopup(){
 			            			$("#empMsgDiv").html("Success!! New Employer added");
 									candidateEmployersList(candidateId);
 									empMsgFadein();
+									candidateQuickViewProfile(candidateId);
 								}
 							}
 
@@ -634,6 +635,8 @@ function employeePagination(){
 	            			$("#empMsgDiv").html("Employer details updated");
 							candidateEmployersList(candidateId);
 							empMsgFadein();
+							candidateQuickViewProfile(candidateId);
+							
 						},
 					});
 			return true;

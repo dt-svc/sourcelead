@@ -208,10 +208,16 @@ function usersList(timePeriod){
 	                    
 	                     for (var i = 0; i < checkSize; i++) { 
 	                    	 var opt = json[i]; 
+	                    	 
+	                    	 if(opt.lastName != null && opt.lastName !='' && opt.lastName != 'undefined'){
+	          			 		lastName = opt.lastName;
+		          			 	}else{
+		          			 		lastName = "";
+		          			 	}
 	                    	 result = result +"<tr>";
 	                    	 
 	                    	 if(opt.firstName !=null && opt.firstName !='' && opt.firstName !='undefined'){
-	                    		 result = result +"<td><div class='tbldata-dotdot-me'><span title='"+opt.firstName+"'>"+opt.firstName+" "+opt.lastName+"</span></a></div></td>";
+	                    		 result = result +"<td><div class='tbldata-dotdot-me'><span title='"+opt.firstName+"'>"+opt.firstName+" "+lastName+"</span></a></div></td>";
 	                    	 }else{
 	                    		 result = result +"<td><div> <span>----</span></div></td>"; 
 	                    	 }
