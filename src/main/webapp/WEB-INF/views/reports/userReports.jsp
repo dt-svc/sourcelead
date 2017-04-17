@@ -90,7 +90,7 @@
     <div class="vendor_wrap">
       <div class="timesheet_head">
 <div class="pull-left reportBtns">
-<h4 class="pull-left mr">Recruiters Report</h4>
+<h4 class="pull-left mr">Vendors Report</h4>
 	  <div class="reportBtn select-field pull-left">
 		<select class="form-control" id="vendorreportTypeId" onChange="flushVendorCustomDates(); getVendorsReportList(); custVendorDates();">
 		 <option value="">select</option>
