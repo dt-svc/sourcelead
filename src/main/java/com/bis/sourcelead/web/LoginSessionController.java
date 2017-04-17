@@ -31,6 +31,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Notifications;
@@ -41,6 +42,7 @@ import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -121,6 +123,9 @@ public class LoginSessionController {
 	@Autowired
 	LookUpDataService lookUpDataService;
 	
+	@Autowired
+	CandidateOnBoardingService candidateOnBoardingService;
+	
 	@RequestMapping(value = "/dashboard" , method = RequestMethod.GET)
 	   public ModelAndView loginSession(HttpServletRequest request,Authentication authentication) throws Exception {
 		
@@ -164,6 +169,9 @@ public class LoginSessionController {
 				SourceLeadSessionManager.removeSessionAttribute(request, "resetPwdMsg");
 			}
 			model.addObject("sourceleadUrl", sourceleadUrl);
+			
+			
+			
 			model.setViewName("dashboard");
 			
 			List<LookUpData> skillList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
