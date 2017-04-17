@@ -796,13 +796,27 @@ public class CandidateOnBoardRestController {
 			candidateOnBoarding.setJobTitle(candidateOnBoarding.getOfferId().getSubmissionId().getRequirement().getJobTitle());
 			
 			if(null != candidateOnBoarding.getManagerUserId()){
+				StringBuilder mgName = new StringBuilder();
+				if(candidateOnBoarding.getManagerUserId().getLastName() != null){
+					candidateOnBoarding.setManagerName(mgName.append(candidateOnBoarding.getManagerUserId().getFirstName()).append(" ").append(candidateOnBoarding.getManagerUserId().getLastName()).toString());	
+				}else{
+					candidateOnBoarding.setManagerName(mgName.append(candidateOnBoarding.getManagerUserId().getFirstName()).toString());
+				}
+			}
+			
+			if(null != candidateOnBoarding.getTeamId()){
+				candidateOnBoarding.setTeamName(candidateOnBoarding.getTeamId().getName());	
+			}
+			if(null !=candidateOnBoarding.getRoleId()){
+				candidateOnBoarding.setRoleName(candidateOnBoarding.getRoleId().getDisplayName());	
+			}
+			if(null != candidateOnBoarding.getManagerUserId()){
 				candidateOnBoarding.setOnBoardManagerId(candidateOnBoarding.getManagerUserId().getId());
 			}
 			
 			if(null != candidateOnBoarding.getTeamId()){
 				candidateOnBoarding.setOnBoardTeamId(candidateOnBoarding.getTeamId().getId());
 			}
-			
 			
 			candidateOnBoarding.setJoiningDateStr(Constants.DMY.format(candidateOnBoarding.getStartDate()));
 			
@@ -1438,4 +1452,49 @@ public class CandidateOnBoardRestController {
 		   }
 		 
 	 
+		 @RequestMapping(value = "/getCandidateOnboardTemplateDocumentByonBoardingUUID" , method = RequestMethod.POST)
+		 public @ResponseBody  String getCandidateOnboardTemplateDocumentByonBoardingUUID(@RequestParam(value="onBoardingUUID", required=false) String onBoardingUUID,
+				 @RequestParam(value="documentType", required=false) String documentType, HttpServletRequest request) throws Exception {
+			
+			String resultJson;
+			List<OnBoardingTemplateDocuments> documentsList = null;
+			List<OnBoardingTemplateDocuments> onboardingDocumentsList = new ArrayList<OnBoardingTemplateDocuments>();
+			CandidateOnBoarding cnb = candidateOnBoardingService.getCandidateOnBoardingByUUID(onBoardingUUID);
+			Integer documentsCount = onBoardingTemplateDocumentsService.getCandidateOnboardingDocumentsByCandidateOnboardingId(cnb.getId());
+			
+			if(documentsCount > 0){
+				documentsList = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsByCandidateOnBoardingId(cnb.getId(),documentType);
+				if(null != documentsList && documentsList.size() > 0){
+					for(OnBoardingTemplateDocuments  documents : documentsList ){
+						documents.setOnboardDocumentType("Candidate Documents");
+						onboardingDocumentsList.add(documents);
+					}
+				}
+				
+				
+			}else{
+				 
+				CandidateOnBoarding onboarding = candidateOnBoardingService.getCandidateOnBoardingById(cnb.getId());
+				 List<Long> templateIdsList = new ArrayList<Long>();
+				 
+				 if(!isNullOrEmpty(onboarding.getOnboardTemplateId())){
+					 for (String s : onboarding.getOnboardTemplateId().split(",")){
+						 templateIdsList.add(Long.parseLong(s));
+					 }
+					 
+					documentsList = onBoardingTemplateDocumentsService.getCandidateOnBoardingTemplateDocumentsByTemplateId(templateIdsList,documentType);
+					if(null != documentsList && documentsList.size() > 0){
+						for(OnBoardingTemplateDocuments  documents : documentsList ){
+							documents.setOnboardDocumentType("Template Documents");
+							onboardingDocumentsList.add(documents);
+						}
+					}
+				 }
+			}
+			
+		 	resultJson = commonUtil.toJSON(onboardingDocumentsList);
+			return resultJson;
+		   
+		}
+		 
 }

@@ -9,7 +9,12 @@
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
- 
+ <script> 
+	$(document).ready(function(){
+		onboardCandidateSummaryDetails();
+	});
+</script>
+
  <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -23,259 +28,50 @@
         </div>
         <div class="tabbable">
           <ul class="nav nav-tabs" id="tab_bar">
-            <li class="active"> <a href="#details" data-toggle="tab"> <i class="fa fa-th-list paddingRight"></i> <span>Details</span> <br>
+            <li class="active"> <a href="#details" data-toggle="tab" onclick="onboardCandidateSummaryDetails();"> <i class="fa fa-th-list paddingRight"></i> <span>Details</span> <br>
               <small>Employee details &amp; Postion details</small> </a> </li>
-            <li><a href="#documents" data-toggle="tab"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
+            <li><a href="#documents" data-toggle="tab" onclick="getTemplateContractsDocumentsDetails();getTemplateFormsDocumentsDetails();getTemplatePolicyDocumentsDetails();getTemplateSupportingDocumentsDetails();"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
               <small>Acceptance &amp; Policy Documents</small> </a> </li>
-            <!-- Kept pending -->
-              <li class="hidden"> <a href="#tasks" data-toggle="tab"> <i class="fa fa-check-square-o paddingRight"></i> <span>Taks</span> <br>
+
+              <li onclick="getOnboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Taks</span> <br>
               <small>List of tasks</small> </a></li>
-              <!-- Kept pending -->
+             
           </ul>
+          
+          
           <div class="tab-content"> 
             
             <!-- Employee Details -->
-            <div class="tab-pane active clearfix" id="details">
-              <div class="col-md-12">
-              <div class="form-horizontal">
-                <p><strong>Employee Details</strong></p>
-                <div class="form-group">
-                  <label class="col-md-3 control-label">Title</label>
-                  <div class="col-md-6">
-                    <label> Mr </label>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-md-3 control-label">First Name <span class="text-danger paddingLeft">*</span></label>
-                  <div class="col-md-6">
-                    Muralikumar Joshi
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-md-3 control-label">Last Name <span class="text-danger paddingLeft">*</span></label>
-                  <div class="col-md-6">
-                    Avanagiri
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-md-3 control-label">Street Addess 1 <span class="text-danger paddingLeft">*</span></label>
-                  <div class="col-md-6">
-                    23-22-56/2, Roadno3, Muralinagar, Hyderabad- 500049.
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-md-3 control-label">Street Addess 2</label>
-                  <div class="col-md-6">
-                    23-22-56/2, Roadno3, Muralinagar, Hyderabad- 500049.
-                  </div>
-                </div>
-                  
-                                  <div class="form-group">
-                  <label class="col-md-3 control-label">Country <span class="text-danger paddingLeft">*</span></label>
-                  <div class="col-md-6">
-                      India
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <label class="col-md-3 control-label">State</label>
-                  <div class="col-md-6">
-                      Telangana
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-md-3 control-label">City</label>
-                  <div class="col-md-6">
-                   Hyderabad    
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-md-3 control-label">Zipcode</label>
-                  <div class="col-md-6">
-                    500049
-                  </div>
-                </div>
-
-
-                <div class="form-group">
-                  <label class="col-md-3 control-label">Personal Email <span class="text-danger paddingLeft">*</span></label>
-                  <div class="col-md-6">
-                    muralikumarJoshi.23@gmail.com
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-md-3 control-label">Mobile number <span class="text-danger paddingLeft">*</span></label>
-                  <div class="col-md-6">
-                    +91 8899554750
-                  </div>
-                </div>
-                <div class="clearfix"></div>
-                <p><strong>Position Details</strong></p>
-                <div class="form-group">
-                  <label class="col-md-3 control-label">Department</label>
-                  <div class="col-md-6">
-                         Deaprtment-2
-                  </div>
-                </div>
-
-                                  <div class="form-group">
-                  <label class="col-md-3 control-label">Role</label>
-                  <div class="col-md-6">
-                          Role-1
-                  </div>
-                </div>
-
-                  <div class="form-group">
-                  <label class="col-md-3 control-label">Start date<span class="text-danger paddingLeft">*</span></label>
-                  <div class="col-md-6">
-                    18/04/2017
-                  </div>
-                </div>
-                  <div class="form-group">
-                  <label class="col-md-3 control-label">End date<span class="text-danger paddingLeft">*</span></label>
-                  <div class="col-md-6">
-                    30/05/2017
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-md-3 control-label">Rate / Salary <span class="text-danger paddingLeft">*</span></label>
-                  <div class="col-md-6">
-                    850000.00
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-md-3 control-label">Manager</label>
-                  <div class="col-md-6">
-                            Manager-1
-                    </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-md-3 control-label">Team</label>
-                  <div class="col-md-6">
-                      Team
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-md-3 control-label">Employment Type</label>
-                  <div class="col-md-6">
-                      Employment Type-4
-                  </div>
-                </div>
-                  
-                  <div class="form-group">
-                  <label class="col-md-3 control-label">Probation Notice</label>
-                  <div class="col-md-6">
-                      2 Months
-                  </div>
-                </div>
-                  <div class="form-group">
-                  <label class="col-md-3 control-label">Termination Notice</label>
-                  <div class="col-md-6">
-                      15 Days
-                  </div>
-                </div>
-                  
-                  
-                  <div class="form-group">
-                  <label class="col-md-3 control-label">Due Date</label>
-                  <div class="col-md-6">
-                   25th April
-                  </div>
-                </div>
-
-                  <div class="form-group">
-                  <label class="col-md-3 control-label">Speical Conditions</label>
-                  <div class="col-md-6">
-                      <p>
-                      Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                      Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
-                      </p>
-                  </div>
-                </div>
-                   <div class="form-group">
-                       <label class="col-md-3 control-label">Onboard Template <span class="text-danger paddingLeft">*</span></label>
-                  <div class="col-md-6">
-                         Tempalte-1.doc, 
-                         Tempalte-2.doc
-                  </div>
-                </div>
-              </div>
-                </div>
+            <div class="tab-pane clearfix onboard_offboad_view active" id="details">
+              <div id="onboardCandidateSummaryDetailsId"></div>
             </div>
+            
+            
             <!-- TAB 2 -->
+            
             <div class="tab-pane clearfix" id="documents">
               <div class="col-md-12 clearfix mt">
-  <div class="form-group">
-    <label class="clearfix"> <strong>Employment Contract</strong> </label>
-    <div class="row">
-      <div class="col-md-2 text-center mb10">
-        <div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>
-          <p class="small mt">karakumar_varam.doc</p>
-          <i class="fa fa-check text-success permission"></i> </div>
-      </div>
-      <div class="col-md-2 text-center mb10">
-        <div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>
-          <p class="small mt">karakumar_varam.doc</p>
-          <i class="fa fa-check text-success permission"></i> </div>
-      </div>
-      <div class="col-md-2 text-center mb10">
-        <div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>
-          <p class="small mt">karakumar_varam.doc</p>
-          <i class="fa fa-check text-success permission"></i> </div>
-      </div>
-      <div class="col-md-2 text-center mb10">
-        <div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>
-          <p class="small mt">karakumar_varam.doc</p>
-          <i class="fa fa-check text-success permission"></i> </div>
-      </div>
-      <div class="col-md-2 text-center mb10">
-        <div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>
-          <p class="small mt">karakumar_varam.doc</p>
-          <i class="fa fa-close text-danger permission"></i> </div>
-      </div>
-      <div class="col-md-2 text-center mb10">
-        <div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>
-          <p class="small mt">karakumar_varam.doc</p>
-          <i class="fa fa-clock-o text-info permission"></i> </div>
-      </div>
-    </div>
-  </div>
-  <div class="form-group mt">
-    <label class="clearfix"> <strong>Policies</strong> </label>
-    <div class="row">
-      <div class="col-md-2 text-center mb10">
-        <div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>
-          <p class="small mt">karakumar_varam.doc</p>
-          <i class="fa fa-check text-success permission"></i> </div>
-      </div>
-      <div class="col-md-2 text-center mb10">
-        <div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>
-          <p class="small mt">karakumar_varam.doc</p>
-          <i class="fa fa-check text-success permission"></i> </div>
-      </div>
-      <div class="col-md-2 text-center mb10">
-        <div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>
-          <p class="small mt">karakumar_varam.doc</p>
-          <i class="fa fa-check text-success permission"></i> </div>
-      </div>
-      <div class="col-md-2 text-center mb10">
-        <div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>
-          <p class="small mt">karakumar_varam.doc</p>
-          <i class="fa fa-check text-success permission"></i> </div>
-      </div>
-      <div class="col-md-2 text-center mb10">
-        <div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>
-          <p class="small mt">karakumar_varam.doc</p>
-          <i class="fa fa-close text-danger permission"></i> </div>
-      </div>
-      <div class="col-md-2 text-center mb10">
-        <div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>
-          <p class="small mt">karakumar_varam.doc</p>
-          <i class="fa fa-clock-o text-info permission"></i> </div>
-      </div>
-    </div>
-  </div>
-</div>
+				  <div class="form-group">
+				    <label class="clearfix"> <strong>Employment Contract</strong> </label>
+				    <div id="employmentContractDivId"></div>
+				  </div>
+				  
+				  <div class="form-group mt">
+				    <label class="clearfix"> <strong>Forms</strong> </label>
+				    <div id="formstDivId"></div>
+				  </div>
+				  
+				  <div class="form-group mt">
+				    <label class="clearfix"> <strong>Policies</strong> </label>
+				    <div id="policiesDivId"></div>
+				  </div>
+				  
+				  <div class="form-group mt">
+				    <label class="clearfix"> <strong>Supporting Information</strong> </label>
+				    <div id="supportedDivId"></div>
+				  </div>
+				  
+			</div>
             </div>
             <!-- Keep as pending -->
               <div class="tab-pane hidden" id="tasks">
@@ -293,7 +89,7 @@
                         </div>
                         <div class="modal-body clearfix"> 
                           
- <!-- Add New Task Widget -->
+                    <!-- Add New Task Widget -->
                           <div class="col-md-12 clearfix">
                             <form class="form-horizontal clearfix task-widget">
                               <div class="row">
@@ -329,24 +125,24 @@
                                         
                                         <!-- Form inline Due after -->
                                         
-                        <div class="row">
-                            <div class="col-md-3 paddingRight">
-                                <label class="small">Months</label> <br>
-                                <input class="form-control input-sm" type="text">
-                            </div>
-                            <div class="col-md-3 paddingRight paddingLeft">
-                                <label class="small">Days</label> <br>
-                                <input class="form-control input-sm" type="text">
-                            </div>
-                            <div class="col-md-3 paddingRight paddingLeft">
-                                <label class="small">Hours</label> <br>
-                                <input type="text" class="form-control input-sm">
-                            </div>
-                            <div class="col-md-3 paddingRight paddingLeft">
-                                <label class="small">Minutes</label> <br>
-                                <input type="text" class="form-control input-sm">
-                            </div>
-                        </div>
+				                        <div class="row">
+				                            <div class="col-md-3 paddingRight">
+				                                <label class="small">Months</label> <br>
+				                                <input class="form-control input-sm" type="text">
+				                            </div>
+				                            <div class="col-md-3 paddingRight paddingLeft">
+				                                <label class="small">Days</label> <br>
+				                                <input class="form-control input-sm" type="text">
+				                            </div>
+				                            <div class="col-md-3 paddingRight paddingLeft">
+				                                <label class="small">Hours</label> <br>
+				                                <input type="text" class="form-control input-sm">
+				                            </div>
+				                            <div class="col-md-3 paddingRight paddingLeft">
+				                                <label class="small">Minutes</label> <br>
+				                                <input type="text" class="form-control input-sm">
+				                            </div>
+				                        </div>
                                         
                                         <!-- Form inline Due after -->
                                         
@@ -507,4 +303,390 @@
     </div>
   </section>
  
+ <script>
+ function onboardCandidateSummaryDetails(){
+	 var onBoardingUUID = '${onBoardingUUID}';
+    var sourceleadUrl ='${sourceleadUrl}';
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	    $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/loadOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID, 
+	        success: function(data) {
+	        	
+	        	 var json = JSON.parse(data);
+	        	if(json.zipCode != null && json.zipCode != '' && json.zipCode != 'undefined'){
+	        		zipCode = json.zipCode;
+	        	}else{
+	        		zipCode = "";
+	        	}
+	        	 var result = "";
+				 result = result +'	 <div class="col-md-12">                                                                                          ';
+				 result = result +'   <div class="form-horizontal">                                                                                   ';
+				 result = result +'     <p><strong>Employee Details</strong></p>                                                                      ';
+				 result = result +'     <div class="form-group">                                                                                      ';
+				 result = result +'       <label class="col-md-3 control-label">First Name <span class="text-danger paddingLeft">*</span></label>     ';
+				 result = result +'       <div class="col-md-6">                                                                                      ';
+				 result = result +'           <label>'+json.firstName+'</label>                                                                      ';
+				 result = result +'       </div>                                                                                                      ';
+				 result = result +'     </div>                                                                                                        ';
+				 
+				 if(json.lastName != null && json.lastName != '' && json.lastName != 'undefiend'){
+					 result = result +'     <div class="form-group">                                                                                      ';
+					 result = result +'       <label class="col-md-3 control-label">Last Name </label>      ';
+					 result = result +'       <div class="col-md-6">                                                                                      ';
+					 result = result +'           <label>'+json.lastName+'</label>                                                                                ';
+					 result = result +'       </div>                                                                                                      ';
+					 result = result +'     </div>                                                                                                        ';
+				 }
+				
+				 
+				 result = result +'     <div class="form-group">                                                                                      ';
+				 result = result +'       <label class="col-md-3 control-label">Street Addess 1 <span class="text-danger paddingLeft">*</span></label>';
+				 result = result +'       <div class="col-md-6">                                                                                      ';
+				 result = result +'           <label>'+json.address1+'</label>                                      ';
+				 result = result +'       </div>                                                                                                      ';
+				 result = result +'     </div>                                                                                                        ';
+				
+				 if(json.address2 != null && json.address2 != '' && json.address2 != 'undefined'){
+					 result = result +'     <div class="form-group">                                                                                      ';
+					 result = result +'       <label class="col-md-3 control-label">Street Addess 2</label>';
+					 result = result +'       <div class="col-md-6">    ';
+					 result = result +'           <label>'+json.address2+'</label> ';
+					 result = result +'       </div>                                                                                                      ';
+					 result = result +'     </div>                                                                                                        ';
+				 }
+				 
+				 
+				 result = result +'  <div class="form-group">                                                                    ';
+				 result = result +'       <label class="col-md-3 control-label">Country <span class="text-danger paddingLeft">*</span></label>        ';
+				 result = result +'       <div class="col-md-6">                                   ';
+				 result = result +'           <label>'+json.country+'</label>                                 ';
+				 result = result +'       </div>                                                   ';
+				 result = result +'     </div>                                                     ';
+			    
+				 if(json.state != null && json.state != '' && json.state != 'undefined' ){
+					 result = result +'     <div class="form-group">                                   ';
+					 result = result +'       <label class="col-md-3 control-label">State</label>      ';
+					 result = result +'       <div class="col-md-6">                                   ';
+					 result = result +'           <label>'+json.state+'</label>                             ';
+					 result = result +'       </div>                                                   ';
+					 result = result +'     </div>     ';
+				 }
+			                                                                                     
+				 if(json.city != null && json.city != '' && json.city != 'undefined' ){
+					 result = result +'     <div class="form-group">                                   ';
+					 result = result +'       <label class="col-md-3 control-label">City</label>       ';
+					 result = result +'       <div class="col-md-6">                                   ';
+					 result = result +'           <label>'+json.city+'</label>                             ';
+					 result = result +'       </div>                                                   ';
+					 result = result +'     </div>                                                     ';
+					
+				 }
+				 if(zipCode != ''){
+					 result = result +'     <div class="form-group">                                   ';
+					 result = result +'       <label class="col-md-3 control-label">Zipcode</label>    ';
+					 result = result +'       <div class="col-md-6">                ';
+					 result = result +'           <label>'+zipCode+'</label>   ';
+					 result = result +'       </div>                                ';
+					 result = result +'     </div>                                  ';
+				 }
+					 
+				 
+				 if(json.personalEmail != null && json.personalEmail != '' && json.personalEmail != 'undefined'){
+					 result = result +'                                                                          ';
+					 result = result +'     <div class="form-group">                                             ';
+					 result = result +'       <label class="col-md-3 control-label">Personal Email <span class="text-danger paddingLeft">*</span></label> ';
+					 result = result +'       <div class="col-md-6">                                                                                      ';
+					 result = result +'           <label>'+json.personalEmail+'</label>                                                            ';
+					 result = result +'       </div>                                                                                                      ';
+					 result = result +'     </div>                                                                                                        ';
+				 }
+			    
+				if(json.mobileNumber != null && json.mobileNumber != '' && json.mobileNumber != 'undefined'){
+					 result = result +'     <div class="form-group">                                                                                      ';
+					 result = result +'       <label class="col-md-3 control-label">Mobile number <span class="text-danger paddingLeft">*</span></label>  ';
+					 result = result +'       <div class="col-md-6">                                                                                      ';
+					 result = result +'           <label>'+json.mobileNumber+'</label>                                                                           ';
+					 result = result +'       </div>                                                                                                      ';
+					 result = result +'     </div>                                                                                                        ';
+				}
+				
+				 if(json.roleName != null && json.roleName != '' && json.roleName != 'undefined'){
+					 result = result +'   <div class="form-group">                                                                                        ';
+					 result = result +'       <label class="col-md-3 control-label">Role <span class="text-danger paddingLeft">*</span></label>                                                          ';
+					 result = result +'       <div class="col-md-6">                                                                                      ';
+					 result = result +'           <label>'+json.roleName+'</label>                                                                                   ';
+					 result = result +'       </div>                                                                                                      ';
+					 result = result +'     </div>                                                                                                        ';
+				 }
+			     
+				 
+			     result = result +'       <div class="form-group">                                                                                    ';
+				 result = result +'       <label class="col-md-3 control-label">Date Of Join<span class="text-danger paddingLeft">*</span></label>      ';
+				 result = result +'       <div class="col-md-6">                                                                                      ';
+				 result = result +'         <label>'+json.joiningDateStr+'                                                                                        ';
+				 result = result +'       </label></div>                                                                                              ';
+				 result = result +'     </div>                                                                                                        ';
+				
+				 if(json.endDateStr != null && json.endDateStr != '' && json.endDateStr != 'undefined'){
+					 result = result +'       <div class="form-group">                                                                                    ';
+					 result = result +'       <label class="col-md-3 control-label">End date</label>        ';
+					 result = result +'       <div class="col-md-6">                                                                                      ';
+					 result = result +'         <label>'+json.endDateStr+'</label>                                                                                 ';
+					 result = result +'       </div>                                                                                                      ';
+					 result = result +'     </div>                                                                                                        ';
+				 }
+				
+				 
+				 result = result +'     <div class="form-group">                                                                                      ';
+				 result = result +'       <label class="col-md-3 control-label">Rate / Salary <span class="text-danger paddingLeft">*</span></label>  ';
+				 result = result +'       <div class="col-md-6">                                                                                      ';
+				 result = result +'         <label>'+json.salaryRate+'</label>                                                                                  ';
+				 result = result +'       </div>                                                                                                      ';
+				 result = result +'     </div>                                                                                                        ';
+				
+				 if(json.managerName != null && json.managerName != '' && json.managerName != 'undefined'){
+					 result = result +'     <div class="form-group">                                                                                      ';
+					 result = result +'       <label class="col-md-3 control-label">Manager</label>                                                       ';
+					 result = result +'       <div class="col-md-6">                                                                                      ';
+					 result = result +'                 <label>'+json.managerName+'</label>                                                                          ';
+					 result = result +'         </div>                                                                                                    ';
+					 result = result +'     </div>                                                                                                        ';
+				 }
+				 
+				 if(json.teamName != null && json.teamName != '' && json.teamName != 'undefined'){
+					 result = result +'     <div class="form-group">                                                                                      ';
+					 result = result +'       <label class="col-md-3 control-label">Team</label>                                                          ';
+					 result = result +'       <div class="col-md-6">                                                                                      ';
+					 result = result +'           <label>'+json.teamName+'</label>                                                                                     ';
+					 result = result +'       </div>                                                                                                      ';
+					 result = result +'     </div>                                                                                                        ';
+				 }
+				 
+				if(json.employmentType != null && json.employmentType != '' && json.employmentType != 'undefined'){
+					 result = result +'     <div class="form-group">                                                                                      ';
+					 result = result +'       <label class="col-md-3 control-label">Employment Type</label>                                               ';
+					 result = result +'       <div class="col-md-6">                                                                                      ';
+					 result = result +'           <label>'+json.employmentType+'</label>                                                                        ';
+					 result = result +'       </div>                                                                                                      ';
+					 result = result +'     </div>                                                                                                        ';
+				}
+				
+				 
+				 if(json.probationNotice != null && json.probationNotice !='' && json.probationNotice != 'undefined'){
+					 result = result +'       <div class="form-group">                                                                                    ';
+					 result = result +'       <label class="col-md-3 control-label">Probation Notice</label>                                              ';
+					 result = result +'       <div class="col-md-6">                                                                                      ';
+					 result = result +'           <label>'+json.probationNotice+'</label>                                                                                 ';
+					 result = result +'       </div>                                                                                                      ';
+					 result = result +'     </div>                                                                                                        ';
+				 }
+				
+				if(json.terminationNotice != '' && json.terminationNotice != '' && json.terminationNotice != 'undefined'){
+					result = result +'       <div class="form-group">                                                                                    ';
+					 result = result +'       <label class="col-md-3 control-label">Termination Notice</label>                                            ';
+					 result = result +'       <div class="col-md-6">                                                                                      ';
+					 result = result +'           <label>'+json.terminationNotice+'</label>                                                                                  ';
+					 result = result +'       </div>                                                                                                      ';
+					 result = result +'     </div>                                                                                                        ';
+				}
+				 
+				 if(json.dueDateStr != null && json.dueDateStr != '' && json.dueDateStr != 'undefined'){
+					 result = result +'       <div class="form-group">                                                                                    ';
+					 result = result +'       <label class="col-md-3 control-label">Due Date</label>                                                      ';
+					 result = result +'       <div class="col-md-6">                                                                                      ';
+					 result = result +'        <label>'+json.dueDateStr+'                                                                                          ';
+					 result = result +'       </label></div>                                                                                              ';
+					 result = result +'     </div>                                                                                                        ';
+				 }
+				 
+
+				 if(json.specialConditions != null && json.specialConditions != '' && json.specialConditions != 'undefined'){
+					  result = result +'       <div class="form-group">                                                                                    ';
+						 result = result +'       <label class="col-md-3 control-label">Speical Conditions</label>                                            ';
+						 result = result +'       <div class="col-md-6">                                                                                      ';
+						 result = result +'           <p>                                                                                                     ';
+						 result = result +'           '+json.specialConditions+'                              ';
+						 result = result +'           </p>                                                                                                    ';
+						 result = result +'       </div>                                                                                                      ';
+						 result = result +'     </div>                                                                                                        ';
+				 }
+			   
+				
+				 result = result +'        <div class="form-group">                                                                                   ';
+				 result = result +'            <label class="col-md-3 control-label">Onboard Template </label> ';
+				 result = result +'       <div class="col-md-6">                                                                                    ';
+				 result = result +'             <div id="onboardingTemplate"></div>                                                                                  ';
+				 result = result +'       </div>                                                                                                    ';
+				 result = result +'     </div>                                                                                                      ';
+				
+				 result = result +'   </div>                                                                                                        ';
+				 result = result +'     </div>';
+	        	 
+				 $("#onboardCandidateSummaryDetailsId").empty();
+            	 
+            	 $("#onboardCandidateSummaryDetailsId").append(result);
+            	 loadOnBoardingTemplates(json.onboardTemplateId);
+	        	 
+	        },
+	    });
+ }
+ </script>
+ <script>
+function loadOnBoardingTemplates(onboardTemplateId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/getOnboardingTemplatesForCandidateOnBoarding?${_csrf.parameterName}=${_csrf.token}",	    	   
+	    success: function(data) {
+	    	 var json = JSON.parse(data);
+        	 var result = "";
+        	
+        	for (var i=0; i<json.length; i++)
+			{
+        		var report = json[i];
+        			result = result + report.templateName +' , ';
+        		
+			}
+        	 $("#onboardingTemplate").empty();
+           	 $("#onboardingTemplate").append(result); 
+	    }
+   });
+}
+</script>
+
+
+
+
+
+<script>
+function getTemplateContractsDocumentsDetails(){
+	var onBoardingUUID = '${onBoardingUUID}';
+	var documentType = "Contracts"
+		var sourceleadUrl ='${sourceleadUrl}';
+	     $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByonBoardingUUID?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&documentType="+documentType, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var result = "";
+		        	result = result +'	 <div class="row">                                                       ';
+		        	for (var i = 0; i < json.length; i++) { 
+               		 var report = json[i]; 
+               		 
+               		
+						result = result +'    <div class="col-md-2 text-center mb10">                                ';
+						result = result +'      <div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
+						result = result +'        <p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>                        ';
+						result = result +'        <i class="fa fa-check text-success permission"></i> </div>         ';
+						result = result +'    </div>                                                                 ';
+		        	}
+					result = result +'    </div>                                                                 ';
+                	 $("#employmentContractDivId").empty();
+                	 $("#employmentContractDivId").append(result);
+                	 
+                	 
+			        
+		        },
+		    });
+}
+</script>
+
+<script>
+function getTemplateFormsDocumentsDetails(){
+	var onBoardingUUID = '${onBoardingUUID}';
+	var documentType = "Forms"
+		var sourceleadUrl ='${sourceleadUrl}';
+	     $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByonBoardingUUID?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&documentType="+documentType, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var result = "";
+		        	result = result +'	 <div class="row">                                                       ';
+		        	for (var i = 0; i < json.length; i++) { 
+               		 var report = json[i]; 
+               		 
+               		
+						result = result +'    <div class="col-md-2 text-center mb10">                                ';
+						result = result +'      <div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
+						result = result +'        <p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>                        ';
+						result = result +'        <i class="fa fa-check text-success permission"></i> </div>         ';
+						result = result +'    </div>                                                                 ';
+		        	}
+					result = result +'    </div>                                                                 ';
+                	 $("#formstDivId").empty();
+                	 $("#formstDivId").append(result);
+                	 
+                	 
+			        
+		        },
+		    });
+}
+</script>
+<script>
+function getTemplatePolicyDocumentsDetails(){
+	var onBoardingUUID = '${onBoardingUUID}';
+	var documentType = "Policies"
+		var sourceleadUrl ='${sourceleadUrl}';
+	     $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByonBoardingUUID?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&documentType="+documentType, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var result = "";
+		        	result = result +'	 <div class="row">                                                       ';
+		        	for (var i = 0; i < json.length; i++) { 
+               		 var report = json[i]; 
+               		 
+               		
+						result = result +'    <div class="col-md-2 text-center mb10">                                ';
+						result = result +'      <div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
+						result = result +'        <p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>                        ';
+						result = result +'        <i class="fa fa-check text-success permission"></i> </div>         ';
+						result = result +'    </div>                                                                 ';
+		        	}
+					result = result +'    </div>                                                                 ';
+                	 $("#policiesDivId").empty();
+                	 $("#policiesDivId").append(result);
+                	 
+                	 
+			        
+		        },
+		    });
+}
+</script>
+
+<script>
+function getTemplateSupportingDocumentsDetails(){
+	var onBoardingUUID = '${onBoardingUUID}';
+	var documentType = "Supported"
+		var sourceleadUrl ='${sourceleadUrl}';
+	     $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByonBoardingUUID?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&documentType="+documentType, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	var result = "";
+		        	result = result +'	 <div class="row">                                                       ';
+		        	for (var i = 0; i < json.length; i++) { 
+               		 var report = json[i]; 
+               		 
+               		
+						result = result +'    <div class="col-md-2 text-center mb10">                                ';
+						result = result +'      <div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
+						result = result +'        <p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>                        ';
+						result = result +'        <i class="fa fa-check text-success permission"></i> </div>         ';
+						result = result +'    </div>                                                                 ';
+		        	}
+					result = result +'    </div>                                                                 ';
+                	 $("#supportedDivId").empty();
+                	 $("#supportedDivId").append(result);
+                	 
+                	 
+			        
+		        },
+		    });
+}
+</script>
  <jsp:include page="../masterFooter.jsp" />
