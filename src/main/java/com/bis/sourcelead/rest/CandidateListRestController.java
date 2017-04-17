@@ -947,8 +947,7 @@ public class CandidateListRestController {
 		   Candidate candidate = null;
 				try {
 					 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-					 candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(candidateId, loginOrgLocation.getId());
-					
+					 candidate = candidateService.getCandidateByCandidateId(candidateId);					
 					if(candidate != null && candidate.getDocFile() != null)
 					{
 						candidate.setFileContentType("image/jpeg");
