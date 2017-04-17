@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.entity.BulkClientDetails;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Org;
@@ -151,6 +152,7 @@ public class ContractRestController {
 			clientSb.append(orgSpoc.getClientUser().getFirstName());
 			}
 			orgSpoc.setSpocName(sb.toString());
+			orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
 			orgSpoc.setOwnerName(clientSb.toString());
 			}
 		return commonUtil.toJSON(orgSpocList);
@@ -192,10 +194,10 @@ public class ContractRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getAllContractsByOrgLocationIdandStatus", method = RequestMethod.GET)
-	public @ResponseBody String getAllContractsByOrgLocationIdandStatus(@RequestParam(value = "contractSubmissionType", required = false) String contractSubmissionType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+	public @ResponseBody String getAllContractsByOrgLocationIdandStatus(@RequestParam(value = "contractSubmissionType", required = false) String contractSubmissionType,@RequestParam(value = "tabType", required = false) String tabType,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<Contracts> contractsTemplateList = contractsTemplateService.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType);
+		List<Contracts> contractsTemplateList = contractsTemplateService.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,tabType);
 		return commonUtil.toJSON(contractsTemplateList);
 	} 
 	
@@ -230,6 +232,26 @@ public class ContractRestController {
 		}
 	}
 	
-	
+	@RequestMapping(value = "/updateContractStatus", method = RequestMethod.POST)
+	@ResponseBody
+	public String updateContractStatus(@RequestParam(value = "recordId", required = false) String recordId,HttpServletRequest request)throws Exception{
+
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		
+		Contracts contracts  = contractsTemplateService.getContractById(Long.parseLong(recordId));
+		
+		Contracts updateContracts = new Contracts();
+		Contracts childContracts = new Contracts();
+		
+		if(null != contracts.getParentContractId()){
+				updateContracts.setId(contracts.getParentContractId().getId());
+				updateContracts.setTemplateSubmissionStatus("Send For Verification");
+				childContracts.setId(contracts.getId());
+				childContracts.setTemplateSubmissionStatus("Waiting To Be Verify");
+			}
+			
+		return "success";
+}
 
 }

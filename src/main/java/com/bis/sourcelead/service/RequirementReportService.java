@@ -59,4 +59,6 @@ public interface RequirementReportService {
 
 	ApplicantReport getSubmittedApplicantsCountForReports(String jsonData, String customStartDate, String customEndDate, String reportType, OrgLocations orgLocation, User user)throws Exception;
 
+	List<RequirementSubmissionHistory> getApplicantsCountsByDateRange(Long submissionId, Date startDateUTC, Date endDateUTC) throws Exception;
+
 }

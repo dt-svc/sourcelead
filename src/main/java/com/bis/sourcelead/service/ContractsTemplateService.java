@@ -23,6 +23,8 @@ public interface ContractsTemplateService {
 
 	Contracts saveNewContract(JSONObject jsonObj, OrgLocations orgLocation, String saveType, User user)throws Exception;
 
-	List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType)throws Exception;
+	List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType)throws Exception;
+
+	Contracts getContractById(Long contractId);
 	
 }
