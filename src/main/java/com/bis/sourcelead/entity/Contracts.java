@@ -153,8 +153,20 @@ public class Contracts {
 	@Transient
 	private String endDateStr;
 
+	@Transient
+	private String parentId;
 	
 	
+	public String getParentId()
+	{
+		return parentId;
+	}
+
+	public void setParentId(String parentId)
+	{
+		this.parentId = parentId;
+	}
+
 	public Contracts getParentContractId()
 	{
 		return parentContractId;

@@ -129,6 +129,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setContractsTemplate(contractsTemplate);
 		}
 		contracts.setContractTitle(jsonObj.getString("contractTitle"));
+		vendorContracts.setContractTitle(jsonObj.getString("contractTitle"));
 		User ownerUser = userService.getUserById(Long.parseLong(jsonObj.getString("owner")));
 		contracts.setOwnerUserId(ownerUser);
         Date startDate = format.parse(jsonObj.getString("startDate"));
@@ -207,10 +208,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			vendorContracts.setDescription(jsonObj.getString("description"));
 		}
 		contracts.setStatus("0");
-		contracts.setTemplateSubmissionStatus("Pending");
+//		contracts.setTemplateSubmissionStatus("pending");
 		vendorContracts.setTemplateSubmissionStatus("Waiting to be signed");
 		vendorContracts.setStatus("0");
-		vendorContracts.setTemplateSubmissionStatus(saveType);
+		contracts.setTemplateSubmissionStatus(saveType);
 		contracts.setCreatedDate(new Date());
 		contracts.setCreatedBy(user.getUserCode());
 		contracts.setUpdatedDate(new Date());
@@ -261,9 +262,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	}
 
 	@Override
-	public List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType) throws Exception
+	public List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType) throws Exception
 	{
-		List<Contracts> contractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType);
+		List<Contracts> contractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,tabType);
 		
 		
 		for(Contracts contracts :contractsList ){
@@ -285,8 +286,20 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			if(null != contracts.getEndDate()){
 				contracts.setEndDateStr(Constants.DF_DMY.format(contracts.getEndDate()));	
 			}
+			if(null != contracts.getParentContractId()){
+			contracts.setParentId(contracts.getParentContractId().getId().toString());
+			}
+			else{
+				contracts.setParentId("");
+			}
 		}
 		return contractsList;
+	}
+
+	@Override
+	public Contracts getContractById(Long contractId)
+	{
+		return contractsTemplateDao.getContractById(contractId);
 	}
 
 	

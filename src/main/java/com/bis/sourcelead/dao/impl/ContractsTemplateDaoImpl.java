@@ -126,12 +126,24 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 
 	@Override
 	@Transactional
-	public List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String submissionType) throws Exception
+	public List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String submissionType,String tabType) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Contracts contracts left join fetch contracts.contractsTemplate left join fetch contracts.ownerUserId left join fetch contracts.orgLocationId left join fetch contracts.orgRelations where contracts.orgLocationId.id = :orgLocationId and contracts.templateSubmissionStatus = :submissionType";
+		String query = "from Contracts contracts left join fetch contracts.contractsTemplate left join fetch contracts.requirementSubmission left join fetch contracts.ownerUserId left join fetch contracts.orgLocationId left join fetch contracts.orgRelations where contracts.orgLocationId.id = :orgLocationId and contracts.templateSubmissionStatus = :submissionType and contracts.contractType like '%"+tabType+"%'";
 		List<Contracts>  ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setString("submissionType", submissionType).setCacheable(true).list();
 		return ContractsList;
+	}
+
+	@Override
+	public Contracts getContractById(Long contractId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Contracts  contracts =  null;
+		List<Contracts>  contractsList = session.createQuery("from Contracts ct where ct.id =:contractId").setLong("contractId", contractId).setCacheable(true).list();
+		if(null != contractsList && contractsList.size() >0){
+			contracts = contractsList.get(0);
+		}
+		return contracts;
 	}
 
 	
