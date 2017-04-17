@@ -274,7 +274,7 @@
 
 		  
 <div class="welBtns">
-	<a href="welcome.html">Prew</a><a class="Brig" href="welcome-three.html">Proceed to next step</a><div class="clearfix"></div>
+	<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Previous</a><a class="Brig" href="welcome-three.html">Proceed to next step</a><div class="clearfix"></div>
 </div>
 		  
 		</section>

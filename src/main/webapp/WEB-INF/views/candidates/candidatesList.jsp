@@ -509,7 +509,7 @@ function candidateSideBar(candidateId){
 			            
 			             result = result+'                       <ul class="list-unstyled">';
 			             
-			             result = result+'                        <li>Type - '+json.candidateType+'</li>';  
+// 			             result = result+'                        <li>Type - '+json.candidateType+'</li>';  
 			             
                          
 			             result = result+'                       </ul>';
@@ -1393,7 +1393,7 @@ function cancel(candidateId){
     
  <ul class="nav nav-tabs">
     <li class="active" id="candQuickView"><a data-toggle="tab" href="#quickview">Quickview</a></li>
-    <li id="candDetailView"><a data-toggle="tab" href="#detailview">Detailedview</a></li>
+    <li id="candDetailView"><a data-toggle="tab" href="#detailview">Detailed View</a></li>
   </ul>
 
   <div class="tab-content">
