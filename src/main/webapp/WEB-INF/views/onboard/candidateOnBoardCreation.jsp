@@ -89,13 +89,13 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Street Addess 1 <span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">Street Address 1 <span class="text-danger paddingLeft">*</span></label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm" id="address1" name="address1" field-name="Address 1" data-validation="required validate_Space">
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Street Addess 2</label>
+                  <label class="col-md-3 control-label">Street Address 2</label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm" id="address2" name="address2" field-name="Address 2" data-validation-optional="true"  data-validation="validate_Space">
                   </div>
@@ -137,7 +137,7 @@
                 <div class="form-group">
                   <label class="col-md-3 control-label">Mobile number <span class="text-danger paddingLeft">*</span></label>
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber" readonly="readonly">
+                    <input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber" >
                   </div>
                 </div>
 
@@ -254,7 +254,7 @@
                 </div>
 
                   <div class="form-group">
-                  <label class="col-md-3 control-label">Speical Conditions</label>
+                  <label class="col-md-3 control-label">Special Conditions</label>
                   <div class="col-md-6">
                       <textarea rows="2" class="form-control" id="specialConditions" name="specialConditions" data-validation-optional="true"></textarea>
                   </div>
@@ -1883,6 +1883,7 @@ function getOnboardingTasksList(){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	
+	if(onboardId != null && onboardId != '' && onboardId!= 'undefined'){
 	
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	$.ajax({
@@ -1961,6 +1962,7 @@ function getOnboardingTasksList(){
    }); 
 	
   $("#loading").removeAttr("style");
+}
 	
 }
 </script>

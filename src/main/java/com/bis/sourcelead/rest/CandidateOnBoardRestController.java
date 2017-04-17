@@ -1206,9 +1206,11 @@ public class CandidateOnBoardRestController {
 				 }
 				
 				 templateTasksList = onboardTasksService.getOnboardTasksByTemplateIdList(templateIdsList);
+				 if(null != templateTasksList){
+					 tasksList.addAll(templateTasksList);
+				 }
+				 
 			 }
-			 
-			 tasksList.addAll(templateTasksList);
 			 
 			 
 			 List<OnboardTasks> onboardtasksList = new ArrayList<OnboardTasks>();
