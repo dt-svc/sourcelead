@@ -134,6 +134,7 @@ function storeCertificate(candidateId){
 			            			$("#cerMsgDiv").html("Success!! New Certification added");
 				               		candidateCertificateList(candidateId);
 				               		cerMsgFadein();
+				               		candidateQuickViewProfile(candidateId);
 							    	}
 							   }
 						},
@@ -698,6 +699,7 @@ function addCertification(candidateId) {
 	            			$("#cerMsgDiv").html("Certification details updated");
 							candidateCertificateList(candidateId);
 							cerMsgFadein();
+							candidateQuickViewProfile(candidateId);
 						},
 					});
 			return true;
