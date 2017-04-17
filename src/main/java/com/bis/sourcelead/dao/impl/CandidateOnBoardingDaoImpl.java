@@ -112,4 +112,20 @@ public class CandidateOnBoardingDaoImpl  implements CandidateOnBoardingDao{
 		}
 	}
 
+
+	@Override
+	@Transactional
+	public CandidateOnBoarding getCandidateOnBoardingByEmailAndLocationId(String email, Long orgLocationId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<CandidateOnBoarding> candidateOnBoarding = session.createQuery("from CandidateOnBoarding onboarding left join fetch onboarding.orgLocationId  "
+				+ " where onboarding.orgLocationId.id =:orgLocationId and onboarding.companyEmail = :email" ).setString("email", email).setLong( "orgLocationId", orgLocationId ).setCacheable(true).list();
+		if (candidateOnBoarding.size() > 0) {
+			return candidateOnBoarding.get(0);
+		} else {
+			return null;
+		}
+	}
+
 }
