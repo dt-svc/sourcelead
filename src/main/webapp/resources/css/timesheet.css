@@ -3513,7 +3513,7 @@ font-size: 20px; color: #FF4141; padding: 4px 0px 0px 0px; display: inline-block
 	border-top: 1px dotted #999;
 }
 .welCo1 h5 {
-	margin:0px 0px 20px 0px; padding: 0px 0px 6px 0px; font-size: 18px; font-weight: 400; color: #454545; border-bottom: 1px dotted #999;
+	margin:0px 0px 20px 0px; padding: 0px 0px 6px 0px; font-size: 16px; font-weight: 400; color: #454545; border-bottom: 1px dotted #999;
 }
 .welCoInn {
 	padding: 0px 0px 18px 0px;
@@ -3562,12 +3562,56 @@ font-size: 20px; color: #FF4141; padding: 4px 0px 0px 0px; display: inline-block
 	margin: 10px 10px 0px 0px; width: 100px; border-radius: 2px; text-align: center; font-size: 13px; line-height: 16px;
 }
 .docu a .fa-file-excel-o, .docu a .fa-file-word-o, .docu a .fa-file-pdf-o {
-	font-size:35px; padding: 10px 0px 15px; color: #3269E7;
+	font-size:35px; padding: 10px 0px 15px; color: #6189E4;
 }
 .docu a .fa-file-pdf-o {color:#DD3C3C;}
 .docu a .fa-file-word-o { color:#25A7AA;}
 .welTeam {
 	position:relative;
+}
+.step3Wrap {
+	border-bottom: 1px dotted #999;
+}
+.step3 {
+	padding:0px 16px 16px 0px; width: 45%; float: left;
+}
+.step3Wrap h2 {
+	border:none; padding: 0px 0px 10px 0px; font-size: 18px;
+}
+.step3 span {
+	float:left; width: 100px; height: 100px; background-color: #fff; box-shadow: 0px 0px 2px rgba(0,0,0,0.2);
+	display: block; border-radius: 2px; padding: 5px; text-align: center;
+}
+.step3 span a {
+	font-size:45px; padding: 22px 0px; display: block; color: #6EA244;
+}
+.step3Wrap .fa-file-excel-o {
+	color:#6189E4;
+}
+.step3Wrap .fa-file-word-o {
+	color:#25A7AA;
+}
+.step3Wrap .fa-file-pdf-o {
+	color:#DD3C3C;
+}
+.step3 strong {
+	display:block; float: left; width: 70%; padding: 0px 0px 0px 15px;
+}
+.step3 strong p {
+	padding:0px 0px 6px; margin: 0px 0px; font-size: 14px; color: #333;
+}
+.step3 label {
+	font-size: 13px; color: #545454;
+}
+.step3 label input {
+	display: inline-block; padding: 0px 0px 0px 0px; margin: 0px;
+}
+.step3 strong a {
+	padding:5px 20px; font-size: 14px; font-weight: 500; background-color: #247ac9; border: 1px solid #1c63a5;
+	color: #fff; border-radius: 3px; margin: 0px 0px 8px 0px; cursor: pointer; display: inline-block;
+}
+.padTop {
+	padding:20px 0px 10px 0px !important;
 }
 
 /** Welcome Team Coro **/
@@ -3619,6 +3663,9 @@ font-size: 20px; color: #FF4141; padding: 4px 0px 0px 0px; display: inline-block
 .welMana span b a {
 	display:inline-block; background-color: #37B598; color: #fff; font-weight: 400; padding: 3px 10px; margin: 0px 2px;
 	border-radius: 2px;
+}
+.padBot {
+	padding:0px 0px 25px 0px;
 }
 
 .propWrap {
@@ -3937,11 +3984,18 @@ width:100%; height: 100%; border: 10px solid #ccc; border-radius: 3px;
 }
 
 .posiF {
-position: fixed !important;
+	position: fixed !important;
 }
 
 .remove_user_pop input.fullBtn {
-width:100%; background:#4caf54;
+	width:100%; background:#4caf54;
 }
-
+.pavPop {
+    position: fixed; left: 0px; right: 0px; width: 900px; border-radius: 5px; top: 15%; background-color: #fff; z-index: 16000; margin: 0px auto;
+    box-shadow: 0px 0px 5px rgba(0,0,0,0.5); padding: 43px 4px 4px 4px; display: none;
+}
+.pavClose {
+    position: absolute; width: 35px; height: 35px; background-color: #fff; border-radius:50%; box-shadow:0px 0px 3px rgba(0,0,0,0.2);
+    right: -20px; top:-20px; text-align: center; cursor: pointer; color: #e35454; font-size: 18px; padding: 5px 0px 0px 0px;
+}
 
