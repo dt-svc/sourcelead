@@ -283,11 +283,15 @@ public class CandidateServiceImpl implements CandidateService {
 		if(jsonObj.has("vendors") && !"".equalsIgnoreCase(jsonObj.getString("vendors"))){
 			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("vendors")));
 			candidate.setOrgRelationId(orgRelation);
+		}else{
+			candidate.setOrgRelationId(null);
 		}
 		
 		if(jsonObj.has("vendorcontact") && !"".equalsIgnoreCase(jsonObj.getString("vendorcontact"))){
 			OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(jsonObj.getString("vendorcontact")));
 			candidate.setSpocId(orgspoc);
+		}else{
+			candidate.setSpocId(null);
 		}
 		
 		HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(jsonObj, orgLocations,candidate,user.getUserCode());
