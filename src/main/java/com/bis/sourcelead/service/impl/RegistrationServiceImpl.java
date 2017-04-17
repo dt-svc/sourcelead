@@ -1,18 +1,30 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
@@ -32,7 +44,6 @@ import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.ReferContacts;
-import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
@@ -1017,12 +1028,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 		user.setCreatedBy("sladmin");
 		user.setCreatedDate(new Date());
 		user.setUpdatedDate(new Date());
-		
 		userService.addUser(user);
 		
 		Org org = new Org();
 		org.setId(1L);
-		
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(1L);
 		
@@ -1120,5 +1129,262 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
 		
 	}
+
+	@Override
+	public void saveProfessionalFromSocialInviter(JSONObject jsonObj) throws Exception {
+		User user = new User();
+		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
+			user.setFirstName(jsonObj.getString("firstName"));
+		}
+		
+		if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
+			user.setLastName(jsonObj.getString("lastName"));
+		}
+		
+		if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
+			user.setEmail(jsonObj.getString("email"));
+		}
+		
+		if(jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))){
+			user.setCountry(jsonObj.getString("location"));
+		}
+		
+		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
+		if(jsonObj.has("userName") && !isNullOrEmpty(jsonObj.getString("userName"))){
+			user.setUserName(jsonObj.getString("userName"));
+		}
+		if(jsonObj.has("imageUrl") && !isNullOrEmpty(jsonObj.getString("imageUrl"))){
+			user.setDocFile(fetchRemoteFile(jsonObj.getString("imageUrl")));
+			user.setFileContentType("image/png");
+		}
+		if(jsonObj.has("service") && !isNullOrEmpty(jsonObj.getString("service"))
+		  && jsonObj.has("profileUrl") && !isNullOrEmpty(jsonObj.getString("profileUrl"))){
+			String service = jsonObj.getString("service");
+			String profileUrl = jsonObj.getString("profileUrl");
+			if(!isNullOrEmpty(service)  && (service.equalsIgnoreCase("googleplus") || service.equalsIgnoreCase("gmail") || service.equalsIgnoreCase("google"))){
+				user.setGooglePlus(profileUrl);
+			}
+			else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("facebook")){
+				user.setFacebook(profileUrl);
+			}
+			else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("twitter")){
+				user.setTwitter(profileUrl);			
+			}
+			else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("linkedin")){
+				user.setLinkedIn(profileUrl);
+			}
+			
+		}
+		user.setUserType(Constants.PROFESSIONAL);
+		user.setCreatedBy("sladmin");
+		user.setCreatedDate(new Date());
+		user.setUpdatedDate(new Date());
+		
+		user = userService.addUser(user);
+		
+		Org org = new Org();
+		org.setId(1L);
+		
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(1L);
+				
+		
+		UserRole userRole = new UserRole();
+		Roles roles = rolesService.getRolesByRoleNameAndOrgId(Constants.ROLE_NAME_PROFESSIONAL, 1L);
+		userRole.setUser(user);
+		userRole.setRoles(roles);
+		userRole.setOrgId(org);
+		userRole.setOrgLocations(orgLocations);
+		userRole.setIsPrimary(1);
+		userRole.setCreatedBy("sladmin");
+		userRole.setCreatedDate(new Date());
+		userRole.setUpdatedDate(new Date());
+		userRole.setUserState(Status.ACTIVE);
+		userRole.setUserType(Constants.PROFESSIONAL);
+		userRole = userRoleService.addUserRole(userRole);
+		
+		Candidate candidate = new Candidate();
+		candidate.setConsultantUser(user);
+		candidate.setOrgId(org);
+		candidate.setOrgLocationId(orgLocations);
+		candidate.setCandidateType(Constants.PROFESSIONAL);
+		candidate.setCountry(jsonObj.getString("location"));
+		
+		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
+			candidate.setFirstName(jsonObj.getString("firstName"));
+		}
+		
+		if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
+			candidate.setLastName(jsonObj.getString("lastName"));
+		}
+		
+		if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
+			candidate.setEmail(jsonObj.getString("email"));
+		}
+		
+		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
+		candidate.setCreatedBy("sladmin");
+		candidate.setCreatedDate(new Date());
+		candidate.setUpdatedDate(new Date());
+		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		
+		candidateService.addCandidate(candidate);
+		candidateService.saveOrUpdateCandidateElkDocument(candidate);
+		loginWithSocialInviter(user, userRole, orgLocations);
+	}
+
+	@Override
+	public void saveIndividualRecruiterFromSocialInviter(JSONObject jsonObj) throws Exception {
+		User user = new User();
+		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
+			user.setFirstName(jsonObj.getString("firstName"));
+		}
+		
+		if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
+			user.setLastName(jsonObj.getString("lastName"));
+		}
+		
+		if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
+			user.setEmail(jsonObj.getString("email"));
+		}
+		
+		if(jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))){
+			user.setCountry(jsonObj.getString("location"));
+		}
+		
+		if(jsonObj.has("userName") && !isNullOrEmpty(jsonObj.getString("userName"))){
+			user.setUserName(jsonObj.getString("userName"));
+		}
+		if(jsonObj.has("imageUrl") && !isNullOrEmpty(jsonObj.getString("imageUrl"))){
+			user.setDocFile(fetchRemoteFile(jsonObj.getString("imageUrl")));
+			user.setFileContentType("image/png");
+		}
+		if(jsonObj.has("service") && !isNullOrEmpty(jsonObj.getString("service"))
+		  && jsonObj.has("profileurl") && !isNullOrEmpty(jsonObj.getString("profileurl"))){
+			String service = jsonObj.getString("service");
+			String profileUrl = jsonObj.getString("profileurl");
+			if(isNullOrEmpty(service)  && (service.equalsIgnoreCase("googleplus") || service.equalsIgnoreCase("gmail") || service.equalsIgnoreCase("google"))){
+				user.setGooglePlus(profileUrl);
+			}
+			else if(isNullOrEmpty(service)  && service.equalsIgnoreCase("facebook")){
+				user.setFacebook(profileUrl);
+			}
+			else if(isNullOrEmpty(service)  && service.equalsIgnoreCase("twitter")){
+				user.setTwitter(profileUrl);			
+			}
+			else if(isNullOrEmpty(service)  && service.equalsIgnoreCase("linkedin")){
+				user.setLinkedIn(profileUrl);
+			}
+			
+		}
+		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
+		user.setUserType(Constants.INDIVIDUAL_RECRUITER);
+		user.setCreatedBy("sladmin");
+		user.setCreatedDate(new Date());
+		user.setUpdatedDate(new Date());
+		
+		userService.addUser(user);
+		
+		Org org = new Org();
+		org.setId(1L);
+		
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(1L);
+		
+		UserRole userRole = new UserRole();
+		Roles roles = rolesService.getRolesByRoleNameAndOrgId(Constants.ROLE_NAME_INDEPENDENT_RECRUITER, 1L);
+		userRole.setUser(user);
+		userRole.setRoles(roles);
+		userRole.setOrgId(org);
+		userRole.setOrgLocations(orgLocations);
+		userRole.setIsPrimary(1);
+		userRole.setCreatedBy("sladmin");
+		userRole.setCreatedDate(new Date());
+		userRole.setUpdatedDate(new Date());
+		userRole.setUserState(Status.ACTIVE);
+		userRole.setUserType(Constants.INDIVIDUAL_RECRUITER);
+		userRoleService.addUserRole(userRole);
+		
+		Candidate candidate = new Candidate();
+		candidate.setConsultantUser(user);
+		candidate.setOrgId(org);
+		candidate.setOrgLocationId(orgLocations);
+		candidate.setCountry(jsonObj.getString("location"));
+		candidate.setCandidateType(Constants.INDIVIDUAL_RECRUITER);
+		
+		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
+			candidate.setFirstName(jsonObj.getString("firstName"));
+		}
+		
+		if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
+			candidate.setLastName(jsonObj.getString("lastName"));
+		}
+		
+		if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
+			candidate.setEmail(jsonObj.getString("email"));
+		}
+		
+		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
+		candidate.setCreatedBy("sladmin");
+		candidate.setCreatedDate(new Date());
+		candidate.setUpdatedDate(new Date());
+		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		
+		candidateService.addCandidate(candidate);
+		candidateService.saveOrUpdateCandidateElkDocument(candidate);
+		loginWithSocialInviter(user, userRole, orgLocations);
+		
+	}
+	private byte[] fetchRemoteFile(String location) throws Exception {
+		  URL url = new URL(location);
+		  InputStream is = null;
+		  byte[] bytes = null;
+		  try {
+		    is = url.openStream ();
+		    bytes = IOUtils.toByteArray(is);
+		  } catch (IOException e) {
+		    //handle errors
+		  }
+		  finally {
+		    if (is != null) is.close();
+		  }
+		  return bytes;
+		}
+	
+	 private void loginWithSocialInviter(User user,UserRole userRole,OrgLocations orgLocations) throws Exception{
+		 List<SourceleadActions> actionsList = sourceleadActionsService.getLoginCrowdSourcingUserRoleActionsByOrgLocationId(userRole.getRoles().getId());
+		  List<GrantedAuthority> authorities = buildUserAuthority(actionsList); 
+		  try {
+			  if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
+   			  userRole.setUserState(Status.ACTIVE);
+   			  userRoleService.addUserRole(userRole);
+
+   			  /*
+                  * Update USER DB data as ElasticSearch Documents
+                  */
+                 Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(), orgLocations.getId());
+                 if(null != employee){
+                     userService.saveOrUpdateUserElkDocument(userRole,employee,userRole.getCreatedBy());
+                 }
+   		  }
+		   } catch (Exception e) {
+			  e.printStackTrace();
+		   }
+		  SecurityContextHolder.clearContext();
+		  SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword(), authorities));
+	 }
+	 private List<GrantedAuthority> buildUserAuthority(List<SourceleadActions> actionsList) {
+
+    	 Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();
+       
+    	if(actionsList != null && !actionsList.isEmpty()){
+    		// Build user's authorities
+    		for (SourceleadActions sourceleadActions : actionsList) {
+    			setAuths.add(new SimpleGrantedAuthority(sourceleadActions.getActionRole()));
+    		}
+    	}
+    	List<GrantedAuthority> Result = new ArrayList<GrantedAuthority>(setAuths);
+    	return Result;
+    }
 
 }
