@@ -83,18 +83,18 @@
 			<h3>Custom Files</h3>
 			<ul id="clientmsa" style="display:block">
 				<li onclick="copyToClipboard('text_element')"><i></i><p class="copyText" id="text_element"> {Client Name} </p></li>
-				<li><i></i>Client Contact</li>
-				<li><i></i>Client location</li>
-				<li><i></i>${country}</li>
-				<li><i></i>${orgName}</li>
+				<li><i></i>{Client Contact}</li>
+				<li><i></i>{Client location}</li>
+				<li><i></i>{Company Name}</li>
+				<li><i></i>{Company Location}</li>
 			</ul>
 			
 			<ul id="vendormsa" style="display:none">
-				<li><i></i>Vendor Name</li>
-				<li><i></i>Vendor Contact</li>
-				<li><i></i>Vendor location</li>
-				<li><i></i>${country}</li>
-				<li><i></i>${orgName}</li>
+				<li><i></i>{Vendor Name}</li>
+				<li><i></i>{Vendor Contact}</li>
+				<li><i></i>{Vendor location}</li>
+				<li><i></i>{Company Name}</li>
+				<li><i></i>{Company Location}</li>
 			</ul>
 			
 			<ul id="clientsow" style="display:none">
@@ -104,8 +104,8 @@
 				<li><i></i>Requirement Title</li>
 				<li><i></i>Associate Name</li>
 				<li><i></i>Offer Rate</li>
-				<li><i></i>${country}</li>
-				<li><i></i>${orgName}</li>
+				<li><i></i>{Company Name}</li>
+				<li><i></i>{Company Location}</li>
 			</ul>
 			
 			<ul id="vendorsow" style="display:none">
@@ -115,8 +115,8 @@
 				<li><i></i>Requirement Title</li>
 				<li><i></i>Associate Name</li>
 				<li><i></i>Offer Rate</li>
-				<li><i></i>${country}</li>
-				<li><i></i>${orgName}</li>
+				<li><i></i>{Company Name}</li>
+				<li><i></i>{Company Location}</li>
 			</ul>
 			<ul id="nda" style="display:none">
 				<li><i></i>Vendor Name</li>
@@ -127,8 +127,8 @@
 				<li><i></i>Vendor Name</li>
 				<li><i></i>Vendor Contact</li>
 				<li><i></i>Vendor Location</li>
-				<li><i></i>${country}</li>
-				<li><i></i>${orgName}</li>
+				<li><i></i>{Company Name}</li>
+				<li><i></i>{Company Location}</li>
 			</ul>
 		</div>  		      
 	</div>

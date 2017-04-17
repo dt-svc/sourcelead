@@ -46,8 +46,8 @@ public class Contracts {
 	
 	@ManyToOne 
     @JoinColumn(name="TEMPLATE_ID", nullable=false )  
-	private ContractsTemplate contractsTemplate;
-	
+	private ContractsTemplate contractsTemplate; 
+	 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "OWNER_USER_ID")
 	private User ownerUserId;
@@ -86,7 +86,7 @@ public class Contracts {
 	private String stateOfJurisdiction;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "APPROVER_USER_ID")
+	@JoinColumn(name = "APPROVER_USER_ID") 
 	private User approverUser;
 	
 	@Column(name = "DESCRIPTION",columnDefinition = "TEXT default NULL")

@@ -159,7 +159,6 @@ function preparedContractList(data){
 	var json = JSON.parse(data);
     for (var i = 0; i < json.length; i++) {
     	var report= json[i];
-    	alert(report.parentId);
     	result = result + '<tr id="row'+report.id+'">';
         result = result + '<td>';
            	result = result + '<div><span>'+report.contractTitle+'</span></div>';
