@@ -82,6 +82,7 @@ public class TeamMemberDaoImpl  implements TeamMemberDao{
 	}
 
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public TeamMembers getTeamMemberByIdAndLocationId(Long teamMmeberId,Long orgLocationId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
@@ -153,6 +154,22 @@ public class TeamMemberDaoImpl  implements TeamMemberDao{
 			isMemberFound = true;
 	     }
 	     return isMemberFound;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public TeamMembers getTeamMemberByMemberUserIdAndLocationId(Long memberUserId, Long orgLocationId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from TeamMembers tm left join fetch tm.teamId team left join fetch team.orgLocationsId  "
+				+ "where tm.memberUserId.id = :memberUserId and team.orgLocationsId.id =:orgLocationId and tm.status = '1' ";  
+		List<TeamMembers> teamMembersList = session.createQuery(query).setLong("memberUserId", memberUserId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		TeamMembers teamMember = null;
+		if(teamMembersList != null && !teamMembersList.isEmpty()){
+			teamMember = teamMembersList.iterator().next();
+		}
+		return teamMember;
 	}
 	
 }

@@ -34,7 +34,8 @@
           <div class="onboardcreateButtons"> 
 	          <a href="<c:url value='/candidateOnBoardCreation'/>" class="btn btn-success btn-sm mr" title="Create onboard">
 	          	<i class="fa fa-plus paddingRight"></i>Create onboard
-	          </a> <a href="offboard_candidate.html" class="btn btn-primary btn-sm" title="Create offboard">
+	          </a> 
+	          <a href="<c:url value='/candidateOffBoardCreation'/>" class="btn btn-primary btn-sm" title="Create offboard">
 	          	<i class="fa fa-plus paddingRight"></i>Create offboard
 	          </a>
           </div>

@@ -226,7 +226,7 @@ function getUsersSearchResult(searchValue){
        <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
           <li><i class="fa fa-filter"></i>&nbsp;
-               <select id="userState" onchange="flushAdvancedData();">
+               <select id="userState" onchange="getUsersList('manual');">
 				<option value="ACTIVE" >Active</option>
 				<option value="">All</option>
 				<option value="INACTIVE" >In Active</option>
@@ -236,7 +236,7 @@ function getUsersSearchResult(searchValue){
           </li>
           
 		   <li><i class="fa fa-filter"></i>&nbsp;
-				<select id="userRole" onchange="flushAdvancedData();">
+				<select id="userRole" onchange="getUsersList('manual');">
 				<option value="">&nbsp;--Select Role--&nbsp;&nbsp;&nbsp;</option>
 				<!-- <option value="All" >All Roles</option> -->
 				<c:forEach var="roles" items="${rolesList}">
