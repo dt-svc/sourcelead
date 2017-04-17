@@ -56,7 +56,7 @@
   <div style="overflow: auto;" class=" vendor_wrap"> 
    
    <div class="pull-left reportBtns">
-<h4 class="pull-left mr">Recruiters Report</h4>
+<h4 class="pull-left">Recruiters Report</h4>
 		  <div class="reportBtn select-field  pull-left ml">
 			<select class="form-control" id="reportTypeId" onChange="flushCustom(); getDayWiseReports(); custdates();">
 			 <option value="">select</option>
