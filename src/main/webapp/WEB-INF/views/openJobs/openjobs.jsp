@@ -654,12 +654,14 @@ function getOpenJobsELKList(){
 					if(requirements.isCrowdSourcingJob == 'Y'){
 					result = result +'	<a href="'+sourceleadUrl+'/login" style="background-color:#eb821c;">Refer</a></div>';
 					}
-					result = result +' <section class="loadJob"><i class="fa fa-spinner fa-spin"></i>View more</section>';
 /* 					result = result +'	<div class="filLoad">';
 					result = result +'	<h2 class="gradi"></h2><p class="gradi"></p><p class="gradi"></p><p class="gradi"></p><br>';
 					result = result +'	<p class="gradi"></p>';
 					result = result +'	</div>'; */				
 					result = result +'	</div>';
+					if((json.length -1) == i ){
+						result = result +' <section class="loadJob"><i class="fa fa-spinner fa-spin"></i>No More Data</section>';	
+					}
 					$("#openJobsRequirementsList").append(result); 
 					$("#openJobsRequirementTitleId").val('');
 					$("#openJobsLocationId").val('');
