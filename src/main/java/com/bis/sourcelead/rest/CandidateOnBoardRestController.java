@@ -1385,16 +1385,48 @@ public class CandidateOnBoardRestController {
 			 CandidateOnBoarding onBoarding = candidateOnBoardingService.getCandidateOnBoardingById(onboardId);
 			 
 			 candidateOnBoardingService.createOnboardingUser(onBoarding,user,loginOrgLocation);
-			 
-			 onBoarding.setCandidateOnBoardStatus("Finished");
-			 candidateOnBoardingService.saveCandidateOnBoarding(onBoarding);
 			
 			return "success";
 		   
 		}
 		 
 		 
+		 @RequestMapping(value = "/validateOnboardCandidate" , method = RequestMethod.POST)
+		 public @ResponseBody  String validateOnboardCandidate(@RequestParam(value="email", required=false) String email,
+				 HttpServletRequest request) throws Exception {
+			
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			User user = userService.findByEmailAndOrgLocationsId(email,loginOrgLocation.getId());
+			if(null != user){
+				return "Invalid";
+			}else{
+				return "success";
+			}
+		   
+		}
 		 
+		 @RequestMapping(value = "/validateOnboardCandidateEmail" , method = RequestMethod.POST)
+		 public @ResponseBody  String validateOnboardCandidateEmail(@RequestParam(value="email", required=false) String email,
+				 HttpServletRequest request) throws Exception {
+			 	
+			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			 	
+			 String result;
+			 	User user = userService.findByEmailAndOrgLocationsId(email,loginOrgLocation.getId());
+			 	
+			 	if (user != null) {
+					result = "Invalid User Email";
+				}else{
+					
+					CandidateOnBoarding onBoarding = candidateOnBoardingService.getCandidateOnBoardingByEmailAndLocationId(email, loginOrgLocation.getId());
+					if(onBoarding != null){
+						result = "Invalid OnboardUser Email";
+					}else{
+						result = "Success";
+					}
+				}
+				return result;
+		   }
 		 
 	 
 }
