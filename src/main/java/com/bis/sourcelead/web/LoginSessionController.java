@@ -197,65 +197,10 @@ public class LoginSessionController {
 			
 			CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(user.getId(), orgLocations.getId());
 			if(null != candidateOnBoarding){
-				
-				candidateOnBoarding.setJoiningDateStr(Constants.DMY.format(candidateOnBoarding.getStartDate()));
-				
-				if(null != candidateOnBoarding.getEndDate()){
-					candidateOnBoarding.setEndDateStr(Constants.DMY.format(candidateOnBoarding.getEndDate()));
-				}
-				
-				if(null != candidateOnBoarding.getDueDate()){
-					candidateOnBoarding.setDueDateStr(Constants.DMY.format(candidateOnBoarding.getDueDate()));
-				}
-				
 				SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding", candidateOnBoarding);
 				if(candidateOnBoarding.getOnboardSubmitted().equalsIgnoreCase("N")){
-					if(null != candidateOnBoarding.getTeamId()){
-						Team team = teamService.getTeamByTeamId(candidateOnBoarding.getTeamId().getId());
-						SourceLeadSessionManager.setSessionAttribute(request, "teamName", team.getName());
-						
-						
-						StringBuilder managerName = new StringBuilder();
-						String manager  = null;
-						if(!isNullOrEmpty(team.getOwnerUserId().getLastName())){
-							manager = managerName.append(team.getOwnerUserId().getFirstName()).append(" ").append(team.getOwnerUserId().getLastName()).toString();
-						}else{
-							manager = managerName.append(team.getOwnerUserId().getFirstName()).toString();
-						}
-						
-						SourceLeadSessionManager.setSessionAttribute(request, "managerName", manager);
-						UserRole teamOwner = userRoleService.getUserDetailsByUserIdAndLocationId(team.getOwnerUserId().getId(), orgLocations.getId());
-						SourceLeadSessionManager.setSessionAttribute(request, "teamOwnerRole", teamOwner.getRoles().getDisplayName());
-						SourceLeadSessionManager.setSessionAttribute(request, "teamOwnerUserId", team.getOwnerUserId().getId());
-						
-						
-						List<TeamMembers> teamMembersList = teamMembersService.getTeamMembersListByTeamID(team.getId(), orgLocations.getId());
-						List<TeamMembers> membersList = new ArrayList<TeamMembers>();
-						if(null != teamMembersList){
-							for(TeamMembers members : teamMembersList){
-								
-								StringBuilder teamMemberName  = new StringBuilder();
-								if(!isNullOrEmpty(members.getMemberUserId().getLastName())){
-									members.setMemberName(teamMemberName.append(members.getMemberUserId().getFirstName()).append(" ").append(members.getMemberUserId().getLastName()).toString());
-								}else{
-									members.setMemberName(teamMemberName.append(members.getMemberUserId().getFirstName()).toString());
-								}
-								
-								UserRole memberUserRole = userRoleService.getUserDetailsByUserIdAndLocationId(members.getMemberUserId().getId(), orgLocations.getId());
-								members.setRoleName(memberUserRole.getRoles().getDisplayName());
-								
-								membersList.add(members);
-							}
-						}
-						SourceLeadSessionManager.setSessionAttribute(request, "teamMembersList", membersList);
-					}
-					
-					
-					List<OnBoardingTemplateDocuments> supportedDocumentsList = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsByCandidateOnBoardingId(candidateOnBoarding.getId(), "Supported");
-					SourceLeadSessionManager.setSessionAttribute(request, "supportedDocumentsList", supportedDocumentsList);
-					
-					
-					model.setViewName("onboard/welcome");
+				   getOnboardingDetails(candidateOnBoarding,user,orgLocations,request);
+				   model.setViewName("onboard/welcome");
 				}else{
 					model.setViewName("dashboard");
 				}
@@ -355,7 +300,20 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 			setLoginSession(request, authentication,user,userRole);
 			model.addObject("sourceleadUrl", sourceleadUrl);
-			model.setViewName("dashboard");
+			
+			CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(user.getId(), orgLocations.getId());
+			if(null != candidateOnBoarding){
+				SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding", candidateOnBoarding);
+				if(candidateOnBoarding.getOnboardSubmitted().equalsIgnoreCase("N")){
+				   getOnboardingDetails(candidateOnBoarding,user,orgLocations,request);
+				   model.setViewName("onboard/welcome");
+				}else{
+					model.setViewName("dashboard");
+				}
+			}else{
+				model.setViewName("dashboard");
+			}
+			
 			List<LookUpData> skillList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 			model.addObject("skillList", skillList);
 			
@@ -564,6 +522,65 @@ public class LoginSessionController {
 		SourceLeadSessionManager.setSessionAttribute(request, "orgName", org.getOrgName());
 		SourceLeadSessionManager.setSessionAttribute(request, "website", org.getWebSite());
 		SourceLeadSessionManager.setSessionAttribute(request, "address", org.getOrgAddress());
+	}
+	
+	
+	private void getOnboardingDetails(CandidateOnBoarding candidateOnBoarding,User user,OrgLocations orgLocations,HttpServletRequest request) throws Exception {
+
+		
+		candidateOnBoarding.setJoiningDateStr(Constants.DMY.format(candidateOnBoarding.getStartDate()));
+		
+		if(null != candidateOnBoarding.getEndDate()){
+			candidateOnBoarding.setEndDateStr(Constants.DMY.format(candidateOnBoarding.getEndDate()));
+		}
+		
+		if(null != candidateOnBoarding.getDueDate()){
+			candidateOnBoarding.setDueDateStr(Constants.DMY.format(candidateOnBoarding.getDueDate()));
+		}
+		
+		if(null != candidateOnBoarding.getTeamId()){
+			Team team = teamService.getTeamByTeamId(candidateOnBoarding.getTeamId().getId());
+			SourceLeadSessionManager.setSessionAttribute(request, "teamName", team.getName());
+			
+			
+			StringBuilder managerName = new StringBuilder();
+			String manager  = null;
+			if(!isNullOrEmpty(team.getOwnerUserId().getLastName())){
+				manager = managerName.append(team.getOwnerUserId().getFirstName()).append(" ").append(team.getOwnerUserId().getLastName()).toString();
+			}else{
+				manager = managerName.append(team.getOwnerUserId().getFirstName()).toString();
+			}
+			
+			SourceLeadSessionManager.setSessionAttribute(request, "managerName", manager);
+			UserRole teamOwner = userRoleService.getUserDetailsByUserIdAndLocationId(team.getOwnerUserId().getId(), orgLocations.getId());
+			SourceLeadSessionManager.setSessionAttribute(request, "teamOwnerRole", teamOwner.getRoles().getDisplayName());
+			SourceLeadSessionManager.setSessionAttribute(request, "teamOwnerUserId", team.getOwnerUserId().getId());
+			
+			
+			List<TeamMembers> teamMembersList = teamMembersService.getTeamMembersListByTeamID(team.getId(), orgLocations.getId());
+			List<TeamMembers> membersList = new ArrayList<TeamMembers>();
+			if(null != teamMembersList){
+				for(TeamMembers members : teamMembersList){
+					
+					StringBuilder teamMemberName  = new StringBuilder();
+					if(!isNullOrEmpty(members.getMemberUserId().getLastName())){
+						members.setMemberName(teamMemberName.append(members.getMemberUserId().getFirstName()).append(" ").append(members.getMemberUserId().getLastName()).toString());
+					}else{
+						members.setMemberName(teamMemberName.append(members.getMemberUserId().getFirstName()).toString());
+					}
+					
+					UserRole memberUserRole = userRoleService.getUserDetailsByUserIdAndLocationId(members.getMemberUserId().getId(), orgLocations.getId());
+					members.setRoleName(memberUserRole.getRoles().getDisplayName());
+					
+					membersList.add(members);
+				}
+			}
+			SourceLeadSessionManager.setSessionAttribute(request, "teamMembersList", membersList);
+		}
+		
+		
+		List<OnBoardingTemplateDocuments> supportedDocumentsList = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsByCandidateOnBoardingId(candidateOnBoarding.getId(), "Supported");
+		SourceLeadSessionManager.setSessionAttribute(request, "supportedDocumentsList", supportedDocumentsList);
 	}
 	
 	
