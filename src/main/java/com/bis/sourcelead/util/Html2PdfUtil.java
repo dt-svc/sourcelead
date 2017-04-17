@@ -9,10 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
 
-import javax.servlet.ServletOutputStream;
-
 import org.springframework.stereotype.Component;
-import org.springframework.test.annotation.Commit;
 
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.itextpdf.text.Document;
