@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
@@ -56,8 +57,13 @@ public class ContractController {
 	 * @return
 	 */
 	@RequestMapping(value = "/addContractTemplate")
-	public ModelAndView addContractTemplate() {
+	public ModelAndView addContractTemplate(HttpServletRequest request,HttpServletResponse response) {
 		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("country", orgLocation.getCountry());
+		model.addObject("orgName", org.getOrgName());
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("contracts/addContractTemplate");
 		return model;

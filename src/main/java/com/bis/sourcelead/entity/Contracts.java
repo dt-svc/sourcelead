@@ -65,6 +65,9 @@ public class Contracts {
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )     
 	private OrgLocations orgLocationId;
 	
+	@ManyToOne
+    @JoinColumn(name="PARENT_CONTRACT_ID", nullable=false )     
+	private Contracts parentContractId;
 	
 	@ManyToOne
     @JoinColumn(name="CONTRACT_ORG_LOCATION_ID", nullable=false )     
@@ -137,6 +140,18 @@ public class Contracts {
 	
 	@Transient
 	private String endDateStr;
+
+	
+	
+	public Contracts getParentContractId()
+	{
+		return parentContractId;
+	}
+
+	public void setParentContractId(Contracts parentContractId)
+	{
+		this.parentContractId = parentContractId;
+	}
 
 	public Date getCreatedDate()
 	{
