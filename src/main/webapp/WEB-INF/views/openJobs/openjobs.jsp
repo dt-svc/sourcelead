@@ -77,7 +77,7 @@ display: none;}
 				<li><a href="../crowdsourcing.html">Crowdsourcing</a></li>
             	<li><a href="../ats.html">ATS</a></li>
                 <li><a href="../vms.html">VMS</a></li>
-                <li><a style="border-bottom:none;" href="timesheet.html">Time Management</a></li>
+                <li><a style="border-bottom:none;" href="../timesheet.html">Time Management</a></li>
             </ul>
         </li>
         <li><a href="javascript:void(0)" class="ma">Resources<i class="fa fa-caret-down"></i></a>
@@ -481,27 +481,27 @@ display: none;}
     	<div class="footerInnCta resFoot">
         	<h3>What we do</h3>
             <ul>
-				<li><a href="crowdsourcing.html"><i class="fa fa-caret-right"></i>Crowdsourcing</a></li>
-            	<li><a href="ats.html"><i class="fa fa-caret-right"></i>ATS</a></li>
-                <li><a href="vms.html"><i class="fa fa-caret-right"></i>VMS</a></li>
-                <li><a href="timesheet.html"><i class="fa fa-caret-right"></i>Time Management</a></li>
+				<li><a href="../crowdsourcing.html"><i class="fa fa-caret-right"></i>Crowdsourcing</a></li>
+            	<li><a href="../ats.html"><i class="fa fa-caret-right"></i>ATS</a></li>
+                <li><a href="../vms.html"><i class="fa fa-caret-right"></i>VMS</a></li>
+                <li><a href="../timesheet.html"><i class="fa fa-caret-right"></i>Time Management</a></li>
             </ul>
         </div> 
     	<div class="footerInnCta">
 <div class="hBlogs">
-            	<a href="blog4.html">
+            	<a href="../blog4.html">
                 	<span>Loyal Relationships with Recruiters</span>
                     <b>FEB 20, 2017</b>
                 </a>            
-            	<a href="blog3.html">
+            	<a href="../blog3.html">
                 	<span>Recruiting Through Social Media Platform</span>
                     <b>FEB 15, 2017</b>
                 </a>            
-            	<a href="blog.html">
+            	<a href="../blog.html">
                 	<span>Existing Process without using any Tool</span>
                     <b>DEC 20, 2016</b>
                 </a>
-            	<a href="blog4.html">Viwe all</a>                                                
+            	<a href="../blog4.html">Viwe all</a>                                                
             </div>
         </div>  
     	<div class="footerInnCta">
@@ -525,8 +525,8 @@ display: none;}
     	<div class="copyright">
     	<b>© 2016 SourceLead. All rights reserved.</b>
         <span>
-        	<a href="privacy.html">Privacy Policy</a>
-            <a href="terms.html">Terms of Use</a>
+        	<a href="../privacy.html">Privacy Policy</a>
+            <a href="../terms.html">Terms of Use</a>
         </span><div class="clear"></div>
         </div>
     </div>  
