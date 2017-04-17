@@ -5,6 +5,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,6 +20,8 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
+
+import com.bis.sourcelead.enums.OnboardStatus;
 
 @Entity
 @Table(name = "ON_BOARDING_TEMPLATE_DOCUMENTS", catalog = "sourcelead")
@@ -55,6 +59,10 @@ private static final long serialVersionUID = 1L;
 	
 	@Column(name = "DOCUMENT_UUID")
 	private String documentUUID;
+	
+	@Column(name = "DOCUMENT_STATUS")
+	@Enumerated(EnumType.STRING)
+	private OnboardStatus documentStatus;
 	
     @Column(name = "STATUS")
 	private Integer status;
@@ -186,5 +194,13 @@ private static final long serialVersionUID = 1L;
 
 	public void setOnboardDocumentType(String onboardDocumentType) {
 		this.onboardDocumentType = onboardDocumentType;
+	}
+
+	public OnboardStatus getDocumentStatus() {
+		return documentStatus;
+	}
+
+	public void setDocumentStatus(OnboardStatus documentStatus) {
+		this.documentStatus = documentStatus;
 	}
 }
