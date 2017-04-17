@@ -149,9 +149,14 @@ public class CandidateIndexHelper {
 			}
 			if(null != candidate.getSpocId()){
 				candidateIndex.setSpocId(candidate.getSpocId().getId());	
+			}else{
+				candidateIndex.setSpocId(null);
 			}
+			
 			if(null != candidate.getOrgRelationId()){
 				candidateIndex.setOrgRelationId(candidate.getOrgRelationId().getId());	
+			}else{
+				candidateIndex.setOrgRelationId(null);
 			}
 			
 			candidateIndex.setTerminateReason(candidate.getTerminateReason());
