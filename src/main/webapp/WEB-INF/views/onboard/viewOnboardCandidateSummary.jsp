@@ -74,230 +74,10 @@
 			</div>
             </div>
             <!-- Keep as pending -->
-              <div class="tab-pane hidden" id="tasks">
-              <div class="clearfix">
-                  <h4 class="pull-left">Task List</h4>
-                <div class="pull-right">
-                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addTask"><i class="fa fa-plus paddingRight"></i>Add Task</button>
-                  <!-- Modal -->
-                  <div id="addTask" class="modal fade" role="dialog">
-                    <div class="modal-dialog modal-lg">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <button type="button" class="close" data-dismiss="modal">&times;</button>
-                          <h4 class="modal-title">Add Tasks</h4>
-                        </div>
-                        <div class="modal-body clearfix"> 
-                          
-                    <!-- Add New Task Widget -->
-                          <div class="col-md-12 clearfix">
-                            <form class="form-horizontal clearfix task-widget">
-                              <div class="row">
-                                <div class="col-md-6">
-                                  <label>Subject <span class="text-danger paddingLeft">*</span></label>
-                                  <input type="text" class="form-control input-sm" placeholder="Subject">
-                                </div>
-                                <div class="col-md-6">
-                                  <label>Assign To <span class="text-danger paddingLeft">*</span></label>
-                                  <select class="chosen-select" multiple data-placeholder="Select Priority" id="priority">
-                                    <option>High</option>
-                                    <option>Low</option>
-                                    <option>Mediam</option>
-                                  </select>
-                                </div>
-                                <div class="col-md-6 dropdown-select">
-                                  <label>Priority</label>
-                                  <select class="form-control">
-                                    <option selected disabled>-- Select Priority --</option>
-                                    <option>High</option>
-                                    <option>Low</option>
-                                    <option>Mediam</option>
-                                  </select>
-                                </div>
-                                <div class="col-md-6">
-                                  <div class="row">
-                                    <div class="col-md-12">
-                                        <label><strong>Due after:</strong><span class="text-danger paddingLeft">*</span></label>
-                                      <div class="input-group hidden">
-                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                        <input class="form-control" value="" name="Date" id="datepicker2" type="text">
-                                      </div>
-                                        
-                                        <!-- Form inline Due after -->
-                                        
-				                        <div class="row">
-				                            <div class="col-md-3 paddingRight">
-				                                <label class="small">Months</label> <br>
-				                                <input class="form-control input-sm" type="text">
-				                            </div>
-				                            <div class="col-md-3 paddingRight paddingLeft">
-				                                <label class="small">Days</label> <br>
-				                                <input class="form-control input-sm" type="text">
-				                            </div>
-				                            <div class="col-md-3 paddingRight paddingLeft">
-				                                <label class="small">Hours</label> <br>
-				                                <input type="text" class="form-control input-sm">
-				                            </div>
-				                            <div class="col-md-3 paddingRight paddingLeft">
-				                                <label class="small">Minutes</label> <br>
-				                                <input type="text" class="form-control input-sm">
-				                            </div>
-				                        </div>
-                                        
-                                        <!-- Form inline Due after -->
-                                        
-                                        
-                                        
-                                        
-                                    </div>
-                                    <div class="col-md-6 hidden">
-                                      <label>Time</label>
-                                      <div class="input-group"> <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
-                                        <input class="form-control" value="" name="Time" id="example" type="text">
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="col-md-6 dropdown-select">
-                                  <label>Repeat</label>
-                                  <select class="form-control input-sm">
-                                    <option selected disabled>-- Select Repeat --</option>
-                                    <option>Never</option>
-                                    <option>Daily</option>
-                                    <option>Weekly</option>
-                                    <option>Monthly</option>
-                                    <option>Yearly</option>
-                                  </select>
-                                </div>
-                                <div class="col-md-6">
-                                  <div class="mt">
-                                    <label class="checkbox-inline">
-                                      <input type="checkbox" name="chkbox">
-                                      Email </label>
-                                    <label class="checkbox-inline">
-                                      <input type="checkbox" name="chkbox">
-                                      Notification </label>
-                                  </div>
-                                </div>
-                                <div class="col-md-6">
-                                  <label>Description</label>
-                                  <textarea rows="2" placeholder="Description" class="form-control"></textarea>
-                                </div>
-                                <div class="clearfix"></div>
-                                <div class="clearfix mt col-md-12">
-                                  <div class="pull-right">
-                                    <input type="button" class="btn btn-primary btn-sm" value="Save">
-                                    <input type="button" class="btn btn-default btn-sm ml10" value="Cancel">
-                                  </div>
-                                </div>
-                              </div>
-                            </form>
-                          </div>
-                          <!-- Add New Task Widget -->                           
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-                
-                <div class="clearfix taskwidget_inner">
-                    <div class="media-body">
-                    <div class="clearfix taskheder">
-                        <label>
-                            <span class="paddingRight">Subject:</span> <strong class="text-primary">Account Setup</strong>
-                        </label>
-                        <label class="small pull-right text-muted">
-                            <span>Due after 15days</span>
-                        </label>
-                    </div>
-                    <ul class="list-inline list-description">
-                        <li><span>Assign To:</span> Pramodkumar Mahagen</li>
-                        <li><span>Priority:</span> High</li>
-                        <li><span>Repeat:</span> Never</li>
-                    </ul>
-                    </div>
-                </div>
-                <div class="clearfix taskwidget_inner">
-                    <div class="media-body">
-                    <div class="clearfix taskheder">
-                        <label>
-                            <span class="paddingRight">Subject:</span> <strong class="text-primary">Desktop arriange</strong>
-                        </label>
-                        <label class="small pull-right text-muted">
-                            <span>Due after 2 months</span>
-                        </label>
-                    </div>
-                    <ul class="list-inline list-description">
-                        <li><span>Assign To:</span> Pramodkumar Mahagen</li>
-                        <li><span>Priority:</span> High</li>
-                        <li><span>Repeat:</span> Never</li>
-                    </ul>
-                    </div>
-                </div>
-                <div class="clearfix taskwidget_inner">
-                    <div class="media-body">
-                    <div class="clearfix taskheder">
-                        <label>
-                            <span class="paddingRight">Subject:</span> <strong class="text-primary">Providing access</strong>
-                        </label>
-                        <label class="small pull-right text-muted">
-                            <span>Due after 3 months</span>
-                        </label>
-                    </div>
-                    <ul class="list-inline list-description">
-                        <li><span>Assign To:</span> Pramodkumar Mahagen</li>
-                        <li><span>Priority:</span> High</li>
-                        <li><span>Repeat:</span> Never</li>
-                    </ul>
-                    </div>
-                </div>
-                <div class="clearfix taskwidget_inner">
-                    <div class="media-body">
-                    <div class="clearfix taskheder">
-                        <!--<label>Account Setup, Desk top Arriange, Providing access to the Candidate</label>-->
-                        <label>
-                            <span class="paddingRight">Subject:</span> <strong class="text-primary">Account Setup</strong>
-                        </label>
-                        <label class="small pull-right text-muted">
-                            <span>Due after 3 months</span>
-                        </label>
-                    </div>
-                    <ul class="list-inline list-description">
-                        <li><span>Assign To:</span> Pramodkumar Mahagen</li>
-                        <li><span>Priority:</span> High</li>
-                        <li><span>Repeat:</span> Never</li>
-                    </ul>
-                    </div>
-                </div>
-                <div class="clearfix taskwidget_inner">
-                    <div class="media-body">
-                    <div class="clearfix taskheder">
-                        <!--<label>Account Setup, Desk top Arriange, Providing access to the Candidate</label>-->
-                        <label>
-                            <span class="paddingRight">Subject:</span> <strong class="text-primary">Account Setup</strong>
-                        </label>
-                        <label class="small pull-right text-muted">
-                            <span>Due after 15 days</span>
-                        </label>
-                    </div>
-                    <ul class="list-inline list-description">
-                        <li><span>Assign To:</span> Pramodkumar Mahagen</li>
-                        <li><span>Priority:</span> High</li>
-                        <li><span>Repeat:</span> Never</li>
-                    </ul>
-                    </div>
-                </div>
-                              <div class="form-footer clearfix mt">
-                <div class="pull-right mr">
-                  <input type="button" value="Cancel" class="btn btn-sm btn-default">
-                  <input type="button" value="Finish" class="btn btn-sm btn-primary">
-                </div>
-              </div>
+              <div class="tab-panes" id="tasks"> 
+              <div id="onboardTasksListViewId"></div>
             </div>
-          <!-- Keep as pending -->
             </div>
-          <!-- STYLED IN FORMS.CSS --> 
         </div>
       </div>
     </div>
@@ -523,6 +303,7 @@
 				 result = result +'   </div>                                                                                                        ';
 				 result = result +'     </div>';
 	        	 
+				 $("#onboardTasksListViewId").empty();
 				 $("#onboardCandidateSummaryDetailsId").empty();
             	 
             	 $("#onboardCandidateSummaryDetailsId").append(result);
@@ -582,6 +363,7 @@ function getTemplateContractsDocumentsDetails(){
 						result = result +'    </div>                                                                 ';
 		        	}
 					result = result +'    </div>                                                                 ';
+					 $("#onboardTasksListViewId").empty();
                 	 $("#employmentContractDivId").empty();
                 	 $("#employmentContractDivId").append(result);
                 	 
@@ -615,6 +397,7 @@ function getTemplateFormsDocumentsDetails(){
 						result = result +'    </div>                                                                 ';
 		        	}
 					result = result +'    </div>                                                                 ';
+					 $("#onboardTasksListViewId").empty();
                 	 $("#formstDivId").empty();
                 	 $("#formstDivId").append(result);
                 	 
@@ -647,6 +430,7 @@ function getTemplatePolicyDocumentsDetails(){
 						result = result +'    </div>                                                                 ';
 		        	}
 					result = result +'    </div>                                                                 ';
+					 $("#onboardTasksListViewId").empty();
                 	 $("#policiesDivId").empty();
                 	 $("#policiesDivId").append(result);
                 	 
@@ -680,6 +464,7 @@ function getTemplateSupportingDocumentsDetails(){
 						result = result +'    </div>                                                                 ';
 		        	}
 					result = result +'    </div>                                                                 ';
+					 $("#onboardTasksListViewId").empty();
                 	 $("#supportedDivId").empty();
                 	 $("#supportedDivId").append(result);
                 	 
@@ -687,6 +472,94 @@ function getTemplateSupportingDocumentsDetails(){
 			        
 		        },
 		    });
+}
+</script>
+
+
+
+<script>
+function getOnboardingTasksList(){
+	var onBoardingUUID = '${onBoardingUUID}';
+	var sourceleadUrl = '${sourceleadUrl}';
+	var locationId = '${SourceLeadWeb_orgLocationId}';
+	
+	
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/viewCandidateOnboardTasks?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID,	    	   
+	    success: function(data) {
+	    	 var json = JSON.parse(data);
+        	 var result = "";
+        	 
+        	if(json.length > 0){ 
+        		result = result +'	<div class="clearfix">';
+        		result = result +'      <h4 class="pull-left">Task List</h4>';
+        		result = result +'  </div>';
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var report = json[i];
+	        		
+	        		var prority = '';
+	        		var repeat = '';
+	        		
+	        		if(report.priority != null && report.priority != '' && report.priority != 'undefined'){
+	        			prority = report.priority;
+	        		}else{
+	        			prority = '----';
+	        		}
+	        		
+	        		if(report.taskRepeat != null && report.taskRepeat != '' && report.taskRepeat != 'undefined'){
+	        			repeat = report.taskRepeat;
+	        		}else{
+	        			repeat = '----';
+	        		}
+	        		
+	        		result = result +'<div class="clearfix taskwidget_inner" id="onboardTask'+report.id+'">';
+	        		result = result +'<div class="media-body">';
+	        		result = result +'<div class="clearfix taskheder">';
+	        		
+	        		result = result +"<label> <span class='paddingRight'>Subject:</span> <strong class='text-primary'>"+report.taskName+"</strong></label>";
+	        		
+	        		result = result +'<label class="small pull-right text-muted"> <span>'+report.dueAfterString+'</span> </label>';
+	        		result = result +'</div>';
+	        		result = result +'<ul class="list-inline list-description mt10">';
+	        		
+	        		result = result +'<li><span>Assign To:</span>';
+	        		
+	        		if(report.usersList.length > 0){
+	        			for(var j=0; j<report.usersList.length; j++){
+		 					result = result +'<label>'+report.usersList[j]+'</label>';
+		 				}
+	        		}else{
+	 					result = result +'Onboarding Candidate';
+	 				}
+	        		result = result +'</li>';
+	        		
+	        		result = result +'<li><span>Priority:</span>'+prority+'</li>';
+	        		result = result +'<li><span>Repeat:</span> '+repeat+'</li>';
+	        		result = result +'</ul>';
+	        		result = result +'</div>';
+	        		result = result +'</div>';
+        		   
+	        		if(report.onboardTaskType != 'Candidate Task'){
+       					result = result +"<input type='hidden' name='savedTemplateTask' id='templateTask"+report.id+"' value='"+report.id+"' />";
+       				}
+				}
+        	}else{
+        		result = result +'<div><h4>No Tasks Found</h4></div>';
+        	}
+        	
+    		
+    		 $("#onboardTasksListViewId").empty();
+           	 $("#onboardTasksListViewId").append(result); 
+    		
+        	 
+	    }
+   }); 
+	
+  $("#loading").removeAttr("style");
+	
 }
 </script>
  <jsp:include page="../masterFooter.jsp" />

@@ -1270,6 +1270,84 @@ public class CandidateOnBoardRestController {
 			}
 		 
 		 
+		 
+		 @RequestMapping(value = "/viewCandidateOnboardTasks", method = RequestMethod.POST)
+		 @ResponseBody String viewCandidateOnboardTasks(@RequestParam(value="onBoardingUUID", required=false) String onBoardingUUID,HttpServletRequest request) throws Exception{
+			 List<OnboardTasks> templateTasksList = null;
+			 List<OnboardTasks> tasksList = new ArrayList<OnboardTasks>();;
+			 CandidateOnBoarding cnb = candidateOnBoardingService.getCandidateOnBoardingByUUID(onBoardingUUID);
+		     List<OnboardTasks> candidateTasksList = onboardTasksService.getOnBoardTasksListByCandidateOnBoardingId(cnb.getId());
+		     tasksList.addAll(candidateTasksList);
+		 
+			 CandidateOnBoarding onboarding = candidateOnBoardingService.getCandidateOnBoardingById(cnb.getId());
+			 List<Long> templateIdsList = new ArrayList<Long>();
+			 
+			 if(!isNullOrEmpty(onboarding.getOnboardTemplateId())){
+				 for (String s : onboarding.getOnboardTemplateId().split(",")){
+					 templateIdsList.add(Long.parseLong(s));
+				 }
+				
+				 templateTasksList = onboardTasksService.getOnboardTasksByTemplateIdList(templateIdsList);
+				 if(null != templateTasksList){
+					 tasksList.addAll(templateTasksList);
+				 }
+				 
+			 }
+			 List<OnboardTasks> onboardtasksList = new ArrayList<OnboardTasks>();
+			 
+			 for(OnboardTasks tasks : tasksList){
+				 
+				 List<String> usersList = new ArrayList<String>();
+					 
+					 if(!isNullOrEmpty(tasks.getAssignToUsers())){
+						 String[] userIds = tasks.getAssignToUsers().split(",");
+						 
+						 for(int i = 0 ; i < userIds.length; i++ ){
+							 StringBuilder userName = new StringBuilder();
+							 User user = userService.getUserById(Long.valueOf(userIds[i]));
+							 String assignedUser = null;
+							 if(null != user.getLastName()){
+								 assignedUser = userName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
+								}else{
+									assignedUser = userName.append(user.getFirstName()).toString();
+								}
+							 usersList.add(assignedUser);
+						 }
+					 }
+					 
+					 StringBuilder dueAfter = new StringBuilder();
+					 
+					 if(null != tasks.getDueAfterMonths()){
+						 dueAfter = dueAfter.append(tasks.getDueAfterMonths()).append(" Months ");
+					 }
+					 
+					 if(null != tasks.getDueAfterDays()){
+						 dueAfter = dueAfter.append(tasks.getDueAfterDays()).append(" Days ");
+					 }
+					 
+					 if(null != tasks.getDueAfterHours()){
+						 dueAfter = dueAfter.append(tasks.getDueAfterHours()).append(" Hours ");
+					 }
+					 
+					 if(null != tasks.getDueAfterMinutes()){
+						 dueAfter = dueAfter.append(tasks.getDueAfterMinutes()).append(" Minutes");
+					 }
+					
+					 tasks.setDueAfterString(dueAfter.toString());
+					 tasks.setUsersList(usersList); 
+					 
+					 if(null != tasks.getCandidateOnBoardingId()){
+						 tasks.setOnboardTaskType("Candidate Task");
+					 }else  if(null != tasks.getOnboardingTemplateId()){
+						 tasks.setOnboardTaskType("Template Task");
+					 }
+					 
+					 onboardtasksList.add(tasks);
+			 }
+				
+			return commonUtil.toJSON(onboardtasksList);
+			}
+		 
 		
 		
 		 
