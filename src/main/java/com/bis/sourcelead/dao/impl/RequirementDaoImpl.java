@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,6 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +18,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.util.CommonUtil;
 
 /**
  * 
@@ -45,6 +46,9 @@ public class RequirementDaoImpl implements RequirementDao {
 	
 	@Autowired
 	private UserDao userDao;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	@Autowired
 	UserRoleDao userRoleDao;
@@ -775,7 +779,8 @@ public class RequirementDaoImpl implements RequirementDao {
 	@Transactional
 	public List<Requirement> getManagerAssignedRequirementsList(Long userId, Long orgLocationId) throws Exception {
 		Session session = sessionFactory.getCurrentSession();
-		String query = "from Requirement requirement left join fetch requirement.parentRequirement "
+		String query = "from Requirement requirement left join f"
+				+ "etch requirement.parentRequirement "
 					+ "where requirement.managerUserId.id = :userId and requirement.orgLocationId.id = :orgLocationId";
 		return session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		
@@ -892,5 +897,135 @@ public class RequirementDaoImpl implements RequirementDao {
 	    List<String> noticePeriodList = session.createQuery(query).setLong( "requirementId", requirementId).setCacheable(true).list();
 	    return noticePeriodList.get(0);
 	}
+	
+	
+	
+
+@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Requirement> getAllRequirementsByOrglocationIdAndUserId(Long orgLocationId,User user)
+			throws Exception {
+		
+		     Session session = this.sessionFactory.getCurrentSession();
+		
+			 String requirementQuery = "from Requirement req where  ( (req.managerUserId.id =:userId)  or (req.createdBy =:userCode) or (req.id IN (select  reqAssignTo.requirementId.id  from RequirementAssignTo reqAssignTo  where  reqAssignTo.assignUserId.id =:userId ) ) or (req.id IN (select  reqApproverHirerarchy.requirementId.id  from RequirementApproverHierarchy reqApproverHirerarchy  where  reqApproverHirerarchy.approverUserId.id =:userId ) ) ) and req.orgLocationId.id =:orgLocationId  ";
+	         List<Requirement> requirementList = session.createQuery(requirementQuery.toString())
+	        		                                    .setLong( "userId", user.getId())
+	        		                                    .setLong( "orgLocationId", orgLocationId)
+	        		                                    .setString("userCode", user.getUserCode())
+	        		                                    .setCacheable(true)
+	        		                                    .list();
+  
+        return requirementList;
+	}
+
+     @Override
+     @Transactional(rollbackFor = { Exception.class })
+		public List<Requirement> getAllRequirementsByOrglocationIdAndUserIdAsTeamLead(Long orgLocationId,User user)
+				throws Exception {
+			
+			      Session session = this.sessionFactory.getCurrentSession();
+			     
+			      String requirementQuery = "from Requirement req where  (req.id IN (select  reqAssignTo.requirementId.id  from RequirementAssignTo reqAssignTo  where  reqAssignTo.teamId.id IN ( select tm.id from Team  tm where tm.ownerUserId.id =:userId and tm.orgLocationsId.id =:orgLocationsId )) ) ";
+		          List<Requirement> requirementList = session.createQuery(requirementQuery.toString())
+		        		                                     .setLong( "userId", user.getId())
+		        		                                     .setLong( "orgLocationId", orgLocationId)
+		        		                                     .setCacheable(true)
+		        		                                     .list();
+		
+			return requirementList;
+		}
+
+
+     @Override
+ 	 @Transactional(rollbackFor = { Exception.class })
+ 	public Integer getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(Long orgLocationId, User user)
+ 			throws Exception {
+ 		
+ 		Session session = this.sessionFactory.getCurrentSession();
+ 		
+ 		 java.sql.Date sqlCurrentDate = null;
+ 	     Date currentDate =  commonUtil.currentDate();
+ 		// for current Date Converting to Sql Date Format
+ 		 if(currentDate != null){
+ 				sqlCurrentDate = new java.sql.Date(currentDate.getTime());
+ 				java.sql.Timestamp sq = new java.sql.Timestamp(currentDate.getTime());
+ 		 }
+ 		
+ 		  String requirementQuery = "select count(*)  from Requirement req where   req.spocId.clientLocationId.id =:orgLocationId and  req.spocId.clientUser.id =:userId  and DATE(req.createdDate) =:sqlCurrentDate GROUP BY req.id";
+           List<Long> requirementList = session.createQuery(requirementQuery.toString())
+         		                                     .setLong( "userId", user.getId())
+         		                                     .setDate("sqlCurrentDate", sqlCurrentDate)
+         		                                     .setLong( "orgLocationId", orgLocationId)
+         		                                     .setCacheable(true)
+         		                                     .list();
+         Integer count = 0;
+   		if(requirementList != null && !requirementList.isEmpty()){
+   				count = requirementList.get(0).intValue();
+   		}
+   		return count;
+ 	}
+     
+     
+	 	@Override
+	 	@Transactional(rollbackFor = { Exception.class })
+	 	public List<Requirement> getAllRequirementsByOrglocationIdAndRequirementWhoAreAssignedToRequirement(Long orgLocationId,  TeamMembers teamMembers) throws Exception {
+	 		
+	 		Session session = this.sessionFactory.getCurrentSession();
+	 		
+	 		String query = "from Requirement requirement left join fetch requirement.parentRequirement where   requirement.orgLocationId.id =:orgLocationId and  requirement.id  IN (select reqassign.requirementId.id  from RequirementAssignTo reqassign where reqassign.assignUserId.id =:userId  and reqassign.teamId.id =:teamId)";
+	 		
+	         List<Requirement> requirementList = session.createQuery(query).setLong("userId", teamMembers.getMemberUserId().getId()).setLong("teamId", teamMembers.getTeamId().getId()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	 		return requirementList;
+	 	}
+
+		@Override
+		 @Transactional(rollbackFor = { Exception.class })
+		public Long getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user,Date startDateUTC, Date endDateUTC)
+				throws Exception {
+			
+			Map<String, Object> params = new HashMap<String,Object>();
+			String subQueryDateRange = "";
+			
+			if(null != startDateUTC && null != endDateUTC){
+				subQueryDateRange = "and (requirement.createdDate >= :startDateUTC and requirement.createdDate <= :endDateUTC)";
+				  params.put("startDateUTC",startDateUTC);
+				  params.put("endDateUTC",endDateUTC);
+			}
+			
+			
+		    String queryString ="select count(*)from Requirement requirement where requirement.orgLocationId.id =:orgLocationId and requirement.createdBy =:userCode "+subQueryDateRange+" ";
+			Session session = this.sessionFactory.getCurrentSession();
+		    params.put("orgLocationId",orgLocationId);
+		    params.put("userCode",user.getUserCode());
+			
+			/*String query ="select count(*)from Requirement requirement where requirement.orgLocationId.id =:orgLocationId and requirement.createdBy =:userCode";
+			Session session = this.sessionFactory.getCurrentSession();
+			long count = ((Long)session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("userCode",user.getUserCode()).uniqueResult()).intValue();*/
+			    
+			    Query query = session.createQuery(queryString);
+			    for (String str : query.getNamedParameters())
+		        {
+					if(str.equalsIgnoreCase("startDateUTC")){
+						query.setParameter( str, (Date) params.get(str) );
+					}
+					if(str.equalsIgnoreCase("endDateUTC")){
+						query.setParameter( str, (Date) params.get(str) );
+					}
+					
+					if(str.equalsIgnoreCase("orgLocationId")){
+						query.setParameter(str, (long) params.get(str));
+					}
+					
+					if(str.equalsIgnoreCase("userCode")){
+						query.setParameter(str, params.get(str));
+					}
+					
+					
+		        }
+			    return (Long)query.uniqueResult();
+				
+		}
+	
 	
 }

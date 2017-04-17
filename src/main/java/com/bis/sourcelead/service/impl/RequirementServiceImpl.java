@@ -2984,6 +2984,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
      	requirement.setJobType(requirementIndex.getJobType());
      	requirement.setOtherJobType(requirementIndex.getOtherJobType());
      	requirement.setJobTitle(requirementIndex.getJobTitle());
+     	requirement.setPostedDateStr(requirementIndex.getCreatedDate());
      	if(requirementIndex.getMinExperience() !=null){
      		requirement.setMinExp(requirementIndex.getMinExperience().toString());	
      	}
@@ -3266,5 +3267,36 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	public String getNoticePeriodByRequirementId(Long requirementId) throws Exception {
 		return requirementDao.getNoticePeriodByRequirementId(requirementId);
 	}
+	
+	@Override
+	public List<Requirement> getAllRequirementsByOrglocationIdAndUserId(Long orgLocationId, User user)
+			throws Exception {
+		return requirementDao.getAllRequirementsByOrglocationIdAndUserId(orgLocationId,user);
+	}
 
+	@Override
+	public List<Requirement> getAllRequirementsByOrglocationIdAndUserIdAsTeamLead(Long orgLocationId, User user)
+			throws Exception {
+		return requirementDao.getAllRequirementsByOrglocationIdAndUserIdAsTeamLead(orgLocationId,user);
+	}
+	
+	@Override
+	public Integer getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(Long orgLocationId, User user)	throws Exception {
+		return requirementDao.getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(orgLocationId,user);
+	}
+
+	@Override
+	public List<Requirement> getAllRequirementsByOrglocationIdAndRequirementWhoAreAssignedToRequirement(
+			Long orgLocationId,  TeamMembers teamMembers) throws Exception {
+		return requirementDao.getAllRequirementsByOrglocationIdAndRequirementWhoAreAssignedToRequirement(orgLocationId,teamMembers);
+	}
+
+
+	@Override
+	public Long getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user,
+			 Date startDateUTC, Date endDateUTC) throws Exception {
+		
+		return requirementDao.getCountOfAllRequirementsByCreatedUserAndOrglocationId(orgLocationId, user, startDateUTC, endDateUTC);
+	}
+	
 }

@@ -10,6 +10,8 @@ public interface ReferContactsDao {
 	
 	ReferContacts getReferContactsByUUID(String contactUUID) throws Exception;
 	
+    void saveAllReferContacts(List<ReferContacts> referContactsList) throws Exception;
+	
 	ReferContacts getReferContactsByEmails(Long userId,String toEmail) throws Exception;
 
 	List<ReferContacts> getReferContactsListByUserIdAndOrglocationId(Long userId,Long orgLocationId) throws Exception;

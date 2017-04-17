@@ -3,8 +3,6 @@ package com.bis.sourcelead.dao;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.xmlbeans.impl.xb.xsdschema.Public;
-
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
@@ -163,6 +161,8 @@ public interface RequirementSubmissionDao {
 	List<RequirementSubmission> getApplicantsListByOrgLocationAndUserId(OrgLocations loginOrgLocations,
 			List<Long> applicantsList, Date startUTCDate, Date endUTCDate);
 	
+	Integer  getConsolidatedReportsForMailingForIndividualUserForToday(User user, OrgLocations orgLocations,String status,Requirement requirement) throws Exception;
+
 	Integer getRequirementHistoryCountByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
 	
 	boolean isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(Long candidateId,Long requirementId) throws Exception;
@@ -173,5 +173,8 @@ public interface RequirementSubmissionDao {
 	
 	List<RequirementSubmission> getOfferAcceptedCandidatesListByOrgLocationId(Long orgLocationId);
 	
+	List<RequirementSubmission> getAllSubmissionsfromVendorsBasedOnLocationIdAndUserId(User user,OrgLocations orgLocations, String status, Requirement requirement) throws Exception;
+	
+	Long getCountOfAllApplicantsByCreatedUserAndOrglocationIdByStage(Long orgLocationId, User user,String stage,String timePeriod) throws Exception ;
 	
 }

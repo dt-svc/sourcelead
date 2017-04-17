@@ -122,6 +122,8 @@ public class Constants {
 	
 	public static String EDIT_CLIENTCONTACT = "Edit SpocContact";
 	
+	public static String CLIENT_OWNER_UPDATEMAIL = "clientOwnerUpdateMail";
+	
 	public static String SHORTLIST_APPLICANTS = "ShortList Applicants";
 	public static String SHORTLIST_NOTIFICATION_MANAGER = "Notification To Manager";
 	
@@ -267,6 +269,10 @@ public class Constants {
 	
 	public static String CROWD_SOURCING_SOURCE_SELF = "SELF";
 	
+	public static String EMPLOYEE_TERMINATION = "Employee Termination";
+	public static String EMPLOYEE_TERMINATION_MAIL_TO_MANAGER = "Employee Termination Mail To Manager";
+	public static String EMPLOYEE_REASSIGN = "Employee Reassign";
+	public static  String SocialInviter = "SocialInviter";
 	
 	public static final DateFormat TMS = new SimpleDateFormat ("hh:mm a");
 	
@@ -321,13 +327,14 @@ public class Constants {
 	public static  String Finance = "Finance";
 	public static  String AssetManagement = "AssetManagement";
 	public static  String Profile = "Profile";
-	
+	public static  String List_by_status = "List by status";
 	
 	public static  String TimeSheet_Approval = "Timesheet Approval";
 	
 	public static  String Requirement = "Requirement";
 	public static  String Vendors = "Vendors";
 	public static  String Candidates = "Candidates";
+	public static  String Associates = "Associates";
 	
 	public static String SOURCELEAD_ORGCODE = "sourcelead.com";
 	public static String SOURCELEAD_LOCATIONCODE_IN = "in.sourcelead.com";
@@ -385,6 +392,7 @@ public class Constants {
 	
 	public static String EDUCATIONS = "Educations";
 	public static String SKILLS = "Skills";
+	public static String DOCUMENT_TYPE="Document Type";
 	
 	public static String ADMIN = "Admin";
 	

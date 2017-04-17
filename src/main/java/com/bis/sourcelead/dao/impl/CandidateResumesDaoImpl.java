@@ -181,7 +181,7 @@ public class CandidateResumesDaoImpl implements CandidateResumesDao {
 		@Transactional(rollbackFor = { Exception.class })
 		public CandidateResumes getCandidateLatesResumes(Long candidateId, int status) throws Exception {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from CandidateResumes candidateResumes where candidateResumes.createdDate IN (SELECT max(canresume.createdDate) FROM CandidateResumes canresume where canresume.candidateId.id =:candidateId) and candidateResumes.status = :status";  
+			String query = "from CandidateResumes candidateResumes left join fetch candidateResumes.orgLocationId  left join fetch candidateResumes.candidateId  where candidateResumes.createdDate IN (SELECT max(canresume.createdDate) FROM CandidateResumes canresume where canresume.candidateId.id =:candidateId) and candidateResumes.status = :status";  
 			List<CandidateResumes> candidateResumesList = session.createQuery(query).setLong("candidateId", candidateId).setInteger("status", status).setCacheable(true).list();
 			CandidateResumes candidateResumes = null;
 			if(candidateResumesList != null && !candidateResumesList.isEmpty()){

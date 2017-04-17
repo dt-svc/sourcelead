@@ -138,6 +138,22 @@ public class CandidateIndexHelper {
 				candidateIndex.setIsFavourite(0);
 			}
 			
+			if(null != candidate.getIsFavouriteAssociate()){
+				candidateIndex.setIsFavouriteAssociate(candidate.getIsFavouriteAssociate());
+			}else{
+				candidateIndex.setIsFavouriteAssociate(0);
+			}
+			
+			if(null != candidate.getIsAssociate()){
+				candidateIndex.setIsAssociate(candidate.getIsAssociate());	
+			}
+			if(null != candidate.getSpocId()){
+				candidateIndex.setSpocId(candidate.getSpocId().getId());	
+			}
+			if(null != candidate.getOrgRelationId()){
+				candidateIndex.setOrgRelationId(candidate.getOrgRelationId().getId());	
+			}
+			
 			candidateIndex.setTerminateReason(candidate.getTerminateReason());
 			if(candidate.getCreatedDate() != null){
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");

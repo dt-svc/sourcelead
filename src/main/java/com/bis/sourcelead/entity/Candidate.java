@@ -123,7 +123,7 @@ public class Candidate implements Serializable{
 	@Column(name = "EXPECTED_RATE_CURRENCY")
 	private String expectedRateCurrencey;
 	
-	@Column(name = "SUMMARY")
+	@Column(name = "SUMMARY", columnDefinition = "TEXT default NULL")
 	private String summary;
 	
 	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
@@ -149,6 +149,9 @@ public class Candidate implements Serializable{
 	@Column(name="IS_FAVOURITE")
 	private Integer isFavourite;
 	
+	@Column(name="IS_FAVOURITE_ASSOCIATE")
+	private Integer isFavouriteAssociate;
+	
 	@Column(name="TERMINATE_REASON")
 	private String terminateReason;
 
@@ -170,6 +173,16 @@ public class Candidate implements Serializable{
 	@Column(name = "CANDIDATE_UUID")
 	private String candidateUUID;
 	
+	@Column(name="IS_ASSOCIATE")
+	private String isAssociate;
+	
+	@ManyToOne
+    @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
+    private OrgRelations orgRelationId;
+	    
+	@ManyToOne
+    @JoinColumn(name="SPOC_ID", nullable=false )        
+    private OrgSpoc spocId;
 	
 	@Transient
 	private String skills;
@@ -273,7 +286,6 @@ public class Candidate implements Serializable{
 	 
 	 @Transient
 	 private String postedDateStr;
-		
 	 
 	 @Transient
 	 private List<RequirementSubmission> requirementSubmisstions;
@@ -282,7 +294,11 @@ public class Candidate implements Serializable{
 	 private LinkedHashSet<String> allAndCandidateSkills;
 	 
 	 @Transient
+	 private LinkedHashSet<String> allAndCandidateEducation;
+	 
+	 @Transient
 	 private Integer candidateRequiementCount;
+	 
 	 
 	public Long getId() {
 		return id;
@@ -752,6 +768,16 @@ public class Candidate implements Serializable{
 	}
 
 
+	public LinkedHashSet<String> getAllAndCandidateEducation() {
+		return allAndCandidateEducation;
+	}
+
+
+	public void setAllAndCandidateEducation(LinkedHashSet<String> allAndCandidateEducation) {
+		this.allAndCandidateEducation = allAndCandidateEducation;
+	}
+
+
 	public String getReqSubmissionId() {
 		return reqSubmissionId;
 	}
@@ -1055,10 +1081,44 @@ public class Candidate implements Serializable{
 	}
 
 
+	public String getIsAssociate() {
+		return isAssociate;
+	}
+
+	public void setIsAssociate(String isAssociate) {
+		this.isAssociate = isAssociate;
+	}
+	
+	public OrgRelations getOrgRelationId() {
+		return orgRelationId;
+	}
+
+
+	public void setOrgRelationId(OrgRelations orgRelationId) {
+		this.orgRelationId = orgRelationId;
+	}
+
+
+	public OrgSpoc getSpocId() {
+		return spocId;
+	}
+
+	public void setSpocId(OrgSpoc spocId) {
+		this.spocId = spocId;
+	}
+
+
+	public Integer getIsFavouriteAssociate() {
+		return isFavouriteAssociate;
+	}
+
+
+	public void setIsFavouriteAssociate(Integer isFavouriteAssociate) {
+		this.isFavouriteAssociate = isFavouriteAssociate;
+	}
 	public String getCandidateUUID() {
 		return candidateUUID;
 	}
-
 
 	public void setCandidateUUID(String candidateUUID) {
 		this.candidateUUID = candidateUUID;
