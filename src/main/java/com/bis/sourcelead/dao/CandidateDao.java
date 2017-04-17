@@ -65,7 +65,7 @@ public interface CandidateDao {
 
 	public Integer getAllCandidatedsBasedOnCreatedByAndOrglocationCodeWhichAreCreatedToday(OrgLocations orgLocations,
 			User user) throws Exception;
-	
+
 	Long getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, String timePeriod) throws Exception ;
 
 	public Candidate getCandidateById(Long candidateId) throws Exception;
