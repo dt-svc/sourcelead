@@ -69,7 +69,6 @@ function candidateQuickViewProfile(candidateId){
 	         			 	}else{
 	         			 		rateType = '';
 	         			 	}
-	         			 	
 	         			 	if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
 				               var skill = json.skillsName;
 	         			 		var qvSkills = "";
@@ -115,12 +114,11 @@ function candidateQuickViewProfile(candidateId){
 					result = result+'          <div class="col-md-5">                                                                                                                              ';
 					result = result+'              <div class="pull-right">                                                                                                                        ';
 					result = result+'                  <ul class="list-unstyled">                                                                                                                  ';
-					result = result+'                      <li><i class="fa fa fa-envelope paddingRight text-warning" title="'+json.email+'"></i>'+json.email+'';
+					result = result+'                      <li><i class="fa fa fa-envelope paddingRight text-warning" title="Email"></i>'+json.email+'';
 					result = result+'                      </li>                                                                                                                                   ';
-					result = result+'                      <li><i class="fa fa-phone paddingRight text-warning" title="'+json.mobilePhone+'"></i>'+json.mobilePhone+'</li>                                              ';
-					result = result+'                      <li><i class="fa fa-map-marker paddingRight text-warning" title="'+city+''+state+''+country+'"></i>'+city+''+state+''+country+'</li>';
-// 					result = result+'                      <li><i class="fa fa-skype paddingRight text-info" title="Skype"></i>candidate.sky</li>';
-					result = result+'                    <li><i class="fa fa-usd paddingRight text-warning" title="'+expectedRate+' '+rateType+''+expectedRateCurrencey+'"></i>'+expectedRate+' '+rateType+''+expectedRateCurrencey+'</li>';
+					result = result+'                      <li><i class="fa fa-phone paddingRight text-warning" title="Mobile"></i>'+json.mobilePhone+'</li>                                              ';
+					result = result+'                      <li><i class="fa fa-map-marker paddingRight text-warning" title="Location"></i>'+city+''+state+''+country+'</li>';
+					result = result+'                    <li><i class="fa fa-usd paddingRight text-warning" title="Rate"></i>'+expectedRate+' '+rateType+''+expectedRateCurrencey+'</li>';
 					result = result+'                  </ul>                                                                                                                                       ';
 					result = result+'              </div>                                                                                                                                          ';
 					result = result+'          </div>                                                                                                                                              ';
@@ -146,6 +144,7 @@ function candidateQuickViewProfile(candidateId){
 					result = result+'          <!-- Skills, Achievements &amp; Certificates BLock -->                                                                                              ';
 					result = result+'          <div class="col-md-5 col-md-offset-1 paddingLeft">                                                                                                              ';
 					result = result+'              <div class="row">                                                                                                                               ';
+					if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
 					result = result+'              <div class="col-md-12">                                                                                                                         ';
 					result = result+'                  <h4>Skills</h4>                                                                                                           ';
 					result = result+'                  <div class="skillsView row">                                                                                                                ';
@@ -155,7 +154,7 @@ function candidateQuickViewProfile(candidateId){
 					result = result+'                  </div>';
 					result = result+'                  </div>';
 					result = result+'               </div>';
-					
+					}
 					//Certification Div
 					result = result + '<div id="qvcertificationSubmission"></div> ';
 					

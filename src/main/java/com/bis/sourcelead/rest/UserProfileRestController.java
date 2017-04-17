@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -210,6 +211,34 @@ public class UserProfileRestController {
 		}
 
 	}
+	
+	
+	   @RequestMapping(value = "/displayOnboardingUserImage/{userId}" , method = RequestMethod.GET)
+	     public void displayOnboardingUserImage(@PathVariable Long userId,HttpServletRequest request,HttpServletResponse response,HttpSession session) {
+	    	 
+		   User user = null;
+				try {
+					 user = userService.getUserById(userId);
+					
+					if(user != null && user.getDocFile() != null)
+					{
+						user.setFileContentType("image/jpeg");
+						InputStream in = new ByteArrayInputStream(user.getDocFile());
+						BufferedImage bi = ImageIO.read(in);
+						OutputStream out = response.getOutputStream();
+						ImageIO.write(bi, "jpg", out);
+						out.close();
+					}
+					
+				} catch (IOException e) {
+					e.printStackTrace();
+				} 
+				
+				catch (Exception e1) {
+					e1.printStackTrace();
+				}
+				
+	  }
 
 
 	private static BufferedImage colorImage(BufferedImage image) {

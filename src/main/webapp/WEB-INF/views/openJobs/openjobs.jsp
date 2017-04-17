@@ -110,7 +110,6 @@ display: none;}
   
   <div class="clear"></div>
 </div>
-
 </header>
 <section class="menuGapInpage"></section>
 
