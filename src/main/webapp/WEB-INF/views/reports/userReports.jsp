@@ -15,7 +15,6 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
 
-
 <script type="text/javascript">
 		window.onload = function () {
 			usersList();
@@ -48,6 +47,10 @@
 		</div>  
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo;   Reports Dashboard</div>
  <div class="clearfix"></div>
+ 
+ 
+ 
+ 
   </section>
    
   <div style="overflow: auto;" class=" vendor_wrap"> 
@@ -75,13 +78,71 @@
 		<p id="reportsEndDate" class="ReError"></p>
 		</span>
 		<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
+		<div class="clearfix"></div>
   </div>
       <div class="candidate_wrap_table recruiterReports_table">
         <div id="usersList"></div>
       </div> 
  </div>
+ 
+ 
+ <div class="timesheet_out mt40">
+    <div class="vendor_wrap">
+      <div class="timesheet_head">
+<div class="pull-left reportBtns">
+<h4 class="pull-left mr">Recruiters Report</h4>
+	  <div class="reportBtn select-field pull-left">
+		<select class="form-control" id="vendorreportTypeId" onChange="flushVendorCustomDates(); getVendorsReportList(); custVendorDates();">
+		 <option value="">select</option>
+		  <option value="today">Today</option>
+		  <option value="yesterday">Yesterday</option>
+		  <option value="week">1 week</option>
+		  <option value="twoweeks">2 weeks</option>
+		  <option value="month">1 month</option>
+		  <option value="twomonths">2 months</option>
+		   <option value="custom">Custom</option> 
+		</select>
+	 </div>	
+	 <!-- <span class="dashboard-datepkr"><input type="text" class="input-sm hasDatepicker" id="datepicker"><i class="fa fa-calendar"></i></span>
+	 <span class="dashboard-datepkr"><input type="text" class="input-sm hasDatepicker" id="datepicker1"><i class="fa fa-calendar"></i></span>	 -->
+	 <div id="dateShow" style="display:none">
+	 <span class="dashboard-datepkr">
+	 <input type="text" class="form-control" value="" id="vendorStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
+	 <p id="vendorreportStartDate" class="ReError"></p>
+	 </span>
+	<span class="dashboard-datepkr">
+	<input type="text"  class="form-control" value="" id="vendorEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
+	<p id="vendorreportEndDate" class="ReError"></p>
+	</span>
+	<span class=""><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getVendorCustomReports();" /></span>
+	</div>
+	
+        <div class="clearfix"></div>
+      </div>
+  
+ <div class="clearfix">
+<section class="candidate_wrap_table recruiterReports_table">
+
+<div id="vendorReportsDiv" class=""></div>
+
+<div id="vendorSpocReportsDiv" class="repoPositiNoCount"></div>
+
+</section>    
+ </div>
+      
+ </div>
+
+
+  </div>
+ 
   </section>    
       
+<div class="mask_time"></div>
+
+<div class="pavPop">
+<span class="pavClose" onclick="pavClose();"><i class="fa fa-times"></i></span>
+		<div id="vendorspc" class="clients_wrap_table"></div>
+</div> 
     
     
  <%-- 
@@ -456,5 +517,6 @@ function getCustomReports(){
 }
 </script>
 
+<jsp:include page="vendorsReport.jsp" />
 
 <jsp:include page="../masterFooter.jsp" />

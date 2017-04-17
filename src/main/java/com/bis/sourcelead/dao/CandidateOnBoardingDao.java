@@ -15,4 +15,8 @@ public interface CandidateOnBoardingDao {
 	Integer getCandidateOnBoardingListCountByOrgLocationId(Long orgLocationId) throws Exception;
 	
 	CandidateOnBoarding getCandidateOnBoardingById(Long Id) throws Exception;
+	
+	CandidateOnBoarding getCandidateOnBoardingByEmailAndLocationId(String email,Long orgLocationId) throws Exception;
+	
+	CandidateOnBoarding getCandidateOnBoardingByUserIdAndLocationId(Long onboardingUser,Long orgLocationId) throws Exception;
 }

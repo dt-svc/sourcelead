@@ -83,6 +83,9 @@ public class TeamMembers implements Serializable{
 	@Transient
     private Long teamMemberUserId;
 	
+	@Transient
+	private String roleName;
+	
 	
 	public Long getId() {
 		return id;
@@ -212,8 +215,13 @@ public class TeamMembers implements Serializable{
 		this.teamMemberUserId = teamMemberUserId;
 	}
 
-	
-	 
+	public String getRoleName() {
+		return roleName;
+	}
+
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
+	}
 	
 	
 }

@@ -111,4 +111,16 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 model.setViewName("reports/requirementAssignToReports");
 		 return model;	
 	 }	
+	 
+	 /**
+	  * @author Pavan Jampana
+	  * returns vendors report page 
+	  */
+	 @RequestMapping(value = "/vendorsReports")
+		public ModelAndView vendorsReports() throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/vendorsReport");
+		 return model;
+	 }	
 }
