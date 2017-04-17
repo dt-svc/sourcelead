@@ -50,6 +50,7 @@
         <div class="clearfix onboardBtns">
         </div>
         <div class="tabbable">
+        <div id="onboardingPopUp"></div>
           <ul class="nav nav-tabs" id="tab_bar">
             <li class="active" onclick="loadOnboardingCandidate();"> <a href="#details" data-toggle="tab"> <i class="fa fa-th-list paddingRight"></i> <span>Details</span> <br>
               <small>Employee details &amp; Postion details</small> </a> </li>
@@ -136,7 +137,7 @@
                 <div class="form-group">
                   <label class="col-md-3 control-label">Mobile number <span class="text-danger paddingLeft">*</span></label>
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber" readonly="readonly">
+                    <input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber" >
                   </div>
                 </div>
 
@@ -898,6 +899,8 @@ function validateUploadFile(id)
 			    	 getOnBoardCandidateStates(json['country'],json['state']);
 			    	 getOnBoardCandidateStates(json['state'],json['city']);
 			    	 getOnBoardCandidateCities(json['country'],json['state'],json['city']);
+			    	 
+			    	 validateOnboardCandidate(json['email']);
 			    }
 		   });
 	  }
@@ -1880,6 +1883,7 @@ function getOnboardingTasksList(){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	
+	if(onboardId != null && onboardId != '' && onboardId!= 'undefined'){
 	
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	$.ajax({
@@ -1958,6 +1962,7 @@ function getOnboardingTasksList(){
    }); 
 	
   $("#loading").removeAttr("style");
+}
 	
 }
 </script>
@@ -2017,21 +2022,27 @@ function saveAndFinishOnboardTemplate(onboardId){
 
 <script type="text/javascript">
  function validateUserEmail() {
-	 var EmailId = document.getElementById("companyEmail").value;
+	 var email = document.getElementById("companyEmail").value;
 	 $('#emailDiv').find('p.jquery_form_error_message').remove();
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 if(EmailId != null && EmailId != ""){
+	 if(email != null && email != ""){
 		 $("#save_onboardUser").attr("disabled", "disabled");
 		 $("#saveAndContinue_onboardUser" ).attr("disabled", "disabled");
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateUserEmail?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
+		        url: sourceleadUrl+"/validateOnboardCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email, 
 		        success: function(data) {
-		        	if(data == 'true'){
+		        	if(data == 'Invalid User Email'){
 		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
-						  $("input#companyEmail").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
+						  $("input#companyEmail").after("<p class='jquery_form_error_message'>"+email+" is Already as user</span>");
 						  document.getElementById("companyEmail").setAttribute('record-exist','yes');
-						  document.getElementById("companyEmail").setAttribute('record-exist-errorMsg',EmailId+' is Already Existed'); 
+						  document.getElementById("companyEmail").setAttribute('record-exist-errorMsg',email+' is as user'); 
+		        	}
+		        	else if(data == 'Invalid OnboardUser Email'){
+		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
+						  $("input#companyEmail").after("<p class='jquery_form_error_message'>"+email+" is Already as onboard user</span>");
+						  document.getElementById("companyEmail").setAttribute('record-exist','yes');
+						  document.getElementById("companyEmail").setAttribute('record-exist-errorMsg',email+' is as user'); 
 		        	}
 		        	else{
 		        		 $('input#companyEmail').removeAttr( "record-exist record-exist-errormsg");
@@ -2044,3 +2055,51 @@ function saveAndFinishOnboardTemplate(onboardId){
 	 }
  }
  </script>  
+ 
+ 
+ <script>
+ function validateOnboardCandidate(email){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	  if(email){
+		  $("#save_onboardUser").attr("disabled", "disabled");
+			 $("#saveAndContinue_onboardUser" ).attr("disabled", "disabled");
+			 $.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/validateOnboardCandidate?${_csrf.parameterName}=${_csrf.token}&email="+email, 
+			        success: function(result) {
+			        	if(result == 'Invalid'){
+			        		alertMessage(email+" is Already exists as user")
+			        	}
+			        	else{
+	                         $("#save_onboardUser").removeAttr("disabled");
+	                         $("#saveAndContinue_onboardUser").removeAttr("disabled");
+			        	}
+			        },
+			    });
+	  }
+	  
+ }
+ </script>
+ 
+ <script type="text/javascript">
+function alertMessage(message){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a posiF'>";
+	result = result +"		<p>"+message+"</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input class='fullBtn' id='confirm-id' type='button' value='Ok' onclick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#onboardingPopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#onboardingPopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>

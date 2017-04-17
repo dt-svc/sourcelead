@@ -3504,7 +3504,7 @@ font-size: 20px; color: #FF4141; padding: 4px 0px 0px 0px; display: inline-block
 	box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
 }
 .welCo1 h2 {
-	margin:0px 0px; padding: 0px 0px 6px 0px; font-size: 20px; font-weight: 400; color: #454545; border-bottom: 1px dotted #999;
+	margin:0px 0px 5px 0px; padding: 0px 0px 6px 0px; font-size: 20px; font-weight: 400; color: #454545; border-bottom: 1px dotted #999;
 }
 .welCo1 h3, .welCo1 h4 {
 	margin:0px 0px; padding: 15px 0px 10px; font-size: 18px; font-weight: 400; color: #454545;
@@ -3512,15 +3512,18 @@ font-size: 20px; color: #FF4141; padding: 4px 0px 0px 0px; display: inline-block
 .welCo1 h4 {
 	border-top: 1px dotted #999;
 }
+.welCo1 h5 {
+	margin:0px 0px 20px 0px; padding: 0px 0px 6px 0px; font-size: 18px; font-weight: 400; color: #454545; border-bottom: 1px dotted #999;
+}
 .welCoInn {
-	padding: 0px 0px 15px 0px;
+	padding: 0px 0px 18px 0px;
 }
 .welCoInnLeft {
-	float: left; background-color: #fff; padding: 15px 15px 10px; width: 20%; border-radius: 2px; cursor: pointer;
+	float: left; background-color: #fff; padding:20px 15px; width: 25%; border-radius: 2px; cursor: pointer;
 	box-shadow: 0px 0px 3px rgba(0,0,0,0.1);
 }
 .welCoInnLeft img {
-	width:100%; border: 1px solid #dedede;
+	width:100%;
 }
 .welCoInnLeft span {
 	display:block; text-align: center; padding: 4px 0px 3px 0px; font-weight: 500; color: #454545;
@@ -3529,10 +3532,10 @@ font-size: 20px; color: #FF4141; padding: 4px 0px 0px 0px; display: inline-block
 	display:inline-block; padding: 0px 5px 0px 0px;
 }
 .welCoInnRight {
-	float: left; width: 62%; padding: 10px 0px 0px 4%;
+	float: left; width: 62%; padding: 0px 0px 0px 4%;
 }
 .welCoInnRight p, .welCo1 p {
-	font-size:14px; font-weight: 500; color: #454545; padding: 5px 0px; margin: 0px 0px;
+	font-size:14px; font-weight: 500; color: #454545; padding: 5px 0px; margin: 0px 0px; line-height: 22px;
 }
 
 .welBtns {
@@ -3555,15 +3558,68 @@ font-size: 20px; color: #FF4141; padding: 4px 0px 0px 0px; display: inline-block
 
 .docu {}
 .docu a {
-	display:inline-block; background-color: #fff; box-shadow: 0px 0px 3px rgba(0,0,0,0.1); padding: 5px;
-	margin: 10px 10px 0px 0px; width: 100px; border-radius: 2px;
+	display:inline-block; background-color: #fff; box-shadow: 0px 0px 3px rgba(0,0,0,0.1); padding: 5px 5px 10px; color: #666;
+	margin: 10px 10px 0px 0px; width: 100px; border-radius: 2px; text-align: center; font-size: 13px; line-height: 16px;
 }
-.docu a img {
-	width: 100%;
+.docu a .fa-file-excel-o, .docu a .fa-file-word-o, .docu a .fa-file-pdf-o {
+	font-size:35px; padding: 10px 0px 15px; color: #3269E7;
+}
+.docu a .fa-file-pdf-o {color:#DD3C3C;}
+.docu a .fa-file-word-o { color:#25A7AA;}
+.welTeam {
+	position:relative;
 }
 
+/** Welcome Team Coro **/
 
+.crsl-items {
+  display: block; padding: 5px 0px;
+}
+.crsl-item {
+  background: #fff; padding: 8px; box-shadow: 0px 2px 3px rgba(0,0,0,0.2); border-radius: 2px;
+}
+.crsl-item figure {
+	float:left; width: 26%; margin: 0px 5% 0px 0px; display: block; min-height: 80px; max-height: 80px;
+	background-repeat: no-repeat; background-position: center; background-size: cover; box-shadow: 0px 0px 2px rgba(0,0,0,0.3);
+}
+.crsl-item span {
+	width:65%; float:left;
+}
+.crsl-item span b {
+	display:block; font-size: 14px; font-weight: 500; color: #454545; padding: 3px 0px; overflow: hidden; text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.crsl-item span b u {
+	display:inline-block; text-decoration: none; width: 55px;
+}
 
+.welArrows {
+	position:absolute; top: -30px; right: 10px;
+}
+.welArrows a {
+	display:inline-block; padding: 2px; font-size: 18px; margin: 0px 5px;
+}
+.welMana {
+	
+}
+.welMana figure {
+	float:left; width: 130px; margin: 0px 25px 0px 0px; display: block; min-height: 130px; max-height: 130px;
+	background-repeat: no-repeat; background-position: center; background-size: cover; box-shadow: 0px 0px 2px rgba(0,0,0,0.3);
+}
+.welMana span {
+	width:65%; float:left;
+}
+.welMana span b {
+	display:block; font-size: 14px; font-weight: 500; color: #454545; padding: 3px 0px; overflow: hidden; text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.welMana span b u {
+	display:inline-block; text-decoration: none; width: 55px;
+}
+.welMana span b a {
+	display:inline-block; background-color: #37B598; color: #fff; font-weight: 400; padding: 3px 10px; margin: 0px 2px;
+	border-radius: 2px;
+}
 
 .propWrap {
 	background-color: #fff; box-shadow: 0px 0px 3px rgba(0,0,0,0.2); border-radius: 3px;
@@ -3866,3 +3922,26 @@ right: -15px; top:-15px; text-align: center; cursor: pointer; color: #e35454; fo
 .prevPop iframe {
 width:100%; height: 100%; border: 10px solid #ccc; border-radius: 3px;
 }
+
+
+.pavInp {
+    width: 125px; margin: 4px 0px 0px 0px;
+}
+.commentFile .fa-info-circle {
+	padding: 5px; margin: 0px 0px; position: absolute; top: -15px; font-size: 16px; color: #17324c; cursor: pointer;
+	left: 0px;
+}
+
+.depPW {
+	width: 400px;
+}
+
+.posiF {
+position: fixed !important;
+}
+
+.remove_user_pop input.fullBtn {
+width:100%; background:#4caf54;
+}
+
+
