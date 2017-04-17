@@ -532,6 +532,8 @@ public class SubmissionsRestController {
 			submission.setSubmittedBy(submittedSourceUser.getFirstName());
 
 		}
+		submission.setDesignationType(submission.getCandidate().getDesignationType());
+		submission.setCandidateSummary(submission.getCandidate().getSummary());
 		submission.setSkillsList(skillsList.toString());
 		submission.setRequirementSubmissionTemplateFields(requirementSubmissionTemplateFields);
 		resultJson = toJSON(submission);

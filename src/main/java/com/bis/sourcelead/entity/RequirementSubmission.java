@@ -197,6 +197,12 @@ public class RequirementSubmission implements Serializable{
    	private Long resumeId;
     
     @Transient
+   	private String candidateSummary;
+    
+    @Transient
+   	private String designationType;
+    
+    @Transient
    	private String resumeUUID;
     
     @Transient
@@ -885,6 +891,21 @@ public class RequirementSubmission implements Serializable{
 		this.numofrequestsent = numofrequestsent;
 	}
 
+	public String getCandidateSummary() {
+		return candidateSummary;
+	}
+
+	public void setCandidateSummary(String candidateSummary) {
+		this.candidateSummary = candidateSummary;
+	}
+
+	public String getDesignationType() {
+		return designationType;
+	}
+
+	public void setDesignationType(String designationType) {
+		this.designationType = designationType;
+	}
 
 	public String getState() {
 		return state;
