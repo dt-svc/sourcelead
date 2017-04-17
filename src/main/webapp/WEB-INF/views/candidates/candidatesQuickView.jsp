@@ -83,6 +83,8 @@ function candidateQuickViewProfile(candidateId){
 					                	}
 				                }
 				                qvSkills += "</ul>"; 
+	         			 	}else{
+	         			 		qvSkills = "";
 	         			 	}
 							
 // 					<!-- resumeView Starts -->

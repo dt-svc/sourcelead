@@ -30,39 +30,56 @@
 			</div>
 	     </c:if>
     <div class="pull-left">
-      <h2>Recruiter Reports</h2>
+      <h2> Reports Dashboard</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Recruiter Reports</div>
+    	<div class=" pull-left reportsH">
+			<a title="Reports"><i class="fa fa-pie-chart"></i></a>
+			<div class="RePop">
+				<ul>
+					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
+					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Stages</a></li>
+					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li>
+				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
+				    <li><a href="<c:url value='/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Submitted</a></li>
+				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirement Assign To</a></li>
+				    <li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
+				</ul>
+			</div>
+		</div>  
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo;   Reports Dashboard</div>
  <div class="clearfix"></div>
   </section>
    
   <div style="overflow: auto;" class=" vendor_wrap"> 
-      <div class="pull-left reportBtns">
-	  <div class="reportBtn select-field">
-		<select class="form-control" id="reportTypeId" onChange="flushCustom(); getDayWiseReports(); custdates();">
-		 <option value="">select</option>
-		  <option value="today">Today</option>
-		  <option value="yesterday">Yesterday</option>
-		  <option value="week">1 week</option>
-		  <option value="twoweeks">2 weeks</option>
-		  <option value="month">1 month</option>
-		  <option value="twomonths">2 months</option>
-		   <option value="custom">Custom</option> 
-		</select>
-	 </div>	
-	 <span class="dashboard-datepkr cusShow">
-	 <input type="text" class="form-control" value="" id="ReportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
-	 <p id="reportsStartDate" class="ReError"></p>
-	 </span>
-	<span class="dashboard-datepkr cusShow">
-	<input type="text"  class="form-control" value="" id="ReportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
-	<p id="reportsEndDate" class="ReError"></p>
-	</span>
-	<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
-</div>
+   
+   <div class="pull-left reportBtns">
+<h4 class="pull-left mr">Recruiters Report</h4>
+		  <div class="reportBtn select-field  pull-left ml">
+			<select class="form-control" id="reportTypeId" onChange="flushCustom(); getDayWiseReports(); custdates();">
+			 <option value="">select</option>
+			  <option value="today">Today</option>
+			  <option value="yesterday">Yesterday</option>
+			  <option value="week">1 week</option>
+			  <option value="twoweeks">2 weeks</option>
+			  <option value="month">1 month</option>
+			  <option value="twomonths">2 months</option>
+			   <option value="custom">Custom</option> 
+			</select>
+		 </div>	
+		 <span class="dashboard-datepkr cusShow">
+		 <input type="text" class="form-control" value="" id="ReportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
+		 <p id="reportsStartDate" class="ReError"></p>
+		 </span>
+		<span class="dashboard-datepkr cusShow">
+		<input type="text"  class="form-control" value="" id="ReportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
+		<p id="reportsEndDate" class="ReError"></p>
+		</span>
+		<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
+  </div>
       <div class="candidate_wrap_table recruiterReports_table">
         <div id="usersList"></div>
-      </div> </div>
+      </div> 
+ </div>
   </section>    
       
     
@@ -130,10 +147,16 @@ function usersList(timePeriod){
 	                    
 	                     for (var i = 0; i < checkSize; i++) { 
 	                    	 var opt = json[i]; 
+	                    	 
+	                    	 if(opt.lastName != null && opt.lastName !='' && opt.lastName != 'undefined'){
+	          			 		lastName = opt.lastName;
+		          			 	}else{
+		          			 		lastName = "";
+		          			 	}
 	                    	 result = result +"<tr>";
 	                    	 
 	                    	 if(opt.firstName !=null && opt.firstName !='' && opt.firstName !='undefined'){
-	                    		 result = result +"<td><div class='tbldata-dotdot-me'><span title='"+opt.firstName+"'>"+opt.firstName+" "+opt.lastName+"</span></a></div></td>";
+	                    		 result = result +"<td><div class='tbldata-dotdot-me'><span title='"+opt.firstName+"'>"+opt.firstName+" "+lastName+"</span></a></div></td>";
 	                    	 }else{
 	                    		 result = result +"<td><div> <span>----</span></div></td>"; 
 	                    	 }
