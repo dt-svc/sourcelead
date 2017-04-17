@@ -367,7 +367,6 @@ function getClientContacts(){
 	for (var i=0; i<json.length; i++)
 	{
 	var opt = json[i];
-	alert("opt.clientUser.id"+opt.spocUserId);
 	// need to use in edit
 	//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
 	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"</option>";
