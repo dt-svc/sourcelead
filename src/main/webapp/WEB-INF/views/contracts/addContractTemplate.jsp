@@ -50,7 +50,6 @@
                   </select>
             </div>
             </div>
-                       
              
           <div class="form-group">
               <label class="col-md-4">Letter head</label>
@@ -82,20 +81,20 @@
 		<div class="col-md-3 contrCus">
 			<h3>Custom Files</h3>
 			<ul id="clientmsa" style="display:block">
-				<li onclick="copyToClipboard('text_element')"><i></i><p class="copyText" id="text_element"> {Client Name} </p></li>
-				<li><i></i>{Client Contact}</li>
-				<li><i></i>{Client location}</li>
-				<li><i></i>{Company Name}</li>
-				<li><i></i>{Company Location}</li>
-			</ul>
-			
-			<ul id="vendormsa" style="display:none">
-				<li><i></i>{Vendor Name}</li>
-				<li><i></i>{Vendor Contact}</li>
-				<li><i></i>{Vendor location}</li>
-				<li><i></i>{Company Name}</li>
-				<li><i></i>{Company Location}</li>
-			</ul>
+                <li onclick="copyToClipboard('text_element1')"><i></i><p class="copyText" id="text_element1">{Client Name}</p></li>
+                <li onclick="copyToClipboard('text_element2')"><i></i><p class="copyText" id="text_element2">{Client Contact}</p></li>
+                <li onclick="copyToClipboard('text_element3')"><i></i><p class="copyText" id="text_element3">{Client location}</p></li>
+                <li onclick="copyToClipboard('text_element4')"><i></i><p class="copyText" id="text_element4">{Company Location}</p></li>
+                <li onclick="copyToClipboard('text_element5')"><i></i><p class="copyText" id="text_element5">{Company Name}</p></li>
+            </ul>
+            
+            <ul id="vendormsa" style="display:none">
+                <li onclick="copyToClipboard('text_element11')"><i></i><p class="copyText" id="text_element11">{Vendor Name}</p></li>
+                <li onclick="copyToClipboard('text_element12')"><i></i><p class="copyText" id="text_element12">{Vendor Contact}</p></li>
+                <li onclick="copyToClipboard('text_element13')"><i></i><p class="copyText" id="text_element13">{Vendor location}</p></li>
+                <li onclick="copyToClipboard('text_element14')"><i></i><p class="copyText" id="text_element14">{Company Location}</p></li>
+                <li onclick="copyToClipboard('text_element15')"><i></i><p class="copyText" id="text_element15">{Company Name}</p></li>
+            </ul>
 			
 			<ul id="clientsow" style="display:none">
 				<li onclick="copyToClipboard('text_element')"><i></i><p class="copyText" id="text_element">{Client Name}</p></li>
@@ -179,16 +178,17 @@ function previewclose(){
 
 <script>
 function copyToClipboard(elementId) {
-	  var aux = document.createElement("input");
-	  aux.setAttribute("value", document.getElementById(elementId).innerHTML);
-	  document.body.appendChild(aux);
-	  aux.select();
-	  document.execCommand("copy");
-	  document.body.removeChild(aux);
-	}
-	function log(){
-		console.log('---')
-	}
+    var aux = document.createElement("input");
+    aux.setAttribute("value", "");
+    aux.setAttribute("value", document.getElementById(elementId).innerHTML);
+    document.body.appendChild(aux);
+    aux.select();
+    document.execCommand("copy");
+    document.body.removeChild(aux);
+  }
+  function log(){
+      console.log('---')
+  }
 </script>
 
 
