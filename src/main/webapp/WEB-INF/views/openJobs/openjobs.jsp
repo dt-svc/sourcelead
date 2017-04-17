@@ -274,8 +274,7 @@ display: none;}
 			<div id= "openJobsRequirementsList"></div>
 			<div id= "openJobsRequirementsSummary"></div>
 			
-			
-<section class="loadJob"><i class="fa fa-spinner fa-spin"></i>View more</section>			
+		
 			
 		</div>
 		<div class="clear"></div>
@@ -655,6 +654,7 @@ function getOpenJobsELKList(){
 					if(requirements.isCrowdSourcingJob == 'Y'){
 					result = result +'	<a href="'+sourceleadUrl+'/login" style="background-color:#eb821c;">Refer</a></div>';
 					}
+					result = result +' <section class="loadJob"><i class="fa fa-spinner fa-spin"></i>View more</section>';
 /* 					result = result +'	<div class="filLoad">';
 					result = result +'	<h2 class="gradi"></h2><p class="gradi"></p><p class="gradi"></p><p class="gradi"></p><br>';
 					result = result +'	<p class="gradi"></p>';
