@@ -47,7 +47,7 @@
  <sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">
 <jsp:include page="candidatesCommentsList.jsp"></jsp:include>
  </sec:authorize> 
- 
+ <jsp:include page="candidatesQuickView.jsp"></jsp:include>
  
 <script>
  window.onload = function() {
@@ -223,7 +223,7 @@ else{
 	
 	             
 	              '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-	                result = result +"  <td><div class='proj_show divmax-width' onclick='candidateSideBar("+opt.candidateId+");'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
+	                result = result +"  <td><div class='proj_show divmax-width' onclick='candidateQuickViewProfile("+opt.candidateId+"); candidateSideBar("+opt.candidateId+");'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
 	              '</sec:authorize>';
 	              
 	              '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
@@ -491,7 +491,7 @@ function candidateSideBar(candidateId){
 			            
 			             result = result+'                       <ul class="list-unstyled">';
 			             
-			             result = result+'                        <li>Type - '+json.candidateType+'</li>';  
+// 			             result = result+'                        <li>Type - '+json.candidateType+'</li>';  
 			             
                          
 			             result = result+'                       </ul>';
@@ -1356,13 +1356,28 @@ function cancel(candidateId){
     
     <!-- Compnay details -->
     <div class="side_mask">
-       <div class="proj_close"></div>
+       <div class="proj_close" onclick="activeTab();"></div>
     </div>
-    <div class="clients_side_wrap">
+ <div class="clients_side_wrap quickviewTabs">
+    
+ <ul class="nav nav-tabs">
+    <li class="active" id="candQuickView"><a data-toggle="tab" href="#quickview">Quickview</a></li>
+    <li id="candDetailView"><a data-toggle="tab" href="#detailview">Detailedview</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div id="quickview" class="tab-pane fade in active">
+	    <!-- resumeView Starts -->
+	    <div id="candidateQuickViewDiv"></div>
+	    <!-- resumeView -->
+    </div>
+    <div id="detailview" class="tab-pane fade">
 	    <div class="clients_side_wrap_inn">
-		             <div id="candidateSideDiv">
-				     </div>  
-	    </div>			     
+	             <div id="candidateSideDiv">
+			     </div>  
+	    </div>
+	     </div>
+  </div>			     
     </div>
     <!-- Compnay details Ends --> 
   </div>
@@ -1375,6 +1390,17 @@ function cancel(candidateId){
   <textarea placeholder="Enter message"></textarea>
   <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
 <!--   Error Message   --> 
+ 
+ 
+ <script>
+function activeTab(){
+	$("#candDetailView").removeClass("active");
+	$("#candQuickView").addClass("active");
+	$("#quickview").addClass("active in");
+	$("#detailview").removeClass("active in");
+}
+</script>
+ 
  
 <!-- BELOW SCRIPTS ARE USED TO SHOW / HIDE POPUP'S --> 
 <script>

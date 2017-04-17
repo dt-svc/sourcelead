@@ -147,7 +147,11 @@ function editCandidate(candidateId){
             			 	if(json.primarySkill != null && json.primarySkill != '' && json.primarySkill != 'undefined'){
             			 		primarySkill = json.primarySkill;            			 		
             			 	}
-            			 	
+            			 	if(json.vendorName != null && json.vendorName != '' && json.vendorName != 'undefined'){
+            			 		vendorName = json.vendorName;
+            			 	}else{
+            			 		vendorName = "";
+            			 	}
 							var result ='';
 							result = result + '		    <div class="edit-details col-md-8 edit-candaite canprofile-popright"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
 							result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
@@ -216,13 +220,14 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							
 							result = result + '<div class="clearfix mb10">';
+							
 							result = result + '<div class="col-md-6 custom-fields">';
 							result = result + '<select  class="chosen-select form-control select-bg" name="city" id="candidateCity" value="'+json.city+'" field-name="City">';
 							result = result + '</select>';
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
-							result = result + '<select class="input-sm form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
+							result = result + '<select class="form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
 							result = result + '<option value="">--Select Notice Period--</option>';
 							result = result + ' <option '+(json.noticePeriod == "Immediately available" ? "selected" : '') +'>Immediately available</option>';
 							result = result + '<option  '+ (json.noticePeriod == "15 Days" ? "selected" : '') +'>15 Days</option>';
@@ -233,37 +238,7 @@ function editCandidate(candidateId){
 							result = result + ' </div>';
 							
 							result = result + '</div>';
-							
-							
-							result = result + '<div class="clearfix mb10">';
-							
-                            result = result + '<div class="col-md-6 custom-fields">';
-							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
-							result = result + '<select class="form-control" id="designationType1" name="designationType" field-name="Designation Type"  onchange="updateDesignationOtherType(this);">';
-							result = result + '<option value="">--Select Employment Type--</option>';
-							result = result + ' <option '+(json.designationType == "C2C" ? "selected" : '') +'>C2C</option>';
-							result = result + ' <option '+(json.designationType == "C2C-1099" ? "selected" : '') +'>C2C-1099</option>';
-							result = result + '<option  '+ (json.designationType == "W-2" ? "selected" : '') +'>W-2</option>';
-							result = result + ' <option '+(json.designationType == "C2H" ? "selected" : '') +'>C2H</option>';
-							result = result + ' <option '+(json.designationType == "C2H -1099" ? "selected" : '') +'>C2H -1099</option>';
-							result = result + '<option  '+(json.designationType == "Part Time" ? "selected" : '') +'>Part Time</option>';
-							result = result + '<option  '+(json.designationType == "Full Time" ? "selected" : '') +'>Full Time</option>';
-							result = result + '<option  '+(json.designationType == "Other" ? "selected" : '') +'>Other</option>';
-							result = result + ' </select>';
-							result = result + '</div>';
-							
-							result = result + '</div>';
-							 
-							/*  result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv" style="display:none">';
-							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType1" value="'+designationOtherType+'" placeholder="Employment Other Type" field-name="Employment Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
-							result = result + '</div>';  */
-							
-							if(json.designationType == "Other"){
-							result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv">';
-							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType1" value="'+designationOtherType+'" placeholder="Employment Other Type" field-name="Employment Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
-							result = result + '</div>';
-							  }
-							result = result + '</div>';
+
 							
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6">';
@@ -334,13 +309,13 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							result = result + '</div>';
 							
-							result = result + '<div class="clearfix mb10">';
+							result = result + '<div class="clearfix">';
 							result = result + '<div class="col-md-6">';
-							result = result + '<div class="row">';
+							result = result + '<div class="form-group">';
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
 							
-							result = result + '<select  class="input-sm form-control" name="experienceYears"  id="experienceYears" field-name="Experience Years" onchange="javascript:disableMonths();">';
+							result = result + '<select  class="form-control" name="experienceYears"  id="experienceYears" field-name="Experience Years" onchange="javascript:disableMonths();">';
 							result = result + '<option value="">Select Year</option>';
 							
 							<c:forEach var="i" begin="0" end="24" >
@@ -358,7 +333,7 @@ function editCandidate(candidateId){
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
 							if(json.experienceYears == "25"){
-							result = result + '<select  class="input-sm form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths" disabled="disabled">';
+							result = result + '<select  class="form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths" disabled="disabled">';
 							result = result + '<option  value="">Select Months</option>';
 							
 							<c:forEach var="i" begin="0" end="11" >
@@ -368,7 +343,7 @@ function editCandidate(candidateId){
 							
 							result = result + '</select>';
 							}else{
-								result = result + '<select  class="input-sm form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths">';
+								result = result + '<select  class="form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths">';
 								result = result + '<option  value="">Select Months</option>';
 								
 								<c:forEach var="i" begin="0" end="11" >
@@ -385,20 +360,68 @@ function editCandidate(candidateId){
 							
 							
 							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="primarySkill" value="'+primarySkill+'" placeholder="Primary Skill" data-validation="validate_Space validate_length length1-100" data-validation-optional="true">';
+							result = result + '		            <input type="text" class="form-control" name="primarySkill" value="'+primarySkill+'" placeholder="Primary Skill" data-validation="validate_Space validate_length length1-100" data-validation-optional="true">';
 							result = result + '		          </div>';
 							
 							
 							result = result + '</div>';
 							
+							
 							result = result + '<div class="clearfix mb10">';
-							result = result + '<div class="col-md-6">';
+							
+                            result = result + '<div class="col-md-6 custom-fields">';
+							
+                            result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
+							result = result + '<select class="form-control" id="designationType1" name="designationType" field-name="Designation Type"  onchange="employementType();updateDesignationOtherType();">';
+							result = result + '<option value="">--Select Employment Type--</option>';
+							result = result + ' <option '+(json.designationType == "C2C" ? "selected" : '') +'>C2C</option>';
+							result = result + ' <option '+(json.designationType == "C2C-1099" ? "selected" : '') +'>C2C-1099</option>';
+							result = result + '<option  '+ (json.designationType == "W-2" ? "selected" : '') +'>W-2</option>';
+							result = result + ' <option '+(json.designationType == "C2H" ? "selected" : '') +'>C2H</option>';
+							result = result + ' <option '+(json.designationType == "C2H -1099" ? "selected" : '') +'>C2H -1099</option>';
+							result = result + '<option  '+(json.designationType == "Part Time" ? "selected" : '') +'>Part Time</option>';
+							result = result + '<option  '+(json.designationType == "Full Time" ? "selected" : '') +'>Full Time</option>';
+							result = result + '<option  '+(json.designationType == "Other" ? "selected" : '') +'>Other</option>';
+							result = result + ' </select>';
+							result = result + '</div>';
+							
+							result = result + '</div>';
+							 
+							
+							if(json.designationType == "Other"){
+							result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv">';
+							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType1" value="'+designationOtherType+'" placeholder="Employment Other Type" field-name="Employment Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
+							result = result + '</div>';
+							  }
+							
+							
+							
+							
+						    result = result + '<span class="" id="hideVendor" style="display:none">'; 
+							result = result + '<div class="col-md-6 custom-fields select-arrow">';
+							result = result + '<select  class="chosen-select form-control select-bg" name="vendors"  id="vendorName" value="'+vendorName+'" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();">';
+							result = result + '</select>';
+							result = result + '<input type="hidden" name="updateVendorName" id="updateVendorName" value="'+vendorName+'" />';
+							result = result + '<input type="hidden" name="updateVendorOrgRelationId" id="updateVendorOrgRelationId" value="'+json.vendorOrgRelationId+'" />';
+							result = result + '</div>';
+							
+							result = result + '<div class="col-md-6 custom-fields select-arrow mt10">';
+							result = result + '<select  class="chosen-select form-control select-bg" name="vendorcontact"  value="'+json.vendorContactName+'" id="vendorcontactName" field-name="Vendor Contact"  placeholder="select Vendor Contact">';
+							result = result + '</select>';
+							result = result + '<input type="hidden" name="updateVendorContactName" id="updateVendorContactName" value="'+json.vendorContactName+'" />';
+							result = result + '<input type="hidden" name="updateSpocId" id="updateSpocId" value="'+json.vendorSpocId+'" />';
+							result = result + '</div>';
+							result = result + '</div>';
+							
+							result = result + '</span>';
+							
+							
+							result = result + '<div class="clearfix mb10 mt">';
+							result = result + '<div class="col-md-12">';
 							result = result + '<textarea placeholder="Summary" class="form-control input-sm"  name="summary" rows="2" cols="5">'+summary+'</textarea>';
 							result = result + ' </div>'; 
 							result = result + ' </div>'; 
-							
 							result = result + '</div>';
-							
 							
 							result = result + '<div class="clearfix mr">';
 							result = result + '<div class="pull-right">';
@@ -416,7 +439,9 @@ function editCandidate(candidateId){
 							$("#profileEditPopup").append(result); 
 							/* updateDesignationType(json.designationType); */
 							getAllCandidateCountries();
-							 getAllCandidateStates();
+							getVendorsByOrgLocation();
+							employementType();
+							getAllCandidateStates();
 							$(".edit-details").toggleClass("edit-details-active");
 							$(".collapse-div").removeClass("edit-details-active");
 							
@@ -432,7 +457,12 @@ function editCandidate(candidateId){
 							    $("#candidateCountry").chosen();
 							    $("#candidateState").chosen();
 							    $("#candidateCity").chosen();
+							    
+							    $("#vendorName").chosen();
+							    $("#vendorcontactName").chosen();
 							   
+							    
+							    
 							    
 							    $("#candidateCountry").on('change', function (e) {
 							 	   getAllCandidateStates();
@@ -1034,6 +1064,7 @@ function candidateProfile(candidateId,candidateType){
          success :function(data) {
               if(data != null && data != 'undefined' && data != "" && data == "success"){
            	  //candidateProfile(candidateId);
+            	  candidateQuickViewProfile(candidateId);
               }
        },
          
@@ -1096,7 +1127,6 @@ function candidateProfile(candidateId,candidateType){
 			
 			 var con = JSON.stringify(frm);
 			 con = con.replace(/[{}]/g, "");
-				
 			  //It will escape all the special characters
 			var jsonData = encodeURIComponent(con);
 			
@@ -1111,6 +1141,7 @@ function candidateProfile(candidateId,candidateType){
 						success : function(result) {
 							/* location.replace(sourceleadUrl+"/candidatesList");  */
 							candidateSideBar(candidateId);
+							candidateQuickViewProfile(candidateId);
 						},
 					});
 			return true;
@@ -1610,9 +1641,8 @@ $('.selectpicker').selectpicker('refresh');
   
 <!-- Employment Type equals Other then Text Box will Open script here -->
 <script>
-function updateDesignationOtherType(typeVal){
+function updateDesignationOtherType(){
 	 var candidateType = $('#designationType1').val(); 
-	
 	if(candidateType == 'Other' &&  candidateType != '' && candidateType !='undefined'){
 		  document.getElementById("designationTypeDiv").style.display="block";
 		  $("#designationOtherType").attr("data-validation-optional", "true");
@@ -1622,7 +1652,6 @@ function updateDesignationOtherType(typeVal){
 		  $("#designationOtherType").attr("data-validation-optional", "true");
 		  $("#designationTypeDiv").find('p.jquery_form_error_message').remove();
 	} 
-	 
 }
 </script>
 
@@ -1710,3 +1739,84 @@ var currentRate = document.getElementById("currentRate").value;
 	 }
 }
 </script>
+
+
+<script>
+function employementType(){
+	 var employementType = $('#designationType1').val(); 
+		if(employementType == 'C2C' || employementType == 'C2C-1099'){
+			document.getElementById("hideVendor").style.display="block";
+			 $('#vendorName').attr("data-validation","required"); 
+			 $('#vendorcontactName').attr("data-validation","required"); 
+		}else{
+			 document.getElementById("hideVendor").style.display="none";
+			 $('#vendorName').removeAttr("data-validation","required"); 
+			 $('#vendorcontactName').removeAttr("data-validation","required"); 
+			 
+			 $('#vendorName').val(''); 
+			 $('#vendorcontactName').val(''); 
+			 
+		}
+}
+</script>
+
+
+<script>
+ function getVendorsByOrgLocation(){
+	 var vendorName = $("#updateVendorName").val();
+	 var vendorOrgRelationId = $("#updateVendorOrgRelationId").val();
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	$('#vendorName').empty();
+		        	$('#vendorName').append('<option value="">--select Vendor --</option>');
+		            for(var i=0;i<json.length;i++){
+		            	  var opt = json[i];
+		            	  if(vendorName != null && vendorName != 'undefined' && vendorName  != ''){
+		            		  $('#vendorName').append('<option '+ (opt.id == vendorOrgRelationId ? "selected" : '') +' value="'+opt.id+'">'+opt.orgName+'</option>');
+			            	}else{
+			            		$('#vendorName').append('<option value='+opt.id+' >'+opt.orgName+'</option>');	
+			            	}
+		            	  
+		            }
+		            $('#vendorName').trigger("chosen:updated");
+		            getVendorContactList();
+		            
+		        }
+		 });
+ }
+ </script>
+ 
+  <script>
+ function getVendorContactList(){
+	$('#vendorcontactName').val('').trigger("chosen:updated");
+		 var orgRelationID = $('#vendorName').val();
+		 if(orgRelationID != null && orgRelationID != '' && orgRelationID != 'undefined'){
+			 var vendorContactName = $("#updateVendorContactName").val();
+			 var vendorSpocId = $("#updateSpocId").val();
+		     var sourceleadUrl ='${sourceleadUrl}';
+			 $.ajax({
+				    type: "POST",
+			        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
+			        success: function(data) {
+			        	var json = JSON.parse(data);
+			        	$('#vendorcontactName').empty();
+			        	$('#vendorcontactName').append('<option value="">--select Vendor contact--</option>');
+			             for(var i=0;i<json.length;i++){
+			            	 var opt = json[i];
+			            	 if(vendorContactName != null && vendorContactName != 'undefined' && vendorContactName  != ''){
+			            		 $('#vendorcontactName').append('<option '+ (opt.id == vendorSpocId ? "selected" : '') +' value="'+opt.id+'">'+opt.spocName+'</option>');
+				            	}else{
+				            		$('#vendorcontactName').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
+				            	}
+			            } 
+			            $('#vendorcontactName').trigger("chosen:updated");
+			        }
+			 });  
+		 }
+		 
+ }
+ </script>

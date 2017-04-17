@@ -38,6 +38,19 @@ public class CandidateOnBoardController {
 	CandidateOnBoardingService candidateOnBoardingService;
 	
 	
+	
+	@RequestMapping(value = "/onboardingCandidateSetp2")
+	public ModelAndView onboardingCandidateSetp2(HttpServletRequest request) {
+		ModelAndView model = new ModelAndView();
+		
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("onboard/welcomeStep2");
+		return model;
+	}
+	
+	
+	
+	
 	@RequestMapping(value = "/candidateOnBoardingDetails")
 	public ModelAndView candidateOnBoardingDetails(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
@@ -135,6 +148,23 @@ public class CandidateOnBoardController {
 		return model;
 	}
 	
+	
+	@RequestMapping(value = "/candidateOffBoardCreation")
+	public ModelAndView candidateOffBoardCreation(HttpServletRequest request) {
+		ModelAndView model = new ModelAndView();
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Users);
+		
+		request.getSession().setAttribute("sessionData",sessionData);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("onboard/candidateOffBoardCreation");
+		return model;
+	}
 	
 	
 	@RequestMapping(value = "/viewOnboardCandidateDetails")

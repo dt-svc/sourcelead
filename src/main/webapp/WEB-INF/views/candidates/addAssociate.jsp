@@ -226,7 +226,7 @@
        
        <div class="clearfix" id="hideVendor" style="display:none">
        <div class="form-group">
-			<label class="col-md-3">Vendor</label>
+			<label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
 			<div class="col-md-9">
 			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();">
                  </select>
@@ -234,7 +234,7 @@
 		</div>
 		
 		 <div class="form-group">
-			<label class="col-md-3">Vendor Contact</label>
+			<label class="col-md-3">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
 			<div class="col-md-9">
 			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="select Vendor Contact">
                  </select>
@@ -335,7 +335,7 @@
          <div class="form-group">
               <label class="col-md-3">Education</label> 
               <div class="col-md-9">
-                <select multiple data-placeholder="select Education" class="chosenone-selectone form-control" name="candidateEducation" id="candidateEducation" data-validation="validate_Space" data-validation-optional="true">
+                <select multiple data-placeholder="select Education" class="chosenone-selectone form-control" name="candidateEducation" id="candidateEducation" data-validation-optional="true">
                 <c:forEach var="edu" items="${educationsList}">
 	                     <option value="${edu.name}">${edu.name}</option>
                 </c:forEach>
@@ -961,7 +961,6 @@ function getDesignationType(designationType){
 			  $("#designationOtherType").val('');
 		  }
 	}
-	
 	if(designationType.value == 'C2C' || designationType.value == 'C2C-1099'){
 		 document.getElementById("hideVendor").style.display="block";
 		 $('#vendors').attr("data-validation","required"); 
@@ -1209,10 +1208,10 @@ function getCandidateDetails(){
 		        		 $("input[name=designation]").val(''); 
 		        	 }
 		        	
-		        	
 		        	 if(json['designationType'] != null && json['designationType'] != "" && json['designationType'] != 'undefined'){
 		        		 $("#designationType").val(json['designationType']);
 		        		 $("#designationType").selectpicker('refresh');
+		        		 employementType(json['designationType']);
 		        	 }else{
 		        		 $("#designationType").val(''); 
 		        		 $("#designationType").selectpicker('refresh');
@@ -1271,7 +1270,25 @@ function getCandidateDetails(){
 		        		 $("#city").val('').trigger("chosen:updated");
 		        		 $("select[name=city]").val('');
 		        	 }
+		        	 
+		        	 if(json['vendorName'] != null && json['vendorName'] != "" && json['vendorName'] != 'undefined'){
+		        		 $("select[name=vendors]").val(json['vendorName']);
+		        		 getVendors(json['vendorName'],json['vendorOrgRelationId']);
+		        	 }else{
+		        		 $("#vendors").val('').trigger("chosen:updated");
+		        		 $("select[name=vendors]").val('');
+		        	 }
+		        	 
 		        	
+		        	 if(json['vendorContactName'] != null && json['vendorContactName'] != "" && json['vendorContactName'] != 'undefined'){
+		        		 $("select[name=vendorcontact]").val(json['vendorContactName']);
+		        		 vendorContactList(json['vendorContactName'],json['vendorOrgRelationId'],json['vendorSpocId']);
+		        	 }else{
+		        		 $("#vendorcontact").val('').trigger("chosen:updated");
+		        		 $("select[name=vendorcontact]").val('');
+		        	 }
+		        	 
+		        	 
 		        	 if(json['noticePeriod'] != null && json['noticePeriod'] != "" && json['noticePeriod'] != 'undefined'){
 		        		 $("select[name=noticePeriod]").val(json['noticePeriod']);
 		        		 $("#noticePeriod").selectpicker('refresh');
@@ -1530,7 +1547,7 @@ function getCandidateDetails(){
 		        	$('#vendors').append('<option value="">--select Vendor --</option>');
 		            for(var i=0;i<json.length;i++){
 		            	  var opt = json[i];
-		            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');
+			            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');	
 		            }
 		            $('#vendors').trigger("chosen:updated");
 		            //getVendorContactList();
@@ -1542,7 +1559,8 @@ function getCandidateDetails(){
  
   <script>
  function getVendorContactList(){
-	var orgRelationID = $('#vendors').val();
+	 $('#vendorcontact').val('').trigger("chosen:updated");
+	 var orgRelationID = $('#vendors').val();
 	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 			    type: "POST",
@@ -1681,7 +1699,69 @@ function getCandidateDetails(){
 	
  }
  
- 
  </script>
  
+ <script>
+ function employementType(type){
+if(type == 'C2C' || type == 'C2C-1099'){
+	 document.getElementById("hideVendor").style.display="block";
+	 $('#vendors').attr("data-validation","required"); 
+	 $('#vendorcontact').attr("data-validation","required"); 
+	// $("#vendors").attr("data-validation", "true");
+	  getVendorsByOrgLocation();
+}else{
+	 document.getElementById("hideVendor").style.display="none";
+	 $('#vendors').removeAttr("data-validation","required"); 
+	 $('#vendorcontact').removeAttr("data-validation","required"); 
+}
+ }
+ </script>
+ 
+ <script>
+ function getVendors(vendorName,vendorOrgRelationId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	$('#vendors').empty();
+		        	$('#vendors').append('<option value="">--select Vendor --</option>');
+		            for(var i=0;i<json.length;i++){
+		            	  var opt = json[i];
+		            	  if(vendorName != null && vendorName != 'undefined' && vendorName  != ''){
+		            		  $('#vendors').append('<option '+ (opt.id == vendorOrgRelationId ? "selected" : '') +' value="'+opt.id+'">'+opt.orgName+'</option>');
+			            	}else{
+			            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');	
+			            	}
+		            }
+		            $('#vendors').trigger("chosen:updated");
+		        }
+		 });
+ }
+ </script>
+ <script>
+ function vendorContactList(vendorContactName,vendorOrgRelationId,vendorSpocId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+			    type: "POST",
+		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+vendorOrgRelationId+"&type=Vendor",  
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	$('#vendorcontact').empty();
+		        	$('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
+		             for(var i=0;i<json.length;i++){
+		            	 var opt = json[i];
+		            	 if(vendorContactName != null && vendorContactName != 'undefined' && vendorContactName  != ''){
+		            		 $('#vendorcontact').append('<option '+ (opt.id == vendorSpocId ? "selected" : '') +' value="'+opt.id+'">'+opt.spocName+'</option>');
+			            	}else{
+			            		$('#vendorcontact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
+			            	}
+		            	 
+		            } 
+		            $('#vendorcontact').trigger("chosen:updated");
+		        }
+		 }); 
+ }
+ </script>
  
