@@ -1,17 +1,27 @@
 package com.bis.sourcelead.util;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
 
+import javax.servlet.ServletOutputStream;
+
+import org.springframework.stereotype.Component;
+import org.springframework.test.annotation.Commit;
+
+import com.bis.sourcelead.entity.ContractsTemplate;
 import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.tool.xml.XMLWorkerHelper;
 
+@Component
 public class Html2PdfUtil {
 	
 	public void convertHtml2PdfUsingHtmlWorker(){
@@ -49,4 +59,16 @@ public class Html2PdfUtil {
 		}
 	}
 
+	public byte[] getPdfBytes(ContractsTemplate contractsTemplate) throws DocumentException, IOException{
+		ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+  	    Document document = new Document();
+  	    PdfWriter.getInstance(document, byteArray);
+  	    document.open();
+  	    HTMLWorker htmlWorker = new HTMLWorker(document);
+  	    htmlWorker.parse(new StringReader(contractsTemplate.getTemplateContent()));
+  	    document.close();
+  	    byte[] pdfBytes = byteArray.toByteArray();
+		return pdfBytes;
+	}
+	
 }
