@@ -15,7 +15,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-   getTemplateList();
+   getTemplateList('draft');
 });
 </script>
 
@@ -29,9 +29,9 @@ $(document).ready(function(){
 
 <section class="contrHead">
 <ul>
-<li title="Draft"><a href="Listby_Status.html"  class="wSig">Draft</a></li>
-<li title="Waiting for Approval"><a href="Listby_Status-waitingforapproval.html"><i class="fa fa-clock-o fa-2"></i>Approve</a></li>
-<li title="Waiting to be sign"><a href="Listby_Status-waitingtosigned.html"><i class="fa fa-clock-o fa-2"></i>Sign</a></li>
+<li title="Draft"><a href="#" onClick="getTemplateList('draft');" class="wSig">Draft</a></li>
+<li title="Waiting for Approval"><a href="#"><i class="fa fa-clock-o fa-2"></i>Approve</a></li>
+<li title="Waiting to be sign"><a href="#" onClick="getTemplateList('wait');"><i class="fa fa-clock-o fa-2"></i>Sign</a></li>
 <li title="Waiting for Verify"><a href="Listby_Status-waitingforverify.html"><i class="fa fa-clock-o fa-2"></i>Verify</a></li>
 <li title="Finalised"><a href="Listby_Status-finalised.html">Finalised</a></li>
 <li title="Expired"><a href="Listby_Status-expired.html">Expired</a></li>
@@ -68,33 +68,13 @@ $(document).ready(function(){
 			<div class="clearfix"></div>
 		</ul>
 		<div class="clearfix"></div>
-
-		<div class="remove_search">
-			<input placeholder="search" type="text">
-		</div>              
             
 	</div>
     <div class="project_wrap_table">
     <div id="contractsList"></div>
 	</div>
 	
-<nav>
-<ul id="paging" class="pagination">
-	<li><a href="#">Previous</a></li>
-	<li><a href="#">2</a></li>
-	<li><a href="#">3</a></li>
-	<li><a href="#">4</a></li>
-	<li><a href="#">5</a></li>
-	<li class="disabled"><a href="#">6</a></li>
-	<li data-page="last"><a href="#">Next</a></li>
-	</ul>
-	<div class="clearfix"></div>
-</nav>	
-    
-	
-	
 </div>
- 
   
 </div>
 </section>
@@ -145,8 +125,8 @@ $(document).ready(function() {
 </script>
 
 <script type="text/javascript">
-function getTemplateList(){
-	var contractSubmissionType = "draft";
+function getTemplateList(contractSubmissionType){
+	/* var contractSubmissionType = "draft"; */
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
       type : "GET",

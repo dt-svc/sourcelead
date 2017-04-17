@@ -239,8 +239,8 @@
       <div class="form-footer clearfix contrFoot">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input type="button" value="Draft" id="draft_template" onclick="saveNewContract('draft'); " class="btn btn-primary">
-            <input type="button" value="Save" class="btn btn-success ml10">
+            <input type="button" value="Save Draft" id="draft_template" onclick="saveNewContract('draft');" class="btn btn-primary">
+            <input type="button" value="Save" id="save_template" onclick="saveNewContract('wait');" class="btn btn-success ml10">
             <input type="button" value="Cancel" class="btn btn-danger ml10">
           </div>
         </div>
