@@ -1028,10 +1028,12 @@ public class RegistrationServiceImpl implements RegistrationService{
 		user.setCreatedBy("sladmin");
 		user.setCreatedDate(new Date());
 		user.setUpdatedDate(new Date());
+		
 		userService.addUser(user);
 		
 		Org org = new Org();
 		org.setId(1L);
+		
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(1L);
 		
@@ -1132,206 +1134,271 @@ public class RegistrationServiceImpl implements RegistrationService{
 
 	@Override
 	public void saveProfessionalFromSocialInviter(JSONObject jsonObj) throws Exception {
-		User user = new User();
-		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
-			user.setFirstName(jsonObj.getString("firstName"));
-		}
-		
-		if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
-			user.setLastName(jsonObj.getString("lastName"));
-		}
-		
-		if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
-			user.setEmail(jsonObj.getString("email"));
-		}
-		
-		if(jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))){
-			user.setCountry(jsonObj.getString("location"));
-		}
-		
-		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
+		 String userName = null;
+		 User user = null;
+		 UserRole userRole = null;
+		 OrgLocations orgLocations = null;
 		if(jsonObj.has("userName") && !isNullOrEmpty(jsonObj.getString("userName"))){
-			user.setUserName(jsonObj.getString("userName"));
-		}
-		if(jsonObj.has("imageUrl") && !isNullOrEmpty(jsonObj.getString("imageUrl"))){
-			user.setDocFile(fetchRemoteFile(jsonObj.getString("imageUrl")));
-			user.setFileContentType("image/png");
-		}
-		if(jsonObj.has("service") && !isNullOrEmpty(jsonObj.getString("service"))
-		  && jsonObj.has("profileUrl") && !isNullOrEmpty(jsonObj.getString("profileUrl"))){
-			String service = jsonObj.getString("service");
-			String profileUrl = jsonObj.getString("profileUrl");
-			if(!isNullOrEmpty(service)  && (service.equalsIgnoreCase("googleplus") || service.equalsIgnoreCase("gmail") || service.equalsIgnoreCase("google"))){
-				user.setGooglePlus(profileUrl);
-			}
-			else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("facebook")){
-				user.setFacebook(profileUrl);
-			}
-			else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("twitter")){
-				user.setTwitter(profileUrl);			
-			}
-			else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("linkedin")){
-				user.setLinkedIn(profileUrl);
-			}
-			
-		}
-		user.setUserType(Constants.PROFESSIONAL);
-		user.setCreatedBy("sladmin");
-		user.setCreatedDate(new Date());
-		user.setUpdatedDate(new Date());
-		
-		user = userService.addUser(user);
-		
-		Org org = new Org();
-		org.setId(1L);
-		
-		OrgLocations orgLocations = new OrgLocations();
-		orgLocations.setId(1L);
+			userName = jsonObj.getString("userName");
+			user = userService.getUserByUserName(userName);
+			if(jsonObj.has("service") && !isNullOrEmpty(jsonObj.getString("service"))
+			  && jsonObj.has("profileUrl") && !isNullOrEmpty(jsonObj.getString("profileUrl"))){
+				String service = jsonObj.getString("service");
+				String profileUrl = jsonObj.getString("profileUrl");
+				if(!isNullOrEmpty(service)  && (service.equalsIgnoreCase("googleplus") || service.equalsIgnoreCase("gmail") || service.equalsIgnoreCase("google"))){
+					user.setGooglePlus(profileUrl);
+				}
+				else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("facebook")){
+					user.setFacebook(profileUrl);
+				}
+				else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("twitter")){
+					user.setTwitter(profileUrl);			
+				}
+				else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("linkedin")){
+					user.setLinkedIn(profileUrl);
+				}
 				
-		
-		UserRole userRole = new UserRole();
-		Roles roles = rolesService.getRolesByRoleNameAndOrgId(Constants.ROLE_NAME_PROFESSIONAL, 1L);
-		userRole.setUser(user);
-		userRole.setRoles(roles);
-		userRole.setOrgId(org);
-		userRole.setOrgLocations(orgLocations);
-		userRole.setIsPrimary(1);
-		userRole.setCreatedBy("sladmin");
-		userRole.setCreatedDate(new Date());
-		userRole.setUpdatedDate(new Date());
-		userRole.setUserState(Status.ACTIVE);
-		userRole.setUserType(Constants.PROFESSIONAL);
-		userRole = userRoleService.addUserRole(userRole);
-		
-		Candidate candidate = new Candidate();
-		candidate.setConsultantUser(user);
-		candidate.setOrgId(org);
-		candidate.setOrgLocationId(orgLocations);
-		candidate.setCandidateType(Constants.PROFESSIONAL);
-		candidate.setCountry(jsonObj.getString("location"));
-		
-		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
-			candidate.setFirstName(jsonObj.getString("firstName"));
+			}
+			userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+			orgLocations = userRole.getOrgLocations();
 		}
-		
-		if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
-			candidate.setLastName(jsonObj.getString("lastName"));
-		}
-		
-		if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
-			candidate.setEmail(jsonObj.getString("email"));
-		}
-		
-		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
-		candidate.setCreatedBy("sladmin");
-		candidate.setCreatedDate(new Date());
-		candidate.setUpdatedDate(new Date());
-		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-		
-		candidateService.addCandidate(candidate);
-		candidateService.saveOrUpdateCandidateElkDocument(candidate);
+		 
+		if(user == null){
+			 user = new User();
+				if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
+					user.setFirstName(jsonObj.getString("firstName"));
+				}
+				
+				if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
+					user.setLastName(jsonObj.getString("lastName"));
+				}
+				
+				if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
+					user.setEmail(jsonObj.getString("email"));
+				}
+				
+				if(jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))){
+					user.setCountry(jsonObj.getString("location"));
+				}
+				
+				user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
+				if(jsonObj.has("userName") && !isNullOrEmpty(jsonObj.getString("userName"))){
+					user.setUserName(jsonObj.getString("userName"));
+				}
+				if(jsonObj.has("imageUrl") && !isNullOrEmpty(jsonObj.getString("imageUrl"))){
+					user.setDocFile(fetchRemoteFile(jsonObj.getString("imageUrl")));
+					user.setFileContentType("image/png");
+				}
+				if(jsonObj.has("service") && !isNullOrEmpty(jsonObj.getString("service"))
+				  && jsonObj.has("profileUrl") && !isNullOrEmpty(jsonObj.getString("profileUrl"))){
+					String service = jsonObj.getString("service");
+					String profileUrl = jsonObj.getString("profileUrl");
+					if(!isNullOrEmpty(service)  && (service.equalsIgnoreCase("googleplus") || service.equalsIgnoreCase("gmail") || service.equalsIgnoreCase("google"))){
+						user.setGooglePlus(profileUrl);
+					}
+					else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("facebook")){
+						user.setFacebook(profileUrl);
+					}
+					else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("twitter")){
+						user.setTwitter(profileUrl);			
+					}
+					else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("linkedin")){
+						user.setLinkedIn(profileUrl);
+					}
+					
+				}
+				user.setUserType(Constants.PROFESSIONAL);
+				user.setCreatedBy("sladmin");
+				user.setCreatedDate(new Date());
+				user.setUpdatedDate(new Date());
+				
+				user = userService.addUser(user);
+				
+				Org org = new Org();
+				org.setId(1L);
+				
+			    orgLocations = new OrgLocations();
+				orgLocations.setId(1L);
+						
+				
+			    userRole = new UserRole();
+				Roles roles = rolesService.getRolesByRoleNameAndOrgId(Constants.ROLE_NAME_PROFESSIONAL, 1L);
+				userRole.setUser(user);
+				userRole.setRoles(roles);
+				userRole.setOrgId(org);
+				userRole.setOrgLocations(orgLocations);
+				userRole.setIsPrimary(1);
+				userRole.setCreatedBy("sladmin");
+				userRole.setCreatedDate(new Date());
+				userRole.setUpdatedDate(new Date());
+				userRole.setUserState(Status.ACTIVE);
+				userRole.setUserType(Constants.PROFESSIONAL);
+				userRole = userRoleService.addUserRole(userRole);
+				
+				Candidate candidate = new Candidate();
+				candidate.setConsultantUser(user);
+				candidate.setOrgId(org);
+				candidate.setOrgLocationId(orgLocations);
+				candidate.setCandidateType(Constants.PROFESSIONAL);
+				candidate.setCountry(jsonObj.getString("location"));
+				
+				if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
+					candidate.setFirstName(jsonObj.getString("firstName"));
+				}
+				
+				if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
+					candidate.setLastName(jsonObj.getString("lastName"));
+				}
+				
+				if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
+					candidate.setEmail(jsonObj.getString("email"));
+				}
+				
+				candidate.setStatus(Constants.CANDIDATE_ACTIVE);
+				candidate.setCreatedBy("sladmin");
+				candidate.setCreatedDate(new Date());
+				candidate.setUpdatedDate(new Date());
+				candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+				
+				candidateService.addCandidate(candidate);
+				candidateService.saveOrUpdateCandidateElkDocument(candidate);
+		 }
 		loginWithSocialInviter(user, userRole, orgLocations);
 	}
 
 	@Override
 	public void saveIndividualRecruiterFromSocialInviter(JSONObject jsonObj) throws Exception {
-		User user = new User();
-		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
-			user.setFirstName(jsonObj.getString("firstName"));
-		}
 		
-		if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
-			user.setLastName(jsonObj.getString("lastName"));
-		}
 		
-		if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
-			user.setEmail(jsonObj.getString("email"));
-		}
-		
-		if(jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))){
-			user.setCountry(jsonObj.getString("location"));
-		}
-		
+		 String userName = null;
+		 User user = null;
+		 UserRole userRole = null;
+		 OrgLocations orgLocations = null;
 		if(jsonObj.has("userName") && !isNullOrEmpty(jsonObj.getString("userName"))){
-			user.setUserName(jsonObj.getString("userName"));
+			userName = jsonObj.getString("userName");
+			user = userService.getUserByUserName(userName);
+			if(jsonObj.has("service") && !isNullOrEmpty(jsonObj.getString("service"))
+			  && jsonObj.has("profileUrl") && !isNullOrEmpty(jsonObj.getString("profileUrl"))){
+				String service = jsonObj.getString("service");
+				String profileUrl = jsonObj.getString("profileUrl");
+				if(!isNullOrEmpty(service)  && (service.equalsIgnoreCase("googleplus") || service.equalsIgnoreCase("gmail") || service.equalsIgnoreCase("google"))){
+					user.setGooglePlus(profileUrl);
+				}
+				else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("facebook")){
+					user.setFacebook(profileUrl);
+				}
+				else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("twitter")){
+					user.setTwitter(profileUrl);			
+				}
+				else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("linkedin")){
+					user.setLinkedIn(profileUrl);
+				}
+				
+			}
+			userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+			orgLocations = userRole.getOrgLocations();
 		}
-		if(jsonObj.has("imageUrl") && !isNullOrEmpty(jsonObj.getString("imageUrl"))){
-			user.setDocFile(fetchRemoteFile(jsonObj.getString("imageUrl")));
-			user.setFileContentType("image/png");
-		}
-		if(jsonObj.has("service") && !isNullOrEmpty(jsonObj.getString("service"))
-		  && jsonObj.has("profileurl") && !isNullOrEmpty(jsonObj.getString("profileurl"))){
-			String service = jsonObj.getString("service");
-			String profileUrl = jsonObj.getString("profileurl");
-			if(isNullOrEmpty(service)  && (service.equalsIgnoreCase("googleplus") || service.equalsIgnoreCase("gmail") || service.equalsIgnoreCase("google"))){
-				user.setGooglePlus(profileUrl);
-			}
-			else if(isNullOrEmpty(service)  && service.equalsIgnoreCase("facebook")){
-				user.setFacebook(profileUrl);
-			}
-			else if(isNullOrEmpty(service)  && service.equalsIgnoreCase("twitter")){
-				user.setTwitter(profileUrl);			
-			}
-			else if(isNullOrEmpty(service)  && service.equalsIgnoreCase("linkedin")){
-				user.setLinkedIn(profileUrl);
+		 
+		if(user == null){
+			user = new User();
+			if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
+				user.setFirstName(jsonObj.getString("firstName"));
 			}
 			
+			if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
+				user.setLastName(jsonObj.getString("lastName"));
+			}
+			
+			if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
+				user.setEmail(jsonObj.getString("email"));
+			}
+			
+			if(jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))){
+				user.setCountry(jsonObj.getString("location"));
+			}
+			
+			if(jsonObj.has("userName") && !isNullOrEmpty(jsonObj.getString("userName"))){
+				user.setUserName(jsonObj.getString("userName"));
+			}
+			if(jsonObj.has("imageUrl") && !isNullOrEmpty(jsonObj.getString("imageUrl"))){
+				user.setDocFile(fetchRemoteFile(jsonObj.getString("imageUrl")));
+				user.setFileContentType("image/png");
+			}
+			if(jsonObj.has("service") && !isNullOrEmpty(jsonObj.getString("service"))
+			  && jsonObj.has("profileurl") && !isNullOrEmpty(jsonObj.getString("profileurl"))){
+				String service = jsonObj.getString("service");
+				String profileUrl = jsonObj.getString("profileurl");
+				if(isNullOrEmpty(service)  && (service.equalsIgnoreCase("googleplus") || service.equalsIgnoreCase("gmail") || service.equalsIgnoreCase("google"))){
+					user.setGooglePlus(profileUrl);
+				}
+				else if(isNullOrEmpty(service)  && service.equalsIgnoreCase("facebook")){
+					user.setFacebook(profileUrl);
+				}
+				else if(isNullOrEmpty(service)  && service.equalsIgnoreCase("twitter")){
+					user.setTwitter(profileUrl);			
+				}
+				else if(isNullOrEmpty(service)  && service.equalsIgnoreCase("linkedin")){
+					user.setLinkedIn(profileUrl);
+				}
+				
+			}
+			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
+			user.setUserType(Constants.INDIVIDUAL_RECRUITER);
+			user.setCreatedBy("sladmin");
+			user.setCreatedDate(new Date());
+			user.setUpdatedDate(new Date());
+			
+			userService.addUser(user);
+			
+			Org org = new Org();
+			org.setId(1L);
+			
+		    orgLocations = new OrgLocations();
+			orgLocations.setId(1L);
+			
+		    userRole = new UserRole();
+			Roles roles = rolesService.getRolesByRoleNameAndOrgId(Constants.ROLE_NAME_INDEPENDENT_RECRUITER, 1L);
+			userRole.setUser(user);
+			userRole.setRoles(roles);
+			userRole.setOrgId(org);
+			userRole.setOrgLocations(orgLocations);
+			userRole.setIsPrimary(1);
+			userRole.setCreatedBy("sladmin");
+			userRole.setCreatedDate(new Date());
+			userRole.setUpdatedDate(new Date());
+			userRole.setUserState(Status.ACTIVE);
+			userRole.setUserType(Constants.INDIVIDUAL_RECRUITER);
+			userRoleService.addUserRole(userRole);
+			
+			Candidate candidate = new Candidate();
+			candidate.setConsultantUser(user);
+			candidate.setOrgId(org);
+			candidate.setOrgLocationId(orgLocations);
+			candidate.setCountry(jsonObj.getString("location"));
+			candidate.setCandidateType(Constants.INDIVIDUAL_RECRUITER);
+			
+			if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
+				candidate.setFirstName(jsonObj.getString("firstName"));
+			}
+			
+			if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
+				candidate.setLastName(jsonObj.getString("lastName"));
+			}
+			
+			if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
+				candidate.setEmail(jsonObj.getString("email"));
+			}
+			
+			candidate.setStatus(Constants.CANDIDATE_ACTIVE);
+			candidate.setCreatedBy("sladmin");
+			candidate.setCreatedDate(new Date());
+			candidate.setUpdatedDate(new Date());
+			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			
+			candidateService.addCandidate(candidate);
+			candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		}
-		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
-		user.setUserType(Constants.INDIVIDUAL_RECRUITER);
-		user.setCreatedBy("sladmin");
-		user.setCreatedDate(new Date());
-		user.setUpdatedDate(new Date());
-		
-		userService.addUser(user);
-		
-		Org org = new Org();
-		org.setId(1L);
-		
-		OrgLocations orgLocations = new OrgLocations();
-		orgLocations.setId(1L);
-		
-		UserRole userRole = new UserRole();
-		Roles roles = rolesService.getRolesByRoleNameAndOrgId(Constants.ROLE_NAME_INDEPENDENT_RECRUITER, 1L);
-		userRole.setUser(user);
-		userRole.setRoles(roles);
-		userRole.setOrgId(org);
-		userRole.setOrgLocations(orgLocations);
-		userRole.setIsPrimary(1);
-		userRole.setCreatedBy("sladmin");
-		userRole.setCreatedDate(new Date());
-		userRole.setUpdatedDate(new Date());
-		userRole.setUserState(Status.ACTIVE);
-		userRole.setUserType(Constants.INDIVIDUAL_RECRUITER);
-		userRoleService.addUserRole(userRole);
-		
-		Candidate candidate = new Candidate();
-		candidate.setConsultantUser(user);
-		candidate.setOrgId(org);
-		candidate.setOrgLocationId(orgLocations);
-		candidate.setCountry(jsonObj.getString("location"));
-		candidate.setCandidateType(Constants.INDIVIDUAL_RECRUITER);
-		
-		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
-			candidate.setFirstName(jsonObj.getString("firstName"));
-		}
-		
-		if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
-			candidate.setLastName(jsonObj.getString("lastName"));
-		}
-		
-		if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
-			candidate.setEmail(jsonObj.getString("email"));
-		}
-		
-		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
-		candidate.setCreatedBy("sladmin");
-		candidate.setCreatedDate(new Date());
-		candidate.setUpdatedDate(new Date());
-		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-		
-		candidateService.addCandidate(candidate);
-		candidateService.saveOrUpdateCandidateElkDocument(candidate);
+		 
 		loginWithSocialInviter(user, userRole, orgLocations);
 		
 	}
