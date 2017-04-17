@@ -144,7 +144,7 @@
        </div>
        
         <div class="form-group">
-         <label class="col-md-3">Employment type</label>
+         <label class="col-md-3">Employment type<span class="text-danger">&nbsp;*</span></label>
          <div class="col-md-9">
               <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getDesignationType(this);">
                 <option value="">--Select--</option>
@@ -194,7 +194,7 @@
        
        <div class="clearfix" id="hideVendor" style="display:none">
        <div class="form-group">
-			<label class="col-md-3">Vendor</label>
+			<label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
 			<div class="col-md-9">
 			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();">
                  </select>
@@ -202,7 +202,7 @@
 		</div>
 		
 		 <div class="form-group">
-			<label class="col-md-3">Vendor Contact</label>
+			<label class="col-md-3">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
 			<div class="col-md-9">
 			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="select Vendor Contact">
                  </select>

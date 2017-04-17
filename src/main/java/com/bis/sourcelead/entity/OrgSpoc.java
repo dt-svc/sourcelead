@@ -144,6 +144,24 @@ public class OrgSpoc implements Serializable{
 	
 	@Transient
 	private String msg;
+	
+	@Transient
+	private Integer reqReleasedCount;
+	
+	@Transient
+	private Integer submittedCount;
+	
+	@Transient
+	private Integer shortlistedCount;
+	
+	@Transient
+	private Integer interviewedCount;
+	
+	@Transient
+	private Integer offeredCount;
+	
+	@Transient
+	private Integer rejectedCount;
 
 	public Long getSpocLocationId() {
 		return spocLocationId;
@@ -438,6 +456,54 @@ public class OrgSpoc implements Serializable{
 
 	public void setClientRateType(String clientRateType) {
 		this.clientRateType = clientRateType;
+	}
+
+	public Integer getReqReleasedCount() {
+		return reqReleasedCount;
+	}
+
+	public void setReqReleasedCount(Integer reqReleasedCount) {
+		this.reqReleasedCount = reqReleasedCount;
+	}
+
+	public Integer getSubmittedCount() {
+		return submittedCount;
+	}
+
+	public void setSubmittedCount(Integer submittedCount) {
+		this.submittedCount = submittedCount;
+	}
+
+	public Integer getShortlistedCount() {
+		return shortlistedCount;
+	}
+
+	public void setShortlistedCount(Integer shortlistedCount) {
+		this.shortlistedCount = shortlistedCount;
+	}
+
+	public Integer getInterviewedCount() {
+		return interviewedCount;
+	}
+
+	public void setInterviewedCount(Integer interviewedCount) {
+		this.interviewedCount = interviewedCount;
+	}
+
+	public Integer getOfferedCount() {
+		return offeredCount;
+	}
+
+	public void setOfferedCount(Integer offeredCount) {
+		this.offeredCount = offeredCount;
+	}
+
+	public Integer getRejectedCount() {
+		return rejectedCount;
+	}
+
+	public void setRejectedCount(Integer rejectedCount) {
+		this.rejectedCount = rejectedCount;
 	}
 	
 }

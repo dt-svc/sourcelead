@@ -115,7 +115,7 @@ public class TeamDaoImpl  implements TeamDao{
 		logger.debug("In Team getTeamByTeamId method");
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Team tm  where tm.id =:teamId";
+		String query = "from Team tm left join fetch tm.ownerUserId where tm.id =:teamId";
 		List<Team> teamList = session.createQuery(query).setLong("teamId", teamId).setCacheable(true).list();
 		
 		Team team = null;
