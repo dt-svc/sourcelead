@@ -281,8 +281,7 @@
 
 		  
 <div class="welBtns">
-	<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Previous</a>
-	
+	<input type="button"  value="Previous" onClick="javascript:location.href = '<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>'" >
 	<input type="button"  value="Proceed to next step" id="save_button"  onclick="saveOnboardingCandidateDetails();" class="Brig">
 	<div class="clearfix"></div>
 </div>
