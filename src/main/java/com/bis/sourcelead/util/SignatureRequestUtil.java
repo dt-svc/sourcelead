@@ -13,7 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.docusign.esign.api.AuthenticationApi;
@@ -40,7 +42,7 @@ public class SignatureRequestUtil {
 	@Autowired
 	private Html2PdfUtil html2PdfUtil;
 	
-	public String sendDocumentForSignatureRequest(User vendorUser, ContractsTemplate contractsTemplate, OrgLocations orgLocation, User loginUser) throws DocumentException{
+	public String sendDocumentForSignatureRequest(User vendorUser, ContractsTemplate contractsTemplate, OrgLocations orgLocation, User loginUser, Contracts contracts, Org org) throws DocumentException{
 		
 		// Enter your DocuSign credentials:
 		String UserName = "rajasekhar.chelpuri@gmail.com";
@@ -85,9 +87,6 @@ public class SignatureRequestUtil {
 			logger.info("Exception: " + ex);
 		}
 		
-		// specify a document we want signed
-		String SignTest1File = "/Docusign/Test.pdf";
-
 		// create a byte array that will hold our document bytes
 		byte[] fileBytes = null;
 
@@ -96,7 +95,8 @@ public class SignatureRequestUtil {
 //			String currentDir = System.getProperty("user.dir");
 //			// read file from a local directory
 //			Path path = Paths.get(currentDir + SignTest1File);
-			fileBytes = html2PdfUtil.getPdfBytes(contractsTemplate);;
+//			fileBytes = html2PdfUtil.getPdfBytes(contractsTemplate);
+			fileBytes = html2PdfUtil.getPdfBytes(contractsTemplate,contracts,orgLocation,org);
 		}
 		catch (IOException ioExcp)
 		{
@@ -159,7 +159,7 @@ public class SignatureRequestUtil {
 			// call the createEnvelope() API to send the signature request!
 			EnvelopeSummary envelopeSummary = envelopesApi.createEnvelope(accountId, envDef);
 			
-			logger.info("EnvelopeSummary: " + envelopeSummary);
+			//logger.info("EnvelopeSummary: " + envelopeSummary);
 		}
 		catch (com.docusign.esign.client.ApiException ex)
 		{
