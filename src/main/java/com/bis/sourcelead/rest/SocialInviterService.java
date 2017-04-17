@@ -292,8 +292,18 @@ public class SocialInviterService {
 	    	APICredentials.put("consumerSecret", "");
         }
     	else if(service.equals("hotmail") || service.equals("outlook")){
-       		APICredentials.put("consumerKey", "09367f41-ab2e-49aa-8b4b-2868a8034074");
-       		APICredentials.put("consumerSecret", "QxWu8nsUQKLKA8QbF4j3co1");
+    		if(sourceleadUrl.equalsIgnoreCase("http://qa2.sourcelead.net/sourcelead")){
+    			APICredentials.put("consumerKey", "09367f41-ab2e-49aa-8b4b-2868a8034074");
+           		APICredentials.put("consumerSecret", "QxWu8nsUQKLKA8QbF4j3co1");
+    		}
+    		else if(sourceleadUrl.equalsIgnoreCase("http://demo.sourcelead.net/sourcelead")){
+    			APICredentials.put("consumerKey", "82108683-3271-4c1b-89af-f3dacf641921");
+            	APICredentials.put("consumerSecret", "bUGjhaLUhNF1CSj1NeWfnsp");
+    		}
+            else if(sourceleadUrl.equalsIgnoreCase("http://sourcelead.com/sourcelead")){
+            	APICredentials.put("consumerKey", "2fe5ba4a-3423-4d43-a4cd-9bf6193e89d9");
+            	APICredentials.put("consumerSecret", "rGiibkiynfKCom9H6jxBvPY");
+    		}
         }
 		else if(service.equals("box")){
        		APICredentials.put("consumerKey", "");
