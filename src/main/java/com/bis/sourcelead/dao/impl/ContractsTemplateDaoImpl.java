@@ -140,6 +140,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 	}
 
 	@Override
+	@Transactional
 	public Contracts getContractById(Long contractId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();

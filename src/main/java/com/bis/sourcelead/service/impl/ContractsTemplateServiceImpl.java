@@ -307,5 +307,11 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		return contractsTemplateDao.getContractById(contractId);
 	}
 
+	@Override
+	public Contracts saveNewContract(Contracts updateContracts) throws Exception
+	{
+		return contractsTemplateDao.saveNewContract(updateContracts);
+	}
+
 	
 }

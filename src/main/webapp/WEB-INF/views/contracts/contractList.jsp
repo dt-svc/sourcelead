@@ -27,15 +27,15 @@ $(document).ready(function(){
   <div class="pull-right brud-crum">Home &raquo; List by status</div>
 </section>
 
-<section class="contrHead">
-<ul>
-<li title="Draft"><a href="#" onClick="getTemplateList('draft');" class="wSig">Draft</a></li>
-<li title="Waiting for Approval"><a href="#"><i class="fa fa-clock-o fa-2"></i>Approve</a></li>
-<li title="Waiting to be sign"><a href="#" onClick="getTemplateList('Waiting to be signed');"><i class="fa fa-clock-o fa-2"></i>Sign</a></li>
-<li title="Waiting for Verify"><a href="Listby_Status-waitingforverify.html"><i class="fa fa-clock-o fa-2"></i>Verify</a></li>
-<li title="Finalised"><a href="Listby_Status-finalised.html">Finalised</a></li>
-<li title="Expired"><a href="Listby_Status-expired.html">Expired</a></li>
-<li title="Rejected"><a href="Listby_Status-reject.html">Rejected</a></li>
+<section class="contrHead"> 
+<ul> 
+<li title="Draft"><a href="#" id="draft" class="draft" onClick="mainTabEnable(this);getTemplateList('draft');">Draft</a></li>
+<li title="Waiting for Approval"><a href="#" id="approve"  onClick="mainTabEnable(this);"><i class="fa fa-clock-o fa-2"></i>Approve</a></li>
+<li title="Waiting to be sign"><a href="#" id="sign" onClick="mainTabEnable(this);getTemplateList('Waiting to be signed');"><i class="fa fa-clock-o fa-2"></i>Sign</a></li>
+<li title="Waiting for Verify"><a href="#" id="verify" onClick="mainTabEnable(this);getTemplateList('Waiting To Be Verify');"><i class="fa fa-clock-o fa-2"></i>Verify</a></li>
+<li title="Finalised"><a href="#" id="finalised"  onClick="mainTabEnable(this);">Finalised</a></li>
+<li title="Expired"><a href="#" id="expired" onClick="mainTabEnable(this);">Expired</a></li>
+<li title="Rejected"><a href="#" id="rejected"  onClick="mainTabEnable(this);">Rejected</a></li>
 
 <div class="conBtn">
   <span>Add<i class="fa fa-caret-down"></i></span>
@@ -248,7 +248,77 @@ function tabEnable(local){
 
 </script>
 
-verify
+<script>
+function mainTabEnable(local){
+   
+	var tabId = local.id;
+    if(tabId == 'draft'){
+	$("#draft").addClass("draft"); 
+    $("#approve").removeClass("wApp");
+    $("#sign").removeClass("wSig");
+    $("#verify").removeClass("wVer");
+    $("#finalised").removeClass("fin");
+    $("#expired").removeClass("exp");
+    $("#rejected").removeClass("rej");
+    }
+    if(tabId == 'approve'){
+    	$("#draft").removeClass("draft"); 
+        $("#approve").addClass("wApp");
+        $("#sign").removeClass("wSig");
+        $("#verify").removeClass("wVer");
+        $("#finalised").removeClass("fin");
+        $("#expired").removeClass("exp");
+        $("#rejected").removeClass("rej");
+        }
+    if(tabId == 'sign'){
+    	$("#draft").removeClass("draft"); 
+        $("#approve").removeClass("wApp");
+        $("#sign").addClass("wSig");
+        $("#verify").removeClass("wVer");
+        $("#finalised").removeClass("fin");
+        $("#expired").removeClass("expi");
+        $("#rejected").removeClass("rej");
+        }
+    if(tabId == 'verify'){
+    	$("#draft").removeClass("draft"); 
+        $("#approve").removeClass("wApp");
+        $("#sign").removeClass("wSig");
+        $("#verify").addClass("wVer");
+        $("#finalised").removeClass("fin");
+        $("#expired").removeClass("exp");
+        $("#rejected").removeClass("rej");
+        }
+    if(tabId == 'finalised'){  
+    	$("#draft").removeClass("draft"); 
+        $("#approve").removeClass("wApp");
+        $("#sign").removeClass("wSig");
+        $("#verify").removeClass("wVer");
+        $("#finalised").addClass("fin");
+        $("#expired").removeClass("exp");
+        $("#rejected").removeClass("rej");
+        }
+    if(tabId == 'expired'){
+    	$("#draft").removeClass("draft"); 
+        $("#approve").removeClass("wApp");
+        $("#sign").removeClass("wSig");
+        $("#verify").removeClass("wVer");
+        $("#finalised").removeClass("fin");
+        $("#expired").addClass("exp");
+        $("#rejected").removeClass("rej");
+        }
+    if(tabId == 'rejected'){
+    	$("#draft").removeClass("draft"); 
+        $("#approve").removeClass("wApp");
+        $("#sign").removeClass("wSig");
+        $("#verify").removeClass("wVer");
+        $("#finalised").removeClass("fin");
+        $("#expired").removeClass("exp");
+        $("#rejected").addClass("rej");
+        }
+	
+}
+
+</script>
 
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
