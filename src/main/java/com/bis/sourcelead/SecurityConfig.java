@@ -92,6 +92,8 @@ public class SecurityConfig  {
     			.antMatchers("/register").permitAll() 
     			.antMatchers("/registerAsProfessional").permitAll() 
     			.antMatchers("/registerAsIndividualRecruiter").permitAll() 
+    			.antMatchers("/registerAsProfessionalFromSocialInviter").permitAll() 
+    			.antMatchers("/registerAsIndividualRecruiterFromSocialInviter").permitAll() 
     			.antMatchers("/resetloginCredentials").permitAll() 
     			.antMatchers("/validateCrowdSourcingEmail").permitAll() 
     			.antMatchers("/validateCrowdSourcingUserName").permitAll() 
