@@ -160,6 +160,12 @@ public class TeamMemberServiceImpl implements TeamMembersService {
 	public Boolean isUserBelongsCurrentTeamByUserIdAndTeamId(Long userId,Long teamId) throws Exception {
 		return teamMemberDao.isUserBelongsCurrentTeamByUserIdAndTeamId(userId, teamId);
 	}
+
+	@Override
+	public TeamMembers getTeamMemberByMemberUserIdAndLocationId(Long memberUserId, Long orgLocationId)
+			throws Exception {
+		return teamMemberDao.getTeamMemberByMemberUserIdAndLocationId(memberUserId, orgLocationId);
+	}
 	 
 }
 

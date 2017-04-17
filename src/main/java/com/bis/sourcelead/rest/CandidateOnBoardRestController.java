@@ -38,6 +38,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.OnboardStatus;
 import com.bis.sourcelead.form.TimesheetEntriesForm;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
@@ -903,6 +904,7 @@ public class CandidateOnBoardRestController {
 	       		        documents.setDocFile(templateDocument.getDocFile());
           	            documents.setFileName(templateDocument.getFileName());
           	            documents.setFileContentType(templateDocument.getFileContentType());
+          	            documents.setDocumentStatus(OnboardStatus.NEW);
 	                  
 		       		    documents.setDocumentType("Policies");
 	                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -938,6 +940,7 @@ public class CandidateOnBoardRestController {
 	                    	   documents.setFileContentType(multiFile.getContentType());
 	                       }
 	                       documents.setDocumentType("Policies");
+	                       documents.setDocumentStatus(OnboardStatus.NEW);
 	                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
 	                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 	                       documents.setCreatedDate(CommonUtil.currentDate());
@@ -972,6 +975,7 @@ public class CandidateOnBoardRestController {
          	            documents.setFileContentType(templateDocument.getFileContentType());
 	                  
 		       		    documents.setDocumentType("Supported");
+		       		    documents.setDocumentStatus(OnboardStatus.NEW);
 	                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
 	                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 	                    documents.setCreatedDate(CommonUtil.currentDate());
@@ -1006,6 +1010,7 @@ public class CandidateOnBoardRestController {
 			                    	   documents.setFileContentType(multiFile.getContentType());
 			                       }
 			                       documents.setDocumentType("Supported");
+			                       documents.setDocumentStatus(OnboardStatus.NEW);
 			                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
 			                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			                       documents.setCreatedDate(CommonUtil.currentDate());
@@ -1044,6 +1049,7 @@ public class CandidateOnBoardRestController {
 		         	            documents.setFileContentType(templateDocument.getFileContentType());
 			                  
 				       		    documents.setDocumentType("Contracts");
+				       		    documents.setDocumentStatus(OnboardStatus.NEW);
 			                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
 			                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			                    documents.setCreatedDate(CommonUtil.currentDate());
@@ -1078,6 +1084,7 @@ public class CandidateOnBoardRestController {
 					                    	   documents.setFileContentType(multiFile.getContentType());
 					                       }
 					                       documents.setDocumentType("Contracts");
+					                       documents.setDocumentStatus(OnboardStatus.NEW);
 					                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
 					                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 					                       documents.setCreatedDate(CommonUtil.currentDate());
@@ -1111,6 +1118,7 @@ public class CandidateOnBoardRestController {
 				         	            documents.setFileContentType(templateDocument.getFileContentType());
 					                  
 						       		    documents.setDocumentType("Forms");
+						       		    documents.setDocumentStatus(OnboardStatus.NEW);
 					                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
 					                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 					                    documents.setCreatedDate(CommonUtil.currentDate());
@@ -1145,6 +1153,7 @@ public class CandidateOnBoardRestController {
 							                    	   documents.setFileContentType(multiFile.getContentType());
 							                       }
 							                       documents.setDocumentType("Forms");
+							                       documents.setDocumentStatus(OnboardStatus.NEW);
 							                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
 							                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 							                       documents.setCreatedDate(CommonUtil.currentDate());
@@ -1385,16 +1394,48 @@ public class CandidateOnBoardRestController {
 			 CandidateOnBoarding onBoarding = candidateOnBoardingService.getCandidateOnBoardingById(onboardId);
 			 
 			 candidateOnBoardingService.createOnboardingUser(onBoarding,user,loginOrgLocation);
-			 
-			 onBoarding.setCandidateOnBoardStatus("Finished");
-			 candidateOnBoardingService.saveCandidateOnBoarding(onBoarding);
 			
 			return "success";
 		   
 		}
 		 
 		 
+		 @RequestMapping(value = "/validateOnboardCandidate" , method = RequestMethod.POST)
+		 public @ResponseBody  String validateOnboardCandidate(@RequestParam(value="email", required=false) String email,
+				 HttpServletRequest request) throws Exception {
+			
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			User user = userService.findByEmailAndOrgLocationsId(email,loginOrgLocation.getId());
+			if(null != user){
+				return "Invalid";
+			}else{
+				return "success";
+			}
+		   
+		}
 		 
+		 @RequestMapping(value = "/validateOnboardCandidateEmail" , method = RequestMethod.POST)
+		 public @ResponseBody  String validateOnboardCandidateEmail(@RequestParam(value="email", required=false) String email,
+				 HttpServletRequest request) throws Exception {
+			 	
+			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			 	
+			 String result;
+			 	User user = userService.findByEmailAndOrgLocationsId(email,loginOrgLocation.getId());
+			 	
+			 	if (user != null) {
+					result = "Invalid User Email";
+				}else{
+					
+					CandidateOnBoarding onBoarding = candidateOnBoardingService.getCandidateOnBoardingByEmailAndLocationId(email, loginOrgLocation.getId());
+					if(onBoarding != null){
+						result = "Invalid OnboardUser Email";
+					}else{
+						result = "Success";
+					}
+				}
+				return result;
+		   }
 		 
 	 
 }

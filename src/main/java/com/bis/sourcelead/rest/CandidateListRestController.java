@@ -733,6 +733,26 @@ public class CandidateListRestController {
 				 }
 			}
 			
+			if(null != can.getOrgRelationId()){
+				can.setVendorOrgRelationId(can.getOrgRelationId().getId().toString());
+				if(can.getOrgRelationId().getResponderLocationId().getId() == loginOrgLocation.getId()){
+					can.setVendorName(can.getOrgRelationId().getLocationId().getOrg().getOrgName());	
+				}
+				if(can.getOrgRelationId().getLocationId().getId() == loginOrgLocation.getId()){
+					can.setVendorName(can.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());	
+				}
+				
+			}
+			if(null != can.getSpocId()){
+				StringBuilder contactName = new StringBuilder();
+				can.setVendorSpocId(can.getSpocId().getId().toString());
+				if(null != can.getSpocId().getClientUser().getLastName()){
+					can.setVendorContactName(contactName.append(can.getSpocId().getVendorUser().getFirstName()).append(" ").append(can.getSpocId().getClientUser().getLastName()).toString());	
+				}else{
+					can.setVendorContactName(contactName.append(can.getSpocId().getVendorUser().getFirstName()).toString());
+				}
+				
+			}
 			resultJson = commonUtil.toJSON(can);
 			return resultJson;
      }
