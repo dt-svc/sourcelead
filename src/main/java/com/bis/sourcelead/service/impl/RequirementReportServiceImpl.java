@@ -1239,6 +1239,12 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 		return currentDateInTimezone = standardFormat.format(converteDate);
 	}
 
+	@Override
+	public List<RequirementSubmissionHistory> getApplicantsCountsByDateRange(Long submissionId, Date startDateUTC,
+			Date endDateUTC) throws Exception {
+		return requirementReportDao.getApplicantsCountsByDateRange(submissionId, startDateUTC, endDateUTC);
+	}
+
 	
 	
 	

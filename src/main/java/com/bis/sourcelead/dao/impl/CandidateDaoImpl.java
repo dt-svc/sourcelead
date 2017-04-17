@@ -778,7 +778,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			return null;
 		}
    	}
-	
+
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Long getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC)
