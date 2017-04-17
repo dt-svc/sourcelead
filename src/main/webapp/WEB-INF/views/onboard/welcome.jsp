@@ -103,7 +103,8 @@
   </div>		  
 		  
 <div class="welBtns">
-	<a class="Brig" href="<c:url value='/onboardingCandidateSetp2'/>">Proceed to next step</a><div class="clearfix"></div>
+<input type="button"  value="Proceed to next step"  onClick="javascript:location.href = '<c:url value='/onboardingCandidateSetp2'/>'"  class="Brig">
+<div class="clearfix"></div>
 </div>
 		  
 		</section>

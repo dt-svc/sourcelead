@@ -17,8 +17,14 @@
 <link href="resources/css/sourcelead-main.css" rel="stylesheet" id="myStyleSheet">
 <link href="resources/css/timesheet.css" rel="stylesheet">
 
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<script src="resources/js/jquery-1.11.1.min.js"></script>
+<script src="resources/js/formvalidator.js"></script>
+
+
 </head>
 
 <body>
@@ -52,16 +58,17 @@
 			  <div class="clearfix"></div>
 		  </div>
 		  
+ <form:form class="login-form clearfix"  id="onboardCandidate_form"  name="onboardCandidate_form" method="post" >
+ <div id="loading"></div>
 <div class="welCo1">
 <h5>Employee Details</h5>
-
 <div class="form-horizontal padBot">
 	<div class="row clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 			<div class="form-group">
 			  <label class="col-md-4 control-label">First Name <span class="text-danger paddingLeft">*</span></label>
 			  <div class="col-md-8">
-				<input type="text" class="form-control input-sm" name="firstName" id="firstName" value="${SourceLeadWeb_user.firstName}">
+				<input type="text" class="form-control input-sm" name="firstName" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100"  id="firstName" value="${SourceLeadWeb_user.firstName}">
 			  </div>
 			</div>
 		</div>
@@ -69,7 +76,7 @@
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Last Name <span class="text-danger paddingLeft">*</span></label>
 			  <div class="col-md-8">
-				<input type="text" class="form-control input-sm" name="lastName" od="lastName" value="${SourceLeadWeb_user.lastName}">
+				<input type="text" class="form-control input-sm" name="lastName" id="lastName" data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100" value="${SourceLeadWeb_user.lastName}">
 			  </div>
 			</div>
 		</div>
@@ -79,7 +86,7 @@
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Street Addess 1 <span class="text-danger paddingLeft">*</span></label>
 			  <div class="col-md-8">
-				<input type="text" class="form-control input-sm" name="address1"  id="address1" value="${SourceLeadWeb_candidateOnBoarding.address1}">
+				<input type="text" class="form-control input-sm" name="address1" data-validation="required validate_Space"  id="address1" value="${SourceLeadWeb_candidateOnBoarding.address1}">
 			  </div>
 			</div>
 		</div>
@@ -87,7 +94,7 @@
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Street Addess 2</label>
 			  <div class="col-md-8">
-				<input type="text" class="form-control input-sm" name="address2" id="address1" value="${SourceLeadWeb_candidateOnBoarding.address2}">
+				<input type="text" class="form-control input-sm" name="address2" data-validation-optional="true" data-validation="validate_Space" id="address1" value="${SourceLeadWeb_candidateOnBoarding.address2}">
 			  </div>
 			</div>
 		</div>
@@ -274,8 +281,12 @@
 
 		  
 <div class="welBtns">
-	<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Previous</a><a class="Brig" href="welcome-three.html">Proceed to next step</a><div class="clearfix"></div>
+	<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Previous</a>
+	
+	<input type="button"  value="Proceed to next step" id="save_button"  onclick="saveOnboardingCandidateDetails();" class="Brig">
+	<div class="clearfix"></div>
 </div>
+</form:form>
 		  
 		</section>
 	</section>  
@@ -283,6 +294,8 @@
   <!--   Welcome Screens   -->
 
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
+  
+  
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
   <script src="resources/js/jquery.dataTables.min.js"></script> 
   <script src="resources/js/moment.min.js"></script> 
@@ -308,6 +321,10 @@
 
 });
 </script> 
+
+<script src="resources/js/formvalidator.js"></script>
+
+
 
 
 <script type="text/javascript">
@@ -414,6 +431,83 @@ function getOnBoardCandidateCities(country,state,city){
 	}
 }
 </script> 
+
+
+<script>
+ function saveOnboardingCandidateDetails(){
+	 var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+	         }; 
+	 
+	 if ($('#onboardCandidate_form').validate(false, validationSettings)){ 
+		    var frm = $('#onboardCandidate_form').serializeFormJSON();
+	        var con = JSON.stringify(frm);
+	        con = con.replace(/[{}]/g, "");
+	        
+	        var jsonData = encodeURIComponent(con);
+	        
+	        var sourceleadUrl ='${sourceleadUrl}';
+	        
+	       
+	       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/saveOnboardingCandidateStepDetails?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+		        success: function(onboardId) {
+		        	
+		        	location.replace(sourceleadUrl+"/onboardingCandidateSetp3");  
+		        },
+		    });  
+	        return true;
+		
+	  }else{
+		return false;
+	  }
+ }
+ 
+ $('body').on('blur', '#onboardCandidate_form', function() {
+		$("#onboardCandidate_form").showHelpOnFocus();
+		$("#onboardCandidate_form").validateOnBlur(false, validationSettings);  
+	});
+ </script>
+ 
+ 
+ <script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>
+ 
+ 
+ <script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+
+        
+</script>  
+
 
 </div>
 

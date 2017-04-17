@@ -474,6 +474,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
         }
 	    
 	    user.setIsMailSent(Status.Y);
+	    user.setLocation(candidateOnBoarding.getCountry());
 	   
 	    
 	    user.setPassword(sourceleadPasswordEncoder.encode(password));

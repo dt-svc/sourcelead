@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OnBoardingTemplate;
 import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
 import com.bis.sourcelead.entity.OnboardTasks;
@@ -42,6 +43,7 @@ import com.bis.sourcelead.enums.OnboardStatus;
 import com.bis.sourcelead.form.TimesheetEntriesForm;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OnBoardingTemplateDocumentsService;
 import com.bis.sourcelead.service.OnBoardingTemplateService;
 import com.bis.sourcelead.service.OnboardTasksService;
@@ -94,6 +96,9 @@ public class CandidateOnBoardRestController {
 	
 	@Autowired
 	CandidateOnBoardingService candidateOnBoardingService;
+	
+	@Autowired
+	EmployeesService employeesService;
 	
 	
 	
@@ -1437,6 +1442,95 @@ public class CandidateOnBoardRestController {
 					}
 				}
 				return result;
+		   }
+		 
+		
+		 @RequestMapping(value = "/saveOnboardingCandidateStepDetails" , method = RequestMethod.POST)
+		 public @ResponseBody  String saveOnboardingCandidateStepDetails(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+			 	
+			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 
+			 CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(user.getId(), loginOrgLocation.getId());
+			 	
+			 json = "{"+json+"}";
+			 JSONObject jsonObj = new JSONObject(json);
+			 
+			 if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
+				 user.setFirstName(jsonObj.getString("firstName"));
+				 candidateOnBoarding.setFirstName(jsonObj.getString("firstName"));
+			 }
+			 
+			 if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
+				 user.setLastName(jsonObj.getString("lastName"));
+				 candidateOnBoarding.setLastName(jsonObj.getString("lastName"));
+			 }else{
+				 user.setLastName(null);
+				 candidateOnBoarding.setLastName(null);
+			 }
+			 
+			 if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
+				 user.setLocation(jsonObj.getString("country"));
+				 candidateOnBoarding.setCountry(jsonObj.getString("country"));
+			 }
+			 
+			 if(jsonObj.has("mobileNumber") && !isNullOrEmpty(jsonObj.getString("mobileNumber"))){
+				 user.setMobilePhone(jsonObj.getString("mobileNumber"));
+				 candidateOnBoarding.setMobileNumber(jsonObj.getString("mobileNumber"));
+			 }
+			 
+			 userService.addUser(user);
+			 SourceLeadSessionManager.setSessionAttribute(request, "user", user);
+			 
+			 
+			 Employees onboardingEmployee = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), loginOrgLocation.getId());
+				if(null != onboardingEmployee){
+					 if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
+						 onboardingEmployee.setCountry(jsonObj.getString("country"));
+					 }
+					 
+					 if(jsonObj.has("state") && !isNullOrEmpty(jsonObj.getString("state"))){
+						 onboardingEmployee.setState(jsonObj.getString("state"));
+					 }else{
+						 onboardingEmployee.setState(null);
+					 }
+					 
+					 if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
+						 onboardingEmployee.setCity(jsonObj.getString("city"));
+					 }else{
+						 onboardingEmployee.setCity(null);
+					 }
+					 
+					 employeesService.addEmployee(onboardingEmployee);
+				}
+				
+				
+					 if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
+						 candidateOnBoarding.setCountry(jsonObj.getString("country"));
+					 }
+					 
+					 if(jsonObj.has("state") && !isNullOrEmpty(jsonObj.getString("state"))){
+						 candidateOnBoarding.setState(jsonObj.getString("state"));
+					 }else{
+						 candidateOnBoarding.setState(null);
+					 }
+					 
+					 if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
+						 candidateOnBoarding.setCity(jsonObj.getString("city"));
+					 }else{
+						 candidateOnBoarding.setCity(null);
+					 }
+					 
+					 if(jsonObj.has("zipCode") && !isNullOrEmpty(jsonObj.getString("zipCode"))){
+						 candidateOnBoarding.setZipCode(jsonObj.getString("zipCode"));
+					 }else{
+						 candidateOnBoarding.setZipCode(null);
+					 }
+					 
+					 candidateOnBoardingService.saveCandidateOnBoarding(candidateOnBoarding);
+			 
+			 
+			  return "success";
 		   }
 		 
 	 

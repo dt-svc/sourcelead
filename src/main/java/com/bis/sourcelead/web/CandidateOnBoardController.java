@@ -48,6 +48,15 @@ public class CandidateOnBoardController {
 		return model;
 	}
 	
+	@RequestMapping(value = "/onboardingCandidateSetp3")
+	public ModelAndView onboardingCandidateSetp3(HttpServletRequest request) {
+		ModelAndView model = new ModelAndView();
+		
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("onboard/welcomeStep3");
+		return model;
+	}
+	
 	
 	
 	
