@@ -3298,5 +3298,11 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		
 		return requirementDao.getCountOfAllRequirementsByCreatedUserAndOrglocationId(orgLocationId, user, startDateUTC, endDateUTC);
 	}
+
+
+	@Override
+	public List<Requirement> getTotalRequirementsReleasedToSpoc(Long relationId, Long spocId) {
+		return requirementDao.getTotalRequirementsReleasedToSpoc(relationId, spocId);
+	}
 	
 }

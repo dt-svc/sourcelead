@@ -283,7 +283,6 @@ document.onkeydown=function(e){
             <li class="reportsH">
 
 				<a title="Reports" title="Reports" href="<c:url value='${sourceleadUrl}/recruitersReports'/>"><i class="fa fa-pie-chart"></i></a>
-				 <%--<li><a href="<c:url value='${sourceleadUrl}/vendorsReports'/>"><span><i class="fa fa-briefcase"></i></span>Vendor Report</a></li> --%>
 				
             </li>
             <sec:authorize access="hasAnyRole('ROLE_MAIL_BOX','ROLE_HOTLIST_CAMPAIGN')">

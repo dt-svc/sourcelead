@@ -246,5 +246,7 @@ public interface RequirementSubmissionService {
 	List<RequirementSubmission> getApplicantCountSubmittedByVendor(Long orgLocationId, Long orgRelationId);
 
 	Long getCountOfAllApplicantsByCreatedUserAndOrglocationIdByStage(Long orgLocationId, User user,String stage,String timePeriod) throws Exception ;
+
+	List<RequirementSubmission> getVendorSpocSubmissions(String userCode, Long orgLocationId);
 	
 }

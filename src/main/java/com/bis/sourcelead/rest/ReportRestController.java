@@ -28,6 +28,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
@@ -382,6 +383,126 @@ public class ReportRestController {
 	    
 		return commonUtil.toJSON(vendorslist);
 	}
+	
+	
+	@RequestMapping(value = "/getVendorSpocsReports")
+	public @ResponseBody String getVendorSpocsReports(@RequestParam(value="reportType", required=false) String reportType,@RequestParam(value="relationId", required=false) Long relationId,
+			@RequestParam(value="customStartDate", required=false) String customStartDate, @RequestParam(value="customEndDate", required=false) String customEndDate,
+			HttpServletRequest request) throws Exception {
+		
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    
+	    Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+		 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+		 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+		 Date endDateUTC =null ;
+		 Date startDateUTC = null;
+		 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)&&!"".equalsIgnoreCase(reportType)){
+			 String endDate = outputFormatter1.print(zoned);
+			 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
+			 endDateUTC = TZ_DF_TS.parse(endDateString);
+		 }
+			
+			if(null != reportType && !"".equals(reportType)){
+				if("today".equals(reportType)){
+					String startDate = outputFormatter.print(zoned);
+					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
+					startDateUTC = TZ_DF_TS.parse(startDateString);
+				}else if(Constants.YESTER_DAY.equals(reportType)){
+					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 1);
+				}else if(Constants.ONE_WEEK.equals(reportType)){
+					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 7);
+				}else if(Constants.TWO_WEEKS.equals(reportType)){
+					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 14);
+				}else if(Constants.ONE_MONTH.equals(reportType)){
+					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
+				}else if(Constants.TWO_MONTHS.equals(reportType)){
+					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 60);
+				}else{
+					 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
+						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
+						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
+						Date startTime =  commonUtil.getDateFormat(customStartDate);
+						Date endTime =  commonUtil.getDateFormat(customEndDate);
+						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+						String customEndTimeStr = TZ_DF_CED.format(endTime);  
+						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
+						String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customEndTimeStr);
+						startDateUTC = TZ_DF_TS.parse(startDateString);
+						endDateUTC = TZ_DF_TS.parse(endDateString);
+					 }
+					
+				}
+			}
+	    int applicantsSum = 0;
+		int requestSentSum = 0;
+		int shortlistedSum = 0;
+		int submitToClientSum = 0;
+		int interviewsSum = 0;
+		int offeredSum = 0;
+		int rejectedSum = 0;
+		
+	    List<OrgSpoc> vendorSpocsList = orgSpocService.getSpoclistByDomain(relationId,"");
+	    for(OrgSpoc spoc : vendorSpocsList){
+	    	List<Requirement> reqList = requirementService.getTotalRequirementsReleasedToSpoc(relationId,spoc.getId());
+	    	spoc.setReqReleasedCount(reqList.size());
+	    	   List<RequirementSubmission> reqSubmissionList = requirementSubmissionService.getVendorSpocSubmissions(spoc.getVendorUser().getUserCode(),orgLocations.getId());
+	    	   spoc.setSubmittedCount(reqSubmissionList.size());
+		    	if(null != reqSubmissionList && reqSubmissionList.size() > 0){
+			    	for(RequirementSubmission reqSub : reqSubmissionList){
+						int applicantsCount = 0;
+						int requestSentCount = 0;
+						int shortlistedCount = 0;
+						int submitToClientCount = 0;
+						int interviewsCount = 0;
+						int offeredCount = 0;
+						int rejectedCount = 0;
+						List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportService.getApplicantsCountsByDateRange(reqSub.getId(),startDateUTC,endDateUTC);
+						if(null != requirementSubmissionHistoryList && requirementSubmissionHistoryList.size() >0){
+							for(RequirementSubmissionHistory rsh : requirementSubmissionHistoryList){
+								if("submission".equals(rsh.getToStage())){
+									applicantsCount++;
+								}else if("shortList".equals(rsh.getToStage())){
+									shortlistedCount++;
+								}else if("interview".equals(rsh.getToStage())){
+									interviewsCount++;
+								}else if("offer_made".equals(rsh.getToStage())){
+									offeredCount++;
+								}else if("request_sent".equals(rsh.getToStage())){
+									requestSentCount++;
+								}else if("submit_to_client".equals(rsh.getToStage())){
+									submitToClientCount++;
+								}else if("rejected".equals(rsh.getToStage())){
+									rejectedCount++;
+								}
+							}
+							 applicantsSum = applicantsSum+applicantsCount;
+							 requestSentSum = requestSentSum+requestSentCount;
+							 shortlistedSum = shortlistedSum+shortlistedCount;
+							 submitToClientSum = submitToClientSum+submitToClientCount;
+							 interviewsSum = interviewsSum+interviewsCount;
+							 offeredSum = offeredSum+offeredCount;
+							 rejectedSum = rejectedSum+rejectedCount;
+						}
+					}
+		    	}
+		    	if(null != spoc.getVendorUser().getLastName()){
+		    		StringBuilder sb = new StringBuilder();
+		    		spoc.setSpocName(sb.append(spoc.getVendorUser().getFirstName()).append(" ").append(spoc.getVendorUser().getLastName()).toString());
+		    	}else{
+		    		spoc.setSpocName(spoc.getVendorUser().getFirstName());
+		    	}
+		    	spoc.setShortlistedCount(shortlistedSum);
+		    	spoc.setInterviewedCount(interviewsSum);
+		    	spoc.setOfferedCount(offeredSum);
+		    	spoc.setRejectedCount(rejectedSum);
+	    }
+	    
+		return commonUtil.toJSON(vendorSpocsList);
+	}
+	
 	
 	private Date getPreviousDate(DateTime zoned, DateTimeFormatter outputFormatter, DateFormat TZ_DF_TS, Timezone timezone, int numberOfDays) throws ParseException
 	{

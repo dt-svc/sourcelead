@@ -1026,6 +1026,16 @@ public class RequirementDaoImpl implements RequirementDao {
 			    return (Long)query.uniqueResult();
 				
 		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<Requirement> getTotalRequirementsReleasedToSpoc(Long relationId, Long spocId) {
+			Session session = this.sessionFactory.getCurrentSession();
+	 		
+	 		String query = "from Requirement requirement left join fetch requirement.parentRequirement where   requirement.clientId.id =:relationId and  requirement.spocId.id =:spocId";
+	        List<Requirement> requirementList = session.createQuery(query).setLong("relationId", relationId).setLong("spocId", spocId).setCacheable(true).list();
+	 		return requirementList;
+		}
 	
 	
 }
