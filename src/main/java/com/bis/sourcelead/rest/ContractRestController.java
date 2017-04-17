@@ -177,8 +177,9 @@ public class ContractRestController {
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Contracts contracts = contractsTemplateService.saveNewContract(jsonObj,orgLocation,saveType,user);
+		Contracts contracts = contractsTemplateService.saveNewContract(jsonObj,orgLocation,saveType,user,org);
 	   if(null != contracts){
 		   isContractSaved = true;
 	   }
