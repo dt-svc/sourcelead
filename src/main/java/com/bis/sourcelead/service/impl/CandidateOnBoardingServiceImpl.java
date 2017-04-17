@@ -713,8 +713,13 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 	@Override
 	public CandidateOnBoarding getCandidateOnBoardingByEmailAndLocationId(String email, Long orgLocationId)
 			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return candidateOnBoardingDao.getCandidateOnBoardingByEmailAndLocationId(email, orgLocationId);
+	}
+
+	@Override
+	public CandidateOnBoarding getCandidateOnBoardingByUserIdAndLocationId(Long onboardingUser, Long orgLocationId)
+			throws Exception {
+		return candidateOnBoardingDao.getCandidateOnBoardingByUserIdAndLocationId(onboardingUser, orgLocationId);
 	}
 
 	
