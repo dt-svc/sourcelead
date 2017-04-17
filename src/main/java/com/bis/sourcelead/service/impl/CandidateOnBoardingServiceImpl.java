@@ -473,7 +473,6 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
     	 user.setMobilePhone(candidateOnBoarding.getMobileNumber());
         }
 	    
-	    user.setUserType("Onboarding");
 	    user.setIsMailSent(Status.Y);
 	   
 	    
