@@ -268,7 +268,7 @@
                   
                 <div class="form-footer">
                   <div class="pull-right mr">
-                    <input type="button" value="Cancel" class="btn btn-sm btn-default">
+                    <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/candidateOnBoardingList'">
                     <input type="button" value="Save" id="save_onboardUser" onclick="saveOnboardingCandidateDetails('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="saveAndContinue_onboardUser" onclick="saveOnboardingCandidateDetails('saveAndContinue');"  class="btn btn-sm btn-primary">
                   </div>
@@ -342,7 +342,7 @@
                 </div>
                 <div class="form-footer">
                   <div class="pull-right mr">
-                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/dashboard/${SourceLeadWeb_orgLocationId}'">
+                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/candidateOnBoardingList'">
                     <input type="button" value="Save" id="save_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="save_continue_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
@@ -460,7 +460,7 @@
                                           <br>
                                           <input class="form-control input-sm" type="text" id="taskDays" name="taskDays" onblur="validateDueAfter();">
                                         </div>
-                                        <div class="col-md-3 paddingRight paddingLeft">
+                                       <!--  <div class="col-md-3 paddingRight paddingLeft">
                                           <label class="small">Hours</label>
                                           <br>
                                           <input type="text" class="form-control input-sm" id="taskHours" name="taskHours" onblur="validateDueAfter();">
@@ -469,7 +469,7 @@
                                           <label class="small">Minutes</label>
                                           <br>
                                           <input type="text" class="form-control input-sm" id="taskMinutes" name="taskMinutes" onblur="validateDueAfter();">
-                                        </div>
+                                        </div> -->
                                       </div>
                                       
                                       <!-- Form inline Due after --> 
@@ -1783,11 +1783,11 @@ function createTemplateDocs(saveType){
 	  
 	  var taskMonths = document.getElementById("taskMonths").value;
 	  var taskDays = document.getElementById("taskDays").value;
-	  var taskHours = document.getElementById("taskHours").value;
-	  var taskMinutes = document.getElementById("taskMinutes").value;
+	  /* var taskHours = document.getElementById("taskHours").value;
+	  var taskMinutes = document.getElementById("taskMinutes").value; */
 	  
 	  
-	  if(taskMonths == '' && taskDays == '' && taskHours == '' && taskMinutes == ''){
+	  if(taskMonths == '' && taskDays == '' ){
 			  $('#taskMonths').removeAttr('data-validation-optional');
 			  $("#taskMonths").attr("data-validation", "required");
 		    

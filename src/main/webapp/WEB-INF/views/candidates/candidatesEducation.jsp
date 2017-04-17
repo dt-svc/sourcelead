@@ -707,6 +707,7 @@ function candidateEducationStore(candidateId){
 			            				$("#eduMsgDiv").html("Success!! New Education added");
 				               			candidateEducationList(candidateId);
 				               			eduMsgFadein();
+				               			candidateQuickViewProfile(candidateId);
 							    	}
 				                 }   
 				      }, 
@@ -881,6 +882,7 @@ function clearSearchKey() {
 		            			$("#eduMsgDiv").html("Education details updated");
 							candidateEducationList(candidateId)
 							eduMsgFadein();
+							candidateQuickViewProfile(candidateId);
 						},
 					});
 			return true;

@@ -3290,5 +3290,13 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 			Long orgLocationId,  TeamMembers teamMembers) throws Exception {
 		return requirementDao.getAllRequirementsByOrglocationIdAndRequirementWhoAreAssignedToRequirement(orgLocationId,teamMembers);
 	}
+
+
+	@Override
+	public Long getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user,
+			 Date startDateUTC, Date endDateUTC) throws Exception {
+		
+		return requirementDao.getCountOfAllRequirementsByCreatedUserAndOrglocationId(orgLocationId, user, startDateUTC, endDateUTC);
+	}
 	
 }

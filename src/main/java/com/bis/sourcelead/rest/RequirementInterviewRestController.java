@@ -174,6 +174,74 @@ public class RequirementInterviewRestController {
 		 resultJson = commonUtil.toJSON(interviewsList);
 		 return resultJson;
 	   }
+	
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_INTERVIEW','ROLE_VIEW_CANCEL_INTERVIEW')")
+	@RequestMapping(value = "/getScheduledInterviewsListForSelectedApplicants" , method = RequestMethod.POST)
+	 public @ResponseBody  String getScheduledInterviewsListForSelectedApplicants(@RequestParam(value="selectedReqId", required=false) String selectedReqId, @RequestParam(value="selectedSubmissions", required=false) String selectedSubmissions, HttpServletRequest request) throws Exception {
+		
+	     OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	     Timezone timezone = null;
+			if(orgLocations.getTimezone() != null){
+				timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+			}
+			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+		 String resultJson = null;
+		 List<RequirementInterviewHistory> interviewsList = new ArrayList<RequirementInterviewHistory>();
+		 if(StringUtils.isNumeric(selectedSubmissions)){
+			 String[] submissionIds = selectedSubmissions.split(",");
+			 if(null != submissionIds && submissionIds.length > 0){
+				 for(String submissionId : submissionIds){
+					 List<RequirementInterviewHistory> interviews = requirementInterviewHistoryService.getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(Long.parseLong(submissionId), orgLocations);
+					 if(interviews.size() > 0){
+						 for(RequirementInterviewHistory interviewHistory : interviews){
+							 if(interviewHistory.getInterviewId().getSubmissionId().getCandidate().getLastName() != null && interviewHistory.getInterviewId().getSubmissionId().getCandidate().getLastName() != "" && interviewHistory.getInterviewId().getSubmissionId().getCandidate().getLastName() != "undefined"){
+								 interviewHistory.setCandidateName(interviewHistory.getInterviewId().getSubmissionId().getCandidate().getFirstName()+" "+ interviewHistory.getInterviewId().getSubmissionId().getCandidate().getLastName());
+							 }else{
+								 interviewHistory.setCandidateName(interviewHistory.getInterviewId().getSubmissionId().getCandidate().getFirstName());
+							 }
+							 
+								if(null != interviewHistory.getInterviewId().getInterviewType() && "" != interviewHistory.getInterviewId().getInterviewType()){
+									interviewHistory.setInterviewType(interviewHistory.getInterviewId().getInterviewType());
+								}
+							 	DateFormat eventstartTimrFroDashBoard = new SimpleDateFormat( "dd-MM-YYYY hh:mm aa");
+								if(null != timezone.getTimeZoneId() && null != interviewHistory.getId() && null != interviewHistory.getInterviewId().getStartTime()){
+									String currentTimeStr = Constants.TZ_DF.format(interviewHistory.getInterviewId().getStartTime());  
+									String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
+									Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+									currentDateInTimezone = eventstartTimrFroDashBoard.format(converteDate);
+									interviewHistory.setInterviewTimeZoneStartTimeStr(currentDateInTimezone);
+								}
+								if(null != timezone.getTimeZoneId() && null != interviewHistory.getId() && null != interviewHistory.getInterviewId().getEndTime()){
+									String currentTimeStr = Constants.TZ_DF.format(interviewHistory.getInterviewId().getEndTime());  
+									String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
+									Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+									currentDateInTimezone = eventstartTimrFroDashBoard.format(converteDate);
+									interviewHistory.setInterviewTimeZoneEndTimeStr(currentDateInTimezone);
+								}
+								if(null != interviewHistory.getInterviewId().getTimezone()){
+									interviewHistory.setTimezone(interviewHistory.getInterviewId().getTimezone().getTimeZoneId());
+								}
+								if(null != interviewHistory.getInterviewId().getLocation()){
+									interviewHistory.setLocation(interviewHistory.getInterviewId().getLocation());
+								}
+								List<RequirementInterviewer> interviewerList = requirementInterviewerService.getInterviwersListByInterviewId(interviewHistory.getInterviewId().getId());
+								if(interviewerList.size()>0){
+									StringBuilder isb = new StringBuilder();
+									for(RequirementInterviewer interviewer : interviewerList){
+										isb.append(interviewer.getInterviewerUser().getFirstName()).append(", ");
+									}
+									interviewHistory.setInterviewersList(isb.toString().substring(0, isb.toString().length()-2));
+								}
+						 }
+						 interviewsList.addAll(interviews);
+					 }
+				 }
+			 }
+		 }
+		 resultJson = commonUtil.toJSON(interviewsList);
+		 return resultJson;
+	   }
+	
 	  
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_INTERVIEW','ROLE_VIEW_CANCEL_INTERVIEW')")
 	@RequestMapping(value = "/getAllCustomerInterviews" , method = RequestMethod.POST)

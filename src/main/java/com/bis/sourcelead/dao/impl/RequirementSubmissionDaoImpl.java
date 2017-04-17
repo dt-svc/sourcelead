@@ -2,7 +2,6 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -31,12 +30,8 @@ import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
-import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
-import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
-import com.bis.sourcelead.entity.Team;
-import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.RequirementAssignToService;
@@ -2281,6 +2276,28 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			
 					return	finalList;
 		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public Long getCountOfAllApplicantsByCreatedUserAndOrglocationIdByStage(Long orgLocationId, User user,String stage,
+				String timePeriod) throws Exception {
+				String subQuery = "";
+				if(stage == ""){
+					subQuery = "";
+				}else{
+					subQuery = "rs.submissionStatus =:stage  and";
+				}
+			    String query ="select count(*)from RequirementSubmission rs where "+subQuery+"  rs.orgLocations.id =:orgLocationId and rs.createdBy =:userCode";
+				Session session = this.sessionFactory.getCurrentSession();
+				long count = 0;
+				if(stage == ""){
+					count = ((Long)session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("userCode",user.getUserCode()).uniqueResult()).intValue();
+				}else{
+					count = ((Long)session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("userCode",user.getUserCode()).setString("stage",stage).uniqueResult()).intValue();
+				}
+		       return count;
+		}
+
 
 		
   }

@@ -335,7 +335,7 @@
          <div class="form-group">
               <label class="col-md-3">Education</label> 
               <div class="col-md-9">
-                <select multiple data-placeholder="select Education" class="chosenone-selectone form-control" name="candidateEducation" id="candidateEducation" data-validation="validate_Space" data-validation-optional="true">
+                <select multiple data-placeholder="select Education" class="chosenone-selectone form-control" name="candidateEducation" id="candidateEducation" data-validation-optional="true">
                 <c:forEach var="edu" items="${educationsList}">
 	                     <option value="${edu.name}">${edu.name}</option>
                 </c:forEach>
