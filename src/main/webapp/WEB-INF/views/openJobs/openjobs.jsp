@@ -734,9 +734,9 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				result = result +'	</span>';
 				result = result +'    </div>';			
 				result = result +'    <div class="jobDetailsLogo">';
-				result = result +'	<a href="#">Apply</a>';
+				result = result +'	<a href="'+sourceleadUrl+'/login">Apply</a>';
 				if (json.isCrowdSourcing == 'Y'){
-				result = result +'	<a href="#" class="btn2" style="background-color:#eb821c;">Refer</a>';
+				result = result +'	<a href="'+sourceleadUrl+'/login" class="btn2" style="background-color:#eb821c;">Refer</a>';
 				}
 				result = result +'	<div style="clear:both;"></div>';
 				result = result +'	<div class="share mt10">';
