@@ -1141,29 +1141,30 @@ public class RegistrationServiceImpl implements RegistrationService{
 		if(jsonObj.has("userName") && !isNullOrEmpty(jsonObj.getString("userName"))){
 			userName = jsonObj.getString("userName");
 			user = userService.getUserByUserName(userName);
-			if(jsonObj.has("service") && !isNullOrEmpty(jsonObj.getString("service"))
-			  && jsonObj.has("profileUrl") && !isNullOrEmpty(jsonObj.getString("profileUrl"))){
-				String service = jsonObj.getString("service");
-				String profileUrl = jsonObj.getString("profileUrl");
-				if(!isNullOrEmpty(service)  && (service.equalsIgnoreCase("googleplus") || service.equalsIgnoreCase("gmail") || service.equalsIgnoreCase("google"))){
-					user.setGooglePlus(profileUrl);
-				}
-				else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("facebook")){
-					user.setFacebook(profileUrl);
-				}
-				else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("twitter")){
-					user.setTwitter(profileUrl);			
-				}
-				else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("linkedin")){
-					user.setLinkedIn(profileUrl);
-				}
-				
-			}
-			userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
-			orgLocations = userRole.getOrgLocations();
 		}
-		 
-		if(user == null){
+		if(user != null ) {
+			     if(jsonObj.has("service") && !isNullOrEmpty(jsonObj.getString("service"))
+					  && jsonObj.has("profileUrl") && !isNullOrEmpty(jsonObj.getString("profileUrl"))){
+						String service = jsonObj.getString("service");
+						String profileUrl = jsonObj.getString("profileUrl");
+						if(!isNullOrEmpty(service)  && (service.equalsIgnoreCase("googleplus") || service.equalsIgnoreCase("gmail") || service.equalsIgnoreCase("google"))){
+							user.setGooglePlus(profileUrl);
+						}
+						else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("facebook")){
+							user.setFacebook(profileUrl);
+						}
+						else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("twitter")){
+							user.setTwitter(profileUrl);			
+						}
+						else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("linkedin")){
+							user.setLinkedIn(profileUrl);
+						}
+						
+					}
+					userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+					orgLocations = userRole.getOrgLocations();
+		}
+		else {
 			 user = new User();
 				if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
 					user.setFirstName(jsonObj.getString("firstName"));
