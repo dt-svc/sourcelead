@@ -1,22 +1,53 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.mail.internet.InternetAddress;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateOnBoardingDao;
+import com.bis.sourcelead.dao.EmployeesDao;
+import com.bis.sourcelead.dao.OnboardTasksDao;
+import com.bis.sourcelead.dao.RolesDao;
+import com.bis.sourcelead.dao.TaskDao;
+import com.bis.sourcelead.dao.TeamMemberDao;
+import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.elk.index.UserIndex;
+import com.bis.sourcelead.elk.index.helper.UserIndexHelper;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.OnboardTasks;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.Team;
+import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
+import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
@@ -27,6 +58,45 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
+	
+	@Autowired
+	UserDao userDao;
+	
+	@Autowired
+	UserRoleDao userRoleDao;
+	
+	@Autowired
+	EmployeesDao employeesDao;
+	
+	@Autowired
+	RolesDao rolesDao;
+	
+	@Autowired
+	TeamMemberDao teamMemberDao;
+	
+	@Value("${sourceleadUrl}")
+    private String sourceleadUrl;
+		
+	@Autowired
+	EmailScenarioService emailScenarioService;
+	
+	@Autowired
+	EmailScenerioUtil emailScenerioUtil;
+	
+	@Autowired
+	UserIndexHelper userIndexHelper;
+	
+	@Autowired
+    private SourceleadELKBaseIndexer<UserIndex> sourceleadELKBaseIndexer;
+	
+	@Autowired
+	OnboardTasksDao onboardTasksDao;
+	
+	@Autowired
+	TaskDao taskDao;
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -226,4 +296,395 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		return candidateOnBoardingDao.getCandidateOnBoardingById(Id);
 	}
 
+	@Override
+	public void createOnboardingUser(CandidateOnBoarding candidateOnBoarding,User loginUser,OrgLocations orgLocations) throws Exception {
+		
+		
+		User onboardingUser = null;
+		UserRole onboardingUserRole = null;
+		Employees onboardingEmployee = null;
+		TeamMembers onboardingTeamMember = null;
+		
+		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
+		
+		onboardingUser = getUserDetails(candidateOnBoarding,password,loginUser);
+	    userDao.addUser(onboardingUser);
+	    
+	    onboardingUserRole = saveUserRoles(candidateOnBoarding,onboardingUser,loginUser,orgLocations);
+	    userRoleDao.addUserRole(onboardingUserRole);
+	    
+	    onboardingEmployee = saveOnboardingEmployee(candidateOnBoarding,onboardingUser,loginUser,orgLocations);
+	    employeesDao.addEmployee(onboardingEmployee);
+	    
+	    if(null != candidateOnBoarding.getTeamId()){
+	    	onboardingTeamMember = saveOnboardingTeamMember(candidateOnBoarding,onboardingUser,loginUser);
+	    	teamMemberDao.saveOrUpdateTeamMembers(onboardingTeamMember);
+	    }
+	    
+	    sendEmailToOnbardingUser(onboardingUser,loginUser,password,orgLocations.getId());
+	    saveOrUpdateUserElkDocument(onboardingUserRole,onboardingEmployee,loginUser.getUserCode());
+	    
+	    List<OnboardTasks> onboardTasksList = onboardTasksDao.getOnBoardTasksListByCandidateOnBoardingId(candidateOnBoarding.getId());
+		 if(null != onboardTasksList && onboardTasksList.size() > 0){
+			 
+			 for(OnboardTasks onboardTasks : onboardTasksList){
+				 if(!isNullOrEmpty(onboardTasks.getAssignToUsers())){
+					 String[] userIds = onboardTasks.getAssignToUsers().split(",");
+					 for(int i=0; i<userIds.length; i++){
+						 
+						 Tasks tasks = null;
+						 User taskUser = userDao.getUserById(Long.valueOf(userIds[i]));
+						 tasks = getTaskDetails(onboardTasks, taskUser, loginUser, orgLocations);
+						 taskDao.saveTasks(tasks);
+						 mailToUserTask(tasks);
+					 }
+				 }else{
+					 Tasks tasks = null;
+					 tasks = getTaskDetails(onboardTasks, onboardingUser, loginUser, orgLocations);
+					 taskDao.saveTasks(tasks);
+					 mailToUserTask(tasks);
+				 }
+			 }
+			 
+		 }
+		
+	}
+	
+	public Tasks getTaskDetails(OnboardTasks onboardTasks,User user,User loginUser,OrgLocations orgLocations){
+		 
+		 Tasks tasks = new Tasks();
+		 tasks.setOwnerOrglocationId(orgLocations);
+		 tasks.setAssignedOrglocationId(orgLocations);
+		 tasks.setTaskOwnerId(loginUser);
+		 tasks.setAssignedUserId(user);
+		 if(!isNullOrEmpty(onboardTasks.getPriority())){
+			 tasks.setPriority(onboardTasks.getPriority());
+		 }
+		 tasks.setSubject(onboardTasks.getTaskName());
+		 
+		 if(!isNullOrEmpty(onboardTasks.getTaskRepeat())){
+			 tasks.setTaskRepeat(onboardTasks.getTaskRepeat());
+		 }
+		 
+		 if(null != onboardTasks.getDueAfterMonths() && null == onboardTasks.getDueAfterDays()){
+			 Calendar cal = Calendar.getInstance(); 
+			 cal.add(Calendar.MONTH, onboardTasks.getDueAfterMonths());
+			 tasks.setTaskDate(cal.getTime());
+		 }
+		 
+		 if(null != onboardTasks.getDueAfterDays() && null == onboardTasks.getDueAfterMonths()){
+			 Calendar cal = Calendar.getInstance(); 
+			 cal.add(Calendar.DATE, onboardTasks.getDueAfterDays());
+			 tasks.setTaskDate(cal.getTime());
+		 }
+		 
+		 if(null != onboardTasks.getDueAfterMonths() && null != onboardTasks.getDueAfterDays()){
+			 Calendar cal = Calendar.getInstance(); 
+			 cal.add(Calendar.MONTH, onboardTasks.getDueAfterMonths());
+			 Date date = cal.getTime();
+			 Date addedDate = addDays(date, onboardTasks.getDueAfterDays());
+			 tasks.setTaskDate(addedDate);
+		 }
+		 
+		 if(!isNullOrEmpty(onboardTasks.getTaskEmail()) && isNullOrEmpty(onboardTasks.getTaskNotification())){
+			 tasks.setAlertType("Email");
+		 }
+		 
+		 if(isNullOrEmpty(onboardTasks.getTaskEmail()) && !isNullOrEmpty(onboardTasks.getTaskNotification())){
+			 tasks.setAlertType("Notification");
+		 }
+		 
+		 if(!isNullOrEmpty(onboardTasks.getTaskEmail()) && !isNullOrEmpty(onboardTasks.getTaskNotification())){
+			 tasks.setAlertType("Email,Notification");
+		 }
+		 
+		 tasks.setTaskTime("23:59:00");
+		 tasks.setDescription(onboardTasks.getDescription());
+		 tasks.setTaskStatus(Constants.TASK_STATUS_OPEN);
+		 tasks.setCreatedBy(loginUser.getUserCode());
+		 tasks.setCreatedDate(commonUtil.currentDate());
+		 tasks.setUpdatedBy(loginUser.getUserCode());
+		 tasks.setUpdatedDate(commonUtil.currentDate());
+		 return tasks;
+		
+		 
+	}
+	
+	public static Date addDays(Date d, int days)
+    {
+        d.setTime(d.getTime() + days * 1000 * 60 * 60 * 24);
+        return d;
+    }
+	
+	
+	public void saveOrUpdateUserElkDocument(UserRole userRole, Employees employee, String loginUserCode) throws Exception {
+		//Elastic Search Document Saving
+		UserIndex userIndex = userIndexHelper.getUserIndexFromUser(userRole,employee,loginUserCode);
+		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(userIndex, Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,userRole.getId().toString());
+		
+	}
+
+	
+	private User getUserDetails(CandidateOnBoarding candidateOnBoarding,String password,User loginUser){
+		
+		User user = new User();
+		
+		user.setFirstName(candidateOnBoarding.getFirstName());
+		
+		if(!isNullOrEmpty(candidateOnBoarding.getLastName())){
+			user.setLastName(candidateOnBoarding.getLastName());
+		}
+	
+		if(!isNullOrEmpty(candidateOnBoarding.getCompanyEmail())){
+			user.setEmail(candidateOnBoarding.getCompanyEmail());
+			user.setUserName(candidateOnBoarding.getCompanyEmail());
+		}else{
+			user.setEmail(candidateOnBoarding.getPersonalEmail());
+			user.setUserName(candidateOnBoarding.getPersonalEmail());
+		}
+		
+	    if(!isNullOrEmpty(candidateOnBoarding.getMobileNumber())){
+    	 user.setMobilePhone(candidateOnBoarding.getMobileNumber());
+        }
+	    
+	    user.setUserType("Onboarding");
+	    user.setIsMailSent(Status.Y);
+	   
+	    
+	    user.setPassword(sourceleadPasswordEncoder.encode(password));
+		
+		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
+		user.setCreatedBy(loginUser.getUserCode());
+		user.setCreatedDate(commonUtil.currentDate());
+		return user;
+	}
+	
+	private UserRole saveUserRoles(CandidateOnBoarding candidateOnBoarding,User onboardingUser,User loginUser,OrgLocations orgLocations){
+		
+		UserRole userRole = new UserRole();
+		   
+	    userRole.setUser(onboardingUser);
+	    
+	    Roles roles;
+		try {
+			roles = rolesDao.getRolesById(candidateOnBoarding.getRoleId().getId());
+			userRole.setRoles(roles);
+			userRole.setUserType(roles.getDisplayName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	   
+	    if(null != candidateOnBoarding.getManagerUserId()){
+	    	User reportingManager = new User();
+	    	reportingManager.setId(candidateOnBoarding.getManagerUserId().getId());
+	    	userRole.setReportingManager(reportingManager);
+	    }
+	    userRole.setOrgLocations(orgLocations);
+	    userRole.setIsPrimary(1);
+	    userRole.setUserState(Status.NOT_LOGGEDIN);
+	    userRole.setCreatedBy(loginUser.getUserCode());
+	    userRole.setCreatedDate(commonUtil.currentDate());
+	    userRole.setUpdatedBy(loginUser.getUserCode());
+	    userRole.setUpdatedDate(commonUtil.currentDate());
+	   
+	    return userRole;
+	}
+	
+	private Employees saveOnboardingEmployee(CandidateOnBoarding candidateOnBoarding,User onboardingUser,User loginUser,OrgLocations orgLocations){
+		    
+		    Employees employees = new Employees();
+		    employees.setUser(onboardingUser);
+		    employees.setOrgLocations(orgLocations);
+		    employees.setCountry(candidateOnBoarding.getCountry());
+		    if(!isNullOrEmpty(candidateOnBoarding.getState())){
+		    	employees.setState(candidateOnBoarding.getState());
+		    }
+		    if(!isNullOrEmpty(candidateOnBoarding.getCity())){
+		    	employees.setCity(candidateOnBoarding.getCity());
+		    }
+		    employees.setHireDate(candidateOnBoarding.getStartDate());
+		    employees.setCreatedBy(loginUser.getUserCode());
+		    employees.setCreatedDate(commonUtil.currentDate());
+		    employees.setUpdatedBy(loginUser.getUserCode());
+		    employees.setUpdatedDate(commonUtil.currentDate());
+		    return employees;
+	}
+	
+	
+	private TeamMembers saveOnboardingTeamMember(CandidateOnBoarding candidateOnBoarding,User onboardingUser,User loginUser){
+	    
+	    TeamMembers teamMembers = new TeamMembers();
+	    
+	    Team team = new Team();
+	    team.setId(candidateOnBoarding.getTeamId().getId());
+	    teamMembers.setTeamId(team);
+	    teamMembers.setMemberUserId(onboardingUser);
+	    teamMembers.setStatus("1");
+	   
+	    teamMembers.setCreatedBy(loginUser.getUserCode());
+	    teamMembers.setCreatedDate(commonUtil.currentDate());
+	    teamMembers.setUpdatedBy(loginUser.getUserCode());
+	    teamMembers.setUpdatedDate(commonUtil.currentDate());
+	    return teamMembers;
+}
+
+	public void sendEmailToOnbardingUser(User user, User loginUser, String password, Long locationId) throws Exception {
+		
+		 UserRole userRole = userRoleDao.getUserRoleByUserIdAndLocationId(user.getId(), locationId);
+		 if(userRole == null){
+		    userRole = userRoleDao.getLoginUserPrimaryRole(user.getId());
+		 }
+		 
+		 boolean isUserActive = false;
+		 isUserActive = userRoleDao.isUserActive(user.getId());
+		 
+		 StringBuilder sb = new StringBuilder();
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(user.getFirstName());
+		 emailMessage.setLastName(user.getLastName());
+		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFromEmail(loginUser.getEmail());
+		 emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
+		 emailMessage.setOrgLocationId(locationId);
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("firstName", emailMessage.getFirstName());
+		 globalVarsMap.put("lastName",emailMessage.getLastName());
+		 globalVarsMap.put("administratorFirstName", loginUser.getFirstName());
+		 globalVarsMap.put("administratorLastName",loginUser.getLastName());
+		 globalVarsMap.put("role",userRole.getUserType());
+		 StringBuilder loginBuilder = new StringBuilder();
+		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 globalVarsMap.put("userEmailId",user.getEmail());
+		 if(isUserActive == false){
+			 globalVarsMap.put("password",password);
+		 }else{
+			 globalVarsMap.put("password","Note : Login with your existing Sourcelead password");
+		 }
+		 
+		
+		 //setting the Recipient information
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_USER,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url,userRole.getOrgLocations().getOrg());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,locationId,iAdressArray,new ArrayList<EmailAttachment>());
+		
+	}
+	
+	public void mailToUserTask(Tasks task) throws Exception{
+		EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(task.getTaskOwnerId().getFirstName());
+		 emailMessage.setLastName(task.getTaskOwnerId().getLastName());
+		 emailMessage.setToEmail(task.getAssignedUserId().getEmail());
+		 emailMessage.setFromEmail(task.getTaskOwnerId().getEmail());
+		 emailMessage.setCreatedBy(task.getTaskOwnerId().getUserCode());
+		 StringBuilder msgBuild = new StringBuilder();
+		 emailMessage.setFromName(msgBuild.append(task.getTaskOwnerId().getFirstName()).append(" ").append(task.getTaskOwnerId().getLastName()).toString());
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 if(task.getSubject()!= null  && !"".equalsIgnoreCase(task.getSubject())){
+		 globalVarsMap.put("subject", task.getSubject()); 
+		 }else{
+		 globalVarsMap.put("subject", "--");	 
+		 }
+		 if(task.getPriority()!= null  && !"".equalsIgnoreCase(task.getPriority())){
+		 globalVarsMap.put("priority", task.getPriority()); 
+		 }else{
+		 globalVarsMap.put("priority", "--");	 
+		 }
+		 if(null != task.getTaskDate() && !"".equalsIgnoreCase(task.getTaskDate().toString())){
+		 task.setTaskDateStr(Constants.DF_DMY.format(task.getTaskDate()));
+		 if( task.getTaskDateStr()!= null  && !"".equalsIgnoreCase( task.getTaskDateStr().toString())){
+		 globalVarsMap.put("date", task.getTaskDateStr());	 
+		 	}
+		 }else{
+	     globalVarsMap.put("date","--"); 
+		 }
+		 if(task.getTaskTime()!= null  && !"".equalsIgnoreCase(task.getTaskTime())){
+		 globalVarsMap.put("time", task.getTaskTime());	 
+		 }else{
+		 globalVarsMap.put("time","--"); 
+		 }
+		 if(task.getDescription()!= null  && !"".equalsIgnoreCase(task.getDescription())){
+		 globalVarsMap.put("description", task.getDescription()); 
+		 }else{
+		 globalVarsMap.put("description","--"); 
+		 }
+		 if(task.getTaskOwnerId().getFirstName() != null && task.getTaskOwnerId().getLastName()!= null  && !"".equalsIgnoreCase( task.getTaskOwnerId().getFirstName()) && !"".equalsIgnoreCase( task.getTaskOwnerId().getLastName())){
+			 StringBuilder userBuild = new StringBuilder();
+			 globalVarsMap.put("LoginUser",userBuild.append(task.getTaskOwnerId().getFirstName()).append(" ").append(task.getTaskOwnerId().getLastName()).toString());
+		 }else{
+		 globalVarsMap.put("LoginUser",task.getTaskOwnerId().getFirstName()); 
+		 }
+		 if (task.getAssignedUserId().getFirstName() != null && task.getAssignedUserId().getLastName()!= null  && !"".equalsIgnoreCase( task.getAssignedUserId().getFirstName()) && !"".equalsIgnoreCase( task.getAssignedUserId().getLastName())){
+			 StringBuilder userBuild = new StringBuilder();
+			 globalVarsMap.put("assignedUser",userBuild.append(task.getAssignedUserId().getFirstName()).append(" ").append(task.getAssignedUserId().getLastName()).toString());
+		 }else{
+		 globalVarsMap.put("assignedUser",task.getAssignedUserId().getFirstName()); 
+		 }
+		 
+		 
+		 //setting the Recipient information
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TASK_MECHANISM_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TASK_MECHANISM_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 notificationScenario.setBody(notificationbody);
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the Email 
+		 
+		 if(!isNullOrEmpty(task.getAlertType())){
+			 if(task.getAlertType().equalsIgnoreCase("Email")){
+				 emailScenerioUtil.sendEmail(emailMessage,task.getOwnerOrglocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+			 }
+			 //calling the Notification 
+			 if(task.getAlertType().equalsIgnoreCase("Notification")){
+				 String actionLink="";
+				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(), task.getOwnerOrglocationId(), notificationScenario);
+			 }
+			 //calling the Email  and notification 
+			 if(task.getAlertType().equalsIgnoreCase("Email,Notification")){
+				 emailScenerioUtil.sendEmail(emailMessage,task.getOwnerOrglocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+				 String actionLink="";
+				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(),task.getOwnerOrglocationId(), notificationScenario);
+			 }
+		 }
+
+}
+
+	
+	
 }

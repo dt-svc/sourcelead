@@ -1029,14 +1029,14 @@ function cancel(candidateId){
     </div>
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Candidate List</div>
     
-    <div class=" pull-left reportsH">
+     <div class=" pull-left reportsH">
 			<a title="Reports"><i class="fa fa-pie-chart"></i>Reports</a>
 			<div class="RePop">
 				<ul>
 					<li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
 				</ul>
 			</div>
-		</div>  
+		</div>   
 		
   </section>
   <div class="timesheet_out">
@@ -1083,7 +1083,7 @@ function cancel(candidateId){
 						<div class="col-md-8">
 						<label>Skills</label>
 							<div class="clearfix">
-								<select class="chosen-select form-control input-sm" multiple data-placeholder="Skills" id="candidateSkills" name="candidateSkills">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Skills" id="canSkills" name="candidateSkills">
 								<c:forEach var="skill" items="${skillsList}">
 								<option value="${skill.name}">${skill.name}</option>
 								</c:forEach>
@@ -1393,7 +1393,7 @@ function cancel(candidateId){
     
  <ul class="nav nav-tabs">
     <li class="active" id="candQuickView"><a data-toggle="tab" href="#quickview">Quickview</a></li>
-    <li id="candDetailView"><a data-toggle="tab" href="#detailview">Detailview</a></li>
+    <li id="candDetailView"><a data-toggle="tab" href="#detailview">Detailedview</a></li>
   </ul>
 
   <div class="tab-content">
@@ -1905,7 +1905,7 @@ function getCities(){
 	    $("#certification").val('').trigger("chosen:updated");
 	    $("#employers").val('').trigger("chosen:updated");
 	    $("#excludeEmployers").val('').trigger("chosen:updated");
-	    $("#candidateSkills").val('').trigger("chosen:updated");
+	    $("#canSkills").val('').trigger("chosen:updated");
 	    $("#noticePeriod").val('').trigger("chosen:updated");
 	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
@@ -2102,9 +2102,9 @@ function getCities(){
 		    });
 		    
 		    var selectnine, chosennine;
-		    selectnine = $("#candidateSkills");
+		    selectnine = $("#canSkills");
 		    selectnine.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Skill:' });
-		    chosennine = selecteight.data('chosen');
+		    chosennine = selectnine.data('chosen');
 		    chosennine.search_field.on('keyup', function(e9)
 		    {
 		    	var skills = this.value.replace(",","");
@@ -2114,10 +2114,10 @@ function getCities(){
 		            var option = $("<option>").val(skills).text(skills);
 		            selectnine.append(option);
 		            selectnine.find(option).prop('selected', true);
-                    $("#candidateSkills option").each(function(){
+                    $("#canSkills option").each(function(){
                           $(this).siblings("[value='"+ this.value+"']").remove();
                     });
-	        		$("#candidateSkills").trigger("chosen:updated");
+	        		$("#canSkills").trigger("chosen:updated");
 	        		
 		        }
 		    });
@@ -2375,7 +2375,7 @@ function minMaxExperience(){
 	    $("#employers").val('').trigger("chosen:updated");
 	    $("#excludeEmployers").val('').trigger("chosen:updated");
 	    $("#applicantType").val('').trigger("chosen:updated");
-	    $("#candidateSkills").val('').trigger("chosen:updated");
+	    $("#canSkills").val('').trigger("chosen:updated");
 	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
 	    $("#designationType").val('').trigger("chosen:updated");
@@ -2415,7 +2415,7 @@ function minMaxExperience(){
 	     $("#employers").val(''); 
 	     $("#excludeEmployers").val(''); 
 	     $("#applicantType").val('');
-	     $("#candidateSkills").val('');
+	     $("#canSkills").val('');
 	     $("#primarySkill").val('');
 	    
 	}

@@ -230,6 +230,8 @@ public class CandidateServiceImpl implements CandidateService {
 		if(jsonObj.has("expectedRateCurrencey") && jsonObj.getString("expectedRateCurrencey") !=null ){
 			candidate.setExpectedRateCurrencey(jsonObj.getString("expectedRateCurrencey"));
 		}
+		
+		
 		if(jsonObj.has("summary") && jsonObj.getString("summary") !=null){
 		candidate.setSummary(jsonObj.getString("summary"));
 		}
@@ -895,7 +897,18 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
+	public Long getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, String timePeriod) throws Exception {
+		return candidateDao.getCountOfAllCandidatesByCreatedUserAndOrglocationId(orgLocationId, user, timePeriod);
+	}
+
+	@Override
 	public List<Candidate> getAllActiveCandidatesCountForCampaignByLocationAndStatus(Long orgLocationId) throws Exception {
 		return candidateDao.getAllActiveCandidatesCountForCampaignByLocationAndStatus(orgLocationId);
 	}
+	
+	@Override
+	public Long getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC) throws Exception {
+		return candidateDao.getCountOfAllCandidatesByCreatedUserAndOrglocationId(orgLocationId, user, startDateUTC,endDateUTC);
+	}
+
 }

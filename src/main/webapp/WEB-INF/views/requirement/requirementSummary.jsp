@@ -801,7 +801,7 @@ function sideBar(requirementId){
 							 
 							 result = result + '<ul class="nav nav-tabs">';
 							 result = result +' <li class="active" id="pipelineQuickviewTabsqv"><a data-toggle="tab" href="#quickview">Quickview</a></li>';
-							 result = result +'<li id="pipelineQuickviewTabsdetails"><a data-toggle="tab" href="#detailview">Detailview</a></li>';
+							 result = result +'<li id="pipelineQuickviewTabsdetails"><a data-toggle="tab" href="#detailview">Detailedview</a></li>';
 							 result = result +'</ul>';
 							 
 							 
@@ -3683,7 +3683,7 @@ function requirementRecommendations(requirementId){
 
 			 result = result + '<ul class="nav nav-tabs">';
 			 result = result +' <li id="quickviewTabsqv"class="active"><a data-toggle="tab" href="#quickresume_view">Quickview</a></li>';
-			 result = result +'<li id="quickviewTabsdetails"><a data-toggle="tab" href="#detailrecommondations">Detailview</a></li>';
+			 result = result +'<li id="quickviewTabsdetails"><a data-toggle="tab" href="#detailrecommondations">Detailedview</a></li>';
 			 result = result +'</ul>';
 			 
 			 
