@@ -207,7 +207,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			vendorContracts.setDescription(jsonObj.getString("description"));
 		}
 		contracts.setStatus("0");
-		contracts.setTemplateSubmissionStatus(saveType);
+		contracts.setTemplateSubmissionStatus("Pending");
+		vendorContracts.setTemplateSubmissionStatus("Waiting to be signed");
 		vendorContracts.setStatus("0");
 		vendorContracts.setTemplateSubmissionStatus(saveType);
 		contracts.setCreatedDate(new Date());
