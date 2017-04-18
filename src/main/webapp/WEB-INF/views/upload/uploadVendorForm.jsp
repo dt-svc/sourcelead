@@ -233,7 +233,7 @@ function prepareExcelDataDiv(data){
 	result = result +  '<table id="excelimportDataTable" class="display" cellspacing="0" width="100%" >';
 	result = result + '	<thead>';
 	result = result + '   <tr>';
-	result = result + '     <th>Client Name</th>';
+	result = result + '     <th>Vendor Name</th>';
 	result = result + '    <th>Website</th>';
 	result = result + '    <th>Location</th>';
 	result = result + '    <th>Contact Name</th>';
