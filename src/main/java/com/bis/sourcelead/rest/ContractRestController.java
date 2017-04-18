@@ -15,6 +15,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -275,6 +276,16 @@ public class ContractRestController {
 	public @ResponseBody String getSubmissionsForSOWByRequirementId(@RequestParam(value = "requirementId", required = false) String requirementId, HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
 		List<RequirementSubmission> requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByRequirementId(Long.parseLong(requirementId));
+		if(requirementSubmissionsList.size() > 0){
+			for(RequirementSubmission requirementSubmission : requirementSubmissionsList){
+				StringBuffer candidateName = new StringBuffer(); 
+				if(null != requirementSubmission.getCandidate() && StringUtils.isNotBlank(requirementSubmission.getCandidate().getLastName())){
+					requirementSubmission.setCandidateName(candidateName.append(requirementSubmission.getCandidate().getFirstName()).append(" ").append(requirementSubmission.getCandidate().getLastName()).toString());
+				}else{
+					requirementSubmission.setCandidateName(candidateName.append(requirementSubmission.getCandidate().getFirstName()).toString());
+				}
+			}
+		}
 		
 		return commonUtil.toJSON(requirementSubmissionsList);
 	}
