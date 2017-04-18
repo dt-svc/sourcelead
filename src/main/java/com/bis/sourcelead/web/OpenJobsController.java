@@ -6,11 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.RequirementService;
@@ -43,7 +45,8 @@ public class OpenJobsController {
 	}
 	
 	
-	 /*@RequestMapping(value = "/openRequirementsSummary")
+	
+	@RequestMapping(value = "/openJobsPublicPage")
 		public ModelAndView openJobsforApplicants(@RequestParam(value = "requirementUUID", required = false) String requirementUUID) throws Exception{
 		 ModelAndView model = new ModelAndView();
 		 //OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -51,11 +54,11 @@ public class OpenJobsController {
 		 model.addObject("requirementDetails", requirementDetails);
 		 String requirementCreatedDate = Constants.DMY.format(requirementDetails.getCreatedDate());
 		 model.addObject("requirementCreatedDate", requirementCreatedDate);
-		 model.setViewName("openJobs/openjobsSummary");
+		 model.setViewName("openJobs/openjobs");
 		 //Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		 //model.addObject("loginCountryName",countries);
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 model.addObject("requirementUUID", requirementUUID);
 		 return model;
-	}*/
+	}
 }

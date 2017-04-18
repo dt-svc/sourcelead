@@ -126,8 +126,14 @@ max-width:220px;
 .project_wrap_table span{
 display: inline;
 }
+.timesheet_out {
+overflow-x: auto; background: #f5f5f5; box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
+}
+.vendor_wrap {
+box-shadow:none;
+}
 .require_wrap_table {
-overflow: auto;
+overflow: inherit;
 }
 .require_wrap_table select {
 width:100% !important;
@@ -226,7 +232,6 @@ function requirementList(){
 
 <script>
 function prepareRequirementData(data){
- 	 
 	var orgATS = '${SourceLeadWeb_ats}';
 	var orgVMS = '${SourceLeadWeb_vms}';
 	 $("#requirementList").removeAttr("style");
@@ -316,10 +321,10 @@ function prepareRequirementData(data){
    	  if(opt.otherJobType !=null && opt.otherJobType !='' && opt.otherJobType !="undefined"){
           result = result +"  <td><div>"+opt.otherJobType+"</div></td>";
     	 }else{
-    		result = result +"  <td><div>"+opt.jobType+"</div></td>"; 
+    		result = result +"  <td><div class='tblminwidth-75'>"+opt.jobType+"</div></td>"; 
     	 }
     	 }else{
-    		 result = result +"  <td><div>----</div></td>"; 
+    		 result = result +"  <td><div class='tblminwidth-75'>----</div></td>"; 
     	 }
        
         if(opt.state!=null && opt.state !='' && opt.state !='undefined' &&  opt.city !='undefined' && opt.city !='' &&  opt.city!=null){
@@ -346,9 +351,9 @@ function prepareRequirementData(data){
        	 result = result +"<td><div>----</div></td>";
         }
         if(opt.postedDateStr!=null && opt.postedDateStr !='' && opt.postedDateStr !='undefined'){
-          	 result = result +"<td><div>"+opt.postedDateStr+"</div></td>";
+          	 result = result +"<td><div class='tblminwidth-75'>"+opt.postedDateStr+"</div></td>";
            }else{
-          	 result = result +"<td><div>----</div></td>";
+          	 result = result +"<td><div class='tblminwidth-75'>----</div></td>";
            }
           result = result +"<td><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+");'  id='changeStatusId"+opt.id+"'>";
            if(opt.requirementSubmissionStatus == "DRAFT"){
@@ -506,10 +511,10 @@ function prepareRequirementData(data){
 }
 </script>
 <script>
-$('#requirementPagination').DataTable( { 
+ $('#requirementPagination').DataTable( { 
 	"autoWidth": false,
 	"scrollX": true,
-});
+}); 
 function pagination(){ 
     $('#requirementPagination').DataTable( { 
     	"scrollCollapse": false,
