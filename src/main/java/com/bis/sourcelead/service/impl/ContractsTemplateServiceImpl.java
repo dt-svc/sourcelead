@@ -51,12 +51,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		
 		
 		ContractsTemplate contractsTemplate = null;
-		if(jsonObj.has("templateId")){
-			if(null != jsonObj.getString("templateId") && !"".equalsIgnoreCase("templateId")){
+		if(jsonObj.has("templateId")&& null != jsonObj.getString("templateId") && !"".equalsIgnoreCase(jsonObj.getString("templateId"))){
+//			if(){
 				contractsTemplate = contractsTemplateDao.getContractTemplateById(Long.parseLong(jsonObj.getString("templateId")));
-			}else{
-				contractsTemplate = new ContractsTemplate();
-			}
+//			}else{
+//				contractsTemplate = new ContractsTemplate();
+//			}
 		}else{
 			contractsTemplate = new ContractsTemplate();
 		}

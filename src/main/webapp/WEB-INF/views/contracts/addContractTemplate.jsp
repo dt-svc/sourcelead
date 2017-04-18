@@ -309,8 +309,9 @@ function generatePDF(id) {
 <script type="text/javascript">
 $(document).ready(function(){
 	var contractsTemplate = "${templateContent}";
-	if(contractsTemplate != null && contractsTemplate != '' && contractsTemplate != 'undefined'){
-		$(".Editor-container").find('.Editor-editor').html(contractsTemplate);
+	alert("contractsTemplate>>>>"+contractsTemplate);
+	if(contractsTemplate != ''){
+		$(".Editor-container").find('.Editor-editor').html(contractsTemplate);	
 	}
 	
 });
