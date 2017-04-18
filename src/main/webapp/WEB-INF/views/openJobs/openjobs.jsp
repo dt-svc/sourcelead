@@ -41,8 +41,13 @@
 
 <script type="text/javascript">
 	$(window).load(function() {
+		if(${requirementUUID != null}){
+			getOpenJobsRequirementSummary('${requirementUUID}');
+			getDropDownCount();
+		}else{
 		getOpenJobsELKList();
 		getDropDownCount();
+	  }
 	});
 </script>
 
@@ -690,7 +695,6 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] ){ 	
 	    	  var json = JSON.parse(data);
 		      var result = "";
-		        result = result +'  <a href="#" class="fa fa-arrow-circle-left fa-3x" aria-hidden="true" onclick="requirementBack();"></a>';
 				result = result +'	<section class="innerContent">';
 				result = result +'  <div class="jobDetails">';
 				result = result +'	<div class="jobResultsInn">';
@@ -801,21 +805,6 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 		});  
 }
 </script>
-
-<script>
-
-function requirementBack(){
-	getOpenJobsELKList();
-	$("#openJobsRequirementsSummary").empty();
-}
-
-</script>
-
-
-
-
-
-
 
 
 <script>
