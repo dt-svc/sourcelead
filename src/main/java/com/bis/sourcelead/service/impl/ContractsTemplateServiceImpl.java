@@ -50,7 +50,16 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	public ContractsTemplate saveContractTemplate(JSONObject jsonObj, User user, OrgLocations orgLocation) throws Exception {
 		
 		
-		ContractsTemplate contractsTemplate = new ContractsTemplate();
+		ContractsTemplate contractsTemplate = null;
+		if(jsonObj.has("templateId")){
+			if(null != jsonObj.getString("templateId") && !"".equalsIgnoreCase("templateId")){
+				contractsTemplate = contractsTemplateDao.getContractTemplateById(Long.parseLong(jsonObj.getString("templateId")));
+			}else{
+				contractsTemplate = new ContractsTemplate();
+			}
+		}else{
+			contractsTemplate = new ContractsTemplate();
+		}
 		contractsTemplate.setOrgLocationId(orgLocation);
 		
 		contractsTemplate.setTemplateName(jsonObj.getString("templateName"));
@@ -270,12 +279,14 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	}
 
 	@Override
-	public List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType) throws Exception
+	public Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType) throws Exception
 	{
-		List<Contracts> contractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,tabType);
+		List<Contracts> vendorcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,"Vendor");
+		List<Contracts> clientcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,"Client");
 		
+		Contracts contractsForList = new Contracts();
 		
-		for(Contracts contracts :contractsList ){
+		for(Contracts contracts :vendorcontractsList ){
 			StringBuilder ownerName = new StringBuilder();
 			StringBuilder vendorName = new StringBuilder();
 			if(null != contracts.getOwnerUserId().getFirstName() && null != contracts.getOwnerUserId().getFirstName()){
@@ -301,7 +312,36 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				contracts.setParentId("");
 			}
 		}
-		return contractsList;
+		for(Contracts contracts :clientcontractsList ){
+			StringBuilder ownerName = new StringBuilder();
+			StringBuilder vendorName = new StringBuilder();
+			if(null != contracts.getOwnerUserId().getFirstName() && null != contracts.getOwnerUserId().getFirstName()){
+				ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
+			}else{
+				ownerName.append(contracts.getOwnerUserId().getFirstName());	
+			}
+			contracts.setOwnerName(ownerName.toString());
+			if(null != contracts.getContactUser().getFirstName() && null != contracts.getContactUser().getFirstName()){
+				vendorName.append(contracts.getContactUser().getFirstName()).append((contracts.getContactUser().getLastName()));
+			}else{
+				vendorName.append(contracts.getContactUser().getFirstName());	
+			}
+			contracts.setVendorContactName(vendorName.toString());
+			contracts.setStartDateStr(Constants.DF_DMY.format(contracts.getStartDate()));
+			if(null != contracts.getEndDate()){
+				contracts.setEndDateStr(Constants.DF_DMY.format(contracts.getEndDate()));	
+			}
+			if(null != contracts.getParentContractId()){
+			contracts.setParentId(contracts.getParentContractId().getId().toString());
+			}
+			else{
+				contracts.setParentId("");
+			}
+		}
+		
+		contractsForList.setVendorcontractsList(vendorcontractsList);
+		contractsForList.setClientcontractsList(clientcontractsList);
+		return contractsForList;
 	}
 
 	@Override
@@ -314,6 +354,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	public Contracts saveNewContract(Contracts updateContracts) throws Exception
 	{
 		return contractsTemplateDao.saveNewContract(updateContracts);
+	}
+
+	@Override
+	public Contracts getChildContractById(Long contractId)
+	{
+		return contractsTemplateDao.getChildContractById(contractId);
 	}
 
 	

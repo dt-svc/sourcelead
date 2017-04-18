@@ -26,5 +26,7 @@ public interface ContractsTemplateDao {
 
 	Contracts getContractById(Long contractId);
 
+	Contracts getChildContractById(Long contractId);
+
 	
 }

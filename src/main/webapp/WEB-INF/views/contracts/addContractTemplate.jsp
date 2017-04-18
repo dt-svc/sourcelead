@@ -8,9 +8,12 @@
 
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<!-- end files for autocomplete with tagit -->
+<!-- end files for autocomplete with tagit  -->
 
 <!-- Content Area -->
+
+
+
 <section class="content-wraper">
 <section class="content-header clearfix">
   <div class="pull-left">
@@ -33,20 +36,29 @@
             <div class="form-group">
               <label class="col-md-4">Template name<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                <input type="text"  id="templateName" name="templateName" value="" field-name="Template Name" data-validation="required" type="text" class="form-control">
+                <input type="text"  id="templateName" name="templateName" value="${contractsTemplate.templateName}"  field-name="Template Name" data-validation="required" type="text" class="form-control">
               </div>
+              <input type="hidden" name="templateId" id="templateId" value="${contractsTemplate.id}"/>
             </div>
             
             <div class="form-group">
               <label class="col-md-4">Template Type<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
                   <select class="chosen-select form-control" id="contractType" field-name="Template Type"  name="contractType" onchange="contractTemplateType();">
-                    <option value="Client MSA">Client MSA</option>
+                   <option value="">&nbsp;&nbsp;&nbsp;&nbsp;---Select Template Type---</option>
+	                 <option  ${contractsTemplate.templateType  == 'Client MSA' ? 'selected' : ''}>Client MSA</option>
+	                 <option  ${contractsTemplate.templateType  == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
+	                 <option  ${contractsTemplate.templateType  == 'Client SOW' ? 'selected' : ''}>Client SOW</option>
+	                 <option  ${contractsTemplate.templateType  == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
+	                 <option  ${contractsTemplate.templateType  == 'NDA' ? 'selected' : ''}>NDA</option>
+	                 <option  ${contractsTemplate.templateType  == 'NSA' ? 'selected' : ''}>NSA</option>
+                   
+                   <!--  <option value="Client MSA">Client MSA</option>
                     <option value="Vendor MSA">Vendor MSA</option>
                     <option value="Client SOW">Client SOW</option>
                     <option value="Vendor SOW">Vendor SOW</option>
                     <option value="NDA">NDA</option>
-                    <option value="NSA">NSA</option>
+                    <option value="NSA">NSA</option> -->
                   </select>
             </div>
             </div>
@@ -64,7 +76,7 @@
             <div class="form-group">
               <label class="col-md-4">Description</label>
               <div class="col-md-8">
-					<textarea class="form-control" rows="3" id ="description"  name="description"></textarea>
+					<textarea class="form-control" rows="3" id ="description"  name="description">${contractsTemplate.description}</textarea>
               </div>
             </div>            
             
@@ -74,7 +86,7 @@
 <div class="row newContrWrap">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 		<div class="col-md-9">
-			<textarea id="txtEditor" name="templateContent" class="form-control newContrtextarea"></textarea>
+			<textarea id="txtEditor" name="templateContent"  class="form-control newContrtextarea"></textarea>
 		</div>  
 		
 		
@@ -294,7 +306,16 @@ function generatePDF(id) {
 	});
 </script>
 
-
+<script type="text/javascript">
+$(document).ready(function(){
+	var contractsTemplate = "${templateContent}";
+	if(contractsTemplate != null && contractsTemplate != '' && contractsTemplate != 'undefined'){
+		$(".Editor-container").find('.Editor-editor').html(contractsTemplate);
+	}
+	
+});
+//$(".Editor-container").find('.Editor-editor').html("Rajashekar").css('border','1px solid red');
+</script>
 
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
