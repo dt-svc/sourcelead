@@ -68,15 +68,15 @@
             <div class="form-group" id="requirementDiv" style="display: none;">
               <label class="col-md-4">Select Requirement<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="form-control" id="requirementsList" name="requirementsList" onchange="submissionOffers();" data-validation="required" field-name="Requirement">
+                  <select class="form-control" id="requirementsList" name="requirementsList" onchange="submissionOffers();" field-name="Requirement">
                   </select>
               </div>
             </div>
             
             <div class="form-group" id="offeredSubmissionDiv" style="display: none;">
-              <label class="col-md-4">Select Offer<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-4">Select Applicant<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="submissionOffersList" name="submissionOffersList"  data-validation="required" field-name="Offer">
+                  <select class="chosen-select form-control" id="submissionOffersList" name="submissionOffersList" field-name="Applicant">
                   </select>
               </div>
             </div>
@@ -550,10 +550,19 @@ function contractTypeLabels(){
 		$('#vendorContact').removeAttr('data-validation');
 		$('#vendorContact').attr('data-validation-optional',"true");
 		
-		$("#requirementsList").empty();
-		$("#requirementsList" ).hide
-        $("#submissionOffersList").empty();
-        $("#submissionOffersList" ).hide();
+        $("#requirementsList option:selected").removeAttr("selected");
+		$('#requirementsList').trigger("chosen:updated");
+		$('#requirementsList').removeAttr('data-validation');
+		$('#requirementsList').attr('data-validation-optional',"true");
+		$('#requirementDiv').find('p.jquery_form_error_message').remove();
+		document.getElementById("requirementDiv").style.display="none";
+		
+		$("#submissionOffersList option:selected").removeAttr("selected");
+		$('#submissionOffersList').trigger("chosen:updated");
+		$('#submissionOffersList').removeAttr('data-validation');
+		$('#submissionOffersList').attr('data-validation-optional',"true");
+		$('#offeredSubmissionDiv').find('p.jquery_form_error_message').remove();
+		document.getElementById("offeredSubmissionDiv").style.display="none";
 	}
 	if(contractType == "Client MSA"){
 		$('#orgRelationId').removeAttr('data-validation');
@@ -561,10 +570,19 @@ function contractTypeLabels(){
 		$('#vendorContact').removeAttr('data-validation');
 		$('#vendorContact').attr('data-validation-optional',"true");
 		
-		$("#requirementsList").empty();
-		$("#requirementsList" ).hide
-        $("#submissionOffersList").empty();
-        $("#submissionOffersList" ).hide();
+		$("#requirementsList option:selected").removeAttr("selected");
+		$('#requirementsList').trigger("chosen:updated");
+		$('#requirementsList').removeAttr('data-validation');
+		$('#requirementsList').attr('data-validation-optional',"true");
+		$('#requirementDiv').find('p.jquery_form_error_message').remove();
+		document.getElementById("requirementDiv").style.display="none";
+		
+		$("#submissionOffersList option:selected").removeAttr("selected");
+		$('#submissionOffersList').trigger("chosen:updated");
+		$('#submissionOffersList').removeAttr('data-validation');
+		$('#submissionOffersList').attr('data-validation-optional',"true");
+		$('#offeredSubmissionDiv').find('p.jquery_form_error_message').remove();
+		document.getElementById("offeredSubmissionDiv").style.display="none";
 	}
 	if(contractType == "Vendor MSA"){
 		$('#clientOrgRelationId').removeAttr('data-validation');
@@ -572,10 +590,19 @@ function contractTypeLabels(){
 		$('#clientContact').removeAttr('data-validation');
 		$('#clientContact').attr('data-validation-optional',"true");
 		
-		$("#requirementsList").empty();
-		$("#requirementsList" ).hide
-        $("#submissionOffersList").empty();
-        $("#submissionOffersList" ).hide();
+		$("#requirementsList option:selected").removeAttr("selected");
+		$('#requirementsList').trigger("chosen:updated");
+		$('#requirementsList').removeAttr('data-validation');
+		$('#requirementsList').attr('data-validation-optional',"true");
+		$('#requirementDiv').find('p.jquery_form_error_message').remove();
+		document.getElementById("requirementDiv").style.display="none";
+		
+		$("#submissionOffersList option:selected").removeAttr("selected");
+		$('#submissionOffersList').trigger("chosen:updated");
+		$('#submissionOffersList').removeAttr('data-validation');
+		$('#submissionOffersList').attr('data-validation-optional',"true");
+		$('#offeredSubmissionDiv').find('p.jquery_form_error_message').remove();
+		document.getElementById("offeredSubmissionDiv").style.display="none";
 	}
 	if(contractType == "Client SOW"){
 		$('#orgRelationId').removeAttr('data-validation');
@@ -645,6 +672,8 @@ function contractTypeLabels(){
 	              	  $("#requirementsList").trigger('chosen:update');
 	              }
 	              $("#requirementDiv").css("display", "block");
+	              $('#requirementsList').removeAttr('data-validation-optional');
+	  			  $('#requirementsList').attr("data-validation","required");
 	       },
 	    });
 	}
@@ -659,10 +688,10 @@ function contractTypeLabels(){
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  var json = JSON.parse(data);
 	            	  var result = "";
-	            	  result = result + '<option value="">--- Select Offer ---</option>';
+	            	  result = result + '<option value="">--- Select Candidate ---</option>';
 	                  for (var i = 0; i < json.length; i++) {
 	                 	 var opt = json[i]; 
-	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.jobTitle+'</option>';
+	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.candidateName+'</option>';
 	                  }
 	                  $("#submissionOffersList").empty();
 	                  $("#submissionOffersList").append(result);
@@ -670,6 +699,8 @@ function contractTypeLabels(){
 	              	  $("#submissionOffersList").trigger('chosen:update');
 	              }
 	              $("#offeredSubmissionDiv").css("display", "block");
+	              $('#submissionOffersList').removeAttr('data-validation-optional');
+	  			  $('#submissionOffersList').attr("data-validation","required");
 	       },
 	    });
 
