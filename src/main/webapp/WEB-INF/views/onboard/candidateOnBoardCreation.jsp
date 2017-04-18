@@ -1854,7 +1854,6 @@ function saveOnboardTask(){
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/saveCandidateOnBoardTasks?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
 		        success: function(result) {
-		        	
 		        	if(result == 'success'){
 		        		$("#onboardtasksLoading").removeAttr("style");
 			        	flushOnboardTask();
