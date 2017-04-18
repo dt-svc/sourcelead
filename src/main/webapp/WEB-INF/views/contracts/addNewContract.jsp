@@ -179,7 +179,14 @@
               <div class="col-md-8">
 					<textarea class="form-control" rows="3" id="description" name="description" data-validation-optional="true" data-validation="validate_Space validate_length length1-250"></textarea>
               </div>
-            </div>            
+            </div>    
+            
+            <div class="form-group">
+              <label class="col-md-4">State of Jurisdiction</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="jurisdiction" name="jurisdiction" field-name="State Jurisdiction">
+              </div>
+            </div>         
             
         </div>
       </div>
