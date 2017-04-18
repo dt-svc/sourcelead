@@ -124,6 +124,12 @@ public class Contracts {
 	@Column(name = "TOTAL_HOURS")
 	private String totalHours;
 	
+	@Column(name = "OVERTIME_RATE")
+	private String overtimeRate;
+	
+	@Column(name = "OVERTIME_RATE_TYPE")
+	private String overtimeRateType;
+	
 	@Column(name = "STATUS")
 	private String status;
 	
@@ -455,6 +461,22 @@ public class Contracts {
 
 	public void setTotalHours(String totalHours) {
 		this.totalHours = totalHours;
+	}
+
+	public String getOvertimeRate() {
+		return overtimeRate;
+	}
+
+	public void setOvertimeRate(String overtimeRate) {
+		this.overtimeRate = overtimeRate;
+	}
+
+	public String getOvertimeRateType() {
+		return overtimeRateType;
+	}
+
+	public void setOvertimeRateType(String overtimeRateType) {
+		this.overtimeRateType = overtimeRateType;
 	}
 
 	public String getStatus() {

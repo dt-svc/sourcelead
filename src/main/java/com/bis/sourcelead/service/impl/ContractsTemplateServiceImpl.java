@@ -1,7 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
@@ -9,19 +8,18 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
-import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -138,6 +136,33 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		if(null != contractsTemplate){
 			contracts.setContractsTemplate(contractsTemplate);
 		}
+		
+		if(jsonObj.has("requirementsList") && null != jsonObj.getString("requirementsList") && !"".equals(jsonObj.getString("requirementsList"))){
+			RequirementSubmission rs = new RequirementSubmission();
+			rs.setId(Long.parseLong(jsonObj.getString("requirementsList")));
+			contracts.setRequirementSubmission(rs);
+		}
+		
+		if(jsonObj.has("hoursPerWeek") && null != jsonObj.getString("hoursPerWeek") && !"".equals(jsonObj.getString("hoursPerWeek"))){
+			contracts.setHoursPerWeek(jsonObj.getString("hoursPerWeek"));
+		}
+		
+		if(jsonObj.has("overTimeHours") && null != jsonObj.getString("overTimeHours") && !"".equals(jsonObj.getString("overTimeHours"))){
+			contracts.setOverTimeHours(jsonObj.getString("overTimeHours"));
+		}
+		
+		if(jsonObj.has("totalHoursEstimated") && null != jsonObj.getString("totalHoursEstimated") && !"".equals(jsonObj.getString("totalHoursEstimated"))){
+			contracts.setTotalHours(jsonObj.getString("totalHoursEstimated"));
+		}
+		
+		if(jsonObj.has("overtimeRate") && null != jsonObj.getString("overtimeRate") && !"".equals(jsonObj.getString("overtimeRate"))){
+			contracts.setTotalHours(jsonObj.getString("overtimeRate"));
+		}
+		
+		if(jsonObj.has("overtimeRateType") && null != jsonObj.getString("overtimeRateType") && !"".equals(jsonObj.getString("overtimeRateType"))){
+			contracts.setTotalHours(jsonObj.getString("overtimeRateType"));
+		}
+		
 		contracts.setContractTitle(jsonObj.getString("contractTitle"));
 		vendorContracts.setContractTitle(jsonObj.getString("contractTitle"));
 		User ownerUser = userService.getUserById(Long.parseLong(jsonObj.getString("owner")));

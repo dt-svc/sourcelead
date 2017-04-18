@@ -195,6 +195,46 @@
 <div class="row newContrBill">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
            <h2>Billing Details</h2>
+           
+           <div class="form-group" id="hoursPerWeekDiv" style="display: none;">
+              <label class="col-md-4">Hours Per Week<span class="text-danger">&nbsp;*</span></label>
+	              <div class="col-md-8">
+				  		<input type="text" class="form-control" id="hoursPerWeek" name="hoursPerWeek" value="" placeholder="Enter Hours" field-name="Hours Per Week">
+	              </div>
+            </div>
+            
+            <div class="form-group" id="overTimeHoursDiv" style="display: none;">
+              <label class="col-md-4">Overtime Hours<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8">
+					  	<input type="text" class="form-control" id="overTimeHours" name="overTimeHours" value="" placeholder="Enter Hours" field-name="Overtime Hours">
+              	</div>
+            </div>
+            
+            <div class="form-group" id="totalHoursEstimatedDiv" style="display: none;">
+              <label class="col-md-4">Total Hours Estimated<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8">
+					  	<input type="text" class="form-control" id="totalHoursEstimated" name="totalHoursEstimated" value="" placeholder="Enter Total Estimated Hours" field-name="Total Estimated Hours">
+              	</div>
+            </div>
+           
+           <div class="form-group" id="overtimeRateDiv" style="display: none;">
+              <label class="col-md-4">Overtime Rate<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8">
+              		<div class="row">
+					  <div class="col-lg-8">
+					  	<input type="text" class="form-control" id="overtimeRate" name="overtimeRate" value="" placeholder="Overtime Rate" field-name="Overtime Rate">
+					  </div>
+					  <div class="col-lg-4">
+						<select class="form-control selectpicker" id="overtimeRateType" name="overtimeRateType" field-name="Overtime Rate Type">
+						  <option value="">Select Type</option>
+						  <option value="FLAT">Flat</option>
+						  <option value="PERCENTAGE">Percentage</option>
+						</select>
+					  </div>
+					</div>
+              	</div>
+            </div>
+           
             <div class="form-group">
               <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
@@ -557,19 +597,7 @@ function contractTypeLabels(){
 		$('#vendorContact').removeAttr('data-validation');
 		$('#vendorContact').attr('data-validation-optional',"true");
 		
-        $("#requirementsList option:selected").removeAttr("selected");
-		$('#requirementsList').trigger("chosen:updated");
-		$('#requirementsList').removeAttr('data-validation');
-		$('#requirementsList').attr('data-validation-optional',"true");
-		$('#requirementDiv').find('p.jquery_form_error_message').remove();
-		document.getElementById("requirementDiv").style.display="none";
-		
-		$("#submissionOffersList option:selected").removeAttr("selected");
-		$('#submissionOffersList').trigger("chosen:updated");
-		$('#submissionOffersList').removeAttr('data-validation');
-		$('#submissionOffersList').attr('data-validation-optional',"true");
-		$('#offeredSubmissionDiv').find('p.jquery_form_error_message').remove();
-		document.getElementById("offeredSubmissionDiv").style.display="none";
+		hideCommonSOWFields();
 	}
 	if(contractType == "Client MSA"){
 		$('#orgRelationId').removeAttr('data-validation');
@@ -577,19 +605,7 @@ function contractTypeLabels(){
 		$('#vendorContact').removeAttr('data-validation');
 		$('#vendorContact').attr('data-validation-optional',"true");
 		
-		$("#requirementsList option:selected").removeAttr("selected");
-		$('#requirementsList').trigger("chosen:updated");
-		$('#requirementsList').removeAttr('data-validation');
-		$('#requirementsList').attr('data-validation-optional',"true");
-		$('#requirementDiv').find('p.jquery_form_error_message').remove();
-		document.getElementById("requirementDiv").style.display="none";
-		
-		$("#submissionOffersList option:selected").removeAttr("selected");
-		$('#submissionOffersList').trigger("chosen:updated");
-		$('#submissionOffersList').removeAttr('data-validation');
-		$('#submissionOffersList').attr('data-validation-optional',"true");
-		$('#offeredSubmissionDiv').find('p.jquery_form_error_message').remove();
-		document.getElementById("offeredSubmissionDiv").style.display="none";
+		hideCommonSOWFields();
 	}
 	if(contractType == "Vendor MSA"){
 		$('#clientOrgRelationId').removeAttr('data-validation');
@@ -597,25 +613,15 @@ function contractTypeLabels(){
 		$('#clientContact').removeAttr('data-validation');
 		$('#clientContact').attr('data-validation-optional',"true");
 		
-		$("#requirementsList option:selected").removeAttr("selected");
-		$('#requirementsList').trigger("chosen:updated");
-		$('#requirementsList').removeAttr('data-validation');
-		$('#requirementsList').attr('data-validation-optional',"true");
-		$('#requirementDiv').find('p.jquery_form_error_message').remove();
-		document.getElementById("requirementDiv").style.display="none";
-		
-		$("#submissionOffersList option:selected").removeAttr("selected");
-		$('#submissionOffersList').trigger("chosen:updated");
-		$('#submissionOffersList').removeAttr('data-validation');
-		$('#submissionOffersList').attr('data-validation-optional',"true");
-		$('#offeredSubmissionDiv').find('p.jquery_form_error_message').remove();
-		document.getElementById("offeredSubmissionDiv").style.display="none";
+		hideCommonSOWFields();
 	}
 	if(contractType == "Client SOW"){
 		$('#orgRelationId').removeAttr('data-validation');
 		$('#orgRelationId').attr('data-validation-optional',"true");
 		$('#vendorContact').removeAttr('data-validation');
 		$('#vendorContact').attr('data-validation-optional',"true");
+		
+		showCommonSOWFields();
 		getRequirements("clientSOW");
 	}
 	if(contractType == "Vendor SOW"){
@@ -623,12 +629,80 @@ function contractTypeLabels(){
 		$('#clientOrgRelationId').attr('data-validation-optional',"true");
 		$('#clientContact').removeAttr('data-validation');
 		$('#clientContact').attr('data-validation-optional',"true");
+		
+		showCommonSOWFields();
 		getRequirements("vendorSOW");
 	}
 }
-
 </script>
 
+<script>
+function showCommonSOWFields(){
+	document.getElementById("hoursPerWeekDiv").style.display="block";
+    $('#hoursPerWeek').removeAttr('data-validation-optional');
+	$('#hoursPerWeek').attr("data-validation","required");
+	
+	document.getElementById("overTimeHoursDiv").style.display="block";
+    $('#overTimeHours').removeAttr('data-validation-optional');
+	$('#overTimeHours').attr("data-validation","required");
+	
+	document.getElementById("totalHoursEstimatedDiv").style.display="block";
+    $('#totalHoursEstimated').removeAttr('data-validation-optional');
+	$('#totalHoursEstimated').attr("data-validation","required");
+	
+	document.getElementById("overtimeRateDiv").style.display="block";
+    $('#overtimeRate').removeAttr('data-validation-optional');
+	$('#overtimeRate').attr("data-validation","required");
+	$('#overtimeRateType').removeAttr('data-validation-optional');
+	$('#overtimeRateType').attr("data-validation","required");
+}
+</script>
+
+<script>
+function hideCommonSOWFields(){
+	$("#requirementsList option:selected").removeAttr("selected");
+	$('#requirementsList').trigger("chosen:updated");
+	$('#requirementsList').removeAttr('data-validation');
+	$('#requirementsList').attr('data-validation-optional',"true");
+	$('#requirementDiv').find('p.jquery_form_error_message').remove();
+	document.getElementById("requirementDiv").style.display="none";
+	
+	$("#submissionOffersList option:selected").removeAttr("selected");
+	$('#submissionOffersList').trigger("chosen:updated");
+	$('#submissionOffersList').removeAttr('data-validation');
+	$('#submissionOffersList').attr('data-validation-optional',"true");
+	$('#offeredSubmissionDiv').find('p.jquery_form_error_message').remove();
+	document.getElementById("offeredSubmissionDiv").style.display="none";
+	
+	$('#hoursPerWeek').removeAttr('data-validation');
+	$('#hoursPerWeek').attr('data-validation-optional',"true");
+	$('#hoursPerWeek').val("");
+	$('#hoursPerWeekDiv').find('p.jquery_form_error_message').remove();
+	document.getElementById("hoursPerWeekDiv").style.display="none";
+	
+	$('#overTimeHours').removeAttr('data-validation');
+	$('#overTimeHours').attr('data-validation-optional',"true");
+	$('#overTimeHours').val("");
+	$('#overTimeHoursDiv').find('p.jquery_form_error_message').remove();
+	document.getElementById("overTimeHoursDiv").style.display="none";
+	
+	$('#totalHoursEstimated').removeAttr('data-validation');
+	$('#totalHoursEstimated').attr('data-validation-optional',"true");
+	$('#totalHoursEstimated').val("");
+	$('#totalHoursEstimatedDiv').find('p.jquery_form_error_message').remove();
+	document.getElementById("totalHoursEstimatedDiv").style.display="none";
+	
+	$('#overtimeRate').removeAttr('data-validation');
+	$('#overtimeRate').attr('data-validation-optional',"true");
+	$('#overtimeRate').val("");
+	$("#overtimeRateType option:selected").removeAttr("selected");
+	$('#overtimeRateType').trigger("chosen:updated");
+	$('#overtimeRateType').removeAttr('data-validation');
+	$('#overtimeRateType').attr('data-validation-optional',"true");
+	$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
+	document.getElementById("overtimeRateDiv").style.display="none";
+}
+</script>
 
 <script type="text/javascript">
 	function saveNewContract(saveType) {
@@ -678,7 +752,7 @@ function contractTypeLabels(){
 	                  $("#requirementsList").chosen();
 	              	  $("#requirementsList").trigger('chosen:update');
 	              }
-	              $("#requirementDiv").css("display", "block");
+	              document.getElementById("requirementDiv").style.display="block";
 	              $('#requirementsList').removeAttr('data-validation-optional');
 	  			  $('#requirementsList').attr("data-validation","required");
 	       },
@@ -705,7 +779,7 @@ function contractTypeLabels(){
 	                  $("#submissionOffersList").chosen();
 	              	  $("#submissionOffersList").trigger('chosen:update');
 	              }
-	              $("#offeredSubmissionDiv").css("display", "block");
+	              document.getElementById("offeredSubmissionDiv").style.display="block";
 	              $('#submissionOffersList').removeAttr('data-validation-optional');
 	  			  $('#submissionOffersList').attr("data-validation","required");
 	       },
