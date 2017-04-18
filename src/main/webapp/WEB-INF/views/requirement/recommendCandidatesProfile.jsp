@@ -18,6 +18,9 @@ text-align:left;
 #skillName {
 width: 100%;
 }
+.chosen-container {
+    width: 100% !important;
+}
 </style>
 
 

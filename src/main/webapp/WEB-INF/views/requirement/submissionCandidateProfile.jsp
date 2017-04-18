@@ -52,7 +52,6 @@ function getCandidateProfile(candidateId){
 							    result = result +'      <div class="select-skills selectSkills_view">';
 							    result = result +'       <div class="divskill col-md-12"> ';
 							    
-							    
 							    result = result +'<div class="clearfix"></div>';
 								result = result +'<div class="append_skill ">';  
 								result = result +'<ul class="list-inline list-unstyled">';
@@ -71,7 +70,6 @@ function getCandidateProfile(candidateId){
 								result = result +'           </div>';
 								result = result +'          </div>';
 								result = result +'        </div>';
-								
 								//Employee Div
 								result = result + '<div id="employeeSubmissionProfile"></div> '; 
 								
@@ -93,17 +91,15 @@ function getCandidateProfile(candidateId){
 								result = result +'  </div>';
 								result = result +'</div>'; 
 							
-							
 							result = result + '    </div>';
 							result = result + '  </div>';
 							$("#tabb-1").empty();
 							$("#tabb-2").empty(); 
 							$("#tabb-2").append(result);  
-							    
 							candidateSkillsList(candidateId);
-							employeeSubmissionProfile(candidateId);
-							educationSubmissionProfile(candidateId);
-							certificationSubmissionProfile(candidateId);
+							reqEmployeeSubmissionProfile(candidateId);
+							reqEducationSubmissionProfile(candidateId);
+							reqCertificationSubmissionProfile(candidateId);
 								
 								$(".btn-addskills").click(function(){
 									$(".add-skills").css({"display":"block","opacity":"1"});
@@ -290,8 +286,8 @@ function candidateSkillsList(candidateId){
 
 
 <script>
-	function employeeSubmissionProfile(candidateId) {
-		var sourceleadUrl = '${sourceleadUrl}';
+	function reqEmployeeSubmissionProfile(candidateId) {
+		 var sourceleadUrl = '${sourceleadUrl}';
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId,
@@ -323,23 +319,10 @@ function candidateSkillsList(candidateId){
 										designation = " "; 
 									}
 									
-									
-									 if (opt.startMonth != null && opt.startMonth != '' && opt.startMonth != 'undefined') {
-										startMonth=   opt.startMonth +' - ';
-									}else{
-										startMonth = " ";
-									}
-									
 									if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined') {
-										startYear=   opt.startYear  +' TO ';
+										startYear=   opt.startYear ;
 									}else{
 										startYear = " ";
-									}
-									
-									if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
-										endMonth = opt.endMonth +' - ';  
-									} else {
-										endMonth = " ";
 									}
 									
 									if (opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
@@ -352,7 +335,13 @@ function candidateSkillsList(candidateId){
 									result = result +' <h3>'+name+'</h3>';
 									result = result +' <p>'+designation+'</p>';
 									result = result +' <p>';
-								    result = result + startMonth +''+startYear +' '+endMonth +''+endYear; 
+									 if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined' && opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
+									    	result = result + startYear +' To '+endYear; 
+									    }else if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined'){
+									    	result = result + startYear; 
+									    }else if(opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
+									    	result = result + endYear; 
+									    }
 									result = result +'  </p>';
 									result = result +'  </div>';
 									result = result +'</li>';
@@ -366,12 +355,12 @@ function candidateSkillsList(candidateId){
 						}
 					},
 
-				});
+				}); 
 	}
 </script>
 
 <script>
-function educationSubmissionProfile(candidateId){
+function reqEducationSubmissionProfile(candidateId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
@@ -429,21 +418,19 @@ function educationSubmissionProfile(candidateId){
 		                    	 }else{
 		                    		 Educationaddress = " ";
 		                    	 }
-		                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
-		                    		 EducationstartDateStr = opt.startDateStr +' TO ';
+		                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined' && opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+		                    		 EducationstartDateStr = opt.startDateStr +' TO '+opt.endDateStr;
+		                    	 }else if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
+		                    		 EducationstartDateStr = opt.startDateStr;
 		                    	 }else{
-		                    		 EducationstartDateStr = " ";
+		                    		 EducationstartDateStr ='';
 		                    	 }
-		                    	 if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){ 
-		                    		 EducationendDateStr = opt.endDateStr;
-		                    	 }else{
-		                    		 EducationendDateStr = " ";
-		                    	 }
+		                    	 
 			                        result = result +'                <li>';
 									result = result +'                  <div class="clearfix">';
 		                    	    result = result +'                    <h3>'+EducationName+' <span class="small text-muted">&nbsp;'+specialization+'</span></h3>';
 		                    	    result = result +'                    <p>'+EducationgradeType + ' '+Educationgrade+' '+institute+' '+Educationaddress+'</p>';
-									result = result +'                    <p>'+EducationstartDateStr+' '+EducationendDateStr+'</p>';
+									result = result +'                    <p>'+EducationstartDateStr+'</p>';
 									result = result +'                  </div>';
 									result = result +'                </li>';
 		                     }
@@ -463,7 +450,7 @@ function educationSubmissionProfile(candidateId){
 </script> 
 
 <script>
-function certificationSubmissionProfile(candidateId){
+function reqCertificationSubmissionProfile(candidateId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
@@ -498,22 +485,19 @@ function certificationSubmissionProfile(candidateId){
 				            	}else{
 				            		scoreType = " ";
 				            	}
-				            	if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
+				            	if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != "" && opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
+				            		candidatevalidFromDateToString = opt.candidatevalidFromDateToString +' To '+opt.candidatevalidToDateToString;
+				            	}else if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
 				            		candidatevalidFromDateToString = opt.candidatevalidFromDateToString;
-				            	}else{
-				            		candidatevalidFromDateToString = " ";
-				            	}
-				            	if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
-				            		candidatevalidToDateToString = opt.candidatevalidToDateToString;
-				            	}else{
-				            		candidatevalidToDateToString = " ";
+				            	}else if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
+				            		candidatevalidFromDateToString = opt.candidatevalidToDateToString;
 				            	}
 				            	
 								result = result +'                <li>';
 								result = result +'                  <div class="clearfix">';
 								result = result +'                    <h3>'+opt.name+' <span class="small text-muted">&nbsp;'+score+'  '+scoreType+'</span></h3>';
 								result = result +'                    <p>'+opt.provider+' </p>';
-								result = result +'                    <p> '+candidatevalidFromDateToString+' TO '+candidatevalidToDateToString+'</p>';
+								result = result +'                    <p> '+candidatevalidFromDateToString+'</p>';
 								result = result +'                  </div>';
 								result = result +'                </li>';
 							}
