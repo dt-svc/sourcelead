@@ -140,6 +140,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 	}
 
 	@Override
+	@Transactional
 	public Contracts getContractById(Long contractId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
@@ -150,6 +151,20 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		}
 		return contracts;
 	}
+
+	@Override
+	@Transactional
+	public Contracts getChildContractById(Long contractId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Contracts  contracts =  null;
+		List<Contracts>  contractsList = session.createQuery("from Contracts ct where ct.parentContractId.id =:contractId").setLong("contractId", contractId).setCacheable(true).list();
+		if(null != contractsList && contractsList.size() >0){
+			contracts = contractsList.get(0);
+		}
+		return contracts;
+	}
+
 
 	
 

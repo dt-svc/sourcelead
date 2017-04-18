@@ -4136,5 +4136,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	public List<RequirementSubmission> getVendorSpocSubmissions(String userCode, Long orgLocationId) {
 		return requirementSubmissionDao.getVendorSpocSubmissions(userCode,orgLocationId);
 	}
+	
+	@Override
+	public List<RequirementSubmission> getSubmissionsForSOWByRequirementId(Long requirementId) {
+		return requirementSubmissionDao.getSubmissionsForSOWByRequirementId(requirementId);
+	}
 
 }
