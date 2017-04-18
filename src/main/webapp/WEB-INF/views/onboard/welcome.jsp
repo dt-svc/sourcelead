@@ -27,7 +27,19 @@
 	<section class="welcoBg">
 		<section class="welcoInn">
 		  <div class="welcoHead">
-				<div class="welLogo"><img src="resources/images/w-logo.png" alt=""/></div>
+				 <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
+					<div class="welLogo">
+					<img class="logo" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" />
+					</div>
+				</c:if>
+				
+				<c:if test="${empty SourceLeadWeb_org.fileContentType}">
+					<div class="welLogoText">
+					<span  title="${SourceLeadWeb_orgName}">${SourceLeadWeb_orgName}</span>
+					</div>
+				</c:if>
+				
+				<div class="welSiO" onclick="logoutFormSubmit();" title="Sign Out"><i class="fa fa-sign-out"></i></div>
 			  <ul>
 				  <li class="actLi"><span>1</span><b>Welcome</b><i class="line"></i></li>
 				  <li><span>2</span><b>Step two</b><i class="line"></i></li>
@@ -39,12 +51,22 @@
 		  </div>
 		  
 			<div class="welCo1">
-				<h2>Welcome to Business Intelli Solutions!</h2>
+				<h2>Welcome to ${SourceLeadWeb_orgName}</h2>
 				<h3>First and foremost, Welcome to the Company!</h3>
 				<p>Below you can find out brief introduction about the Company and a glance at the manager, your team and support documents, next verify your personal information, documents and take a couple of minutes to view boarding undertakings </p><br>
 				<h4>About the Company</h4>
 				<div class="welCoInn">
-					<div class="welCoInnLeft"><img src="resources/images/w-logo.png" alt=""/></div>
+					<div class="welCoInnLeft">
+						<c:if test="${!empty SourceLeadWeb_org.fileContentType}">
+							<img class="logo" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" />
+						</c:if>
+						
+						<c:if test="${empty SourceLeadWeb_org.fileContentType}">
+							<div class="welLogoText">
+							<span  title="${SourceLeadWeb_orgName}">${SourceLeadWeb_orgName}</span>
+							</div>
+						</c:if>
+					</div>
 					<div class="welCoInnRight">
 						<p>${SourceLeadWeb_org.orgDescription}</p>
 					</div>
@@ -129,4 +151,17 @@ $(function(){
 });
 </script>
 
+<script>
+		function logoutFormSubmit() {
+			document.getElementById("logoutForm").submit();
+		}
+</script>
 
+<c:url var="logoutUrl" value="/logout"/>
+<form action="${logoutUrl}" method="post" id="logoutForm">
+ <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+</form>
+
+<form action="${logoutUrl}" method="post" id="logoutForm">
+ <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+</form>

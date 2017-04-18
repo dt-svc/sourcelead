@@ -1,6 +1,4 @@
 <!DOCTYPE html>
-<html lang="en" manifest="/sourcelead.appcache">
-<head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -25,11 +23,6 @@
 <script src="resources/js/formvalidator.js"></script>
 
 
-</head>
-
-<body>
-
-
 <script type="text/javascript">
 		window.onload = function () {
 			getOnBoardCandidateCountry('${SourceLeadWeb_candidateOnBoarding.country}');
@@ -47,7 +40,19 @@
 	<section class="welcoBg">
 		<section class="welcoInn">
 		  <div class="welcoHead">
-				<div class="welLogo"><img src="resources/images/w-logo.png" alt=""/></div>
+				<c:if test="${!empty SourceLeadWeb_org.fileContentType}">
+					<div class="welLogo">
+					<img class="logo" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" />
+					</div>
+				</c:if>
+				
+				<c:if test="${empty SourceLeadWeb_org.fileContentType}">
+					<div class="welLogoText">
+					<span  title="${SourceLeadWeb_orgName}">${SourceLeadWeb_orgName}</span>
+					</div>
+				</c:if>
+				
+				<div class="welSiO" onclick="logoutFormSubmit();" title="Sign Out"><i class="fa fa-sign-out"></i></div>
 			  <ul>
 				  <li class="actLi"><span class="fill">1</span><b>Welcome</b><i class="line"></i></li>
 				  <li class="actLi"><span>2</span><b>Step two</b><i class="line"></i></li>
@@ -63,7 +68,7 @@
 <div class="welCo1">
 <h5>Employee Details</h5>
 <div class="form-horizontal padBot">
-	<div class="row clearfix">
+	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 			<div class="form-group">
 			  <label class="col-md-4 control-label">First Name <span class="text-danger paddingLeft">*</span></label>
@@ -81,7 +86,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="row clearfix">
+	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Street Addess 1 <span class="text-danger paddingLeft">*</span></label>
@@ -99,7 +104,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="row clearfix">
+	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 			  <div class="form-group">
 			  <label class="col-md-4 control-label">Country <span class="text-danger paddingLeft">*</span></label>
@@ -121,7 +126,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="row clearfix">
+	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
 			<div class="form-group">
 			  <label class="col-md-4 control-label">City</label>
@@ -141,7 +146,7 @@
 			</div>
 		</div>	
 	</div>	
-	<div class="row clearfix">
+	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Mobile number <span class="text-danger paddingLeft">*</span></label>
@@ -159,7 +164,7 @@
 			</div>
 		</div>	
 	</div>
-	<div class="row clearfix">
+	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Company Email</label>
@@ -173,7 +178,7 @@
  
  <h5>Position Details</h5>
  <div class="form-horizontal">
-	<div class="row clearfix">
+	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Role</label>
@@ -191,7 +196,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="row clearfix">
+	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 			<div class="form-group">
                   <label class="col-md-4 control-label">End date ${SourceLeadWeb_candidateOnBoarding.endDateStr}</label>
@@ -209,7 +214,7 @@
                 </div>
 		</div>
 	</div>
-	<div class="row clearfix">
+	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                 <div class="form-group">
                   <label class="col-md-4 control-label">Manager</label>
@@ -227,7 +232,7 @@
                 </div>
 		</div>
 	</div>
-	<div class="row clearfix">
+	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
                 <div class="form-group">
                   <label class="col-md-4 control-label">Employment Type</label>
@@ -245,7 +250,7 @@
                 </div>
 		</div>	
 	</div>	
-	<div class="row clearfix">
+	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
                   <div class="form-group">
                   <label class="col-md-4 control-label">Termination Notice</label>
@@ -263,7 +268,7 @@
                 </div>
 		</div>	
 	</div>
-	<div class="row clearfix">
+	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
                   <div class="form-group">
                   <label class="col-md-4 control-label">Speical Conditions</label>
@@ -289,7 +294,7 @@
 		  
 		</section>
 	</section>  
-  
+  </div>
   <!--   Welcome Screens   -->
 
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
@@ -507,8 +512,17 @@ function getOnBoardCandidateCities(country,state,city){
         
 </script>  
 
+<script>
+		function logoutFormSubmit() {
+			document.getElementById("logoutForm").submit();
+		}
+</script>
 
-</div>
+<c:url var="logoutUrl" value="/logout"/>
+<form action="${logoutUrl}" method="post" id="logoutForm">
+ <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+</form>
 
-</body>
-</html>
+<form action="${logoutUrl}" method="post" id="logoutForm">
+ <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+</form>

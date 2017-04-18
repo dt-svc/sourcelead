@@ -371,7 +371,10 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		 candidateOnBoarding.setOnboardingUser(onboardingUser);
 		 candidateOnBoarding.setOnboardSubmitted(Constants.NO);
 		 candidateOnBoarding.setRoleId(onboardingUserRole.getRoles());
-		 candidateOnBoarding.setTeamId(onboardingTeamMember.getTeamId());
+		 if(null != onboardingTeamMember){
+			 candidateOnBoarding.setTeamId(onboardingTeamMember.getTeamId());
+		 }
+		 
 		 candidateOnBoardingDao.saveCandidateOnBoarding(candidateOnBoarding);
 		
 	}

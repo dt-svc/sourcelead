@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<html lang="en" manifest="/sourcelead.appcache">
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -29,10 +28,8 @@
         overflow: visible !important;
     }
     </style>
-
 </head>
 
-<body>
 
 <div class="wraper"> 
 
@@ -42,7 +39,19 @@
 	<section class="welcoBg">
 		<section class="welcoInn">
 		  <div class="welcoHead">
-				<div class="welLogo"><img src="images/w-logo.png" alt=""/></div>
+				<c:if test="${!empty SourceLeadWeb_org.fileContentType}">
+					<div class="welLogo">
+					<img class="logo" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" />
+					</div>
+				</c:if>
+				
+				<c:if test="${empty SourceLeadWeb_org.fileContentType}">
+					<div class="welLogoText">
+					<span  title="${SourceLeadWeb_orgName}">${SourceLeadWeb_orgName}</span>
+					</div>
+				</c:if>
+				
+				<div class="welSiO" onclick="logoutFormSubmit();" title="Sign Out"><i class="fa fa-sign-out"></i></div>
 			  <ul>
 				  <li class="actLi"><span class="fill">1</span><b>Welcome</b><i class="line"></i></li>
 				  <li class="actLi"><span class="fill">2</span><b>Step two</b><i class="line"></i></li>
@@ -52,85 +61,74 @@
 			  </ul>
 			  <div class="clearfix"></div>
 		  </div>
-		  
+	
+	<form:form class="login-form clearfix"  id="onboardCandidateDocs_form"  name="onboardCandidateDocs_form" enctype='multipart/form-data' >	  
+		<div id="loading"></div>
 		<div class="welCo1">
-
+        <input type="hidden" name="candidateOnboardId" id="candidateOnboardId" value="${candidateOnboardId}"/>
+		<c:if test="${contractDocsListSize > 0}">
 			<div class="step3Wrap">
 			<h2>Employment Contract</h2>
+				<c:forEach var="contractDocs" items="${contractDocsList}">
 				<div class="step3">
-					<span><a href="images/BIS-pdf.pdf" target="_blank"  class="fa fa-file-excel-o"></a></span>
+					<span><a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${contractDocs.documentUUID}" class="fa fa-file-word-o"></a></span>
 					<strong>
-						<p>Document Name here...</p>
-						<a href="images/BIS-pdf.pdf" download >Download</a><br>
-						<label><input type="checkbox"> &nbsp; Checkbox accepted text..</label>
+						<p>${contractDocs.fileName}</p>
+						<input type="file"  class="form-control welFile" readonly id="uploadContractsFile${contractDocs.id}" name="docFile${contractDocs.id}"   placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
 					</strong>
 					<div class="clearfix"></div>
 				</div>
-				<div class="step3">
-					<span><a href="images/BIS-pdf.pdf" target="_blank"  class="fa fa-file-pdf-o"></a></span>
-					<strong>
-						<p>Document Name here...</p>
-						<a href="images/BIS-pdf.pdf" download >Download</a><br>
-						<label><input type="checkbox"> &nbsp; Checkbox accepted text..</label>
-					</strong>
-					<div class="clearfix"></div>
-				</div>
+				</c:forEach>
 				<div class="clearfix"></div>			
 			</div>	
+		</c:if>	
+			
+			
+		<c:if test="${formsDocsListSize > 0}">
 			<div class="step3Wrap">
 			<h2 class="padTop">Employment Forms</h2>
+				<c:forEach var="formsDocs" items="${formsDocsList}">
 				<div class="step3">
-					<span><a href="images/BIS-pdf.pdf" target="_blank"  class="fa fa-file-word-o"></a></span>
+					<span><a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${formsDocs.documentUUID}" class="fa fa-file-word-o"></a></span>
 					<strong>
-						<p>Document Name here...</p>
-						<a href="images/BIS-pdf.pdf" download >Download</a><br>
-						<label><input type="checkbox"> &nbsp; Checkbox accepted text..</label>
+						<p>${formsDocs.fileName}</p>
+						<input  type="file" class="form-control welFile" readonly id="uploadFormsFile${formsDocs.id}"  name="docFile${formsDocs.id}"  placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
 					</strong>
 					<div class="clearfix"></div>
 				</div>
-				<div class="step3">
-					<span><a href="images/BIS-pdf.pdf" target="_blank"  class="fa fa-file-excel-o"></a></span>
-					<strong>
-						<p>Document Name here...</p>
-						<a href="images/BIS-pdf.pdf" download >Download</a><br>
-						<label><input type="checkbox"> &nbsp; Checkbox accepted text..</label>
-					</strong>
-					<div class="clearfix"></div>
-				</div>				
-				<div class="step3">
-					<span><a href="images/BIS-pdf.pdf" target="_blank"  class="fa fa-file-pdf-o"></a></span>
-					<strong>
-						<p>Document Name here...</p>
-						<a href="images/BIS-pdf.pdf" download >Download</a><br>
-						<label><input type="checkbox"> &nbsp; Checkbox accepted text..</label>
-					</strong>
-					<div class="clearfix"></div>
-				</div>
+				</c:forEach>
 				<div class="clearfix"></div>			
 			</div>	
+		</c:if>	
+		
+		
+			<c:if test="${policiesDocsListSize > 0}">
 			<div class="step3Wrap">
-			<h2 class="padTop">Polices</h2>
+			<h2 class="padTop">Policies</h2>
+				<c:forEach var="policiesDocs" items="${policiesDocsList}">
 				<div class="step3">
-					<span><a href="images/BIS-pdf.pdf" target="_blank"  class="fa fa-file-image-o"></a></span>
+					<span><a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${policiesDocs.documentUUID}" class="fa fa-file-word-o"></a></span>
 					<strong>
-						<p>Document Name here...</p>
-						<a href="images/BIS-pdf.pdf" download >Download</a><br>
-						<label><input type="checkbox"> &nbsp; Checkbox accepted text..</label>
+						<p>${policiesDocs.fileName}</p>
 					</strong>
 					<div class="clearfix"></div>
 				</div>
-				<div class="clearfix"></div>
-			</div>							
-	  
-		  </div>		  
+				</c:forEach>
+				<div class="clearfix"></div>			
+			</div>	
+		</c:if>								
+  </div>		  
 		  
 <div class="welBtns">
-	<a href="welcome-two.html">Prew</a><a class="Brig" href="welcome-four.html">Proceed to next step</a><div class="clearfix"></div>
+	<input type="button"  value="Previous" onClick="javascript:location.href = '<c:url value='/onboardingCandidateSetp2'/>'" >
+	<input type="button"  value="Proceed to next step" id="save_button"  onclick="saveOnboardingCandidateDocs();" class="Brig">
+	<div class="clearfix"></div>
 </div>
-		  
+ </form:form>.
 		</section>
 	</section>  
   
+  </div>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
   <script src="resources/js/jquery.dataTables.min.js"></script> 
@@ -158,7 +156,114 @@
 });
 </script> 
 
-</div>
 
-</body>
-</html>
+
+
+
+<script>
+function saveOnboardingCandidateDocs(saveType){
+	var validationSettings = {
+	        errorMessagePosition : 'element',
+	       borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+         }; 
+	
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  
+	  var frm = $('#onboardCandidateDocs_form').serializeFormJSON();
+      var con = JSON.stringify(frm);
+      con = con.replace(/[{}]/g, "");
+      
+      //It will escape all the special characters
+      var jsonData = encodeURIComponent(con);
+      
+	   var form = $('#onboardCandidateDocs_form')[0];
+	   var formData = new FormData(form); 
+	
+   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$.ajax({
+        type : "POST",
+	      data: formData,
+	      contentType : 'application/json; charset=utf-8',
+	      enctype: 'multipart/form-data',
+          processData: false,
+          contentType:false,
+	      dataType : 'json',
+    	  url: sourceleadUrl+"/storeOnboardingCandidateDocsStep3?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,		
+	      success :function(result) {
+	    	  location.replace(sourceleadUrl+"/onboardingCandidateSetp4");  
+      }
+    	  
+  });
+}
+</script>
+
+
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>
+ 
+ 
+ <script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+
+        
+</script>  
+
+
+<script>
+function uploadFormFile(id){
+	 
+	 $("#uploadFormsFile"+id+"").val($("#uploadFormsBtn"+id+"").val().replace(/C:\\fakepath\\/i, ''));
+}
+
+function uploadContractFile(id){
+	
+	$("#uploadContractsFile"+id+"").val($("#uploadContractsBtn"+id+"").val().replace(/C:\\fakepath\\/i, ''));
+}
+
+function uploadPoliciesFile(id){
+	
+	$("#uploadPoliciesFile"+id+"").val($("#uploadPoliciesBtn"+id+"").val().replace(/C:\\fakepath\\/i, ''));
+}
+	 
+</script>
+
+
+<script>
+		function logoutFormSubmit() {
+			document.getElementById("logoutForm").submit();
+		}
+</script>
+
+<c:url var="logoutUrl" value="/logout"/>
+<form action="${logoutUrl}" method="post" id="logoutForm">
+ <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+</form>
+
+<form action="${logoutUrl}" method="post" id="logoutForm">
+ <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+</form>
