@@ -142,6 +142,10 @@ public class Contracts {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	
+	@Column(name = "STATE_JURISDICTION")
+	private String stateJurisdiction;
+	
 	@Transient
 	private String ownerName;
 	
@@ -509,6 +513,14 @@ public class Contracts {
 	public void setEndDateStr(String endDateStr)
 	{
 		this.endDateStr = endDateStr;
+	}
+
+	public String getStateJurisdiction() {
+		return stateJurisdiction;
+	}
+
+	public void setStateJurisdiction(String stateJurisdiction) {
+		this.stateJurisdiction = stateJurisdiction;
 	}
 	
 	
