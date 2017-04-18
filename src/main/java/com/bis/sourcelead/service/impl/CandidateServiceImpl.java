@@ -911,4 +911,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getCountOfAllCandidatesByCreatedUserAndOrglocationId(orgLocationId, user, startDateUTC,endDateUTC);
 	}
 
+	@Override
+	public Candidate getCandidateByUUID(String candidateUUID) throws Exception {
+		return candidateDao.getCandidateByUUID(candidateUUID);
+	}
+
 }

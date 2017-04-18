@@ -45,6 +45,12 @@ public class OnboardTasksServiceImpl implements OnboardTasksService{
 		return onboardTasksDao.getOnboardTasksByTaskId(Id);
 	}
 
+	@Override
+	public List<OnboardTasks> getOnBoardTasksListAssignedToCandidateByCandidateOnBoardingId(Long candidateOnBoardingId)
+			throws Exception {
+		return onboardTasksDao.getOnBoardTasksListAssignedToCandidateByCandidateOnBoardingId(candidateOnBoardingId);
+	}
+
 	
 
 }

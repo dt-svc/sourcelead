@@ -15,7 +15,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-   getTemplateList();
+   getTemplateList('draft');
 });
 </script>
 
@@ -27,15 +27,15 @@ $(document).ready(function(){
   <div class="pull-right brud-crum">Home &raquo; List by status</div>
 </section>
 
-<section class="contrHead">
-<ul>
-<li title="Draft"><a href="Listby_Status.html"  class="wSig">Draft</a></li>
-<li title="Waiting for Approval"><a href="Listby_Status-waitingforapproval.html"><i class="fa fa-clock-o fa-2"></i>Approve</a></li>
-<li title="Waiting to be sign"><a href="Listby_Status-waitingtosigned.html"><i class="fa fa-clock-o fa-2"></i>Sign</a></li>
-<li title="Waiting for Verify"><a href="Listby_Status-waitingforverify.html"><i class="fa fa-clock-o fa-2"></i>Verify</a></li>
-<li title="Finalised"><a href="Listby_Status-finalised.html">Finalised</a></li>
-<li title="Expired"><a href="Listby_Status-expired.html">Expired</a></li>
-<li title="Rejected"><a href="Listby_Status-reject.html">Rejected</a></li>
+<section class="contrHead"> 
+<ul> 
+<li title="Draft"><a href="#" id="draft" class="draft" onClick="mainTabEnable(this);getTemplateList('draft');">Draft</a></li>
+<!-- <li title="Waiting for Approval"><a href="#" id="approve"  onClick="mainTabEnable(this);"><i class="fa fa-clock-o fa-2"></i>Approve</a></li> -->
+<li title="Waiting to be sign"><a href="#" id="sign" onClick="mainTabEnable(this);getTemplateList('Waiting to be signed');"><i class="fa fa-clock-o fa-2"></i>Sign</a></li>
+<li title="Waiting for Verify"><a href="#" id="verify" onClick="mainTabEnable(this);getTemplateList('Waiting To Be Verify');"><i class="fa fa-clock-o fa-2"></i>Verify</a></li>
+<li title="Finalised"><a href="#" id="finalised"  onClick="mainTabEnable(this); getTemplateList('Finalized');">Finalized</a></li>
+<li title="Expired"><a href="#" id="expired" onClick="mainTabEnable(this);">Expired</a></li>
+<li title="Rejected"><a href="#" id="rejected"  onClick="mainTabEnable(this);">Rejected</a></li>
 
 <div class="conBtn">
   <span>Add<i class="fa fa-caret-down"></i></span>
@@ -52,8 +52,11 @@ $(document).ready(function(){
  <div class="project_wrap">
 	<div class="timesheet_head">
 		<div class="ContrBut">
-			<a href="javascript:void(0)" class="active">Vendors</a>
-			<a href="javascript:void(0)">Clients</a>
+		    <input type="hidden" name="tabType" id="tabType" value='Vendor'>
+			<!-- <a href="#" id="Vendor" class="active tabActivation" onclick="tabEnable(this);getTemplateList('pending');">Vendors</a>
+			<a href="#" id="Client" class="tabActivation" onclick="tabEnable(this);getTemplateList('pending');">Clients</a> -->
+			<a href="#" id="Vendor1" class="active tabActivation" onclick="tabEnable(this);Check('Vendors');">Vendors</a>
+			<a href="#" id="Client1" class="tabActivation" onclick="tabEnable(this);Check('Clients');">Clients</a>
 		</div>
 		<ul>
 			<li id="export-pop"><i class="glyphicon glyphicon-export"></i>
@@ -68,33 +71,14 @@ $(document).ready(function(){
 			<div class="clearfix"></div>
 		</ul>
 		<div class="clearfix"></div>
-
-		<div class="remove_search">
-			<input placeholder="search" type="text">
-		</div>              
             
 	</div>
     <div class="project_wrap_table">
-    <div id="contractsList"></div>
+    <div id="vendorContractsList" ></div>
+     <div id="clientContractsList" style="display: none"></div>
 	</div>
 	
-<nav>
-<ul id="paging" class="pagination">
-	<li><a href="#">Previous</a></li>
-	<li><a href="#">2</a></li>
-	<li><a href="#">3</a></li>
-	<li><a href="#">4</a></li>
-	<li><a href="#">5</a></li>
-	<li class="disabled"><a href="#">6</a></li>
-	<li data-page="last"><a href="#">Next</a></li>
-	</ul>
-	<div class="clearfix"></div>
-</nav>	
-    
-	
-	
 </div>
- 
   
 </div>
 </section>
@@ -145,14 +129,15 @@ $(document).ready(function() {
 </script>
 
 <script type="text/javascript">
-function getTemplateList(){
-	var contractSubmissionType = "draft";
+function getTemplateList(contractSubmissionType){
+	var tabType = $("#tabType").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
       type : "GET",
-       url: sourceleadUrl+"/getAllContractsByOrgLocationIdandStatus?${_csrf.parameterName}=${_csrf.token}&contractSubmissionType="+contractSubmissionType,       
+       url: sourceleadUrl+"/getAllContractsByOrgLocationIdandStatus?${_csrf.parameterName}=${_csrf.token}&contractSubmissionType="+contractSubmissionType+"&tabType="+tabType,       
        success :function(data) {
-      	preparedContractList(data);
+    	   preparedContractList(data);
+      	
       },
   }); 
 }
@@ -160,56 +145,186 @@ function getTemplateList(){
 
 <script>
 function preparedContractList(data){
-	var sourceleadUrl ='${sourceleadUrl}';
-	var result = '';
-	result = result +  '<table id="contractListTable" class="display" cellspacing="0" width="100%" >';
-	result = result + '	<thead>';
-	result = result + '   <tr>';
-	result = result + '    <th>Contract Title</th>';
-	result = result + '    <th>Owner</th>';
-	result = result + '    <th>Start date</th>';
-	result = result + '    <th>End date</th>'; 
-	result = result + '    <th>Type Of the Contract</th>';
-	result = result + '    <th>Vendor Contact</th>';
-	result = result + '   </tr>';
-	result = result + '	</thead>';
-	result = result + '	<tbody>';
-	var json = JSON.parse(data);
-    for (var i = 0; i < json.length; i++) {
-    	var report= json[i];
-    	result = result + '<tr id="row'+report.id+'">';
-        result = result + '<td>';
-           	result = result + '<div><span>'+report.contractTitle+'</span></div>';
-         result = result + '</td>';
-    	 result = result + '<td>';
-       	 result = result + '<div><span>'+report.ownerName+'</span></div>';
-         result = result + '</td>';
-         result = result + '<td>';
-         result = result + '<div><span>'+report.startDateStr+'</span></div>';
-         result = result + '</td>';
-         result = result + '<td>';
-         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
-        	 result = result + '<div><span>'+report.endDateStr+'</span></div>';
-         }else{
-        	 result = result + '<div><span>--</span></div>';
-         }
-         result = result + '<td>';
-         result = result + '<div><span>'+report.contractType+'</span></div>';
-         result = result + '</td>';
-         result = result + '<td>';
-         result = result + '<div><span>'+report.vendorContactName+'</span></div>';
-         result = result + '</td>';
-         result = result + '</td>';
-        
-        result = result + '</tr>';
-    }
+	$("#vendorContractsList").empty();
+    $("#clientContractsList").empty();
+	 var json = JSON.parse(data);
+	 var result = '';
+	 result = result +  '<table id="contractListTable1" class="display" cellspacing="0" width="100%" >';
+		result = result + '	<thead>';
+		result = result + '   <tr>';
+		result = result + '    <th>Contract Title</th>';
+		result = result + '    <th>Owner</th>';
+		result = result + '    <th>Start date</th>';
+		result = result + '    <th>End date</th>'; 
+		result = result + '    <th>Type Of the Contract</th>';
+		result = result + '    <th>Vendor Contact</th>';
+		result = result + '    <th>Action</th>';
+		result = result + '   </tr>';
+		result = result + '	</thead>';
+		result = result + '	<tbody>';
+	if(json.vendorcontractsList.length>0){
+		    for (var i = 0; i < json.vendorcontractsList.length; i++) {
+		    	var report= json.vendorcontractsList[i];
+		    	result = result + '<tr id="row'+report.id+'">';
+		        result = result + '<td>';
+		           	result = result + '<div><span>'+report.contractTitle+'</span></div>';
+		         result = result + '</td>';
+		    	 result = result + '<td>';
+		       	 result = result + '<div><span>'+report.ownerName+'</span></div>';
+		         result = result + '</td>';
+		         result = result + '<td>';
+		         result = result + '<div><span>'+report.startDateStr+'</span></div>';
+		         result = result + '</td>';
+		         result = result + '<td>';
+		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
+		        	 result = result + '<div><span>'+report.endBeDateStr+'</span></div>';
+		         }else{
+		        	 result = result + '<div><span>--</span></div>';
+		         }
+		         result = result + '<td>';
+		         result = result + '<div><span>'+report.contractType+'</span></div>';
+		         result = result + '</td>';
+		         result = result + '<td>';
+		         result = result + '<div><span>'+report.vendorContactName+'</span></div>';
+		         result = result + '</td>';
+		         result = result + '</td>';
+		         result = result + '<td>';//Waiting to be signed
+		     	 if(report.parentId != null && report.parentId != '' && report.parentId != 'undefined'){
+		     		 if(report.templateSubmissionStatus == "Finalized"){
+		     			result = result + '<div id="removeStatus'+report.id+'">Finalized</a></div>';
+		            	 }
+		     		 else{
+		     		 	result = result + '<div  id="removeStatus'+report.id+'"><a class="btn btn-sm btn-info" title="verify" onclick="removeRecord('+report.id+',\'Waiting to be signed\');">verify</a></div>';  
+		     		 }
+		     	}else{
+		        	  if(report.templateSubmissionStatus == "Waiting To Be Verify"){
+		            		result = result + '<div id="removeStatus'+report.id+'"><a class="btn btn-sm btn-success" title="finalize" onclick="finalizeContract('+report.id+',\'Waiting To Be Verify\');">finalize</a></div>';
+		            	 }
+		        	  if(result.templateSubmissionStatus == "Finalized"){
+		        		  result = result + '<div id="removeStatus'+report.id+'">Finalized</a></div>';
+		            	 }
+		        	  else{
+		         	 	result = result + '<div><span>--</span></div>';
+		        	  }
+		          } 
+		     	 result = result + '</td>';
+		        result = result + '</tr>';
+		    }
+			
+	}
 	result = result + '	</tbody>';
 	result = result + '</table>';
-	$("#contractsList").empty();
-    $("#contractsList").append(result);
-    listContractsPagination();	
+	var opt="";
+	opt = opt +  '<table id="contractListTable" class="display" cellspacing="0" width="100%" >';
+	opt = opt + '	<thead>';
+	opt = opt + '   <tr>';
+	opt = opt + '    <th>Contract Title</th>';
+	opt = opt + '    <th>Owner</th>';
+	opt = opt + '    <th>Start date</th>';
+	opt = opt + '    <th>End date</th>'; 
+	opt = opt + '    <th>Type Of the Contract</th>';
+	opt = opt + '    <th>Client Contact</th>';
+	opt = opt + '    <th>Action</th>';
+	opt = opt + '   </tr>';
+	opt = opt + '	</thead>';
+	opt = opt + '	<tbody>';
+	if(json.clientcontractsList.length>0){
+	    for (var i = 0; i < json.clientcontractsList.length; i++) {
+	    	var output= json.clientcontractsList[i];
+	    	opt = opt + '<tr id="row'+output.id+'">';
+	        opt = opt + '<td>';
+	       		 opt = opt + '<div><span>'+output.contractTitle+'</span></div>';
+	         opt = opt + '</td>';
+	    	 opt = opt + '<td>';
+	       	 opt = opt + '<div><span>'+output.ownerName+'</span></div>';
+	         opt = opt + '</td>';
+	         opt = opt + '<td>';
+	         opt = opt + '<div><span>'+output.startDateStr+'</span></div>';
+	         opt = opt + '</td>';
+	         opt = opt + '<td>';
+	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
+	        	 opt = opt + '<div><span>'+output.endBeDateStr+'</span></div>';
+	         }else{
+	        	 opt = opt + '<div><span>--</span></div>';
+	         }
+	         opt = opt + '<td>';
+	         opt = opt + '<div><span>'+output.contractType+'</span></div>';
+	         opt = opt + '</td>';
+	         opt = opt + '<td>';
+	         opt = opt + '<div><span>'+output.vendorContactName+'</span></div>';
+	         opt = opt + '</td>';
+	         opt = opt + '</td>';
+	         opt = opt + '<td>';//Waiting to be signed
+	     	  if(output.parentId != null && output.parentId != '' && output.parentId != 'undefined'){
+	     		  
+	     		 if(output.templateSubmissionStatus == "Finalized"){
+	        		  opt = opt + '<div id="removeStatus'+output.id+'">Finalized</a></div>';
+	            	 }
+	     		 else{
+	     			opt = opt + '<div  id="removeStatus'+output.id+'"><a class="btn btn-sm btn-info" title="verify" onclick="removeRecord('+output.id+',\'Waiting to be signed\');">Verify</a></div>';  
+	     		 }
+	     		  
+	     		  
+	          }else{
+	        	  if(output.templateSubmissionStatus == "Waiting To Be Verify"){
+	        		  opt = opt + '<div id="removeStatus'+output.id+'"><a class="btn btn-sm btn-success" title="finalize" onclick="finalizeContract('+output.id+',\'Waiting To Be Verify\');">Finalize</a></div>';
+	            	 }
+	        	  if(output.templateSubmissionStatus == "Finalized"){
+	        		  opt = opt + '<div id="removeStatus'+output.id+'">Finalized</a></div>';
+	            	 }
+	        	  else{
+	        		  opt = opt + '<div><span>--</span></div>';
+	        	  }
+	          }  
+	     	opt = opt + '</td>';
+	     	opt = opt + '</tr>';
+	    }
+		
+	
+	}
+	opt = opt + '	</tbody>';
+	opt = opt + '</table>';
+	
+    $("#vendorContractsList").empty();
+    $("#vendorContractsList").append(result);
+    $("#clientContractsList").empty();
+    $("#clientContractsList").append(opt); 
+    //listContractsPagination();	
+   // vendorListContractsPagination();
 	
 }
+</script>
+
+<script>
+function removeRecord(recordId,status){
+	var rowHtmlContent =  $("#row"+recordId).html();
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+       type : "POST",
+        url: sourceleadUrl+"/updateContractStatus?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&status="+status,        
+        success :function(data) {
+        	$("#row"+recordId).empty();
+	    	$("#row"+recordId).html(rowHtmlContent);
+	        $("#removeStatus"+recordId).html("<span>Send For Verification</span>").addClass('text-primary');
+       },
+   }); 
+}
+
+
+function finalizeContract(recordId,status){
+	 var rowHtmlContent =  $("#row"+recordId).html();
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+       type : "POST",
+        url: sourceleadUrl+"/updateContractStatus?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&status="+status,       
+        success :function(data) {
+        	$("#row"+recordId).empty();
+	    	$("#row"+recordId).html(rowHtmlContent);
+	        $("#removeStatus"+recordId).html("<span>Finalized</span>").addClass('text-success');
+       },
+   });  
+}
+
 </script>
 
 <script>
@@ -226,6 +341,120 @@ function listContractsPagination(){
      	}
     } );
 }
+function vendorListContractsPagination(){ 
+    $('#contractListTable1').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 15, 20, -1], [2, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    } );
+}
+</script>
+</script>
+
+<script>
+function tabEnable(local){
+	$('.tabActivation').each(function() {
+		 var localId = this.id;
+		 $("#"+localId).removeClass("active");
+    });
+	var tabId = local.id;
+	$("#tabType").val(tabId);
+	$("#"+tabId).addClass("active");
+}
+
+</script>
+
+<script>
+function mainTabEnable(local){
+   
+	var tabId = local.id;
+    if(tabId == 'draft'){
+	$("#draft").addClass("draft"); 
+    $("#approve").removeClass("wApp");
+    $("#sign").removeClass("wSig");
+    $("#verify").removeClass("wVer");
+    $("#finalised").removeClass("fin");
+    $("#expired").removeClass("exp");
+    $("#rejected").removeClass("rej");
+    }
+    if(tabId == 'approve'){
+    	$("#draft").removeClass("draft"); 
+        $("#approve").addClass("wApp");
+        $("#sign").removeClass("wSig");
+        $("#verify").removeClass("wVer");
+        $("#finalised").removeClass("fin");
+        $("#expired").removeClass("exp");
+        $("#rejected").removeClass("rej");
+        }
+    if(tabId == 'sign'){
+    	$("#draft").removeClass("draft"); 
+        $("#approve").removeClass("wApp");
+        $("#sign").addClass("wSig");
+        $("#verify").removeClass("wVer");
+        $("#finalised").removeClass("fin");
+        $("#expired").removeClass("expi");
+        $("#rejected").removeClass("rej");
+        }
+    if(tabId == 'verify'){
+    	$("#draft").removeClass("draft"); 
+        $("#approve").removeClass("wApp");
+        $("#sign").removeClass("wSig");
+        $("#verify").addClass("wVer");
+        $("#finalised").removeClass("fin");
+        $("#expired").removeClass("exp");
+        $("#rejected").removeClass("rej");
+        }
+    if(tabId == 'finalised'){  
+    	$("#draft").removeClass("draft"); 
+        $("#approve").removeClass("wApp");
+        $("#sign").removeClass("wSig");
+        $("#verify").removeClass("wVer");
+        $("#finalised").addClass("fin");
+        $("#expired").removeClass("exp");
+        $("#rejected").removeClass("rej");
+        }
+    if(tabId == 'expired'){
+    	$("#draft").removeClass("draft"); 
+        $("#approve").removeClass("wApp");
+        $("#sign").removeClass("wSig");
+        $("#verify").removeClass("wVer");
+        $("#finalised").removeClass("fin");
+        $("#expired").addClass("exp");
+        $("#rejected").removeClass("rej");
+        }
+    if(tabId == 'rejected'){
+    	$("#draft").removeClass("draft"); 
+        $("#approve").removeClass("wApp");
+        $("#sign").removeClass("wSig");
+        $("#verify").removeClass("wVer");
+        $("#finalised").removeClass("fin");
+        $("#expired").removeClass("exp");
+        $("#rejected").addClass("rej");
+        }
+	
+}
+
+</script>
+
+
+<script>
+function Check(val){
+			 if(val=="Vendors"){
+				 document.getElementById("vendorContractsList").style.display="block";
+				 document.getElementById("clientContractsList").style.display="none";
+			 }
+			 if(val=="Clients"){
+				 document.getElementById("clientContractsList").style.display="block";
+				 document.getElementById("vendorContractsList").style.display="none";
+			 }
+}
+
 </script>
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />

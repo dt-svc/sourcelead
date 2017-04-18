@@ -249,4 +249,5 @@ public interface RequirementSubmissionService {
 
 	List<RequirementSubmission> getVendorSpocSubmissions(String userCode, Long orgLocationId);
 	
+	List<RequirementSubmission> getSubmissionsForSOWByRequirementId(Long requirementId);
 }

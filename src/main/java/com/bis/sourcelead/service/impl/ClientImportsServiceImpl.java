@@ -985,12 +985,28 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			HSSFSheet realSheet = workbook.createSheet("vendorContact");
 			realSheet = setTemplateHeaders(realSheet);
 			HSSFSheet hidden = workbook.createSheet("hidden");
-			 org.apache.poi.ss.usermodel.Name namedCell = workbook.createName();
-			 namedCell.setNameName("hidden");
-				 workbook.setSheetHidden(1, true);
-				 realSheet.addValidationData(getDropDownListForCell(Constants.COUNTRY_DROPDOWN,2,"xls"));
-				 realSheet.addValidationData(getDropDownListForCell(Constants.LEVEL_DROPDOWN,5,"xls"));
-				 realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_CONTACTS_STATUS_DROPDOWN,10,"xls"));
+			
+			String[] ownersList = getOwnerList(orgLocationId,Long.valueOf(Constants.TAB_VENDOR));
+            for (int i = 0, length= ownersList.length; i < length; i++) {
+               String name = ownersList[i];
+               HSSFRow row = hidden.createRow(i);
+               HSSFCell cell = row.createCell(0);
+               cell.setCellValue(name);
+             }
+             org.apache.poi.ss.usermodel.Name namedCell = workbook.createName();
+             namedCell.setNameName("hidden");
+             if(ownersList.length > 0){
+                 namedCell.setRefersToFormula("hidden!$A$1:$A$" + ownersList.length);
+                 DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
+                 CellRangeAddressList addressList = new CellRangeAddressList(1,500,11,11);
+                 HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
+                 workbook.setSheetHidden(1, true);
+                 realSheet.addValidationData(getDropDownListForCell(Constants.COUNTRY_DROPDOWN,2,"xls"));
+                 realSheet.addValidationData(getDropDownListForCell(Constants.LEVEL_DROPDOWN,5,"xls"));
+                 realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_CONTACTS_STATUS_DROPDOWN,10,"xls"));
+                 realSheet.addValidationData(validation);
+             }
+			
 			 File file = new File("vendors_contacts_Import.xls");
 			 FileOutputStream stream = new FileOutputStream(file);
 			 workbook.write(stream);
@@ -1585,10 +1601,10 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		
 		
 		@Override
-		public BulkClientDetails deleteDuplicateRecord(String recordId,OrgLocations orgLocation) throws Exception
+		public BulkClientDetails deleteDuplicateRecord(String recordId,OrgLocations orgLocation,String responderType) throws Exception
 		{
 			BulkClientDetails bulkClientDetails = null; 
-			bulkClientDetails = clientImportDao.getbulkClientByrecordIdAndOrgLocationId(Long.parseLong(recordId),orgLocation.getId());
+			bulkClientDetails = clientImportDao.getbulkClientByrecordIdAndOrgLocationId(Long.parseLong(recordId),orgLocation.getId(),responderType);
 			if(null != bulkClientDetails){
 				bulkClientDetails.setRecordStatus("1");
 				bulkClientDetails = clientImportDao.saveClientVendorExcelData(bulkClientDetails);
@@ -1596,15 +1612,15 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			return bulkClientDetails;
 		}
 		@Override
-		public BulkClientDetails saveClientRecord(String recordId, OrgLocations orgLocation,Org org,User user) throws  Exception
+		public BulkClientDetails saveClientRecord(String recordId, OrgLocations orgLocation,Org org,User user,String responderType) throws  Exception
 		{
-			BulkClientDetails bulkClientDetails = clientImportDao.getbulkClientByrecordIdAndOrgLocationId(Long.parseLong(recordId),orgLocation.getId());
+			BulkClientDetails bulkClientDetails = clientImportDao.getbulkClientByrecordIdAndOrgLocationId(Long.parseLong(recordId),orgLocation.getId(),responderType);
 			
 			
 			OrgLocations mainOrgLocation = validateSourceleadOrg(bulkClientDetails.getOrgName(),org);
 			 JSONObject jsonObj = populateJsonObjectTemp(bulkClientDetails,"Y",null,orgLocation,bulkClientDetails.getOrgName(),"org",mainOrgLocation);
 			try {
-				clientService.storeClient(jsonObj, user, orgLocation,"Client",org);
+				clientService.storeClient(jsonObj, user, orgLocation,responderType,org);
 				bulkClientDetails.setRecordStatus("1");
 				clientImportDao.saveClientVendorExcelData(bulkClientDetails);
 			} catch (Exception e) {
@@ -1614,9 +1630,9 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			return null;
 		}
 		@Override
-		public OrgRelations getMatchedClientList(String recordId, OrgLocations orgLocation, Org org, User user) throws Exception
+		public OrgRelations getMatchedClientList(String recordId, OrgLocations orgLocation, Org org, User user, String responderType) throws Exception
 		{
-			BulkClientDetails bulkClientDetails = clientImportDao.getbulkClientByrecordIdAndOrgLocationId(Long.parseLong(recordId),orgLocation.getId());
+			BulkClientDetails bulkClientDetails = clientImportDao.getbulkClientByrecordIdAndOrgLocationId(Long.parseLong(recordId),orgLocation.getId(),responderType);
 			
 			String domain = bulkClientDetails.getEmail().split("@")[1];
 			
@@ -1625,9 +1641,13 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			List<OrgRelations> orgRelationsListbyClientName = new ArrayList<>();
 			
 			//with Domain
-			List<OrgRelations>    orgRelationsListWithDomain = orgRelationsService.getAllClientsByOrgLocationIdAndDomain(orgLocation.getId(),domain,"");
-			
-			List<OrgRelations>    orgRelationsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocation.getId());
+			List<OrgRelations>    orgRelationsListWithDomain = orgRelationsService.getAllClientsByOrgLocationIdAndDomain(orgLocation.getId(),domain,responderType);
+			List<OrgRelations> orgRelationsList;
+			if("Client".equalsIgnoreCase(responderType)){
+				orgRelationsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocation.getId());
+			}else{
+				orgRelationsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
+			}
 			
 			for (OrgRelations orgRelations2 : orgRelationsList) {
 				String orgName = "";
@@ -1667,7 +1687,12 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 				}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
 					orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
 				}
-				orgRelations.setOrgName(orgName+"(with Client Name)");
+				if("Client".equalsIgnoreCase(responderType)){
+					orgRelations.setOrgName(orgName+"(with Client Name)");
+				}else{
+					orgRelations.setOrgName(orgName+"(with Vendor Name)");
+				}
+				
 			}
 			
 			finalClient.setMatchedDomainClientList(orgRelationsListWithDomain);
@@ -1676,10 +1701,10 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			return finalClient;
 		}
 		@Override
-		public String mergeSpocWithClient(String bulkRecordId, OrgLocations orgLocation, Org org, User user,String orgRelationId) throws Exception
+		public String mergeSpocWithClient(String bulkRecordId, OrgLocations orgLocation, Org org, User user,String orgRelationId,String responderType) throws Exception
 		{
 			
-			BulkClientDetails bulkClientDetails = clientImportDao.getbulkClientByrecordIdAndOrgLocationId(Long.parseLong(bulkRecordId),orgLocation.getId());
+			BulkClientDetails bulkClientDetails = clientImportDao.getbulkClientByrecordIdAndOrgLocationId(Long.parseLong(bulkRecordId),orgLocation.getId(),responderType);
 			
 			OrgRelations orgRel = orgRelationsService.getOrRelationsById(Long.parseLong(orgRelationId));
 			
@@ -1689,13 +1714,17 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			}if(orgRel.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
 				orgName = orgRel.getResponderLocationId().getOrg().getOrgName();
 			}
+			List<OrgRelations>  vandorsListByOrgLocationId;
+			if("Client".equalsIgnoreCase(responderType)){
+				vandorsListByOrgLocationId = orgRelationsService.getAllClientsByOrgNameOrgLocationId(orgName,orgLocation.getId());	
+			}else{
+				vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgName(orgName,orgLocation.getId());	  
+			}
 			
-			
-			List<OrgRelations>  vandorsListByOrgLocationId = orgRelationsService.getAllClientsByOrgNameOrgLocationId(orgName,orgLocation.getId());	  
 			OrgLocations mainOrgLocations = null;
 			JSONObject jsonObj1 = populateJsonObjectTemp(bulkClientDetails,"Y",vandorsListByOrgLocationId,orgLocation,orgName,"org",mainOrgLocations);
 			try {
-					orgSpocService.addVendorContacts(jsonObj1, user, orgLocation, orgRelationId.toString(), "", "Client", org);
+					orgSpocService.addVendorContacts(jsonObj1, user, orgLocation, orgRelationId.toString(), "", responderType, org);
 					vandorsListByOrgLocationId.clear();
 					bulkClientDetails.setRecordStatus("1");
 					clientImportDao.saveClientVendorExcelData(bulkClientDetails);

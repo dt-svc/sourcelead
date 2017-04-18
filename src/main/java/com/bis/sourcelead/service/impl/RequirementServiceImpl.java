@@ -3309,4 +3309,10 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		return requirementDao.getTotalRequirementsReleasedToSpoc(relationId, spocId);
 	}
 	
+	@Override
+	public List<Requirement> getRequirementsForSOWByOrgLocationId(
+			Long orgLocationId, String type) throws Exception {
+		return requirementDao.getRequirementsForSOWByOrgLocationId(orgLocationId, type);
+	}
+	
 }
