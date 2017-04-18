@@ -1962,17 +1962,13 @@ function rescheduleInterView(interviewId,timezone,submissionId){
 	result = result + '			   <input type="hidden" id="interviewId" name="interviewId" value='+interviewId+' >';
 	result = result + '				  <h3>Reschedule</h3>';
 	result = result + '				  <div class="reSchPopCta">';									  	
-	result = result + '						<span>';
+	result = result + '						<span id="rescheduleDateDiv">';
 	result = result + '						<input type="text" class="form-control input-sm" placeholder="Date" id="rescheduleDate" name="rescheduleDate" data-validation="required" field-name="Interview Date">';
 	result = result + '						<i class="fa fa-calendar"></i>';
 	result = result + '						</span>	';									  	
 	result = result + '						<span class="timeDiv" id="timeDiv">';
-	result = result + '						<input type="text" class="form-control input-sm" placeholder="Time" id="startTime" name="startTime" onBlur="validateEndTime();" data-validation="required" field-name="Start Time">';
-	//result = result + '						<i class="fa fa-clock-o"></i>';
-	//result = result + '						</span>';
-	//result = result + '						<span class="popTime">';
-	result = result + '						<input type="text" class="form-control input-sm" placeholder="Time" name="endTime" id="endTime" onBlur="validateEndTime();">';
-	//result = result + '						<i class="fa fa-clock-o"></i>';
+	result = result + '						<input type="text" class="timeicon form-control input-sm" placeholder="Start Time" id="startTime" name="startTime" onBlur="validateEndTime();" data-validation="required" field-name="Start Time">';
+	result = result + '						<input type="text" class="timeicon form-control input-sm" placeholder="End Time" name="endTime" id="endTime" onBlur="validateEndTime();">';
 	result = result + '						</span>';
 	result = result + '				<div class="clearfix"></div> ';
 	result = result + '			<div class="form-group Pmess clearfix">';
@@ -2060,6 +2056,7 @@ $('#rescheduleDate').datepicker({
 	onSelect : function(selected) {
 		var dt = new Date(selected);
 		dt.setDate(dt.getDate() + 1);
+		addValidClass();
 	}
 	});
 	
@@ -2068,8 +2065,19 @@ function rescheduleInterClose(){
 	$(".reSchPop").removeClass("reSchPopActive");
 }
 </script>
+
+<script type="text/javascript"> 
+	function addValidClass(){
+		 var StartDate = document.getElementById("rescheduleDate").value;
+		 if(StartDate){
+			 $('#rescheduleDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+}
+</script>
+
  <script>
  function rescheduleInterviewUpdate(submissionId){
+	    validateOtherMail();
 		if ($('#rescheduleInterview_form').validate(false, validationSettings)) {
 			var frm = $('#rescheduleInterview_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -2091,6 +2099,10 @@ function rescheduleInterClose(){
 		}
 	 
  }
+ $('body').on('blur', '#rescheduleInterview_form', function() {
+		$("#rescheduleInterview_form").showHelpOnFocus();
+		$("#rescheduleInterview_form").validateOnBlur(false, validationSettings);
+	});
  </script>
  <script>
    function validateTimeZone(){
