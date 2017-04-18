@@ -254,6 +254,8 @@ public class ContractRestController {
 				childContracts.setId(contracts.getId());
 				childContracts.setTemplateSubmissionStatus("Waiting To Be Verify");
 			}
+		Contracts savedChildContracts = contractsTemplateService.saveNewContract(updateContracts);
+		Contracts updateChildContracts = contractsTemplateService.saveNewContract(childContracts);
 			
 		return "success";
 }

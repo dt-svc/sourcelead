@@ -27,5 +27,7 @@ public interface ContractsTemplateService {
 	List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType)throws Exception;
 
 	Contracts getContractById(Long contractId);
+
+	Contracts saveNewContract(Contracts updateContracts) throws Exception;
 	
 }
