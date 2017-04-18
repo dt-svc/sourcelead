@@ -16,75 +16,107 @@
 --%>
 
 <script>
-function applicantQuickViewProfile(candidateId){
+function applicantQuickViewProfile(submissionId,candidateId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	  var skillsList = '${skillsList}'; 
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+         url: sourceleadUrl+"/getSubmissionDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
          success :function(data) {  
         	 if(data != null && data != 'undefined' && data != ""){  
-              	var json = JSON.parse(data);
-							var result ="";
-							
-							if(json.country != null && json.country != '' && json.country != 'undefined'){
-	         			 		country =json.country;
-	             			 	}else{
-	             			 		country = '';
-	             			 	}
-	         			 	
-	         			 	if(json.state != null && json.state != '' && json.state != 'undefined'){
-	         			 		state =json.state+',';
-	             			 	}else{
-	             			 		state = '';
-	             			 	}
-	         			 	
-	         			 	if(json.city != null && json.city != '' && json.city != 'undefined'){
-	         			 		city =json.city+',';
-	             			 	}else{
-	             			 		city = '';
-	             			 	}	
-	         			 	
-	         			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
-	         			 		lastName =json.lastName;
-	             			 	}else{
-	             			 		lastName = '';
-	             			 	}
-	         			 	if(json.designationType != null && json.designationType != '' && json.designationType != 'undefined'){
-	         			 		designationType =json.designationType+',';
-	             			 	}else{
-	             			 		designationType = '';
-	             			 	}
-	         			 	
-	         			 	if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
-	         			 		expectedRate = json.expectedRate;
-	         			 		expectedRateCurrencey = '/'+json.expectedRateCurrencey;
-	         			 	}else{
-	         			 		expectedRate = '---';
-	         			 		expectedRateCurrencey = '';
-	         			 	}
-	         			 	
-	         			 	if(json.rateType != null && json.rateType != '' && json.rateType != 'undefined'){
-	         			 		rateType = json.rateType;
-	         			 	}else{
-	         			 		rateType = '';
-	         			 	}
-	         			 	if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
-				               var skill = json.skillsName;
-	         			 		var qvSkills = "";
-	         			 		var res = [];
-	         			 		res = skill.split(',');
-	         			 		var minSkills = res.slice(1,20);
-				                qvSkills = "<ul>";
-				                for(i = 0; i<=minSkills.length; i++){
-				                		if(res[i] != null && res[i] != '' && res[i] != 'undefined'){
-					                		qvSkills += "<li>" + res[i] + "</li>";
-					                	}
-				                }
-				                qvSkills += "</ul>"; 
-	         			 	}
-							
-// 					<!-- resumeView Starts -->
+              	
+               var json = JSON.parse(data);
+ 	    	   
+ 	    	   if(json.designationType != null && json.designationType != '' && json.designationType != 'undefined'){
+			 		designationType =json.designationType+',';
+   			 	}else{
+   			 		designationType = '';
+   			 	}
+ 	    	   
+ 	    	  if(json.requirementSubmissionTemplateFields.expectedCTC != null && json.requirementSubmissionTemplateFields.expectedCTC != '' && json.requirementSubmissionTemplateFields.expectedCTC !='undefined'){
+ 	    		 expectedRate = json.requirementSubmissionTemplateFields.expectedCTC; 
+  	    	   }else{
+  	    		  expectedRate= " ";
+  	    	   } 
+ 	    	 
+ 	    	  if(json.requirementSubmissionTemplateFields.expectedRateType != null && json.requirementSubmissionTemplateFields.expectedRateType != '' && json.requirementSubmissionTemplateFields.expectedRateType !='undefined'){
+ 	    		 expectedRateType = json.requirementSubmissionTemplateFields.expectedRateType; 
+ 	    	   }else{
+ 	    		  expectedRateType = " ";
+ 	    	   } 
+ 	    	   
+ 	    	   if(json.requirementSubmissionTemplateFields.expectedRatePer != null && json.requirementSubmissionTemplateFields.expectedRatePer != '' && json.requirementSubmissionTemplateFields.expectedRatePer !='undefined'){
+ 	    		  expectedRatePer = ' / ' +json.requirementSubmissionTemplateFields.expectedRatePer; 
+ 	    	   }else{
+ 	    		  expectedRatePer = " ";
+ 	    	   }
+ 	    	   
+ 	    	   if(json.requirementSubmissionTemplateFields.state != null && json.requirementSubmissionTemplateFields.state != '' && json.requirementSubmissionTemplateFields.state !='undefined'){
+ 	    		   state = ' , '+json.requirementSubmissionTemplateFields.state;
+ 	    	   }else{
+ 	    		   state = " ";
+ 	    	   }
+ 	    	   
+ 	    	   if(json.requirementSubmissionTemplateFields.city != null && json.requirementSubmissionTemplateFields.city != '' && json.requirementSubmissionTemplateFields.city !='undefined'){
+ 	    		   city =' , '+json.requirementSubmissionTemplateFields.city; 
+ 	    	   }else{
+ 	    		   city = " ";
+ 	    	   }
+ 	    	   
+ 	    	  if(json.requirementSubmissionTemplateFields.firstName != null && json.requirementSubmissionTemplateFields.firstName != '' && json.requirementSubmissionTemplateFields.firstName != 'undefined'){
+ 	    		 firstName = json.requirementSubmissionTemplateFields.firstName;
+	    	   }else{
+	    		   firstName = "";
+	    	   }
+ 	    	   
+ 	    	   if(json.requirementSubmissionTemplateFields.lastName != null && json.requirementSubmissionTemplateFields.lastName != '' && json.requirementSubmissionTemplateFields.lastName != 'undefined'){
+ 	    		   lastName = json.requirementSubmissionTemplateFields.lastName;
+ 	    	   }else{
+ 	    		   lastName = "";
+ 	    	   }
+ 	    	   if(json.requirementSubmissionTemplateFields.country != null && json.requirementSubmissionTemplateFields.country != null && json.requirementSubmissionTemplateFields.country != 'undefined'){
+ 	    		   country = json.requirementSubmissionTemplateFields.country;
+ 	    	   }else{
+ 	    		   country = "";
+ 	    	   }
+              	
+ 	    	  if(json.requirementSubmissionTemplateFields.emailId != null && json.requirementSubmissionTemplateFields.emailId != null && json.requirementSubmissionTemplateFields.emailId != 'undefined'){
+ 	    		 emailId = json.requirementSubmissionTemplateFields.emailId;
+	    	   }else{
+	    		   emailId = "";
+	    	   }
+              
+ 	    	 if(json.requirementSubmissionTemplateFields.phoneNumber != null && json.requirementSubmissionTemplateFields.phoneNumber != null && json.requirementSubmissionTemplateFields.phoneNumber != 'undefined'){
+ 	    		phoneNumber = json.requirementSubmissionTemplateFields.phoneNumber;
+	    	   }else{
+	    		   phoneNumber = "";
+	    	   }
+ 	    	 
+ 	    	if(json.skillsList != null && json.skillsList != 'undefined' && json.skillsList != ''){
+	                var skill = json.skillsList;
+	                var qvSkills = "";
+			 		var res = [];
+			 		res = skill.split(',');
+			 		var minSkills = res.slice(1,20);
+	                qvSkills = "<ul>";
+	                for(i = 0; i<=minSkills.length ; i++){
+	                		if(res[i] != null && res[i] != '' && res[i] != 'undefined'){
+		                		qvSkills += "<li>" + res[i] + "</li>";
+		                	}
+	                }
+	                qvSkills += "</ul>"; 
+			 	}else{
+			 		qvSkills = "--";
+			 	}
+ 	    	 
+		 	     if(json.candidateSummary != null && json.candidateSummary != '' && json.candidateSummary != 'undefined'){
+		       	  candidateSummary = json.candidateSummary;
+		         }else{
+		       	  candidateSummary = "--";
+		         }	 
+ 	    	   
+ 	    	 		var result ="";
+	//						<!-- resumeView Starts -->
 					result = result+'  <div class="resumeView">                                                                                                                                    ';
 					result = result+'                                                                                                                                                              ';
 					result = result+'      <!-- Candiate Header -->                                                                                                                                ';
@@ -93,16 +125,11 @@ function applicantQuickViewProfile(candidateId){
 					result = result+'        <div class="col-md-7">                                                                                                                                ';
 					result = result+'            <div class="media">                                                                                                                               ';
 					result = result+'                <div class="media-body">                                                                                                                      ';
-					result = result+'                    <h4 class="media-heading text-warning">'+json.firstName+' '+lastName+'<small> '+designationType+'</small></h4>';
-					if(json.summary != null && json.summary != '' && json.summary != 'undifined'){
-						
-						result = result+'      <div class="trimTxt">';
-						result = result+'<p title="'+json.summary+'"><i class="fa fa-quote-left text-muted"></i>'+json.summary+'</p>';
-						result = result+'      </div>';
-					}else{
-						result = result+'<p>---</p>';
-					}
-					
+					result = result+'                    <h4 class="media-heading text-warning">'+firstName+' '+lastName+'<small> '+designationType+'</small></h4>';
+				
+					result = result+'      <div class="trimTxt">';
+					result = result+'<p title="'+candidateSummary+'"><i class="fa fa-quote-left text-muted"></i>'+candidateSummary+'</p>';
+					result = result+'      </div>';
 					result = result+'                </div>                                                                                                                                        ';
 					result = result+'                <div class="media-right">                                                                                                                     ';
 					result = result+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class="media-object" style="width:65px">';
@@ -112,12 +139,10 @@ function applicantQuickViewProfile(candidateId){
 					result = result+'          <div class="col-md-5">                                                                                                                              ';
 					result = result+'              <div class="pull-right">                                                                                                                        ';
 					result = result+'                  <ul class="list-unstyled">                                                                                                                  ';
-					result = result+'                      <li><i class="fa fa fa-envelope paddingRight text-warning" title="'+json.email+'"></i>'+json.email+'';
-					result = result+'                      </li>                                                                                                                                   ';
- 					result = result+'                      <li><i class="fa fa-phone paddingRight text-warning" title="'+json.mobilePhone+'"></i>'+json.mobilePhone+'</li>                                              ';
-					result = result+'                      <li><i class="fa fa-map-marker paddingRight text-warning" title="'+city+''+state+''+country+'"></i>'+city+''+state+''+country+'</li>';
-// 					result = result+'                      <li><i class="fa fa-skype paddingRight text-info" title="Skype"></i>candidate.sky</li>                                                  ';
-					result = result+'                    <li><i class="fa fa-usd paddingRight text-warning" title="'+expectedRate+' '+rateType+''+expectedRateCurrencey+'"></i>'+expectedRate+' '+rateType+''+expectedRateCurrencey+'</li>';
+					result = result+'                      <li><i class="fa fa fa-envelope paddingRight text-warning" title="Email"></i>'+emailId+'</li>';
+					result = result+'                      <li><i class="fa fa-phone paddingRight text-warning" title="Mobile"></i>'+phoneNumber+'</li>                                              ';
+					result = result+'                      <li><i class="fa fa-map-marker paddingRight text-warning" title="Location"></i>'+country+''+state+''+city+'</li>';
+					result = result+'                    <li><i class="fa fa-usd paddingRight text-warning" title="Rate"></i>'+expectedRate+' '+expectedRateType+''+expectedRatePer+'</li>';
 					result = result+'                  </ul>                                                                                                                                       ';
 					result = result+'              </div>                                                                                                                                          ';
 					result = result+'          </div>                                                                                                                                              ';
@@ -143,6 +168,7 @@ function applicantQuickViewProfile(candidateId){
 					result = result+'          <!-- Skills, Achievements &amp; Certificates BLock -->                                                                                              ';
 					result = result+'          <div class="col-md-5 col-md-offset-1 paddingLeft">                                                                                                              ';
 					result = result+'              <div class="row">                                                                                                                               ';
+					if(json.skillsList != null && json.skillsList != 'undefined' && json.skillsList != ''){
 					result = result+'              <div class="col-md-12">                                                                                                                         ';
 					result = result+'                  <h4>Skills</h4>                                                                                                           ';
 					result = result+'                  <div class="skillsView row">                                                                                                                ';
@@ -152,7 +178,7 @@ function applicantQuickViewProfile(candidateId){
 					result = result+'                  </div>';
 					result = result+'                  </div>';
 					result = result+'               </div>';
-					
+					}
 					//Certification Div
 					result = result + '<div id="reqQvcertificationSubmission"></div> ';
 					

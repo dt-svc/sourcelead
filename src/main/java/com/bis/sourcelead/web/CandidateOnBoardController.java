@@ -149,6 +149,23 @@ public class CandidateOnBoardController {
 	}
 	
 	
+	@RequestMapping(value = "/candidateOffBoardCreation")
+	public ModelAndView candidateOffBoardCreation(HttpServletRequest request) {
+		ModelAndView model = new ModelAndView();
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Users);
+		
+		request.getSession().setAttribute("sessionData",sessionData);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("onboard/candidateOffBoardCreation");
+		return model;
+	}
+	
 	
 	@RequestMapping(value = "/viewOnboardCandidateDetails")
  	public ModelAndView viewOnboardCandidateDetails(@RequestParam(value="onboardUUID", required=false) String onboardUUID,
