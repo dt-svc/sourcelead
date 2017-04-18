@@ -19,6 +19,7 @@ import com.bis.sourcelead.dao.ContractsTemplateDao;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
@@ -116,7 +117,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	}
 
 	@Override
-	public Contracts saveNewContract(JSONObject jsonObj, OrgLocations orgLocation, String saveType,User user) throws Exception
+	public Contracts saveNewContract(JSONObject jsonObj, OrgLocations orgLocation, String saveType,User user,Org org) throws Exception
 	{
 		Contracts contracts = new Contracts();
 		Contracts vendorContracts = new Contracts();
@@ -129,6 +130,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setContractsTemplate(contractsTemplate);
 		}
 		contracts.setContractTitle(jsonObj.getString("contractTitle"));
+		vendorContracts.setContractTitle(jsonObj.getString("contractTitle"));
 		User ownerUser = userService.getUserById(Long.parseLong(jsonObj.getString("owner")));
 		contracts.setOwnerUserId(ownerUser);
         Date startDate = format.parse(jsonObj.getString("startDate"));
@@ -142,6 +144,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}
 		}
 		User approverUser = null;
+		User vendorContactsUser = null;
 		if(jsonObj.has("approver") && null != jsonObj.getString("approver") && !"".equals(jsonObj.getString("approver"))){
 			 approverUser = userService.getUserById(Long.parseLong(jsonObj.getString("approver")));
 			contracts.setApproverUser(approverUser);
@@ -156,11 +159,11 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
 				contracts.setContractOrgLocationId(orgRelations.getResponderLocationId());
 			}
-			User vendorUser = userService.getUserById(Long.parseLong(jsonObj.getString("vendorContact")));
-			if(null != vendorUser && null != approverUser && !"draft".equalsIgnoreCase(saveType)){
-				signatureRequestUtil.sendDocumentForSignatureRequest(vendorUser,contractsTemplate,orgLocation,user);
-			}
-			contracts.setContactUser(vendorUser);
+			vendorContactsUser = userService.getUserById(Long.parseLong(jsonObj.getString("vendorContact")));
+//			if(null != vendorUser && null != approverUser && !"draft".equalsIgnoreCase(saveType)){
+//				signatureRequestUtil.sendDocumentForSignatureRequest(vendorUser,contractsTemplate,orgLocation,user);
+//			}
+			contracts.setContactUser(vendorContactsUser);
 		}
 		if("Client MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
 			contracts.setInitiatorType("Vendor");
@@ -172,11 +175,11 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
 				contracts.setContractOrgLocationId(orgRelations.getResponderLocationId());
 			}
-			User vendorUser = userService.getUserById(Long.parseLong(jsonObj.getString("clientContact")));
-			if(null != vendorUser && null != approverUser && !"draft".equalsIgnoreCase(saveType)){
+			vendorContactsUser = userService.getUserById(Long.parseLong(jsonObj.getString("clientContact")));
+			/*if(null != vendorUser && null != approverUser && !"draft".equalsIgnoreCase(saveType)){
 				signatureRequestUtil.sendDocumentForSignatureRequest(vendorUser,contractsTemplate,orgLocation,user);
-			}
-			contracts.setContactUser(vendorUser);
+			}*/
+			contracts.setContactUser(vendorContactsUser);
 		}
 		
 		if(jsonObj.has("endDate") && null != jsonObj.getString("billingAmount") && !"".equals(jsonObj.getString("billingAmount")) ){
@@ -207,10 +210,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			vendorContracts.setDescription(jsonObj.getString("description"));
 		}
 		contracts.setStatus("0");
-		contracts.setTemplateSubmissionStatus("Pending");
+//		contracts.setTemplateSubmissionStatus("pending");
 		vendorContracts.setTemplateSubmissionStatus("Waiting to be signed");
 		vendorContracts.setStatus("0");
-		vendorContracts.setTemplateSubmissionStatus(saveType);
+		contracts.setTemplateSubmissionStatus(saveType);
 		contracts.setCreatedDate(new Date());
 		contracts.setCreatedBy(user.getUserCode());
 		contracts.setUpdatedDate(new Date());
@@ -255,15 +258,18 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			vendorContracts.setContactUser(ownerUser);
 		}
 		Contracts savedChildContracts = contractsTemplateDao.saveNewContract(vendorContracts);
+		  if(null != vendorContactsUser && null != approverUser && !"draft".equalsIgnoreCase(saveType)){
+	            signatureRequestUtil.sendDocumentForSignatureRequest(vendorContactsUser,contractsTemplate,orgLocation,user,savedContracts,org);
+	        }
 		return savedContracts;
 		
 		
 	}
 
 	@Override
-	public List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType) throws Exception
+	public List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType) throws Exception
 	{
-		List<Contracts> contractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType);
+		List<Contracts> contractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,tabType);
 		
 		
 		for(Contracts contracts :contractsList ){
@@ -285,8 +291,20 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			if(null != contracts.getEndDate()){
 				contracts.setEndDateStr(Constants.DF_DMY.format(contracts.getEndDate()));	
 			}
+			if(null != contracts.getParentContractId()){
+			contracts.setParentId(contracts.getParentContractId().getId().toString());
+			}
+			else{
+				contracts.setParentId("");
+			}
 		}
 		return contractsList;
+	}
+
+	@Override
+	public Contracts getContractById(Long contractId)
+	{
+		return contractsTemplateDao.getContractById(contractId);
 	}
 
 	

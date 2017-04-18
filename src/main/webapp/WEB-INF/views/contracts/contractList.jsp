@@ -15,7 +15,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-   getTemplateList('draft');
+   getTemplateList('pending');
 });
 </script>
 
@@ -31,7 +31,7 @@ $(document).ready(function(){
 <ul>
 <li title="Draft"><a href="#" onClick="getTemplateList('draft');" class="wSig">Draft</a></li>
 <li title="Waiting for Approval"><a href="#"><i class="fa fa-clock-o fa-2"></i>Approve</a></li>
-<li title="Waiting to be sign"><a href="#" onClick="getTemplateList('wait');"><i class="fa fa-clock-o fa-2"></i>Sign</a></li>
+<li title="Waiting to be sign"><a href="#" onClick="getTemplateList('Waiting to be signed');"><i class="fa fa-clock-o fa-2"></i>Sign</a></li>
 <li title="Waiting for Verify"><a href="Listby_Status-waitingforverify.html"><i class="fa fa-clock-o fa-2"></i>Verify</a></li>
 <li title="Finalised"><a href="Listby_Status-finalised.html">Finalised</a></li>
 <li title="Expired"><a href="Listby_Status-expired.html">Expired</a></li>
@@ -52,8 +52,9 @@ $(document).ready(function(){
  <div class="project_wrap">
 	<div class="timesheet_head">
 		<div class="ContrBut">
-			<a href="javascript:void(0)" class="active">Vendors</a>
-			<a href="javascript:void(0)">Clients</a>
+		    <input type="hidden" name="tabType" id="tabType" value='Vendor'>
+			<a href="#" id="Vendor" class="active tabActivation" onclick="tabEnable(this);getTemplateList('pending');">Vendors</a>
+			<a href="#" id="Client" class="tabActivation" onclick="tabEnable(this);getTemplateList('pending');">Clients</a>
 		</div>
 		<ul>
 			<li id="export-pop"><i class="glyphicon glyphicon-export"></i>
@@ -126,11 +127,11 @@ $(document).ready(function() {
 
 <script type="text/javascript">
 function getTemplateList(contractSubmissionType){
-	/* var contractSubmissionType = "draft"; */
+	var tabType = $("#tabType").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
       type : "GET",
-       url: sourceleadUrl+"/getAllContractsByOrgLocationIdandStatus?${_csrf.parameterName}=${_csrf.token}&contractSubmissionType="+contractSubmissionType,       
+       url: sourceleadUrl+"/getAllContractsByOrgLocationIdandStatus?${_csrf.parameterName}=${_csrf.token}&contractSubmissionType="+contractSubmissionType+"&tabType="+tabType,       
        success :function(data) {
       	preparedContractList(data);
       },
@@ -151,6 +152,7 @@ function preparedContractList(data){
 	result = result + '    <th>End date</th>'; 
 	result = result + '    <th>Type Of the Contract</th>';
 	result = result + '    <th>Vendor Contact</th>';
+	result = result + '    <th>Action</th>';
 	result = result + '   </tr>';
 	result = result + '	</thead>';
 	result = result + '	<tbody>';
@@ -180,7 +182,14 @@ function preparedContractList(data){
          result = result + '<div><span>'+report.vendorContactName+'</span></div>';
          result = result + '</td>';
          result = result + '</td>';
-        
+         result = result + '<td>';//Waiting to be signed
+     	  if(report.parentId != null && report.parentId != '' && report.parentId != 'undefined'){
+         	 /* result = result + '<div onClick="verify('+report.id+'\,\''+report.orgRelations.id+'\')";><span>Verify</span></div>'; */
+     		 result = result + '<div  id="removeStatus'+report.id+'"><a class="text-danger fa fa-trash" title="verify" onclick="removeRecord('+report.id+');"></a></div>';  
+          }else{
+         	 result = result + '<div><span>--</span></div>';
+          }
+     	 result = result + '</td>';
         result = result + '</tr>';
     }
 	result = result + '	</tbody>';
@@ -191,6 +200,24 @@ function preparedContractList(data){
 	
 }
 </script>
+
+<script>
+function removeRecord(recordId){
+	var rowHtmlContent =  $("#row"+recordId).html();
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+       type : "POST",
+        url: sourceleadUrl+"/updateContractStatus?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId,       
+        success :function(data) {
+        	$("#row"+recordId).empty();
+	    	$("#row"+recordId).html(rowHtmlContent);
+	        $("#removeStatus"+recordId).html("<b >Send For Verification</b>");
+       },
+   }); 
+}
+
+</script>
+
 
 <script>
 function listContractsPagination(){
@@ -207,6 +234,22 @@ function listContractsPagination(){
     } );
 }
 </script>
+
+<script>
+function tabEnable(local){
+	$('.tabActivation').each(function() {
+		 var localId = this.id;
+		 $("#"+localId).removeClass("active");
+    });
+	var tabId = local.id;
+	$("#tabType").val(tabId);
+	$("#"+tabId).addClass("active");
+}
+
+</script>
+
+verify
+
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
