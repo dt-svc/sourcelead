@@ -13,6 +13,12 @@
 .text-center {
     text-align: center !important;
 }
+.paddingLeft {position: relative;}
+.paddingLeft .fa-clipboard {
+font-size: 16px; position: absolute; border: 1px solid #ccc; background-color: #eee; text-align:center;
+box-shadow: inset 0 1px 1px rgba(0,0,0,.075); color: #555; height: 30px; width: 30px; top:0; right:-20px;
+border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
+}
 </style>
 
 <!-- Content Area Starts -->
@@ -179,6 +185,13 @@
                         </select>
                       </div>
                     </div>
+                    
+                    <label class="col-md-3"> Referral Link</label>
+                    <div class="select-field col-md-9 paddingLeft">
+                    <input type="text" class="form-control input-sm" field-name="RefeeralLink" id="referralLink" name="referralLink" placeholder="Referral Link" readonly="readonly"> 
+                    <i id="copyButton" class="fa fa-clipboard" aria-hidden="true"></i>
+                    </div>
+                    
                     <div class="clearfix col-lg-12 hidden"> <span class="text-muted">Note:</span> <span class="text-info"><b>5%</b> will be sourcelead fund and remaining....</span> </div>
                   </div>
                   
@@ -257,6 +270,8 @@ function getPercentageValue(){
 <script> 
 $(document).ready(function(){
 	getVendorLists();
+	var referLink = "${sourceleadUrl}/openJobsPublicPage?requirementUUID=${requirementUUID}"
+	$("#referralLink").val(referLink);
 	
 	if('${SourceLeadWeb_vms}'  == 'Y'){
 		openVendors();
@@ -270,7 +285,7 @@ $(document).ready(function(){
 	}else{
 		$("#jobType").html('No Data');
 	}
-	
+	 
 	if('${jobRate}' != null && '${jobRate}' != '' && '${jobRate}' != 'jobRate'){
 		$("#jobRate").html('${jobRate}');
 	}else{
@@ -280,6 +295,36 @@ $(document).ready(function(){
 	$("#jobTitle").html("Release to Vendors (${jobTitle})");
 	//getVendorContactLists();
 });
+</script>
+
+<script>
+document.getElementById("copyButton").addEventListener("click", function() {
+    copyToClipboard(document.getElementById("referralLink"));
+});
+
+function copyToClipboard(elem) {
+    var targetId = "_hiddenCopyText_";
+    var isInput = elem.tagName === "INPUT" || elem.tagName === "TEXTAREA";
+    var origSelectionStart, origSelectionEnd;
+    if (isInput) {
+        target = elem;
+        origSelectionStart = elem.selectionStart;
+        origSelectionEnd = elem.selectionEnd;
+    } else {
+        target = document.getElementById(targetId);
+        target.textContent = elem.textContent;
+    }
+    var currentFocus = document.activeElement;
+    target.focus();
+    target.setSelectionRange(0, target.value.length);
+    var succeed;
+    try {
+    	  succeed = document.execCommand("copy");
+    } catch(e) {
+        succeed = false;
+    }
+    return succeed;
+}
 </script>
 
 <script>
