@@ -6,6 +6,8 @@ public enum OnboardStatus {
 	DRAFT("draft"),
 	SUBMITTED("submitted"),
 	APPROVED("approved"),
+	ACCEPTED("accepted"),
+	PENDING("accepted"),
 	REJECTED("rejected");
 	
 	

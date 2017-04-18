@@ -823,4 +823,20 @@ public class CandidateDaoImpl implements CandidateDao {
 		    return (Long)query.uniqueResult();
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateByUUID(String candidateUUID) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Candidate> candidate = new ArrayList<Candidate>();
+		logger.debug("getCandidateById start");
+		candidate = session.createQuery("from Candidate candidate where candidate.candidateUUID = :candidateUUID" ).setCacheable(true).setString("candidateUUID", candidateUUID ).setCacheable(true).list();
+		logger.debug("getCandidateById end");
+		if (candidate.size() > 0) {
+			return candidate.get(0);
+		} else {
+			return null;
+		}
+	}
+
 }

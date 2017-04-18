@@ -370,6 +370,11 @@ public Long getTasksCompletedTodayByLocationCodeandUserId(OrgLocations orglocati
 	
 	return taskDao.getTasksCompletedTodayByLocationCodeandUserId(orglocationCode,user);
 }
+
+@Override
+public List<Tasks> getTasskByAssignedUserIdAndOrgLocationId(Long orgLocationId, Long userId) throws Exception {
+	return taskDao.getTasskByAssignedUserIdAndOrgLocationId(orgLocationId, userId);
+}
 }
 	
 
