@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
@@ -147,8 +148,10 @@ public class ContractController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("contractsTemplate", contractsTemplate);
 		model.addObject("templateContent", contractsTemplate.getTemplateContent());
+		model.addObject("templateId", templateId);
 		model.setViewName("contracts/addContractTemplate");
 		return model;
 	}
+	
 		
 }
