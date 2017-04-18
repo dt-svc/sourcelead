@@ -149,6 +149,18 @@ public class TaskDaoImpl implements TaskDao{
 
 
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Tasks> getTasskByAssignedUserIdAndOrgLocationId(Long orgLocationId, Long userId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		 String query ="from Tasks tasks left join fetch tasks.ownerOrglocationId orglocation  left join fetch tasks.assignedUserId assignUser "
+		 		+ " where assignUser.id = :userId and orglocation.id = :orgLocationId";
+		List<Tasks> tasksScheduledList = session.createQuery(query).setLong("userId",userId).setLong("orgLocationId",orgLocationId).setCacheable(true).list();
+		return tasksScheduledList;
+	}
+
+
+
 
 }
 

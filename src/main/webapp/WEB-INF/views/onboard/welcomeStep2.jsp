@@ -1,6 +1,4 @@
 <!DOCTYPE html>
-<html lang="en" manifest="/sourcelead.appcache">
-<head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,11 +15,12 @@
 <link href="resources/css/sourcelead-main.css" rel="stylesheet" id="myStyleSheet">
 <link href="resources/css/timesheet.css" rel="stylesheet">
 
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-</head>
-
-<body>
+<script src="resources/js/jquery-1.11.1.min.js"></script>
+<script src="resources/js/formvalidator.js"></script>
 
 
 <script type="text/javascript">
@@ -41,7 +40,19 @@
 	<section class="welcoBg">
 		<section class="welcoInn">
 		  <div class="welcoHead">
-				<div class="welLogo"><img src="resources/images/w-logo.png" alt=""/></div>
+				<c:if test="${!empty SourceLeadWeb_org.fileContentType}">
+					<div class="welLogo">
+					<img class="logo" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" />
+					</div>
+				</c:if>
+				
+				<c:if test="${empty SourceLeadWeb_org.fileContentType}">
+					<div class="welLogoText">
+					<span  title="${SourceLeadWeb_orgName}">${SourceLeadWeb_orgName}</span>
+					</div>
+				</c:if>
+				
+				<div class="welSiO" onclick="logoutFormSubmit();" title="Sign Out"><i class="fa fa-sign-out"></i></div>
 			  <ul>
 				  <li class="actLi"><span class="fill">1</span><b>Welcome</b><i class="line"></i></li>
 				  <li class="actLi"><span>2</span><b>Step two</b><i class="line"></i></li>
@@ -52,16 +63,17 @@
 			  <div class="clearfix"></div>
 		  </div>
 		  
+ <form:form class="login-form clearfix"  id="onboardCandidate_form"  name="onboardCandidate_form" method="post" >
+ <div id="loading"></div>
 <div class="welCo1">
 <h5>Employee Details</h5>
-
 <div class="form-horizontal padBot">
-	<div class="row clearfix">
+	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 			<div class="form-group">
 			  <label class="col-md-4 control-label">First Name <span class="text-danger paddingLeft">*</span></label>
 			  <div class="col-md-8">
-				<input type="text" class="form-control input-sm" name="firstName" id="firstName" value="${SourceLeadWeb_user.firstName}">
+				<input type="text" class="form-control input-sm" name="firstName" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100"  id="firstName" value="${SourceLeadWeb_user.firstName}">
 			  </div>
 			</div>
 		</div>
@@ -69,17 +81,17 @@
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Last Name <span class="text-danger paddingLeft">*</span></label>
 			  <div class="col-md-8">
-				<input type="text" class="form-control input-sm" name="lastName" od="lastName" value="${SourceLeadWeb_user.lastName}">
+				<input type="text" class="form-control input-sm" name="lastName" id="lastName" data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100" value="${SourceLeadWeb_user.lastName}">
 			  </div>
 			</div>
 		</div>
 	</div>
-	<div class="row clearfix">
+	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Street Addess 1 <span class="text-danger paddingLeft">*</span></label>
 			  <div class="col-md-8">
-				<input type="text" class="form-control input-sm" name="address1"  id="address1" value="${SourceLeadWeb_candidateOnBoarding.address1}">
+				<input type="text" class="form-control input-sm" name="address1" data-validation="required validate_Space"  id="address1" value="${SourceLeadWeb_candidateOnBoarding.address1}">
 			  </div>
 			</div>
 		</div>
@@ -87,12 +99,12 @@
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Street Addess 2</label>
 			  <div class="col-md-8">
-				<input type="text" class="form-control input-sm" name="address2" id="address1" value="${SourceLeadWeb_candidateOnBoarding.address2}">
+				<input type="text" class="form-control input-sm" name="address2" data-validation-optional="true" data-validation="validate_Space" id="address1" value="${SourceLeadWeb_candidateOnBoarding.address2}">
 			  </div>
 			</div>
 		</div>
 	</div>
-	<div class="row clearfix">
+	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 			  <div class="form-group">
 			  <label class="col-md-4 control-label">Country <span class="text-danger paddingLeft">*</span></label>
@@ -114,7 +126,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="row clearfix">
+	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
 			<div class="form-group">
 			  <label class="col-md-4 control-label">City</label>
@@ -134,7 +146,7 @@
 			</div>
 		</div>	
 	</div>	
-	<div class="row clearfix">
+	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Mobile number <span class="text-danger paddingLeft">*</span></label>
@@ -152,7 +164,7 @@
 			</div>
 		</div>	
 	</div>
-	<div class="row clearfix">
+	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Company Email</label>
@@ -166,7 +178,7 @@
  
  <h5>Position Details</h5>
  <div class="form-horizontal">
-	<div class="row clearfix">
+	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Role</label>
@@ -184,7 +196,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="row clearfix">
+	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 			<div class="form-group">
                   <label class="col-md-4 control-label">End date ${SourceLeadWeb_candidateOnBoarding.endDateStr}</label>
@@ -202,7 +214,7 @@
                 </div>
 		</div>
 	</div>
-	<div class="row clearfix">
+	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                 <div class="form-group">
                   <label class="col-md-4 control-label">Manager</label>
@@ -220,7 +232,7 @@
                 </div>
 		</div>
 	</div>
-	<div class="row clearfix">
+	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
                 <div class="form-group">
                   <label class="col-md-4 control-label">Employment Type</label>
@@ -238,7 +250,7 @@
                 </div>
 		</div>	
 	</div>	
-	<div class="row clearfix">
+	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
                   <div class="form-group">
                   <label class="col-md-4 control-label">Termination Notice</label>
@@ -256,7 +268,7 @@
                 </div>
 		</div>	
 	</div>
-	<div class="row clearfix">
+	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
                   <div class="form-group">
                   <label class="col-md-4 control-label">Speical Conditions</label>
@@ -274,15 +286,20 @@
 
 		  
 <div class="welBtns">
-	<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Previous</a><a class="Brig" href="welcome-three.html">Proceed to next step</a><div class="clearfix"></div>
+	<input type="button"  value="Previous" onClick="javascript:location.href = '<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>'" >
+	<input type="button"  value="Proceed to next step" id="save_button"  onclick="saveOnboardingCandidateDetails();" class="Brig">
+	<div class="clearfix"></div>
 </div>
+</form:form>
 		  
 		</section>
 	</section>  
-  
+  </div>
   <!--   Welcome Screens   -->
 
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
+  
+  
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
   <script src="resources/js/jquery.dataTables.min.js"></script> 
   <script src="resources/js/moment.min.js"></script> 
@@ -308,6 +325,10 @@
 
 });
 </script> 
+
+<script src="resources/js/formvalidator.js"></script>
+
+
 
 
 <script type="text/javascript">
@@ -415,7 +436,93 @@ function getOnBoardCandidateCities(country,state,city){
 }
 </script> 
 
-</div>
 
-</body>
-</html>
+<script>
+ function saveOnboardingCandidateDetails(){
+	 var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+	         }; 
+	 
+	 if ($('#onboardCandidate_form').validate(false, validationSettings)){ 
+		    var frm = $('#onboardCandidate_form').serializeFormJSON();
+	        var con = JSON.stringify(frm);
+	        con = con.replace(/[{}]/g, "");
+	        
+	        var jsonData = encodeURIComponent(con);
+	        
+	        var sourceleadUrl ='${sourceleadUrl}';
+	        
+	       
+	       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/saveOnboardingCandidateStepDetails?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+		        success: function(onboardId) {
+		        	
+		        	location.replace(sourceleadUrl+"/onboardingCandidateSetp3");  
+		        },
+		    });  
+	        return true;
+		
+	  }else{
+		return false;
+	  }
+ }
+ 
+ $('body').on('blur', '#onboardCandidate_form', function() {
+		$("#onboardCandidate_form").showHelpOnFocus();
+		$("#onboardCandidate_form").validateOnBlur(false, validationSettings);  
+	});
+ </script>
+ 
+ 
+ <script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>
+ 
+ 
+ <script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+
+        
+</script>  
+
+<script>
+		function logoutFormSubmit() {
+			document.getElementById("logoutForm").submit();
+		}
+</script>
+
+<c:url var="logoutUrl" value="/logout"/>
+<form action="${logoutUrl}" method="post" id="logoutForm">
+ <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+</form>
+
+<form action="${logoutUrl}" method="post" id="logoutForm">
+ <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+</form>

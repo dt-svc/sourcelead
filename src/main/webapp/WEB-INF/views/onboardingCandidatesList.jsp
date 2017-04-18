@@ -19,7 +19,7 @@
 <div class="content-dashboard clearfix"> 
       <div class="clearfix dashboard-widget mb col-md-12 hdrPosition">
         <h4 class="clearfix">
-        On-boarding Candidates
+        Onboard Candidates
         &nbsp;&nbsp;
         </h4>
         <div class="clearfix require_wrap_table dashboard-data filter_position"> 
@@ -110,7 +110,7 @@ function onboardingCandidatesList(){
 function onboardingPagenation(){ 
 	 $('#onboardingPagination').DataTable( { 
 	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+	    	"lengthMenu": [[5, 15, 20, -1], [2, 15, 20, "All"]],
 	    	"bLengthChange": false,
 	    	"bDestroy": true,
 	    	"ordering": true,

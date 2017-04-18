@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -21,8 +22,14 @@ public interface ContractsTemplateService {
 
 	List<ContractsTemplate> getAllContractsTemplatesByContractTypeLandLocationId(Long orgLocationId, String contractType)throws Exception;
 
-	Contracts saveNewContract(JSONObject jsonObj, OrgLocations orgLocation, String saveType, User user)throws Exception;
+	Contracts saveNewContract(JSONObject jsonObj, OrgLocations orgLocation, String saveType, User user, Org org)throws Exception;
 
-	List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType)throws Exception;
+	Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType)throws Exception;
+
+	Contracts getContractById(Long contractId);
+
+	Contracts saveNewContract(Contracts updateContracts) throws Exception;
+
+	Contracts getChildContractById(Long contractId);
 	
 }

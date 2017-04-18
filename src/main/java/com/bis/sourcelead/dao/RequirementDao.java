@@ -89,4 +89,6 @@ public interface RequirementDao {
 	Long getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC) throws Exception ;
 
 	public List<Requirement> getTotalRequirementsReleasedToSpoc(Long relationId, Long spocId);
+	
+	List<Requirement> getRequirementsForSOWByOrgLocationId(Long orgLocationId, String type) throws Exception ;
 }
