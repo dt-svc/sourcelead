@@ -50,7 +50,16 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	public ContractsTemplate saveContractTemplate(JSONObject jsonObj, User user, OrgLocations orgLocation) throws Exception {
 		
 		
-		ContractsTemplate contractsTemplate = new ContractsTemplate();
+		ContractsTemplate contractsTemplate = null;
+		if(jsonObj.has("templateId")){
+			if(null != jsonObj.getString("templateId") && !"".equalsIgnoreCase("templateId")){
+				contractsTemplate = contractsTemplateDao.getContractTemplateById(Long.parseLong(jsonObj.getString("templateId")));
+			}else{
+				contractsTemplate = new ContractsTemplate();
+			}
+		}else{
+			contractsTemplate = new ContractsTemplate();
+		}
 		contractsTemplate.setOrgLocationId(orgLocation);
 		
 		contractsTemplate.setTemplateName(jsonObj.getString("templateName"));
