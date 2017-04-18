@@ -59,7 +59,7 @@ display: none;}
     	<ul>
         	<li><a href="tel:(214) 295-5535"><i class="fa fa-phone"></i> (214) 295-5535</a></li>
             <li><a href="mailto:info@sourcelead.com"><i class="fa fa-envelope-o"></i>info@sourcelead.com</a></li>
-            <li class="hideres"><a href="http://www.sourcelead.com/sourcelead/"><i class="fa fa-user-o"></i> Login</a></li>
+            <li class="hideres"><a href="${sourceleadUrl}/login"><i class="fa fa-user-o"></i> Login</a></li>
             <div class="clear"></div>
         </ul>
     	<div class="clear"></div>    
@@ -74,26 +74,26 @@ display: none;}
 		<li><a href="${sourceleadUrl}/openRequirements" class="rcolor">Jobs</a></li>
         <li><a href="javascript:void(0)" class="ma">What we do<i class="fa fa-caret-down"></i></a>
 			<ul>
-				<li><a href="crowdsourcing.html">Crowdsourcing</a></li>
-            	<li><a href="ats.html">ATS</a></li>
-                <li><a href="vms.html">VMS</a></li>
-                <li><a style="border-bottom:none;" href="timesheet.html">Time Management</a></li>
+				<li><a href="../crowdsourcing.html">Crowdsourcing</a></li>
+            	<li><a href="../ats.html">ATS</a></li>
+                <li><a href="../vms.html">VMS</a></li>
+                <li><a style="border-bottom:none;" href="../timesheet.html">Time Management</a></li>
             </ul>
         </li>
         <li><a href="javascript:void(0)" class="ma">Resources<i class="fa fa-caret-down"></i></a>
         	<ul>
-            	<li><a href="demo.html">Product Videos</a></li>
+            	<li><a href="../demo.html">Product Videos</a></li>
                 <li><a href="javascript:void(0)" class="requestDemo">Request Personal Demo</a></li>
                 <li><a style="border-bottom:none;" href="faqs.html">FAQs</a></li>
             </ul>
         </li>
         <li><a href="javascript:void(0)">About SourceLead<i class="fa fa-caret-down"></i></a>
         	<ul>
-            	<li><a href="about-us.html">About SourceLead</a></li>
-                <li><a href="team.html">Our team</a></li>
+            	<li><a href="../about-us.html">About SourceLead</a></li>
+                <li><a href="../team.html">Our team</a></li>
                 <!--<li><a href="about-us.html#client">Clienef="testimonial.html">Testimonial</a></li>
                 <!--<li><a href="careers.html">Careers</a></li>-->
-                <li><a style="border-bottom:none;" href="contact.html">Contact</a></li>
+                <li><a style="border-bottom:none;" href="../contact.html">Contact</a></li>
             </ul>        
         </li>
         <li><a href="blog4.html">Blogs</a></li>
@@ -110,7 +110,6 @@ display: none;}
   
   <div class="clear"></div>
 </div>
-
 </header>
 <section class="menuGapInpage"></section>
 
@@ -482,27 +481,27 @@ display: none;}
     	<div class="footerInnCta resFoot">
         	<h3>What we do</h3>
             <ul>
-				<li><a href="crowdsourcing.html"><i class="fa fa-caret-right"></i>Crowdsourcing</a></li>
-            	<li><a href="ats.html"><i class="fa fa-caret-right"></i>ATS</a></li>
-                <li><a href="vms.html"><i class="fa fa-caret-right"></i>VMS</a></li>
-                <li><a href="timesheet.html"><i class="fa fa-caret-right"></i>Time Management</a></li>
+				<li><a href="../crowdsourcing.html"><i class="fa fa-caret-right"></i>Crowdsourcing</a></li>
+            	<li><a href="../ats.html"><i class="fa fa-caret-right"></i>ATS</a></li>
+                <li><a href="../vms.html"><i class="fa fa-caret-right"></i>VMS</a></li>
+                <li><a href="../timesheet.html"><i class="fa fa-caret-right"></i>Time Management</a></li>
             </ul>
         </div> 
     	<div class="footerInnCta">
 <div class="hBlogs">
-            	<a href="blog4.html">
+            	<a href="../blog4.html">
                 	<span>Loyal Relationships with Recruiters</span>
                     <b>FEB 20, 2017</b>
                 </a>            
-            	<a href="blog3.html">
+            	<a href="../blog3.html">
                 	<span>Recruiting Through Social Media Platform</span>
                     <b>FEB 15, 2017</b>
                 </a>            
-            	<a href="blog.html">
+            	<a href="../blog.html">
                 	<span>Existing Process without using any Tool</span>
                     <b>DEC 20, 2016</b>
                 </a>
-            	<a href="blog4.html">Viwe all</a>                                                
+            	<a href="../blog4.html">Viwe all</a>                                                
             </div>
         </div>  
     	<div class="footerInnCta">
@@ -526,8 +525,8 @@ display: none;}
     	<div class="copyright">
     	<b>© 2016 SourceLead. All rights reserved.</b>
         <span>
-        	<a href="privacy.html">Privacy Policy</a>
-            <a href="terms.html">Terms of Use</a>
+        	<a href="../privacy.html">Privacy Policy</a>
+            <a href="../terms.html">Terms of Use</a>
         </span><div class="clear"></div>
         </div>
     </div>  
@@ -654,12 +653,14 @@ function getOpenJobsELKList(){
 					if(requirements.isCrowdSourcingJob == 'Y'){
 					result = result +'	<a href="'+sourceleadUrl+'/login" style="background-color:#eb821c;">Refer</a></div>';
 					}
-					result = result +' <section class="loadJob"><i class="fa fa-spinner fa-spin"></i>View more</section>';
 /* 					result = result +'	<div class="filLoad">';
 					result = result +'	<h2 class="gradi"></h2><p class="gradi"></p><p class="gradi"></p><p class="gradi"></p><br>';
 					result = result +'	<p class="gradi"></p>';
 					result = result +'	</div>'; */				
 					result = result +'	</div>';
+					if((json.length -1) == i ){
+						result = result +' <section class="loadJob"><i class="fa fa-spinner fa-spin"></i>No More Data</section>';	
+					}
 					$("#openJobsRequirementsList").append(result); 
 					$("#openJobsRequirementTitleId").val('');
 					$("#openJobsLocationId").val('');

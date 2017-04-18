@@ -89,13 +89,13 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Street Addess 1 <span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">Street Address 1 <span class="text-danger paddingLeft">*</span></label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm" id="address1" name="address1" field-name="Address 1" data-validation="required validate_Space">
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Street Addess 2</label>
+                  <label class="col-md-3 control-label">Street Address 2</label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm" id="address2" name="address2" field-name="Address 2" data-validation-optional="true"  data-validation="validate_Space">
                   </div>
@@ -254,7 +254,7 @@
                 </div>
 
                   <div class="form-group">
-                  <label class="col-md-3 control-label">Speical Conditions</label>
+                  <label class="col-md-3 control-label">Special Conditions</label>
                   <div class="col-md-6">
                       <textarea rows="2" class="form-control" id="specialConditions" name="specialConditions" data-validation-optional="true"></textarea>
                   </div>
@@ -1854,7 +1854,6 @@ function saveOnboardTask(){
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/saveCandidateOnBoardTasks?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
 		        success: function(result) {
-		        	
 		        	if(result == 'success'){
 		        		$("#onboardtasksLoading").removeAttr("style");
 			        	flushOnboardTask();

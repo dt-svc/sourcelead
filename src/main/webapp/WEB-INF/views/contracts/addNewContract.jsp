@@ -239,8 +239,8 @@
       <div class="form-footer clearfix contrFoot">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input type="button" value="Draft" id="draft_template" onclick="saveNewContract('draft'); " class="btn btn-primary">
-            <input type="button" value="Save" class="btn btn-success ml10">
+            <input type="button" value="Save Draft" id="draft_template" onclick="saveNewContract('draft');" class="btn btn-primary">
+            <input type="button" value="Save" id="save_template" onclick="saveNewContract('pending');" class="btn btn-success ml10">
             <input type="button" value="Cancel" class="btn btn-danger ml10">
           </div>
         </div>
@@ -369,7 +369,7 @@ function getClientContacts(){
 	var opt = json[i];
 	// need to use in edit
 	//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-	output = output + "<option value='" +opt.clientUser.id+ "'>"+opt.ownerName+"</option>";
+	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"</option>";
 	}
 	$("#clientContact").empty();
 	$("#clientContact").append(output);
