@@ -101,7 +101,8 @@ function preparedTemplateList(data){
 		    }
          result = result + '</td>';
          result = result + '<td>';
-         result = result + '<div><span onclick="previewPDF('+report.id+')">previews/edit</span></div>';
+        /*  result = result + '<div><span onclick="previewPDF('+report.id+')">previews/edit</span></div>'; */
+         result = result + '<div class="tbldata-dotdot-vsm"><a href="javascript:void(0)" title="Preview" class="mr"><i class="fa fa-eye" onclick="previewPDF('+report.id+')"></i></a> <a href="javascript:void(0)" title="Edit"><i class="fa fa-edit"></i></a></div>';
          result = result + '</td>';
          result = result + '<td>';
          result = result + '<div><a class="glyphicon glyphicon-paperclip pinCo" href="" onclick="downloadPdfTemplate('+report.id+')"></a></div>';
@@ -150,7 +151,7 @@ function downloadPdfTemplate(templateId){
 
 </script> 
 <!-- Footer Area -->
-<jsp:include page="../masterFooter.jsp" />
+<%-- <jsp:include page="../masterFooter.jsp" /> --%>
 <!-- Footer Area -->
 
 

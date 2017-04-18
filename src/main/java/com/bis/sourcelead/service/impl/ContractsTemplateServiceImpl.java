@@ -209,6 +209,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setDescription(jsonObj.getString("description"));
 			vendorContracts.setDescription(jsonObj.getString("description"));
 		}
+		if(jsonObj.has("jurisdiction") && null != jsonObj.getString("jurisdiction") && !"".equals(jsonObj.getString("jurisdiction"))){
+			contracts.setStateJurisdiction(jsonObj.getString("jurisdiction"));
+		}
 		contracts.setStatus("0");
 //		contracts.setTemplateSubmissionStatus("pending");
 		vendorContracts.setTemplateSubmissionStatus("Waiting to be signed");

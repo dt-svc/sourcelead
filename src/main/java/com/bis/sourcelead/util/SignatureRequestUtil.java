@@ -80,7 +80,7 @@ public class SignatureRequestUtil {
 			// note that a given user may be a member of multiple accounts
 			loginAccounts = loginInfo.getLoginAccounts();
 
-			logger.info("LoginInformation: " + loginAccounts);
+//			logger.info("LoginInformation: " + loginAccounts);
 		}
 		catch (com.docusign.esign.client.ApiException ex)
 		{

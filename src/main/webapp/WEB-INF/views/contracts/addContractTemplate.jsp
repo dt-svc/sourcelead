@@ -81,23 +81,23 @@
 		<div class="col-md-3 contrCus">
 			<h3>Custom Files</h3>
 			<ul id="clientmsa" style="display:block">
-                <li onclick="copyToClipboard('text_element1')"><i></i><p class="copyText" id="text_element1">{Client Name}</p></li>
-                <li onclick="copyToClipboard('text_element2')"><i></i><p class="copyText" id="text_element2">{Client Contact}</p></li>
-                <li onclick="copyToClipboard('text_element3')"><i></i><p class="copyText" id="text_element3">{Client location}</p></li>
-                <li onclick="copyToClipboard('text_element4')"><i></i><p class="copyText" id="text_element4">{Company Location}</p></li>
-                <li onclick="copyToClipboard('text_element5')"><i></i><p class="copyText" id="text_element5">{Company Name}</p></li>
+                <li onclick="copyToClipboard('text_element1')"><i></i><p class="copyText" id="text_element1">[Client Name]</p></li>
+                <li onclick="copyToClipboard('text_element2')"><i></i><p class="copyText" id="text_element2">[Client Contact]</p></li>
+                <li onclick="copyToClipboard('text_element3')"><i></i><p class="copyText" id="text_element3">[Client location]</p></li>
+                <li onclick="copyToClipboard('text_element4')"><i></i><p class="copyText" id="text_element4">[Company Location]</p></li>
+                <li onclick="copyToClipboard('text_element5')"><i></i><p class="copyText" id="text_element5">[Company Name]</p></li>
             </ul>
             
             <ul id="vendormsa" style="display:none">
-                <li onclick="copyToClipboard('text_element11')"><i></i><p class="copyText" id="text_element11">{Vendor Name}</p></li>
-                <li onclick="copyToClipboard('text_element12')"><i></i><p class="copyText" id="text_element12">{Vendor Contact}</p></li>
-                <li onclick="copyToClipboard('text_element13')"><i></i><p class="copyText" id="text_element13">{Vendor location}</p></li>
-                <li onclick="copyToClipboard('text_element14')"><i></i><p class="copyText" id="text_element14">{Company Location}</p></li>
-                <li onclick="copyToClipboard('text_element15')"><i></i><p class="copyText" id="text_element15">{Company Name}</p></li>
+                <li onclick="copyToClipboard('text_element11')"><i></i><p class="copyText" id="text_element11">[Vendor Name]</p></li>
+                <li onclick="copyToClipboard('text_element12')"><i></i><p class="copyText" id="text_element12">[Vendor Contact]</p></li>
+                <li onclick="copyToClipboard('text_element13')"><i></i><p class="copyText" id="text_element13">[Vendor location]</p></li>
+                <li onclick="copyToClipboard('text_element14')"><i></i><p class="copyText" id="text_element14">[Company Location]</p></li>
+                <li onclick="copyToClipboard('text_element15')"><i></i><p class="copyText" id="text_element15">[Company Name]</p></li>
             </ul>
 			
 			<ul id="clientsow" style="display:none">
-				<li onclick="copyToClipboard('text_element')"><i></i><p class="copyText" id="text_element">{Client Name}</p></li>
+				<li onclick="copyToClipboard('text_element')"><i></i><p class="copyText" id="text_element">[Client Name]</p></li>
 				<li><i></i>Client Contact</li>
 				<li><i></i>Client Location</li>
 				<li><i></i>Requirement Title</li>
