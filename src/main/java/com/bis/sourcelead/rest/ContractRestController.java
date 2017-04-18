@@ -153,6 +153,7 @@ public class ContractRestController {
 			}
 			orgSpoc.setSpocName(sb.toString());
 			orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
+			orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
 			orgSpoc.setOwnerName(clientSb.toString());
 			}
 		return commonUtil.toJSON(orgSpocList);
@@ -198,8 +199,8 @@ public class ContractRestController {
 	public @ResponseBody String getAllContractsByOrgLocationIdandStatus(@RequestParam(value = "contractSubmissionType", required = false) String contractSubmissionType,@RequestParam(value = "tabType", required = false) String tabType,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<Contracts> contractsTemplateList = contractsTemplateService.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,tabType);
-		return commonUtil.toJSON(contractsTemplateList);
+		Contracts contracts = contractsTemplateService.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,tabType);
+		return commonUtil.toJSON(contracts);
 	} 
 	
 	@RequestMapping(value = "/downloadContractsTemplate", method = RequestMethod.GET)
@@ -235,25 +236,43 @@ public class ContractRestController {
 	
 	@RequestMapping(value = "/updateContractStatus", method = RequestMethod.POST)
 	@ResponseBody
-	public String updateContractStatus(@RequestParam(value = "recordId", required = false) String recordId,HttpServletRequest request)throws Exception{
+	public String updateContractStatus(@RequestParam(value = "recordId", required = false) String recordId,
+			@RequestParam(value = "status", required = false) String status,
+			HttpServletRequest request)throws Exception{
 
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		
 		Contracts contracts  = contractsTemplateService.getContractById(Long.parseLong(recordId));
-		
-		Contracts updateContracts = new Contracts();
-		Contracts childContracts = new Contracts();
-		
-		if(null != contracts.getParentContractId()){
-				updateContracts.setId(contracts.getParentContractId().getId());
-				updateContracts.setTemplateSubmissionStatus("Send For Verification");
-				childContracts.setId(contracts.getId());
-				childContracts.setTemplateSubmissionStatus("Waiting To Be Verify");
+		if("Waiting to be signed".equalsIgnoreCase(status)){
+			Contracts parentContracts  = contractsTemplateService.getContractById(contracts.getParentContractId().getId());
+			if(null != contracts.getParentContractId()){
+				parentContracts.setId(contracts.getParentContractId().getId());
+				parentContracts.setTemplateSubmissionStatus("Waiting To Be Verify");
+				contracts.setId(contracts.getId());
+				contracts.setTemplateSubmissionStatus("Send For Verification");
 			}
-		Contracts savedChildContracts = contractsTemplateService.saveNewContract(updateContracts);
-		Contracts updateChildContracts = contractsTemplateService.saveNewContract(childContracts);
-			
+		 contractsTemplateService.saveNewContract(parentContracts);
+		 contractsTemplateService.saveNewContract(contracts);
+		}
+		
+		
+		
+		
+		
+		if(("Waiting To Be Verify").equalsIgnoreCase(status)){
+			Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
+			if(null != childContarct.getParentContractId()){
+				childContarct.setId(childContarct.getId());
+				childContarct.setTemplateSubmissionStatus("Finalized");
+				contracts.setId(contracts.getId());
+				contracts.setTemplateSubmissionStatus("Finalized");
+			}
+			 contractsTemplateService.saveNewContract(childContarct);
+			 contractsTemplateService.saveNewContract(contracts);
+		}
+		
+		
+		
 		return "success";
 }
 

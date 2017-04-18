@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -156,7 +157,32 @@ public class Contracts {
 	@Transient
 	private String parentId;
 	
+	@Transient
+	List<Contracts> vendorcontractsList;
 	
+	@Transient
+	List<Contracts> clientcontractsList;
+	
+	public List<Contracts> getVendorcontractsList()
+	{
+		return vendorcontractsList;
+	}
+
+	public void setVendorcontractsList(List<Contracts> vendorcontractsList)
+	{
+		this.vendorcontractsList = vendorcontractsList;
+	}
+
+	public List<Contracts> getClientcontractsList()
+	{
+		return clientcontractsList;
+	}
+
+	public void setClientcontractsList(List<Contracts> clientcontractsList)
+	{
+		this.clientcontractsList = clientcontractsList;
+	}
+
 	public String getParentId()
 	{
 		return parentId;
