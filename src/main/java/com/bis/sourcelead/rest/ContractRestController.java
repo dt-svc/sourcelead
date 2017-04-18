@@ -1,13 +1,10 @@
 package com.bis.sourcelead.rest;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
@@ -18,7 +15,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,17 +28,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bis.sourcelead.entity.BulkClientDetails;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ContractsTemplateService;
-import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
-import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.itextpdf.text.Document;
@@ -70,6 +68,11 @@ public class ContractRestController {
 	@Autowired
 	private OrgSpocService orgSpocService;
 	
+	@Autowired
+	private RequirementService requirementService;
+	
+	@Autowired
+	private RequirementSubmissionService requirementSubmissionService;
 	
 	@RequestMapping(value = "/saveTemplate", method = RequestMethod.POST)
 	public @ResponseBody String saveClient(@RequestParam(value = "json", required = false) String json,
@@ -256,5 +259,24 @@ public class ContractRestController {
 			
 		return "success";
 }
+	
+	@RequestMapping(value = "/getRequirementsForSOWByOrgLocationId", method = RequestMethod.GET)
+	public @ResponseBody String getRequirementsForSOWByOrgLocationId(@RequestParam(value = "type", required = false) String type, HttpServletRequest request,HttpServletResponse response) throws Exception {
+		
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		
+		List<Requirement> requirementList = requirementService.getRequirementsForSOWByOrgLocationId(loginOrgLocation.getId(), type);
+		
+		return commonUtil.toJSON(requirementList);
+	}
+	
+	
+	@RequestMapping(value = "/getSubmissionsForSOWByRequirementId", method = RequestMethod.GET)
+	public @ResponseBody String getSubmissionsForSOWByRequirementId(@RequestParam(value = "requirementId", required = false) String requirementId, HttpServletRequest request,HttpServletResponse response) throws Exception {
+		
+		List<RequirementSubmission> requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByRequirementId(Long.parseLong(requirementId));
+		
+		return commonUtil.toJSON(requirementSubmissionsList);
+	}
 
 }
