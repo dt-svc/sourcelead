@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service;
 
 import org.json.JSONObject;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.User;
@@ -27,6 +28,10 @@ public interface RegistrationService {
 	public void saveProfessional(JSONObject jsonObj,String contactUUID) throws Exception;
 	
 	public void saveIndividualRecruiter(JSONObject jsonObj) throws Exception;
+	
+    public void saveProfessionalFromSocialInviter(JSONObject jsonObj) throws Exception;
+	
+	public void saveIndividualRecruiterFromSocialInviter(JSONObject jsonObj) throws Exception;
 
 
 

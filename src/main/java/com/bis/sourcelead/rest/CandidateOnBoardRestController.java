@@ -801,13 +801,27 @@ public class CandidateOnBoardRestController {
 			candidateOnBoarding.setJobTitle(candidateOnBoarding.getOfferId().getSubmissionId().getRequirement().getJobTitle());
 			
 			if(null != candidateOnBoarding.getManagerUserId()){
+				StringBuilder mgName = new StringBuilder();
+				if(candidateOnBoarding.getManagerUserId().getLastName() != null){
+					candidateOnBoarding.setManagerName(mgName.append(candidateOnBoarding.getManagerUserId().getFirstName()).append(" ").append(candidateOnBoarding.getManagerUserId().getLastName()).toString());	
+				}else{
+					candidateOnBoarding.setManagerName(mgName.append(candidateOnBoarding.getManagerUserId().getFirstName()).toString());
+				}
+			}
+			
+			if(null != candidateOnBoarding.getTeamId()){
+				candidateOnBoarding.setTeamName(candidateOnBoarding.getTeamId().getName());	
+			}
+			if(null !=candidateOnBoarding.getRoleId()){
+				candidateOnBoarding.setRoleName(candidateOnBoarding.getRoleId().getDisplayName());	
+			}
+			if(null != candidateOnBoarding.getManagerUserId()){
 				candidateOnBoarding.setOnBoardManagerId(candidateOnBoarding.getManagerUserId().getId());
 			}
 			
 			if(null != candidateOnBoarding.getTeamId()){
 				candidateOnBoarding.setOnBoardTeamId(candidateOnBoarding.getTeamId().getId());
 			}
-			
 			
 			candidateOnBoarding.setJoiningDateStr(Constants.DMY.format(candidateOnBoarding.getStartDate()));
 			
@@ -1261,6 +1275,84 @@ public class CandidateOnBoardRestController {
 			}
 		 
 		 
+		 
+		 @RequestMapping(value = "/viewCandidateOnboardTasks", method = RequestMethod.POST)
+		 @ResponseBody String viewCandidateOnboardTasks(@RequestParam(value="onBoardingUUID", required=false) String onBoardingUUID,HttpServletRequest request) throws Exception{
+			 List<OnboardTasks> templateTasksList = null;
+			 List<OnboardTasks> tasksList = new ArrayList<OnboardTasks>();;
+			 CandidateOnBoarding cnb = candidateOnBoardingService.getCandidateOnBoardingByUUID(onBoardingUUID);
+		     List<OnboardTasks> candidateTasksList = onboardTasksService.getOnBoardTasksListByCandidateOnBoardingId(cnb.getId());
+		     tasksList.addAll(candidateTasksList);
+		 
+			 CandidateOnBoarding onboarding = candidateOnBoardingService.getCandidateOnBoardingById(cnb.getId());
+			 List<Long> templateIdsList = new ArrayList<Long>();
+			 
+			 if(!isNullOrEmpty(onboarding.getOnboardTemplateId())){
+				 for (String s : onboarding.getOnboardTemplateId().split(",")){
+					 templateIdsList.add(Long.parseLong(s));
+				 }
+				
+				 templateTasksList = onboardTasksService.getOnboardTasksByTemplateIdList(templateIdsList);
+				 if(null != templateTasksList){
+					 tasksList.addAll(templateTasksList);
+				 }
+				 
+			 }
+			 List<OnboardTasks> onboardtasksList = new ArrayList<OnboardTasks>();
+			 
+			 for(OnboardTasks tasks : tasksList){
+				 
+				 List<String> usersList = new ArrayList<String>();
+					 
+					 if(!isNullOrEmpty(tasks.getAssignToUsers())){
+						 String[] userIds = tasks.getAssignToUsers().split(",");
+						 
+						 for(int i = 0 ; i < userIds.length; i++ ){
+							 StringBuilder userName = new StringBuilder();
+							 User user = userService.getUserById(Long.valueOf(userIds[i]));
+							 String assignedUser = null;
+							 if(null != user.getLastName()){
+								 assignedUser = userName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
+								}else{
+									assignedUser = userName.append(user.getFirstName()).toString();
+								}
+							 usersList.add(assignedUser);
+						 }
+					 }
+					 
+					 StringBuilder dueAfter = new StringBuilder();
+					 
+					 if(null != tasks.getDueAfterMonths()){
+						 dueAfter = dueAfter.append(tasks.getDueAfterMonths()).append(" Months ");
+					 }
+					 
+					 if(null != tasks.getDueAfterDays()){
+						 dueAfter = dueAfter.append(tasks.getDueAfterDays()).append(" Days ");
+					 }
+					 
+					 if(null != tasks.getDueAfterHours()){
+						 dueAfter = dueAfter.append(tasks.getDueAfterHours()).append(" Hours ");
+					 }
+					 
+					 if(null != tasks.getDueAfterMinutes()){
+						 dueAfter = dueAfter.append(tasks.getDueAfterMinutes()).append(" Minutes");
+					 }
+					
+					 tasks.setDueAfterString(dueAfter.toString());
+					 tasks.setUsersList(usersList); 
+					 
+					 if(null != tasks.getCandidateOnBoardingId()){
+						 tasks.setOnboardTaskType("Candidate Task");
+					 }else  if(null != tasks.getOnboardingTemplateId()){
+						 tasks.setOnboardTaskType("Template Task");
+					 }
+					 
+					 onboardtasksList.add(tasks);
+			 }
+				
+			return commonUtil.toJSON(onboardtasksList);
+			}
+		 
 		
 		
 		 
@@ -1534,4 +1626,49 @@ public class CandidateOnBoardRestController {
 		   }
 		 
 	 
+		 @RequestMapping(value = "/getCandidateOnboardTemplateDocumentByonBoardingUUID" , method = RequestMethod.POST)
+		 public @ResponseBody  String getCandidateOnboardTemplateDocumentByonBoardingUUID(@RequestParam(value="onBoardingUUID", required=false) String onBoardingUUID,
+				 @RequestParam(value="documentType", required=false) String documentType, HttpServletRequest request) throws Exception {
+			
+			String resultJson;
+			List<OnBoardingTemplateDocuments> documentsList = null;
+			List<OnBoardingTemplateDocuments> onboardingDocumentsList = new ArrayList<OnBoardingTemplateDocuments>();
+			CandidateOnBoarding cnb = candidateOnBoardingService.getCandidateOnBoardingByUUID(onBoardingUUID);
+			Integer documentsCount = onBoardingTemplateDocumentsService.getCandidateOnboardingDocumentsByCandidateOnboardingId(cnb.getId());
+			
+			if(documentsCount > 0){
+				documentsList = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsByCandidateOnBoardingId(cnb.getId(),documentType);
+				if(null != documentsList && documentsList.size() > 0){
+					for(OnBoardingTemplateDocuments  documents : documentsList ){
+						documents.setOnboardDocumentType("Candidate Documents");
+						onboardingDocumentsList.add(documents);
+					}
+				}
+				
+				
+			}else{
+				 
+				CandidateOnBoarding onboarding = candidateOnBoardingService.getCandidateOnBoardingById(cnb.getId());
+				 List<Long> templateIdsList = new ArrayList<Long>();
+				 
+				 if(!isNullOrEmpty(onboarding.getOnboardTemplateId())){
+					 for (String s : onboarding.getOnboardTemplateId().split(",")){
+						 templateIdsList.add(Long.parseLong(s));
+					 }
+					 
+					documentsList = onBoardingTemplateDocumentsService.getCandidateOnBoardingTemplateDocumentsByTemplateId(templateIdsList,documentType);
+					if(null != documentsList && documentsList.size() > 0){
+						for(OnBoardingTemplateDocuments  documents : documentsList ){
+							documents.setOnboardDocumentType("Template Documents");
+							onboardingDocumentsList.add(documents);
+						}
+					}
+				 }
+			}
+			
+		 	resultJson = commonUtil.toJSON(onboardingDocumentsList);
+			return resultJson;
+		   
+		}
+		 
 }

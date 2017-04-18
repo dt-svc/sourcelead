@@ -585,7 +585,12 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 		{
 			Session session = this.sessionFactory.getCurrentSession();
 			 //from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Vendor') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Vendor'
-			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.clientUser user where spoc.orgRelations.id = :orgRelations and user.email like '%"+domain+"%'");
+			Query query;
+			if("".equalsIgnoreCase(domain)){
+				query= session.createQuery("from OrgSpoc spoc left join fetch spoc.clientUser user where spoc.orgRelations.id = :orgRelations");
+			}else{
+				query= session.createQuery("from OrgSpoc spoc left join fetch spoc.vendorUser user where spoc.orgRelations.id = :orgRelations and user.email like '%"+domain+"%'");
+			}
 			List<OrgSpoc> spocsList = query.setLong("orgRelations", orgRelationId).setCacheable(true).list();
 			 
 			return spocsList;

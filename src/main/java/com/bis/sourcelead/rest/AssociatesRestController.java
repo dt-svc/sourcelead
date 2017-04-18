@@ -239,11 +239,30 @@ public class AssociatesRestController {
 	   @RequestMapping(value = "/getCandidateDetailsInAssociate")
 		public String getCandidateDetailsInAssociate(@RequestParam(value = "candidateId", required = false) Long candidateId,
 				HttpServletRequest request) throws Exception {
-
+		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			String resultJson = null;
 			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 			List<String> educationList = candidateEducationService.getCandidateEducationNamesByCandidateId(candidateId);
-			
+			if(null != candidate.getOrgRelationId()){
+				candidate.setVendorOrgRelationId(candidate.getOrgRelationId().getId().toString());
+				if(candidate.getOrgRelationId().getResponderLocationId().getId() == orgLocations.getId()){
+					candidate.setVendorName(candidate.getOrgRelationId().getLocationId().getOrg().getOrgName());	
+				}
+				if(candidate.getOrgRelationId().getLocationId().getId() == orgLocations.getId()){
+					candidate.setVendorName(candidate.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());	
+				}
+				
+			}
+			if(null != candidate.getSpocId()){
+				StringBuilder contactName = new StringBuilder();
+				candidate.setVendorSpocId(candidate.getSpocId().getId().toString());
+				if(null != candidate.getSpocId().getClientUser().getLastName()){
+					candidate.setVendorContactName(contactName.append(candidate.getSpocId().getVendorUser().getFirstName()).append(" ").append(candidate.getSpocId().getClientUser().getLastName()).toString());	
+				}else{
+					candidate.setVendorContactName(contactName.append(candidate.getSpocId().getVendorUser().getFirstName()).toString());
+				}
+				
+			}
 			/*List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
 			LinkedHashSet<String> totSkils = new LinkedHashSet<String>();
 			if(!educationList.contains(null)){

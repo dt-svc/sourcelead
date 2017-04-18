@@ -46,8 +46,8 @@ public class Contracts {
 	
 	@ManyToOne 
     @JoinColumn(name="TEMPLATE_ID", nullable=false )  
-	private ContractsTemplate contractsTemplate;
-	
+	private ContractsTemplate contractsTemplate; 
+	 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "OWNER_USER_ID")
 	private User ownerUserId;
@@ -65,6 +65,9 @@ public class Contracts {
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )     
 	private OrgLocations orgLocationId;
 	
+	@ManyToOne
+    @JoinColumn(name="PARENT_CONTRACT_ID", nullable=false )     
+	private Contracts parentContractId;
 	
 	@ManyToOne
     @JoinColumn(name="CONTRACT_ORG_LOCATION_ID", nullable=false )     
@@ -83,7 +86,7 @@ public class Contracts {
 	private String stateOfJurisdiction;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "APPROVER_USER_ID")
+	@JoinColumn(name = "APPROVER_USER_ID") 
 	private User approverUser;
 	
 	@Column(name = "DESCRIPTION",columnDefinition = "TEXT default NULL")
@@ -106,6 +109,19 @@ public class Contracts {
 	
 	@Column(name = "TAX_TYPE")
 	private String taxType;
+	
+	@ManyToOne
+    @JoinColumn(name="REQUIREMENT_SUBMISSION_ID")     
+	private RequirementSubmission requirementSubmission;
+	
+	@Column(name = "HOURS_PER_WEEK")
+	private String hoursPerWeek;
+	
+	@Column(name = "OVER_TIME_HOURS")
+	private String overTimeHours;
+	
+	@Column(name = "TOTAL_HOURS")
+	private String totalHours;
 	
 	@Column(name = "STATUS")
 	private String status;
@@ -131,12 +147,35 @@ public class Contracts {
 	@Transient
 	private String vendorContactName;
 	
-
 	@Transient
 	private String startDateStr;
 	
 	@Transient
 	private String endDateStr;
+
+	@Transient
+	private String parentId;
+	
+	
+	public String getParentId()
+	{
+		return parentId;
+	}
+
+	public void setParentId(String parentId)
+	{
+		this.parentId = parentId;
+	}
+
+	public Contracts getParentContractId()
+	{
+		return parentContractId;
+	}
+
+	public void setParentContractId(Contracts parentContractId)
+	{
+		this.parentContractId = parentContractId;
+	}
 
 	public Date getCreatedDate()
 	{
@@ -354,6 +393,38 @@ public class Contracts {
 
 	public void setTaxType(String taxType) {
 		this.taxType = taxType;
+	}
+
+	public RequirementSubmission getRequirementSubmission() {
+		return requirementSubmission;
+	}
+
+	public void setRequirementSubmission(RequirementSubmission requirementSubmission) {
+		this.requirementSubmission = requirementSubmission;
+	}
+
+	public String getHoursPerWeek() {
+		return hoursPerWeek;
+	}
+
+	public void setHoursPerWeek(String hoursPerWeek) {
+		this.hoursPerWeek = hoursPerWeek;
+	}
+
+	public String getOverTimeHours() {
+		return overTimeHours;
+	}
+
+	public void setOverTimeHours(String overTimeHours) {
+		this.overTimeHours = overTimeHours;
+	}
+
+	public String getTotalHours() {
+		return totalHours;
+	}
+
+	public void setTotalHours(String totalHours) {
+		this.totalHours = totalHours;
 	}
 
 	public String getStatus() {
