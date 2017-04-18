@@ -36,10 +36,11 @@ window.onload = function () {
 		$(".logPop").fadeOut(100);
     }
 </script>
+ <div  id="loadTime"></div> 
 <div class="logMask"></div>
 	<div class="logPop">
-		<div class="loPopClose" onclick="closeProfileDetailsPop();"><i class="fa fa-times"></i></div>
-		<div class="row mt10">
+		<div id="registerPopClose" class="loPopClose" onclick="closeProfileDetailsPop();"><i class="fa fa-times"></i></div>
+		<div id="registerPop" class="row mt10">
 		    <div id = "professionalRegistrationPopup" style="display:block;">
 				    <form:form class="login-form clearfix"  id="popprofessionalRegistration_form"  name="popprofessionalRegistration_form" method="post" >
 				    <div class="col-md-3">
@@ -48,6 +49,16 @@ window.onload = function () {
 					   </div>
 				    </div>
 		            <div class="col-md-9">
+		             <div class="form-group clearfix">
+		                  <label  class="col-md-4">User Name <span class="text-danger">*</span></label>
+		                  <span class="col-md-8">
+		                     <input type="hidden" name="imageUrl" id="popProfessionalimageUrl"/>
+		                     <input type="hidden" name="profileUrl" id="popProfessionalprofileurl"/>
+		                     <input type="hidden" name="service" id="popProfessionalService"/>
+		                     <input type="text" class="form-control" name="userName" field-name="User Name" id="popUserName" readonly="readonly" data-validation="required">
+		                     <b></b>
+		                  </span>
+		            </div>
 		            <div class="form-group clearfix">
 		                  <label  class="col-md-4">First Name <span class="text-danger">*</span></label>
 		                  <span class="col-md-8">
@@ -65,7 +76,7 @@ window.onload = function () {
 		            <div class="form-group clearfix">
 		              <label class="col-md-4">Email<span class="text-danger">&nbsp;*</span></label>
 		              <span class="col-md-8" id="popemailDiv">
-		                 <input type="text" class="form-control" name="email" field-name="Email" value='${email}' onblur="validateEmail('Professional');" id="popemail"  data-validation="required validate_Space validate_length length2-100 validate_email" >
+		                 <input type="text" class="form-control" name="email" field-name="Email" onblur="validatepopEmail('Professional');" value='${email}' id="popemail"  data-validation="required validate_Space validate_length length2-100 validate_email" >
 		                  <b></b>
 		              </span>
 		            </div>
@@ -101,6 +112,16 @@ window.onload = function () {
 					   </div>
 				    </div>   
 		            <div class="col-md-9">
+		             <div class="form-group clearfix">
+		                  <label  class="col-md-4">User Name <span class="text-danger">*</span></label>
+		                  <span class="col-md-8">
+		                     <input type="hidden" name="imageUrl" id="popRecruiterimageUrl"/>
+		                     <input type="hidden" name="profileUrl" id="popRecruiterprofileUrl"/>
+		                     <input type="hidden" name="service" id="popRecruiterservice"/>
+		                     <input type="text" class="form-control" name="userName" field-name="User Name" id="poprecruiterUserName" readonly="readonly" data-validation="required">
+		                     <b></b>
+		                  </span>
+		            </div>
 		            <div class="form-group clearfix">
 		                  <label  class="col-md-4">First Name <span class="text-danger">*</span></label>
 		                  <span class="col-md-8">
@@ -118,7 +139,7 @@ window.onload = function () {
 		            <div class="form-group clearfix">
 		              <label class="col-md-4">Email<span class="text-danger">&nbsp;*</span></label>
 		              <span class="col-md-8" id="poprecruiterEmailDiv">
-		                 <input type="text" class="form-control" name="email" field-name="Email"  id="poprecruiterEmail"  onblur="validateRecruiterEmail('Recruiter');" data-validation="required validate_Space validate_length length2-100 validate_email" >
+		                 <input type="text" class="form-control" name="email" field-name="Email"  id="poprecruiterEmail"  onblur="validatepopRecruiterEmail('Recruiter');" data-validation="required validate_Space validate_length length2-100 validate_email" >
 		                  <b></b>
 		              </span>
 		            </div>
@@ -303,6 +324,18 @@ function resetCredentials(type){
 	$("#poprecruiterEmail").val('');
 	$("#poprecruiterLocation").val('');
 	
+	
+	
+	 $("#popregister_button").removeAttr("disabled");
+	 $('input#popemail').removeAttr( "record-exist record-exist-errormsg");
+	 $('#poprecruiterEmailDiv').find('p.jquery_form_error_message').remove(); 
+	 $( "#popregister_button" ).removeAttr("style");
+	 
+     $("#poprecruiter_register").removeAttr("disabled");
+     $('input#poprecruiterEmail').removeAttr( "record-exist record-exist-errormsg");
+     $('#popemailDiv').find('p.jquery_form_error_message').remove(); 
+     $( "#poprecruiter_register" ).removeAttr("style");
+	 
 	$("#proffessionalConnect").removeAttr('class');
 	$("#recruiterConnect").removeAttr('class');
 	$("#proffessionalConnect").removeAttr('type');
@@ -399,7 +432,6 @@ function validateRecruiterEmail(type){
 
 <script type="text/javascript">
 function validatepopEmail(type){
-	
     var email = document.getElementById("popemail").value;
     var sourceleadUrl ='${sourceleadUrl}';
 		if(email != null && email != ''){
@@ -582,27 +614,28 @@ var validationSettings = {
          $('body').on('submit', '#popprofessionalRegistration_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
+        		$(".logPop").fadeOut(100);
+        	    $("#loadTime").attr('style','position:fixed; width:650px; height:350px; background-color:rgba(255,255,255,0.8); top:20%; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px; background-color: #fff; z-index: 10000; margin: 0px auto; display: block; right: 0px; border-radius: 5px; box-shadow:0px 0px 5px rgba(0,0,0,0.5);');
+        	    
             	var frm = $('#popprofessionalRegistration_form').serializeFormJSON();
 			    
 			    var con = JSON.stringify(frm);
 		        con = con.replace(/[{}]/g, "");
 		        
 		        var jsonData = encodeURIComponent(con);
-			    
+		        
          		var sourceleadUrl ='${sourceleadUrl}';
-         		var contactUUID = '${contactUUID}';
          		
-         	 	$("#popregister_button").attr("disabled", "disabled");
-         		
-           	 
-         		$.ajax({
-          	      type: "POST",
-          	      contentType : 'application/json; charset=utf-8',
-          	      dataType : 'json',
-                	  url: sourceleadUrl+"/registerAsProfessional?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&contactUUID="+contactUUID,		  
+         	 	$("#popregister_button").attr("disabled", "disabled"); 
+         		 $.ajax({
+         			  type: "POST",
+              	      contentType : 'application/json; charset=utf-8',
+              	      dataType : 'json',
+                	  url: sourceleadUrl+"/registerAsProfessionalFromSocialInviter?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,		  
                   	success: function(result) {
 			        	if((result == 'success')){
-			        		location.replace(sourceleadUrl+"/resetloginCredentials");  
+			        		$("#loadTime").removeAttr('style');
+			        		location.replace(sourceleadUrl+"/dashboard");  
 			        	}
 			        	
 			        },  
@@ -631,27 +664,29 @@ var validationSettings = {
          $('body').on('submit', '#poprecruiterRegistration_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
+        		$(".logPop").fadeOut(100);
+        	    $("#loadTime").attr('style','position:fixed; width:650px; height:350px; background-color:rgba(255,255,255,0.8); top:20%; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px; background-color: #fff; z-index: 10000; margin: 0px auto; display: block; right: 0px; border-radius: 5px; box-shadow:0px 0px 5px rgba(0,0,0,0.5);');
+        	    
             	var frm = $('#poprecruiterRegistration_form').serializeFormJSON();
 			    
 			    var con = JSON.stringify(frm);
 		        con = con.replace(/[{}]/g, "");
 		        
 		        var jsonData = encodeURIComponent(con);
-		        
 			    
          		var sourceleadUrl ='${sourceleadUrl}';
          	 	$("#poprecruiter_register").attr("disabled", "disabled");
          		
            	 
          		$.ajax({
-          	      type: "POST",
-          	      contentType : 'application/json; charset=utf-8',
-          	      dataType : 'json',
-                	  url: sourceleadUrl+"/registerAsIndividualRecruiter?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
-                			  
+         			  type: "POST",
+              	      contentType : 'application/json; charset=utf-8',
+              	      dataType : 'json',
+                	url: sourceleadUrl+"/registerAsIndividualRecruiterFromSocialInviter?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
                   	success: function(result) {
 			        	if((result == 'success')){
-			        		location.replace(sourceleadUrl+"/resetloginCredentials");  
+			        		$("#loadTime").removeAttr('style');
+			        		location.replace(sourceleadUrl+"/dashboard");  
 			        	}
 			        	
 			        },  
