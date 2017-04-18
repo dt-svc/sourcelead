@@ -190,10 +190,18 @@ function preparedContractList(data){
 		         result = result + '</td>';
 		         result = result + '<td>';//Waiting to be signed
 		     	 if(report.parentId != null && report.parentId != '' && report.parentId != 'undefined'){
-		     		 result = result + '<div  id="removeStatus'+report.id+'"><a class="btn btn-sm btn-info" title="verify" onclick="removeRecord('+report.id+',\'Waiting to be signed\');">verify</a></div>';  
-		          }else{
+		     		 if(report.templateSubmissionStatus == "Finalized"){
+		     			result = result + '<div id="removeStatus'+report.id+'">Finalized</a></div>';
+		            	 }
+		     		 else{
+		     		 	result = result + '<div  id="removeStatus'+report.id+'"><a class="btn btn-sm btn-info" title="verify" onclick="removeRecord('+report.id+',\'Waiting to be signed\');">verify</a></div>';  
+		     		 }
+		     	}else{
 		        	  if(report.templateSubmissionStatus == "Waiting To Be Verify"){
 		            		result = result + '<div id="removeStatus'+report.id+'"><a class="btn btn-sm btn-success" title="finalize" onclick="finalizeContract('+report.id+',\'Waiting To Be Verify\');">finalize</a></div>';
+		            	 }
+		        	  if(result.templateSubmissionStatus == "Finalized"){
+		        		  result = result + '<div id="removeStatus'+report.id+'">Finalized</a></div>';
 		            	 }
 		        	  else{
 		         	 	result = result + '<div><span>--</span></div>';
@@ -248,10 +256,21 @@ function preparedContractList(data){
 	         opt = opt + '</td>';
 	         opt = opt + '<td>';//Waiting to be signed
 	     	  if(output.parentId != null && output.parentId != '' && output.parentId != 'undefined'){
-	     		opt = opt + '<div  id="removeStatus'+output.id+'"><a class="btn btn-sm btn-info" title="verify" onclick="removeRecord('+output.id+',\'Waiting To Be Verify\');">Verify</a></div>';  
+	     		  
+	     		 if(output.templateSubmissionStatus == "Finalized"){
+	        		  opt = opt + '<div id="removeStatus'+output.id+'">Finalized</a></div>';
+	            	 }
+	     		 else{
+	     			opt = opt + '<div  id="removeStatus'+output.id+'"><a class="btn btn-sm btn-info" title="verify" onclick="removeRecord('+output.id+',\'Waiting to be signed\');">Verify</a></div>';  
+	     		 }
+	     		  
+	     		  
 	          }else{
 	        	  if(output.templateSubmissionStatus == "Waiting To Be Verify"){
 	        		  opt = opt + '<div id="removeStatus'+output.id+'"><a class="btn btn-sm btn-success" title="finalize" onclick="finalizeContract('+output.id+',\'Waiting To Be Verify\');">Finalize</a></div>';
+	            	 }
+	        	  if(output.templateSubmissionStatus == "Finalized"){
+	        		  opt = opt + '<div id="removeStatus'+output.id+'">Finalized</a></div>';
 	            	 }
 	        	  else{
 	        		  opt = opt + '<div><span>--</span></div>';
