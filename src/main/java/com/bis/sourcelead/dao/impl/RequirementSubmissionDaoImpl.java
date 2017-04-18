@@ -2316,6 +2316,15 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		    return subList;
 		}
 		
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<RequirementSubmission> getSubmissionsForSOWByRequirementId(Long requirementId) {
+			 Session session = this.sessionFactory.getCurrentSession();
+			 String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate where rs.requirement.id = :requirementId and rs.submissionStatus = 'OFFERACCEPTED'";
+			 List<RequirementSubmission>  offerAcceptedCandidatesList = session.createQuery(query).setLong( "requirementId", requirementId).setCacheable(true).list();
+		     return offerAcceptedCandidatesList;
+		}
+		
   }
 
 
