@@ -156,11 +156,11 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		
 		if(jsonObj.has("overtimeRate") && null != jsonObj.getString("overtimeRate") && !"".equals(jsonObj.getString("overtimeRate"))){
-			contracts.setTotalHours(jsonObj.getString("overtimeRate"));
+			contracts.setOvertimeRate(jsonObj.getString("overtimeRate"));
 		}
 		
 		if(jsonObj.has("overtimeRateType") && null != jsonObj.getString("overtimeRateType") && !"".equals(jsonObj.getString("overtimeRateType"))){
-			contracts.setTotalHours(jsonObj.getString("overtimeRateType"));
+			contracts.setOvertimeRateType(jsonObj.getString("overtimeRateType"));
 		}
 		
 		contracts.setContractTitle(jsonObj.getString("contractTitle"));
