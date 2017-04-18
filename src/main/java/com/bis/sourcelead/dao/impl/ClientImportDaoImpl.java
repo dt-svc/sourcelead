@@ -77,13 +77,12 @@ public class ClientImportDaoImpl implements ClientImportDao{
 
 	@Override
 	@Transactional
-	public BulkClientDetails getbulkClientByrecordIdAndOrgLocationId(long recordId, Long orgLocationId) throws Exception
+	public BulkClientDetails getbulkClientByrecordIdAndOrgLocationId(long recordId, Long orgLocationId,String responderType) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		BulkClientDetails bulkClientDetails = null;
-		
-		String query = "from BulkClientDetails bulkClientDetails  where orgLocationId =:orgLocationId and bulkClientDetails.id = :recordId and bulkClientDetails.type ='"+Constants.CLIENT+"'";
-		List<BulkClientDetails> bulkClientDetailsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("recordId", recordId).setCacheable(true).list();
+		String query = "from BulkClientDetails bulkClientDetails  where orgLocationId =:orgLocationId and bulkClientDetails.id = :recordId and bulkClientDetails.type =:responderType";
+		List<BulkClientDetails> bulkClientDetailsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("responderType", responderType).setLong("recordId", recordId).setCacheable(true).list();
 		
 		if(null != bulkClientDetailsList && bulkClientDetailsList.size() >0){
 			bulkClientDetails = bulkClientDetailsList.get(0);
