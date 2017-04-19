@@ -27,7 +27,15 @@
   	        loadOnboardingCandidate('${onBoardingUUID}');
   	        
 		}else{
-			loadOnboardingDetails();
+			var candidateId = '${candidateId}';
+			var offerId = '${offerId}';
+			if(candidateId != null && candidateId != '' && candidateId != 'undefined'){
+				loadOnboardCandidateFormDashobard(candidateId,offerId);
+			}else{
+				loadOnboardingDetails();
+			}
+			
+			
 		}
 		
 		
@@ -947,6 +955,42 @@ function validateUploadFile(id)
   }
   </script>
   
+  
+  
+  <script>
+  function getDashboardCandidateDetails(){
+	  
+	  var onboardCandiate = document.getElementById("onboardCandiate").value;
+	  var candidate = onboardCandiate.split(",");
+	  var candidateId = candidate[0];
+	  
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  
+	  if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
+		  
+		  $.ajax({
+			   	type: "POST",
+			    url: sourceleadUrl+"/getOnBoardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,	    	   
+			    success: function(data) {
+			    	 var json = JSON.parse(data);
+		        	
+			    	 $("#firstName").val(json['firstName']);
+			    	 $("#lastName").val(json['lastName']);
+			    	 $("#mobileNumber").val(json['mobilePhone']);
+			    	 $("#personalEmail").val(json['email']);
+			    	 getOnBoardCandidateCountry(json['country'])
+			    	 getOnBoardCandidateStates(json['country'],json['state']);
+			    	 getOnBoardCandidateStates(json['state'],json['city']);
+			    	 getOnBoardCandidateCities(json['country'],json['state'],json['city']);
+			    	 
+			    }
+		   });
+	  }
+	  
+	  
+  }
+  </script>
+  
    <script>
   function getOfferDetails(){
 	  
@@ -1433,6 +1477,37 @@ function loadOnBoardingTemplates(onboardTemplateId){
  </script>
  
  
+ 
+ <script>
+ function loadOnboardCandidateFormDashobard(candidateId,offerId){
+	 
+	 var candidateName = '${candidateName}';
+	 var jobTitle = '${jobTitle}';
+	 var candidateEmail ='${candidateEmail}';
+	 
+	 var result = "";
+	 var selected = 'selected';
+	 result = result +'<option disabled selected>--Select Candidate--</option>';
+	 result = result +'<option value='+candidateId+","+offerId+' '+selected+' >'+candidateName+' ('+jobTitle+')</option>';
+	 $("#onboardCandiate").empty();
+   	 $("#onboardCandiate").append(result); 
+   	 $('#onboardCandiate').trigger("chosen:updated");
+   	 
+   	 getDashboardCandidateDetails();
+     validateOnbardUserByCandidateId(candidateId,candidateName);
+    
+     
+   	 getOfferDetails();
+   	 
+   	 loadCandidateRoles();
+	 loadTeams();
+	 loadOnBoardingTemplates();
+	 
+	
+ }
+ </script>
+ 
+ 
  <script>
 function getTemplatePolicyDocumentsDetails(onboardId){
 	if(onboardId == '' || onboardId == null || onboardId =='undefined'){
@@ -1480,7 +1555,7 @@ function getTemplatePolicyDocumentsDetails(onboardId){
                 	 
                 	 $("#savedPociliesAttachments").append(result);
                 	 
-                	 
+                	 $("#onboardTasksList").empty();
                 	 
 			        
 		        },
@@ -1535,6 +1610,7 @@ function getTemplateSupportingDocumentsDetails(onboardId){
                 	 $("#savedSupportedAttachments").empty();
                 	 $("#savedSupportedAttachments").append(result);
                 	 
+                	 $("#onboardTasksList").empty();
                 	 
 			        
 		        },
@@ -1590,6 +1666,8 @@ function getTemplateContractsDocumentsDetails(onboardId){
                 	 result = result +"</table>";
                 	 $("#savedContractsAttachments").empty();
                 	 $("#savedContractsAttachments").append(result);
+                	 
+                	 $("#onboardTasksList").empty();
                 	 
                 	 
 			        
@@ -1647,6 +1725,8 @@ function getTemplateFormsDocumentsDetails(onboardId){
                 	 result = result +"</table>";
                 	 $("#savedFormsAttachments").empty();
                 	 $("#savedFormsAttachments").append(result);
+                	 
+                	 $("#onboardTasksList").empty();
                 	 
                 	 
 			        
@@ -2111,6 +2191,28 @@ function saveAndFinishOnboardTemplate(onboardId){
 	                         $("#save_onboardUser").removeAttr("disabled");
 	                         $("#saveAndContinue_onboardUser").removeAttr("disabled");
 			        	}
+			        },
+			    });
+	  }
+	  
+ }
+ </script>
+ 
+ 
+ <script>
+ function validateOnbardUserByCandidateId(candidateId,candidateName){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	  if(candidateId){
+			 $.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/validateOnboardCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
+			        success: function(result) {
+			        	if(result == 'Invalid'){
+			        		 $("#save_onboardUser").attr("disabled", "disabled");
+			    			 $("#saveAndContinue_onboardUser" ).attr("disabled", "disabled");
+			        		 alertMessage(candidateName+" is Already exists as onboard user");
+			        	}
+			        	
 			        },
 			    });
 	  }
