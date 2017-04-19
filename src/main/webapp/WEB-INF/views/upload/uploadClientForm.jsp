@@ -492,12 +492,12 @@ function excelimportDataPagination(){
 </script>
 
 
-<!-- <script type="text/javascript">
-
+<script type="text/javascript">
+//script for upload file
 document.getElementById("uploadBtn").onchange = function () {
-    document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
-};
-</script> -->
+	document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
+}
+</script>
 
 <!-- <script>
 function check(){
