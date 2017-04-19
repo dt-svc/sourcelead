@@ -1039,17 +1039,17 @@ public class RequirementDaoImpl implements RequirementDao {
 		
 		@Override
 	 	@Transactional(rollbackFor = { Exception.class })
-	 	public List<Requirement> getRequirementsForSOWByOrgLocationId(Long orgLocationId, String type) throws Exception {
+	 	public List<Requirement> getRequirementsForSOWByOrgLocationId(Long orgLocationId, String sowType) throws Exception {
 	 		
 	 		Session session = this.sessionFactory.getCurrentSession();
 	 		String subQuery = "";
-	 		if(type.equalsIgnoreCase("clientSOW")){
+	 		if(sowType.equalsIgnoreCase("Client SOW")){
 	 			subQuery = "and requirement.isClientJob = 'Y' and requirement.parentRequirement <> null ";
-	 		}else if(type.equalsIgnoreCase("vendorSOW")){
+	 		}else if(sowType.equalsIgnoreCase("Vendor SOW")){
 	 			subQuery = " ";
 	 		}
 	 		
-	 		String query = "from Requirement requirement left join fetch requirement.parentRequirement where  requirement.orgLocationId.id =:orgLocationId "+subQuery+")";
+	 		String query = "from Requirement requirement left join fetch requirement.parentRequirement where  requirement.orgLocationId.id =:orgLocationId "+subQuery+" ORDER BY requirement.id DESC";
 	 		
 	         List<Requirement> requirementList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	 		return requirementList;
