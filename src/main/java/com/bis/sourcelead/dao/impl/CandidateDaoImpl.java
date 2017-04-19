@@ -150,7 +150,7 @@ public class CandidateDaoImpl implements CandidateDao {
     */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, Integer candidateState, String updatedDateRange,String candidateType) throws Exception {
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, Integer candidateState, String updatedDateRange,String candidateType,String isAssociate) throws Exception {
 
 		
 		String subQuery = null;
@@ -179,13 +179,28 @@ public class CandidateDaoImpl implements CandidateDao {
 		
 		
 		String candidateTypeSubQuery = "";
-		if(candidateType != null && !candidateType.isEmpty() && candidateType.equalsIgnoreCase("All")){
+		/*if(candidateType != null && !candidateType.isEmpty() && candidateType.equalsIgnoreCase("All")){
 			
 			candidateTypeSubQuery = " and (cnadidate.candidateType = 'Candidate' OR cnadidate.candidateType = 'Consultant')";
 			
 		}else{
 			candidateTypeSubQuery = " and cnadidate.candidateType = '"+candidateType+"' ";
-		}
+		}*/
+		
+			if(candidateType != null && !candidateType.isEmpty() && candidateType.equalsIgnoreCase("All")){
+				if(isAssociate.equalsIgnoreCase(Constants.YES)){
+					candidateTypeSubQuery = " and (cnadidate.isAssociate = 'Y')";
+				}else{
+					candidateTypeSubQuery = " and (cnadidate.isAssociate = 'N' OR cnadidate.isAssociate = 'Y' )";					
+				}
+				
+			}else{
+				if(isAssociate.equalsIgnoreCase(Constants.YES)){
+					candidateTypeSubQuery = " and (cnadidate.isFavouriteAssociate = '"+candidateType+"') ";
+				}else{
+					candidateTypeSubQuery = " and (cnadidate.isFavourite = '"+candidateType+"') ";
+				}
+			}
     	
 			
 		if(StringUtils.isNotEmpty(updatedDateRange) && !"null".equalsIgnoreCase(updatedDateRange)   && !updatedDateRange.equalsIgnoreCase("undefined")){
@@ -821,6 +836,22 @@ public class CandidateDaoImpl implements CandidateDao {
 				}
 	        }
 		    return (Long)query.uniqueResult();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateByUUID(String candidateUUID) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Candidate> candidate = new ArrayList<Candidate>();
+		logger.debug("getCandidateById start");
+		candidate = session.createQuery("from Candidate candidate where candidate.candidateUUID = :candidateUUID" ).setCacheable(true).setString("candidateUUID", candidateUUID ).setCacheable(true).list();
+		logger.debug("getCandidateById end");
+		if (candidate.size() > 0) {
+			return candidate.get(0);
+		} else {
+			return null;
+		}
 	}
 
 }

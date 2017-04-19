@@ -133,7 +133,7 @@ overflow-x: auto; background: #f5f5f5; box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
 box-shadow:none;
 }
 .require_wrap_table {
-overflow: inherit;
+overflow: inherit; min-height: 175px;
 }
 .require_wrap_table select {
 width:100% !important;

@@ -11,16 +11,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -39,6 +45,10 @@ public class ContractController {
 	
 	@Autowired
 	private OrgRelationsService orgRelationsService;
+
+	@Autowired
+	private ContractsTemplateService contractsTemplateService;
+	
 	/**
 	 * display contract template list page
 	 * @return model
@@ -71,8 +81,15 @@ public class ContractController {
 	@RequestMapping(value = "/contractListbyStatus")
 	public ModelAndView contractListbyStatus(HttpServletRequest request) {
 		logger.debug("display contract template page");
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Contract);
+		
 		ModelAndView model = new ModelAndView();
-//		commonUtil.highLightMenu(Constants.List_by_status, request);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("contracts/contractList");
 		return model;
@@ -130,4 +147,19 @@ public class ContractController {
 		model.setViewName("contracts/addExistedContract");
 		return model;
 	}
+	
+	@RequestMapping(value = "/editTemplate")
+    public ModelAndView editTemplate(@RequestParam(value="templateId", required=false) String templateId ,HttpServletResponse response) throws Exception {
+		
+		ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateById(Long.parseLong(templateId));
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("contractsTemplate", contractsTemplate);
+		model.addObject("templateContent", contractsTemplate.getTemplateContent());
+		model.addObject("templateId", templateId);
+		model.setViewName("contracts/addContractTemplate");
+		return model;
+	}
+	
+		
 }

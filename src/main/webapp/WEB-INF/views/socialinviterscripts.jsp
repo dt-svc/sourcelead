@@ -166,7 +166,7 @@
 			
 		}
 	}
-	 $(document).ready(function () {
+	 function socialInviterScripts() {
 		 var sourceleadUrl ='${sourceleadUrl}';
          socialinviter.load({
              dock:false,
@@ -215,7 +215,9 @@
                  },
                  "login": function (service, response) {
                 	 loadProfileInformation(response,service);
-                	 $("body,html").animate({scrollTop:$(".sc_regform-holder").offset().top-20});
+                 },
+                 "fetched": function (service, status) {
+                	 contactsImportSucess(service, status);
                  }
              },
              
@@ -237,7 +239,7 @@
         /*  socialinviter.socialconnect.getUserInformation(); */
           socialinviter.socialpost.setPostValues(shareObj); 
 
-     });
+     }
  
 </script>
 

@@ -70,8 +70,8 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 						{
 							if(
 								    (StringUtils.isEmpty(referContacts.getFirstName()) && StringUtils.isEmpty(referContacts.getLastName()))
-							     || (StringUtils.isNotEmpty(referContacts.getFirstName()) && isNameContainsSpecialCharacters(referContacts.getFirstName()))
-							     || (StringUtils.isNotEmpty(referContacts.getLastName()) && isNameContainsSpecialCharacters(referContacts.getLastName()))
+							     || (StringUtils.isNotEmpty(referContacts.getFirstName()) && (isNameContainsSpecialCharacters(referContacts.getFirstName()) || referContacts.getFirstName().equalsIgnoreCase("null")))
+							     || (StringUtils.isNotEmpty(referContacts.getLastName()) && (isNameContainsSpecialCharacters(referContacts.getLastName()) || referContacts.getLastName().equalsIgnoreCase("null")))
 							){
 								referContacts.setFirstName(getNameFromEmail(referContacts.getContactUserEmail()));
 								referContacts.setLastName("");

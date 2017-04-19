@@ -76,6 +76,13 @@ public class Constants {
 	public static final DateFormat TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'HH:mm:ss");
 	/*public static final DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");*/
 	
+	
+	
+	public static String ONBOARDING_FORMS = "Forms";
+	public static String ONBOARDING_POLICIES = "Policies";
+	public static String ONBOARDING_CONTRACTS = "Contracts";
+	public static String ONBOARDING_SUPPORTED = "Supported";
+	
 	public static String MAIL_TEAM_MEMBERS = "Mail To Team Members";
 	public static String INVITE_USER = "Invite User";
 	public static String INVITE_CLIENT = "Invite Client";
@@ -326,6 +333,7 @@ public class Constants {
 	public static  String BackOffice = "BackOffice";
 	public static  String Finance = "Finance";
 	public static  String AssetManagement = "AssetManagement";
+	public static  String Contract = "Contract";
 	public static  String Profile = "Profile";
 	public static  String List_by_status = "List by status";
 	

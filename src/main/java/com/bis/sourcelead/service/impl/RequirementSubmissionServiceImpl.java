@@ -315,6 +315,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 						 candidate.setExperienceMonths(jsonObj.getString("monthExp"));
 					 }
 					candidate.setCandidateType("Candidate");
+					candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 					candidate.setCreatedBy(user.getUserCode());
 					candidate.setCreatedDate(new Date());
 					candidate.setUpdatedDate(new Date());
@@ -4135,6 +4136,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	@Override
 	public List<RequirementSubmission> getVendorSpocSubmissions(String userCode, Long orgLocationId) {
 		return requirementSubmissionDao.getVendorSpocSubmissions(userCode,orgLocationId);
+	}
+	
+	@Override
+	public List<RequirementSubmission> getSubmissionsForSOWByRequirementId(Long requirementId) {
+		return requirementSubmissionDao.getSubmissionsForSOWByRequirementId(requirementId);
 	}
 
 }

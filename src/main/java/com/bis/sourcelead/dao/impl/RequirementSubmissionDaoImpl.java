@@ -2140,7 +2140,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		@Transactional(rollbackFor = { Exception.class })
 		public List<RequirementSubmission> getOfferAcceptedCandidatesListByOrgLocationId(Long orgLocationId) {
 			 Session session = this.sessionFactory.getCurrentSession();
-			 String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate where rs.orgLocations.id = :orgLocationId and rs.submissionStatus = 'OFFERACCEPTED'";
+			 String query = "from RequirementSubmission rs left join fetch rs.candidateResumes left join fetch rs.requirement left join fetch rs.candidate where rs.orgLocations.id = :orgLocationId and rs.submissionStatus = 'OFFERACCEPTED'";
 			 List<RequirementSubmission>  offerAcceptedCandidatesList = session.createQuery(query).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
 		     return offerAcceptedCandidatesList;
 		}
@@ -2314,6 +2314,16 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			String query =" from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.orgLocations left join fetch rs.candidateResumes where rs.orgLocations.id =:orgLocationId and rs.createdBy =:userCode";
 			List<RequirementSubmission>  subList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("userCode", userCode).setCacheable(true).list();
 		    return subList;
+		}
+		
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<RequirementSubmission> getSubmissionsForSOWByRequirementId(Long requirementId) {
+			 Session session = this.sessionFactory.getCurrentSession();
+			 String leftJoins = "left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission join fetch rs.candidateResumes join fetch rs.orgLocations join fetch rs.vendorLocationId join fetch rs.recruiterUserId ";
+			 String query = "from RequirementSubmission rs "+leftJoins+"  where rs.requirement.id = :requirementId and rs.submissionStatus = 'OFFERACCEPTED'";
+			 List<RequirementSubmission>  offerAcceptedCandidatesList = session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
+		     return offerAcceptedCandidatesList;
 		}
 		
   }

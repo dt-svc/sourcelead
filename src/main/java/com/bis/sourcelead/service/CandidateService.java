@@ -47,7 +47,7 @@ public interface CandidateService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange,String candidateType) throws Exception;
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange,String candidateType,String isAssociate) throws Exception;
 	
 	/**
 	 * @param candidateId
@@ -135,5 +135,7 @@ public interface CandidateService {
 	List<Candidate> getAllActiveCandidatesCountForCampaignByLocationAndStatus(Long orgLocationId)throws Exception;
 	
 	Long getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC) throws Exception ;
+	
+	Candidate getCandidateByUUID(String candidateUUID) throws Exception ;
 	
 }
