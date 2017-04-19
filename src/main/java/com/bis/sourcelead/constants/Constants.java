@@ -333,6 +333,7 @@ public class Constants {
 	public static  String BackOffice = "BackOffice";
 	public static  String Finance = "Finance";
 	public static  String AssetManagement = "AssetManagement";
+	public static  String Contract = "Contract";
 	public static  String Profile = "Profile";
 	public static  String List_by_status = "List by status";
 	
