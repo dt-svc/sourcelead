@@ -20,6 +20,7 @@ import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.OnBoardingTemplate;
 import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
@@ -27,6 +28,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OnBoardingTemplateDocumentsService;
 import com.bis.sourcelead.service.OnBoardingTemplateService;
 import com.bis.sourcelead.service.OnboardTasksService;
+import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
@@ -60,6 +62,13 @@ public class CandidateOnBoardController {
 	@Autowired
 	TaskService taskService;
 	
+	@Autowired
+	RequirementOffersService requirementOffersService;
+	
+	
+	protected static boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
 	
 	@RequestMapping(value = "/onboardingCandidateSetp2")
 	public ModelAndView onboardingCandidateSetp2(HttpServletRequest request) {
@@ -134,7 +143,8 @@ public class CandidateOnBoardController {
 	
 	
 	@RequestMapping(value = "/candidateOnBoardingDetails")
-	public ModelAndView candidateOnBoardingDetails(@RequestParam(value="candidateUUId", required=false) String candidateUUId,HttpServletRequest request) throws Exception {
+	public ModelAndView candidateOnBoardingDetails(@RequestParam(value="candidateUUId", required=false) String candidateUUId,
+			@RequestParam(value="offerUUID", required=false) String offerUUID,HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -145,11 +155,26 @@ public class CandidateOnBoardController {
 		sessionData.setNav(Constants.Users);
 		
 		Candidate candidate = CandidateService.getCandidateByUUID(candidateUUId);
+		RequirementOffers offer = requirementOffersService.getRequirementOffersByUUID(offerUUID);
 		
-		if(candidate != null){
+		if(candidate != null && offer != null){
 			request.getSession().setAttribute("sessionData",sessionData);
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.addObject("candidateId", candidate.getId());
+			model.addObject("offerId", offer.getId());
+			model.addObject("candidateEmail", candidate.getEmail());
+			
+			StringBuilder candidateName = new StringBuilder();
+			String name = null;
+			if(!isNullOrEmpty(candidate.getLastName())){
+				name = candidateName.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString();
+			}else{
+				name = candidateName.append(candidate.getFirstName()).toString();
+			}
+			
+			model.addObject("candidateName", name);
+			model.addObject("jobTitle", offer.getSubmissionId().getRequirement().getJobTitle());
+			
 			model.setViewName("onboard/candidateOnBoardCreation");
 		}else{
 			model.setViewName("registration/persmissionDenied");

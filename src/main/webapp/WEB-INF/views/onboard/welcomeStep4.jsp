@@ -169,7 +169,7 @@ function goToDashboard(){
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/sendOnboardCandidateToDashboard?${_csrf.parameterName}=${_csrf.token}", 
 	        success: function(result) {
-	        	location.replace(sourceleadUrl+"/dashboard");  
+	        	location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");  
 	        },
 	    });
 }

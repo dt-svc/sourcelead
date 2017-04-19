@@ -37,11 +37,35 @@
 <script src="resources/js/jobs/js/controls.js"></script>
 <script src="resources/js/jobs/js/jquery-1.11.3.min.js"></script>
 <script src="resources/js/jobs/js/chosen.jquery.min.js"></script>
+<script type="text/javascript">
+var postdatavalues = { title: "", link: "", picture: "", description: "", comment: "" };
+function setPostValues(title,link,picture,description,comment){
+	 if (title) {
+         postdatavalues.title = title;
+     }
+     if (link) {
+         postdatavalues.link = link;
+     }
+     if (picture) {
+         postdatavalues.picture = picture;
+     }
+     if (description) {
+         postdatavalues.description = description;
+     }
+     if (comment) {
+         postdatavalues.comment = comment;
+     }
+}
+function getPostValueDetails(){
+	alert(postdatavalues.description);
+	 return postdatavalues;
+  }
 
+</script>
 
 <script type="text/javascript">
 	$(window).load(function() {
-		if(${requirementUUID != null}){
+		if(${requirementUUID != null} ){
 			getOpenJobsRequirementSummary('${requirementUUID}');
 			getDropDownCount();
 		}else{
@@ -57,7 +81,7 @@ display: none;}
 </style>
 
 <!-- Content Area -->
-
+<div  id="loadTime"></div> 
 <header class="headerInpage">
 <section class="headTop headTopFix">
 	<div class="headTopInn">
@@ -528,7 +552,7 @@ display: none;}
     <jsp:include page="../masterFooter.jsp" />
     <div class="copyrightOut">
     	<div class="copyright">
-    	<b>© 2016 SourceLead. All rights reserved.</b>
+    	<b>Â© 2016 SourceLead. All rights reserved.</b>
         <span>
         	<a href="../privacy.html">Privacy Policy</a>
             <a href="../terms.html">Terms of Use</a>
@@ -581,6 +605,11 @@ function getOpenJobsELKList(){
 	   		{
 	 			for(var i=0; i<json.length; i++){
 	 				var requirements = json[i];
+	 				var title="";
+					var link="";
+					var picture="";
+					var description='';
+					var comment='';
 	 				if(requirements.minExperience != '' && requirements.maxExperience == ''){
 	 					experience = requirements.minExperience+" Years";
 	 				}else if(requirements.minExperience == '' && requirements.maxExperience != ''){
@@ -600,8 +629,13 @@ function getOpenJobsELKList(){
 	 				result = result +'	<div class="jobResultsCta">';
 					result = result +'	<div class="jobResultsInn">';
 					result = result +'	<a href="#" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');"><h3 style="font-size:20px;color:#368ee0;">'+requirements.jobTitle+'</h3></a>';
+					description =  description+'Job Title:'+requirements.jobTitle;
+					
+					link = sourceleadUrl+"/sourcelead/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
+					
 					if(requirements.postedOrg != null && requirements.postedOrg != '' && requirements.postedOrg !='undefined'){
 					result = result +'	<h4>'+requirements.postedOrg+'</h4>';	
+					description =  description+'Posted By :'+requirements.postedOrg;
 					}else{
 					result = result +'	<h4>--</h4>';
 					}
@@ -609,6 +643,7 @@ function getOpenJobsELKList(){
 					result = result +'	<strong>Skills :</strong>';
 					if(requirements.skills != null && requirements.skills != '' && requirements.skills !='undefined'){
 					result = result +'  <span>'+requirements.skills+'</span>';
+					description =  description+'Skills :'+requirements.skills;
 					}else{
 					result = result +'  <span>--</span>';	
 					}
@@ -616,21 +651,26 @@ function getOpenJobsELKList(){
 					result = result +'	<span>';
 					if(requirements.jobType != null && requirements.jobType != '' && requirements.jobType !='undefined'){
 					result = result +'	<b><i class="fa fa-clock-o"></i>'+requirements.jobType+'</b>';
+					description =  description+'Job Type:'+requirements.jobType;
 					}else{
 					result = result +'	<b><i class="fa fa-clock-o"></i>--</b>';
 					}
 					if(experience != null && experience != '' && experience !='undefined'){
 					result = result +'	<b><i class="fa fa-briefcase"></i>'+experience+'</b>';
+					if(experience != null && experience != 'No Data')
+					description =  description+'Experience :'+experience;
 					}else{
 					result = result +'	<b><i class="fa fa-briefcase"></i>--</b>';	
 					}
 					if(location != null && location != '' && location !='undefined'){
 					result = result +'	<b><i class="fa fa-map-marker"></i>'+location+'</b>';
+					description =  description+'Job Location: '+location;
 					}else{
 					result = result +'	<b><i class="fa fa-map-marker"></i>--</b>';	
 					}
 					if(requirements.noticePeriod != null && requirements.noticePeriod != '' && requirements.noticePeriod !='undefined'){
 					result = result +'	<b><i class="fa fa-bell"></i>'+requirements.noticePeriod+'</b>';
+					description =  description+'Notice Period :'+requirements.noticePeriod;
 					}else{
 					result = result +'	<b><i class="fa fa-bell"></i>--</b>';	
 					}
@@ -642,16 +682,18 @@ function getOpenJobsELKList(){
 					var creadtedDateStringArray = creadtedDateString.split("-");
 					var convertedDate = creadtedDateStringArray[2]+'-'+creadtedDateStringArray[1]+'-'+creadtedDateStringArray[0];
 					result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i>'+convertedDate+'</div>';
+					description =  description+'Posted Date :'+convertedDate;
 					}else{
 					result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i>--</div>';	
 					}
 					result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
 					result = result +'	<div class="share">';
-					result = result +'	<a href="javascript:void(0)"><i class="fa fa-linkedin-square"></i></a>';
-					result = result +'  <a href="javascript:void(0)"><i class="fa fa-twitter-square"></i></a>';				  
-					result = result +'  <a href="javascript:void(0)"><i class="fa fa-facebook-square"></i></a>';
-					result = result +'  <a href="javascript:void(0)"><i class="fa fa-envelope-square"></i></a>';					  	
-					result = result +'  </div>';
+					
+					/* result = result +'	<div class="socialinviter holder break" type="socialpost"></div>'; */ 
+				    result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
+					result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';				  
+					result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>';
+					result = result +'  </div>'
 					result = result +'	<div class="clear"></div>';
 					result = result +'	</div>';
 					result = result +'	<div class="jobApply"><a href="'+sourceleadUrl+'/login">Apply</a>';
@@ -677,6 +719,7 @@ function getOpenJobsELKList(){
 				$("#openJobsLocationId").val('');
 				$("#openJobsExperienceId").val('');
  			}
+	     socialInviterScripts();
 	    }
 	 }); 
  }
@@ -1272,3 +1315,4 @@ function loadOpenJobsChosenRequirementScripts(){
 					$(".adSearch").fadeOut(100);
 				});	 */	  
 </script>
+<jsp:include page="../socialinviterscripts.jsp" />
