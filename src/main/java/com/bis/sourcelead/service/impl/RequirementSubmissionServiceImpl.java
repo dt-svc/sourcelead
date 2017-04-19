@@ -578,14 +578,14 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 				}
 				requirementDao.storeRequirement(requirement);
 		 }
-		 
-		 if(jsonObj.has("notifyToApplicant") && !isNullOrEmpty(jsonObj.getString("notifyToApplicant"))){
+	
+		 if(jsonObj.has("notifyToApplicant") && !isNullOrEmpty(jsonObj.getString("notifyToApplicant")) && (!"Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit()))){
 			 if(jsonObj.getString("notifyToApplicant").equals("Y")){
 				 notifyToapplicantMailAboutRequirement(requirementSubmission.getId(),requirement,candidate,user,orgLocations);
 			 }
 		 }
 		 
-		 if("Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit())){
+		 if("Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit()) && (jsonObj.has("notifyToApplicant") && !isNullOrEmpty(jsonObj.getString("notifyToApplicant"))) || ("Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit()))){
 			 applicantReceiveMailAboutRequirement(requirementSubmission.getId(),requirement,candidate,user,orgLocations);
 		 }
 		 
