@@ -173,9 +173,11 @@ public class UserRestController {
 	}
 	
 	@RequestMapping(value = "/getActiveAssociateDetails",  method = RequestMethod.POST)
-    public @ResponseBody String getAssociateDetailsById(@RequestParam(value="candidateId", required=false) Long candidateId) {
+    public @ResponseBody String getAssociateDetailsById(@RequestParam(value="candidateId", required=false) Long candidateId) throws Exception {
 		
-	   ArrayList<String> associateList = new ArrayList<String>();
+		Candidate candidate   = candidateService.getCandidateById(candidateId);
+			
+	   /*ArrayList<String> associateList = new ArrayList<String>();
 	   Candidate candidate = null;
 		try {
 			candidate = candidateService.getCandidateById(candidateId);
@@ -190,9 +192,9 @@ public class UserRestController {
 			associateList.add(candidate.getEmail());
 			associateList.add(candidate.getMobilePhone());
 			
-		}
+		}*/
 		
-		return commonUtil.toJSON(associateList);
+		return commonUtil.toJSON(candidate);
 		
 	}
 

@@ -18,8 +18,13 @@ text-align:left;
 #skillName {
 width: 100%;
 }
+
+.iconpostion {
+position: relative; top:7px;
+}
 .chosen-container {
     width: 100% !important;
+
 }
 </style>
 
@@ -155,7 +160,7 @@ function editCandidate(candidateId){
 								
 								result = result + '<div class="clearfix mb10">';
 								result = result + '<div class="col-md-6 custom-fields">';
-								result = result + '<select class="chosen-select form-control select-bg" name="country" id="candidateCountry" value="'+json.country+'" field-name="Country">';
+								result = result + '<select class="form-control" name="country" id="candidateCountry" value="'+json.country+'" field-name="Country">';
 								result = result + '</select>';
 								result = result + '</div>';
 								
@@ -165,7 +170,7 @@ function editCandidate(candidateId){
 								result = result + '<input type="hidden" name="updateCity" id="updateCity" value="'+json.city+'" />';
 								
 								result = result + '<div class="col-md-6 custom-fields select-arrow">';
-								result = result + '<select  class="chosen-select form-control select-bg" name="state" value="'+json.state+'" id="candidateState" field-name="State">';
+								result = result + '<select  class="form-control" name="state" value="'+json.state+'" id="candidateState" field-name="State">';
 								result = result + '</select>';
 								result = result + '</div>';
 								result = result + '</div>';
@@ -173,7 +178,7 @@ function editCandidate(candidateId){
 								result = result + '<div class="clearfix mb10">';
 								
 								result = result + '<div class="col-md-6 custom-fields">';
-								result = result + '<select  class="chosen-select form-control select-bg" name="city" id="candidateCity" value="'+json.city+'" field-name="City">';
+								result = result + '<select  class="form-control" name="city" id="candidateCity" value="'+json.city+'" field-name="City">';
 								result = result + '</select>';
 								result = result + '</div>';
 								
@@ -323,7 +328,7 @@ function editCandidate(candidateId){
 	                            result = result + '<div class="col-md-6 custom-fields">';
 								
 	                            result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
-								result = result + '<select class="form-control" id="designationType1" name="designationType" field-name="Designation Type"  onchange="employementType();updateDesignationOtherType();">';
+								result = result + '<select class="form-control" id="designationType1" name="designationType" field-name="Employment type" data-validation="required"  onchange="employementType();updateDesignationOtherType();">';
 								result = result + '<option value="">--Select Employment Type--</option>';
 								result = result + ' <option '+(json.designationType == "C2C" ? "selected" : '') +'>C2C</option>';
 								result = result + ' <option '+(json.designationType == "C2C-1099" ? "selected" : '') +'>C2C-1099</option>';
@@ -349,15 +354,15 @@ function editCandidate(candidateId){
 								
 								
 							    result = result + '<span class="" id="hideVendor" style="display:none">'; 
-								result = result + '<div class="col-md-6 custom-fields select-arrow">';
-								result = result + '<select  class="chosen-select form-control select-bg" name="vendors"  id="vendorName" value="'+vendorName+'" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();">';
+								result = result + '<div class="col-md-6 custom-fields select-arrow" id="errorvendor">';
+								result = result + '<select  class="form-control" name="vendors"  id="vendorName" value="'+vendorName+'" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();">';
 								result = result + '</select>';
 								result = result + '<input type="hidden" name="updateVendorName" id="updateVendorName" value="'+vendorName+'" />';
 								result = result + '<input type="hidden" name="updateVendorOrgRelationId" id="updateVendorOrgRelationId" value="'+json.vendorOrgRelationId+'" />';
 								result = result + '</div>';
 								
-								result = result + '<div class="col-md-6 custom-fields select-arrow mt10">';
-								result = result + '<select  class="chosen-select form-control select-bg" name="vendorcontact"  value="'+json.vendorContactName+'" id="vendorcontactName" field-name="Vendor Contact"  placeholder="select Vendor Contact">';
+								result = result + '<div class="col-md-6 custom-fields select-arrow mt10" id="errorvendorContact">';
+								result = result + '<select  class="form-control" name="vendorcontact"  value="'+json.vendorContactName+'" id="vendorcontactName" field-name="Vendor Contact"  placeholder="select Vendor Contact" onchange="removeValiationVendorContact();">';
 								result = result + '</select>';
 								result = result + '<input type="hidden" name="updateVendorContactName" id="updateVendorContactName" value="'+json.vendorContactName+'" />';
 								result = result + '<input type="hidden" name="updateSpocId" id="updateSpocId" value="'+json.vendorSpocId+'" />';
@@ -397,7 +402,25 @@ function editCandidate(candidateId){
 								$(".edit-details").toggleClass("edit-details-active");
 								$(".collapse-div").removeClass("edit-details-active");
 								
-								
+								  $("#candidateCountry").chosen();
+								  $("#candidateCountry").trigger("chosen:update");
+								  
+								  $("#candidateState").chosen();
+								  $("#candidateState").trigger("chosen:update");
+								  
+								  $("#candidateCity").chosen();
+								  $("#candidateCity").trigger("chosen:update");
+								  
+								  $("#vendorName").chosen();
+								  $("#vendorName").trigger("chosen:update");
+								  
+     							  $("#vendorcontactName").chosen();
+     							  $("#vendorcontactName").trigger("chosen:update");
+     							 $('.chosen-select').each(function() {
+										var $this = $(this);
+										$this.next().css({'width': '100%'});
+								  })
+								   $(".chosen-container").css("width","100%");
 								$(function(){
 								    var config = {
 										  '.chosen-select'           : {},
@@ -406,16 +429,6 @@ function editCandidate(candidateId){
 										  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 										  '.chosen-select-width'     : {width:"95%"}
 										}
-								    $("#candidateCountry").chosen();
-								    $("#candidateState").chosen();
-								    $("#candidateCity").chosen();
-								    
-								    $("#vendorName").chosen();
-								    $("#vendorcontactName").chosen();
-								   
-								    
-								    
-								    
 								    $("#candidateCountry").on('change', function (e) {
 								 	   getAllCandidateStates();
 								    });
@@ -733,7 +746,7 @@ function candidateProfile(candidateId){
 							if(json.status == 0){
 								result = result + '<div class="project_tabs_inn_head"><a href="#" class="positionRelative showInfo"><i class="glyphicon glyphicon-info-sign"></i>Terminated<span class="infoContent col-xs-12 col-md-5"> '+json.terminateReason+' </span></a><a href="javascript:void(0)" onClick="reActivateCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>ReActivate</a> ';
 							}else{
-								result = result + '<div class="project_tabs_inn_head "> <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a> <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> ';
+								result = result + '<div class="project_tabs_inn_head "> <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org iconpostion"><i class="glyphicon glyphicon-pencil"></i>Edit</a> <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> ';
 
 							}
 							result = result + '<div id="profileEditPopup"></div>';
@@ -977,7 +990,9 @@ function removeSkillPopUp(candidateId){
 	function upDateCandidate(candidateId) {
 	
 		
-		 var rateType = document.getElementById("rateType").value; 
+		//This is commented by Laxman Because form is not submiting  check the  rates condiditons first and then open comment 
+		
+		/*  var rateType = document.getElementById("rateType").value; 
 		 if(rateType != null && rateType != ""){
 			 $('#expectedRate').removeAttr('data-validation-optional');
 			 $('#expectedRate').attr("data-validation","required"); 
@@ -1017,7 +1032,7 @@ function removeSkillPopUp(candidateId){
 			 $('#currentRateType').removeAttr('data-validation');
 			 $('#currentRateType').attr("data-validation-optional","true"); 
 			 }
-			 
+			  */
 		 
 			
 		var validationSettings = {
@@ -1027,19 +1042,15 @@ function removeSkillPopUp(candidateId){
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
 		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
-			
 			var frm = $('#candidateProfileEdit_form').serializeFormJSON();
-			
 			 var con = JSON.stringify(frm);
 				 con = con.replace(/[{}]/g, "");
 				var jsonData = encodeURIComponent(con);
-			  //It will escape all the special characters
 			var sourceleadUrl = '${sourceleadUrl}';
 			$.ajax({
 						type : "POST",
 						url : sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 						success : function(result) {
-							/* location.replace(sourceleadUrl+"/candidatesList");  */
 							clientSideBar(candidateId);
 						},
 					});
@@ -1047,12 +1058,11 @@ function removeSkillPopUp(candidateId){
 		 }else{ 
 				return false;
 		 } 
-		 $('body').on('blur','#candidateProfileEdit_form',
-					function() {
-						$("#candidateProfileEdit_form").showHelpOnFocus();
-						$("#candidateProfileEdit_form").validateOnBlur(false,validationSettings);
-					});
 	} 
+	$('body').on('blur','#candidateProfileEdit_form', function() {
+		$("#candidateProfileEdit_form").showHelpOnFocus();
+		$("#candidateProfileEdit_form").validateOnBlur(false,validationSettings);
+	});
 </script>
 
 <script>
@@ -1683,6 +1693,13 @@ function employementType(){
 			 $('#vendorcontactName').val(''); 
 			 
 		}
+		$('#designationType1 + p').remove();
+		
+		/* $('.chosen-select').each(function() {
+			var $this = $(this);
+			$this.next().css({'width': '100%'});
+	  })
+	   $(".chosen-container").css("width","100%"); */
 }
 </script>
 
@@ -1715,7 +1732,16 @@ function employementType(){
 		 });
  }
  </script>
- 
+  <script>
+	 function  removeValiationVendor() {
+		$("#errorvendor").find("p.jquery_form_error_message").remove();
+	}
+</script>
+<script>
+	function  removeValiationVendorContact() {
+		 $("#errorvendorContact").find("p.jquery_form_error_message").remove();
+	}
+</script>
   <script>
  function getVendorContactList(){
 	$('#vendorcontactName').val('').trigger("chosen:updated");
