@@ -1,5 +1,8 @@
 package com.bis.sourcelead.web;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -12,11 +15,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.OnBoardingTemplate;
+import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Tasks;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
+import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.OnBoardingTemplateDocumentsService;
 import com.bis.sourcelead.service.OnBoardingTemplateService;
+import com.bis.sourcelead.service.OnboardTasksService;
+import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -37,6 +48,17 @@ public class CandidateOnBoardController {
 	@Autowired
 	CandidateOnBoardingService candidateOnBoardingService;
 	
+	@Autowired
+	OnBoardingTemplateDocumentsService onBoardingTemplateDocumentsService;
+	
+	@Autowired
+	CandidateService CandidateService;
+	
+	@Autowired
+	OnboardTasksService onboardTasksService;
+	
+	@Autowired
+	TaskService taskService;
 	
 	
 	@RequestMapping(value = "/onboardingCandidateSetp2")
@@ -48,11 +70,71 @@ public class CandidateOnBoardController {
 		return model;
 	}
 	
+	@RequestMapping(value = "/onboardingCandidateSetp3")
+	public ModelAndView onboardingCandidateSetp3(HttpServletRequest request) throws Exception {
+		
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		 
+		ModelAndView model = new ModelAndView();
+		
+		CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(user.getId(), orgLocations.getId());
+		
+		List<OnBoardingTemplateDocuments> contractDocsList = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsByCandidateOnBoardingId(candidateOnBoarding.getId(), Constants.ONBOARDING_CONTRACTS);
+		model.addObject("contractDocsList", contractDocsList);
+		model.addObject("contractDocsListSize", contractDocsList.size());
+		
+		List<OnBoardingTemplateDocuments> formsDocsList = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsByCandidateOnBoardingId(candidateOnBoarding.getId(), Constants.ONBOARDING_FORMS);
+		model.addObject("formsDocsList", formsDocsList);
+		model.addObject("formsDocsListSize", formsDocsList.size());
+		
+		List<OnBoardingTemplateDocuments> policiesDocsList = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsByCandidateOnBoardingId(candidateOnBoarding.getId(), Constants.ONBOARDING_POLICIES);
+		model.addObject("policiesDocsList", policiesDocsList);
+		model.addObject("policiesDocsListSize", policiesDocsList.size());
+		
+		
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("candidateOnboardId", candidateOnBoarding.getId());
+		model.setViewName("onboard/welcomeStep3");
+		return model;
+	}
+	
+	
+	
+	
+	@RequestMapping(value = "/onboardingCandidateSetp4")
+	public ModelAndView onboardingCandidateSetp4(HttpServletRequest request) throws Exception {
+		
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		 
+		ModelAndView model = new ModelAndView();
+		
+		List<Tasks> tasksList = taskService.getTasskByAssignedUserIdAndOrgLocationId(orgLocations.getId(),user.getId());
+		List<Tasks> taskList = new ArrayList<Tasks>();
+		if(null != tasksList && tasksList.size() > 0){
+			for(Tasks tasks : tasksList){
+				tasks.setTaskDateStr(Constants.DMY.format(tasks.getTaskDate()));
+				taskList.add(tasks);
+			}
+			
+		}
+		
+		model.addObject("tasksList", taskList);
+		model.addObject("tasksListSize", taskList.size());
+		
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("onboard/welcomeStep4");
+		return model;
+	}
+	
+	
+	
 	
 	
 	
 	@RequestMapping(value = "/candidateOnBoardingDetails")
-	public ModelAndView candidateOnBoardingDetails(HttpServletRequest request) {
+	public ModelAndView candidateOnBoardingDetails(@RequestParam(value="candidateUUId", required=false) String candidateUUId,HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -60,11 +142,19 @@ public class CandidateOnBoardController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		sessionData.setNav(Constants.Dashboard);
+		sessionData.setNav(Constants.Users);
 		
-		request.getSession().setAttribute("sessionData",sessionData);
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("onboard/candidateOnBoardingDetails");
+		Candidate candidate = CandidateService.getCandidateByUUID(candidateUUId);
+		
+		if(candidate != null){
+			request.getSession().setAttribute("sessionData",sessionData);
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.addObject("candidateId", candidate.getId());
+			model.setViewName("onboard/candidateOnBoardCreation");
+		}else{
+			model.setViewName("registration/persmissionDenied");
+		}
+		
 		return model;
 	}
 	
