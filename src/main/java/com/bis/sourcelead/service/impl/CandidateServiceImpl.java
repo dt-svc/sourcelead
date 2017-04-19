@@ -352,8 +352,8 @@ public class CandidateServiceImpl implements CandidateService {
 	 * @throws Exception
     */
 	@Override
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange,String candidateType) throws Exception {
-		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationID(orgLocationId,orgId,candidateStatus,updatedDateRange,candidateType);
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange,String candidateType,String isAssociate) throws Exception {
+		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationID(orgLocationId,orgId,candidateStatus,updatedDateRange,candidateType,isAssociate);
 		for(Candidate can :candidateList){
 			if(can.getUpdatedDate() != null){
 			 can.setCandidateUpdateDateToString(Constants.DF_DMY.format(can.getUpdatedDate()));
@@ -909,6 +909,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public Long getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC) throws Exception {
 		return candidateDao.getCountOfAllCandidatesByCreatedUserAndOrglocationId(orgLocationId, user, startDateUTC,endDateUTC);
+	}
+
+	@Override
+	public Candidate getCandidateByUUID(String candidateUUID) throws Exception {
+		return candidateDao.getCandidateByUUID(candidateUUID);
 	}
 
 }

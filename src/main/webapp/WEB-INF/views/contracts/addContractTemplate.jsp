@@ -8,9 +8,12 @@
 
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<!-- end files for autocomplete with tagit -->
+<!-- end files for autocomplete with tagit  -->
 
 <!-- Content Area -->
+
+
+
 <section class="content-wraper">
 <section class="content-header clearfix">
   <div class="pull-left">
@@ -19,10 +22,10 @@
   <div class="pull-right brud-crum">Home &raquo; Add Contract Template</div>
 </section>
 
-<section class="addcontrHead">
+<!-- <section class="addcontrHead">
 	<a href="#" class="active">Template</a>
 	<a href="#">Preview</a>
-</section>
+</section> -->
 	
 <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal">
@@ -33,20 +36,29 @@
             <div class="form-group">
               <label class="col-md-4">Template name<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                <input type="text"  id="templateName" name="templateName" value="" field-name="Template Name" data-validation="required" type="text" class="form-control">
+                <input type="text"  id="templateName" name="templateName" value="${contractsTemplate.templateName}"  field-name="Template Name" data-validation="required" type="text" class="form-control">
               </div>
+              <input type="hidden" name="templateId" id="templateId" value="${contractsTemplate.id}"/>
             </div>
             
             <div class="form-group">
               <label class="col-md-4">Template Type<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
                   <select class="chosen-select form-control" id="contractType" field-name="Template Type"  name="contractType" onchange="contractTemplateType();">
-                    <option value="Client MSA">Client MSA</option>
+                   <!-- <option value="">&nbsp;&nbsp;&nbsp;&nbsp;---Select Template Type---</option> -->
+	                 <option  ${contractsTemplate.templateType  == 'Client MSA' ? 'selected' : ''}>Client MSA</option>
+	                 <option  ${contractsTemplate.templateType  == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
+	                 <option  ${contractsTemplate.templateType  == 'Client SOW' ? 'selected' : ''}>Client SOW</option>
+	                 <option  ${contractsTemplate.templateType  == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
+	                 <option  ${contractsTemplate.templateType  == 'NDA' ? 'selected' : ''}>NDA</option>
+	                 <option  ${contractsTemplate.templateType  == 'NSA' ? 'selected' : ''}>NSA</option>
+                   
+                   <!--  <option value="Client MSA">Client MSA</option>
                     <option value="Vendor MSA">Vendor MSA</option>
                     <option value="Client SOW">Client SOW</option>
                     <option value="Vendor SOW">Vendor SOW</option>
                     <option value="NDA">NDA</option>
-                    <option value="NSA">NSA</option>
+                    <option value="NSA">NSA</option> -->
                   </select>
             </div>
             </div>
@@ -64,7 +76,7 @@
             <div class="form-group">
               <label class="col-md-4">Description</label>
               <div class="col-md-8">
-					<textarea class="form-control" rows="3" id ="description"  name="description"></textarea>
+					<textarea class="form-control" rows="3" id ="description"  name="description">${contractsTemplate.description}</textarea>
               </div>
             </div>            
             
@@ -74,30 +86,30 @@
 <div class="row newContrWrap">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 		<div class="col-md-9">
-			<textarea id="txtEditor" name="templateContent" class="form-control newContrtextarea"></textarea>
+			<textarea id="txtEditor" name="templateContent"  class="form-control newContrtextarea"></textarea>
 		</div>  
 		
 		
 		<div class="col-md-3 contrCus">
 			<h3>Custom Files</h3>
 			<ul id="clientmsa" style="display:block">
-                <li onclick="copyToClipboard('text_element1')"><i></i><p class="copyText" id="text_element1">{Client Name}</p></li>
-                <li onclick="copyToClipboard('text_element2')"><i></i><p class="copyText" id="text_element2">{Client Contact}</p></li>
-                <li onclick="copyToClipboard('text_element3')"><i></i><p class="copyText" id="text_element3">{Client location}</p></li>
-                <li onclick="copyToClipboard('text_element4')"><i></i><p class="copyText" id="text_element4">{Company Location}</p></li>
-                <li onclick="copyToClipboard('text_element5')"><i></i><p class="copyText" id="text_element5">{Company Name}</p></li>
+                <li onclick="copyToClipboard('text_element1')"><i></i><p class="copyText" id="text_element1">[Client Name]</p></li>
+                <li onclick="copyToClipboard('text_element2')"><i></i><p class="copyText" id="text_element2">[Client Contact]</p></li>
+                <li onclick="copyToClipboard('text_element3')"><i></i><p class="copyText" id="text_element3">[Client location]</p></li>
+                <li onclick="copyToClipboard('text_element4')"><i></i><p class="copyText" id="text_element4">[Company Location]</p></li>
+                <li onclick="copyToClipboard('text_element5')"><i></i><p class="copyText" id="text_element5">[Company Name]</p></li>
             </ul>
             
             <ul id="vendormsa" style="display:none">
-                <li onclick="copyToClipboard('text_element11')"><i></i><p class="copyText" id="text_element11">{Vendor Name}</p></li>
-                <li onclick="copyToClipboard('text_element12')"><i></i><p class="copyText" id="text_element12">{Vendor Contact}</p></li>
-                <li onclick="copyToClipboard('text_element13')"><i></i><p class="copyText" id="text_element13">{Vendor location}</p></li>
-                <li onclick="copyToClipboard('text_element14')"><i></i><p class="copyText" id="text_element14">{Company Location}</p></li>
-                <li onclick="copyToClipboard('text_element15')"><i></i><p class="copyText" id="text_element15">{Company Name}</p></li>
+                <li onclick="copyToClipboard('text_element11')"><i></i><p class="copyText" id="text_element11">[Vendor Name]</p></li>
+                <li onclick="copyToClipboard('text_element12')"><i></i><p class="copyText" id="text_element12">[Vendor Contact]</p></li>
+                <li onclick="copyToClipboard('text_element13')"><i></i><p class="copyText" id="text_element13">[Vendor location]</p></li>
+                <li onclick="copyToClipboard('text_element14')"><i></i><p class="copyText" id="text_element14">[Company Location]</p></li>
+                <li onclick="copyToClipboard('text_element15')"><i></i><p class="copyText" id="text_element15">[Company Name]</p></li>
             </ul>
 			
 			<ul id="clientsow" style="display:none">
-				<li onclick="copyToClipboard('text_element')"><i></i><p class="copyText" id="text_element">{Client Name}</p></li>
+				<li onclick="copyToClipboard('text_element')"><i></i><p class="copyText" id="text_element">[Client Name]</p></li>
 				<li><i></i>Client Contact</li>
 				<li><i></i>Client Location</li>
 				<li><i></i>Requirement Title</li>
@@ -294,7 +306,37 @@ function generatePDF(id) {
 	});
 </script>
 
+<script type="text/javascript">
+$(document).ready(function(){
+	var templateId  = "${templateId}";
+	editContractTemplate(templateId);
+	
+/* 	var contractsTemplate = "${templateContent}";
+		$(".Editor-container").find('.Editor-editor').html(contractsTemplate);	 */
+	
+});
+//$(".Editor-container").find('.Editor-editor').html("Rajashekar").css('border','1px solid red');
+</script>
 
+<script>
+function editContractTemplate(templateId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	if(templateId !=''){
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/getEditContractTemplateDetails?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,
+			success : function(data) {
+				var json = JSON.parse(data);
+				$(".Editor-container").find('.Editor-editor').html(json['templateContent']);
+			},
+		}); 
+	}
+	
+}
+
+
+
+</script>
 
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />

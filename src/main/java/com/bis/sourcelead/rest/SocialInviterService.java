@@ -304,6 +304,10 @@ public class SocialInviterService {
             	APICredentials.put("consumerKey", "2fe5ba4a-3423-4d43-a4cd-9bf6193e89d9");
             	APICredentials.put("consumerSecret", "rGiibkiynfKCom9H6jxBvPY");
     		}
+            else if(sourceleadUrl.equalsIgnoreCase("http://localhost:8080/sourcelead")){
+            	APICredentials.put("consumerKey", "c103f35b-432c-461f-a8b8-4b0cd7ad6116");
+            	APICredentials.put("consumerSecret", "f403E09xavRPBDxtxpF7UsO");
+    		}
         }
 		else if(service.equals("box")){
        		APICredentials.put("consumerKey", "");
