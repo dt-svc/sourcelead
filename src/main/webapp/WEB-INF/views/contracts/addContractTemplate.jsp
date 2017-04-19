@@ -22,10 +22,10 @@
   <div class="pull-right brud-crum">Home &raquo; Add Contract Template</div>
 </section>
 
-<section class="addcontrHead">
+<!-- <section class="addcontrHead">
 	<a href="#" class="active">Template</a>
 	<a href="#">Preview</a>
-</section>
+</section> -->
 	
 <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal">
@@ -45,7 +45,7 @@
               <label class="col-md-4">Template Type<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
                   <select class="chosen-select form-control" id="contractType" field-name="Template Type"  name="contractType" onchange="contractTemplateType();">
-                   <option value="">&nbsp;&nbsp;&nbsp;&nbsp;---Select Template Type---</option>
+                   <!-- <option value="">&nbsp;&nbsp;&nbsp;&nbsp;---Select Template Type---</option> -->
 	                 <option  ${contractsTemplate.templateType  == 'Client MSA' ? 'selected' : ''}>Client MSA</option>
 	                 <option  ${contractsTemplate.templateType  == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
 	                 <option  ${contractsTemplate.templateType  == 'Client SOW' ? 'selected' : ''}>Client SOW</option>
@@ -308,14 +308,34 @@ function generatePDF(id) {
 
 <script type="text/javascript">
 $(document).ready(function(){
-	var contractsTemplate = "${templateContent}";
-	alert("contractsTemplate>>>>"+contractsTemplate);
-	if(contractsTemplate != ''){
-		$(".Editor-container").find('.Editor-editor').html(contractsTemplate);	
-	}
+	var templateId  = "${templateId}";
+	editContractTemplate(templateId);
+	
+/* 	var contractsTemplate = "${templateContent}";
+		$(".Editor-container").find('.Editor-editor').html(contractsTemplate);	 */
 	
 });
 //$(".Editor-container").find('.Editor-editor').html("Rajashekar").css('border','1px solid red');
+</script>
+
+<script>
+function editContractTemplate(templateId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	if(templateId !=''){
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/getEditContractTemplateDetails?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,
+			success : function(data) {
+				var json = JSON.parse(data);
+				$(".Editor-container").find('.Editor-editor').html(json['templateContent']);
+			},
+		}); 
+	}
+	
+}
+
+
+
 </script>
 
 <!-- Footer Area -->

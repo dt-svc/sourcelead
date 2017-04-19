@@ -256,48 +256,49 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		contracts.setUpdatedDate(new Date());
 		contracts.setUpdatedBy(user.getUserCode());
 		Contracts savedContracts = contractsTemplateDao.saveNewContract(contracts);
-		
-		if("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
-			vendorContracts.setContractType("Client MSA");
-			vendorContracts.setInitiatorType("Client");
-			vendorContracts.setContractOrgLocationId(orgLocation);
-			vendorContracts.setParentContractId(savedContracts);
-			OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("orgRelationId")));
-			vendorContracts.setOrgRelations(orgRelations);
-			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				vendorContracts.setOrgLocationId(orgRelations.getLocationId());
-			}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				vendorContracts.setOrgLocationId(orgRelations.getResponderLocationId());
+		if(!"draft".equalsIgnoreCase(savedContracts.getTemplateSubmissionStatus())){
+			if("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
+				vendorContracts.setContractType("Client MSA");
+				vendorContracts.setInitiatorType("Client");
+				vendorContracts.setContractOrgLocationId(orgLocation);
+				vendorContracts.setParentContractId(savedContracts);
+				OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("orgRelationId")));
+				vendorContracts.setOrgRelations(orgRelations);
+				if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+					vendorContracts.setOrgLocationId(orgRelations.getLocationId());
+				}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+					vendorContracts.setOrgLocationId(orgRelations.getResponderLocationId());
+				}
+				
+				User vendorUser = userService.getUserById(Long.parseLong(jsonObj.getString("vendorContact")));
+				/*if(null != vendorUser && !"draft".equalsIgnoreCase(saveType)){
+					signatureRequestUtil.sendDocumentForSignatureRequest(vendorUser,contractsTemplate,orgLocation,user);
+				}*/
+				vendorContracts.setOwnerUserId(vendorUser);
+				vendorContracts.setContactUser(ownerUser);
 			}
 			
-			User vendorUser = userService.getUserById(Long.parseLong(jsonObj.getString("vendorContact")));
-			/*if(null != vendorUser && !"draft".equalsIgnoreCase(saveType)){
-				signatureRequestUtil.sendDocumentForSignatureRequest(vendorUser,contractsTemplate,orgLocation,user);
-			}*/
-			vendorContracts.setOwnerUserId(vendorUser);
-			vendorContracts.setContactUser(ownerUser);
-		}
-		
-		if("Client MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
-			vendorContracts.setContractType("Vendor MSA");
-			vendorContracts.setInitiatorType("Vendor");
-			vendorContracts.setParentContractId(savedContracts);
-			vendorContracts.setContractOrgLocationId(orgLocation);
-			OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("clientOrgRelationId")));
-			vendorContracts.setOrgRelations(orgRelations);
-			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				vendorContracts.setOrgLocationId(orgRelations.getLocationId());
-			}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				vendorContracts.setOrgLocationId(orgRelations.getResponderLocationId());
+			if("Client MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
+				vendorContracts.setContractType("Vendor MSA");
+				vendorContracts.setInitiatorType("Vendor");
+				vendorContracts.setParentContractId(savedContracts);
+				vendorContracts.setContractOrgLocationId(orgLocation);
+				OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("clientOrgRelationId")));
+				vendorContracts.setOrgRelations(orgRelations);
+				if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+					vendorContracts.setOrgLocationId(orgRelations.getLocationId());
+				}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+					vendorContracts.setOrgLocationId(orgRelations.getResponderLocationId());
+				}
+				User vendorUser = userService.getUserById(Long.parseLong(jsonObj.getString("clientContact")));
+				vendorContracts.setOwnerUserId(vendorUser);
+				vendorContracts.setContactUser(ownerUser);
 			}
-			User vendorUser = userService.getUserById(Long.parseLong(jsonObj.getString("clientContact")));
-			vendorContracts.setOwnerUserId(vendorUser);
-			vendorContracts.setContactUser(ownerUser);
+			Contracts savedChildContracts = contractsTemplateDao.saveNewContract(vendorContracts);
+			  if(null != vendorContactsUser && null != approverUser && !"draft".equalsIgnoreCase(saveType)){
+		            signatureRequestUtil.sendDocumentForSignatureRequest(vendorContactsUser,contractsTemplate,orgLocation,user,savedContracts,org);
+		        }
 		}
-		Contracts savedChildContracts = contractsTemplateDao.saveNewContract(vendorContracts);
-		  if(null != vendorContactsUser && null != approverUser && !"draft".equalsIgnoreCase(saveType)){
-	            signatureRequestUtil.sendDocumentForSignatureRequest(vendorContactsUser,contractsTemplate,orgLocation,user,savedContracts,org);
-	        }
 		return savedContracts;
 		
 		

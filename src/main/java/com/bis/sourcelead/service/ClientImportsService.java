@@ -27,12 +27,12 @@ public interface ClientImportsService {
 
 	List<BulkClientDetails> getbulkClientDetailsByOrgLocationId(OrgLocations orgLocation, User user, Org org, String isMailSent, String responderType) throws Exception;
 
-	BulkClientDetails deleteDuplicateRecord(String recordId, OrgLocations orgLocation)throws Exception;
+	BulkClientDetails deleteDuplicateRecord(String recordId, OrgLocations orgLocation,String responderType)throws Exception;
 
-	BulkClientDetails saveClientRecord(String recordId, OrgLocations orgLocation, Org org, User user) throws Exception;
+	BulkClientDetails saveClientRecord(String recordId, OrgLocations orgLocation, Org org, User user,String responderType) throws Exception;
 
-	OrgRelations getMatchedClientList(String recordId, OrgLocations orgLocation, Org org, User user) throws Exception;
+	OrgRelations getMatchedClientList(String recordId, OrgLocations orgLocation, Org org, User user, String responderType) throws Exception;
 
-	String mergeSpocWithClient(String bulkRecordId, OrgLocations orgLocation, Org org, User user, String orgRelationId) throws Exception;
+	String mergeSpocWithClient(String bulkRecordId, OrgLocations orgLocation, Org org, User user, String orgRelationId,String responderType) throws Exception;
 	
 }

@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
@@ -206,6 +207,13 @@ public class ContractRestController {
 		Contracts contracts = contractsTemplateService.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,tabType);
 		return commonUtil.toJSON(contracts);
 	} 
+	
+	@RequestMapping(value = "/getEditContractTemplateDetails", method = RequestMethod.GET)
+	public @ResponseBody String getEditContractTemplateDetails(@RequestParam(value="templateId", required=false) String templateId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateById(Long.parseLong(templateId));
+		return commonUtil.toJSON(contractsTemplate);
+	} 
+	
 	
 	@RequestMapping(value = "/downloadContractsTemplate", method = RequestMethod.GET)
 	public void downloadContractsTemplate(@RequestParam(value="templateId", required=false) String templateId,HttpServletRequest request, HttpServletResponse response) throws Exception
