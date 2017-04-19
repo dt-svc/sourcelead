@@ -308,9 +308,9 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
 		
 		if(!isNullOrEmpty(candidateOnBoarding.getCompanyEmail())){
-			onboardingUser = userDao.findByEmail(candidateOnBoarding.getCompanyEmail());
+			onboardingUser = userDao.findByUserName(candidateOnBoarding.getCompanyEmail());
 		}else{
-			onboardingUser = userDao.findByEmail(candidateOnBoarding.getPersonalEmail());
+			onboardingUser = userDao.findByUserName(candidateOnBoarding.getPersonalEmail());
 		}
 		
 		if(onboardingUser == null){
