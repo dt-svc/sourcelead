@@ -139,4 +139,6 @@ public interface RequirementService {
 	Long getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC) throws Exception ;
 
 	public List<Requirement> getTotalRequirementsReleasedToSpoc(Long relationId, Long spocId);
+	
+	public List<Requirement> getRequirementsForSOWByOrgLocationId(Long orgLocationId, String type) throws Exception;
 }
