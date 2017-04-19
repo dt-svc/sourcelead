@@ -109,7 +109,7 @@
 </div>	
 </c:if>
 		
-		<c:if test="${supportedDocumentsListSize > 0}">
+		<c:if test="${SourceLeadWeb_supportedDocumentsListSize > 0}">
 		<br><h4>Support Documents</h4>
 		<div class="docu">
 		<c:forEach var="docFiles" items="${SourceLeadWeb_supportedDocumentsList}">
