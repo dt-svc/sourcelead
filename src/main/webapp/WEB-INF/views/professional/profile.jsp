@@ -202,8 +202,8 @@ function getProfessionalInfo(){
 				 result = result +'	        </span>';
 				 result = result +'	        </div>';
 				 result = result +'	        <ul class="list-unstyled professional-details">';
-				 result = result +'	            <li><i class="fa fa-magnet" ></i><strong>'+designation+'</strong></li>';
-				 result = result +'	            <li><i class="fa fa-magnet" ></i><span class="text-muted">'+designationType+' '+designationOtherType+'</strong></li>';
+				 result = result +'	            <li><i class="fa fa-magnet" title="Designation"></i><strong>'+designation+'</strong></li>';
+				 result = result +'	            <li><i class="fa fa-magnet" title="Employment Type"></i><span class="text-muted">'+designationType+' '+designationOtherType+'</strong></li>';
 				 result = result +'	            <li><i class="fa fa-history" title="Experience"></i>'+experienceYears+' &nbsp; '+experienceMonths+'</li>';
 				 result = result +'	            <li><i class="fa fa-calendar" title="Notice Period"></i>'+noticePeriod+'</li>';
 				 result = result +'	            <li> <i class="fa fa-money" title="Current Rate"></i>';

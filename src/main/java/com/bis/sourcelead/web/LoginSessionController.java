@@ -581,6 +581,7 @@ public class LoginSessionController {
 		
 		List<OnBoardingTemplateDocuments> supportedDocumentsList = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsByCandidateOnBoardingId(candidateOnBoarding.getId(), "Supported");
 		SourceLeadSessionManager.setSessionAttribute(request, "supportedDocumentsList", supportedDocumentsList);
+		SourceLeadSessionManager.setSessionAttribute(request, "supportedDocumentsListSize", supportedDocumentsList.size());
 	}
 	
 	

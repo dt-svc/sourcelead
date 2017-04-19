@@ -308,9 +308,9 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
 		
 		if(!isNullOrEmpty(candidateOnBoarding.getCompanyEmail())){
-			onboardingUser = userDao.findByEmail(candidateOnBoarding.getCompanyEmail());
+			onboardingUser = userDao.findByUserName(candidateOnBoarding.getCompanyEmail());
 		}else{
-			onboardingUser = userDao.findByEmail(candidateOnBoarding.getPersonalEmail());
+			onboardingUser = userDao.findByUserName(candidateOnBoarding.getPersonalEmail());
 		}
 		
 		if(onboardingUser == null){
@@ -724,6 +724,23 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 	public CandidateOnBoarding getCandidateOnBoardingByUserIdAndLocationId(Long onboardingUser, Long orgLocationId)
 			throws Exception {
 		return candidateOnBoardingDao.getCandidateOnBoardingByUserIdAndLocationId(onboardingUser, orgLocationId);
+	}
+
+	@Override
+	public CandidateOnBoarding getCandidateOnBoardingByCandidateIdAndOfferId(Long candidateId ,Long offerId) throws Exception {
+		return candidateOnBoardingDao.getCandidateOnBoardingByCandidateIdAndOfferId(candidateId ,offerId);
+	}
+
+	@Override
+	public CandidateOnBoarding getCandidateOnBoardingByPersonalEmailAndLocationId(String personalEmail,
+			Long orgLocationId) throws Exception {
+		return candidateOnBoardingDao.getCandidateOnBoardingByPersonalEmailAndLocationId(personalEmail, orgLocationId);
+	}
+
+	@Override
+	public CandidateOnBoarding getCandidateOnBoardingByCandidateIdAndLocationId(Long candidateId, Long orgLocationId)
+			throws Exception {
+		return candidateOnBoardingDao.getCandidateOnBoardingByCandidateIdAndLocationId(candidateId, orgLocationId);
 	}
 
 	

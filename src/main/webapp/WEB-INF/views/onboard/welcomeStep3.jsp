@@ -66,9 +66,9 @@
 		<div id="loading"></div>
 		<div class="welCo1">
         <input type="hidden" name="candidateOnboardId" id="candidateOnboardId" value="${candidateOnboardId}"/>
-		<c:if test="${contractDocsListSize > 0}">
 			<div class="step3Wrap">
 			<h2>Employment Contract</h2>
+				<c:if test="${contractDocsListSize > 0}">
 				<c:forEach var="contractDocs" items="${contractDocsList}">
 				<div class="step3">
 					<span><a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${contractDocs.documentUUID}" class="fa fa-file-word-o"></a></span>
@@ -79,14 +79,19 @@
 					<div class="clearfix"></div>
 				</div>
 				</c:forEach>
+				</c:if>
+				<c:if test="${contractDocsListSize == 0}">
+				       <p>No Contract Files Found</p>
+				</c:if>
 				<div class="clearfix"></div>			
 			</div>	
-		</c:if>	
 			
 			
-		<c:if test="${formsDocsListSize > 0}">
+			
+		
 			<div class="step3Wrap">
 			<h2 class="padTop">Employment Forms</h2>
+				<c:if test="${formsDocsListSize > 0}">
 				<c:forEach var="formsDocs" items="${formsDocsList}">
 				<div class="step3">
 					<span><a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${formsDocs.documentUUID}" class="fa fa-file-word-o"></a></span>
@@ -97,14 +102,21 @@
 					<div class="clearfix"></div>
 				</div>
 				</c:forEach>
+				</c:if>	
+				
+				<c:if test="${formsDocsListSize == 0}">
+				  <p>No Employment Forms Found</p>
+				</c:if>
+				
 				<div class="clearfix"></div>			
 			</div>	
-		</c:if>	
 		
 		
-			<c:if test="${policiesDocsListSize > 0}">
+		
+			
 			<div class="step3Wrap">
 			<h2 class="padTop">Policies</h2>
+				<c:if test="${policiesDocsListSize > 0}">
 				<c:forEach var="policiesDocs" items="${policiesDocsList}">
 				<div class="step3">
 					<span><a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${policiesDocs.documentUUID}" class="fa fa-file-word-o"></a></span>
@@ -114,9 +126,14 @@
 					<div class="clearfix"></div>
 				</div>
 				</c:forEach>
+				</c:if>	
+				
+				<c:if test="${policiesDocsListSize == 0}">
+					<p>No Policies Found</p>
+				</c:if>
 				<div class="clearfix"></div>			
 			</div>	
-		</c:if>								
+									
   </div>		  
 		  
 <div class="welBtns">

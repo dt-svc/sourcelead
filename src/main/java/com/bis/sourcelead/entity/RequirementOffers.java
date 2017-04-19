@@ -46,6 +46,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	@Column(name = "Offer_Status")
 	private String offerStatus;
 	
+	@Column(name = "OFFER_UUID")
+	private String offerUUID;
+	
 	
 	@Column(name = "PAYMENT_MODE")
 	private String paymentMode;
@@ -282,6 +285,14 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 	public void setCandidateName(String candidateName) {
 		this.candidateName = candidateName;
+	}
+
+	public String getOfferUUID() {
+		return offerUUID;
+	}
+
+	public void setOfferUUID(String offerUUID) {
+		this.offerUUID = offerUUID;
 	}
 	
 	

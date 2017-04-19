@@ -513,8 +513,12 @@ public class RequirementListRestController {
 			           for (RequirementAssignTo assing : requirementAssignToListdb) { 
 			        	   RequirementAssignTo ra = new  RequirementAssignTo();
 			        	   StringBuilder assignUserSB = new StringBuilder();
+			        	   if(assing.getAssignUserId().getLastName() != null){
 			        	   ra.setAssignedUserName(assignUserSB.append(assing.getAssignUserId().getFirstName()).append(" ").append(assing.getAssignUserId().getLastName()).toString());
-					       if(assing.getRoleId() != null ){
+			        	   }else{
+				        	ra.setAssignedUserName(assignUserSB.append(assing.getAssignUserId().getFirstName()).toString());
+			        	   }
+			        	   if(assing.getRoleId() != null ){
 					    	   ra.setAssignedUserRole(assing.getRoleId().getDisplayName());
 					       }
 					       if(assing.getTeamId() != null ){

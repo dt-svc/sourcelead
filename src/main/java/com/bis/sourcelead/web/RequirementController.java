@@ -261,22 +261,26 @@ public class RequirementController {
 
 			List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirement.getId());
 				List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
-				LinkedHashSet<String> totSkils = new LinkedHashSet<String>();
-				if(!allReqSkills.contains(null)){
-					totSkils.addAll(skillsList);
-					totSkils.addAll(allReqSkills);
-					model.addObject("skillsList", totSkils);
-				}else{
-					model.addObject("skillsList", skillsList);
+				String skill = allReqSkills.get(0);
+				if(!"null".equalsIgnoreCase(skill) && null != skill){
+				String arr[] = skill.split(",");
+				for(String editSkillName : arr){
+					if(!skillsList.contains(editSkillName)){
+						skillsList.add(editSkillName);
+					}
 				}
-
+			      model.addObject("skillsList", skillsList);
+				}else{
+				  model.addObject("skillsList", skillsList);
+				} 
 		}else{
 			//List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 			List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
 			model.addObject("skillsList", skillsList);
 		}
 		
-        List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+		
+       List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		model.addObject("educationsList", educationsList);
 		
 		List<User> usersList = userService.getOwnersByOrgLocationId(orgLocations.getId());
