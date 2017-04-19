@@ -451,7 +451,7 @@ function reqEducationSubmissionProfile(candidateId){
 
 <script>
 function reqCertificationSubmissionProfile(candidateId){
-	 var sourceleadUrl ='${sourceleadUrl}';
+	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -491,6 +491,8 @@ function reqCertificationSubmissionProfile(candidateId){
 				            		candidatevalidFromDateToString = opt.candidatevalidFromDateToString;
 				            	}else if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
 				            		candidatevalidFromDateToString = opt.candidatevalidToDateToString;
+				            	}else{
+				            		candidatevalidFromDateToString = " ";
 				            	}
 				            	
 								result = result +'                <li>';
