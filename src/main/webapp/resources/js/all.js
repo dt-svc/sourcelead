@@ -905,7 +905,7 @@ var serviceNotIn = function (productType, serv) {
     else if (productType == "socialconnect" && serv != "github" && serv != "foursquare"  && serv != "instagram" && serv != "pinterest"  && serv != "outlook" && serv != "yahoo" && serv != "csv" && serv != "email" && serv != "google" && serv != "aol" && serv != "box" && serv != "yammer" && serv != "xing" && serv != "skyrock" && serv != "gmail" && serv != "tumblr" && serv != "delicious" && serv != "slack" && serv != "mailru" && serv != "eventbrite" && serv != "mailchimp" && serv != "salesforce" && serv != "office365" && serv != "base" && serv != "hubspot" && serv != "nimble" && serv != "podio" && serv != "onepage" && serv != "karma" && serv != "xero" && serv != "contactually" && serv != "pipedrive" && serv != "zoho") {
         return true;
     }
-    else if (productType == "socialpost" && serv != "outlook" && serv != "instagram" && serv != "pinterest" && serv != "aol" && serv != "github" && serv != "csv" && serv != "email" && serv != "box" && serv != "yammer" && serv != "google" && serv != "skyrock" && serv != "googleplus" && serv != "gmail" && serv != "slack" && serv != "yahoo" && serv != "hotmail" && serv != "foursquare" && serv != "mailru" && serv != "eventbrite" && serv != "mailchimp" && serv != "salesforce" && serv != "office365" && serv != "base" && serv != "hubspot" && serv != "nimble" && serv != "podio" && serv != "onepage" && serv != "karma" && serv != "xero" && serv != "contactually" && serv != "pipedrive" && serv != "zoho") {
+    else if (productType == "socialpost"  && serv != "delicious" && serv != "tumblr" && serv != "xing" && serv != "outlook" && serv != "instagram" && serv != "pinterest" && serv != "aol" && serv != "github" && serv != "csv" && serv != "email" && serv != "box" && serv != "yammer" && serv != "google" && serv != "skyrock" && serv != "googleplus" && serv != "gmail" && serv != "slack" && serv != "yahoo" && serv != "hotmail" && serv != "foursquare" && serv != "mailru" && serv != "eventbrite" && serv != "mailchimp" && serv != "salesforce" && serv != "office365" && serv != "base" && serv != "hubspot" && serv != "nimble" && serv != "podio" && serv != "onepage" && serv != "karma" && serv != "xero" && serv != "contactually" && serv != "pipedrive" && serv != "zoho") {
         return true;
     }
     else if ((productType == "crmcontacts") && serv != "xing" && serv != "instagram" && serv != "pinterest" && serv != "aol" && serv != "github" && serv != "email" && serv != "box" && serv != "yammer" && serv != "gmail" && serv != "yahoo" && serv != "hotmail" && serv != "outlook" && serv != "csv" && serv != "slack" && serv != "skyrock" && serv != "facebook" && serv != "twitter" && serv != "foursquare" && serv != "linkedin" && serv != "googleplus" && serv != "google" && serv != "tumblr" && serv != "delicious" && serv != "mailru" && serv != "eventbrite" && serv != "mailchimp") {
@@ -4333,6 +4333,7 @@ var socialpost = (function () {
             catch (e) { }
         }
         else {
+        	//$("#loadTime").attr('style','position:fixed; width:650px; height:350px; background-color:rgba(255,255,255,0.8); top:20%; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px; background-color: #fff; z-index: 10000; margin: 0px auto; display: block; right: 0px; border-radius: 5px; box-shadow:0px 0px 5px rgba(0,0,0,0.5);');
             socialinviter.modalSI.hide();
             if (socialinviter.getConfig().callbacks.post) {
                 socialinviter.getConfig().callbacks.post(serv, data);
@@ -4360,7 +4361,7 @@ var socialpost = (function () {
         }
     }
     var getPostValues = function () {
-        return postdatavalues;
+        return  getPostValueDetails();
     }
     var getService = function () {
         return socialinviter.getService();
