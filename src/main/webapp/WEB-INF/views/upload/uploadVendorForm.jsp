@@ -78,7 +78,7 @@ margin:10px 220px 0;
 			  </div> --%>
 			  </div>
 			<div class="file-upload clearfix text-center" id="fileDiv" onclick = "check();">
-		<div class="col-md-12" id="vendorNameDiv">
+		<div class="col-md-12" id="clientNameDiv">
 			<label class="bg-default">
 			<i aria-hidden="true" class="fa fa-paperclip"></i> <br/>
                 <input type="file" name="file" field-name="File Upload" style="display: none;" id="uploadBtn" data-validation="required validate_importFile">
@@ -191,7 +191,13 @@ $(document).ready(function(){
 
 <script type="text/javascript">
 function saveBulkImport(){
-	
+	 var validationSettings = {
+	            errorMessagePosition : 'element',
+	            borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+	            };
+	if ($('#upload_form').validate(false, validationSettings)){
 	var frm = $('#upload_form').serializeFormJSON();
 	var con = JSON.stringify(frm);
 	con = con.replace(/[{}]/g, "");
@@ -223,6 +229,7 @@ function saveBulkImport(){
 	        }
 	 });
 	 
+}
 }
 </script>
 
@@ -482,14 +489,15 @@ function excelimportDataPagination(){
 
 
 
-<!-- <script type="text/javascript">
 
+<script type="text/javascript">
+//script for upload file
 document.getElementById("uploadBtn").onchange = function () {
-    document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();;
-};
+	document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
+}
 </script>
 
-<script>
+<!-- <script>
 function check(){
 	var errormsg = '${errorMessage}';
 		$("#errorFileDiv").hide();
@@ -541,14 +549,14 @@ function uploadSave() {
 			dateFormat : 'yyyy/mm/dd' 
             };
 </script> 
-
+ 
 
 <script language="javascript" type="text/javascript">
  function checkFile()
     {
-     var fsize = $('#uploadBtn')[0].files[0].size;
+//      var fsize = $('#uploadBtn')[0].files[0].size;
      $('#clientNameDiv').find('p.jquery_form_error_message').remove();
-     var res_field = document.upload_form.elements["uploadFile"].value;   
+     var res_field = document.upload_form.elements["uploadFile"].value;  
      var extension = res_field.substr(res_field.lastIndexOf('.') + 1).toLowerCase();
      var allowedExtensions = ['xls', 'xlsx'];
      if (res_field.length > 0)
