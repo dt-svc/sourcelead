@@ -1,0 +1,3 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','CONTRACTS','OVERTIME_RATE','VARCHAR(15) NULL AFTER `STATE_JURISDICTION`');
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','CONTRACTS','OVERTIME_RATE_TYPE','VARCHAR(15) NULL AFTER `OVERTIME_RATE`');
