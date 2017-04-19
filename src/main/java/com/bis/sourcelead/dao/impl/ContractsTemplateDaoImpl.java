@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -114,8 +115,9 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 			}
 			logger.debug("contractsTemplate Added Successfully");
 		} catch (Exception exception) {
-			   StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ORG_SPOC"));
-				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+			logger.error(ExceptionUtils.getFullStackTrace(exception)); 
+//			   StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ORG_SPOC"));
+//				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return contracts;
 	}
