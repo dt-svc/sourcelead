@@ -30,7 +30,6 @@ function setPostValues(title,link,picture,description,comment){
      }
 }
 function getPostValueDetails(){
-	alert(postdatavalues.description);
 	 return postdatavalues;
   }
 
