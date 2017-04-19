@@ -4138,8 +4138,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 	
 	@Override
-	public List<RequirementSubmission> getSubmissionsForSOWByRequirementId(Long requirementId) {
-		return requirementSubmissionDao.getSubmissionsForSOWByRequirementId(requirementId);
+	public List<RequirementSubmission> getSubmissionsForSOWByRequirementId(Long requirementId, String sowType) {
+		return requirementSubmissionDao.getSubmissionsForSOWByRequirementId(requirementId, sowType);
 	}
 
 }
