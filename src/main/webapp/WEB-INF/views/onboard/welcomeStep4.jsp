@@ -73,6 +73,10 @@
 					</ul>
 					</c:forEach>
 					</c:if>
+					
+					<c:if test="${tasksListSize == 0}">
+					    <ul><li>No Tasks Found</li></ul>
+					</c:if>
 																				
 				</div>		
 		  </div>		  
