@@ -52,12 +52,12 @@ function requirementProfile(requirementUUID){
 		    	var json = JSON.parse(data);
 		    	var result = "";
 		    	if(json.minExp != null && json.minExp != '' && json.minExp != 'undefined'){
-		    		minExp = json.minExp +'&nbsp;Years';
+		    		minExp = json.minExp;
 		    	}else{
 		    		minExp = "";
 		    	}
 		    	if(json.maxExp != null && json.maxExp != '' && json.maxExp != 'undefined'){
-		    		maxExp = json.maxExp + '&nbsp;Years';
+		    		maxExp = json.maxExp;
 		    	}else{
 		    		maxExp = "";
 		    	}
@@ -133,11 +133,20 @@ function requirementProfile(requirementUUID){
 				 result = result +'                  <div class="row">';
 				 result = result +'                    <div class="col-md-12">';
 				 result = result +'                      <ul class="list-unstyled can-perdt">';
-				 result = result +'                        <li><i class="fa fa-black-tie"></i><span>Min Experience - '+minExp+'</span></li>';
-				 result = result +'                        <li><i class="fa fa-black-tie"></i><span>Max Experience - '+maxExp+'</span></li>';
-				 result = result +'                        <li><i class="fa fa-rupee"></i><span>'+rate+' '+rateType+' '+currencyCode+'</span></li>';
-				 result = result +'                        <li><i class="fa fa-map-marker"></i><span>'+city+' '+state+' '+country+'</span></li>';
-				 result = result +'                        <li><i class="fa fa-bell"></i><span>'+noticePeriod+'</span>';
+				 
+				 if(json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined' && json.minExp != null && json.minExp != '' && json.minExp != 'undefined'){
+				 result = result +'                        <li><i class="fa fa-black-tie" title="Experience"></i><span>'+json.minExp+'-'+json.maxExp+' years</span></li>';
+				 }else if(json.minExp != null && json.minExp != '' && json.minExp != 'undefined'){
+				 result = result +'                        <li><i class="fa fa-black-tie" title="Experience"></i><span>'+json.minExp+' years</span></li>';
+				 }else if(json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined'){
+				 result = result +'                        <li><i class="fa fa-black-tie" title="Experience"></i><span>'+json.maxExp+' years</span></li>';
+				 }else{
+					 result = result+'						<li><i class="fa fa-black-tie" title="Experience"></i><span> -- </span></li>';
+				 }
+				 
+				 result = result +'                        <li><i class="fa fa-rupee" title="Requirement Rate"></i><span>'+rate+' '+rateType+' '+currencyCode+'</span></li>';
+				 result = result +'                        <li><i class="fa fa-map-marker" title="Location"></i><span>'+city+' '+state+' '+country+'</span></li>';
+				 result = result +'                        <li><i class="fa fa-bell" title="Notice Period"></i><span>'+noticePeriod+'</span>';
 				 result = result +'                      </ul>';
 				 result = result +'                    </div>';
 				 result = result +'                  </div>';

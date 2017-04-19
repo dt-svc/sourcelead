@@ -1036,6 +1036,24 @@ public class RequirementDaoImpl implements RequirementDao {
 	        List<Requirement> requirementList = session.createQuery(query).setLong("relationId", relationId).setLong("spocId", spocId).setCacheable(true).list();
 	 		return requirementList;
 		}
+		
+		@Override
+	 	@Transactional(rollbackFor = { Exception.class })
+	 	public List<Requirement> getRequirementsForSOWByOrgLocationId(Long orgLocationId, String type) throws Exception {
+	 		
+	 		Session session = this.sessionFactory.getCurrentSession();
+	 		String subQuery = "";
+	 		if(type.equalsIgnoreCase("clientSOW")){
+	 			subQuery = "and requirement.isClientJob = 'Y' and requirement.parentRequirement <> null ";
+	 		}else if(type.equalsIgnoreCase("vendorSOW")){
+	 			subQuery = " ";
+	 		}
+	 		
+	 		String query = "from Requirement requirement left join fetch requirement.parentRequirement where  requirement.orgLocationId.id =:orgLocationId "+subQuery+")";
+	 		
+	         List<Requirement> requirementList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	 		return requirementList;
+	 	}
 	
 	
 }

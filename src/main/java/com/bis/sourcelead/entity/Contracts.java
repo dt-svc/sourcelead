@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -141,6 +142,10 @@ public class Contracts {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	
+	@Column(name = "STATE_JURISDICTION")
+	private String stateJurisdiction;
+	
 	@Transient
 	private String ownerName;
 	
@@ -156,7 +161,32 @@ public class Contracts {
 	@Transient
 	private String parentId;
 	
+	@Transient
+	List<Contracts> vendorcontractsList;
 	
+	@Transient
+	List<Contracts> clientcontractsList;
+	
+	public List<Contracts> getVendorcontractsList()
+	{
+		return vendorcontractsList;
+	}
+
+	public void setVendorcontractsList(List<Contracts> vendorcontractsList)
+	{
+		this.vendorcontractsList = vendorcontractsList;
+	}
+
+	public List<Contracts> getClientcontractsList()
+	{
+		return clientcontractsList;
+	}
+
+	public void setClientcontractsList(List<Contracts> clientcontractsList)
+	{
+		this.clientcontractsList = clientcontractsList;
+	}
+
 	public String getParentId()
 	{
 		return parentId;
@@ -483,6 +513,14 @@ public class Contracts {
 	public void setEndDateStr(String endDateStr)
 	{
 		this.endDateStr = endDateStr;
+	}
+
+	public String getStateJurisdiction() {
+		return stateJurisdiction;
+	}
+
+	public void setStateJurisdiction(String stateJurisdiction) {
+		this.stateJurisdiction = stateJurisdiction;
 	}
 	
 	

@@ -1,13 +1,10 @@
 package com.bis.sourcelead.rest;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
@@ -18,7 +15,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,18 +28,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.entity.BulkClientDetails;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ContractsTemplateService;
-import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
-import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.itextpdf.text.Document;
@@ -70,6 +70,11 @@ public class ContractRestController {
 	@Autowired
 	private OrgSpocService orgSpocService;
 	
+	@Autowired
+	private RequirementService requirementService;
+	
+	@Autowired
+	private RequirementSubmissionService requirementSubmissionService;
 	
 	@RequestMapping(value = "/saveTemplate", method = RequestMethod.POST)
 	public @ResponseBody String saveClient(@RequestParam(value = "json", required = false) String json,
@@ -153,6 +158,7 @@ public class ContractRestController {
 			}
 			orgSpoc.setSpocName(sb.toString());
 			orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
+			orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
 			orgSpoc.setOwnerName(clientSb.toString());
 			}
 		return commonUtil.toJSON(orgSpocList);
@@ -198,9 +204,16 @@ public class ContractRestController {
 	public @ResponseBody String getAllContractsByOrgLocationIdandStatus(@RequestParam(value = "contractSubmissionType", required = false) String contractSubmissionType,@RequestParam(value = "tabType", required = false) String tabType,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<Contracts> contractsTemplateList = contractsTemplateService.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,tabType);
-		return commonUtil.toJSON(contractsTemplateList);
+		Contracts contracts = contractsTemplateService.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,tabType);
+		return commonUtil.toJSON(contracts);
 	} 
+	
+	@RequestMapping(value = "/getEditContractTemplateDetails", method = RequestMethod.GET)
+	public @ResponseBody String getEditContractTemplateDetails(@RequestParam(value="templateId", required=false) String templateId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateById(Long.parseLong(templateId));
+		return commonUtil.toJSON(contractsTemplate);
+	} 
+	
 	
 	@RequestMapping(value = "/downloadContractsTemplate", method = RequestMethod.GET)
 	public void downloadContractsTemplate(@RequestParam(value="templateId", required=false) String templateId,HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -235,24 +248,73 @@ public class ContractRestController {
 	
 	@RequestMapping(value = "/updateContractStatus", method = RequestMethod.POST)
 	@ResponseBody
-	public String updateContractStatus(@RequestParam(value = "recordId", required = false) String recordId,HttpServletRequest request)throws Exception{
+	public String updateContractStatus(@RequestParam(value = "recordId", required = false) String recordId,
+			@RequestParam(value = "status", required = false) String status,
+			HttpServletRequest request)throws Exception{
 
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		
 		Contracts contracts  = contractsTemplateService.getContractById(Long.parseLong(recordId));
-		
-		Contracts updateContracts = new Contracts();
-		Contracts childContracts = new Contracts();
-		
-		if(null != contracts.getParentContractId()){
-				updateContracts.setId(contracts.getParentContractId().getId());
-				updateContracts.setTemplateSubmissionStatus("Send For Verification");
-				childContracts.setId(contracts.getId());
-				childContracts.setTemplateSubmissionStatus("Waiting To Be Verify");
+		if("Waiting to be signed".equalsIgnoreCase(status)){
+			Contracts parentContracts  = contractsTemplateService.getContractById(contracts.getParentContractId().getId());
+			if(null != contracts.getParentContractId()){
+				parentContracts.setId(contracts.getParentContractId().getId());
+				parentContracts.setTemplateSubmissionStatus("Waiting To Be Verify");
+				contracts.setId(contracts.getId());
+				contracts.setTemplateSubmissionStatus("Send For Verification");
 			}
-			
+		 contractsTemplateService.saveNewContract(parentContracts);
+		 contractsTemplateService.saveNewContract(contracts);
+		}
+		
+		
+		
+		
+		
+		if(("Waiting To Be Verify").equalsIgnoreCase(status)){
+			Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
+			if(null != childContarct.getParentContractId()){
+				childContarct.setId(childContarct.getId());
+				childContarct.setTemplateSubmissionStatus("Finalized");
+				contracts.setId(contracts.getId());
+				contracts.setTemplateSubmissionStatus("Finalized");
+			}
+			 contractsTemplateService.saveNewContract(childContarct);
+			 contractsTemplateService.saveNewContract(contracts);
+		}
+		
+		
+		
 		return "success";
 }
+	
+	@RequestMapping(value = "/getRequirementsForSOWByOrgLocationId", method = RequestMethod.GET)
+	public @ResponseBody String getRequirementsForSOWByOrgLocationId(@RequestParam(value = "type", required = false) String type, HttpServletRequest request,HttpServletResponse response) throws Exception {
+		
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		
+		List<Requirement> requirementList = requirementService.getRequirementsForSOWByOrgLocationId(loginOrgLocation.getId(), type);
+		
+		return commonUtil.toJSON(requirementList);
+	}
+	
+	
+	@RequestMapping(value = "/getSubmissionsForSOWByRequirementId", method = RequestMethod.GET)
+	public @ResponseBody String getSubmissionsForSOWByRequirementId(@RequestParam(value = "requirementId", required = false) String requirementId, HttpServletRequest request,HttpServletResponse response) throws Exception {
+		
+		List<RequirementSubmission> requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByRequirementId(Long.parseLong(requirementId));
+		if(requirementSubmissionsList.size() > 0){
+			for(RequirementSubmission requirementSubmission : requirementSubmissionsList){
+				StringBuffer candidateName = new StringBuffer(); 
+				if(null != requirementSubmission.getCandidate() && StringUtils.isNotBlank(requirementSubmission.getCandidate().getLastName())){
+					requirementSubmission.setCandidateName(candidateName.append(requirementSubmission.getCandidate().getFirstName()).append(" ").append(requirementSubmission.getCandidate().getLastName()).toString());
+				}else{
+					requirementSubmission.setCandidateName(candidateName.append(requirementSubmission.getCandidate().getFirstName()).toString());
+				}
+			}
+		}
+		
+		return commonUtil.toJSON(requirementSubmissionsList);
+	}
 
 }

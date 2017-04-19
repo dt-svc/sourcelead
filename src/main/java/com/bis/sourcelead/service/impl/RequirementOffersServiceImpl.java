@@ -739,6 +739,18 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 						 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 				  }
 		    	
+		    	//this condition is for candidate to Associate when offerAccepted 
+		    	if(requirementOffers.getSubmissionId().getCandidate().getOrgLocationId().getId().longValue() == orgLocations.getId().longValue()){
+		    		Candidate candidate = candidateService.getCandidateByCandidateId(requirementOffers.getSubmissionId().getCandidate().getId());
+			    	candidate.setIsAssociate(Constants.YES);
+			    	candidate.setUpdatedBy(loginUser.getUserCode());
+			    	candidate.setUpdatedDate(commonUtil.currentDate());
+			    	
+			    	candidateService.saveOrUpdateCandidate(candidate);
+			    	candidateService.saveOrUpdateCandidateElkDocument(candidate);
+		    	}
+		    	
+		    	
 		    	  //Changing the status of offerTable 
 			      if(requirementOffers  != null){
 					    requirementOffers.setOfferStatus("OFFERACCEPTED");
@@ -877,7 +889,12 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(loginUser.getFirstName());
 		 emailMessage.setLastName(loginUser.getLastName());
-		 emailMessage.setToEmail(requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getClientUser().getEmail());
+		 if(null != requirementOffers.getSubmissionId().getSourceSubmission()){
+			 emailMessage.setToEmail(requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getClientUser().getEmail());
+		 }else{
+			 emailMessage.setToEmail(requirementOffers.getSubmissionId().getRequirement().getSpocId().getClientUser().getEmail());
+		 }
+		 
 		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);

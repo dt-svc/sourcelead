@@ -77,8 +77,8 @@ public class Html2PdfUtil {
 	
 	
 	 private String replacePlaceHolders(String templateBody, Contracts contracts, OrgLocations orgLocation, Org org) {
-	        System.out.println("vendor contact "+contracts.getContactUser().getFirstName());
-	        System.out.println("vendor location "+contracts.getContractOrgLocationId().getCountry());
+//	        System.out.println("vendor contact "+contracts.getContactUser().getFirstName());
+//	        System.out.println("vendor location "+contracts.getContractOrgLocationId().getCountry());
 	        
 	        String orgName = "";
 	        if(contracts.getOrgRelations().getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
@@ -86,7 +86,7 @@ public class Html2PdfUtil {
 	        }if(contracts.getOrgRelations().getLocationId().getId().longValue() == orgLocation.getId().longValue()){
 	            orgName = contracts.getOrgRelations().getResponderLocationId().getOrg().getOrgName();
 	        }
-	        System.out.println("vendoe name "+orgName);
+//	        System.out.println("vendoe name "+orgName);
 	        
 	         Pattern logEntry = Pattern.compile("\\[(.*?)\\]");
 	            Matcher matchPattern = logEntry.matcher(templateBody);

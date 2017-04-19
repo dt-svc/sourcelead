@@ -215,7 +215,9 @@
                  },
                  "login": function (service, response) {
                 	 loadProfileInformation(response,service);
-                	 $("body,html").animate({scrollTop:$(".sc_regform-holder").offset().top-20});
+                 },
+                 "fetched": function (service, status) {
+                	 contactsImportSucess(service, status);
                  }
              },
              
