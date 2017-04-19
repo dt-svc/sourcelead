@@ -10,7 +10,31 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <script src="resources/js/formvalidator.js"></script>
 
+<script type="text/javascript">
+var postdatavalues = { title: "", link: "", picture: "", description: "", comment: "" };
+function setPostValues(title,link,picture,description,comment){
+	 if (title) {
+         postdatavalues.title = title;
+     }
+     if (link) {
+         postdatavalues.link = link;
+     }
+     if (picture) {
+         postdatavalues.picture = picture;
+     }
+     if (description) {
+         postdatavalues.description = description;
+     }
+     if (comment) {
+         postdatavalues.comment = comment;
+     }
+}
+function getPostValueDetails(){
+	alert(postdatavalues.description);
+	 return postdatavalues;
+  }
 
+</script>
 
 <script type="text/javascript">
 window.onload = function () {
@@ -576,6 +600,11 @@ function requirementsList(offset){
 	 				
 			 				var requirements = json[i];
 			 				
+			 				var title="";
+							var link="";
+							var picture="";
+							var description='';
+							var comment='';
 			 				
 			 				var jobType = '';
 			 				var experience = '';
@@ -618,7 +647,8 @@ function requirementsList(offset){
 			 					rate = 'No Data';
 			 				}
 			 				
-			 				
+			 				description =  description+'Job Title:'+requirements.jobTitle+";";
+			 				description =  description+'Posted By :'+requirements.postedOrg+";";
 			 				
 			 				result = '<section class="openCta">';
 			 				result = result +'<div class="OpenJob">';
@@ -635,14 +665,23 @@ function requirementsList(offset){
 			 				result = result +'<ul>';
 			 				
 			 				if(requirements.skillsList != null){
+			 					description =  description+'Skills :'+requirements.skillsList+";";
 			 					for(var j=0; j<requirements.skillsList.length; j++){
 				 					result = result +'<li>'+requirements.skillsList[j]+'</li>';
 				 				}
 			 				}else{
 			 					result = result +'<li>No Data</li>';
 			 				}
-			 				
-			 				
+			 				if(jobType != null &&jobType != 'No Data'){
+			 					description =  description+'Job Type:'+requirements.jobType+";";
+			 				}
+			 				if(experience != null && experience != 'No Data'){
+								description =  description+'Experience :'+experience+";";
+							}
+			 				if(location != null && location != 'No Data'){
+			 					description =  description+'Job Location: '+location+";";
+							}
+			 				description =  description+'Posted :'+requirements.calDays+";";
 			 				result = result +'<div class="clearfix"></div>';
 			 				result = result +'</ul>';
 			 				result = result +'<div class="clearfix"></div>';
@@ -676,10 +715,9 @@ function requirementsList(offset){
 			 					result = result +'<div class="openCtaRight">';
 				 			  result = result +'<p>Share Requirement</p>';
 				 				result = result +'<span>';
-				 				result = result +'<a href="javascript:void(0)"><i class="fa fa-linkedin-square"></i></a>';
-				 				result = result +'<a href="javascript:void(0)"><i class="fa fa-twitter-square"></i></a>';				  
-				 				result = result +'<a href="javascript:void(0)"><i class="fa fa-facebook-square"></i></a>';
-				 				result = result +'<a href="javascript:void(0)"><i class="fa fa-envelope-square"></i></a>';
+			 				    result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
+								result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';				  
+								result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>';
 				 				result = result +'</span>'; 
 				 				result = result +'<div class="openPostBtns">';
 				 				
@@ -777,6 +815,7 @@ function requirementsList(offset){
 			       	    	document.getElementById("loadMoreSearchSection").style.display="none";
 		            		
 				   }
+	 			 socialInviterScripts();
 	   		    }
           }else if(offset == 0){
 	   		     var result ="";
@@ -858,7 +897,11 @@ function searchRequirement(offset){
 							 			for(var i=0; i<json.length; i++){
 							 				
 									 				var requirements = json[i];
-									 				
+									 				var title="";
+													var link="";
+													var picture="";
+													var description='';
+													var comment='';
 									 				
 									 				var jobType = '';
 									 				var experience = '';
@@ -866,7 +909,8 @@ function searchRequirement(offset){
 									 				var location = '';
 									 				
 									 				var jobId = '';
-									 				
+									 				description =  description+'Job Title:'+requirements.jobTitle +";";
+									 				description =  description+' Posted By :'+requirements.postedOrg+";";
 									 				if(requirements.jobType != null && requirements.jobType != '' && requirements.jobType != 'undefined'){
 									 					jobType = requirements.jobType;
 									 				}else{
@@ -915,16 +959,24 @@ function searchRequirement(offset){
 									 				result = result +'<h5>';
 									 				result = result +'<strong>Skills :</strong>';
 									 				result = result +'<ul>';
-									 				
 									 				if(requirements.skillsList != null){
+									 					description =  description+'Skills :'+requirements.skillsList+";";
 									 					for(var j=0; j<requirements.skillsList.length; j++){
 										 					result = result +'<li>'+requirements.skillsList[j]+'</li>';
 										 				}
 									 				}else{
 									 					result = result +'<li>No Data</li>';
 									 				}
-									 				
-									 				
+									 				if(jobType != null &&jobType != 'No Data'){
+									 					description =  description+'Job Type:'+requirements.jobType+";";
+									 				}
+									 				if(experience != null && experience != 'No Data'){
+														description =  description+'Experience :'+experience+";";
+													}
+									 				if(location != null && location != 'No Data'){
+									 					description =  description+'Job Location: '+location+";";
+													}
+									 				description =  description+'Posted :'+requirements.calDays+";";
 									 				result = result +'<div class="clearfix"></div>';
 									 				result = result +'</ul>';
 									 				result = result +'<div class="clearfix"></div>';
@@ -957,11 +1009,10 @@ function searchRequirement(offset){
 									 				if(requirementType != "AppliedJobs"){
 									 					result = result +'<div class="openCtaRight">';
 										 				 result = result +'<p>Share Requirement</p>';
-										 				result = result +'<span>';
-										 				result = result +'<a href="javascript:void(0)"><i class="fa fa-linkedin-square"></i></a>';
-										 				result = result +'<a href="javascript:void(0)"><i class="fa fa-twitter-square"></i></a>';				  
-										 				result = result +'<a href="javascript:void(0)"><i class="fa fa-facebook-square"></i></a>';
-										 				result = result +'<a href="javascript:void(0)"><i class="fa fa-envelope-square"></i></a>';
+										 				 result = result +'<span>';
+									 				    result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
+														result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';				  
+														result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>';
 										 				result = result +'</span>'; 
 										 				result = result +'<div class="openPostBtns">';
 										 				
@@ -1029,6 +1080,7 @@ function searchRequirement(offset){
 		           		    	document.getElementById("noMoreRecordsSection").style.display="none";
 		               		 }
 					       	$("#requirementsListLoading").removeAttr("style"); 
+					        socialInviterScripts();
 						},
 					});  
 			return true;
@@ -1518,3 +1570,4 @@ $('body').on('submit', '#referToContacts', function(e){
     	requirementsList('0')
     }
 </script>
+<jsp:include page="../socialinviterscripts.jsp" />

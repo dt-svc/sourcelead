@@ -57,7 +57,6 @@ function setPostValues(title,link,picture,description,comment){
      }
 }
 function getPostValueDetails(){
-	alert(postdatavalues.description);
 	 return postdatavalues;
   }
 
@@ -629,13 +628,13 @@ function getOpenJobsELKList(){
 	 				result = result +'	<div class="jobResultsCta">';
 					result = result +'	<div class="jobResultsInn">';
 					result = result +'	<a href="#" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');"><h3 style="font-size:20px;color:#368ee0;">'+requirements.jobTitle+'</h3></a>';
-					description =  description+'Job Title:'+requirements.jobTitle;
+					description =  description+'Job Title:'+requirements.jobTitle+";";
 					
 					link = sourceleadUrl+"/sourcelead/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 					
 					if(requirements.postedOrg != null && requirements.postedOrg != '' && requirements.postedOrg !='undefined'){
 					result = result +'	<h4>'+requirements.postedOrg+'</h4>';	
-					description =  description+'Posted By :'+requirements.postedOrg;
+					description =  description+'Posted By :'+requirements.postedOrg+";";
 					}else{
 					result = result +'	<h4>--</h4>';
 					}
@@ -643,7 +642,7 @@ function getOpenJobsELKList(){
 					result = result +'	<strong>Skills :</strong>';
 					if(requirements.skills != null && requirements.skills != '' && requirements.skills !='undefined'){
 					result = result +'  <span>'+requirements.skills+'</span>';
-					description =  description+'Skills :'+requirements.skills;
+					description =  description+'Skills :'+requirements.skills+";";
 					}else{
 					result = result +'  <span>--</span>';	
 					}
@@ -651,26 +650,28 @@ function getOpenJobsELKList(){
 					result = result +'	<span>';
 					if(requirements.jobType != null && requirements.jobType != '' && requirements.jobType !='undefined'){
 					result = result +'	<b><i class="fa fa-clock-o"></i>'+requirements.jobType+'</b>';
-					description =  description+'Job Type:'+requirements.jobType;
+					description =  description+'Job Type:'+requirements.jobType+";";
 					}else{
 					result = result +'	<b><i class="fa fa-clock-o"></i>--</b>';
 					}
 					if(experience != null && experience != '' && experience !='undefined'){
 					result = result +'	<b><i class="fa fa-briefcase"></i>'+experience+'</b>';
-					if(experience != null && experience != 'No Data')
-					description =  description+'Experience :'+experience;
+					if(experience != null && experience != 'No Data'){
+						description =  description+'Experience :'+experience+";";
+					}
+					
 					}else{
 					result = result +'	<b><i class="fa fa-briefcase"></i>--</b>';	
 					}
 					if(location != null && location != '' && location !='undefined'){
 					result = result +'	<b><i class="fa fa-map-marker"></i>'+location+'</b>';
-					description =  description+'Job Location: '+location;
+					description =  description+'Job Location: '+location+";";
 					}else{
 					result = result +'	<b><i class="fa fa-map-marker"></i>--</b>';	
 					}
 					if(requirements.noticePeriod != null && requirements.noticePeriod != '' && requirements.noticePeriod !='undefined'){
 					result = result +'	<b><i class="fa fa-bell"></i>'+requirements.noticePeriod+'</b>';
-					description =  description+'Notice Period :'+requirements.noticePeriod;
+					description =  description+'Notice Period :'+requirements.noticePeriod+";";
 					}else{
 					result = result +'	<b><i class="fa fa-bell"></i>--</b>';	
 					}
@@ -682,7 +683,7 @@ function getOpenJobsELKList(){
 					var creadtedDateStringArray = creadtedDateString.split("-");
 					var convertedDate = creadtedDateStringArray[2]+'-'+creadtedDateStringArray[1]+'-'+creadtedDateStringArray[0];
 					result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i>'+convertedDate+'</div>';
-					description =  description+'Posted Date :'+convertedDate;
+					description =  description+'Posted Date :'+convertedDate+";";
 					}else{
 					result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i>--</div>';	
 					}
