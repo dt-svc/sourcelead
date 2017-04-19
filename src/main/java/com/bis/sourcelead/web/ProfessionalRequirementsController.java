@@ -234,6 +234,10 @@ public class ProfessionalRequirementsController {
 			 {
 			 	sessionData = new SessionMaintainanceData();
 			 }
+			 
+			 Integer resumesCount = candidateResumesService.getCandidateResumeCountByCandidateId(candidateId);
+			 model.addObject("resumesCount", resumesCount);
+			 
 			sessionData.setNav(Constants.Requirement);
 			request.getSession().setAttribute("sessionData",sessionData);
 			model.setViewName("professional/professionalRequirementProfile");
