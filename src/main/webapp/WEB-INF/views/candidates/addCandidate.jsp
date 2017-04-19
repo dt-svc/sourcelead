@@ -304,13 +304,13 @@
             </div>
         
          <div class="form-group">
-            <label class="col-md-3">Add Resume</label>
+            <label class="col-md-3">Import Resume</label>
             <div class="col-md-9">
 			 <div class="input-group col-md-12" id="uploadFileGroup" style="margin:0 auto">
                <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                 <input type="file" style="display: none;" multiple name ="uploadBtn" id="uploadBtn"  class="upload">
                  </span> </label>
-                 <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
+                 <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Import Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
            </div>
          </div>
         </div>
@@ -887,7 +887,7 @@ var currentRate = document.getElementById("currentRate").value;
 		        	$('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
 		             for(var i=0;i<json.length;i++){
 		            	 var opt = json[i];
-		            	 $('#vendorcontact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
+		            	 $('#vendorcontact').append('<option value='+opt.id+' >'+opt.spocName+' ('+opt.ownerName+')</option>');
 		            } 
 		            $('#vendorcontact').trigger("chosen:updated");
 		        }

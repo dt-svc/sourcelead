@@ -1024,6 +1024,7 @@ public class CandidateListRestController {
 				
 					if(Constants.Associates.equalsIgnoreCase(candidateType)){
 						candidate.setIsAssociate(Constants.NO);
+						candidate.setIsFavouriteAssociate(Constants.RECORD_INACTIVE);
 						candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 					}
 						
@@ -1179,11 +1180,12 @@ public class CandidateListRestController {
 		 public void getCandidatesExportList(@RequestParam(value="candidateStatus", required=false) Integer  candidateStatus,
 				                             @RequestParam(value="updatedDateRange", required=false) String  updatedDateRange,
 				                             @RequestParam(value="exportType", required=false) String  exportType,
-				                             @RequestParam(value="candidateType", required=false) String  candidateType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+				                             @RequestParam(value="candidateType", required=false) String  candidateType,
+				                             @RequestParam(value="isAssociate", required=false) String  isAssociate,HttpServletRequest request,HttpServletResponse response) throws Exception {
 
 	 		 Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange,candidateType);
+			List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange,candidateType,isAssociate);
 			File file = null;
 			if(!"pdf".equalsIgnoreCase(exportType)){
 			file = candidateService.getCandidateExcelFile(candidatesList,org.getOrgName());
