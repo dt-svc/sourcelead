@@ -648,7 +648,7 @@ function requirementsList(offset){
 			 				
 			 				description =  description+'Job Title:'+requirements.jobTitle+";";
 			 				description =  description+'Posted By :'+requirements.postedOrg+";";
-			 				
+			 				link = sourceleadUrl+"/sourcelead/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 			 				result = '<section class="openCta">';
 			 				result = result +'<div class="OpenJob">';
 			 				result = result +'<a href="<c:url value="/requirementProfile/'+requirements.requirementUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
@@ -944,7 +944,7 @@ function searchRequirement(offset){
 									 				}else{
 									 					rate = 'No Data';
 									 				}
-									 				
+									 				link = sourceleadUrl+"/sourcelead/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 									 				result = '<section class="openCta">';
 									 				result = result +'<div class="OpenJob">';
 									 				result = result +'<a href="<c:url value="/requirementProfile/'+requirements.requirementUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
