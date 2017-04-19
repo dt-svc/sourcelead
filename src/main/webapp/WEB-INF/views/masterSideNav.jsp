@@ -193,7 +193,7 @@
 
           </c:forEach>
           				 
-      <li class="${sessionData.nav == 'SocialInviter' ? 'side-nav-active' : ''}"><a href="<c:url value='/socialinviter'/>" title="SocialInviter"><span><i class="fa fa-bar-chart"></i></span>Social Inviter</a></li>
+     <%--  <li class="${sessionData.nav == 'SocialInviter' ? 'side-nav-active' : ''}"><a href="<c:url value='/socialinviter'/>" title="SocialInviter"><span><i class="fa fa-bar-chart"></i></span>Social Inviter</a></li> --%>
 
         </ul>
       </div>
