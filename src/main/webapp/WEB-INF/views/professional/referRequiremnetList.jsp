@@ -8,6 +8,7 @@
 <script src="resources/js/formvalidator.js"></script>
 <script>
 $(document).ready(function() {
+	socialInviterScripts();
 	refercontactList();
 });	
 </script>
@@ -16,7 +17,6 @@ $(document).ready(function() {
 	width:400px;
 }
 </style>
-
 <script>
  function contactsImportSucess(service,status){
 	 closePop();
