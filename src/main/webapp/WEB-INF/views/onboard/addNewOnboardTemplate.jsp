@@ -976,6 +976,8 @@ function getTemplateDetails(){
 	        	
 	        	 $("input[name=templateName]").val(json['templateName']);
 	        	 $("textarea[name=description]").val(json['description']);
+	        	 
+	        	 $("#onboardTasksList").empty();
 		        
 	        },
 	    }); 
@@ -1019,7 +1021,7 @@ function getTemplatePolicyDocumentsDetails(templateId){
                 	 $("#savedPociliesAttachments").empty();
                 	 
                 	 $("#savedPociliesAttachments").append(result);
-                	 
+                	 $("#onboardTasksList").empty();
                 	 
                 	 
 			        
@@ -1064,6 +1066,7 @@ function getTemplateSupportingDocumentsDetails(templateId){
                 	 result = result +"</table>";
                 	 $("#savedSupportedAttachments").empty();
                 	 $("#savedSupportedAttachments").append(result);
+                	 $("#onboardTasksList").empty();
                 	 
                 	 
 			        
@@ -1108,6 +1111,7 @@ function getTemplateContractsDocumentsDetails(templateId){
                 	 result = result +"</table>";
                 	 $("#savedContractsAttachments").empty();
                 	 $("#savedContractsAttachments").append(result);
+                	 $("#onboardTasksList").empty();
 			        
 		        },
 		    });
