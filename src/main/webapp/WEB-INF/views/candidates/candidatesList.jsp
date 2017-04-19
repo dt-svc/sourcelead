@@ -2166,7 +2166,7 @@ function getCities(){
                                 <i class="fa fa-file-text-o fa-4x"></i>
                                     <span class="fa fa-arrow-right"></span>
                                 </div>
-                                <strong class="clearfix">Parse Resume</strong>
+                                <strong class="clearfix">Import Resume</strong>
                                 </a>
                         </div>
 					  </div>
