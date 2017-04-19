@@ -73,6 +73,10 @@
 					</ul>
 					</c:forEach>
 					</c:if>
+					
+					<c:if test="${tasksListSize == 0}">
+					    <ul><li>No Tasks Found</li></ul>
+					</c:if>
 																				
 				</div>		
 		  </div>		  
@@ -169,7 +173,7 @@ function goToDashboard(){
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/sendOnboardCandidateToDashboard?${_csrf.parameterName}=${_csrf.token}", 
 	        success: function(result) {
-	        	location.replace(sourceleadUrl+"/dashboard");  
+	        	location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");  
 	        },
 	    });
 }
