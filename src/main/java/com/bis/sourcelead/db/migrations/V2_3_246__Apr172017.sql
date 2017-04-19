@@ -12,6 +12,3 @@ CALL sourcelead.AlterTableAddColumn ('sourcelead','CONTRACTS','OVER_TIME_HOURS',
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','CONTRACTS','TOTAL_HOURS','VARCHAR(10) NULL AFTER `OVER_TIME_HOURS`');
 
-CALL sourcelead.AlterTableAddColumn ('sourcelead','CONTRACTS','OVERTIME_RATE','VARCHAR(15) NULL AFTER `TOTAL_HOURS`');
-
-CALL sourcelead.AlterTableAddColumn ('sourcelead','CONTRACTS','OVERTIME_RATE_TYPE','VARCHAR(15) NULL AFTER `OVERTIME_RATE`');

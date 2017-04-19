@@ -166,9 +166,10 @@
               <label class="col-md-4">Approver</label>
               <div class="col-md-8">
                   <select class="chosen-select form-control" id="approver" name="approver">
-                  <option>Select Owner</option>
+                  <option value=''>--Select Owner--</option>
                   <c:forEach var="user" items="${userList}">
-	                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+                   <%-- to Enable login user as approver ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} --%>
+	                     <option value="${user.id}">${user.firstName} ${user.lastName}</option>
                   </c:forEach>
                   </select>
               </div>

@@ -184,7 +184,7 @@ pre {
   word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 .on{display:block; position:relative;}
-.fullscreen{position:fixed; background:#FFF; width:100%; height:100%; top:0; left:0; z-index:1000; margin:0;}
+.fullscreen{position:fixed; background:#FFF; width:100%; height:100%; top:0; left:0; z-index:100000; margin:0;}
 .fullscreen #statusbar{position:fixed; bottom:0; border-top:1px solid #DDD;}
 .fullscreen #contentarea{border:none;}
 
