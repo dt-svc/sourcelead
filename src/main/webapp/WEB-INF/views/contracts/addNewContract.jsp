@@ -76,7 +76,7 @@
             <div class="form-group" id="offeredSubmissionDiv" style="display: none;">
               <label class="col-md-4">Select Applicant<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="submissionOffersList" name="submissionOffersList" field-name="Applicant">
+                  <select class="form-control" id="submissionOffersList" name="submissionOffersList" field-name="Applicant">
                   </select>
               </div>
             </div>
@@ -620,18 +620,18 @@ function contractTypeLabels(){
 		$('#orgRelationId').attr('data-validation-optional',"true");
 		$('#vendorContact').removeAttr('data-validation');
 		$('#vendorContact').attr('data-validation-optional',"true");
-		
+		hideCommonSOWFields();
 		showCommonSOWFields();
-		getRequirements("clientSOW");
+		getRequirements("Client SOW");
 	}
 	if(contractType == "Vendor SOW"){
 		$('#clientOrgRelationId').removeAttr('data-validation');
 		$('#clientOrgRelationId').attr('data-validation-optional',"true");
 		$('#clientContact').removeAttr('data-validation');
 		$('#clientContact').attr('data-validation-optional',"true");
-		
+		hideCommonSOWFields();
 		showCommonSOWFields();
-		getRequirements("vendorSOW");
+		getRequirements("Vendor SOW");
 	}
 }
 </script>
@@ -733,11 +733,11 @@ function hideCommonSOWFields(){
 
 
 <script>
-	function getRequirements(type){
+	function getRequirements(sowType){
 		var sourceleadUrl ='${sourceleadUrl}';
 		$.ajax({
 	        type : "GET",
-	        url: sourceleadUrl+"/getRequirementsForSOWByOrgLocationId?type="+type,    
+	        url: sourceleadUrl+"/getRequirementsForSOWByOrgLocationId?sowType="+sowType,    
 	         success :function(data) {
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  var json = JSON.parse(data);
@@ -762,9 +762,10 @@ function hideCommonSOWFields(){
 	function submissionOffers(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		var requirementId = $("#requirementsList").val();
+		var sowType = $("#contractType").val();
 		$.ajax({
 	        type : "GET",
-	        url: sourceleadUrl+"/getSubmissionsForSOWByRequirementId?requirementId="+requirementId,    
+	        url: sourceleadUrl+"/getSubmissionsForSOWByRequirementId?requirementId="+requirementId+"&sowType="+sowType,    
 	         success :function(data) {
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  var json = JSON.parse(data);

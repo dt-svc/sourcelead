@@ -23,6 +23,7 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SignatureRequestUtil;
 import com.itextpdf.text.Document;
@@ -40,6 +41,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	
 	@Autowired
 	private OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	private RequirementSubmissionService requirementSubmissionService;
 	
 	@Autowired
 	private SignatureRequestUtil signatureRequestUtil;
@@ -137,9 +141,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setContractsTemplate(contractsTemplate);
 		}
 		
-		if(jsonObj.has("requirementsList") && null != jsonObj.getString("requirementsList") && !"".equals(jsonObj.getString("requirementsList"))){
-			RequirementSubmission rs = new RequirementSubmission();
-			rs.setId(Long.parseLong(jsonObj.getString("requirementsList")));
+		if(jsonObj.has("submissionOffersList") && null != jsonObj.getString("submissionOffersList") && !"".equals(jsonObj.getString("submissionOffersList"))){
+			RequirementSubmission rs = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(jsonObj.getString("submissionOffersList")));
+			//rs.setId(Long.parseLong(jsonObj.getString("requirementsList")));
 			contracts.setRequirementSubmission(rs);
 		}
 		
