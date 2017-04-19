@@ -17,4 +17,6 @@ public interface OnboardTasksService {
 	List<OnboardTasks> getOnboardTasksByTemplateIdList(List<Long> templateId) throws Exception;
 	
 	OnboardTasks getOnboardTasksByTaskId(Long Id) throws Exception;
+	
+	List<OnboardTasks> getOnBoardTasksListAssignedToCandidateByCandidateOnBoardingId(Long candidateOnBoardingId) throws Exception;
 }

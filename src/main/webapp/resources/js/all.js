@@ -2082,7 +2082,11 @@ var contactimporter = (function () {
         return authfunction;
     }
     var contactsCallback = function (data) {
-        var dataStr = data;
+        socialinviter.modalSI.hide();
+        if (socialinviter.getConfig().callbacks.fetched) {
+            socialinviter.getConfig().callbacks.fetched(socialinviter.contactimporter.getService(), "success");
+        }
+       /* var dataStr = data;
         try {
             data = eval("(" + decodeURIComponent(decodeURIComponent(data)) + ")");
         }
@@ -2095,7 +2099,10 @@ var contactimporter = (function () {
             $(".modal-SI-CI").find(".modal-SI-holder").addClass("modal-SI-small");
         }
         else {
-            var ciholder = $(".modal-SI-CI");
+        	  socialinviter.modalSI.load({ "title": convertName(data.data.service), "body": "<div class='CI-loading'></div>" }, "show");
+              $(".modal-SI-CI").find(".modal-SI-holder").addClass("modal-SI-small");
+            
+          /*  var ciholder = $(".modal-SI-CI");
             if ($(".grabbedcicontacts").length == 0) {
                 $("body").append("<div class=\"posabs grabbedcicontacts\"></div>");
                 $(".grabbedcicontacts").attr("contacts", dataStr);
@@ -2132,13 +2139,13 @@ var contactimporter = (function () {
                             socialinviter.contactimporter.showStep1(data.data);
                         }, 1500);
                     }
-                    /*else {
+                    else {
                         ldtext = socialinviter.getConfig().servicepanel.content.messages.contactsimported;
                         socialinviter.modalSI.load({ "title": convertName(data.data.service), "body": "<div class='CI-loading'><span class='messagingicon'><img class='imgloading' src='//socialinviter.com/assets/img/icons/tickcomplete.png'></span><span>" + ldtext.replace("{0}", contactsData.addressbook.length) + "</span></div>" }, "show");
-                    }*/
+                    }
                 }
             }, 1);
-        }
+        }*/
     }
     var uploadCallback = function (data) {
         if (data.responseStatus.type == "error") {
@@ -2254,6 +2261,8 @@ var contactimporter = (function () {
                 grabAPI = endpoint + "?id=" + id + "&did=" + did + "&product=" + getFromStore("product") + "&key=" + key + "&service=" + serv + "&type=&callback=socialinviter.socialpost.postCallback" + reqParam;
             }
             else {
+            	socialinviter.modalSI.load({ "title": convertName(serv), "body": "<div class='CI-loading'><span class='messagingicon'><img class='imgloading' src='//socialinviter.com/assets/img/icons/loadingwhite.gif'></span><span>Please Wait Your Contacts Are Importing....</span></div>" }, "show");
+                $(".modal-SI-CI").find(".modal-SI-holder").addClass("modal-SI-small");
                 grabAPI = endpoint + "?id=" + id + "&did=" + did + "&product=" + getFromStore("product") + "&key=" + key + "&service=" + serv + "&type=&callback=socialinviter.contactimporter.contactsCallback" + reqParam;
             }
             if (socialinviter.whichVersion() == "pro") {

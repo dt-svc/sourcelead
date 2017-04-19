@@ -184,8 +184,17 @@ private static final long serialVersionUID = 1L;
 	@Transient
 	private String jobTitle;
 	
+	@Transient
+	private String roleName;
 	
+	@Transient
+	private String managerName;
 	
+	@Transient
+	private String teamName;
+	
+	@Transient
+	private String templateName;
 	
 
 	public Long getId() {
@@ -571,5 +580,28 @@ private static final long serialVersionUID = 1L;
 	public void setJobTitle(String jobTitle) {
 		this.jobTitle = jobTitle;
 	}
-	    
+
+	public String getRoleName() {
+		return roleName;
+	}
+
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
+	}
+
+	public String getManagerName() {
+		return managerName;
+	}
+
+	public void setManagerName(String managerName) {
+		this.managerName = managerName;
+	}
+
+	public String getTeamName() {
+		return teamName;
+	}
+
+	public void setTeamName(String teamName) {
+		this.teamName = teamName;
+	}
 }

@@ -166,6 +166,18 @@ margin:10px 220px 0;
     </form:form>
   </section>  
   
+  <div class="side_mask"></div>   
+  <section class="mergePopup">
+  <div class="mergeAA"><span onclick="mergeclose();"><i class="fa fa-times"></i></span></div>
+	<span><select class="chosen-select form-control mergePopupSel" id="vendorListIds" onchange="flush();">
+    	       
+	</select></span>  
+	<input type="button" onclick="mergeWithRecord();" value="Merge" class="btn btn-primary mergePopupbtn" />
+	<div class="clearfix"></div>
+	<p id="clientError"></p>	
+	<p><i class="fa fa-info-circle"></i>The user will be created in the selected Vendor</p>	
+  </section>
+  
  <!-- <script>
 $(document).ready(function(){
 	document.getElementById("uploadFile").value = '';
@@ -221,7 +233,7 @@ function prepareExcelDataDiv(data){
 	result = result +  '<table id="excelimportDataTable" class="display" cellspacing="0" width="100%" >';
 	result = result + '	<thead>';
 	result = result + '   <tr>';
-	result = result + '     <th>Client Name</th>';
+	result = result + '     <th>Vendor Name</th>';
 	result = result + '    <th>Website</th>';
 	result = result + '    <th>Location</th>';
 	result = result + '    <th>Contact Name</th>';
@@ -307,7 +319,7 @@ function prepareExcelDataDiv(data){
         result = result + '</td>';
         
          result = result + '<td>';
-         if(report.reason == 'Spoc existed' || report.reason == 'Current org user' || report.reason ==  'Client name is mandatory' || report.reason ==  'Client name should contain above 2 char' || report.reason ==  'Invalid email' || report.reason ==  'Invalid moblie number'){
+         if(report.reason == 'Spoc existed' || report.reason == 'Current org user' || report.reason ==  'Vendor name is mandatory' || report.reason ==  'Vendor name should contain above 2 char' || report.reason ==  'Invalid email' || report.reason ==  'Invalid moblie number'){
         	 result = result + '<div class="proj_active" id="removeStatus'+report.id+'"><a class="text-danger fa fa-trash" title="Remove" onclick="removeRecord('+report.id+');"></a></div>';  
          }else{
         	 result = result + '<div class="tbldata-dotdot-100" id="recordStatus'+report.id+'"><a class="text-success fa fa-object-group paddingRight aa" title="Merge" onclick="mergeRecord('+report.id+');"></a> <small>|</small> <a class="text-primary fa fa-plus paddingRight" title="Add" onclick="addRecord('+report.id+');"></a> <small>|</small> <a class="text-danger fa fa-trash" title="Remove" onclick="terminateRecord('+report.id+');"></a></div>';
@@ -330,7 +342,7 @@ function removeRecord(recordId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/deleteRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId,       
+        url: sourceleadUrl+"/deleteRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&responderType=Vendor",       
         success :function(data) {
         	$("#row"+recordId).empty();
 	    	$("#row"+recordId).html(rowHtmlContent);
@@ -348,7 +360,7 @@ function terminateRecord(recordId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/deleteRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId,       
+        url: sourceleadUrl+"/deleteRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&responderType=Vendor",       
         success :function(data) {
         	$("#row"+recordId).empty();
 	    	$("#row"+recordId).html(rowHtmlContent);
@@ -364,7 +376,7 @@ function addRecord(recordId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/addRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId,       
+        url: sourceleadUrl+"/addRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&responderType=Vendor",       
         success :function(data) {
         	$("#row"+recordId).empty();
 	    	$("#row"+recordId).html(rowHtmlContent);
@@ -382,7 +394,7 @@ function flush(){
 </script>
 <script>
 function mergeWithRecord(){
-	var recordId = document.getElementById("clientListIds").value;
+	var recordId = document.getElementById("vendorListIds").value;
 	if(recordId!=null && recordId !=''){
 	$("#clientError").empty();
 	var recordIdVal = recordId.split(',');
@@ -390,7 +402,7 @@ function mergeWithRecord(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	   type : "POST",
-	    url: sourceleadUrl+"/mergeRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId,       
+	    url: sourceleadUrl+"/mergeRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&responderType=Vendor",       
 	    success :function(data) {
 	    	$("#row"+recordIdVal[1]).empty();
 	    	$("#row"+recordIdVal[1]).html(rowHtmlContent);
@@ -403,7 +415,7 @@ function mergeWithRecord(){
 	 $(".mergePopup").fadeIn(100);
 	}
 	else{
-		$("#clientError").empty().append("Select the client") ; 
+		$("#clientError").empty().append("Select the Vendor") ; 
 	}
 }
 </script>
@@ -414,27 +426,27 @@ function mergeRecord(recordId){
 	flush();
 	 var rowHtmlContent =  $("#row"+recordId).html();
 	var sourceleadUrl ='${sourceleadUrl}';
-	$('#clientListIds').empty();
+	$('#vendorListIds').empty();
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/getMatchedClientList?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId,       
+        url: sourceleadUrl+"/getMatchedClientList?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&responderType=Vendor",       
         success :function(data) {
         	var json = JSON.parse(data);
         	var result = "";
         	
-        	$('#clientListIds').append('<option value="">---select Client---</option>');
+        	$('#vendorListIds').append('<option value="">---select Vendor---</option>');
         	for (var i=0; i<json.matchedDomainClientList.length; i++)
 			{ 
         		var report = json.matchedDomainClientList[i];
-        		$('#clientListIds').append('<option value='+report.id+','+recordId+'>'+report.orgName+'</option>');
+        		$('#vendorListIds').append('<option value='+report.id+','+recordId+'>'+report.orgName+'</option>');
 			}
         	for (var i=0; i<json.matchedClientNameList.length; i++)
 			{ 
         		var report = json.matchedClientNameList[i];
-        		$('#clientListIds').append('<option value='+report.id+','+recordId+'>'+report.orgName+'</option>');
+        		$('#vendorListIds').append('<option value='+report.id+','+recordId+'>'+report.orgName+'</option>');
 			}
         	
-        	$('#clientListIds').trigger("chosen:updated");
+        	$('#vendorListIds').trigger("chosen:updated");
         	
         	
         	/* $("#row"+recordId).empty();
@@ -461,7 +473,8 @@ function excelimportDataPagination(){
     	"ordering": false,
     	"oLanguage": {
      		"sSearch": "",
-     		 "sZeroRecords": "", "sEmptyTable": ""
+     		 "sZeroRecords": "", 
+     		 "sEmptyTable": ""
      	}
     } );
 };
