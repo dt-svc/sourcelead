@@ -1,0 +1,1 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_OFFERS','OFFER_UUID','VARCHAR(20) NULL');
