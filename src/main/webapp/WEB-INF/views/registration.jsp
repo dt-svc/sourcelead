@@ -95,6 +95,36 @@ window.onload = function () {
 		                   <b></b>
 		              </div>
 		            </div>
+		            </div>
+		            <div class="col-md-12 clearfix">
+		            <div class="form-group  empCheckbox">
+                        <div class="row">
+                        <p class="ml"><strong>Wanted to be</strong></p>
+                            
+				           <div class="clearfix">
+					         <c:forEach var="wanted" items="${WantedToBeList}">
+				      				<span class="col-md-4">
+				                            <input type="checkbox" value="${wanted.id}" name="wantedtobeList"><i>${wanted.registerName}</i>
+				                    </span>
+						     </c:forEach>
+				          </div>  
+                            
+                            <div class="clearfix">   
+                            <p class="ml mt10"><strong>Would like to</strong></p>
+
+
+						  <div class="clearfix">
+					         <c:forEach var="WouldLikeToList" items="${WouldLikeToList}">
+				      				<span class="col-md-4">
+				                            <input type="checkbox" value="${WouldLikeToList.id}" name="Wouldliketo"><i>${WouldLikeToList.registerName}</i>
+				                    </span>
+						     </c:forEach>
+				          </div>
+
+                        </div>
+                        </div>
+	            </div>
+		            
 		            <div class="form-group clearfix">
 		                <div class="pull-right">
 		                     <button type="submit" id="popregister_button"  class="btn btn-primary btn_styles mr" title="Register">
@@ -157,7 +187,36 @@ window.onload = function () {
 		                   </select>
 		                   <b></b>
 		              </div>
-		            </div>
+		            </div> </div>
+		            <div class="col-md-12 clearfix">
+		            <div class="form-group  empCheckbox">
+                        <div class="row">
+                        <p class="ml"><strong>Wanted to be</strong></p>
+                            
+				           <div class="clearfix">
+					         <c:forEach var="wanted" items="${WantedToBeList}">
+				      				<span class="col-md-4">
+				                            <input type="checkbox" value="${wanted.id}" name="wantedtobeList"><i>${wanted.registerName}</i>
+				                    </span>
+						     </c:forEach>
+				          </div>  
+                            
+                            <div class="clearfix">   
+                            <p class="ml mt10"><strong>Would like to</strong></p>
+
+
+						  <div class="clearfix">
+					         <c:forEach var="WouldLikeToList" items="${WouldLikeToList}">
+				      				<span class="col-md-4">
+				                            <input type="checkbox" value="${WouldLikeToList.id}" name="Wouldliketo"><i>${WouldLikeToList.registerName}</i>
+				                    </span>
+						     </c:forEach>
+				          </div>
+
+                        </div>
+                        </div>
+	            </div>
+		            
 		            <div class="form-group clearfix">
 		                <div class="pull-right">
 		                     <button type="submit" id="poprecruiter_register"  class="btn btn-primary btn_styles mr" title="Register">
@@ -223,15 +282,44 @@ window.onload = function () {
                 </div>
                 </div>
                 
+                
+                    <div class="form-group clearfix empCheckbox">
+                        <div class="col-md-12">
+                        <p><strong>Wanted to be</strong></p>
+                            
+				           <div class="clearfix row">
+					         <c:forEach var="wanted" items="${WantedToBeList}">
+				      				<span class="col-md-4">
+				                            <input type="checkbox" value="${wanted.id}" name="wantedtobeList"><i>${wanted.registerName}</i>
+				                    </span>
+						     </c:forEach>
+				          </div>  
+                            
+                            <div class="clearfix row">   
+                            <p class="ml mt10"><strong>Would like to</strong></p>
+
+
+						  <div class="clearfix">
+					         <c:forEach var="WouldLikeToList" items="${WouldLikeToList}">
+				      				<span class="col-md-4">
+				                            <input type="checkbox" value="${WouldLikeToList.id}" name="Wouldliketo"><i>${WouldLikeToList.registerName}</i>
+				                    </span>
+						     </c:forEach>
+				          </div>
+
+                        </div>
+                        </div>
+	            </div>
+                
             </div>
             
-            <div class="clearfix mt25">
+            <div class="clearfix">
                 <div class="pull-left">
                     <span class="small text-muted">Already have an Account:</span><a href="${sourceleadUrl}" class="btn" title="Login">Login</a><br/>
                     <span class="small text-muted">Register With:</span>
                 </div>
                 <div id ="proffessionalConnect"></div>
-                <div class="pull-right">
+                <div class="pull-right mt10">
                     <button type="submit" id="register_button"  class="btn btn-primary btn_styles mr" title="Register">
                         <i class="fa fa-paper-plane"></i>Register</button>
                 </div>
@@ -276,19 +364,50 @@ window.onload = function () {
 	                    <b></b>
 	                </div>
 	                </div>
+	            
+	            
+	            
+	            <div class="form-group clearfix empCheckbox">
+                        <div class="col-md-12">
+                        <p><strong>Wanted to be</strong></p>
+                            
+				           <div class="clearfix row">
+					         <c:forEach var="wanted" items="${WantedToBeList}">
+				      				<span class="col-md-4">
+				                            <input type="checkbox" value="${wanted.id}" name="wantedtobeList"><i>${wanted.registerName}</i>
+				                    </span>
+						     </c:forEach>
+				          </div>  
+                            
+                            <div class="clearfix row">   
+                            <p class="ml mt10"><strong>Would like to</strong></p>
+
+
+						  <div class="clearfix">
+					         <c:forEach var="WouldLikeToList" items="${WouldLikeToList}">
+				      				<span class="col-md-4">
+				                            <input type="checkbox" value="${WouldLikeToList.id}" name="Wouldliketo"><i>${WouldLikeToList.registerName}</i>
+				                    </span>
+						     </c:forEach>
+				          </div>
+
+                        </div>
+                        </div>
 	            </div>
 	            
-	            <div class="clearfix mt25">
+	            <div class="clearfix">
+	            <div class="col-md-12">
 	                 <div class="pull-left">
 	                    <span class="small text-muted">Already have an Account:</span><a href="${sourceleadUrl}" class="btn" title="Login">Login</a><br/>
 	                     <span class="small text-muted">Register With:</span>
 	                </div>
-	                  <div id="recruiterConnect"  ></div>
-	                <div class="pull-right">
+	                  <div id="recruiterConnect"></div>
+	                <div class="pull-right mt10">
 	                    <button type="submit" class="btn btn-primary btn_styles mr" id="recruiter_register" title="Register">
 	                        <i class="fa fa-paper-plane"></i>Register</button>
 	                </div>
 	            </div>
+	             </div>
         </form:form>
         </div>
       </div>
@@ -528,6 +647,15 @@ var validationSettings = {
          		var sourceleadUrl ='${sourceleadUrl}';
          		var contactUUID = '${contactUUID}';
          		
+         		var wantedToBeIds = [];
+	       		$("input[name='wantedtobeList']:checked").each( function (i) {
+	       			wantedToBeIds[i] = $(this).val();
+	       		});
+	       		var wouldliketoIds =[]; 
+	       		$("input[name='Wouldliketo']:checked").each( function (i) {
+	       			wouldliketoIds[i] = $(this).val();
+	       		});
+         		
          	 	$("#register_button").attr("disabled", "disabled");
          		
            	 
@@ -577,9 +705,17 @@ var validationSettings = {
 			    
          		var sourceleadUrl ='${sourceleadUrl}';
          	 	$("#recruiter_register").attr("disabled", "disabled");
-         		
+         	 	
+         	 	var wantedToBeIds = [];
+	       		$("input[name='wantedtobeList']:checked").each( function (i) {
+	       			wantedToBeIds[i] = $(this).val();
+	       		});
+	       		var wouldliketoIds =[]; 
+	       		$("input[name='Wouldliketo']:checked").each( function (i) {
+	       			wouldliketoIds[i] = $(this).val();
+	       		});
            	 
-         		$.ajax({
+         	 	$.ajax({
           	      type: "POST",
           	      contentType : 'application/json; charset=utf-8',
           	      dataType : 'json',
@@ -625,6 +761,15 @@ var validationSettings = {
 		        var jsonData = encodeURIComponent(con);
 		        
          		var sourceleadUrl ='${sourceleadUrl}';
+         		
+         		var wantedToBeIds = [];
+	       		$("input[name='wantedtobeList']:checked").each( function (i) {
+	       			wantedToBeIds[i] = $(this).val();
+	       		});
+	       		var wouldliketoIds =[]; 
+	       		$("input[name='Wouldliketo']:checked").each( function (i) {
+	       			wouldliketoIds[i] = $(this).val();
+	       		});
          		
          	 	$("#popregister_button").attr("disabled", "disabled"); 
          		 $.ajax({
@@ -677,6 +822,14 @@ var validationSettings = {
          		var sourceleadUrl ='${sourceleadUrl}';
          	 	$("#poprecruiter_register").attr("disabled", "disabled");
          		
+         	 	var wantedToBeIds = [];
+	       		$("input[name='wantedtobeList']:checked").each( function (i) {
+	       			wantedToBeIds[i] = $(this).val();
+	       		});
+	       		var wouldliketoIds =[]; 
+	       		$("input[name='Wouldliketo']:checked").each( function (i) {
+	       			wouldliketoIds[i] = $(this).val();
+	       		});
            	 
          		$.ajax({
          			  type: "POST",

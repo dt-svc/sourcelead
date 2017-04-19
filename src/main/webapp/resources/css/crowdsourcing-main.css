@@ -76,9 +76,9 @@ textarea {
 .outsoucing-registaion {
     margin:0 auto;
     clear: both;
-    width: 900px;
+    width: 915px;
     position: absolute;
-    top:20%;
+    top:15%;
     margin-top: -20px;
     left: 22%;
     margin-left: -22px;
@@ -142,7 +142,7 @@ textarea {
     border-radius:8px;
     background-color: #fff;
     margin:1px 5px;
-    padding: 15px;
+    padding: 15px 10px;
     /*border: 1px solid #b0bec5;*/
     box-shadow: 0px 0px 2px #263238;
 
@@ -241,3 +241,27 @@ label.test{
 	margin-top: 7px;
 }
 /* Validation Styles */
+
+/* checkbox styles added on 19th April, srinivas lankalapalli */
+.empCheckbox{
+	position: relative; z-index: 9;
+}
+.empCheckbox input {
+    width: auto; padding: 0; background: #f60; min-height: inherit; margin-right: 5px; position: absolute; top: -1px;
+    left: 15px; padding-right:10px; z-index: 9999;
+}
+.empCheckbox span.col-md-4 i {
+    position: relative; padding-left: 30px; font-style: inherit; float: left; padding-top: 0; color: #505050; font-size: 12px;
+    top: 1px;
+    }
+.empCheckbox .col-md-4 {
+    padding: 0 5px; margin-bottom: 5px;
+}
+.empCheckbox p {
+    margin-bottom: 5px;
+}
+.empCheckbox p strong {
+    margin-bottom: 2px; font-size: 13px; color: #505050;
+}
+
+/* checkbox styles added on 19th April, srinivas lankalapalli */
