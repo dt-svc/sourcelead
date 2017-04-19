@@ -134,7 +134,7 @@
        <div class="form-group">
          <label class="col-md-3">Employment type<span class="text-danger">&nbsp;*</span></label>
          <div class="col-md-9">
-             <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getDesignationType(this);">
+             <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getDesignationType(this);" field-name="Employment type" data-validation="required">
                 <option value="">--Select--</option>
                  <option>C2C</option>
                  <option>C2C-1099</option>
@@ -182,16 +182,16 @@
        <div class="clearfix" id="hideVendor" style="display:none">
        <div class="form-group">
 			<label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
-			<div class="col-md-9">
-			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();">
+			<div class="col-md-9" id="errorvendor">
+			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();">
                  </select>
 			</div>
 		</div>
 		
 		 <div class="form-group">
 			<label class="col-md-3">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
-			<div class="col-md-9">
-			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="select Vendor Contact">
+			<div class="col-md-9" id="errorvendorContact">
+			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="select Vendor Contact" onchange="removeValiationVendorContact();">
                  </select>
 			</div>
 		</div>
@@ -792,7 +792,7 @@ function getDesignationType(designationType){
 		 $('#vendors').removeAttr("data-validation","required"); 
 		 $('#vendorcontact').removeAttr("data-validation","required"); 
 	}
-	
+	$('#designationType + p').remove();
 }
 </script>
 
@@ -873,7 +873,17 @@ var currentRate = document.getElementById("currentRate").value;
 		 });
  }
  </script>
- 
+ <script>
+ function  removeValiationVendor() {
+	$("#errorvendor").find("p.jquery_form_error_message").remove();
+}
+</script>
+<script>
+function  removeValiationVendorContact() {
+	 $("#errorvendorContact").find("p.jquery_form_error_message").remove();
+}
+</script>
+
   <script>
  function getVendorContactList(){
 	var orgRelationID = $('#vendors').val();
