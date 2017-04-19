@@ -166,7 +166,7 @@
 			
 		}
 	}
-	 $(document).ready(function () {
+	 function socialInviterScripts() {
 		 var sourceleadUrl ='${sourceleadUrl}';
          socialinviter.load({
              dock:false,
@@ -239,7 +239,7 @@
         /*  socialinviter.socialconnect.getUserInformation(); */
           socialinviter.socialpost.setPostValues(shareObj); 
 
-     });
+     }
  
 </script>
 
