@@ -315,6 +315,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 						 candidate.setExperienceMonths(jsonObj.getString("monthExp"));
 					 }
 					candidate.setCandidateType("Candidate");
+					candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 					candidate.setCreatedBy(user.getUserCode());
 					candidate.setCreatedDate(new Date());
 					candidate.setUpdatedDate(new Date());
@@ -577,14 +578,14 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 				}
 				requirementDao.storeRequirement(requirement);
 		 }
-		 
-		 if(jsonObj.has("notifyToApplicant") && !isNullOrEmpty(jsonObj.getString("notifyToApplicant"))){
+	
+		 if(jsonObj.has("notifyToApplicant") && !isNullOrEmpty(jsonObj.getString("notifyToApplicant")) && (!"Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit()))){
 			 if(jsonObj.getString("notifyToApplicant").equals("Y")){
 				 notifyToapplicantMailAboutRequirement(requirementSubmission.getId(),requirement,candidate,user,orgLocations);
 			 }
 		 }
 		 
-		 if("Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit())){
+		 if("Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit()) && (jsonObj.has("notifyToApplicant") && !isNullOrEmpty(jsonObj.getString("notifyToApplicant"))) || ("Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit()))){
 			 applicantReceiveMailAboutRequirement(requirementSubmission.getId(),requirement,candidate,user,orgLocations);
 		 }
 		 
@@ -4138,8 +4139,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 	
 	@Override
-	public List<RequirementSubmission> getSubmissionsForSOWByRequirementId(Long requirementId) {
-		return requirementSubmissionDao.getSubmissionsForSOWByRequirementId(requirementId);
+	public List<RequirementSubmission> getSubmissionsForSOWByRequirementId(Long requirementId, String sowType) {
+		return requirementSubmissionDao.getSubmissionsForSOWByRequirementId(requirementId, sowType);
 	}
 
 }

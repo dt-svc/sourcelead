@@ -1434,25 +1434,24 @@ function removeSkillById(candidateId, skillId){
 										designation = " "; 
 									}
 									
-									
+									/* 
 									 if (opt.startMonth != null && opt.startMonth != '' && opt.startMonth != 'undefined') {
-										startMonth=   opt.startMonth +' - ';
+										startMonth=   opt.startMonth;
 									}else{
 										startMonth = " ";
-									}
+									} */
 									
 									if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined') {
-										startYear=   opt.startYear  +' TO ';
+										startYear=   opt.startYear;
 									}else{
 										startYear = " ";
 									}
 									
-									if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
-										endMonth = opt.endMonth +' - ';  
+									/* if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
+										endMonth = opt.endMonth;  
 									} else {
 										endMonth = " ";
-									}
-									
+									} */
 									if (opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
 										endYear = opt.endYear;  
 									} else {
@@ -1463,7 +1462,13 @@ function removeSkillById(candidateId, skillId){
 									result = result +' <h3>'+name+'</h3>';
 									result = result +' <p>'+designation+'</p>';
 									result = result +' <p>';
-								    result = result + startMonth +''+startYear +' '+endMonth +''+endYear; 
+								    if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined' && opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
+								    	result = result + startYear +' To '+endYear; 
+								    }else if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined'){
+								    	result = result + startYear; 
+								    }else if(opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
+								    	result = result + endYear; 
+								    }
 									result = result +'  </p>';
 									result = result +'  </div>';
 									result = result +'</li>';
@@ -1472,6 +1477,7 @@ function removeSkillById(candidateId, skillId){
 								result = result +'            </div>';
 								result = result +'          </div>';
 								result = result +'        </div>';
+								$("#employeeSubmissionProfile").empty(); 
 								$("#employeeSubmissionProfile").append(result);
 						}
 					},
@@ -1533,7 +1539,7 @@ function educationSubmissionProfile(candidateId){
 		                    		 Educationaddress = " ";
 		                    	 }
 		                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
-		                    		 EducationstartDateStr = opt.startDateStr +' TO ';
+		                    		 EducationstartDateStr = opt.startDateStr;
 		                    	 }else{
 		                    		 EducationstartDateStr = " ";
 		                    	 }
@@ -1546,8 +1552,14 @@ function educationSubmissionProfile(candidateId){
 									result = result +'                  <div class="clearfix">';
 		                    	    result = result +'                    <h3>'+EducationName+' <span class="small text-muted">&nbsp;'+specialization+'</span></h3>';
 		                    	    result = result +'                    <p>'+EducationgradeType + ' '+Educationgrade+' '+institute+' '+Educationaddress+'</p>';
-									result = result +'                    <p>'+EducationstartDateStr+' '+EducationendDateStr+'</p>';
-									result = result +'                  </div>';
+		                    	    if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined' && opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+		                    	    result = result +'                    <p>'+EducationstartDateStr+' To '+EducationendDateStr+'</p>';
+		                    	    }else if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
+		                    	    	result = result +'                    <p>'+EducationstartDateStr+'</p>';
+		                    	    }else if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+		                    	    	result = result +'                    <p>'+EducationendDateStr+'</p>';
+		                    	    }
+		                    	    result = result +'                  </div>';
 									result = result +'                </li>';
 		                     }
 							
@@ -1556,6 +1568,7 @@ function educationSubmissionProfile(candidateId){
 							result = result +'            </div>';
 							result = result +'          </div>';
 							result = result +'        </div>';
+						 $("#educationSubmissionProfile").empty(); 
 	                     $("#educationSubmissionProfile").append(result); 
         	  }
         },
@@ -1608,7 +1621,14 @@ function certificationSubmissionProfile(candidateId){
 								result = result +'                  <div class="clearfix">';
 								result = result +'                    <h3>'+opt.name+' <span class="small text-muted">&nbsp;'+score+'  '+scoreType+'</span></h3>';
 								result = result +'                    <p>'+opt.provider+' </p>';
-								result = result +'                    <p> '+candidatevalidFromDateToString+' TO '+candidatevalidToDateToString+'</p>';
+								if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != "" && 
+										opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
+									result = result +'                    <p> '+candidatevalidFromDateToString+' TO '+candidatevalidToDateToString+'</p>';
+								}else if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
+									result = result +'                    <p> '+candidatevalidFromDateToString+'</p>';
+								}else if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
+									result = result +'                    <p> '+candidatevalidToDateToString+'</p>';
+								}
 								result = result +'                  </div>';
 								result = result +'                </li>';
 							}
@@ -1617,6 +1637,7 @@ function certificationSubmissionProfile(candidateId){
 							result = result +'          </div>';
 							result = result +'        </div>';
 							
+							$("#certificationSubmissionProfile").empty();
 							$("#certificationSubmissionProfile").append(result); 
         	  }
         },

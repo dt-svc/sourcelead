@@ -18,8 +18,13 @@ text-align:left;
 #skillName {
 width: 100%;
 }
+
 .iconpostion {
 position: relative; top:7px;
+}
+.chosen-container {
+    width: 100% !important;
+
 }
 </style>
 
@@ -1484,35 +1489,34 @@ function updateDesignationType(){
 									}
 									
 									
-									 if (opt.startMonth != null && opt.startMonth != '' && opt.startMonth != 'undefined') {
+									/*  if (opt.startMonth != null && opt.startMonth != '' && opt.startMonth != 'undefined') {
 										startMonth=   opt.startMonth +' - ';
 									}else{
 										startMonth = " ";
-									}
+									} */
 									
-									if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined') {
-										startYear=   opt.startYear  +' TO ';
+									if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined' && opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
+										startYear=   opt.startYear  +' To '+opt.endYear;
+									}else if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined'){
+										startYear=   opt.startYear;
+									}else if(opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
+										startYear = opt.endYear;  
 									}else{
 										startYear = " ";
 									}
 									
-									if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
+									/* if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
 										endMonth = opt.endMonth +' - ';  
 									} else {
 										endMonth = " ";
-									}
+									} */
 									
-									if (opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
-										endYear = opt.endYear;  
-									} else {
-										endYear = " ";
-									}
 									result = result +'   <li>';
 									result = result +'   <div class="clearfix">';
 									result = result +' <h3>'+name+'</h3>';
 									result = result +' <p>'+designation+'</p>';
 									result = result +' <p>';
-								    result = result + startMonth +''+startYear +' '+endMonth +''+endYear; 
+								    result = result + startYear; 
 									result = result +'  </p>';
 									result = result +'  </div>';
 									result = result +'</li>';
@@ -1581,21 +1585,20 @@ function educationSubmissionProfile(candidateId){
 		                    	 }else{
 		                    		 Educationaddress = " ";
 		                    	 }
-		                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
-		                    		 EducationstartDateStr = opt.startDateStr +' TO ';
+		                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined' && opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+		                    		 EducationstartDateStr = opt.startDateStr +' To '+opt.endDateStr;
+		                    	 }else if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
+		                    		 EducationstartDateStr = opt.startDateStr;
+		                    	 }else if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+		                    		 EducationstartDateStr = opt.endDateStr;
 		                    	 }else{
-		                    		 EducationstartDateStr = " ";
-		                    	 }
-		                    	 if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){ 
-		                    		 EducationendDateStr = opt.endDateStr;
-		                    	 }else{
-		                    		 EducationendDateStr = " ";
+		                    		 EducationstartDateStr ='';
 		                    	 }
 			                        result = result +'                <li>';
 									result = result +'                  <div class="clearfix">';
 		                    	    result = result +'                    <h3>'+EducationName+' <span class="small text-muted">&nbsp;'+specialization+'</span></h3>';
 		                    	    result = result +'                    <p>'+EducationgradeType + ' '+Educationgrade+' '+institute+' '+Educationaddress+'</p>';
-									result = result +'                    <p>'+EducationstartDateStr+' '+EducationendDateStr+'</p>';
+									result = result +'                    <p>'+EducationstartDateStr+'</p>';
 									result = result +'                  </div>';
 									result = result +'                </li>';
 		                     }
@@ -1642,22 +1645,22 @@ function certificationSubmissionProfile(candidateId){
 				            	}else{
 				            		scoreType = " ";
 				            	}
-				            	if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
+				            	
+				            	if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != "" && opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
+				            		candidatevalidFromDateToString = opt.candidatevalidFromDateToString +' To '+opt.candidatevalidToDateToString;
+				            	}else if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
 				            		candidatevalidFromDateToString = opt.candidatevalidFromDateToString;
+				            	}else if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
+				            		candidatevalidFromDateToString = opt.candidatevalidToDateToString;
 				            	}else{
 				            		candidatevalidFromDateToString = " ";
-				            	}
-				            	if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
-				            		candidatevalidToDateToString = opt.candidatevalidToDateToString;
-				            	}else{
-				            		candidatevalidToDateToString = " ";
 				            	}
 				            	
 								result = result +'                <li>';
 								result = result +'                  <div class="clearfix">';
 								result = result +'                    <h3>'+opt.name+' <span class="small text-muted">&nbsp;'+score+'  '+scoreType+'</span></h3>';
 								result = result +'                    <p>'+opt.provider+' </p>';
-								result = result +'                    <p> '+candidatevalidFromDateToString+' TO '+candidatevalidToDateToString+'</p>';
+								result = result +'                    <p> '+candidatevalidFromDateToString+'</p>';
 								result = result +'                  </div>';
 								result = result +'                </li>';
 							}

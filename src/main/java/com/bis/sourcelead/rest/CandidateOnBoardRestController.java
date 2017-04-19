@@ -1601,6 +1601,24 @@ public class CandidateOnBoardRestController {
 		   
 		}
 		 
+		 @RequestMapping(value = "/validateOnboardCandidateFromDashboard" , method = RequestMethod.POST)
+		 public @ResponseBody  String validateOnboardCandidateFromDashboard(@RequestParam(value="candidateId", required=false) Long candidateId,
+				 HttpServletRequest request) throws Exception {
+			 
+		    String result;
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			
+			CandidateOnBoarding onBoarding = candidateOnBoardingService.getCandidateOnBoardingByCandidateIdAndLocationId(candidateId, loginOrgLocation.getId());
+			if(onBoarding != null){
+				result = "Invalid";
+			}else{
+				result = "Success";
+			}
+		    return result;
+		}
+		 
+		 
+		 
 		 @RequestMapping(value = "/validateOnboardCandidateEmail" , method = RequestMethod.POST)
 		 public @ResponseBody  String validateOnboardCandidateEmail(@RequestParam(value="email", required=false) String email,
 				 HttpServletRequest request) throws Exception {
@@ -1791,7 +1809,14 @@ public class CandidateOnBoardRestController {
 					submission.setRate(requirementOffers.getAmount());
 					submission.setRateType(requirementOffers.getPaymentMode());
 					submission.setPaymentType(requirementOffers.getPaymentType());
+					submission.setOfferUUID(requirementOffers.getOfferUUID());
 					requirementSubmissionList.add(submission);
+					
+					CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByCandidateIdAndOfferId(submission.getCandidate().getId(), requirementOffers.getId());
+					if(null != candidateOnBoarding){
+						submission.setOnboardUUId(candidateOnBoarding.getOnboardCandidateUUID());
+						submission.setOnboardStatus(candidateOnBoarding.getCandidateOnBoardStatus());
+					}
 					
 				}
 			}

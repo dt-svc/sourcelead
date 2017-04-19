@@ -50,6 +50,7 @@ import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class RequirementOffersServiceImpl implements RequirementOffersService{
@@ -160,7 +161,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     							   requirementOffers.setFileContentType(multiFile.getContentType());
                                }
                                
-							  
+                                requirementOffers.setOfferUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 								requirementOffers.setStatus(Constants.RECORD_ACTIVE);
 								requirementOffers.setOfferStatus(Constants.OFFERMADE);
 								requirementOffers.setCreatedDate(new Date());
@@ -1047,6 +1048,12 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	@Override
 	public List<RequirementOffers> getOfferAcceptedCandidatesByOrgLocationId(Long orgLocationId) throws Exception {
 		return requirementOffersDao.getOfferAcceptedCandidatesByOrgLocationId(orgLocationId);
+	}
+
+
+	@Override
+	public RequirementOffers getRequirementOffersByUUID(String offerUUId) throws Exception {
+		return requirementOffersDao.getRequirementOffersByUUID(offerUUId);
 	}
 
 

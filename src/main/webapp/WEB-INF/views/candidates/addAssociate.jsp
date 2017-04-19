@@ -59,7 +59,7 @@
           <div class="col-md-6 radioInline">
 	          <label class="mr"><input type="radio"  id="canId" checked="true" value="Candidate" name="candidateType" onclick="getCandidatesList(this.value);" >Candidates</label>
 	          <label class="mr"><input type="radio"  id="newId" value="New" name="candidateType" onclick="getCandidatesList(this.value);" >Add New Associate </label>
-	          <label class="mr"><input type="radio"  id="parsId" value="parseCandidate" name="candidateType" onclick="parseResume();getCandidatesList(this.value);">Parse Associate</label>
+	          <label class="mr"><input type="radio"  id="parsId" value="parseCandidate" name="candidateType" onclick="parseResume();getCandidatesList(this.value);">Import Associate</label>
           </div>
           <input type="hidden" name="isAssociate" id="isAssociate" value="Y"/> 
           <div id="parsResumeDivId"></div>
@@ -394,7 +394,7 @@
                <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                 <input type="file" style="display: none;" multiple name ="uploadFileBtn" id="uploadFileBtn"  class="upload">
                  </span> </label>
-                 <input type="text" class="form-control" readonly id="uploadProfile" name="docFile" type="file"  placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
+                 <input type="text" class="form-control" readonly id="uploadProfile" name="docFile" type="file"  placeholder="Import Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
            </div>
          </div>
         </div>
@@ -1605,7 +1605,7 @@ function getCandidateDetails(){
 	result = result + ' 		 <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File ';
 	result = result + ' 		 <input type="file" style="display: none;" name="locationMapFile" multiple id="uploadBtn"  class="upload"> ';
 	result = result + ' 		 </span> </label> ';
-	result = result + ' 		 <input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">'; 
+	result = result + ' 		 <input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Import Resume">'; 
 	result = result + ' 		 </div> ';
 	result = result + ' 	 </div> 	';
 	result = result + '   </div>  ';
