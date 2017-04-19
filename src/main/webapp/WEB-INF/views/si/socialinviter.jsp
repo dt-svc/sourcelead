@@ -222,6 +222,39 @@
 <br/>
 <br/>
 </section>
+<script type="text/javascript">
+var shareObj = {
+        title: "Sourcelead",
+        link: "http://www.sourcelead.com",
+        picture: "http://sourcelead.com/images/logo.png",
+        description: "Engage your user using socialinviter services.",
+        comment: "Allows your business to promote through multiple social networks."
+    };
+ var setPostValues = function (obj) {
+    if (obj) {
+        if (obj.title) {
+            postdatavalues.title = obj.title;
+        }
+        if (obj.link) {
+            postdatavalues.link = obj.link;
+        }
+        if (obj.picture) {
+            postdatavalues.picture = obj.picture;
+        }
+        if (obj.description) {
+            postdatavalues.description = obj.description;
+        }
+        if (obj.comment) {
+            postdatavalues.comment = obj.comment;
+        }
+    }
+ }
+ function getPostValueDetails(){
+	 setPostValues(shareObj);
+	 return postdatavalues;
+  }
+</script>
+
 
 <script type="text/javascript">
 	var loadProfileInformation = function(response){
@@ -299,16 +332,15 @@
                  apiurl:"http://localhost:8080/sourcelead/getAPIService"
              }
          });
-         var shareObj = {
+        /*  var shareObj = {
              title: "Sourcelead",
              link: "http://www.sourcelead.com",
              picture: "http://sourcelead.com/images/logo.png",
              description: "Engage your user using socialinviter services.",
              comment: "Allows your business to promote through multiple social networks."
-         };
-         
+         }; */
         /*  socialinviter.socialconnect.getUserInformation(); */
-          socialinviter.socialpost.setPostValues(shareObj); 
+         /* socialinviter.socialpost.setPostValues(shareObj);  */
 
      });
  
