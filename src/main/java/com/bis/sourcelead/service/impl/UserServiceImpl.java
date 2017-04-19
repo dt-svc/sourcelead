@@ -37,6 +37,7 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.UserIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -51,6 +52,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.UserProfile;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -124,6 +126,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	OrgDao orgDao;
+	
+	@Autowired
+	private CandidateService  candidateService;
 	
 	@Override
 	public User findByUserName(String username) {
@@ -223,6 +228,20 @@ public class UserServiceImpl implements UserService {
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
+		
+		//for updating cosultantUserId in candidate
+		if(!"".equalsIgnoreCase(jsonObj.getString("associateId"))){
+			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(jsonObj.getString("associateId")));
+			if(null != candidate){
+				candidate.setConsultantUser(user1);
+				candidate.setUpdatedBy(loginuser.getUserCode());
+				candidate.setUpdatedDate(commonUtil.currentDate());
+				candidateService.saveOrUpdateCandidate(candidate);
+				candidateService.saveOrUpdateCandidateElkDocument(candidate);
+			}	
+		}
+		
+		
 		
 		//For saving Employee details (Every User is an Employee)
 		if(jsonObj.has("projectId") && !isNullOrEmpty(jsonObj.getString("projectId"))){
