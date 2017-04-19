@@ -378,7 +378,6 @@ function addEmailtemplate(requirementId){
 					result = result +'  <div class="pull-left">';
 				 	result = result +'    <h2>Mail Box</h2>';
 					result = result +'  </div>';	
-					result = result +'  <div class="pull-right brud-crum">Mail &raquo; Mail Box</div>';
 					result = result +'</section>';
 					result = result +'	<div class="content-area clearfix">';
 					result = result +'		<div class="form-horizontal compose-mail col-md-10 col-md-offset-1">';
