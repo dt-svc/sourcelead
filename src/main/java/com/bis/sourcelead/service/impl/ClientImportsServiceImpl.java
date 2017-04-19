@@ -1369,7 +1369,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 														String domain = clientOrVendor.getEmail().split("@")[1];
 														//List<OrgSpoc> spocList = orgSpocService.getSpoclistByDomain(orgRelations.getId(),domain);
 														spocList = orgRelationsService. getAllClientsByOrgLocationIdAndDomain(orgLocations.getId(),domain,responderType);
-														if((null != spocList && spocList.size() >0 ) && !domain.equalsIgnoreCase("gmail.com")){
+														if((null != spocList && spocList.size() >0 ) && !"gmail.com".equalsIgnoreCase(domain)){
 															if("Client".equalsIgnoreCase(responderType)){
 																clientOrVendor.setReason("Similar client exist with domain");
 															}else{
