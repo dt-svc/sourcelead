@@ -1366,6 +1366,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 												
 												if(!list.contains(clientOrVendor.getOrgName())){
 													if(spocList==null){
+														logger.info("domain from email is......."+clientOrVendor.getEmail());
 														String domain = clientOrVendor.getEmail().split("@")[1];
 														//List<OrgSpoc> spocList = orgSpocService.getSpoclistByDomain(orgRelations.getId(),domain);
 														spocList = orgRelationsService. getAllClientsByOrgLocationIdAndDomain(orgLocations.getId(),domain,responderType);
