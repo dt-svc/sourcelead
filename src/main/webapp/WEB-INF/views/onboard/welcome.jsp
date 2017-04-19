@@ -62,9 +62,7 @@
 						</c:if>
 						
 						<c:if test="${empty SourceLeadWeb_org.fileContentType}">
-							<div class="welLogoText">
-							<span  title="${SourceLeadWeb_orgName}">${SourceLeadWeb_orgName}</span>
-							</div>
+							<span  title="${SourceLeadWeb_orgName}"><b>${SourceLeadWeb_orgName}</b></span>
 						</c:if>
 					</div>
 					<div class="welCoInnRight">
@@ -111,7 +109,7 @@
 </div>	
 </c:if>
 		
-		<c:if test="${SourceLeadWeb_supportedDocumentsList != null}">
+		<c:if test="${supportedDocumentsListSize > 0}">
 		<br><h4>Support Documents</h4>
 		<div class="docu">
 		<c:forEach var="docFiles" items="${SourceLeadWeb_supportedDocumentsList}">

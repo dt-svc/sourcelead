@@ -26,6 +26,7 @@ import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -80,8 +81,15 @@ public class ContractController {
 	@RequestMapping(value = "/contractListbyStatus")
 	public ModelAndView contractListbyStatus(HttpServletRequest request) {
 		logger.debug("display contract template page");
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Contract);
+		
 		ModelAndView model = new ModelAndView();
-//		commonUtil.highLightMenu(Constants.List_by_status, request);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("contracts/contractList");
 		return model;
