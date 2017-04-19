@@ -428,6 +428,7 @@ function editCandidate(candidateId){
 							result = result + '<button type="button" id="update_candidate" onClick ="upDateCandidate('+candidateId+');" class="btn btn-sm btn-primary mr">Save</button>';
 							result = result + '<button type="button" class="btn btn-sm btn-danger" onClick ="cancelEdit();">Cancel</button>';
 							result = result + '		          </div>';
+							result = result + '		          </div>';
 							result = result + '		        </div>';
 							result = result + '		      </div>';
 							result  = result + '              </form>';
@@ -1829,9 +1830,9 @@ function employementType(){
 			             for(var i=0;i<json.length;i++){
 			            	 var opt = json[i];
 			            	 if(vendorContactName != null && vendorContactName != 'undefined' && vendorContactName  != ''){
-			            		 $('#vendorcontactName').append('<option '+ (opt.id == vendorSpocId ? "selected" : '') +' value="'+opt.id+'">'+opt.spocName+'</option>');
+			            		 $('#vendorcontactName').append('<option '+ (opt.id == vendorSpocId ? "selected" : '') +' value="'+opt.id+'">'+opt.spocName+' ('+opt.ownerName+')</option>');
 				            	}else{
-				            		$('#vendorcontactName').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
+				            		$('#vendorcontactName').append('<option value='+opt.id+' >'+opt.spocName+' ('+opt.ownerName+')</option>');
 				            	}
 			            } 
 			            $('#vendorcontactName').trigger("chosen:updated");
