@@ -48,7 +48,7 @@
               </span> 
            </label>
 
-             <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Import Resume ..." field-name="Upload Resume" data-validation="required validate_Space validatedoc " >
+             <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validate_Space validatedoc " >
          </div>
           </div>
         </div>

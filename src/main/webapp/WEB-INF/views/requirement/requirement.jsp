@@ -606,7 +606,7 @@ $(document).ready(function () {
 								value="" onclick="getTemplateVal();">
 						</c:otherwise>
 					</c:choose>
-					<label>&nbsp;&nbsp;<strong>Is Template</strong>
+					<label>&nbsp;&nbsp;<strong>Save as a template</strong>
 						&nbsp;&nbsp;
 					</label>
 				</div>
