@@ -18,12 +18,6 @@
     </section>
     <div class="content-area content-new clearfix">
       <div class="applicant_accept">
-        <div class="clearfix onboardBtns">
-          <div class="btn-group pull-right">
-            <button class="btn" id="prevtab" type="button"><i class="fa fa-angle-double-left paddingRight"></i>Prev</button>
-            <button class="btn" id="nexttab" type="button">Next<i class="fa fa-angle-double-right paddingLeft"></i></button>
-          </div>
-        </div>
         <div class="tabbable">
           <ul class="nav nav-tabs" id="tab_bar">
             <li class="active"> <a href="#details" data-toggle="tab"> <i class="fa fa-th-list paddingRight"></i> <span>Details</span> <br>
