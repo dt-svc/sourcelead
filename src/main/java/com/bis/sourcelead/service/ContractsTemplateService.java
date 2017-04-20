@@ -31,5 +31,7 @@ public interface ContractsTemplateService {
 	Contracts saveNewContract(Contracts updateContracts) throws Exception;
 
 	Contracts getChildContractById(Long contractId);
+
+	Contracts approveContracts(long parseLong, String status, OrgLocations orgLocation, User user, Org org)throws Exception;
 	
 }

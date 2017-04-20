@@ -17,6 +17,7 @@ import java.util.Set;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.io.IOUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -241,6 +242,18 @@ public class RegistrationServiceImpl implements RegistrationService{
 			e.printStackTrace();
 		}
 		
+		//For saving Associate details 
+		/*Candidate candidate = getCandidateDetails(user,orgLocations);
+		try {
+			candidateService.addCandidate(candidate);
+			
+			//Update the Elk in Candidate
+			candidateService.saveOrUpdateCandidateElkDocument(candidate);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}*/
+		
+		
 		
 		List<Integer> moduleIds = new ArrayList<Integer>();
 		 for (String s : org.getModulesId().split(",")){
@@ -266,6 +279,22 @@ public class RegistrationServiceImpl implements RegistrationService{
 		userService.sendEmail(user, loginUser, password,orgLocationsId);
 	
 	}
+	
+	private Candidate getCandidateDetails(User user, OrgLocations orgLocations) {
+		Candidate candidate = new Candidate();
+		candidate.setOrgLocationId(orgLocations);
+		candidate.setCandidateType(Constants.CANDIDATE);
+		candidate.setFirstName(user.getFirstName());
+		candidate.setLastName(user.getLastName());
+		candidate.setCountry(orgLocations.getCountry());
+		candidate.setIsAssociate(Constants.YES);
+		candidate.setStatus(Constants.RECORD_ACTIVE);
+		candidate.setCreatedBy(user.getUserCode());
+		candidate.setCreatedDate(commonUtil.currentDate());
+		return candidate;
+	}
+
+	
 	
 	private Org getOrgDetails(Registration registration,String subModules,String modules){
 		
@@ -867,6 +896,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		user.setUserName(SourceLeadRandomCodeHelper.generateRandomUniquUserName());
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
+		
+		prepareRegisterOptionalServicesToAllForms(jsonObj,user);
+		
 		user.setUserType(Constants.PROFESSIONAL);
 		user.setCreatedBy("sladmin");
 		user.setCreatedDate(new Date());
@@ -1022,6 +1054,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 			user.setCountry(jsonObj.getString("location"));
 		}
 		
+		prepareRegisterOptionalServicesToAllForms(jsonObj,user);
+				
 		user.setUserName(SourceLeadRandomCodeHelper.generateRandomUniquUserName());
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		user.setUserType(Constants.INDIVIDUAL_RECRUITER);
@@ -1083,7 +1117,31 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 	}
 	
+	public void prepareRegisterOptionalServicesToAllForms(JSONObject jsonObj, User user) throws JSONException{
+		if(jsonObj.has("wantedtobeList") && !isNullOrEmpty(jsonObj.getString("wantedtobeList")) && jsonObj.has("Wouldliketo") && !isNullOrEmpty(jsonObj.getString("Wouldliketo"))){
+			String wantedtobeListids = jsonObj.getString("wantedtobeList");
+			String wanted = replacejsonToString(wantedtobeListids);
+		    String WouldliketoString  = jsonObj.getString("Wouldliketo");
+		    String Wouldlike = replacejsonToString(WouldliketoString);
+		    user.setRegisterOptionalServiceId(wanted+","+Wouldlike);
+			}else if(jsonObj.has("wantedtobeList") && !isNullOrEmpty(jsonObj.getString("wantedtobeList").toString())){
+				String wantedtobeListids = jsonObj.getString("wantedtobeList");
+				String wanted = replacejsonToString(wantedtobeListids);
+			user.setRegisterOptionalServiceId(wanted);
+			}else if(jsonObj.has("Wouldliketo") && !isNullOrEmpty(jsonObj.getString("Wouldliketo"))){
+				String WouldliketoString  = jsonObj.getString("Wouldliketo");
+			    String Wouldlike = replacejsonToString(WouldliketoString);
+				user.setRegisterOptionalServiceId(Wouldlike);
+		   }
+	}
 	
+	
+	public String replacejsonToString(String replaceString){
+		String newReplacedString = null;
+		newReplacedString = replaceString.replaceAll("\\[", "").replaceAll("\\]","");
+		newReplacedString = newReplacedString.replaceAll("\"", "");
+		return newReplacedString;
+	}
 	
 	public void sendEmailToIndividualRecruiter(User user) throws Exception {
 		
@@ -1140,7 +1198,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 OrgLocations orgLocations = null;
 		if(jsonObj.has("userName") && !isNullOrEmpty(jsonObj.getString("userName"))){
 			userName = jsonObj.getString("userName");
-			user = userService.getUserByUserName(userName);
+			user = userService.getUserByEmailAndUserType(userName,Constants.PROFESSIONAL);
 		}
 		if(user != null ) {
 			     if(jsonObj.has("service") && !isNullOrEmpty(jsonObj.getString("service"))
@@ -1208,6 +1266,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 					}
 					
 				}
+				
+				prepareRegisterOptionalServicesToAllForms(jsonObj,user);
 				user.setUserType(Constants.PROFESSIONAL);
 				user.setCreatedBy("sladmin");
 				user.setCreatedDate(new Date());
@@ -1269,16 +1329,16 @@ public class RegistrationServiceImpl implements RegistrationService{
 
 	@Override
 	public void saveIndividualRecruiterFromSocialInviter(JSONObject jsonObj) throws Exception {
-		
-		
 		 String userName = null;
 		 User user = null;
 		 UserRole userRole = null;
 		 OrgLocations orgLocations = null;
 		if(jsonObj.has("userName") && !isNullOrEmpty(jsonObj.getString("userName"))){
 			userName = jsonObj.getString("userName");
-			user = userService.getUserByUserName(userName);
-			if(jsonObj.has("service") && !isNullOrEmpty(jsonObj.getString("service"))
+			user = userService.getUserByEmailAndUserType(userName,Constants.RECRUITER);
+		}
+		if(user != null){
+	      if(jsonObj.has("service") && !isNullOrEmpty(jsonObj.getString("service"))
 			  && jsonObj.has("profileUrl") && !isNullOrEmpty(jsonObj.getString("profileUrl"))){
 				String service = jsonObj.getString("service");
 				String profileUrl = jsonObj.getString("profileUrl");
@@ -1299,9 +1359,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 			userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 			orgLocations = userRole.getOrgLocations();
 		}
-		 
-		if(user == null){
-			user = new User();
+	   else{
+	 		user = new User();
 			if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
 				user.setFirstName(jsonObj.getString("firstName"));
 			}
@@ -1343,6 +1402,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 				}
 				
 			}
+			
+			prepareRegisterOptionalServicesToAllForms(jsonObj,user);
+			
 			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			user.setUserType(Constants.INDIVIDUAL_RECRUITER);
 			user.setCreatedBy("sladmin");
