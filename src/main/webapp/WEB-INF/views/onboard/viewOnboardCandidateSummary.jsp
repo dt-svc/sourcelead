@@ -18,7 +18,7 @@
  <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-          <h2>Srinivas Lankalapalli <span class="small">onboard details</span></h2>
+          <h2 id="candidateName"></h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/usersList'/>">Users List</a> &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Candidate Onboarding Summary </div>
     </section>
@@ -118,6 +118,15 @@
 					 result = result +'       </div>                                                                                                      ';
 					 result = result +'     </div>                                                                                                        ';
 				 }
+				 
+				 var candidateName = '';
+				 if(json.lastName != null && json.lastName != '' && json.lastName != 'undefiend'){
+					 candidateName = json.firstName+" "+json.lastName;
+				 }else{
+					 candidateName = json.firstName;
+				 }
+				 
+				 $("#candidateName").html(candidateName+" <span class='small'>onboard details</span>");
 				
 				 
 				 result = result +'     <div class="form-group">                                                                                      ';
@@ -489,7 +498,7 @@ function getTemplateSupportingDocumentsDetails(){
 						result = result +'    <div class="col-md-2 text-center mb10">                                ';
 						result = result +'      <a href=\"'+sourceleadUrl+'/downloadTemplateDocument?documentUUID='+report.documentUUID+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
 						result = result +'        <p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>                        ';
-						result = result +'        <i class="fa fa-question-circle text-info permission"></i> </div></a>         ';
+						result = result +'        <i class="fa fa-info-circle text-info permission"></i> </div></a>         ';
 						result = result +'    </div>                                                                 ';
 		        	}
 					result = result +'    </div>                                                                 ';

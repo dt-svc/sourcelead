@@ -337,7 +337,30 @@ $(document).ready(function () {
             </div>
           </div>
           
-          <div class="form-group">
+          
+           <div class="form-group">
+              <label class="col-md-3">Education</label>
+              <div class="col-md-9">
+                <select multiple class="chosen-select form-control" name="education" id="education" data-validation-optional="true">
+               <c:forEach var="education" items="${educationsList}">
+               		<c:set var = "NUM" value = "${0}"/>
+               		<c:forEach var="existedEducation" items="${requirement.reqEducationListString}">
+					    <c:if test="${existedEducation eq education}">
+					    	<c:set var = "NUM" value = "${1}"/>
+					       <option  selected value="${education}">${education}</option>
+					    </c:if>
+					</c:forEach>
+					<c:if test="${NUM == 0}">
+						<option  value="${education}">${education}</option>
+					</c:if>
+                </c:forEach>
+                </select>
+              </div>
+            </div>
+          
+          
+          
+          <%-- div class="form-group">
               <label class="col-md-3">Education</label>
               <div class="col-md-9">
                 <select multiple  class="chosen-select form-control" name="education" id="education" data-validation="validate_Space" data-validation-optional="true">
@@ -351,7 +374,7 @@ $(document).ready(function () {
                 </c:forEach>
                 </select>
               </div>
-            </div>
+            </div> --%>
             
          <div class="form-group" >
             <label class="col-md-3">Experience</label>
@@ -583,7 +606,7 @@ $(document).ready(function () {
 								value="" onclick="getTemplateVal();">
 						</c:otherwise>
 					</c:choose>
-					<label>&nbsp;&nbsp;<strong>Is Template</strong>
+					<label>&nbsp;&nbsp;<strong>Save as a template</strong>
 						&nbsp;&nbsp;
 					</label>
 				</div>
@@ -2424,8 +2447,12 @@ var existingValue = document.getElementById('isClientJob').value;
 		
 		$("#selectContact").val('');
 		$('#selectContact').trigger("chosen:updated");
+
+		// empty the dropdown value and changed to default value
+		$("#clientCurrencyCode").val($("#clientCurrencyCode option:first").val()).change();
 		
-		 
+		$("#clientRateType").val($("#clientRateType option:first").val()).change();
+
 		/*  $('select[name=clientCurrencyCodgetIsClientVale]').val(1);
 		 $('.selectpicker').selectpicker('refresh');
 		  */
