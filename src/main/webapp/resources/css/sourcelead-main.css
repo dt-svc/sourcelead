@@ -6266,7 +6266,12 @@ height: auto;
 .onboard_offboad_view .col-md-6 label {
     position: relative; top: 5px;
 }
-
+.emp_onboarddocs a {
+	color:#505050; transition: all 0.3s; -moz-transition: all 0.3s; -webkit-transition: all 0.3s; -o-transition: all 0.3s;
+}
+.emp_onboarddocs a:hover{
+	color:#909090;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

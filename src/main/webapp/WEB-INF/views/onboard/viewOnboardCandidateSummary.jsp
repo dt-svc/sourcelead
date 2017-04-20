@@ -49,7 +49,7 @@
             
             <!-- TAB 2 -->
             
-            <div class="tab-pane clearfix" id="documents">
+            <div class="tab-pane clearfix emp_onboarddocs" id="documents">
               <div class="col-md-12 clearfix mt">
 				  <div class="form-group">
 				    <label class="clearfix"> <strong>Employment Contract</strong> </label>
@@ -359,9 +359,17 @@ function getTemplateContractsDocumentsDetails(){
                		 
                		
 						result = result +'    <div class="col-md-2 text-center mb10">                                ';
-						result = result +'      <div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
+						result = result +'      <a href=\"'+sourceleadUrl+'/downloadTemplateDocument?documentUUID='+report.documentUUID+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
 						result = result +'        <p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>                        ';
-						result = result +'        <i class="fa fa-check text-success permission"></i> </div>         ';
+						if(report.documentStatus == 'NEW'){
+							result = result +'<i class="fa fa-arrow-right text-info permission"></i> </div></a>';
+						}
+						else if(report.documentStatus == 'PENDING'){
+							result = result +'<i class="fa fa-clock-o text-info permission"></i> </div></a>';
+						}else if(report.documentStatus == 'ACCEPTED'){
+							result = result +'<i class="fa fa-check text-success permission"></i> </div></a>';
+							
+						}
 						result = result +'    </div>                                                                 ';
 		        	}
 					result = result +'    </div>                                                                 ';
@@ -387,18 +395,29 @@ function getTemplateFormsDocumentsDetails(){
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var result = "";
-		        	result = result +'	 <div class="row">                                                       ';
+		        	result = result +'	 <div class="row">';
 		        	for (var i = 0; i < json.length; i++) { 
                		 var report = json[i]; 
                		 
                		
 						result = result +'    <div class="col-md-2 text-center mb10">                                ';
-						result = result +'      <div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
+						result = result +'      <a href=\"'+sourceleadUrl+'/downloadTemplateDocument?documentUUID='+report.documentUUID+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
 						result = result +'        <p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>                        ';
-						result = result +'        <i class="fa fa-check text-success permission"></i> </div>         ';
-						result = result +'    </div>                                                                 ';
+						
+						if(report.documentStatus == 'NEW'){
+							result = result +'<i class="fa fa-arrow-right text-info permission"></i> </div></a>';
+						}
+						else if(report.documentStatus == 'PENDING'){
+							result = result +'<i class="fa fa-clock-o text-info permission"></i> </div></a>';
+						}else if(report.documentStatus == 'ACCEPTED'){
+							result = result +'<i class="fa fa-check text-success permission"></i> </div></a>';
+							
+						}
+						
+						
+						result = result +'    </div>';
 		        	}
-					result = result +'    </div>                                                                 ';
+					result = result +'    </div>';
 					 $("#onboardTasksListViewId").empty();
                 	 $("#formstDivId").empty();
                 	 $("#formstDivId").append(result);
@@ -426,9 +445,17 @@ function getTemplatePolicyDocumentsDetails(){
                		 
                		
 						result = result +'    <div class="col-md-2 text-center mb10">                                ';
-						result = result +'      <div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
+						result = result +'      <a href=\"'+sourceleadUrl+'/downloadTemplateDocument?documentUUID='+report.documentUUID+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
 						result = result +'        <p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>                        ';
-						result = result +'        <i class="fa fa-check text-success permission"></i> </div>         ';
+						if(report.documentStatus == 'NEW'){
+							result = result +'<i class="fa fa-arrow-right text-info permission"></i> </div></a>';
+						}
+						else if(report.documentStatus == 'PENDING'){
+							result = result +'<i class="fa fa-clock-o text-info permission"></i> </div></a>';
+						}else if(report.documentStatus == 'ACCEPTED'){
+							result = result +'<i class="fa fa-check text-success permission"></i> </div></a>';
+							
+						}
 						result = result +'    </div>                                                                 ';
 		        	}
 					result = result +'    </div>                                                                 ';
@@ -460,9 +487,9 @@ function getTemplateSupportingDocumentsDetails(){
                		 
                		
 						result = result +'    <div class="col-md-2 text-center mb10">                                ';
-						result = result +'      <div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
+						result = result +'      <a href=\"'+sourceleadUrl+'/downloadTemplateDocument?documentUUID='+report.documentUUID+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
 						result = result +'        <p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>                        ';
-						result = result +'        <i class="fa fa-check text-success permission"></i> </div>         ';
+						result = result +'        <i class="fa fa-question-circle text-info permission"></i> </div></a>         ';
 						result = result +'    </div>                                                                 ';
 		        	}
 					result = result +'    </div>                                                                 ';
