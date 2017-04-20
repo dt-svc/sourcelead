@@ -726,8 +726,8 @@ function getCities(){
          if ($("#experienceYears").val() == '25'){
         	 $("#experienceMonths").val('');  
         	 $('#experienceMonths').selectpicker('refresh');
-        	 $('#experienceMonths').attr("disabled", true);
-             $('#experienceMonths').val("disabled", true);
+        	 $('#experienceMonths').attr("disabled", false);
+             $('#experienceMonths').val("disabled", false);
          }else{
         	 $("#experienceMonths").val('');  
         	 $('#experienceMonths').selectpicker('refresh');
