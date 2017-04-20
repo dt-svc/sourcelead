@@ -388,11 +388,9 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							 
 							
-							if(json.designationType == "Other"){
-							result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv">';
+							result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv" style="display:none">';
 							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType1" value="'+designationOtherType+'" placeholder="Employment Other Type" field-name="Employment Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
 							result = result + '</div>';
-							  }
 							
 							
 							
@@ -439,6 +437,10 @@ function editCandidate(candidateId){
 							$("#profileEditPopup").empty(); 
 							$("#profileEditPopup").append(result); 
 							/* updateDesignationType(json.designationType); */
+							
+							if(json.designationType == "Other"){
+								$("#designationTypeDiv").show();
+						      }
 							getAllCandidateCountries();
 							getVendorsByOrgLocation();
 							employementType();
