@@ -42,7 +42,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	result = result + '<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result + '<input type="file" style="display: none;" name="locationMapFile" multiple id="uploadBtn"  class="upload">';
 	result = result + '</span> </label>';
-	result = result + '<input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Import Resume">';
+	result = result + '<input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
 	result = result + '</div>';
 	result = result + '</div>';	
 	result = result + '</div>';
@@ -113,7 +113,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	result = result + '			        <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result + '                   <input type="file" style="display: none;" name="newUploadBtn" id="newUploadBtn"  class="upload">';
 	result = result + '			          </span> </label>';
-	result = result + '			          <input type="text" class="form-control" readonly id="newUploadFile" placeholder="Import Resume ..." field-name="Upload Resume" data-validation="required validatedoc "  >';
+	result = result + '			          <input type="text" class="form-control" readonly id="newUploadFile" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validatedoc "  >';
 	result = result + '			    </div>';
 	result = result + '		 </div>';
 	result = result + '	 </div>';
