@@ -1054,6 +1054,15 @@ public class RequirementDaoImpl implements RequirementDao {
 	         List<Requirement> requirementList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	 		return requirementList;
 	 	}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<String> getAllRequirementEducationByRequirementId(Long requirementId){
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "select req.education from Requirement req where req.id =:requirementId";
+		    List<String> educationList = session.createQuery(query).setLong( "requirementId", requirementId).setCacheable(true).list();
+	        return educationList;
+		}
 	
 	
 }
