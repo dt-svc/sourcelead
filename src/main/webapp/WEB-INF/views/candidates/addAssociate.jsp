@@ -310,7 +310,7 @@
                <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                 <input type="file" style="display: none;" multiple name ="uploadBtn" id="uploadBtn"  class="upload">
                  </span> </label>
-                 <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Import Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
+                 <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
            </div>
          </div>
         </div>
@@ -345,9 +345,23 @@
             <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true"></textarea>
           </div>
         </div>
-         
+        
           <div class="clearfix"></div>
-          
+         <div class="clearfix" id="newResumeDiv"  style="display: none;">
+         <div class="form-group">
+            <label class="col-md-3">Add Resume</label>
+            <div class="col-md-9"> 
+			 <div class="input-group col-md-12 errorInptgroup"  id="addResumeId" style="margin:0 auto">
+               <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                <input type="file" style="display: none;" multiple name ="uploadFileBtn" id="uploadFileBtn"  class="upload">
+                 </span> </label>
+                 <input type="text" class="form-control" readonly id="uploadProfile" name="docFile" type="file"  placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
+           </div>
+         </div>
+        </div>
+        </div> 
+        
+
         <div class="form-group">
           <label class="col-md-3"></label>
         </div> 
@@ -904,3 +918,191 @@ function  removeValiationVendorContact() {
 		 }); 
  }
  </script>
+
+ <script>
+ function parseResume(){
+	  var result = "";
+	result = result + ' 	 <div class="col-md-5 pull-right"> ';
+	result = result + ' 	 <div class="col-md-12" id="browseDiv"  style="display: none;"> ';
+	result = result + ' 		 <div class="input-group" id="uploadFileGroup"> ';
+	result = result + ' 		 <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File ';
+	result = result + ' 		 <input type="file" style="display: none;" name="locationMapFile" multiple id="uploadBtn"  class="upload"> ';
+	result = result + ' 		 </span> </label> ';
+	result = result + ' 		 <input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">'; 
+	result = result + ' 		 </div> ';
+	result = result + ' 	 </div> 	';
+	result = result + '   </div>  ';
+	$("#parsResumeDivId").append(result);   
+	
+	var selectedFile = document.getElementById("uploadBtn");
+    selectedFile.addEventListener("change", function() {
+    	 $("#uploadFile").focus();
+    	 if(validate_fileupload(this.value)){
+    		 
+    		 var docSize = this.files[0].size;
+   	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
+   	      
+   	      if(docSize > 2097152){
+   	    	  document.getElementById("uploadFile").value = '';
+   	    	 /*  $("#uploadFileGroup").append("<p class='jquery_form_error_message'></p>"); */
+   	    	  $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
+   			  $("input#uploadFile").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+   			  document.getElementById("uploadFile").setAttribute('record-exist','yes');
+   			  document.getElementById("uploadFile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+   	      }else{
+   	    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
+      		 $('#uploadFileGroup').find('p.jquery_form_error_message').remove(); 
+   		var form = $('#candidate_form')[0];
+     		var formData = new FormData(form); 
+   		var sourceleadUrl = '${sourceleadUrl}';
+    	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+   		   $.ajax({
+   					type : "POST",
+   	        	    data: formData,
+   	        	    contentType : 'application/json; charset=utf-8',
+   	        	    enctype: 'multipart/form-data',
+   	    	        processData: false,
+   	    	        contentType:false,
+   	        	    dataType : 'json',
+   				 	url : sourceleadUrl+"/parseResume?${_csrf.parameterName}=${_csrf.token}", 
+   					success : function(data) {
+   						var json = JSON.parse(data);
+   						var name = json.name;
+  						var firstName = '';
+  						var lastName = '';
+  						if(name != null && name != 'undefined' && name != ''){
+  							 firstName = name.split(".")[0]; 
+  							 lastName = name.split(".")[1]; 
+  							 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
+  									 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
+  								 firstName = name;
+  							 }
+  						}
+  						
+  						
+  						 $("input[name=firstName]").val(firstName);
+  			        	 $("input[name=lastName]").val(lastName);
+  			        	 $("input[name=email]").val(json.email);
+   						 var mobilePhone = $("#mobilePhone").val();
+   						 if(mobilePhone == null || mobilePhone == '' || mobilePhone == 'undefined'){
+   							$("#mobilePhone").val(json.phoneNumbers); 
+   						}
+   						
+   						
+   						validateCandidateEmail();
+   						$("#candidateSkills").empty();
+   						 var internalOutput = "";
+   						 <c:forEach var="skill" items="${skillsList}">
+   						    internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
+   	                     </c:forEach>
+   						var skills = json.skills;
+   						if(skills != null && skills != 'undefined' && skills != ''){
+   							var str_array = skills.split(',');
+   							for(var i = 0; i < str_array.length; i++) {
+   							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+   							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+   							}
+   						}
+   						$("#candidateSkills").append(internalOutput);
+   		        		$("#candidateSkills").trigger("chosen:updated");
+   		        		
+   		        		
+   		        		$("#candidateEducation").empty();
+   						 var internalOutput = "";
+   						 <c:forEach var="edu" items="${educationsList}">
+   						    internalOutput = internalOutput+"<option value='${edu.name}'>${edu.name}</option>";
+   	                     </c:forEach>
+   						var edu = json.edu;
+   						if(edu != null && edu != 'undefined' && edu != ''){
+   							var str_array = edu.split(',');
+   							for(var i = 0; i < str_array.length; i++) {
+   							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+   							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+   							}
+   						}
+   						$("#candidateEducation").append(internalOutput);
+   		        		$("#candidateEducation").trigger("chosen:updated");
+   		        		
+   		        		
+   						$("#loading").removeAttr("style");
+   						
+   					},
+   				});
+    	 }
+    	 }
+    });
+
+   /* upload file script */
+   document.getElementById("uploadBtn").onchange = function () {
+   	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+     // document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
+   };
+	
+ }
+ 
+ </script>
+ 
+ <script>
+ function employementType(type){
+if(type == 'C2C' || type == 'C2C-1099'){
+	 document.getElementById("hideVendor").style.display="block";
+	 $('#vendors').attr("data-validation","required"); 
+	 $('#vendorcontact').attr("data-validation","required"); 
+	// $("#vendors").attr("data-validation", "true");
+	  getVendorsByOrgLocation();
+}else{
+	 document.getElementById("hideVendor").style.display="none";
+	 $('#vendors').removeAttr("data-validation","required"); 
+	 $('#vendorcontact').removeAttr("data-validation","required"); 
+}
+ }
+ </script>
+ 
+ <script>
+ function getVendors(vendorName,vendorOrgRelationId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	$('#vendors').empty();
+		        	$('#vendors').append('<option value="">--select Vendor --</option>');
+		            for(var i=0;i<json.length;i++){
+		            	  var opt = json[i];
+		            	  if(vendorName != null && vendorName != 'undefined' && vendorName  != ''){
+		            		  $('#vendors').append('<option '+ (opt.id == vendorOrgRelationId ? "selected" : '') +' value="'+opt.id+'">'+opt.orgName+'</option>');
+			            	}else{
+			            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');	
+			            	}
+		            }
+		            $('#vendors').trigger("chosen:updated");
+		        }
+		 });
+ }
+ </script>
+ <script>
+ function vendorContactList(vendorContactName,vendorOrgRelationId,vendorSpocId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+			    type: "POST",
+		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+vendorOrgRelationId+"&type=Vendor",  
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	$('#vendorcontact').empty();
+		        	$('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
+		             for(var i=0;i<json.length;i++){
+		            	 var opt = json[i];
+		            	 if(vendorContactName != null && vendorContactName != 'undefined' && vendorContactName  != ''){
+		            		 $('#vendorcontact').append('<option '+ (opt.id == vendorSpocId ? "selected" : '') +' value="'+opt.id+'">'+opt.spocName+' ('+opt.ownerName+')</option>');
+			            	}else{
+			            		$('#vendorcontact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
+			            	}
+		            	 
+		            } 
+		            $('#vendorcontact').trigger("chosen:updated");
+		        }
+		 }); 
+ }
+ </script>
+ 
