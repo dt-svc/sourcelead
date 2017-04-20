@@ -360,7 +360,7 @@ $(document).ready(function () {
           
           
           
-          <<%-- div class="form-group">
+          <%-- div class="form-group">
               <label class="col-md-3">Education</label>
               <div class="col-md-9">
                 <select multiple  class="chosen-select form-control" name="education" id="education" data-validation="validate_Space" data-validation-optional="true">
