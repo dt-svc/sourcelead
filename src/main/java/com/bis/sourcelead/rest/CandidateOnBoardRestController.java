@@ -1850,11 +1850,43 @@ public class CandidateOnBoardRestController {
 		   }
 		 
 		 
+		 
+		 
+		 
+		 @RequestMapping(value = "/deleteOnboardCandidateUploadedDocument" , method = RequestMethod.POST)
+		 public @ResponseBody  String deleteOnboardCandidateUploadedDocument(@RequestParam(value="documentUUID", required=false) String documentUUID,
+				 HttpServletRequest request,HttpServletResponse response) throws Exception {
+			 
+			 
+			 OnBoardingTemplateDocuments document = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsBydocumentUUID(documentUUID);
+			 document.setDocumentStatus(OnboardStatus.PENDING);
+			 onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(document);
+			 return "success";
+			 
+		   }
+		 
+		 
+		 @RequestMapping(value = "/acceptCandidatePolicyDocument" , method = RequestMethod.POST)
+		 public @ResponseBody  String acceptCandidatePolicyDocument(@RequestParam(value="documentUUID", required=false) String documentUUID,
+				 HttpServletRequest request,HttpServletResponse response) throws Exception {
+			 
+			 OnBoardingTemplateDocuments document = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsBydocumentUUID(documentUUID);
+			 if(document.getDocumentStatus().equals(OnboardStatus.NEW)){
+				 document.setDocumentStatus(OnboardStatus.ACCEPTED);
+			 }else{
+				 document.setDocumentStatus(OnboardStatus.NEW);
+			 }
+			 
+			 onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(document);
+			 return "success";
+			 
+		   }
+		 
+		 
 		 @RequestMapping(value = "/sendOnboardCandidateToDashboard" , method = RequestMethod.POST)
 		 public @ResponseBody  String sendOnboardCandidateToDashboard(@RequestParam(value="taskId", required=false) Long taskId,
 				 HttpServletRequest request,HttpServletResponse response) throws Exception {
 			 
-			 ModelAndView model = new ModelAndView();
 			 	
 			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
