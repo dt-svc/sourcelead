@@ -66,27 +66,40 @@
 		<div id="loading"></div>
 		<div class="welCo1">
         <input type="hidden" name="candidateOnboardId" id="candidateOnboardId" value="${candidateOnboardId}"/>
-		<c:if test="${contractDocsListSize > 0}">
 			<div class="step3Wrap">
 			<h2>Employment Contract</h2>
+				<c:if test="${contractDocsListSize > 0}">
 				<c:forEach var="contractDocs" items="${contractDocsList}">
 				<div class="step3">
 					<span><a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${contractDocs.documentUUID}" class="fa fa-file-word-o"></a></span>
 					<strong>
 						<p>${contractDocs.fileName}</p>
+						
+						<c:if test="${contractDocs.documentStatus != 'ACCEPTED'}">
 						<input type="file"  class="form-control welFile" readonly id="uploadContractsFile${contractDocs.id}" name="docFile${contractDocs.id}"   placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
+						</c:if>
+						
+						<c:if test="${contractDocs.documentStatus == 'ACCEPTED'}">
+						<p class="deleDocu" onclick="deleteDocument('${contractDocs.documentUUID}');"><i class="fa fa-trash"></i>Delete document</p>
+						</c:if>
+						
 					</strong>
 					<div class="clearfix"></div>
 				</div>
 				</c:forEach>
+				</c:if>
+				<c:if test="${contractDocsListSize == 0}">
+				       <p>No Contract Files Found</p>
+				</c:if>
 				<div class="clearfix"></div>			
 			</div>	
-		</c:if>	
 			
 			
-		<c:if test="${formsDocsListSize > 0}">
+			
+		
 			<div class="step3Wrap">
 			<h2 class="padTop">Employment Forms</h2>
+				<c:if test="${formsDocsListSize > 0}">
 				<c:forEach var="formsDocs" items="${formsDocsList}">
 				<div class="step3">
 					<span><a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${formsDocs.documentUUID}" class="fa fa-file-word-o"></a></span>
@@ -97,26 +110,46 @@
 					<div class="clearfix"></div>
 				</div>
 				</c:forEach>
+				</c:if>	
+				
+				<c:if test="${formsDocsListSize == 0}">
+				  <p>No Employment Forms Found</p>
+				</c:if>
+				
 				<div class="clearfix"></div>			
 			</div>	
-		</c:if>	
 		
 		
-			<c:if test="${policiesDocsListSize > 0}">
+		
+			
 			<div class="step3Wrap">
 			<h2 class="padTop">Policies</h2>
+				<c:if test="${policiesDocsListSize > 0}">
 				<c:forEach var="policiesDocs" items="${policiesDocsList}">
 				<div class="step3">
 					<span><a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${policiesDocs.documentUUID}" class="fa fa-file-word-o"></a></span>
 					<strong>
 						<p>${policiesDocs.fileName}</p>
+				
+					<div>
+	                    <input id="policyCheck${policiesDocs.id}" class="checkbox-custom" ${policiesDocs.documentStatus  == 'ACCEPTED' ? 'checked' : ''}  onclick="acceptPolicy('${policiesDocs.documentUUID}')" type="checkbox">
+	                    
+	                    <label for="policyCheck${policiesDocs.id}" class="checkbox-custom-label">&nbsp;&nbsp;<b>Accept Policy</b></label>
+	                </div>
+						
+						
 					</strong>
 					<div class="clearfix"></div>
 				</div>
 				</c:forEach>
+				</c:if>	
+				
+				<c:if test="${policiesDocsListSize == 0}">
+					<p>No Policies Found</p>
+				</c:if>
 				<div class="clearfix"></div>			
 			</div>	
-		</c:if>								
+									
   </div>		  
 		  
 <div class="welBtns">
@@ -157,6 +190,34 @@
 </script> 
 
 
+<script>
+function deleteDocument(documentUUID){
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/deleteOnboardCandidateUploadedDocument?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
+	        success: function(result) {
+	        	location.replace(sourceleadUrl+"/onboardingCandidateSetp3");  
+	        },
+	    });
+}
+</script>
+
+
+<script>
+function acceptPolicy(documentUUID){
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/acceptCandidatePolicyDocument?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
+	        success: function(result) {
+	        	$("#loading").removeAttr("style"); 
+	        },
+	    });
+}
+</script>
 
 
 

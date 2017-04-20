@@ -249,23 +249,27 @@ function applicantQuickViewProfile(submissionId,candidateId){
 									}
 									
 									
-									 if (opt.startMonth != null && opt.startMonth != '' && opt.startMonth != 'undefined') {
+									/*  if (opt.startMonth != null && opt.startMonth != '' && opt.startMonth != 'undefined') {
 										startMonth=   opt.startMonth +' - ';
 									}else{
 										startMonth = " ";
-									}
+									} */
 									
-									if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined') {
-										startYear=   opt.startYear  +' TO ';
+									if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined' && opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
+										startYear=   opt.startYear  +' To '+opt.endYear;
+									}else if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined'){
+										startYear = opt.startYear;
+									}else if(opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
+										startYear = opt.endYear;
 									}else{
-										startYear = " ";
+										startYear=" ";
 									}
 									
-									if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
+									/* if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
 										endMonth = opt.endMonth +' - ';  
 									} else {
 										endMonth = " ";
-									}
+									} */
 									
 									if (opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
 										endYear = opt.endYear;  
@@ -278,7 +282,7 @@ function applicantQuickViewProfile(submissionId,candidateId){
 										address = " ";
 									}
 									result = result +'<div class="resume-widget">';
-									result = result +'  <p><small>'+startMonth +''+startYear +' '+endMonth +''+endYear+'</small>';
+									result = result +'  <p><small>'+startYear+'</small>';
 									result = result +'  <small class="pull-right address">'+address+'</small></p>';
 									result = result +'  <h4>'+designation+'</h4>';
 									result = result +'  <h5>'+name+'</h5>';
@@ -343,19 +347,17 @@ function reqQveducationSubmission(candidateId){
 			                    	 }else{
 			                    		 Educationaddress = " ";
 			                    	 }
-			                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
-			                    		 EducationstartDateStr = opt.startDateStr +' TO ';
+			                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined' && opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+			                    		 EducationstartDateStr = opt.startDateStr +' To '+opt.endDateStr;
+			                    	 }else if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
+			                    		 EducationstartDateStr = opt.startDateStr;
+			                    	 }else if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){ 
+			                    		 EducationstartDateStr = opt.endDateStr;
 			                    	 }else{
 			                    		 EducationstartDateStr = " ";
 			                    	 }
-			                    	 if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){ 
-			                    		 EducationendDateStr = opt.endDateStr;
-			                    	 }else{
-			                    		 EducationendDateStr = " ";
-			                    	 }
-			                    	 
 										result = result +'<div class="resume-widget">';
-										result = result +'<p><small>'+EducationstartDateStr+' '+EducationendDateStr+'</small></p>';
+										result = result +'<p><small>'+EducationstartDateStr+'</small></p>';
 										result = result +'<h5>'+EducationName+' '+specialization+'</h5>';
 										result = result +'</div>';
 		                     	}
@@ -388,18 +390,16 @@ function reqQwikCertificates(candidateId){
 		                    	var opt = json[i];  
 								result = result +'<div class="resume-widget resumewidget">';
 								
-								
-								if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != '' && opt.candidatevalidFromDateToString !='undefined'){
-									candidatevalidFromDateToString = opt.candidatevalidFromDateToString;
-								}else{
-									candidatevalidFromDateToString = "";
-								}
-								
 								if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != "" && opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
 									result = result +'  <p><small>'+opt.candidatevalidFromDateToString+' - '+opt.candidatevalidToDateToString+'</small></p>';
+								}else if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != '' && opt.candidatevalidFromDateToString !='undefined'){
+									result = result +'  <p><small>'+opt.candidatevalidFromDateToString+'</small></p>';
+								}else if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != '' && opt.candidatevalidToDateToString !='undefined'){
+									result = result +'  <p><small>'+opt.candidatevalidToDateToString+'</small></p>';
 								}else{
-									result = result +'  <p><small>'+candidatevalidFromDateToString+' </small></p>';
+									result=' ';
 								}
+								
 								if(opt.name != null && opt.name != 'undefined' && opt.name != ""){
 									name = opt.name;
 								}else{

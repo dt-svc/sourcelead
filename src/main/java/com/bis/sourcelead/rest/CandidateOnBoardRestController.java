@@ -783,6 +783,11 @@ public class CandidateOnBoardRestController {
 					candidateOnBoarding.setCandidateName(candidateName.append(candidateOnBoarding.getFirstName()).toString());
 				}
 				
+				Integer documentsCount = onBoardingTemplateDocumentsService.getCandidateOnboardingDocumentsCountByCandidateOnboardingIdExpectSupportDocs(candidateOnBoarding.getId());
+				candidateOnBoarding.setDocumentsCount(documentsCount);
+				Integer acceptedDocumentsCount = onBoardingTemplateDocumentsService.getCandidateAcceptedOnboardingDocumentsCountByCandidateOnboardingId(candidateOnBoarding.getId());
+				candidateOnBoarding.setDocumentsAcceptedCount(acceptedDocumentsCount);
+				
 				onBoardingList.add(candidateOnBoarding);
 				
 			}
@@ -1601,6 +1606,24 @@ public class CandidateOnBoardRestController {
 		   
 		}
 		 
+		 @RequestMapping(value = "/validateOnboardCandidateFromDashboard" , method = RequestMethod.POST)
+		 public @ResponseBody  String validateOnboardCandidateFromDashboard(@RequestParam(value="candidateId", required=false) Long candidateId,
+				 HttpServletRequest request) throws Exception {
+			 
+		    String result;
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			
+			CandidateOnBoarding onBoarding = candidateOnBoardingService.getCandidateOnBoardingByCandidateIdAndLocationId(candidateId, loginOrgLocation.getId());
+			if(onBoarding != null){
+				result = "Invalid";
+			}else{
+				result = "Success";
+			}
+		    return result;
+		}
+		 
+		 
+		 
 		 @RequestMapping(value = "/validateOnboardCandidateEmail" , method = RequestMethod.POST)
 		 public @ResponseBody  String validateOnboardCandidateEmail(@RequestParam(value="email", required=false) String email,
 				 HttpServletRequest request) throws Exception {
@@ -1791,7 +1814,14 @@ public class CandidateOnBoardRestController {
 					submission.setRate(requirementOffers.getAmount());
 					submission.setRateType(requirementOffers.getPaymentMode());
 					submission.setPaymentType(requirementOffers.getPaymentType());
+					submission.setOfferUUID(requirementOffers.getOfferUUID());
 					requirementSubmissionList.add(submission);
+					
+					CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByCandidateIdAndOfferId(submission.getCandidate().getId(), requirementOffers.getId());
+					if(null != candidateOnBoarding){
+						submission.setOnboardUUId(candidateOnBoarding.getOnboardCandidateUUID());
+						submission.setOnboardStatus(candidateOnBoarding.getCandidateOnBoardStatus());
+					}
 					
 				}
 			}
@@ -1825,11 +1855,43 @@ public class CandidateOnBoardRestController {
 		   }
 		 
 		 
+		 
+		 
+		 
+		 @RequestMapping(value = "/deleteOnboardCandidateUploadedDocument" , method = RequestMethod.POST)
+		 public @ResponseBody  String deleteOnboardCandidateUploadedDocument(@RequestParam(value="documentUUID", required=false) String documentUUID,
+				 HttpServletRequest request,HttpServletResponse response) throws Exception {
+			 
+			 
+			 OnBoardingTemplateDocuments document = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsBydocumentUUID(documentUUID);
+			 document.setDocumentStatus(OnboardStatus.PENDING);
+			 onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(document);
+			 return "success";
+			 
+		   }
+		 
+		 
+		 @RequestMapping(value = "/acceptCandidatePolicyDocument" , method = RequestMethod.POST)
+		 public @ResponseBody  String acceptCandidatePolicyDocument(@RequestParam(value="documentUUID", required=false) String documentUUID,
+				 HttpServletRequest request,HttpServletResponse response) throws Exception {
+			 
+			 OnBoardingTemplateDocuments document = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsBydocumentUUID(documentUUID);
+			 if(document.getDocumentStatus().equals(OnboardStatus.NEW)){
+				 document.setDocumentStatus(OnboardStatus.ACCEPTED);
+			 }else{
+				 document.setDocumentStatus(OnboardStatus.NEW);
+			 }
+			 
+			 onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(document);
+			 return "success";
+			 
+		   }
+		 
+		 
 		 @RequestMapping(value = "/sendOnboardCandidateToDashboard" , method = RequestMethod.POST)
 		 public @ResponseBody  String sendOnboardCandidateToDashboard(@RequestParam(value="taskId", required=false) Long taskId,
 				 HttpServletRequest request,HttpServletResponse response) throws Exception {
 			 
-			 ModelAndView model = new ModelAndView();
 			 	
 			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");

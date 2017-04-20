@@ -620,14 +620,17 @@ function sideBar(requirementId){
 				        result = result+'<div class="row">';
 				        result = result+'<div class="col-md-5">';
 				        result = result+'<ul class="list-unstyled can-perdt">';
+				        
 				        if(json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined' && json.minExp != null && json.minExp != '' && json.minExp != 'undefined')
 			        	{
-			       	result = result+'<li><i class="fa fa-black-tie" title="Experience"></i><span title="'+json.minExp+'-'+json.maxExp+'"> '+json.minExp+'-'+json.maxExp+'</span></li>';
+			       			result = result+'<li><i class="fa fa-black-tie" title="Experience"></i><span title="'+json.minExp+'-'+json.maxExp+'"> '+json.minExp+'-'+json.maxExp+' years</span></li>';
+			        	}else if(json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined'){
+			        		result = result+'<li><i class="fa fa-black-tie" title="Experience"></i><span title="'+json.maxExp+'"> '+json.maxExp+' years</span></li>';
+			        	}else if(json.minExp != null && json.minExp != '' && json.minExp != 'undefined'){
+			        		result = result+'<li><i class="fa fa-black-tie" title="Experience"></i><span title="'+json.minExp+'"> '+json.minExp+' years</span></li>';
+			        	}else{
+				   			result = result+'<li><i class="fa fa-black-tie" title="Experience"></i><span> -- </span></li>';
 			        	}
-				   
-			        else{
-				    result = result+'<li><i class="fa fa-black-tie" title="Experience"></i><span> -- </span></li>';
-			        }
 			        
 			        if(json.currencyCode == 'INR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined')
 			    	   {

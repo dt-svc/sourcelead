@@ -59,7 +59,7 @@
           <div class="col-md-6 radioInline">
 	          <label class="mr"><input type="radio"  id="canId" checked="true" value="Candidate" name="candidateType" onclick="getCandidatesList(this.value);" >Candidates</label>
 	          <label class="mr"><input type="radio"  id="newId" value="New" name="candidateType" onclick="getCandidatesList(this.value);" >Add New Associate </label>
-	          <label class="mr"><input type="radio"  id="parsId" value="parseCandidate" name="candidateType" onclick="parseResume();getCandidatesList(this.value);">Parse Associate</label>
+	          <label class="mr"><input type="radio"  id="parsId" value="parseCandidate" name="candidateType" onclick="parseResume();getCandidatesList(this.value);">Import Associate</label>
           </div>
           <input type="hidden" name="isAssociate" id="isAssociate" value="Y"/> 
           <div id="parsResumeDivId"></div>
@@ -1125,8 +1125,8 @@ var currentRate = document.getElementById("currentRate").value;
 	    	 $( "#canId" ).attr( "checked", false );
 	    	 $("#email").removeAttr('readonly','readonly');
 	    	 document.getElementById("newResumeDiv").style.display="block";
-// 	    	 document.getElementById("resumesDiv").style.display="none";
-	    	document.getElementById("browseDiv").style.display="none";
+	    	 document.getElementById("resumesDiv").style.display="none";
+	    	 document.getElementById("browseDiv").style.display="none";
 	    	 //$('#uploadFile').removeAttr('data-validation');
 			 //$('#uploadFile').attr("data-validation-optional","true");
 			 
@@ -1215,6 +1215,24 @@ function getCandidateDetails(){
 		        	 }else{
 		        		 $("#designationType").val(''); 
 		        		 $("#designationType").selectpicker('refresh');
+		        	 }
+		        	 
+		        	 if(json['address'] != null && json['address'] != "" && json['address'] != 'undefined'){
+		        		 $("#address").val(json['address']);
+		        	 }else{
+		        		 $("#address").val('');
+		        	 }
+		        	 
+		        	 if(json['summary'] != null && json['summary'] != "" && json['summary'] != 'undefined'){
+		        		 $("#summary").val(json['summary']);
+		        	 }else{
+		        		 $("#summary").val('');
+		        	 }
+		        	 
+		        	 if(json['primarySkill'] != null && json['primarySkill'] != "" && json['primarySkill'] != 'undefined'){
+		        		 $("#primarySkill").val(json['primarySkill']);
+		        	 }else{
+		        		 $("#primarySkill").val('');
 		        	 }
 		        	 
 		        	 
@@ -1571,7 +1589,7 @@ function getCandidateDetails(){
 		        	$('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
 		             for(var i=0;i<json.length;i++){
 		            	 var opt = json[i];
-		            	 $('#vendorcontact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
+		            	 $('#vendorcontact').append('<option value='+opt.id+' >'+opt.spocName+' ('+opt.ownerName+')</option>');
 		            } 
 		            $('#vendorcontact').trigger("chosen:updated");
 		        }
@@ -1753,7 +1771,7 @@ if(type == 'C2C' || type == 'C2C-1099'){
 		             for(var i=0;i<json.length;i++){
 		            	 var opt = json[i];
 		            	 if(vendorContactName != null && vendorContactName != 'undefined' && vendorContactName  != ''){
-		            		 $('#vendorcontact').append('<option '+ (opt.id == vendorSpocId ? "selected" : '') +' value="'+opt.id+'">'+opt.spocName+'</option>');
+		            		 $('#vendorcontact').append('<option '+ (opt.id == vendorSpocId ? "selected" : '') +' value="'+opt.id+'">'+opt.spocName+' ('+opt.ownerName+')</option>');
 			            	}else{
 			            		$('#vendorcontact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
 			            	}

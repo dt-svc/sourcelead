@@ -55,7 +55,8 @@ function onboardingCandidatesList(){
 	                     result = result +"    <th>Title</th>";
 	                     result = result +"    <th>DOJ</th>"; 
 	                     result = result +"    <th>Rate</th>"; 
-	                     result = result +"    <th>Position Type</th>"; 
+	                     result = result +"    <th>Position Type</th>";
+	                     result = result +"    <th>Onboard Status</th>";
 	                     result = result +"<th>Actions</th>";
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
@@ -87,7 +88,23 @@ function onboardingCandidatesList(){
 				                     result = result +"<td><div><span>-----</span></div></td>";
 			                     }
 			                     
-			                     result = result +"<td><div class='tbldata-dotdot-sm'><a href='"+sourceleadUrl+"/candidateOnBoardingDetails?candidateUUId="+opt.candidateUUID+"'><span class='text-success'>On-board</span></a>&nbsp;&nbsp;<a href='#'><span class='text-danger'>Decline</span></a></div></td>";
+			                     if(opt.onboardStatus != null && opt.onboardStatus != '' && opt.onboardStatus != 'undefined'){
+			                    	 result = result +"<td><div><span>"+opt.onboardStatus+"</span></div></td>";
+			                     }else{
+				                     result = result +"<td><div><span>Ready to onboard</span></div></td>";
+			                     }
+			                     
+			                    if(opt.onboardUUId != null && opt.onboardUUId != '' && opt.onboardUUId != 'undefined'){
+			                    	 if(opt.onboardStatus == 'Draft'){
+			                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/viewOnboardCandidateDetails?onboardUUID="+opt.onboardUUId+"'> <span class='text-success'>View Onboard</span> </a> </div></td>";
+			                    	 }else if(opt.onboardStatus == 'Finished'){
+			                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/viewOnboardCandidateSummary?onboardUUID="+opt.onboardUUId+"'> <span class='text-success'>View Onboard</span> </a> </div></td>";
+			                    	 }
+			                    	
+			                    }else{
+			                    	result = result +"<td><div class='tbldata-dotdot-sm'><a href='"+sourceleadUrl+"/candidateOnBoardingDetails?candidateUUId="+opt.candidateUUID+"&offerUUID="+opt.offerUUID+"'><span class='text-success'>Onboard</span></a></div></td>";
+			                    }
+			                     
 
 		                     
 		                     result = result +"</tr>";

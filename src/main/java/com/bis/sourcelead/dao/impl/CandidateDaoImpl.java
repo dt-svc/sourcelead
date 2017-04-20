@@ -150,7 +150,7 @@ public class CandidateDaoImpl implements CandidateDao {
     */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, Integer candidateState, String updatedDateRange,String candidateType) throws Exception {
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, Integer candidateState, String updatedDateRange,String candidateType,String isAssociate) throws Exception {
 
 		
 		String subQuery = null;
@@ -179,13 +179,28 @@ public class CandidateDaoImpl implements CandidateDao {
 		
 		
 		String candidateTypeSubQuery = "";
-		if(candidateType != null && !candidateType.isEmpty() && candidateType.equalsIgnoreCase("All")){
+		/*if(candidateType != null && !candidateType.isEmpty() && candidateType.equalsIgnoreCase("All")){
 			
 			candidateTypeSubQuery = " and (cnadidate.candidateType = 'Candidate' OR cnadidate.candidateType = 'Consultant')";
 			
 		}else{
 			candidateTypeSubQuery = " and cnadidate.candidateType = '"+candidateType+"' ";
-		}
+		}*/
+		
+			if(candidateType != null && !candidateType.isEmpty() && candidateType.equalsIgnoreCase("All")){
+				if(isAssociate.equalsIgnoreCase(Constants.YES)){
+					candidateTypeSubQuery = " and (cnadidate.isAssociate = 'Y')";
+				}else{
+					candidateTypeSubQuery = " and (cnadidate.isAssociate = 'N' OR cnadidate.isAssociate = 'Y' )";					
+				}
+				
+			}else{
+				if(isAssociate.equalsIgnoreCase(Constants.YES)){
+					candidateTypeSubQuery = " and (cnadidate.isFavouriteAssociate = '"+candidateType+"') ";
+				}else{
+					candidateTypeSubQuery = " and (cnadidate.isFavourite = '"+candidateType+"') ";
+				}
+			}
     	
 			
 		if(StringUtils.isNotEmpty(updatedDateRange) && !"null".equalsIgnoreCase(updatedDateRange)   && !updatedDateRange.equalsIgnoreCase("undefined")){
@@ -647,10 +662,10 @@ public class CandidateDaoImpl implements CandidateDao {
 		String query = "";
 		List<Candidate> candidateList = null;
 		if(employeementType != null && employeementType != "" && employeementType != "undefined"){
-			query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.isAssociate ='Y'  and candidate.designationType =:employeementType ";
+			query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.isAssociate ='Y'  and candidate.designationType =:employeementType and candidate.consultantUser ='NULL'";
 			candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("employeementType", employeementType).setCacheable(true).list();
 		}else{
-			query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.isAssociate ='Y' "; 
+			query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.isAssociate ='Y' and candidate.consultantUser IS NULL"; 
 			candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		}
 		  

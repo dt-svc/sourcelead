@@ -1546,9 +1546,9 @@ function exportToPdf(){
     }
 	  
 	  var candTypeRadio = $('input[name=candidateType]');
-	  var candidateType = "consultant";
+	  var candidateType = candTypeRadio.filter(':checked').val();
 	  if(isCandidatesAvailable == ''){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf"+"&candidateType="+candidateType;	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf"+"&candidateType="+candidateType+"&isAssociate=Y";	
 	  }else{
 		  var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -1587,9 +1587,9 @@ function exportToExcel(){
    }
 	  
 	  var candTypeRadio = $('input[name=candidateType]');
-	  var candidateType = "consultant";
+	  var candidateType = candTypeRadio.filter(':checked').val();
 	  if(isCandidatesAvailable == ''){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls"+"&candidateType="+candidateType;	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls"+"&candidateType="+candidateType+"&isAssociate=Y";	
 	  }else{
 		  var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";

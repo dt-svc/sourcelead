@@ -86,9 +86,10 @@
 	                     result = result +"  <tr>"; 
 	                     result = result +"    <th>Candidate Name</th>";
 	                     result = result +"    <th>Type</th>";
-	                     result = result +"    <th>Effective Date</th>";
+	                     result = result +"    <th>Date Of Join</th>";
+	                     result = result +"    <th>Onboard<br/>Documents</th>";
 	                     result = result +"    <th>Stage</th>"; 
-	                     result = result +"<th>Actions</th>";
+	                     result = result +"    <th>Candidate Onboard Stage</th>"; 
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
@@ -123,14 +124,15 @@
 	                    	 
                     		 result = result +"<td><div><span>Onboard</span></div></td>";
                     		 result = result +"<td><div><span>"+joiningDate+"</span></div></td>";
+                    		 result = result +"<td><div><span>"+opt.documentsAcceptedCount+" / "+opt.documentsCount+"</span></div></td>";
                     		 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div></td>";
                     		 
-                    		 result = result +"<td>";
-                    		 result = result +" <div class='tblminwidth-50 ml'>";
-                    		 result = result +"<div class='pull-left mr'><a href='javascript:void(0)' title='Accept'><i class='fa fa-check text-success'></i></a></div>";
-                    		 result = result +"<div class='pull-left'><a href='javascript:void(0)' title='Reject'><i class='fa fa-close text-danger'></i></a></div>";
-                    		 result = result +"</div>";
-                    		 result = result +"</td>";
+                    		 if(opt.onboardSubmitted == 'Y'){
+                    			 result = result +"<td><div><span class='text-success'>Submitted</span></div></td>";
+                    		 }else{
+                    			 result = result +"<td><div><span class='text-warning'>Pending</span></div></td>";
+                    		 }
+                    
 		                     
 		                     result = result +"</tr>";
 		                     result = result +"</tr>";

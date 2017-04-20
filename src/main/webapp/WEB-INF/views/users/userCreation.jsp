@@ -67,7 +67,7 @@
            </select>
           </div> </div>
           </div>
-      
+           <input type="hidden" id="associateId" name="associateId"/>
           </div>
         </div>
               
@@ -404,7 +404,7 @@
 			        			 $("#phone").val('');
 			        		}
 		        		}else{
-		        			 $("#FirstName").attr("disabled", false);
+		        			$("#FirstName").attr("disabled", false);
 		        			 $("#FirstName").val('');
 		        			 
 		        			 $("#lastName").attr("disabled", false);
@@ -426,6 +426,20 @@
 		 
 		 $("#phone").attr("disabled", false);
 		 $("#phone").val('');
+		 
+		
+		 $("#role").val('');
+		 $("#role").trigger("chosen:updated");
+		 
+		  
+		 $("#reportingManager").val('');
+		 $("#reportingManager").trigger("chosen:updated");
+		 
+		 $("#employeementType").val('');
+	     $('#employeementType').trigger("chosen:updated");
+		 
+		 
+		 
 	 }
  }
  </script>   
@@ -442,10 +456,11 @@ function getAssociateUserDetails(){
 	        success: function(data) {
 	        	if(data != null && data != ''){
 	        		var json = JSON.parse(data);
-	        		  $("#FirstName").val(json[0]);
-	        		  $("#lastName").val(json[1]);
-	        		  $("#EmailId").val(json[2]);
-	        		  $("#phone").val(json[3]);
+	        		  $("#associateId").val(json['id']);
+	        		  $("#FirstName").val(json['firstName']);
+	        		  $("#lastName").val(json['lastName']);
+	        		  $("#EmailId").val(json['email']);
+	        		  $("#phone").val(json['mobilePhone']);
 	        		  validateUserEmail();
 	        	}
 			 },

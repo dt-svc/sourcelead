@@ -42,7 +42,7 @@ function getAddApplicant(requirementId){
 	result = result + '<label class="mr"><input type="radio" checked="checked" value="N" name="candidateType" onClick="getCandidatesList('+requirementId+',\'N\');">Candidates</label>';
 	result = result + '<label class="mr"><input type="radio" value="Y" name="candidateType" onClick="getCandidatesList('+requirementId+',\'Y\');">Associates</label>';
 	result = result + '<label class="mr"><input type="radio" value="New candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'New\');getCandidateSelectionType();">Add New Candidate</label>';
-	result = result + '<label class="mr"><input type="radio" value="Parese candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'parseCandidate\');getCandidateSelectionType();">Parse Candidate</label>';
+	result = result + '<label class="mr"><input type="radio" value="Parese candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'parseCandidate\');getCandidateSelectionType();">Import Candidate</label>';
 	result = result + '</div>';	
 	
 	result = result + '<div class="col-md-5 pull-right">';
@@ -116,7 +116,7 @@ function getAddApplicant(requirementId){
 	
 	result = result + '<div class="row">';
 	result = result + '	<div class="col-md-6 upresume mb" id="newResumeDiv" style="display: none;">';
-	result = result + '<label class="col-md-4">Add Resume &nbsp;*</label>';
+	result = result + '<label class="col-md-4">Import Resume &nbsp;*</label>';
 	result = result + '		<div class="col-md-8">';
 	result = result + '			    <div class="input-group col-md-12 attachfile-error" id="uploadFileGroup1" style="margin:0 auto">';
 	result = result + '			        <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
@@ -265,7 +265,7 @@ function submitRecomendedApplicant(requirementId,candidateId){
 	
 	result = result + '<div class="row">';
 	result = result + '	<div class="col-md-6 upresume mb" id="newResumeDiv" style="display: none;">';
-	result = result + '<label class="col-md-4">Add Resume &nbsp;*</label>';
+	result = result + '<label class="col-md-4">Import Resume &nbsp;*</label>';
 	result = result + '		<div class="col-md-8">';
 	result = result + '			    <div class="input-group col-md-12 attachfile-error" id="uploadFileGroup1" style="margin:0 auto">';
 	result = result + '			        <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';

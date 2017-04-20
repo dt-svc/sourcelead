@@ -254,13 +254,17 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 //		contracts.setTemplateSubmissionStatus("pending");
 		vendorContracts.setTemplateSubmissionStatus("Waiting to be signed");
 		vendorContracts.setStatus("0");
-		contracts.setTemplateSubmissionStatus(saveType);
+		if(null != approverUser){
+			contracts.setTemplateSubmissionStatus("WAITING_FOR_APPROVER");
+		}else{
+			contracts.setTemplateSubmissionStatus(saveType);
+		}
 		contracts.setCreatedDate(new Date());
 		contracts.setCreatedBy(user.getUserCode());
 		contracts.setUpdatedDate(new Date());
 		contracts.setUpdatedBy(user.getUserCode());
 		Contracts savedContracts = contractsTemplateDao.saveNewContract(contracts);
-		if(!"draft".equalsIgnoreCase(savedContracts.getTemplateSubmissionStatus())){
+		if(null == approverUser && !"draft".equalsIgnoreCase(savedContracts.getTemplateSubmissionStatus())){
 			if("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
 				vendorContracts.setContractType("Client MSA");
 				vendorContracts.setInitiatorType("Client");
@@ -299,7 +303,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				vendorContracts.setContactUser(ownerUser);
 			}
 			Contracts savedChildContracts = contractsTemplateDao.saveNewContract(vendorContracts);
-			  if(null != vendorContactsUser && null != approverUser && !"draft".equalsIgnoreCase(saveType)){
+			  if(null != vendorContactsUser && null == approverUser && !"draft".equalsIgnoreCase(saveType)){
 		            signatureRequestUtil.sendDocumentForSignatureRequest(vendorContactsUser,contractsTemplate,orgLocation,user,savedContracts,org);
 		        }
 		}
@@ -392,5 +396,77 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		return contractsTemplateDao.getChildContractById(contractId);
 	}
 
+	@Override
+	public Contracts approveContracts(long recordId, String status, OrgLocations orgLocation,User user,Org org) throws Exception
+	{
+		Contracts contracts  = contractsTemplateDao.getContractById(recordId);
+		Contracts upadatedContracts = null;
+		if(!"REJECTED".equalsIgnoreCase(status)){
+			contracts.setTemplateSubmissionStatus("pending");
+			 upadatedContracts = contractsTemplateDao.saveNewContract(contracts);
+			Contracts childContract = new Contracts();
+			childContract.setContractTitle(contracts.getContractTitle());
+			childContract.setStartDate(contracts.getStartDate());
+			childContract.setEndDate(contracts.getEndDate());
+			
+			childContract.setBillingAmount(contracts.getBillingAmount());
+			childContract.setBillingPer(contracts.getBillingPer());
+			childContract.setInvoiceFrequency(contracts.getInvoiceFrequency());
+			childContract.setPaymentTerm(contracts.getPaymentTerm());
+			
+			childContract.setTax(contracts.getTax());
+			childContract.setTaxType(contracts.getTaxType());
+			childContract.setDescription(contracts.getDescription());
+			childContract.setTemplateSubmissionStatus("Waiting to be signed");
+			childContract.setStatus("0");
+			
+				if("Vendor MSA".equalsIgnoreCase(contracts.getContractType())){
+					childContract.setContractType("Client MSA");
+					childContract.setInitiatorType("Client");
+					childContract.setContractOrgLocationId(orgLocation);
+					childContract.setParentContractId(upadatedContracts);
+					OrgRelations orgRelations = contracts.getOrgRelations();//orgRelationsService.getOrRelationsById(contracts.getOrgRelations());
+					childContract.setOrgRelations(orgRelations);
+					if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+						childContract.setOrgLocationId(orgRelations.getLocationId());
+					}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+						childContract.setOrgLocationId(orgRelations.getResponderLocationId());
+					}
+					
+//					User vendorUser = userService.getUserById(Long.parseLong(approveContracts.getContactUser()));
+//					if(null != vendorUser && !"draft".equalsIgnoreCase(saveType)){
+//						signatureRequestUtil.sendDocumentForSignatureRequest(vendorUser,contractsTemplate,orgLocation,user);
+//					}
+					childContract.setOwnerUserId(contracts.getContactUser());
+					childContract.setContactUser(contracts.getOwnerUserId());
+				}
+				
+				if("Client MSA".equalsIgnoreCase(contracts.getContractType())){
+					childContract.setContractType("Vendor MSA");
+					childContract.setInitiatorType("Vendor");
+					childContract.setParentContractId(upadatedContracts);
+					childContract.setContractOrgLocationId(orgLocation);
+					OrgRelations orgRelations = contracts.getOrgRelations();//orgRelationsService.getOrRelationsById(contracts.getOrgLocationId().getId());
+					childContract.setOrgRelations(orgRelations);
+					if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+						childContract.setOrgLocationId(orgRelations.getLocationId());
+					}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+						childContract.setOrgLocationId(orgRelations.getResponderLocationId());
+					}
+					childContract.setOwnerUserId(contracts.getContactUser());
+					childContract.setContactUser(contracts.getOwnerUserId());
+				}
+				
+				Contracts savedChildContracts = contractsTemplateDao.saveNewContract(childContract);
+				  if(null != upadatedContracts.getContactUser()){
+			            signatureRequestUtil.sendDocumentForSignatureRequest(upadatedContracts.getContactUser(),upadatedContracts.getContractsTemplate(),orgLocation,user,upadatedContracts,org);
+			        }
+		}else{
+			contracts.setTemplateSubmissionStatus("REJECTED");
+			 upadatedContracts = contractsTemplateDao.saveNewContract(contracts);
+		}
+		
+		return upadatedContracts;
+	}
 	
 }
