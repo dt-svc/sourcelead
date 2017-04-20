@@ -162,7 +162,7 @@
 </form:form>
 </div>
 </div>
-
+</section>
 <div class="side_mask"></div>
 <div class="prevPop">
 	<div class="prevPopClose" onclick="previewclose();"><i class="fa fa-times"></i></div>
@@ -206,8 +206,14 @@ function copyToClipboard(elementId) {
 
 <script type="text/javascript">
 function contractTemplateType(){
+	var contractType = "";
+	var type = $("#contractType").val();
+	if(type != ''){
+		contractType = type;
+	}else{
+		contractType = "${contractsTemplate.templateType}";
+	}
 	
-	var contractType = $("#contractType").val();
 	if(contractType == "Client MSA"){
 		document.getElementById("vendormsa").style.display="none";
 		document.getElementById("clientsow").style.display="none";
@@ -320,6 +326,8 @@ $(document).ready(function(){
 
 <script>
 function editContractTemplate(templateId){
+	
+	contractTemplateType();
 	var sourceleadUrl = '${sourceleadUrl}';
 	if(templateId !=''){
 		$.ajax({

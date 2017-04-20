@@ -114,4 +114,20 @@ public class RequirementOffersDaoImpl implements RequirementOffersDao{
 		
 		return requirementOffersList;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementOffers getRequirementOffersByUUID(String offerUUID) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementOffers rs left join fetch rs.submissionId submission left join fetch submission.requirement where rs.offerUUID = :offerUUID ";
+		List<RequirementOffers> requirementOffersList =  session.createQuery(query.toString()).setString("offerUUID", offerUUID).setCacheable(true).list();
+		
+		RequirementOffers requirementOffers = null;
+		
+		if (requirementOffersList != null && requirementOffersList.size() > 0) {
+			requirementOffers = (RequirementOffers) requirementOffersList.iterator().next();
+		}
+		return requirementOffers;
+	}
 }

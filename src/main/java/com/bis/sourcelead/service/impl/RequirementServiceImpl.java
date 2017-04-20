@@ -3311,8 +3311,8 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	
 	@Override
 	public List<Requirement> getRequirementsForSOWByOrgLocationId(
-			Long orgLocationId, String type) throws Exception {
-		return requirementDao.getRequirementsForSOWByOrgLocationId(orgLocationId, type);
+			Long orgLocationId, String sowType) throws Exception {
+		return requirementDao.getRequirementsForSOWByOrgLocationId(orgLocationId, sowType);
 	}
 	
 }

@@ -372,7 +372,7 @@ function editCandidate(candidateId){
                             result = result + '<div class="col-md-6 custom-fields">';
 							
                             result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
-							result = result + '<select class="form-control" id="designationType1" name="designationType" field-name="Designation Type"  onchange="employementType();updateDesignationOtherType();">';
+							result = result + '<select class="form-control" id="designationType1" name="designationType"  onchange="employementType();updateDesignationOtherType();" field-name="Employment type" data-validation="required">';
 							result = result + '<option value="">--Select Employment Type--</option>';
 							result = result + ' <option '+(json.designationType == "C2C" ? "selected" : '') +'>C2C</option>';
 							result = result + ' <option '+(json.designationType == "C2C-1099" ? "selected" : '') +'>C2C-1099</option>';
@@ -398,15 +398,15 @@ function editCandidate(candidateId){
 							
 							
 						    result = result + '<span class="" id="hideVendor" style="display:none">'; 
-							result = result + '<div class="col-md-6 custom-fields select-arrow">';
-							result = result + '<select  class="chosen-select form-control select-bg" name="vendors"  id="vendorName" value="'+vendorName+'" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();">';
+							result = result + '<div class="col-md-6 custom-fields select-arrow" id="errorvendor">';
+							result = result + '<select  class="chosen-select form-control select-bg" name="vendors"  id="vendorName" value="'+vendorName+'" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();">';
 							result = result + '</select>';
 							result = result + '<input type="hidden" name="updateVendorName" id="updateVendorName" value="'+vendorName+'" />';
 							result = result + '<input type="hidden" name="updateVendorOrgRelationId" id="updateVendorOrgRelationId" value="'+json.vendorOrgRelationId+'" />';
 							result = result + '</div>';
 							
-							result = result + '<div class="col-md-6 custom-fields select-arrow mt10">';
-							result = result + '<select  class="chosen-select form-control select-bg" name="vendorcontact"  value="'+json.vendorContactName+'" id="vendorcontactName" field-name="Vendor Contact"  placeholder="select Vendor Contact">';
+							result = result + '<div class="col-md-6 custom-fields select-arrow mt10" id="errorvendorContact">';
+							result = result + '<select  class="chosen-select form-control select-bg" name="vendorcontact"  value="'+json.vendorContactName+'" id="vendorcontactName" field-name="Vendor Contact"  placeholder="select Vendor Contact" onchange="removeValiationVendorContact();">';
 							result = result + '</select>';
 							result = result + '<input type="hidden" name="updateVendorContactName" id="updateVendorContactName" value="'+json.vendorContactName+'" />';
 							result = result + '<input type="hidden" name="updateSpocId" id="updateSpocId" value="'+json.vendorSpocId+'" />';
@@ -1779,6 +1779,7 @@ function employementType(){
 			 $('#vendorcontactName').val(''); 
 			 
 		}
+		$('#designationType1 + p').remove();
 }
 </script>
 
@@ -1811,8 +1812,18 @@ function employementType(){
 		 });
  }
  </script>
- 
-  <script>
+ <script>
+ function  removeValiationVendor() {
+	$("#errorvendor").find("p.jquery_form_error_message").remove();
+}
+</script>
+<script>
+function  removeValiationVendorContact() {
+	 $("#errorvendorContact").find("p.jquery_form_error_message").remove();
+}
+</script>
+
+ <script>
  function getVendorContactList(){
 	$('#vendorcontactName').val('').trigger("chosen:updated");
 		 var orgRelationID = $('#vendorName').val();

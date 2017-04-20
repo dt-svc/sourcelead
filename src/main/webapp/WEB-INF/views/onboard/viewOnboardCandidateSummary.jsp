@@ -262,7 +262,7 @@
 					 result = result +'     </div>                                                                                                        ';
 				 }
 				
-				if(json.terminationNotice != '' && json.terminationNotice != '' && json.terminationNotice != 'undefined'){
+				if(json.terminationNotice != null && json.terminationNotice != '' && json.terminationNotice != 'undefined'){
 					result = result +'       <div class="form-group">                                                                                    ';
 					 result = result +'       <label class="col-md-3 control-label">Termination Notice</label>                                            ';
 					 result = result +'       <div class="col-md-6">                                                                                      ';
@@ -293,13 +293,15 @@
 				 }
 			   
 				
-				 result = result +'        <div class="form-group">                                                                                   ';
-				 result = result +'            <label class="col-md-3 control-label">Onboard Template </label> ';
-				 result = result +'       <div class="col-md-6">                                                                                    ';
-				 result = result +'             <div id="onboardingTemplate"></div>                                                                                  ';
-				 result = result +'       </div>                                                                                                    ';
-				 result = result +'     </div>                                                                                                      ';
-				
+				 if(json.onboardTemplateId != null && json.onboardTemplateId != '' && json.onboardTemplateId != 'undefined'){
+					 result = result +'        <div class="form-group">                                                                                   ';
+					 result = result +'            <label class="col-md-3 control-label">Onboard Template </label> ';
+					 result = result +'       <div class="col-md-6">                                                                                    ';
+					 result = result +'             <div id="onboardingTemplate"></div>                                                                                  ';
+					 result = result +'       </div>                                                                                                    ';
+					 result = result +'     </div>                                                                                                      ';
+				 }
+				 
 				 result = result +'   </div>                                                                                                        ';
 				 result = result +'     </div>';
 	        	 
