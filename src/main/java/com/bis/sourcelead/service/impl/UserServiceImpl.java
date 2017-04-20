@@ -230,7 +230,7 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		//for updating cosultantUserId in candidate
-		if(!"".equalsIgnoreCase(jsonObj.getString("associateId"))){
+		if(jsonObj.has("associateId")&& !"".equalsIgnoreCase(jsonObj.getString("associateId"))){
 			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(jsonObj.getString("associateId")));
 			if(null != candidate){
 				candidate.setConsultantUser(user1);
