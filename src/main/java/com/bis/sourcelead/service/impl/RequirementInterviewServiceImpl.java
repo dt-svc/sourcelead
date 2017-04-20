@@ -764,6 +764,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 String startTime = "";
 		 String endTime = "";
 		 String dateOfInterviewStr ="";
+		 String dateOfInterviewValue ="";
 		 
 		 if(requirementInterview.getDateOfInterview() != null){
 
@@ -800,7 +801,11 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			  time = timeBuilder.append(startTime).append(" - ").append(endTime).append(" ("+requirementInterview.getTimezone().getTimeZoneId()+")").toString();
 		 }
 		 StringBuilder dateOfInterviewSB=new StringBuilder();
-		 String dateOfInterviewValue = dateOfInterviewSB.append(dateOfInterviewStr).append(" ").append(time).toString();
+		 if(null != dateOfInterviewStr){
+		  dateOfInterviewValue = dateOfInterviewSB.append(dateOfInterviewStr).append(" ").append(time).toString();
+		 }else{
+		 dateOfInterviewValue = dateOfInterviewSB.append("--").toString();
+		 }
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 			 globalVarsMap.put("interviewerFirstName", emailMessage.getFirstName());
