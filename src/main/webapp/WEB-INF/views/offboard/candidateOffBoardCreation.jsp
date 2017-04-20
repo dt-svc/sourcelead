@@ -66,7 +66,7 @@
                 </div>
                 
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Mobile number</label>
+                  <label class="col-md-3 control-label">Mobile Number</label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber"  readonly="readonly">
                   </div>
