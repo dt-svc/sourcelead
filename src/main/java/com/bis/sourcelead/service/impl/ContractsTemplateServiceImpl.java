@@ -220,14 +220,22 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setContactUser(vendorContactsUser);
 		}
 		
-		if(jsonObj.has("endDate") && null != jsonObj.getString("billingAmount") && !"".equals(jsonObj.getString("billingAmount")) ){
-			contracts.setBillingAmount(jsonObj.getString("billingAmount"));
-			vendorContracts.setBillingAmount(jsonObj.getString("billingAmount"));
+		if(jsonObj.has("percentageReward") && null != jsonObj.getString("percentageReward") && !"".equals(jsonObj.getString("percentageReward")) ){
+			contracts.setBillingAmount(jsonObj.getString("percentageReward"));
+			vendorContracts.setBillingAmount(jsonObj.getString("percentageReward"));
+				contracts.setBillingPer("Percentage");
+				vendorContracts.setBillingPer("Percentage");
 		}
-		if(jsonObj.has("billingPer") && null != jsonObj.getString("billingPer") && !"".equals(jsonObj.getString("billingPer")) ){
-			contracts.setBillingPer(jsonObj.getString("billingPer"));
-			vendorContracts.setBillingPer(jsonObj.getString("billingPer"));
+		if(jsonObj.has("flatReward") && null != jsonObj.getString("flatReward") && !"".equals(jsonObj.getString("flatReward")) ){
+			contracts.setBillingAmount(jsonObj.getString("flatReward"));
+			vendorContracts.setBillingAmount(jsonObj.getString("flatReward"));
+			
+			if(jsonObj.has("flatRateType") && null != jsonObj.getString("flatRateType") && !"".equals(jsonObj.getString("flatRateType")) ){
+				contracts.setBillingPer(jsonObj.getString("flatRateType"));
+				vendorContracts.setBillingPer(jsonObj.getString("flatRateType"));
+			}
 		}
+		
 		contracts.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
 		vendorContracts.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
 		
@@ -235,14 +243,22 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setPaymentTerm(jsonObj.getString("paymentFrequency"));
 			vendorContracts.setPaymentTerm(jsonObj.getString("paymentFrequency"));
 		}
-		if(jsonObj.has("tax") && null != jsonObj.getString("tax") && !"".equals(jsonObj.getString("tax")) ){
-			contracts.setTax(jsonObj.getString("tax"));
-			vendorContracts.setTax(jsonObj.getString("tax"));
+		
+		if(jsonObj.has("taxPercentageReward") && null != jsonObj.getString("taxPercentageReward") && !"".equals(jsonObj.getString("taxPercentageReward")) ){
+			contracts.setTax(jsonObj.getString("taxPercentageReward"));
+			vendorContracts.setTax(jsonObj.getString("taxPercentageReward"));
+			contracts.setTaxType("Percentage");
+			vendorContracts.setTaxType("Percentage");
 		}
-		if(jsonObj.has("taxType") && null != jsonObj.getString("taxType") && !"".equals(jsonObj.getString("taxType")) ){
-			contracts.setTaxType(jsonObj.getString("taxType"));
-			vendorContracts.setTaxType(jsonObj.getString("taxType"));
+		if(jsonObj.has("taxFlatReward") && null != jsonObj.getString("taxFlatReward") && !"".equals(jsonObj.getString("taxFlatReward")) ){
+			contracts.setTax(jsonObj.getString("taxFlatReward"));
+			vendorContracts.setTax(jsonObj.getString("taxFlatReward"));
+			contracts.setTaxType(jsonObj.getString("taxFlatRateType"));
+			vendorContracts.setTaxType(jsonObj.getString("taxFlatRateType"));
 		}
+		
+		
+		
 		if(jsonObj.has("description") && null != jsonObj.getString("description") && !"".equals(jsonObj.getString("description"))){
 			contracts.setDescription(jsonObj.getString("description"));
 			vendorContracts.setDescription(jsonObj.getString("description"));

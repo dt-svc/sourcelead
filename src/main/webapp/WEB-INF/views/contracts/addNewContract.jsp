@@ -10,6 +10,7 @@
 .chosen-container {
     width: 100% !important;
 }
+.fullWid {width: 100% !important;}
 </style>
 
 <!-- these files for autocomplete with tagit -->
@@ -237,8 +238,41 @@
             </div>
            
             <div class="form-group">
-              <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
+              <!-- <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label> -->
+                <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label>
+                   <div class="clearfix col-md-8">
+                      <div class="col-md-5 paddingLeft">
+                        <div class="btn-group btn_Block">
+                          <button type="button" class="btn btn-sm btn-primary" id="percentageBtn" value="percentage" onClick="getRewardType('Percentage')">%</button>
+                          <button type="button" class="btn btn-sm btn-default" id="flatBtn" value="flat" onClick="getRewardType('Flat')">Flat</button>
+                          <input type="hidden" name="rewardType" id="rewardType" value=""/>
+                        </div>
+                      </div>
+                      <div class="col-md-7 paddingLeft" id="percentageReward">
+                        <div class="form-group positionRelative iconHolder percentage fullWid" >
+                          <input type="text" class="form-control input-sm" field-name="Percentage" id="percentageRewardValue" name="percentageReward" onblur="getPercentageValue()" placeholder="Percentage">
+                          <i class="fa fa-percent"></i> 
+                        </div>
+                        </div>
+                        <div class="col-md-7 paddingLeft" id="flatReward"  style="display: none">
+                        <div class="row flat">
+                          <div class="form-group col-md-8 paddingRight positionRelative iconHolder" >
+                            <input type="text" class="form-control input-sm" field-name="Flat" id="flatRewardValue"  name="flatReward" placeholder="Flat">
+                            <i class="fa fa-money" id="flatRewardIcon"></i> </div>
+                          <div class="form-group select-field col-md-4 paddingLeft">
+                            <select class="form-control input-sm" id="flatRateType" name="flatRateType"  style="display: none">
+                              <option  ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}><i class="fa fa-rupee" title="INR"></i>INR</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}><i class="fa fa-dollar" title="USD"></i>USD</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}><i class="fa fa-aud" title="AUD"></i>AUD</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'EUR' ? 'selected' : ''}><i class="fa fa-eur" title="Eur"></i>EUR</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'SGD' ? 'selected' : ''}><i class="fa fa-sgd" title="SGD"></i>SGD</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'GBP' ? 'selected' : ''}><i class="fa fa-gdp" title="GDP"></i>GBP</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+             <!--  <div class="col-md-8">
 					<div class="row">
 					  <div class="col-lg-8">
 					  	<input type="text" class="form-control" id="billingAmount" name="billingAmount" value="" placeholder="Enter Amount" data-validation="required validate_Space validate_float validate_length length1-50" field-name="Billing Amount">
@@ -251,7 +285,7 @@
 						</select>
 					  </div>
 					</div>
-              </div>
+              </div> -->
             </div>
             <div class="form-group">
               <label class="col-md-4">invoice frequency<span class="text-danger">&nbsp;*</span></label>
@@ -285,7 +319,44 @@
               	<input type="text" class="form-control" name="Company Name" value="">
             </div>
             </div> -->
+            
             <div class="form-group">
+              <!-- <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label> -->
+                <label class="col-md-4">Tax<span class="text-danger">&nbsp;*</span></label>
+                   <div class="clearfix col-md-8">
+                      <div class="col-md-5 paddingLeft">
+                        <div class="btn-group btn_Block">
+                          <button type="button" class="btn btn-sm btn-primary" id="taxPercentageBtn" value="percentage" onClick="getTaxRewardType('Percentage')">%</button>
+                          <button type="button" class="btn btn-sm btn-default" id="taxflatBtn" value="flat" onClick="getTaxRewardType('Flat')">Flat</button>
+                          <input type="hidden" name="taxRewardType" id="taxRewardType" value=""/>
+                        </div>
+                      </div>
+                      <div class="col-md-7 paddingLeft" id="taxPercentageReward">
+                        <div class="form-group positionRelative iconHolder percentage fullWid" >
+                          <input type="text" class="form-control input-sm" field-name="Percentage" id="taxPercentageRewardValue" name="taxPercentageReward" onblur="getTaxPercentageValue()" placeholder="Percentage">
+                          <i class="fa fa-percent"></i> 
+                        </div>
+                        </div>
+                        <div class="col-md-7 paddingLeft" id="taxFlatReward"  style="display: none">
+                        <div class="row flat">
+                          <div class="form-group col-md-8 paddingRight positionRelative iconHolder" >
+                            <input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue"  name="taxFlatReward" placeholder="Flat">
+                            <i class="fa fa-money" id="taxFlatRewardIcon"></i> </div>
+                          <div class="form-group select-field col-md-4 paddingLeft">
+                            <select class="form-control input-sm" id="taxFlatRateType" name="taxFlatRateType"  style="display: none">
+                              <option  ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}><i class="fa fa-rupee" title="INR"></i>INR</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}><i class="fa fa-dollar" title="USD"></i>USD</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}><i class="fa fa-aud" title="AUD"></i>AUD</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'EUR' ? 'selected' : ''}><i class="fa fa-eur" title="Eur"></i>EUR</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'SGD' ? 'selected' : ''}><i class="fa fa-sgd" title="SGD"></i>SGD</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'GBP' ? 'selected' : ''}><i class="fa fa-gdp" title="GDP"></i>GBP</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+            </div>
+          <!--   <div class="form-group">
               <label class="col-md-4">Tax</label>
               <div class="col-md-8">
 					<div class="row">
@@ -299,10 +370,10 @@
 					  <div class="col-lg-8" id = "taxDiv">
 					  	<input type="text" class="form-control" id="tax" name="tax" value="" onchange = "selectTaxType();">
 					  </div>
-					 <!--  <span class="hidden">Enter Project Id</span> -->
+					  <span class="hidden">Enter Project Id</span>
 					</div>
               </div>
-		</div>      
+		</div>  -->     
             
         </div>
       </div>      
@@ -789,19 +860,162 @@ function hideCommonSOWFields(){
 
 	}
 </script>
-<!-- <script>
-var config = {
-	      '.chosen-select'           : {},
-	      '.chosen-select-deselect'  : {allow_single_deselect:true},
-	      '.chosen-select-no-single' : {disable_search_threshold:10},
-	      '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-	      '.chosen-select-width'     : {width:"95%"}
-	    }
-	    for (var selector in config) {
-	      $(selector).chosen(config[selector]);
-	    }
 
-</script> -->
+
+<script type="text/javascript">
+function getRewardType(rewardType){
+	
+	 $("#rewardType").val(rewardType);
+	 
+	 $("#percentageRewardValue").val('');
+	 $("#flatRewardValue").val('');
+	 
+	 $('#percentageReward').find('p.jquery_form_error_message').remove();
+	 $('#flatReward').find('p.jquery_form_error_message').remove();
+	 
+	if(rewardType == 'Percentage'){
+		document.getElementById("percentageReward").style.display="";
+		document.getElementById("flatReward").style.display="none";
+		document.getElementById("flatRateType").style.display="none";
+		
+		document.getElementById("percentageBtn").className = 'btn btn-sm btn-primary active'
+	    document.getElementById("flatBtn").className = 'btn btn-sm btn-primary'
+    	$('#percentageRewardValue').attr("data-validation","required validate_float");  
+		$('#percentageRewardValue').removeAttr('data-validation-optional');
+	    $('#flatRewardValue').removeAttr('data-validation');
+	    $('#flatRewardValue').attr("data-validation-optional","true"); 
+	    	
+	    
+	}
+	
+	if(rewardType == 'Flat'){
+		/* document.getElementById("crowd_rate").style.display=""; */
+		document.getElementById("flatReward").style.display="";
+		document.getElementById("flatRateType").style.display="";
+		document.getElementById("percentageReward").style.display="none";
+		
+		document.getElementById("percentageBtn").className = 'btn btn-sm btn-primary'
+		document.getElementById("flatBtn").className = 'btn btn-sm btn-primary active'
+		$('#flatRewardValue').attr("data-validation","required validate_float");
+		$('#flatRewardValue').removeAttr('data-validation-optional');
+		$('#percentageRewardValue').removeAttr('data-validation');
+		$('#percentageRewardValue').attr("data-validation-optional","true"); 
+		
+	}
+}
+</script>
+
+<script>
+function getPercentageValue(){
+	var percentageValue = document.getElementById("percentageRewardValue").value;
+	if(percentageValue > 100 || percentageValue < 0){
+		/* $("#releaseToCWBtn").attr("disabled", "disabled"); */
+	    $('#percentageReward').find('p.jquery_form_error_message').remove(); 
+	   
+	    if(percentageValue < 0){
+	    	$("input#percentageRewardValue").after("<p class='jquery_form_error_message'>Percentage value should not in negitive</span>");
+	    }else{
+	    	$("input#percentageRewardValue").after("<p class='jquery_form_error_message'>Percentage value not more than 100</span>");
+	    }
+	    
+		$('input#percentageRewardValue').attr('record-exist','yes');
+		 if(percentageValue < 0){
+			 $('input#percentageRewardValue').attr('record-exist-errorMsg','Percentage value should not in negitive'); 
+		 }else{
+			 $('input#percentageRewardValue').attr('record-exist-errorMsg','Percentage value not more than 100'); 
+		 }
+		
+	}else{
+		 /* $("#releaseToCWBtn").removeAttr("disabled"); */
+		 $('input#percentageRewardValue').removeAttr( "record-exist record-exist-errormsg");
+		 $('#percentageReward').find('p.jquery_form_error_message').remove(); 
+		 $( "#releaseToCWBtn" ).removeAttr("style");
+		 $( "#releaseToCWBtn" ).click(function() {
+		 if ($(this).validate(false, validationSettings)){
+		 }
+		});
+	}
+	
+}
+</script>
+
+
+<script type="text/javascript">
+function getTaxRewardType(rewardType){
+	
+	 $("#taxRewardType").val(rewardType);
+	 
+	 $("#taxPercentageRewardValue").val('');
+	 $("#taxFlatRewardValue").val('');
+	 
+	 $('#taxPercentageReward').find('p.jquery_form_error_message').remove();
+	 $('#taxFlatReward').find('p.jquery_form_error_message').remove();
+	 
+	if(rewardType == 'Percentage'){
+		document.getElementById("taxPercentageReward").style.display="";
+		document.getElementById("taxFlatReward").style.display="none";
+		document.getElementById("taxFlatRateType").style.display="none";
+		
+		document.getElementById("taxPercentageBtn").className = 'btn btn-sm btn-primary active'
+	    document.getElementById("taxFlatBtn").className = 'btn btn-sm btn-primary'
+    	$('#taxPercentageRewardValue').attr("data-validation","required validate_float");  
+		$('#taxPercentageRewardValue').removeAttr('data-validation-optional');
+	    $('#taxFlatRewardValue').removeAttr('data-validation');
+	    $('#taxFlatRewardValue').attr("data-validation-optional","true"); 
+	    	
+	    
+	}
+	
+	if(rewardType == 'Flat'){
+		/* document.getElementById("crowd_rate").style.display=""; */
+		document.getElementById("taxFlatReward").style.display="";
+		document.getElementById("taxFlatRateType").style.display="";
+		document.getElementById("taxPercentageReward").style.display="none";
+		
+		document.getElementById("taxPercentageBtn").className = 'btn btn-sm btn-primary'
+		document.getElementById("taxFlatBtn").className = 'btn btn-sm btn-primary active'
+		$('#taxFlatRewardValue').attr("data-validation","required validate_float");
+		$('#taxFlatRewardValue').removeAttr('data-validation-optional');
+		$('#taxPercentageRewardValue').removeAttr('data-validation');
+		$('#taxPercentageRewardValue').attr("data-validation-optional","true"); 
+		
+	}
+}
+</script>
+
+<script>
+function getTaxPercentageValue(){
+	var percentageValue = document.getElementById("taxPercentageRewardValue").value;
+	if(percentageValue > 100 || percentageValue < 0){
+		/* $("#releaseToCWBtn").attr("disabled", "disabled"); */
+	    $('#taxPercentageReward').find('p.jquery_form_error_message').remove(); 
+	   
+	    if(percentageValue < 0){
+	    	$("input#taxPercentageRewardValue").after("<p class='jquery_form_error_message'>Percentage value should not in negitive</span>");
+	    }else{
+	    	$("input#taxPpercentageRewardValue").after("<p class='jquery_form_error_message'>Percentage value not more than 100</span>");
+	    }
+	    
+		$('input#taxPercentageRewardValue').attr('record-exist','yes');
+		 if(percentageValue < 0){
+			 $('input#taxPercentageRewardValue').attr('record-exist-errorMsg','Percentage value should not in negitive'); 
+		 }else{
+			 $('input#taxPercentageRewardValue').attr('record-exist-errorMsg','Percentage value not more than 100'); 
+		 }
+		
+	}else{
+		 /* $("#releaseToCWBtn").removeAttr("disabled"); */
+		 $('input#taxPercentageRewardValue').removeAttr( "record-exist record-exist-errormsg");
+		 $('#taxPercentageReward').find('p.jquery_form_error_message').remove(); 
+		/*  $( "#releaseToCWBtn" ).removeAttr("style");
+		 $( "#releaseToCWBtn" ).click(function() {
+		 if ($(this).validate(false, validationSettings)){
+		 }
+		}); */
+	}
+	
+}
+</script>
 
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
