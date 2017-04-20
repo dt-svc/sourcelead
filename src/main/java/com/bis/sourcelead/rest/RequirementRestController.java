@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -837,4 +838,10 @@ public class RequirementRestController {
 			resultJson = toJSON(reqList);
 			return resultJson;
 		}
+	    
+	    @RequestMapping(value = "/getEditRequirementDetails", method = RequestMethod.GET)
+		public @ResponseBody String getEditRequirementDetails(@RequestParam(value="requirementId", required=false) String requirementId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+	    	Requirement requirement =	requirementService.getRequirementDetailsById(Long.parseLong(requirementId));
+			return commonUtil.toJSON(requirement);
+		} 
 }
