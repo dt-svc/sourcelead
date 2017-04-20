@@ -242,6 +242,18 @@ public class RegistrationServiceImpl implements RegistrationService{
 			e.printStackTrace();
 		}
 		
+		//For saving Associate details 
+		/*Candidate candidate = getCandidateDetails(user,orgLocations);
+		try {
+			candidateService.addCandidate(candidate);
+			
+			//Update the Elk in Candidate
+			candidateService.saveOrUpdateCandidateElkDocument(candidate);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}*/
+		
+		
 		
 		List<Integer> moduleIds = new ArrayList<Integer>();
 		 for (String s : org.getModulesId().split(",")){
@@ -267,6 +279,22 @@ public class RegistrationServiceImpl implements RegistrationService{
 		userService.sendEmail(user, loginUser, password,orgLocationsId);
 	
 	}
+	
+	private Candidate getCandidateDetails(User user, OrgLocations orgLocations) {
+		Candidate candidate = new Candidate();
+		candidate.setOrgLocationId(orgLocations);
+		candidate.setCandidateType(Constants.CANDIDATE);
+		candidate.setFirstName(user.getFirstName());
+		candidate.setLastName(user.getLastName());
+		candidate.setCountry(orgLocations.getCountry());
+		candidate.setIsAssociate(Constants.YES);
+		candidate.setStatus(Constants.RECORD_ACTIVE);
+		candidate.setCreatedBy(user.getUserCode());
+		candidate.setCreatedDate(commonUtil.currentDate());
+		return candidate;
+	}
+
+	
 	
 	private Org getOrgDetails(Registration registration,String subModules,String modules){
 		

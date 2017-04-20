@@ -441,14 +441,14 @@ function getStatus(){
 	function addTasks() {
 		$('#taskNameDIV').find('p.jquery_form_error_message').remove();
 		$('#descriptionDiv').find('p.jquery_form_error_message').remove();
-		if ($('#taskName').val() == '' || $("#taskDescription").val().length > 200 || $("#taskDescription").val().length < 10 || $("#taskName").val().length > 100 || $("#taskName").val().length < 2) {
+		if ($('#taskName').val() == '' || $("#taskDescription").val().length > 200  || $("#taskName").val().length > 100 || $("#taskName").val().length < 2) {
 			if ($('#taskName').val() == '') {
 				$("input#taskName") .after( "<p class='jquery_form_error_message'>Task Name is required</span>");
 			}
 			if(($('#taskName').val() != '' && $("#taskName").val().length < 2 )|| $("#taskName").val().length > 100){
 				$("input#taskName") .after( "<p class='jquery_form_error_message'>The values Entered must be between 2-100 characters</span>");
 			}
-			if (($("#taskDescription").val() != '' && $("#taskDescription").val().length < 2) || $("#taskDescription").val().length > 200) {
+			if (($("#taskDescription").val() != '' && $("#taskDescription").val().length < 2 )  || $("#taskDescription").val().length > 200) {
 				$("textarea#taskDescription") .after( "<p class='jquery_form_error_message'>The values Entered must be between2-250 characters</span>");
 			}
 			return true;

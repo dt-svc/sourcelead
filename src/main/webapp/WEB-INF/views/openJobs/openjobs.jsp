@@ -630,7 +630,7 @@ function getOpenJobsELKList(){
 					result = result +'	<a href="#" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');"><h3 style="font-size:20px;color:#368ee0;">'+requirements.jobTitle+'</h3></a>';
 					description =  description+'Job Title:'+requirements.jobTitle+";";
 					
-					link = sourceleadUrl+"/sourcelead/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
+					link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 					
 					if(requirements.postedOrg != null && requirements.postedOrg != '' && requirements.postedOrg !='undefined'){
 					result = result +'	<h4>'+requirements.postedOrg+'</h4>';	
