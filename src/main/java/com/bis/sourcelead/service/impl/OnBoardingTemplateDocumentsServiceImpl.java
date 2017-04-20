@@ -55,4 +55,16 @@ public class OnBoardingTemplateDocumentsServiceImpl implements OnBoardingTemplat
 		return onBoardingTemplateDocumentsDao.getOnBoardingTemplateDocumentsByCandidateOnBoardingId(candidateOnBoardingId, documentType);
 	}
 
+	@Override
+	public Integer getCandidateOnboardingDocumentsCountByCandidateOnboardingIdExpectSupportDocs(
+			Long candidateOnBoardingId) throws Exception {
+		return onBoardingTemplateDocumentsDao.getCandidateOnboardingDocumentsCountByCandidateOnboardingIdExpectSupportDocs(candidateOnBoardingId);
+	}
+
+	@Override
+	public Integer getCandidateAcceptedOnboardingDocumentsCountByCandidateOnboardingId(Long candidateOnBoardingId)
+			throws Exception {
+		return onBoardingTemplateDocumentsDao.getCandidateAcceptedOnboardingDocumentsCountByCandidateOnboardingId(candidateOnBoardingId);
+	}
+
 }

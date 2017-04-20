@@ -3,9 +3,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-
-<link href="resources/css/candidate-common.css" rel="stylesheet">
-
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
@@ -13,29 +10,21 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
 	
+	<link href="resources/css/candidate-common.css" rel="stylesheet">
+	
 	<script type="text/javascript">
 		window.onload = function () {
 			getAllCountries();
 			disableMonths();
-			getUsersByRole();
-			var type = '${type}';
 		 };
 	</script>
 	 
 	 <script>
 		$(document).ready(function() {
-			getCandidatesList('Candidate');
-			document.getElementById("candidate_form").reset();
+			document.getElementById("addcandidate_form").reset();
 		});
 	</script>
-	 
- <style>
-	 #associateResumeDivId{
-	 display: none;
-	 }
- 
- 
- </style>
+	
 
 <!-- Content Area -->
 <section class="content-wraper">
@@ -43,57 +32,18 @@
     <div class="pull-left">
       <h2>Add Associate</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/associatesList'/>"> Associate List</a> &raquo; Add Associate</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/associatesList'/>"> Associate List</a> &raquo; Create Associate</div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
-  <form:form id="candidate_form" name="candidate_form"  enctype='multipart/form-data' >
+  <form:form id="addcandidate_form" name="addcandidate_form"  enctype='multipart/form-data' >
     <div class="row form-horizontal mt myForm">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
-        
-        <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
-        <div class="col-md-12 clearfix">
-        <div class="well clearfix">
-        <div class="row">
-      
-          <div class="col-md-6 radioInline">
-	          <label class="mr"><input type="radio"  id="canId" checked="true" value="Candidate" name="candidateType" onclick="getCandidatesList(this.value);" >Candidates</label>
-	          <label class="mr"><input type="radio"  id="newId" value="New" name="candidateType" onclick="getCandidatesList(this.value);" >Add New Associate </label>
-	          <label class="mr"><input type="radio"  id="parsId" value="parseCandidate" name="candidateType" onclick="parseResume();getCandidatesList(this.value);">Import Associate</label>
-          </div>
-          <input type="hidden" name="isAssociate" id="isAssociate" value="Y"/> 
-          <div id="parsResumeDivId"></div>
-          <!-- <div class="col-md-5 pull-right"> 
-			 <div class="col-md-12" id="browseDiv"  style="display: none;"> 
-				 <div class="input-group" id="uploadFileGroup"> 
-				 <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File 
-				 <input type="file" style="display: none;" name="locationMapFile" multiple id="uploadBtn"  class="upload"> 
-				 </span> </label> 
-				 <input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume"> 
-				 </div> 
-			 </div> 	
-          </div> -->
-          </div>
-          
-          <div class="row mt10">
-          <div class="col-md-6" id="selectCandidateDiv" style="display: block;">
-           <select class="form-control chosen-select" onchange="getCandidateDetails(); getCandidateResumes();"  name="candidateId" id="candidateId" data-validation="required" field-name="Applicant" class="form-control  block mt10">
-             <option value="">-Select Candidate-</option>
-           </select>
-          </div>
-          
-          <div class="col-md-6" id="resumesDiv"  style="display: none;">
-          <select id="candidateResumesList" name="candidateResume" field-name="Resume" class="form-control block"></select>
-          </div>
-          </div>
-          </div>
-        </div>
-        <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
-        
+         <input type="hidden" name="isAssociate" id="isAssociate" value="Y"/>
         <div class="form-group">
           <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="firstName" name="firstName" value="${firstName}"  field-name="First Name" data-validation="required validate_AlphaNumber validate_Space validate_length length1-100" value="">
+            <input type="text" class="form-control" id="firstName" name="firstName" value="${firstName}"  field-name="First Name" data-validation="required validate_AlphaNumber validate_length length1-100" value="">
             <div class="input-group hidden">
               <div class="input-group-btn">
                 <button type="button" class="btn btn-danger dropdown-toggle"
@@ -115,14 +65,13 @@
         <div class="form-group">
           <label class="col-md-3">Last Name</label>
           <div class="col-md-9">
-           <input type="text" class="form-control" id="lastName" name="lastName" value="${lastName}"  field-name="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true" value="">
+           <input type="text" class="form-control" id="lastName" name="lastName" value="${lastName}"  field-name="Last Name" data-validation="validate_AlphaNumber validate_length length1-100" data-validation-optional="true" value="">
           </div>
         </div>
-        
         <div class="form-group" id="emailDiv">
           <label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="email" name="email" value="${email}"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateCandidateEmail();" readonly="true">
+            <input type="text" class="form-control" id="email" name="email" value="${email}"  field-name="Email" data-validation="required validate_length length2-100 validate_email" onblur="validateCandidateEmail();" onmouseout="validateCandidateEmail();" value="">
           <span class="hidden">Valid Email</span>
           </div>
         </div>
@@ -130,16 +79,17 @@
         <div class="form-group">
           <label class="col-md-3">Mobile</label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="mobilePhone" name="mobilePhone" value="${phone}"  field-name="Mobile Number" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true" value="">
+            <input type="text" class="form-control" id="mobilePhone" name="mobilePhone" value="${phone}"  field-name="Mobile Number" data-validation="validate_length length9-20 validate_phone" data-validation-optional="true" value="">
           </div>
         </div>
         
-         <div class="form-group">
+        <div class="form-group">
           <label class="col-md-3">Alternative Number</label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="alternateMobilePhone" name="alternateMobilePhone"   field-name="Alternative Number" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true" value="">
+            <input type="text" class="form-control" id="alternateMobilePhone" name="alternateMobilePhone"   field-name="Alternative Number" data-validation="validate_length length9-20 validate_phone" data-validation-optional="true" value="">
           </div>
         </div>
+        
         
         <div class="form-group">
 				<label class="col-md-3">Country</label>
@@ -164,6 +114,8 @@
                  </select>
 			</div>
 		</div>
+		
+		
         
         <div class="form-group">
           <label class="col-md-3">Address</label>
@@ -172,7 +124,7 @@
           </div>
         </div>
         
-         <div class="form-group">
+        <div class="form-group">
          <label class="col-md-3">Designation</label>
          <div class="col-md-9 ratetype">
              <input type="text" id="designation" name="designation" value="${designation}" field-name="Designation"  data-validation="validate_Space validate_Name validate_length length2-250" data-validation-optional="true"  value="" class="form-control">
@@ -182,7 +134,7 @@
        <div class="form-group">
          <label class="col-md-3">Employment type<span class="text-danger">&nbsp;*</span></label>
          <div class="col-md-9">
-             <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getDesignationType(this);" data-validation="required" field-name="Employment type">
+             <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getDesignationType(this);" field-name="Employment type" data-validation="required">
                 <option value="">--Select--</option>
                  <option>C2C</option>
                  <option>C2C-1099</option>
@@ -202,15 +154,12 @@
             <div class="row exp-drop">
              <div class="col-xs-6 col-md-6">
              		<select class="form-control selectpicker" id="experienceYears" name="experienceYears" onchange="disableMonths();">
-             		  <option value="" >Years</option>
+             		  <option value="">Years</option>
              		  <c:forEach begin="0" end="25" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
-             		     
              		</select>
              </div>
-            
-             
              <div class="col-xs-6 col-md-6">
              		<select class="form-control selectpicker" id="experienceMonths" name="experienceMonths">
              		<option value="">Months</option>
@@ -223,37 +172,36 @@
           </div>
         </div>
        
+       <div class="form-group designationTypeDiv" id="designationTypeDiv" style="display:none">
+            <label class="col-md-3">Employment Type</label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" id="designationOtherType" name="designationOtherType" value="${candidate.designationOtherType}"  field-name="Job Type" value="">
+            </div>
+          </div>
        
        <div class="clearfix" id="hideVendor" style="display:none">
        <div class="form-group">
 			<label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
-			<div class="col-md-9">
-			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();">
+			<div class="col-md-9" id="errorvendor">
+			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();">
                  </select>
 			</div>
 		</div>
 		
 		 <div class="form-group">
 			<label class="col-md-3">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
-			<div class="col-md-9">
-			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="select Vendor Contact">
+			<div class="col-md-9" id="errorvendorContact">
+			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="select Vendor Contact" onchange="removeValiationVendorContact();">
                  </select>
 			</div>
 		</div>
 		</div>
-       
-        <div class="form-group designationTypeDiv" id="designationTypeDiv" style="display:none">
-            <label class="col-md-3">Employment Type</label>
-            <div class="col-md-9">
-              <input type="text" class="form-control" id="designationOtherType" name="designationOtherType" value="${candidate.designationOtherType}"  field-name="Job Type" value="">
-            </div>
-          </div>
-          
+		
        <div class="form-group">
             <label class="col-md-3">Current Rate</label>
             <div class="col-md-9">
              <div class="input-group er ratetype">
-                <div class="input-group-btn tblminwidth-75"> 
+                <div class="input-group-btn tblminwidth-75">
                   
                   <select class="selectpicker" id="currentRateCurrency" name="currentRateCurrency">
                  
@@ -273,10 +221,10 @@
                     <option value="">Rate Per</option>
                     <option ${currentRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
                     <option ${currentRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-                    <option ${currentRateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
-                    <option ${currentRateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+                    <option ${currentRateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
+                    <option ${currentRateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
                     <option ${currentRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-                    <option ${currentRateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+                    <option ${currentRateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
                     <option ${currentRateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
                   </select>
                 </div>
@@ -311,10 +259,10 @@
                     <option value="">Rate Per</option>
                     <option ${rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
                     <option ${rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-                    <option ${rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
-                    <option ${rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+                    <option ${rateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
+                    <option ${rateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
                     <option ${rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-                    <option ${rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+                    <option ${rateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
                     <option ${rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
                   </select>
                 </div>
@@ -333,9 +281,9 @@
         
         
          <div class="form-group">
-              <label class="col-md-3">Education</label> 
+              <label class="col-md-3">Education</label>
               <div class="col-md-9">
-                <select multiple data-placeholder="select Education" class="chosenone-selectone form-control" name="candidateEducation" id="candidateEducation" data-validation-optional="true">
+                <select multiple data-placeholder="select Education" class="chosenone-selectone form-control" name="candidateEducation" id="candidateEducation" data-validation="validate_Space" data-validation-optional="true">
                 <c:forEach var="edu" items="${educationsList}">
 	                     <option value="${edu.name}">${edu.name}</option>
                 </c:forEach>
@@ -343,13 +291,11 @@
               </div>
             </div>
        
-         
-        
         
         <div class="form-group">
               <label class="col-md-3">Skills</label>
               <div class="col-md-9">
-                <select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">
+                <select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true" >
                 <c:forEach var="skill" items="${skillsList}">
 	                     <option value="${skill.name}">${skill.name}</option>
                 </c:forEach>
@@ -357,11 +303,25 @@
               </div>
             </div>
         
+         <div class="form-group">
+            <label class="col-md-3">Import Resume</label>
+            <div class="col-md-9">
+			 <div class="input-group col-md-12" id="uploadFileGroup" style="margin:0 auto">
+               <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                <input type="file" style="display: none;" multiple name ="uploadBtn" id="uploadBtn"  class="upload">
+                 </span> </label>
+                 <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
+           </div>
+         </div>
+        </div>
+        
+         
+        
         <div class="form-group">
          <label class="col-md-3">Notice Period</label>
           <div class="col-md-9">
                <select class="form-control valid selectpicker" id="noticePeriod" name="noticePeriod">
-                <option value="">--Select--</option>
+                <option value="">Select</option>
                  <option ${noticePeriod  == 'Immediately available' ? 'selected' : ''}>Immediately available</option>
                  <option ${noticePeriod  == '15 Days' ? 'selected' : ''}>15 Days</option>
                  <option ${noticePeriod  == '1 Month' ? 'selected' : ''}>1 Month</option>
@@ -370,22 +330,23 @@
                 </select>
              
            </div>
-         </div>
-         
-        <div class="form-group">
+          </div> 
+           <div class="form-group">
           <label class="col-md-3">Primary Skill</label>
           <div class="col-md-9">
             <input type="text" class="form-control" id="primarySkill" name="primarySkill" value="${primarySkill}"  field-name="Primary Skill" data-validation="validate_Space validate_length length2-200" data-validation-optional="true">
           </div>
          </div>
-        
-        <div class="form-group">
+         
+         
+         <div class="form-group">
           <label class="col-md-3">Summary</label>
           <div class="col-md-9">
             <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true"></textarea>
           </div>
         </div>
         
+          <div class="clearfix"></div>
          <div class="clearfix" id="newResumeDiv"  style="display: none;">
          <div class="form-group">
             <label class="col-md-3">Add Resume</label>
@@ -394,26 +355,24 @@
                <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                 <input type="file" style="display: none;" multiple name ="uploadFileBtn" id="uploadFileBtn"  class="upload">
                  </span> </label>
-                 <input type="text" class="form-control" readonly id="uploadProfile" name="docFile" type="file"  placeholder="Import Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
+                 <input type="text" class="form-control" readonly id="uploadProfile" name="docFile" type="file"  placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
            </div>
          </div>
         </div>
         </div> 
         
+
         <div class="form-group">
           <label class="col-md-3"></label>
-         <!--  <div class="col-md-9 checkbox checkBox">
-            <label>
-              <input type="checkbox" value="">
-              Send Invitation </label>
-          </div> -->
         </div> 
+        
+        
         <div class="clearfix"></div>
       </div> 
     </div>
     
     
-    <div class="form-footer clearfix mt">
+    <div class="form-footer clearfix">
       <div class="col-lg-12">
         <div class="pull-right">
           <input type="button" value="Save" id="store_candidate" onclick="storeCandidate();" class="btn btn-primary">
@@ -433,13 +392,20 @@
 	<!-- Footer Area -->
 	
 	<%-- 
-     @author : Laxman.
+     @author : prasad k.
      this script is for save/store candidate.
      1.usage     : onclick.
      2.parameter : csrf token,con.
      3.ajax url implementation in CandidateRestController.
     --%>
- 
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 
 <script type="text/javascript">
 	function storeCandidate() {
 		
@@ -452,18 +418,19 @@
 				dateFormat : 'yyyy/mm/dd'
 			};
 		
-		 if ($('#candidate_form').validate(false, validationSettings)){ 
+		 if ($('#addcandidate_form').validate(false, validationSettings)){ 
 			
 			var sourceleadUrl = '${sourceleadUrl}';
-			var frm = $('#candidate_form').serializeFormJSON();
+			var frm = $('#addcandidate_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, ""); 
 		    var jsonData = encodeURIComponent(con);
-			var form = $('#candidate_form')[0];
+			var form = $('#addcandidate_form')[0];
       		var formData = new FormData(form); 
 			//It will escape all the special characters
 			$("#store_candidate").attr("disabled", "disabled");
 			$("#store_candidate").addClass('button').val('Processing..');
+
 			$.ajax({
 						type : "POST",
 		        	    data: formData,
@@ -483,9 +450,9 @@
 		 } 
 	} 
 	
-	$('body').on('blur', '#candidate_form', function() {
-		$("#candidate_form").showHelpOnFocus();
-		$("#candidate_form").validateOnBlur(false, validationSettings);
+	$('body').on('blur', '#addcandidate_form', function() {
+		$("#addcandidate_form").showHelpOnFocus();
+		$("#addcandidate_form").validateOnBlur(false, validationSettings);
 	});
 </script>
 
@@ -558,8 +525,7 @@ function getAllCountries(){
 
 
 <script>
-function getStates(state){
-	
+function getStates(){
 	var countryName = $("#country").val();
 	if(countryName != null && countryName != "" && countryName !="undefined"){
 		$.ajax({
@@ -571,12 +537,7 @@ function getStates(state){
 	        	$('#state').empty();
 	        	$('#state').append('<option value="">---select state---</option>');
 	            for(var i=0;i<json.length;i++){
-	            	if(state != null && state != 'undefined' && json[i] == state){
-	            		$('#state').append('<option value="'+state+'" selected>'+json[i]+'</option>');
-	            	}else{
-	            		$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');	
-	            	}
-	            	
+	            	$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            }
 	            $('#state').trigger("chosen:updated");
 	            
@@ -600,7 +561,7 @@ function getStates(state){
 
 
 <script>
-function getCities(city){
+function getCities(){
 	var countryName = $("#country").val();
 	var stateName = $("#state").val();
 	
@@ -614,10 +575,7 @@ function getCities(city){
 	        	$('#city').empty();
 	        	$('#city').append('<option value="">---select city---</option>');
 	            for(var i=0;i<json.length;i++){
-	            	if(city != null && city != "" && city !="undefined" && json[i] == city){
-	            		selected = 'selected';
-	            	}
-	            	$('#city').append('<option value="'+json[i]+'" '+selected+'>'+json[i]+'</option>');
+	            	$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            }
 	            $('#city').trigger("chosen:updated");
 	        },
@@ -650,8 +608,7 @@ function getCities(city){
 	       $("#state").chosen();
 	       $("#city").chosen();
 	       
-	       $("#candidateSkills").val('').trigger("chosen:updated");
-	       $("#candidateEducation").val('').trigger("chosen:updated");
+	       
 	       
 	        //Adding Customized Skills to the list
 	        var select, chosen;
@@ -662,6 +619,8 @@ function getCities(city){
 		    $("#candidateSkills").chosen().change(function(event) {
 		    	 var sourceleadUrl ='${sourceleadUrl}';
 		    	var allSkills = $(event.target).val();
+		   
+		    	
 		    	$.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
@@ -683,13 +642,11 @@ function getCities(city){
 		            var option = $("<option>").val(newSkill).text(newSkill);
 		            select.append(option);
 		            select.find(option).prop('selected', true);
-		            
-		            //to doesn't allow duplicates
+		          //to doesn't allow duplicates
                     $("#candidateSkills option").each(function(){
                           $(this).siblings("[value='"+ this.value+"']").remove();
                     });
                     //end
-		            
 	        		$("#candidateSkills").trigger("chosen:updated");
 	        		
 		        }
@@ -710,13 +667,11 @@ function getCities(city){
 		            var option = $("<option>").val(newEducation).text(newEducation);
 		            selectone.append(option);
 		            selectone.find(option).prop('selected', true);
-		            
-		            //to doesn't allow duplicates
+		          //to doesn't allow duplicates
                     $("#candidateEducation option").each(function(){
                           $(this).siblings("[value='"+ this.value+"']").remove();
                     });
                     //end
-		            
 	        		$("#candidateEducation").trigger("chosen:updated");
 	        		
 		        }
@@ -737,6 +692,9 @@ function getCities(city){
 			var $this = $(this);
 			$this.next().css({'width': '100%'});
 			})
+			
+			$("#candidateSkills").val('').trigger("chosen:updated");
+	       $("#candidateEducation").val('').trigger("chosen:updated");
 				
 				
 </script> 
@@ -753,7 +711,7 @@ function getCities(city){
 		
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&candidateType=Y", 
+		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&candidateType=N", 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
@@ -777,14 +735,13 @@ function getCities(city){
  
  <!-- Experience Years and Months validation Script years greater than  20 the months dropdown disabled script here -->
  <script type="text/javascript">
- 
  function disableMonths() {
      $("#experienceYears").change(function() {
          if ($("#experienceYears").val() == '25'){
         	 $("#experienceMonths").val('');  
         	 $('#experienceMonths').selectpicker('refresh');
-        	 /* $('#experienceMonths').attr("disabled", true);
-             $('#experienceMonths').val("disabled", true); */
+        	 $('#experienceMonths').attr("disabled", true);
+             $('#experienceMonths').val("disabled", true);
          }else{
         	 $("#experienceMonths").val('');  
         	 $('#experienceMonths').selectpicker('refresh');
@@ -792,162 +749,39 @@ function getCities(city){
          }
      });
  }
-	      
+ 
+ var selectedFile = document.getElementById("uploadBtn");
+	      selectedFile.addEventListener("change", function() {
+	      	 $("#uploadFile").focus();
+	      	 if(validate_fileupload(this.value)){
+	      		 var docSize = this.files[0].size;
+	     	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
+	     	      if(docSize > 2097152){
+	     	    	  document.getElementById("uploadFile").value = '';
+	     	    	 /*  $("#uploadFileGroup").append("<p class='jquery_form_error_message'></p>"); */
+	     	    	  $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
+	     			  $("input#uploadFile").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+	     			  document.getElementById("uploadFile").setAttribute('record-exist','yes');
+	     			  document.getElementById("uploadFile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+	     	      }else{
+	     	    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
+	        		 $('#uploadFileGroup').find('p.jquery_form_error_message').remove(); 
+	      	    }
+	      	 }
+	      });
 
+	     /* upload file script */
+	     document.getElementById("uploadBtn").onchange = function () {
+	     	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+	       // document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
+	     };
+
+ 
 </script>
-
-
-
-<script>
-
-function getUsersByRole(){
-	var sourceleadUrl ='${sourceleadUrl}';
-	var roleId = document.getElementById("role").value;
-	if(roleId != 'All' && roleId != ''  && roleId != 'undefined'){
-		
-		 $.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/getUserByRoleId?${_csrf.parameterName}=${_csrf.token}&roleId="+roleId, 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	var output = "";
-		        	output = output + "<option value=''>-- Select User --</option>"; 
-		        	for (var i=0; i<json.length; i++)
-					{
-		        		var opt = json[i];
-		        		var name = '';
-		        		if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
-		        			name = opt.firstName+" "+opt.lastName;
-		        		}else{
-		        			name = opt.firstName;
-		        		}
-			        		
-		        		output = output + "<option value='" +opt.id+ "'>"+name+"</option>";
-					}
-		        	$("#consultantUser").empty();
-			        $("#consultantUser").append(output);
-			        $('#consultantUser').trigger("chosen:updated");
-		        },
-		    });
-		
-		
-	}else if(roleId == 'All'){
-		
-		 $.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/getAllRoleUsers?${_csrf.parameterName}=${_csrf.token}", 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	var output = "";
-		        	output = output + "<option value=''>-- Select User --</option>"; 
-		        	for (var i=0; i<json.length; i++)
-					{
-			        		var opt = json[i];
-			        		var name = '';
-			        		if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
-			        			name = opt.firstName+" "+opt.lastName;
-			        		}else{
-			        			name = opt.firstName;
-			        		}
-			        		output = output + "<option value='" +opt.id+ "'>"+name+"&nbsp;("+opt.userType+")</option>";
-					}
-		        	$("#consultantUser").empty();
-			        $("#consultantUser").append(output);
-			        $('#consultantUser').trigger("chosen:updated");
-		        },
-		    });
-		
-		
-	}else{
-		
-		 var output = "";
-    	 output = output + "<option value=''>-- Select User --</option>"; 
-    	 $("#consultantUser").empty();
-	     $("#consultantUser").append(output);
-	     $('#consultantUser').trigger("chosen:updated");
-	}
-	
-	
-	$("#firstName").val('');
-    $("#lastName").val('');
-    $("#email").val('');
-    $("#mobilePhone").val('');
-    $("#uploadFile").val('');
-    
-    /* Clear the skills */
-    $("#candidateSkills").val('').trigger("chosen:updated");
-}
-
-</script>
-
-<script>
-function getUserDetails(){
-	var sourceleadUrl ='${sourceleadUrl}';
-	var consultantUser = document.getElementById("consultantUser").value;
-	if(consultantUser){
-		
-		$.ajax({
-	    	type: "POST",
-	    	url : sourceleadUrl+"/getConsultantUserDetailsById?${_csrf.parameterName}=${_csrf.token}&userId="+consultantUser,
-	        contentType: "application/json; charset=utf-8",
-	        dataType: "json",
-	        success: function(data) {
-	        	if(data != null && data != ''){
-	        		  var json = JSON.parse(data);
-	        		
-	        		  $("#firstName").val(json[0]);
-	        		  
-	        		 /*  if(json[1] != null && json[1] != '' && json[1] !='undefined'){
-	        			  $("#lastName").val('');
-	        		  }else{
-	        			  $("#lastName").val(json[1]);
-	        		  } */
-	        		  $("#lastName").val(json[1]);
-	        		  $("#email").val(json[2]);
-	        		  $("#mobilePhone").val(json[3]);
-	        		 
-	        		 
-	        	}
-			 },
-	        error: function(e){
-	        }
-	    });
-	}
-	
-}
-</script>
-<script>
-var selectedFile = document.getElementById("uploadFileBtn");
-selectedFile.addEventListener("change", function() {
-	 $("#uploadProfile").focus();
-	 if(validate_fileupload(this.value)){
-		 var docSize = this.files[0].size;
-	      $("#addResumeId").find('p.jquery_form_error_message').remove();
-	      if(docSize > 2097152){
-	    	  document.getElementById("uploadProfile").value = '';
-	    	 /*  $("#uploadFileGroup").append("<p class='jquery_form_error_message'></p>"); */
-	    	  $('#addResumeId').find('p.jquery_form_error_message').remove();
-			  $("input#uploadProfile").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
-			  document.getElementById("uploadProfile").setAttribute('record-exist','yes');
-			  document.getElementById("uploadProfile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
-	      }else{
-	    	 $('input#uploadProfile').removeAttr( "record-exist record-exist-errormsg");
-  		 $('#addResumeId').find('p.jquery_form_error_message').remove(); 
-	    }
-	 }
-});
-document.getElementById("uploadFileBtn").onchange = function () {
- 	$('#uploadProfile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
-   // document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
- };
-</script>
-
-
 <!-- Experience Years and Months validation Script End here -->
 
 <script>
 function getDesignationType(designationType){
-	$('#vendorcontact').val('').trigger("chosen:updated");
 	var existingDesignationType = '${requirement.designationType}';
 	if(designationType.value == 'Other'){
 		 document.getElementById("designationTypeDiv").style.display="block";
@@ -961,20 +795,21 @@ function getDesignationType(designationType){
 			  $("#designationOtherType").val('');
 		  }
 	}
+	
 	if(designationType.value == 'C2C' || designationType.value == 'C2C-1099'){
 		 document.getElementById("hideVendor").style.display="block";
 		 $('#vendors').attr("data-validation","required"); 
 		 $('#vendorcontact').attr("data-validation","required"); 
-		// $("#vendors").attr("data-validation", "true");
 		  getVendorsByOrgLocation();
 	}else{
 		 document.getElementById("hideVendor").style.display="none";
 		 $('#vendors').removeAttr("data-validation","required"); 
 		 $('#vendorcontact').removeAttr("data-validation","required"); 
 	}
-	
+	$('#designationType + p').remove();
 }
 </script>
+
 
 <!-- This script for Current Rate ,Rate Type,Expected Rate, Expected Rate Type validation checks -->
 <script>
@@ -1031,529 +866,7 @@ var currentRate = document.getElementById("currentRate").value;
 }
 </script>
 
-
-
-
-
-
-
-<!-- =================================================Laxman =========================================== -->
-<script type="text/javascript">
- function getCandidatesList(value) {
-	 candidateType = value;
-	 $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
-	 $('#newResumeDiv').hide();
-	  $("#candidateEducation").val('').trigger("chosen:updated");
-      $("#candidateSkills").val('').trigger("chosen:updated");
-	 $('#candidateId').removeAttr('data-validation-optional');
-	 $("#candidateId").attr("data-validation", "required");
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType != 'New' && candidateType != 'parseCandidate'){
-		 $("#selectCandidateDiv").css("display","block");
-		 document.getElementById("newResumeDiv").style.display="none";
-		 var skillsDiv = document.getElementById('skillsDiv'); 
-		 if(skillsDiv != null){
-			 document.getElementById("skillsDiv").style.display="none";
-			 $("#candidateSkills").val('').trigger("chosen:updated");
-		 }
-			 $.ajax({
-			    	type: "POST",
-			        url: sourceleadUrl+"/getAssociateList?${_csrf.parameterName}=${_csrf.token}&candidateType="+candidateType, 
-			        success: function(data) {
-			        	var json = JSON.parse(data);
-			        	var output = "";
-			        	output = output + "<option value=''>-- Select "+candidateType+" --</option>"; 
-			        	for (var i=0; i<json.length; i++)
-						{
-				        		var opt = json[i];
-				        		var lastName = "";
-				        		if(opt.isAssociate == 'N'){
-				        			if(opt.lastName != null && opt.lastName != "" && opt.lastName != 'undefined'){
-					        			lastName = opt.lastName;
-					        		}
-					        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+lastName+"</option>";
-				        		}
-						}
-			        	$("#candidateId").empty();
-				        $("#candidateId").append(output);
-				        $('#candidateId').trigger("chosen:updated");
-				        getCandidateResumes();
-			        },
-			    }); 
-	 }else{
-		 var output = "";
-     	 $("#candidateId").empty();
-	     $("#candidateId").append(output);
-	     $('#candidateId').trigger("chosen:updated");
-	     $("#selectCandidateDiv").css("display","none");
-	     
-	     $("#candidateId").removeAttr("data-validation");
-	     $('#candidateId').attr("data-validation-optional","true"); 
-	     
-	     $("#candidateResumesList").removeAttr("data-validation");
-	     $('#candidateResumesList').attr("data-validation-optional","true"); 
-	     
-	     $("#candidateEducation").val('').trigger("chosen:updated");
-   	     $("#candidateSkills").val('').trigger("chosen:updated");
-	     
-	     if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType == 'parseCandidate'){
-	    	 $("#candidate_form").val('').trigger("chosen:updated");
-	    	 document.getElementById("candidate_form").reset();
-	    	 $(".selectpicker").selectpicker('refresh');
-	    	 $('#state').trigger("chosen:updated");
-	    	 $( "#parsId" ).attr( "checked", true );
-	    	 $( "#newId" ).attr( "checked", false );
-	    	 $( "#canId" ).attr( "checked", false );
-	    	 
-	    	 document.getElementById("resumesDiv").style.display="none";
-	    	 document.getElementById("browseDiv").style.display="";
-	    	 $('#uploadFile').removeAttr('data-validation-optional');
-			 $('#uploadFile').attr("data-validation","required validatedoc "); 
-			 $("#email").removeAttr('readonly','readonly');
-			 //document.getElementById("newResumeDiv").style.display="none";
-			 document.getElementById("skillsDiv").style.display="";
-			 document.getElementById("associateResumeDivId").style.display="none";
-		     $("#candidateSkills").val('').trigger("chosen:updated");
-			 $('#uploadProfile').removeAttr('data-validation');
-			 $('#uploadProfile').attr("data-validation-optional","true"); 
-	     }else if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType == 'New'){
-	    	 $("#candidate_form").val('').trigger("chosen:updated");
-	    	 document.getElementById("candidate_form").reset();
-	    	 $(".selectpicker").selectpicker('refresh');
-	    	 $( "#newId" ).attr( "checked", true );
-	    	 $( "#parsId" ).attr( "checked", false );
-	    	 $( "#canId" ).attr( "checked", false );
-	    	 $("#email").removeAttr('readonly','readonly');
-	    	 document.getElementById("newResumeDiv").style.display="block";
-	    	 document.getElementById("resumesDiv").style.display="none";
-	    	 document.getElementById("browseDiv").style.display="none";
-	    	 //$('#uploadFile').removeAttr('data-validation');
-			 //$('#uploadFile').attr("data-validation-optional","true");
-			 
-			 //document.getElementById("associateResumeDivId").style.display="block";
-			
-	    	// document.getElementById("skillsDiv").style.display="";
-		     //$("#candidateSkills").val('').trigger("chosen:updated");
-			 //$('#uploadProfile').removeAttr('data-validation-optional');
-			 //$("#uploadProfile").attr("data-validation", "required validatedoc");
-	     }
-	     
-	     document.getElementById("resumesDiv").style.display="none";
-		
-	 }
-	 
-	 $("input[name=firstName]").val('');
-	 $("input[name=lastName]").val('');
-	 $("input[name=email]").val('');
-	 $("input[name=email]").removeAttr("readonly");
-	 
-	 $("input[name=alternateMobilePhone]").val('');
-	 $("input[name=mobilePhone]").val('');
-	 $("input[name=designation]").val('');
-	 $("select[name=state]").val('');
-	 $("select[name=city]").val('');
-	 $("select[name=noticePeriod]").val('');
-	 $("select[name=experienceYears]").val(0);
-	 $("select[name=experienceMonths]").val('');
-	 $("input[name=currentRate]").val('');
-	 $("input[name=currentRateType]").val('');
-	 $("input[name=expectedRate]").val('');
-	 $("input[name=rateType]").val('');
-	 $("input[name=candidateEducation]").val('');
-	 
-	 $("#uploadProfile").val('');
-	 $("#uploadFile").val(''); 
-	
- }
-</script>
-
-
-<script type="text/javascript">
-function getCandidateDetails(){
-	$(".selectpicker").selectpicker('refresh');
-	var candidateId = document.getElementById("candidateId").value
-	var sourceleadUrl ='${sourceleadUrl}';
-	if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
-		 $.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/getCandidateDetailsInAssociate?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	 
-		        	 $("input[name=firstName]").val(json['firstName']);
-		        	 $("input[name=email]").val(json['email']);
-		        	 $("input[name=email]").attr('readonly', 'readonly');
-		        	 
-		        	 if(json['lastName'] != null && json['lastName'] != "" && json['lastName'] != 'undefined'){
-		        		 $("input[name=lastName]").val(json['lastName']);
-		        	 }else{
-		        		 $("input[name=LastName]").val(''); 
-		        	 }
-		        	 
-		        	 if(json['mobilePhone'] != null && json['mobilePhone'] != "" && json['mobilePhone'] != 'undefined'){
-		        		 $("input[name=mobilePhone]").val(json['mobilePhone']);
-		        	 }else{
-		        		 $("input[name=mobilePhone]").val(''); 
-		        	 }
-		        	 
-		        	 if(json['alternateMobilePhone'] != null && json['alternateMobilePhone'] != "" && json['alternateMobilePhone'] != 'undefined'){
-		        		 $("input[name=alternateMobilePhone]").val(json['alternateMobilePhone']);
-		        	 }else{
-		        		 $("input[name=alternateMobilePhone]").val(''); 
-		        	 }
-		        	 
-		        	 if(json['designation'] != null && json['designation'] != "" && json['designation'] != 'undefined'){
-		        		 $("input[name=designation]").val(json['designation']);
-		        	 }else{
-		        		 $("input[name=designation]").val(''); 
-		        	 }
-		        	
-		        	 if(json['designationType'] != null && json['designationType'] != "" && json['designationType'] != 'undefined'){
-		        		 $("#designationType").val(json['designationType']);
-		        		 $("#designationType").selectpicker('refresh');
-		        		 employementType(json['designationType']);
-		        	 }else{
-		        		 $("#designationType").val(''); 
-		        		 $("#designationType").selectpicker('refresh');
-		        	 }
-		        	 
-		        	 if(json['address'] != null && json['address'] != "" && json['address'] != 'undefined'){
-		        		 $("#address").val(json['address']);
-		        	 }else{
-		        		 $("#address").val('');
-		        	 }
-		        	 
-		        	 if(json['summary'] != null && json['summary'] != "" && json['summary'] != 'undefined'){
-		        		 $("#summary").val(json['summary']);
-		        	 }else{
-		        		 $("#summary").val('');
-		        	 }
-		        	 
-		        	 if(json['primarySkill'] != null && json['primarySkill'] != "" && json['primarySkill'] != 'undefined'){
-		        		 $("#primarySkill").val(json['primarySkill']);
-		        	 }else{
-		        		 $("#primarySkill").val('');
-		        	 }
-		        	 
-		        	 
-		        	  if(json['candidateEdu'] != null && json['candidateEdu'] != "" && json['candidateEdu'] != 'undefined'){
-		        		var eduaction = json['candidateEdu'];
-				    	var customizeEducation = new Array();
-				    	customizeEducation = eduaction.split(",");
-				        for (var i = 0; i < customizeEducation.length; i++) { 
-				        	 var customEdu = customizeEducation[i];
-				        	 $('#candidateEducation').append('<option value=\''+customEdu+'\' selected>'+customEdu+'</option>');
-				        }
- 		        		$("#candidateEducation").trigger("chosen:updated");
-		     
-		        	 }else{
-		        		 $("#candidateEducation").val('').trigger("chosen:updated");
-		        		 $("input[name=candidateEducation]").val(''); 
-		        	 } 
-		        	 
-		        	 
-		        	  if(json['skillsName'] != null && json['skillsName'] != "" && json['skillsName'] != 'undefined'){
-			        		var skills = json['skillsName'];
-					    	var totalSkills = new Array();
-					    	totalSkills = skills.split(",");
-					        for (var i = 0; i < totalSkills.length; i++) { 
-					        	 var customSkill = totalSkills[i];
-					        	 $('#candidateSkills').append('<option value=\''+customSkill+'\' selected>'+customSkill+'</option>');
-					        }
-	 		        		$("#candidateSkills").trigger("chosen:updated");
-			     
-			        	 }else{
-			        		 $("#candidateSkills").val('').trigger("chosen:updated");
-			        		 $("input[name=candidateSkills]").val(''); 
-			        	 } 
-		        	 
-		        	 
-		        	 if(json['country'] != null && json['country'] != "" && json['country'] != 'undefined'){
-		        		 $("select[name=country]").val(json['country']);
-		        	 }else{
-		        		 $("select[name=country]").val('');
-		        	 }
-		        	
-		        	 if(json['state'] != null && json['state'] != "" && json['state'] != 'undefined'){
-		        		 $("select[name=state]").val(json['state']);
-		        		 getStates(json['state']);
-		        	 }else{
-		        		 $("#state").val('').trigger("chosen:updated");
-		        		 $("select[name=state]").val('');
-		        	 }
-		        	 
-		        	 if(json['city'] != null && json['city'] != "" && json['city'] != 'undefined'){
-		        		 getCities(json['city']);
-		        	 }else{
-		        		 $("#city").val('').trigger("chosen:updated");
-		        		 $("select[name=city]").val('');
-		        	 }
-		        	 
-		        	 if(json['vendorName'] != null && json['vendorName'] != "" && json['vendorName'] != 'undefined'){
-		        		 $("select[name=vendors]").val(json['vendorName']);
-		        		 getVendors(json['vendorName'],json['vendorOrgRelationId']);
-		        	 }else{
-		        		 $("#vendors").val('').trigger("chosen:updated");
-		        		 $("select[name=vendors]").val('');
-		        	 }
-		        	 
-		        	
-		        	 if(json['vendorContactName'] != null && json['vendorContactName'] != "" && json['vendorContactName'] != 'undefined'){
-		        		 $("select[name=vendorcontact]").val(json['vendorContactName']);
-		        		 vendorContactList(json['vendorContactName'],json['vendorOrgRelationId'],json['vendorSpocId']);
-		        	 }else{
-		        		 $("#vendorcontact").val('').trigger("chosen:updated");
-		        		 $("select[name=vendorcontact]").val('');
-		        	 }
-		        	 
-		        	 
-		        	 if(json['noticePeriod'] != null && json['noticePeriod'] != "" && json['noticePeriod'] != 'undefined'){
-		        		 $("select[name=noticePeriod]").val(json['noticePeriod']);
-		        		 $("#noticePeriod").selectpicker('refresh');
-		        	 }else{
-		        		 $("select[name=noticePeriod]").val('');
-		        	 }
-		        	
-		        	 if(json['experienceYears'] != null && json['experienceYears'] != "" && json['experienceYears'] != 'undefined'){
-		        		 $("select[name=experienceYears]").val(json['experienceYears']);
-		        		 $("#experienceYears").selectpicker('refresh');
-		        	 }else{
-		        		 $("select[name=experienceYears]").val('');
-		        		 $("#experienceYears").selectpicker('refresh');
-		        	 }
-		        	 
-		        	 if(json['experienceMonths'] != null && json['experienceMonths'] != "" && json['experienceMonths'] != 'undefined'){
-		        		 $("select[name=experienceMonths]").val(json['experienceMonths']);
-		        		 $("#experienceMonths").selectpicker('refresh');
-		        	 }else{
-		        		 $("select[name=experienceMonths]").val('');
-		        		 $("#experienceMonths").selectpicker('refresh');
-		        	 }
-		        	 
-		        	 
-		        	 if(json['expectedRate'] != null && json['expectedRate'] != "" && json['expectedRate'] != 'undefined'){
-		        		 $("input[name=expectedRate]").val(json['expectedRate']);
-		        	 }else{
-		        		 $("input[name=expectedRate]").val(''); 
-		        	 }
-		        	 		        	 
-		        	 if(json['rateType'] != null && json['rateType'] != "" && json['rateType'] != 'undefined'){
-		        		 $("select[name=rateType]").val(json['rateType']);
-		        		 $("#rateType").selectpicker('refresh');
-		        		 validateExpectedCTCRatePer();
-		        	 }else{
-		        		 $("select[name=rateType]").val('');
-		        		 $("#rateType").selectpicker('refresh');
-		        		 validateExpectedCTCRatePer();
-		        	 }
-		        	 
-		        	 if(json['expectedRateCurrencey'] != null && json['expectedRateCurrencey'] != "" && json['expectedRateCurrencey'] != 'undefined'){
-		        		 $("select[name=expectedRateCurrencey]").val(json['expectedRateCurrencey']);
-		        	 }
-		        	 
-		        	 if(json['currentRate'] != null && json['currentRate'] != "" && json['currentRate'] != 'undefined'){
-		        		 $("input[name=currentRate]").val(json['currentRate']);
-		        		 validateCurrentCTC();
-		        	 }else{
-		        		 $("input[name=currentRate]").val(''); 
-		        		 validateCurrentCTC();
-		        	 }
-		        	 
-		        	 
-		        	 if(json['currentRateType'] != null && json['currentRateType'] != "" && json['currentRateType'] != 'undefined'){
-		        		 $("select[name=currentRateType]").val(json['currentRateType']);
-		        		 $("#currentRateType").selectpicker('refresh');
-		        		 validateExpectedCTC();
-		        		 validateCurrentCTCRatePer();
-		        	 }else{
-		        		 $("select[name=currentRateType]").val(''); 
-		        		 $("#currentRateType").selectpicker('refresh');
-		        		 validateExpectedCTC();
-		        		 validateCurrentCTCRatePer();
-		        	 }
-		        	 
-		        	 if(json['currentRateCurrency'] != null && json['currentRateCurrency'] != "" && json['currentRateCurrency'] != 'undefined'){
-		        		 $("select[name=currentRateCurrency]").val(json['currentRateCurrency']);
-		        	 }
-		        	 
-		        },
-		    });
-	 }else{
-		 
-		 $("input[name=firstName]").val('');
-		 $("input[name=lastName]").val('');
-		 $("input[name=email]").val('');
-		 $("input[name=email]").removeAttr("readonly");
-		 
-		 $("input[name=alternateMobilePhone]").val('');
-		 $("input[name=mobilePhone]").val('');
-		 $("input[name=designation]").val('');
-		 $("select[name=state]").val('');
-		 $("select[name=city]").val('');
-		 $("select[name=noticePeriod]").val('');
-		 $("select[name=experienceYears]").val(0);
-		 $("select[name=experienceMonths]").val('');
-		 $("input[name=currentRate]").val('');
-		 $("input[name=currentRateType]").val('');
-		 $("input[name=expectedRate]").val('');
-		 $("input[name=rateType]").val('');
-		 $("input[name=candidateEducation]").val('');
-		 
-		 $("#uploadProfile").val('');
-		 $("#uploadFile").val(''); 
-		 
-	 }
-}
-</script>
-
-
-
-<script type="text/javascript">
- function getCandidateResumes() {
-	 $("#save_button").removeAttr("disabled");
-	 $('.jquery_form_error_message').remove();
-	 var candidateId = document.getElementById("candidateId").value
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
- 		 document.getElementById("resumesDiv").style.display="";
- 		/*	 document.getElementById("browseDiv").style.display="none";
-		 $("#uploadFile").removeAttr("data-validation");
-		 $("#uploadFile").val('');
-		 
- */		 
- 
- $('.jquery_form_error_message').remove();
-		 $.ajax({
-		    	type: "GET",
-		        url: sourceleadUrl+"/getAssociateResumes?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	if( json.length > 0){
-			        	var output = "";
-			        	if(json.length == 1){
-			        		
-			        		var opt = json[0];
-			        		if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
-			        			output = output + "<option value='" +opt.id+ "'>"+opt.title+"</option>";
-			            	}else{
-			            		output = output + "<option value='" +opt.id+ "'>"+opt.fileName+"</option>";
-			            	}
-			        	}else{
-			        		output = output + "<option value=''>-- Select Resume --</option>"; 
-				        	for (var i=0; i<json.length; i++)
-							{
-					        		var opt = json[i];
-					        		if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
-					        			output = output + "<option value='" +opt.id+ "'>"+opt.title+"</option>";
-					            	}else{
-					            		output = output + "<option value='" +opt.id+ "'>"+opt.fileName+"</option>";
-					            	}
-							}
-			        	}
-			        	
-			        	$("#candidateResumesList").empty();
-				        $("#candidateResumesList").append(output);
-				        
-				        document.getElementById("newResumeDiv").style.display="none";
-				        document.getElementById("skillsDiv").style.display="none";
-				        
-				        
-				        $('#uploadProfile').removeAttr('data-validation');
-		        		$('#uploadProfile').attr("data-validation-optional","true"); 
-		        		
-		        		 $('#candidateResumesList').removeAttr('data-validation-optional');
-		    			 $("#candidateResumesList").attr("data-validation", "required"); 
-		        	}else{
-		        		 $('#candidateResumesList').removeAttr('data-validation');
-		        		 $('#candidateResumesList').attr("data-validation-optional","true"); 
-		        		 document.getElementById("newResumeDiv").style.display="block";
-		        		 document.getElementById("resumesDiv").style.display="none";
-		        		 //document.getElementById("browseDiv").style.display="none";
-		        		
-		        		 
-		        		 document.getElementById("skillsDiv").style.display="";
-		        		 
-		        		 $('#uploadProfile').removeAttr('data-validation-optional');
-		        		 $("#uploadProfile").attr("data-validation", "required validatedoc");
-		        		 
-		        		 $('#uploadFile').removeAttr('data-validation');
-		        		 $('#uploadFile').attr("data-validation-optional","true"); 
-		        	}
-		        	
-		        },
-		    });
-	 }else{
-		 var output = "";
-     	 output = output + "<option value=''>-- Select Resume --</option>"; 
-     	 $("#candidateResumesList").empty();
-     	 $("#candidateResumesList").removeAttr("data-validation");
-		 document.getElementById("resumesDiv").style.display="none";
-		 document.getElementById("browseDiv").style.display="none";
-		 $('#uploadFile').removeAttr('data-validation');
-		 $('#uploadFile').attr("data-validation-optional","true"); 
-	     $("#candidateResumesList").append(output);
-	 }
-	
- }
-</script>
-
-
 <script>
- function validateCurrentCTC(){
-	 var currentCTC = $("input[name=currentRate]").val();
-	 if(currentCTC){
-		 $("#currentRateType").removeAttr("data-validation-optional");
-		 $("#currentRateType").attr("data-validation", "required");
-	 }else{
-		 $("#currentRateType").removeAttr("data-validation");
-		 $("#currentRateType").attr("data-validation-optional", "true");
-	 }
- }
- </script>
- 
-  <script>
- function validateExpectedCTC(){
-	 var expectedCTC = $("input[name=expectedRate]").val();
-	 if(expectedCTC){
-		 $("#rateType").removeAttr("data-validation-optional");
-		 $("#rateType").attr("data-validation", "required");
-	 }else{
-		 $("#rateType").removeAttr("data-validation");
-		 $("#rateType").attr("data-validation-optional", "true");
-	 }
- }
- </script>
- 
- <script>
- function validateExpectedCTCRatePer(){
-	 var expectedCTCRatePer = document.getElementById("rateType").value;
-	 if(expectedCTCRatePer){
-		 $("input[name=expectedRate]").removeAttr("data-validation-optional");
-		 $("input[name=expectedRate]").attr("data-validation", "required validate_Space validate_float validate_length length1-8");
-	 }else{
-		 $("input[name=expectedRate]").removeAttr("data-validation");
-		 $("input[name=expectedRate]").attr("data-validation-optional", "true");
-		 $("input[name=expectedRate]").attr("data-validation", "validate_Space validate_float validate_length length1-8");
-	 }
- }
- </script>
- 
- <script>
- function validateCurrentCTCRatePer(){
-	 var currentCTCRatePer = document.getElementById("currentRateType").value;
-	 if(currentCTCRatePer){
-		 $("input[name=currentRate]").removeAttr("data-validation-optional");
-		 $("input[name=currentRate]").attr("data-validation", "required validate_Space validate_float validate_length length1-8");
-	 }else{
-		 $("input[name=currentRate]").removeAttr("data-validation");
-		 $("input[name=currentRate]").attr("data-validation-optional", "true");
-		 $("input[name=currentRate]").attr("data-validation", "validate_Space validate_float validate_length length1-8");
-	 }
- }
- </script>
- 
- 
- <script>
  function getVendorsByOrgLocation(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
@@ -1565,7 +878,7 @@ function getCandidateDetails(){
 		        	$('#vendors').append('<option value="">--select Vendor --</option>');
 		            for(var i=0;i<json.length;i++){
 		            	  var opt = json[i];
-			            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');	
+		            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');
 		            }
 		            $('#vendors').trigger("chosen:updated");
 		            //getVendorContactList();
@@ -1574,11 +887,20 @@ function getCandidateDetails(){
 		 });
  }
  </script>
- 
+ <script>
+ function  removeValiationVendor() {
+	$("#errorvendor").find("p.jquery_form_error_message").remove();
+}
+</script>
+<script>
+function  removeValiationVendorContact() {
+	 $("#errorvendorContact").find("p.jquery_form_error_message").remove();
+}
+</script>
+
   <script>
  function getVendorContactList(){
-	 $('#vendorcontact').val('').trigger("chosen:updated");
-	 var orgRelationID = $('#vendors').val();
+	var orgRelationID = $('#vendors').val();
 	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 			    type: "POST",
@@ -1596,6 +918,7 @@ function getCandidateDetails(){
 		 }); 
  }
  </script>
+
  <script>
  function parseResume(){
 	  var result = "";
@@ -1605,7 +928,7 @@ function getCandidateDetails(){
 	result = result + ' 		 <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File ';
 	result = result + ' 		 <input type="file" style="display: none;" name="locationMapFile" multiple id="uploadBtn"  class="upload"> ';
 	result = result + ' 		 </span> </label> ';
-	result = result + ' 		 <input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Import Resume">'; 
+	result = result + ' 		 <input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">'; 
 	result = result + ' 		 </div> ';
 	result = result + ' 	 </div> 	';
 	result = result + '   </div>  ';
