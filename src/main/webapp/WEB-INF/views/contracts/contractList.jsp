@@ -17,7 +17,12 @@
 $(document).ready(function(){
    getTemplateList('draft');
 });
-</script>
+</script>.
+
+<style>
+.CurDiv { position: static !important; float: left;}
+
+</style>
 
 <section class="content-wraper">
 <section class="content-header clearfix">
@@ -30,12 +35,12 @@ $(document).ready(function(){
 <section class="contrHead"> 
 <ul> 
 <li title="Draft"><a href="#" id="draft" class="draft" onClick="mainTabEnable(this);getTemplateList('draft');">Draft</a></li>
-<!-- <li title="Waiting for Approval"><a href="#" id="approve"  onClick="mainTabEnable(this);"><i class="fa fa-clock-o fa-2"></i>Approve</a></li> -->
+<li title="Waiting for Approval"><a href="#" id="approve"  onClick="mainTabEnable(this);getTemplateList('WAITING_FOR_APPROVER');"><i class="fa fa-clock-o fa-2"></i>Approve</a></li> 
 <li title="Waiting to be sign"><a href="#" id="sign" onClick="mainTabEnable(this);getTemplateList('Waiting to be signed');"><i class="fa fa-clock-o fa-2"></i>Sign</a></li>
 <li title="Waiting for Verify"><a href="#" id="verify" onClick="mainTabEnable(this);getTemplateList('Waiting To Be Verify');"><i class="fa fa-clock-o fa-2"></i>Verify</a></li>
 <li title="Finalised"><a href="#" id="finalised"  onClick="mainTabEnable(this); getTemplateList('Finalized');">Finalized</a></li>
 <li title="Expired"><a href="#" id="expired" onClick="mainTabEnable(this);">Expired</a></li>
-<li title="Rejected"><a href="#" id="rejected"  onClick="mainTabEnable(this);">Rejected</a></li>
+<li title="Rejected"><a href="#" id="rejected"  onClick="mainTabEnable(this);getTemplateList('REJECTED');">Rejected</a></li>
 
 <div class="conBtn">
   <span>Add<i class="fa fa-caret-down"></i></span>
@@ -189,12 +194,13 @@ function preparedContractList(data){
 		         result = result + '</td>';
 		         result = result + '</td>';
 		         result = result + '<td>';//Waiting to be signed
-		     	 if(report.parentId != null && report.parentId != '' && report.parentId != 'undefined'){
+		         result = result + '<div class="tbldata-dotdot-sm">';
+		         if(report.parentId != null && report.parentId != '' && report.parentId != 'undefined'){
 		     		 if(report.templateSubmissionStatus == "Finalized"){
 		     			result = result + '<div id="removeStatus'+report.id+'">Finalized</a></div>';
 		            	 }
 		     		 else{
-		     		 	result = result + '<div  id="removeStatus'+report.id+'"><a class="btn btn-sm btn-info" title="verify" onclick="removeRecord('+report.id+',\'Waiting to be signed\');">verify</a></div>';  
+		     		 	result = result + '<div id="removeStatus'+report.id+'"><a class="btn btn-sm btn-info" title="verify" onclick="removeRecord('+report.id+',\'Waiting to be signed\');">verify</a></div>';  
 		     		 }
 		     	}else{
 		        	  if(report.templateSubmissionStatus == "Waiting To Be Verify"){
@@ -203,10 +209,16 @@ function preparedContractList(data){
 		        	  if(result.templateSubmissionStatus == "Finalized"){
 		        		  result = result + '<div id="removeStatus'+report.id+'">Finalized</a></div>';
 		            	 }
+		        	  
+		        	  if(report.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
+		            		/* result = result + '<div id="removeStatus'+report.id+'"><a class="btn btn-sm btn-success" title="finalize" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');">Approve</a></div>'; */
+		        		  result = result + '<div><div class="CurDiv" id="removeStatus'+report.id+'"><a class="btn btn-sm btn-success pull-left" title="approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');">Approve</a></div><div class="CurDiv" id="removeReject'+report.id+'"><a class="btn btn-sm btn-danger ml" title="REJECTED" onclick="approveContract('+report.id+',\'REJECTED\');">Reject</a></div></div>'; 
+		        	  }
 		        	  else{
 		         	 	result = result + '<div><span>--</span></div>';
 		        	  }
-		          } 
+		          }
+		         result = result + '</div>';
 		     	 result = result + '</td>';
 		        result = result + '</tr>';
 		    }
@@ -324,7 +336,32 @@ function finalizeContract(recordId,status){
        },
    });  
 }
+</script>
 
+
+<script>
+function approveContract(recordId,status){
+	 var rowHtmlContent =  $("#row"+recordId).html();
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+       type : "POST",
+        url: sourceleadUrl+"/approveContract?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&status="+status,       
+        success :function(data) {
+        	if(data == 'REJECTED'){
+        		$("#row"+recordId).empty();
+    	    	$("#row"+recordId).html(rowHtmlContent);
+    	    	 $("#removeStatus"+recordId).html("");
+    	        $("#removeReject"+recordId).html("<span>REJECTED</span>").addClass('text-success');
+        	}else{
+        		$("#row"+recordId).empty();
+    	    	$("#row"+recordId).html(rowHtmlContent);
+    	    	 $("#removeReject"+recordId).html("");
+    	        $("#removeStatus"+recordId).html("<span>APPROVED</span>").addClass('text-success');
+        	}
+        	
+       },
+   });  
+}
 </script>
 
 <script>

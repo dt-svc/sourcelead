@@ -11,3 +11,4 @@ CALL sourcelead.AlterTableAddColumn ('sourcelead','CONTRACTS','HOURS_PER_WEEK','
 CALL sourcelead.AlterTableAddColumn ('sourcelead','CONTRACTS','OVER_TIME_HOURS','VARCHAR(10) NULL AFTER `HOURS_PER_WEEK`');
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','CONTRACTS','TOTAL_HOURS','VARCHAR(10) NULL AFTER `OVER_TIME_HOURS`');
+

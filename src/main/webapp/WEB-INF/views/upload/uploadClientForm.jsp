@@ -196,7 +196,13 @@ margin:10px 220px 0;
 
 <script type="text/javascript">
 function saveBulkImport(){
-	
+	var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+if ($('#upload_form').validate(false, validationSettings)){
 	var frm = $('#upload_form').serializeFormJSON();
 	var con = JSON.stringify(frm);
 	con = con.replace(/[{}]/g, "");
@@ -228,6 +234,7 @@ function saveBulkImport(){
 	        }
 	 });
 	 
+}
 }
 </script>
 
@@ -485,12 +492,12 @@ function excelimportDataPagination(){
 </script>
 
 
-<!-- <script type="text/javascript">
-
+<script type="text/javascript">
+//script for upload file
 document.getElementById("uploadBtn").onchange = function () {
-    document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
-};
-</script> -->
+	document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
+}
+</script>
 
 <!-- <script>
 function check(){

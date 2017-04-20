@@ -289,20 +289,20 @@ public class ContractRestController {
 }
 	
 	@RequestMapping(value = "/getRequirementsForSOWByOrgLocationId", method = RequestMethod.GET)
-	public @ResponseBody String getRequirementsForSOWByOrgLocationId(@RequestParam(value = "type", required = false) String type, HttpServletRequest request,HttpServletResponse response) throws Exception {
+	public @ResponseBody String getRequirementsForSOWByOrgLocationId(@RequestParam(value = "sowType", required = false) String sowType, HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		
-		List<Requirement> requirementList = requirementService.getRequirementsForSOWByOrgLocationId(loginOrgLocation.getId(), type);
+		List<Requirement> requirementList = requirementService.getRequirementsForSOWByOrgLocationId(loginOrgLocation.getId(), sowType);
 		
 		return commonUtil.toJSON(requirementList);
 	}
 	
 	
 	@RequestMapping(value = "/getSubmissionsForSOWByRequirementId", method = RequestMethod.GET)
-	public @ResponseBody String getSubmissionsForSOWByRequirementId(@RequestParam(value = "requirementId", required = false) String requirementId, HttpServletRequest request,HttpServletResponse response) throws Exception {
+	public @ResponseBody String getSubmissionsForSOWByRequirementId(@RequestParam(value = "requirementId", required = false) String requirementId, @RequestParam(value = "sowType", required = false) String sowType, HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
-		List<RequirementSubmission> requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByRequirementId(Long.parseLong(requirementId));
+		List<RequirementSubmission> requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByRequirementId(Long.parseLong(requirementId), sowType);
 		if(requirementSubmissionsList.size() > 0){
 			for(RequirementSubmission requirementSubmission : requirementSubmissionsList){
 				StringBuffer candidateName = new StringBuffer(); 
@@ -316,5 +316,21 @@ public class ContractRestController {
 		
 		return commonUtil.toJSON(requirementSubmissionsList);
 	}
+	
+	@RequestMapping(value = "/approveContract", method = RequestMethod.POST)
+	@ResponseBody
+	public String approveContract(@RequestParam(value = "recordId", required = false) String recordId,
+			@RequestParam(value = "status", required = false) String status,
+			HttpServletRequest request)throws Exception{
+		String isAprroved = "APPROVED";
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		Contracts updatedContract = contractsTemplateService.approveContracts(Long.parseLong(recordId),status,orgLocation,user,org);
+		if("REJECTED".equalsIgnoreCase(updatedContract.getTemplateSubmissionStatus())){
+			isAprroved = "REJECTED";
+		}
+		return isAprroved;
+}
 
 }

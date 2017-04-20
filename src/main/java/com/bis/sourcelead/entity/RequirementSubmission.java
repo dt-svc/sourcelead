@@ -266,6 +266,9 @@ public class RequirementSubmission implements Serializable{
 	private String proposedSubmissionRate;
 	
 	@Transient
+	private String ExpectedRate;
+	
+	@Transient
 	private String clientSubmissionId;
 	
 	@Transient
@@ -835,6 +838,14 @@ public class RequirementSubmission implements Serializable{
 
 	public void setProposedSubmissionRate(String proposedSubmissionRate) {
 		this.proposedSubmissionRate = proposedSubmissionRate;
+	}
+
+	public String getExpectedRate() {
+		return ExpectedRate;
+	}
+
+	public void setExpectedRate(String expectedRate) {
+		ExpectedRate = expectedRate;
 	}
 
 	public String getClientSubmissionId() {
