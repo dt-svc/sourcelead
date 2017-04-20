@@ -26,7 +26,7 @@ function setPostValues(title,link,picture,description,comment){
          postdatavalues.description = description;
      }
      if (comment) {
-         postdatavalues.comment = comment;
+         postdatavalues.comment = description;
      }
 }
 function getPostValueDetails(){
@@ -34,7 +34,18 @@ function getPostValueDetails(){
   }
 
 </script>
-
+<script>
+ function socialPostSucess(service,status){
+	 msgFadein();
+     $("#msgDiv").html(" Job is Successfully Posted on Your "+service+" Wall.");
+ }
+</script>
+<script>
+	function msgFadein() {
+		$("#selector").fadeIn(200);
+        $('#selector').delay(2000).fadeOut('slow');
+	}
+</script> 
 <script type="text/javascript">
 window.onload = function () {
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
@@ -79,8 +90,9 @@ window.onload = function () {
           </span>
           </div> 
 		  <div class="clearfix"></div>            
-               
-      
+        <div class="success_pop" id="selector" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+         </div>
     </section>
     
     <!-- Project -->

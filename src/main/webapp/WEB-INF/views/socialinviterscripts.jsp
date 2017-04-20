@@ -164,6 +164,9 @@
                  },
                  "fetched": function (service, status) {
                 	 contactsImportSucess(service, status);
+                 },
+                 "post": function (service, status) {
+                	 socialPostSucess(service);
                  }
              },
              

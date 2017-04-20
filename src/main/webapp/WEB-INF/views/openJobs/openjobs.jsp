@@ -37,6 +37,12 @@
 <script src="resources/js/jobs/js/controls.js"></script>
 <script src="resources/js/jobs/js/jquery-1.11.3.min.js"></script>
 <script src="resources/js/jobs/js/chosen.jquery.min.js"></script>
+<script>
+ function socialPostSucess(service,status){
+	 msgFadein();
+     $("#msgDiv").html(" Job is Successfully Posted on Your "+service+" Wall.");
+ }
+</script>
 <script type="text/javascript">
 var postdatavalues = { title: "", link: "", picture: "", description: "", comment: "" };
 function setPostValues(title,link,picture,description,comment){
@@ -52,8 +58,8 @@ function setPostValues(title,link,picture,description,comment){
      if (description) {
          postdatavalues.description = description;
      }
-     if (comment) {
-         postdatavalues.comment = comment;
+     if (description) {
+         postdatavalues.comment = description;
      }
 }
 function getPostValueDetails(){
@@ -73,7 +79,12 @@ function getPostValueDetails(){
 	  }
 	});
 </script>
-
+<script>
+	function msgFadein() {
+		$("#selector").fadeIn(200);
+        $('#selector').delay(2000).fadeOut('slow');
+	}
+</script> 
 <style>
 .footer-area {
 display: none;}
@@ -94,7 +105,9 @@ display: none;}
     </div>
 </section>
 <div class="head_inn">
-  
+    <div class="success_pop" id="selector" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+     </div>
   <div class="logo"><a href="home.html"><img src="resources/css/jobs/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
   <nav>
   	<ul class="menu">
