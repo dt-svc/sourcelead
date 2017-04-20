@@ -39,6 +39,10 @@ private static final long serialVersionUID = 1L;
 	@JoinColumn(name = "OFFER_ID")
 	private RequirementOffers offerId;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "BOARDING_USER_ID")
+	private User onboardingUser;
+	
 	@Column(name = "FIRST_NAME")
 	private String firstName;
 	
@@ -131,6 +135,9 @@ private static final long serialVersionUID = 1L;
 	
 	@Column(name = "STATUS")
 	private Integer status;
+	
+	@Column(name = "ONBOARD_SUBMITTED")
+	private String onboardSubmitted;
 		
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -177,8 +184,17 @@ private static final long serialVersionUID = 1L;
 	@Transient
 	private String jobTitle;
 	
+	@Transient
+	private String roleName;
 	
+	@Transient
+	private String managerName;
 	
+	@Transient
+	private String teamName;
+	
+	@Transient
+	private String templateName;
 	
 
 	public Long getId() {
@@ -187,6 +203,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public User getOnboardingUser() {
+		return onboardingUser;
+	}
+
+	public void setOnboardingUser(User onboardingUser) {
+		this.onboardingUser = onboardingUser;
 	}
 
 	public Candidate getCandidateId() {
@@ -413,6 +437,14 @@ private static final long serialVersionUID = 1L;
 		this.status = status;
 	}
 
+	public String getOnboardSubmitted() {
+		return onboardSubmitted;
+	}
+
+	public void setOnboardSubmitted(String onboardSubmitted) {
+		this.onboardSubmitted = onboardSubmitted;
+	}
+
 	public Date getCreatedDate() {
 		return createdDate;
 	}
@@ -548,5 +580,28 @@ private static final long serialVersionUID = 1L;
 	public void setJobTitle(String jobTitle) {
 		this.jobTitle = jobTitle;
 	}
-	    
+
+	public String getRoleName() {
+		return roleName;
+	}
+
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
+	}
+
+	public String getManagerName() {
+		return managerName;
+	}
+
+	public void setManagerName(String managerName) {
+		this.managerName = managerName;
+	}
+
+	public String getTeamName() {
+		return teamName;
+	}
+
+	public void setTeamName(String teamName) {
+		this.teamName = teamName;
+	}
 }

@@ -676,9 +676,9 @@ public class RequirementDaoImpl implements RequirementDao {
 		String query = "";
 		if(orgRelationId != null && orgLocationId != null){
 			
-			UserRole userRole  = userRoleDao.getUserRoleByUserIdAndLocationId(user.getId(), loginOrgLocations.getId());
+//			UserRole userRole  = userRoleDao.getUserRoleByUserIdAndLocationId(user.getId(), loginOrgLocations.getId());
 			/*if("Admin".equalsIgnoreCase(userRole.getUserType())){*/
-				query = "from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId  and requirement.clientId.id IN (  select orgRelation.id from OrgRelations orgRelation where orgRelation.locationId.id =:orgLocationId )and requirement.parentRequirement IS NOT NULL";
+				query = "from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId  and requirement.clientId.id IN (  select orgRelation.id from OrgRelations orgRelation where orgRelation.locationId.id =:orgLocationId )and requirement.parentRequirement IS NOT NULL group by requirement.clientId.id";
 				releasedJobsList = session.createQuery(query).setLong( "orgLocationId", orgLocationId ).setLong( "orgRelationId", orgRelationId ).setCacheable(true).list();
 			/*}else{
 				query = "from Requirement requirement where requirement.orgLocationId.id =:orgLocationId and requirement.clientId.id =:orgRelationId and parentRequirement !='null' and requirement.spocId.createdBy =:loginUserCode";
@@ -1026,6 +1026,34 @@ public class RequirementDaoImpl implements RequirementDao {
 			    return (Long)query.uniqueResult();
 				
 		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<Requirement> getTotalRequirementsReleasedToSpoc(Long relationId, Long spocId) {
+			Session session = this.sessionFactory.getCurrentSession();
+	 		
+	 		String query = "from Requirement requirement left join fetch requirement.parentRequirement where   requirement.clientId.id =:relationId and  requirement.spocId.id =:spocId";
+	        List<Requirement> requirementList = session.createQuery(query).setLong("relationId", relationId).setLong("spocId", spocId).setCacheable(true).list();
+	 		return requirementList;
+		}
+		
+		@Override
+	 	@Transactional(rollbackFor = { Exception.class })
+	 	public List<Requirement> getRequirementsForSOWByOrgLocationId(Long orgLocationId, String sowType) throws Exception {
+	 		
+	 		Session session = this.sessionFactory.getCurrentSession();
+	 		String subQuery = "";
+	 		if(sowType.equalsIgnoreCase("Client SOW")){
+	 			subQuery = "and requirement.isClientJob = 'Y' and requirement.parentRequirement <> null ";
+	 		}else if(sowType.equalsIgnoreCase("Vendor SOW")){
+	 			subQuery = " ";
+	 		}
+	 		
+	 		String query = "from Requirement requirement left join fetch requirement.parentRequirement where  requirement.orgLocationId.id =:orgLocationId "+subQuery+" ORDER BY requirement.id DESC";
+	 		
+	         List<Requirement> requirementList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	 		return requirementList;
+	 	}
 	
 	
 }

@@ -1,6 +1,8 @@
 <link href="//fonts.googleapis.com/css?family=Lato:100,300,400" rel="stylesheet">
 <script src="//socialinviter.com/assets/js/libraries/jquery.js"></script>
 <script type="text/javascript" id="apiscript" src="resources/js/all.js?burst=1"></script>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@page session="true"%>
 <style type="text/css">
 		body{
 			font-family: 'Lato', sans-serif;
@@ -105,57 +107,13 @@
 	</style>
 
 <script type="text/javascript">
-	var loadProfileInformation = function(response){
+	var loadProfileInformation = function(response,service){
 		if(response.responseStatus.type=="success"){
-			var activeElement = $('.tab-pane.fade.in.active').attr('id');
-			if(activeElement != null && activeElement != ''  && activeElement != 'undefined' &&  activeElement == 'recruiter'){
-				$("#recruiterRegistrationPopup").removeAttr();
-				$("#professionalRegistrationPopup").removeAttr();
-				$("#recruiterRegistrationPopup").attr("style","display:block");
-				$("#professionalRegistrationPopup").attr("style","display:none");
-				
-				
-				var details = response.data.details;
-				$("#popRecruiterprofileimage").attr("src",details.photo);
-				/* $("#aboutme").html(details.aboutMe); */
-				//$("#profileurl").html(details.profileUrl).attr("href",details.profileUrl);
-				//$("#loginid").val(details.id);
-				/* $("#logindisplayname").val(details.displayName); */
-				$("#poprecruiterFirstName").val(details.firstName);
-				$("#poprecruiterLastName").val(details.lastName);
-				$("#poprecruiterEmail").val(details.email);
-				/* $("#logingender").val(details.gender);
-				$("#logindob").val(details.dob); */
-				$("#loginlocation").val(details.location);
-				
-			}
-			else{
-				$("#recruiterRegistrationPopup").removeAttr();
-				$("#professionalRegistrationPopup").removeAttr();
-				$("#recruiterRegistrationPopup").attr("style","display:none");
-				$("#professionalRegistrationPopup").attr("style","display:block");
-				
-
-				var details = response.data.details;
-				$("#popProfessionalprofileimage").attr("src",details.photo);
-				/* $("#aboutme").html(details.aboutMe); */
-				//$("#profileurl").html(details.profileUrl).attr("href",details.profileUrl);
-				//$("#loginid").val(details.id);
-				/* $("#logindisplayname").val(details.displayName); */
-				$("#popfirstName").val(details.firstName);
-				$("#poplastName").val(details.lastName);
-				$("#popemail").val(details.email);
-				/* $("#logingender").val(details.gender);
-				$("#logindob").val(details.dob); */
-				$("#loginlocation").val(details.location);
-				
-			}
-			$(".logMask").fadeIn(200);
-    		 $(".logPop").fadeIn(100);
-			
+			getProfileDetails(response,service)
 		}
 	}
-	 $(document).ready(function () {
+	 function socialInviterScripts() {
+		 var sourceleadUrl ='${sourceleadUrl}';
          socialinviter.load({
              dock:false,
              showmodal: true,
@@ -202,30 +160,32 @@
 
                  },
                  "login": function (service, response) {
-                	 loadProfileInformation(response);
-                	 $("body,html").animate({scrollTop:$(".sc_regform-holder").offset().top-20});
+                	 loadProfileInformation(response,service);
+                 },
+                 "fetched": function (service, status) {
+                	 contactsImportSucess(service, status);
                  }
              },
              
              path: {
                  css: "resources/css/",
                  js: "resources/js/",
-                 authpage : "http://localhost:8080/sourcelead/resources/oauth.html",
-                 apiurl:"http://localhost:8080/sourcelead/getAPIService"
+                 authpage : sourceleadUrl+"/resources/oauth.html",
+                 apiurl:sourceleadUrl+"/getAPIService"
              }
          });
-         var shareObj = {
+        /*  var shareObj = {
              title: "Sourcelead",
              link: "http://www.sourcelead.com",
              picture: "http://sourcelead.com/images/logo.png",
              description: "Engage your user using socialinviter services.",
              comment: "Allows your business to promote through multiple social networks."
-         };
+         }; */
          
         /*  socialinviter.socialconnect.getUserInformation(); */
-          socialinviter.socialpost.setPostValues(shareObj); 
+        /*   socialinviter.socialpost.setPostValues(shareObj);  */
 
-     });
+     }
  
 </script>
 

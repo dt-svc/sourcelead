@@ -120,5 +120,17 @@ public class OnboardTasksDaoImpl implements OnboardTasksDao{
 			return null;
 		}
 	}
+
+
+	@Override
+	@Transactional
+	public List<OnboardTasks> getOnBoardTasksListAssignedToCandidateByCandidateOnBoardingId(Long candidateOnBoardingId)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from OnboardTasks tasks left join fetch tasks.candidateOnBoardingId where tasks.candidateOnBoardingId.id = :candidateOnBoardingId "
+	    		+ " and tasks.assignToCandidate = 'Y' and tasks.status = '1' ";
+	    List<OnboardTasks> tasksList = session.createQuery(query.toString()).setLong("candidateOnBoardingId", candidateOnBoardingId).setCacheable(true).list();
+        return tasksList;
+	}
 	
 }

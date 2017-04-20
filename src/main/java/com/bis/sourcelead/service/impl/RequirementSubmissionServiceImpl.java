@@ -315,6 +315,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 						 candidate.setExperienceMonths(jsonObj.getString("monthExp"));
 					 }
 					candidate.setCandidateType("Candidate");
+					candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 					candidate.setCreatedBy(user.getUserCode());
 					candidate.setCreatedDate(new Date());
 					candidate.setUpdatedDate(new Date());
@@ -577,14 +578,14 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 				}
 				requirementDao.storeRequirement(requirement);
 		 }
-		 
-		 if(jsonObj.has("notifyToApplicant") && !isNullOrEmpty(jsonObj.getString("notifyToApplicant"))){
+	
+		 if(jsonObj.has("notifyToApplicant") && !isNullOrEmpty(jsonObj.getString("notifyToApplicant")) && (!"Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit()))){
 			 if(jsonObj.getString("notifyToApplicant").equals("Y")){
 				 notifyToapplicantMailAboutRequirement(requirementSubmission.getId(),requirement,candidate,user,orgLocations);
 			 }
 		 }
 		 
-		 if("Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit())){
+		 if("Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit()) && (jsonObj.has("notifyToApplicant") && !isNullOrEmpty(jsonObj.getString("notifyToApplicant"))) || ("Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit()))){
 			 applicantReceiveMailAboutRequirement(requirementSubmission.getId(),requirement,candidate,user,orgLocations);
 		 }
 		 
@@ -4125,6 +4126,21 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	public Long getCountOfAllApplicantsByCreatedUserAndOrglocationIdByStage(Long orgLocationId, User user,String stage, String timePeriod)
 			throws Exception {
 		return requirementSubmissionDao.getCountOfAllApplicantsByCreatedUserAndOrglocationIdByStage(orgLocationId, user,stage,timePeriod);
+	}
+
+	@Override
+	public List<RequirementSubmission> getApplicantCountSubmittedByVendor(Long orgLocationId, Long orgRelationId) {
+		return requirementSubmissionDao.getApplicantCountSubmittedByVendor(orgLocationId,orgRelationId);
+	}
+
+	@Override
+	public List<RequirementSubmission> getVendorSpocSubmissions(String userCode, Long orgLocationId) {
+		return requirementSubmissionDao.getVendorSpocSubmissions(userCode,orgLocationId);
+	}
+	
+	@Override
+	public List<RequirementSubmission> getSubmissionsForSOWByRequirementId(Long requirementId, String sowType) {
+		return requirementSubmissionDao.getSubmissionsForSOWByRequirementId(requirementId, sowType);
 	}
 
 }

@@ -27,7 +27,15 @@
   	        loadOnboardingCandidate('${onBoardingUUID}');
   	        
 		}else{
-			loadOnboardingDetails();
+			var candidateId = '${candidateId}';
+			var offerId = '${offerId}';
+			if(candidateId != null && candidateId != '' && candidateId != 'undefined'){
+				loadOnboardCandidateFormDashobard(candidateId,offerId);
+			}else{
+				loadOnboardingDetails();
+			}
+			
+			
 		}
 		
 		
@@ -50,6 +58,7 @@
         <div class="clearfix onboardBtns">
         </div>
         <div class="tabbable">
+        <div id="onboardingPopUp"></div>
           <ul class="nav nav-tabs" id="tab_bar">
             <li class="active" onclick="loadOnboardingCandidate();"> <a href="#details" data-toggle="tab"> <i class="fa fa-th-list paddingRight"></i> <span>Details</span> <br>
               <small>Employee details &amp; Postion details</small> </a> </li>
@@ -88,13 +97,13 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Street Addess 1 <span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">Street Address 1 <span class="text-danger paddingLeft">*</span></label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm" id="address1" name="address1" field-name="Address 1" data-validation="required validate_Space">
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Street Addess 2</label>
+                  <label class="col-md-3 control-label">Street Address 2</label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm" id="address2" name="address2" field-name="Address 2" data-validation-optional="true"  data-validation="validate_Space">
                   </div>
@@ -136,7 +145,7 @@
                 <div class="form-group">
                   <label class="col-md-3 control-label">Mobile number <span class="text-danger paddingLeft">*</span></label>
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber" readonly="readonly">
+                    <input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber" >
                   </div>
                 </div>
 
@@ -253,7 +262,7 @@
                 </div>
 
                   <div class="form-group">
-                  <label class="col-md-3 control-label">Speical Conditions</label>
+                  <label class="col-md-3 control-label">Special Conditions</label>
                   <div class="col-md-6">
                       <textarea rows="2" class="form-control" id="specialConditions" name="specialConditions" data-validation-optional="true"></textarea>
                   </div>
@@ -380,7 +389,7 @@
                                 
                                 <div class="col-md-12 mb10">
                                   <label>Subject <span class="text-danger paddingLeft">*</span></label>
-                                  <input type="text" class="form-control input-sm" placeholder="Subject" field-name="Subject" id="taskName" name="taskName" data-validation="required" data-validation="required validate_Space validate_length length2-100">
+                                  <input type="text" class="form-control input-sm" placeholder="Subject" field-name="Subject" id="taskName" name="taskName"  data-validation="required validate_Space validate_length length2-100">
                                 </div>
                                 
                                 <div class="col-md-12 dropdown-select mb10">
@@ -450,35 +459,73 @@
                                       <!-- Form inline Due after -->
                                       
                                       <div class="row" id="dueAfterDiv">
-                                        <div class="col-md-3 paddingRight">
-                                          <label class="small">Months</label>
-                                          <br>
-                                          <input class="form-control input-sm" type="text" id="taskMonths" data-validation="required" field-name="Due after" name="taskMonths" onblur="validateDueAfter();">
-                                        </div>
-                                        <div class="col-md-3 paddingRight paddingLeft">
-                                          <label class="small">Days</label>
-                                          <br>
-                                          <input class="form-control input-sm" type="text" id="taskDays" name="taskDays" onblur="validateDueAfter();">
-                                        </div>
-                                       <!--  <div class="col-md-3 paddingRight paddingLeft">
-                                          <label class="small">Hours</label>
-                                          <br>
-                                          <input type="text" class="form-control input-sm" id="taskHours" name="taskHours" onblur="validateDueAfter();">
-                                        </div>
-                                        <div class="col-md-3 paddingRight paddingLeft">
-                                          <label class="small">Minutes</label>
-                                          <br>
-                                          <input type="text" class="form-control input-sm" id="taskMinutes" name="taskMinutes" onblur="validateDueAfter();">
-                                        </div> -->
+										   <div class="col-md-6 paddingRight">
+											<label class="small">Months</label> <br>
+												<div class="select-field">
+													<select class="form-control input-sm" id="taskMonths" data-validation="required" field-name="Due after" name="taskMonths" onchange="validateDueAfter();">
+														<option selected value=''>--Select Month--</option>
+														<option value="1">1</option>
+														<option value="2">2</option>
+														<option value="3">3</option>
+														<option value="4">4</option>
+														<option value="5">5</option>
+														<option value="6">6</option>
+														<option value="7">7</option>
+														<option value="8">8</option>
+														<option value="9">9</option>
+														<option value="10">10</option>
+														<option value="11">11</option>
+														<option value="12">12</option>
+														</select>
+												</div>
+											</div> 
+                                      
+                                        
+                                        <div class="col-md-6 paddingRight paddingLeft">
+										<label class="small">Days</label>
+											<div class="select-field">
+												<select class="form-control input-sm" id="taskDays" name="taskDays" onchange="validateDueAfter();">
+													<option selected value=''>--Select Days--</option>
+													    <option value="1">1</option>
+														<option value="2">2</option>
+														<option value="3">3</option>
+														<option value="4">4</option>
+														<option value="5">5</option>
+														<option value="6">6</option>
+														<option value="7">7</option>
+														<option value="8">8</option>
+														<option value="9">9</option>
+														<option value="10">10</option>
+														<option value="11">11</option>
+														<option value="12">12</option>
+														<option value="13">13</option>
+														<option value="14">14</option>
+														<option value="15">15</option>
+														<option value="16">16</option>
+														<option value="17">17</option>
+														<option value="18">18</option>
+														<option value="19">19</option>
+														<option value="20">20</option>
+														<option value="21">21</option>
+														<option value="22">22</option>
+														<option value="23">23</option>
+														<option value="24">24</option>
+														<option value="25">25</option>
+														<option value="26">26</option>
+														<option value="27">27</option>
+														<option value="28">28</option>
+														<option value="29">29</option>
+														<option value="30">30</option>
+												</select>
+											</div>
                                       </div>
-                                      
-                                      <!-- Form inline Due after --> 
-                                      
                                     </div>
-                                    
                                   </div>
                                 </div>
-	                               <div class="col-md-12 mb10">
+                                </div>
+	                           
+	                            <div class="clearfix"></div>    
+                               <div class="col-md-12 mb10">
                                   <label>Description</label>
                                   <textarea rows="2" placeholder="Description" id="taskdescription" name="taskdescription" class="form-control"></textarea>
                                 </div>
@@ -898,6 +945,44 @@ function validateUploadFile(id)
 			    	 getOnBoardCandidateStates(json['country'],json['state']);
 			    	 getOnBoardCandidateStates(json['state'],json['city']);
 			    	 getOnBoardCandidateCities(json['country'],json['state'],json['city']);
+			    	 
+			    	 validateOnboardCandidate(json['email']);
+			    }
+		   });
+	  }
+	  
+	  
+  }
+  </script>
+  
+  
+  
+  <script>
+  function getDashboardCandidateDetails(){
+	  
+	  var onboardCandiate = document.getElementById("onboardCandiate").value;
+	  var candidate = onboardCandiate.split(",");
+	  var candidateId = candidate[0];
+	  
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  
+	  if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
+		  
+		  $.ajax({
+			   	type: "POST",
+			    url: sourceleadUrl+"/getOnBoardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,	    	   
+			    success: function(data) {
+			    	 var json = JSON.parse(data);
+		        	
+			    	 $("#firstName").val(json['firstName']);
+			    	 $("#lastName").val(json['lastName']);
+			    	 $("#mobileNumber").val(json['mobilePhone']);
+			    	 $("#personalEmail").val(json['email']);
+			    	 getOnBoardCandidateCountry(json['country'])
+			    	 getOnBoardCandidateStates(json['country'],json['state']);
+			    	 getOnBoardCandidateStates(json['state'],json['city']);
+			    	 getOnBoardCandidateCities(json['country'],json['state'],json['city']);
+			    	 
 			    }
 		   });
 	  }
@@ -1392,6 +1477,37 @@ function loadOnBoardingTemplates(onboardTemplateId){
  </script>
  
  
+ 
+ <script>
+ function loadOnboardCandidateFormDashobard(candidateId,offerId){
+	 
+	 var candidateName = '${candidateName}';
+	 var jobTitle = '${jobTitle}';
+	 var candidateEmail ='${candidateEmail}';
+	 
+	 var result = "";
+	 var selected = 'selected';
+	 result = result +'<option disabled selected>--Select Candidate--</option>';
+	 result = result +'<option value='+candidateId+","+offerId+' '+selected+' >'+candidateName+' ('+jobTitle+')</option>';
+	 $("#onboardCandiate").empty();
+   	 $("#onboardCandiate").append(result); 
+   	 $('#onboardCandiate').trigger("chosen:updated");
+   	 
+   	 getDashboardCandidateDetails();
+     validateOnbardUserByCandidateId(candidateId,candidateName);
+    
+     
+   	 getOfferDetails();
+   	 
+   	 loadCandidateRoles();
+	 loadTeams();
+	 loadOnBoardingTemplates();
+	 
+	
+ }
+ </script>
+ 
+ 
  <script>
 function getTemplatePolicyDocumentsDetails(onboardId){
 	if(onboardId == '' || onboardId == null || onboardId =='undefined'){
@@ -1439,7 +1555,7 @@ function getTemplatePolicyDocumentsDetails(onboardId){
                 	 
                 	 $("#savedPociliesAttachments").append(result);
                 	 
-                	 
+                	 $("#onboardTasksList").empty();
                 	 
 			        
 		        },
@@ -1494,6 +1610,7 @@ function getTemplateSupportingDocumentsDetails(onboardId){
                 	 $("#savedSupportedAttachments").empty();
                 	 $("#savedSupportedAttachments").append(result);
                 	 
+                	 $("#onboardTasksList").empty();
                 	 
 			        
 		        },
@@ -1549,6 +1666,8 @@ function getTemplateContractsDocumentsDetails(onboardId){
                 	 result = result +"</table>";
                 	 $("#savedContractsAttachments").empty();
                 	 $("#savedContractsAttachments").append(result);
+                	 
+                	 $("#onboardTasksList").empty();
                 	 
                 	 
 			        
@@ -1606,6 +1725,8 @@ function getTemplateFormsDocumentsDetails(onboardId){
                 	 result = result +"</table>";
                 	 $("#savedFormsAttachments").empty();
                 	 $("#savedFormsAttachments").append(result);
+                	 
+                	 $("#onboardTasksList").empty();
                 	 
                 	 
 			        
@@ -1851,7 +1972,6 @@ function saveOnboardTask(){
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/saveCandidateOnBoardTasks?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
 		        success: function(result) {
-		        	
 		        	if(result == 'success'){
 		        		$("#onboardtasksLoading").removeAttr("style");
 			        	flushOnboardTask();
@@ -1880,6 +2000,7 @@ function getOnboardingTasksList(){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	
+	if(onboardId != null && onboardId != '' && onboardId!= 'undefined'){
 	
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	$.ajax({
@@ -1958,6 +2079,7 @@ function getOnboardingTasksList(){
    }); 
 	
   $("#loading").removeAttr("style");
+}
 	
 }
 </script>
@@ -2008,7 +2130,7 @@ function saveAndFinishOnboardTemplate(onboardId){
        	 
 	    	location.replace(sourceleadUrl+"/candidateOnBoardingList");  
 	    }
-  });  
+  });   
 	
 
 }
@@ -2017,21 +2139,27 @@ function saveAndFinishOnboardTemplate(onboardId){
 
 <script type="text/javascript">
  function validateUserEmail() {
-	 var EmailId = document.getElementById("companyEmail").value;
+	 var email = document.getElementById("companyEmail").value;
 	 $('#emailDiv').find('p.jquery_form_error_message').remove();
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 if(EmailId != null && EmailId != ""){
+	 if(email != null && email != ""){
 		 $("#save_onboardUser").attr("disabled", "disabled");
 		 $("#saveAndContinue_onboardUser" ).attr("disabled", "disabled");
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateUserEmail?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
+		        url: sourceleadUrl+"/validateOnboardCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email, 
 		        success: function(data) {
-		        	if(data == 'true'){
+		        	if(data == 'Invalid User Email'){
 		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
-						  $("input#companyEmail").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
+						  $("input#companyEmail").after("<p class='jquery_form_error_message'>"+email+" is Already as user</span>");
 						  document.getElementById("companyEmail").setAttribute('record-exist','yes');
-						  document.getElementById("companyEmail").setAttribute('record-exist-errorMsg',EmailId+' is Already Existed'); 
+						  document.getElementById("companyEmail").setAttribute('record-exist-errorMsg',email+' is as user'); 
+		        	}
+		        	else if(data == 'Invalid OnboardUser Email'){
+		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
+						  $("input#companyEmail").after("<p class='jquery_form_error_message'>"+email+" is Already as onboard user</span>");
+						  document.getElementById("companyEmail").setAttribute('record-exist','yes');
+						  document.getElementById("companyEmail").setAttribute('record-exist-errorMsg',email+' is as user'); 
 		        	}
 		        	else{
 		        		 $('input#companyEmail').removeAttr( "record-exist record-exist-errormsg");
@@ -2044,3 +2172,73 @@ function saveAndFinishOnboardTemplate(onboardId){
 	 }
  }
  </script>  
+ 
+ 
+ <script>
+ function validateOnboardCandidate(email){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	  if(email){
+		  $("#save_onboardUser").attr("disabled", "disabled");
+			 $("#saveAndContinue_onboardUser" ).attr("disabled", "disabled");
+			 $.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/validateOnboardCandidate?${_csrf.parameterName}=${_csrf.token}&email="+email, 
+			        success: function(result) {
+			        	if(result == 'Invalid'){
+			        		alertMessage(email+" is Already exists as user")
+			        	}
+			        	else{
+	                         $("#save_onboardUser").removeAttr("disabled");
+	                         $("#saveAndContinue_onboardUser").removeAttr("disabled");
+			        	}
+			        },
+			    });
+	  }
+	  
+ }
+ </script>
+ 
+ 
+ <script>
+ function validateOnbardUserByCandidateId(candidateId,candidateName){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	  if(candidateId){
+			 $.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/validateOnboardCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
+			        success: function(result) {
+			        	if(result == 'Invalid'){
+			        		 $("#save_onboardUser").attr("disabled", "disabled");
+			    			 $("#saveAndContinue_onboardUser" ).attr("disabled", "disabled");
+			        		 alertMessage(candidateName+" is Already exists as onboard user");
+			        	}
+			        	
+			        },
+			    });
+	  }
+	  
+ }
+ </script>
+ 
+ <script type="text/javascript">
+function alertMessage(message){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a posiF'>";
+	result = result +"		<p>"+message+"</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input class='fullBtn' id='confirm-id' type='button' value='Ok' onclick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#onboardingPopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#onboardingPopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>

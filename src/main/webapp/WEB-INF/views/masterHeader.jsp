@@ -281,6 +281,7 @@ document.onkeydown=function(e){
 	          </li>
             </c:if> --%>
             <li class="reportsH">
+
 				<a title="Reports" title="Reports" href="<c:url value='${sourceleadUrl}/recruitersReports'/>"><i class="fa fa-pie-chart"></i></a>
 				
             </li>

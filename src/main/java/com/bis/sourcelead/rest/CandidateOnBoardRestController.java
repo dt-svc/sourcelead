@@ -25,27 +25,35 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OnBoardingTemplate;
 import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
 import com.bis.sourcelead.entity.OnboardTasks;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.OnboardStatus;
 import com.bis.sourcelead.form.TimesheetEntriesForm;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OnBoardingTemplateDocumentsService;
 import com.bis.sourcelead.service.OnBoardingTemplateService;
 import com.bis.sourcelead.service.OnboardTasksService;
 import com.bis.sourcelead.service.RequirementOffersService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -93,6 +101,15 @@ public class CandidateOnBoardRestController {
 	
 	@Autowired
 	CandidateOnBoardingService candidateOnBoardingService;
+	
+	@Autowired
+	EmployeesService employeesService;
+	
+	@Autowired
+	RequirementSubmissionService requirementSubmissionService;
+	
+	@Autowired
+	TaskService taskService;
 	
 	
 	
@@ -795,13 +812,27 @@ public class CandidateOnBoardRestController {
 			candidateOnBoarding.setJobTitle(candidateOnBoarding.getOfferId().getSubmissionId().getRequirement().getJobTitle());
 			
 			if(null != candidateOnBoarding.getManagerUserId()){
+				StringBuilder mgName = new StringBuilder();
+				if(candidateOnBoarding.getManagerUserId().getLastName() != null){
+					candidateOnBoarding.setManagerName(mgName.append(candidateOnBoarding.getManagerUserId().getFirstName()).append(" ").append(candidateOnBoarding.getManagerUserId().getLastName()).toString());	
+				}else{
+					candidateOnBoarding.setManagerName(mgName.append(candidateOnBoarding.getManagerUserId().getFirstName()).toString());
+				}
+			}
+			
+			if(null != candidateOnBoarding.getTeamId()){
+				candidateOnBoarding.setTeamName(candidateOnBoarding.getTeamId().getName());	
+			}
+			if(null !=candidateOnBoarding.getRoleId()){
+				candidateOnBoarding.setRoleName(candidateOnBoarding.getRoleId().getDisplayName());	
+			}
+			if(null != candidateOnBoarding.getManagerUserId()){
 				candidateOnBoarding.setOnBoardManagerId(candidateOnBoarding.getManagerUserId().getId());
 			}
 			
 			if(null != candidateOnBoarding.getTeamId()){
 				candidateOnBoarding.setOnBoardTeamId(candidateOnBoarding.getTeamId().getId());
 			}
-			
 			
 			candidateOnBoarding.setJoiningDateStr(Constants.DMY.format(candidateOnBoarding.getStartDate()));
 			
@@ -903,6 +934,7 @@ public class CandidateOnBoardRestController {
 	       		        documents.setDocFile(templateDocument.getDocFile());
           	            documents.setFileName(templateDocument.getFileName());
           	            documents.setFileContentType(templateDocument.getFileContentType());
+          	            documents.setDocumentStatus(OnboardStatus.NEW);
 	                  
 		       		    documents.setDocumentType("Policies");
 	                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -938,6 +970,7 @@ public class CandidateOnBoardRestController {
 	                    	   documents.setFileContentType(multiFile.getContentType());
 	                       }
 	                       documents.setDocumentType("Policies");
+	                       documents.setDocumentStatus(OnboardStatus.NEW);
 	                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
 	                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 	                       documents.setCreatedDate(CommonUtil.currentDate());
@@ -972,6 +1005,7 @@ public class CandidateOnBoardRestController {
          	            documents.setFileContentType(templateDocument.getFileContentType());
 	                  
 		       		    documents.setDocumentType("Supported");
+		       		    documents.setDocumentStatus(OnboardStatus.NEW);
 	                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
 	                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 	                    documents.setCreatedDate(CommonUtil.currentDate());
@@ -1006,6 +1040,7 @@ public class CandidateOnBoardRestController {
 			                    	   documents.setFileContentType(multiFile.getContentType());
 			                       }
 			                       documents.setDocumentType("Supported");
+			                       documents.setDocumentStatus(OnboardStatus.NEW);
 			                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
 			                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			                       documents.setCreatedDate(CommonUtil.currentDate());
@@ -1044,6 +1079,7 @@ public class CandidateOnBoardRestController {
 		         	            documents.setFileContentType(templateDocument.getFileContentType());
 			                  
 				       		    documents.setDocumentType("Contracts");
+				       		    documents.setDocumentStatus(OnboardStatus.NEW);
 			                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
 			                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			                    documents.setCreatedDate(CommonUtil.currentDate());
@@ -1078,6 +1114,7 @@ public class CandidateOnBoardRestController {
 					                    	   documents.setFileContentType(multiFile.getContentType());
 					                       }
 					                       documents.setDocumentType("Contracts");
+					                       documents.setDocumentStatus(OnboardStatus.NEW);
 					                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
 					                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 					                       documents.setCreatedDate(CommonUtil.currentDate());
@@ -1111,6 +1148,7 @@ public class CandidateOnBoardRestController {
 				         	            documents.setFileContentType(templateDocument.getFileContentType());
 					                  
 						       		    documents.setDocumentType("Forms");
+						       		    documents.setDocumentStatus(OnboardStatus.NEW);
 					                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
 					                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 					                    documents.setCreatedDate(CommonUtil.currentDate());
@@ -1145,6 +1183,7 @@ public class CandidateOnBoardRestController {
 							                    	   documents.setFileContentType(multiFile.getContentType());
 							                       }
 							                       documents.setDocumentType("Forms");
+							                       documents.setDocumentStatus(OnboardStatus.NEW);
 							                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
 							                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 							                       documents.setCreatedDate(CommonUtil.currentDate());
@@ -1160,6 +1199,83 @@ public class CandidateOnBoardRestController {
 			return "success";
 				
 		}
+		
+		
+		 @RequestMapping(value = "/storeOnboardingCandidateDocsStep3" , method = RequestMethod.POST)
+		 public @ResponseBody  String storeOnboardingCandidateDocsStep3(@RequestParam(value="json", required=false) String json, MultipartHttpServletRequest request) throws Exception {
+			
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+
+				json = "{"+json+"}";
+				JSONObject jsonObj = new JSONObject(json);
+				
+				if(jsonObj.has("candidateOnboardId") && !isNullOrEmpty(jsonObj.getString("candidateOnboardId"))){
+					
+						
+						List<OnBoardingTemplateDocuments> contractDocsList = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsByCandidateOnBoardingId(Long.valueOf(jsonObj.getString("candidateOnboardId")), Constants.ONBOARDING_CONTRACTS);
+						if(null != contractDocsList && contractDocsList.size() > 0){
+							for(OnBoardingTemplateDocuments contractsDocs : contractDocsList){
+								
+									final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
+					       		    final Map files = multiRequest.getFileMap();
+					       		     
+					       		    MultipartFile  multiFile = (MultipartFile)files.get("docFile"+contractsDocs.getId());
+					       		    if(multiFile != null && !multiFile.isEmpty()){
+					       			contractsDocs.setDocFile(multiFile.getBytes());
+					       			contractsDocs.setFileName(multiFile.getOriginalFilename());
+				                       
+				                       if(null != multiFile.getContentType()){
+				                    	   contractsDocs.setFileContentType(multiFile.getContentType());
+				                       }
+				                       contractsDocs.setDocumentStatus(OnboardStatus.ACCEPTED);
+				                       onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(contractsDocs);
+				                   }else{
+				                	   
+				                	   if(contractsDocs.getDocumentStatus().equals(OnboardStatus.NEW)){
+				                		   contractsDocs.setDocumentStatus(OnboardStatus.PENDING);
+					                       onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(contractsDocs); 
+				                	   }
+				                	  
+				                   }
+								}
+							}
+						
+						
+						
+						List<OnBoardingTemplateDocuments> formsDocsList = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsByCandidateOnBoardingId(Long.valueOf(jsonObj.getString("candidateOnboardId")), Constants.ONBOARDING_FORMS);
+						if(null != formsDocsList && formsDocsList.size() > 0){
+							for(OnBoardingTemplateDocuments formsDocs : formsDocsList){
+								
+									final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
+					       		    final Map files = multiRequest.getFileMap();
+					       		     
+					       		    MultipartFile  multiFile = (MultipartFile)files.get("docFile"+formsDocs.getId());
+					       		    if(multiFile != null && !multiFile.isEmpty()){
+					       		    	formsDocs.setDocFile(multiFile.getBytes());
+					       		    	formsDocs.setFileName(multiFile.getOriginalFilename());
+				                       
+				                       if(null != multiFile.getContentType()){
+				                    	   formsDocs.setFileContentType(multiFile.getContentType());
+				                       }
+				                       formsDocs.setDocumentStatus(OnboardStatus.ACCEPTED);
+				                       onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(formsDocs);
+				                   }else{
+				                	   
+				                	   if(formsDocs.getDocumentStatus().equals(OnboardStatus.NEW)){
+				                		   formsDocs.setDocumentStatus(OnboardStatus.PENDING); 
+				                		   onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(formsDocs);
+				                	   }
+				                       
+				                   }
+								}
+							}
+						
+				}
+			 
+			 
+			return "success";
+		   }
 		
 		
 		
@@ -1183,9 +1299,11 @@ public class CandidateOnBoardRestController {
 				 }
 				
 				 templateTasksList = onboardTasksService.getOnboardTasksByTemplateIdList(templateIdsList);
+				 if(null != templateTasksList){
+					 tasksList.addAll(templateTasksList);
+				 }
+				 
 			 }
-			 
-			 tasksList.addAll(templateTasksList);
 			 
 			 
 			 List<OnboardTasks> onboardtasksList = new ArrayList<OnboardTasks>();
@@ -1244,6 +1362,84 @@ public class CandidateOnBoardRestController {
 			return commonUtil.toJSON(onboardtasksList);
 			}
 		 
+		 
+		 
+		 @RequestMapping(value = "/viewCandidateOnboardTasks", method = RequestMethod.POST)
+		 @ResponseBody String viewCandidateOnboardTasks(@RequestParam(value="onBoardingUUID", required=false) String onBoardingUUID,HttpServletRequest request) throws Exception{
+			 List<OnboardTasks> templateTasksList = null;
+			 List<OnboardTasks> tasksList = new ArrayList<OnboardTasks>();;
+			 CandidateOnBoarding cnb = candidateOnBoardingService.getCandidateOnBoardingByUUID(onBoardingUUID);
+		     List<OnboardTasks> candidateTasksList = onboardTasksService.getOnBoardTasksListByCandidateOnBoardingId(cnb.getId());
+		     tasksList.addAll(candidateTasksList);
+		 
+			 CandidateOnBoarding onboarding = candidateOnBoardingService.getCandidateOnBoardingById(cnb.getId());
+			 List<Long> templateIdsList = new ArrayList<Long>();
+			 
+			 if(!isNullOrEmpty(onboarding.getOnboardTemplateId())){
+				 for (String s : onboarding.getOnboardTemplateId().split(",")){
+					 templateIdsList.add(Long.parseLong(s));
+				 }
+				
+				 templateTasksList = onboardTasksService.getOnboardTasksByTemplateIdList(templateIdsList);
+				 if(null != templateTasksList){
+					 tasksList.addAll(templateTasksList);
+				 }
+				 
+			 }
+			 List<OnboardTasks> onboardtasksList = new ArrayList<OnboardTasks>();
+			 
+			 for(OnboardTasks tasks : tasksList){
+				 
+				 List<String> usersList = new ArrayList<String>();
+					 
+					 if(!isNullOrEmpty(tasks.getAssignToUsers())){
+						 String[] userIds = tasks.getAssignToUsers().split(",");
+						 
+						 for(int i = 0 ; i < userIds.length; i++ ){
+							 StringBuilder userName = new StringBuilder();
+							 User user = userService.getUserById(Long.valueOf(userIds[i]));
+							 String assignedUser = null;
+							 if(null != user.getLastName()){
+								 assignedUser = userName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
+								}else{
+									assignedUser = userName.append(user.getFirstName()).toString();
+								}
+							 usersList.add(assignedUser);
+						 }
+					 }
+					 
+					 StringBuilder dueAfter = new StringBuilder();
+					 
+					 if(null != tasks.getDueAfterMonths()){
+						 dueAfter = dueAfter.append(tasks.getDueAfterMonths()).append(" Months ");
+					 }
+					 
+					 if(null != tasks.getDueAfterDays()){
+						 dueAfter = dueAfter.append(tasks.getDueAfterDays()).append(" Days ");
+					 }
+					 
+					 if(null != tasks.getDueAfterHours()){
+						 dueAfter = dueAfter.append(tasks.getDueAfterHours()).append(" Hours ");
+					 }
+					 
+					 if(null != tasks.getDueAfterMinutes()){
+						 dueAfter = dueAfter.append(tasks.getDueAfterMinutes()).append(" Minutes");
+					 }
+					
+					 tasks.setDueAfterString(dueAfter.toString());
+					 tasks.setUsersList(usersList); 
+					 
+					 if(null != tasks.getCandidateOnBoardingId()){
+						 tasks.setOnboardTaskType("Candidate Task");
+					 }else  if(null != tasks.getOnboardingTemplateId()){
+						 tasks.setOnboardTaskType("Template Task");
+					 }
+					 
+					 onboardtasksList.add(tasks);
+			 }
+				
+			return commonUtil.toJSON(onboardtasksList);
+			}
 		 
 		
 		
@@ -1385,16 +1581,291 @@ public class CandidateOnBoardRestController {
 			 CandidateOnBoarding onBoarding = candidateOnBoardingService.getCandidateOnBoardingById(onboardId);
 			 
 			 candidateOnBoardingService.createOnboardingUser(onBoarding,user,loginOrgLocation);
-			 
-			 onBoarding.setCandidateOnBoardStatus("Finished");
-			 candidateOnBoardingService.saveCandidateOnBoarding(onBoarding);
 			
 			return "success";
 		   
 		}
 		 
 		 
+		 @RequestMapping(value = "/validateOnboardCandidate" , method = RequestMethod.POST)
+		 public @ResponseBody  String validateOnboardCandidate(@RequestParam(value="email", required=false) String email,
+				 HttpServletRequest request) throws Exception {
+			
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			User user = userService.findByEmailAndOrgLocationsId(email,loginOrgLocation.getId());
+			if(null != user){
+				return "Invalid";
+			}else{
+				return "success";
+			}
+		   
+		}
 		 
+		 @RequestMapping(value = "/validateOnboardCandidateFromDashboard" , method = RequestMethod.POST)
+		 public @ResponseBody  String validateOnboardCandidateFromDashboard(@RequestParam(value="candidateId", required=false) Long candidateId,
+				 HttpServletRequest request) throws Exception {
+			 
+		    String result;
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			
+			CandidateOnBoarding onBoarding = candidateOnBoardingService.getCandidateOnBoardingByCandidateIdAndLocationId(candidateId, loginOrgLocation.getId());
+			if(onBoarding != null){
+				result = "Invalid";
+			}else{
+				result = "Success";
+			}
+		    return result;
+		}
+		 
+		 
+		 
+		 @RequestMapping(value = "/validateOnboardCandidateEmail" , method = RequestMethod.POST)
+		 public @ResponseBody  String validateOnboardCandidateEmail(@RequestParam(value="email", required=false) String email,
+				 HttpServletRequest request) throws Exception {
+			 	
+			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			 	
+			 String result;
+			 	User user = userService.findByEmailAndOrgLocationsId(email,loginOrgLocation.getId());
+			 	
+			 	if (user != null) {
+					result = "Invalid User Email";
+				}else{
+					
+					CandidateOnBoarding onBoarding = candidateOnBoardingService.getCandidateOnBoardingByEmailAndLocationId(email, loginOrgLocation.getId());
+					if(onBoarding != null){
+						result = "Invalid OnboardUser Email";
+					}else{
+						result = "Success";
+					}
+				}
+				return result;
+		   }
+		 
+		
+		 @RequestMapping(value = "/saveOnboardingCandidateStepDetails" , method = RequestMethod.POST)
+		 public @ResponseBody  String saveOnboardingCandidateStepDetails(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+			 	
+			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 
+			 CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(user.getId(), loginOrgLocation.getId());
+			 	
+			 json = "{"+json+"}";
+			 JSONObject jsonObj = new JSONObject(json);
+			 
+			 if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
+				 user.setFirstName(jsonObj.getString("firstName"));
+				 candidateOnBoarding.setFirstName(jsonObj.getString("firstName"));
+			 }
+			 
+			 if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
+				 user.setLastName(jsonObj.getString("lastName"));
+				 candidateOnBoarding.setLastName(jsonObj.getString("lastName"));
+			 }else{
+				 user.setLastName(null);
+				 candidateOnBoarding.setLastName(null);
+			 }
+			 
+			 if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
+				 user.setLocation(jsonObj.getString("country"));
+				 candidateOnBoarding.setCountry(jsonObj.getString("country"));
+			 }
+			 
+			 if(jsonObj.has("mobileNumber") && !isNullOrEmpty(jsonObj.getString("mobileNumber"))){
+				 user.setMobilePhone(jsonObj.getString("mobileNumber"));
+				 candidateOnBoarding.setMobileNumber(jsonObj.getString("mobileNumber"));
+			 }
+			 
+			 userService.addUser(user);
+			 SourceLeadSessionManager.setSessionAttribute(request, "user", user);
+			 
+			 
+			 Employees onboardingEmployee = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), loginOrgLocation.getId());
+				if(null != onboardingEmployee){
+					 if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
+						 onboardingEmployee.setCountry(jsonObj.getString("country"));
+					 }
+					 
+					 if(jsonObj.has("state") && !isNullOrEmpty(jsonObj.getString("state"))){
+						 onboardingEmployee.setState(jsonObj.getString("state"));
+					 }else{
+						 onboardingEmployee.setState(null);
+					 }
+					 
+					 if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
+						 onboardingEmployee.setCity(jsonObj.getString("city"));
+					 }else{
+						 onboardingEmployee.setCity(null);
+					 }
+					 
+					 employeesService.addEmployee(onboardingEmployee);
+				}
+				
+				
+					 if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
+						 candidateOnBoarding.setCountry(jsonObj.getString("country"));
+					 }
+					 
+					 if(jsonObj.has("state") && !isNullOrEmpty(jsonObj.getString("state"))){
+						 candidateOnBoarding.setState(jsonObj.getString("state"));
+					 }else{
+						 candidateOnBoarding.setState(null);
+					 }
+					 
+					 if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
+						 candidateOnBoarding.setCity(jsonObj.getString("city"));
+					 }else{
+						 candidateOnBoarding.setCity(null);
+					 }
+					 
+					 if(jsonObj.has("zipCode") && !isNullOrEmpty(jsonObj.getString("zipCode"))){
+						 candidateOnBoarding.setZipCode(jsonObj.getString("zipCode"));
+					 }else{
+						 candidateOnBoarding.setZipCode(null);
+					 }
+					 
+					 candidateOnBoardingService.saveCandidateOnBoarding(candidateOnBoarding);
+			 
+			 
+			  return "success";
+		   }
 		 
 	 
+		 @RequestMapping(value = "/getCandidateOnboardTemplateDocumentByonBoardingUUID" , method = RequestMethod.POST)
+		 public @ResponseBody  String getCandidateOnboardTemplateDocumentByonBoardingUUID(@RequestParam(value="onBoardingUUID", required=false) String onBoardingUUID,
+				 @RequestParam(value="documentType", required=false) String documentType, HttpServletRequest request) throws Exception {
+			
+			String resultJson;
+			List<OnBoardingTemplateDocuments> documentsList = null;
+			List<OnBoardingTemplateDocuments> onboardingDocumentsList = new ArrayList<OnBoardingTemplateDocuments>();
+			CandidateOnBoarding cnb = candidateOnBoardingService.getCandidateOnBoardingByUUID(onBoardingUUID);
+			Integer documentsCount = onBoardingTemplateDocumentsService.getCandidateOnboardingDocumentsByCandidateOnboardingId(cnb.getId());
+			
+			if(documentsCount > 0){
+				documentsList = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsByCandidateOnBoardingId(cnb.getId(),documentType);
+				if(null != documentsList && documentsList.size() > 0){
+					for(OnBoardingTemplateDocuments  documents : documentsList ){
+						documents.setOnboardDocumentType("Candidate Documents");
+						onboardingDocumentsList.add(documents);
+					}
+				}
+				
+				
+			}else{
+				 
+				CandidateOnBoarding onboarding = candidateOnBoardingService.getCandidateOnBoardingById(cnb.getId());
+				 List<Long> templateIdsList = new ArrayList<Long>();
+				 
+				 if(!isNullOrEmpty(onboarding.getOnboardTemplateId())){
+					 for (String s : onboarding.getOnboardTemplateId().split(",")){
+						 templateIdsList.add(Long.parseLong(s));
+					 }
+					 
+					documentsList = onBoardingTemplateDocumentsService.getCandidateOnBoardingTemplateDocumentsByTemplateId(templateIdsList,documentType);
+					if(null != documentsList && documentsList.size() > 0){
+						for(OnBoardingTemplateDocuments  documents : documentsList ){
+							documents.setOnboardDocumentType("Template Documents");
+							onboardingDocumentsList.add(documents);
+						}
+					}
+				 }
+			}
+			
+		 	resultJson = commonUtil.toJSON(onboardingDocumentsList);
+			return resultJson;
+		   
+		}
+		 
+		 
+		 
+		 @RequestMapping(value = "/getOnboardingCandidatesList")
+		 public String getOnboardingCandidatesList(HttpServletRequest request) throws Exception {
+
+			String resultJson;
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			
+			List<RequirementSubmission> submissionList = requirementSubmissionService.getOfferAcceptedCandidatesListByOrgLocationId(loginOrgLocation.getId());
+			List<RequirementSubmission> requirementSubmissionList = new ArrayList<RequirementSubmission>();
+			
+			if(null != submissionList && submissionList.size() > 0){
+				
+				for(RequirementSubmission submission : submissionList){
+					StringBuilder candidateName = new StringBuilder();
+					if(!isNullOrEmpty(submission.getCandidate().getLastName())){
+						submission.setCandidateName(candidateName.append(submission.getCandidate().getFirstName()).append(" ").append(submission.getCandidate().getLastName()).toString());
+					}else{
+						submission.setCandidateName(candidateName.append(submission.getCandidate().getFirstName()).toString());
+					}
+					
+					submission.setCandidateEmail(submission.getCandidate().getEmail());
+					submission.setRequirementName(submission.getRequirement().getJobTitle());
+					submission.setCandidateUUID(submission.getCandidate().getCandidateUUID());
+					submission.setRequirementUUID(submission.getRequirement().getRequirementUUID());
+					
+					RequirementOffers requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(submission.getId());
+					submission.setOfferJoinDate(Constants.DMY.format(requirementOffers.getDateOfJoining()));
+					submission.setPositionType(requirementOffers.getPositionType());
+					submission.setRate(requirementOffers.getAmount());
+					submission.setRateType(requirementOffers.getPaymentMode());
+					submission.setPaymentType(requirementOffers.getPaymentType());
+					submission.setOfferUUID(requirementOffers.getOfferUUID());
+					requirementSubmissionList.add(submission);
+					
+					CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByCandidateIdAndOfferId(submission.getCandidate().getId(), requirementOffers.getId());
+					if(null != candidateOnBoarding){
+						submission.setOnboardUUId(candidateOnBoarding.getOnboardCandidateUUID());
+						submission.setOnboardStatus(candidateOnBoarding.getCandidateOnBoardStatus());
+					}
+					
+				}
+			}
+			
+			
+			resultJson = commonUtil.toJSON(requirementSubmissionList);
+			return resultJson;
+		 }
+		 
+		 
+		 @RequestMapping(value = "/changeTaskStatusByOnboardCandidate" , method = RequestMethod.POST)
+		 public @ResponseBody  String changeTaskStatusByOnboardCandidate(@RequestParam(value="taskId", required=false) Long taskId,
+				 HttpServletRequest request) throws Exception {
+			 	
+			 	Tasks tasks = taskService.getTasksById(taskId);
+			 	
+			 	if (null != tasks) {
+					
+			 		if(!isNullOrEmpty(tasks.getTaskStatus())){
+			 			if(tasks.getTaskStatus().equalsIgnoreCase("Open")){
+			 				tasks.setTaskStatus("Closed");
+			 			}else{
+			 				tasks.setTaskStatus("Open");
+			 			}
+			 			
+			 			taskService.saveTasks(tasks);
+			 		}
+				}
+			 	
+				return "success";
+		   }
+		 
+		 
+		 @RequestMapping(value = "/sendOnboardCandidateToDashboard" , method = RequestMethod.POST)
+		 public @ResponseBody  String sendOnboardCandidateToDashboard(@RequestParam(value="taskId", required=false) Long taskId,
+				 HttpServletRequest request,HttpServletResponse response) throws Exception {
+			 
+			 ModelAndView model = new ModelAndView();
+			 	
+			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 
+			 CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(user.getId(), loginOrgLocation.getId());
+			 candidateOnBoarding.setOnboardSubmitted(Constants.YES);	
+			 candidateOnBoardingService.saveCandidateOnBoarding(candidateOnBoarding);
+			 
+			 return "success";
+			 
+		   }
+		 
+		 
 }

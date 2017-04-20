@@ -6,6 +6,12 @@
 <!-- <script src="resources/js/chosen.jquery.min.js"></script> --> 
 
 
+<style type="text/css">
+.chosen-container {
+    width: 100% !important;
+}
+</style>
+
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <!-- end files for autocomplete with tagit -->
@@ -43,6 +49,13 @@
             </div>				
 			</div>
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+          	
+          	<div class="form-group">
+              <label class="col-md-4">Contract title<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="" data-validation="required validate_Space validate_length length1-250" field-name="Contract Title">
+              </div>
+            </div>
                        
             <div class="form-group">
               <label class="col-md-4">Select template<span class="text-danger">&nbsp;*</span></label>
@@ -51,13 +64,23 @@
                   </select>
               </div>
             </div>  
-                     
-            <div class="form-group">
-              <label class="col-md-4">Contract title<span class="text-danger">&nbsp;*</span></label>
+            
+            <div class="form-group" id="requirementDiv" style="display: none;">
+              <label class="col-md-4">Select Requirement<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="" data-validation="required validate_Space validate_length length1-250" field-name="Contract Title">
+                  <select class="form-control" id="requirementsList" name="requirementsList" onchange="submissionOffers();" field-name="Requirement">
+                  </select>
               </div>
             </div>
+            
+            <div class="form-group" id="offeredSubmissionDiv" style="display: none;">
+              <label class="col-md-4">Select Applicant<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-8">
+                  <select class="form-control" id="submissionOffersList" name="submissionOffersList" field-name="Applicant">
+                  </select>
+              </div>
+            </div>
+                     
              
           <div class="form-group">
               <label class="col-md-4">Owner<span class="text-danger">&nbsp;*</span></label>
@@ -143,9 +166,10 @@
               <label class="col-md-4">Approver</label>
               <div class="col-md-8">
                   <select class="chosen-select form-control" id="approver" name="approver">
-                  <option>Select Owner</option>
+                  <option value=''>--Select Owner--</option>
                   <c:forEach var="user" items="${userList}">
-	                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+                   <%-- to Enable login user as approver ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} --%>
+	                     <option value="${user.id}">${user.firstName} ${user.lastName}</option>
                   </c:forEach>
                   </select>
               </div>
@@ -156,7 +180,14 @@
               <div class="col-md-8">
 					<textarea class="form-control" rows="3" id="description" name="description" data-validation-optional="true" data-validation="validate_Space validate_length length1-250"></textarea>
               </div>
-            </div>            
+            </div>    
+            
+            <div class="form-group">
+              <label class="col-md-4">State of Jurisdiction</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="jurisdiction" name="jurisdiction" field-name="State Jurisdiction">
+              </div>
+            </div>         
             
         </div>
       </div>
@@ -165,6 +196,46 @@
 <div class="row newContrBill">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
            <h2>Billing Details</h2>
+           
+           <div class="form-group" id="hoursPerWeekDiv" style="display: none;">
+              <label class="col-md-4">Hours Per Week<span class="text-danger">&nbsp;*</span></label>
+	              <div class="col-md-8">
+				  		<input type="text" class="form-control" id="hoursPerWeek" name="hoursPerWeek" value="" placeholder="Enter Hours" field-name="Hours Per Week">
+	              </div>
+            </div>
+            
+            <div class="form-group" id="overTimeHoursDiv" style="display: none;">
+              <label class="col-md-4">Overtime Hours<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8">
+					  	<input type="text" class="form-control" id="overTimeHours" name="overTimeHours" value="" placeholder="Enter Hours" field-name="Overtime Hours">
+              	</div>
+            </div>
+            
+            <div class="form-group" id="totalHoursEstimatedDiv" style="display: none;">
+              <label class="col-md-4">Total Hours Estimated<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8">
+					  	<input type="text" class="form-control" id="totalHoursEstimated" name="totalHoursEstimated" value="" placeholder="Enter Total Estimated Hours" field-name="Total Estimated Hours">
+              	</div>
+            </div>
+           
+           <div class="form-group" id="overtimeRateDiv" style="display: none;">
+              <label class="col-md-4">Overtime Rate<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8">
+              		<div class="row">
+					  <div class="col-lg-8">
+					  	<input type="text" class="form-control" id="overtimeRate" name="overtimeRate" value="" placeholder="Overtime Rate" field-name="Overtime Rate">
+					  </div>
+					  <div class="col-lg-4">
+						<select class="form-control selectpicker" id="overtimeRateType" name="overtimeRateType" field-name="Overtime Rate Type">
+						  <option value="">Select Type</option>
+						  <option value="FLAT">Flat</option>
+						  <option value="PERCENTAGE">Percentage</option>
+						</select>
+					  </div>
+					</div>
+              	</div>
+            </div>
+           
             <div class="form-group">
               <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
@@ -239,8 +310,8 @@
       <div class="form-footer clearfix contrFoot">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input type="button" value="Draft" id="draft_template" onclick="saveNewContract('draft'); " class="btn btn-primary">
-            <input type="button" value="Save" class="btn btn-success ml10">
+            <input type="button" value="Save Draft" id="draft_template" onclick="saveNewContract('draft');" class="btn btn-primary">
+            <input type="button" value="Save" id="save_template" onclick="saveNewContract('pending');" class="btn btn-success ml10">
             <input type="button" value="Cancel" class="btn btn-danger ml10">
           </div>
         </div>
@@ -344,7 +415,7 @@ function getVendorContacts(){
 	        var opt = json[i];
 	            // need to use in edit
        			//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-       			output = output + "<option value='" +opt.vendorUser.id+ "'>"+opt.spocName+"</option>";
+       			output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+"</option>";
 			}
        	    $("#vendorContact").empty();
 	        $("#vendorContact").append(output);
@@ -369,7 +440,7 @@ function getClientContacts(){
 	var opt = json[i];
 	// need to use in edit
 	//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-	output = output + "<option value='" +opt.clientUser.id+ "'>"+opt.ownerName+"</option>";
+	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"</option>";
 	}
 	$("#clientContact").empty();
 	$("#clientContact").append(output);
@@ -451,18 +522,47 @@ function selectTaxType(){
 function getContractTemplates(){
 	var contractType = $("#contractType").val();
 	
+	if(contractType == ""){
+		$("#clientOrgRelationId option:selected").removeAttr("selected");
+		$('#clientOrgRelationId').trigger("chosen:updated");
+		document.getElementById("clientDiv").style.display="none";
+		
+		$("#clientContact option:selected").removeAttr("selected");
+		$('#clientContact').trigger("chosen:updated");
+		document.getElementById("clientContactDiv").style.display="none";
+		
+		$("#orgRelationId option:selected").removeAttr("selected");
+		$('#orgRelationId').trigger("chosen:updated");
+		document.getElementById("vendorDiv").style.display="none";
+		
+		$("#vendorContact option:selected").removeAttr("selected");
+		$('#vendorContact').trigger("chosen:updated");
+		document.getElementById("vendorContactDiv").style.display="none";
+	}
  	if(contractType == "Client MSA"){
 		document.getElementById("clientDiv").style.display="block";
 		document.getElementById("clientContactDiv").style.display="block";
 		document.getElementById("vendorDiv").style.display="none";
 		document.getElementById("vendorContactDiv").style.display="none";
-		}
-		if(contractType == "Vendor MSA"){
+	}
+	if(contractType == "Vendor MSA"){
 		document.getElementById("clientDiv").style.display="none";
 		document.getElementById("clientContactDiv").style.display="none";
 		document.getElementById("vendorDiv").style.display="block";
 		document.getElementById("vendorContactDiv").style.display="block";
-		}
+	}
+	if(contractType == "Client SOW"){
+		document.getElementById("clientDiv").style.display="block";
+		document.getElementById("clientContactDiv").style.display="block";
+		document.getElementById("vendorDiv").style.display="none";
+		document.getElementById("vendorContactDiv").style.display="none";
+	}
+	if(contractType == "Vendor SOW"){
+		document.getElementById("clientDiv").style.display="none";
+		document.getElementById("clientContactDiv").style.display="none";
+		document.getElementById("vendorDiv").style.display="block";
+		document.getElementById("vendorContactDiv").style.display="block";
+	}
 		 
  	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
@@ -491,25 +591,119 @@ function getContractTemplates(){
 
 <script>
 function contractTypeLabels(){
-var contractType = $("#contractType").val();
-if(contractType == "Client MSA"){
-$('#orgRelationId').removeAttr('data-validation');
-$('#orgRelationId').attr('data-validation-optional',"true");
-$('#vendorContact').removeAttr('data-validation');
-$('#vendorContact').attr('data-validation-optional',"true");
+	var contractType = $("#contractType").val();
+	if(contractType == ""){
+		$('#orgRelationId').removeAttr('data-validation');
+		$('#orgRelationId').attr('data-validation-optional',"true");
+		$('#vendorContact').removeAttr('data-validation');
+		$('#vendorContact').attr('data-validation-optional',"true");
+		
+		hideCommonSOWFields();
+	}
+	if(contractType == "Client MSA"){
+		$('#orgRelationId').removeAttr('data-validation');
+		$('#orgRelationId').attr('data-validation-optional',"true");
+		$('#vendorContact').removeAttr('data-validation');
+		$('#vendorContact').attr('data-validation-optional',"true");
+		
+		hideCommonSOWFields();
+	}
+	if(contractType == "Vendor MSA"){
+		$('#clientOrgRelationId').removeAttr('data-validation');
+		$('#clientOrgRelationId').attr('data-validation-optional',"true");
+		$('#clientContact').removeAttr('data-validation');
+		$('#clientContact').attr('data-validation-optional',"true");
+		
+		hideCommonSOWFields();
+	}
+	if(contractType == "Client SOW"){
+		$('#orgRelationId').removeAttr('data-validation');
+		$('#orgRelationId').attr('data-validation-optional',"true");
+		$('#vendorContact').removeAttr('data-validation');
+		$('#vendorContact').attr('data-validation-optional',"true");
+		hideCommonSOWFields();
+		showCommonSOWFields();
+		getRequirements("Client SOW");
+	}
+	if(contractType == "Vendor SOW"){
+		$('#clientOrgRelationId').removeAttr('data-validation');
+		$('#clientOrgRelationId').attr('data-validation-optional',"true");
+		$('#clientContact').removeAttr('data-validation');
+		$('#clientContact').attr('data-validation-optional',"true");
+		hideCommonSOWFields();
+		showCommonSOWFields();
+		getRequirements("Vendor SOW");
+	}
 }
-if(contractType == "Vendor MSA"){
-$('#clientOrgRelationId').removeAttr('data-validation');
-$('#clientOrgRelationId').attr('data-validation-optional',"true");
-$('#clientContact').removeAttr('data-validation');
-$('#clientContact').attr('data-validation-optional',"true");
-}
-}
-
 </script>
 
+<script>
+function showCommonSOWFields(){
+	document.getElementById("hoursPerWeekDiv").style.display="block";
+    $('#hoursPerWeek').removeAttr('data-validation-optional');
+	$('#hoursPerWeek').attr("data-validation","required");
+	
+	document.getElementById("overTimeHoursDiv").style.display="block";
+    $('#overTimeHours').removeAttr('data-validation-optional');
+	$('#overTimeHours').attr("data-validation","required");
+	
+	document.getElementById("totalHoursEstimatedDiv").style.display="block";
+    $('#totalHoursEstimated').removeAttr('data-validation-optional');
+	$('#totalHoursEstimated').attr("data-validation","required");
+	
+	document.getElementById("overtimeRateDiv").style.display="block";
+    $('#overtimeRate').removeAttr('data-validation-optional');
+	$('#overtimeRate').attr("data-validation","required");
+	$('#overtimeRateType').removeAttr('data-validation-optional');
+	$('#overtimeRateType').attr("data-validation","required");
+}
+</script>
 
-
+<script>
+function hideCommonSOWFields(){
+	$("#requirementsList option:selected").removeAttr("selected");
+	$('#requirementsList').trigger("chosen:updated");
+	$('#requirementsList').removeAttr('data-validation');
+	$('#requirementsList').attr('data-validation-optional',"true");
+	$('#requirementDiv').find('p.jquery_form_error_message').remove();
+	document.getElementById("requirementDiv").style.display="none";
+	
+	$("#submissionOffersList option:selected").removeAttr("selected");
+	$('#submissionOffersList').trigger("chosen:updated");
+	$('#submissionOffersList').removeAttr('data-validation');
+	$('#submissionOffersList').attr('data-validation-optional',"true");
+	$('#offeredSubmissionDiv').find('p.jquery_form_error_message').remove();
+	document.getElementById("offeredSubmissionDiv").style.display="none";
+	
+	$('#hoursPerWeek').removeAttr('data-validation');
+	$('#hoursPerWeek').attr('data-validation-optional',"true");
+	$('#hoursPerWeek').val("");
+	$('#hoursPerWeekDiv').find('p.jquery_form_error_message').remove();
+	document.getElementById("hoursPerWeekDiv").style.display="none";
+	
+	$('#overTimeHours').removeAttr('data-validation');
+	$('#overTimeHours').attr('data-validation-optional',"true");
+	$('#overTimeHours').val("");
+	$('#overTimeHoursDiv').find('p.jquery_form_error_message').remove();
+	document.getElementById("overTimeHoursDiv").style.display="none";
+	
+	$('#totalHoursEstimated').removeAttr('data-validation');
+	$('#totalHoursEstimated').attr('data-validation-optional',"true");
+	$('#totalHoursEstimated').val("");
+	$('#totalHoursEstimatedDiv').find('p.jquery_form_error_message').remove();
+	document.getElementById("totalHoursEstimatedDiv").style.display="none";
+	
+	$('#overtimeRate').removeAttr('data-validation');
+	$('#overtimeRate').attr('data-validation-optional',"true");
+	$('#overtimeRate').val("");
+	$("#overtimeRateType option:selected").removeAttr("selected");
+	$('#overtimeRateType').trigger("chosen:updated");
+	$('#overtimeRateType').removeAttr('data-validation');
+	$('#overtimeRateType').attr('data-validation-optional',"true");
+	$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
+	document.getElementById("overtimeRateDiv").style.display="none";
+}
+</script>
 
 <script type="text/javascript">
 	function saveNewContract(saveType) {
@@ -539,7 +733,75 @@ $('#clientContact').attr('data-validation-optional',"true");
 </script>
 
 
+<script>
+	function getRequirements(sowType){
+		var sourceleadUrl ='${sourceleadUrl}';
+		$.ajax({
+	        type : "GET",
+	        url: sourceleadUrl+"/getRequirementsForSOWByOrgLocationId?sowType="+sowType,    
+	         success :function(data) {
+	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
+	            	  var json = JSON.parse(data);
+	            	  var result = "";
+	            	  result = result + '<option value="">--- Select Requirement ---</option>';
+	                  for (var i = 0; i < json.length; i++) {
+	                 	 var opt = json[i]; 
+	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.jobTitle+'</option>';
+	                  }
+	                  $("#requirementsList").empty();
+	                  $("#requirementsList").append(result);
+	                  $("#requirementsList").chosen();
+	              	  $("#requirementsList").trigger('chosen:update');
+	              }
+	              document.getElementById("requirementDiv").style.display="block";
+	              $('#requirementsList').removeAttr('data-validation-optional');
+	  			  $('#requirementsList').attr("data-validation","required");
+	       },
+	    });
+	}
+		
+	function submissionOffers(){
+		var sourceleadUrl ='${sourceleadUrl}';
+		var requirementId = $("#requirementsList").val();
+		var sowType = $("#contractType").val();
+		$.ajax({
+	        type : "GET",
+	        url: sourceleadUrl+"/getSubmissionsForSOWByRequirementId?requirementId="+requirementId+"&sowType="+sowType,    
+	         success :function(data) {
+	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
+	            	  var json = JSON.parse(data);
+	            	  var result = "";
+	            	  result = result + '<option value="">--- Select Candidate ---</option>';
+	                  for (var i = 0; i < json.length; i++) {
+	                 	 var opt = json[i]; 
+	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.candidateName+'</option>';
+	                  }
+	                  $("#submissionOffersList").empty();
+	                  $("#submissionOffersList").append(result);
+	                  $("#submissionOffersList").chosen();
+	              	  $("#submissionOffersList").trigger('chosen:update');
+	              }
+	              document.getElementById("offeredSubmissionDiv").style.display="block";
+	              $('#submissionOffersList').removeAttr('data-validation-optional');
+	  			  $('#submissionOffersList').attr("data-validation","required");
+	       },
+	    });
 
+	}
+</script>
+<!-- <script>
+var config = {
+	      '.chosen-select'           : {},
+	      '.chosen-select-deselect'  : {allow_single_deselect:true},
+	      '.chosen-select-no-single' : {disable_search_threshold:10},
+	      '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+	      '.chosen-select-width'     : {width:"95%"}
+	    }
+	    for (var selector in config) {
+	      $(selector).chosen(config[selector]);
+	    }
+
+</script> -->
 
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />

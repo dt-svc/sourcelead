@@ -197,6 +197,12 @@ public class RequirementSubmission implements Serializable{
    	private Long resumeId;
     
     @Transient
+   	private String candidateSummary;
+    
+    @Transient
+   	private String designationType;
+    
+    @Transient
    	private String resumeUUID;
     
     @Transient
@@ -258,6 +264,9 @@ public class RequirementSubmission implements Serializable{
 	
 	@Transient
 	private String proposedSubmissionRate;
+	
+	@Transient
+	private String ExpectedRate;
 	
 	@Transient
 	private String clientSubmissionId;
@@ -345,6 +354,16 @@ public class RequirementSubmission implements Serializable{
     
     @Transient
 	private String isClientSubmission;
+    
+    @Transient
+   	private String offerUUID;
+    
+    @Transient
+   	private String onboardUUId;
+    
+    @Transient
+   	private String onboardStatus;
+    
 	
 	
 	public OrgLocations getVendorLocationId() {
@@ -821,6 +840,14 @@ public class RequirementSubmission implements Serializable{
 		this.proposedSubmissionRate = proposedSubmissionRate;
 	}
 
+	public String getExpectedRate() {
+		return ExpectedRate;
+	}
+
+	public void setExpectedRate(String expectedRate) {
+		ExpectedRate = expectedRate;
+	}
+
 	public String getClientSubmissionId() {
 		return clientSubmissionId;
 	}
@@ -885,6 +912,21 @@ public class RequirementSubmission implements Serializable{
 		this.numofrequestsent = numofrequestsent;
 	}
 
+	public String getCandidateSummary() {
+		return candidateSummary;
+	}
+
+	public void setCandidateSummary(String candidateSummary) {
+		this.candidateSummary = candidateSummary;
+	}
+
+	public String getDesignationType() {
+		return designationType;
+	}
+
+	public void setDesignationType(String designationType) {
+		this.designationType = designationType;
+	}
 
 	public String getState() {
 		return state;
@@ -1141,5 +1183,29 @@ public class RequirementSubmission implements Serializable{
 
 	public void setIsClientSubmission(String isClientSubmission) {
 		this.isClientSubmission = isClientSubmission;
+	}
+
+	public String getOfferUUID() {
+		return offerUUID;
+	}
+
+	public void setOfferUUID(String offerUUID) {
+		this.offerUUID = offerUUID;
+	}
+
+	public String getOnboardUUId() {
+		return onboardUUId;
+	}
+
+	public void setOnboardUUId(String onboardUUId) {
+		this.onboardUUId = onboardUUId;
+	}
+
+	public String getOnboardStatus() {
+		return onboardStatus;
+	}
+
+	public void setOnboardStatus(String onboardStatus) {
+		this.onboardStatus = onboardStatus;
 	}
 }

@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,6 +34,9 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 public class SocialInviterService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(SocialInviterService.class);
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
 	
     @RequestMapping(value="/getAPIService",  method =  RequestMethod.GET )
 	@ResponseBody
@@ -261,8 +265,19 @@ public class SocialInviterService {
 	protected JSONObject getCredentials(String service) throws JSONException{
     	JSONObject APICredentials = new JSONObject();
     	if(service.equals("twitter")){
-        	APICredentials.put("consumerKey", "V4P2tb6xkkjPNTVblTlkZa3E6");
-        	APICredentials.put("consumerSecret", "UVSn8ZaxvToCPy5jn7IDKLuQlA02nNTpAiXrzaKLOPFPoSYcab");
+    		if(sourceleadUrl.equalsIgnoreCase("http://qa2.sourcelead.net/sourcelead")){
+    			APICredentials.put("consumerKey", "0ugd8Y5fhrr7b3T5fypnuEyVt");
+            	APICredentials.put("consumerSecret", "5Wly1QOVn1KMA18knmqo6VKH24iq0ZmrgDBrwaOPtJFc4SD4xs");
+    		}
+    		else if(sourceleadUrl.equalsIgnoreCase("http://demo.sourcelead.net/sourcelead")){
+    			APICredentials.put("consumerKey", " Vy8RVbLxNBsLvfGfjLPAfr1Lj");
+            	APICredentials.put("consumerSecret", "k0TWdiZtiH5mgfLY3DwXVC41rNcleixDsRoVzPVO9XLo4P41OQ");
+    		}
+            else if(sourceleadUrl.equalsIgnoreCase("http://sourcelead.com/sourcelead")){
+            	APICredentials.put("consumerKey", "nIPNX5vuHo7TjlWm4gu6RG3Z5");
+            	APICredentials.put("consumerSecret", "WBjOVo4JGzRzJPxyHBQtRAFx3jA2HlTX2SSHcGZuTNfx4J516e");
+    		}
+        	
         }
     	else if (service.equals("facebook")){
         	APICredentials.put("consumerKey", "200281393793197");
@@ -277,8 +292,22 @@ public class SocialInviterService {
 	    	APICredentials.put("consumerSecret", "");
         }
     	else if(service.equals("hotmail") || service.equals("outlook")){
-       		APICredentials.put("consumerKey", "09367f41-ab2e-49aa-8b4b-2868a8034074");
-       		APICredentials.put("consumerSecret", "QxWu8nsUQKLKA8QbF4j3co1");
+    		if(sourceleadUrl.equalsIgnoreCase("http://qa2.sourcelead.net/sourcelead")){
+    			APICredentials.put("consumerKey", "09367f41-ab2e-49aa-8b4b-2868a8034074");
+           		APICredentials.put("consumerSecret", "QxWu8nsUQKLKA8QbF4j3co1");
+    		}
+    		else if(sourceleadUrl.equalsIgnoreCase("http://demo.sourcelead.net/sourcelead")){
+    			APICredentials.put("consumerKey", "82108683-3271-4c1b-89af-f3dacf641921");
+            	APICredentials.put("consumerSecret", "bUGjhaLUhNF1CSj1NeWfnsp");
+    		}
+            else if(sourceleadUrl.equalsIgnoreCase("http://sourcelead.com/sourcelead")){
+            	APICredentials.put("consumerKey", "2fe5ba4a-3423-4d43-a4cd-9bf6193e89d9");
+            	APICredentials.put("consumerSecret", "rGiibkiynfKCom9H6jxBvPY");
+    		}
+            else if(sourceleadUrl.equalsIgnoreCase("http://localhost:8080/sourcelead")){
+            	APICredentials.put("consumerKey", "c103f35b-432c-461f-a8b8-4b0cd7ad6116");
+            	APICredentials.put("consumerSecret", "f403E09xavRPBDxtxpF7UsO");
+    		}
         }
 		else if(service.equals("box")){
        		APICredentials.put("consumerKey", "");
@@ -313,8 +342,18 @@ public class SocialInviterService {
 	    	APICredentials.put("consumerSecret", "sWQwek2HiUjqrLBL");
         }
 		else if(service.equals("yahoo")){
-       		APICredentials.put("consumerKey", "dj0yJmk9THZweTRuYnY4d3hWJmQ9WVdrOWJHSTFUalJ2Tm1VbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD0yZQ--");
-	    	APICredentials.put("consumerSecret", "d6d481b6f2d7b6d448cd83401b3317518d30e452");
+			if(sourceleadUrl.equalsIgnoreCase("http://qa2.sourcelead.net/sourcelead")){
+    			APICredentials.put("consumerKey", "dj0yJmk9ODRRRDZKUGVzS1JjJmQ9WVdrOVUwcGtSRWR6TkdrbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD04Zg--");
+            	APICredentials.put("consumerSecret", "830d72d8b56174c1ec16c6401ec770fb0bbfff92");
+    		}
+    		else if(sourceleadUrl.equalsIgnoreCase("http://demo.sourcelead.net/sourcelead")){
+    			APICredentials.put("consumerKey", "dj0yJmk9Qm1jYlpmMmpvVWJhJmQ9WVdrOU9VMWpZMHA1TlRBbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD1iOQ--");
+            	APICredentials.put("consumerSecret", "7fa62cce8b2ae539d4480df23deeb46aaa08e96c");
+    		}
+            else if(sourceleadUrl.equalsIgnoreCase("http://sourcelead.com/sourcelead")){
+            	APICredentials.put("consumerKey", "dj0yJmk9R0xUeFZjS25mTExxJmQ9WVdrOVZsbEpjbXRXTmpRbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD05Mw--");
+            	APICredentials.put("consumerSecret", "4167fe3f2cca37c2ad971d766e9f337d60951d25");
+    		}
         }
 		else if(service.equals("foursquare")){
         	APICredentials.put("consumerKey", "YUZNQ1BUKIFEJKXKCGLWKVNQCASW1G50O1TWTEM1KEK3S3VB");

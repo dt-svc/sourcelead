@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -46,8 +47,8 @@ public class Contracts {
 	
 	@ManyToOne 
     @JoinColumn(name="TEMPLATE_ID", nullable=false )  
-	private ContractsTemplate contractsTemplate;
-	
+	private ContractsTemplate contractsTemplate; 
+	 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "OWNER_USER_ID")
 	private User ownerUserId;
@@ -65,6 +66,9 @@ public class Contracts {
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )     
 	private OrgLocations orgLocationId;
 	
+	@ManyToOne
+    @JoinColumn(name="PARENT_CONTRACT_ID", nullable=false )     
+	private Contracts parentContractId;
 	
 	@ManyToOne
     @JoinColumn(name="CONTRACT_ORG_LOCATION_ID", nullable=false )     
@@ -83,7 +87,7 @@ public class Contracts {
 	private String stateOfJurisdiction;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "APPROVER_USER_ID")
+	@JoinColumn(name = "APPROVER_USER_ID") 
 	private User approverUser;
 	
 	@Column(name = "DESCRIPTION",columnDefinition = "TEXT default NULL")
@@ -107,6 +111,25 @@ public class Contracts {
 	@Column(name = "TAX_TYPE")
 	private String taxType;
 	
+	@ManyToOne
+    @JoinColumn(name="REQUIREMENT_SUBMISSION_ID")     
+	private RequirementSubmission requirementSubmission;
+	
+	@Column(name = "HOURS_PER_WEEK")
+	private String hoursPerWeek;
+	
+	@Column(name = "OVER_TIME_HOURS")
+	private String overTimeHours;
+	
+	@Column(name = "TOTAL_HOURS")
+	private String totalHours;
+	
+	@Column(name = "OVERTIME_RATE")
+	private String overtimeRate;
+	
+	@Column(name = "OVERTIME_RATE_TYPE")
+	private String overtimeRateType;
+	
 	@Column(name = "STATUS")
 	private String status;
 	
@@ -125,18 +148,70 @@ public class Contracts {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	
+	@Column(name = "STATE_JURISDICTION")
+	private String stateJurisdiction;
+	
 	@Transient
 	private String ownerName;
 	
 	@Transient
 	private String vendorContactName;
 	
-
 	@Transient
 	private String startDateStr;
 	
 	@Transient
 	private String endDateStr;
+
+	@Transient
+	private String parentId;
+	
+	@Transient
+	List<Contracts> vendorcontractsList;
+	
+	@Transient
+	List<Contracts> clientcontractsList;
+	
+	public List<Contracts> getVendorcontractsList()
+	{
+		return vendorcontractsList;
+	}
+
+	public void setVendorcontractsList(List<Contracts> vendorcontractsList)
+	{
+		this.vendorcontractsList = vendorcontractsList;
+	}
+
+	public List<Contracts> getClientcontractsList()
+	{
+		return clientcontractsList;
+	}
+
+	public void setClientcontractsList(List<Contracts> clientcontractsList)
+	{
+		this.clientcontractsList = clientcontractsList;
+	}
+
+	public String getParentId()
+	{
+		return parentId;
+	}
+
+	public void setParentId(String parentId)
+	{
+		this.parentId = parentId;
+	}
+
+	public Contracts getParentContractId()
+	{
+		return parentContractId;
+	}
+
+	public void setParentContractId(Contracts parentContractId)
+	{
+		this.parentContractId = parentContractId;
+	}
 
 	public Date getCreatedDate()
 	{
@@ -356,6 +431,54 @@ public class Contracts {
 		this.taxType = taxType;
 	}
 
+	public RequirementSubmission getRequirementSubmission() {
+		return requirementSubmission;
+	}
+
+	public void setRequirementSubmission(RequirementSubmission requirementSubmission) {
+		this.requirementSubmission = requirementSubmission;
+	}
+
+	public String getHoursPerWeek() {
+		return hoursPerWeek;
+	}
+
+	public void setHoursPerWeek(String hoursPerWeek) {
+		this.hoursPerWeek = hoursPerWeek;
+	}
+
+	public String getOverTimeHours() {
+		return overTimeHours;
+	}
+
+	public void setOverTimeHours(String overTimeHours) {
+		this.overTimeHours = overTimeHours;
+	}
+
+	public String getTotalHours() {
+		return totalHours;
+	}
+
+	public void setTotalHours(String totalHours) {
+		this.totalHours = totalHours;
+	}
+
+	public String getOvertimeRate() {
+		return overtimeRate;
+	}
+
+	public void setOvertimeRate(String overtimeRate) {
+		this.overtimeRate = overtimeRate;
+	}
+
+	public String getOvertimeRateType() {
+		return overtimeRateType;
+	}
+
+	public void setOvertimeRateType(String overtimeRateType) {
+		this.overtimeRateType = overtimeRateType;
+	}
+
 	public String getStatus() {
 		return status;
 	}
@@ -412,6 +535,14 @@ public class Contracts {
 	public void setEndDateStr(String endDateStr)
 	{
 		this.endDateStr = endDateStr;
+	}
+
+	public String getStateJurisdiction() {
+		return stateJurisdiction;
+	}
+
+	public void setStateJurisdiction(String stateJurisdiction) {
+		this.stateJurisdiction = stateJurisdiction;
 	}
 	
 	

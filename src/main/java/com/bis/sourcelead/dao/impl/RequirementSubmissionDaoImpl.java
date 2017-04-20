@@ -2140,7 +2140,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		@Transactional(rollbackFor = { Exception.class })
 		public List<RequirementSubmission> getOfferAcceptedCandidatesListByOrgLocationId(Long orgLocationId) {
 			 Session session = this.sessionFactory.getCurrentSession();
-			 String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate where rs.orgLocations.id = :orgLocationId and rs.submissionStatus = 'OFFERACCEPTED'";
+			 String query = "from RequirementSubmission rs left join fetch rs.candidateResumes left join fetch rs.requirement left join fetch rs.candidate where rs.orgLocations.id = :orgLocationId and rs.submissionStatus = 'OFFERACCEPTED'";
 			 List<RequirementSubmission>  offerAcceptedCandidatesList = session.createQuery(query).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
 		     return offerAcceptedCandidatesList;
 		}
@@ -2298,7 +2298,39 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		       return count;
 		}
 
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<RequirementSubmission> getApplicantCountSubmittedByVendor(Long orgLocationId, Long orgRelationId) {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query =" from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.orgLocations left join fetch rs.candidateResumes where rs.orgLocations.id =:orgLocationId and rs.vendorLocationId.id =:orgRelationId and rs.sourceSubmission <> NULL";
+			List<RequirementSubmission>  subList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+		    return subList;
+		}
 
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<RequirementSubmission> getVendorSpocSubmissions(String userCode, Long orgLocationId) {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query =" from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.orgLocations left join fetch rs.candidateResumes where rs.orgLocations.id =:orgLocationId and rs.createdBy =:userCode";
+			List<RequirementSubmission>  subList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("userCode", userCode).setCacheable(true).list();
+		    return subList;
+		}
+		
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<RequirementSubmission> getSubmissionsForSOWByRequirementId(Long requirementId, String sowType) {
+			 Session session = this.sessionFactory.getCurrentSession();
+			 String subQuery = "";
+			 if(sowType.equalsIgnoreCase("Client SOW")){
+		 			subQuery = "and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
+		 		}else if(sowType.equalsIgnoreCase("Vendor SOW")){
+		 			subQuery = "and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
+		 		}
+			 String leftJoins = "left join fetch rs.requirement req left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes left join fetch rs.orgLocations left join fetch rs.vendorLocationId left join fetch rs.recruiterUserId ";
+			 String query = "from RequirementSubmission rs "+leftJoins+" where req.id = :requirementId "+subQuery+" ORDER BY rs.id DESC";
+			 List<RequirementSubmission>  offerAcceptedCandidatesList = session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
+		     return offerAcceptedCandidatesList;
+		}
 		
   }
 

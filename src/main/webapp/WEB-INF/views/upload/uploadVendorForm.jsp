@@ -78,7 +78,7 @@ margin:10px 220px 0;
 			  </div> --%>
 			  </div>
 			<div class="file-upload clearfix text-center" id="fileDiv" onclick = "check();">
-		<div class="col-md-12" id="vendorNameDiv">
+		<div class="col-md-12" id="clientNameDiv">
 			<label class="bg-default">
 			<i aria-hidden="true" class="fa fa-paperclip"></i> <br/>
                 <input type="file" name="file" field-name="File Upload" style="display: none;" id="uploadBtn" data-validation="required validate_importFile">
@@ -166,6 +166,18 @@ margin:10px 220px 0;
     </form:form>
   </section>  
   
+  <div class="side_mask"></div>   
+  <section class="mergePopup">
+  <div class="mergeAA"><span onclick="mergeclose();"><i class="fa fa-times"></i></span></div>
+	<span><select class="chosen-select form-control mergePopupSel" id="vendorListIds" onchange="flush();">
+    	       
+	</select></span>  
+	<input type="button" onclick="mergeWithRecord();" value="Merge" class="btn btn-primary mergePopupbtn" />
+	<div class="clearfix"></div>
+	<p id="clientError"></p>	
+	<p><i class="fa fa-info-circle"></i>The user will be created in the selected Vendor</p>	
+  </section>
+  
  <!-- <script>
 $(document).ready(function(){
 	document.getElementById("uploadFile").value = '';
@@ -179,7 +191,13 @@ $(document).ready(function(){
 
 <script type="text/javascript">
 function saveBulkImport(){
-	
+	 var validationSettings = {
+	            errorMessagePosition : 'element',
+	            borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+	            };
+	if ($('#upload_form').validate(false, validationSettings)){
 	var frm = $('#upload_form').serializeFormJSON();
 	var con = JSON.stringify(frm);
 	con = con.replace(/[{}]/g, "");
@@ -212,6 +230,7 @@ function saveBulkImport(){
 	 });
 	 
 }
+}
 </script>
 
 
@@ -221,7 +240,7 @@ function prepareExcelDataDiv(data){
 	result = result +  '<table id="excelimportDataTable" class="display" cellspacing="0" width="100%" >';
 	result = result + '	<thead>';
 	result = result + '   <tr>';
-	result = result + '     <th>Client Name</th>';
+	result = result + '     <th>Vendor Name</th>';
 	result = result + '    <th>Website</th>';
 	result = result + '    <th>Location</th>';
 	result = result + '    <th>Contact Name</th>';
@@ -307,7 +326,7 @@ function prepareExcelDataDiv(data){
         result = result + '</td>';
         
          result = result + '<td>';
-         if(report.reason == 'Spoc existed' || report.reason == 'Current org user' || report.reason ==  'Client name is mandatory' || report.reason ==  'Client name should contain above 2 char' || report.reason ==  'Invalid email' || report.reason ==  'Invalid moblie number'){
+         if(report.reason == 'Spoc existed' || report.reason == 'Current org user' || report.reason ==  'Vendor name is mandatory' || report.reason ==  'Vendor name should contain above 2 char' || report.reason ==  'Invalid email' || report.reason ==  'Invalid moblie number'){
         	 result = result + '<div class="proj_active" id="removeStatus'+report.id+'"><a class="text-danger fa fa-trash" title="Remove" onclick="removeRecord('+report.id+');"></a></div>';  
          }else{
         	 result = result + '<div class="tbldata-dotdot-100" id="recordStatus'+report.id+'"><a class="text-success fa fa-object-group paddingRight aa" title="Merge" onclick="mergeRecord('+report.id+');"></a> <small>|</small> <a class="text-primary fa fa-plus paddingRight" title="Add" onclick="addRecord('+report.id+');"></a> <small>|</small> <a class="text-danger fa fa-trash" title="Remove" onclick="terminateRecord('+report.id+');"></a></div>';
@@ -330,7 +349,7 @@ function removeRecord(recordId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/deleteRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId,       
+        url: sourceleadUrl+"/deleteRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&responderType=Vendor",       
         success :function(data) {
         	$("#row"+recordId).empty();
 	    	$("#row"+recordId).html(rowHtmlContent);
@@ -348,7 +367,7 @@ function terminateRecord(recordId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/deleteRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId,       
+        url: sourceleadUrl+"/deleteRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&responderType=Vendor",       
         success :function(data) {
         	$("#row"+recordId).empty();
 	    	$("#row"+recordId).html(rowHtmlContent);
@@ -364,7 +383,7 @@ function addRecord(recordId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/addRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId,       
+        url: sourceleadUrl+"/addRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&responderType=Vendor",       
         success :function(data) {
         	$("#row"+recordId).empty();
 	    	$("#row"+recordId).html(rowHtmlContent);
@@ -382,7 +401,7 @@ function flush(){
 </script>
 <script>
 function mergeWithRecord(){
-	var recordId = document.getElementById("clientListIds").value;
+	var recordId = document.getElementById("vendorListIds").value;
 	if(recordId!=null && recordId !=''){
 	$("#clientError").empty();
 	var recordIdVal = recordId.split(',');
@@ -390,7 +409,7 @@ function mergeWithRecord(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	   type : "POST",
-	    url: sourceleadUrl+"/mergeRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId,       
+	    url: sourceleadUrl+"/mergeRecordFromBulk?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&responderType=Vendor",       
 	    success :function(data) {
 	    	$("#row"+recordIdVal[1]).empty();
 	    	$("#row"+recordIdVal[1]).html(rowHtmlContent);
@@ -403,7 +422,7 @@ function mergeWithRecord(){
 	 $(".mergePopup").fadeIn(100);
 	}
 	else{
-		$("#clientError").empty().append("Select the client") ; 
+		$("#clientError").empty().append("Select the Vendor") ; 
 	}
 }
 </script>
@@ -414,27 +433,27 @@ function mergeRecord(recordId){
 	flush();
 	 var rowHtmlContent =  $("#row"+recordId).html();
 	var sourceleadUrl ='${sourceleadUrl}';
-	$('#clientListIds').empty();
+	$('#vendorListIds').empty();
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/getMatchedClientList?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId,       
+        url: sourceleadUrl+"/getMatchedClientList?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&responderType=Vendor",       
         success :function(data) {
         	var json = JSON.parse(data);
         	var result = "";
         	
-        	$('#clientListIds').append('<option value="">---select Client---</option>');
+        	$('#vendorListIds').append('<option value="">---select Vendor---</option>');
         	for (var i=0; i<json.matchedDomainClientList.length; i++)
 			{ 
         		var report = json.matchedDomainClientList[i];
-        		$('#clientListIds').append('<option value='+report.id+','+recordId+'>'+report.orgName+'</option>');
+        		$('#vendorListIds').append('<option value='+report.id+','+recordId+'>'+report.orgName+'</option>');
 			}
         	for (var i=0; i<json.matchedClientNameList.length; i++)
 			{ 
         		var report = json.matchedClientNameList[i];
-        		$('#clientListIds').append('<option value='+report.id+','+recordId+'>'+report.orgName+'</option>');
+        		$('#vendorListIds').append('<option value='+report.id+','+recordId+'>'+report.orgName+'</option>');
 			}
         	
-        	$('#clientListIds').trigger("chosen:updated");
+        	$('#vendorListIds').trigger("chosen:updated");
         	
         	
         	/* $("#row"+recordId).empty();
@@ -461,7 +480,8 @@ function excelimportDataPagination(){
     	"ordering": false,
     	"oLanguage": {
      		"sSearch": "",
-     		 "sZeroRecords": "", "sEmptyTable": ""
+     		 "sZeroRecords": "", 
+     		 "sEmptyTable": ""
      	}
     } );
 };
@@ -469,14 +489,15 @@ function excelimportDataPagination(){
 
 
 
-<!-- <script type="text/javascript">
 
+<script type="text/javascript">
+//script for upload file
 document.getElementById("uploadBtn").onchange = function () {
-    document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();;
-};
+	document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
+}
 </script>
 
-<script>
+<!-- <script>
 function check(){
 	var errormsg = '${errorMessage}';
 		$("#errorFileDiv").hide();
@@ -528,14 +549,14 @@ function uploadSave() {
 			dateFormat : 'yyyy/mm/dd' 
             };
 </script> 
-
+ 
 
 <script language="javascript" type="text/javascript">
  function checkFile()
     {
-     var fsize = $('#uploadBtn')[0].files[0].size;
+//      var fsize = $('#uploadBtn')[0].files[0].size;
      $('#clientNameDiv').find('p.jquery_form_error_message').remove();
-     var res_field = document.upload_form.elements["uploadFile"].value;   
+     var res_field = document.upload_form.elements["uploadFile"].value;  
      var extension = res_field.substr(res_field.lastIndexOf('.') + 1).toLowerCase();
      var allowedExtensions = ['xls', 'xlsx'];
      if (res_field.length > 0)

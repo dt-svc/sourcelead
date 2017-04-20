@@ -17,7 +17,7 @@ public interface CandidateDao {
 	
 	public Long getCandidatesCountByOrgLocationID(Long orgLocationId,String candidateStatus);
 	
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, Integer candidateState,String updatedDateRange,String candidateType) throws Exception;
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, Integer candidateState,String updatedDateRange,String candidateType,String isAssociate) throws Exception;
 	
 	public Candidate getCandidateByCandidateIdAndOrgLocationId(Long candidateId,Long orgLocationId) throws Exception;
 	
@@ -65,11 +65,13 @@ public interface CandidateDao {
 
 	public Integer getAllCandidatedsBasedOnCreatedByAndOrglocationCodeWhichAreCreatedToday(OrgLocations orgLocations,
 			User user) throws Exception;
-	
+
 	Long getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, String timePeriod) throws Exception ;
 
 	public Candidate getCandidateById(Long candidateId) throws Exception;
 	
 	Long getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC) throws Exception ;
+	
+	Candidate getCandidateByUUID(String candidateUUID) throws Exception ;
 
 }

@@ -4,10 +4,11 @@
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
-
+<script src="resources/js/jquery.dataTables.min.js"></script>
+<script src="resources/js/formvalidator.js"></script>
 <script>
 $(document).ready(function() {
+	socialInviterScripts();
 	refercontactList();
 });	
 </script>
@@ -16,10 +17,27 @@ $(document).ready(function() {
 	width:400px;
 }
 </style>
+<script>
+ function contactsImportSucess(service,status){
+	 closePop();
+	 msgFadein();
+     $("#msgDiv").html(service+" Contacts Are Imported Successfully..");
+	 refercontactList();
+ }
+</script>
+
+<script>
+	function msgFadein() {
+		$("#selector").fadeIn(200);
+        $('#selector').delay(2000).fadeOut('slow');
+	}
+</script> 
 
 <section class="content-wraper">
-
 <section class="content-header clearfix">
+     <div class="success_pop" id="selector" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+     </div>
     <div class="pull-left">
       <h2>Contacts List</h2>
     </div>
@@ -138,17 +156,18 @@ function refercontactList(){
 
 <script>
 function refercontactpagenation(){
-    $('#refercontactpagenationid').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
-    	"bDestroy": true,
-    	"ordering": false,
-    	"oLanguage": {
-     		"sSearch": "",
- 			"sZeroRecords": "", "sEmptyTable": ""
-     	}
-    } );
+	
+	  $('#refercontactpagenationid').DataTable( { 
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[100, 15, 20, -1], [2, 15, 20, "All"]],
+	    	"bLengthChange": false,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": ""
+	     	}
+	    } );
 }
 </script>
 
@@ -233,8 +252,6 @@ var validationSettings = {
             
      
 </script> 
-
-
 <script>
 function flushContactDetails(){
 	$('#firstName').val('');
@@ -247,8 +264,6 @@ function flushContactDetails(){
 	$('#phoneDiv').find('p.jquery_form_error_message').remove();
 }
 </script>
-
-
 <script type="text/javascript">
 (function ($) {
    $.fn.serializeFormJSON = function () {
@@ -294,32 +309,24 @@ function flushContactDetails(){
 	});		
 </script> 
 	
-<div class="side_mask"></div>
+   <div class="side_mask"></div>
    <div class="impConPop">
+      <div id="registerPopClose" class="pavClose" onclick="closePop();"><i class="fa fa-times"></i></div>
       <div class="socialinviter" type="contactimporter"></div>
-	<!-- <ul> -->
-		<!-- <li><i class="fa fa-facebook-official"></i>Facebook</li>
-		<li><i class="fa fa-facebook-official"></i>Facebook</li>
-		<li><i class="fa fa-facebook-official"></i>Facebook</li>
-		<li><i class="fa fa-facebook-official"></i>Facebook</li>
-		<li><i class="fa fa-facebook-official"></i>Facebook</li>
-		<li><i class="fa fa-facebook-official"></i>Facebook</li>
-		<div class="clearfix"></div> -->
-	<!-- </ul> -->
-</div>
+   </div>
 <script>	
 	$("#imCon").click(function(){
 		$(".referWrap").removeClass("referWrapActive");
 		$(".side_mask").fadeIn(200);
 		$(".impConPop").fadeIn(100);
 	});
-	$(".side_mask").click(function(){
-		$(".side_mask").fadeOut(200);
-		$(".impConPop").fadeOut(100);
-	});	
 </script> 
-
-
+<script>
+    function closePop(){
+    	$(".side_mask").fadeOut(200);
+		$(".impConPop").fadeOut(100);
+    }
+</script>
 <script>
 // Back To Top 
     $(window).scroll(function() {

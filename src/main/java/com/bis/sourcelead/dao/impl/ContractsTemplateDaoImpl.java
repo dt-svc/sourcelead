@@ -4,11 +4,9 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Resource;
-
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +18,6 @@ import com.bis.sourcelead.dao.ContractsTemplateDao;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -118,21 +115,58 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 			}
 			logger.debug("contractsTemplate Added Successfully");
 		} catch (Exception exception) {
-			   StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ORG_SPOC"));
-				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+			logger.error(ExceptionUtils.getFullStackTrace(exception)); 
+//			   StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ORG_SPOC"));
+//				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return contracts;
 	}
 
 	@Override
 	@Transactional
-	public List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String submissionType) throws Exception
+	public List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String submissionType,String tabType) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Contracts contracts left join fetch contracts.contractsTemplate left join fetch contracts.ownerUserId left join fetch contracts.orgLocationId left join fetch contracts.orgRelations where contracts.orgLocationId.id = :orgLocationId and contracts.templateSubmissionStatus = :submissionType";
+		String query = "from Contracts contracts left join fetch contracts.contractsTemplate "
+				+ "left join fetch contracts.requirementSubmission "
+				+ "left join fetch contracts.ownerUserId "
+				+ "left join fetch contracts.orgLocationId "
+				+ "left join fetch contracts.orgRelations "
+				+ "left join fetch contracts.parentContractId "
+				+ "left join fetch contracts.contractOrgLocationId "
+				+ "left join fetch contracts.contactUser "
+				+ "left join fetch contracts.approverUser "
+				+ "where contracts.orgLocationId.id = :orgLocationId and contracts.templateSubmissionStatus = :submissionType and contracts.contractType like '%"+tabType+"%'";
 		List<Contracts>  ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setString("submissionType", submissionType).setCacheable(true).list();
 		return ContractsList;
 	}
+
+	@Override
+	@Transactional
+	public Contracts getContractById(Long contractId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Contracts  contracts =  null;
+		List<Contracts>  contractsList = session.createQuery("from Contracts ct where ct.id =:contractId").setLong("contractId", contractId).setCacheable(true).list();
+		if(null != contractsList && contractsList.size() >0){
+			contracts = contractsList.get(0);
+		}
+		return contracts;
+	}
+
+	@Override
+	@Transactional
+	public Contracts getChildContractById(Long contractId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Contracts  contracts =  null;
+		List<Contracts>  contractsList = session.createQuery("from Contracts ct where ct.parentContractId.id =:contractId").setLong("contractId", contractId).setCacheable(true).list();
+		if(null != contractsList && contractsList.size() >0){
+			contracts = contractsList.get(0);
+		}
+		return contracts;
+	}
+
 
 	
 

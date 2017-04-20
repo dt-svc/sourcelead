@@ -905,7 +905,7 @@ var serviceNotIn = function (productType, serv) {
     else if (productType == "socialconnect" && serv != "github" && serv != "foursquare"  && serv != "instagram" && serv != "pinterest"  && serv != "outlook" && serv != "yahoo" && serv != "csv" && serv != "email" && serv != "google" && serv != "aol" && serv != "box" && serv != "yammer" && serv != "xing" && serv != "skyrock" && serv != "gmail" && serv != "tumblr" && serv != "delicious" && serv != "slack" && serv != "mailru" && serv != "eventbrite" && serv != "mailchimp" && serv != "salesforce" && serv != "office365" && serv != "base" && serv != "hubspot" && serv != "nimble" && serv != "podio" && serv != "onepage" && serv != "karma" && serv != "xero" && serv != "contactually" && serv != "pipedrive" && serv != "zoho") {
         return true;
     }
-    else if (productType == "socialpost" && serv != "outlook" && serv != "instagram" && serv != "pinterest" && serv != "aol" && serv != "github" && serv != "csv" && serv != "email" && serv != "box" && serv != "yammer" && serv != "google" && serv != "skyrock" && serv != "googleplus" && serv != "gmail" && serv != "slack" && serv != "yahoo" && serv != "hotmail" && serv != "foursquare" && serv != "mailru" && serv != "eventbrite" && serv != "mailchimp" && serv != "salesforce" && serv != "office365" && serv != "base" && serv != "hubspot" && serv != "nimble" && serv != "podio" && serv != "onepage" && serv != "karma" && serv != "xero" && serv != "contactually" && serv != "pipedrive" && serv != "zoho") {
+    else if (productType == "socialpost"  && serv != "delicious" && serv != "tumblr" && serv != "xing" && serv != "outlook" && serv != "instagram" && serv != "pinterest" && serv != "aol" && serv != "github" && serv != "csv" && serv != "email" && serv != "box" && serv != "yammer" && serv != "google" && serv != "skyrock" && serv != "googleplus" && serv != "gmail" && serv != "slack" && serv != "yahoo" && serv != "hotmail" && serv != "foursquare" && serv != "mailru" && serv != "eventbrite" && serv != "mailchimp" && serv != "salesforce" && serv != "office365" && serv != "base" && serv != "hubspot" && serv != "nimble" && serv != "podio" && serv != "onepage" && serv != "karma" && serv != "xero" && serv != "contactually" && serv != "pipedrive" && serv != "zoho") {
         return true;
     }
     else if ((productType == "crmcontacts") && serv != "xing" && serv != "instagram" && serv != "pinterest" && serv != "aol" && serv != "github" && serv != "email" && serv != "box" && serv != "yammer" && serv != "gmail" && serv != "yahoo" && serv != "hotmail" && serv != "outlook" && serv != "csv" && serv != "slack" && serv != "skyrock" && serv != "facebook" && serv != "twitter" && serv != "foursquare" && serv != "linkedin" && serv != "googleplus" && serv != "google" && serv != "tumblr" && serv != "delicious" && serv != "mailru" && serv != "eventbrite" && serv != "mailchimp") {
@@ -2082,7 +2082,11 @@ var contactimporter = (function () {
         return authfunction;
     }
     var contactsCallback = function (data) {
-        var dataStr = data;
+        socialinviter.modalSI.hide();
+        if (socialinviter.getConfig().callbacks.fetched) {
+            socialinviter.getConfig().callbacks.fetched(socialinviter.contactimporter.getService(), "success");
+        }
+       /* var dataStr = data;
         try {
             data = eval("(" + decodeURIComponent(decodeURIComponent(data)) + ")");
         }
@@ -2095,7 +2099,10 @@ var contactimporter = (function () {
             $(".modal-SI-CI").find(".modal-SI-holder").addClass("modal-SI-small");
         }
         else {
-            var ciholder = $(".modal-SI-CI");
+        	  socialinviter.modalSI.load({ "title": convertName(data.data.service), "body": "<div class='CI-loading'></div>" }, "show");
+              $(".modal-SI-CI").find(".modal-SI-holder").addClass("modal-SI-small");
+            
+          /*  var ciholder = $(".modal-SI-CI");
             if ($(".grabbedcicontacts").length == 0) {
                 $("body").append("<div class=\"posabs grabbedcicontacts\"></div>");
                 $(".grabbedcicontacts").attr("contacts", dataStr);
@@ -2132,13 +2139,13 @@ var contactimporter = (function () {
                             socialinviter.contactimporter.showStep1(data.data);
                         }, 1500);
                     }
-                    /*else {
+                    else {
                         ldtext = socialinviter.getConfig().servicepanel.content.messages.contactsimported;
                         socialinviter.modalSI.load({ "title": convertName(data.data.service), "body": "<div class='CI-loading'><span class='messagingicon'><img class='imgloading' src='//socialinviter.com/assets/img/icons/tickcomplete.png'></span><span>" + ldtext.replace("{0}", contactsData.addressbook.length) + "</span></div>" }, "show");
-                    }*/
+                    }
                 }
             }, 1);
-        }
+        }*/
     }
     var uploadCallback = function (data) {
         if (data.responseStatus.type == "error") {
@@ -2254,6 +2261,8 @@ var contactimporter = (function () {
                 grabAPI = endpoint + "?id=" + id + "&did=" + did + "&product=" + getFromStore("product") + "&key=" + key + "&service=" + serv + "&type=&callback=socialinviter.socialpost.postCallback" + reqParam;
             }
             else {
+            	socialinviter.modalSI.load({ "title": convertName(serv), "body": "<div class='CI-loading'><span class='messagingicon'><img class='imgloading' src='//socialinviter.com/assets/img/icons/loadingwhite.gif'></span><span>Please Wait Your Contacts Are Importing....</span></div>" }, "show");
+                $(".modal-SI-CI").find(".modal-SI-holder").addClass("modal-SI-small");
                 grabAPI = endpoint + "?id=" + id + "&did=" + did + "&product=" + getFromStore("product") + "&key=" + key + "&service=" + serv + "&type=&callback=socialinviter.contactimporter.contactsCallback" + reqParam;
             }
             if (socialinviter.whichVersion() == "pro") {
@@ -4324,6 +4333,7 @@ var socialpost = (function () {
             catch (e) { }
         }
         else {
+        	//$("#loadTime").attr('style','position:fixed; width:650px; height:350px; background-color:rgba(255,255,255,0.8); top:20%; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px; background-color: #fff; z-index: 10000; margin: 0px auto; display: block; right: 0px; border-radius: 5px; box-shadow:0px 0px 5px rgba(0,0,0,0.5);');
             socialinviter.modalSI.hide();
             if (socialinviter.getConfig().callbacks.post) {
                 socialinviter.getConfig().callbacks.post(serv, data);
@@ -4351,7 +4361,7 @@ var socialpost = (function () {
         }
     }
     var getPostValues = function () {
-        return postdatavalues;
+        return  getPostValueDetails();
     }
     var getService = function () {
         return socialinviter.getService();

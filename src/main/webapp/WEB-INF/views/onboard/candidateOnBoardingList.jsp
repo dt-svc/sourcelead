@@ -34,7 +34,8 @@
           <div class="onboardcreateButtons"> 
 	          <a href="<c:url value='/candidateOnBoardCreation'/>" class="btn btn-success btn-sm mr" title="Create onboard">
 	          	<i class="fa fa-plus paddingRight"></i>Create onboard
-	          </a> <a href="offboard_candidate.html" class="btn btn-primary btn-sm" title="Create offboard">
+	          </a> 
+	          <a href="<c:url value='/candidateOffBoardCreation'/>" class="btn btn-primary btn-sm" title="Create offboard">
 	          	<i class="fa fa-plus paddingRight"></i>Create offboard
 	          </a>
           </div>
@@ -87,7 +88,7 @@
 	                     result = result +"    <th>Type</th>";
 	                     result = result +"    <th>Effective Date</th>";
 	                     result = result +"    <th>Stage</th>"; 
-	                     result = result +"<th>Actions</th>";
+	                     /* result = result +"<th>Actions</th>"; */
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
@@ -124,12 +125,12 @@
                     		 result = result +"<td><div><span>"+joiningDate+"</span></div></td>";
                     		 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div></td>";
                     		 
-                    		 result = result +"<td>";
+                    	/* 	 result = result +"<td>";
                     		 result = result +" <div class='tblminwidth-50 ml'>";
                     		 result = result +"<div class='pull-left mr'><a href='javascript:void(0)' title='Accept'><i class='fa fa-check text-success'></i></a></div>";
                     		 result = result +"<div class='pull-left'><a href='javascript:void(0)' title='Reject'><i class='fa fa-close text-danger'></i></a></div>";
                     		 result = result +"</div>";
-                    		 result = result +"</td>";
+                    		 result = result +"</td>"; */
 		                     
 		                     result = result +"</tr>";
 		                     result = result +"</tr>";

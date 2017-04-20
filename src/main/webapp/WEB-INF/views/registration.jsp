@@ -21,7 +21,66 @@
 </head>
 <jsp:include page="socialinviterscripts.jsp" />
 <script>
+ function getProfileDetails(response,service){
+		var activeElement = $('.tab-pane.fade.in.active').attr('id');
+		if(activeElement != null && activeElement != ''  && activeElement != 'undefined' &&  activeElement == 'recruiter'){
+			resetCredentials('Recruiter')
+			$("#recruiterRegistrationPopup").removeAttr();
+			$("#professionalRegistrationPopup").removeAttr();
+			$("#recruiterRegistrationPopup").attr("style","display:block");
+			$("#professionalRegistrationPopup").attr("style","display:none");
+			
+			var details = response.data.details;
+			$("#popRecruiterprofileimage").attr("src",details.photo);
+			$("#popRecruiterservice").val(service);
+			$("#popRecruiterprofileUrl").val(details.profileUrl);
+			/* $("#aboutme").html(details.aboutMe); */
+			//$("#profileurl").html(details.profileUrl).attr("href",details.profileUrl);
+			//$("#loginid").val(details.id);
+			/* $("#logindisplayname").val(details.displayName); */
+			$("#popRecruiterimageUrl").val(details.photo);
+			$("#poprecruiterFirstName").val(details.firstName);
+			$("#poprecruiterLastName").val(details.lastName);
+			$("#poprecruiterEmail").val(details.email);
+			$("#poprecruiterUserName").val(details.email);
+			/* $("#logingender").val(details.gender);
+			$("#logindob").val(details.dob); */
+			$("#loginlocation").val(details.location);
+			
+		}
+		else{
+			resetCredentials('Professional');
+			$("#recruiterRegistrationPopup").removeAttr();
+			$("#professionalRegistrationPopup").removeAttr();
+			$("#recruiterRegistrationPopup").attr("style","display:none");
+			$("#professionalRegistrationPopup").attr("style","display:block");
+			
+
+			var details = response.data.details;
+			$("#popProfessionalprofileimage").attr("src",details.photo);
+			/* $("#aboutme").html(details.aboutMe); */
+			//$("#profileurl").html(details.profileUrl).attr("href",details.profileUrl);
+			//$("#loginid").val(details.id);
+			/* $("#logindisplayname").val(details.displayName); */
+			$("#popProfessionalimageUrl").val(details.photo);
+			$("#popProfessionalService").val(service);
+			$("#popProfessionalprofileurl").val(details.profileUrl);
+			$("#popfirstName").val(details.firstName);
+			$("#poplastName").val(details.lastName);
+			$("#popemail").val(details.email);
+			$("#popUserName").val(details.email);
+			/* $("#logingender").val(details.gender);
+			$("#logindob").val(details.dob); */
+			$("#loginlocation").val(details.location);
+			
+		}
+		$(".logMask").fadeIn(200);
+		 $(".logPop").fadeIn(100);
+ }
+ </script>
+<script>
 window.onload = function () {
+	    socialInviterScripts();
 	    resetCredentials('Professional');
 		var contactUUID = '${contactUUID}';
 		if(contactUUID != null && contactUUID != '' && contactUUID != 'undefined'){
@@ -36,10 +95,11 @@ window.onload = function () {
 		$(".logPop").fadeOut(100);
     }
 </script>
+ <div  id="loadTime"></div> 
 <div class="logMask"></div>
 	<div class="logPop">
-		<div class="loPopClose" onclick="closeProfileDetailsPop();"><i class="fa fa-times"></i></div>
-		<div class="row mt10">
+		<div id="registerPopClose" class="loPopClose" onclick="closeProfileDetailsPop();"><i class="fa fa-times"></i></div>
+		<div id="registerPop" class="row mt10">
 		    <div id = "professionalRegistrationPopup" style="display:block;">
 				    <form:form class="login-form clearfix"  id="popprofessionalRegistration_form"  name="popprofessionalRegistration_form" method="post" >
 				    <div class="col-md-3">
@@ -48,6 +108,16 @@ window.onload = function () {
 					   </div>
 				    </div>
 		            <div class="col-md-9">
+		             <div class="form-group clearfix">
+		                  <label  class="col-md-4">User Name <span class="text-danger">*</span></label>
+		                  <span class="col-md-8">
+		                     <input type="hidden" name="imageUrl" id="popProfessionalimageUrl"/>
+		                     <input type="hidden" name="profileUrl" id="popProfessionalprofileurl"/>
+		                     <input type="hidden" name="service" id="popProfessionalService"/>
+		                     <input type="text" class="form-control" name="userName" field-name="User Name" id="popUserName" readonly="readonly" data-validation="required">
+		                     <b></b>
+		                  </span>
+		            </div>
 		            <div class="form-group clearfix">
 		                  <label  class="col-md-4">First Name <span class="text-danger">*</span></label>
 		                  <span class="col-md-8">
@@ -65,7 +135,7 @@ window.onload = function () {
 		            <div class="form-group clearfix">
 		              <label class="col-md-4">Email<span class="text-danger">&nbsp;*</span></label>
 		              <span class="col-md-8" id="popemailDiv">
-		                 <input type="text" class="form-control" name="email" field-name="Email" value='${email}' onblur="validateEmail('Professional');" id="popemail"  data-validation="required validate_Space validate_length length2-100 validate_email" >
+		                 <input type="text" class="form-control" name="email" field-name="Email" onblur="validatepopEmail('Professional');" value='${email}' id="popemail"  data-validation="required validate_Space validate_length length2-100 validate_email" >
 		                  <b></b>
 		              </span>
 		            </div>
@@ -84,6 +154,36 @@ window.onload = function () {
 		                   <b></b>
 		              </div>
 		            </div>
+		            </div>
+		            <div class="col-md-12 clearfix">
+		            <div class="form-group  empCheckbox">
+                        <div class="row">
+                        <p class="ml"><strong>Wanted to be</strong></p>
+                            
+				           <div class="clearfix">
+					         <c:forEach var="wanted" items="${WantedToBeList}">
+				      				<span class="col-md-4">
+				                            <input type="checkbox" value="${wanted.id}" name="wantedtobeList"><i>${wanted.registerName}</i>
+				                    </span>
+						     </c:forEach>
+				          </div>  
+                            
+                            <div class="clearfix">   
+                            <p class="ml mt10"><strong>Would like to</strong></p>
+
+
+						  <div class="clearfix">
+					         <c:forEach var="WouldLikeToList" items="${WouldLikeToList}">
+				      				<span class="col-md-4">
+				                            <input type="checkbox" value="${WouldLikeToList.id}" name="Wouldliketo"><i>${WouldLikeToList.registerName}</i>
+				                    </span>
+						     </c:forEach>
+				          </div>
+
+                        </div>
+                        </div>
+	            </div>
+		            
 		            <div class="form-group clearfix">
 		                <div class="pull-right">
 		                     <button type="submit" id="popregister_button"  class="btn btn-primary btn_styles mr" title="Register">
@@ -101,6 +201,16 @@ window.onload = function () {
 					   </div>
 				    </div>   
 		            <div class="col-md-9">
+		             <div class="form-group clearfix">
+		                  <label  class="col-md-4">User Name <span class="text-danger">*</span></label>
+		                  <span class="col-md-8">
+		                     <input type="hidden" name="imageUrl" id="popRecruiterimageUrl"/>
+		                     <input type="hidden" name="profileUrl" id="popRecruiterprofileUrl"/>
+		                     <input type="hidden" name="service" id="popRecruiterservice"/>
+		                     <input type="text" class="form-control" name="userName" field-name="User Name" id="poprecruiterUserName" readonly="readonly" data-validation="required">
+		                     <b></b>
+		                  </span>
+		            </div>
 		            <div class="form-group clearfix">
 		                  <label  class="col-md-4">First Name <span class="text-danger">*</span></label>
 		                  <span class="col-md-8">
@@ -118,7 +228,7 @@ window.onload = function () {
 		            <div class="form-group clearfix">
 		              <label class="col-md-4">Email<span class="text-danger">&nbsp;*</span></label>
 		              <span class="col-md-8" id="poprecruiterEmailDiv">
-		                 <input type="text" class="form-control" name="email" field-name="Email"  id="poprecruiterEmail"  onblur="validateRecruiterEmail('Recruiter');" data-validation="required validate_Space validate_length length2-100 validate_email" >
+		                 <input type="text" class="form-control" name="email" field-name="Email"  id="poprecruiterEmail"  onblur="validatepopRecruiterEmail('Recruiter');" data-validation="required validate_Space validate_length length2-100 validate_email" >
 		                  <b></b>
 		              </span>
 		            </div>
@@ -136,7 +246,36 @@ window.onload = function () {
 		                   </select>
 		                   <b></b>
 		              </div>
-		            </div>
+		            </div> </div>
+		            <div class="col-md-12 clearfix">
+		            <div class="form-group  empCheckbox">
+                        <div class="row">
+                        <p class="ml"><strong>Wanted to be</strong></p>
+                            
+				           <div class="clearfix">
+					         <c:forEach var="wanted" items="${WantedToBeList}">
+				      				<span class="col-md-4">
+				                            <input type="checkbox" value="${wanted.id}" name="wantedtobeList"><i>${wanted.registerName}</i>
+				                    </span>
+						     </c:forEach>
+				          </div>  
+                            
+                            <div class="clearfix">   
+                            <p class="ml mt10"><strong>Would like to</strong></p>
+
+
+						  <div class="clearfix">
+					         <c:forEach var="WouldLikeToList" items="${WouldLikeToList}">
+				      				<span class="col-md-4">
+				                            <input type="checkbox" value="${WouldLikeToList.id}" name="Wouldliketo"><i>${WouldLikeToList.registerName}</i>
+				                    </span>
+						     </c:forEach>
+				          </div>
+
+                        </div>
+                        </div>
+	            </div>
+		            
 		            <div class="form-group clearfix">
 		                <div class="pull-right">
 		                     <button type="submit" id="poprecruiter_register"  class="btn btn-primary btn_styles mr" title="Register">
@@ -202,15 +341,44 @@ window.onload = function () {
                 </div>
                 </div>
                 
+                
+                    <div class="form-group clearfix empCheckbox">
+                        <div class="col-md-12">
+                        <p><strong>Wanted to be</strong></p>
+                            
+				           <div class="clearfix row">
+					         <c:forEach var="wanted" items="${WantedToBeList}">
+				      				<span class="col-md-4">
+				                            <input type="checkbox" value="${wanted.id}" name="wantedtobeList"><i>${wanted.registerName}</i>
+				                    </span>
+						     </c:forEach>
+				          </div>  
+                            
+                            <div class="clearfix row">   
+                            <p class="ml mt10"><strong>Would like to</strong></p>
+
+
+						  <div class="clearfix">
+					         <c:forEach var="WouldLikeToList" items="${WouldLikeToList}">
+				      				<span class="col-md-4">
+				                            <input type="checkbox" value="${WouldLikeToList.id}" name="Wouldliketo"><i>${WouldLikeToList.registerName}</i>
+				                    </span>
+						     </c:forEach>
+				          </div>
+
+                        </div>
+                        </div>
+	            </div>
+                
             </div>
             
-            <div class="clearfix mt25">
+            <div class="clearfix">
                 <div class="pull-left">
                     <span class="small text-muted">Already have an Account:</span><a href="${sourceleadUrl}" class="btn" title="Login">Login</a><br/>
                     <span class="small text-muted">Register With:</span>
                 </div>
                 <div id ="proffessionalConnect"></div>
-                <div class="pull-right">
+                <div class="pull-right mt10">
                     <button type="submit" id="register_button"  class="btn btn-primary btn_styles mr" title="Register">
                         <i class="fa fa-paper-plane"></i>Register</button>
                 </div>
@@ -255,19 +423,50 @@ window.onload = function () {
 	                    <b></b>
 	                </div>
 	                </div>
+	            
+	            
+	            
+	            <div class="form-group clearfix empCheckbox">
+                        <div class="col-md-12">
+                        <p><strong>Wanted to be</strong></p>
+                            
+				           <div class="clearfix row">
+					         <c:forEach var="wanted" items="${WantedToBeList}">
+				      				<span class="col-md-4">
+				                            <input type="checkbox" value="${wanted.id}" name="wantedtobeList"><i>${wanted.registerName}</i>
+				                    </span>
+						     </c:forEach>
+				          </div>  
+                            
+                            <div class="clearfix row">   
+                            <p class="ml mt10"><strong>Would like to</strong></p>
+
+
+						  <div class="clearfix">
+					         <c:forEach var="WouldLikeToList" items="${WouldLikeToList}">
+				      				<span class="col-md-4">
+				                            <input type="checkbox" value="${WouldLikeToList.id}" name="Wouldliketo"><i>${WouldLikeToList.registerName}</i>
+				                    </span>
+						     </c:forEach>
+				          </div>
+
+                        </div>
+                        </div>
 	            </div>
 	            
-	            <div class="clearfix mt25">
+	            <div class="clearfix">
+	            <div class="col-md-12">
 	                 <div class="pull-left">
 	                    <span class="small text-muted">Already have an Account:</span><a href="${sourceleadUrl}" class="btn" title="Login">Login</a><br/>
 	                     <span class="small text-muted">Register With:</span>
 	                </div>
-	                  <div id="recruiterConnect"  ></div>
-	                <div class="pull-right">
+	                  <div id="recruiterConnect"></div>
+	                <div class="pull-right mt10">
 	                    <button type="submit" class="btn btn-primary btn_styles mr" id="recruiter_register" title="Register">
 	                        <i class="fa fa-paper-plane"></i>Register</button>
 	                </div>
 	            </div>
+	             </div>
         </form:form>
         </div>
       </div>
@@ -303,6 +502,18 @@ function resetCredentials(type){
 	$("#poprecruiterEmail").val('');
 	$("#poprecruiterLocation").val('');
 	
+	
+	
+	 $("#popregister_button").removeAttr("disabled");
+	 $('input#popemail').removeAttr( "record-exist record-exist-errormsg");
+	 $('#poprecruiterEmailDiv').find('p.jquery_form_error_message').remove(); 
+	 $( "#popregister_button" ).removeAttr("style");
+	 
+     $("#poprecruiter_register").removeAttr("disabled");
+     $('input#poprecruiterEmail').removeAttr( "record-exist record-exist-errormsg");
+     $('#popemailDiv').find('p.jquery_form_error_message').remove(); 
+     $( "#poprecruiter_register" ).removeAttr("style");
+	 
 	$("#proffessionalConnect").removeAttr('class');
 	$("#recruiterConnect").removeAttr('class');
 	$("#proffessionalConnect").removeAttr('type');
@@ -399,7 +610,6 @@ function validateRecruiterEmail(type){
 
 <script type="text/javascript">
 function validatepopEmail(type){
-	
     var email = document.getElementById("popemail").value;
     var sourceleadUrl ='${sourceleadUrl}';
 		if(email != null && email != ''){
@@ -496,6 +706,15 @@ var validationSettings = {
          		var sourceleadUrl ='${sourceleadUrl}';
          		var contactUUID = '${contactUUID}';
          		
+         		var wantedToBeIds = [];
+	       		$("input[name='wantedtobeList']:checked").each( function (i) {
+	       			wantedToBeIds[i] = $(this).val();
+	       		});
+	       		var wouldliketoIds =[]; 
+	       		$("input[name='Wouldliketo']:checked").each( function (i) {
+	       			wouldliketoIds[i] = $(this).val();
+	       		});
+         		
          	 	$("#register_button").attr("disabled", "disabled");
          		
            	 
@@ -545,9 +764,17 @@ var validationSettings = {
 			    
          		var sourceleadUrl ='${sourceleadUrl}';
          	 	$("#recruiter_register").attr("disabled", "disabled");
-         		
+         	 	
+         	 	var wantedToBeIds = [];
+	       		$("input[name='wantedtobeList']:checked").each( function (i) {
+	       			wantedToBeIds[i] = $(this).val();
+	       		});
+	       		var wouldliketoIds =[]; 
+	       		$("input[name='Wouldliketo']:checked").each( function (i) {
+	       			wouldliketoIds[i] = $(this).val();
+	       		});
            	 
-         		$.ajax({
+         	 	$.ajax({
           	      type: "POST",
           	      contentType : 'application/json; charset=utf-8',
           	      dataType : 'json',
@@ -582,27 +809,37 @@ var validationSettings = {
          $('body').on('submit', '#popprofessionalRegistration_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
+        		$(".logPop").fadeOut(100);
+        	    $("#loadTime").attr('style','position:fixed; width:650px; height:350px; background-color:rgba(255,255,255,0.8); top:20%; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px; background-color: #fff; z-index: 10000; margin: 0px auto; display: block; right: 0px; border-radius: 5px; box-shadow:0px 0px 5px rgba(0,0,0,0.5);');
+        	    
             	var frm = $('#popprofessionalRegistration_form').serializeFormJSON();
 			    
 			    var con = JSON.stringify(frm);
 		        con = con.replace(/[{}]/g, "");
 		        
 		        var jsonData = encodeURIComponent(con);
-			    
+		        
          		var sourceleadUrl ='${sourceleadUrl}';
-         		var contactUUID = '${contactUUID}';
          		
-         	 	$("#popregister_button").attr("disabled", "disabled");
+         		var wantedToBeIds = [];
+	       		$("input[name='wantedtobeList']:checked").each( function (i) {
+	       			wantedToBeIds[i] = $(this).val();
+	       		});
+	       		var wouldliketoIds =[]; 
+	       		$("input[name='Wouldliketo']:checked").each( function (i) {
+	       			wouldliketoIds[i] = $(this).val();
+	       		});
          		
-           	 
-         		$.ajax({
-          	      type: "POST",
-          	      contentType : 'application/json; charset=utf-8',
-          	      dataType : 'json',
-                	  url: sourceleadUrl+"/registerAsProfessional?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&contactUUID="+contactUUID,		  
+         	 	$("#popregister_button").attr("disabled", "disabled"); 
+         		 $.ajax({
+         			  type: "POST",
+              	      contentType : 'application/json; charset=utf-8',
+              	      dataType : 'json',
+                	  url: sourceleadUrl+"/registerAsProfessionalFromSocialInviter?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,		  
                   	success: function(result) {
 			        	if((result == 'success')){
-			        		location.replace(sourceleadUrl+"/resetloginCredentials");  
+			        		$("#loadTime").removeAttr('style');
+			        		location.replace(sourceleadUrl+"/dashboard");  
 			        	}
 			        	
 			        },  
@@ -631,27 +868,37 @@ var validationSettings = {
          $('body').on('submit', '#poprecruiterRegistration_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
+        		$(".logPop").fadeOut(100);
+        	    $("#loadTime").attr('style','position:fixed; width:650px; height:350px; background-color:rgba(255,255,255,0.8); top:20%; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px; background-color: #fff; z-index: 10000; margin: 0px auto; display: block; right: 0px; border-radius: 5px; box-shadow:0px 0px 5px rgba(0,0,0,0.5);');
+        	    
             	var frm = $('#poprecruiterRegistration_form').serializeFormJSON();
 			    
 			    var con = JSON.stringify(frm);
 		        con = con.replace(/[{}]/g, "");
 		        
 		        var jsonData = encodeURIComponent(con);
-		        
 			    
          		var sourceleadUrl ='${sourceleadUrl}';
          	 	$("#poprecruiter_register").attr("disabled", "disabled");
          		
+         	 	var wantedToBeIds = [];
+	       		$("input[name='wantedtobeList']:checked").each( function (i) {
+	       			wantedToBeIds[i] = $(this).val();
+	       		});
+	       		var wouldliketoIds =[]; 
+	       		$("input[name='Wouldliketo']:checked").each( function (i) {
+	       			wouldliketoIds[i] = $(this).val();
+	       		});
            	 
          		$.ajax({
-          	      type: "POST",
-          	      contentType : 'application/json; charset=utf-8',
-          	      dataType : 'json',
-                	  url: sourceleadUrl+"/registerAsIndividualRecruiter?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
-                			  
+         			  type: "POST",
+              	      contentType : 'application/json; charset=utf-8',
+              	      dataType : 'json',
+                	url: sourceleadUrl+"/registerAsIndividualRecruiterFromSocialInviter?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
                   	success: function(result) {
 			        	if((result == 'success')){
-			        		location.replace(sourceleadUrl+"/resetloginCredentials");  
+			        		$("#loadTime").removeAttr('style');
+			        		location.replace(sourceleadUrl+"/dashboard");  
 			        	}
 			        	
 			        },  

@@ -733,6 +733,26 @@ public class CandidateListRestController {
 				 }
 			}
 			
+			if(null != can.getOrgRelationId()){
+				can.setVendorOrgRelationId(can.getOrgRelationId().getId().toString());
+				if(can.getOrgRelationId().getResponderLocationId().getId() == loginOrgLocation.getId()){
+					can.setVendorName(can.getOrgRelationId().getLocationId().getOrg().getOrgName());	
+				}
+				if(can.getOrgRelationId().getLocationId().getId() == loginOrgLocation.getId()){
+					can.setVendorName(can.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());	
+				}
+				
+			}
+			if(null != can.getSpocId()){
+				StringBuilder contactName = new StringBuilder();
+				can.setVendorSpocId(can.getSpocId().getId().toString());
+				if(null != can.getSpocId().getClientUser().getLastName()){
+					can.setVendorContactName(contactName.append(can.getSpocId().getVendorUser().getFirstName()).append(" ").append(can.getSpocId().getClientUser().getLastName()).toString());	
+				}else{
+					can.setVendorContactName(contactName.append(can.getSpocId().getVendorUser().getFirstName()).toString());
+				}
+				
+			}
 			resultJson = commonUtil.toJSON(can);
 			return resultJson;
      }
@@ -927,8 +947,7 @@ public class CandidateListRestController {
 		   Candidate candidate = null;
 				try {
 					 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-					 candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(candidateId, loginOrgLocation.getId());
-					
+					 candidate = candidateService.getCandidateByCandidateId(candidateId);					
 					if(candidate != null && candidate.getDocFile() != null)
 					{
 						candidate.setFileContentType("image/jpeg");
@@ -1005,6 +1024,7 @@ public class CandidateListRestController {
 				
 					if(Constants.Associates.equalsIgnoreCase(candidateType)){
 						candidate.setIsAssociate(Constants.NO);
+						candidate.setIsFavouriteAssociate(Constants.RECORD_INACTIVE);
 						candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 					}
 						
@@ -1160,11 +1180,12 @@ public class CandidateListRestController {
 		 public void getCandidatesExportList(@RequestParam(value="candidateStatus", required=false) Integer  candidateStatus,
 				                             @RequestParam(value="updatedDateRange", required=false) String  updatedDateRange,
 				                             @RequestParam(value="exportType", required=false) String  exportType,
-				                             @RequestParam(value="candidateType", required=false) String  candidateType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+				                             @RequestParam(value="candidateType", required=false) String  candidateType,
+				                             @RequestParam(value="isAssociate", required=false) String  isAssociate,HttpServletRequest request,HttpServletResponse response) throws Exception {
 
 	 		 Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange,candidateType);
+			List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange,candidateType,isAssociate);
 			File file = null;
 			if(!"pdf".equalsIgnoreCase(exportType)){
 			file = candidateService.getCandidateExcelFile(candidatesList,org.getOrgName());

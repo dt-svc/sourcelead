@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.SourceleadAuthenticationProvider;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
@@ -265,6 +267,33 @@ public class RegistrationRestController {
 					"Username sent to your mail.");
 	 	
 	 	
+		 return "success";
+	   }
+	 
+	 
+	 
+	 
+	 @RequestMapping(value = "/registerAsProfessionalFromSocialInviter" , method = RequestMethod.POST)
+	 public  String registerAsProfessionalFromSocialInviter(@RequestParam(value="json", required=false) String json,
+			 HttpServletRequest request) throws Exception {
+		 
+		 json = "{"+json+"}";
+		 
+		 JSONObject jsonObj = new JSONObject(json);
+		 	
+		 registrationService.saveProfessionalFromSocialInviter(jsonObj);
+	 	
+		 return "success";
+	   }
+	 
+	 @RequestMapping(value = "/registerAsIndividualRecruiterFromSocialInviter" , method = RequestMethod.POST)
+	 public  String registerAsIndividualRecruiterFromSocialInviter(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+		 
+		 json = "{"+json+"}";
+		 
+		 JSONObject jsonObj = new JSONObject(json);
+		 	
+		 registrationService.saveIndividualRecruiterFromSocialInviter(jsonObj);
 		 return "success";
 	   }
 	 
