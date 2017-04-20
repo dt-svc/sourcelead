@@ -1580,12 +1580,16 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 							}
 						}
 				  }
-				  if(client.getFirstName() == null && "".equalsIgnoreCase(client.getFirstName())){
+				  if(client.getFirstName() == null || "".equalsIgnoreCase(client.getFirstName())){
 						client.setReason("First Name is mandatory");
 						return false;
 					}
 				  
-				if(client.getEmail() != null && !"".equalsIgnoreCase(client.getEmail()) && !validateEmail(client.getEmail())){
+				  if(client.getEmail() == null || "".equalsIgnoreCase(client.getEmail())){
+					  client.setReason("Email is Mandatory");
+					  return false;
+				  }
+					  if(client.getEmail() != null && !"".equalsIgnoreCase(client.getEmail()) && !validateEmail(client.getEmail())){
 						client.setReason("Invalid email");
 						return false;
 					}
