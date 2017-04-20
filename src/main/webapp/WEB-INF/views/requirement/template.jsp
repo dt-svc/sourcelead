@@ -19,7 +19,7 @@
     </div>
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requirement Template List</div>
   </section>
-  <div class="timesheet_out">
+  <div class="timesheet_out overflow_Auto">
     <div class="vendor_wrap">
       <div class="timesheet_head">
         <ul>
@@ -33,7 +33,7 @@
       </div>
       
       <!-- list requirement -->
-      <div class="require_wrap_table">
+      <div class="require_wrap_table overflow_inherint">
      
           <div id="requirementTemplateList"></div>
       </div>
@@ -59,7 +59,7 @@ function requirementTemplateList(){
 	                	 $("#requirementTemplateList").empty();
 	                	 
 	                	 var result = "";
-	                	 result = result +"<table id='requirementTemplatePagination' class='display' cellspacing='0' width='100%' >"; 
+	                	 result = result +"<table id='temppagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"<tr>"; 
 	                     result = result +"<th>Title</th>"; 
@@ -125,7 +125,7 @@ function requirementTemplateList(){
 	                     result = result +" </tbody>";
 	                     result = result +"</table>"; 
 	                     $("#requirementTemplateList").append(result); 
-	                     pagination();
+	                     temppagination();
 			    	
                  /* } else{
                  	 $("#requirementTemplateList").removeAttr("style");
@@ -152,8 +152,8 @@ function requirementTemplateList(){
 --%>
 
 <script>
-function pagination(){ 
-    $('#requirementTemplatePagination').DataTable( { 
+function temppagination(){ 
+    $('#temppagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
