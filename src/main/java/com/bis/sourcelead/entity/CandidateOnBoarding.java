@@ -196,6 +196,12 @@ private static final long serialVersionUID = 1L;
 	@Transient
 	private String templateName;
 	
+	@Transient
+	private Integer documentsCount;
+	
+	@Transient
+	private Integer documentsAcceptedCount;
+	
 
 	public Long getId() {
 		return id;
@@ -603,5 +609,29 @@ private static final long serialVersionUID = 1L;
 
 	public void setTeamName(String teamName) {
 		this.teamName = teamName;
+	}
+
+	public String getTemplateName() {
+		return templateName;
+	}
+
+	public void setTemplateName(String templateName) {
+		this.templateName = templateName;
+	}
+
+	public Integer getDocumentsCount() {
+		return documentsCount;
+	}
+
+	public void setDocumentsCount(Integer documentsCount) {
+		this.documentsCount = documentsCount;
+	}
+
+	public Integer getDocumentsAcceptedCount() {
+		return documentsAcceptedCount;
+	}
+
+	public void setDocumentsAcceptedCount(Integer documentsAcceptedCount) {
+		this.documentsAcceptedCount = documentsAcceptedCount;
 	}
 }
