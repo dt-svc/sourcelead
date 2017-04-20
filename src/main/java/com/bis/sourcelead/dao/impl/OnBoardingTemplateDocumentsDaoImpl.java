@@ -132,4 +132,36 @@ public class OnBoardingTemplateDocumentsDaoImpl implements OnBoardingTemplateDoc
         return documentsList;
 	}
 
+	@Override
+	@Transactional
+	public Integer getCandidateOnboardingDocumentsCountByCandidateOnboardingIdExpectSupportDocs(
+			Long candidateOnBoardingId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query ="select count(*) from OnBoardingTemplateDocuments documents where documents.candidateOnBoardingId.id =:candidateOnBoardingId and "
+				+ " documents.documentType != 'Supported' ";
+		List<Long> onboardCount = session.createQuery(query.toString()).setLong("candidateOnBoardingId", candidateOnBoardingId).list();
+			Integer count = 0;
+			if(onboardCount != null && !onboardCount.isEmpty()){
+					count = onboardCount.get(0).intValue();
+			}
+			return count;
+	}
+
+	@Override
+	@Transactional
+	public Integer getCandidateAcceptedOnboardingDocumentsCountByCandidateOnboardingId(Long candidateOnBoardingId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query ="select count(*) from OnBoardingTemplateDocuments documents where documents.candidateOnBoardingId.id =:candidateOnBoardingId and "
+				+ " documents.documentStatus = 'ACCEPTED' ";
+		List<Long> onboardCount = session.createQuery(query.toString()).setLong("candidateOnBoardingId", candidateOnBoardingId).list();
+			Integer count = 0;
+			if(onboardCount != null && !onboardCount.isEmpty()){
+					count = onboardCount.get(0).intValue();
+			}
+			return count;
+	}
+
 }

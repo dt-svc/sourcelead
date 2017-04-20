@@ -783,6 +783,11 @@ public class CandidateOnBoardRestController {
 					candidateOnBoarding.setCandidateName(candidateName.append(candidateOnBoarding.getFirstName()).toString());
 				}
 				
+				Integer documentsCount = onBoardingTemplateDocumentsService.getCandidateOnboardingDocumentsCountByCandidateOnboardingIdExpectSupportDocs(candidateOnBoarding.getId());
+				candidateOnBoarding.setDocumentsCount(documentsCount);
+				Integer acceptedDocumentsCount = onBoardingTemplateDocumentsService.getCandidateAcceptedOnboardingDocumentsCountByCandidateOnboardingId(candidateOnBoarding.getId());
+				candidateOnBoarding.setDocumentsAcceptedCount(acceptedDocumentsCount);
+				
 				onBoardingList.add(candidateOnBoarding);
 				
 			}
