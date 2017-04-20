@@ -337,7 +337,30 @@ $(document).ready(function () {
             </div>
           </div>
           
-          <div class="form-group">
+          
+           <div class="form-group">
+              <label class="col-md-3">Education</label>
+              <div class="col-md-9">
+                <select multiple class="chosen-select form-control" name="education" id="education" data-validation-optional="true">
+               <c:forEach var="education" items="${educationsList}">
+               		<c:set var = "NUM" value = "${0}"/>
+               		<c:forEach var="existedEducation" items="${requirement.reqEducationListString}">
+					    <c:if test="${existedEducation eq education}">
+					    	<c:set var = "NUM" value = "${1}"/>
+					       <option  selected value="${education}">${education}</option>
+					    </c:if>
+					</c:forEach>
+					<c:if test="${NUM == 0}">
+						<option  value="${education}">${education}</option>
+					</c:if>
+                </c:forEach>
+                </select>
+              </div>
+            </div>
+          
+          
+          
+          <<%-- div class="form-group">
               <label class="col-md-3">Education</label>
               <div class="col-md-9">
                 <select multiple  class="chosen-select form-control" name="education" id="education" data-validation="validate_Space" data-validation-optional="true">
@@ -351,7 +374,7 @@ $(document).ready(function () {
                 </c:forEach>
                 </select>
               </div>
-            </div>
+            </div> --%>
             
          <div class="form-group" >
             <label class="col-md-3">Experience</label>
