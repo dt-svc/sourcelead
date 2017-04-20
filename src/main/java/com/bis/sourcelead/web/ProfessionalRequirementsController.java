@@ -23,6 +23,7 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.CrowdSourcingUserBankAccounts;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.ReferContacts;
+import com.bis.sourcelead.entity.RegistrationOptionalService;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.States;
@@ -32,6 +33,7 @@ import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.CrowdSourcingUserBankAccountsService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ReferContactsService;
+import com.bis.sourcelead.service.RegistrationOptionalServicesService;
 import com.bis.sourcelead.service.RequirementReferService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
@@ -81,6 +83,9 @@ public class ProfessionalRequirementsController {
 	CandidateResumesService candidateResumesService;
 	
 	
+	@Autowired
+	private RegistrationOptionalServicesService registrationOptionalServicesService;
+	
 	protected boolean isNullOrEmpty(String str) {
 		return str == null || "".equals(str.trim());
 	}
@@ -90,6 +95,17 @@ public class ProfessionalRequirementsController {
 	 	public ModelAndView register(@RequestParam(value = "contactUUID", required = false) String contactUUID) throws Exception {
 	 			ModelAndView model = new ModelAndView();
 	 			model.addObject("sourceleadUrl", sourceleadUrl);
+	 			
+	 			String registerType = "Wanted to be";
+	 			String registerTypeTwo = "Would like to";
+	 			
+	 			
+				List<RegistrationOptionalService> WantedToBeList = registrationOptionalServicesService.getRegistraionOptionalServiceListByRegisterType(registerType);
+				model.addObject("WantedToBeList",WantedToBeList);
+				
+				List<RegistrationOptionalService> WouldLikeToList = registrationOptionalServicesService.getRegistraionOptionalServiceListByRegisterType(registerTypeTwo);
+				model.addObject("WouldLikeToList",WouldLikeToList);
+	 			
 	 			if(!isNullOrEmpty(contactUUID)){
 	 				ReferContacts referContacts = referContactsService.getReferContactsByUUID(contactUUID);
 	 				if(null == referContacts.getContactUser()){

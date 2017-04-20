@@ -153,6 +153,9 @@ public class User implements Serializable{
 	@Column(name = "COUNTRY")
 	private String country;
 	
+	@Column(name ="REGISTER_OPTIONAL_SERVICE_ID")
+	private String registerOptionalServiceId;
+	
 	@Transient
 	private String isPrimaryAdmin;
 
@@ -608,6 +611,14 @@ public class User implements Serializable{
 
 	public void setUserRejectedApplicantsCount(long userRejectedApplicantsCount) {
 		this.userRejectedApplicantsCount = userRejectedApplicantsCount;
+	}
+
+	public String getRegisterOptionalServiceId() {
+		return registerOptionalServiceId;
+	}
+
+	public void setRegisterOptionalServiceId(String registerOptionalServiceId) {
+		this.registerOptionalServiceId = registerOptionalServiceId;
 	}
 	
 	
