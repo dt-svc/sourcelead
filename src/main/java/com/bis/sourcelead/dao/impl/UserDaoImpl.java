@@ -1116,4 +1116,16 @@ public class UserDaoImpl implements UserDao {
 	       
 	       return userRoleList;
 	}
+
+	@Override
+	@Transactional
+	public List<User> getUsersByOrgLocationIdExceptLoggedInUser(Long orgLocationsId, Long userId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+
+	    String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationsId and userRole.userState != 'INACTIVE' ) and user.id <> :userId ";
+
+	    List<User> userRoleList = session.createQuery(query.toString()).setLong( "orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
+        return userRoleList;
+	}
 }

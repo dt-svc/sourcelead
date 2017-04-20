@@ -1148,5 +1148,10 @@ public class UserServiceImpl implements UserService {
 		{
 		return userDao.getUsersListAsReoprtingManagersByOrgLocationIdHavingTabAccess(orgLocationsId,user,tabId);
 	}
+
+	@Override
+	public List<User> getUsersByOrgLocationIdExceptLoggedInUser(Long orgLocationsId, Long userId) throws Exception {
+		return userDao.getUsersByOrgLocationIdExceptLoggedInUser(orgLocationsId, userId);
+	}
 	
 }

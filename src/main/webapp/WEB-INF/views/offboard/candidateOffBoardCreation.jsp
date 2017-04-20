@@ -9,6 +9,16 @@
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+
+<script> 
+	$(document).ready(function(){
+		document.getElementById("templateDocs").disabled = true;
+		document.getElementById("templateTasks").disabled = true;
+		
+		loadCandidates();
+	});
+</script>
+
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -22,9 +32,9 @@
           <ul class="nav nav-tabs" id="tab_bar">
             <li class="active"> <a href="#details" data-toggle="tab"> <i class="fa fa-th-list paddingRight"></i> <span>Details</span> <br>
               <small>Employee details &amp; Postion details</small> </a> </li>
-            <li><a href="#documents" data-toggle="tab"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
+            <li><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
               <small>Acceptance &amp; Policy Documents</small> </a> </li>
-            <li> <a href="#tasks" data-toggle="tab"> <i class="fa fa-check-square-o paddingRight"></i> <span>Taks</span> <br>
+            <li> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Taks</span> <br>
               <small>List of tasks</small> </a></li>
           </ul>
           <div class="tab-content"> 
@@ -33,132 +43,73 @@
             <div class="tab-pane active" id="details">
               <div class="form-horizontal">
                 <p><strong>Employee Details</strong></p>
+               
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Select User</label>
+                  <label class="col-md-3 control-label">Select User <span class="text-danger paddingLeft">*</span></label>
                   <div class="col-md-6">
-                    <select class="chosen-select" data-placeholder="Select User">
-                      <option disabled selected>-Select User-</option>
-                      <option>User-1</option>
-                      <option>User-2</option>
-                      <option>User-3</option>
+                    <select class="chosen-select" id="offboardUser" readonly="readonly" name="offboardUser" data-validation="required" onchange="getUserDetails();" field-name="User">
                     </select>
                   </div>
                 </div>
+                
                 <div class="form-group">
-                  <label class="col-md-3 control-label">First Name <span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">First Name</label>
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="">
+                    <input type="text" class="form-control input-sm" readonly="readonly" id="firstName" name="firstName" filed-name="First Name" readonly="readonly">
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Last Name <span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">Last Name</label>
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="">
+                    <input type="text" class="form-control input-sm" readonly="readonly" id="lastName" name="lastName"  filed-name="Last Name">
                   </div>
                 </div>
+                
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Street Addess 1 <span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">Mobile number</label>
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="">
+                    <input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber"  readonly="readonly">
                   </div>
                 </div>
-                <div class="form-group">
-                  <label class="col-md-3 control-label">Street Addess 2</label>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="">
-                  </div>
-                </div>
+
                   
-                                  <div class="form-group">
-                  <label class="col-md-3 control-label">Country <span class="text-danger paddingLeft">*</span></label>
-                  <div class="col-md-6">
-                    <select class="chosen-select" data-placeholder="Select Country">
-                      <option disabled>Select Country</option>
-                      <option>United States of America</option>
-                      <option>United Kingdom</option>
-                      <option>India</option>
-                      <option>Germany</option>
-                      <option>New Zealand</option>
-                    </select>
-                  </div>
-                </div>
-
                 <div class="form-group">
-                  <label class="col-md-3 control-label">State</label>
+                  <label class="col-md-3 control-label">Email</label>
                   <div class="col-md-6">
-                    <select class="chosen-select" data-placeholder="Select State">
-                      <option disabled>Select State</option>
-                      <option>Andra Pradesh</option>
-                      <option>Telangana</option>
-                      <option>Uttar Pradesh</option>
-                      <option>Karnataka</option>
-                      <option>Kerala</option>
-                    </select>
+                    <input type="text" class="form-control input-sm" id="email" name="email" readonly="readonly">
                   </div>
                 </div>
+                
                 <div class="form-group">
-                  <label class="col-md-3 control-label">City</label>
+                  <label class="col-md-3 control-label">Joined date</label>
                   <div class="col-md-6">
-                    <select class="chosen-select" data-placeholder="Select State">
-                      <option disabled>Select State</option>
-                      <option>Andra Pradesh</option>
-                      <option>Telangana</option>
-                      <option>Uttar Pradesh</option>
-                      <option>Karnataka</option>
-                      <option>Kerala</option>
-                    </select>
+                    <input type="text" class="form-control input-sm calendar" id="dateOfJoin" name="dateOfJoin" readonly="readonly">
                   </div>
                 </div>
+                
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Zipcode</label>
+                  <label class="col-md-3 control-label">Role</label>
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="">
-                  </div>
-                </div>
-
-
-                <div class="form-group">
-                  <label class="col-md-3 control-label">Personal Email <span class="text-danger paddingLeft">*</span></label>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-md-3 control-label">Company Email</label>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-md-3 control-label">Mobile number <span class="text-danger paddingLeft">*</span></label>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" value="">
-                  </div>
-                </div>
-                  <div class="form-group">
-                  <label class="col-md-3 control-label">Joined date<span class="text-danger paddingLeft">*</span></label>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm calendar" value="" id="startDate">
+                    <input type="text" class="form-control input-sm" id="role" name="role" readonly="readonly">
                   </div>
                 </div>
                   
                 <div class="clearfix"></div>
                 <p><strong>Offboard Details</strong></p>
-<div class="form-group">
+				<div class="form-group">
                   <label class="col-md-3 control-label">End date<span class="text-danger paddingLeft">*</span></label>
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm calendar" value="" id="endDate">
+                    <input type="text" class="form-control input-sm calendar" data-validation="required" field-name="End Date" id="endDate" name="endDate" readonly="readonly">
                   </div>
                 </div>
                   <div class="form-group">
                       <label class="col-md-3 control-label">Reasons <span class="paddingLeft text-danger">*</span></label>
                   <div class="col-md-6">
-                      <select class="form-control selectpicker">
+                      <select class="chosen-select" data-validation="required"  field-name="Reason" id="reason" name="reason">
                           <option selected disabled>- Select Reason -</option>
                           <option>Resignation</option>
                           <option>Termination</option>
                           <option>End of the contract</option>
-                          <option>Others</option>
                       </select>
                   </div>
                 </div>
@@ -166,7 +117,7 @@
             <div class="form-group">
                   <label class="col-md-3 control-label">Explanation</label>
                   <div class="col-md-6">
-                    <input type="text" value="" class="form-control input-sm">
+                    <textarea rows="3" class="form-control" id="explanation" name="explanation" data-validation-optional="true"></textarea>
                  </div>
             </div>
 
@@ -174,8 +125,8 @@
                   <div class="form-group">
                   <label class="col-md-3 control-label">Notice Period</label>
                   <div class="col-md-6 select-field">
-                    <select class="form-control" data-placeholder="Select Notice Period">
-                      <option disabled selected>Select Notice Period</option>
+                    <select class="chosen-select"  id="noticePeriod" name="noticePeriod">
+                      <option  selected="selected">- Select Notice Period -</option>
                       <option>15 Days</option>
                       <option>1 Month</option>
                       <option>2 Months</option>
@@ -188,17 +139,17 @@
                   <div class="form-group">
                   <label class="col-md-3 control-label">Effective Date<span class="text-danger paddingLeft">*</span></label>
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm calendar" value="" id="effectiveDate">
+                    <input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Effective Date" id="effectiveDate" name="effectiveDate" readonly="readonly" >
                   </div>
                 </div>
                 <div class="form-group">
                   <label class="col-md-3 control-label">Have to work in notice period ?<span class="text-danger paddingLeft">*</span></label>
                   <div class="col-md-6">
                       <label class="radio-inline">
-                    <input type="radio" value="" name="noticeperiod"> Yes
+                    <input type="radio" value="Y" checked name="noticeperiod"> Yes
                           </label>
                       <label class="radio-inline">
-                    <input type="radio" value="" name="noticeperiod"> No
+                    <input type="radio" value="N" name="noticeperiod"> No
                     </label>
                   </div>
                 </div>
@@ -495,5 +446,84 @@
   
  
   <jsp:include page="../masterFooter.jsp" />
+  
+  
+  <script>
+  function loadCandidates(){
+	  var sourceleadUrl = '${sourceleadUrl}';
+		$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/getUsersForOffboard?${_csrf.parameterName}=${_csrf.token}",	    	   
+		    success: function(data) {
+		    	 var json = JSON.parse(data);
+	        	 var result = "";
+	        	
+	        	result = result +'<option disabled selected>--Select User--</option>';
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var report = json[i];
+	        		
+	        		result = result +'<option value='+report.id+' >'+report.userName+'</option>';
+				}
+	        	 
+	        	 $("#offboardUser").empty();
+	           	 $("#offboardUser").append(result); 
+	           	 $('#offboardUser').trigger("chosen:updated");
+		    }
+	   });
+  }
+  </script>
+  
+  
+  <script>
+  function getUserDetails(){
+	  var offboardUserId = document.getElementById("offboardUser").value;
+	  if(offboardUser){
+		  var sourceleadUrl = '${sourceleadUrl}';
+			$.ajax({
+			   	type: "POST",
+			    url: sourceleadUrl+"/getOffboardUserDetailsById?${_csrf.parameterName}=${_csrf.token}&offboardUserId="+offboardUserId,	    	   
+			    success: function(data) {
+			    	 var json = JSON.parse(data);
+			    	 
+			    	 $("#firstName").val(json['firstName']);
+			    	 $("#lastName").val(json['lastName']);
+			    	 $("#mobileNumber").val(json['mobilePhone']);
+			    	 $("#email").val(json['email']);
+			    	 $("#mobilePhone").val(json['mobilePhone']);
+			    	 $("#dateOfJoin").val(json['dateOfJoin']);
+			    	 $("#role").val(json['role']);
+			    	 
+			    	 
+		        	
+			    }
+		   });
+	  }
+  }
+  </script>
+  
+  
+  
+<script>
+  $( function() {
+	  
+	 
+
+	  
+	  $('#endDate').datepicker({
+	      dateFormat: 'dd-mm-yy',
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  });
+	  
+	  $('#effectiveDate').datepicker({
+	      dateFormat: 'dd-mm-yy',
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  });
+	  
+  } );
+</script>
+  
   
   

@@ -943,7 +943,6 @@ function validateUploadFile(id)
 			    	 $("#personalEmail").val(json['email']);
 			    	 getOnBoardCandidateCountry(json['country'])
 			    	 getOnBoardCandidateStates(json['country'],json['state']);
-			    	 getOnBoardCandidateStates(json['state'],json['city']);
 			    	 getOnBoardCandidateCities(json['country'],json['state'],json['city']);
 			    	 
 			    	 validateOnboardCandidate(json['email']);
@@ -980,7 +979,6 @@ function validateUploadFile(id)
 			    	 $("#personalEmail").val(json['email']);
 			    	 getOnBoardCandidateCountry(json['country'])
 			    	 getOnBoardCandidateStates(json['country'],json['state']);
-			    	 getOnBoardCandidateStates(json['state'],json['city']);
 			    	 getOnBoardCandidateCities(json['country'],json['state'],json['city']);
 			    	 
 			    }
@@ -1418,7 +1416,6 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		    	
 		    	getOnBoardCandidateCountry(json['country']);
 		    	getOnBoardCandidateStates(json['country'],json['state']);
-		    	getOnBoardCandidateStates(json['state'],json['city']);
 		    	getOnBoardCandidateCities(json['country'],json['state'],json['city']);
 		    	
 		    	loadCandidateRoles(json['onBoardRoleId']);

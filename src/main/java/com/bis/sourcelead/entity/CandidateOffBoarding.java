@@ -29,10 +29,9 @@ private static final long serialVersionUID = 1L;
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CANDIDATE_ID")
-	private Candidate candidateId;
+	@JoinColumn(name = "USER_ID")
+	private User userId;
 	
 	@Column(name = "FIRST_NAME")
 	private String firstName;
@@ -63,11 +62,8 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "MOBILE_NUMBER")
 	private String mobileNumber;
 	
-	@Column(name = "PERSONAL_EMAIL")
-	private String personalEmail;
-	
-	@Column(name = "COMPANY_EMAIL")
-	private String companyEmail;
+	@Column(name = "EMAIL")
+	private String email;
 	
 	@Column(name = "DATE_OF_JOIN")
 	private Date dateOfJoin;
@@ -121,7 +117,6 @@ private static final long serialVersionUID = 1L;
 	
 	
 	
-
 	public Long getId() {
 		return id;
 	}
@@ -130,12 +125,20 @@ private static final long serialVersionUID = 1L;
 		this.id = id;
 	}
 
-	public Candidate getCandidateId() {
-		return candidateId;
+	public User getUserId() {
+		return userId;
 	}
 
-	public void setCandidateId(Candidate candidateId) {
-		this.candidateId = candidateId;
+	public void setUserId(User userId) {
+		this.userId = userId;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getFirstName() {
@@ -210,21 +213,6 @@ private static final long serialVersionUID = 1L;
 		this.mobileNumber = mobileNumber;
 	}
 
-	public String getPersonalEmail() {
-		return personalEmail;
-	}
-
-	public void setPersonalEmail(String personalEmail) {
-		this.personalEmail = personalEmail;
-	}
-
-	public String getCompanyEmail() {
-		return companyEmail;
-	}
-
-	public void setCompanyEmail(String companyEmail) {
-		this.companyEmail = companyEmail;
-	}
 
 	public Date getDateOfJoin() {
 		return dateOfJoin;
