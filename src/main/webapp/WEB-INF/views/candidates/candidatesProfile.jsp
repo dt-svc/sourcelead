@@ -333,7 +333,7 @@ function editCandidate(candidateId){
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
 							if(json.experienceYears == "25"){
-							result = result + '<select  class="form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths" disabled="disabled">';
+							result = result + '<select  class="form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths" >';
 							result = result + '<option  value="">Select Months</option>';
 							
 							<c:forEach var="i" begin="0" end="11" >
@@ -1655,9 +1655,11 @@ $('.selectpicker').selectpicker('refresh');
  function disableMonths() {
 	
          if ($("#experienceYears").val() == "25"){
-             $("#experienceMonths").attr("disabled", true);
-             $("#experienceMonths").val("disabled", true);
+        	 $("#experienceMonths").val('');  
+        	 $('#experienceMonths').attr("disabled", false);
          }else{
+        	 $("#experienceMonths").val('');  
+        	 $('#experienceMonths').selectpicker('refresh');
         	 $("#experienceMonths").attr("disabled", false); 
 		 }    
  }
