@@ -2424,8 +2424,12 @@ var existingValue = document.getElementById('isClientJob').value;
 		
 		$("#selectContact").val('');
 		$('#selectContact').trigger("chosen:updated");
+
+		// empty the dropdown value and changed to default value
+		$("#clientCurrencyCode").val($("#clientCurrencyCode option:first").val()).change();
 		
-		 
+		$("#clientRateType").val($("#clientRateType option:first").val()).change();
+
 		/*  $('select[name=clientCurrencyCodgetIsClientVale]').val(1);
 		 $('.selectpicker').selectpicker('refresh');
 		  */
