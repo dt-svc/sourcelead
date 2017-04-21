@@ -4092,3 +4092,9 @@ position: relative; padding: 0px 0px 5px 0px;
 	width: 80%; display: inline-block; background-color: #367fa9 !important; border: 1px solid #1f6791; padding: 4px 6px;
 	border-radius: 2px; color: #fff; margin-bottom: 10px;
 }
+.step3 strong p.deleDocu {
+	 color: #DF4B4E; cursor: pointer; width: 65%;
+}
+.deleDocu i {
+	display: inline-block; padding: 0px 5px 0px 0px;
+}

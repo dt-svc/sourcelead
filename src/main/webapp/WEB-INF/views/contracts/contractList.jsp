@@ -182,7 +182,7 @@ function preparedContractList(data){
 		         result = result + '</td>';
 		         result = result + '<td>';
 		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
-		        	 result = result + '<div><span>'+report.endBeDateStr+'</span></div>';
+		        	 result = result + '<div><span>'+report.endDateStr+'</span></div>';
 		         }else{
 		        	 result = result + '<div><span>--</span></div>';
 		         }
@@ -206,7 +206,7 @@ function preparedContractList(data){
 		        	  if(report.templateSubmissionStatus == "Waiting To Be Verify"){
 		            		result = result + '<div id="removeStatus'+report.id+'"><a class="btn btn-sm btn-success" title="finalize" onclick="finalizeContract('+report.id+',\'Waiting To Be Verify\');">finalize</a></div>';
 		            	 }
-		        	  if(result.templateSubmissionStatus == "Finalized"){
+		        	  if(report.templateSubmissionStatus == "Finalized"){
 		        		  result = result + '<div id="removeStatus'+report.id+'">Finalized</a></div>';
 		            	 }
 		        	  
@@ -255,7 +255,7 @@ function preparedContractList(data){
 	         opt = opt + '</td>';
 	         opt = opt + '<td>';
 	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
-	        	 opt = opt + '<div><span>'+output.endBeDateStr+'</span></div>';
+	        	 opt = opt + '<div><span>'+output.endDateStr+'</span></div>';
 	         }else{
 	        	 opt = opt + '<div><span>--</span></div>';
 	         }
@@ -267,27 +267,31 @@ function preparedContractList(data){
 	         opt = opt + '</td>';
 	         opt = opt + '</td>';
 	         opt = opt + '<td>';//Waiting to be signed
-	     	  if(output.parentId != null && output.parentId != '' && output.parentId != 'undefined'){
-	     		  
+	         opt = opt + '<div class="tbldata-dotdot-sm">';
+	         if(output.parentId != null && output.parentId != '' && output.parentId != 'undefined'){
 	     		 if(output.templateSubmissionStatus == "Finalized"){
-	        		  opt = opt + '<div id="removeStatus'+output.id+'">Finalized</a></div>';
+	     			opt = opt + '<div id="removeStatus'+output.id+'">Finalized</a></div>';
 	            	 }
 	     		 else{
-	     			opt = opt + '<div  id="removeStatus'+output.id+'"><a class="btn btn-sm btn-info" title="verify" onclick="removeRecord('+output.id+',\'Waiting to be signed\');">Verify</a></div>';  
+	     		 	opt = opt + '<div id="removeStatus'+output.id+'"><a class="btn btn-sm btn-info" title="verify" onclick="removeRecord('+output.id+',\'Waiting to be signed\');">verify</a></div>';  
 	     		 }
-	     		  
-	     		  
-	          }else{
+	     	}else{
 	        	  if(output.templateSubmissionStatus == "Waiting To Be Verify"){
-	        		  opt = opt + '<div id="removeStatus'+output.id+'"><a class="btn btn-sm btn-success" title="finalize" onclick="finalizeContract('+output.id+',\'Waiting To Be Verify\');">Finalize</a></div>';
+	            		opt = opt + '<div id="removeStatus'+output.id+'"><a class="btn btn-sm btn-success" title="finalize" onclick="finalizeContract('+output.id+',\'Waiting To Be Verify\');">finalize</a></div>';
 	            	 }
 	        	  if(output.templateSubmissionStatus == "Finalized"){
 	        		  opt = opt + '<div id="removeStatus'+output.id+'">Finalized</a></div>';
 	            	 }
-	        	  else{
-	        		  opt = opt + '<div><span>--</span></div>';
+	        	  
+	        	  if(output.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
+	            		/* result = result + '<div id="removeStatus'+output.id+'"><a class="btn btn-sm btn-success" title="finalize" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');">Approve</a></div>'; */
+	        		  opt = opt + '<div><div class="CurDiv" id="removeStatus'+output.id+'"><a class="btn btn-sm btn-success pull-left" title="approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');">Approve</a></div><div class="CurDiv" id="removeReject'+output.id+'"><a class="btn btn-sm btn-danger ml" title="REJECTED" onclick="approveContract('+output.id+',\'REJECTED\');">Reject</a></div></div>'; 
 	        	  }
-	          }  
+	        	  else{
+	         	 	opt = opt + '<div><span>--</span></div>';
+	        	  }
+	          }
+	         opt = opt + '</div>';
 	     	opt = opt + '</td>';
 	     	opt = opt + '</tr>';
 	    }

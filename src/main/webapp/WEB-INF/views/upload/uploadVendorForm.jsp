@@ -86,7 +86,7 @@ margin:10px 220px 0;
         	</div>
         	
         	<div class="center-div">
-        	<input id="uploadFile" placeholder="" disabled="disabled"/>
+        	<input id="uploadFile" placeholder="" disabled="disabled" style="width: 100%;"/>
         	</div>
         	
         	
