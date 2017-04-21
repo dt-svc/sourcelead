@@ -223,6 +223,7 @@ document.onkeydown=function(e){
 	             <option data-icon="fa fa-bar-chart" ${searchType == "Projects" ?"selected='selected'":""} value="Projects">Projects</option>   	  
 	           </c:if>
 			</c:forEach>
+	             <option data-icon="fa fa-black-tie" ${searchType == "Candidate" ?"selected='selected'":""} value="Associate">Associate</option>
 		</select>
 			
 			

@@ -27,9 +27,9 @@ function candidateEducation(candidateId){
 	
 	var result = "";
 	if(window.candidateStatusGlobal == '0'){
-		result = result  +'    <div class="project_tabs_inn_head addUser-org overflow_inherint mt25">  ';
+		result = result  +'    <div class="project_tabs_inn_head addUser-org  mt25">  ';
 	}else{
-		result = result  +'    <div class="project_tabs_inn_head addUser-org overflow_inherint mt10">  ';
+		result = result  +'    <div class="project_tabs_inn_head addUser-org  mt10">  ';
 	}
 	
 	result  = result + '<div class="success_pop" id="selector4" style="display: none;">';
@@ -61,6 +61,9 @@ function candidateEducation(candidateId){
     $("#tab-4").empty();  
     $("#tab-5").empty();  
     $("#tab-6").empty();  
+    $("#tab-7").empty();
+    $("#tab-8").empty();
+    $("#tab-9").empty();
     $("#tab-4").append(result);  
 	
     candidateEducationList(candidateId);
@@ -707,7 +710,6 @@ function candidateEducationStore(candidateId){
 			            				$("#eduMsgDiv").html("Success!! New Education added");
 				               			candidateEducationList(candidateId);
 				               			eduMsgFadein();
-				               			candidateQuickViewProfile(candidateId);
 							    	}
 				                 }   
 				      }, 

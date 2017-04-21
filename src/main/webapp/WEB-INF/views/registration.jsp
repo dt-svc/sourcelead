@@ -19,7 +19,6 @@
      <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
     <%@page session="true"%>
 </head>
-<jsp:include page="socialinviterscripts.jsp" />
 <script>
  function getProfileDetails(response,service){
 		var activeElement = $('.tab-pane.fade.in.active').attr('id');
@@ -902,5 +901,6 @@ var config = {
    };
 })(jQuery);
 </script>
+<jsp:include page="socialinviterscripts.jsp" />
 <!--    Ends of validating the Company Email i,e removing duplicate values-->
 </html>
