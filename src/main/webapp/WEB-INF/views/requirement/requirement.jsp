@@ -6,14 +6,6 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
- <!-- <script src="resources/js/bootstrap-select.min.js"></script> -->
-
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script> 
-<!-- end files for autocomplete with tagit -->
 
 <jsp:include page="requirementDetails.jsp"></jsp:include>
 <jsp:include page="requirementClientDetails.jsp"></jsp:include>
@@ -68,6 +60,7 @@ left:-20px !important;
 bottom:-14px;
 }
 </style>
+
 
 <script>
 $(document).ready(function() {
@@ -337,7 +330,7 @@ $(document).ready(function () {
             </div>
           </div>
           
-          <div class="form-group">
+          <%-- <div class="form-group">
               <label class="col-md-3">Education</label>
               <div class="col-md-9">
                 <select multiple  class="chosen-select form-control" name="education" id="education" data-validation="validate_Space" data-validation-optional="true">
@@ -348,6 +341,26 @@ $(document).ready(function () {
                 		  <c:if test="${!fn:contains(requirement.reqEducationListString, edu.name)}">
                 		  	 <option  value="${edu.name}">${edu.name}</option>
                 		  </c:if>
+                </c:forEach>
+                </select>
+              </div>
+            </div> --%>
+            
+              <div class="form-group">
+              <label class="col-md-3">Education</label>
+              <div class="col-md-9">
+                <select multiple class="chosen-select form-control" name="education" id="education" data-validation-optional="true">
+               <c:forEach var="education" items="${educationsList}">
+               		<c:set var = "NUM" value = "${0}"/>
+               		<c:forEach var="existedEducation" items="${requirement.reqEducationListString}">
+					    <c:if test="${existedEducation eq education}">
+					    	<c:set var = "NUM" value = "${1}"/>
+					       <option  selected value="${education}">${education}</option>
+					    </c:if>
+					</c:forEach>
+					<c:if test="${NUM == 0}">
+						<option  value="${education}">${education}</option>
+					</c:if>
                 </c:forEach>
                 </select>
               </div>
@@ -504,12 +517,22 @@ $(document).ready(function () {
             <div class="clearfix"></div>
             <!-- upload file html need to add bottom JavaScript otherwise it will not work --> 
           </div>
-           <div class="form-group">
+           <%-- <div class="form-group">
             <label class="col-md-3">Description</label>
-            <div class="col-md-9">
-             <textarea rows="5" class="form-control" id="description" name="description" value="${requirement.description}" field-name="Description"  data-validation-optional="true">${requirement.description}</textarea>
+            <div class="col-md-9 nicEditpanelContain">
+             <textarea rows="5" class="form-control" id="bodytext" name="description" value="${requirement.description}" field-name="Description"  data-validation-optional="true">${requirement.description}</textarea>
+             <textarea rows="5" class="form-control" id="bodytext" name="description" value="${requirement.description}" field-name="Description" data-validation=" validate_length length2-5000" data-validation-optional="true"></textarea>
+           
             </div>
+          </div> --%>
+          
+          <div class="clearfix mb">
+          <label class="col-md-3">Description</label>
+          <div class="col-md-12 txtEditor_p">
+          <%-- <textarea rows="5" class="form-control" id="bodytext" name="description" value="${requirement.description}" field-name="Description" data-validation="" data-validation-optional="true">${requirement.description}</textarea> --%> 
+          <textarea id="txtEditor" name="description" value="${requirement.description}" class="form-control newContrtextarea">${requirement.description}</textarea>
           </div>
+        </div> 
           
           <div class="form-group">
               <label class="col-md-3">Notice Period</label>
@@ -1117,7 +1140,6 @@ $(document).ready(function () {
   
   </div>
 </section>
-
 <script type="text/javascript">
 	function storeRequirement(saveType) {
 		
@@ -1127,6 +1149,10 @@ $(document).ready(function () {
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
+		
+		
+		
+		var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 		
 		checkTemplateforDouplicate();
 		validateJobId();
@@ -1213,9 +1239,12 @@ $(document).ready(function () {
       		var formData = new FormData(form); 
 			  
 			var sourceleadUrl = '${sourceleadUrl}';
+			var text = $('textarea#bodytext').val();
+			
+			
 			$( "#submitForApproval" ).addClass('button').val('Processing..');
      		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-			
+     		
 			$.ajax({
 						type : "POST",
 		        	    data: formData,
@@ -2670,6 +2699,14 @@ function checkcheckbox(){
 }
 </script> -->
 
+<script src="resources/js/editor.js"></script>
+<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
+		<script>
+			$(document).ready(function() {
+				$("#txtEditor").Editor();
+			});
+       </script> 
+
 
 <script>
 function getNoticePeriodList(){
@@ -2682,4 +2719,30 @@ for (var i = 0; i < splitNotice.length; i++) {
 }
 </script>
 
+<script>
+function getEditRequirementDetails(requirementId){
+	
+	var sourceleadUrl = '${sourceleadUrl}';
+	if(templateId !=''){
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/getEditRequirementDetails?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,
+			success : function(data) {
+				var json = JSON.parse(data);
+				$(".Editor-container").find('.Editor-editor').html(json['description']);
+			},
+		}); 
+	}
+	
+}
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	var requirementId  = "${requirementId}";
+	getEditRequirementDetails(requirementId);
+	
+});
+</script>
+ 
 <jsp:include page="../masterFooter.jsp" />

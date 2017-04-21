@@ -297,6 +297,9 @@ public class Candidate implements Serializable{
 	private String vendorOrgRelationId;
 	
 	@Transient
+	private String employeList;
+	
+	@Transient
 	private String vendorSpocId;
 	 
 	 @Transient
@@ -1080,6 +1083,16 @@ public class Candidate implements Serializable{
 
 	public void setPrimarySkill(String primarySkill) {
 		this.primarySkill = primarySkill;
+	}
+
+
+	public String getEmployeList() {
+		return employeList;
+	}
+
+
+	public void setEmployeList(String employeList) {
+		this.employeList = employeList;
 	}
 
 

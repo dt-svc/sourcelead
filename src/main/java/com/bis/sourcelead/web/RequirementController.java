@@ -256,6 +256,7 @@ public class RequirementController {
 	        
 		}*/
         
+		// skills and education list<Pojo(lookupdata)> to list<string> because customized skills were not appending in edit mode.
 		
 		if(requirement != null && requirement.getId() != null){
 
@@ -280,8 +281,31 @@ public class RequirementController {
 		}
 		
 		
-       List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
-		model.addObject("educationsList", educationsList);
+		
+		
+		
+		if(requirement != null && requirement.getId() != null){
+		List<String> newlyAddededucationList = requirementService.getAllRequirementEducationByRequirementId(requirement.getId());
+	       List<String> educationsList = lookUpDataService.getLookUpDataByCategoryEducation();
+	       
+	       String education = newlyAddededucationList.get(0);
+			if(!"null".equalsIgnoreCase(education) && null != education){
+			String arr[] = education.split(",");
+			for(String editEducationName : arr){
+				if(!educationsList.contains(editEducationName)){
+					educationsList.add(editEducationName);
+				}
+			}
+		      model.addObject("educationsList", educationsList);
+			}else{
+			  model.addObject("educationsList", educationsList);
+			} 
+		}else{
+         // List<LookUpData> educationsListData = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+          List<String> educationsList = lookUpDataService.getLookUpDataByCategoryEducation();
+		  model.addObject("educationsList", educationsList);
+		}
+		
 		
 		List<User> usersList = userService.getOwnersByOrgLocationId(orgLocations.getId());
 		model.addObject("usersList", usersList);
