@@ -25,6 +25,7 @@
 <script>
 function candidateDocuments(candidateId){
 	var result = "";
+	
 	if(window.candidateStatusGlobal == '0'){
 		result = result  +'    <div class="project_tabs_inn_head addUser-org overflow_inherint mt25">  ';
 	}else{
@@ -380,6 +381,10 @@ function getDocumentType(documentType){
 						url : sourceleadUrl+"/saveCandidateDocument?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId+"&documentUUID="+documentUUID,
 						success : function(result) {
 								closePopup();
+								$("#popUpDiv").removeClass("edit-details-active");
+		            			$("#selector9").removeAttr("style");
+		            			$("#selector9").css({ display: "block" });
+	            				$("#docMsgDiv").html("Success!! New Candidate Document added");
 		             			candDocumentsList(candidateId);
 						 		resMsgFadein();
 		            		 

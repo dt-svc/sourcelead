@@ -195,6 +195,11 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 	
 	@Override
+	public RequirementSubmission getClientRequierementSubmission(Long submissionId) throws Exception {
+		return requirementSubmissionDao.getClientRequierementSubmission(submissionId);
+	}
+	
+	@Override
 	public List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations,Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole) throws Exception {
 		return requirementSubmissionDao.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations,requirementId,existingApplicantsIds,isClientInterview,user,loginUserRole);
 	}

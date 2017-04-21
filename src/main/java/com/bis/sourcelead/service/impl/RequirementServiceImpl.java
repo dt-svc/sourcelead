@@ -3321,4 +3321,9 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		return requirementDao.getAllRequirementEducationByRequirementId(requirementId);
 	}
 	
+	@Override
+	public Requirement getRequirementDetailsById(Long requirementId) throws Exception {
+		return requirementDao.getRequirementDetailsById(requirementId);
+	}
+	
 }
