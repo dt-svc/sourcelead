@@ -583,6 +583,10 @@ function getNotifyToOtersVal(){
    	var isNofityToOthers = document.getElementById("notificationToOthers").value;
    		if(isNofityToOthers == "Y"){
    			validateOtherMail();
+   		}else{
+   			$('input#notificationToOthersEmails').removeAttr( "record-exist record-exist-errormsg");
+   			$('#notifyOthersDiv').find('p.jquery_form_error_message').remove(); 
+   		    $("#add_interview").removeAttr("disabled");
    		}
 	  if ($(this).validate(false, validationSettings)){
         e.preventDefault();

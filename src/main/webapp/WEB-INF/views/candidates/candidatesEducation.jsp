@@ -61,6 +61,9 @@ function candidateEducation(candidateId){
     $("#tab-4").empty();  
     $("#tab-5").empty();  
     $("#tab-6").empty();  
+    $("#tab-7").empty();
+    $("#tab-8").empty();
+    $("#tab-9").empty();
     $("#tab-4").append(result);  
 	
     candidateEducationList(candidateId);
@@ -707,7 +710,6 @@ function candidateEducationStore(candidateId){
 			            				$("#eduMsgDiv").html("Success!! New Education added");
 				               			candidateEducationList(candidateId);
 				               			eduMsgFadein();
-				               			candidateQuickViewProfile(candidateId);
 							    	}
 				                 }   
 				      }, 
