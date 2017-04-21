@@ -350,13 +350,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		for(Contracts contracts :vendorcontractsList ){
 			StringBuilder ownerName = new StringBuilder();
 			StringBuilder vendorName = new StringBuilder();
-			if(null != contracts.getOwnerUserId().getFirstName() && null != contracts.getOwnerUserId().getFirstName()){
+			if(null != contracts.getOwnerUserId().getLastName() && null != contracts.getOwnerUserId().getLastName()){
 				ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
 			}else{
 				ownerName.append(contracts.getOwnerUserId().getFirstName());	
 			}
 			contracts.setOwnerName(ownerName.toString());
-			if(null != contracts.getContactUser().getFirstName() && null != contracts.getContactUser().getFirstName()){
+			if(null != contracts.getContactUser().getLastName() && null != contracts.getContactUser().getLastName()){
 				vendorName.append(contracts.getContactUser().getFirstName()).append((contracts.getContactUser().getLastName()));
 			}else{
 				vendorName.append(contracts.getContactUser().getFirstName());	
@@ -376,13 +376,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		for(Contracts contracts :clientcontractsList ){
 			StringBuilder ownerName = new StringBuilder();
 			StringBuilder vendorName = new StringBuilder();
-			if(null != contracts.getOwnerUserId().getFirstName() && null != contracts.getOwnerUserId().getFirstName()){
+			if(null != contracts.getOwnerUserId().getLastName() && null != contracts.getOwnerUserId().getLastName()){
 				ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
 			}else{
 				ownerName.append(contracts.getOwnerUserId().getFirstName());	
 			}
 			contracts.setOwnerName(ownerName.toString());
-			if(null != contracts.getContactUser().getFirstName() && null != contracts.getContactUser().getFirstName()){
+			if(null != contracts.getContactUser().getLastName() && null != contracts.getContactUser().getLastName()){
 				vendorName.append(contracts.getContactUser().getFirstName()).append((contracts.getContactUser().getLastName()));
 			}else{
 				vendorName.append(contracts.getContactUser().getFirstName());	

@@ -103,8 +103,12 @@ public class CandidateEmployersRestController {
 
 		String msg = "";
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		Candidate employers =candidateService.getCandidateById(Long.parseLong(candidateId));
+		Long loc = employers.getOrgLocationId().getId();
+		
 		String resultJson;
-		 List<CandidateEmployers>   candidatesEmployersList = candidateEmployersService.getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long.valueOf(candidateId), loginOrgLocation.getId());
+		 List<CandidateEmployers>   candidatesEmployersList = candidateEmployersService.getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long.valueOf(candidateId), loc);
 		 
 		 for(CandidateEmployers candidateEmployers : candidatesEmployersList){
 			 

@@ -20,11 +20,8 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.States;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -154,8 +151,8 @@ public class AssociateController {
 	
 	
 	@PreAuthorize("hasRole('ROLE_CREATE_CANDIDATE')")
-	@RequestMapping(value = "/addAssociate")
-	public ModelAndView addAssociate(@RequestParam(value="type", required=false) String  type,HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/associate")
+	public ModelAndView addAssociate(@RequestParam(value="type", required=false) String type ,HttpServletRequest request) throws Exception {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -164,7 +161,15 @@ public class AssociateController {
 		List<Roles> rolesList = roleService.getOrgEnrolledRolesByOrgLocationId(org, orgLocations.getId());
 		model.addObject("rolesList", rolesList);
 		
-		model.setViewName("candidates/addAssociate");
+		if("addAssociate".equalsIgnoreCase(type)){
+			model.setViewName("candidates/addAssociate");
+		}
+		if("importAssociate".equalsIgnoreCase(type)){
+			model.setViewName("candidates/importAssociate");
+		}
+		if("associateFromCandidate".equalsIgnoreCase(type)){
+			model.setViewName("candidates/associateFromCandidate");
+		}
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("type", type);
 	

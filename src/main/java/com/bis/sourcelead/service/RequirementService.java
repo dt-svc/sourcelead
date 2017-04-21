@@ -141,4 +141,8 @@ public interface RequirementService {
 	public List<Requirement> getTotalRequirementsReleasedToSpoc(Long relationId, Long spocId);
 	
 	public List<Requirement> getRequirementsForSOWByOrgLocationId(Long orgLocationId, String sowType) throws Exception;
+
+	public List<String> getAllRequirementEducationByRequirementId(Long requirementId);
+	
+	Requirement getRequirementDetailsById(Long requirementId) throws Exception;
 }
