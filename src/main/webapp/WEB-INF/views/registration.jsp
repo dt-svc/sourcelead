@@ -158,21 +158,10 @@ window.onload = function () {
 		            <div class="col-md-12 clearfix">
 		            <div class="form-group  empCheckbox">
                         <div class="row">
-                        <p class="ml"><strong>Wanted to be</strong></p>
-                            
-				           <div class="clearfix">
-					         <c:forEach var="wanted" items="${WantedToBeList}">
-				      				<span class="col-md-4">
-				                            <input type="checkbox" value="${wanted.id}" name="wantedtobeList"><i>${wanted.registerName}</i>
-				                    </span>
-						     </c:forEach>
-				          </div>  
                             
                             <div class="clearfix">   
-                            <p class="ml mt10"><strong>Would like to</strong></p>
-
-
-						  <div class="clearfix">
+                            <p class="ml mt10"><strong>Would like to be</strong></p>
+						    <div class="clearfix">
 					         <c:forEach var="WouldLikeToList" items="${WouldLikeToList}">
 				      				<span class="col-md-4">
 				                            <input type="checkbox" value="${WouldLikeToList.id}" name="Wouldliketo"><i>${WouldLikeToList.registerName}</i>
@@ -250,20 +239,8 @@ window.onload = function () {
 		            <div class="col-md-12 clearfix">
 		            <div class="form-group  empCheckbox">
                         <div class="row">
-                        <p class="ml"><strong>Wanted to be</strong></p>
-                            
-				           <div class="clearfix">
-					         <c:forEach var="wanted" items="${WantedToBeList}">
-				      				<span class="col-md-4">
-				                            <input type="checkbox" value="${wanted.id}" name="wantedtobeList"><i>${wanted.registerName}</i>
-				                    </span>
-						     </c:forEach>
-				          </div>  
-                            
                             <div class="clearfix">   
                             <p class="ml mt10"><strong>Would like to</strong></p>
-
-
 						  <div class="clearfix">
 					         <c:forEach var="WouldLikeToList" items="${WouldLikeToList}">
 				      				<span class="col-md-4">
@@ -300,33 +277,35 @@ window.onload = function () {
           <li><a data-toggle="tab" href="#recruiter" onclick="resetCredentials('Recruiter')"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Individual Recruiter</a></li>
           </c:if>
       </ul>
-        <div class="regis_wrap_styles">
+        <div class="regis_wrap_styles registered_widget_styles">
         <div class="tab-content">
         <div id="professional" class="tab-pane fade in active">
            <form:form class="login-form clearfix"  id="professionalRegistration_form"  name="professionalRegistration_form" method="post" >     
-            <div class="row">
+            <span class="col-md-12 text-muted text-center">Register With:</span>
+            <div id ="proffessionalConnect"></div>
+            <div class="clearfix"></div>
+            <div class="row mt">
             <div class="form-group clearfix">
-                <div class="col-xs-12 col-md-6">
+                <div class="col-xs-12 col-md-12 mb10">
                     <i class="fa fa-user-circle"></i>
                     <label>First Name <span class="text-danger">*</span></label>
                     <input type="text" name="firstName" field-name="First Name" id="firstName" value='${firstName}' data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
                     <b></b>
                 </div>
-                <div class="col-xs-12 col-md-6">
+                <div class="col-xs-12 col-md-12 mb10">
                     <i class="fa fa-user-circle"></i>
                     <label>Last Name</label>
                     <input type="text" name="lastName" field-name="Last Name" id="lastName" value='${lastName}'  data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
                     <b></b>
                 </div>
-                </div>
-                <div class="form-group clearfix">
-                <div class="col-xs-12 col-md-6" id="emailDiv">
+                
+                <div class="col-xs-12 col-md-12 mb10" id="emailDiv">
                     <i class="fa fa-envelope"></i>
                     <label>Email <span class="text-danger">*</span></label>
                     <input type="text" name="email" field-name="Email" value='${email}' onblur="validateEmail('Professional');" id="email"  data-validation="required validate_Space validate_length length2-100 validate_email" >
                     <b></b>
                 </div>
-                <div class="col-xs-12 col-md-6 select-field">
+                <div class="col-xs-12 col-md-12 select-field mb10">
                     <i class="fa fa-map-marker"></i>
                     <select class="form-control chosen-select" name="location" id="location" field-name="Country" data-validation="required">
                         <option disabled selected>Country</option>
@@ -340,48 +319,17 @@ window.onload = function () {
                     <b></b>
                 </div>
                 </div>
-                
-                
-                    <div class="form-group clearfix empCheckbox">
-                        <div class="col-md-12">
-                        <p><strong>Wanted to be</strong></p>
-                            
-				           <div class="clearfix row">
-					         <c:forEach var="wanted" items="${WantedToBeList}">
-				      				<span class="col-md-4">
-				                            <input type="checkbox" value="${wanted.id}" name="wantedtobeList"><i>${wanted.registerName}</i>
-				                    </span>
-						     </c:forEach>
-				          </div>  
-                            
-                            <div class="clearfix row">   
-                            <p class="ml mt10"><strong>Would like to</strong></p>
-
-
-						  <div class="clearfix">
-					         <c:forEach var="WouldLikeToList" items="${WouldLikeToList}">
-				      				<span class="col-md-4">
-				                            <input type="checkbox" value="${WouldLikeToList.id}" name="Wouldliketo"><i>${WouldLikeToList.registerName}</i>
-				                    </span>
-						     </c:forEach>
-				          </div>
-
-                        </div>
-                        </div>
-	            </div>
-                
             </div>
             
             <div class="clearfix">
-                <div class="pull-left">
-                    <span class="small text-muted">Already have an Account:</span><a href="${sourceleadUrl}" class="btn" title="Login">Login</a><br/>
-                    <span class="small text-muted">Register With:</span>
-                </div>
-                <div id ="proffessionalConnect"></div>
-                <div class="pull-right mt10">
-                    <button type="submit" id="register_button"  class="btn btn-primary btn_styles mr" title="Register">
+            <div class="text-center">
+                    <button type="submit" id="register_button"  class="btn btn-primary btn_styles" title="Register">
                         <i class="fa fa-paper-plane"></i>Register</button>
                 </div>
+                <div class="col-md-12 text-center mt bg-info">
+                    <span class="text-muted">Already have an Account:</span><a href="${sourceleadUrl}" class="btn" title="Login">Login</a><br/>
+                </div>
+                
             </div>
             </form:form>
         </div>
@@ -389,13 +337,13 @@ window.onload = function () {
           <form:form class="login-form clearfix"  id="recruiterRegistration_form"  name="recruiterRegistration_form" method="post" >    
 	            <div class="row">
 	            <div class="form-group clearfix">
-	                <div class="col-xs-12 col-md-6">
+	                <div class="col-xs-12 col-md-12">
 	                    <i class="fa fa-user-circle"></i>
 	                    <label>First Name <span class="text-danger">*</span></label>
 	                    <input type="text" name="firstName" field-name="First Name" id="recruiterFirstName" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
 	                    <b></b>
 	                </div>
-	                <div class="col-xs-12 col-md-6">
+	                <div class="col-xs-12 col-md-12">
 	                    <i class="fa fa-user-circle"></i>
 	                    <label>Last Name</label>
 	                    <input type="text" name="lastName" field-name="Last Name" id="recruiterLastName" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
@@ -403,13 +351,13 @@ window.onload = function () {
 	                </div>
 	                </div>
 	                <div class="form-group clearfix">
-	                <div class="col-xs-12 col-md-6" id="recruiterEmailDiv">
+	                <div class="col-xs-12 col-md-12" id="recruiterEmailDiv">
 	                    <i class="fa fa-envelope"></i>
 	                    <label>Email <span class="text-danger">*</span></label>
 	                    <input type="text" name="email" field-name="Email"  id="recruiterEmail"  onblur="validateRecruiterEmail('Recruiter');" data-validation="required validate_Space validate_length length2-100 validate_email" >
 	                    <b></b>
 	                </div>
-	                <div class="col-xs-12 col-md-6 select-field">
+	                <div class="col-xs-12 col-md-12 select-field">
 	                    <i class="fa fa-map-marker"></i>
 	                    <select class="form-control chosen-select" name="location" id="recruiterLocation" field-name="Location" data-validation="required">
 	                        <option disabled selected>Location</option>
@@ -423,37 +371,6 @@ window.onload = function () {
 	                    <b></b>
 	                </div>
 	                </div>
-	            
-	            
-	            
-	            <div class="form-group clearfix empCheckbox">
-                        <div class="col-md-12">
-                        <p><strong>Wanted to be</strong></p>
-                            
-				           <div class="clearfix row">
-					         <c:forEach var="wanted" items="${WantedToBeList}">
-				      				<span class="col-md-4">
-				                            <input type="checkbox" value="${wanted.id}" name="wantedtobeList"><i>${wanted.registerName}</i>
-				                    </span>
-						     </c:forEach>
-				          </div>  
-                            
-                            <div class="clearfix row">   
-                            <p class="ml mt10"><strong>Would like to</strong></p>
-
-
-						  <div class="clearfix">
-					         <c:forEach var="WouldLikeToList" items="${WouldLikeToList}">
-				      				<span class="col-md-4">
-				                            <input type="checkbox" value="${WouldLikeToList.id}" name="Wouldliketo"><i>${WouldLikeToList.registerName}</i>
-				                    </span>
-						     </c:forEach>
-				          </div>
-
-                        </div>
-                        </div>
-	            </div>
-	            
 	            <div class="clearfix">
 	            <div class="col-md-12">
 	                 <div class="pull-left">
