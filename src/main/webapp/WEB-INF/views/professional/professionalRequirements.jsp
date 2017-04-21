@@ -25,7 +25,7 @@ function setPostValues(title,link,picture,description,comment){
      if (description) {
          postdatavalues.description = description;
      }
-     if (comment) {
+     if (description) {
          postdatavalues.comment = description;
      }
 }

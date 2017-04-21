@@ -1,5 +1,4 @@
 <link href="//fonts.googleapis.com/css?family=Lato:100,300,400" rel="stylesheet">
-<script src="//socialinviter.com/assets/js/libraries/jquery.js"></script>
 <script type="text/javascript" id="apiscript" src="resources/js/all.js?burst=1"></script>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page session="true"%>
