@@ -6,6 +6,11 @@
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<link rel="stylesheet" href="resources/css/style.css" />
+
+<script src="resources/js/offboardCheckListBuilder.js" type="text/javascript" ></script> <!-- form builder -->
+<script src="resources/js/offboardCheckList-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
+
 <script src="resources/js/formvalidator.js"></script>
 
 <section class="content-wraper">
@@ -25,7 +30,7 @@
               <small>Template details</small> </a> </li>
             <li onclick="getTemplateResignationDocumentsDetails();getTemplateOffboardPackDocumentsDetails();"><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
               <small>Resignation / Termination &amp; Offboard pack Documents</small> </a> </li>
-            <li onclick="getOnboardingCheckList();"> <a href="#checkList" data-toggle="tab" id="checkList"> <i class="fa fa-check-square-o paddingRight"></i> <span>Check List</span> <br>
+            <li onclick="getOffboardingCheckList();"> <a href="#offboardCheckList" data-toggle="tab" id="checkList"> <i class="fa fa-check-square-o paddingRight"></i> <span>Check List</span> <br>
               <small>Check List</small> </a></li>
             <li onclick="getOffboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Tasks</span> <br>
               <small>List of tasks</small> </a></li>
@@ -105,6 +110,18 @@
                 </form>
               </div>
             </div>
+            
+            
+            
+             <!-- Check List -->
+            <div class="tab-pane" id="offboardCheckList">
+              <div class="form-horizontal assignTemplate">
+                <h4 class="clearfix">CheckList</h4>
+                 <div id="offboardingCheckList"></div>
+              </div>
+            </div>
+            
+            
             <div class="tab-pane" id="tasks">
               <div class="clearfix">
                 <h4 class="pull-left">Task List</h4>
@@ -718,7 +735,7 @@ function createTemplateDocs(saveType){
 	        		var $tabs = $('.tabbable li');
 	     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
 	     	        document.getElementById("templateTasks").disabled = false;
-	     	        getOffboardingTasksList();
+	     	        getOffboardingCheckList();
 	        	}else{
 	        		getTemplateResignationDocumentsDetails(templateId);
 	     	        getTemplateOffboardPackDocumentsDetails(templateId);
@@ -1051,7 +1068,7 @@ function getOffboardingTasksList(){
         	
         	result = result +'<div class="form-footer clearfix mt">';
     		result = result +'<div class="pull-right mr">';
-    		result = result +'<input type="button" value="Finish" onclick="saveAndFinishOnboardTemplate('+templateId+');" class="btn btn-sm btn-primary">';
+    		result = result +'<input type="button" value="Finish" onclick="saveAndFinishOffboardTemplate('+templateId+');" class="btn btn-sm btn-primary">';
     		result = result +'</div>';
     		result = result +'</div>';
     		
@@ -1103,6 +1120,259 @@ function saveAndFinishOffboardTemplate(templateId){
 
 }
 </script>
+
+
+<script>
+function getOffboardingCheckList(){
+	
+	
+	var result = "";
+	var templateId = document.getElementById("templateId").value;
+	var sourceleadUrl ='${sourceleadUrl}';
+	var locationId = '${SourceLeadWeb_orgLocationId}';
+	
+	result = result + '<div class="clearfix">';
+	        result = result + '</div>';
+	        result = result + '<div id="sjfb-wrap">';
+	        result = result + '<div id="offboardcheckListLoading"></div>';
+	           result = result + '<form id="sjfb" novalidate>';
+	           result = result + '<input type="hidden" id="checkListTemplateId" name="checkListTemplateId"  value="'+templateId+'">';
+	           
+		    	
+		    	result = result + '<div class="clearfix mb row">';
+		    	
+		    	result = result + '<div class="col-md-10">';
+		    	result = result + '<h2>Add Check List</h2>';
+		    	result = result + '</div>';
+		    	
+		    	result = result + '<div class="col-md-2">';
+		        result = result + '<div class="dropdown">';
+		        result = result + '<button class="btn btn-success dropdown-toggle btn-block" type="button" data-toggle="dropdown" id="addFiled-dropdown">Add Field &nbsp;&nbsp;';
+		        result = result + '<span class="caret"></span></button>';
+		        result = result + '<ul id="add-field" class="dropdown-menu pull-right">';
+		        result = result + '<li><a id="add-textarea" data-type="textarea" onclick="scrollToBottom();" href="javascript:void(0)">Text Area</a></li>';
+		        result = result + ' <li><a id="add-checkbox" data-type="checkbox" onclick="scrollToBottom();" href="javascript:void(0)">Check Box</a></li>';
+	            result = result + '</ul>';
+		        result = result + '</div>';
+		        result = result + '</div>';
+		        result = result + '</div>';
+		        
+		        result = result + '<div class="clearfix mb row">';
+	           
+	           result = result + '<div id="form-fields">';
+	           result = result + '</div>';
+	           result = result + '<div class="form-footer clearfix row mt">';
+	           
+	           result = result + '<div class="pull-right mr">';
+	           
+	           result = result +"<input type='button' value='Save' id='save_button'  onclick='createTemplateCheckList(\"save\");' class='btn btn-sm btn-success'>";
+	           result = result +"<input type='button' value='Save and Continue' id='save_continue_button'  onclick='createTemplateCheckList(\"saveAndContinue\");'  class='btn btn-sm btn-primary'>";
+	           
+	           result = result + '</div>';
+
+	           result = result + '</div>';
+	           result = result + '</form>';
+
+	      
+	           result = result + '</section>';
+	           
+	           result = result + '<div id="popUp"></div>'; 
+	           result = result + '<div id="choicepopUp"></div>'; 
+	           
+	           $("#offboardingCheckList").empty();
+	           $("#offboardingCheckList").append(result); 
+	           $("#offboardTasksList").empty();
+	           customizeFields(templateId,sourceleadUrl);
+	           
+	
+}
+</script>
+
+<script type="text/javascript">
+function alertMessage(message){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>"+message+"</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#choicepopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#choicepopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+
+
+<script>
+function createTemplateCheckList(saveType){
+	
+	var validationSettings = {
+	        errorMessagePosition : 'element',
+	       borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+         }; 
+	
+	  if ($('#sjfb').validate(false, validationSettings)){ 
+		   
+	        var frm = $('#sjfb').serializeFormJSON();
+	        var con = JSON.stringify(frm);
+	        con = con.replace(/[{}]/g, "");
+	        var jsonData = encodeURIComponent(con);
+	        var isRemoved = '';
+	        var isLabelModified = 'N';
+	        //Loop through fields and save field data to array
+	        var fields = [];
+	        var submitTemplate = true;
+	        var fieldLabel = '';
+	        var myArray = new Array();
+	        $('.field').each(function() {
+
+	            var $this = $(this);
+
+	            //field type
+	            var fieldType = $this.data('type');
+
+	            //field label
+	            fieldLabel = $this.find('.field-label').val();
+
+	            //field required
+	            var fieldReq = $this.hasClass('required') ? 1 : 0;
+	            
+	            
+	            if(fieldType == 'checkbox' || fieldType == 'radio' ||  fieldType == 'select'){
+	            	if($this.find('.choices li').length == 0) {
+	            		submitTemplate = false;
+	            		alertMessage("Provide choice for "+fieldLabel)
+	            	}
+	            }
+	            
+	           
+	            myArray.push(fieldLabel);
+	            
+	            
+
+	            //check if this field has choices
+	            if($this.find('.choices li').length >= 1) {
+
+	                var choices = [];
+
+	                $this.find('.choices li').each(function() {
+
+	                    var $thisChoice = $(this);
+
+	                    //choice label
+	                    var choiceLabel = $thisChoice.find('.choice-label').val();
+
+	                    //choice selected
+	                    var choiceSel = $thisChoice.hasClass('selected') ? 1 : 0;
+
+	                    if($thisChoice.find('.choice-label').val() != null && $thisChoice.find('.choice-label').val() != '' && $thisChoice.find('.choice-label').val() != 'undefined'){
+		                    choices.push({
+		                        label: choiceLabel,
+		                        sel: choiceSel
+		                    });
+	                    }
+
+	                });
+	            }
+	            
+	            
+	            
+	            /* if(fieldLabel == 'First Name'  || fieldLabel == 'Phone Number'  
+	        		|| fieldLabel == 'Email Id' || fieldLabel == 'DOB' || fieldLabel == 'Current / Last Company' || fieldLabel == 'Designation' 
+	        		|| fieldLabel == 'Education' || fieldLabel == 'Work Experience' || fieldLabel == 'Current CTC' || fieldLabel == 'Expected CTC' 
+	        		|| fieldLabel == 'Notice Period'){
+	        	
+	            	isRemoved = 'N';
+	            }else{
+	            	isRemoved = 'Y';
+	            } */
+	            
+	            isRemoved = 'Y';
+	            
+	            fields.push({
+	                type: fieldType,
+	                label: fieldLabel,
+	                req: fieldReq,
+	                choices: choices,
+	                isRemoved : isRemoved,
+	                isLabelModified : isLabelModified
+	            });
+
+	        });
+	        
+	        for (var i = 0; i < myArray.length; i++) 
+	        {
+	            for (var j = 0; j < myArray.length; j++) 
+	            {
+	                if (i != j) 
+	                {
+	                    if (myArray[i].toLowerCase() == myArray[j].toLowerCase()) 
+	                    {
+	                    	submitTemplate = false;
+	                    	alertMessage(myArray[i]+" label duplicated")
+	                    }
+	                }
+	            }
+	        }
+	        
+	        
+	        var sourceleadUrl ='${sourceleadUrl}';
+	        //Save form to database
+	        //Demo doesn't actually save. Download project files for save
+	        var con2 = JSON.stringify(fields);
+	        var jsonStringData = encodeURIComponent(con2);
+	        
+	        if(submitTemplate){
+	        	 $("#offboardcheckListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	        	  $.ajax({
+	      	    	type: "POST",
+	      	        url: sourceleadUrl+"/saveOffboardTemplateCheckList?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
+	      	        success: function(result) {
+	      	        	if((result == 'home')){
+	      	        		
+	      	        		 if(saveType == 'saveAndContinue'){
+	      		        		var $tabs = $('.tabbable li');
+	      		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
+	      		     	        document.getElementById("templateTasks").disabled = false;
+	      		     	        getOffboardingTasksList();
+	      		        	}else{
+	      		        		getOffboardingCheckList();
+	      		        	}
+	      		        } 
+	      	        	
+	      	        	 $("#offboardcheckListLoading").removeAttr("style");
+	      	        },
+	      	    });  
+	              return true;
+	        }else{
+	        	alertMessage("Provide choice for "+fieldLabel)
+	        }
+		
+	  }else{
+		return false;
+	  }
+}
+
+$('body').on('blur', '#sjfb', function() {
+    $("#sjfb").showHelpOnFocus();
+    $("#sjfb").validateOnBlur(false, validationSettings);  
+});
+</script> 
+
+
+
 
   
   
@@ -1274,5 +1544,31 @@ $('#nexttab').on('click', function() {
     });
 
     </script>
+    
 
   <jsp:include page="../masterFooter.jsp" />
+  <div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div>  
+  
+  
+<script>
+function scrollToBottom(){
+	var documentHeight = document.documentElement.offsetHeight;
+	var viewportHeight = window.innerHeight;
+	window.scrollTo(0,documentHeight-viewportHeight);
+}
+</script>
+  
+  <script>
+// Back To Top 
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 200) {
+            $('.backtotop').fadeIn('slow');
+        } else {
+            $('.backtotop').fadeOut('slow');
+        }
+    });
+    $('.backtotop').click(function() {
+        $("html, body").animate({scrollTop: 0}, 500);
+        return false;
+    });
+</script>

@@ -27,19 +27,23 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.OffboardCheckListDao;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OffBoardingDocuments;
 import com.bis.sourcelead.entity.OffBoardingTemplate;
+import com.bis.sourcelead.entity.OffboardCheckList;
 import com.bis.sourcelead.entity.OffboardTasks;
 import com.bis.sourcelead.entity.OnBoardingTemplate;
 import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
 import com.bis.sourcelead.entity.OnboardTasks;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OffBoardingDocumentsService;
 import com.bis.sourcelead.service.OffBoardingTemplateService;
+import com.bis.sourcelead.service.OffboardCheckListService;
 import com.bis.sourcelead.service.OffboardTasksService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -75,6 +79,9 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
     
     @Autowired
     OffboardTasksService offboardTasksService;
+    
+    @Autowired
+    OffboardCheckListService offboardCheckListService;
      
     protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -552,6 +559,58 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 				return "success";
 			   
 			}
+			
+			
+			@RequestMapping(value = "/loadOffboardCheckListByTemplateId" , method = RequestMethod.GET)
+			   public String loadOffboardCheckListByTemplateId(@RequestParam(value="templateId", required=false) Long templateId) throws Exception {
+					
+				    OffboardCheckList checkList = offboardCheckListService.getOffboardCheckListByTemplateId(templateId);
+				    
+					return checkList.getCheckListJsonString();
+			    
+			   }
+			
+			
+			
+		@RequestMapping(value = "/saveOffboardTemplateCheckList" , method = RequestMethod.POST)
+		   public String saveOffboardTemplateCheckList(@RequestParam(value="jsonData", required=false) String json,
+				   @RequestParam(value="jsonStringData", required=false) String jsonStringData,
+				   HttpServletRequest request) throws Exception {
+				
+			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
+			    
+			    String json1 = "{" + json + "}";
+				JSONObject jsonObj = new JSONObject(json1);
+				
+				
+			   try {
+				   OffboardCheckList offboardCheckList = null;
+				   OffBoardingTemplate template = null;
+				   if(jsonObj.has("checkListTemplateId") && !isNullOrEmpty(jsonObj.getString("checkListTemplateId"))){
+					   offboardCheckList = offboardCheckListService.getOffboardCheckListByTemplateId(Long.valueOf(jsonObj.getString("checkListTemplateId")));
+					   if(offboardCheckList == null){
+						   offboardCheckList = new OffboardCheckList();
+					   }
+					   
+					   template = new OffBoardingTemplate();
+					   template.setId(Long.valueOf(jsonObj.getString("checkListTemplateId")));
+					   offboardCheckList.setOffboardingTemplateId(template);
+					   offboardCheckList.setCheckListJsonString(jsonStringData);
+					   offboardCheckList.setStatus(Constants.CANDIDATE_ACTIVE);
+					   offboardCheckList.setCreatedBy(user.getUserCode());
+					   offboardCheckList.setCreatedDate(new Date());
+					   offboardCheckList.setUpdatedBy(user.getUserCode());
+					   offboardCheckList.setUpdatedDate(new Date());
+					   offboardCheckListService.saveOffboardCheckList(offboardCheckList);
+					}
+					
+				} catch (Exception e) {
+					logger.error(ExceptionUtils.getFullStackTrace(e)); 
+				}
+				   return "home";
+		    
+		   }
 		
 
 }
