@@ -195,7 +195,7 @@
       
       
 <div class="row newContrBill">
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm" id="billingDiv">
            <h2>Billing Details</h2>
            
            <div class="form-group" id="hoursPerWeekDiv" style="display: none;">
@@ -272,20 +272,6 @@
                         </div>
                       </div>
                     </div>
-             <!--  <div class="col-md-8">
-					<div class="row">
-					  <div class="col-lg-8">
-					  	<input type="text" class="form-control" id="billingAmount" name="billingAmount" value="" placeholder="Enter Amount" data-validation="required validate_Space validate_float validate_length length1-50" field-name="Billing Amount">
-					  </div>
-					  <div class="col-lg-4">
-						<select class="form-control selectpicker" id="billingPer" name="billingPer">
-						  <option>India</option>
-						  <option>USA</option>
-						  <option>UK</option>
-						</select>
-					  </div>
-					</div>
-              </div> -->
             </div>
             <div class="form-group">
               <label class="col-md-4">invoice frequency<span class="text-danger">&nbsp;*</span></label>
@@ -313,12 +299,6 @@
                   </select>
               </div>
             </div>
-           <!--  <div class="form-group">
-              <label class="col-md-4">Payment frequency<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
-              	<input type="text" class="form-control" name="Company Name" value="">
-            </div>
-            </div> -->
             
             <div class="form-group">
               <!-- <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label> -->
@@ -356,26 +336,8 @@
                       </div>
                     </div>
             </div>
-          <!--   <div class="form-group">
-              <label class="col-md-4">Tax</label>
-              <div class="col-md-8">
-					<div class="row">
-					  <div class="col-lg-4" id = "taxTypeDiv">
-						<select class="form-control selectpicker" id="taxType"  name="taxType" onchange = "selectTaxType();clearSearchKey();">
-						 <option value="Percentage">%</option>
-						  <option value="INR">INR</option>
-						  
-						</select>
-					  </div>					
-					  <div class="col-lg-8" id = "taxDiv">
-					  	<input type="text" class="form-control" id="tax" name="tax" value="" onchange = "selectTaxType();">
-					  </div>
-					  <span class="hidden">Enter Project Id</span>
-					</div>
-              </div>
-		</div>  -->     
-            
         </div>
+        <!-- billing end -->
       </div>      
       
       <div class="form-footer clearfix contrFoot">
@@ -608,21 +570,25 @@ function getContractTemplates(){
 		
 		$("#vendorContact option:selected").removeAttr("selected");
 		$('#vendorContact').trigger("chosen:updated");
+		document.getElementById("billingDiv").style.display="block";
 		document.getElementById("vendorContactDiv").style.display="none";
 	}
  	if(contractType == "Client MSA"){
+ 		document.getElementById("billingDiv").style.display="block";
 		document.getElementById("clientDiv").style.display="block";
 		document.getElementById("clientContactDiv").style.display="block";
 		document.getElementById("vendorDiv").style.display="none";
 		document.getElementById("vendorContactDiv").style.display="none";
 	}
 	if(contractType == "Vendor MSA"){
+		document.getElementById("billingDiv").style.display="block";
 		document.getElementById("clientDiv").style.display="none";
 		document.getElementById("clientContactDiv").style.display="none";
 		document.getElementById("vendorDiv").style.display="block";
 		document.getElementById("vendorContactDiv").style.display="block";
 	}
 	if(contractType == "Client SOW"){
+		document.getElementById("billingDiv").style.display="block";
 		document.getElementById("clientDiv").style.display="block";
 		document.getElementById("clientContactDiv").style.display="block";
 		document.getElementById("vendorDiv").style.display="none";
@@ -631,8 +597,16 @@ function getContractTemplates(){
 	if(contractType == "Vendor SOW"){
 		document.getElementById("clientDiv").style.display="none";
 		document.getElementById("clientContactDiv").style.display="none";
+		document.getElementById("billingDiv").style.display="block";
 		document.getElementById("vendorDiv").style.display="block";
 		document.getElementById("vendorContactDiv").style.display="block";
+	}
+	if(contractType == "NDA" || contractType == "NCA"){
+		document.getElementById("clientDiv").style.display="none";
+		document.getElementById("clientContactDiv").style.display="none";
+		document.getElementById("vendorDiv").style.display="none";
+		document.getElementById("vendorContactDiv").style.display="none";
+		document.getElementById("billingDiv").style.display="none";
 	}
 		 
  	var sourceleadUrl ='${sourceleadUrl}';
