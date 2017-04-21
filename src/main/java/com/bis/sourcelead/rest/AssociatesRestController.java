@@ -1,34 +1,17 @@
 package com.bis.sourcelead.rest;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Writer;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,29 +19,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.OrgSpoc;
-import com.bis.sourcelead.entity.Requirement;
-import com.bis.sourcelead.entity.RequirementInterview;
-import com.bis.sourcelead.entity.RequirementInterviewHistory;
-import com.bis.sourcelead.entity.RequirementInterviewer;
-import com.bis.sourcelead.entity.RequirementOfferHistory;
-import com.bis.sourcelead.entity.RequirementOffers;
-import com.bis.sourcelead.entity.RequirementSubmission;
-import com.bis.sourcelead.entity.RequirementSubmissionHistory;
-import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateEducationService;
+import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -74,9 +46,7 @@ import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.PrimarySkillUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.SourceleadResumeParser;
 import com.thoughtworks.xstream.XStream;
@@ -155,6 +125,9 @@ public class AssociatesRestController {
     
     @Autowired
     CandidateEducationService candidateEducationService;
+    
+    @Autowired
+    CandidateEmployersService candidateEmployersService;
     
     @Autowired
     LookUpDataService lookUpDataService;
@@ -263,7 +236,7 @@ public class AssociatesRestController {
 				}
 				
 			}
-			/*List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
+		/*	List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
 			LinkedHashSet<String> totSkils = new LinkedHashSet<String>();
 			if(!educationList.contains(null)){
 				totSkils.addAll(skillsList);
@@ -273,6 +246,14 @@ public class AssociatesRestController {
 				candidate.setAllAndCandidateEducation((LinkedHashSet<String>) skillsList);
 			}*/
 			
+			List<CandidateEmployers>   employeeList= candidateEmployersService.getCandidatesEmployersListByCandidateIdAndOrgLocationID(candidateId, orgLocations.getId());
+			if(null != employeeList && employeeList.size() > 0){
+				StringBuilder employees = new StringBuilder();
+				for(CandidateEmployers employe : employeeList){
+					candidate.setEmployeList(employees.append(employe.getName()).append(",").toString());
+				}
+				candidate.setEmployeList(candidate.getEmployeList().substring(0, candidate.getEmployeList().length()-1));
+			}
 			
 			StringBuilder education = new StringBuilder();
 			if (educationList != null && educationList.size() > 0) {

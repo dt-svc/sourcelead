@@ -482,15 +482,17 @@ function prepareRequirementData(data){
 	        
 	        '</sec:authorize>';
 	        
+	        '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
 		if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
 	        	if(opt.isRequirementReleasedByuser == 'Y'){
 		   		 	result = result +"<div class='pull-left'><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn success'></i></a></div>"; 
 			   	 }else{	
 			   	 	result = result +"<div class='pull-left'><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn'></i></a></div>";
 			   	 }
-        }else{
+        }
+		else{
            result = result +"<div>--</div>";
-       }        
+       }    '</sec:authorize>';    
 		result = result +"</td>";
         result = result +"</tr>";
         result = result +"</tr>";
