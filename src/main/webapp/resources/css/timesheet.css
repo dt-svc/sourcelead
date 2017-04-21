@@ -4098,3 +4098,7 @@ position: relative; padding: 0px 0px 5px 0px;
 .deleDocu i {
 	display: inline-block; padding: 0px 5px 0px 0px;
 }
+
+.nomr{
+	margin: 0px auto !important;
+}

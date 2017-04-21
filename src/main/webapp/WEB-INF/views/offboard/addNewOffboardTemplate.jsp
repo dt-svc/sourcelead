@@ -116,7 +116,7 @@
              <!-- Check List -->
             <div class="tab-pane" id="offboardCheckList">
               <div class="form-horizontal assignTemplate">
-                <h4 class="clearfix">CheckList</h4>
+                <h4 class="clearfix">Check List</h4>
                  <div id="offboardingCheckList"></div>
               </div>
             </div>
@@ -1139,10 +1139,10 @@ function getOffboardingCheckList(){
 	           result = result + '<input type="hidden" id="checkListTemplateId" name="checkListTemplateId"  value="'+templateId+'">';
 	           
 		    	
-		    	result = result + '<div class="clearfix mb row">';
+		    	result = result + '<div class="clearfix mb mt">';
 		    	
 		    	result = result + '<div class="col-md-10">';
-		    	result = result + '<h2>Add Check List</h2>';
+		    	result = result + '<p>Add Check List</p>';
 		    	result = result + '</div>';
 		    	
 		    	result = result + '<div class="col-md-2">';
