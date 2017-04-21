@@ -22,9 +22,9 @@ function candidateCertificate(candidateId){
 	 
 	var result = "";
 	if(window.candidateStatusGlobal == '0'){
-		result  = result + '   <div class="project_tabs_inn_head addUser-org overflow_inherint mt25"> ';
+		result  = result + '   <div class="project_tabs_inn_head addUser-org mt25"> ';
 	}else{
-		result  = result + '   <div class="project_tabs_inn_head addUser-org overflow_inherint mt10"> ';
+		result  = result + '   <div class="project_tabs_inn_head addUser-org mt10"> ';
 	}
 	result  = result + '<div class="success_pop" id="selector5" style="display: none;">';
     result  = result + '<i class="fa fa-check-circle"></i><span id="cerMsgDiv"></span>';
@@ -134,7 +134,6 @@ function storeCertificate(candidateId){
 			            			$("#cerMsgDiv").html("Success!! New Certification added");
 				               		candidateCertificateList(candidateId);
 				               		cerMsgFadein();
-				               		candidateQuickViewProfile(candidateId);
 							    	}
 							   }
 						},

@@ -93,6 +93,21 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
+	public RequirementSubmission getClientRequierementSubmission(Long submissionId) throws Exception{
+		Session session = this.sessionFactory.getCurrentSession();	
+		String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes   where rs.sourceSubmission.id = :submissionId";
+		List<RequirementSubmission>  submission = session.createQuery(query).setLong( "submissionId", submissionId).setCacheable(true).list();
+		logger.info("RequirementSubmission loaded successfully !!!");
+		if (submission.size() > 0) {
+			return submission.get(0);
+		} else {
+			return null;
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole) throws Exception {
 		 Session session = this.sessionFactory.getCurrentSession();
 		 String subQuery = "";

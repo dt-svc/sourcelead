@@ -266,7 +266,7 @@ public class RequirementSubmission implements Serializable{
 	private String proposedSubmissionRate;
 	
 	@Transient
-	private String ExpectedRate;
+	private String expectedRate;
 	
 	@Transient
 	private String clientSubmissionId;
@@ -364,6 +364,17 @@ public class RequirementSubmission implements Serializable{
     @Transient
    	private String onboardStatus;
     
+    @Transient
+	private String lastRateStage;
+    
+    @Transient
+	private String lastRateIniUserCode;
+    
+    @Transient
+	private String lastRateIniLocId;
+    
+    @Transient
+	private String lastRateIniType;
 	
 	
 	public OrgLocations getVendorLocationId() {
@@ -839,13 +850,45 @@ public class RequirementSubmission implements Serializable{
 	public void setProposedSubmissionRate(String proposedSubmissionRate) {
 		this.proposedSubmissionRate = proposedSubmissionRate;
 	}
-
+	
 	public String getExpectedRate() {
-		return ExpectedRate;
+		return expectedRate;
 	}
 
 	public void setExpectedRate(String expectedRate) {
-		ExpectedRate = expectedRate;
+		this.expectedRate = expectedRate;
+	}
+
+	public String getLastRateStage() {
+		return lastRateStage;
+	}
+
+	public void setLastRateStage(String lastRateStage) {
+		this.lastRateStage = lastRateStage;
+	}
+
+	public String getLastRateIniUserCode() {
+		return lastRateIniUserCode;
+	}
+
+	public void setLastRateIniUserCode(String lastRateIniUserCode) {
+		this.lastRateIniUserCode = lastRateIniUserCode;
+	}
+
+	public String getLastRateIniLocId() {
+		return lastRateIniLocId;
+	}
+
+	public void setLastRateIniLocId(String lastRateIniLocId) {
+		this.lastRateIniLocId = lastRateIniLocId;
+	}
+
+	public String getLastRateIniType() {
+		return lastRateIniType;
+	}
+
+	public void setLastRateIniType(String lastRateIniType) {
+		this.lastRateIniType = lastRateIniType;
 	}
 
 	public String getClientSubmissionId() {

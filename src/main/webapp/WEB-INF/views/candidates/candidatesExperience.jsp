@@ -42,6 +42,9 @@
 		$("#tab-4").empty();
 		$("#tab-5").empty();
 		$("#tab-6").empty();
+		$("#tab-7").empty();
+		$("#tab-8").empty();
+		$("#tab-9").empty();
 		$("#tab-3").append(result);
 
 		candidateEmployersList(candidateId);
@@ -110,7 +113,6 @@ function closeCertificatePopup(){
 			            			$("#empMsgDiv").html("Success!! New Employer added");
 									candidateEmployersList(candidateId);
 									empMsgFadein();
-									candidateQuickViewProfile(candidateId);
 								}
 							}
 
