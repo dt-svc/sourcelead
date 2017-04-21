@@ -145,4 +145,6 @@ public interface RequirementService {
 	public List<String> getAllRequirementEducationByRequirementId(Long requirementId);
 	
 	Requirement getRequirementDetailsById(Long requirementId) throws Exception;
+	
+	public List<Requirement> getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(Long orgLocationId, String userType, Long userId, String userCode, String numberOfDays) throws Exception;
 }
