@@ -94,7 +94,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 	private UniversalSearchHelper universalSearchHelper;
 	
 	@Override
-	public List<Object> univesalSearch(OrgLocations orgLocation, String searchType, String searchValue, Org org,String userRole, User user) throws Exception {
+	public List<Object> univesalSearch(OrgLocations orgLocation, String searchType, String searchValue, Org org,String userRole, User user,String isAssociate) throws Exception {
 
 		List<Object>   searchList = new ArrayList<>();
 		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
@@ -356,7 +356,11 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 		/// ELK list for the Candidate
 		if(searchType !=null && !"".equalsIgnoreCase(searchType)&&Constants.CANDIDATE.equalsIgnoreCase(searchType))
 		{
-			 Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocation.getId(),null);
+			
+			
+			// Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocation.getId(),null);\
+			
+			 Long maxResults = candidateService.getCandidatesCountByOrgLocationIDAndStatus(orgLocation.getId(),null,isAssociate);
 				//Any Keywords
 			 ArrayList<String> anyKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
 				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
@@ -374,6 +378,10 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 					 boolQueryBuilder.must(anyBoolQueryBuilder);
 				}
 		
+				
+				if(null != isAssociate && isAssociate.equalsIgnoreCase(Constants.YES)){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", isAssociate));
+				}
 				
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));

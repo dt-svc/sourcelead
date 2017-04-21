@@ -260,7 +260,7 @@ function candidateQuickViewProfile(candidateId){
 								    	result = result +'  <p><small>'+endYear+'</small>';
 								    }
 // 									result = result +'  <p><small>'+startMonth +''+startYear +' '+endMonth +''+endYear+'</small>';
-									result = result +'  <small class="pull-right address">'+address+'</small></p>';
+									result = result +'  <small class="pull-right address" title="'+address+'">'+address+'</small></p>';
 									result = result +'  <h4>'+designation+'</h4>';
 									result = result +'  <h5>'+name+'</h5>';
 									result = result +'</div>';
