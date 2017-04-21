@@ -5,8 +5,13 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.mail.internet.InternetAddress;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +21,9 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -220,14 +228,22 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setContactUser(vendorContactsUser);
 		}
 		
-		if(jsonObj.has("endDate") && null != jsonObj.getString("billingAmount") && !"".equals(jsonObj.getString("billingAmount")) ){
-			contracts.setBillingAmount(jsonObj.getString("billingAmount"));
-			vendorContracts.setBillingAmount(jsonObj.getString("billingAmount"));
+		if(jsonObj.has("percentageReward") && null != jsonObj.getString("percentageReward") && !"".equals(jsonObj.getString("percentageReward")) ){
+			contracts.setBillingAmount(jsonObj.getString("percentageReward"));
+			vendorContracts.setBillingAmount(jsonObj.getString("percentageReward"));
+				contracts.setBillingPer("Percentage");
+				vendorContracts.setBillingPer("Percentage");
 		}
-		if(jsonObj.has("billingPer") && null != jsonObj.getString("billingPer") && !"".equals(jsonObj.getString("billingPer")) ){
-			contracts.setBillingPer(jsonObj.getString("billingPer"));
-			vendorContracts.setBillingPer(jsonObj.getString("billingPer"));
+		if(jsonObj.has("flatReward") && null != jsonObj.getString("flatReward") && !"".equals(jsonObj.getString("flatReward")) ){
+			contracts.setBillingAmount(jsonObj.getString("flatReward"));
+			vendorContracts.setBillingAmount(jsonObj.getString("flatReward"));
+			
+			if(jsonObj.has("flatRateType") && null != jsonObj.getString("flatRateType") && !"".equals(jsonObj.getString("flatRateType")) ){
+				contracts.setBillingPer(jsonObj.getString("flatRateType"));
+				vendorContracts.setBillingPer(jsonObj.getString("flatRateType"));
+			}
 		}
+		
 		contracts.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
 		vendorContracts.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
 		
@@ -235,14 +251,22 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setPaymentTerm(jsonObj.getString("paymentFrequency"));
 			vendorContracts.setPaymentTerm(jsonObj.getString("paymentFrequency"));
 		}
-		if(jsonObj.has("tax") && null != jsonObj.getString("tax") && !"".equals(jsonObj.getString("tax")) ){
-			contracts.setTax(jsonObj.getString("tax"));
-			vendorContracts.setTax(jsonObj.getString("tax"));
+		
+		if(jsonObj.has("taxPercentageReward") && null != jsonObj.getString("taxPercentageReward") && !"".equals(jsonObj.getString("taxPercentageReward")) ){
+			contracts.setTax(jsonObj.getString("taxPercentageReward"));
+			vendorContracts.setTax(jsonObj.getString("taxPercentageReward"));
+			contracts.setTaxType("Percentage");
+			vendorContracts.setTaxType("Percentage");
 		}
-		if(jsonObj.has("taxType") && null != jsonObj.getString("taxType") && !"".equals(jsonObj.getString("taxType")) ){
-			contracts.setTaxType(jsonObj.getString("taxType"));
-			vendorContracts.setTaxType(jsonObj.getString("taxType"));
+		if(jsonObj.has("taxFlatReward") && null != jsonObj.getString("taxFlatReward") && !"".equals(jsonObj.getString("taxFlatReward")) ){
+			contracts.setTax(jsonObj.getString("taxFlatReward"));
+			vendorContracts.setTax(jsonObj.getString("taxFlatReward"));
+			contracts.setTaxType(jsonObj.getString("taxFlatRateType"));
+			vendorContracts.setTaxType(jsonObj.getString("taxFlatRateType"));
 		}
+		
+		
+		
 		if(jsonObj.has("description") && null != jsonObj.getString("description") && !"".equals(jsonObj.getString("description"))){
 			contracts.setDescription(jsonObj.getString("description"));
 			vendorContracts.setDescription(jsonObj.getString("description"));
@@ -256,6 +280,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		vendorContracts.setStatus("0");
 		if(null != approverUser){
 			contracts.setTemplateSubmissionStatus("WAITING_FOR_APPROVER");
+			sendMailToContractApprover(user,approverUser,contracts);
 		}else{
 			contracts.setTemplateSubmissionStatus(saveType);
 		}
@@ -311,6 +336,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		
 		
 	}
+
+	
 
 	@Override
 	public Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType) throws Exception
@@ -467,6 +494,126 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		
 		return upadatedContracts;
+	}
+	
+	private void sendMailToContractApprover(User loginUser, User approverUser, Contracts contracts)
+	{
+		
+		/*EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(loginUser.getFirstName());
+		 emailMessage.setLastName(loginUser.getLastName());
+		 emailMessage.setToEmail(approverUser.getEmail());
+		 emailMessage.setFromEmail(loginUser.getEmail());
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
+		 StringBuilder msgBuild = new StringBuilder();
+		 emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 
+		 if(requirement.getJobTitle()!= null && !"".equalsIgnoreCase(requirement.getJobTitle())){
+			 globalVarsMap.put("requirementName", requirement.getJobTitle());
+			 }else{
+				 globalVarsMap.put("requirementName","--");
+			 }
+		 if(location!= null){
+			 globalVarsMap.put("requirementLocation", location.toString());
+			 }else{
+				 globalVarsMap.put("requirementLocation","--");
+			 }
+		 if(requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate())){
+			 globalVarsMap.put("requirementRate", requirement.getRate());
+			 }else{
+				 globalVarsMap.put("requirementRate","--");
+			 }
+		if(requirement.getClientId()!=null){
+			OrgRelations orgRelations = orgRelationsService.getRespondingPartyDetailsById(requirement.getClientId().getId());
+			if(orgRelations != null){
+				globalVarsMap.put("client", orgRelations.getResponderLocationId().getOrg().getOrgName());
+			}
+		}else{
+			globalVarsMap.put("client","--");
+		 }
+		if(approverUser.getFirstName()!= null && !"".equalsIgnoreCase(approverUser.getFirstName())){
+			globalVarsMap.put("approverName", approverUser.getFirstName());
+		}else{
+			globalVarsMap.put("approverName","--");
+		}
+		if(emailMessage.getLastName()!=null && !"".equalsIgnoreCase(emailMessage.getLastName())){
+			globalVarsMap.put("lastName",emailMessage.getLastName());	
+		}else{
+			globalVarsMap.put("lastName","--");
+		}
+		if(loginUser.getFirstName()!=null && !"".equalsIgnoreCase(loginUser.getFirstName())){
+			globalVarsMap.put("jobInitiatorName", loginUser.getFirstName());
+			}else{
+			globalVarsMap.put("jobInitiatorName","--");
+		}
+		 
+		if(approverUser.getEmail()!=null && !"".equalsIgnoreCase(approverUser.getEmail())){
+			globalVarsMap.put("userEmailId",approverUser.getEmail());
+			}else{
+				globalVarsMap.put("userEmailId","--");
+		}
+	
+	     StringBuilder linkBuild = new StringBuilder();
+		 globalVarsMap.put("link",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		
+		 if(loginUser.getFirstName() != null && loginUser.getLastName()!=null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())){
+			 StringBuilder userBuild = new StringBuilder();
+			 globalVarsMap.put("loginUserName",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 }else{
+				 globalVarsMap.put("loginUserName",loginUser.getFirstName());
+			}
+		 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
+			 globalVarsMap.put("role",loginOrgLocation.getOrg().getOrgName() );
+			 } else {
+				 globalVarsMap.put("role", "--");
+			}
+		 
+		 if(requirement.getFileName() != null && !requirement.getFileName().isEmpty() ){
+			 StringBuilder attachmentBuild = new StringBuilder();
+	            globalVarsMap.put("attachment",attachmentBuild.append("<a href='").append(sourceleadUrl).append("/").append("downloadRequirementAttachment?requirementId=").append(requirement.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment<br/></div></a>").toString());
+         }else{
+        	 StringBuilder attachmentBuild = new StringBuilder();
+            globalVarsMap.put(" ",attachmentBuild.append("<a href='").append(sourceleadUrl).append("/").append("downloadRequirementAttachment?requirementId=").append(requirement.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment<br/></div></a>").toString());
+         }
+		 
+		 //setting the Recipient information
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 EmailRecipient emailRecipient = new EmailRecipient();
+		 emailRecipient.setEmail(emailMessage.getToEmail());
+		 StringBuilder recipBuild = new StringBuilder();
+		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
+		 emailRecipientList.add(emailRecipient);
+		
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
+		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		 String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		 notificationScenario.setBody(notificationbody);
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 StringBuilder actionLinkStringBuilder = new StringBuilder();
+		 String actionLink= actionLinkStringBuilder.append(sourceleadUrl).append("/requirementSummary?requirementUUID=").append(requirement.getRequirementUUID()).toString();
+//		 String actionLink= sourceleadUrl"/requirementSummary?requirementUUID="+requirement.getRequirementUUID()+"";
+		//calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, loginOrgLocation, notificationScenario);
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());*/
+		
 	}
 	
 }
