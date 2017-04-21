@@ -5,8 +5,13 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.mail.internet.InternetAddress;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +21,9 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -272,6 +280,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		vendorContracts.setStatus("0");
 		if(null != approverUser){
 			contracts.setTemplateSubmissionStatus("WAITING_FOR_APPROVER");
+			sendMailToContractApprover(user,approverUser,contracts);
 		}else{
 			contracts.setTemplateSubmissionStatus(saveType);
 		}
@@ -327,6 +336,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		
 		
 	}
+
+	
 
 	@Override
 	public Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType) throws Exception
@@ -483,6 +494,126 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		
 		return upadatedContracts;
+	}
+	
+	private void sendMailToContractApprover(User loginUser, User approverUser, Contracts contracts)
+	{
+		
+		/*EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(loginUser.getFirstName());
+		 emailMessage.setLastName(loginUser.getLastName());
+		 emailMessage.setToEmail(approverUser.getEmail());
+		 emailMessage.setFromEmail(loginUser.getEmail());
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
+		 StringBuilder msgBuild = new StringBuilder();
+		 emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 
+		 if(requirement.getJobTitle()!= null && !"".equalsIgnoreCase(requirement.getJobTitle())){
+			 globalVarsMap.put("requirementName", requirement.getJobTitle());
+			 }else{
+				 globalVarsMap.put("requirementName","--");
+			 }
+		 if(location!= null){
+			 globalVarsMap.put("requirementLocation", location.toString());
+			 }else{
+				 globalVarsMap.put("requirementLocation","--");
+			 }
+		 if(requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate())){
+			 globalVarsMap.put("requirementRate", requirement.getRate());
+			 }else{
+				 globalVarsMap.put("requirementRate","--");
+			 }
+		if(requirement.getClientId()!=null){
+			OrgRelations orgRelations = orgRelationsService.getRespondingPartyDetailsById(requirement.getClientId().getId());
+			if(orgRelations != null){
+				globalVarsMap.put("client", orgRelations.getResponderLocationId().getOrg().getOrgName());
+			}
+		}else{
+			globalVarsMap.put("client","--");
+		 }
+		if(approverUser.getFirstName()!= null && !"".equalsIgnoreCase(approverUser.getFirstName())){
+			globalVarsMap.put("approverName", approverUser.getFirstName());
+		}else{
+			globalVarsMap.put("approverName","--");
+		}
+		if(emailMessage.getLastName()!=null && !"".equalsIgnoreCase(emailMessage.getLastName())){
+			globalVarsMap.put("lastName",emailMessage.getLastName());	
+		}else{
+			globalVarsMap.put("lastName","--");
+		}
+		if(loginUser.getFirstName()!=null && !"".equalsIgnoreCase(loginUser.getFirstName())){
+			globalVarsMap.put("jobInitiatorName", loginUser.getFirstName());
+			}else{
+			globalVarsMap.put("jobInitiatorName","--");
+		}
+		 
+		if(approverUser.getEmail()!=null && !"".equalsIgnoreCase(approverUser.getEmail())){
+			globalVarsMap.put("userEmailId",approverUser.getEmail());
+			}else{
+				globalVarsMap.put("userEmailId","--");
+		}
+	
+	     StringBuilder linkBuild = new StringBuilder();
+		 globalVarsMap.put("link",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		
+		 if(loginUser.getFirstName() != null && loginUser.getLastName()!=null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())){
+			 StringBuilder userBuild = new StringBuilder();
+			 globalVarsMap.put("loginUserName",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 }else{
+				 globalVarsMap.put("loginUserName",loginUser.getFirstName());
+			}
+		 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
+			 globalVarsMap.put("role",loginOrgLocation.getOrg().getOrgName() );
+			 } else {
+				 globalVarsMap.put("role", "--");
+			}
+		 
+		 if(requirement.getFileName() != null && !requirement.getFileName().isEmpty() ){
+			 StringBuilder attachmentBuild = new StringBuilder();
+	            globalVarsMap.put("attachment",attachmentBuild.append("<a href='").append(sourceleadUrl).append("/").append("downloadRequirementAttachment?requirementId=").append(requirement.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment<br/></div></a>").toString());
+         }else{
+        	 StringBuilder attachmentBuild = new StringBuilder();
+            globalVarsMap.put(" ",attachmentBuild.append("<a href='").append(sourceleadUrl).append("/").append("downloadRequirementAttachment?requirementId=").append(requirement.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment<br/></div></a>").toString());
+         }
+		 
+		 //setting the Recipient information
+		 ArrayList<EmailRecipient> emailRecipientList = new ArrayList<EmailRecipient>();
+		 EmailRecipient emailRecipient = new EmailRecipient();
+		 emailRecipient.setEmail(emailMessage.getToEmail());
+		 StringBuilder recipBuild = new StringBuilder();
+		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
+		 emailRecipientList.add(emailRecipient);
+		
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
+		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		 String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		 notificationScenario.setBody(notificationbody);
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 StringBuilder actionLinkStringBuilder = new StringBuilder();
+		 String actionLink= actionLinkStringBuilder.append(sourceleadUrl).append("/requirementSummary?requirementUUID=").append(requirement.getRequirementUUID()).toString();
+//		 String actionLink= sourceleadUrl"/requirementSummary?requirementUUID="+requirement.getRequirementUUID()+"";
+		//calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, loginOrgLocation, notificationScenario);
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());*/
+		
 	}
 	
 }
