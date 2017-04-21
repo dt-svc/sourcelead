@@ -2272,6 +2272,8 @@ var contactimporter = (function () {
                     grabAPI = endpoint + "?type=profile&service=" + serv + "&consumerkey=" + consumerkey + "&consumersecret=" + consumerSecret + "&product=" + getFromStore("product") + "&callback=socialinviter.socialconnect.userinfoCallback" + reqParam;
                 }
                 else if (product == "socialpost") {
+                	socialinviter.modalSI.load({ "title": convertName(serv), "body": "<div class='CI-loading'><span class='messagingicon'><img class='imgloading' src='//socialinviter.com/assets/img/icons/loadingwhite.gif'></span><span>Please Wait For Few Seconds....</span></div>" }, "show");
+                    $(".modal-SI-CI").find(".modal-SI-holder").addClass("modal-SI-small");
                     grabAPI = endpoint + "?type=post&service=" + serv + "&consumerkey=" + consumerkey + "&consumersecret=" + consumerSecret + "&product=" + getFromStore("product") + "&callback=socialinviter.socialpost.postCallback" + reqParam;
                 }
                 else if (product == "friendsinviter") {
