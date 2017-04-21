@@ -622,8 +622,8 @@ $(document).ready(function () {
 			  <c:when test="${val == 'Y'}">
 			   				<div class="ml">
 			   				<!-- here the isClient checkbox name is changes to isClientEdit because, readonly check box is not working and onclick methods are effected (Venkat Kesav) -->
-					            <input type="checkbox" name="isClientEdit" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
-					            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();" disabled="disabled" checked="checked">
+					            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
+					            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();" hidden="true" checked="checked">
 					            <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
 					            &nbsp;&nbsp;
 					            </label>
@@ -842,7 +842,7 @@ $(document).ready(function () {
                   <c:set var="val" value="${requirement.isClientJob}"/>
                   <c:choose> 
 				 	<c:when test="${val == 'Y'}">
-				   		<select class="chosen-select form-control" disabled="disabled" id="clientSubmissionForm" name="clientSubmissionForm" field-name = "Submission Form" data-validation-optional="true" >
+				   		<select class="chosen-select form-control" onchange="false" id="clientSubmissionForm" name="clientSubmissionForm" field-name = "Submission Form" data-validation-optional="true" >
 	                       <c:set var="report" value="${clientSubmissionTemplete}"/>
 				           <option value="${report.id}">${report.templateName}</option>
 						</select>
