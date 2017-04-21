@@ -125,14 +125,14 @@ public class CandidateOnBoardRestController {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		
 		List<OnBoardingTemplate> templatesList = onBoardingTemplateService.getOnBoardingTemplatesList(loginOrgLocation.getId());
-		List<OnBoardingTemplate> onboardintTemplatesList = new ArrayList<OnBoardingTemplate>();
+		List<OnBoardingTemplate> onboardingTemplatesList = new ArrayList<OnBoardingTemplate>();
 		
 		for(OnBoardingTemplate template : templatesList){
 			template.setTemplateCreatedDate(Constants.DMY.format(template.getCreatedDate()));
-			onboardintTemplatesList.add(template);
+			onboardingTemplatesList.add(template);
 		}
 		
-		resultJson = commonUtil.toJSON(onboardintTemplatesList);
+		resultJson = commonUtil.toJSON(onboardingTemplatesList);
 		return resultJson;
 	 }
 	
@@ -258,7 +258,7 @@ public class CandidateOnBoardRestController {
 	
 	
 	@RequestMapping(value = "/saveOnboardingTemplateDocuments", method = RequestMethod.POST)
-	public @ResponseBody String saveOnboardingTemplateDocuments(TimesheetEntriesForm timesheetEntriesForm,@RequestParam(value="json", required=false) String json,
+	public @ResponseBody String saveOnboardingTemplateDocuments(@RequestParam(value="json", required=false) String json,
 			MultipartHttpServletRequest request) throws Exception {
 		
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");

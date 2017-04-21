@@ -376,7 +376,7 @@ document.onkeydown=function(e){
 
 	                     
 	                     <li><a href="<c:url value="/onboardingTemplatesList" />"><i class="fa fa-file-text" aria-hidden="true"></i>On-boarding</a></li>
-	                    <%--  <li><a href="<c:url value="/onboardingTasksList" />"><i class="fa fa-file-text" aria-hidden="true"></i>Task Docs</a></li> --%>
+	                     <li><a href="<c:url value="/offboardingTemplatesList" />"><i class="fa fa-file-text" aria-hidden="true"></i>Off-boarding</a></li>
 
 	              </ul>
 	            </div>

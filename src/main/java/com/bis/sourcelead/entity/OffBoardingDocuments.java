@@ -38,6 +38,12 @@ private static final long serialVersionUID = 1L;
 	@JoinColumn(name = "CANDIDATE_OFF_BOARDING_ID", nullable = false)
 	private CandidateOffBoarding candidateOffBoardingId;
     
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "OFF_BOARDING_TEMPLATE_ID", nullable = false)
+	private OffBoardingTemplate offboardingTemplateId;
+    
+    
     @Column(name = "DOCUMENT_TYPE")
 	private String documentType;
     
@@ -179,5 +185,15 @@ private static final long serialVersionUID = 1L;
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
+
+	public OffBoardingTemplate getOffboardingTemplateId() {
+		return offboardingTemplateId;
+	}
+
+	public void setOffboardingTemplateId(OffBoardingTemplate offboardingTemplateId) {
+		this.offboardingTemplateId = offboardingTemplateId;
+	}
+
+	
 	
 }

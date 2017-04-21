@@ -160,7 +160,7 @@ public class UserServiceImpl implements UserService {
 	   String password = null;
 	   UserRole userRole = null;
 	   boolean isUserActive = false;
-	   user = userDao.findByEmail(jsonObj.getString("email"));
+	   user = userDao.findByUserName(jsonObj.getString("email"));
 	   if(null != user){
 		  isUserActive = userRoleService.isUserActive(user.getId());
 	   }
