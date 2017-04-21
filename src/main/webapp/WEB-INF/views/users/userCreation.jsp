@@ -404,7 +404,7 @@
 			        			 $("#phone").val('');
 			        		}
 		        		}else{
-		        			 $("#FirstName").attr("disabled", false);
+		        			$("#FirstName").attr("disabled", false);
 		        			 $("#FirstName").val('');
 		        			 
 		        			 $("#lastName").attr("disabled", false);
@@ -426,6 +426,20 @@
 		 
 		 $("#phone").attr("disabled", false);
 		 $("#phone").val('');
+		 
+		
+		 $("#role").val('');
+		 $("#role").trigger("chosen:updated");
+		 
+		  
+		 $("#reportingManager").val('');
+		 $("#reportingManager").trigger("chosen:updated");
+		 
+		 $("#employeementType").val('');
+	     $('#employeementType').trigger("chosen:updated");
+		 
+		 
+		 
 	 }
  }
  </script>   
