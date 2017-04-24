@@ -1326,7 +1326,7 @@ function cancel(candidateId){
           <li><b id="addmore"><i class="fa fa-plus"></i>&nbsp;<span>Add</span>&nbsp;<i class="glyphicon glyphicon-play"></i></b>
           	<div id="addmorepop" class="approved_pop">
 	          <ul>
-	          <li><a href="<c:url value='/addAssociate'/>" title="Add Associate"><i class="fa fa-plus"></i>Add Associate</a></li>
+	          <li><a onClick="addCandidate();"  title="Add Associate"><i class="fa fa-plus"></i>Add Associate</a></li>
 	          
 	          <sec:authorize access="hasAnyRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')">
 	              <li><a href="<c:url value='/assignHotListToTeam'/>" title=""><i class="fa fa-plus"></i>Assign To Team</a></li>
@@ -2255,5 +2255,67 @@ function minMaxExperience(){
 </script>
 
 <!-- End  clearCandidateSearchKeys() method for clear search data-->
+
+
+			<div class="addcandidate-popup">
+				  <div class="row">
+                      <div class="col-md-offset-1 col-md-10">
+				       <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()"><i class="fa fa-close"></i></a>
+					       
+					       <div class="col-md-4 mt25">
+	                          <div class="small-widget bg-yellow">
+	                              <a href="<c:url value='/associate?type=associateFromCandidate'/>" title="Create from Candidates">
+	                                  <div class="clearfix mb10">
+	                                      <i class="fa fa-user-circle fa-4x"></i>
+	                                      <span class="fa fa-plus"></span>
+	                                  </div>
+	                                  <strong class="clearfix">Create from Candidates</strong>
+	                                </a>
+	                                
+	                          </div>
+						  </div>
+						  
+						  <div class="col-md-4 mt25">
+	                          <div class="small-widget bgGreen">
+	                               <a href="<c:url value='/associate?type=addAssociate'/>"  title="Add Manually">
+	                                  <div class="clearfix mb10">
+	                                    <i class="fa fa-black-tie fa-4x"></i>
+	                                      <span class="fa fa-plus"></span>
+	                                  </div>
+	                                  <strong class="clearfix">Add Manually</strong>
+	                                </a>
+	                          </div>
+	                      </div>
+                          <div class="col-md-4 mt25">
+                           <div class="small-widget bg-purple">
+                            <a href="<c:url value='/associate?type=importAssociate'/>"  title="Import Associate">
+                                <div class="clearfix mb10">
+                                <i class="fa fa-file-text-o fa-4x"></i>
+                                    <span class="fa fa-arrow-right"></span>
+                                </div>
+                                <strong class="clearfix">Import Associate</strong>
+                                </a>
+                            </div>
+					      </div>
+					      
+                      
+                      </div>
+                          
+				  </div>
+			  </div>
+      <div class="pop_mask"></div>
+      
+      <script>
+    //addcandidate-popup script
+    function addCandidate(){
+        $('.addcandidate-popup').fadeIn(200);
+        $('.pop_mask').fadeIn(200);
+        $('#addmorepop').slideUp(200);
+    };
+       function closeCandidate(){
+        $('.addcandidate-popup').fadeOut(200);
+        $('.pop_mask').fadeOut(200);
+       }
+    </script>
 
 <jsp:include page="../masterFooter.jsp" /> 

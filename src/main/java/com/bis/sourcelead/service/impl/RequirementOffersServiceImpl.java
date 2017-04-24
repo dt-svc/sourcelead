@@ -758,7 +758,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					    requirementOffers.setUpdatedDate(commonUtil.currentDate());
 					    requirementOffersDao.storeRequirementOffers(requirementOffers);
 			     }
+			      if(requirementOffers.getSubmissionId().getCandidate().getOrgLocationId().getId().longValue() != orgLocations.getId().longValue()){
 			      sendOfferAcceptedMail(requirementOffers,loginUser,orgLocations);
+			      }
 	    }else if(offerStatus.equalsIgnoreCase("OFFERREJECTED")){
 	    	for (RequirementOfferHistory requirementOfferHistory : requirementOfferHistories) {
 	    		    RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOfferHistory.getSubmissionId().getId());
@@ -889,12 +891,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(loginUser.getFirstName());
 		 emailMessage.setLastName(loginUser.getLastName());
-		 if(null != requirementOffers.getSubmissionId().getSourceSubmission()){
-			 emailMessage.setToEmail(requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getClientUser().getEmail());
-		 }else{
-			 emailMessage.setToEmail(requirementOffers.getSubmissionId().getRequirement().getSpocId().getClientUser().getEmail());
-		 }
-		 
+		 emailMessage.setToEmail(requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getClientUser().getEmail());
 		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
