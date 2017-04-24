@@ -95,4 +95,6 @@ public interface RequirementDao {
 	public List<String> getAllRequirementEducationByRequirementId(Long requirementId);
 	
 	Requirement getRequirementDetailsById(long parseLong)throws Exception;
+	
+	List<Requirement> getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(Long orgLocationId, String userType, Long userId, String userCode, String numberOfDays) throws Exception;
 }
