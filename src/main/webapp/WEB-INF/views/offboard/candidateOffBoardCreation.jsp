@@ -1112,7 +1112,7 @@ function createTemplateDocs(saveType){
 	    	  if(saveType == 'saveAndContinue'){
 	        		var $tabs = $('.tabbable li');
 	     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
-	     	        document.getElementById("templateTasks").disabled = false;
+	     	        document.getElementById("checkList").disabled = false;
 	     	        getOffboardingCheckList();
 	        	}else{
 	        		getTemplateResignationDocumentsDetails();
