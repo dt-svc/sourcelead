@@ -522,6 +522,7 @@ function pagination(){
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
+    	"aaSorting": [[7,'desc']],
     	"oLanguage": {
             "sSearch": "",
             "sZeroRecords": "", "sEmptyTable": ""

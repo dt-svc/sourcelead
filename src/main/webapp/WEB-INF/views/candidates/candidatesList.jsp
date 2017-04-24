@@ -317,6 +317,11 @@ function cpagination(){
     $('#candidatePagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 0
+			}],
+		"aaSorting": [[7,'desc']],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,

@@ -207,7 +207,7 @@ public class SubmissionsRateRestController {
 		requirementRateSubmissionNegotiation.setInitiatorOrgLocationId(requirementSubmission.getCandidate().getOrgLocationId());
 		requirementRateSubmissionNegotiation.setRateStage(SubmissionRateStatus.NEWRATE);
 		if(jsonObj.has("comment") && jsonObj.getString("comment") != null && "" != jsonObj.getString("comment")){
-			requirementRateSubmissionNegotiation.setRateReason(jsonObj.getString("comment"));
+			requirementRateSubmissionNegotiation.setRateReason(jsonObj.getString("comment").trim());
 		}
 		
 		requirementRateSubmissionNegotiation.setStatus(Constants.RECORD_ACTIVE);
