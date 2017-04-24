@@ -345,7 +345,7 @@
           <div class="pull-right">
             <input type="button" value="Save Draft" id="draft_template" onclick="saveNewContract('draft');" class="btn btn-primary">
             <input type="button" value="Save" id="save_template" onclick="saveNewContract('pending');" class="btn btn-success ml10">
-            <input type="button" value="Cancel" class="btn btn-danger ml10">
+            <input type="button" value="Cancel" class="btn btn-danger ml10" id="cancel_contract" onclick="cancelContract();">
           </div>
         </div>
       </div>
@@ -1089,6 +1089,14 @@ function flush(){
 	
 	$("newcontract_form").validate().resetForm();
 }
+</script>
+
+<script>
+function cancelContract(){
+	var sourceleadUrl = '${sourceleadUrl}';
+	location.replace(sourceleadUrl+"/contractListbyStatus");
+}
+
 </script>
 
 <!-- Footer Area -->
