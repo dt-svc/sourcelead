@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -637,6 +638,11 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, orgLocation, notificationScenario);
 		
+	}
+	
+	@Override
+	public ContractsTemplate findByContractTemplateName(String templateName,Long orgLocationId) throws Exception {
+		return contractsTemplateDao.findByContractTemplateName(templateName, orgLocationId);
 	}
 	
 }
