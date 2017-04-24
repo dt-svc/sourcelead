@@ -70,15 +70,17 @@ public class ClientImportRestController {
 			multipartFile = request.getFile(itrator.next());
 		}
 		
+		String isFileCreated = "";
 		if(multipartFile != null){
-		String isFileCreated = clientImportsService.clientExcelDataSave(multipartFile,user,orgLocation,org,"Y",responderType);
+		isFileCreated = clientImportsService.clientExcelDataSave(multipartFile,user,orgLocation,org,"Y",responderType);
 		}
-		List<BulkClientDetails> bulkClientDetailsList = clientImportsService.getbulkClientDetailsByOrgLocationId(orgLocation,user,org,"Y",responderType);
-		
-		//SourceLeadSessionManager.setSessionAttribute(request, "clientImport", "Success!! New clients created ");
-		
-		return commonUtil.toJSON(bulkClientDetailsList);
-//		return "success";
+		if("empty".equalsIgnoreCase(isFileCreated)){
+			SourceLeadSessionManager.setSessionAttribute(request, "importCreateMsg", "Mandatory fields are required");
+		}else{
+			List<BulkClientDetails> bulkClientDetailsList = clientImportsService.getbulkClientDetailsByOrgLocationId(orgLocation,user,org,"Y",responderType);
+			return commonUtil.toJSON(bulkClientDetailsList);
+		}
+		return "failure";
 	}
 	
 //	/deleteRecordFromBulk

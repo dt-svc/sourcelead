@@ -161,8 +161,7 @@ public class MailBoxRestController {
 	
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/sendEmailToUsers", method = RequestMethod.POST)
-	public String sendEmailToUsers(@RequestParam(value = "json", required = false) String json,
-			MultipartHttpServletRequest request) throws Exception {
+	public String sendEmailToUsers(MultipartHttpServletRequest request) throws Exception {
 		
 		MultipartFile multiFile = null;
 		Iterator<String> itrator = request.getFileNames();
@@ -170,8 +169,8 @@ public class MailBoxRestController {
 	        multiFile = request.getFile(itrator.next());
 		}
 		
-		String jsonc = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(jsonc);
+		/*String jsonc = "{" + json + "}";*/
+		JSONObject jsonObj = new JSONObject(request.getParameter("json"));
 		
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");

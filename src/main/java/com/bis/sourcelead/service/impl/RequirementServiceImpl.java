@@ -3326,4 +3326,12 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		return requirementDao.getRequirementDetailsById(requirementId);
 	}
 	
+	@Override
+	public List<Requirement> getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(Long orgLocationId, String userType, Long userId, String userCode, String numberOfDays)
+			throws Exception {
+		
+			return requirementDao.getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(orgLocationId, userType, userId, userCode, numberOfDays);
+		
+	}
+	
 }
