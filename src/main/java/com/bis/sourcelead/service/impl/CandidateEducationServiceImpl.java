@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -168,7 +169,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	}
 
 	@Override
-	public HashSet<CandidateEducation> getCandidateEducationDetails(JSONObject jsonObj,OrgLocations orgLocations,Candidate candidate,String userCode) throws JSONException {
+	public HashSet<CandidateEducation> getCandidateEducationDetails(JSONObject jsonObj,OrgLocations orgLocations,Candidate candidate,String userCode) throws Exception {
 		    HashSet<CandidateEducation> candidateEducationList = new HashSet<CandidateEducation>(); 
 		    if(jsonObj.has("candidateEducation")){
 		    	  String education = null;
@@ -181,14 +182,43 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		    	  }
 		    	  education = education.replaceAll("\\[", "").replaceAll("\\]","");
 		  	      String[] educations = education.split(",");
+		  	    Set<String> courses = new HashSet();
 		    	  for (String edu : educations) {
-		    		  CandidateEducation ce = new  CandidateEducation();
+		    		  /*CandidateEducation ce = new  CandidateEducation();
+		    		  edu = edu.replace("\"", "");*/
+		    		  CandidateEducation ce = null;
 		    		  edu = edu.replace("\"", "");
-		    		  ce.setName(edu);
-		    		  ce.setCandidateId(candidate);
-		    		  ce.setOrglocationId(orgLocations);
-		    		  ce.setStatus(Constants.CANDIDATE_ACTIVE);
-		    		  candidateEducationList.add(ce);
+		    		  String eduTrim = edu.trim();
+		    		  if(null != candidate.getId()){
+		    		  List<CandidateEducation> eduList= candidateEducationDao.getCandidateEducationListByCandidateIdAndOrgLocationID(candidate.getId(),orgLocations.getId());
+		    			if(courses.size() != eduList.size()){
+		    				for(CandidateEducation candidateEducation :eduList){
+			    				String DbEdu = candidateEducation.getName().replace("\"", "");
+			    				courses.add(DbEdu.trim());
+			    			}
+		    			}
+	    			  if(courses.add(eduTrim)){
+	    				  ce = new  CandidateEducation();
+	    				  if(null !=ce){
+			    			  ce.setName(edu);
+				    		  ce.setCandidateId(candidate);
+				    		  ce.setOrglocationId(orgLocations);
+				    		  ce.setStatus(Constants.CANDIDATE_ACTIVE);
+				    		  candidateEducationList.add(ce);
+			    		  }
+	    			  }
+		    		  }else{
+		    			  ce = new  CandidateEducation();
+		    			  if(null !=ce){
+			    			  ce.setName(edu);
+				    		  ce.setCandidateId(candidate);
+				    		  ce.setOrglocationId(orgLocations);
+				    		  ce.setStatus(Constants.CANDIDATE_ACTIVE);
+				    		  candidateEducationList.add(ce);
+			    		  }
+		    		  }
+		    		  
+		    		
 		    	  }
 		    	  
 		    }

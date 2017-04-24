@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,7 @@ import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
@@ -236,6 +238,36 @@ public class AssociatesRestController {
 				}
 				
 			}
+			
+			
+			
+			LinkedHashSet<String> lhs = new LinkedHashSet<String>();
+			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			for(LookUpData lookUpData :skillsList){
+				lhs.add(lookUpData.getName());
+			}
+			if(null != candidate.getSkillsName() && StringUtils.isNotEmpty(candidate.getSkillsName())){
+				String [] csl = candidate.getSkillsName().split(",");
+				for(String sl : csl){
+					lhs.add(sl);
+				}
+			}
+			candidate.setAllAndCandidateSkills(lhs);
+			
+			
+			LinkedHashSet<String> eduList = new LinkedHashSet<String>();
+			List<LookUpData> eduLookupList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+			for(LookUpData lookUpData :eduLookupList){
+				eduList.add(lookUpData.getName());
+			}
+			if(educationList.size() > 0){
+				for(String  ed: educationList){
+					eduList.add(ed);
+				}
+			}
+			candidate.setAllAndCandidateEducation(eduList);
+			
+			
 		/*	List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
 			LinkedHashSet<String> totSkils = new LinkedHashSet<String>();
 			if(!educationList.contains(null)){
@@ -262,6 +294,7 @@ public class AssociatesRestController {
 				}
 				
 				candidate.setCandidateEdu(education.substring(0,education.length()-2).toString());
+				
 			}
 			resultJson = toJSON(candidate);
 			return resultJson;

@@ -4791,6 +4791,7 @@ function customizeScore(requirementId){
 		    		var requirmentSkills = json.customizeSkills;
 			    	var customizeSkills = new Array();
 			    	customizeSkills = requirmentSkills.split(",");
+			    	alert("customizeSkills>>>"+customizeSkills);
 			        for (var i = 0; i < customizeSkills.length; i++) { 
 			        	 var customSkill = customizeSkills[i];
 			        	 result = result +'	<option selected value=\''+customSkill+'\'>'+customSkill+'</option> ';
