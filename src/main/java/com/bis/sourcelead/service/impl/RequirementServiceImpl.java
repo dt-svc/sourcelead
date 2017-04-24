@@ -375,7 +375,7 @@ public class RequirementServiceImpl implements RequirementService {
 			 
 			if(jsonObj.has("isClient") && jsonObj.getString("isClient").equalsIgnoreCase("Y") && StringUtils.isNotEmpty(jsonObj.getString("isClient"))){
 					requirement.setIsClientJob(jsonObj.getString("isClient"));
-			}else if(jsonObj.has("isClient")){
+			}else {
 				requirement.setIsClientJob("N");
 			}
 		if(jsonObj.has("selectClient") && StringUtils.isNotEmpty(jsonObj.getString("selectClient")) &&  jsonObj.has("isClient") && jsonObj.getString("isClient").equalsIgnoreCase("Y")){
@@ -3313,6 +3313,17 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	public List<Requirement> getRequirementsForSOWByOrgLocationId(
 			Long orgLocationId, String sowType) throws Exception {
 		return requirementDao.getRequirementsForSOWByOrgLocationId(orgLocationId, sowType);
+	}
+
+
+	@Override
+	public List<String> getAllRequirementEducationByRequirementId(Long requirementId){
+		return requirementDao.getAllRequirementEducationByRequirementId(requirementId);
+	}
+	
+	@Override
+	public Requirement getRequirementDetailsById(Long requirementId) throws Exception {
+		return requirementDao.getRequirementDetailsById(requirementId);
 	}
 	
 }

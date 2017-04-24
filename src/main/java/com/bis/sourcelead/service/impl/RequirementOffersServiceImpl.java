@@ -445,7 +445,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
          StringBuilder negotiationLinkBuilder=new StringBuilder();
          globalVarsMap.put("acceptLink",acceptLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptOrRejectRequirementOffer?offerStatus=Accepted&offerId=").append(requirementOffers.getId()).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
          globalVarsMap.put("rejectLink",rejectLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptOrRejectRequirementOffer?offerStatus=Rejected&offerId=").append(requirementOffers.getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
-         globalVarsMap.put("negotiationLink",negotiationLinkBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectOrRateNegotiateUserRates?rateStatus=Negotiate&submissionId=").append(requirementOffers.getSubmissionId().getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>").toString());
+         globalVarsMap.put("negotiationLink",negotiationLinkBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Negotiate&submissionId=").append(requirementOffers.getSubmissionId().getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>").toString());
         
         StringBuilder attachmentLinkBuilder=new StringBuilder();
         if(requirementOffers.getFileName() != null && !requirementOffers.getFileName().isEmpty() ){
@@ -758,7 +758,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					    requirementOffers.setUpdatedDate(commonUtil.currentDate());
 					    requirementOffersDao.storeRequirementOffers(requirementOffers);
 			     }
+			      if(requirementOffers.getSubmissionId().getCandidate().getOrgLocationId().getId().longValue() != orgLocations.getId().longValue()){
 			      sendOfferAcceptedMail(requirementOffers,loginUser,orgLocations);
+			      }
 	    }else if(offerStatus.equalsIgnoreCase("OFFERREJECTED")){
 	    	for (RequirementOfferHistory requirementOfferHistory : requirementOfferHistories) {
 	    		    RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOfferHistory.getSubmissionId().getId());
@@ -771,7 +773,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 					 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			  }
-	    		sendOfferRejectedMail(requirementOffers,loginUser,orgLocations);
+	    		if(requirementOffers.getSubmissionId().getCandidate().getOrgLocationId().getId().longValue() != orgLocations.getId().longValue()){
+	    			sendOfferRejectedMail(requirementOffers,loginUser,orgLocations);
+			      }
 	    	
 	    	  //Changing the status of offerTable 
 			  if(requirementOffers  != null ){
@@ -889,12 +893,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(loginUser.getFirstName());
 		 emailMessage.setLastName(loginUser.getLastName());
-		 if(null != requirementOffers.getSubmissionId().getSourceSubmission()){
-			 emailMessage.setToEmail(requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getClientUser().getEmail());
-		 }else{
-			 emailMessage.setToEmail(requirementOffers.getSubmissionId().getRequirement().getSpocId().getClientUser().getEmail());
-		 }
-		 
+		 emailMessage.setToEmail(requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getClientUser().getEmail());
 		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);

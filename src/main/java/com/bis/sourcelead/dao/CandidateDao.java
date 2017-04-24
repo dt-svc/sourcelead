@@ -23,6 +23,8 @@ public interface CandidateDao {
 	
 	public Candidate findByCandidateEmail(String email,Long orgLocationId) throws Exception;
 	
+	public Long getCandidatesCountByOrgLocationIDAndStatus(Long orgLocationId,String candidateStatus,String isAssociate)throws Exception;
+	 
 	public List<Candidate> getCandidatesByOrgLocationID(Long orgLocationId,Long requirementId, String candidateType) throws Exception;
 
 	public List<Candidate> getAllCandidatesByLocation(Long orgLocationId);

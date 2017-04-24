@@ -1246,6 +1246,8 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 					List<OrgRelations>    spocList=null;
 					boolean isValidate = validateBulkImportedData(clientOrVendor,responderType);
 					if(isValidate){
+						UserRole userRole1 = userRoleService.getUserDetailsByEmailAndLocationId(clientOrVendor.getEmail(), orgLocations.getId());
+						if(userRole1 == null){
 							if(!org.getOrgName().equalsIgnoreCase(clientOrVendor.getOrgName())){
 								List<OrgRelations> orgRelationsList;
 								if("Client".equalsIgnoreCase(responderType)){
@@ -1418,7 +1420,11 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 									
 								}
 							}
+					}else{
+						clientOrVendor.setReason("Current org user");
+						duplicateClietDetails.add(clientOrVendor);
 					}
+				}
 					else{
 						duplicateClietDetails.add(clientOrVendor);
 					}
@@ -1580,12 +1586,16 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 							}
 						}
 				  }
-				  if(client.getFirstName() == null && "".equalsIgnoreCase(client.getFirstName())){
+				  if(client.getFirstName() == null || "".equalsIgnoreCase(client.getFirstName())){
 						client.setReason("First Name is mandatory");
 						return false;
 					}
 				  
-				if(client.getEmail() != null && !"".equalsIgnoreCase(client.getEmail()) && !validateEmail(client.getEmail())){
+				  if(client.getEmail() == null || "".equalsIgnoreCase(client.getEmail())){
+					  client.setReason("Email is Mandatory");
+					  return false;
+				  }
+					  if(client.getEmail() != null && !"".equalsIgnoreCase(client.getEmail()) && !validateEmail(client.getEmail())){
 						client.setReason("Invalid email");
 						return false;
 					}

@@ -91,4 +91,8 @@ public interface RequirementDao {
 	public List<Requirement> getTotalRequirementsReleasedToSpoc(Long relationId, Long spocId);
 	
 	List<Requirement> getRequirementsForSOWByOrgLocationId(Long orgLocationId, String sowType) throws Exception ;
+
+	public List<String> getAllRequirementEducationByRequirementId(Long requirementId);
+	
+	Requirement getRequirementDetailsById(long parseLong)throws Exception;
 }

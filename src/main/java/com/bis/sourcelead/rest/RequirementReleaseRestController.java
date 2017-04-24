@@ -273,6 +273,14 @@ public class RequirementReleaseRestController {
 		    	for(OrgSpoc contact : contactsList){
 			    	Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(Long.parseLong(requirementId), contact.getId());
 			    	contact.setReleasedRequirement(isJobReleased.toString());
+			    	
+			    	if(contact.getVendorUser().getFirstName() != null && contact.getVendorUser().getFirstName() != "" && contact.getVendorUser().getLastName() != null && contact.getVendorUser().getLastName() != "" ){
+						StringBuilder spocNameSB3 = new StringBuilder();
+						contact.setSpocName(spocNameSB3.append(contact.getVendorUser().getFirstName()).append(" ").append(contact.getVendorUser().getLastName()).toString());
+					}else{
+						contact.setSpocName(contact.getVendorUser().getFirstName());
+					}
+			    	
 			    	StringBuilder ownerName = new StringBuilder();
 			    	if(null != contact.getClientUser() && null != contact.getClientUser().getLastName() &&  "" != contact.getClientUser().getLastName()){
 			    		contact.setOwnerName(ownerName.append(contact.getClientUser().getFirstName()).append(" ").append(contact.getClientUser().getLastName()).toString());

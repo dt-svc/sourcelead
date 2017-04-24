@@ -87,6 +87,8 @@ public interface CandidateService {
 	
 	public Long getCandidatesCountByOrgLocationID(Long orgLocationId, String candidateStatus);
 	
+	public Long getCandidatesCountByOrgLocationIDAndStatus(Long orgLocationId,String candidateStatus,String isAssociate)throws Exception;
+	
 	public List<Candidate> getAllActiveAssociatesByOrglocationId(Long orgLocationId, String employeementType) throws Exception;
 	
 	public Integer getHotlistCandidatesCountByTeamIdAndOrgLocationId(Long teamId,Long orgLocationId) throws Exception;
