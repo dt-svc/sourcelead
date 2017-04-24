@@ -1761,6 +1761,7 @@ function documentpagination(){
     	"scrollCollapse": false,
     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"aaSorting": [[7,'desc']],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -2035,6 +2036,7 @@ function documentpaginationDA(){
     	"scrollCollapse": false,
     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"aaSorting": [[7,'desc']],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -2303,6 +2305,7 @@ function documentpaginationRS(){
     	"scrollCollapse": false,
     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"aaSorting": [[7,'desc']],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -2583,6 +2586,7 @@ function documentpaginationSL(){
     	"scrollCollapse": false,
     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"aaSorting": [[8,'desc']],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -2838,6 +2842,7 @@ function documentpaginationSC(){
     	"scrollCollapse": false,
     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"aaSorting": [[7,'desc']],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -3009,6 +3014,7 @@ function documentpaginationIN(){
     	"scrollCollapse": false,
     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"aaSorting": [[8,'desc']],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -3200,6 +3206,7 @@ function documentpaginationOffer(){
     	"scrollCollapse": false,
     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"aaSorting": [[8,'desc']],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -3981,6 +3988,7 @@ function recommendationpagination(){
     $('#recommendationTable').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"aaSorting": [[7,'desc']],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -4791,6 +4799,7 @@ function customizeScore(requirementId){
 		    		var requirmentSkills = json.customizeSkills;
 			    	var customizeSkills = new Array();
 			    	customizeSkills = requirmentSkills.split(",");
+			    	alert("customizeSkills>>>"+customizeSkills);
 			        for (var i = 0; i < customizeSkills.length; i++) { 
 			        	 var customSkill = customizeSkills[i];
 			        	 result = result +'	<option selected value=\''+customSkill+'\'>'+customSkill+'</option> ';
