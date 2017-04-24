@@ -510,6 +510,7 @@ function pagination(){
     $('#example').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+		"aaSorting": [[4,'desc']],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,

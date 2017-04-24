@@ -103,7 +103,7 @@ public class EmailServiceImpl implements EmailService {
 		    	 
 		    	 String[] recipantsEmails = emails.split(",");
 		    	 for(int i=0; i < recipantsEmails.length; i++){
-		    		 if(validateEmail(recipantsEmails[i])){
+		    		 if(validateEmail(recipantsEmails[i].trim())){
 		    			 recipantsEmailsList = recipantsEmailsList.append(recipantsEmails[i]);
 		    			 recipantsEmailsList.append(",");
 		    		 }
