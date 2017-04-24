@@ -1449,7 +1449,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		StringBuilder sb = new StringBuilder();
 		String interviewStartTime = null;
 		String interviewEndTime = null;
-		if (null != reqnterview.getStartTime() && null != reqnterview.getEndTime()) {
+		if (null != reqnterview.getStartTime() || null != reqnterview.getEndTime()) {
 			if (null != reqnterview.getStartTime()) {
 				DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
 				String currentTimeStr = Constants.TZ_DF.format(reqnterview.getStartTime());
@@ -1459,6 +1459,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
 				String convertedDateStr = DF_DMY.format(convertedDate);
 				interviewStartTime = convertedDateStr;
+				globalVarsMap.put("InterviewTime",sb.append(interviewStartTime).toString());
 			}
 			if (null != reqnterview.getEndTime()) {
 				DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
@@ -1469,10 +1470,12 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
 				String convertedDateStr = DF_DMY.format(convertedDate);
 				interviewEndTime = convertedDateStr;
+				globalVarsMap.put("InterviewTime",sb.append(interviewEndTime).toString());
 			}
 
-			globalVarsMap.put("InterviewTime",
-					sb.append(interviewStartTime).append("-").append(interviewEndTime).toString());
+			if(null != reqnterview.getStartTime() && null != reqnterview.getEndTime()){
+			globalVarsMap.put("InterviewTime",sb.append(interviewStartTime).append("-").append(interviewEndTime).toString());
+			}
 		} else if (null != reqnterview.getStartTime()) {
 			globalVarsMap.put("InterviewTime", sb.append(interviewStartTime).toString());
 		} else {
