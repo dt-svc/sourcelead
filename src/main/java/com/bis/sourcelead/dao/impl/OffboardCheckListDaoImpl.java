@@ -67,4 +67,31 @@ public class OffboardCheckListDaoImpl implements OffboardCheckListDao{
 		return offboardCheckList;
 	}
 
+	@Override
+	@Transactional
+	public Integer getOffboardCheckListCountByOffboardId(Long candidateOffBoardingId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query ="select count(*) from OffboardCheckList checkList where checkList.candidateOffBoardingId.id =:candidateOffBoardingId ";
+		List<Long> checkListCount = session.createQuery(query.toString()).setLong("candidateOffBoardingId", candidateOffBoardingId).list();
+			Integer count = 0;
+			if(checkListCount != null && !checkListCount.isEmpty()){
+					count = checkListCount.get(0).intValue();
+			}
+			return count;
+	}
+
+	@Override
+	@Transactional
+	public OffboardCheckList getOffboardCheckListByOffboardingId(Long candidateOffBoardingId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<OffboardCheckList> offboardCheckList = session.createQuery("from OffboardCheckList checkList left join fetch checkList.candidateOffBoardingId  where checkList.candidateOffBoardingId.id = :candidateOffBoardingId" ).setLong( "candidateOffBoardingId", candidateOffBoardingId ).setCacheable(true).list();
+		if (offboardCheckList.size() > 0) {
+			return offboardCheckList.get(0);
+		} else {
+			return null;
+		}
+	}
+
 }

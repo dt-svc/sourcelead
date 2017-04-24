@@ -11,4 +11,12 @@ public interface OffBoardingDocumentsDao {
 	List<OffBoardingDocuments> getOffBoardingDocumentsByTemplateId(Long templateId,String documentType) throws Exception;
 	
 	OffBoardingDocuments getOffBoardingDocumentsBydocumentUUID(String documentUUID) throws Exception;
+	
+	Integer getOffboardingDocumentsByOffboardingId(Long offBoardingId) throws Exception;
+	
+	List<OffBoardingDocuments> getOffBoardingDocumentsByCandidateOffBoardingId(Long candidateOffBoardingId,String documentType) throws Exception;
+	
+	List<OffBoardingDocuments> getOffBoardingDocumentsByTemplateIdsList(List<Long> templateIds,String documentType) throws Exception;
+	
+	OffBoardingDocuments getOffBoardingDocumentsById(Long id) throws Exception;
 }

@@ -5,13 +5,13 @@
  * SJFB may be freely distributed under the included MIT license (license.txt).
  */
 
-function customizeFields(templateId,sourceleadUrl){
+function customizeFields(templateId,sourceleadUrl,type){
 
     //If loading a saved form from your database, put the ID here. Example id is "1".
     //Adds new field with animation
     $("#add-field a").click(function(e) {
         e.preventDefault();
-        $(addField($(this).data('type'),'Y','Y',sourceleadUrl,templateId,'Y')).appendTo('#form-fields').hide().slideDown('fast');
+        $(addField($(this).data('type'),'Y','Y',sourceleadUrl,'Y')).appendTo('#form-fields').hide().slideDown('fast');
         $('#form-fields').sortable();
     });
 
@@ -64,18 +64,21 @@ function customizeFields(templateId,sourceleadUrl){
     });
 
     //load saved form
-    if(null != templateId && templateId != undefined){
-    	 loadSavedForm(templateId,sourceleadUrl);
-    }else{
-    	// loadForm(sourceleadUrl,templateId);
+    
+    if(null != templateId && templateId != undefined && type == "template"){
+    	 loadSavedTemplateForm(templateId,sourceleadUrl);
     }
+    
+    if(null != templateId && templateId != undefined && type == "offboarding"){
+   	     loadOffboardTemplateForm(templateId,sourceleadUrl);
+   }
    
 
 };
 
 
 //Add field to builder
-function addField(fieldType,value,labelValue,sourceleadUrl,templateId,labelValidationCheck) {
+function addField(fieldType,value,labelValue,sourceleadUrl,labelValidationCheck) {
 
     var hasRequired, hasChoices,hasAutocomplete,fieldName;
     var includeRequiredHTML = '';
@@ -103,6 +106,11 @@ function addField(fieldType,value,labelValue,sourceleadUrl,templateId,labelValid
             hasRequired = true;
             hasChoices = true;
             fieldName = "Check Box";
+            break;
+        case 'radio':
+            hasRequired = true;
+            hasChoices = true;
+            fieldName = "Radio Button";
             break;
        
             
@@ -224,12 +232,12 @@ function addChoice(labelValue) {
         '</label>' +
         
         
-        '<label class="col-md-2 lblClass"><div class="col-md-9 choice-padLeft lblHeight"> Selected? </div> ' +
+        /*'<label class="col-md-2 lblClass"><div class="col-md-9 choice-padLeft lblHeight"> Selected? </div> ' +
         '<div class="col-md-3 choicePadLeft lblHeight"> ' +
         '<input class="toggle-selected" type="checkbox">' +
         '</div>' +
+        '</label>' +*/
         
-        '</label>' +
         '<button type="button" class="delete pull-left choicebtn-delete"><i class="fa fa-times text-danger"></i></button>' +
         '</div>' +
         '</div>' +
@@ -237,56 +245,9 @@ function addChoice(labelValue) {
 }
 
 
-/*//Loads a saved form from your database into the builder
-function loadForm(sourceleadUrl,templateId) {
-        $.ajax({
-	    	type: "GET",
-	        url: sourceleadUrl+"/loadInterviewFeedbackTemplate", 
-	        success: function(data) {
-	        	 var data = eval(data);
-	        	 if (data) {
-	                 //go through each saved field object and render the builder
-	                 $.each( data, function( k, v ) {
-	                     //Add the field
-	                     $(addField(v['type'],v['isRemoved'],v['isLabelModified'],v['label'],sourceleadUrl,templateId,'N')).appendTo('#form-fields').hide().slideDown('fast');
-	                     var $currentField = $('#form-fields .field').last();
-
-	                     //Add the label
-	                     $currentField.find('.field-label').val(v['label']);
-
-	                     //Is it required?
-	                     if (v['req']) {
-	                         requiredField($currentField.find('.toggle-required'));
-	                     }
-
-	                     //Any choices?
-	                     if (v['choices']) {
-	                         $.each( v['choices'], function( k, v ) {
-	                             //add the choices
-	                             $currentField.find('.choices ul').append(addChoice(v['isLabelModified']));
-
-	                             //Add the label
-	                             $currentField.find('.choice-label').last().val(v['label']);
-
-	                             //Is it selected?
-	                             if (v['sel']) {
-	                                 selectedChoice($currentField.find('.toggle-selected').last());
-	                             }
-	                         });
-	                     }
-
-	                 });
-
-	                 $('#form-fields').sortable();
-	                 $('.choices ul').sortable();
-	             }
-	        },
-	    });
-       
-}*/
 
 
-function loadSavedForm(templateId,sourceleadUrl) {
+function loadSavedTemplateForm(templateId,sourceleadUrl) {
     $.ajax({
     	type: "GET",
         url: sourceleadUrl+"/loadOffboardCheckListByTemplateId?templateId="+templateId, 
@@ -296,7 +257,7 @@ function loadSavedForm(templateId,sourceleadUrl) {
                  //go through each saved field object and render the builder
                  $.each( data, function( k, v ) {
                      //Add the field
-                     $(addField(v['type'],v['isRemoved'],v['isLabelModified'],sourceleadUrl,templateId,'N')).appendTo('#form-fields').hide().slideDown('fast');
+                     $(addField(v['type'],v['isRemoved'],v['isLabelModified'],sourceleadUrl,'N')).appendTo('#form-fields').hide().slideDown('fast');
                      var $currentField = $('#form-fields .field').last();
 
                      //Add the label
@@ -333,6 +294,65 @@ function loadSavedForm(templateId,sourceleadUrl) {
    
 }
 
+
+
+function loadOffboardTemplateForm(offboardingId,sourceleadUrl) {
+    $.ajax({
+    	type: "GET",
+        url: sourceleadUrl+"/loadOffboardCheckListByOffboardingId?offboardingId="+offboardingId, 
+        success: function(data) {
+        	
+        	
+        	var json = JSON.parse(data);
+        	 for (var i = 0; i < json.length; i++) { 
+        		 
+        		 var opt = json[i]; 
+        		 var jsonStringData = eval(opt.checkListJsonString);
+        		 
+            	 if (jsonStringData) {
+                     //go through each saved field object and render the builder
+                     $.each( jsonStringData, function( k, v ) {
+                         //Add the field
+                         $(addField(v['type'],v['isRemoved'],v['isLabelModified'],sourceleadUrl,'N')).appendTo('#form-fields').hide().slideDown('fast');
+                         var $currentField = $('#form-fields .field').last();
+                         
+                         //Add the label
+                         $currentField.find('.field-label').val(v['label']);
+
+                         //Is it required?
+                         if (v['req']) {
+                             requiredField($currentField.find('.toggle-required'));
+                         }
+
+                         //Any choices?
+                         if (v['choices']) {
+                             $.each( v['choices'], function( k, v ) {
+                                 //add the choices
+                                 $currentField.find('.choices ul').append(addChoice(v['isLabelModified']));
+
+                                 //Add the label
+                                 $currentField.find('.choice-label').last().val(v['label']);
+
+                                 //Is it selected?
+                                 if (v['sel']) {
+                                     selectedChoice($currentField.find('.toggle-selected').last());
+                                 }
+                             });
+                         }
+
+                     });
+
+                     $('#form-fields').sortable();
+                     $('.choices ul').sortable();
+                 }
+        		 
+        	 }
+        	
+        	
+        },
+    });
+   
+}
 
 
 

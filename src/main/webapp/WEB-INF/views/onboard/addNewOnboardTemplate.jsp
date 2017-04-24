@@ -865,8 +865,8 @@ function createTemplateDocs(saveType){
 	        	}else{
 	        		getTemplatePolicyDocumentsDetails();
 	        		getTemplateSupportingDocumentsDetails();
-	        		getTemplateContractsDocumentsDetails(templateId);
-	        		getTemplateFormsDocumentsDetails(templateId);
+	        		getTemplateContractsDocumentsDetails();
+	        		getTemplateFormsDocumentsDetails();
 	        	}
 	    	  $("#loading").removeAttr("style");
 	    	  

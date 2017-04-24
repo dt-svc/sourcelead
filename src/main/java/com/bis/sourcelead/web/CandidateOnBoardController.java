@@ -23,6 +23,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OnBoardingTemplateDocumentsService;
@@ -64,6 +65,9 @@ public class CandidateOnBoardController {
 	
 	@Autowired
 	RequirementOffersService requirementOffersService;
+	
+	@Autowired
+	CandidateOffBoardingService candidateOffBoardingService;
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -238,9 +242,12 @@ public class CandidateOnBoardController {
 		
 		Integer onboardCount = candidateOnBoardingService.getCandidateOnBoardingListCountByOrgLocationId(orgLocations.getId());
 		
+		Integer offboardCount = candidateOffBoardingService.getCandidateOffBoardingListCountByOrgLocationId(orgLocations.getId());
+		
 		request.getSession().setAttribute("sessionData",sessionData);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("onboardCount", onboardCount);
+		model.addObject("offboardCount", offboardCount);
 		model.setViewName("onboard/candidateOnBoardingList");
 		return model;
 	}

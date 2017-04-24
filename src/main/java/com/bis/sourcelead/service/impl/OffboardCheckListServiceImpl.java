@@ -23,4 +23,14 @@ public class OffboardCheckListServiceImpl implements OffboardCheckListService {
 		return offboardCheckListDao.saveOffboardCheckList(offboardCheckList);
 	}
 
+	@Override
+	public Integer getOffboardCheckListCountByOffboardId(Long candidateOffBoardingId) throws Exception {
+		return offboardCheckListDao.getOffboardCheckListCountByOffboardId(candidateOffBoardingId);
+	}
+
+	@Override
+	public OffboardCheckList getOffboardCheckListByOffboardingId(Long candidateOffBoardingId) throws Exception {
+		return offboardCheckListDao.getOffboardCheckListByOffboardingId(candidateOffBoardingId);
+	}
+
 }

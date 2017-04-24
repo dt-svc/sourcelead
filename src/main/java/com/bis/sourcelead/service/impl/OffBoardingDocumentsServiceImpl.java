@@ -32,4 +32,26 @@ public class OffBoardingDocumentsServiceImpl implements OffBoardingDocumentsServ
 		return offBoardingDocumentsDao.getOffBoardingDocumentsBydocumentUUID(documentUUID);
 	}
 
+	@Override
+	public Integer getOffboardingDocumentsByOffboardingId(Long offBoardingId) throws Exception {
+		return offBoardingDocumentsDao.getOffboardingDocumentsByOffboardingId(offBoardingId);
+	}
+
+	@Override
+	public List<OffBoardingDocuments> getOffBoardingDocumentsByCandidateOffBoardingId(Long candidateOffBoardingId,
+			String documentType) throws Exception {
+		return offBoardingDocumentsDao.getOffBoardingDocumentsByCandidateOffBoardingId(candidateOffBoardingId, documentType);
+	}
+
+	@Override
+	public List<OffBoardingDocuments> getOffBoardingDocumentsByTemplateIdsList(List<Long> templateIds,
+			String documentType) throws Exception {
+		return offBoardingDocumentsDao.getOffBoardingDocumentsByTemplateIdsList(templateIds, documentType);
+	}
+
+	@Override
+	public OffBoardingDocuments getOffBoardingDocumentsById(Long id) throws Exception {
+		return offBoardingDocumentsDao.getOffBoardingDocumentsById(id);
+	}
+
 }

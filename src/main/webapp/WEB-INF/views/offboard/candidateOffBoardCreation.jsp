@@ -9,13 +9,38 @@
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<link rel="stylesheet" href="resources/css/style.css" />
+
+<script src="resources/js/offboardCheckListBuilder.js" type="text/javascript" ></script> <!-- form builder -->
+<script src="resources/js/offboardCheckList-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
+
 
 <script> 
 	$(document).ready(function(){
 		document.getElementById("templateDocs").disabled = true;
 		document.getElementById("templateTasks").disabled = true;
+		document.getElementById("checkList").disabled = true;
 		
-		loadCandidates();
+		
+		var offBoardingId = '${offBoardingId}';
+		if(offBoardingId != null && offBoardingId != '' && offBoardingId != 'undefined'){
+			
+			$("#candidateOffBoardId").val(offBoardingId);
+  	        document.getElementById("templateDocs").disabled = false;
+  	        document.getElementById("templateTasks").disabled = false;
+  	        document.getElementById("checkList").disabled = false;
+  	        $("#candidateOffBoardUUID").val('${offBoardingUUID}');
+  	        $("#documentstemplateId").val(offBoardingId);
+  	        
+  	        loadOffboardingUser('${offBoardingUUID}');
+		}else{
+			loadCandidates();
+			loadOffBoardingTemplates();
+		}
+		
+		
+		
+		
 	});
 </script>
 
@@ -24,23 +49,29 @@
       <div class="pull-left">
         <h2>Employee offboarding</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Employee onboarding</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/usersList'/>">Users List</a> &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Employee Offboarding </div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="applicant_accept">
         <div class="tabbable">
           <ul class="nav nav-tabs" id="tab_bar">
-            <li class="active"> <a href="#details" data-toggle="tab"> <i class="fa fa-th-list paddingRight"></i> <span>Details</span> <br>
+            <li class="active" onclick="loadOffboardingUser();"> <a href="#details" data-toggle="tab"> <i class="fa fa-th-list paddingRight"></i> <span>Details</span> <br>
               <small>Employee details &amp; Postion details</small> </a> </li>
-            <li><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
+            <li onclick="getTemplateResignationDocumentsDetails();getTemplateOffboardPackDocumentsDetails();"><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
               <small>Acceptance &amp; Policy Documents</small> </a> </li>
-            <li> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Taks</span> <br>
+             <li onclick="getOffboardingCheckList();"> <a href="#offboardCheckList" data-toggle="tab" id="checkList"> <i class="fa fa-check-square-o paddingRight"></i> <span>Check List</span> <br>
+              <small>Check List</small> </a></li>
+            <li onclick="getOffboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Taks</span> <br>
               <small>List of tasks</small> </a></li>
           </ul>
+          <input type="hidden" name="candidateOffBoardId" id="candidateOffBoardId" value=""/>
+          <input type="hidden" name="candidateOffBoardUUID" id="candidateOffBoardUUID" value=""/>
           <div class="tab-content"> 
             
             <!-- Employee Details -->
             <div class="tab-pane active" id="details">
+             <form:form class="login-form clearfix"  id="offboardCandidate_form"  name="offboardCandidate_form" method="post" >
+             <input type="hidden" name="savedoffboardId" id="savedoffboardId" value=""/>
               <div class="form-horizontal">
                 <p><strong>Employee Details</strong></p>
                
@@ -103,7 +134,7 @@
                   </div>
                 </div>
                   <div class="form-group">
-                      <label class="col-md-3 control-label">Reasons <span class="paddingLeft text-danger">*</span></label>
+                      <label class="col-md-3 control-label">Reason<span class="paddingLeft text-danger">*</span></label>
                   <div class="col-md-6">
                       <select class="chosen-select" data-validation="required"  field-name="Reason" id="reason" name="reason">
                           <option selected disabled>- Select Reason -</option>
@@ -125,12 +156,12 @@
                   <div class="form-group">
                   <label class="col-md-3 control-label">Notice Period</label>
                   <div class="col-md-6 select-field">
-                    <select class="chosen-select"  id="noticePeriod" name="noticePeriod">
-                      <option  selected="selected">- Select Notice Period -</option>
-                      <option>15 Days</option>
-                      <option>1 Month</option>
-                      <option>2 Months</option>
-                      <option>3 Months</option>
+                    <select class="chosen-select"  id="noticePeriod" name="noticePeriod" onchange="getNoticePeriod()">
+                      <option  selected="selected" value=''>- Select Notice Period -</option>
+                      <option value='15 Days'>15 Days</option>
+                      <option value='1 Month'>1 Month</option>
+                      <option value='2 Months'>2 Months</option>
+                      <option value='3 Months'>3 Months</option>
                     </select>
                   </div>
                 </div>
@@ -142,166 +173,137 @@
                     <input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Effective Date" id="effectiveDate" name="effectiveDate" readonly="readonly" >
                   </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="workInNotice" style="display: none;">
                   <label class="col-md-3 control-label">Have to work in notice period ?<span class="text-danger paddingLeft">*</span></label>
                   <div class="col-md-6">
                       <label class="radio-inline">
-                    <input type="radio" value="Y" checked name="noticeperiod"> Yes
+                    <input type="radio" value="Y" checked id="checkedY" name="workInNoticePeriod"> Yes
                           </label>
                       <label class="radio-inline">
-                    <input type="radio" value="N" name="noticeperiod"> No
+                    <input type="radio" value="N" id="checkedN" name="workInNoticePeriod"> No
                     </label>
                   </div>
                 </div>
-                  <div class="form-footer">
-                  <div class="pull-right mr">
-                    <input type="button" value="Cancel" class="btn btn-sm btn-default">
-                    <input type="button" value="Save" class="btn btn-sm btn-success">
-                    <input type="button" value="Save and Continue" class="btn btn-sm btn-primary">
+                
+                 <div class="form-group">
+                       <label class="col-md-3 control-label">Offboard Template</label>
+                  <div class="col-md-6">
+                      <select class="chosen-select" multiple data-placeholder="Select Template" data-validation-optional="true" id="offboardingTemplate" name="offboardingTemplate" >
+                       </select>
                   </div>
                 </div>
+                
+                
+                  <div class="form-footer">
+                  <div class="pull-right mr">
+                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/candidateOffBoardingList'">
+                    <input type="button" value="Save" id="save_offboardUser" onclick="saveOffboardingCandidateDetails('save');" class="btn btn-sm btn-success">
+                    <input type="button" value="Save and Continue" id="saveAndContinue_offboardUser" onclick="saveOffboardingCandidateDetails('saveAndContinue');"  class="btn btn-sm btn-primary">
+                  </div>
+                </div>
+                 </form:form>
               </div>
             </div>
             
             <!-- TAB 2 -->
             <div class="tab-pane" id="documents">
-              
-                <div class="form-horizontal">
+              <div class="form-horizontal">
+                <form id='templateDocuments_form' name='templateDocuments_form' enctype='multipart/form-data' >
+                 <input type="hidden" name="candidateoffboardingId" id="documentstemplateId" value=""/>
+                 
+               
                 <div class="form-group">
-                  <label class="col-md-12">
-                    <strong>Resignation letter</strong>
-                    </label>
-                    <label class="col-md-4 control-label"></label>
-                  <div class="col-md-7">
-                      <button type="button" class="btn btn-default btn-sm"><i class="fa fa-plus paddingRight"></i>Upload additional contract files</button>
-                  </div>
+                  <label class="col-md-12"> <strong>Resignation / Termination Letter</strong> <br>
+                  </label>
+                     <div id="timesheetDocumentsId" class="timesheetDocs">
+                      <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
+				        <span> 
+			              <div id="savedResignationAttachments"></div>
+				        </span>
+                      </div>
+                      </div>
                 </div>
-                  
-                  
+                
+                
                 <div class="form-group">
-                  <label class="col-md-12">
-                      <strong>Offboard pack</strong> <br>
-                    </label>
-
-                    <label class="col-md-4 control-label"></label>
-                  <div class="col-md-7">
-                      <button type="button" class="btn btn-default btn-sm"><i class="fa fa-plus paddingRight"></i>Upload additional policies files</button>
-                  </div>
+                  <label class="col-md-12"> <strong>Offboard Pack</strong> <br>
+                  </label>
+                     <div id="timesheetDocumentsId" class="timesheetDocs">
+                      <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
+				        <span> 
+			              <div id="savedOffboardPackAttachments"></div>
+				        </span>
+                      </div>
+                      </div>
                 </div>
+                
+               
+                
                 <div class="clearfix"></div>
+               
                 <div class="form-footer">
                   <div class="pull-right mr">
-                    <input type="button" value="Cancel" class="btn btn-sm btn-default">
-                    <input type="button" value="Save" class="btn btn-sm btn-success">
-                    <input type="button" value="Save and Continue" class="btn btn-sm btn-primary">
+                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/dashboard/${SourceLeadWeb_orgLocationId}'">
+                    <input type="button" value="Save" id="save_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
+                    <input type="button" value="Save and Continue" id="save_continue_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
                 </div>
+                </form>
               </div>
-                
-                
-                
             </div>
+            
+              <div class="tab-pane" id="offboardCheckList">
+              <div class="form-horizontal assignTemplate">
+                <h4 class="clearfix">Check List</h4>
+                 <div id="offboardingCheckList"></div>
+              </div>
+            </div>
+            
+            
+            
             <div class="tab-pane" id="tasks">
               <div class="clearfix">
-                  <h4 class="pull-left">Task List</h4>
+                <h4 class="pull-left">Task List</h4>
                 <div class="pull-right">
-                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addTask"><i class="fa fa-plus paddingRight"></i>Add Task</button>
+                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addTask" onclick="getAssignToUsersList();"><i class="fa fa-plus paddingRight"></i>Add Task</button>
                   <!-- Modal -->
-                  <div id="addTask" class="modal fade" role="dialog">
+                  <div id="addTask" class="modal fade add_Task" role="dialog">
                     <div class="modal-dialog modal-lg">
                       <div class="modal-content">
                         <div class="modal-header">
-                          <button type="button" class="close" data-dismiss="modal">&times;</button>
+                          <button type="button" class="close" data-dismiss="modal" onclick="flushOffboardTask()">&times;</button>
                           <h4 class="modal-title">Add Tasks</h4>
                         </div>
                         <div class="modal-body clearfix"> 
                           
- <!-- Add New Task Widget -->
+                          <!-- Add New Task Widget -->
                           <div class="col-md-12 clearfix">
-                            <form class="form-horizontal clearfix task-widget">
+                          <div id="offboardtasksLoading"></div>
+                             <form:form class="login-form clearfix"  id="addoffboardTask_form"  name="addoffboardTask_form" method="post" > 
+                             <input type="hidden" name="offboardTaskId" id="candidateOffboardTaskId" value=""/>
                               <div class="row">
-                                <div class="col-md-6">
+                              
+                              <div class="col-md-6">
+                                <div class="row">
+                                
+                                <div class="col-md-12 mb10">
                                   <label>Subject <span class="text-danger paddingLeft">*</span></label>
-                                  <input type="text" class="form-control input-sm" placeholder="Subject">
+                                  <input type="text" class="form-control input-sm" placeholder="Subject" field-name="Subject" id="taskName" name="taskName"  data-validation="required validate_Space validate_length length2-100">
                                 </div>
-                                <div class="col-md-6">
-                                  <label>Assign To <span class="text-danger paddingLeft">*</span></label>
-                                    <div class="clearfix assignRadio">
-                                        <label class="radio-inline"><input type="radio" name="assignto" value="assignUsers" id="assignUsers">Users</label>
-                                        <label class="radio-inline"><input type="radio" name="assignto"  value="assignManager" id="assignManager">Manager</label>
-                                        <label class="radio-inline"><input type="radio" name="assignto"  value="assignEmployee" id="assignEmployee">Employee</label>
-                                    </div>
-                                    <div id="users" class="mt10" style="display: none;">
-                                    <select class="chosen-select" multiple data-placeholder="Select Priority" id="priority">
-                                        <option>High</option>
-                                        <option>Low</option>
-                                        <option>Mediam</option>
-                                    </select>
-                                    </div>
-                                    <div id="manager" class="mt10" style="display: none;">
-                                        <input type="text" class="form-control input-sm" value="Manager">
-                                    </div>
-                                    <div id="employee" class="mt10" style="display: none;">
-                                        <input type="text" class="form-control input-sm" value="Employee">
-                                    </div>
-
-                                  </div>
-                                <div class="col-md-6 dropdown-select">
+                                
+                                <div class="col-md-12 dropdown-select mb10">
                                   <label>Priority</label>
-                                  <select class="form-control">
+                                  <select class="form-control" id="taskPriority" name="taskPriority">
                                     <option selected disabled>-- Select Priority --</option>
                                     <option>High</option>
                                     <option>Low</option>
                                     <option>Mediam</option>
                                   </select>
                                 </div>
-                                <div class="col-md-6 mt10">
-                                  <div class="row">
-                                    <div class="col-md-12">
-                                        <label><strong>Due after:</strong><span class="text-danger paddingLeft">*</span></label>
-                                      <div class="input-group hidden">
-                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                        <input class="form-control" value="" name="Date" id="datepicker2" type="text">
-                                      </div>
-                                        
-                                        <!-- Form inline Due after -->
-                                        
-                        <div class="row">
-                            <div class="col-md-3 paddingRight">
-                                <label class="small">Months</label> <br>
-                                <input class="form-control input-sm" type="text">
-                            </div>
-                            <div class="col-md-3 paddingRight paddingLeft">
-                                <label class="small">Days</label> <br>
-                                <input class="form-control input-sm" type="text">
-                            </div>
-                            <div class="col-md-3 paddingRight paddingLeft">
-                                <label class="small">Hours</label> <br>
-                                <input type="text" class="form-control input-sm">
-                            </div>
-                            <div class="col-md-3 paddingRight paddingLeft">
-                                <label class="small">Minutes</label> <br>
-                                <input type="text" class="form-control input-sm">
-                            </div>
-                        </div>
-                                        
-                                        <!-- Form inline Due after -->
-                                        
-                                        
-                                        
-                                        
-                                    </div>
-                                    <div class="col-md-6 hidden">
-                                      <label>Time</label>
-                                      <div class="input-group"> <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
-                                        <input class="form-control" value="" name="Time" id="example" type="text">
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="col-md-6 dropdown-select">
+                                
+                                <div class="col-md-12 dropdown-select mb10">
                                   <label>Repeat</label>
-                                  <select class="form-control input-sm">
+                                  <select class="form-control input-sm" id="taskRepeat" name="taskRepeat">
                                     <option selected disabled>-- Select Repeat --</option>
                                     <option>Never</option>
                                     <option>Daily</option>
@@ -310,132 +312,150 @@
                                     <option>Yearly</option>
                                   </select>
                                 </div>
-                                <div class="col-md-6">
+                                
+                                <div class="col-md-12 mb10">
                                   <div class="mt">
                                     <label class="checkbox-inline">
-                                      <input type="checkbox" name="chkbox">
+                                      <input type="checkbox" id="taskEmail" name="taskEmail" value="N" onclick="validateTaskEmail();">
                                       Email </label>
                                     <label class="checkbox-inline">
-                                      <input type="checkbox" name="chkbox">
+                                      <input type="checkbox" id="taskNotification" name="taskNotification" value="N" onclick="validateTaskNotification();">
                                       Notification </label>
                                   </div>
                                 </div>
-                                <div class="col-md-6">
-                                  <label>Description</label>
-                                  <textarea rows="2" placeholder="Description" class="form-control"></textarea>
+                                
                                 </div>
+                                </div>
+                                
+                                
+                                <div class="col-md-6">
+	                                <div class="row">
+	                                
+	                                <div class="col-md-12 mb10">
+                                  <label>Assign To <span class="text-danger paddingLeft">*</span></label>
+                                  
+                                  <div class="">
+                                    <label class="radio-inline">
+                                      <input type="radio"  name="assignedToType" checked="checked" onclick="validateAssignToType('assingToCandidate');">
+                                      Candidate </label>
+                                    <label class="checkbox-inline">
+                                      <input type="radio" name="assignedToType"  onclick="validateAssignToType('assingToUser');">
+                                      User </label>
+                                  </div>
+                                  
+                                  <div id="assignToUserDiv" style="display: none;" class="mt10">
+	                                  <select class="chosen-select" multiple data-placeholder="Select User" id="offboardAssignedTo" name="offboardAssignedTo" field-name="AssignTo"  data-validation-optional="true" >
+	                                  </select>
+                                  </div>
+                                </div>
+	                                
+	                                
+	                               <div class="col-md-12 mb10">
+                                  <div class="row">
+                                    <div class="col-md-12">
+                                      <label><strong>Due after:</strong><span class="text-danger paddingLeft">*</span></label>
+                                                                            
+                                      <!-- Form inline Due after -->
+                                      
+                                      <div class="row" id="dueAfterDiv">
+										   <div class="col-md-6 paddingRight">
+											<label class="small">Months</label> <br>
+												<div class="select-field">
+													<select class="form-control input-sm" id="taskMonths" data-validation="required" field-name="Due after" name="taskMonths" onchange="validateDueAfter();">
+														<option selected value=''>--Select Month--</option>
+														<option value="1">1</option>
+														<option value="2">2</option>
+														<option value="3">3</option>
+														<option value="4">4</option>
+														<option value="5">5</option>
+														<option value="6">6</option>
+														<option value="7">7</option>
+														<option value="8">8</option>
+														<option value="9">9</option>
+														<option value="10">10</option>
+														<option value="11">11</option>
+														<option value="12">12</option>
+														</select>
+												</div>
+											</div> 
+                                      
+                                        
+                                        <div class="col-md-6 paddingRight paddingLeft">
+										<label class="small">Days</label>
+											<div class="select-field">
+												<select class="form-control input-sm" id="taskDays" name="taskDays" onchange="validateDueAfter();">
+													<option selected value=''>--Select Days--</option>
+													    <option value="1">1</option>
+														<option value="2">2</option>
+														<option value="3">3</option>
+														<option value="4">4</option>
+														<option value="5">5</option>
+														<option value="6">6</option>
+														<option value="7">7</option>
+														<option value="8">8</option>
+														<option value="9">9</option>
+														<option value="10">10</option>
+														<option value="11">11</option>
+														<option value="12">12</option>
+														<option value="13">13</option>
+														<option value="14">14</option>
+														<option value="15">15</option>
+														<option value="16">16</option>
+														<option value="17">17</option>
+														<option value="18">18</option>
+														<option value="19">19</option>
+														<option value="20">20</option>
+														<option value="21">21</option>
+														<option value="22">22</option>
+														<option value="23">23</option>
+														<option value="24">24</option>
+														<option value="25">25</option>
+														<option value="26">26</option>
+														<option value="27">27</option>
+														<option value="28">28</option>
+														<option value="29">29</option>
+														<option value="30">30</option>
+												</select>
+											</div>
+                                      </div>
+                                    </div>
+                                    </div>
+                                      
+                                      <!-- Form inline Due after --> 
+                                      
+                                    </div>
+                                    
+                                  </div>
+                                </div>
+	                               <div class="col-md-12 mb10">
+                                  <label>Description</label>
+                                  <textarea rows="2" placeholder="Description" id="taskdescription" name="taskdescription" class="form-control"></textarea>
+                                </div>
+	                                
+	                                </div>
+                                </div>
+                                
                                 <div class="clearfix"></div>
-                                <div class="clearfix mt col-md-12">
+                                <div class="clearfix mt col-md-12 form-footer">
                                   <div class="pull-right">
-                                    <input type="button" class="btn btn-primary btn-sm" value="Save">
-                                    <input type="button" onClick="closeModal();" class="btn btn-default btn-sm ml10" value="Cancel">
+                                    <input type="button" id="offboardtask_submit" class="btn btn-primary btn-sm" onclick="saveOffboardTask();"  value="Save">
+                                    <input type="button" class="btn btn-default btn-sm ml10" value="Cancel" data-dismiss="modal" onclick="flushOnboardTask();">
                                   </div>
                                 </div>
                               </div>
-                            </form>
+                            </form:form>
                           </div>
-                          <!-- Add New Task Widget -->                           
+                          <!-- Add New Task Widget --> 
+                          
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-                
-                <div class="clearfix taskwidget_inner">
-                    <div class="media-body">
-                    <div class="clearfix taskheder">
-                        <label>
-                            <span class="paddingRight">Subject:</span> <strong class="text-primary">Account Setup</strong>
-                        </label>
-                        <label class="small pull-right text-muted">
-                            <span>Due after 15days</span>
-                        </label>
-                    </div>
-                    <ul class="list-inline list-description">
-                        <li><span>Assign To:</span> Pramodkumar Mahagen</li>
-                        <li><span>Priority:</span> High</li>
-                        <li><span>Repeat:</span> Never</li>
-                    </ul>
-                    </div>
-                </div>
-                <div class="clearfix taskwidget_inner">
-                    <div class="media-body">
-                    <div class="clearfix taskheder">
-                        <label>
-                            <span class="paddingRight">Subject:</span> <strong class="text-primary">Desktop arriange</strong>
-                        </label>
-                        <label class="small pull-right text-muted">
-                            <span>Due after 2 months</span>
-                        </label>
-                    </div>
-                    <ul class="list-inline list-description">
-                        <li><span>Assign To:</span> Pramodkumar Mahagen</li>
-                        <li><span>Priority:</span> High</li>
-                        <li><span>Repeat:</span> Never</li>
-                    </ul>
-                    </div>
-                </div>
-                <div class="clearfix taskwidget_inner">
-                    <div class="media-body">
-                    <div class="clearfix taskheder">
-                        <label>
-                            <span class="paddingRight">Subject:</span> <strong class="text-primary">Providing access</strong>
-                        </label>
-                        <label class="small pull-right text-muted">
-                            <span>Due after 3 months</span>
-                        </label>
-                    </div>
-                    <ul class="list-inline list-description">
-                        <li><span>Assign To:</span> Pramodkumar Mahagen</li>
-                        <li><span>Priority:</span> High</li>
-                        <li><span>Repeat:</span> Never</li>
-                    </ul>
-                    </div>
-                </div>
-                <div class="clearfix taskwidget_inner">
-                    <div class="media-body">
-                    <div class="clearfix taskheder">
-                        <!--<label>Account Setup, Desk top Arriange, Providing access to the Candidate</label>-->
-                        <label>
-                            <span class="paddingRight">Subject:</span> <strong class="text-primary">Account Setup</strong>
-                        </label>
-                        <label class="small pull-right text-muted">
-                            <span>Due after 3 months</span>
-                        </label>
-                    </div>
-                    <ul class="list-inline list-description">
-                        <li><span>Assign To:</span> Pramodkumar Mahagen</li>
-                        <li><span>Priority:</span> High</li>
-                        <li><span>Repeat:</span> Never</li>
-                    </ul>
-                    </div>
-                </div>
-                <div class="clearfix taskwidget_inner">
-                    <div class="media-body">
-                    <div class="clearfix taskheder">
-                        <!--<label>Account Setup, Desk top Arriange, Providing access to the Candidate</label>-->
-                        <label>
-                            <span class="paddingRight">Subject:</span> <strong class="text-primary">Account Setup</strong>
-                        </label>
-                        <label class="small pull-right text-muted">
-                            <span>Due after 15 days</span>
-                        </label>
-                    </div>
-                    <ul class="list-inline list-description">
-                        <li><span>Assign To:</span> Pramodkumar Mahagen</li>
-                        <li><span>Priority:</span> High</li>
-                        <li><span>Repeat:</span> Never</li>
-                    </ul>
-                    </div>
-                </div>
-                              <div class="form-footer clearfix mt">
-                <div class="pull-right mr">
-                  <input type="button" value="Cancel" class="btn btn-sm btn-default">
-                  <input type="button" value="Finish" class="btn btn-sm btn-primary">
-                </div>
-              </div>
-            </div>
+              <div id="offboardTasksList"></div>
+              
+              
           </div>
           <!-- STYLED IN FORMS.CSS --> 
         </div>
@@ -443,9 +463,195 @@
     </div>
   </section>
 
-  
- 
   <jsp:include page="../masterFooter.jsp" />
+  
+  <div id="divResignationAttachmentTd1" style="display: none; float: left;">
+			<div id='REPLACEROWIDResignationdocFileuploadFileGroup'>
+	  			<input type='file' name='REPLACEROWIDresignationdocFile' id='REPLACEROWIDresignationdocFile' class="timesheetAttachmentValidation" onchange='validateResignationUploadFile(REPLACEROWID)'> 
+	  			<i class="fa fa-times" onclick="removeResignationAttachmentRow(REPLACEROWID);"></i>
+	  		</div>
+</div>
+
+<div id="divOffboardPackAttachmentTd1" style="display: none; float: left;">
+			<div id='REPLACEROWIDOffboardPackdocFileuploadFileGroup'>
+	  			<input type='file' name='REPLACEROWIDoffboardPackdocFile' id='REPLACEROWIDoffboardPackdocFile' class="timesheetAttachmentValidation" onchange='validateOffboardPackUploadFile(REPLACEROWID)'> 
+	  			<i class="fa fa-times" onclick="removeOffboardPackAttachmentRow(REPLACEROWID);"></i>
+	  		</div>
+</div>
+
+
+
+
+<script>
+function addResignationAttachment(){  
+			var checkMaxTsRowNum = $("#resignationAttcahmentMaxRowNumber").val();
+			var tbl = document.getElementById("resignationAttachmentTable");
+			var maxRowNum = parseInt($("input[name = 'resignationAttcahmentMaxRowNumber']").val());
+			$("input[name = 'resignationAttcahmentMaxRowNumber']").val(maxRowNum + 1);
+			
+			
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", "divAttachmentResignationRow" + maxRowNum);
+			
+			
+			var cell0 = row.insertCell(0);
+			var divAttachmentTdStr = document.getElementById("divResignationAttachmentTd1").innerHTML;
+			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+			cell0.innerHTML = divAttachmentTdStr;
+			
+			
+}			
+</script>
+
+
+<script>
+function addOffboardPackAttachment(){  
+			var checkMaxTsRowNum = $("#offboardPackAttcahmentMaxRowNumber").val();
+			var tbl = document.getElementById("offboardPackAttachmentTable");
+			var maxRowNum = parseInt($("input[name = 'offboardPackAttcahmentMaxRowNumber']").val());
+			$("input[name = 'offboardPackAttcahmentMaxRowNumber']").val(maxRowNum + 1);
+			
+			
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", "divAttachmentOffboardPackRow" + maxRowNum);
+			
+			
+			var cell0 = row.insertCell(0);
+			var divAttachmentTdStr = document.getElementById("divOffboardPackAttachmentTd1").innerHTML;
+			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+			cell0.innerHTML = divAttachmentTdStr;
+			
+			
+}			
+</script>
+	
+<script type="text/javascript">
+	function removeResignationAttachmentRow(rowId) {
+		 document.getElementById("divAttachmentResignationRow"+rowId).style.display = 'none';
+		 document.getElementById("divAttachmentResignationRow"+rowId).value= '';
+		 var  rId = "divAttachmentResignationRow"+rowId;
+		  var r = document.getElementById("resignationAttachmentTable").rows[rId];
+          var count = 2*(r.cells.length);
+		    for(i=0;i<=count;i++){
+		        r.deleteCell(0);
+		    } 
+		 
+	}
+</script>
+
+
+
+<script type="text/javascript">
+function validateResignationUploadFile(id)
+{
+	 var selectedFile = $('#'+id+'resignationdocFile').val();
+	  if(validate_fileupload(selectedFile)){
+		   var docSize = $('#'+id+'resignationdocFile')[0].files[0].size;
+	       $("#"+id+"ResignationdocFileuploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  $('#'+id+'ResignationdocFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+	    	  $('#'+id+'ResignationdocFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+			  $('#'+id+'resignationdocFile').attr('record-exist','yes');
+			  $('#'+id+'resignationdocFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+	      }else{
+	    	 $('input#'+id+'resignationdocFile').removeAttr( "record-exist record-exist-errormsg");
+   		 $('#'+id+'ResignationdocFileuploadFileGroup').find('p.jquery_form_error_message').remove(); 
+	      }
+	  }
+	  else{
+		      $('#'+id+'ResignationdocFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+		      $('#'+id+'ResignationdocFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Invalid Format</span>");
+			  $('#'+id+'resignationdocFile').attr('record-exist','yes');
+			  $('#'+id+'resignationdocFile').attr('record-exist-errorMsg','Invalid Format'); 
+	  }
+	
+}
+</script>
+
+
+
+<script>
+function addOffboardPackAttachment(){  
+			var checkMaxTsRowNum = $("#offboardPackAttcahmentMaxRowNumber").val();
+			var tbl = document.getElementById("offboardPackAttachmentTable");
+			var maxRowNum = parseInt($("input[name = 'offboardPackAttcahmentMaxRowNumber']").val());
+			$("input[name = 'offboardPackAttcahmentMaxRowNumber']").val(maxRowNum + 1);
+			
+			
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", "divAttachmentOffboardPackRow" + maxRowNum);
+			
+			
+			var cell0 = row.insertCell(0);
+			var divAttachmentTdStr = document.getElementById("divOffboardPackAttachmentTd1").innerHTML;
+			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+			cell0.innerHTML = divAttachmentTdStr;
+			
+			
+}			
+</script>
+	
+<script type="text/javascript">
+	function removeOffboardPackAttachmentRow(rowId) {
+		 document.getElementById("divAttachmentOffboardPackRow"+rowId).style.display = 'none';
+		 document.getElementById("divAttachmentOffboardPackRow"+rowId).value= '';
+		 var  rId = "divAttachmentOffboardPackRow"+rowId;
+		  var r = document.getElementById("offboardPackAttachmentTable").rows[rId];
+          var count = 2*(r.cells.length);
+		    for(i=0;i<=count;i++){
+		        r.deleteCell(0);
+		    } 
+		 
+	}
+</script>
+
+
+
+<script type="text/javascript">
+function validateOffboardPackUploadFile(id)
+{
+	 var selectedFile = $('#'+id+'offboardPackdocFile').val();
+	  if(validate_fileupload(selectedFile)){
+		   var docSize = $('#'+id+'offboardPackdocFile')[0].files[0].size;
+	       $("#"+id+"OffboardPackdocFileuploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  $('#'+id+'OffboardPackdocFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+	    	  $('#'+id+'OffboardPackdocFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+			  $('#'+id+'offboardPackdocFile').attr('record-exist','yes');
+			  $('#'+id+'offboardPackdocFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+	      }else{
+	    	 $('input#'+id+'offboardPackdocFile').removeAttr( "record-exist record-exist-errormsg");
+   		 $('#'+id+'OffboardPackdocFileuploadFileGroup').find('p.jquery_form_error_message').remove(); 
+	      }
+	  }
+	  else{
+		      $('#'+id+'OffboardPackdocFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+		      $('#'+id+'OffboardPackdocFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Invalid Format</span>");
+			  $('#'+id+'offboardPackdocFile').attr('record-exist','yes');
+			  $('#'+id+'offboardPackdocFile').attr('record-exist-errorMsg','Invalid Format'); 
+	  }
+	
+}
+</script>
+
+<script type="text/javascript">
+function validate_fileupload(fileName)
+{
+
+    var allowed_extensions = new Array("ppt", "pptx", "pps", "ppsx", "doc", "docx", "pdf", "rtf", "odt", "xls", "xlsx", "csv", "zip", "txt", "jpg","jpeg","bmp","png","gif","eps","tiff","TGA","psd","svg","msg","wpd","wps");
+    var file_extension = fileName.split('.').pop(); 
+
+    for(var i = 0; i <= allowed_extensions.length; i++)
+    {
+        if(allowed_extensions[i] != null && allowed_extensions[i] != '' && allowed_extensions[i] != 'undefined' && allowed_extensions[i]==file_extension.toLowerCase())
+        {
+            return true; // valid file extension
+        }
+    }
+
+    return false;
+}
+</script>
   
   
   <script>
@@ -503,12 +709,118 @@
   </script>
   
   
+  <script>
+function getTemplateResignationDocumentsDetails(offboardId){
+	if(offboardId == '' || offboardId == null || offboardId =='undefined'){
+		offboardId = document.getElementById("candidateOffBoardId").value;
+	}
+	var documentType = "Resignation"
+	if(offboardId){
+		var sourceleadUrl ='${sourceleadUrl}';
+	     $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/getCandidateOffboardDocumentByOffboardId?${_csrf.parameterName}=${_csrf.token}&offboardId="+offboardId+"&documentType="+documentType, 
+		        success: function(data) {
+		        	
+		        	 var json = JSON.parse(data);
+		        	 var result = "";
+		        	 
+                	 for (var i = 0; i < json.length; i++) { 
+                		 var opt = json[i]; 
+                		 result = result +"<strong id='resignationdocument"+opt.id+"'>";
+                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadOffboardDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
+           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
+           				 result = result +"</a>";
+           				
+           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+         					result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument("+opt.id+",\""+documentType+"\");' >"; 
+        				 }else{
+        					result = result +"<input class='dele' type='button' onClick='deleteOffBoardingDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
+        				 }
+           				 
+           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+            					result = result +"<input type='hidden' name='savedResignationAttcahments' id='resignationAttachment"+opt.id+"' value='"+opt.id+"' />";
+           				  }
+           				 
+           				 result = result +"</strong>";
+                	 }
+                	 
+                	 result = result +"<input type='hidden' name='resignationAttcahmentMaxRowNumber'  id='resignationAttcahmentMaxRowNumber' value='1' />";
+                	 result = result +"<table class='timesheetAttachment' id='resignationAttachmentTable' cellpadding='0' cellspacing='0'>";
+                	 result = result +"<tr id='divAttachmentTsRow0'>";
+                	 result = result +"<td><div id='0ResignationdocFileuploadFileGroup'><input type='file' name='0resignationdocFile' id='0resignationdocFile' field-name='Attachment' onchange='validateResignationUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addResignationAttachment()'></i></div></td>";
+                	 result = result +"</tr>";
+                	 result = result +"</table>";
+                	 $("#savedResignationAttachments").empty();
+                	 $("#savedResignationAttachments").append(result);
+                	 $("#offboardTasksList").empty();
+			        
+		        },
+		    });
+	}
+}
+</script>
+
+
+
+<script>
+function getTemplateOffboardPackDocumentsDetails(offboardId){
+	if(offboardId == '' || offboardId == null || offboardId =='undefined'){
+		offboardId = document.getElementById("candidateOffBoardId").value;
+	}
+	
+	var documentType = "Offboard Pack"
+	if(offboardId){
+		var sourceleadUrl ='${sourceleadUrl}';
+	     $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/getCandidateOffboardDocumentByOffboardId?${_csrf.parameterName}=${_csrf.token}&offboardId="+offboardId+"&documentType="+documentType, 
+		        success: function(data) {
+		        	
+		        	 var json = JSON.parse(data);
+		        	 var result = "";
+		        	 
+                	 for (var i = 0; i < json.length; i++) { 
+                		 var opt = json[i]; 
+                		 result = result +"<strong id='offboardPackdocument"+opt.id+"'>";
+                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadTemplateDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
+           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
+           				 result = result +"</a>";
+
+           				 if(opt.offboardDocumentType != 'Candidate Documents'){
+           					result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument("+opt.id+",\""+documentType+"\");' >"; 
+           				 }else{
+           					result = result +"<input class='dele' type='button' onClick='deleteOffBoardingDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
+           				 }
+           				 
+           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+         					result = result +"<input type='hidden' name='savedOffboardPackAttcahments' id='offboardPackAttachment"+opt.id+"' value='"+opt.id+"' />";
+        				  }
+           				 
+           				 result = result +"</strong>";
+                	 }
+                	 
+                	 result = result +"<input type='hidden' name='offboardPackAttcahmentMaxRowNumber'  id='offboardPackAttcahmentMaxRowNumber' value='1' />";
+                	 result = result +"<table class='timesheetAttachment' id='offboardPackAttachmentTable' cellpadding='0' cellspacing='0'>";
+                	 result = result +"<tr id='divAttachmentTsRow0'>";
+                	 result = result +"<td><div id='0OffboardPackdocFileuploadFileGroup'><input type='file' name='0offboardPackdocFile' id='0offboardPackdocFile' field-name='Attachment' onchange='validateOffboardPackUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addOffboardPackAttachment();'></i></div></td>";
+                	 result = result +"</tr>";
+                	 result = result +"</table>";
+                	 $("#savedOffboardPackAttachments").empty();
+                	 $("#savedOffboardPackAttachments").append(result);
+                	 $("#offboardTasksList").empty();
+			        
+		        },
+		    });
+	}
+}
+</script>
+  
+  
+  
   
 <script>
   $( function() {
-	  
-	 
-
 	  
 	  $('#endDate').datepicker({
 	      dateFormat: 'dd-mm-yy',
@@ -524,6 +836,817 @@
 	  
   } );
 </script>
+
+<script>
+function loadOffBoardingTemplates(offboardTemplateId){
+	
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/getOffboardingTemplatesForCandidateOffBoarding?${_csrf.parameterName}=${_csrf.token}",	    	   
+	    success: function(data) {
+	    	 var json = JSON.parse(data);
+        	 var result = "";
+        	
+        	for (var i=0; i<json.length; i++)
+			{
+        		var report = json[i];
+        		if(offboardTemplateId != null && offboardTemplateId != "" && offboardTemplateId !="undefined"){
+        			var templateId = offboardTemplateId.split(",");
+        			var selected = '';
+        			for(var j=0; j<templateId.length; j++){
+        				if(templateId[j] == report.id){
+        					selected = 'selected';
+        				}
+        			}
+        			
+        		}
+        		
+        		result = result +'<option value='+report.id+' '+selected+'>'+report.templateName+'</option>';
+			}
+        	 
+        	 $("#offboardingTemplate").empty();
+           	 $("#offboardingTemplate").append(result); 
+           	 $('#offboardingTemplate').trigger("chosen:updated");
+	    }
+   });
+}
+</script>
+
+
+
+<script>
+ function saveOffboardingCandidateDetails(saveType){
+	 
+	 var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+	         }; 
+	 
+	 if ($('#offboardCandidate_form').validate(false, validationSettings)){ 
+		    var frm = $('#offboardCandidate_form').serializeFormJSON();
+	        var con = JSON.stringify(frm);
+	        con = con.replace(/[{}]/g, "");
+	        
+	        //It will escape all the special characters
+	        var jsonData = encodeURIComponent(con);
+	        
+	        var sourceleadUrl ='${sourceleadUrl}';
+	        
+	       
+	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/saveOffboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+		        success: function(offboardId) {
+		        	
+		        	if(saveType == 'saveAndContinue'){
+		        		var $tabs = $('.tabbable li');
+		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
+		     	        document.getElementById("templateDocs").disabled = false;
+		     	        
+		     	       getTemplateResignationDocumentsDetails(offboardId);
+		     	       getTemplateOffboardPackDocumentsDetails(offboardId);
+		     	      
+		     	       
+		     	       $("#documentstemplateId").val(offboardId);
+		        	}
+		        	
+	     	        $("#candidateOffBoardId").val(offboardId);
+	     	        $("#loading").removeAttr("style");
+		        },
+		    }); 
+	        return true;
+		
+	  }else{
+		return false;
+	  }
+ }
+ 
+ $('body').on('blur', '#offboardCandidate_form', function() {
+		$("#offboardCandidate_form").showHelpOnFocus();
+		$("#offboardCandidate_form").validateOnBlur(false, validationSettings);  
+	});
+ </script> 
+ 
+ 
+ <script>
+ function getNoticePeriod(){
+	 var noticePeriod = document.getElementById("noticePeriod").value;
+	 if(noticePeriod != '' && noticePeriod != null && noticePeriod != 'undefined'){
+		 document.getElementById("workInNotice").style.display="";
+	 }else{
+		 document.getElementById("workInNotice").style.display="none";
+	 }
+ }
+ </script>
+ 
+ 
+ <script>
+ function loadOffboardingUser(offBoardingUUID){
+	 
+	 
+	 if(offBoardingUUID == null && offBoardingUUID == "" && offBoardingUUID =="undefined"){
+		 offBoardingUUID = document.getElementById("candidateOffBoardUUID").value;
+	 }
+	 
+	 if(offBoardingUUID){
+	
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	    $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/loadOffboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&offBoardingUUID="+offBoardingUUID, 
+	        success: function(data) {
+	        	
+	        	 var json = JSON.parse(data);
+	        	 
+	        	 var result = "";
+	        	 var selected = 'selected';
+	        	 result = result +'<option disabled selected>--Select User--</option>';
+	        	 result = result +'<option value='+json['offBoardUserId']+' '+selected+' >'+json['candidateName']+'</option>';
+	        	 $("#offboardUser").empty();
+	           	 $("#offboardUser").append(result); 
+	           	 $('#offboardUser').trigger("chosen:updated");
+	        	
+	        	$("#firstName").val(json['firstName']);
+	        	
+	        	if(json['lastName'] != null && json['lastName'] != "" && json['lastName'] !="undefined"){
+	        		$("#lastName").val(json['lastName']);
+	        	}
+	        	
+	        		        	
+	        	
+	        	$("#mobileNumber").val(json['mobileNumber']);
+		    	$("#email").val(json['email']);
+		    	$("#role").val(json['role']);
+		    	
+		    	
+		    	$("#dateOfJoin").val(json['dateOfJoinStr']);
+		    	
+		    	if(json['endDateStr'] != null && json['endDateStr'] != "" && json['endDateStr'] !="undefined"){
+		    		$("#endDate").val(json['endDateStr']);
+		    	}
+		    	
+		    	if(json['reason'] != null && json['reason'] != "" && json['reason'] !="undefined"){
+		    		$("#reason").val(json['reason']);
+			    	$('#reason').trigger("chosen:updated");
+		    	}
+		    	
+		    	
+		    	if(json['noticePeriod'] != null && json['noticePeriod'] != "" && json['noticePeriod'] !="undefined"){
+		    		$("#noticePeriod").val(json['noticePeriod']);
+			    	$('#noticePeriod').trigger("chosen:updated");
+			    	document.getElementById("workInNotice").style.display="";
+			    	
+			    	if(json['haveToWorkInNoticePeriod'] == 'Y'){
+			    		$("#checkedY").val(json['haveToWorkInNoticePeriod']);
+			    		document.getElementById('checkedY').checked = true;
+			    	}else{
+			    		$("#checkedN").val(json['haveToWorkInNoticePeriod']);
+			    		document.getElementById('checkedN').checked = true;
+			    	}
+			    	
+			    	
+			    	
+		    	}else{
+		    		document.getElementById("workInNotice").style.display="none";
+		    	}
+		    	
+		    	
+		    	if(json['explanation'] != null && json['explanation'] != "" && json['explanation'] !="undefined"){
+		    		$("#explanation").val(json['explanation']);
+		    	}
+		    	
+		    	if(json['effectiveDate'] != null && json['effectiveDate'] != "" && json['effectiveDate'] !="undefined"){
+		    		$("#effectiveDate").val(json['effectiveDateStr']);
+		    	}
+		    	
+		    	if(json['offboardTemplateId'] != null && json['offboardTemplateId'] != "" && json['offboardTemplateId'] !="undefined"){
+		    		loadOffBoardingTemplates(json['offboardTemplateId']);
+		    	}
+		    	
+		    	$("#savedoffboardId").val(json['id']);
+		    	
+		    	$("#loading").removeAttr("style");
+	        },
+	    });
+	 }
+ }
+ </script>
+ 
+ <script>
+function deleteOffBoardingDocument(documentUUID,documentId,documentType){
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	   $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/deleteOffBoardingDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
+	        success: function(data) {
+	        	if(data == 'success'){
+	        		if(documentType == 'Resignation'){
+	        			document.getElementById("resignationdocument"+documentId).remove();
+	        		}else if(documentType == 'Offboard Pack'){
+	        			document.getElementById("offboardPackdocument"+documentId).remove();
+	        		}
+	        		
+	        	}
+	        },
+	    });
+	 
+}
+</script>
+
+<script>
+function deleteTemplateDocument(documentId,documentType){
+	
+	if(documentType == 'Resignation'){
+		document.getElementById("resignationdocument"+documentId).remove();
+		document.getElementById("resignationAttachment"+documentId).remove();
+	}
+	else if(documentType == 'Offboard Pack'){
+		document.getElementById("offboardPackdocument"+documentId).remove();
+		document.getElementById("offboardPackAttachment"+documentId).remove();
+	}
+	 
+}
+</script>
+
+
+<script>
+function createTemplateDocs(saveType){
+	var validationSettings = {
+	        errorMessagePosition : 'element',
+	       borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+         }; 
+	
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  
+	  var frm = $('#templateDocuments_form').serializeFormJSON();
+      var con = JSON.stringify(frm);
+      con = con.replace(/[{}]/g, "");
+      
+      //It will escape all the special characters
+      var jsonData = encodeURIComponent(con);
+      
+	   var form = $('#templateDocuments_form')[0];
+	   var formData = new FormData(form); 
+	
+   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$.ajax({
+        type : "POST",
+	      data: formData,
+	      contentType : 'application/json; charset=utf-8',
+	      enctype: 'multipart/form-data',
+        processData: false,
+        contentType:false,
+	      dataType : 'json',
+    	  url: sourceleadUrl+"/saveCandidatedOffboardingDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,		
+	      success :function(result) {
+	    	  
+	    	  if(saveType == 'saveAndContinue'){
+	        		var $tabs = $('.tabbable li');
+	     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
+	     	        document.getElementById("templateTasks").disabled = false;
+	     	        getOffboardingCheckList();
+	        	}else{
+	        		getTemplateResignationDocumentsDetails();
+	     	        getTemplateOffboardPackDocumentsDetails();
+	        	}
+	    	  $("#loading").removeAttr("style");
+	    	  
+	      }
+    	  
+  });
+}
+</script>
+
+<script>
+function getOffboardingCheckList(){
+	
+	
+	var result = "";
+	var candidateOffBoardId = document.getElementById("candidateOffBoardId").value;
+	var sourceleadUrl ='${sourceleadUrl}';
+	var locationId = '${SourceLeadWeb_orgLocationId}';
+	
+	result = result + '<div class="clearfix">';
+	        result = result + '</div>';
+	        result = result + '<div id="sjfb-wrap">';
+	        result = result + '<div id="offboardcheckListLoading"></div>';
+	           result = result + '<form id="sjfb" novalidate>';
+	           result = result + '<input type="hidden" id="checkListoffboardId" name="checkListoffboardId"  value="'+candidateOffBoardId+'">';
+	           
+		    	
+		    	result = result + '<div class="clearfix mb mt">';
+		    	
+		    	result = result + '<div class="col-md-10">';
+		    	result = result + '<p>Add Check List</p>';
+		    	result = result + '</div>';
+		    	
+		    	result = result + '<div class="col-md-2">';
+		        result = result + '<div class="dropdown">';
+		        result = result + '<button class="btn btn-success dropdown-toggle btn-block" type="button" data-toggle="dropdown" id="addFiled-dropdown">Add Field &nbsp;&nbsp;';
+		        result = result + '<span class="caret"></span></button>';
+		        result = result + '<ul id="add-field" class="dropdown-menu pull-right">';
+		        result = result + ' <li><a id="add-checkbox" data-type="checkbox" onclick="scrollToBottom();" href="javascript:void(0)">Check Box</a></li>';
+		        result = result + '<li><a id="add-radio" data-type="radio" onclick="scrollToBottom();"  href="javascript:void(0)">Radio Button</a></li>';
+		        result = result + '<li><a id="add-textarea" data-type="textarea" onclick="scrollToBottom();" href="javascript:void(0)">Text Area</a></li>';
+		        result = result + '</ul>';
+		        result = result + '</div>';
+		        result = result + '</div>';
+		        result = result + '</div>';
+		        
+		        result = result + '<div class="clearfix mb row">';
+	           
+	           result = result + '<div id="form-fields">';
+	           result = result + '</div>';
+	           result = result + '<div class="form-footer clearfix row mt">';
+	           
+	           result = result + '<div class="pull-right mr">';
+	           
+	           result = result +"<input type='button' value='Save' id='save_button'  onclick='createOffboardCheckList(\"save\");' class='btn btn-sm btn-success'>";
+	           result = result +"<input type='button' value='Save and Continue' id='save_continue_button'  onclick='createOffboardCheckList(\"saveAndContinue\");'  class='btn btn-sm btn-primary'>";
+	           
+	           result = result + '</div>';
+
+	           result = result + '</div>';
+	           result = result + '</form>';
+
+	      
+	           result = result + '</section>';
+	           
+	           result = result + '<div id="popUp"></div>'; 
+	           result = result + '<div id="choicepopUp"></div>'; 
+	           
+	           $("#offboardingCheckList").empty();
+	           $("#offboardingCheckList").append(result); 
+	           $("#offboardTasksList").empty();
+	           customizeFields(candidateOffBoardId,sourceleadUrl,"offboarding");
+	           
+	
+}
+</script>
   
   
+ <script>
+function createOffboardCheckList(saveType){
+	
+	var validationSettings = {
+	        errorMessagePosition : 'element',
+	       borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+         }; 
+	
+	  if ($('#sjfb').validate(false, validationSettings)){ 
+		   
+	        var frm = $('#sjfb').serializeFormJSON();
+	        var con = JSON.stringify(frm);
+	        con = con.replace(/[{}]/g, "");
+	        var jsonData = encodeURIComponent(con);
+	        var isRemoved = '';
+	        var isLabelModified = 'N';
+	        //Loop through fields and save field data to array
+	        var fields = [];
+	        var submitTemplate = true;
+	        var fieldLabel = '';
+	        var myArray = new Array();
+	        $('.field').each(function() {
+
+	            var $this = $(this);
+
+	            //field type
+	            var fieldType = $this.data('type');
+
+	            //field label
+	            fieldLabel = $this.find('.field-label').val();
+
+	            //field required
+	            var fieldReq = $this.hasClass('required') ? 1 : 0;
+	            
+	            
+	            if(fieldType == 'checkbox' || fieldType == 'radio' ||  fieldType == 'select'){
+	            	if($this.find('.choices li').length == 0) {
+	            		submitTemplate = false;
+	            		alertMessage("Provide choice for "+fieldLabel)
+	            	}
+	            }
+	            
+	           
+	            myArray.push(fieldLabel);
+	            
+	            
+
+	            //check if this field has choices
+	            if($this.find('.choices li').length >= 1) {
+
+	                var choices = [];
+
+	                $this.find('.choices li').each(function() {
+
+	                    var $thisChoice = $(this);
+
+	                    //choice label
+	                    var choiceLabel = $thisChoice.find('.choice-label').val();
+
+	                    //choice selected
+	                    var choiceSel = $thisChoice.hasClass('selected') ? 1 : 0;
+
+	                    if($thisChoice.find('.choice-label').val() != null && $thisChoice.find('.choice-label').val() != '' && $thisChoice.find('.choice-label').val() != 'undefined'){
+		                    choices.push({
+		                        label: choiceLabel,
+		                        sel: choiceSel
+		                    });
+	                    }
+
+	                });
+	            }
+	            
+	            
+	            
+	            /* if(fieldLabel == 'First Name'  || fieldLabel == 'Phone Number'  
+	        		|| fieldLabel == 'Email Id' || fieldLabel == 'DOB' || fieldLabel == 'Current / Last Company' || fieldLabel == 'Designation' 
+	        		|| fieldLabel == 'Education' || fieldLabel == 'Work Experience' || fieldLabel == 'Current CTC' || fieldLabel == 'Expected CTC' 
+	        		|| fieldLabel == 'Notice Period'){
+	        	
+	            	isRemoved = 'N';
+	            }else{
+	            	isRemoved = 'Y';
+	            } */
+	            
+	            isRemoved = 'Y';
+	            
+	            fields.push({
+	                type: fieldType,
+	                label: fieldLabel,
+	                req: fieldReq,
+	                choices: choices,
+	                isRemoved : isRemoved,
+	                isLabelModified : isLabelModified
+	            });
+
+	        });
+	        
+	        for (var i = 0; i < myArray.length; i++) 
+	        {
+	            for (var j = 0; j < myArray.length; j++) 
+	            {
+	                if (i != j) 
+	                {
+	                    if (myArray[i].toLowerCase() == myArray[j].toLowerCase()) 
+	                    {
+	                    	submitTemplate = false;
+	                    	alertMessage(myArray[i]+" label duplicated")
+	                    }
+	                }
+	            }
+	        }
+	        
+	        
+	        var sourceleadUrl ='${sourceleadUrl}';
+	        //Save form to database
+	        //Demo doesn't actually save. Download project files for save
+	        var con2 = JSON.stringify(fields);
+	        var jsonStringData = encodeURIComponent(con2);
+	        
+	        if(submitTemplate){
+	        	 $("#offboardcheckListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	        	  $.ajax({
+	      	    	type: "POST",
+	      	        url: sourceleadUrl+"/saveCandidateOffboardCheckList?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
+	      	        success: function(result) {
+	      	        	if((result == 'home')){
+	      	        		
+	      	        		 if(saveType == 'saveAndContinue'){
+	      		        		var $tabs = $('.tabbable li');
+	      		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
+	      		     	        document.getElementById("templateTasks").disabled = false;
+	      		     	        getOffboardingTasksList();
+	      		        	}else{
+	      		        		getOffboardingCheckList();
+	      		        	}
+	      		        } 
+	      	        	
+	      	        	 $("#offboardcheckListLoading").removeAttr("style");
+	      	        },
+	      	    });  
+	              return true;
+	        }else{
+	        	alertMessage("Provide choice for "+fieldLabel)
+	        }
+		
+	  }else{
+		return false;
+	  }
+}
+
+$('body').on('blur', '#sjfb', function() {
+    $("#sjfb").showHelpOnFocus();
+    $("#sjfb").validateOnBlur(false, validationSettings);  
+});
+</script> 
+
+
+
+
+
+
+
+
+<script>
+function getOffboardingTasksList(){
+	var offboardId = document.getElementById("candidateOffBoardId").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	var locationId = '${SourceLeadWeb_orgLocationId}';
+	
+	if(offboardId != null && offboardId != '' && offboardId!= 'undefined'){
+	
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/getCandidateOffboardTasksList?${_csrf.parameterName}=${_csrf.token}&offboardId="+offboardId,	    	   
+	    success: function(data) {
+	    	 var json = JSON.parse(data);
+        	 var result = "";
+        	 
+        	if(json.length > 0){ 
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var report = json[i];
+	        		
+	        		var prority = '';
+	        		var repeat = '';
+	        		
+	        		if(report.priority != null && report.priority != '' && report.priority != 'undefined'){
+	        			prority = report.priority;
+	        		}else{
+	        			prority = '----';
+	        		}
+	        		
+	        		if(report.taskRepeat != null && report.taskRepeat != '' && report.taskRepeat != 'undefined'){
+	        			repeat = report.taskRepeat;
+	        		}else{
+	        			repeat = '----';
+	        		}
+	        		
+	        		result = result +'<div class="clearfix taskwidget_inner" id="offboardTask'+report.id+'">';
+	        		result = result +'<div class="media-body">';
+	        		result = result +'<div class="clearfix taskheder">';
+	        		
+	        		result = result +"<label> <span class='paddingRight'>Subject:</span> <strong class='text-primary'>"+report.taskName+"</strong><i class='fa fa-trash text-danger paddingLeft' onClick='deleteTask("+report.id+",\""+report.offboardTaskType+"\");'></i></label>";
+	        		
+	        		result = result +'<label class="small pull-right text-muted"> <span>'+report.dueAfterString+'</span> </label>';
+	        		result = result +'</div>';
+	        		result = result +'<ul class="list-inline list-description mt10">';
+	        		
+	        		result = result +'<li><span>Assign To:</span>';
+	        		
+	        		if(report.usersList.length > 0){
+	        			for(var j=0; j<report.usersList.length; j++){
+		 					result = result +'<label>'+report.usersList[j]+'</label>';
+		 				}
+	        		}else{
+	 					result = result +'Offboarding Candidate';
+	 				}
+	        		result = result +'</li>';
+	        		
+	        		result = result +'<li><span>Priority:</span>'+prority+'</li>';
+	        		result = result +'<li><span>Repeat:</span> '+repeat+'</li>';
+	        		result = result +'</ul>';
+	        		result = result +'</div>';
+	        		result = result +'</div>';
+        		   
+	        		if(report.offboardTaskType != 'Candidate Task'){
+       					result = result +"<input type='hidden' name='savedTemplateTask' id='templateTask"+report.id+"' value='"+report.id+"' />";
+       				}
+				}
+        	}else{
+        		result = result +'<div><h4>No Tasks Found</h4></div>';
+        	}
+        	
+        	result = result +'<div class="form-footer clearfix mt">';
+    		result = result +'<div class="pull-right mr">';
+    		result = result +'<input type="button" value="Finish" onclick="saveAndFinishOffboardTemplate('+offboardId+');" class="btn btn-sm btn-primary">';
+    		result = result +'</div>';
+    		result = result +'</div>';
+    		
+    		 $("#offboardTasksList").empty();
+    		 $("#offboardingCheckList").empty();
+    		 
+           	 $("#offboardTasksList").append(result); 
+    		
+        	 
+	    }
+   }); 
+	
+  $("#loading").removeAttr("style");
+}
+	
+}
+</script>
+
+
+<script>
+function saveAndFinishOffboardTemplate(offboardId){
+	
+	var tasksIds = document.getElementsByName("savedTemplateTask");
+	var tasks = '';
+	for(var i=0; i < tasksIds.length; i++){
+		tasks = tasks+tasksIds[i].value+",";
+	}
+	
+	tasks = tasks.substring(0, tasks.length - 1);
+	
+	
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/saveAndFinishCandidateOffboard?${_csrf.parameterName}=${_csrf.token}&offboardId="+offboardId+"&tasks="+tasks, 	    	   
+	    success: function(data) {
+       	 
+	    	location.replace(sourceleadUrl+"/candidateOnBoardingList");  
+	    }
+  });   
+	
+
+}
+</script>
+
+  <script>
+  function flushOffboardTask(){
+	  document.getElementById("addoffboardTask_form").reset();
+  }
+  </script>
   
+  <script>
+function deleteTask(taskId,taskType){
+	
+	alert(taskType);
+	
+	if(taskType != 'Candidate Task'){
+		document.getElementById("offboardTask"+taskId).remove();
+		document.getElementById("templateTask"+taskId).remove()
+	}else{
+		
+		var sourceleadUrl ='${sourceleadUrl}';
+		   $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/deleteOffboardTaskByTaskId?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
+		        success: function(data) {
+		        	if(data == 'success'){
+		        		document.getElementById("offboardTask"+taskId).remove();
+		        		
+		        	}
+		        },
+		    });
+	}
+}
+</script>
+
+
+<script>
+  function validateAssignToType(assignToType){
+	  if(assignToType == 'assingToUser'){
+		  document.getElementById("assignToUserDiv").style.display="";
+		  $('#offboardAssignedTo').removeAttr('data-validation-optional');
+		  $("#offboardAssignedTo").attr("data-validation", "required");
+		 
+	  }else{
+		  document.getElementById("assignToUserDiv").style.display="none";
+		  $('#offboardAssignedTo').removeAttr('data-validation');
+		  $("#offboardAssignedTo").attr("data-validation-optional", "true");
+		  getAssignToUsersList();
+	  }
+  }
+  </script>
+  
+  
+  <script>
+  function validateDueAfter(){
+	  
+	  var taskMonths = document.getElementById("taskMonths").value;
+	  var taskDays = document.getElementById("taskDays").value;
+	  /* var taskHours = document.getElementById("taskHours").value;
+	  var taskMinutes = document.getElementById("taskMinutes").value; */
+	  
+	  
+	  if(taskMonths == '' && taskDays == '' ){
+			  $('#taskMonths').removeAttr('data-validation-optional');
+			  $("#taskMonths").attr("data-validation", "required");
+		    
+	  }else{
+		  $('#taskMonths').removeAttr('data-validation');
+		  $("#taskMonths").attr("data-validation-optional", "true");
+		    
+	  }  
+	  
+  }
+  </script>
+
+<script>
+function getAssignToUsersList(){
+	var candidateOffBoardId = document.getElementById("candidateOffBoardId").value;
+    $("#candidateOffboardTaskId").val(candidateOffBoardId);
+    
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
+	    success: function(data) {
+	    	 var json = JSON.parse(data);
+        	 var result = "";
+        	for (var i=0; i<json.length; i++)
+			{
+        		var report = json[i];
+        		result = result +'<option value='+report.userId+' >'+report.userName+'</option>';
+			}
+        	 $("#offboardAssignedTo").empty();
+           	 $("#offboardAssignedTo").append(result); 
+           	 $('#offboardAssignedTo').trigger("chosen:updated");
+	    }
+   }); 
+}
+</script>
+
+
+<script>
+function saveOffboardTask(){
+	
+	var validationSettings = {
+	        errorMessagePosition : 'element',
+	       borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+         }; 
+	
+	  if ($('#addoffboardTask_form').validate(false, validationSettings)){ 
+		    var frm = $('#addoffboardTask_form').serializeFormJSON();
+	        var con = JSON.stringify(frm);
+	        con = con.replace(/[{}]/g, "");
+	        
+	        //It will escape all the special characters
+	        var jsonData = encodeURIComponent(con);
+	        
+	        var sourceleadUrl ='${sourceleadUrl}';
+	        
+	       
+	        $("#offboardtasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	        $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/saveCandidateOffBoardTasks?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+		        success: function(result) {
+		        	if(result == 'success'){
+		        		$("#offboardtasksLoading").removeAttr("style");
+			        	flushOffboardTask();
+			        	getAssignToUsersList();
+			        	getOffboardingTasksList();
+		        	}
+		        	
+		        },
+		    });  
+	        return true;
+		
+	  }else{
+		return false;
+	  }
+}
+
+$('body').on('blur', '#addonboardTask_form', function() {
+	$("#addonboardTask_form").showHelpOnFocus();
+	$("#addonboardTask_form").validateOnBlur(false, validationSettings);  
+});
+</script>
+
+
+<div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div>  
+  
+  
+<script>
+function scrollToBottom(){
+	var documentHeight = document.documentElement.offsetHeight;
+	var viewportHeight = window.innerHeight;
+	window.scrollTo(0,documentHeight-viewportHeight);
+}
+</script>
+  
+  <script>
+// Back To Top 
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 200) {
+            $('.backtotop').fadeIn('slow');
+        } else {
+            $('.backtotop').fadeOut('slow');
+        }
+    });
+    $('.backtotop').click(function() {
+        $("html, body").animate({scrollTop: 0}, 500);
+        return false;
+    });
+</script>

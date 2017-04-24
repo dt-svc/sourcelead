@@ -103,12 +103,12 @@ public class OffboardTasksDaoImpl implements OffboardTasksDao{
 
 	@Override
 	@Transactional
-	public OnboardTasks getOffboardTasksByTaskId(Long Id) throws Exception {
+	public OffboardTasks getOffboardTasksByTaskId(Long Id) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		List<OnboardTasks> onboardTasks = session.createQuery("from OffboardTasks tasks where tasks.id =:id" ).setLong( "id", Id ).setCacheable(true).list();
-		if (onboardTasks.size() > 0) {
-			return onboardTasks.get(0);
+		List<OffboardTasks> offboardTasks = session.createQuery("from OffboardTasks tasks where tasks.id =:id" ).setLong( "id", Id ).setCacheable(true).list();
+		if (offboardTasks.size() > 0) {
+			return offboardTasks.get(0);
 		} else {
 			return null;
 		}

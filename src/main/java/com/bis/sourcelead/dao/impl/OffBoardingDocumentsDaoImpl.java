@@ -83,4 +83,60 @@ public class OffBoardingDocumentsDaoImpl implements OffBoardingDocumentsDao {
 		}
 	}
 
+
+	@Override
+	@Transactional
+	public Integer getOffboardingDocumentsByOffboardingId(Long offBoardingId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query ="select count(*) from OffBoardingDocuments documents where documents.candidateOffBoardingId.id =:offBoardingId ";
+		List<Long> offboardCount = session.createQuery(query.toString()).setLong("offBoardingId", offBoardingId).list();
+			Integer count = 0;
+			if(offboardCount != null && !offboardCount.isEmpty()){
+					count = offboardCount.get(0).intValue();
+			}
+			return count;
+	}
+
+
+	@Override
+	@Transactional
+	public List<OffBoardingDocuments> getOffBoardingDocumentsByCandidateOffBoardingId(Long candidateOffBoardingId,
+			String documentType) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from OffBoardingDocuments documents left join fetch documents.candidateOffBoardingId where documents.candidateOffBoardingId.id = :candidateOffBoardingId "
+	    		+ " and documents.documentType = :documentType and documents.status = '1' ";
+	    List<OffBoardingDocuments> documentsList = session.createQuery(query.toString()).setLong("candidateOffBoardingId", candidateOffBoardingId).setString("documentType", documentType).setCacheable(true).list();
+        return documentsList;
+		
+	}
+
+
+	@Override
+	@Transactional
+	public List<OffBoardingDocuments> getOffBoardingDocumentsByTemplateIdsList(List<Long> templateIds,
+			String documentType) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from OffBoardingDocuments documents left join fetch documents.offboardingTemplateId where documents.offboardingTemplateId.id IN (:templateIds) "
+	    		+ " and documents.documentType = :documentType and documents.status = '1' ";
+	    List<OffBoardingDocuments> documentsList = session.createQuery(query.toString()).setParameterList("templateIds", templateIds).setString("documentType", documentType).setCacheable(true).list();
+        return documentsList;
+	}
+
+
+	@Override
+	@Transactional
+	public OffBoardingDocuments getOffBoardingDocumentsById(Long id) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<OffBoardingDocuments> documents = session.createQuery("from OffBoardingDocuments documents where documents.id = :id" ).setLong( "id", id ).setCacheable(true).list();
+		if (documents.size() > 0) {
+			return documents.get(0);
+		} else {
+			return null;
+		}
+	}
+
 }

@@ -17,7 +17,7 @@ public interface OffboardTasksService {
 	
 	List<OffboardTasks> getOffboardTasksByTemplateIdList(List<Long> templateId) throws Exception;
 	
-	OnboardTasks getOffboardTasksByTaskId(Long Id) throws Exception;
+	OffboardTasks getOffboardTasksByTaskId(Long Id) throws Exception;
 	
 	List<OffboardTasks> getOffBoardTasksListAssignedToCandidateByCandidateOffBoardingId(Long candidateOffBoardingId) throws Exception;
 

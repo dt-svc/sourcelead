@@ -14,6 +14,7 @@
 	$(document).ready(function(){
 		
 		$("#onboardCount").html('${onboardCount}');
+		$("#offboardCount").html('${offboardCount}');
 		
 		getOnboardCandidatesList();
 		
@@ -47,8 +48,8 @@
               </a> 
             </li>
             
-            <li> <a href="#documents" data-toggle="tab" title="Current offboard count">
-              <div class="count"> 10 </div>
+            <li> <a href="#documents" data-toggle="tab" class="offboardCount" onclick="getOffboardCandidatesList();" title="Current offboard count">
+              <div class="count" id="offboardCount"></div>
               <h4>Current offboard</h4>
               </a> 
             </li>
@@ -61,6 +62,7 @@
           <div class="candidate_wrap_table">
 	          <div id="onboardingLoading"></div>
 	          <div id="onboardingCandidatesList"></div>
+	          <div id="offboardingCandidatesList"></div>
           </div>
         
       </div>
@@ -80,6 +82,8 @@
                		
 			    	     $("#onboardingLoading").removeAttr("style");
 	                	 $("#onboardingCandidatesList").empty();
+	                	 $("#offboardingCandidatesList").empty();
+	                	 
 	                	 var result = "";
 	                	 result = result +"<table id='onboardingPagination' class='display' cellspacing='0' width='99.9%' >"; 
 	                     result = result +"<thead>"; 
@@ -151,9 +155,106 @@
  </script>
  
  
+ 
+ <script>
+ function getOffboardCandidatesList(){
+	 
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  $.ajax({
+           type : "POST",
+           url: sourceleadUrl+"/getOffboardCandidateList?${_csrf.parameterName}=${_csrf.token}",    
+            success :function(data) {
+               		
+			    	     $("#onboardingLoading").removeAttr("style");
+	                	 $("#onboardingCandidatesList").empty();
+	                	 $("#offboardingCandidatesList").empty();
+	                	 
+	                	 var result = "";
+	                	 result = result +"<table id='offboardingPagination' class='display' cellspacing='0' width='99.9%' >"; 
+	                     result = result +"<thead>"; 
+	                     result = result +"  <tr>"; 
+	                     result = result +"    <th>Candidate Name</th>";
+	                     result = result +"    <th>Type</th>";
+	                     result = result +"    <th>Date Of Join</th>";
+	                     result = result +"    <th>End Date</th>";
+	                     result = result +"    <th>Stage</th>"; 
+	                     result = result +"    <th>Candidate Offboard Stage</th>"; 
+	                     result = result +"  </tr>"; 
+	                     result = result +"</thead>";
+	                     result = result +"<tbody>"; 
+	                     
+	                     var json = JSON.parse(data);
+	                     
+	                    	 for (var i = 0; i < json.length; i++) { 
+	                    	 var opt = json[i]; 
+	                    	 var joiningDate = '';
+	                    	 
+	                    		                    	     
+	                    	 result = result +"<tr>";
+	                    	 
+	                    	 result = result +"<td>";
+	                    	 result = result +"<div class='width300px'>";
+	                    	 result = result +"<div class='tbldata-dotdot-big pull-left'>"+opt.candidateName+"</div>";
+	                    	 
+	                    	 if(opt.offBoardStatus == 'Draft'){
+	                    		 result = result +"<b class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOffboardCandidateDetails?offboardUUID="+opt.offboardUUID+"'> <i class='fa fa-binoculars'></i> </a> </b> </div>";
+	                    	 }else if(opt.offBoardStatus == 'Finished'){
+	                    		 //result = result +"<b class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOnboardCandidateSummary?onboardUUID="+opt.offboardUUID+"'> <i class='fa fa-binoculars'></i> </a> </b> </div>";
+	                    	 }
+	                    	 
+	                    	 
+	                    	 result = result +"</td>";
+	                    	 
+	                    	 
+                    		 result = result +"<td><div><span>Offboard</span></div></td>";
+                    		 result = result +"<td><div><span>"+opt.dateOfJoinStr+"</span></div></td>";
+                    		 result = result +"<td><div><span>"+opt.endDateStr+"</span></div></td>";
+                    		 result = result +"<td><div><span>"+opt.offBoardStatus+"</span></div></td>";
+                    		 
+                    		 if(opt.offboardSubmitted == 'Y'){
+                    			 result = result +"<td><div><span class='text-success'>Submitted</span></div></td>";
+                    		 }else{
+                    			 result = result +"<td><div><span class='text-warning'>Pending</span></div></td>";
+                    		 }
+                    
+		                     
+		                     result = result +"</tr>";
+		                     result = result +"</tr>";
+	                     }
+	                     result = result +" </tbody>";
+	                     result = result +"</table>"; 
+	                     $("#onboardingLoading").removeAttr("style");
+	                     $("#offboardingCandidatesList").append(result); 
+	                     
+	                     offboardingPagenation(); 
+                    
+          },
+            
+       }); 
+ }
+ </script>
+ 
+ 
  <script>
 function onboardingPagenation(){ 
 	 $('#onboardingPagination').DataTable( { 
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+	    	"bLengthChange": false,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	            "sSearch": "",
+	            "sZeroRecords": "", "sEmptyTable": ""
+	       }
+	    } );
+}
+</script>
+
+<script>
+function offboardingPagenation(){ 
+	 $('#offboardingPagination').DataTable( { 
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
 	    	"bLengthChange": false,

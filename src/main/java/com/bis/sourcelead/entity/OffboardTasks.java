@@ -98,7 +98,7 @@ private static final long serialVersionUID = 1L;
    	private String dueAfterString;
    	
 	@Transient
-   	private String onboardTaskType;
+   	private String offboardTaskType;
    	
    	
    	
@@ -279,13 +279,15 @@ private static final long serialVersionUID = 1L;
 		this.dueAfterString = dueAfterString;
 	}
 
-	public String getOnboardTaskType() {
-		return onboardTaskType;
+	public String getOffboardTaskType() {
+		return offboardTaskType;
 	}
 
-	public void setOnboardTaskType(String onboardTaskType) {
-		this.onboardTaskType = onboardTaskType;
+	public void setOffboardTaskType(String offboardTaskType) {
+		this.offboardTaskType = offboardTaskType;
 	}
+
+	
    	
 
 }

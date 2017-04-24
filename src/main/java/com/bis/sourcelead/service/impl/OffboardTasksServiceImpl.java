@@ -43,7 +43,7 @@ public class OffboardTasksServiceImpl implements OffboardTasksService {
 	}
 
 	@Override
-	public OnboardTasks getOffboardTasksByTaskId(Long Id) throws Exception {
+	public OffboardTasks getOffboardTasksByTaskId(Long Id) throws Exception {
 		return offboardTasksDao.getOffboardTasksByTaskId(Id);
 	}
 

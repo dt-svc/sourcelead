@@ -27,19 +27,19 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.OffboardCheckListDao;
+import com.bis.sourcelead.entity.CandidateOffBoarding;
+import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OffBoardingDocuments;
 import com.bis.sourcelead.entity.OffBoardingTemplate;
 import com.bis.sourcelead.entity.OffboardCheckList;
 import com.bis.sourcelead.entity.OffboardTasks;
-import com.bis.sourcelead.entity.OnBoardingTemplate;
-import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
 import com.bis.sourcelead.entity.OnboardTasks;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.OnboardStatus;
+import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OffBoardingDocumentsService;
 import com.bis.sourcelead.service.OffBoardingTemplateService;
@@ -82,6 +82,9 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
     
     @Autowired
     OffboardCheckListService offboardCheckListService;
+    
+    @Autowired
+    CandidateOffBoardingService candidateOffBoardingService;
      
     protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -612,5 +615,619 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		    
 		   }
 		
+		
+		 @RequestMapping(value = "/getOffboardingTemplatesForCandidateOffBoarding")
+			public String getOffboardingTemplatesForCandidateOffBoarding(HttpServletRequest request) throws Exception {
+
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+				List<OffBoardingTemplate> teamplatesList = offBoardingTemplateService.getOffBoardingFinishedTemplatesList(loginOrgLocation.getId());
+				
+				return commonUtil.toJSON(teamplatesList);
+
+			}
+		
+		 
+		 
+		 @RequestMapping(value = "/saveOffboardingCandidateDetails" , method = RequestMethod.POST)
+		 public @ResponseBody  String saveOffboardingCandidateDetails(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+			
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			 
+			 String resultJson;
+			 
+			 json = "{"+json+"}";
+			 
+			 JSONObject jsonObj = new JSONObject(json);
+			 
+			 CandidateOffBoarding candidateOffBoarding = candidateOffBoardingService.saveOffBoardingCandidatesDetails(jsonObj, loginOrgLocation, user);
+			 	
+		 	resultJson = commonUtil.toJSON(Long.valueOf(candidateOffBoarding.getId()));
+			return resultJson;
+		   }
+		 
+		 
+		 
+		 @RequestMapping(value = "/getCandidateOffboardDocumentByOffboardId" , method = RequestMethod.POST)
+		 public @ResponseBody  String getCandidateOffboardDocumentByOffboardId(@RequestParam(value="offboardId", required=false) Long offboardId,
+				 @RequestParam(value="documentType", required=false) String documentType, HttpServletRequest request) throws Exception {
+			
+			String resultJson;
+			List<OffBoardingDocuments> documentsList = null;
+			List<OffBoardingDocuments> offboardingDocumentsList = new ArrayList<OffBoardingDocuments>();
+			
+			Integer documentsCount = offBoardingDocumentsService.getOffboardingDocumentsByOffboardingId(offboardId);
+			
+			if(documentsCount > 0){
+				documentsList = offBoardingDocumentsService.getOffBoardingDocumentsByCandidateOffBoardingId(offboardId,documentType);
+				if(null != documentsList && documentsList.size() > 0){
+					for(OffBoardingDocuments  documents : documentsList ){
+						documents.setOffboardDocumentType("Candidate Documents");
+						offboardingDocumentsList.add(documents);
+					}
+				}
+				
+				
+			}else{
+				 
+				CandidateOffBoarding offboarding = candidateOffBoardingService.getCandidateOffBoardingById(offboardId);
+				 List<Long> templateIdsList = new ArrayList<Long>();
+				 
+				 if(!isNullOrEmpty(offboarding.getOffboardTemplateId())){
+					 for (String s : offboarding.getOffboardTemplateId().split(",")){
+						 templateIdsList.add(Long.parseLong(s));
+					 }
+					 
+					documentsList = offBoardingDocumentsService.getOffBoardingDocumentsByTemplateIdsList(templateIdsList,documentType);
+					if(null != documentsList && documentsList.size() > 0){
+						for(OffBoardingDocuments  documents : documentsList ){
+							documents.setOffboardDocumentType("Template Documents");
+							offboardingDocumentsList.add(documents);
+						}
+					}
+				 }
+			}
+			
+		 	resultJson = commonUtil.toJSON(offboardingDocumentsList);
+			return resultJson;
+		   
+		}
+		 
+		 
+		 
+		 @RequestMapping(value = "/getOffboardCandidateList")
+		 public String getOffboardCandidateList(HttpServletRequest request) throws Exception {
+
+			String resultJson;
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			
+			List<CandidateOffBoarding> candidateOffBoardingList = candidateOffBoardingService.getCandidateOffBoardingListByOrgLocationId(loginOrgLocation.getId());
+			List<CandidateOffBoarding> offBoardingList = new ArrayList<CandidateOffBoarding>();
+			
+			if(null != candidateOffBoardingList && candidateOffBoardingList.size() > 0){
+				for(CandidateOffBoarding candidateOffBoarding : candidateOffBoardingList){
+					if(null != candidateOffBoarding.getDateOfJoin()){
+						candidateOffBoarding.setDateOfJoinStr(Constants.DMY.format(candidateOffBoarding.getDateOfJoin()));
+					}
+					
+					if(null != candidateOffBoarding.getEndDate()){
+						candidateOffBoarding.setEndDateStr(Constants.DMY.format(candidateOffBoarding.getEndDate()));
+					}
+					
+					StringBuilder candidateName = new StringBuilder();
+					
+					if(null != candidateOffBoarding.getLastName()){
+						candidateOffBoarding.setCandidateName(candidateName.append(candidateOffBoarding.getFirstName()).append(" ").append(candidateOffBoarding.getLastName()).toString());
+					}else{
+						candidateOffBoarding.setCandidateName(candidateName.append(candidateOffBoarding.getFirstName()).toString());
+					}
+					
+					
+					offBoardingList.add(candidateOffBoarding);
+					
+				}
+			}
+			
+			resultJson = commonUtil.toJSON(offBoardingList);
+			
+			return resultJson;
+		 }
+		 
+		 
+		 
+		 
+		 
+		 @RequestMapping(value = "/loadOffboardingCandidateDetails")
+		 public String loadOffboardingCandidateDetails(@RequestParam(value="offBoardingUUID", required=false) String offBoardingUUID,HttpServletRequest request) throws Exception {
+
+			String resultJson;
+			StringBuilder candidateName = new StringBuilder();
+			
+			CandidateOffBoarding candidateOffBoarding = candidateOffBoardingService.getCandidateOffBoardingByOffboardUUID(offBoardingUUID);
+			if(null != candidateOffBoarding){
+				
+				candidateOffBoarding.setOffBoardUserId(candidateOffBoarding.getUserId().getId());
+			
+				
+				candidateOffBoarding.setDateOfJoinStr(Constants.DMY.format(candidateOffBoarding.getDateOfJoin()));
+				
+				if(null != candidateOffBoarding.getEndDate()){
+					candidateOffBoarding.setEndDateStr(Constants.DMY.format(candidateOffBoarding.getEndDate()));
+				}
+				
+				if(null != candidateOffBoarding.getEffectiveDate()){
+					candidateOffBoarding.setEffectiveDateStr(Constants.DMY.format(candidateOffBoarding.getEffectiveDate()));
+				}
+				
+				
+				if(null != candidateOffBoarding.getLastName()){
+					candidateOffBoarding.setCandidateName(candidateName.append(candidateOffBoarding.getFirstName()).append(" ").append(candidateOffBoarding.getLastName()).toString());
+				}else{
+					candidateOffBoarding.setCandidateName(candidateName.append(candidateOffBoarding.getFirstName()).toString());
+				}
+				
+				
+			}
+			
+			resultJson = commonUtil.toJSON(candidateOffBoarding);
+			
+			return resultJson;
+		 }
+		 
+		 
+		 
+		 
+		 @RequestMapping(value = "/saveCandidatedOffboardingDocuments", method = RequestMethod.POST)
+			public @ResponseBody String saveCandidatedOffboardingDocuments(@RequestParam(value="json", required=false) String json,
+					MultipartHttpServletRequest request) throws Exception {
+				
+				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				
+				json = "{"+json+"}";
+				JSONObject jsonObj = new JSONObject(json);
+				CandidateOffBoarding offBoarding = candidateOffBoardingService.getCandidateOffBoardingById(Long.valueOf(jsonObj.getString("candidateoffboardingId")));
+				
+				
+				if(jsonObj.has("savedResignationAttcahments") && !isNullOrEmpty(jsonObj.getString("savedResignationAttcahments"))){
+					 String documentIds = jsonObj.getString("savedResignationAttcahments");
+					 documentIds = documentIds.replaceAll("\\[", "").replaceAll("\\]","");
+					 documentIds = documentIds.replaceAll("\"", "");
+					 
+					 String[] savedDocumentIds = documentIds.split(",");
+					 for(int i=0; i < savedDocumentIds.length; i++){
+						    OffBoardingDocuments templateDocument = offBoardingDocumentsService.getOffBoardingDocumentsById(Long.valueOf(savedDocumentIds[i]));
+						 
+					 
+						    OffBoardingDocuments documents = new OffBoardingDocuments();
+		       		        documents.setCandidateOffBoardingId(offBoarding);
+		       		       
+		       		        documents.setDocFile(templateDocument.getDocFile());
+	         	            documents.setFileName(templateDocument.getFileName());
+	         	            documents.setFileContentType(templateDocument.getFileContentType());
+		                  
+			       		    documents.setDocumentType("Resignation");
+			       		    documents.setDocumentStatus(OnboardStatus.NEW);
+		                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
+		                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		                    documents.setCreatedDate(CommonUtil.currentDate());
+		                    documents.setCreatedBy(loginUser.getUserCode());
+		                    documents.setUpdatedDate(CommonUtil.currentDate());
+		                    documents.setUpdatedBy(loginUser.getUserCode());
+		                    offBoardingDocumentsService.saveOffBoardingDocuments(documents);
+					 
+					 }
+					 
+				}
+				
+				
+				//save  mutliple attachment for Resignation / Termination Documents.
+				if ((jsonObj.has("resignationAttcahmentMaxRowNumber"))){
+			    	String resignationAttcahmentMaxRowNumber = jsonObj.getString("resignationAttcahmentMaxRowNumber");
+					int resignationAttcahmentMaxRowNumberCount = Integer.parseInt(resignationAttcahmentMaxRowNumber);
+					
+			    	for (int a = 0; a < resignationAttcahmentMaxRowNumberCount; a++) {
+						   
+						   OffBoardingDocuments documents = new OffBoardingDocuments();
+						   final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
+		       		       final Map files = multiRequest.getFileMap();
+		       		       
+		       		       documents.setCandidateOffBoardingId(offBoarding);
+		                   MultipartFile  multiFile = (MultipartFile)files.get(a+"resignationdocFile");
+		                   if(multiFile != null && !multiFile.isEmpty()){
+		                	   documents.setDocFile(multiFile.getBytes());
+		                	   documents.setFileName(multiFile.getOriginalFilename());
+		                       
+		                       if(multiFile.getContentType()!=null){
+		                    	   documents.setFileContentType(multiFile.getContentType());
+		                       }
+		                       documents.setDocumentType("Resignation");
+		                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
+		                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		                       documents.setCreatedDate(CommonUtil.currentDate());
+		                       documents.setCreatedBy(loginUser.getUserCode());
+		                       documents.setUpdatedDate(CommonUtil.currentDate());
+		                       documents.setUpdatedBy(loginUser.getUserCode());
+		                       offBoardingDocumentsService.saveOffBoardingDocuments(documents);
+							   
+		                   }
+		                 
+			    	}
+				}
+				
+				
+				
+				
+				if(jsonObj.has("savedOffboardPackAttcahments") && !isNullOrEmpty(jsonObj.getString("savedOffboardPackAttcahments"))){
+					 String documentIds = jsonObj.getString("savedOffboardPackAttcahments");
+					 documentIds = documentIds.replaceAll("\\[", "").replaceAll("\\]","");
+					 documentIds = documentIds.replaceAll("\"", "");
+					 
+					 String[] savedDocumentIds = documentIds.split(",");
+					 for(int i=0; i < savedDocumentIds.length; i++){
+						    OffBoardingDocuments templateDocument = offBoardingDocumentsService.getOffBoardingDocumentsById(Long.valueOf(savedDocumentIds[i]));
+						 
+					 
+						    OffBoardingDocuments documents = new OffBoardingDocuments();
+		       		        documents.setCandidateOffBoardingId(offBoarding);
+		       		       
+		       		        documents.setDocFile(templateDocument.getDocFile());
+	         	            documents.setFileName(templateDocument.getFileName());
+	         	            documents.setFileContentType(templateDocument.getFileContentType());
+		                  
+			       		    documents.setDocumentType("Offboard Pack");
+			       		    documents.setDocumentStatus(OnboardStatus.NEW);
+		                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
+		                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		                    documents.setCreatedDate(CommonUtil.currentDate());
+		                    documents.setCreatedBy(loginUser.getUserCode());
+		                    documents.setUpdatedDate(CommonUtil.currentDate());
+		                    documents.setUpdatedBy(loginUser.getUserCode());
+		                    offBoardingDocumentsService.saveOffBoardingDocuments(documents);
+					 
+					 }
+					 
+				}
+				
+				
+				//save  mutliple attachment for offboard Documents.
+						if ((jsonObj.has("offboardPackAttcahmentMaxRowNumber"))){
+					    	String offboardPackAttcahmentMaxRowNumber = jsonObj.getString("offboardPackAttcahmentMaxRowNumber");
+							int offboardPackAttcahmentMaxRowNumberCount = Integer.parseInt(offboardPackAttcahmentMaxRowNumber);
+							
+							
+					    	for (int a = 0; a < offboardPackAttcahmentMaxRowNumberCount; a++) {
+								   
+								   OffBoardingDocuments documents = new OffBoardingDocuments();
+								   final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
+				       		       final Map files = multiRequest.getFileMap();
+				       		       
+				       		       documents.setCandidateOffBoardingId(offBoarding);
+				                   MultipartFile  multiFile = (MultipartFile)files.get(a+"offboardPackdocFile");
+				                   if(multiFile != null && !multiFile.isEmpty()){
+				                	   documents.setDocFile(multiFile.getBytes());
+				                	   documents.setFileName(multiFile.getOriginalFilename());
+				                       
+				                       if(multiFile.getContentType()!=null){
+				                    	   documents.setFileContentType(multiFile.getContentType());
+				                       }
+				                       documents.setDocumentType("Offboard Pack");
+				                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
+				                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+				                       documents.setCreatedDate(CommonUtil.currentDate());
+				                       documents.setCreatedBy(loginUser.getUserCode());
+				                       documents.setUpdatedDate(CommonUtil.currentDate());
+				                       documents.setUpdatedBy(loginUser.getUserCode());
+				                       offBoardingDocumentsService.saveOffBoardingDocuments(documents);
+									   
+				                   }
+				                 
+					    	}
+						}
+						
+						return "success";
+				
+			}
+		 
+		 
+		 @RequestMapping(value = "/loadOffboardCheckListByOffboardingId" , method = RequestMethod.GET)
+		   public String loadOffboardCheckListByOffboardingId(@RequestParam(value="offboardingId", required=false) Long offboardingId) throws Exception {
+				
+			 Integer checkListCount = offboardCheckListService.getOffboardCheckListCountByOffboardId(offboardingId);
+			 List<OffboardCheckList> offboardCheckList = new ArrayList<OffboardCheckList>();
+			 
+			 if(checkListCount > 0){
+				 OffboardCheckList checkList  = offboardCheckListService.getOffboardCheckListByOffboardingId(offboardingId);
+				 offboardCheckList.add(checkList);
+			 }else{
+				    CandidateOffBoarding offboarding = candidateOffBoardingService.getCandidateOffBoardingById(offboardingId);
+				    if(!isNullOrEmpty(offboarding.getOffboardTemplateId())){
+				    	String[] templateIds = offboarding.getOffboardTemplateId().split(",");
+				    	
+				    	for(int i=0; i<templateIds.length; i++){
+				    		OffboardCheckList checkList = offboardCheckListService.getOffboardCheckListByTemplateId(Long.valueOf(templateIds[i]));
+				    		offboardCheckList.add(checkList);
+				    	}
+				    }
+				    
+			 }
+			    
+			 return commonUtil.toJSON(offboardCheckList);
+		    
+		   }
+		 
+		 
+		 @RequestMapping(value = "/saveCandidateOffboardCheckList" , method = RequestMethod.POST)
+		   public String saveCandidateOffboardCheckList(@RequestParam(value="jsonData", required=false) String json,
+				   @RequestParam(value="jsonStringData", required=false) String jsonStringData,
+				   HttpServletRequest request) throws Exception {
+				
+			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
+			    
+			    String json1 = "{" + json + "}";
+				JSONObject jsonObj = new JSONObject(json1);
+				
+				
+			   try {
+				   OffboardCheckList offboardCheckList = null;
+				   CandidateOffBoarding offboarding = null;
+				   if(jsonObj.has("checkListoffboardId") && !isNullOrEmpty(jsonObj.getString("checkListoffboardId"))){
+					   offboardCheckList = offboardCheckListService.getOffboardCheckListByOffboardingId(Long.valueOf(jsonObj.getString("checkListoffboardId")));
+					   if(offboardCheckList == null){
+						   offboardCheckList = new OffboardCheckList();
+					   }
+					   
+					   offboarding = new CandidateOffBoarding();
+					   offboarding.setId(Long.valueOf(jsonObj.getString("checkListoffboardId")));
+					   offboardCheckList.setCandidateOffBoardingId(offboarding);
+					   offboardCheckList.setCheckListJsonString(jsonStringData);
+					   offboardCheckList.setStatus(Constants.CANDIDATE_ACTIVE);
+					   offboardCheckList.setCreatedBy(user.getUserCode());
+					   offboardCheckList.setCreatedDate(new Date());
+					   offboardCheckList.setUpdatedBy(user.getUserCode());
+					   offboardCheckList.setUpdatedDate(new Date());
+					   offboardCheckListService.saveOffboardCheckList(offboardCheckList);
+					}
+					
+				} catch (Exception e) {
+					logger.error(ExceptionUtils.getFullStackTrace(e)); 
+				}
+				   return "home";
+		    
+		   }
+		 
+		 
+		 
+		 
+		 
+		 @RequestMapping(value = "/getCandidateOffboardTasksList", method = RequestMethod.POST)
+		 @ResponseBody String getCandidateOffboardTasksList(@RequestParam(value="offboardId", required=false) Long offboardId,HttpServletRequest request) throws Exception{
+			
+			 
+			 List<OffboardTasks> templateTasksList = null;
+			 
+			 List<OffboardTasks> tasksList = new ArrayList<OffboardTasks>();;
+			 
+		     List<OffboardTasks> candidateTasksList = offboardTasksService.getOffBoardTasksListByCandidateOffBoardingId(offboardId);
+		     tasksList.addAll(candidateTasksList);
+		 
+			 CandidateOffBoarding offboarding = candidateOffBoardingService.getCandidateOffBoardingById(offboardId);
+			 List<Long> templateIdsList = new ArrayList<Long>();
+			 
+			 if(!isNullOrEmpty(offboarding.getOffboardTemplateId())){
+				 for (String s : offboarding.getOffboardTemplateId().split(",")){
+					 templateIdsList.add(Long.parseLong(s));
+				 }
+				
+				 templateTasksList = offboardTasksService.getOffboardTasksByTemplateIdList(templateIdsList);
+				 if(null != templateTasksList){
+					 tasksList.addAll(templateTasksList);
+				 }
+				 
+			 }
+			 
+			 List<OffboardTasks> offboardtasksList = new ArrayList<OffboardTasks>();
+			 
+			 for(OffboardTasks tasks : tasksList){
+				 
+				 List<String> usersList = new ArrayList<String>();
+					 
+					 if(!isNullOrEmpty(tasks.getAssignToUsers())){
+						 String[] userIds = tasks.getAssignToUsers().split(",");
+						 
+						 for(int i = 0 ; i < userIds.length; i++ ){
+							 StringBuilder userName = new StringBuilder();
+							 User user = userService.getUserById(Long.valueOf(userIds[i]));
+							 String assignedUser = null;
+							 if(null != user.getLastName()){
+								 assignedUser = userName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
+								}else{
+									assignedUser = userName.append(user.getFirstName()).toString();
+								}
+							 usersList.add(assignedUser);
+						 }
+					 }
+					 
+					 StringBuilder dueAfter = new StringBuilder();
+					 
+					 if(null != tasks.getDueAfterMonths()){
+						 dueAfter = dueAfter.append(tasks.getDueAfterMonths()).append(" Months ");
+					 }
+					 
+					 if(null != tasks.getDueAfterDays()){
+						 dueAfter = dueAfter.append(tasks.getDueAfterDays()).append(" Days ");
+					 }
+					 
+					 if(null != tasks.getDueAfterHours()){
+						 dueAfter = dueAfter.append(tasks.getDueAfterHours()).append(" Hours ");
+					 }
+					 
+					 if(null != tasks.getDueAfterMinutes()){
+						 dueAfter = dueAfter.append(tasks.getDueAfterMinutes()).append(" Minutes");
+					 }
+					 
+					
+					 tasks.setDueAfterString(dueAfter.toString());
+					 tasks.setUsersList(usersList); 
+					 
+					 if(null != tasks.getCandidateOffBoardingId()){
+						 tasks.setOffboardTaskType("Candidate Task");
+					 }else  if(null != tasks.getOffboardingTemplateId()){
+						 tasks.setOffboardTaskType("Template Task");
+					 }
+					 
+					 offboardtasksList.add(tasks);
+			 }
+				
+			return commonUtil.toJSON(offboardtasksList);
+			}
+		 
+		 
+		 @RequestMapping(value = "/deleteOffboardTaskByTaskId" , method = RequestMethod.POST)
+		 public @ResponseBody  String deleteOffboardTaskByTaskId(@RequestParam(value="taskId", required=false) Long taskId,
+				 HttpServletRequest request) throws Exception {
+			
+			OffboardTasks offboardTasks = offboardTasksService.getOffboardTasksByTaskId(taskId);
+		 	 if(null != offboardTasks){
+		 		offboardTasks.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+		 		offboardTasksService.saveOffboardTasks(offboardTasks);
+		 	 }
+			return "success";
+		   
+		}
+		 
+		 
+		 
+		 @RequestMapping(value = "/saveCandidateOffBoardTasks" , method = RequestMethod.POST)
+		 public @ResponseBody  String saveCandidateOffBoardTasks(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+			
+			 
+			 json = "{"+json+"}";
+			 
+			 JSONObject jsonObj = new JSONObject(json);
+			 
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+			 
+			 OffboardTasks offboardTasks = new OffboardTasks();
+			 
+			 
+			 if(jsonObj.has("taskName") && !isNullOrEmpty(jsonObj.getString("taskName"))){
+				 offboardTasks.setTaskName(jsonObj.getString("taskName"));
+			 }
+			 
+			 CandidateOffBoarding offBoarding = new CandidateOffBoarding();
+			 offBoarding.setId(Long.valueOf(jsonObj.getString("offboardTaskId")));
+			 offboardTasks.setCandidateOffBoardingId(offBoarding);
+			 
+			 if(jsonObj.has("offboardAssignedTo") && !isNullOrEmpty(jsonObj.getString("offboardAssignedTo"))){
+				
+				 String userIds = jsonObj.getString("offboardAssignedTo");
+				 
+				 userIds = userIds.replaceAll("\\[", "").replaceAll("\\]","");
+				 userIds = userIds.replaceAll("\"", "");
+				 offboardTasks.setAssignToUsers(userIds);
+			 }else{
+				 offboardTasks.setAssignToCandidate(Constants.YES);
+			 }
+			 
+			 if(jsonObj.has("taskPriority") && !isNullOrEmpty(jsonObj.getString("taskPriority"))){
+				 offboardTasks.setPriority(jsonObj.getString("taskPriority"));
+			 }
+			 
+			 if(jsonObj.has("taskRepeat") && !isNullOrEmpty(jsonObj.getString("taskRepeat"))){
+				 offboardTasks.setTaskRepeat(jsonObj.getString("taskRepeat"));
+			 }
+			 
+			 if(jsonObj.has("taskMonths") && !isNullOrEmpty(jsonObj.getString("taskMonths"))){
+				 offboardTasks.setDueAfterMonths(Integer.parseInt(jsonObj.getString("taskMonths")));
+			 }
+			 
+			 if(jsonObj.has("taskDays") && !isNullOrEmpty(jsonObj.getString("taskDays"))){
+				 offboardTasks.setDueAfterDays(Integer.parseInt(jsonObj.getString("taskDays")));
+			 }
+			 
+			 if(jsonObj.has("taskHours") && !isNullOrEmpty(jsonObj.getString("taskHours"))){
+				 offboardTasks.setDueAfterHours(Integer.parseInt(jsonObj.getString("taskHours")));
+			 }
+			 
+			 if(jsonObj.has("taskMinutes") && !isNullOrEmpty(jsonObj.getString("taskMinutes"))){
+				 offboardTasks.setDueAfterMinutes(Integer.parseInt(jsonObj.getString("taskMinutes")));
+			 }
+			 
+			 if(jsonObj.has("taskNotification") && !isNullOrEmpty(jsonObj.getString("taskNotification"))){
+				 offboardTasks.setTaskNotification(jsonObj.getString("taskNotification"));
+			 }
+			 
+			 if(jsonObj.has("taskEmail") && !isNullOrEmpty(jsonObj.getString("taskEmail"))){
+				 offboardTasks.setTaskEmail(jsonObj.getString("taskEmail"));
+			 }
+			 
+			 if(jsonObj.has("taskdescription") && !isNullOrEmpty(jsonObj.getString("taskdescription"))){
+				 offboardTasks.setDescription(jsonObj.getString("taskdescription"));
+			 }
+			 
+			 offboardTasks.setStatus(Constants.CANDIDATE_ACTIVE);
+			 offboardTasks.setCreatedDate(CommonUtil.currentDate());
+			 offboardTasks.setCreatedBy(user.getUserCode());
+			 offboardTasks.setUpdatedDate(CommonUtil.currentDate());
+			 offboardTasks.setUpdatedBy(user.getUserCode());
+			 
+			 
+			 offboardTasksService.saveOffboardTasks(offboardTasks);
+			
+			  return "success";
+		   }
+		 
+		 
+		 
+		 
+		 @RequestMapping(value = "/saveAndFinishCandidateOffboard" , method = RequestMethod.POST)
+		 public @ResponseBody  String saveAndFinishCandidateOffboard(@RequestParam(value="offboardId", required=false) Long offboardId,
+				 @RequestParam(value="tasks", required=false) String tasks,
+				 HttpServletRequest request) throws Exception {
+			 
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			 
+			 CandidateOffBoarding offBoarding = candidateOffBoardingService.getCandidateOffBoardingById(offboardId);
+			 
+			 if(!isNullOrEmpty(tasks)){
+				 String[] taksIds = tasks.split(",");
+				 for(int i=0; i<taksIds.length; i++){
+					 OffboardTasks offboardTasks = offboardTasksService.getOffboardTasksByTaskId(Long.valueOf(taksIds[i]));
+					 
+					 OffboardTasks candidateTask = new OffboardTasks();
+					 candidateTask.setTaskName(offboardTasks.getTaskName());
+					 candidateTask.setCandidateOffBoardingId(offBoarding);
+					 
+					 candidateTask.setAssignToUsers(offboardTasks.getAssignToUsers());
+					 candidateTask.setAssignToCandidate(offboardTasks.getAssignToCandidate());
+					 candidateTask.setPriority(offboardTasks.getPriority());
+					 candidateTask.setTaskRepeat(offboardTasks.getTaskRepeat());
+					 candidateTask.setDueAfterMonths(offboardTasks.getDueAfterMonths());
+					 candidateTask.setDueAfterDays(offboardTasks.getDueAfterDays());
+					 candidateTask.setDueAfterHours(offboardTasks.getDueAfterHours());
+					 candidateTask.setDueAfterMinutes(offboardTasks.getDueAfterMinutes());
+					 candidateTask.setTaskNotification(offboardTasks.getTaskNotification());
+					 candidateTask.setTaskEmail(offboardTasks.getTaskEmail());
+					 candidateTask.setDescription(offboardTasks.getDescription());
+					 candidateTask.setStatus(Constants.CANDIDATE_ACTIVE);
+					 candidateTask.setCreatedDate(CommonUtil.currentDate());
+					 candidateTask.setCreatedBy(user.getUserCode());
+					 candidateTask.setUpdatedDate(CommonUtil.currentDate());
+					 candidateTask.setUpdatedBy(user.getUserCode());
+					 offboardTasksService.saveOffboardTasks(candidateTask);
+				 }
+			 }
+			
+			
+			 
+			 candidateOffBoardingService.terminateOffboardingUser(offBoarding,user,loginOrgLocation);
+			
+			return "success";
+		   
+		}
+		 
 
 }

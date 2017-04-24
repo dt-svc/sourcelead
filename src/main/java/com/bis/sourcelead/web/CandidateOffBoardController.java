@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.CandidateOffBoarding;
+import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.OffBoardingTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.OffBoardingTemplateService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
@@ -31,6 +34,9 @@ public class CandidateOffBoardController {
 	
 	@Autowired
 	OffBoardingTemplateService offBoardingTemplateService;
+	
+	@Autowired
+	CandidateOffBoardingService candidateOffBoardingService;
 	
 
 	protected static boolean isNullOrEmpty(String str) {
@@ -93,6 +99,29 @@ public class CandidateOffBoardController {
  			model.setViewName("offboard/addNewOffboardTemplate");
  			model.addObject("sourceleadUrl", sourceleadUrl);
  			model.addObject("templateId", template.getId());
+ 			return model;
+ 	}
+	
+	
+	@RequestMapping(value = "/viewOffboardCandidateDetails")
+ 	public ModelAndView viewOffboardCandidateDetails(@RequestParam(value="offboardUUID", required=false) String offboardUUID,
+ 			HttpServletRequest request) throws Exception {
+		   
+		    ModelAndView model = new ModelAndView();
+ 			
+		    SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.Users);
+ 			
+ 			CandidateOffBoarding offBoarding = candidateOffBoardingService.getCandidateOffBoardingByOffboardUUID(offboardUUID);
+ 			
+ 			model.setViewName("offboard/candidateOffBoardCreation");
+ 			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			model.addObject("offBoardingId", offBoarding.getId());
+ 			model.addObject("offBoardingUUID", offBoarding.getOffboardUUID());
  			return model;
  	}
 	

@@ -483,7 +483,7 @@ function addOffboardPackAttachment(){
 	
 <script type="text/javascript">
 	function removeResignationAttachmentRow(rowId) {
-		 document.getElementById("divResignationRow"+rowId).style.display = 'none';
+		 document.getElementById("divAttachmentResignationRow"+rowId).style.display = 'none';
 		 document.getElementById("divAttachmentResignationRow"+rowId).value= '';
 		 var  rId = "divAttachmentResignationRow"+rowId;
 		  var r = document.getElementById("resignationAttachmentTable").rows[rId];
@@ -737,8 +737,8 @@ function createTemplateDocs(saveType){
 	     	        document.getElementById("templateTasks").disabled = false;
 	     	        getOffboardingCheckList();
 	        	}else{
-	        		getTemplateResignationDocumentsDetails(templateId);
-	     	        getTemplateOffboardPackDocumentsDetails(templateId);
+	        		getTemplateResignationDocumentsDetails();
+	     	        getTemplateOffboardPackDocumentsDetails();
 	        	}
 	    	  $("#loading").removeAttr("style");
 	    	  
@@ -1150,8 +1150,9 @@ function getOffboardingCheckList(){
 		        result = result + '<button class="btn btn-success dropdown-toggle btn-block" type="button" data-toggle="dropdown" id="addFiled-dropdown">Add Field &nbsp;&nbsp;';
 		        result = result + '<span class="caret"></span></button>';
 		        result = result + '<ul id="add-field" class="dropdown-menu pull-right">';
-		        result = result + '<li><a id="add-textarea" data-type="textarea" onclick="scrollToBottom();" href="javascript:void(0)">Text Area</a></li>';
 		        result = result + ' <li><a id="add-checkbox" data-type="checkbox" onclick="scrollToBottom();" href="javascript:void(0)">Check Box</a></li>';
+		        result = result + '<li><a id="add-radio" data-type="radio" onclick="scrollToBottom();"  href="javascript:void(0)">Radio Button</a></li>';
+		        result = result + '<li><a id="add-textarea" data-type="textarea" onclick="scrollToBottom();" href="javascript:void(0)">Text Area</a></li>';
 	            result = result + '</ul>';
 		        result = result + '</div>';
 		        result = result + '</div>';
@@ -1182,7 +1183,7 @@ function getOffboardingCheckList(){
 	           $("#offboardingCheckList").empty();
 	           $("#offboardingCheckList").append(result); 
 	           $("#offboardTasksList").empty();
-	           customizeFields(templateId,sourceleadUrl);
+	           customizeFields(templateId,sourceleadUrl,"template");
 	           
 	
 }

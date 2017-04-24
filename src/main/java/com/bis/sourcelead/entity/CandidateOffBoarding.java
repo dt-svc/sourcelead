@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -65,6 +66,9 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "EMAIL")
 	private String email;
 	
+	@Column(name = "ROLE")
+	private String role;
+	
 	@Column(name = "DATE_OF_JOIN")
 	private Date dateOfJoin;
 	
@@ -97,6 +101,10 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "CANDIDATE_OFFBOARD_STATUS")
 	private String offBoardStatus;
 	
+	@Column(name = "OFFBOARD_TEMPLATE_ID")
+	@Type(type="text")
+	private String offboardTemplateId;
+	
 	@Column(name = "OFFBOARD_SUBMITTED")
 	private String offboardSubmitted;
 	
@@ -114,6 +122,22 @@ private static final long serialVersionUID = 1L;
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	
+	@Transient
+	private String dateOfJoinStr;
+	
+	@Transient
+	private String endDateStr;
+	
+	@Transient
+	private String effectiveDateStr;
+	
+	@Transient
+	private String candidateName;
+	
+	@Transient
+	private Long offBoardUserId;
 	
 	
 	
@@ -340,6 +364,63 @@ private static final long serialVersionUID = 1L;
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+	public String getOffboardTemplateId() {
+		return offboardTemplateId;
+	}
+
+	public void setOffboardTemplateId(String offboardTemplateId) {
+		this.offboardTemplateId = offboardTemplateId;
+	}
+
+	public String getDateOfJoinStr() {
+		return dateOfJoinStr;
+	}
+
+	public void setDateOfJoinStr(String dateOfJoinStr) {
+		this.dateOfJoinStr = dateOfJoinStr;
+	}
+
+	public String getEndDateStr() {
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr) {
+		this.endDateStr = endDateStr;
+	}
+
+	public String getEffectiveDateStr() {
+		return effectiveDateStr;
+	}
+
+	public void setEffectiveDateStr(String effectiveDateStr) {
+		this.effectiveDateStr = effectiveDateStr;
+	}
+
+	public String getCandidateName() {
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+
+	public Long getOffBoardUserId() {
+		return offBoardUserId;
+	}
+
+	public void setOffBoardUserId(Long offBoardUserId) {
+		this.offBoardUserId = offBoardUserId;
 	}
 	
 
