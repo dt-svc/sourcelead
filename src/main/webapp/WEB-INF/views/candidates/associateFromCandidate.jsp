@@ -1207,7 +1207,27 @@ function getCandidateDetails(){
 		        	 }
 		        	 
 		        	 
-		        	  if(json['candidateEdu'] != null && json['candidateEdu'] != "" && json['candidateEdu'] != 'undefined'){
+		        	/*  $('#candidateEducation').find('option').remove().end();
+		        	  $.each( json.allAndCandidateEducation, function( i, educt){
+						  var existedEdu = 0;
+			                if(json.candidateEdu != null && json.candidateEdu != 'undefined' && json.candidateEdu != ''){
+				                var res = [];
+				                res = json.candidateEdu.split(",");
+				                res.forEach(function(item) {
+				                	if(educt == item){
+				                		existedEdu = 1;
+				                		$('#candidateEducation').append('<option value=\''+educt+'\' selected>'+educt+'</option>');
+				                	}
+				                });
+			                }
+			                if(existedEdu == 0){
+			                	$('#candidateEducation').append('<option value=\''+educt+'\'>'+educt+'</option>');
+			                }
+						  
+						});
+		        	  $("#candidateEducation").trigger("chosen:updated"); */
+		        	  
+		        	 if(json['candidateEdu'] != null && json['candidateEdu'] != "" && json['candidateEdu'] != 'undefined'){
 		        		var eduaction = json['candidateEdu'];
 				    	var customizeEducation = new Array();
 				    	customizeEducation = eduaction.split(",");
@@ -1221,9 +1241,31 @@ function getCandidateDetails(){
 		        		 $("#candidateEducation").val('').trigger("chosen:updated");
 		        		 $("input[name=candidateEducation]").val(''); 
 		        	 } 
+		        	  
+		      		
+		      		$('#candidateSkills').find('option').remove().end();
+		      		
+		        	  $.each( json.allAndCandidateSkills, function( i, skill ){
+						  var existed = 0;
+			                if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
+				                var res = [];
+				                res = json.skillsName.split(",");
+				                res.forEach(function(item) {
+				                	if(skill == item){
+				                		existed = 1;
+				                		$('#candidateSkills').append('<option value=\''+skill+'\' selected>'+skill+'</option>');
+				                	}
+				                });
+			                }
+			                if(existed == 0){
+			                	$('#candidateSkills').append('<option value=\''+skill+'\'>'+skill+'</option>');
+			                }
+						  
+						});
+		        	  $("#candidateSkills").trigger("chosen:updated");
 		        	 
 		        	 
-		        	  if(json['skillsName'] != null && json['skillsName'] != "" && json['skillsName'] != 'undefined'){
+		        	 /*  if(json['skillsName'] != null && json['skillsName'] != "" && json['skillsName'] != 'undefined'){
 			        		var skills = json['skillsName'];
 					    	var totalSkills = new Array();
 					    	totalSkills = skills.split(",");
@@ -1236,7 +1278,7 @@ function getCandidateDetails(){
 			        	 }else{
 			        		 $("#candidateSkills").val('').trigger("chosen:updated");
 			        		 $("input[name=candidateSkills]").val(''); 
-			        	 } 
+			        	 }  */
 		        	 
 		        	 
 		        	 if(json['country'] != null && json['country'] != "" && json['country'] != 'undefined'){
