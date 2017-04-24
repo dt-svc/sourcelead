@@ -413,9 +413,13 @@ public class UserRestController {
 	 			}
 	 			user.setIsMailSent(Status.Y);
 	 			userService.addUser(user);
-
+	 			
+	 			// mail should forward user when action done in sourcelead admin 
+	 			if(orgId != null){
 	 			userService.sendEmailFromSourcelead(user,loginUser,password,orgLocations.getId(),orgId);
-
+	 			}else{
+	 				userService.sendEmail(user,loginUser,password,orgLocations.getId());
+	 			}
 	 			/*
 				 * Update USER DB data as ElasticSearch Documents
 				 */
