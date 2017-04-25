@@ -314,6 +314,9 @@ public class Candidate implements Serializable{
 	 @Transient
 	 private Integer candidateRequiementCount;
 	 
+	 @Transient
+	 private  List<String> candidateSkillsList;
+	 
 	 
 	public Long getId() {
 		return id;
@@ -1186,6 +1189,16 @@ public class Candidate implements Serializable{
 
 	public void setCandidateUUID(String candidateUUID) {
 		this.candidateUUID = candidateUUID;
+	}
+
+
+	public List<String> getCandidateSkillsList() {
+		return candidateSkillsList;
+	}
+
+
+	public void setCandidateSkillsList(List<String> candidateSkillsList) {
+		this.candidateSkillsList = candidateSkillsList;
 	}
 	
 }

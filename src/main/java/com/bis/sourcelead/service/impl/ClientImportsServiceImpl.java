@@ -1166,6 +1166,10 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		      }
 		      Sheet createExcelsheet = wb_hssf.createSheet("createContact");
 		 			
+		      /*if(sheet.getLastRowNum() < 1){
+		    	  inp.close();
+					return "empty";
+		      }*/
 		      Iterator rows = sheet.rowIterator(); // Now we have rows ready from the sheet
 		      createExcelsheet = setClientExcelHeader(createExcelsheet,responderType);
 		     while (rows.hasNext()) 
@@ -1229,7 +1233,10 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 										   clientImportDao.saveClientVendorExcelData(bulkClientVendors);
 									   }
 									   
-						       } 
+						       } /*else{
+						    	   inp.close();
+									return "empty";
+						       }*/
 			      }
 			  inp.close();
 			return isFileCreated;
@@ -1246,6 +1253,8 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 					List<OrgRelations>    spocList=null;
 					boolean isValidate = validateBulkImportedData(clientOrVendor,responderType);
 					if(isValidate){
+						UserRole userRole1 = userRoleService.getUserDetailsByEmailAndLocationId(clientOrVendor.getEmail(), orgLocations.getId());
+						if(userRole1 == null){
 							if(!org.getOrgName().equalsIgnoreCase(clientOrVendor.getOrgName())){
 								List<OrgRelations> orgRelationsList;
 								if("Client".equalsIgnoreCase(responderType)){
@@ -1268,7 +1277,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 											}
 											
 											
-											if(clientOrVendor.getOrgName().equals(orgName.trim())){
+											if(clientOrVendor.getOrgName().equalsIgnoreCase(orgName.trim())){
 													  User spocUser = userService.findByEmail(clientOrVendor.getEmail());
 													  User spocOwnerUser = userService.findByEmail(clientOrVendor.getOwnerEmail());
 													 if(spocUser !=null && spocOwnerUser !=null){
@@ -1418,7 +1427,11 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 									
 								}
 							}
+					}else{
+						clientOrVendor.setReason("Current org user");
+						duplicateClietDetails.add(clientOrVendor);
 					}
+				}
 					else{
 						duplicateClietDetails.add(clientOrVendor);
 					}
@@ -1540,7 +1553,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 				}
 				String existedClient = orgName;
 				String newClient = client.getOrgName();
-				if(existedClient.equals(newClient)){
+				if(existedClient.equalsIgnoreCase(newClient)){
 					return isExist = false;
 				}else if(orgName.length() >4 && client.getOrgName().length()>4){
 					 existedClient = orgName.substring(0,4);

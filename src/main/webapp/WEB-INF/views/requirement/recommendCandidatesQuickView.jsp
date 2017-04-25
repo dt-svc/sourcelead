@@ -252,7 +252,7 @@ function recomendcandidateQuickViewProfile(candidateId){
 									}
 									result = result +'<div class="resume-widget">';
 									result = result +'  <p><small>'+startYear +'</small>';
-									result = result +'  <small class="pull-right address">'+address+'</small></p>';
+									result = result +'  <small class="pull-right address" title="'+address+'">'+address+'</small></p>';
 									result = result +'  <h4>'+designation+'</h4>';
 									result = result +'  <h5>'+name+'</h5>';
 									result = result +'</div>';
