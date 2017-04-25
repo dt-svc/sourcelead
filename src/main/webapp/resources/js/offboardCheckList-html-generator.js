@@ -20,11 +20,15 @@ function getCheckList(sourceleadUrl,offboardId) {
     	type: "GET",
         url: sourceleadUrl+"/getOffboardCheckListByOffBoardId?offboardId="+offboardId, 
         success: function(data) {
-        	 var data = eval(data);
-        	 
-        	if (data) {
+        	
+        	var json = JSON.parse(data);
+        	
+        	var jsonStringData = eval(json['checkListJsonString']);
+        	
+        	
+        	if (jsonStringData) {
                  //go through each saved field object and render the form HTML
-                 $.each( data, function( k, v ) {
+                 $.each( jsonStringData, function( k, v ) {
 
                      var fieldType = v['type'];
 
@@ -43,42 +47,94 @@ function getCheckList(sourceleadUrl,offboardId) {
                      }
                      
                      
-                     //Any choices?
-                     if (v['choices']) {
+                     
+                     
+                     if(json['checkListJsonValueString'] != null && json['checkListJsonValueString'] != '' && json['checkListJsonValueString'] != 'undefined'){
+                    	 
+                    	 if (v['choices']) {
 
-                         var uniqueID = Math.floor(Math.random()*999999)+1;
+                             var uniqueID = Math.floor(Math.random()*999999)+1;
 
-                         $.each( v['choices'], function( k, v ) {
+                             $.each( v['choices'], function( k1, v1 ) {
 
-                             if (fieldType == 'select') {
-                                 var selected = v['sel'] ? ' selected' : '';
-                                 var choiceHTML = '<option' + selected + '>' + v['label'] + '</option>';
-                                 $currentField.find(".choices").append(choiceHTML);
-                             }
+                                if (fieldType == 'radio') {
+                                	
+                            	  var details = eval(json['checkListJsonValueString']);
+                              	   $.each(details, function( k2, v2 ) {
+                              		   if(v['label'] == v2['label']){
+                              			   var values = v2['value'].split(",");
+                              			   for(var i=0; i<values.length; i++){
+                              				 var selected = '';
+                              				   if(values[i] == v1['label']){
+                              					 selected = v1['sel'] ? ' checked' : 'checked';
+                              				   }else{
+                              					 selected = v1['sel'] ? ' checked' : '';
+                              				   }
+                              				   
+                              				 var choiceHTML = '<label><input type="radio" name="radio-' + uniqueID + '"' + selected + ' value="' + v1['label'] + '">' + v1['label'] + '</label>';
+                                             $currentField.find(".choices").append(choiceHTML);
+                              			   }
+                              		   }
+                              		  
+                              	   });
+                                     
+                                 }
 
-                             else if (fieldType == 'radio') {
-                                 var selected = v['sel'] ? ' checked' : '';
-                                 var choiceHTML = '<label><input type="radio" name="radio-' + uniqueID + '"' + selected + ' value="' + v['label'] + '">' + v['label'] + '</label>';
-                                 $currentField.find(".choices").append(choiceHTML);
-                             }
+                                 else if (fieldType == 'checkbox') {
+                                	 
+                                	 var details = eval(json['checkListJsonValueString']);
+                                	 var selected = '';
+                                	 $.each(details, function( k3, v3 ) {
+                                		 if(v['label'] == v3['label']){
+                                			 var values = v3['value'].split(",");
+                                			
+                                			 for(var i=0; i<values.length; i++){
+                                				 if(values[i] == v1['label']){
+                                  					 selected = "checked";
+                              				     }
+                                			 }
+                                			 
+                                			 var choiceHTML = '<label><input type="checkbox" onclick="validateCheckBox(this);" name="checkbox-' + uniqueID + '[]"' + selected + ' value="' + v1['label'] + '">' + v1['label'] + '</label>';
+                                             $currentField.find(".choices").append(choiceHTML);
+                                			 
+                                		 }
+                                	 });
+                                	
+                                    
+                                 }
 
-                             else if (fieldType == 'checkbox') {
-                                 var selected = v['sel'] ? ' checked' : '';
-                                 var choiceHTML = '<label><input type="checkbox" name="checkbox-' + uniqueID + '[]"' + selected + ' value="' + v['label'] + '">' + v['label'] + '</label>';
-                                 $currentField.find(".choices").append(choiceHTML);
-                             }
+                             });
+                         }
+                     }else{
+                    	 
+                    	 //Any choices?
+                         if (v['choices']) {
 
-                         });
+                             var uniqueID = Math.floor(Math.random()*999999)+1;
+
+                             $.each( v['choices'], function( k, v ) {
+
+                               if (fieldType == 'radio') {
+                                     var selected = v['sel'] ? ' checked' : '';
+                                     var choiceHTML = '<label><input type="radio" name="radio-' + uniqueID + '"' + selected + ' value="' + v['label'] + '">' + v['label'] + '</label>';
+                                     $currentField.find(".choices").append(choiceHTML);
+                                 }
+
+                                 else if (fieldType == 'checkbox') {
+                                     var selected = v['sel'] ? ' checked' : '';
+                                     var choiceHTML = '<label><input type="checkbox" name="checkbox-' + uniqueID + '[]"' + selected + ' value="' + v['label'] + '">' + v['label'] + '</label>';
+                                     $currentField.find(".choices").append(choiceHTML);
+                                 }
+
+                             });
+                         }
                      }
+                     
+                    
 
                      //Is it required?
                      if (v['req']) {
-                         if (fieldType == 'text') { $currentField.find("input").prop('required',true).addClass('required-choice') }
-                         else if (fieldType == 'calendar') { $currentField.find("calandar").prop('required',true).addClass('required-choice') }
-                         else if (fieldType == 'autocomplete') { $currentField.find("autocomplete").prop('required',true).addClass('required-choice') }
-                         else if (fieldType == 'textarea') { $currentField.find("textarea").prop('required',true).addClass('required-choice') }
-                         else if (fieldType == 'select') { $currentField.find("select").prop('required',true).addClass('required-choice') }
-                         else if (fieldType == 'radio') { $currentField.find("input").prop('required',true).addClass('required-choice') }
+                         if (fieldType == 'textarea') { $currentField.find("textarea").prop('required',true).addClass('required-choice') }
                          $currentField.addClass('required-field');
                      }
 
@@ -126,5 +182,14 @@ function getCheckList(sourceleadUrl,offboardId) {
     
     
 }
+
+
+function validateCheckBox(obj){
+	if(obj.checked == false){
+		obj.removeAttribute('checked');
+    }
+}
+	
+
 
 

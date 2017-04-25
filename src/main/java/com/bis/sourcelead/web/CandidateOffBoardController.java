@@ -68,6 +68,20 @@ public class CandidateOffBoardController {
 	
 	
 	
+	@RequestMapping(value = "/offboardStep3")
+	public ModelAndView offboardStep3(HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+		
+		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("offboard/offboardStep3");
+		 return model;
+	}
+	
+	
+	
 	@RequestMapping(value = "/candidateOffBoardCreation")
 	public ModelAndView candidateOffBoardCreation(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();

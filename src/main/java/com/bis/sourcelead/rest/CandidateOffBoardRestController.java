@@ -1285,8 +1285,26 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 			 
 			 OffboardCheckList offboardCheckList = offboardCheckListService.getOffboardCheckListByOffboardingId(offboardId);
 			 
-			 return offboardCheckList.getCheckListJsonString();
+			 return commonUtil.toJSON(offboardCheckList);
+			
 		    
 		   }
+		 
+		 
+		 @RequestMapping(value = "/saveOffboardingCheckList" , method = RequestMethod.POST)
+		   public  @ResponseBody String saveOffboardingCheckList(@RequestParam(value="jsonStringValues", required=false) String jsonStringValues,
+				   @RequestParam(value="offboardId", required=false) Long offboardId,
+				   HttpServletRequest request) throws Exception {
+				
+			 
+			 OffboardCheckList offboardCheckList = offboardCheckListService.getOffboardCheckListByOffboardingId(offboardId);
+			 offboardCheckList.setCheckListJsonValueString(jsonStringValues);
+			 offboardCheckListService.saveOffboardCheckList(offboardCheckList);
+			 
+			 return "success";
+		    
+		   }
+		 
+		 
 
 }

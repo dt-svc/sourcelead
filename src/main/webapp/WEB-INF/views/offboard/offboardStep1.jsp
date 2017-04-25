@@ -236,7 +236,7 @@
 	          $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/saveOffboardingCandidateStep1Details?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
-		        success: function(onboardId) {
+		        success: function(data) {
 		        	
 		        	location.replace(sourceleadUrl+"/offboardStep2");  
 		        },

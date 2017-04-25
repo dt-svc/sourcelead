@@ -59,24 +59,23 @@
 			  <div class="clearfix"></div>
 		  </div>
 		  
-<div class="welCo1">
-	<div class="clearfix">
-		
-		<div id="offboardCheckList"></div>	
-						
-	</div>
-	
-	
-	
-			
-</div>
-
-		  
-<div class="welBtns">
-	<input type="button"  value="Previous" onClick="javascript:location.href = '<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>'" >
-	<input type="button"  value="Proceed to next step" id="save_button"  onclick="saveOffboardingCheckList();" class="Brig">
-	<div class="clearfix"></div>
-</div>
+	<form:form class="login-form clearfix"  id="offboardCheckList_form"  name="offboardCheckList_form" method="post" >
+	<div id="loading"></div>
+		<div class="welCo1">
+			<div class="clearfix">
+				
+				<div id="offboardCheckList"></div>	
+								
+			</div>
+					
+		</div>
+			  
+		<div class="welBtns">
+			<input type="button"  value="Previous" onClick="javascript:location.href = '<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>'" >
+			<input type="button"  value="Proceed to next step" id="save_button"  onclick="saveOffboardingCheckList();" class="Brig">
+			<div class="clearfix"></div>
+		</div>
+	</form:form>
 	  
 		</section>
 	</section>  
@@ -99,19 +98,151 @@ function getOffboardCheckList(offboardingId){
 	getCheckList(sourceleadUrl,offboardingId);
 	
     var result = "";
-	result = result + '<form id="addcheckList_form" name="addcheckList_form" method="post">';
 	
     result = result + '<div id="sjfb-fields" class="viewTemplate checklist">';
 	
 	result = result + '</div>';
 	
-	result = result + '</form>';
 	
 	$("#offboardCheckList").empty();
 	$("#offboardCheckList").append(result);  
 	
 }
 </script>
+
+<script>
+ function saveOffboardingCheckList(){
+	 var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+	         }; 
+	 
+	 if ($('#offboardCheckList_form').validate(false, validationSettings)){ 
+		    var frm = $('#offboardCheckList_form').serializeFormJSON();
+	        var con = JSON.stringify(frm);
+	        con = con.replace(/[{}]/g, "");
+	        
+	        var jsonData = encodeURIComponent(con);
+	        
+	        var sourceleadUrl ='${sourceleadUrl}';
+	        
+	        var offboardId = '${offboardingId}';
+	        
+	        var fields = [];
+	        $('.sjfb-field').each(function() { 
+	        	  var $this = $(this); 
+	        	  var divId = $(this).attr('id');  
+	        	  var fieldLabel = $this.find('label:first').text();
+	        	  var inputValue = $this.find('input[type="radio"]:checked').val();
+	        	  
+	        	 if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+	      		   inputValue = $this.find('input[type="checkbox"]:checked').val();
+	      		   if(inputValue != null && inputValue != '' && inputValue != 'undefined'){
+	      			   var selected = [];
+	                 	$this.find('input[type="checkbox"]:checked').each(function() {
+	        		        selected.push($(this).val()); 
+	        		       });
+	                 	inputValue = selected.toString()
+	      		   }
+	      		   
+	        	 }
+	        	 
+	       	     
+	       	      
+	       	     if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+	       	    	 inputValue = $this.find('textarea').val();
+	       	      }
+	       	      
+	       	    
+	       	     
+	       	      if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+	       	    	inputValue = '';
+	       	      }
+	       	      
+	       	      
+	       	      
+	  	       	  var name = $this.find('input[type="radio"]:checked').attr('name');
+	  	       	  var id = $this.find('input[type="radio"]:checked').attr('id');
+	  	     	  if(name == null || name == '' || name == 'undefined'){
+	  	     		  name = $this.find('input').attr('name');
+	  	     		  id = $this.find('input').attr('id');
+	  	     	  }
+	  	     	  
+	  	     	  if(name == null || name == '' || name == 'undefined'){
+	  	     		 name = $this.find('select').attr('name');
+	  	     		 id = $this.find('select').attr('id');
+	       	      }
+	  	     	  
+	  	     	  
+	        	  fields.push({
+	                  label: fieldLabel,
+	                  id :id,
+	                  name :name,
+	                  value: inputValue,
+	              });
+	         });
+	        var con = JSON.stringify(fields);
+	        
+	        con = encodeURIComponent(con);
+	        
+	         $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	           $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/saveOffboardingCheckList?${_csrf.parameterName}=${_csrf.token}&jsonStringValues="+con+"&offboardId="+offboardId, 
+		        success: function(data) {
+		        	
+		        	location.replace(sourceleadUrl+"/offboardStep3");  
+		        },
+		    });  
+	        return true;
+		
+	  }else{
+		return false;
+	  }
+ }
+ 
+ $('body').on('blur', '#offboardCheckList_form', function() {
+		$("#offboardCheckList_form").showHelpOnFocus();
+		$("#offboardCheckList_form").validateOnBlur(false, validationSettings);  
+	});
+ </script>
+ 
+ 
+ <script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>
+ 
+ 
+ <script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+
+        
+</script>  
+
 
 
 

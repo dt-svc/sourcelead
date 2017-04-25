@@ -41,6 +41,10 @@ private static final long serialVersionUID = 1L;
 	@Type(type="text")
 	private String checkListJsonString;
     
+    @Column(name = "CHECK_LIST_JSON_VALUE_STRING")
+   	@Type(type="text")
+   	private String checkListJsonValueString;
+    
     @Column(name = "STATUS")
    	private Integer status;
    		
@@ -129,6 +133,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getCheckListJsonValueString() {
+		return checkListJsonValueString;
+	}
+
+	public void setCheckListJsonValueString(String checkListJsonValueString) {
+		this.checkListJsonValueString = checkListJsonValueString;
 	}
    	
 	    
