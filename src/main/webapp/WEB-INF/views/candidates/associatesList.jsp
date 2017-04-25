@@ -296,6 +296,7 @@ function cpagination(){
  -->
 <script>
 function cpagination(){ 
+	$.fn.dataTable.moment( 'DD-MM-YYYY' );
     $('#candidatePagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
