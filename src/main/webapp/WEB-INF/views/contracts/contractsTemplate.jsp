@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <script src="resources/js/formvalidator.js"></script>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!-- <script src="resources/js/chosen.jquery.min.js"></script> --> 
 
 
@@ -31,7 +32,9 @@ $(document).ready(function(){
  <div class="project_wrap">
 	<div class="timesheet_head">
         	<ul>
+        		<sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE')">
 				<li><a href="<c:url value="/addContractTemplate" />"><i class="fa fa-plus"></i>Add Template</a></li>	
+				</sec:authorize>
                 <div class="clearfix"></div>
             </ul>
             <div class="clearfix"></div>
@@ -102,7 +105,9 @@ function preparedTemplateList(data){
          result = result + '</td>';
          result = result + '<td>';
         /*  result = result + '<div><span onclick="previewPDF('+report.id+')">previews/edit</span></div>'; */
+         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CONTRACT_TEMPLATE\')">';
          result = result + '<div class="tbldata-dotdot-vsm"><a href="#" title="Preview" class="mr"><i class="fa fa-eye" onclick="previewPDF('+report.id+')"></i></a> <a href=\"'+sourceleadUrl+'/editTemplate?templateId='+report.id+'\" title="Edit"><i class="fa fa-edit"></i></a></div>';
+         '</sec:authorize>';
          result = result + '</td>';
          result = result + '<td>';
          result = result + '<div><a class="glyphicon glyphicon-paperclip pinCo" href="" onclick="downloadPdfTemplate('+report.id+')"></a></div>';
