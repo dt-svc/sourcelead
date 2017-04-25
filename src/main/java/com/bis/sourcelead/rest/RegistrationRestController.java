@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +21,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.SourceleadAuthenticationProvider;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
@@ -29,6 +28,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
+import com.bis.sourcelead.entity.RegistrationOptionalService;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -36,6 +36,7 @@ import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.PasswordResetsSevice;
+import com.bis.sourcelead.service.RegistrationOptionalServicesService;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
@@ -83,6 +84,9 @@ public class RegistrationRestController {
 	 
 	 @Autowired
 		private SourceleadPasswordEncoder sourceleadPasswordEncoder;
+	 
+	 @Autowired
+	 private RegistrationOptionalServicesService registrationOptionalServicesService;
 	 
 	 @RequestMapping(value = "/getOrgsList")
 		public @ResponseBody String getUsersList(HttpServletRequest request,
@@ -309,12 +313,35 @@ public class RegistrationRestController {
 		 if(null != user){
 			 user.setUserName(jsonObj.getString("resetUserName"));
 			 user.setPassword(sourceleadPasswordEncoder.encode(jsonObj.getString("password")));
+			 prepareRegisterOptionalServicesToAllForms(jsonObj,user);
 			 userService.addUser(user);
 		 }
-	 	
-	 	
 		 return "success";
 	   }
+	 
+	 
+	 public void prepareRegisterOptionalServicesToAllForms(JSONObject jsonObj, User user) throws JSONException{
+			if(jsonObj.has("Wouldliketo") && !isNullOrEmpty(jsonObj.getString("Wouldliketo"))){
+					String WouldliketoString  = jsonObj.getString("Wouldliketo");
+				    String Wouldlike = replacejsonToString(WouldliketoString);
+					user.setRegisterOptionalServiceId(Wouldlike);
+			   }
+		}
+	 
+	 public String replacejsonToString(String replaceString){
+			String newReplacedString = null;
+			newReplacedString = replaceString.replaceAll("\\[", "").replaceAll("\\]","");
+			newReplacedString = newReplacedString.replaceAll("\"", "");
+			return newReplacedString;
+		}
+	 
+	 
+	 @RequestMapping(value = "/getOptionalValueList" , method = RequestMethod.POST)
+	 public  String getOptionalValueList(HttpServletRequest request) throws Exception {
+	 			String registerTypeTwo = "Would like to";
+				List<RegistrationOptionalService> WouldLikeToList = registrationOptionalServicesService.getRegistraionOptionalServiceListByRegisterType(registerTypeTwo);
+				return commonUtil.toJSON(WouldLikeToList);
+	        }
 	 
 	 
 	

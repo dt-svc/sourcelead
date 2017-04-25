@@ -722,6 +722,7 @@ function getOpenJobsELKList(){
 					if((json.length -1) == i ){
 						result = result +' <section class="loadJob"><i class="fa fa-spinner fa-spin"></i>No More Data</section>';	
 					}
+					$("#openJobsRequirementsSummary").empty();
 					$("#openJobsRequirementsList").append(result); 
 					$("#openJobsRequirementTitleId").val('');
 					$("#openJobsLocationId").val('');
@@ -960,6 +961,7 @@ function openJobSearchRequirement(){
 										result = result +'	<p class="gradi"></p>';
 										result = result +'	</div>'; */				
 										result = result +'	</div>';
+										$("#openJobsRequirementsSummary").empty();
 										$("#openJobsRequirementsList").append(result); 
 								}
 							}

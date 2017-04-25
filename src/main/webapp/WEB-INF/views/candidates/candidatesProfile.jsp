@@ -1770,7 +1770,7 @@ var currentRate = document.getElementById("currentRate").value;
 <script>
 function employementType(){
 	 var employementType = $('#designationType1').val(); 
-		if(employementType == 'C2C' || employementType == 'C2C-1099'){
+		if(employementType == 'C2C'){
 			document.getElementById("hideVendor").style.display="block";
 			 $('#vendorName').attr("data-validation","required"); 
 			 $('#vendorcontactName').attr("data-validation","required"); 
@@ -1783,6 +1783,21 @@ function employementType(){
 			 $('#vendorcontactName').val(''); 
 			 
 		}
+		
+		if(employementType == 'C2C-1099'){
+			 document.getElementById("hideVendor").style.display="block";
+			 $('#vendorName').attr("data-validation-optional", "true"); 
+			 $('#vendorcontactName').attr("data-validation-optional", "true");  
+			 
+			 $("#errorvendor").find("p.jquery_form_error_message").remove();
+			 $("#errorvendorContact").find("p.jquery_form_error_message").remove();
+		}else{
+			 $('#vendorName').removeAttr("data-validation-optional", "true"); 
+			 $('#vendorcontactName').removeAttr("data-validation-optional", "true");  
+			 
+			 $('#vendorName').val(''); 
+			 $('#vendorcontactName').val(''); 
+		} 
 		$('#designationType1 + p').remove();
 }
 </script>
