@@ -37,7 +37,7 @@
             <div class="form-group">
               <label class="col-md-4">Contract Type<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();getContractTemplates();" data-validation="required" field-name="Contract Type">
+                  <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();getContractTemplates();flush();" data-validation="required" field-name="Contract Type">
                     <option value=''>Contract Type</option>
                     <option>Client MSA</option>
                     <option>Vendor MSA</option>
@@ -91,7 +91,7 @@
                   <c:forEach var="user" items="${userList}">
 	                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
                   </c:forEach>
-                   <!--  <option>Select Owner</option>
+                   <!--  <option>Select Owner</option>ER
                     <option>Owner-1</option>
                     <option>Owner-2</option>
                     <option>Owner-3</option> -->
@@ -195,7 +195,7 @@
       
       
 <div class="row newContrBill">
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm" id="billingDiv">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm" id="billingDiv" >
            <h2>Billing Details</h2>
            
            <div class="form-group" id="hoursPerWeekDiv" style="display: none;">
@@ -209,7 +209,7 @@
               <label class="col-md-4">Overtime Hours<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8">
 					  	<input type="text" class="form-control" id="overTimeHours" name="overTimeHours" value="" placeholder="Enter Hours" field-name="Overtime Hours">
-              	</div>
+              	</div> 
             </div>
             
             <div class="form-group" id="totalHoursEstimatedDiv" style="display: none;">
@@ -240,7 +240,7 @@
             <div class="form-group">
               <!-- <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label> -->
                 <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label>
-                   <div class="clearfix col-md-8">
+                   <div class="clearfix col-md-8" id="errBilling">
                       <div class="col-md-5 paddingLeft">
                         <div class="btn-group btn_Block">
                           <button type="button" class="btn btn-sm btn-primary" id="percentageBtn" value="percentage" onClick="getRewardType('Percentage')">%</button>
@@ -275,12 +275,12 @@
             </div>
             <div class="form-group">
               <label class="col-md-4">invoice frequency<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
+              <div class="col-md-8" id="errInvoice">
                   <select class="chosen-select form-control" id="invoiceFrequency" name="invoiceFrequency" data-validation="required" field-name="Invoice Frequency">
                     <option value="">Select frequency</option>
                     <option value="Weekly">Weekly</option>
                     <option value="Bi-Weekly">Bi-Weekly</option>
-                    <option value="Semi-Monthly">Semi-Monthly</option>
+                    <option value="Semi-Monthly">Semi-Monthly</option> 
                     <option value="Monthly">Monthly</option>
                   </select>
               </div>
@@ -288,7 +288,7 @@
             
               <div class="form-group">
               <label class="col-md-4">Payment frequency<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
+              <div class="col-md-8" id="errPayment">
                   <select class="chosen-select form-control" id="paymentFrequency" name="paymentFrequency" data-validation="required" field-name="Payment Frequency">
                     <option value="">Select frequency</option>
                     <option value="10 days">10 days</option>
@@ -303,7 +303,7 @@
             <div class="form-group">
               <!-- <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label> -->
                 <label class="col-md-4">Tax<span class="text-danger">&nbsp;*</span></label>
-                   <div class="clearfix col-md-8">
+                   <div class="clearfix col-md-8" id="errTax">
                       <div class="col-md-5 paddingLeft">
                         <div class="btn-group btn_Block">
                           <button type="button" class="btn btn-sm btn-primary" id="taxPercentageBtn" value="percentage" onClick="getTaxRewardType('Percentage')">%</button>
@@ -312,7 +312,7 @@
                         </div>
                       </div>
                       <div class="col-md-7 paddingLeft" id="taxPercentageReward">
-                        <div class="form-group positionRelative iconHolder percentage fullWid" >
+                        <div class="form-group positionRelative iconHolder percentage fullWid" > 
                           <input type="text" class="form-control input-sm" field-name="Percentage" id="taxPercentageRewardValue" name="taxPercentageReward" onblur="getTaxPercentageValue()" placeholder="Percentage">
                           <i class="fa fa-percent"></i> 
                         </div>
@@ -322,7 +322,7 @@
                           <div class="form-group col-md-8 paddingRight positionRelative iconHolder" >
                             <input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue"  name="taxFlatReward" placeholder="Flat">
                             <i class="fa fa-money" id="taxFlatRewardIcon"></i> </div>
-                          <div class="form-group select-field col-md-4 paddingLeft">
+                          <div class="form-group select-field col-md-4 paddingLeft"> 
                             <select class="form-control input-sm" id="taxFlatRateType" name="taxFlatRateType"  style="display: none">
                               <option  ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}><i class="fa fa-rupee" title="INR"></i>INR</option>
                               <option  ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}><i class="fa fa-dollar" title="USD"></i>USD</option>
@@ -679,6 +679,72 @@ function contractTypeLabels(){
 		showCommonSOWFields();
 		getRequirements("Vendor SOW");
 	}
+	if(contractType == "NDA" || contractType == "NSA"){
+
+		$('#percentageRewardValue').removeAttr('data-validation');
+		$('#flatRewardValue').removeAttr('data-validation');
+		$('#invoiceFrequency').removeAttr('data-validation');
+		$('#paymentFrequency').removeAttr('data-validation');
+		$('#taxPercentageRewardValue').removeAttr('data-validation');
+		$('#taxFlatRewardValue').removeAttr('data-validation');
+		
+		
+		$('#percentageRewardValue').attr('data-validation-optional',"true");
+		$('#flatRewardValue').attr('data-validation-optional',"true");
+		$('#invoiceFrequency').attr('data-validation-optional',"true");
+		$('#paymentFrequency').attr('data-validation-optional',"true");
+		$('#taxPercentageRewardValue').attr('data-validation-optional',"true");
+		$('#taxFlatRewardValue').attr('data-validation-optional',"true");
+		
+		
+		$('#clientOrgRelationId').removeAttr('data-validation');
+		$('#clientOrgRelationId').attr('data-validation-optional',"true");
+		$('#clientContact').removeAttr('data-validation');
+		$('#clientContact').attr('data-validation-optional',"true");
+		
+		$('#orgRelationId').removeAttr('data-validation');
+		$('#orgRelationId').attr('data-validation-optional',"true");
+		$('#vendorContact').removeAttr('data-validation');
+		$('#vendorContact').attr('data-validation-optional',"true");
+		
+		
+		
+		$('#requirementsList').removeAttr('data-validation');
+		$('#requirementsList').attr('data-validation-optional',"true");
+		$('#requirementDiv').find('p.jquery_form_error_message').remove();
+		document.getElementById("requirementDiv").style.display="none";
+		
+		$('#submissionOffersList').removeAttr('data-validation');
+		$('#submissionOffersList').attr('data-validation-optional',"true");
+		$('#offeredSubmissionDiv').find('p.jquery_form_error_message').remove();
+		document.getElementById("offeredSubmissionDiv").style.display="none";
+		
+		$('#hoursPerWeek').removeAttr('data-validation');
+		$('#hoursPerWeek').attr('data-validation-optional',"true");
+		$('#hoursPerWeek').val("");
+		$('#hoursPerWeekDiv').find('p.jquery_form_error_message').remove();
+		document.getElementById("hoursPerWeekDiv").style.display="none";
+		
+		$('#overTimeHours').removeAttr('data-validation');
+		$('#overTimeHours').attr('data-validation-optional',"true");
+		$('#overTimeHours').val("");
+		$('#overTimeHoursDiv').find('p.jquery_form_error_message').remove();
+		document.getElementById("overTimeHoursDiv").style.display="none";
+		
+		$('#totalHoursEstimated').removeAttr('data-validation');
+		$('#totalHoursEstimated').attr('data-validation-optional',"true");
+		$('#totalHoursEstimated').val("");
+		$('#totalHoursEstimatedDiv').find('p.jquery_form_error_message').remove();
+		document.getElementById("totalHoursEstimatedDiv").style.display="none";
+		
+		$('#overtimeRate').removeAttr('data-validation');
+		$('#overtimeRate').attr('data-validation-optional',"true");
+		$('#overtimeRate').val("");
+		$('#overtimeRateType').removeAttr('data-validation');
+		$('#overtimeRateType').attr('data-validation-optional',"true");
+		$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
+		
+	}
 }
 </script>
 
@@ -988,6 +1054,40 @@ function getTaxPercentageValue(){
 		}); */
 	}
 	
+}
+</script>
+
+<script>
+function flush(){
+	document.getElementById("contractTitle").value="";
+//document.getElementById("owner").value="";
+	document.getElementById("template").value="";
+	document.getElementById("requirementsList").value="";
+	document.getElementById("submissionOffersList").value="";
+	document.getElementById("startDate").value="";
+	document.getElementById("endDate").value="";
+	
+	document.getElementById("orgRelationId").value="";
+	
+	document.getElementById("vendorContact").value="";
+	document.getElementById("clientOrgRelationId").value="";
+	document.getElementById("clientContact").value="";
+	document.getElementById("approver").value="";
+	document.getElementById("description").value="";
+	
+	document.getElementById("hoursPerWeek").value="";
+	document.getElementById("overTimeHours").value="";
+	document.getElementById("totalHoursEstimated").value="";
+	document.getElementById("overtimeRate").value="";
+	document.getElementById("overtimeRateType").value="";
+	
+	document.getElementById("invoiceFrequency").value="";
+	document.getElementById("taxFlatRateType").value="";
+	document.getElementById("submissionOffersList").value="";
+	
+	
+	
+	$("newcontract_form").validate().resetForm();
 }
 </script>
 
