@@ -56,6 +56,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	@Column(name = "POSITION_TYPE")
 	private String positionType;
 	
+	@Column(name = "OTHER_POSITION_TYPE")
+	private String otherPositionType;
+	
 	@Column(name = "Rejected_Reason" , columnDefinition = "TEXT default NULL")
 	private String rejectedReason;
 	
@@ -157,6 +160,15 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 	public void setPositionType(String positionType) {
 		this.positionType = positionType;
+	}
+	
+	
+	public String getOtherPositionType() {
+		return otherPositionType;
+	}
+
+	public void setOtherPositionType(String otherPositionType) {
+		this.otherPositionType = otherPositionType;
 	}
 
 	public String getRejectedReason() {

@@ -499,9 +499,17 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		writeRow.createCell(3).setCellValue(candidate.getMobilePhone());
 	}
 	
-	if(candidate.getCountry() !=null && !"".equalsIgnoreCase(candidate.getCountry())){
+	StringBuilder loc = new StringBuilder();
+	if(candidate.getCity() !=null && !"".equalsIgnoreCase(candidate.getCity())){
+		writeRow.createCell(4).setCellValue(loc.append(candidate.getCountry()).append(",").append(candidate.getState()).append(",").append(candidate.getCity()).toString());
+	}else if(candidate.getState() !=null && !"".equalsIgnoreCase(candidate.getState())){
+		writeRow.createCell(4).setCellValue(loc.append(candidate.getCountry()).append(",").append(candidate.getState()).toString());
+	}else if(candidate.getCountry() !=null && !"".equalsIgnoreCase(candidate.getCountry())){
 		writeRow.createCell(4).setCellValue(candidate.getCountry());
+	}else{
+		writeRow.createCell(4).setCellValue("--");
 	}
+	
 	if(candidate.getDesignation() !=null && !"".equalsIgnoreCase(candidate.getDesignation())){
 		writeRow.createCell(5).setCellValue(candidate.getDesignation());
 	}

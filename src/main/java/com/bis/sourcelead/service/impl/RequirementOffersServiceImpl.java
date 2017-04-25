@@ -146,6 +146,10 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 									requirementOffers.setPositionType(jsonObj.getString(c+"PositionType"));
 								}
 								
+								if(jsonObj.has(c+"JobOtherType") && !jsonObj.getString(c+"JobOtherType").isEmpty()){
+									requirementOffers.setOtherPositionType(jsonObj.getString(c+"JobOtherType"));
+								}
+								
                                final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
                    		       final Map files = multiRequest.getFileMap();
                               

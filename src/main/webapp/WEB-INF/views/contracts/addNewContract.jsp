@@ -166,7 +166,7 @@
           <div class="form-group">
               <label class="col-md-4">Approver</label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="approver" name="approver">
+                  <select class="chosen-select form-control" id="approver" name="approver" onchange="changeSaveButton();">
                   <option value=''>--Select Owner--</option>
                   <c:forEach var="user" items="${userList}">
                    <%-- to Enable login user as approver ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} --%>
@@ -383,6 +383,7 @@
           <div class="pull-right">
             <input type="button" value="Save Draft" id="draft_template" onclick="saveNewContract('draft');" class="btn btn-primary">
             <input type="button" value="Save" id="save_template" onclick="saveNewContract('pending');" class="btn btn-success ml10">
+            <input type="button" value="SubmitToApprover" id="save_approver_template" onclick="saveNewContract('pending');" class="btn btn-success ml10" style="display:none">
             <input type="button" value="Cancel" class="btn btn-danger ml10">
           </div>
         </div>
@@ -1014,6 +1015,18 @@ function getTaxPercentageValue(){
 		}); */
 	}
 	
+}
+</script>
+<script>
+function changeSaveButton(){
+	 var approverId = $("#approver").val();
+	if(approverId !='' && approverId != null){
+		document.getElementById("save_approver_template").style.display="block";
+		document.getElementById("save_template").style.display="none";
+	}else{
+		document.getElementById("save_approver_template").style.display="none";
+		document.getElementById("save_template").style.display="block";
+	}
 }
 </script>
 
