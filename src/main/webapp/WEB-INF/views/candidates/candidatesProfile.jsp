@@ -773,7 +773,7 @@ function candidateProfile(candidateId,candidateType){
 								result = result + '<div class="project_tabs_inn_head mt10"><div class="anchor-inline"><a href="#" class="positionRelative showInfo"><i class="glyphicon glyphicon-info-sign"></i>Terminated<span class="infoContent col-xs-12 col-md-5"> '+json.terminateReason+' </span></a><a href="javascript:void(0)" onClick="reActivateCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>ReActivate</a> </div>';
 								'</sec:authorize>';
 							}else{
-								   result = result + '<div class="project_tabs_inn_head mt10"> <div class="anchor-inline"> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a></sec:authorize> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a> </sec:authorize></div>';
+								   result = result + '<div class="project_tabs_inn_head mt10"> <div class="anchor-inline"> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_VIEW_EDIT_ASSOCIATE\')"> <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a></sec:authorize> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_VIEW_DELETE_ASSOCIATE\')"><a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a> </sec:authorize></div>';
 							}
 							result = result + '<div id="profileEditPopup"></div>';
 							result = result +'<div class="require_wrap_details candidate_wrap_details">';	 
@@ -1770,7 +1770,7 @@ var currentRate = document.getElementById("currentRate").value;
 <script>
 function employementType(){
 	 var employementType = $('#designationType1').val(); 
-		if(employementType == 'C2C' || employementType == 'C2C-1099'){
+		if(employementType == 'C2C'){
 			document.getElementById("hideVendor").style.display="block";
 			 $('#vendorName').attr("data-validation","required"); 
 			 $('#vendorcontactName').attr("data-validation","required"); 
@@ -1783,6 +1783,21 @@ function employementType(){
 			 $('#vendorcontactName').val(''); 
 			 
 		}
+		
+		if(employementType == 'C2C-1099'){
+			 document.getElementById("hideVendor").style.display="block";
+			 $('#vendorName').attr("data-validation-optional", "true"); 
+			 $('#vendorcontactName').attr("data-validation-optional", "true");  
+			 
+			 $("#errorvendor").find("p.jquery_form_error_message").remove();
+			 $("#errorvendorContact").find("p.jquery_form_error_message").remove();
+		}else{
+			 $('#vendorName').removeAttr("data-validation-optional", "true"); 
+			 $('#vendorcontactName').removeAttr("data-validation-optional", "true");  
+			 
+			 $('#vendorName').val(''); 
+			 $('#vendorcontactName').val(''); 
+		} 
 		$('#designationType1 + p').remove();
 }
 </script>
