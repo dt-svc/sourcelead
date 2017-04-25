@@ -1,7 +1,11 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
-
+<style type="text/css">
+.chosen-container {
+    width: 100% !important;
+}
+</style>
  <!-- Applicant Authorization -->
       <div class="dashboard-widget clearfix mb eventAlert">
         <div class="row">
@@ -184,6 +188,21 @@ function dashboardAddInterview(){
 	
 	
 	result = result + '<div class="clearfix form-group row">';
+	
+	result = result + '<div class="col-md-5">';
+	result = result + '<span class="col-md-3 paddingLeft">Range<span class="text-danger">&nbsp;*</span></span>';
+	result = result + '<div class="col-md-9 req_list">';
+	result = result + '<select class="form-control mt10" id="requirementsTimeRange" onchange="getRequirements();">';
+	result = result + '		<option value="today">Today</option>';
+    result = result + '		<option value="yesterday">Yesterday</option>';
+    result = result + '		<option value="week" selected>1 week</option>';
+    result = result + '		<option value="twoweeks">2 weeks</option>';
+    result = result + '		<option value="month">1 month</option>';
+    result = result + '		<option value="twomonths">2 months</option>';
+	result = result + '</select>';
+	result = result + '</div>';
+	result = result + '</div>';
+	result = result + '<div class="clearfix form-group row"></div>';
 	
 	result = result + '<div class="col-md-5">';
 	result = result + '<span class="col-md-3 paddingLeft">Requirement<span class="text-danger">&nbsp;*</span></span>';
@@ -462,9 +481,10 @@ function getSeheduledInterviewsList(){
 <script>
 function getRequirements(){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var postedDateRange =$("#requirementsTimeRange").val();
 	$.ajax({
-        type : "POST",
-        url: sourceleadUrl+"/getAssignedRequirementListByOrgLocationIDAndUserId?${_csrf.parameterName}=${_csrf.token}",    
+        type : "GET",
+        url: sourceleadUrl+"/getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate?postedDateRange="+postedDateRange,    
          success :function(data) {
               if(data != null && data != 'undefined' && data != "" && data != '[]'){
             	  var json = JSON.parse(data);
@@ -478,6 +498,19 @@ function getRequirements(){
                   $("#requirementsList").append(result);
                   $("#requirementsList").chosen();
               	  $("#requirementsList").trigger('chosen:update');
+	              	$('#requirementsList')
+	                .find('option:first-child').prop('selected', true)
+	                .end().trigger('chosen:updated');
+              }else{
+            	  var result = "";
+            	  	 result = result + '<option value="">--- Select Requirement ---</option>';
+            	  $("#requirementsList").empty();
+                  $("#requirementsList").append(result);
+                  $("#requirementsList").chosen();
+              	  $("#requirementsList").trigger('chosen:update');
+	              	$('#requirementsList')
+	                .find('option:first-child').prop('selected', true)
+	                .end().trigger('chosen:updated');
               }
        },
     });

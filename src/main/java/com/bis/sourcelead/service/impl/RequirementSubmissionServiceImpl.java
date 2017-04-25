@@ -320,6 +320,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 						 candidate.setExperienceMonths(jsonObj.getString("monthExp"));
 					 }
 					candidate.setCandidateType("Candidate");
+					candidate.setIsAssociate(Constants.NO);
 					candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 					candidate.setCreatedBy(user.getUserCode());
 					candidate.setCreatedDate(new Date());

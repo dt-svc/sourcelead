@@ -841,7 +841,11 @@ public class RequirementRestController {
 	    
 	    @RequestMapping(value = "/getEditRequirementDetails", method = RequestMethod.GET)
 		public @ResponseBody String getEditRequirementDetails(@RequestParam(value="requirementId", required=false) String requirementId,HttpServletRequest request,HttpServletResponse response) throws Exception {
-	    	Requirement requirement =	requirementService.getRequirementDetailsById(Long.parseLong(requirementId));
+	    	
+	    	Requirement requirement = null;
+	    	if(null !=requirementId && "" !=requirementId && "undefined" !=requirementId){
+	    	requirement =	requirementService.getRequirementDetailsById(Long.parseLong(requirementId));
+	    	}
 			return commonUtil.toJSON(requirement);
 		} 
 }

@@ -24,12 +24,15 @@ margin:10px 220px 0;
       <div class="pull-left">
         <h2>Import Vendor & Contacts</h2>
       </div>
+      <div class="remove_pop" id="selector"  style="display: none;">
+	         <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+		</div>
       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="vendorsList">Vendor & Contact List</a> &raquo; Vendor & Contact Import </div>
     </section>
      <form:form id="upload_form" name="upload_form" enctype="multipart/form-data">
     <%-- <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="clientFileUpload?${_csrf.parameterName}=${_csrf.token}&type=Client"> --%>
     <div class="content-area clearfix">
-    <div id="loading"></div> 
+    <div id="loadinggif"></div> 
       <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
         <div class="row minHyewtriuwe rwrghek	fghjqwehjgfwej tkjreight">
           <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
@@ -208,10 +211,7 @@ function saveBulkImport(){
 	var formData = new FormData(form); 
 	var sourceleadUrl = '${sourceleadUrl}';
 	
-	/* $( "#submitForApproval" ).addClass('button').val('Processing..');
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	 */
-	
+	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	 $.ajax({
 		   	type: "POST",
 		   	data: formData,
@@ -222,7 +222,15 @@ function saveBulkImport(){
     	    dataType : 'json',
 		    url : sourceleadUrl+"/clientExcelFileUpload?${_csrf.parameterName}=${_csrf.token}&responderType=Vendor", 	   
  		    success : function(data) {
- 		    	prepareExcelDataDiv(data);
+ 		    	$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+ 		    	if(data == "failure"){
+ 		    		$("#selector").removeAttr("style");
+ 	    			$("#selector").css({ display: "block" });
+ 		    		$("#msgDiv").html("Mandatory fields are required");
+ 		    		msgFadein();
+ 		    	}else{
+ 		    		prepareExcelDataDiv(data);
+ 		    	}
  		    },
  		   error: function(e){
  			  alert(e);
@@ -233,6 +241,12 @@ function saveBulkImport(){
 }
 </script>
 
+<script>
+	function msgFadein() {
+		$("#selector").fadeIn(200);
+        $('#selector').delay(2000).fadeOut('slow');
+	}
+</script> 
 
 <script>
 function prepareExcelDataDiv(data){
@@ -477,7 +491,7 @@ function excelimportDataPagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", 

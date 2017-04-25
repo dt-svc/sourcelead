@@ -35,8 +35,8 @@ bottom:-14px;
 		</div>
 		<div class="pull-right brud-crum">
 			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="<c:url value='/template'/>">Template List </a>&raquo;
-			Add Template
+				href="<c:url value='/template'/>">Requirement Template List </a>&raquo;
+			Add Requirement Template
 		</div>
 	</section>
 	<div class="content-area content-new clearfix">
@@ -44,7 +44,7 @@ bottom:-14px;
 			<div class="form-horizontal req-dtls myForm row mb">
 				<div class="clearfix">
 					<div class="col-lg-12">
-						<h3>Add Template Details</h3>
+						<h3>Add Requirement Template Details</h3>
 					</div>
 
 					<div

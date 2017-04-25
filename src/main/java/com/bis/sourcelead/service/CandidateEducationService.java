@@ -42,7 +42,7 @@ public interface CandidateEducationService {
 	 * @return HashSet<CandidateEducation>
 	 * @throws JSONException
 	 */
-	HashSet<CandidateEducation> getCandidateEducationDetails(JSONObject jsonObj,OrgLocations orgLocations,Candidate candidate,String userCode) throws JSONException;
+	HashSet<CandidateEducation> getCandidateEducationDetails(JSONObject jsonObj,OrgLocations orgLocations,Candidate candidate,String userCode) throws Exception;
 
 	/**
 	 * @param candidateId

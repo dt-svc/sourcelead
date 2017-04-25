@@ -5,8 +5,13 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.mail.internet.InternetAddress;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,17 +19,24 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailRecipient;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ContractsTemplateService;
+import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SignatureRequestUtil;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
@@ -47,6 +59,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	
 	@Autowired
 	private SignatureRequestUtil signatureRequestUtil;
+	
+	@Autowired
+	EmailScenarioService emailScenarioService;
+	
+	@Autowired
+	EmailScenerioUtil emailScenerioUtil;
 	
 	@Override
 	public ContractsTemplate saveContractTemplate(JSONObject jsonObj, User user, OrgLocations orgLocation) throws Exception {
@@ -220,14 +238,22 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setContactUser(vendorContactsUser);
 		}
 		
-		if(jsonObj.has("endDate") && null != jsonObj.getString("billingAmount") && !"".equals(jsonObj.getString("billingAmount")) ){
-			contracts.setBillingAmount(jsonObj.getString("billingAmount"));
-			vendorContracts.setBillingAmount(jsonObj.getString("billingAmount"));
+		if(jsonObj.has("percentageReward") && null != jsonObj.getString("percentageReward") && !"".equals(jsonObj.getString("percentageReward")) ){
+			contracts.setBillingAmount(jsonObj.getString("percentageReward"));
+			vendorContracts.setBillingAmount(jsonObj.getString("percentageReward"));
+				contracts.setBillingPer("Percentage");
+				vendorContracts.setBillingPer("Percentage");
 		}
-		if(jsonObj.has("billingPer") && null != jsonObj.getString("billingPer") && !"".equals(jsonObj.getString("billingPer")) ){
-			contracts.setBillingPer(jsonObj.getString("billingPer"));
-			vendorContracts.setBillingPer(jsonObj.getString("billingPer"));
+		if(jsonObj.has("flatReward") && null != jsonObj.getString("flatReward") && !"".equals(jsonObj.getString("flatReward")) ){
+			contracts.setBillingAmount(jsonObj.getString("flatReward"));
+			vendorContracts.setBillingAmount(jsonObj.getString("flatReward"));
+			
+			if(jsonObj.has("flatRateType") && null != jsonObj.getString("flatRateType") && !"".equals(jsonObj.getString("flatRateType")) ){
+				contracts.setBillingPer(jsonObj.getString("flatRateType"));
+				vendorContracts.setBillingPer(jsonObj.getString("flatRateType"));
+			}
 		}
+		
 		contracts.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
 		vendorContracts.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
 		
@@ -235,14 +261,22 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setPaymentTerm(jsonObj.getString("paymentFrequency"));
 			vendorContracts.setPaymentTerm(jsonObj.getString("paymentFrequency"));
 		}
-		if(jsonObj.has("tax") && null != jsonObj.getString("tax") && !"".equals(jsonObj.getString("tax")) ){
-			contracts.setTax(jsonObj.getString("tax"));
-			vendorContracts.setTax(jsonObj.getString("tax"));
+		
+		if(jsonObj.has("taxPercentageReward") && null != jsonObj.getString("taxPercentageReward") && !"".equals(jsonObj.getString("taxPercentageReward")) ){
+			contracts.setTax(jsonObj.getString("taxPercentageReward"));
+			vendorContracts.setTax(jsonObj.getString("taxPercentageReward"));
+			contracts.setTaxType("Percentage");
+			vendorContracts.setTaxType("Percentage");
 		}
-		if(jsonObj.has("taxType") && null != jsonObj.getString("taxType") && !"".equals(jsonObj.getString("taxType")) ){
-			contracts.setTaxType(jsonObj.getString("taxType"));
-			vendorContracts.setTaxType(jsonObj.getString("taxType"));
+		if(jsonObj.has("taxFlatReward") && null != jsonObj.getString("taxFlatReward") && !"".equals(jsonObj.getString("taxFlatReward")) ){
+			contracts.setTax(jsonObj.getString("taxFlatReward"));
+			vendorContracts.setTax(jsonObj.getString("taxFlatReward"));
+			contracts.setTaxType(jsonObj.getString("taxFlatRateType"));
+			vendorContracts.setTaxType(jsonObj.getString("taxFlatRateType"));
 		}
+		
+		
+		
 		if(jsonObj.has("description") && null != jsonObj.getString("description") && !"".equals(jsonObj.getString("description"))){
 			contracts.setDescription(jsonObj.getString("description"));
 			vendorContracts.setDescription(jsonObj.getString("description"));
@@ -256,6 +290,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		vendorContracts.setStatus("0");
 		if(null != approverUser){
 			contracts.setTemplateSubmissionStatus("WAITING_FOR_APPROVER");
+			sendMailToContractApprover(user,approverUser,contracts,orgLocation);
 		}else{
 			contracts.setTemplateSubmissionStatus(saveType);
 		}
@@ -311,6 +346,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		
 		
 	}
+
+	
 
 	@Override
 	public Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType) throws Exception
@@ -467,6 +504,145 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		
 		return upadatedContracts;
+	}
+	
+	private void sendMailToContractApprover(User loginUser, User approverUser, Contracts contracts, OrgLocations orgLocation) throws Exception
+	{
+		
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(loginUser.getFirstName());
+		 emailMessage.setLastName(loginUser.getLastName());
+		 emailMessage.setToEmail(approverUser.getEmail());
+		 emailMessage.setFromEmail(loginUser.getEmail());
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
+		 
+		 StringBuilder msgBuild = new StringBuilder();
+		 emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 
+		 if(contracts.getContractTitle()!= null && !"".equalsIgnoreCase(contracts.getContractTitle())){
+			 globalVarsMap.put("ContractTitle", contracts.getContractTitle());
+			 }else{
+				 globalVarsMap.put("ContractTitle","--");
+			 }
+		
+		if(approverUser.getFirstName()!= null && !"".equalsIgnoreCase(approverUser.getFirstName()) && approverUser.getLastName()!= null && !"".equalsIgnoreCase(approverUser.getLastName())){
+			StringBuilder approverSb = new StringBuilder();
+			globalVarsMap.put("ApproverName", approverSb.append(approverUser.getFirstName()).append(" ").append(approverUser.getLastName()).toString());
+		}else if(approverUser.getLastName()!= null && !"".equalsIgnoreCase(approverUser.getLastName())){
+			globalVarsMap.put("ApproverName",approverUser.getFirstName());
+		}else{
+			globalVarsMap.put("ApproverName","--");
+		}
+		
+		if(contracts.getOwnerUserId().getFirstName()!= null && !"".equalsIgnoreCase(contracts.getOwnerUserId().getFirstName()) && contracts.getOwnerUserId().getLastName()!= null && !"".equalsIgnoreCase(contracts.getOwnerUserId().getLastName())){
+			StringBuilder ownerSb = new StringBuilder();
+			globalVarsMap.put("OwnerName", ownerSb.append(contracts.getOwnerUserId().getFirstName()).append(" ").append(contracts.getOwnerUserId().getLastName()).toString());
+		}else if(contracts.getOwnerUserId().getLastName()!= null && !"".equalsIgnoreCase(contracts.getOwnerUserId().getLastName())){
+			globalVarsMap.put("OwnerName",contracts.getOwnerUserId().getFirstName());
+		}else{
+			globalVarsMap.put("OwnerName","--");
+		}
+		
+		if(contracts.getStartDate()!=null && !"".equalsIgnoreCase(contracts.getStartDate().toString())){
+			globalVarsMap.put("StartDate",contracts.getStartDate().toString());	
+		}else{
+			globalVarsMap.put("StartDate","--");
+		}
+
+		if(contracts.getEndDate()!=null && !"".equalsIgnoreCase(contracts.getEndDate().toString())){
+			globalVarsMap.put("EndDate",contracts.getEndDate().toString());	
+		}else{
+			globalVarsMap.put("EndDate","--");
+		}
+		 
+		if(contracts.getContractType()!=null && !"".equalsIgnoreCase(contracts.getContractType())){
+			globalVarsMap.put("ContractType",contracts.getContractType());
+			}else{
+				globalVarsMap.put("ContractType","--");
+		}
+	
+		 if(loginUser.getFirstName() != null && loginUser.getLastName()!=null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())){
+			 StringBuilder userBuild = new StringBuilder();
+			 globalVarsMap.put("loginUserName",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 }else{
+				 globalVarsMap.put("loginUserName",loginUser.getFirstName());
+			}
+		 
+			
+			if("Client MSA".equalsIgnoreCase(contracts.getContractType())){
+				List<OrgRelations> clientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocation.getId());
+				for (OrgRelations orgRelations : clientList) {
+				String orgName = "";
+				if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+					orgName = orgRelations.getLocationId().getOrg().getOrgName();
+				}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+					orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+				}
+				orgRelations.setOrgName(orgName);
+
+			 if(orgRelations.getResponderLocationId().getOrg().getOrgName() != null && !"".equalsIgnoreCase(orgRelations.getResponderLocationId().getOrg().getOrgName()) && !"".equalsIgnoreCase(orgRelations.getResponderLocationId().getOrg().getOrgName())){
+					 globalVarsMap.put("ClientVendorName",orgRelations.getResponderLocationId().getOrg().getOrgName());
+					 }else{
+						 globalVarsMap.put("ClientVendorName","--");
+					}
+			}	
+			}
+			if("Vendor MSA".equalsIgnoreCase(contracts.getContractType())){
+				List<OrgRelations> vendorList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
+				for (OrgRelations orgRelations : vendorList) {
+					String orgName = "";
+					if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+						orgName = orgRelations.getLocationId().getOrg().getOrgName();
+					}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+						orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+					}
+					orgRelations.setOrgName(orgName);
+
+					if(orgRelations.getResponderLocationId().getOrg().getOrgName() != null && !"".equalsIgnoreCase(orgRelations.getResponderLocationId().getOrg().getOrgName()) && !"".equalsIgnoreCase(orgRelations.getResponderLocationId().getOrg().getOrgName())){
+						 globalVarsMap.put("ClientVendorName",orgRelations.getResponderLocationId().getOrg().getOrgName());
+						 }else{
+							 globalVarsMap.put("ClientVendorName","--");
+						}
+			}
+			}
+		 
+		 
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPROVER_UPDATED_CONTRACT,Constants.ENTITY_TYPE_EMAIL);
+		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPROVER_UPDATED_CONTRACT,Constants.ENTITY_TYPE_NOTIFICATION);
+
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		 String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		 notificationScenario.setBody(notificationbody);
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocation.getOrg());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		
+		// StringBuilder actionLinkStringBuilder = new StringBuilder();
+		// String actionLink= actionLinkStringBuilder.append(sourceleadUrl).append("/requirementSummary?requirementUUID=").append(requirement.getRequirementUUID()).toString();
+//		 String actionLink= sourceleadUrl"/requirementSummary?requirementUUID="+requirement.getRequirementUUID()+"";
+		//calling the sendEmail method of emailScenerioUtil
+		 String actionLink="";
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, orgLocation, notificationScenario);
+		
+	}
+	
+	@Override
+	public ContractsTemplate findByContractTemplateName(String templateName,Long orgLocationId) throws Exception {
+		return contractsTemplateDao.findByContractTemplateName(templateName, orgLocationId);
 	}
 	
 }
