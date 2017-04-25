@@ -74,7 +74,7 @@
 			
 		}
 		$(".logMask").fadeIn(200);
-		 $(".logPop").fadeIn(100);
+		$(".logPop").fadeIn(100);
  }
  </script>
 <script>
@@ -92,6 +92,7 @@ window.onload = function () {
     function closeProfileDetailsPop(){
     	$(".logMask").fadeOut(200);
 		$(".logPop").fadeOut(100);
+		$(".terms_conditions").fadeOut(100);
     }
 </script>
  <div  id="loadTime"></div> 
@@ -267,7 +268,7 @@ window.onload = function () {
 <div class="regis_bg">
   <div class="container">
       
-    <div class="outsoucing-registaion">
+    <div class="outsoucing-registaion registerwith">
         <div class="company_logo pull-left"><img src="resources/images/mail-logo.png" alt="Sourcelead Logo" class="img-responsive" width="250"></div>
       <div class="clearfix"></div>
       <ul class="nav nav-tabs">
@@ -275,14 +276,21 @@ window.onload = function () {
           <c:if test="${empty contactUUID}">
           <li><a data-toggle="tab" href="#recruiter" onclick="resetCredentials('Recruiter')"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Individual Recruiter</a></li>
           </c:if>
+          <input type="hidden" id="tabType" />
       </ul>
-        <div class="regis_wrap_styles registered_widget_styles">
+       <!--  <div class="regis_wrap_styles registered_widget_styles"> -->
+        <div class="regis_wrap_styles">
         <div class="tab-content">
         <div id="professional" class="tab-pane fade in active">
            <form:form class="login-form clearfix"  id="professionalRegistration_form"  name="professionalRegistration_form" method="post" >     
-            <span class="col-md-12 text-muted text-center">Register With:</span>
+            <div class="clearfix social_icons">
+            <span class="col-md-12 text-muted text-center small">Continue with</span>
             <div id ="proffessionalConnect"></div>
+            </div>
             <div class="clearfix"></div>
+            <div class=" text-muted small mb10 text-center clearfix">
+            -------------------------------------------------- ( OR ) --------------------------------------------------
+            </div>
             <div class="row mt">
             <div class="form-group clearfix">
                 <div class="col-xs-12 col-md-12 mb10">
@@ -321,10 +329,17 @@ window.onload = function () {
             </div>
             
             <div class="clearfix">
-            <div class="text-center">
-                    <button type="submit" id="register_button"  class="btn btn-primary btn_styles" title="Register">
-                        <i class="fa fa-paper-plane"></i>Register</button>
-                </div>
+            <div class="clearfix row">
+            <div class='col-md-12 privacy_checkbox text-center'>
+                    <!-- <input type="checkbox" name="privacy" onClick="termsConditon();" id="terms"> -->
+                    <input type="checkbox" name="privacy" id="professionalRegistrationCheckTermsId">
+                    I agree terms of <a href="javascript:void(0)" onClick="termsConditon();" class="text-succcess">service and privacy policy</a>
+            </div>
+            <div class="col-md-12 mt10">
+                    <button type="submit" id="register_button"  class="btn btn-primary btn_styles btn-block" title="Register">
+                        <span class="text-center"><i class="fa fa-paper-plane"></i>Register</span></button>
+            </div>
+            </div>
                 <div class="col-md-12 text-center mt bg-info">
                     <span class="text-muted">Already have an Account:</span><a href="${sourceleadUrl}" class="btn" title="Login">Login</a><br/>
                 </div>
@@ -333,7 +348,74 @@ window.onload = function () {
             </form:form>
         </div>
         <div id="recruiter" class="tab-pane fade">
-          <form:form class="login-form clearfix"  id="recruiterRegistration_form"  name="recruiterRegistration_form" method="post" >    
+        
+        <form:form class="login-form clearfix"  id="recruiterRegistration_form"  name="recruiterRegistration_form" method="post" >     
+            <div class="clearfix social_icons">
+            <span class="col-md-12 text-muted text-center small">Continue with</span>
+            <div id ="recruiterConnect"></div>
+            </div>
+            <div class="clearfix"></div>
+            <div class=" text-muted small mb10 text-center clearfix">
+            -------------------------------------------------- ( OR ) --------------------------------------------------
+            </div>
+            <div class="row mt">
+            <div class="form-group clearfix">
+                <div class="col-xs-12 col-md-12 mb10">
+                    <i class="fa fa-user-circle"></i>
+                    <label>First Name <span class="text-danger">*</span></label>
+                    <input type="text" name="firstName" field-name="First Name" id="recruiterFirstName" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
+                    <b></b>
+                </div>
+                <div class="col-xs-12 col-md-12 mb10">
+                    <i class="fa fa-user-circle"></i>
+                    <label>Last Name</label>
+                    <input type="text" name="lastName" field-name="Last Name" id="recruiterLastName" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
+                    <b></b>
+                </div>
+                
+                <div class="col-xs-12 col-md-12 mb10" id="emailDiv">
+                    <i class="fa fa-envelope"></i>
+                    <label>Email <span class="text-danger">*</span></label>
+                    <input type="text" name="email" field-name="Email"  id="recruiterEmail"  onblur="validateRecruiterEmail('Recruiter');" data-validation="required validate_Space validate_length length2-100 validate_email" >
+                    <b></b>
+                </div>
+                <div class="col-xs-12 col-md-12 select-field mb10">
+                    <i class="fa fa-map-marker"></i>
+                    <select class="form-control chosen-select" name="location" id="location" field-name="Country" data-validation="required">
+                        <option disabled selected>Country</option>
+                        <option value="Australia">Australia</option>
+		                <option value="France">France</option>
+		                <option value="India">India</option>
+		                <option value="Singapore">Singapore</option>
+		                <option value="United Kingdom">United Kingdom</option>
+		                <option value="United States">United States</option>
+                    </select>
+                    <b></b>
+                </div>
+                </div>
+            </div>
+            
+            <div class="clearfix">
+            <div class="clearfix row">
+            <div class='col-md-12 privacy_checkbox text-center'>
+                    <!-- <input type="checkbox" name="privacy" onClick="termsConditon();" id="terms"> -->
+                    <input type="checkbox" name="privacy" id="termsCheckoxId">
+                    I agree terms of <a href="javascript:void(0)" onClick="termsConditon();" class="text-succcess">service and privacy policy</a>
+            </div>
+            <div class="col-md-12 mt10">
+                    <button type="submit" id="recruiter_register"  class="btn btn-primary btn_styles btn-block" title="Register">
+                        <span class="text-center"><i class="fa fa-paper-plane"></i>Register</span></button>
+            </div>
+            </div>
+                <div class="col-md-12 text-center mt bg-info">
+                    <span class="text-muted">Already have an Account:</span><a href="${sourceleadUrl}" class="btn" title="Login">Login</a><br/>
+                </div>
+                
+            </div>
+        </form:form>
+        
+        
+          <%-- <form:form class="login-form clearfix"  id="recruiterRegistration_form"  name="recruiterRegistration_form" method="post" >    
 	            <div class="row">
 	            <div class="form-group clearfix">
 	                <div class="col-xs-12 col-md-12">
@@ -383,7 +465,7 @@ window.onload = function () {
 	                </div>
 	            </div>
 	             </div>
-        </form:form>
+        </form:form> --%>
         </div>
       </div>
         </div>
@@ -398,6 +480,7 @@ window.onload = function () {
 
 <script>
 function resetCredentials(type){
+	$("#tabType").val(type);
 	$("#firstName").val('');
 	$("#lastName").val('');
 	$("#email").val('');
@@ -901,6 +984,65 @@ var config = {
    };
 })(jQuery);
 </script>
+
+<div class="logMask"></div>
+<div class="terms_conditions">
+<div class="loPopClose" onclick="closeProfileDetailsPop();"><i class="fa fa-times"></i></div>
+	<h4>Terms and Conditons</h4>
+	<div class="termscondtion-content" id="includedContent">
+	<jsp:include page="privacyPolicyDocument.jsp" />
+	</div>
+	<div class="stickyFooter row">
+	<div class="pull-right">
+	<button type="button" class="btn btn-danger btn-sm mr" onclick="closeProfileDetailsPop();"><i class="fa fa-close mr"></i>Reject</button>
+	<button type="button" class="btn btn-success btn-sm ml" id="acceptTermsId" onclick="acceptCheckBox();"><i class="fa fa-check mr"></i>Accept</button>
+	</div>
+	</div>
+</div>
+
+<script>
+function acceptCheckBox(){
+var tabType = document.getElementById("tabType").value;
+
+
+if(tabType == "recruiter"){
+		$("#termsCheckoxId").attr("checked","checked");
+		closeProfileDetailsPop();
+}
+if(tabType == "professional"){
+		$("#professionalRegistrationCheckTermsId").attr("checked","checked");
+		closeProfileDetailsPop();
+}
+
+
+}
+</script>
+
+
+<script>
+function termsConditon() {
+	$(".logMask").fadeIn(100);
+	$(".terms_conditions").fadeIn(200);
+};
+/* $('#terms').change(function() {
+    var $check = $(this);
+    if ($check.prop('checked')) {
+    	$(".logMask").fadeIn(100);
+    	$(".terms_conditions").fadeIn(200);
+    } else {
+    	$(".logMask").hide();
+    	$(".terms_conditions").hide();
+    }
+}); */
+
+// load div
+/* $(function() {
+var sourceleadUrl ='${sourceleadUrl}';
+$("#includedContent").load("~/views/privacyPolicyDocument.jsp"); 
+});  */
+</script>
+
+
 <jsp:include page="socialinviterscripts.jsp" />
 <!--    Ends of validating the Company Email i,e removing duplicate values-->
 </html>
