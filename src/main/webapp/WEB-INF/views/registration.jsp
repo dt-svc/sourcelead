@@ -1004,17 +1004,14 @@ var config = {
 function acceptCheckBox(){
 var tabType = document.getElementById("tabType").value;
 
-
-if(tabType == "recruiter"){
+if(tabType == "Recruiter"){
 		$("#termsCheckoxId").attr("checked","checked");
 		closeProfileDetailsPop();
 }
-if(tabType == "professional"){
+if(tabType == "Professional"){
 		$("#professionalRegistrationCheckTermsId").attr("checked","checked");
 		closeProfileDetailsPop();
 }
-
-
 }
 </script>
 
