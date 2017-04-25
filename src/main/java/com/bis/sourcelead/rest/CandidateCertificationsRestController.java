@@ -53,7 +53,7 @@ public class CandidateCertificationsRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_CERTIFICATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES')")
+	@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_CERTIFICATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_CERTIFICATION_DETAILS')")
 	 @RequestMapping(value = "/storeCandidateCertifications", method = RequestMethod.POST)
      public @ResponseBody String storeCandidateCertifications(@RequestParam(value = "json", required = false) String json,@RequestParam(value="candidateId", required=false) Long candidateId ,HttpServletRequest request) throws Exception {
 		
@@ -80,7 +80,7 @@ public class CandidateCertificationsRestController {
 	   * 
 	   * @throws Exception
 	   */
-	@PreAuthorize("hasAnyRole('ROLE_VIEW_CANDIDATE_CERTIFICATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_CANDIDATE_CERTIFICATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_EDIT_ASSOCIATE_CERTIFICATION_DETAILS')")
 	 @RequestMapping(value = "/getCandidateCertificationListByCandidateIdAndOrgLocationID") 
 	 public String getCandidateCertificationListByCandidateIdAndOrgLocationID(@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception {
 
@@ -123,7 +123,7 @@ public class CandidateCertificationsRestController {
 	   * 
 	   * @throws Exception
 	   */
-	 @PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES')")
+	 @PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_DELETE_ASSOCIATE_CERTIFICATION_DETAILS')")
 	   @RequestMapping(value = "/removeCandidateCertificateBycandidateIdandcandidateCertificateId")
 	   public String removeCandidateCertificateBycandidateIdandcandidateCertificateId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateCertificationId", required = false) Long candidateCertificationId,HttpServletRequest request) throws Exception {
 
@@ -148,7 +148,7 @@ public class CandidateCertificationsRestController {
 		   * 
 		   * @throws Exception
 		   */
-	   @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES')")
+	   @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_EDIT_ASSOCIATE_CERTIFICATION_DETAILS')")
 	   @RequestMapping(value = "/getCandidateCertificateBycandidateIdandCertificateId")
 		public String getCandidateCertificateBycandidateIdandCertificateId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateCertificationId", required = false) Long candidateCertificationId,HttpServletRequest request) throws Exception {
 
