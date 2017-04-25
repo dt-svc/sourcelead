@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateOffBoardingDao;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
-import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -104,6 +103,22 @@ public class CandidateOffBoardingDaoImpl implements CandidateOffBoardingDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<CandidateOffBoarding> candidateOffBoarding = session.createQuery("from CandidateOffBoarding offboarding  "
 				+ " where offboarding.offboardUUID =:offboardUUID" ).setString( "offboardUUID", offboardUUID ).setCacheable(true).list();
+		if (candidateOffBoarding.size() > 0) {
+			return candidateOffBoarding.get(0);
+		} else {
+			return null;
+		}
+	}
+
+
+	@Override
+	@Transactional
+	public CandidateOffBoarding getCandidateOffBoardingByUserIdAndLocationId(Long offboardingUser, Long orgLocationId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<CandidateOffBoarding> candidateOffBoarding = session.createQuery("from CandidateOffBoarding offboarding left join fetch offboarding.userId left join fetch offboarding.orgLocationId   "
+				+ " where offboarding.orgLocationId.id =:orgLocationId and offboarding.userId.id = :offboardingUser" ).setLong("offboardingUser", offboardingUser).setLong( "orgLocationId", orgLocationId ).setCacheable(true).list();
 		if (candidateOffBoarding.size() > 0) {
 			return candidateOffBoarding.get(0);
 		} else {

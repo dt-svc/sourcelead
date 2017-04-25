@@ -15,9 +15,12 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.OffBoardingTemplate;
+import com.bis.sourcelead.entity.OffboardCheckList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.OffBoardingTemplateService;
+import com.bis.sourcelead.service.OffboardCheckListService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -38,10 +41,31 @@ public class CandidateOffBoardController {
 	@Autowired
 	CandidateOffBoardingService candidateOffBoardingService;
 	
+	@Autowired
+	OffboardCheckListService offboardCheckListService;
+	
 
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
+	
+	
+	
+	@RequestMapping(value = "/offboardStep2")
+	public ModelAndView offboardStep2(HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+		
+		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 
+		 CandidateOffBoarding offboarding = candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(user.getId(), loginOrgLocation.getId());
+		 
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.addObject("offboardingId", offboarding.getId());
+		 model.setViewName("offboard/offboardStep2");
+		 return model;
+	}
+	
 	
 	
 	@RequestMapping(value = "/candidateOffBoardCreation")

@@ -382,4 +382,11 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 
 }
 
+
+	@Override
+	public CandidateOffBoarding getCandidateOffBoardingByUserIdAndLocationId(Long offboardingUser, Long orgLocationId)
+			throws Exception {
+		return candidateOffBoardingDao.getCandidateOffBoardingByUserIdAndLocationId(offboardingUser, orgLocationId);
+	}
+
 }

@@ -108,6 +108,21 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "OFFBOARD_SUBMITTED")
 	private String offboardSubmitted;
 	
+	@Column(name = "WANTED_TO_SELL_PROPERTY")
+	private String wantedToSellProperty;
+	
+	@Column(name = "WANTED_TO_SUB_LEASE")
+	private String wantedToSubLease;
+	
+	@Column(name = "LOOKING_FOR_PUBLIC_STORAGE")
+	private String lookingForPublicStorage;
+	
+	@Column(name = "LOOKING_FOR_ACCOMMODATION")
+	private String lookingForAccommodation;
+	
+	@Column(name = "RATING")
+	private Integer rating;
+	
 	@Column(name = "STATUS")
 	private Integer status;
 	
@@ -421,6 +436,46 @@ private static final long serialVersionUID = 1L;
 
 	public void setOffBoardUserId(Long offBoardUserId) {
 		this.offBoardUserId = offBoardUserId;
+	}
+
+	public String getWantedToSellProperty() {
+		return wantedToSellProperty;
+	}
+
+	public void setWantedToSellProperty(String wantedToSellProperty) {
+		this.wantedToSellProperty = wantedToSellProperty;
+	}
+
+	public String getWantedToSubLease() {
+		return wantedToSubLease;
+	}
+
+	public void setWantedToSubLease(String wantedToSubLease) {
+		this.wantedToSubLease = wantedToSubLease;
+	}
+
+	public String getLookingForPublicStorage() {
+		return lookingForPublicStorage;
+	}
+
+	public void setLookingForPublicStorage(String lookingForPublicStorage) {
+		this.lookingForPublicStorage = lookingForPublicStorage;
+	}
+
+	public String getLookingForAccommodation() {
+		return lookingForAccommodation;
+	}
+
+	public void setLookingForAccommodation(String lookingForAccommodation) {
+		this.lookingForAccommodation = lookingForAccommodation;
+	}
+
+	public Integer getRating() {
+		return rating;
+	}
+
+	public void setRating(Integer rating) {
+		this.rating = rating;
 	}
 	
 

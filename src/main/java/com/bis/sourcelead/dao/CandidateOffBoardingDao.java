@@ -15,5 +15,7 @@ public interface CandidateOffBoardingDao {
 	Integer getCandidateOffBoardingListCountByOrgLocationId(Long orgLocationId) throws Exception;
 	
 	CandidateOffBoarding getCandidateOffBoardingByOffboardUUID(String offboardUUID) throws Exception;
+	
+	CandidateOffBoarding getCandidateOffBoardingByUserIdAndLocationId(Long offboardingUser,Long orgLocationId) throws Exception;
 
 }

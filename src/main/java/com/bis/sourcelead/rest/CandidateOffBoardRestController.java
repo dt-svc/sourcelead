@@ -36,6 +36,7 @@ import com.bis.sourcelead.entity.OffboardCheckList;
 import com.bis.sourcelead.entity.OffboardTasks;
 import com.bis.sourcelead.entity.OnboardTasks;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.OnboardStatus;
@@ -1229,5 +1230,63 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		   
 		}
 		 
+		 
+		 @RequestMapping(value = "/saveOffboardingCandidateStep1Details" , method = RequestMethod.POST)
+		 public @ResponseBody  String saveOffboardingCandidateStep1Details(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+			
+			 
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			 
+			 json = "{"+json+"}";
+			 JSONObject jsonObj = new JSONObject(json);
+			 
+			 CandidateOffBoarding offboarding = candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(user.getId(), loginOrgLocation.getId());
+			 if(null != offboarding){
+				 offboarding.setRating(Integer.parseInt(jsonObj.getString("rating")));
+				 
+				 if(jsonObj.has("sellProperty") && !isNullOrEmpty("sellProperty") && jsonObj.getString("sellProperty").equalsIgnoreCase("Y")){
+					 offboarding.setWantedToSellProperty(Constants.YES);
+				 }else{
+					 offboarding.setWantedToSellProperty(Constants.NO);
+				 }
+				 
+				 if(jsonObj.has("sublease") && !isNullOrEmpty("sublease") && jsonObj.getString("sublease").equalsIgnoreCase("Y")){
+					 offboarding.setWantedToSubLease(Constants.YES);
+				 }else{
+					 offboarding.setWantedToSubLease(Constants.NO);
+				 }
+				 
+				 if(jsonObj.has("itemsStorage") && !isNullOrEmpty("itemsStorage") && jsonObj.getString("itemsStorage").equalsIgnoreCase("Y")){
+					 offboarding.setLookingForPublicStorage(Constants.YES);
+				 }else{
+					 offboarding.setLookingForPublicStorage(Constants.NO);
+				 }
+				 
+				 if(jsonObj.has("accommodation") && !isNullOrEmpty("accommodation") && jsonObj.getString("accommodation").equalsIgnoreCase("Y")){
+					 offboarding.setLookingForAccommodation(Constants.YES);
+				 }else{
+					 offboarding.setLookingForAccommodation(Constants.NO);
+				 }
+				 
+				 candidateOffBoardingService.saveCandidateOffBoarding(offboarding);
+				 
+			 }
+			 
+			 return "success";
+		 }
+		 
+		 
+		 
+		 @RequestMapping(value = "/getOffboardCheckListByOffBoardId" , method = RequestMethod.GET)
+		   public String getOffboardCheckListByOffBoardId(@RequestParam(value="offboardId", required=false) Long offboardId,
+				   HttpServletRequest request) throws Exception {
+				
+			 
+			 OffboardCheckList offboardCheckList = offboardCheckListService.getOffboardCheckListByOffboardingId(offboardId);
+			 
+			 return offboardCheckList.getCheckListJsonString();
+		    
+		   }
 
 }

@@ -4098,7 +4098,28 @@ position: relative; padding: 0px 0px 5px 0px;
 .deleDocu i {
 	display: inline-block; padding: 0px 5px 0px 0px;
 }
-
 .nomr{
 	margin: 0px auto !important;
+}
+.viewTemplate.checklist{
+	padding: 0;
+}
+.viewTemplate.checklist .sjfb-field{
+	width: 100%; margin: 0; margin-bottom: 15px; font-weight: normal; background-color: rgba(255, 255, 255, 0.9); border-radius:5px;
+	padding: 10px; box-shadow: 0px 0px 2px rgba(0,0,0,0.1);
+}
+.viewTemplate.checklist .sjfb-field:nth-child(2n+2){
+	margin-left: 0;
+}
+.viewTemplate.checklist .sjfb-field label{
+	font-weight: normal; width: 20%; margin-right: 5px;margin-bottom: 0;font-size: 14px;
+}
+.viewTemplate.checklist .choices{
+	float: left; width:78.5%;
+}
+.viewTemplate.checklist .choices label{
+	width: 100%; margin-bottom: 10px;
+}
+.viewTemplate.checklist input[type=checkbox], .viewTemplate.checklist input[type=radio]{
+	margin: 0 10px 0 0; position: relative; top:2px;
 }

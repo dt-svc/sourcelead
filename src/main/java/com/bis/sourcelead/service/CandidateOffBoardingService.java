@@ -5,6 +5,7 @@ import java.util.List;
 import org.json.JSONObject;
 
 import com.bis.sourcelead.entity.CandidateOffBoarding;
+import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -23,4 +24,6 @@ public interface CandidateOffBoardingService {
 	CandidateOffBoarding getCandidateOffBoardingByOffboardUUID(String offboardUUID) throws Exception;
 	
 	public void terminateOffboardingUser(CandidateOffBoarding candidateOffBoarding,User user,OrgLocations orgLocations) throws Exception;
+	
+	CandidateOffBoarding getCandidateOffBoardingByUserIdAndLocationId(Long offboardingUser,Long orgLocationId) throws Exception;
 }
