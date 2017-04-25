@@ -148,7 +148,7 @@ $(document).ready(function() {
    		    		if(report.status == 1){
    		    			result = result +'<a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onclick="deleteProject('+report.id+');"></a>';	
    		    		}else{
-   		    			result = result +'<a class="glyphicon ml re-Assign" title="Add Department List" onclick="editDepartment('+report.id+');"><i class="fa-2x fa fa-plus-circle"></i></a>';
+   		    			result = result +'<a class="glyphicon ml re-Assign" title="Add Department List" onclick="editDepartment('+report.id+');"><i class="fa-2x fa fa-reply" aria-hidden="true"></i></a>';
    		    		}
    		    		
    		    		
