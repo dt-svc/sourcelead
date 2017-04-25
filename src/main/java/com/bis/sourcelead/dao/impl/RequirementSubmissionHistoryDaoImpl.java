@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -119,53 +120,16 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 		return session.createQuery(query).setParameterList("submissionIds", submissionIds).setCacheable(true).list();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Long getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(Long orgLocationId, User user,
 			String submissionStage, Date startDateUTC, Date endDateUTC) throws Exception {
-		
-		Map<String, Object> params = new HashMap<String,Object>();
-		String subQueryDateRange = "";
-		
-		if(null != startDateUTC && null != endDateUTC){
-			subQueryDateRange = "and (rsh.createdDate >= :startDateUTC and rsh.createdDate <= :endDateUTC)";
-			  params.put("startDateUTC",startDateUTC);
-			  params.put("endDateUTC",endDateUTC);
-		}
-		
-		 String queryString ="select count(*)from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations.id =:orgLocationId and rsh.toStage =:submissionStage and rsh.submissionId.submissionStatus = rsh.toStage and rsh.createdBy =:userCode "+subQueryDateRange+" ";
 		Session session = this.sessionFactory.getCurrentSession();
-	    //long count = ((Long)session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("submissionStage",submissionStage).setString("userCode",user.getUserCode()).uniqueResult()).intValue();
-	    params.put("orgLocationId",orgLocationId);
-	    params.put("submissionStage",submissionStage);
-	    params.put("userCode",user.getUserCode());
-	  
-	    
-	    Query query = session.createQuery(queryString);
-	    for (String str : query.getNamedParameters())
-        {
-			if(str.equalsIgnoreCase("startDateUTC")){
-				query.setParameter( str, (Date) params.get(str) );
-			}
-			if(str.equalsIgnoreCase("endDateUTC")){
-				query.setParameter( str, (Date) params.get(str) );
-			}
-			
-			if(str.equalsIgnoreCase("orgLocationId")){
-				query.setParameter(str, (long) params.get(str));
-			}
-			
-			if(str.equalsIgnoreCase("submissionStage")){
-				query.setParameter(str, params.get(submissionStage));
-			}
-			
-			if(str.equalsIgnoreCase("userCode")){
-				query.setParameter(str, params.get(str));
-			}
-			
-			
-        }
-       return (Long)query.uniqueResult();
+		List<RequirementSubmissionHistory> rhl = new ArrayList<RequirementSubmissionHistory>();
+		 String queryString ="from RequirementSubmissionHistory rsh left join fetch rsh.submissionId rs left join fetch rsh.interviewerId  where rs.orgLocations.id =:orgLocationID and rsh.toStage =:toStage and rsh.createdBy =:userCode and (rsh.createdDate >= :startDateUTC and rsh.createdDate <= :endDateUTC)";
+		 rhl = session.createQuery(queryString).setString("userCode", user.getUserCode()).setLong("orgLocationID", orgLocationId).setString("toStage", submissionStage).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
+       return (long) rhl.size();
 	}
 
 }

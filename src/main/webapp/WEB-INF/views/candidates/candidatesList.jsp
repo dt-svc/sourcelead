@@ -214,7 +214,7 @@ else{
 	              result = result +"<td style='width:40px; display: inline-block'>";
 
 	              if(opt.isAssociate == "Y"){
-	            	  result = result +"<i class='fa fa-black-tie pull-right mt10' title='Associate'></i> ";  
+	            	  result = result +"<i class='fa fa-black-tie pull-right mt10' title='Added as Associate'></i> ";  
 	              }
 
 	              result = result +"<div class='iconClass pull-left star-rating "+isFavClass+"' id='favourite"+opt.candidateId+"'>";
@@ -314,6 +314,7 @@ function cpagination(){
  -->
 <script>
 function cpagination(){ 
+	$.fn.dataTable.moment( 'DD-MM-YYYY' );
     $('#candidatePagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],

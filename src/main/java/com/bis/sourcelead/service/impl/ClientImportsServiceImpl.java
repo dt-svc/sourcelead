@@ -1166,10 +1166,10 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		      }
 		      Sheet createExcelsheet = wb_hssf.createSheet("createContact");
 		 			
-		      /*if(sheet.getLastRowNum() < 1){
+		      if(sheet.getLastRowNum() < 1){
 		    	  inp.close();
 					return "empty";
-		      }*/
+		      }
 		      Iterator rows = sheet.rowIterator(); // Now we have rows ready from the sheet
 		      createExcelsheet = setClientExcelHeader(createExcelsheet,responderType);
 		     while (rows.hasNext()) 

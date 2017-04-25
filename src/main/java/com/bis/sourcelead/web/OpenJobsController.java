@@ -40,9 +40,22 @@ public class OpenJobsController {
 		 List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 		 model.addObject("skillsList",skillsList);
 		 model.addObject("sourceleadUrl", sourceleadUrl);
-		 model.setViewName("openJobs/openjobs");
+		 model.setViewName("openJobs/souceleadJobPage");
 		 return model;
 	}
+	
+	
+	@RequestMapping(value = "/openRequirementsRedirect")
+	 public ModelAndView openRequirementsRedirect() throws Exception{
+	 ModelAndView model = new ModelAndView();
+	 List<Countries> countriesList = countriesService.getAllCountries();
+	 model.addObject("countryList",countriesList);
+	 List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+	 model.addObject("skillsList",skillsList);
+	 model.addObject("sourceleadUrl", sourceleadUrl);
+	 model.setViewName("openJobs/openjobs");
+	 return model;
+}
 	
 	
 	
