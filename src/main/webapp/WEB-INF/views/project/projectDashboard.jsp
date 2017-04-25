@@ -507,6 +507,7 @@ $(document).ready(function() {
 
 <script>
 function pagination(){  
+	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
     $('#example').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
@@ -688,6 +689,7 @@ function filter(){
 <script>
   $('#selector').delay(2000).fadeOut('slow');
 </script> 
+
  <script>
 // Edit pop
 $(document).ready(function() {	
