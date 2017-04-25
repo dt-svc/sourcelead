@@ -615,5 +615,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());*/
 		
 	}
+
+	@Override
+	public ContractsTemplate saveContractTemplate(ContractsTemplate contractsTemplate) throws Exception {
+		return contractsTemplateDao.saveContractTemplate(contractsTemplate);
+	}
 	
 }
