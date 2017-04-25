@@ -1,7 +1,10 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.sql.Timestamp;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -1077,5 +1080,82 @@ public class RequirementDaoImpl implements RequirementDao {
 		}
 
 	
-	
+		@SuppressWarnings("unchecked")
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<Requirement> getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(Long orgLocationId, String userType, Long userId, String userCode, String numberOfDays)
+				throws Exception {
+			Date currentDate =  commonUtil.currentDate();
+			java.sql.Date sqlCurrentDate = null;
+			
+			 if(currentDate != null){
+					sqlCurrentDate = new java.sql.Date(currentDate.getTime());
+			 }
+			
+		    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		     Calendar c = Calendar.getInstance();
+		      c.setTime(new Date()); // Now use today date.
+		    c.add(Calendar.DATE, -Integer.parseInt(numberOfDays)); // Adding  The DateRange days
+		    String updatedDate     = dateFormat.format(c.getTime());
+		    Date parsed = dateFormat.parse(updatedDate);
+		    java.sql.Date endDate = new java.sql.Date(parsed.getTime());
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		User user = userDao.getUserById(userId);
+				
+		Map<String, Object> params = new HashMap<String,Object>();
+		
+		/*String subQueryRole = "";*/
+		String from = "from Requirement requirement left join fetch requirement.parentRequirement "; 
+		String subQuery = "";
+		//String dateBetween = "(requirement.createdDate BETWEEN :sqlCurrentDate AND :endDate) and ";
+		String dateBetween = "requirement.createdDate >=:endDate and requirement.createdDate <= :sqlCurrentDate and ";
+		
+		if(!StringUtils.equalsIgnoreCase(userType, "ADMIN")){
+			
+			String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT'  ";
+			params.put("userId",userId);
+
+			String subQuery2 = "requirement.managerUserId.id = :managerUserId and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
+			params.put("managerUserId",userId);
+			
+			String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId)) and requirement.requirementSubmissionStatus <> 'DRAFT' and requirement.requirementSubmissionStatus <> 'SUBMITTED'  ";
+			params.put("userId",userId);
+			
+			if(subQuery1 != "" || subQuery2 != "" || subQuery3 !=""){
+				subQuery = "where "+dateBetween+" requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+")  or ("+subQuery3+") ) ";
+				params.put("orgLocationId",orgLocationId);
+				params.put("sqlCurrentDate",sqlCurrentDate);
+				params.put("endDate",endDate);
+			}
+		}else{
+			String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where  ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT') ";
+			
+			String subQuery2 = " ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
+			params.put("managerUserId",userId);
+			
+			if(subQuery1 != "" || subQuery2 !=""){
+				subQuery = "where "+dateBetween+" requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+")) ";
+				params.put("orgLocationId",orgLocationId);
+				params.put("sqlCurrentDate",sqlCurrentDate);
+				params.put("endDate",endDate);
+			}
+		}
+		
+		String whereCondition = subQuery;
+		Query query = session.createQuery(from+" "+whereCondition+" ORDER BY requirement.id DESC");
+		for (String str : query.getNamedParameters())
+        {
+			if(str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId")){
+				query.setLong(str, (long) params.get( str ));
+			}
+			else{
+				query.setParameter( str, params.get( str ) );
+			}
+        	
+        }
+		return query.setCacheable(true).list();
+		
+		}
+		
 }
