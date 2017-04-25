@@ -113,4 +113,13 @@ public class DepartmentDaoImpl implements DepartmentDao{
 		return flag;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Department> getDepartmentByOrgLocationIdAndStatus(Long orgLocationId, String status) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Department department  where department.orgLocationId.id =:orgLocationId and department.status =:status "; 
+		List<Department> departmentList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("status", status).setCacheable(true).list();
+		return departmentList;
+	}
+
 }
