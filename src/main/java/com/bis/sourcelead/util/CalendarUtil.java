@@ -1,12 +1,16 @@
 package com.bis.sourcelead.util;
 
 import java.text.DateFormat;
+import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -501,6 +505,15 @@ public  class CalendarUtil {
 		return dateStr;
   	}
     
+    public static String getYearPatternByYearPreference(Date date,Integer yearPreference){
+  		Calendar calendar = Calendar.getInstance();   
+  		calendar.setTime(date);
+  		calendar.add(Calendar.YEAR, yearPreference);
+  	    DateFormat format = Constants.Y;
+  		String dateStr = format.format(calendar.getTime());
+		return dateStr;
+  	}
+    
     
     public static LinkedHashMap<String,Date> getMonthStartDateAndEndDateFromGivenMonthString(String month){
     	LinkedHashMap<String,Date> dateList = new LinkedHashMap<String,Date>();
@@ -664,6 +677,31 @@ public  class CalendarUtil {
 		  calendar.setTime(date);
 		  calendar.add(Calendar.DAY_OF_YEAR, -decrementor);
 		  return format.format(calendar.getTime()); 
+	}
+	
+
+	public static LinkedList<String> getAllMonths()
+	{
+		DateFormatSymbols dfs = new DateFormatSymbols();
+		String[] arrayOfMonthsNames = dfs.getMonths();
+		
+		return new LinkedList<String>(Arrays.asList(arrayOfMonthsNames));
+	}
+	
+	public static LinkedHashSet<String> getYearsListFromCurrentDate(int previousYears,int priorYears) throws Exception{
+		LinkedHashSet<String> YearsList = new LinkedHashSet<String>();
+		
+		for(int i =previousYears;i>0;i--){
+			String date = CalendarUtil.getYearPatternByYearPreference(CommonUtil.currentDate(),-i);
+			YearsList.add(date);
+		}
+		String currentDate = CalendarUtil.getYearPatternByYearPreference(CommonUtil.currentDate(),0);
+		YearsList.add(currentDate);
+		for(int i =1;i<=priorYears;i++){
+			String date = CalendarUtil.getYearPatternByYearPreference(CommonUtil.currentDate(),i);
+			YearsList.add(date);
+		}
+		return YearsList;
 	}
 
 }
