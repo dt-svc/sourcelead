@@ -34,6 +34,7 @@ import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -58,6 +59,7 @@ import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -120,6 +122,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
 	 
+	@Autowired
+	ContractsTemplateService contractsTemplateService;
+	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
@@ -270,6 +275,12 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		saveDefaultSubmissionTemplate(org,orgLocations,user);
 		saveDefaultInterviewFeedbackTemplate(org,orgLocations,user);
+		saveDefaultContractTemplate(org,orgLocations,user," Default Client MSA Template","Client MSA");
+		saveDefaultContractTemplate(org,orgLocations,user," Default Vendor MSA Template","Vendor MSA");
+		saveDefaultContractTemplate(org,orgLocations,user," Default Client SOW Template","Client SOW");
+		saveDefaultContractTemplate(org,orgLocations,user," Default Vendor SOW Template","Vendor SOW");
+		saveDefaultContractTemplate(org,orgLocations,user," Default NDA Template","NDA");
+		saveDefaultContractTemplate(org,orgLocations,user," Default NCA Template","NCA");
 		
 		/*
 		 * Saving USER DB data as ElasticSearch Documents
@@ -280,6 +291,22 @@ public class RegistrationServiceImpl implements RegistrationService{
 	
 	}
 	
+	private void saveDefaultContractTemplate(Org org, OrgLocations orgLocations, User user,String template,String templateType) throws Exception {
+		 StringBuilder templateStringBuilder=new StringBuilder();
+		 ContractsTemplate contractsTemplate = new ContractsTemplate();
+		 contractsTemplate.setTemplateName(templateStringBuilder.append(org.getOrgName()).append(template).toString());
+		 contractsTemplate.setDescription(templateStringBuilder.append(org.getOrgName()).append(template).toString());
+		 contractsTemplate.setOrgLocationId(orgLocations);
+		 contractsTemplate.setTemplateType(templateType);
+		 contractsTemplate.setTemplateStatus(Constants.MEMBER_IN_ACTIVE);
+		 contractsTemplate.setUpdatedBy(user.getUserCode());
+		 contractsTemplate.setUpdatedDate(new Date());
+		 contractsTemplate.setCreatedBy(user.getUserCode());
+		 contractsTemplate.setCreatedDate(new Date());
+		 contractsTemplateService.saveContractTemplate(contractsTemplate);
+		
+	}
+
 	private Candidate getCandidateDetails(User user, OrgLocations orgLocations) {
 		Candidate candidate = new Candidate();
 		candidate.setOrgLocationId(orgLocations);
