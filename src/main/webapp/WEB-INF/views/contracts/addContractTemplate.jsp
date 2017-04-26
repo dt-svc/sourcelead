@@ -76,7 +76,7 @@
             <div class="form-group">
               <label class="col-md-4">Description</label>
               <div class="col-md-8">
-					<textarea class="form-control" rows="3" id ="description"  name="description">${contractsTemplate.description}</textarea>
+					<textarea class="form-control" rows="3" id ="description"  name="description" data-validation-optional="true" data-validation="validate_Space validate_length length1-250">${contractsTemplate.description}</textarea>
               </div>
             </div>            
             

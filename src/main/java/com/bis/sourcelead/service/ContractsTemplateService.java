@@ -40,5 +40,7 @@ public interface ContractsTemplateService {
 
 	ContractsTemplate findByContractTemplateName(String templateName,Long orgLocationId) throws Exception;
 
+	List<Contracts> getListOfContractsEnvId();
+
 	
 }
