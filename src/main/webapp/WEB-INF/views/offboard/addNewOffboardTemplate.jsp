@@ -103,8 +103,8 @@
                 <div class="form-footer">
                   <div class="pull-right mr">
                      <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/dashboard/${SourceLeadWeb_orgLocationId}'">
-                    <input type="button" value="Save" id="save_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
-                    <input type="button" value="Save and Continue" id="save_continue_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
+                    <input type="button" value="Save" id="save_doc_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
+                    <input type="button" value="Save and Continue" id="save_continue_doc_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
                 </div>
                 </form>
@@ -663,6 +663,9 @@ function createTemplate(saveType){
 	        
 	        var sourceleadUrl ='${sourceleadUrl}';
 	        
+	    	$("#save_button").attr("disabled", "disabled");
+    		$("#save_continue_button").attr("disabled", "disabled");
+	        
 	       
 	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	        $.ajax({
@@ -683,6 +686,9 @@ function createTemplate(saveType){
 	     	        $("#offboardtemplateId").val(templateId);
 	     	        $("#documentstemplateId").val(templateId);
 	     	        $("#loading").removeAttr("style");
+	     	        
+	     	        $("#save_button").removeAttr("disabled")
+	        	    $("#save_continue_button").removeAttr("disabled")
 		        },
 		    }); 
 	        return true;
@@ -718,6 +724,10 @@ function createTemplateDocs(saveType){
       
 	   var form = $('#templateDocuments_form')[0];
 	   var formData = new FormData(form); 
+	   
+	    $("#save_doc_button").attr("disabled", "disabled");
+		$("#save_continue_doc_button").attr("disabled", "disabled");
+       
 	
    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	$.ajax({
@@ -740,6 +750,9 @@ function createTemplateDocs(saveType){
 	        		getTemplateResignationDocumentsDetails();
 	     	        getTemplateOffboardPackDocumentsDetails();
 	        	}
+	    	  
+	    	  $("#save_doc_button").removeAttr("disabled");
+      	      $("#save_continue_doc_button").removeAttr("disabled");
 	    	  $("#loading").removeAttr("style");
 	    	  
 	      }
@@ -1068,7 +1081,7 @@ function getOffboardingTasksList(){
         	
         	result = result +'<div class="form-footer clearfix mt">';
     		result = result +'<div class="pull-right mr">';
-    		result = result +'<input type="button" value="Finish" onclick="saveAndFinishOffboardTemplate('+templateId+');" class="btn btn-sm btn-primary">';
+    		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishOffboardTemplate('+templateId+');" class="btn btn-sm btn-primary">';
     		result = result +'</div>';
     		result = result +'</div>';
     		
@@ -1107,15 +1120,18 @@ function deleteTask(taskId){
 function saveAndFinishOffboardTemplate(templateId){
 	
 	var sourceleadUrl = '${sourceleadUrl}';
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$("#finish_task").attr("disabled", "disabled");
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/saveAndFinishOffboardTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
 	    success: function(data) {
        	 
+	    	 $("#finish_task").removeAttr("disabled");
 	    	 $("#loading").removeAttr("style");
+	    	
 	    }
-  }); 
+   }); 
 	
 
 }
@@ -1166,8 +1182,8 @@ function getOffboardingCheckList(){
 	           
 	           result = result + '<div class="pull-right mr">';
 	           
-	           result = result +"<input type='button' value='Save' id='save_button'  onclick='createTemplateCheckList(\"save\");' class='btn btn-sm btn-success'>";
-	           result = result +"<input type='button' value='Save and Continue' id='save_continue_button'  onclick='createTemplateCheckList(\"saveAndContinue\");'  class='btn btn-sm btn-primary'>";
+	           result = result +"<input type='button' value='Save' id='save_checkList_button'  onclick='createTemplateCheckList(\"save\");' class='btn btn-sm btn-success'>";
+	           result = result +"<input type='button' value='Save and Continue' id='save_continue_checkList_button'  onclick='createTemplateCheckList(\"saveAndContinue\");'  class='btn btn-sm btn-primary'>";
 	           
 	           result = result + '</div>';
 
@@ -1288,18 +1304,6 @@ function createTemplateCheckList(saveType){
 	                });
 	            }
 	            
-	            
-	            
-	            /* if(fieldLabel == 'First Name'  || fieldLabel == 'Phone Number'  
-	        		|| fieldLabel == 'Email Id' || fieldLabel == 'DOB' || fieldLabel == 'Current / Last Company' || fieldLabel == 'Designation' 
-	        		|| fieldLabel == 'Education' || fieldLabel == 'Work Experience' || fieldLabel == 'Current CTC' || fieldLabel == 'Expected CTC' 
-	        		|| fieldLabel == 'Notice Period'){
-	        	
-	            	isRemoved = 'N';
-	            }else{
-	            	isRemoved = 'Y';
-	            } */
-	            
 	            isRemoved = 'Y';
 	            
 	            fields.push({
@@ -1336,6 +1340,10 @@ function createTemplateCheckList(saveType){
 	        var jsonStringData = encodeURIComponent(con2);
 	        
 	        if(submitTemplate){
+
+	    	    $("#save_checkList_button").attr("disabled", "disabled");
+	    		$("#save_continue_checkList_button").attr("disabled", "disabled");
+	           
 	        	 $("#offboardcheckListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	        	  $.ajax({
 	      	    	type: "POST",
@@ -1353,6 +1361,8 @@ function createTemplateCheckList(saveType){
 	      		        	}
 	      		        } 
 	      	        	
+	      	        	  $("#save_checkList_button").removeAttr("disabled")
+	      	      	      $("#save_continue_checkList_button").removeAttr("disabled")
 	      	        	 $("#offboardcheckListLoading").removeAttr("style");
 	      	        },
 	      	    });  
