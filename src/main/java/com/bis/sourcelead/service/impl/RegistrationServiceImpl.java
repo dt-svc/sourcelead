@@ -924,7 +924,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		user.setUserName(SourceLeadRandomCodeHelper.generateRandomUniquUserName());
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		
-		prepareRegisterOptionalServicesToAllForms(jsonObj,user);
+		//prepareRegisterOptionalServicesToAllForms(jsonObj,user);
 		
 		user.setUserType(Constants.PROFESSIONAL);
 		user.setCreatedBy("sladmin");
@@ -1081,7 +1081,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			user.setCountry(jsonObj.getString("location"));
 		}
 		
-		prepareRegisterOptionalServicesToAllForms(jsonObj,user);
+		//prepareRegisterOptionalServicesToAllForms(jsonObj,user);
 				
 		user.setUserName(SourceLeadRandomCodeHelper.generateRandomUniquUserName());
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
@@ -1431,7 +1431,6 @@ public class RegistrationServiceImpl implements RegistrationService{
 			}
 			
 			prepareRegisterOptionalServicesToAllForms(jsonObj,user);
-			
 			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			user.setUserType(Constants.INDIVIDUAL_RECRUITER);
 			user.setCreatedBy("sladmin");

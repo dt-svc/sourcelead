@@ -14,6 +14,8 @@ public interface DepartmentService {
 	
 	List<Department>  getDepartmentByOrgLocationId(Long orgLocationId) throws Exception;
 	
+	List<Department>  getDepartmentByOrgLocationIdAndStatus(Long orgLocationId,String status) throws Exception;
+	
 	String  saveDepartment(JSONObject jsonObj) throws Exception;
 	
 	Department validateDepartmentnameByDepartmentIdAndDepartmentName(Long departmentId,String departmentName) throws Exception;

@@ -195,7 +195,7 @@
        
        <div class="clearfix" id="hideVendor" style="display:none">
        <div class="form-group">
-			<label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
+			<label class="col-md-3">Vendor<span class="text-danger" id="man1">&nbsp;*</span></label>
 			<div class="col-md-9" id="errorvendor">
 			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();" >
                  </select>
@@ -203,7 +203,7 @@
 		</div>
 		
 		 <div class="form-group">
-			<label class="col-md-3">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
+			<label class="col-md-3">Vendor Contact<span class="text-danger" id="man2">&nbsp;*</span></label>
 			<div class="col-md-9" id="errorvendorContact">
 			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="select Vendor Contact" onchange="removeValiationVendorContact();">
                  </select>
@@ -847,12 +847,30 @@ function getDesignationType(designationType){
 		 document.getElementById("hideVendor").style.display="block";
 		 $('#vendors').attr("data-validation","required"); 
 		 $('#vendorcontact').attr("data-validation","required"); 
+		 document.getElementById("man1").style.display="block";
+		 document.getElementById("man2").style.display="block";
 		  getVendorsByOrgLocation();
 	}else{
 		 document.getElementById("hideVendor").style.display="none";
 		 $('#vendors').removeAttr("data-validation","required"); 
 		 $('#vendorcontact').removeAttr("data-validation","required"); 
 	}
+	
+	if(designationType.value == 'C2C-1099'){
+		 document.getElementById("hideVendor").style.display="block";
+		 document.getElementById("man1").style.display="none";
+		 document.getElementById("man2").style.display="none";
+		 $('#vendors').attr("data-validation-optional", "true"); 
+		 $('#vendorcontact').attr("data-validation-optional", "true");  
+		 $("#errorvendor").find("p.jquery_form_error_message").remove();
+			$("#errorvendorContact").find("p.jquery_form_error_message").remove();
+		  getVendorsByOrgLocation();
+	}else{
+		// document.getElementById("hideVendor").style.display="none";
+		 $('#vendors').removeAttr("data-validation-optional", "true"); 
+		 $('#vendorcontact').removeAttr("data-validation-optional", "true");  
+	} 
+	
 	$('#designationType + p').remove();
 }
 </script>
