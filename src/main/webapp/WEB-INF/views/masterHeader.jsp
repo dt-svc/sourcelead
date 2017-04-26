@@ -42,6 +42,8 @@
 <script src="resources/js/formvalidator.js"></script>
 <script src="resources/js/bootstrap-select.min.js"></script>
 <script src="resources/js/themeswitcher.js"></script>
+<script src="resources/js/moment.min.js"></script>
+<script src="resources/js/datetime-moment.js"></script>
 <style>
 .dashboard-widget.dashboard-widget-icons{
 min-height: 225px !important;

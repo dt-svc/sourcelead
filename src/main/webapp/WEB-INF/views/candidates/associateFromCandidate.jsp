@@ -217,7 +217,7 @@
        
        <div class="clearfix" id="hideVendor" style="display:none">
        <div class="form-group">
-			<label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
+			<label class="col-md-3">Vendor<span class="text-danger" id="man1">&nbsp;*</span></label>
 			<div class="col-md-9">
 			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();">
                  </select>
@@ -225,7 +225,7 @@
 		</div>
 		
 		 <div class="form-group">
-			<label class="col-md-3">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
+			<label class="col-md-3">Vendor Contact<span class="text-danger" id="man2">&nbsp;*</span></label>
 			<div class="col-md-9">
 			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="select Vendor Contact">
                  </select>
@@ -921,10 +921,13 @@ function getDesignationType(designationType){
 			  $("#designationOtherType").val('');
 		  }
 	}
-	if(designationType.value == 'C2C' || designationType.value == 'C2C-1099'){
+	if(designationType.value == 'C2C'){
 		 document.getElementById("hideVendor").style.display="block";
 		 $('#vendors').attr("data-validation","required"); 
 		 $('#vendorcontact').attr("data-validation","required"); 
+		 
+		 document.getElementById("man1").style.display="block";
+		 document.getElementById("man2").style.display="block";
 		// $("#vendors").attr("data-validation", "true");
 		  getVendorsByOrgLocation();
 	}else{
@@ -932,6 +935,22 @@ function getDesignationType(designationType){
 		 $('#vendors').removeAttr("data-validation","required"); 
 		 $('#vendorcontact').removeAttr("data-validation","required"); 
 	}
+	
+	if(designationType.value == 'C2C-1099'){
+		 document.getElementById("hideVendor").style.display="block";
+		 document.getElementById("man1").style.display="none";
+		 document.getElementById("man2").style.display="none";
+		 $('#vendors').attr("data-validation-optional", "true"); 
+		 $('#vendorcontact').attr("data-validation-optional", "true");  
+		 $("#errorvendor").find("p.jquery_form_error_message").remove();
+			$("#errorvendorContact").find("p.jquery_form_error_message").remove();
+		  getVendorsByOrgLocation();
+	}else{
+		// document.getElementById("hideVendor").style.display="none";
+		 $('#vendors').removeAttr("data-validation-optional", "true"); 
+		 $('#vendorcontact').removeAttr("data-validation-optional", "true");  
+	} 
+	
 	
 }
 </script>
@@ -1207,7 +1226,27 @@ function getCandidateDetails(){
 		        	 }
 		        	 
 		        	 
-		        	  if(json['candidateEdu'] != null && json['candidateEdu'] != "" && json['candidateEdu'] != 'undefined'){
+		        	/*  $('#candidateEducation').find('option').remove().end();
+		        	  $.each( json.allAndCandidateEducation, function( i, educt){
+						  var existedEdu = 0;
+			                if(json.candidateEdu != null && json.candidateEdu != 'undefined' && json.candidateEdu != ''){
+				                var res = [];
+				                res = json.candidateEdu.split(",");
+				                res.forEach(function(item) {
+				                	if(educt == item){
+				                		existedEdu = 1;
+				                		$('#candidateEducation').append('<option value=\''+educt+'\' selected>'+educt+'</option>');
+				                	}
+				                });
+			                }
+			                if(existedEdu == 0){
+			                	$('#candidateEducation').append('<option value=\''+educt+'\'>'+educt+'</option>');
+			                }
+						  
+						});
+		        	  $("#candidateEducation").trigger("chosen:updated"); */
+		        	  
+		        	 if(json['candidateEdu'] != null && json['candidateEdu'] != "" && json['candidateEdu'] != 'undefined'){
 		        		var eduaction = json['candidateEdu'];
 				    	var customizeEducation = new Array();
 				    	customizeEducation = eduaction.split(",");
@@ -1221,9 +1260,31 @@ function getCandidateDetails(){
 		        		 $("#candidateEducation").val('').trigger("chosen:updated");
 		        		 $("input[name=candidateEducation]").val(''); 
 		        	 } 
+		        	  
+		      		
+		      		$('#candidateSkills').find('option').remove().end();
+		      		
+		        	  $.each( json.allAndCandidateSkills, function( i, skill ){
+						  var existed = 0;
+			                if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
+				                var res = [];
+				                res = json.skillsName.split(",");
+				                res.forEach(function(item) {
+				                	if(skill == item){
+				                		existed = 1;
+				                		$('#candidateSkills').append('<option value=\''+skill+'\' selected>'+skill+'</option>');
+				                	}
+				                });
+			                }
+			                if(existed == 0){
+			                	$('#candidateSkills').append('<option value=\''+skill+'\'>'+skill+'</option>');
+			                }
+						  
+						});
+		        	  $("#candidateSkills").trigger("chosen:updated");
 		        	 
 		        	 
-		        	  if(json['skillsName'] != null && json['skillsName'] != "" && json['skillsName'] != 'undefined'){
+		        	 /*  if(json['skillsName'] != null && json['skillsName'] != "" && json['skillsName'] != 'undefined'){
 			        		var skills = json['skillsName'];
 					    	var totalSkills = new Array();
 					    	totalSkills = skills.split(",");
@@ -1236,7 +1297,7 @@ function getCandidateDetails(){
 			        	 }else{
 			        		 $("#candidateSkills").val('').trigger("chosen:updated");
 			        		 $("input[name=candidateSkills]").val(''); 
-			        	 } 
+			        	 }  */
 		        	 
 		        	 
 		        	 if(json['country'] != null && json['country'] != "" && json['country'] != 'undefined'){
@@ -1691,10 +1752,14 @@ function getCandidateDetails(){
  
  <script>
  function employementType(type){
-if(type == 'C2C' || type == 'C2C-1099'){
+if(type == 'C2C'){
 	 document.getElementById("hideVendor").style.display="block";
 	 $('#vendors').attr("data-validation","required"); 
 	 $('#vendorcontact').attr("data-validation","required"); 
+	 
+	 document.getElementById("man1").style.display="block";
+	 document.getElementById("man2").style.display="block";
+	 
 	// $("#vendors").attr("data-validation", "true");
 	  getVendorsByOrgLocation();
 }else{
@@ -1702,6 +1767,24 @@ if(type == 'C2C' || type == 'C2C-1099'){
 	 $('#vendors').removeAttr("data-validation","required"); 
 	 $('#vendorcontact').removeAttr("data-validation","required"); 
 }
+
+
+if(type == 'C2C-1099'){
+	 document.getElementById("hideVendor").style.display="block";
+	 document.getElementById("man1").style.display="none";
+	 document.getElementById("man2").style.display="none";
+	 $('#vendors').attr("data-validation-optional", "true"); 
+	 $('#vendorcontact').attr("data-validation-optional", "true");  
+	 $("#errorvendor").find("p.jquery_form_error_message").remove();
+		$("#errorvendorContact").find("p.jquery_form_error_message").remove();
+	  getVendorsByOrgLocation();
+}else{
+	// document.getElementById("hideVendor").style.display="none";
+	 $('#vendors').removeAttr("data-validation-optional", "true"); 
+	 $('#vendorcontact').removeAttr("data-validation-optional", "true");  
+} 
+
+
  }
  </script>
  

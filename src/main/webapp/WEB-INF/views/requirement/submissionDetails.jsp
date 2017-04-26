@@ -671,7 +671,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 if(report.interviewId.interviewStatus == "Attending"){
 	                    		 result = result +' <font color="green" class="brder-int">Attending</font>';
 	                    	 }
-	                    	 if(report.interviewId.interviewStatus == "Not Attending"){
+	                    	 if(report.interviewId.interviewStatus == "Not_Attending"){
 	                    		 result = result +' <font color="red" class="brder-int">Not Attending</font>';
 	                    	 }
 	                    	 if(report.interviewId.interviewStatus == "Maybe"){

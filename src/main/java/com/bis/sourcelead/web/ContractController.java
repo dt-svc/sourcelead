@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -66,6 +67,7 @@ public class ContractController {
 	 * 	Display add template page
 	 * @return
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE')")
 	@RequestMapping(value = "/addContractTemplate")
 	public ModelAndView addContractTemplate(HttpServletRequest request,HttpServletResponse response) {
 		ModelAndView model = new ModelAndView();
@@ -101,6 +103,7 @@ public class ContractController {
 	 * @return model
 	 * @throws Exception 
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_ADD_NEW_CONTRACT')")
 	@RequestMapping(value = "/addNewContract")
 	public ModelAndView addNewContract(HttpServletRequest request,HttpServletResponse response) throws Exception {
 		ModelAndView model = new ModelAndView();
@@ -139,6 +142,7 @@ public class ContractController {
 	 * display add new contract  page 
 	 * @return model
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_ADD_EXISTING_CONTRACT')")
 	@RequestMapping(value = "/addExistingContract")
 	public ModelAndView addExistingContract(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
@@ -148,6 +152,7 @@ public class ContractController {
 		return model;
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_CONTRACT_TEMPLATE')")
 	@RequestMapping(value = "/editTemplate")
     public ModelAndView editTemplate(@RequestParam(value="templateId", required=false) String templateId ,HttpServletResponse response) throws Exception {
 		

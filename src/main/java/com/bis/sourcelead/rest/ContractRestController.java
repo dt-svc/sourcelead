@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Org;
@@ -255,7 +256,7 @@ public class ContractRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		Contracts contracts  = contractsTemplateService.getContractById(Long.parseLong(recordId));
-		if("Waiting to be signed".equalsIgnoreCase(status)){
+/*		if("Waiting to be signed".equalsIgnoreCase(status)){
 			Contracts parentContracts  = contractsTemplateService.getContractById(contracts.getParentContractId().getId());
 			if(null != contracts.getParentContractId()){
 				parentContracts.setId(contracts.getParentContractId().getId());
@@ -265,11 +266,7 @@ public class ContractRestController {
 			}
 		 contractsTemplateService.saveNewContract(parentContracts);
 		 contractsTemplateService.saveNewContract(contracts);
-		}
-		
-		
-		
-		
+		}*/
 		
 		if(("Waiting To Be Verify").equalsIgnoreCase(status)){
 			Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
@@ -333,4 +330,24 @@ public class ContractRestController {
 		return isAprroved;
 }
 
+	 /**
+	  * To  validate template Name
+	  * @param template name
+	  * @return
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = "/validateContractTemplateName" , method = RequestMethod.POST)
+	 public @ResponseBody  String validateContractTemplateName(@RequestParam(value="templateName", required=false) String templateName,HttpServletRequest request) throws Exception {
+		 	
+		 	String result = null;
+		 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 	ContractsTemplate  contractsTemplate = contractsTemplateService.findByContractTemplateName(templateName, orgLocation.getId());
+		 	
+		 	if (null != contractsTemplate) {
+				result = "true";
+			}else{
+				result = "false";
+			}
+			return result;
+	   }
 }

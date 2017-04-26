@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <script src="resources/js/formvalidator.js"></script>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!-- <script src="resources/js/chosen.jquery.min.js"></script> --> 
 
 
@@ -45,8 +46,12 @@ $(document).ready(function(){
 <div class="conBtn">
   <span>Add<i class="fa fa-caret-down"></i></span>
   <ul>  
+	  <sec:authorize access="hasAnyRole('ROLE_ADD_NEW_CONTRACT')">
 	  <li><a href="<c:url value="/addNewContract" />"><i class="fa fa-caret-right"></i>New Contract</a></li>
+	  </sec:authorize>
+	  <sec:authorize access="hasAnyRole('ROLE_ADD_EXISTING_CONTRACT')">
 	  <li><a href="<c:url value="/addExistingContract" />"><i class="fa fa-caret-right"></i>Existing Contract</a></li>
+  	  </sec:authorize>
   </ul>
 </div>
 <div class="clearfix"></div>
@@ -163,6 +168,7 @@ function preparedContractList(data){
 		result = result + '    <th>End date</th>'; 
 		result = result + '    <th>Type Of the Contract</th>';
 		result = result + '    <th>Vendor Contact</th>';
+		result = result + '    <th>Status</th>';
 		result = result + '    <th>Action</th>';
 		result = result + '   </tr>';
 		result = result + '	</thead>';
@@ -193,6 +199,11 @@ function preparedContractList(data){
 		         result = result + '<div><span>'+report.vendorContactName+'</span></div>';
 		         result = result + '</td>';
 		         result = result + '</td>';
+		         
+		         result = result + '<td>';
+		         result = result + '<div><span>'+report.templateSubmissionStatus+'</span></div>';
+		         result = result + '</td>';
+		         
 		         result = result + '<td>';//Waiting to be signed
 		         result = result + '<div class="tbldata-dotdot-sm">';
 		         if(report.parentId != null && report.parentId != '' && report.parentId != 'undefined'){
@@ -200,19 +211,20 @@ function preparedContractList(data){
 		     			result = result + '<div id="removeStatus'+report.id+'">Finalized</a></div>';
 		            	 }
 		     		 else{
-		     		 	result = result + '<div id="removeStatus'+report.id+'"><a class="btn btn-sm btn-info" title="verify" onclick="removeRecord('+report.id+',\'Waiting to be signed\');">verify</a></div>';  
-		     		 }
+			         	 	opt = opt + '<div><span>--</span></div>';
+			        	  }
 		     	}else{
-		        	  if(report.templateSubmissionStatus == "Waiting To Be Verify"){
-		            		result = result + '<div id="removeStatus'+report.id+'"><a class="btn btn-sm btn-success" title="finalize" onclick="finalizeContract('+report.id+',\'Waiting To Be Verify\');">finalize</a></div>';
+		     		if(report.contractStatus == "completed" && report.templateSubmissionStatus != "Finalized"){
+		     			result = result + '<div id="removeStatus'+report.id+'"><a class="btn btn-sm btn-success" title="finalize" onclick="finalizeContract('+report.id+',\'Waiting To Be Verify\');">finalize</a></div>';
 		            	 }
 		        	  if(report.templateSubmissionStatus == "Finalized"){
 		        		  result = result + '<div id="removeStatus'+report.id+'">Finalized</a></div>';
 		            	 }
 		        	  
 		        	  if(report.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
-		            		/* result = result + '<div id="removeStatus'+report.id+'"><a class="btn btn-sm btn-success" title="finalize" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');">Approve</a></div>'; */
-		        		  result = result + '<div><div class="CurDiv" id="removeStatus'+report.id+'"><a class="btn btn-sm btn-success pull-left" title="approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');">Approve</a></div><div class="CurDiv" id="removeReject'+report.id+'"><a class="btn btn-sm btn-danger ml" title="REJECTED" onclick="approveContract('+report.id+',\'REJECTED\');">Reject</a></div></div>'; 
+		        		 '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_CONTRACT\')">';
+		            		result = result + '<div><div class="CurDiv" id="removeStatus'+report.id+'"><a class="btn btn-sm btn-success pull-left" title="approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');">Approve</a></div><div class="CurDiv" id="removeReject'+report.id+'"><a class="btn btn-sm btn-danger ml" title="REJECTED" onclick="approveContract('+report.id+',\'REJECTED\');">Reject</a></div></div>'; 
+		            	 '</sec:authorize>';
 		        	  }
 		        	  else{
 		         	 	result = result + '<div><span>--</span></div>';
@@ -236,6 +248,7 @@ function preparedContractList(data){
 	opt = opt + '    <th>End date</th>'; 
 	opt = opt + '    <th>Type Of the Contract</th>';
 	opt = opt + '    <th>Client Contact</th>';
+	opt = opt + '    <th>Status</th>';
 	opt = opt + '    <th>Action</th>';
 	opt = opt + '   </tr>';
 	opt = opt + '	</thead>';
@@ -266,26 +279,30 @@ function preparedContractList(data){
 	         opt = opt + '<div><span>'+output.vendorContactName+'</span></div>';
 	         opt = opt + '</td>';
 	         opt = opt + '</td>';
+	         opt = opt + '<td>';
+	         opt = opt + '<div><span>'+output.templateSubmissionStatus+'</span></div>';
+	         opt = opt + '</td>';
 	         opt = opt + '<td>';//Waiting to be signed
 	         opt = opt + '<div class="tbldata-dotdot-sm">';
 	         if(output.parentId != null && output.parentId != '' && output.parentId != 'undefined'){
 	     		 if(output.templateSubmissionStatus == "Finalized"){
 	     			opt = opt + '<div id="removeStatus'+output.id+'">Finalized</a></div>';
 	            	 }
+	     		
 	     		 else{
-	     		 	opt = opt + '<div id="removeStatus'+output.id+'"><a class="btn btn-sm btn-info" title="verify" onclick="removeRecord('+output.id+',\'Waiting to be signed\');">verify</a></div>';  
-	     		 }
+		         	 	opt = opt + '<div><span>--</span></div>';
+		        	  }
 	     	}else{
-	        	  if(output.templateSubmissionStatus == "Waiting To Be Verify"){
-	            		opt = opt + '<div id="removeStatus'+output.id+'"><a class="btn btn-sm btn-success" title="finalize" onclick="finalizeContract('+output.id+',\'Waiting To Be Verify\');">finalize</a></div>';
-	            	 }
 	        	  if(output.templateSubmissionStatus == "Finalized"){
 	        		  opt = opt + '<div id="removeStatus'+output.id+'">Finalized</a></div>';
 	            	 }
-	        	  
-	        	  if(output.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
-	            		/* result = result + '<div id="removeStatus'+output.id+'"><a class="btn btn-sm btn-success" title="finalize" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');">Approve</a></div>'; */
-	        		  opt = opt + '<div><div class="CurDiv" id="removeStatus'+output.id+'"><a class="btn btn-sm btn-success pull-left" title="approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');">Approve</a></div><div class="CurDiv" id="removeReject'+output.id+'"><a class="btn btn-sm btn-danger ml" title="REJECTED" onclick="approveContract('+output.id+',\'REJECTED\');">Reject</a></div></div>'; 
+	        	  else if(output.contractStatus == "completed" && output.templateSubmissionStatus != "Finalized"){
+		     			opt = opt +  '<div id="removeStatus'+output.id+'"><a class="btn btn-sm btn-success" title="finalize" onclick="finalizeContract('+output.id+',\'Waiting To Be Verify\');">finalize</a></div>';
+		     		}
+	        	  else if(output.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
+	        		   '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_CONTRACT\')">';
+	            		opt = opt + '<div><div class="CurDiv" id="removeStatus'+output.id+'"><a class="btn btn-sm btn-success pull-left" title="approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');">Approve</a></div><div class="CurDiv" id="removeReject'+output.id+'"><a class="btn btn-sm btn-danger ml" title="REJECTED" onclick="approveContract('+output.id+',\'REJECTED\');">Reject</a></div></div>'; 
+	            		'</sec:authorize>';
 	        	  }
 	        	  else{
 	         	 	opt = opt + '<div><span>--</span></div>';
@@ -347,6 +364,7 @@ function finalizeContract(recordId,status){
 function approveContract(recordId,status){
 	 var rowHtmlContent =  $("#row"+recordId).html();
 	var sourceleadUrl ='${sourceleadUrl}';
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	 $.ajax({
        type : "POST",
         url: sourceleadUrl+"/approveContract?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&status="+status,       

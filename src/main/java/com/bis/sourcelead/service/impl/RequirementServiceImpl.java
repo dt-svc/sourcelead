@@ -426,7 +426,7 @@ public class RequirementServiceImpl implements RequirementService {
 			
 			
 			//requirement status 
-			if(jsonObj.has("saveType")){            
+			if(jsonObj.has("saveType")){   
 				
 				if(jsonObj.getString("saveType").equalsIgnoreCase("draft")){
 					requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.DRAFT);
@@ -3324,6 +3324,14 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	@Override
 	public Requirement getRequirementDetailsById(Long requirementId) throws Exception {
 		return requirementDao.getRequirementDetailsById(requirementId);
+	}
+	
+	@Override
+	public List<Requirement> getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(Long orgLocationId, String userType, Long userId, String userCode, String numberOfDays)
+			throws Exception {
+		
+			return requirementDao.getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(orgLocationId, userType, userId, userCode, numberOfDays);
+		
 	}
 	
 }

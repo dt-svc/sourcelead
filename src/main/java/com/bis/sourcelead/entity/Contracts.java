@@ -67,7 +67,7 @@ public class Contracts {
 	private OrgLocations orgLocationId;
 	
 	@ManyToOne
-    @JoinColumn(name="PARENT_CONTRACT_ID", nullable=false )     
+    @JoinColumn(name="PARENT_CONTRACT_ID")     
 	private Contracts parentContractId;
 	
 	@ManyToOne
@@ -89,6 +89,15 @@ public class Contracts {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "APPROVER_USER_ID") 
 	private User approverUser;
+	
+	@Column(name = "CONTRACT_STATUS")
+	private String contractStatus;
+	
+	@Column(name = "DOC_ID",columnDefinition = "TEXT default NULL")
+	private String docId;
+	
+	@Column(name = "ENVELOP_ID",columnDefinition = "TEXT default NULL")
+	private String envelopId;
 	
 	@Column(name = "DESCRIPTION",columnDefinition = "TEXT default NULL")
 	private String description;
@@ -173,6 +182,53 @@ public class Contracts {
 	@Transient
 	List<Contracts> clientcontractsList;
 	
+	@Transient
+	private String tempEnvId;
+
+	@Transient
+	private String tempdocId;
+	
+	
+	public String getTempEnvId() {
+		return tempEnvId;
+	}
+
+	public void setTempEnvId(String tempEnvId) {
+		this.tempEnvId = tempEnvId;
+	}
+
+	public String getTempdocId() {
+		return tempdocId;
+	}
+
+	public void setTempdocId(String tempdocId) {
+		this.tempdocId = tempdocId;
+	}
+
+	public String getContractStatus() {
+		return contractStatus;
+	}
+
+	public void setContractStatus(String contractStatus) {
+		this.contractStatus = contractStatus;
+	}
+
+	public String getDocId() {
+		return docId;
+	}
+
+	public void setDocId(String docId) {
+		this.docId = docId;
+	}
+
+	public String getEnvelopId() {
+		return envelopId;
+	}
+
+	public void setEnvelopId(String envelopId) {
+		this.envelopId = envelopId;
+	}
+
 	public List<Contracts> getVendorcontractsList()
 	{
 		return vendorcontractsList;
