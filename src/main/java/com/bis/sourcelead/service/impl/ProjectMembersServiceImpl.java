@@ -647,6 +647,12 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		Collection<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectMembersByProjectIdAndStatus(projectId,status);
 		return projectMembersList;
 	}
+
+	@Override
+	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserId(Date startDate, Date endDate,
+			Long locationsId, Long approverUserId) {
+		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndApproverUserId(startDate,endDate,locationsId,approverUserId);
+	}
 	
 
 }

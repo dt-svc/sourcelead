@@ -423,7 +423,7 @@ public  class CalendarUtil {
 
 	}
 
-	public static Calendar getDateIncrementByincrement(Calendar calendar, int increment) throws Exception {
+	public static Calendar getDateIncrementByincrement(Calendar calendar, int increment) {
 		Calendar nowCal = Calendar.getInstance(TimeZone.getDefault());
 		nowCal.setTime(calendar.getTime());
 		nowCal.add(Calendar.DAY_OF_MONTH, increment);
@@ -524,6 +524,24 @@ public  class CalendarUtil {
 		try {
 			date = format.parse(month);
 			calendar.setTime(date);
+			calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+			dateList.put("STARTDATE", calendar.getTime());
+
+			calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+			dateList.put("ENDDATE", calendar.getTime());
+		} catch (ParseException e) {}
+		return dateList;
+	}
+	
+	public static LinkedHashMap<String,Date> getMonthStartDateAndEndDateFromGivenMonthStringForTsReports(String month,String year){
+		LinkedHashMap<String,Date> dateList = new LinkedHashMap<String,Date>();
+		final DateFormat format = Constants.M;
+		final Calendar calendar = Calendar.getInstance();
+		Date date;
+		try {
+			date = format.parse(month);
+			calendar.setTime(date);
+			calendar.set(Calendar.YEAR, Integer.parseInt(year));
 			calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
 			dateList.put("STARTDATE", calendar.getTime());
 
@@ -689,7 +707,7 @@ public  class CalendarUtil {
 		return new LinkedList<String>(Arrays.asList(arrayOfMonthsNames));
 	}
 
-	public static LinkedHashSet<String> getYearsListFromCurrentDate(int previousYears,int priorYears) throws Exception{
+	public static LinkedHashSet<String> getYearsListFromCurrentDate(int previousYears,int priorYears){
 		LinkedHashSet<String> YearsList = new LinkedHashSet<String>();
 
 		for(int i =previousYears;i>0;i--){
