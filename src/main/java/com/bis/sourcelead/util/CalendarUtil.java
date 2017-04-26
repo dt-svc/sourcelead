@@ -1,12 +1,17 @@
 package com.bis.sourcelead.util;
 
 import java.text.DateFormat;
+import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Year;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -18,7 +23,7 @@ import org.joda.time.Weeks;
 import com.bis.sourcelead.constants.Constants;
 
 public  class CalendarUtil {
-	
+
 	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 		currentCal.setLenient(false);
@@ -39,8 +44,8 @@ public  class CalendarUtil {
 		Calendar currentSunday = getCurrentWeekDayByCalendar(currentCal, "SUN");
 		System.out.println("Current-Sunday>>>>>>>>>>>>"+currentSunday.getTime());
 		System.out.println("<<<<<<<<<<<<<<<<<<<<=================>>>>>>>>>>>>");
-		
-		
+
+
 		System.out.println("<<<<======Next Week Dates===========>>>>>>>>>>");
 		Calendar nextMonday =  getNextWeekDayByCalendar(currentCal, "MON");
 		Calendar nextTuesday = getNextWeekDayByCalendar(currentCal, "TUE");
@@ -49,7 +54,7 @@ public  class CalendarUtil {
 		Calendar nextFriday =  getNextWeekDayByCalendar(currentCal, "FRI");
 		Calendar nextSatday =  getNextWeekDayByCalendar(currentCal, "SAT");
 		Calendar nextSunday =  getNextWeekDayByCalendar(currentCal, "SUN");
-	
+
 		System.out.println("Next-Monday>>>>>>>>>>>>"+   nextMonday.getTime());
 		System.out.println("Next-Tuesday>>>>>>>>>>>>"+  nextTuesday.getTime());
 		System.out.println("Next-Wedday>>>>>>>>>>>>"+   nextWedday.getTime());
@@ -58,7 +63,7 @@ public  class CalendarUtil {
 		System.out.println("Next-Saturday>>>>>>>>>>>>"+ nextSatday.getTime());
 		System.out.println("Next-Sunday>>>>>>>>>>>>"+   nextSunday.getTime());
 		System.out.println("<<<<<<<<<<<<<<<<<<<<=================>>>>>>>>>>>>");
-		
+
 		System.out.println("<<<<======Previous Week Dates===========>>>>>>>>>>");     
 		Calendar previousMonday =  getPreviousWeekDayByCalendar(currentCal, "MON");       
 		Calendar previousTuesday = getPreviousWeekDayByCalendar(currentCal, "TUE");       
@@ -75,8 +80,8 @@ public  class CalendarUtil {
 		System.out.println("Previous-Saturday>>>>>>>>>>>>"+ previousSatday.getTime()); 
 	    System.out.println("Previous-Sunday>>>>>>>>>>>>"+   previousSunday.getTime()); 
 		System.out.println("<<<<<<<<<<<<<<<<<<<<=================>>>>>>>>>>>>");  
-		
-		
+
+
 		System.out.println("<<<<======Current W/O Week Dates===========>>>>>>>>>>");
 		Date currentWithMonday = getCurrentWeekDay( "MON");
 		Date currentWithTuesday = getCurrentWeekDay( "TUE");
@@ -93,8 +98,8 @@ public  class CalendarUtil {
 		System.out.println("Current-Without-Calendar-Saturday>>>>>>>>>>>>"+ currentWithSatday);
 		System.out.println("Current-Without-Calendar-Sunday>>>>>>>>>>>>"+   currentWithSunday);
 		System.out.println("<<<<<<<<<<<<<<<<<<<<=================>>>>>>>>>>>>");      
-		
-		
+
+
 		System.out.println("<<<<======Next W/O Week Dates===========>>>>>>>>>>");
 		Date nextWithMonday = getNextWeekDay( "MON");
 		Date nextWithTuesday = getNextWeekDay( "TUE");
@@ -111,7 +116,7 @@ public  class CalendarUtil {
 		System.out.println("Next-Without-Calendar-Saturday>>>>>>>>>>>>"+ nextWithSatday);
 		System.out.println("Next-Without-Calendar-Sunday>>>>>>>>>>>>"+   nextWithSunday);
 		System.out.println("<<<<<<<<<<<<<<<<<<<<=================>>>>>>>>>>>>");      
-		
+
 		System.out.println("<<<<======Previous W/O Week Dates===========>>>>>>>>>>");
 		Date previousWithMonday =  getPreviousWeekDay( "MON");
 		Date previousWithTuesday = getPreviousWeekDay( "TUE");
@@ -128,11 +133,11 @@ public  class CalendarUtil {
 		System.out.println("Previous-Without-Calendar-Saturday>>>>>>>>>>>>"+ previousWithSatday);
 	    System.out.println("Previous-Without-Calendar-Sunday>>>>>>>>>>>>"+   previousWithSunday);
 		System.out.println("<<<<<<<<<<<<<<<<<<<<=================>>>>>>>>>>>>");
-		
-		
+
+
 		try {
 			System.out.println("Monday After 4weeks>>>>>>>>>>>>"+CalendarUtil.getDateIncrementByincrement(currentMonday,28).getTime());
-			
+
 			System.out.println("<<<<======Week Days After 4Weeks===========>>>>>>>>>>");
 			Date date4WithMonday = CalendarUtil.getDateIncrementByincrement(currentMonday,28).getTime();
 			Date date4WithTuesday =CalendarUtil.getDateIncrementByincrement(currentTuesday,28).getTime();
@@ -149,58 +154,58 @@ public  class CalendarUtil {
 			System.out.println("4th-Week-Saturday>>>>>>>>>>>>"+ date4WithSatday);
 			System.out.println("4th-Week-Sunday>>>>>>>>>>>>"+   date4WithSunday);
 			System.out.println("<<<<<<<<<<<<<<<<<<<<=================>>>>>>>>>>>>");
-			
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		
-		
+
+
+
+
 	}*/
-	
-	
-	
+
+
+
 	protected static int getDayOffset(String day_Of_Week){
 		int day_offset = 0;
-        switch (day_Of_Week) {
-           case "MON":  day_offset = Calendar.MONDAY;
-                    break;
-           case "TUE":  day_offset = Calendar.TUESDAY;
-                    break;
-           case "WED":  day_offset = Calendar.WEDNESDAY;
-                break;
-           case "THU":  day_offset = Calendar.THURSDAY;
-               break;
-           case "FRI":  day_offset = Calendar.FRIDAY;
-               break;
-           case "SAT":  day_offset = Calendar.SATURDAY;
-                 break;
-           case "SUN":  day_offset = Calendar.SATURDAY+1;
-                break;
-           default:   day_offset = Calendar.SUNDAY;
-                    break;
-       }
-        return day_offset;
+		switch (day_Of_Week) {
+		case "MON":  day_offset = Calendar.MONDAY;
+		break;
+		case "TUE":  day_offset = Calendar.TUESDAY;
+		break;
+		case "WED":  day_offset = Calendar.WEDNESDAY;
+		break;
+		case "THU":  day_offset = Calendar.THURSDAY;
+		break;
+		case "FRI":  day_offset = Calendar.FRIDAY;
+		break;
+		case "SAT":  day_offset = Calendar.SATURDAY;
+		break;
+		case "SUN":  day_offset = Calendar.SATURDAY+1;
+		break;
+		default:   day_offset = Calendar.SUNDAY;
+		break;
+		}
+		return day_offset;
 	}
 
 	public static int monthsBetween(Date a, Date b) {
-	    Calendar cal = Calendar.getInstance();
-	    if (a.before(b)) {
-	        cal.setTime(a);
-	    } else {
-	        cal.setTime(b);
-	        b = a;
-	    }
-	    int c = 0;
-	    while (cal.getTime().before(b)) {
-	        cal.add(Calendar.MONTH, 1);
-	        c++;
-	    }
-	    return c - 1;
+		Calendar cal = Calendar.getInstance();
+		if (a.before(b)) {
+			cal.setTime(a);
+		} else {
+			cal.setTime(b);
+			b = a;
+		}
+		int c = 0;
+		while (cal.getTime().before(b)) {
+			cal.add(Calendar.MONTH, 1);
+			c++;
+		}
+		return c - 1;
 	}
-	
+
 	public static Date getNextWeekDay(String day_Of_Week) {
 		int day_offset = getDayOffset(day_Of_Week);
 		Calendar nowCal = Calendar.getInstance(TimeZone.getDefault());
@@ -221,11 +226,11 @@ public  class CalendarUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
-	
-	
+
+
 	public static Date getNextWeekDayForTimesheet(String day_Of_Week) {
 		int day_offset = getDayOffset(day_Of_Week);
 		Calendar nowCal = Calendar.getInstance(TimeZone.getDefault());
@@ -242,15 +247,15 @@ public  class CalendarUtil {
 				nowCal.add(Calendar.DATE, 7);
 				nowCal.set(Calendar.DAY_OF_WEEK, day_offset);
 			}
-			
+
 			return nowCal.getTime();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
-	
+
 	public static Date getCurrentWeekDay(String day_Of_Week) {
 		int day_offset = getDayOffset(day_Of_Week);
 		Calendar nowCal = Calendar.getInstance(TimeZone.getDefault());
@@ -272,7 +277,7 @@ public  class CalendarUtil {
 		}
 		return null;
 	}
-	
+
 	public static Date getCurrentWeekDayForTimesheets(String day_Of_Week) {
 		int day_offset = getDayOffset(day_Of_Week);
 		Calendar nowCal = Calendar.getInstance(TimeZone.getDefault());
@@ -294,7 +299,7 @@ public  class CalendarUtil {
 		}
 		return null;
 	}
-	
+
 	public static Calendar getCurrentWeekDayByCalendarForTimesheets(Calendar calendar,String day_Of_Week) {
 		Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 		int day_offset = getDayOffset(day_Of_Week);
@@ -316,18 +321,18 @@ public  class CalendarUtil {
 		}
 		return null;
 	}
-	
+
 	public static Date getPreviousWeekDay(String day_Of_Week) {
-		  
+
 		int day_offset = getDayOffset(day_Of_Week);
 		Calendar nowCal = Calendar.getInstance(TimeZone.getDefault());
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-			
+
 			String nowStr = sdf.format(new Date().getTime());
 			Date nowDate = sdf.parse(nowStr);
 			nowCal.setTime(nowDate);
-			
+
 			if(day_offset == 8){
 				nowCal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 			}
@@ -340,38 +345,38 @@ public  class CalendarUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
-	
-	
-     public static Calendar getPreviousWeekDayByCalendar(Calendar calendar,String day_Of_Week) {
-    	 Calendar cal = Calendar.getInstance(TimeZone.getDefault());
-    	 int day_offset = getDayOffset(day_Of_Week);
- 		try {
- 			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
- 			String nowStr = sdf.format(calendar.getTime());
- 			Date nowDate = sdf.parse(nowStr);
- 			cal.setTime(nowDate);
- 			if(day_offset == 8){
- 	 			cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
- 			}
- 			else{
- 				cal.add(Calendar.DATE, -7);
- 	 			cal.set(Calendar.DAY_OF_WEEK, day_offset);
- 			}
- 			
- 			return cal;
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
- 		return null;
+
+
+	public static Calendar getPreviousWeekDayByCalendar(Calendar calendar,String day_Of_Week) {
+		Calendar cal = Calendar.getInstance(TimeZone.getDefault());
+		int day_offset = getDayOffset(day_Of_Week);
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+			String nowStr = sdf.format(calendar.getTime());
+			Date nowDate = sdf.parse(nowStr);
+			cal.setTime(nowDate);
+			if(day_offset == 8){
+				cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+			}
+			else{
+				cal.add(Calendar.DATE, -7);
+				cal.set(Calendar.DAY_OF_WEEK, day_offset);
+			}
+
+			return cal;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
-	
+
 	public static Calendar getCurrentWeekDayByCalendar(Calendar calendar,String day_Of_Week) {
 		Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 		int day_offset = getDayOffset(day_Of_Week);
-		
+
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 			String nowStr = sdf.format(calendar.getTime());
@@ -379,23 +384,23 @@ public  class CalendarUtil {
 			cal.setTime(nowDate);
 			if(day_offset == 8){
 				cal.add(Calendar.DATE, 7);
- 	 			cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+				cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 			}
 			else{
 				cal.set(Calendar.DAY_OF_WEEK, day_offset);
 			}
-			
+
 			return cal;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
+
 
 	public static Calendar getNextWeekDayByCalendar(Calendar calendar,String day_Of_Week) {
-        int day_offset = getDayOffset(day_Of_Week);
-        Calendar cal = Calendar.getInstance(TimeZone.getDefault());
+		int day_offset = getDayOffset(day_Of_Week);
+		Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 			String nowStr = sdf.format(calendar.getTime());
@@ -409,67 +414,67 @@ public  class CalendarUtil {
 				cal.add(Calendar.DATE, 7);
 				cal.set(Calendar.DAY_OF_WEEK, day_offset);
 			}
-			
+
 			return cal;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
-		
+
 	}
-	
-	public static Calendar getDateIncrementByincrement(Calendar calendar, int increment) throws Exception {
+
+	public static Calendar getDateIncrementByincrement(Calendar calendar, int increment) {
 		Calendar nowCal = Calendar.getInstance(TimeZone.getDefault());
 		nowCal.setTime(calendar.getTime());
 		nowCal.add(Calendar.DAY_OF_MONTH, increment);
 		return nowCal;
 	}
-    public static Date addDays(Date date, int days)
-    {
-        Calendar nowCal = Calendar.getInstance(TimeZone.getDefault());
-        try {
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-		String nowStr = sdf.format(nowCal.getTime());
-		Date nowDate = sdf.parse(nowStr);
-		nowCal.setTime(nowDate);
-		nowCal.add(Calendar.DATE, days);
-		//nowCal.setTimeZone(Constants.TIMEZONE_CENTRAL);
-        return nowCal.getTime();
-        } catch (Exception e) {
+	public static Date addDays(Date date, int days)
+	{
+		Calendar nowCal = Calendar.getInstance(TimeZone.getDefault());
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+			String nowStr = sdf.format(nowCal.getTime());
+			Date nowDate = sdf.parse(nowStr);
+			nowCal.setTime(nowDate);
+			nowCal.add(Calendar.DATE, days);
+			//nowCal.setTimeZone(Constants.TIMEZONE_CENTRAL);
+			return nowCal.getTime();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-        return null;
-    }
-    
-    
-    public static Date getDateFromDateAndTime(Date date,String timeInTwelveHoursFormat) {
-    	
-    	  SimpleDateFormat displayFormat = new SimpleDateFormat("HH:mm");
-	       SimpleDateFormat parseFormat = new SimpleDateFormat("hh:mma");
-	       Date time = null;
-	       Date requiredDate = null;
-			try {
-				  time = parseFormat.parse(timeInTwelveHoursFormat);
-				  String[] hourAndMinutes = displayFormat.format(time).split(":");
-			      Calendar cal = Calendar.getInstance(TimeZone.getDefault());
-		          cal.setTime(date);
-		          cal.set(Calendar.HOUR_OF_DAY,Integer.parseInt(hourAndMinutes[0]));
-		          cal.set(Calendar.MINUTE,Integer.parseInt(hourAndMinutes[1]));
-		          cal.set(Calendar.SECOND,0);
-		          cal.set(Calendar.MILLISECOND,0);
-		          requiredDate = cal.getTime();
-			} catch (ParseException e) {
-			}
-		   return requiredDate;
+		return null;
 	}
-    
-    
-    public static String get12FormatTimeFrom24FormatTime(String twentyHourFormatTime) {
-    	
-    	SimpleDateFormat parseFormat = new SimpleDateFormat("HH:mm");
-        SimpleDateFormat displayFormat = new SimpleDateFormat("hh:mm a");
-        String twelveHourFormatTime = null;
-        Date date;
+
+
+	public static Date getDateFromDateAndTime(Date date,String timeInTwelveHoursFormat) {
+
+		SimpleDateFormat displayFormat = new SimpleDateFormat("HH:mm");
+		SimpleDateFormat parseFormat = new SimpleDateFormat("hh:mma");
+		Date time = null;
+		Date requiredDate = null;
+		try {
+			time = parseFormat.parse(timeInTwelveHoursFormat);
+			String[] hourAndMinutes = displayFormat.format(time).split(":");
+			Calendar cal = Calendar.getInstance(TimeZone.getDefault());
+			cal.setTime(date);
+			cal.set(Calendar.HOUR_OF_DAY,Integer.parseInt(hourAndMinutes[0]));
+			cal.set(Calendar.MINUTE,Integer.parseInt(hourAndMinutes[1]));
+			cal.set(Calendar.SECOND,0);
+			cal.set(Calendar.MILLISECOND,0);
+			requiredDate = cal.getTime();
+		} catch (ParseException e) {
+		}
+		return requiredDate;
+	}
+
+
+	public static String get12FormatTimeFrom24FormatTime(String twentyHourFormatTime) {
+
+		SimpleDateFormat parseFormat = new SimpleDateFormat("HH:mm");
+		SimpleDateFormat displayFormat = new SimpleDateFormat("hh:mm a");
+		String twelveHourFormatTime = null;
+		Date date;
 		try {
 			date = parseFormat.parse(twentyHourFormatTime);
 			twelveHourFormatTime =displayFormat.format(date);
@@ -479,191 +484,258 @@ public  class CalendarUtil {
 		}
 		return twelveHourFormatTime;
 	}
-    
-    public static HashMap<String,Date> getMonthStartDateAndEndDateByMothPreference(Date startDate,Integer monthPreference){
-  		HashMap<String,Date> dateList = new HashMap<String,Date>();
-  		Calendar calendar = Calendar.getInstance();   
-  		calendar.setTime(startDate);
-  		calendar.add(Calendar.MONTH, monthPreference);
-  		calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
-  		dateList.put("STARTDATE", calendar.getTime());
-  		calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
-  		dateList.put("ENDDATE", calendar.getTime());
-  	    return dateList;
-  	}
-    
-    public static String getMonthAndYearPatternDateByMonthPreference(Date date,Integer monthPreference){
-  		Calendar calendar = Calendar.getInstance();   
-  		calendar.setTime(date);
-  		calendar.add(Calendar.MONTH, monthPreference);
-  	    DateFormat format = Constants.MY;
-  		String dateStr = format.format(calendar.getTime());
+
+	public static HashMap<String,Date> getMonthStartDateAndEndDateByMothPreference(Date startDate,Integer monthPreference){
+		HashMap<String,Date> dateList = new HashMap<String,Date>();
+		Calendar calendar = Calendar.getInstance();   
+		calendar.setTime(startDate);
+		calendar.add(Calendar.MONTH, monthPreference);
+		calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+		dateList.put("STARTDATE", calendar.getTime());
+		calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+		dateList.put("ENDDATE", calendar.getTime());
+		return dateList;
+	}
+
+	public static String getMonthAndYearPatternDateByMonthPreference(Date date,Integer monthPreference){
+		Calendar calendar = Calendar.getInstance();   
+		calendar.setTime(date);
+		calendar.add(Calendar.MONTH, monthPreference);
+		DateFormat format = Constants.MY;
+		String dateStr = format.format(calendar.getTime());
 		return dateStr;
-  	}
-    
-    
-    public static LinkedHashMap<String,Date> getMonthStartDateAndEndDateFromGivenMonthString(String month){
-    	LinkedHashMap<String,Date> dateList = new LinkedHashMap<String,Date>();
-	    final DateFormat format = Constants.MY;
-	    final Calendar calendar = Calendar.getInstance();
-	    Date date;
+	}
+
+	public static String getYearPatternByYearPreference(Date date,Integer yearPreference){
+		Calendar calendar = Calendar.getInstance();   
+		calendar.setTime(date);
+		calendar.add(Calendar.YEAR, yearPreference);
+		DateFormat format = Constants.Y;
+		String dateStr = format.format(calendar.getTime());
+		return dateStr;
+	}
+
+
+	public static LinkedHashMap<String,Date> getMonthStartDateAndEndDateFromGivenMonthString(String month){
+		LinkedHashMap<String,Date> dateList = new LinkedHashMap<String,Date>();
+		final DateFormat format = Constants.MY;
+		final Calendar calendar = Calendar.getInstance();
+		Date date;
 		try {
 			date = format.parse(month);
 			calendar.setTime(date);
-	  		calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
-	  		dateList.put("STARTDATE", calendar.getTime());
-	  		
-	  		calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
-	  		dateList.put("ENDDATE", calendar.getTime());
+			calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+			dateList.put("STARTDATE", calendar.getTime());
+
+			calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+			dateList.put("ENDDATE", calendar.getTime());
 		} catch (ParseException e) {}
 		return dateList;
-  	}
-    
-    public static boolean isCurrentDateBetweenDateRange(String weekStartDate,String weekEndDate) {
+	}
+	
+	public static LinkedHashMap<String,Date> getMonthStartDateAndEndDateFromGivenMonthStringForTsReports(String month,String year){
+		LinkedHashMap<String,Date> dateList = new LinkedHashMap<String,Date>();
+		final DateFormat format = Constants.M;
+		final Calendar calendar = Calendar.getInstance();
+		Date date;
+		try {
+			date = format.parse(month);
+			calendar.setTime(date);
+			calendar.set(Calendar.YEAR, Integer.parseInt(year));
+			calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+			dateList.put("STARTDATE", calendar.getTime());
+
+			calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+			dateList.put("ENDDATE", calendar.getTime());
+		} catch (ParseException e) {}
+		return dateList;
+	}
+
+	public static boolean isCurrentDateBetweenDateRange(String weekStartDate,String weekEndDate) {
 		Boolean flag = false;
 		if(StringUtils.isNotEmpty(weekStartDate) && StringUtils.isNotEmpty(weekEndDate)){
-			 DateFormat format = Constants.DF_STD_DMY;
-			 Date startDate = null;
-			 Date endDate = null;
-			 Date currentDate = null;
+			DateFormat format = Constants.DF_STD_DMY;
+			Date startDate = null;
+			Date endDate = null;
+			Date currentDate = null;
 			try {
-			 	 currentDate = format.parse(format.format(new Date()));
-				 startDate = format.parse(weekStartDate.replaceAll("-", "/"));
-				 endDate = format.parse(weekEndDate.replaceAll("-", "/"));
-				 flag =   ((currentDate.after(startDate) && currentDate.before(endDate)) || (currentDate.equals(startDate)) || ((currentDate.equals(endDate))));
+				currentDate = format.parse(format.format(new Date()));
+				startDate = format.parse(weekStartDate.replaceAll("-", "/"));
+				endDate = format.parse(weekEndDate.replaceAll("-", "/"));
+				flag =   ((currentDate.after(startDate) && currentDate.before(endDate)) || (currentDate.equals(startDate)) || ((currentDate.equals(endDate))));
 			} catch (ParseException e) {}
 		}
 		return flag;
 	}
-    
-    public static HashMap<String,Date> getMonthStartDateByGivenDate(Date date,Integer monthPreference){
-  		HashMap<String,Date> dateList = new HashMap<String,Date>();
-  		Calendar calendar = Calendar.getInstance();   
-  		calendar.setTime(date);
-  		calendar.add(Calendar.MONTH, monthPreference);
-  		calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
-  		dateList.put("STARTDATE", calendar.getTime());
-  	    return dateList;
-  	}
-    
-    
-    public static HashMap<String,Date> getMonthEndDateByGivenDate(Date date,Integer monthPreference){
-  		HashMap<String,Date> dateList = new HashMap<String,Date>();
-  		Calendar calendar = Calendar.getInstance();   
-  		calendar.setTime(date);
-  		calendar.add(Calendar.MONTH, monthPreference);
-  		calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
-  		dateList.put("ENDDATE", calendar.getTime());
-  	    return dateList;
-  	}
-    
-    public static HashMap<String,Date> getMonthStartDateAnd15thDateByGivenDateAndMothPreference(Date startDate,Integer monthPreference){
-  		HashMap<String,Date> dateList = new HashMap<String,Date>();
-  		Calendar calendar = Calendar.getInstance();   
-  		calendar.setTime(startDate);
-  		calendar.add(Calendar.MONTH, monthPreference);
-  		calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
-  		dateList.put("STARTDATE", calendar.getTime());
-  	    calendar.set(Calendar.DAY_OF_MONTH, 15); 
-  		dateList.put("ENDDATE", calendar.getTime());
-  	    return dateList;
-  	}
-    
-    public static HashMap<String,Date> getMonth16thDateAndEndDateByGivenDateAndMothPreference(Date sixteenthDate,Integer monthPreference){
-  		HashMap<String,Date> dateList = new HashMap<String,Date>();
-  		Calendar calendar = Calendar.getInstance();   
-  		calendar.setTime(sixteenthDate);
-  		calendar.add(Calendar.MONTH, monthPreference);
-  		calendar.set(Calendar.DAY_OF_MONTH, 16); 
-  		dateList.put("STARTDATE", calendar.getTime());
-  		calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
-  		dateList.put("ENDDATE", calendar.getTime());
-  	    return dateList;
-  	}
-      
 
-    
-    public static HashMap<String,Date> getMonth15thDateByGivenDate(Date date,Integer monthPreference){
-  		HashMap<String,Date> dateList = new HashMap<String,Date>();
-  		Calendar calendar = Calendar.getInstance();   
-  		calendar.setTime(date);
-  		calendar.add(Calendar.MONTH, monthPreference);
-  		calendar.set(Calendar.DAY_OF_MONTH, 15); 
-  		dateList.put("STARTDATE", calendar.getTime());
-  	    return dateList;
-  	}
-    
-    
-    public static HashMap<String,Date> getMonth16thDateByGivenDate(Date date,Integer monthPreference){
-  		HashMap<String,Date> dateList = new HashMap<String,Date>();
-  		Calendar calendar = Calendar.getInstance();   
-  		calendar.setTime(date);
-  		calendar.add(Calendar.MONTH, monthPreference);
-  		calendar.set(Calendar.DAY_OF_MONTH, 16); 
-  		dateList.put("STARTDATE", calendar.getTime());
-  	    return dateList;
-  	}
-	 
-//    Calendar calendar = Calendar.getInstance();
-//	Date date = calendar.getTime();
-//	// 3 letter name form of the day
-//	System.out.println(new SimpleDateFormat("EE", Locale.ENGLISH).format(date.getTime()).toUpperCase());
-	
-    public static String currentDay()
-    {
-       try{
-    	    Calendar calendar = Calendar.getInstance();
-    		Date date = calendar.getTime();
-    	return new SimpleDateFormat("EE", Locale.ENGLISH).format(date.getTime()).toUpperCase();
-       }catch(Exception ex){
-    	   ex.printStackTrace();
-       }
-	return null;
-    }
-    public static int getNumberOfWeeks(Date date1, Date date2){
+	public static HashMap<String,Date> getMonthStartDateByGivenDate(Date date,Integer monthPreference){
+		HashMap<String,Date> dateList = new HashMap<String,Date>();
+		Calendar calendar = Calendar.getInstance();   
+		calendar.setTime(date);
+		calendar.add(Calendar.MONTH, monthPreference);
+		calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+		dateList.put("STARTDATE", calendar.getTime());
+		return dateList;
+	}
+
+
+	public static HashMap<String,Date> getMonthEndDateByGivenDate(Date date,Integer monthPreference){
+		HashMap<String,Date> dateList = new HashMap<String,Date>();
+		Calendar calendar = Calendar.getInstance();   
+		calendar.setTime(date);
+		calendar.add(Calendar.MONTH, monthPreference);
+		calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+		dateList.put("ENDDATE", calendar.getTime());
+		return dateList;
+	}
+
+	public static HashMap<String,Date> getMonthStartDateAnd15thDateByGivenDateAndMothPreference(Date startDate,Integer monthPreference){
+		HashMap<String,Date> dateList = new HashMap<String,Date>();
+		Calendar calendar = Calendar.getInstance();   
+		calendar.setTime(startDate);
+		calendar.add(Calendar.MONTH, monthPreference);
+		calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+		dateList.put("STARTDATE", calendar.getTime());
+		calendar.set(Calendar.DAY_OF_MONTH, 15); 
+		dateList.put("ENDDATE", calendar.getTime());
+		return dateList;
+	}
+
+	public static HashMap<String,Date> getMonth16thDateAndEndDateByGivenDateAndMothPreference(Date sixteenthDate,Integer monthPreference){
+		HashMap<String,Date> dateList = new HashMap<String,Date>();
+		Calendar calendar = Calendar.getInstance();   
+		calendar.setTime(sixteenthDate);
+		calendar.add(Calendar.MONTH, monthPreference);
+		calendar.set(Calendar.DAY_OF_MONTH, 16); 
+		dateList.put("STARTDATE", calendar.getTime());
+		calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+		dateList.put("ENDDATE", calendar.getTime());
+		return dateList;
+	}
+
+
+
+	public static HashMap<String,Date> getMonth15thDateByGivenDate(Date date,Integer monthPreference){
+		HashMap<String,Date> dateList = new HashMap<String,Date>();
+		Calendar calendar = Calendar.getInstance();   
+		calendar.setTime(date);
+		calendar.add(Calendar.MONTH, monthPreference);
+		calendar.set(Calendar.DAY_OF_MONTH, 15); 
+		dateList.put("STARTDATE", calendar.getTime());
+		return dateList;
+	}
+
+
+	public static HashMap<String,Date> getMonth16thDateByGivenDate(Date date,Integer monthPreference){
+		HashMap<String,Date> dateList = new HashMap<String,Date>();
+		Calendar calendar = Calendar.getInstance();   
+		calendar.setTime(date);
+		calendar.add(Calendar.MONTH, monthPreference);
+		calendar.set(Calendar.DAY_OF_MONTH, 16); 
+		dateList.put("STARTDATE", calendar.getTime());
+		return dateList;
+	}
+
+	//    Calendar calendar = Calendar.getInstance();
+	//	Date date = calendar.getTime();
+	//	// 3 letter name form of the day
+	//	System.out.println(new SimpleDateFormat("EE", Locale.ENGLISH).format(date.getTime()).toUpperCase());
+
+	public static String currentDay()
+	{
+		try{
+			Calendar calendar = Calendar.getInstance();
+			Date date = calendar.getTime();
+			return new SimpleDateFormat("EE", Locale.ENGLISH).format(date.getTime()).toUpperCase();
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		return null;
+	}
+	public static int getNumberOfWeeks(Date date1, Date date2){
 		DateTime dateTime1 = new DateTime(date1);
 		DateTime dateTime2 = new DateTime(date2);
 
 		int weeks = Weeks.weeksBetween(dateTime1, dateTime2).getWeeks();
 		return weeks;
 	}
-	
+
 	public static long getNumberOfDays(Date date1, Date date2){
-		    long diff = date2.getTime() - date1.getTime();
-		    long  numberofDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-		    return numberofDays;
-		
+		long diff = date2.getTime() - date1.getTime();
+		long  numberofDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+		return numberofDays;
+
 	}
 	public static int getDayOfTheDate(Date date){
 		Calendar c = Calendar.getInstance();
 		c.setTime(date);
 		int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
-        return dayOfWeek;
-	}
-	
-	public static String getNextDate(String  curDate) throws ParseException {
-		  final DateFormat format =Constants.DF_DMY;
-		  final Date date = format.parse(curDate);
-		  final Calendar calendar = Calendar.getInstance();
-		  calendar.setTime(date);
-		  calendar.add(Calendar.DAY_OF_YEAR, 1);
-		  return format.format(calendar.getTime()); 
-	}
-	
-	public static String getShortDateFromLongDate(String  curDate) throws ParseException {
-		  final DateFormat format =Constants.DF_DMY;
-		  final Date date = format.parse(curDate);
-		  final DateFormat Short_Format =Constants.SHORT_DF_STD_DM;
-		  return Short_Format.format(date); 
-	}
-	
-	public static String getPreviousDateByDecrementor(String  curDate,int decrementor) throws ParseException {
-		  final DateFormat format =Constants.DF_DMY;
-		  final Date date = format.parse(curDate.replaceAll("/", "-"));
-		  final Calendar calendar = Calendar.getInstance();
-		  calendar.setTime(date);
-		  calendar.add(Calendar.DAY_OF_YEAR, -decrementor);
-		  return format.format(calendar.getTime()); 
+		return dayOfWeek;
 	}
 
+	public static String getNextDate(String  curDate) throws ParseException {
+		final DateFormat format =Constants.DF_DMY;
+		final Date date = format.parse(curDate);
+		final Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.DAY_OF_YEAR, 1);
+		return format.format(calendar.getTime()); 
+	}
+
+	public static String getShortDateFromLongDate(String  curDate) throws ParseException {
+		final DateFormat format =Constants.DF_DMY;
+		final Date date = format.parse(curDate);
+		final DateFormat Short_Format =Constants.SHORT_DF_STD_DM;
+		return Short_Format.format(date); 
+	}
+
+	public static String getPreviousDateByDecrementor(String  curDate,int decrementor) throws ParseException {
+		final DateFormat format =Constants.DF_DMY;
+		final Date date = format.parse(curDate.replaceAll("/", "-"));
+		final Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.DAY_OF_YEAR, -decrementor);
+		return format.format(calendar.getTime()); 
+	}
+
+
+	public static LinkedList<String> getAllMonths()
+	{
+		DateFormatSymbols dfs = new DateFormatSymbols();
+		String[] arrayOfMonthsNames = dfs.getMonths();
+
+		return new LinkedList<String>(Arrays.asList(arrayOfMonthsNames));
+	}
+
+	public static LinkedHashSet<String> getYearsListFromCurrentDate(int previousYears,int priorYears){
+		LinkedHashSet<String> YearsList = new LinkedHashSet<String>();
+
+		for(int i =previousYears;i>0;i--){
+			String date = CalendarUtil.getYearPatternByYearPreference(CommonUtil.currentDate(),-i);
+			YearsList.add(date);
+		}
+		String currentDate = CalendarUtil.getYearPatternByYearPreference(CommonUtil.currentDate(),0);
+		YearsList.add(currentDate);
+		for(int i =1;i<=priorYears;i++){
+			String date = CalendarUtil.getYearPatternByYearPreference(CommonUtil.currentDate(),i);
+			YearsList.add(date);
+		}
+		return YearsList;
+	}
+
+	public static String getCurrentYear()
+	{
+
+		Calendar cal = Calendar.getInstance();
+		DateFormat format =Constants.Y;
+		return format.format(cal.getTime());
+		//		return Year.now().getValue();
+	}
+
+	public static String getCurrentMonth()
+	{
+		Calendar cal = Calendar.getInstance();
+		DateFormat format =Constants.M;
+		return format.format(cal.getTime());
+	}
 }
