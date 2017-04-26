@@ -59,7 +59,7 @@
 <h4 class="pull-left">Recruiters Report</h4>
 		  <div class="reportBtn select-field  pull-left ml">
 			<select class="form-control" id="reportTypeId" onChange="flushCustom(); getDayWiseReports(); custdates();">
-			 <option value="">select</option>
+<!-- 			 <option value="">select</option> -->
 			  <option value="today">Today</option>
 			  <option value="yesterday">Yesterday</option>
 			  <option value="week">1 week</option>
@@ -166,7 +166,8 @@ width: 100% !important;
 </style>
 
 <script>
-function usersList(timePeriod){  
+function usersList(){ 
+	var timePeriod = $('#reportTypeId').val(); 
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
            type : "POST",

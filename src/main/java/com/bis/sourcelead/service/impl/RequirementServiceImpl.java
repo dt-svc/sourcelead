@@ -426,7 +426,7 @@ public class RequirementServiceImpl implements RequirementService {
 			
 			
 			//requirement status 
-			if(jsonObj.has("saveType")){            
+			if(jsonObj.has("saveType")){   
 				
 				if(jsonObj.getString("saveType").equalsIgnoreCase("draft")){
 					requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.DRAFT);
