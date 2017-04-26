@@ -191,6 +191,18 @@ public class TaskDaoImpl implements TaskDao{
 
 
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Tasks> getTasksListOffboardingId(Long offboardingId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		 String query ="from Tasks tasks left join fetch tasks.offboardingId left join fetch tasks.assignedUserId where tasks.offboardingId.id = :offboardingId";
+		List<Tasks> tasksList = session.createQuery(query).setLong("offboardingId", offboardingId).setCacheable(true).list();
+		return tasksList;
+	}
+
+
+
 
 }
 

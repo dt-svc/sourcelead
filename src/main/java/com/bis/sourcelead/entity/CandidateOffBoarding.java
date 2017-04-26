@@ -123,6 +123,14 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "RATING")
 	private Integer rating;
 	
+	@Column(name = "SURVEY_EXPLANATION")
+	@Type(type="text")
+	private String surveyExplanation;
+	
+	@Column(name = "SURVEY_REASON")
+	@Type(type="text")
+	private String surveyReason;
+	
 	@Column(name = "STATUS")
 	private Integer status;
 	
@@ -153,6 +161,9 @@ private static final long serialVersionUID = 1L;
 	
 	@Transient
 	private Long offBoardUserId;
+	
+	@Transient
+	private String templateNames;
 	
 	
 	
@@ -476,6 +487,30 @@ private static final long serialVersionUID = 1L;
 
 	public void setRating(Integer rating) {
 		this.rating = rating;
+	}
+
+	public String getSurveyExplanation() {
+		return surveyExplanation;
+	}
+
+	public void setSurveyExplanation(String surveyExplanation) {
+		this.surveyExplanation = surveyExplanation;
+	}
+
+	public String getSurveyReason() {
+		return surveyReason;
+	}
+
+	public void setSurveyReason(String surveyReason) {
+		this.surveyReason = surveyReason;
+	}
+
+	public String getTemplateNames() {
+		return templateNames;
+	}
+
+	public void setTemplateNames(String templateNames) {
+		this.templateNames = templateNames;
 	}
 	
 

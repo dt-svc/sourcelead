@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
@@ -37,6 +38,7 @@ import com.bis.sourcelead.entity.OffboardTasks;
 import com.bis.sourcelead.entity.OnboardTasks;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SubmissionTemplate;
+import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.OnboardStatus;
@@ -46,6 +48,7 @@ import com.bis.sourcelead.service.OffBoardingDocumentsService;
 import com.bis.sourcelead.service.OffBoardingTemplateService;
 import com.bis.sourcelead.service.OffboardCheckListService;
 import com.bis.sourcelead.service.OffboardTasksService;
+import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -86,6 +89,9 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
     
     @Autowired
     CandidateOffBoardingService candidateOffBoardingService;
+    
+    @Autowired
+    TaskService taskService;
      
     protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -767,7 +773,6 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 					candidateOffBoarding.setCandidateName(candidateName.append(candidateOffBoarding.getFirstName()).toString());
 				}
 				
-				
 			}
 			
 			resultJson = commonUtil.toJSON(candidateOffBoarding);
@@ -1269,6 +1274,16 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 					 offboarding.setLookingForAccommodation(Constants.NO);
 				 }
 				 
+				 
+				 if(jsonObj.has("surveyReason") && !isNullOrEmpty(jsonObj.getString("surveyReason"))){
+					 offboarding.setSurveyReason(jsonObj.getString("surveyReason"));
+				 }
+				 
+				 if(jsonObj.has("surveyExplanation") && !isNullOrEmpty(jsonObj.getString("surveyExplanation"))){
+					 offboarding.setSurveyExplanation(jsonObj.getString("surveyExplanation"));
+				 }
+				 
+				 
 				 candidateOffBoardingService.saveCandidateOffBoarding(offboarding);
 				 
 			 }
@@ -1284,6 +1299,20 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 				
 			 
 			 OffboardCheckList offboardCheckList = offboardCheckListService.getOffboardCheckListByOffboardingId(offboardId);
+			 
+			 return commonUtil.toJSON(offboardCheckList);
+			
+		    
+		   }
+		 
+		 
+		 @RequestMapping(value = "/getCandidateOffBoardCheckListByOffboardUUID" , method = RequestMethod.GET)
+		   public String getCandidateOffBoardCheckListByOffboardUUID(@RequestParam(value="offboardUUID", required=false) String offboardUUID,
+				   HttpServletRequest request) throws Exception {
+			
+			 CandidateOffBoarding candidateOffBoarding = candidateOffBoardingService.getCandidateOffBoardingByOffboardUUID(offboardUUID);
+			 
+			 OffboardCheckList offboardCheckList = offboardCheckListService.getOffboardCheckListByOffboardingId(candidateOffBoarding.getId());
 			 
 			 return commonUtil.toJSON(offboardCheckList);
 			
@@ -1323,5 +1352,58 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		 
 		 
 		 
+		 @RequestMapping(value = "/getOffboardCandidateTasksByOffboardUUID" , method = RequestMethod.GET)
+		 public @ResponseBody  String getOffboardCandidateTasksByOffboardUUID(@RequestParam(value="offboardUUID", required=false) String offboardUUID,
+				 HttpServletRequest request,HttpServletResponse response) throws Exception {
+			 
+			 
+			 CandidateOffBoarding offboarding = candidateOffBoardingService.getCandidateOffBoardingByOffboardUUID(offboardUUID);
+			 
+			 List<Tasks> tasksList = taskService.getTasksListOffboardingId(offboarding.getId());
+				List<Tasks> taskList = new ArrayList<Tasks>();
+				if(null != tasksList && tasksList.size() > 0){
+					for(Tasks tasks : tasksList){
+						tasks.setTaskDateStr(Constants.DMY.format(tasks.getTaskDate()));
+						
+						StringBuilder userName = new StringBuilder();
+						if(null != tasks.getAssignedUserId().getLastName()){
+							tasks.setAssignedName(userName.append(tasks.getAssignedUserId().getFirstName()).append(" ").append(tasks.getAssignedUserId().getLastName()).toString());
+						}else{
+							tasks.setAssignedName(userName.append(tasks.getAssignedUserId().getFirstName()).toString());
+						}
+						taskList.add(tasks);
+					}
+					
+				}
+			 
+				return commonUtil.toJSON(taskList);
+			 
+		   }
+		 
+		 
+		 
+		 @RequestMapping(value = "/getOffboardCandidateDocumentsByOffboardUUID" , method = RequestMethod.GET)
+		 public @ResponseBody  String getOffboardCandidateDocumentsByOffboardUUID(@RequestParam(value="offboardUUID", required=false) String offboardUUID,
+				 HttpServletRequest request,HttpServletResponse response) throws Exception {
+			 
+			 
+			 CandidateOffBoarding offboarding = candidateOffBoardingService.getCandidateOffBoardingByOffboardUUID(offboardUUID);
+			 
+			 List<OffBoardingDocuments>  offboardDocumentsList = new ArrayList<OffBoardingDocuments>();
+			 
+			 List<OffBoardingDocuments> resignationDocumentsList = offBoardingDocumentsService.getOffBoardingDocumentsByCandidateOffBoardingId(offboarding.getId(), "Resignation");
+			 List<OffBoardingDocuments> offboardPackDocumentsList = offBoardingDocumentsService.getOffBoardingDocumentsByCandidateOffBoardingId(offboarding.getId(), "Offboard Pack");
+			 
+			 
+			 OffBoardingDocuments documents = new OffBoardingDocuments();
+			 documents.setResignationDocumentsList(resignationDocumentsList);
+			 documents.setOffboardPackDocumentsList(offboardPackDocumentsList);
+			 
+			 return commonUtil.toJSON(documents);
+			 
+		   }
+		 
+		 
+		
 
 }

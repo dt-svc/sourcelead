@@ -102,7 +102,28 @@
 			  </div>
 			</div>
 		</div>
+		
+		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
+			<div class="form-group">
+			  <label class="col-md-4 control-label">Reason</label>
+			  <div class="col-md-8">
+				<input type="text" class="form-control input-sm" value="${SourceLeadWeb_candidateOffBoarding.reason}" readonly="readonly">
+			  </div>
+			</div>
+		</div>
 	</div>
+	
+	<div class="clearfix">
+ 		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
+                  <div class="form-group">
+                  <label class="col-md-4 control-label">Explanation</label>
+                  <div class="col-md-8">
+                      <textarea rows="2" class="form-control" readonly="readonly" >${SourceLeadWeb_candidateOffBoarding.explanation}</textarea>
+                  </div>
+                </div>
+		</div>		
+	</div>	
+	
 </div>
  
  <h5>Survey</h5>
@@ -112,7 +133,19 @@
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Reason</label>
 			  <div class="col-md-8">
-				<input type="text" class="form-control input-sm" value="${SourceLeadWeb_candidateOffBoarding.reason}" readonly="readonly">
+				<select class="chosen-select" data-placeholder="Select Reason" name="surveyReason" data-validation="required" field-name="Survey Reason" >
+                      <option  selected="selected" value=''>- Select Reason -</option>
+                      <option  value='Personal problems' ${SourceLeadWeb_candidateOffBoarding.surveyReason  == 'Personal problems' ? 'selected' : ''}>Personal problems</option>
+                      <option  value='Growth Prospects' ${SourceLeadWeb_candidateOffBoarding.surveyReason  == 'Growth Prospects' ? 'selected' : ''}>Growth Prospects</option>
+                      <option  value='Miscellaneous Reasons' ${SourceLeadWeb_candidateOffBoarding.surveyReason  == 'Miscellaneous Reasons' ? 'selected' : ''}>Miscellaneous Reasons</option>
+                      <option  value='Family Reasons' ${SourceLeadWeb_candidateOffBoarding.surveyReason  == 'Family Reasons' ? 'selected' : ''}>Family Reasons</option>
+                      <option  value='Discipline' ${SourceLeadWeb_candidateOffBoarding.surveyReason  == 'Discipline' ? 'selected' : ''}>Discipline</option>
+                      <option  value='Compensation' ${SourceLeadWeb_candidateOffBoarding.surveyReason  == 'Compensation' ? 'selected' : ''}>Compensation</option>
+                      <option  value='Performance' ${SourceLeadWeb_candidateOffBoarding.surveyReason  == 'Performance' ? 'selected' : ''}>Performance</option>
+                      <option  value='Health issues' ${SourceLeadWeb_candidateOffBoarding.surveyReason  == 'Health issues' ? 'selected' : ''}>Health issues</option>
+                      <option  value='Expiration of contract' ${SourceLeadWeb_candidateOffBoarding.surveyReason  == 'Expiration of contract' ? 'selected' : ''}>Expiration of contract</option>
+                      <option  value='Voluntary exit' ${SourceLeadWeb_candidateOffBoarding.surveyReason  == 'Voluntary exit' ? 'selected' : ''}>Voluntary exit</option>
+               </select>
 			  </div>
 			</div>
 		</div>
@@ -142,7 +175,7 @@
                   <div class="form-group">
                   <label class="col-md-4 control-label">Explanation</label>
                   <div class="col-md-8">
-                      <textarea rows="2" class="form-control" readonly="readonly" >${SourceLeadWeb_candidateOffBoarding.explanation}</textarea>
+                      <textarea rows="2" class="form-control" name="surveyExplanation" >${SourceLeadWeb_candidateOffBoarding.surveyExplanation}</textarea>
                   </div>
                 </div>
 		</div>		

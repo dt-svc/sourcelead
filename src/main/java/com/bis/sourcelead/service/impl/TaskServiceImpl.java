@@ -387,6 +387,11 @@ public List<Tasks> getTasskByAssignedUserIdAndOrgLocationIdAndOffboardingId(Long
 		Long offboardingId) throws Exception {
 	return taskDao.getTasskByAssignedUserIdAndOrgLocationIdAndOffboardingId(orgLocationId, userId, offboardingId);
 }
+
+@Override
+public List<Tasks> getTasksListOffboardingId(Long offboardingId) throws Exception {
+	return taskDao.getTasksListOffboardingId(offboardingId);
+}
 }
 	
 

@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -83,6 +84,12 @@ private static final long serialVersionUID = 1L;
 	
 	@Transient
 	private String offboardDocumentType;
+	
+	@Transient
+	private List<OffBoardingDocuments> resignationDocumentsList;
+	
+	@Transient
+	private List<OffBoardingDocuments> offboardPackDocumentsList;
 
 	public Long getId() {
 		return id;
@@ -204,6 +211,23 @@ private static final long serialVersionUID = 1L;
 		this.offboardDocumentType = offboardDocumentType;
 	}
 
+	public List<OffBoardingDocuments> getResignationDocumentsList() {
+		return resignationDocumentsList;
+	}
+
+	public void setResignationDocumentsList(List<OffBoardingDocuments> resignationDocumentsList) {
+		this.resignationDocumentsList = resignationDocumentsList;
+	}
+
+	public List<OffBoardingDocuments> getOffboardPackDocumentsList() {
+		return offboardPackDocumentsList;
+	}
+
+	public void setOffboardPackDocumentsList(List<OffBoardingDocuments> offboardPackDocumentsList) {
+		this.offboardPackDocumentsList = offboardPackDocumentsList;
+	}
+
+	
 	
 	
 }

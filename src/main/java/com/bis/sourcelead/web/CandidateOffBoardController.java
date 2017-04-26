@@ -147,6 +147,25 @@ public class CandidateOffBoardController {
 	}
 	
 	
+	@RequestMapping(value = "/viewOffboardCandidateSummaryDetails")
+	public ModelAndView viewOffboardCandidateSummaryDetails(@RequestParam(value="offboardUUID", required=false) String offboardUUID,HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Users);
+		
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.addObject("offboardUUID", offboardUUID);
+		 
+		 model.setViewName("offboard/viewOffboardCandidateSummaryDetails");
+		 return model;
+	}
+	
+	
 	
 	@RequestMapping(value = "/candidateOffBoardCreation")
 	public ModelAndView candidateOffBoardCreation(HttpServletRequest request) {

@@ -197,10 +197,10 @@
 	                    	 result = result +"<div class='width300px'>";
 	                    	 result = result +"<div class='tbldata-dotdot-big pull-left'>"+opt.candidateName+"</div>";
 	                    	 
-	                    	 if(opt.offBoardStatus == 'Draft'){
+	                    	 if(opt.offboardSubmitted == 'N'){
 	                    		 result = result +"<b class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOffboardCandidateDetails?offboardUUID="+opt.offboardUUID+"'> <i class='fa fa-binoculars'></i> </a> </b> </div>";
-	                    	 }else if(opt.offBoardStatus == 'Finished'){
-	                    		 //result = result +"<b class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOnboardCandidateSummary?onboardUUID="+opt.offboardUUID+"'> <i class='fa fa-binoculars'></i> </a> </b> </div>";
+	                    	 }else if(opt.offboardSubmitted == 'Y'){
+	                    		 result = result +"<b class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOffboardCandidateSummaryDetails?offboardUUID="+opt.offboardUUID+"'> <i class='fa fa-binoculars'></i> </a> </b> </div>";
 	                    	 }
 	                    	 
 	                    	 
