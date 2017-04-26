@@ -159,7 +159,7 @@ public class RequirementRestController {
 	 */
 
 	@RequestMapping(value = "/storeRequirement", method = RequestMethod.POST)
-	public @ResponseBody String storeRequirement(@RequestParam(value = "json", required = false) String json,
+	public @ResponseBody String storeRequirement(
 			MultipartHttpServletRequest request, @RequestParam(value = "saveType", required = false) String saveType)
 			throws Exception {
 
@@ -168,10 +168,12 @@ public class RequirementRestController {
 		if (itrator.hasNext()) {
 			multiFile = request.getFile(itrator.next());
 		}
-		json = json + ", saveType : " + saveType;
-		String jsonc = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(jsonc);
+		String json = request.getParameter("json");
+		//String jsonc = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json);
+		jsonObj.put("saveType", saveType);
 
+		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
