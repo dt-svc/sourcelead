@@ -77,8 +77,17 @@ public class Employees implements Serializable{
 	@Column(name="UPDATED_BY")
 	private String updatedBy;
 	
+	@ManyToOne
+    @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
+    private OrgRelations orgRelationId;
+	    
+	@ManyToOne
+    @JoinColumn(name="SPOC_ID", nullable=false )        
+    private OrgSpoc spocId;
 	
-
+	@Column(name = "EMPLOYMENT_TYPE")
+	private String userEmploymentType;
+	
 	@Column(name="RATE")
 	private String rate;
 	
@@ -87,6 +96,12 @@ public class Employees implements Serializable{
 	
 	@Column(name="DAILY_HOURS")
 	private String dailyHours;
+	
+	@Column(name = "DESIGNATION_OTHER_TYPE")
+	private String designationOtherType;
+	
+	@Column(name = "CURRENT_CURRENCY")
+	private String currentCurrency;
 	
 	@Transient
     private String hireDateStr;
@@ -102,6 +117,8 @@ public class Employees implements Serializable{
 	
 	@Transient
     private String userType;
+	
+	
 
 	public Long getId() {
 		return id;
@@ -295,5 +312,56 @@ public class Employees implements Serializable{
 	public void setUserType(String userType) {
 		this.userType = userType;
 	}
-	
+
+	public OrgRelations getOrgRelationId()
+	{
+		return orgRelationId;
+	}
+
+	public void setOrgRelationId(OrgRelations orgRelationId)
+	{
+		this.orgRelationId = orgRelationId;
+	}
+
+	public OrgSpoc getSpocId()
+	{
+		return spocId;
+	}
+
+	public void setSpocId(OrgSpoc spocId)
+	{
+		this.spocId = spocId;
+	}
+
+	public String getUserEmploymentType()
+	{
+		return userEmploymentType;
+	}
+
+	public void setUserEmploymentType(String userEmploymentType)
+	{
+		this.userEmploymentType = userEmploymentType;
+	}
+
+	public String getDesignationOtherType()
+	{
+		return designationOtherType;
+	}
+
+	public void setDesignationOtherType(String designationOtherType)
+	{
+		this.designationOtherType = designationOtherType;
+	}
+
+	public String getCurrentCurrency()
+	{
+		return currentCurrency;
+	}
+
+	public void setCurrentCurrency(String currentCurrency)
+	{
+		this.currentCurrency = currentCurrency;
+	}
+
+		
 }

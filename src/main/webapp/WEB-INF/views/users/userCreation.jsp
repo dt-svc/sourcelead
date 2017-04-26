@@ -15,6 +15,7 @@
 <script type="text/javascript">
 		window.onload = function () {
 			getAssociateList();
+			getDepartmentsList();
 		 };
 	</script>
 <script>
@@ -118,6 +119,32 @@
                   </div>
                 </div> 
                 
+                <!-- <div class="form-group">
+                  <label class="col-md-3">Department </label>
+                  <div class="col-md-9" id="chosen-role">
+                         <select multiple class="form-control chosen-select" id="department" name="department" field-name="Department" onchange="getReportingManager()" data-validation-optional="true" >
+		                        
+			              </select>
+                  </div>
+                </div> -->
+                
+                <div class="form-group">
+         <label class="col-md-3">Employment type<span class="text-danger">&nbsp;*</span></label>
+         <div class="col-md-9">
+             <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getEmployeementType(this);" field-name="Employment type" >
+                <option value="">--Select--</option>
+                 <option>C2C</option>
+                 <option>C2C-1099</option>
+                 <option>W-2</option>
+                 <option>C2H</option>
+                 <option>C2H -1099</option>
+                 <option>Part Time</option>
+                 <option>Full Time</option>
+                 <option>Other</option>
+             </select>
+         </div>
+       </div>
+                
                 <div class="form-group">
                   <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
                   <div class="col-md-9" id="chosen-role">
@@ -129,6 +156,32 @@
 			              </select>
                   </div>
                 </div>
+               
+               
+               <div class="form-group designationTypeDiv" id="designationTypeDiv" style="display:none">
+            <label class="col-md-3">Employment Type</label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" id="designationOtherType" name="designationOtherType"   field-name="Job Type" value="">
+            </div>
+          </div>
+       
+       <span id="hideVendor" style="display:none">
+       <div class="form-group">
+			<label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
+			<div class="col-md-9" id="errorvendor">
+			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();">
+                 </select>
+			</div>
+		</div>
+		
+		 <div class="form-group">
+			<label class="col-md-3">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
+			<div class="col-md-9" id="errorvendorContact">
+			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="select Vendor Contact" onchange="removeValiationVendorContact();">
+                 </select>
+			</div>
+		</div>
+		</span>
                
               <div class="form-group">
                   <label class="col-md-3">Manager</label>
@@ -147,12 +200,20 @@
                  <div class="form-group">
                      <label class="col-md-3">Rate</label>
                      <div class="col-md-9">
-                         <div class="row">
-		                        <div class="col-md-6">
+                         <div class="input-group er ratetype">
+							<div class="input-group-btn tblminwidth-75 displyBlock">
+							 <select class="selectpicker" id="currentCurrency" name="currentCurrency">
+								<option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+								<option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+								<option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+								<option ${currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
+								<option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
+								<option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+							</select>
+							</div>
 				                    <input type="text" class="form-control" id="Rate" field-name="Rate" name="rate" value="" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">
 				                    <span class="hidden">Rate</span>
-		                        </div>
-		                        <div class="col-md-6">
+		                        <div class="input-group-btn tblminwidth-75 ratetype">
 				                     <select class="form-control selectpicker" id="RatePer" name="ratePer" field-name="Rate Per">
 				                        <option value="">-Rate Per-</option>
 				                        <option>Hourly</option>
@@ -204,7 +265,96 @@
 
       <!-- Footer Area -->
       <jsp:include page="../masterFooter.jsp" />
-      <!-- Footer Area --> 
+      <!-- Footer Area -->
+
+
+<script>
+ function employementType(type){
+if(type == 'C2C' || type == 'C2C-1099'){
+	 document.getElementById("hideVendor").style.display="block";
+	 $('#vendors').attr("data-validation","required"); 
+	 $('#vendorcontact').attr("data-validation","required"); 
+	// $("#vendors").attr("data-validation", "true");
+	  getVendorsByOrgLocationId();
+}else{
+	 document.getElementById("hideVendor").style.display="none";
+	 $('#vendors').removeAttr("data-validation","required"); 
+	 $('#vendorcontact').removeAttr("data-validation","required"); 
+}
+ }
+ </script>
+
+<script>
+ function getVendorsByOrgLocationId(){
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getVendorsByOrgLocationId?", 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	$('#vendors').empty();
+		        	$('#vendors').append('<option value="">--select Vendor --</option>');
+		            for(var i=0;i<json.length;i++){
+		            	  var opt = json[i];
+		            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');
+		            }
+		            $('#vendors').trigger("chosen:updated");
+		            
+		            
+		        }
+		 });
+ }
+ </script>
+ <script>
+ function getVendorContactList(){
+	var orgRelationID = $('#vendors').val();
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+			    type: "POST",
+		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	$('#vendorcontact').empty();
+		        	$('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
+		             for(var i=0;i<json.length;i++){
+		            	 var opt = json[i];
+		            	 $('#vendorcontact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
+		            } 
+		            $('#vendorcontact').trigger("chosen:updated");
+		        }
+		 }); 
+ }
+ </script>
+
+<script>
+function getEmployeementType(designationType){
+	var existingDesignationType = '${requirement.designationType}';
+	if(designationType.value == 'Other'){
+		 document.getElementById("designationTypeDiv").style.display="block";
+		  $("#designationOtherType").attr("data-validation-optional", "true");
+		  $("#designationOtherType").attr("data-validation", "validate_Space validate_length length2-250");
+	}else{
+		document.getElementById("designationTypeDiv").style.display="none";
+		  $("#designationOtherType").attr("data-validation-optional", "true");
+		  $("#designationTypeDiv").find('p.jquery_form_error_message').remove();
+		  if(existingDesignationType ==null || existingDesignationType == "" || existingDesignationType == "undefined" || existingDesignationType != 'Other'){
+			  $("#designationOtherType").val('');
+		  }
+	}
+	
+	if(designationType.value == 'C2C' || designationType.value == 'C2C-1099'){
+		document.getElementById("hideVendor").style.display="block";
+		 $('#vendors').attr("data-validation","required"); 
+		 $('#vendorcontact').attr("data-validation","required"); 
+		  getVendorsByOrgLocationId();
+	}else{
+		 document.getElementById("hideVendor").style.display="none";
+		 $('#vendors').removeAttr("data-validation","required"); 
+		 $('#vendorcontact').removeAttr("data-validation","required"); 
+	}
+	$('#designationType + p').remove();
+}
+</script>
       
  <script type="text/javascript">
  function validateDayHours() {
@@ -504,9 +654,36 @@ function getAssociateUserDetails(){
  
  </script>  
  
+ 
+ <script>
+ function getDepartmentsList(){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+	    	type: "POST",
+	    	url: sourceleadUrl+"/getDepartmentsList?${_csrf.parameterName}=${_csrf.token}",
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	var output = "";
+	        	output = output + "<option value=''>-- Select Department --</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var opt = json[i];
+	        		var name = '';
+	        		name = opt.departmentName;
+	        		output = output + "<option value='" +opt.id+ "'>"+name+"</option>";
+				}
+	        	$("#department").empty();
+		        $("#department").append(output);
+		        $('#department').trigger("chosen:updated");
+	        },
+	    });
+ }
+ 
+ </script>  
+ 
  <script>
  function getDesignationType(){
-	var employmentDesignationType = $("#employmentDesignationType").val();
+	 var employmentDesignationType = $("#employmentDesignationType").val();
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	    	type: "POST",
