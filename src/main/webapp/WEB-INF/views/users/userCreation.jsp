@@ -211,7 +211,7 @@
 								<option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
 							</select>
 							</div>
-				                    <input type="text" class="form-control" id="Rate" field-name="Rate" name="rate" value="" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">
+				                    <input type="text" class="form-control" id="Rate" field-name="Rate" name="rate" value="" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">
 				                    <span class="hidden">Rate</span>
 		                        <div class="input-group-btn tblminwidth-75 ratetype">
 				                     <select class="form-control selectpicker" id="RatePer" name="ratePer" field-name="Rate Per">
@@ -394,7 +394,7 @@ function getEmployeementType(designationType){
 
 <script type="text/javascript">
  function createUser() {
-	 var Rate = document.getElementById("Rate").value; 
+	/*  var Rate = document.getElementById("Rate").value; 
 	 var RatePer = document.getElementById("RatePer").value; 
 	 if(Rate != null && Rate != ""){
 		 $('#RatePer').removeAttr('data-validation-optional');
@@ -408,7 +408,26 @@ function getEmployeementType(designationType){
 	 }else{
 		 $('#Rate').removeAttr('data-validation');
 		 $('#Rate').attr("data-validation-optional","true"); 
-	 }
+	 } */
+	 
+	 	var RatePer = document.getElementById("RatePer").value; 
+		if(RatePer != null && RatePer != ""){
+			$('#Rate').removeAttr('data-validation-optional');
+			$('#Rate').attr("data-validation","required validate_Space validate_float validate_length length1-8"); 
+		}else{
+			$('#Rate').removeAttr('data-validation');
+			$('#Rate').attr("data-validation-optional","true"); 
+		}
+		 
+		var Rate = document.getElementById("Rate").value; 
+		if(Rate != null && Rate != ""){
+			$('#RatePer').removeAttr('data-validation-optional');
+			$('#RatePer').attr("data-validation","required");
+			$('#Rate').attr("data-validation","required validate_Space validate_float validate_length length1-8");
+		}else{
+			$('#RatePer').removeAttr('data-validation');
+			$('#RatePer').attr("data-validation-optional","true"); 
+		}
 	 
 	 
 	   if ($('#createUser_form').validate(false, validationSettings)){ 
