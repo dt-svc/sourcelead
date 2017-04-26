@@ -71,6 +71,8 @@ public interface ProjectMembersDao {
 	
 	public Collection<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId,String status) throws Exception;
 	
+	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserId(Date startDate,Date endDate,Long locationsId, Long approverUserId);
+	
 	
 	
 	
