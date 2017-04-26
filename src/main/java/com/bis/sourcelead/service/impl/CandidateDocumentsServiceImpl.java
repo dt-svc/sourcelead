@@ -53,6 +53,7 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 						candidateDocuments.setDocumentOtherType(jsonObj.getString("documentOtherType"));
 					}else{
 					candidateDocuments.setDocumentType(jsonObj.getString("name"));
+					candidateDocuments.setDocumentOtherType(null);
 					}
 				}
 				

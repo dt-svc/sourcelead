@@ -230,7 +230,7 @@ function addDocument(candidateId, documentUUID) {
 	result = result+'<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'<input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
 	result = result+'</span> </label>';
-	result = result+'<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Document..." field-name="Document" data-validation="required validate_Space validatedoc">';
+	result = result+'<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Document..." field-name="Document" data-validation="required validate_Space validate_docimgpdf">';
 	result = result+'</div>';
 	result = result+'</div>';  
 	result = result+'</div>'; 
@@ -492,7 +492,7 @@ this script is for remove Document in edit mode to upload new document
 function removeDocNameDiv(){
 	$("#docNameDiv").hide();
 	$("#uploadDocDiv").show();
-	$("#uploadFile").attr("data-validation", "required validate_Space validatedoc");
+	$("#uploadFile").attr("data-validation", "required validate_Space validate_docimgpdf");
 }
 </script>
 
