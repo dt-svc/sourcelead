@@ -463,7 +463,7 @@ function getDocument(candidateId, documentId){
 function deleteDocument(candidateId, documentId){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
-	var message = confirm("You are choosing to delete the resume");
+	var message = confirm("You are choosing to delete the document");
 	if (message == true) {
 		$.ajax({
 		   	type: "POST",
