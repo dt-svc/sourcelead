@@ -25,6 +25,7 @@ function getOffboardCheckList(sourceleadUrl,offboardUUID) {
         	
         	var jsonStringData = eval(json['checkListJsonString']);
         	
+        	if(jsonStringData != null && jsonStringData != '' && jsonStringData != 'undefined'){
         	
         	if (jsonStringData) {
                  //go through each saved field object and render the form HTML
@@ -132,6 +133,9 @@ function getOffboardCheckList(sourceleadUrl,offboardUUID) {
                      }
                  });
              }
+        }else{
+        	$('#sjfb-fields').append("<h4>No Check List Found</h4>");
+        }
         	 
         	 
         	 

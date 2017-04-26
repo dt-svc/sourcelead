@@ -25,7 +25,7 @@ function getCheckList(sourceleadUrl,offboardId) {
         	
         	var jsonStringData = eval(json['checkListJsonString']);
         	
-        	
+        	if(jsonStringData != null && jsonStringData != '' && jsonStringData != 'undefined'){
         	if (jsonStringData) {
                  //go through each saved field object and render the form HTML
                  $.each( jsonStringData, function( k, v ) {
@@ -132,7 +132,9 @@ function getCheckList(sourceleadUrl,offboardId) {
                      }
                  });
              }
-        	 
+        	}else{
+        		 $('#sjfb-fields').append("<h4>No Check List Found</h4>");
+        	}
         	 
         	 
         	  //HTML templates for rendering frontend form fields
