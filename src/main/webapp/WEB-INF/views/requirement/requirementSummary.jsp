@@ -1226,7 +1226,9 @@ function requirementDetails(requirementId){
 	  	
 					            }
 				            }
-				            
+				               result = result +'</div>';
+		          	           
+					           result = result +'<div class="clearfix"></div>';
 				           	            
 				            
 				            //  Checking  for approval mechanism type  Parallel or Sequential
@@ -4501,11 +4503,11 @@ function getRateListDiv(submissionId, candidateId){
 		                     result = result + '<div class="clearfix row">';
 		                     result = result + '<form name="rate_form" id="rate_form" method="post">';
 		                     result = result + '  <div class="form-group col-md-6">';
-		                     result = result + '    <input type="text" class="form-control input-sm" placeholder="Rate" id="rateProposal" name="rateProposal" field-name="Rate" data-validation="required  validate_Space validate_float validate_length length1-10">';
+		                     result = result + '    <input type="text" class="form-control input-sm" placeholder="Rate" id="rateProposal" name="rateProposal" field-name="Rate" data-validation="required  validate_Space validate_float validate_length length1-8">';
 		                     result = result + '  </div>';
 		                     
 		                     result = result + '<div class="form-group col-md-6 select-field">';
-		                     result = result + ' <select class="form-control input-sm" id="rateType" name="rateType" field-name="Rate Type" data-validation="required">';
+		                     result = result + ' <select class="form-control input-sm" id="rateType" name="rateType" field-name="Rate Per" data-validation="required">';
 		                     result = result + '	<option value="">Rate Per</option>';
 		                     result = result + '    <option>Hourly</option>';
 		                     result = result + '    <option>Weekly</option>';

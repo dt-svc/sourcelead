@@ -162,10 +162,10 @@ function selectOfferApplicants(){
            </select>
      </div>
      <div class="positionRelative float select-field">
-     	  <input type="text" value="" class="form-control input-sm" id="REPLACEROWIDAmount" name="REPLACEROWIDpaymentTypAmount" field-name="Rate" data-validation="required validate_int validate_length length1-28" onclick="validateRateAndRateType();">
+     	  <input type="text" value="" class="form-control input-sm" id="REPLACEROWIDAmount" name="REPLACEROWIDpaymentTypAmount" field-name="Rate" data-validation="required validate_int validate_length length1-8" onclick="validateRateAndRateType();">
      </div>
    	 <div class="positionRelative float select-rateper select-field">
-           <select class="form-control" id="REPLACEROWIDPaymentMode" name="REPLACEROWIDPaymentMode" field-name="Rate Type" style="height: 30px;" onchange="validateRateAndRateType();">
+           <select class="form-control" id="REPLACEROWIDPaymentMode" name="REPLACEROWIDPaymentMode" field-name="Rate Per" style="height: 30px;" onchange="validateRateAndRateType();">
 	                 <option value="">Rate Per</option>
 	                 <option value="Hourly">Hourly</option>
 	                 <option value="Weekly">Weekly</option>

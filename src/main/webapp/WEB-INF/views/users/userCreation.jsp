@@ -23,6 +23,13 @@
 		document.getElementById("createUser_form").reset();
 	});
 </script>
+<style type="text/css">
+.ratetype p {
+    left: 0 !important;
+    position: absolute;
+    bottom: -14px;
+}
+</style>
 
   <!-- Content Area -->
   <section class="content-wraper">
@@ -159,7 +166,7 @@
                
                
                <div class="form-group designationTypeDiv" id="designationTypeDiv" style="display:none">
-            <label class="col-md-3">Employment Type</label>
+            <label class="col-md-3">Employment Other Type</label>
             <div class="col-md-9">
               <input type="text" class="form-control" id="designationOtherType" name="designationOtherType"   field-name="Job Type" value="">
             </div>

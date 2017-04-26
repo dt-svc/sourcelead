@@ -914,24 +914,25 @@ function getChangeRole(userId,userRoleId){
      var EmployeeId = document.getElementById("EmployeeId").value;
      var EmailId = document.getElementById("EmailId").value;
      var sourceleadUrl ='${sourceleadUrl}';
-     var RatePer = document.getElementById("RatePer").value;
-	 if(RatePer != null && RatePer != ""){
-		 $('#Rate').removeAttr('data-validation-optional');
-		 $('#Rate').attr("data-validation","required"); 
-	 }else{
-		 $('#Rate').removeAttr('data-validation');
-	 	 $('#Rate').attr("data-validation-optional","true"); 
-		 $('#RatePer').removeAttr('data-validation');
-	 	 $('#RatePer').attr("data-validation-optional","true"); 
-	 }
-     var Rate = document.getElementById("Rate").value;
-     if(Rate != null && Rate != ""){
-         $('#RatePer').removeAttr('data-validation-optional');
-         $('#RatePer').attr("data-validation","required");
-     }else{
-         $('#RatePer').removeAttr('data-validation');
-         $('#RatePer').attr("data-validation-optional","true");
-     }
+     
+     var RatePer = document.getElementById("RatePer").value; 
+		if(RatePer != null && RatePer != ""){
+			$('#Rate').removeAttr('data-validation-optional');
+			$('#Rate').attr("data-validation","required validate_Space validate_float validate_length length1-8"); 
+		}else{
+			$('#Rate').removeAttr('data-validation');
+			$('#Rate').attr("data-validation-optional","true"); 
+		}
+		 
+		var Rate = document.getElementById("Rate").value; 
+		if(Rate != null && Rate != ""){
+			$('#RatePer').removeAttr('data-validation-optional');
+			$('#RatePer').attr("data-validation","required");
+			$('#Rate').attr("data-validation","required validate_Space validate_float validate_length length1-8");
+		}else{
+			$('#RatePer').removeAttr('data-validation');
+			$('#RatePer').attr("data-validation-optional","true"); 
+		}
      
       if ($('#editUser_form').validate(false, validationSettings)){
     	  if(EmployeeId!=null&&EmployeeId!="" && empId != EmployeeId){
@@ -1330,12 +1331,12 @@ $("#editRoleDetailsList").empty();
 						result = result + '</div>';
 						
 						result = result + '<div class="user_summary_edit_cta select-field" id="designationTypeDiv" style="display:none">';
-						result = result + ' <label>&nbsp;</label>';
+						result = result + ' <label>Employment Other Type </label>';
 						result = result + '<input type="text" class="form-control" name="designationOtherType"  id="designationOtherType" value="'+designationOtherType+'" placeholder="Employment Other Type" field-name="Employment Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
 						result = result + '</div>';
 					    result = result + '<span class="" id="hideVendor" style="display:none">'; 
 						result = result + '<div class="user_summary_edit_cta" id="vendor">';
-						result = result + ' <label>&nbsp;</label>';
+						result = result + ' <label>Vendor</label>';
 						result = result + '<select  class="chosen-select form-control" name="vendors"  id="vendors" value="'+json.vendorName+'" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();">';
 						result = result + '</select>';
 						result = result + '<input type="hidden" name="updateVendorName" id="updateVendorName" value="'+json.vendorName+'">';
@@ -1343,7 +1344,7 @@ $("#editRoleDetailsList").empty();
 						result = result + '</div>'; 
 						
 						result = result + '<div class="user_summary_edit_cta select-field" id="vendorContacterr">';
-						result = result + ' <label>&nbsp;</label>';
+						result = result + ' <label>Vendor Contact</label>';
 						result = result + '<select  class="chosen-select form-control" name="vendorcontact"  value="'+json.vendorContactName+'" id="vendorcontact" field-name="Vendor Contact"  placeholder="select Vendor Contact">';
 						result = result + '</select>';
 						result = result + '<input type="hidden" name="updateVendorContactName" id="updateVendorContactName" value="'+json.vendorContactName+'" />';
