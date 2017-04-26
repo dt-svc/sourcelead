@@ -275,10 +275,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		saveDefaultSubmissionTemplate(org,orgLocations,user);
 		saveDefaultInterviewFeedbackTemplate(org,orgLocations,user);
-		saveDefaultContractTemplate(org,orgLocations,user," Default Client MSA Template","Client MSA");
-		saveDefaultContractTemplate(org,orgLocations,user," Default Vendor MSA Template","Vendor MSA");
-		saveDefaultContractTemplate(org,orgLocations,user," Default Client SOW Template","Client SOW");
-		saveDefaultContractTemplate(org,orgLocations,user," Default Vendor SOW Template","Vendor SOW");
+//		saveDefaultContractTemplate(org,orgLocations,user," Default Client MSA Template","Client MSA");
+//		saveDefaultContractTemplate(org,orgLocations,user," Default Vendor MSA Template","Vendor MSA");
+//		saveDefaultContractTemplate(org,orgLocations,user," Default Client SOW Template","Client SOW");
+//		saveDefaultContractTemplate(org,orgLocations,user," Default Vendor SOW Template","Vendor SOW");
 		/*saveDefaultContractTemplate(org,orgLocations,user," Default NDA Template","NDA");
 		saveDefaultContractTemplate(org,orgLocations,user," Default NCA Template","NCA");*/
 		
