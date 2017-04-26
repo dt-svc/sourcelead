@@ -80,6 +80,7 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 		}else{
 			candidateOffBoarding = new CandidateOffBoarding();
 			candidateOffBoarding.setOffboardUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			candidateOffBoarding.setOffBoardStatus("Draft");
 		}
 		
 		User offboardUser = new User();
@@ -147,7 +148,6 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 		candidateOffBoarding.setOffboardSubmitted(Constants.NO);
 		candidateOffBoarding.setOrgLocationId(orgLocations);
 		candidateOffBoarding.setStatus(Constants.CANDIDATE_ACTIVE);
-		candidateOffBoarding.setOffBoardStatus("Draft");
 		candidateOffBoarding.setCreatedDate(CommonUtil.currentDate());
 		candidateOffBoarding.setCreatedBy(user.getUserCode());
 		candidateOffBoarding.setUpdatedDate(CommonUtil.currentDate());
