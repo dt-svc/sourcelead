@@ -29,5 +29,7 @@ public interface ContractsTemplateDao {
 	Contracts getChildContractById(Long contractId);
 	
 	ContractsTemplate findByContractTemplateName(String templateName,Long orgLocationId) throws Exception;
+
+	List<Contracts> getListOfContractsEnvId();
 	
 }

@@ -256,7 +256,7 @@ public class ContractRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		Contracts contracts  = contractsTemplateService.getContractById(Long.parseLong(recordId));
-		if("Waiting to be signed".equalsIgnoreCase(status)){
+/*		if("Waiting to be signed".equalsIgnoreCase(status)){
 			Contracts parentContracts  = contractsTemplateService.getContractById(contracts.getParentContractId().getId());
 			if(null != contracts.getParentContractId()){
 				parentContracts.setId(contracts.getParentContractId().getId());
@@ -266,11 +266,7 @@ public class ContractRestController {
 			}
 		 contractsTemplateService.saveNewContract(parentContracts);
 		 contractsTemplateService.saveNewContract(contracts);
-		}
-		
-		
-		
-		
+		}*/
 		
 		if(("Waiting To Be Verify").equalsIgnoreCase(status)){
 			Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
