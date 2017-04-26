@@ -1832,8 +1832,8 @@ public class CandidateOnBoardRestController {
 		 }
 		 
 		 
-		 @RequestMapping(value = "/changeTaskStatusByOnboardCandidate" , method = RequestMethod.POST)
-		 public @ResponseBody  String changeTaskStatusByOnboardCandidate(@RequestParam(value="taskId", required=false) Long taskId,
+		 @RequestMapping(value = "/changeTaskStatusForOnboardAndOffboardCandidate" , method = RequestMethod.POST)
+		 public @ResponseBody  String changeTaskStatusForOnboardAndOffboardCandidate(@RequestParam(value="taskId", required=false) Long taskId,
 				 HttpServletRequest request) throws Exception {
 			 	
 			 	Tasks tasks = taskService.getTasksById(taskId);

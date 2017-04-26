@@ -1,5 +1,8 @@
 package com.bis.sourcelead.web;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -14,13 +17,17 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
+import com.bis.sourcelead.entity.OffBoardingDocuments;
 import com.bis.sourcelead.entity.OffBoardingTemplate;
 import com.bis.sourcelead.entity.OffboardCheckList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
+import com.bis.sourcelead.service.OffBoardingDocumentsService;
 import com.bis.sourcelead.service.OffBoardingTemplateService;
 import com.bis.sourcelead.service.OffboardCheckListService;
+import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -43,6 +50,12 @@ public class CandidateOffBoardController {
 	
 	@Autowired
 	OffboardCheckListService offboardCheckListService;
+	
+	@Autowired
+	TaskService taskService;
+	
+	@Autowired
+	OffBoardingDocumentsService offBoardingDocumentsService;
 	
 
 	protected static boolean isNullOrEmpty(String str) {
@@ -75,8 +88,61 @@ public class CandidateOffBoardController {
 		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 
+		 CandidateOffBoarding offboarding = candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(user.getId(), loginOrgLocation.getId());
+		 
+		 
+		 List<Tasks> tasksList = taskService.getTasskByAssignedUserIdAndOrgLocationIdAndOffboardingId(loginOrgLocation.getId(),user.getId(),offboarding.getId());
+			List<Tasks> taskList = new ArrayList<Tasks>();
+			if(null != tasksList && tasksList.size() > 0){
+				for(Tasks tasks : tasksList){
+					tasks.setTaskDateStr(Constants.DMY.format(tasks.getTaskDate()));
+					taskList.add(tasks);
+				}
+				
+			}
+			
+			model.addObject("tasksList", taskList);
+			model.addObject("tasksListSize", taskList.size());
+			
+		 
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 model.setViewName("offboard/offboardStep3");
+		 return model;
+	}
+	
+	
+	
+	@RequestMapping(value = "/offboardStep4")
+	public ModelAndView offboardStep4(HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+		
+		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 
+		 CandidateOffBoarding offboarding = candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(user.getId(), loginOrgLocation.getId());
+		 
+		 List<OffBoardingDocuments> resignationDocumentsList = offBoardingDocumentsService.getOffBoardingDocumentsByCandidateOffBoardingId(offboarding.getId(), "Resignation");
+		 model.addObject("resignationDocumentsList", resignationDocumentsList);
+		 model.addObject("resignationDocumentsListSize", resignationDocumentsList.size());
+		 
+		 List<OffBoardingDocuments> offboardPackDocumentsList = offBoardingDocumentsService.getOffBoardingDocumentsByCandidateOffBoardingId(offboarding.getId(), "Offboard Pack");
+		 model.addObject("offboardPackDocumentsList", offboardPackDocumentsList);
+		 model.addObject("offboardPackDocumentsListSize", offboardPackDocumentsList.size());
+		 
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.addObject("offboardingId", offboarding.getId());
+		 model.setViewName("offboard/offboardStep4");
+		 return model;
+	}
+	
+	
+	
+	@RequestMapping(value = "/offboardSuccess")
+	public ModelAndView offboardSuccess(HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+		
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("offboard/offboardSuccess");
 		 return model;
 	}
 	

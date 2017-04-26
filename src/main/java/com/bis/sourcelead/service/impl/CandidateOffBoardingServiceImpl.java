@@ -199,12 +199,14 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 						 Tasks tasks = null;
 						 User taskUser = userDao.getUserById(Long.valueOf(userIds[i]));
 						 tasks = getTaskDetails(offboardTasks, taskUser, loginUser, orgLocations);
+						 tasks.setOffboardingId(candidateOffBoarding);
 						 taskDao.saveTasks(tasks);
 						 mailToUserTask(tasks);
 					 }
 				 }else{
 					 Tasks tasks = null;
 					 tasks = getTaskDetails(offboardTasks, candidateOffBoarding.getUserId(), loginUser, orgLocations);
+					 tasks.setOffboardingId(candidateOffBoarding);
 					 taskDao.saveTasks(tasks);
 					 mailToUserTask(tasks);
 				 }

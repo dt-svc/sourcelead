@@ -113,7 +113,7 @@
 		<br><h4>Support Documents</h4>
 		<div class="docu">
 		<c:forEach var="docFiles" items="${SourceLeadWeb_supportedDocumentsList}">
-					<a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${docFiles.documentUUID}"><i class="fa fa-file-word-o" aria-hidden="true"></i><span class="tbldata-dotdot_80">${docFiles.fileName}</span></a>
+					<a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${docFiles.documentUUID}"><i class="fa fa-file-text" aria-hidden="true"></i><span class="tbldata-dotdot_80">${docFiles.fileName}</span></a>
 		</c:forEach>
 	    </div>	
 	    </c:if>						

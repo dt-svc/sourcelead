@@ -1305,6 +1305,23 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		    
 		   }
 		 
+		 @RequestMapping(value = "/sendOffboardCandidateToDashboard" , method = RequestMethod.POST)
+		 public @ResponseBody  String sendOffboardCandidateToDashboard(@RequestParam(value="taskId", required=false) Long taskId,
+				 HttpServletRequest request,HttpServletResponse response) throws Exception {
+			 
+			 	
+			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 
+			 CandidateOffBoarding offboarding = candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(user.getId(), loginOrgLocation.getId());
+			 offboarding.setOffboardSubmitted(Constants.YES);	
+			 candidateOffBoardingService.saveCandidateOffBoarding(offboarding);
+			 
+			 return "success";
+			 
+		   }
+		 
+		 
 		 
 
 }

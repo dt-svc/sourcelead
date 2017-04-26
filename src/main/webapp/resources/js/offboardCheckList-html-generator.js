@@ -34,20 +34,11 @@ function getCheckList(sourceleadUrl,offboardId) {
 
                      //Add the field
                      $('#sjfb-fields').append(addFieldHTML(fieldType,v['req'],v['label']));
+                    
+                     
                      var $currentField = $('#sjfb-fields .sjfb-field').last();
                      
-                     var reqSymbol = '';
-                	 if(v['req'] == '1'){
-                		reqSymbol = " *";
-                	 }
-                     
-                     //Add the label
-                     if(v['label'] != 'location' ){
-                    	 $currentField.find('label').text(v['label']+reqSymbol);
-                     }
-                     
-                     
-                     
+                     $currentField.find('label').text(v['label']);
                      
                      if(json['checkListJsonValueString'] != null && json['checkListJsonValueString'] != '' && json['checkListJsonValueString'] != 'undefined'){
                     	 
@@ -129,15 +120,16 @@ function getCheckList(sourceleadUrl,offboardId) {
                              });
                          }
                      }
-                     
-                    
 
                      //Is it required?
                      if (v['req']) {
                          if (fieldType == 'textarea') { $currentField.find("textarea").prop('required',true).addClass('required-choice') }
                          $currentField.addClass('required-field');
                      }
-
+                    
+                     if(fieldType == 'textarea'){
+                 	    getContent(v['label']);
+                     }
                  });
              }
         	 
@@ -156,10 +148,8 @@ function getCheckList(sourceleadUrl,offboardId) {
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-textarea">' +
                              '<label for="textarea-' + uniqueID + '"></label>' +
-                             '<textarea rows="3" id="textarea-' + uniqueID + '"></textarea>' +
+                             '<textarea rows="3" id="textarea-' + label + '"  ></textarea>' +
                              '</div>';
-
-                   
 
                      case 'radio':
                          return '' +
@@ -176,6 +166,17 @@ function getCheckList(sourceleadUrl,offboardId) {
                              '</div>';
 
                  }
+             }
+             
+             
+             function getContent(label){
+            	 var details = eval(json['checkListJsonValueString']);
+            	 $.each(details, function( k3, v3 ) {
+            		 if(label == v3['label']){
+            			 $('#textarea-'+ label).html(v3['value']);
+            		 }
+            		 
+            	 });
              }
         },
     });

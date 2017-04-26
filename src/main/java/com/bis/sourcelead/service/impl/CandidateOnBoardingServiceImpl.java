@@ -354,6 +354,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 						 Tasks tasks = null;
 						 User taskUser = userDao.getUserById(Long.valueOf(userIds[i]));
 						 tasks = getTaskDetails(onboardTasks, taskUser, loginUser, orgLocations);
+						 tasks.setOnboardingId(candidateOnBoarding);
 						 taskDao.saveTasks(tasks);
 						 mailToUserTask(tasks);
 					 }
@@ -361,6 +362,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 					 Tasks tasks = null;
 					 tasks = getTaskDetails(onboardTasks, onboardingUser, loginUser, orgLocations);
 					 taskDao.saveTasks(tasks);
+					 tasks.setOnboardingId(candidateOnBoarding);
 					 mailToUserTask(tasks);
 				 }
 			 }

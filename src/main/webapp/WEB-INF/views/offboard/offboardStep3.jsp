@@ -38,19 +38,45 @@
 				
 			 <div class="welSiO" onclick="logoutFormSubmit();" title="Sign Out"><i class="fa fa-sign-out"></i></div>
 			  <ul>
-				  <li class="actLi"><span class="fill">1</span><b>Welcome</b><i class="line"></i></li>
-				  <li class="actLi"><span class="fill">2</span><b>Step two</b><i class="line"></i></li>
-				  <li class="actLi"><span>3</span><b>Step three</b><i class="line"></i></li>
-				  <li><span>4</span><b>Finish</b><i class="line"></i></li>
+				  <li class="actLi"><span class="fill">1</span><b>Details</b><i class="line"></i></li>
+				  <li class="actLi"><span class="fill">2</span><b>Check List</b><i class="line"></i></li>
+				  <li class="actLi"><span>3</span><b>Tasks</b><i class="line"></i></li>
+				  <li><span>4</span><b>Documents</b><i class="line"></i></li>
 				  <div class="clearfix"></div>
 			  </ul>
 			  <div class="clearfix"></div>
 		  </div>
 		  
+		  <div class="welCo1"> 
+			<div id="loading"></div>
+				<div class="step4">
+					<c:if test="${tasksListSize > 0}">
+					<c:forEach var="tasks" items="${tasksList}">
+					<ul id="task${tasks.id}">
+						<li>Subject : ${tasks.subject}</li>
+						<li><i class="fa fa-star-o"></i>Priority : ${tasks.priority}</li>
+						<li><i class="fa fa-clock-o"></i>Task Date : ${tasks.taskDateStr}</li>
+						<li>
+							 <select class="form-control select-bg" onchange="changeTaskStatus(${tasks.id})">
+							  <option ${tasks.taskStatus  == 'Open' ? 'selected' : ''}>Open</option>
+							  <option ${tasks.taskStatus  == 'Closed' ? 'selected' : ''}>Closed</option>
+							</select>
+                		</li>
+						<div class="clearfix"></div>
+					</ul>
+					</c:forEach>
+					</c:if>
+					
+					<c:if test="${tasksListSize == 0}">
+					    <ul><li>No Tasks Found</li></ul>
+					</c:if>
+																				
+				</div>		
+		  </div>	
 		  
 		  <div class="welBtns">
 			<input type="button"  value="Previous" onClick="javascript:location.href = '<c:url value='/offboardStep2'/>'" >
-			<input type="button"  value="Proceed to next step" id="save_button"  onclick="saveOffboardingCheckList();" class="Brig">
+			<input type="button"  value="Proceed to next step" id="save_button"  onclick="javascript:location.href = '<c:url value='/offboardStep4'/>'" class="Brig">
 			<div class="clearfix"></div>
 		</div>
 		
@@ -65,6 +91,23 @@
   
 
 <script src="resources/js/formvalidator.js"></script> 
+
+
+<script>
+function changeTaskStatus(taskId){
+	$("#task"+taskId).attr('style',' height:50px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/changeTaskStatusForOnboardAndOffboardCandidate?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
+	        success: function(onboardId) {
+	        	$("#task"+taskId).removeAttr("style");
+	        },
+	    });
+	
+	 
+}
+</script>
 
 
 <script>

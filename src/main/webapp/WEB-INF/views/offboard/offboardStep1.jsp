@@ -39,10 +39,10 @@
 				
 			 <div class="welSiO" onclick="logoutFormSubmit();" title="Sign Out"><i class="fa fa-sign-out"></i></div>
 			  <ul>
-				  <li class="actLi"><span>1</span><b>Welcome</b><i class="line"></i></li>
-				  <li><span>2</span><b>Step two</b><i class="line"></i></li>
-				  <li><span>3</span><b>Step three</b><i class="line"></i></li>
-				  <li><span>4</span><b>Finish</b><i class="line"></i></li>
+				  <li class="actLi"><span>1</span><b>Details</b><i class="line"></i></li>
+				  <li><span>2</span><b>Check List</b><i class="line"></i></li>
+				  <li><span>3</span><b>Tasks</b><i class="line"></i></li>
+				  <li><span>4</span><b>Documents</b><i class="line"></i></li>
 				  <div class="clearfix"></div>
 			  </ul>
 			  <div class="clearfix"></div>

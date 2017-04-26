@@ -214,7 +214,7 @@ public class LoginSessionController {
 					if(candidateOffBoarding.getOffboardSubmitted().equalsIgnoreCase("N")){
 						model.setViewName("offboard/offboardStep1");
 					}else{
-						model.setViewName("onboard/welcome");
+						model.setViewName("offboard/offboardUser");
 					}
 				}else{
 					model.setViewName("dashboard");
@@ -342,7 +342,7 @@ public class LoginSessionController {
 					if(candidateOffBoarding.getOffboardSubmitted().equalsIgnoreCase("N")){
 						model.setViewName("offboard/offboardStep1");
 					}else{
-						model.setViewName("onboard/welcome");
+						model.setViewName("offboard/offboardUser");
 					}
 				}else{
 					model.setViewName("dashboard");

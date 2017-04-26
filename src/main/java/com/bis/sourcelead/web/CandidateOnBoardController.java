@@ -123,7 +123,9 @@ public class CandidateOnBoardController {
 		 
 		ModelAndView model = new ModelAndView();
 		
-		List<Tasks> tasksList = taskService.getTasskByAssignedUserIdAndOrgLocationId(orgLocations.getId(),user.getId());
+		CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(user.getId(), orgLocations.getId());
+		
+		List<Tasks> tasksList = taskService.getTasskByAssignedUserIdAndOrgLocationIdAndOnboardingId(orgLocations.getId(),user.getId(),candidateOnBoarding.getId());
 		List<Tasks> taskList = new ArrayList<Tasks>();
 		if(null != tasksList && tasksList.size() > 0){
 			for(Tasks tasks : tasksList){
