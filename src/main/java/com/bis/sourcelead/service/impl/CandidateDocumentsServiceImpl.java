@@ -47,7 +47,13 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 			candidateDocuments = candidateDocumentsDao.getCandidateDocumentByCandidateId(candidateId,documentUUID);
 			 if(null != candidateDocuments){
 				if(jsonObj.has("name")){
+					/*candidateDocuments.setDocumentType(jsonObj.getString("name"));*/
+					if(jsonObj.getString("name").equalsIgnoreCase("Other")){
+						candidateDocuments.setDocumentType(jsonObj.getString("name"));
+						candidateDocuments.setDocumentOtherType(jsonObj.getString("documentOtherType"));
+					}else{
 					candidateDocuments.setDocumentType(jsonObj.getString("name"));
+					}
 				}
 				
 				if(jsonObj.has("description")){

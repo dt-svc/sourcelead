@@ -221,7 +221,7 @@ function addDocument(candidateId, documentUUID) {
 	result = result  +'';
 	
 	result = result + '<div class="col-md-12 documentTypeDiv mb10" id="documentTypeDiv" style="display:none">';
-	result = result + '<input type="text" class="form-control input-sm" name="documentOtherType"  id="documentOtherType" value="" placeholder="Document Other Type" field-name="Document Other Type" data-validation="validate_Space validate_length length1-250" data-validation-optional="true">';
+	result = result + '<input type="text" class="form-control input-sm" name="documentOtherType"  id="documentOtherType" value="" placeholder="Document Other Type" field-name="Document Other Type" data-validation="required validate_Space validate_length length1-250">';
 	result = result + '</div>'; 
 	
 	result = result+'<div class="clearfix mb10" id="uploadDocDiv">';
@@ -331,8 +331,8 @@ function getDocumentType(documentType){
 	 var existingDocumentType = $('#name').val(); 
 	if(documentType.value == 'Other'){
 		 document.getElementById("documentTypeDiv").style.display="block";
-		  $("#documentOtherType").attr("data-validation-optional", "true");
-		  $("#documentOtherType").attr("data-validation", "validate_Space validate_length length2-250");
+		  $("#documentOtherType").attr("data-validation-optional", "false");
+		  $("#documentOtherType").attr("data-validation", "required validate_Space validate_length length2-250");
 	}else{
 		document.getElementById("documentTypeDiv").style.display="none";
 		  $("#documentOtherType").attr("data-validation-optional", "true");
