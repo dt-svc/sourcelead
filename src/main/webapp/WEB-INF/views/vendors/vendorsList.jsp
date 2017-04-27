@@ -765,7 +765,7 @@ function preparedVendorsListFromElk(data){
 		   	result = result +'<th>Location</th>';
 		   	result = result +'<th>Tier</th>';
 		 	result = result +'<th>Created By</th>';
-		   	result = result +'<th>Released Jobs</th>';
+		   	result = result +'<th>Released Requirements</th>';
 		   	result = result +'<th>No.of Contacts</th>';
 		   	/* result = result +'<th>Actions</th>'; */
 		   	result = result +'</tr>';
@@ -875,7 +875,7 @@ function preparedVendorsLists(data){
 		   	result = result +' <th>Website</th>';
 		   	result = result +'<th>Location</th>';
 		   	result = result +'<th>Tier</th>';
-		   	result = result +'<th>Released Jobs</th>';
+		   	result = result +'<th>Released Requirements</th>';
 		   	result = result +'<th>No.of Contacts</th>';
 		   	/* result = result +'<th>Actions</th>'; */
 		   	result = result +'</tr>';

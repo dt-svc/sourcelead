@@ -136,7 +136,7 @@ public class ReportRestController {
 	 */
 
 	@RequestMapping(value = "/getAllUsersByOrgLocationsId")
-	public @ResponseBody String getAllUsersByOrgLocationsId(String timePeriod,String customStartDate,String customEndDate,
+	public @ResponseBody String getAllUsersByOrgLocationsId(@RequestParam(value="timePeriod", required=false) String timePeriod,@RequestParam(value="customStartDate", required=false) String customStartDate,@RequestParam(value="customEndDate", required=false) String customEndDate,
 			HttpServletRequest request) throws Exception {
 
 	    String resultJson;
@@ -249,7 +249,7 @@ public class ReportRestController {
 				long totalOfferedApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocations.getId(), user, "OFFERMADE", startDateUTC, endDateUTC);
 				user.setUserOfferedApplicantsCount(totalOfferedApplicants);
 				
-				long totalRejectedApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocations.getId(), user, "REJECTED", startDateUTC, endDateUTC);
+				long totalRejectedApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocations.getId(), user, "rejected", startDateUTC, endDateUTC);
 				user.setUserRejectedApplicantsCount(totalRejectedApplicants);
 				
 				orgUsersList.add(user);

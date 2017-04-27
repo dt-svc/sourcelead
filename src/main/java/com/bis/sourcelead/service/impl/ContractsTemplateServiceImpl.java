@@ -187,6 +187,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		
 		contracts.setContractTitle(jsonObj.getString("contractTitle"));
 		vendorContracts.setContractTitle(jsonObj.getString("contractTitle"));
+		vendorContracts.setContractsTemplate(contractsTemplate);
 		User ownerUser = userService.getUserById(Long.parseLong(jsonObj.getString("owner")));
 		contracts.setOwnerUserId(ownerUser);
         Date startDate = format.parse(jsonObj.getString("startDate"));
@@ -339,8 +340,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}
 			Contracts savedChildContracts = contractsTemplateDao.saveNewContract(vendorContracts);
 			  if(null != vendorContactsUser && null == approverUser && !"draft".equalsIgnoreCase(saveType)){
-		            signatureRequestUtil.sendDocumentForSignatureRequest(vendorContactsUser,contractsTemplate,orgLocation,user,savedContracts,org);
-		        }
+		            Contracts con = signatureRequestUtil.sendDocumentForSignatureRequest(vendorContactsUser,contractsTemplate,orgLocation,user,savedContracts,org);
+		            savedContracts.setDocId(con.getTempdocId());
+		            savedContracts.setEnvelopId(con.getTempEnvId());
+		            savedContracts.setContractStatus(con.getStatus());
+		        	Contracts updateEnvContracts = contractsTemplateDao.saveNewContract(savedContracts);
+			  }
 		}
 		return savedContracts;
 		
@@ -639,10 +644,20 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, orgLocation, notificationScenario);
 		
 	}
+
+	@Override
+	public ContractsTemplate saveContractTemplate(ContractsTemplate contractsTemplate) throws Exception {
+		return contractsTemplateDao.saveContractTemplate(contractsTemplate);
+	}
 	
 	@Override
 	public ContractsTemplate findByContractTemplateName(String templateName,Long orgLocationId) throws Exception {
 		return contractsTemplateDao.findByContractTemplateName(templateName, orgLocationId);
+	}
+
+	@Override
+	public List<Contracts> getListOfContractsEnvId() {
+		return  contractsTemplateDao.getListOfContractsEnvId();
 	}
 	
 }

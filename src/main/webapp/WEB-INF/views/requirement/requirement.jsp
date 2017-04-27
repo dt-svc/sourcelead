@@ -540,10 +540,10 @@ $(document).ready(function () {
                 <select multiple class="chosen-select form-control" name="noticePeriod" id="noticePeriod" data-validation-optional="true" onclick="getNoticeperiod();">
 					     <option  selected value="${noticePrd}">${noticePrd}</option>
 					        <option  ${requirement.noticePeriod  == 'Immediately Available' ? 'selected' : ''}>Immediately Available</option>
-	                		 <option  ${requirement.noticePeriod  == '15-Days' ? 'selected' : ''}>15-Days</option>
-	               			  <option  ${requirement.noticePeriod  == '1-Month' ? 'selected' : ''}>1-Month</option>
-	                		 <option  ${requirement.noticePeriod  == '2-Month' ? 'selected' : ''}>2-Month</option>
-	                 		<option  ${requirement.noticePeriod  == '3-Month' ? 'selected' : ''}>3-Month</option>
+	                		 <option  ${requirement.noticePeriod  == '15-Days' ? 'selected' : ''}>15 Days</option>
+	               			  <option  ${requirement.noticePeriod  == '1-Month' ? 'selected' : ''}>1 Month</option>
+	                		 <option  ${requirement.noticePeriod  == '2-Month' ? 'selected' : ''}>2 Months</option>
+	                 		<option  ${requirement.noticePeriod  == '3-Month' ? 'selected' : ''}>3 Months</option>
                 </select>
               </div>
             </div>
@@ -606,7 +606,7 @@ $(document).ready(function () {
 								value="" onclick="getTemplateVal();">
 						</c:otherwise>
 					</c:choose>
-					<label>&nbsp;&nbsp;<strong>Is Template</strong>
+					<label>&nbsp;&nbsp;<strong>Save as a template</strong>
 						&nbsp;&nbsp;
 					</label>
 				</div>
@@ -1283,16 +1283,18 @@ function validate_fileupload(fileName)
 		   if ($('#requirement_form').validate(false, validationSettings)){   
 			
 			var frm = $('#requirement_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
+			var jsonData = JSON.stringify(frm);
+			//con = con.replace(/[{}]/g, "");
 			
 			//It will escape all the special characters
-			var jsonData = encodeURIComponent(con);
+			//var jsonData = encodeURIComponent(con);
+			
+			
 			var form = $('#requirement_form')[0];
       		var formData = new FormData(form); 
-			  
+      		formData.append("json",jsonData);
 			var sourceleadUrl = '${sourceleadUrl}';
-			var text = $('textarea#bodytext').val();
+			//var text = $('textarea#bodytext').val();
 			
 			
 			$( "#submitForApproval" ).addClass('button').val('Processing..');
@@ -1306,7 +1308,7 @@ function validate_fileupload(fileName)
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeRequirement?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType+"&json="+jsonData,
+						url : sourceleadUrl+"/storeRequirement?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType,
 						success : function(result) {
 								location.replace(sourceleadUrl+"/requirementList");
 						},
@@ -1676,6 +1678,7 @@ function getRequirementAndLookUpSkills(requirementid){
 function setTemplateValues(){
  var sourceleadUrl ='${sourceleadUrl}';
 	var requirementId = document.getElementById('template').value;
+	getEditRequirementDetails(requirementId);
 	if(requirementId != null && requirementId !='' && requirementId != 'undefined'){
 		
 		getRequirementAndLookUpSkills(requirementId);
@@ -1764,7 +1767,10 @@ function setTemplateValues(){
 			            $('#education').trigger("chosen:updated");
 					}
 			    	
-			    	$("textarea#description").val(json.description);
+			    	//$("textarea#description").val(json.description);
+			    	
+			    	$('#txtEditor').html(json.description); 
+			    	
 			    	$("#rate").val(json.rate);
 			    	
 			    	if(json.currencyCode != null && json.currencyCode != '' && json.currencyCode != 'undefined'){
