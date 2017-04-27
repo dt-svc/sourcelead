@@ -126,10 +126,10 @@ function cancelFunction(){
 	$("#remove_user_pop").slideUp(200);
 	$(".project_inn_mask").hide();
 	var result = "";
-	result = result + '<form id="cancelFunction_form" name="cancelFunction_form" enctype="multipart/form-data" method="post">';
+	
 	result = result + '<h3>Interview Feedback</h3>';
 	result = result + '<div class="row clearfix">';
-	result = result + '<div col-md-6 ">';
+/* 	result = result + '<div col-md-6 ">';
 		result = result + '<div class="col-md-6">';
 		result = result + '<label class="col-md-4">Requirement Name</label>';
 		result = result + '<span class="col-md-8">'+requirementName+'</span>';
@@ -139,8 +139,8 @@ function cancelFunction(){
 		result = result + '<label class="col-md-4">Applicant Name</label>';
 		result = result + '<span class="col-md-8">'+applicantName+'</span>';
 		result = result + '</div>';
-	result = result + '</div>&nbsp;&nbsp;';
-
+	result = result + '</div>&nbsp;&nbsp;'; */
+	result = result + '<form id="cancelFunction_form" name="cancelFunction_form" enctype="multipart/form-data" method="post">';
 	result = result + '<div class=" clearfix mp">';
 	result = result + '<div class="col-md-6">';
 	result = result + '<label class="col-md-4">Comment <span class="text-danger">*</span></label>';
@@ -272,11 +272,11 @@ function interviewTemplateForm(){
 	}else{
 		generateInterviewFeedbackForm1(sourceleadUrl,templateId)
 		var result = "";
-		result = result + '<form id="interviewTemplate_form" name="interviewTemplate_form" enctype="multipart/form-data" method="post">';
+		
 		
 		result = result + '<h3>Interview Feedback</h3>';
 		
-		result = result + '<div class="viewTemplate feedbackTemplate col-md-12">';
+		/* result = result + '<div class="viewTemplate feedbackTemplate col-md-12">';
 			result = result + '<div class="sjfb-field sjfb-text">';
 			result = result + '<label>Requirement Name</label>';
 			result = result + '<span>'+requirementName+'</span>';
@@ -286,20 +286,9 @@ function interviewTemplateForm(){
 			result = result + '<label>Applicant Name</label>';
 			result = result + '<span>'+applicantName+'</span>';
 			result = result + '</div>';
-		result = result + '</div>';
-		
-		/* result = result + '<div class="viewTemplate feedbackTemplate col-md-12">';
-		result = result + '<div class="sjfb-field sjfb-text">';
-		result = result + '<label>Comment <span class="text-danger">*</span></label>';
-		result = result + '<textarea rows="2" placeholder="Comment" class="form-control" name="interviewComment" field-name="Comment" data-validation="required"></textarea>';
-		result = result + '</div>';
-		result = result + '<div class="sjfb-field sjfb-text">';
-		result = result + '<label>Selected for Interview</label>';
-		result = result + '<span class="radio-inline"><input type="radio" value="Yes" name="feedback">Yes</span>';
-		result = result + '<span class="radio-inline"><input type="radio" value="No" name="feedback">No</span>';
-		result = result + '</div>';
 		result = result + '</div>'; */
 		
+		result = result + '<form id="interviewTemplate_form" name="interviewTemplate_form" enctype="multipart/form-data" method="post">';
 		result = result + '<div class="form-horizontal clearfix">';
 		result = result + '<div id="interviewsjfb-fields" class="viewTemplate">';
 		result = result + '</div>';

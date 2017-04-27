@@ -173,7 +173,7 @@ public class AssociatesRestController {
 			   @RequestParam(value = "candidateType", required = false) String candidateType, HttpServletRequest request) throws Exception {
 			String resultJson = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			List<Candidate> candidateIdsList = candidateService.getAllCandidatesByLocation(orgLocations.getId());
+			List<Candidate> candidateIdsList = candidateService.getAllActiveCandidatesByLocation(orgLocations.getId());
 			resultJson = toJSON(candidateIdsList);
 			return resultJson;
 		}

@@ -74,10 +74,12 @@ public interface CandidateService {
 	public List<Candidate> getCandidatesByOrgLocationID(Long orgLocationId,Long requirementId, String candidateType) throws Exception;
 
 	public List<Candidate> getAllCandidatesByLocation(Long orgLocationId)throws Exception;
+	
+	public List<Candidate> getAllActiveCandidatesByLocation(Long orgLocationId)throws Exception;
 
-	public File getCandidateExcelFile(List<Candidate> candidatesList, String orgName)throws Exception;
+	public File getCandidateExcelFile(List<Candidate> candidatesList, String orgName,String isAssociate)throws Exception;
 
-	public File getCandidatePdf(List<Candidate> candidatesList, String orgName) throws Exception;
+	public File getCandidatePdf(List<Candidate> candidatesList, String orgName,String isAssociate) throws Exception;
 	
 	public List<Candidate> getHotListCandidatesListByOrgLocationID(Long orgLocationId,String candidateType) throws Exception;
 	

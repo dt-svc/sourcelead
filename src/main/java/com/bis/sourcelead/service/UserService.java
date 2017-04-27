@@ -185,6 +185,8 @@ public interface UserService  {
 
 	LinkedHashSet<User> getUsersListAsReoprtingManagersByOrgLocationIdHavingTabAccess(Long orgLocationsId, User user,Long tabId) throws Exception;
 	void passwordResetMailToLoginUser(User user, OrgLocations orgLocations) throws Exception;
+	
+	public List<User> getUsersByOrgLocationIdExceptLoggedInUser(Long orgLocationsId,Long userId) throws Exception;
 
 }	
 		
