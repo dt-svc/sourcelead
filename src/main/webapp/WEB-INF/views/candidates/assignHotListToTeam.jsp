@@ -68,7 +68,7 @@
 	                     result = result + ' <th><input type="checkbox" onclick="selectAllCandidates();"  id="selectallHotList" ></th>';   
 	                     result = result +"    <th>Name</th>"; 
 	                     result = result +"    <th>Designation</th>"; 
-	                     result = result +"    <th>Position type</th>"; 
+	                     result = result +"    <th>Employment Type</th>"; 
 	                     result = result +"    <th>Email</th>"; 
 	                     result = result +"    <th>Mobile</th>"; 
 	                     result = result +"    <th>Type</th>"; 
