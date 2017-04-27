@@ -43,8 +43,13 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	public List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
+		List<Contracts> contractsList = null;
 		String query = "from Contracts contract left join fetch contract.requirementSubmission submission where contract.orgLocationId.id = :orgLocationId and contract.orgRelations.id = :orgRelationId and submission.candidate.id = :candidateId";
-		return session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+	     contractsList = session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+	  if(null != contractsList){
+		  return contractsList;
+	  }
+	  return contractsList;
 		 
 	}
 }

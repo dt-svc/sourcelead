@@ -115,12 +115,14 @@ public class InvoiceRestController {
  	public @ResponseBody  String getSowcontractListByAssociateId(@RequestParam(value = "candidateId", required = false) Long candidateId,
  			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,HttpServletRequest request, HttpServletResponse response) throws Exception
  	{
-     	String resultJson;
+     	String resultJson = "";
      	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
      	
-     	
-     	List<Contracts> projectsList = invoiceService.getSowcontractListByAssociateId(candidateId,loginOrgLocation.getId(),orgRelationId);
- 	  resultJson = commonUtil.toJSON(projectsList);
+     	List<Contracts> contractsList = invoiceService.getSowcontractListByAssociateId(candidateId,loginOrgLocation.getId(),orgRelationId);
+     	if(null != contractsList){
+     		resultJson = commonUtil.toJSON(contractsList);	
+     	}
+ 	  
  	  return resultJson;
  	}
     

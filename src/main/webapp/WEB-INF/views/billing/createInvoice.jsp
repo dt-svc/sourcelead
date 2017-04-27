@@ -464,15 +464,17 @@ $(document).ready(function(){
 	    	type: "GET",
 	        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId,
 	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	var output = "";
-	        	output = output + "<option value=''>-Select sow-</option>"; 
-	        	 for (var i=0; i<json.length; i++)
-				{
-		        		var opt = json[i];
-		        		$('#'+rowId+'sow').append('<option value='+opt.id+' >'+opt.contractTitle+'</option>');
-				} 
-	        	
+	        	if(data != null && data != ''){
+	        		var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option value=''>-Select sow-</option>"; 
+		        	 for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		$('#'+rowId+'sow').empty();
+			        		$('#'+rowId+'sow').append('<option value='+opt.id+' >'+opt.contractTitle+'</option>');
+					} 
+	        	}
 	        },
 	        
 	    });
