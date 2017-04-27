@@ -692,7 +692,7 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 		result = result + '</div>';
 		}
 		else{
-			result = result + '<label class="mr"><input type="radio" onClick="parseProfessionalResume();">&nbsp;Parse Resume</label>';
+			result = result + '<label class="mr"><input type="radio" onClick="parseProfessionalResume();">&nbsp;Import Candidate</label>';
 			
 			result = result + '<div class="col-md-5 pull-right">';
 			result = result + '<div class="col-md-12" id="browseDiv"  style="display: none;">';
@@ -747,7 +747,7 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 		result = result + '<div class="col-md-7 radioInline">';
 		result = result + '<label class="mr"><input type="radio" checked="checked" value="Candidates" name="candidateType" onClick="getCandidatesList('+requirementId+',\'Candidate\');">Candidates</label>';
 		result = result + '<label class="mr"><input type="radio" value="Consultants" name="candidateType" onClick="getCandidatesList('+requirementId+',\'FavCandidates\');">Favourite Candidates</label>';
-		result = result + '<label class="mr"><input type="radio" value="Parese candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'parseCandidate\');">Parse Resume</label>';
+		result = result + '<label class="mr"><input type="radio" value="Parese candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'parseCandidate\');">Import Candidate</label>';
 		result = result + '</div>';	
 		
 		result = result + '<div class="col-md-5 pull-right">';

@@ -143,7 +143,7 @@
                 </div>
 
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Mobile number <span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">Mobile Number <span class="text-danger paddingLeft">*</span></label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber" >
                   </div>
@@ -352,8 +352,8 @@
                 <div class="form-footer">
                   <div class="pull-right mr">
                      <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/candidateOnBoardingList'">
-                    <input type="button" value="Save" id="save_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
-                    <input type="button" value="Save and Continue" id="save_continue_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
+                    <input type="button" value="Save" id="save_docs_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
+                    <input type="button" value="Save and Continue" id="save_continue_docs_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
                 </div>
                 </form>
@@ -943,7 +943,6 @@ function validateUploadFile(id)
 			    	 $("#personalEmail").val(json['email']);
 			    	 getOnBoardCandidateCountry(json['country'])
 			    	 getOnBoardCandidateStates(json['country'],json['state']);
-			    	 getOnBoardCandidateStates(json['state'],json['city']);
 			    	 getOnBoardCandidateCities(json['country'],json['state'],json['city']);
 			    	 
 			    	 validateOnboardCandidate(json['email']);
@@ -980,7 +979,6 @@ function validateUploadFile(id)
 			    	 $("#personalEmail").val(json['email']);
 			    	 getOnBoardCandidateCountry(json['country'])
 			    	 getOnBoardCandidateStates(json['country'],json['state']);
-			    	 getOnBoardCandidateStates(json['state'],json['city']);
 			    	 getOnBoardCandidateCities(json['country'],json['state'],json['city']);
 			    	 
 			    }
@@ -1325,7 +1323,9 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	        
 	        var sourceleadUrl ='${sourceleadUrl}';
 	        
-	       
+	        $("#save_onboardUser").attr("disabled", "disabled");
+	        $("#saveAndContinue_onboardUser").attr("disabled", "disabled");
+	        
 	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	         $.ajax({
 		    	type: "POST",
@@ -1346,6 +1346,10 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		        	}
 		        	
 	     	        $("#candidateOnBoardId").val(onboardId);
+	     	        
+	     	       $("#save_onboardUser").removeAttr("disabled");
+	   	           $("#saveAndContinue_onboardUser").removeAttr("disabled");
+	   	        
 	     	        $("#loading").removeAttr("style");
 		        },
 		    }); 
@@ -1418,7 +1422,6 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		    	
 		    	getOnBoardCandidateCountry(json['country']);
 		    	getOnBoardCandidateStates(json['country'],json['state']);
-		    	getOnBoardCandidateStates(json['state'],json['city']);
 		    	getOnBoardCandidateCities(json['country'],json['state'],json['city']);
 		    	
 		    	loadCandidateRoles(json['onBoardRoleId']);
@@ -1817,6 +1820,10 @@ function createTemplateDocs(saveType){
       
 	   var form = $('#templateDocuments_form')[0];
 	   var formData = new FormData(form); 
+	   
+	   
+	   $("#save_docs_button").attr("disabled", "disabled");
+	   $("#save_continue_docs_button").attr("disabled", "disabled");
 	
    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	$.ajax({
@@ -1841,6 +1848,9 @@ function createTemplateDocs(saveType){
 	        		getTemplateContractsDocumentsDetails();
 		     	    getTemplateFormsDocumentsDetails();
 	        	}
+	    	  
+	    	  $("#save_docs_button").removeAttr("disabled");
+	   	      $("#save_continue_docs_button").removeAttr("disabled");
 	    	  $("#loading").removeAttr("style");
 	    	  
 	      }
@@ -2067,7 +2077,7 @@ function getOnboardingTasksList(){
         	
         	result = result +'<div class="form-footer clearfix mt">';
     		result = result +'<div class="pull-right mr">';
-    		result = result +'<input type="button" value="Finish" onclick="saveAndFinishOnboardTemplate('+onboardId+');" class="btn btn-sm btn-primary">';
+    		result = result +'<input type="button" id="finish_task" value="Finish" onclick="saveAndFinishOnboardTemplate('+onboardId+');" class="btn btn-sm btn-primary">';
     		result = result +'</div>';
     		result = result +'</div>';
     		
@@ -2112,6 +2122,8 @@ function deleteTask(taskId,taskType){
 <script>
 function saveAndFinishOnboardTemplate(onboardId){
 	
+	$("#finish_task").attr("disabled", "disabled");
+	
 	var tasksIds = document.getElementsByName("savedTemplateTask");
 	var tasks = '';
 	for(var i=0; i < tasksIds.length; i++){
@@ -2127,7 +2139,7 @@ function saveAndFinishOnboardTemplate(onboardId){
 	   	type: "POST",
 	    url: sourceleadUrl+"/saveAndFinishCandidateOnboard?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&tasks="+tasks, 	    	   
 	    success: function(data) {
-       	 
+	    	$("#finish_task").removeAttr("disabled");
 	    	location.replace(sourceleadUrl+"/candidateOnBoardingList");  
 	    }
   });   

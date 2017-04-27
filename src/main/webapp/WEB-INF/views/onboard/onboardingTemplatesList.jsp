@@ -61,6 +61,7 @@ function onboardingTemplatesList(){
 	                     result = result +"    <th>Description</th>";
 	                     result = result +"    <th>Created Date</th>";
 	                     result = result +"    <th>Created By</th>"; 
+	                     result = result +"    <th>Status</th>";
 	                     result = result +"<th>Actions</th>";
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
@@ -79,6 +80,8 @@ function onboardingTemplatesList(){
 	                    		 result = result +"<td><div><span>"+opt.templateCreatedDate+"</span></div></td>";
 	                    		 
 	                    		 result = result +"<td><div><span>"+opt.createdUser+"</span></div></td>";
+	                    		 
+	                    		 result = result +"<td><div><span>"+opt.templateStatus+"</span></div></td>";
 	                    		 
 			                     result = result +"<td><div class=''><a href='"+sourceleadUrl+"/viewOnboardTemplateByTemplateUUID?templateUUID="+opt.templateUUID+"'>View</a></div></td>"; 
 
