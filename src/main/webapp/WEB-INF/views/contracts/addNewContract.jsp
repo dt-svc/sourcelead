@@ -53,8 +53,8 @@
           	
           	<div class="form-group">
               <label class="col-md-4">Contract title<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
-                <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="" data-validation="required validate_Space validate_length length1-250" field-name="Contract Title">
+              <div class="col-md-8" id="titleDiv">
+                <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="" data-validation="required validate_Space validate_length length1-250" field-name="Contract Title" onblur="validateContractTitle();">
               </div>
             </div>
                        
@@ -1109,6 +1109,34 @@ function flush(){
 function cancelContract(){
 	var sourceleadUrl = '${sourceleadUrl}';
 	location.replace(sourceleadUrl+"/contractListbyStatus");
+}
+
+</script>
+
+<script>
+function validateContractTitle(){
+	var contractTitle = $('#contractTitle').val();
+	var contractType = $('#contractType').val();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(contractTitle != null && contractTitle != "" && contractType != null && contractType != ""){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateContractTitle?${_csrf.parameterName}=${_csrf.token}&contractTitle="+contractTitle+"&contractType="+contractType, 
+		        success: function(data) {
+		        	if(data == 'true'){
+						  $("input#contractTitle").after("<p class='jquery_form_error_message'>"+contractTitle+" is Already Existed</span>");
+						  $("#save_template").attr("disabled", "disabled");
+		        	}
+		        	else{
+		        		 $('input#contractTitle').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#titleDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#save_template" ).addClass('button').val('Save Template');
+                        $("#save_template").removeAttr("disabled");
+		        	}
+		        	}
+		        });
+	 }
+	
 }
 
 </script>

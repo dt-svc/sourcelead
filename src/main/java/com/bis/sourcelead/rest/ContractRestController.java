@@ -337,13 +337,35 @@ public class ContractRestController {
 	  * @throws Exception
 	  */
 	 @RequestMapping(value = "/validateContractTemplateName" , method = RequestMethod.POST)
-	 public @ResponseBody  String validateContractTemplateName(@RequestParam(value="templateName", required=false) String templateName,HttpServletRequest request) throws Exception {
+	 public @ResponseBody  String validateContractTemplateName(@RequestParam(value="templateName", required=false) String templateName,@RequestParam(value="contractType", required=false) String contractType,HttpServletRequest request) throws Exception {
 		 	
 		 	String result = null;
 		 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 	ContractsTemplate  contractsTemplate = contractsTemplateService.findByContractTemplateName(templateName, orgLocation.getId());
+		 	ContractsTemplate  contractsTemplate = contractsTemplateService.findByContractTemplateName(templateName,contractType,orgLocation.getId());
 		 	
 		 	if (null != contractsTemplate) {
+				result = "true";
+			}else{
+				result = "false";
+			}
+			return result;
+	   }
+	 
+
+	 /**
+	  * To  validate Contract title
+	  * @param contract title
+	  * @return
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = "/validateContractTitle" , method = RequestMethod.POST)
+	 public @ResponseBody  String validateContractTitle(@RequestParam(value="contractTitle", required=false) String contractTitle,@RequestParam(value="contractType", required=false) String contractType,HttpServletRequest request) throws Exception {
+		 	
+		 	String result = null;
+		 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 	Contracts  contracts = contractsTemplateService.findContractTitleByOrgLocationAndContractType(contractTitle, contractType, orgLocation.getId());
+		 	
+		 	if (null != contracts) {
 				result = "true";
 			}else{
 				result = "false";

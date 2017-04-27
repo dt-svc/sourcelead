@@ -83,6 +83,7 @@ $(document).ready(function(){
 		<div class="clearfix"></div>
             
 	</div>
+	<div id="loading"></div>
     <div class="project_wrap_table">
     <div id="vendorContractsList" ></div>
      <div id="clientContractsList" style="display: none"></div>
@@ -223,7 +224,7 @@ function preparedContractList(data){
 		        	  
 		        	  if(report.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
 		        		 '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_CONTRACT\')">';
-		            		result = result + '<div><div class="CurDiv" id="removeStatus'+report.id+'"><a class="btn btn-sm btn-success pull-left" title="approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');">Approve</a></div><div class="CurDiv" id="removeReject'+report.id+'"><a class="btn btn-sm btn-danger ml" title="REJECTED" onclick="approveContract('+report.id+',\'REJECTED\');">Reject</a></div></div>'; 
+		            		result = result + '<div class="CurDiv" id="removeStatus'+report.id+'"><a class="btn btn-sm btn-success pull-left" title="approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');">Approve</a></div><div class="CurDiv" id="removeReject'+report.id+'"><a class="btn btn-sm btn-danger ml" title="REJECTED" onclick="approveContract('+report.id+',\'REJECTED\');">Reject</a></div>'; 
 		            	 '</sec:authorize>';
 		        	  }
 		        	  else{
@@ -380,7 +381,7 @@ function approveContract(recordId,status){
     	    	 $("#removeReject"+recordId).html("");
     	        $("#removeStatus"+recordId).html("<span>APPROVED</span>").addClass('text-success');
         	}
-        	
+        	$("#loading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
        },
    });  
 }

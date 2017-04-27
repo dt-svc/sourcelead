@@ -651,13 +651,19 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	}
 	
 	@Override
-	public ContractsTemplate findByContractTemplateName(String templateName,Long orgLocationId) throws Exception {
-		return contractsTemplateDao.findByContractTemplateName(templateName, orgLocationId);
+	public ContractsTemplate findByContractTemplateName(String templateName,String contractType,Long orgLocationId) throws Exception {
+		return contractsTemplateDao.findByContractTemplateName(templateName,contractType,orgLocationId);
 	}
 
 	@Override
 	public List<Contracts> getListOfContractsEnvId() {
 		return  contractsTemplateDao.getListOfContractsEnvId();
+	}
+
+	@Override
+	public Contracts findContractTitleByOrgLocationAndContractType(String contractTitle, String contractType,
+			Long orgLocationId) {
+		return contractsTemplateDao.findContractTitleByOrgLocationAndContractType(contractTitle, contractType, orgLocationId);
 	}
 	
 }
