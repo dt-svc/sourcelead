@@ -192,26 +192,30 @@ public class UserRestController {
 	}
 	
 	@RequestMapping(value = "/getActiveAssociateDetails",  method = RequestMethod.POST)
-    public @ResponseBody String getAssociateDetailsById(@RequestParam(value="candidateId", required=false) Long candidateId) throws Exception {
-		
+    public @ResponseBody String getAssociateDetailsById(@RequestParam(value="candidateId", required=false) Long candidateId,HttpServletRequest request) throws Exception {
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		Candidate candidate   = candidateService.getCandidateById(candidateId);
+		if(null != candidate.getOrgRelationId()){
+			candidate.setVendorOrgRelationId(candidate.getOrgRelationId().getId().toString());
+			if(candidate.getOrgRelationId().getResponderLocationId().getId() == orgLocations.getId()){
+				candidate.setVendorName(candidate.getOrgRelationId().getLocationId().getOrg().getOrgName());	
+			}
+			if(candidate.getOrgRelationId().getLocationId().getId() == orgLocations.getId()){
+				candidate.setVendorName(candidate.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());	
+			}
 			
-	   /*ArrayList<String> associateList = new ArrayList<String>();
-	   Candidate candidate = null;
-		try {
-			candidate = candidateService.getCandidateById(candidateId);
-		} catch (Exception e) {
-			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		if(null != candidate.getSpocId()){
+			StringBuilder contactName = new StringBuilder();
+			candidate.setVendorSpocId(candidate.getSpocId().getId().toString());
+			if(null != candidate.getSpocId().getClientUser().getLastName()){
+				candidate.setVendorContactName(contactName.append(candidate.getSpocId().getVendorUser().getFirstName()).append(" ").append(candidate.getSpocId().getClientUser().getLastName()).toString());	
+			}else{
+				candidate.setVendorContactName(contactName.append(candidate.getSpocId().getVendorUser().getFirstName()).toString());
+			}
+			
 		}
 		
-		if(null != candidate)
-		{
-			associateList.add(candidate.getFirstName());
-			associateList.add(candidate.getLastName());
-			associateList.add(candidate.getEmail());
-			associateList.add(candidate.getMobilePhone());
-			
-		}*/
 		
 		return commonUtil.toJSON(candidate);
 		

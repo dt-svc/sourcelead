@@ -527,6 +527,10 @@ public class UsersListRestController {
 			userRole.setUserEmploymentType(employee.getUserEmploymentType());
 			userRole.setDesignationOtherType(employee.getDesignationOtherType());
 			
+			if(null != employee.getDepartmentId()){
+				userRole.setDepartment(employee.getDepartmentId().getId().toString());
+				userRole.setDepartmentName(employee.getDepartmentId().getDepartmentName());
+			}
 			
 			if(null != employee.getOrgRelationId()){
 				userRole.setVendorOrgRelationId(employee.getOrgRelationId().getId().toString());
@@ -1196,6 +1200,14 @@ public class UsersListRestController {
 			if(jsonObj.has("designationOtherType")){
 				employees.setDesignationOtherType(jsonObj.getString("designationOtherType"));
 			}
+			
+			if(jsonObj.has("department") && !"".equalsIgnoreCase(jsonObj.getString("department"))){
+				Department department= departmentService.getDepartmentById(Long.parseLong(jsonObj.getString("department")));
+				employees.setDepartmentId(department);
+			}else{
+				employees.setDepartmentId(null);
+			}
+			
 			if(jsonObj.has("vendors") && !"".equalsIgnoreCase(jsonObj.getString("vendors"))){
 				OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("vendors")));
 				employees.setOrgRelationId(orgRelation);
