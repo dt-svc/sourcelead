@@ -35,6 +35,12 @@ public interface ContractsTemplateService {
 
 	Contracts approveContracts(long parseLong, String status, OrgLocations orgLocation, User user, Org org)throws Exception;
 	
+
+	ContractsTemplate saveContractTemplate(ContractsTemplate contractsTemplate) throws Exception;
+
 	ContractsTemplate findByContractTemplateName(String templateName,Long orgLocationId) throws Exception;
+
+	List<Contracts> getListOfContractsEnvId();
+
 	
 }

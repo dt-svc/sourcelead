@@ -883,4 +883,13 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getAllActiveCandidatesByLocation(Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId and cnadidate.status ='1' ORDER BY cnadidate.id DESC";  
+        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	}
+
 }
+
