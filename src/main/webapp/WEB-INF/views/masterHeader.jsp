@@ -384,7 +384,6 @@ document.onkeydown=function(e){
 	                      <sec:authorize access="hasAnyRole('ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')"> 
 	                      <li><a href="<c:url value="/offboardingTemplatesList" />"><i class="fa fa-file-text" aria-hidden="true"></i>Off-boarding</a></li>
 						  </sec:authorize>	
-						  <li><a href="<c:url value="/referRequirementList" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Contacts</a></li>
 	              </ul>
 	            </div>
 	          </li>
