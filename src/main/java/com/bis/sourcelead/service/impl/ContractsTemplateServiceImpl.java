@@ -96,9 +96,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		
 		if(jsonObj.has("templateContent") && !isNullOrEmpty(jsonObj.getString("templateContent"))){
 			String content = jsonObj.getString("templateContent");
-			String header = "<div style='text-align: center;'>"+jsonObj.getString("templateName")+"<br></div><br>";
-			String totalBody = header + content;
-			contractsTemplate.setTemplateContent(totalBody);
+		//	String header = "<div style='text-align: center;'>"+jsonObj.getString("templateName")+"<br></div><br>";
+		//	String totalBody = header + content;
+			contractsTemplate.setTemplateContent(content);
 		}
 		contractsTemplate.setCreatedDate(new Date());
 		contractsTemplate.setCreatedBy(user.getUserCode());
@@ -213,7 +213,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setOrgRelations(orgRelations);
 			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
 				contracts.setContractOrgLocationId(orgRelations.getLocationId());
-			}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+			}else if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
 				contracts.setContractOrgLocationId(orgRelations.getResponderLocationId());
 			}
 			vendorContactsUser = userService.getUserById(Long.parseLong(jsonObj.getString("vendorContact")));
@@ -229,7 +229,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setOrgRelations(orgRelations);
 			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
 				contracts.setContractOrgLocationId(orgRelations.getLocationId());
-			}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+			}else if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
 				contracts.setContractOrgLocationId(orgRelations.getResponderLocationId());
 			}
 			vendorContactsUser = userService.getUserById(Long.parseLong(jsonObj.getString("clientContact")));
@@ -310,7 +310,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				vendorContracts.setOrgRelations(orgRelations);
 				if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
 					vendorContracts.setOrgLocationId(orgRelations.getLocationId());
-				}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+				}else if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
 					vendorContracts.setOrgLocationId(orgRelations.getResponderLocationId());
 				}
 				
