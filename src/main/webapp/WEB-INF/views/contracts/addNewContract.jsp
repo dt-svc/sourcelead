@@ -342,12 +342,12 @@
       
       <div class="form-footer clearfix contrFoot">
         <div class="col-lg-12">
-          <div class="pull-right">
-            <input type="button" value="Save Draft" id="draft_template" onclick="saveNewContract('draft');" class="btn btn-primary">
-            <input type="button" value="Save" id="save_template" onclick="saveNewContract('pending');" class="btn btn-success ml10">
+          <div class="pull-right mt">
+            <input type="button" value="Save Draft" id="draft_template" onclick="saveNewContract('draft');" class="btn btn-primary pull-left">
+            <input type="button" value="Save" id="save_template" onclick="saveNewContract('pending');" class="btn btn-success ml10 pull-left">
 
-            <input type="button" value="SubmitToApprover" id="save_approver_template" onclick="saveNewContract('pending');" class="btn btn-success ml10" style="display:none">
-            <input type="button" value="Cancel" class="btn btn-danger ml10" id="cancel_contract" onclick="cancelContract();">
+            <input type="button" value="SubmitToApprover" id="save_approver_template" onclick="saveNewContract('pending');" class="btn btn-success ml10 pull-left" style="display:none">
+            <input type="button" value="Cancel" class="btn btn-danger ml10 pull-left" id="cancel_contract" onclick="cancelContract();">
           </div>
         </div>
       </div>
