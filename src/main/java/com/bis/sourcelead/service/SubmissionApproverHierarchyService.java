@@ -72,5 +72,6 @@ public interface SubmissionApproverHierarchyService {
 
 	public SubmissionApproverHierarchy isThereAnyApproverChangesStatusForProjectMember(Long projectMemberId,Date frequencyStartDate,Date frequencyEndDate,String approvalStatus);
 
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(Long approverUserId,Long projectMemberId, Date startDate, Date endDate) throws Exception;
 	
 }
