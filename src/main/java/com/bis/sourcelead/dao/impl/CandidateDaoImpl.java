@@ -135,7 +135,36 @@ public class CandidateDaoImpl implements CandidateDao {
 		logger.debug("..getCandidatesCount() Method Ended..");
 		return results.get(0);
 	}
+
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getCandidatesCountByOrgLocationIDAndStatus(Long orgLocationId,String candidateStatus,String isAssociate) {
+		logger.debug("..getCandidatesCount() Method Started..");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		
+		String subQuery  = null;
+		if(null != candidateStatus && !candidateStatus.isEmpty() && candidateStatus.equalsIgnoreCase(Constants.ACTIVE)){
+			subQuery = "and candidate.status = '1'"; 
+		}else if(null != candidateStatus && !candidateStatus.isEmpty() && candidateStatus.equalsIgnoreCase(Constants.INACTIVE)){
+			subQuery = "and candidate.status = '0'"; 
+		}else{
+			subQuery = "and (candidate.status = '1' or candidate.status = '0')";
+		}
+		
+		String subQuery1  = null;
+		if(isAssociate.equalsIgnoreCase(Constants.YES)){
+			subQuery1 = "and candidate.isAssociate = 'Y'"; 
+		}else{
+			subQuery1 = "and candidate.isAssociate = 'Y' OR candidate.isAssociate = 'N'";  
+		}
+		
+		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId "+subQuery1+"  "+subQuery+" ";
+		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		logger.debug("..getCandidatesCount() Method Ended..");
+		return results.get(0);
+	}
 
 	/**
 	 * to Candidates List by OrgCode OrgLocationCode
@@ -854,4 +883,13 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getAllActiveCandidatesByLocation(Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId and cnadidate.status ='1' ORDER BY cnadidate.id DESC";  
+        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	}
+
 }
+

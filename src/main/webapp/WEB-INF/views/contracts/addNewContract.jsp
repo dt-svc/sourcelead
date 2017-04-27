@@ -10,6 +10,7 @@
 .chosen-container {
     width: 100% !important;
 }
+.fullWid {width: 100% !important;}
 </style>
 
 <!-- these files for autocomplete with tagit -->
@@ -36,7 +37,7 @@
             <div class="form-group">
               <label class="col-md-4">Contract Type<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();getContractTemplates();" data-validation="required" field-name="Contract Type">
+                  <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();getContractTemplates();flush();" data-validation="required" field-name="Contract Type">
                     <option value=''>Contract Type</option>
                     <option>Client MSA</option>
                     <option>Vendor MSA</option>
@@ -90,7 +91,7 @@
                   <c:forEach var="user" items="${userList}">
 	                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
                   </c:forEach>
-                   <!--  <option>Select Owner</option>
+                   <!--  <option>Select Owner</option>ER
                     <option>Owner-1</option>
                     <option>Owner-2</option>
                     <option>Owner-3</option> -->
@@ -165,7 +166,7 @@
           <div class="form-group">
               <label class="col-md-4">Approver</label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="approver" name="approver">
+                  <select class="chosen-select form-control" id="approver" name="approver" onchange="changeSaveButton();">
                   <option value=''>--Select Owner--</option>
                   <c:forEach var="user" items="${userList}">
                    <%-- to Enable login user as approver ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} --%>
@@ -194,7 +195,7 @@
       
       
 <div class="row newContrBill">
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm" id="billingDiv" >
            <h2>Billing Details</h2>
            
            <div class="form-group" id="hoursPerWeekDiv" style="display: none;">
@@ -208,7 +209,7 @@
               <label class="col-md-4">Overtime Hours<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8">
 					  	<input type="text" class="form-control" id="overTimeHours" name="overTimeHours" value="" placeholder="Enter Hours" field-name="Overtime Hours">
-              	</div>
+              	</div> 
             </div>
             
             <div class="form-group" id="totalHoursEstimatedDiv" style="display: none;">
@@ -237,30 +238,49 @@
             </div>
            
             <div class="form-group">
-              <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
-					<div class="row">
-					  <div class="col-lg-8">
-					  	<input type="text" class="form-control" id="billingAmount" name="billingAmount" value="" placeholder="Enter Amount" data-validation="required validate_Space validate_float validate_length length1-50" field-name="Billing Amount">
-					  </div>
-					  <div class="col-lg-4">
-						<select class="form-control selectpicker" id="billingPer" name="billingPer">
-						  <option>India</option>
-						  <option>USA</option>
-						  <option>UK</option>
-						</select>
-					  </div>
-					</div>
-              </div>
+              <!-- <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label> -->
+                <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label>
+                   <div class="clearfix col-md-8" id="errBilling">
+                      <div class="col-md-5 paddingLeft">
+                        <div class="btn-group btn_Block">
+                          <button type="button" class="btn btn-sm btn-primary" id="percentageBtn" value="percentage" onClick="getRewardType('Percentage')">%</button>
+                          <button type="button" class="btn btn-sm btn-default" id="flatBtn" value="flat" onClick="getRewardType('Flat')">Flat</button>
+                          <input type="hidden" name="rewardType" id="rewardType" value=""/>
+                        </div>
+                      </div>
+                      <div class="col-md-7 paddingLeft" id="percentageReward">
+                        <div class="form-group positionRelative iconHolder percentage fullWid" >
+                          <input type="text" class="form-control input-sm" field-name="Percentage" id="percentageRewardValue" name="percentageReward" onblur="getPercentageValue()" placeholder="Percentage">
+                          <i class="fa fa-percent"></i> 
+                        </div>
+                        </div>
+                        <div class="col-md-7 paddingLeft" id="flatReward"  style="display: none">
+                        <div class="row flat">
+                          <div class="form-group col-md-8 paddingRight positionRelative iconHolder" >
+                            <input type="text" class="form-control input-sm" field-name="Flat" id="flatRewardValue"  name="flatReward" placeholder="Flat">
+                            <i class="fa fa-money" id="flatRewardIcon"></i> </div>
+                          <div class="form-group select-field col-md-4 paddingLeft">
+                            <select class="form-control input-sm" id="flatRateType" name="flatRateType"  style="display: none">
+                              <option  ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}><i class="fa fa-rupee" title="INR"></i>INR</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}><i class="fa fa-dollar" title="USD"></i>USD</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}><i class="fa fa-aud" title="AUD"></i>AUD</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'EUR' ? 'selected' : ''}><i class="fa fa-eur" title="Eur"></i>EUR</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'SGD' ? 'selected' : ''}><i class="fa fa-sgd" title="SGD"></i>SGD</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'GBP' ? 'selected' : ''}><i class="fa fa-gdp" title="GDP"></i>GBP</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
             </div>
             <div class="form-group">
               <label class="col-md-4">invoice frequency<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
+              <div class="col-md-8" id="errInvoice">
                   <select class="chosen-select form-control" id="invoiceFrequency" name="invoiceFrequency" data-validation="required" field-name="Invoice Frequency">
                     <option value="">Select frequency</option>
                     <option value="Weekly">Weekly</option>
                     <option value="Bi-Weekly">Bi-Weekly</option>
-                    <option value="Semi-Monthly">Semi-Monthly</option>
+                    <option value="Semi-Monthly">Semi-Monthly</option> 
                     <option value="Monthly">Monthly</option>
                   </select>
               </div>
@@ -268,7 +288,7 @@
             
               <div class="form-group">
               <label class="col-md-4">Payment frequency<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
+              <div class="col-md-8" id="errPayment">
                   <select class="chosen-select form-control" id="paymentFrequency" name="paymentFrequency" data-validation="required" field-name="Payment Frequency">
                     <option value="">Select frequency</option>
                     <option value="10 days">10 days</option>
@@ -279,32 +299,45 @@
                   </select>
               </div>
             </div>
-           <!--  <div class="form-group">
-              <label class="col-md-4">Payment frequency<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
-              	<input type="text" class="form-control" name="Company Name" value="">
-            </div>
-            </div> -->
-            <div class="form-group">
-              <label class="col-md-4">Tax</label>
-              <div class="col-md-8">
-					<div class="row">
-					  <div class="col-lg-4" id = "taxTypeDiv">
-						<select class="form-control selectpicker" id="taxType"  name="taxType" onchange = "selectTaxType();clearSearchKey();">
-						 <option value="Percentage">%</option>
-						  <option value="INR">INR</option>
-						  
-						</select>
-					  </div>					
-					  <div class="col-lg-8" id = "taxDiv">
-					  	<input type="text" class="form-control" id="tax" name="tax" value="" onchange = "selectTaxType();">
-					  </div>
-					 <!--  <span class="hidden">Enter Project Id</span> -->
-					</div>
-              </div>
-		</div>      
             
+            <div class="form-group">
+              <!-- <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label> -->
+                <label class="col-md-4">Tax<span class="text-danger">&nbsp;*</span></label>
+                   <div class="clearfix col-md-8" id="errTax">
+                      <div class="col-md-5 paddingLeft">
+                        <div class="btn-group btn_Block">
+                          <button type="button" class="btn btn-sm btn-primary" id="taxPercentageBtn" value="percentage" onClick="getTaxRewardType('Percentage')">%</button>
+                          <button type="button" class="btn btn-sm btn-default" id="taxflatBtn" value="flat" onClick="getTaxRewardType('Flat')">Flat</button>
+                          <input type="hidden" name="taxRewardType" id="taxRewardType" value=""/>
+                        </div>
+                      </div>
+                      <div class="col-md-7 paddingLeft" id="taxPercentageReward">
+                        <div class="form-group positionRelative iconHolder percentage fullWid" > 
+                          <input type="text" class="form-control input-sm" field-name="Percentage" id="taxPercentageRewardValue" name="taxPercentageReward" onblur="getTaxPercentageValue()" placeholder="Percentage">
+                          <i class="fa fa-percent"></i> 
+                        </div>
+                        </div>
+                        <div class="col-md-7 paddingLeft" id="taxFlatReward"  style="display: none">
+                        <div class="row flat">
+                          <div class="form-group col-md-8 paddingRight positionRelative iconHolder" >
+                            <input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue"  name="taxFlatReward" placeholder="Flat">
+                            <i class="fa fa-money" id="taxFlatRewardIcon"></i> </div>
+                          <div class="form-group select-field col-md-4 paddingLeft"> 
+                            <select class="form-control input-sm" id="taxFlatRateType" name="taxFlatRateType"  style="display: none">
+                              <option  ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}><i class="fa fa-rupee" title="INR"></i>INR</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}><i class="fa fa-dollar" title="USD"></i>USD</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}><i class="fa fa-aud" title="AUD"></i>AUD</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'EUR' ? 'selected' : ''}><i class="fa fa-eur" title="Eur"></i>EUR</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'SGD' ? 'selected' : ''}><i class="fa fa-sgd" title="SGD"></i>SGD</option>
+                              <option  ${SourceLeadWeb_currencyCode == 'GBP' ? 'selected' : ''}><i class="fa fa-gdp" title="GDP"></i>GBP</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+            </div>
         </div>
+        <!-- billing end -->
       </div>      
       
       <div class="form-footer clearfix contrFoot">
@@ -312,7 +345,9 @@
           <div class="pull-right">
             <input type="button" value="Save Draft" id="draft_template" onclick="saveNewContract('draft');" class="btn btn-primary">
             <input type="button" value="Save" id="save_template" onclick="saveNewContract('pending');" class="btn btn-success ml10">
-            <input type="button" value="Cancel" class="btn btn-danger ml10">
+
+            <input type="button" value="SubmitToApprover" id="save_approver_template" onclick="saveNewContract('pending');" class="btn btn-success ml10" style="display:none">
+            <input type="button" value="Cancel" class="btn btn-danger ml10" id="cancel_contract" onclick="cancelContract();">
           </div>
         </div>
       </div>
@@ -537,21 +572,25 @@ function getContractTemplates(){
 		
 		$("#vendorContact option:selected").removeAttr("selected");
 		$('#vendorContact').trigger("chosen:updated");
+		document.getElementById("billingDiv").style.display="block";
 		document.getElementById("vendorContactDiv").style.display="none";
 	}
  	if(contractType == "Client MSA"){
+ 		document.getElementById("billingDiv").style.display="block";
 		document.getElementById("clientDiv").style.display="block";
 		document.getElementById("clientContactDiv").style.display="block";
 		document.getElementById("vendorDiv").style.display="none";
 		document.getElementById("vendorContactDiv").style.display="none";
 	}
 	if(contractType == "Vendor MSA"){
+		document.getElementById("billingDiv").style.display="block";
 		document.getElementById("clientDiv").style.display="none";
 		document.getElementById("clientContactDiv").style.display="none";
 		document.getElementById("vendorDiv").style.display="block";
 		document.getElementById("vendorContactDiv").style.display="block";
 	}
 	if(contractType == "Client SOW"){
+		document.getElementById("billingDiv").style.display="block";
 		document.getElementById("clientDiv").style.display="block";
 		document.getElementById("clientContactDiv").style.display="block";
 		document.getElementById("vendorDiv").style.display="none";
@@ -560,8 +599,16 @@ function getContractTemplates(){
 	if(contractType == "Vendor SOW"){
 		document.getElementById("clientDiv").style.display="none";
 		document.getElementById("clientContactDiv").style.display="none";
+		document.getElementById("billingDiv").style.display="block";
 		document.getElementById("vendorDiv").style.display="block";
 		document.getElementById("vendorContactDiv").style.display="block";
+	}
+	if(contractType == "NDA" || contractType == "NCA"){
+		document.getElementById("clientDiv").style.display="none";
+		document.getElementById("clientContactDiv").style.display="none";
+		document.getElementById("vendorDiv").style.display="none";
+		document.getElementById("vendorContactDiv").style.display="none";
+		document.getElementById("billingDiv").style.display="none";
 	}
 		 
  	var sourceleadUrl ='${sourceleadUrl}';
@@ -633,6 +680,72 @@ function contractTypeLabels(){
 		hideCommonSOWFields();
 		showCommonSOWFields();
 		getRequirements("Vendor SOW");
+	}
+	if(contractType == "NDA" || contractType == "NSA"){
+
+		$('#percentageRewardValue').removeAttr('data-validation');
+		$('#flatRewardValue').removeAttr('data-validation');
+		$('#invoiceFrequency').removeAttr('data-validation');
+		$('#paymentFrequency').removeAttr('data-validation');
+		$('#taxPercentageRewardValue').removeAttr('data-validation');
+		$('#taxFlatRewardValue').removeAttr('data-validation');
+		
+		
+		$('#percentageRewardValue').attr('data-validation-optional',"true");
+		$('#flatRewardValue').attr('data-validation-optional',"true");
+		$('#invoiceFrequency').attr('data-validation-optional',"true");
+		$('#paymentFrequency').attr('data-validation-optional',"true");
+		$('#taxPercentageRewardValue').attr('data-validation-optional',"true");
+		$('#taxFlatRewardValue').attr('data-validation-optional',"true");
+		
+		
+		$('#clientOrgRelationId').removeAttr('data-validation');
+		$('#clientOrgRelationId').attr('data-validation-optional',"true");
+		$('#clientContact').removeAttr('data-validation');
+		$('#clientContact').attr('data-validation-optional',"true");
+		
+		$('#orgRelationId').removeAttr('data-validation');
+		$('#orgRelationId').attr('data-validation-optional',"true");
+		$('#vendorContact').removeAttr('data-validation');
+		$('#vendorContact').attr('data-validation-optional',"true");
+		
+		
+		
+		$('#requirementsList').removeAttr('data-validation');
+		$('#requirementsList').attr('data-validation-optional',"true");
+		$('#requirementDiv').find('p.jquery_form_error_message').remove();
+		document.getElementById("requirementDiv").style.display="none";
+		
+		$('#submissionOffersList').removeAttr('data-validation');
+		$('#submissionOffersList').attr('data-validation-optional',"true");
+		$('#offeredSubmissionDiv').find('p.jquery_form_error_message').remove();
+		document.getElementById("offeredSubmissionDiv").style.display="none";
+		
+		$('#hoursPerWeek').removeAttr('data-validation');
+		$('#hoursPerWeek').attr('data-validation-optional',"true");
+		$('#hoursPerWeek').val("");
+		$('#hoursPerWeekDiv').find('p.jquery_form_error_message').remove();
+		document.getElementById("hoursPerWeekDiv").style.display="none";
+		
+		$('#overTimeHours').removeAttr('data-validation');
+		$('#overTimeHours').attr('data-validation-optional',"true");
+		$('#overTimeHours').val("");
+		$('#overTimeHoursDiv').find('p.jquery_form_error_message').remove();
+		document.getElementById("overTimeHoursDiv").style.display="none";
+		
+		$('#totalHoursEstimated').removeAttr('data-validation');
+		$('#totalHoursEstimated').attr('data-validation-optional',"true");
+		$('#totalHoursEstimated').val("");
+		$('#totalHoursEstimatedDiv').find('p.jquery_form_error_message').remove();
+		document.getElementById("totalHoursEstimatedDiv").style.display="none";
+		
+		$('#overtimeRate').removeAttr('data-validation');
+		$('#overtimeRate').attr('data-validation-optional',"true");
+		$('#overtimeRate').val("");
+		$('#overtimeRateType').removeAttr('data-validation');
+		$('#overtimeRateType').attr('data-validation-optional',"true");
+		$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
+		
 	}
 }
 </script>
@@ -789,19 +902,216 @@ function hideCommonSOWFields(){
 
 	}
 </script>
-<!-- <script>
-var config = {
-	      '.chosen-select'           : {},
-	      '.chosen-select-deselect'  : {allow_single_deselect:true},
-	      '.chosen-select-no-single' : {disable_search_threshold:10},
-	      '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-	      '.chosen-select-width'     : {width:"95%"}
-	    }
-	    for (var selector in config) {
-	      $(selector).chosen(config[selector]);
-	    }
 
-</script> -->
+
+<script type="text/javascript">
+function getRewardType(rewardType){
+	
+	 $("#rewardType").val(rewardType);
+	 
+	 $("#percentageRewardValue").val('');
+	 $("#flatRewardValue").val('');
+	 
+	 $('#percentageReward').find('p.jquery_form_error_message').remove();
+	 $('#flatReward').find('p.jquery_form_error_message').remove();
+	 
+	if(rewardType == 'Percentage'){
+		document.getElementById("percentageReward").style.display="";
+		document.getElementById("flatReward").style.display="none";
+		document.getElementById("flatRateType").style.display="none";
+		
+		document.getElementById("percentageBtn").className = 'btn btn-sm btn-primary active'
+	    document.getElementById("flatBtn").className = 'btn btn-sm btn-primary'
+    	$('#percentageRewardValue').attr("data-validation","required validate_float");  
+		$('#percentageRewardValue').removeAttr('data-validation-optional');
+	    $('#flatRewardValue').removeAttr('data-validation');
+	    $('#flatRewardValue').attr("data-validation-optional","true"); 
+	    	
+	    
+	}
+	
+	if(rewardType == 'Flat'){
+		/* document.getElementById("crowd_rate").style.display=""; */
+		document.getElementById("flatReward").style.display="";
+		document.getElementById("flatRateType").style.display="";
+		document.getElementById("percentageReward").style.display="none";
+		
+		document.getElementById("percentageBtn").className = 'btn btn-sm btn-primary'
+		document.getElementById("flatBtn").className = 'btn btn-sm btn-primary active'
+		$('#flatRewardValue').attr("data-validation","required validate_float");
+		$('#flatRewardValue').removeAttr('data-validation-optional');
+		$('#percentageRewardValue').removeAttr('data-validation');
+		$('#percentageRewardValue').attr("data-validation-optional","true"); 
+		
+	}
+}
+</script>
+
+<script>
+function getPercentageValue(){
+	var percentageValue = document.getElementById("percentageRewardValue").value;
+	if(percentageValue > 100 || percentageValue < 0){
+		/* $("#releaseToCWBtn").attr("disabled", "disabled"); */
+	    $('#percentageReward').find('p.jquery_form_error_message').remove(); 
+	   
+	    if(percentageValue < 0){
+	    	$("input#percentageRewardValue").after("<p class='jquery_form_error_message'>Percentage value should not in negitive</span>");
+	    }else{
+	    	$("input#percentageRewardValue").after("<p class='jquery_form_error_message'>Percentage value not more than 100</span>");
+	    }
+	    
+		$('input#percentageRewardValue').attr('record-exist','yes');
+		 if(percentageValue < 0){
+			 $('input#percentageRewardValue').attr('record-exist-errorMsg','Percentage value should not in negitive'); 
+		 }else{
+			 $('input#percentageRewardValue').attr('record-exist-errorMsg','Percentage value not more than 100'); 
+		 }
+		
+	}else{
+		 /* $("#releaseToCWBtn").removeAttr("disabled"); */
+		 $('input#percentageRewardValue').removeAttr( "record-exist record-exist-errormsg");
+		 $('#percentageReward').find('p.jquery_form_error_message').remove(); 
+		 $( "#releaseToCWBtn" ).removeAttr("style");
+		 $( "#releaseToCWBtn" ).click(function() {
+		 if ($(this).validate(false, validationSettings)){
+		 }
+		});
+	}
+	
+}
+</script>
+
+
+<script type="text/javascript">
+function getTaxRewardType(rewardType){
+	
+	 $("#taxRewardType").val(rewardType);
+	 
+	 $("#taxPercentageRewardValue").val('');
+	 $("#taxFlatRewardValue").val('');
+	 
+	 $('#taxPercentageReward').find('p.jquery_form_error_message').remove();
+	 $('#taxFlatReward').find('p.jquery_form_error_message').remove();
+	 
+	if(rewardType == 'Percentage'){
+		document.getElementById("taxPercentageReward").style.display="";
+		document.getElementById("taxFlatReward").style.display="none";
+		document.getElementById("taxFlatRateType").style.display="none";
+		
+		document.getElementById("taxPercentageBtn").className = 'btn btn-sm btn-primary active'
+	    document.getElementById("taxFlatBtn").className = 'btn btn-sm btn-primary'
+    	$('#taxPercentageRewardValue').attr("data-validation","required validate_float");  
+		$('#taxPercentageRewardValue').removeAttr('data-validation-optional');
+	    $('#taxFlatRewardValue').removeAttr('data-validation');
+	    $('#taxFlatRewardValue').attr("data-validation-optional","true"); 
+	    	
+	    
+	}
+	
+	if(rewardType == 'Flat'){
+		/* document.getElementById("crowd_rate").style.display=""; */
+		document.getElementById("taxFlatReward").style.display="";
+		document.getElementById("taxFlatRateType").style.display="";
+		document.getElementById("taxPercentageReward").style.display="none";
+		
+		document.getElementById("taxPercentageBtn").className = 'btn btn-sm btn-primary'
+		document.getElementById("taxFlatBtn").className = 'btn btn-sm btn-primary active'
+		$('#taxFlatRewardValue').attr("data-validation","required validate_float");
+		$('#taxFlatRewardValue').removeAttr('data-validation-optional');
+		$('#taxPercentageRewardValue').removeAttr('data-validation');
+		$('#taxPercentageRewardValue').attr("data-validation-optional","true"); 
+		
+	}
+}
+</script>
+
+<script>
+function getTaxPercentageValue(){
+	var percentageValue = document.getElementById("taxPercentageRewardValue").value;
+	if(percentageValue > 100 || percentageValue < 0){
+		/* $("#releaseToCWBtn").attr("disabled", "disabled"); */
+	    $('#taxPercentageReward').find('p.jquery_form_error_message').remove(); 
+	   
+	    if(percentageValue < 0){
+	    	$("input#taxPercentageRewardValue").after("<p class='jquery_form_error_message'>Percentage value should not in negitive</span>");
+	    }else{
+	    	$("input#taxPpercentageRewardValue").after("<p class='jquery_form_error_message'>Percentage value not more than 100</span>");
+	    }
+	    
+		$('input#taxPercentageRewardValue').attr('record-exist','yes');
+		 if(percentageValue < 0){
+			 $('input#taxPercentageRewardValue').attr('record-exist-errorMsg','Percentage value should not in negitive'); 
+		 }else{
+			 $('input#taxPercentageRewardValue').attr('record-exist-errorMsg','Percentage value not more than 100'); 
+		 }
+		
+	}else{
+		 /* $("#releaseToCWBtn").removeAttr("disabled"); */
+		 $('input#taxPercentageRewardValue').removeAttr( "record-exist record-exist-errormsg");
+		 $('#taxPercentageReward').find('p.jquery_form_error_message').remove(); 
+		/*  $( "#releaseToCWBtn" ).removeAttr("style");
+		 $( "#releaseToCWBtn" ).click(function() {
+		 if ($(this).validate(false, validationSettings)){
+		 }
+		}); */
+	}
+	
+}
+</script>
+<script>
+function changeSaveButton(){
+	 var approverId = $("#approver").val();
+	if(approverId !='' && approverId != null){
+		document.getElementById("save_approver_template").style.display="block";
+		document.getElementById("save_template").style.display="none";
+	}else{
+		document.getElementById("save_approver_template").style.display="none";
+		document.getElementById("save_template").style.display="block";
+	}
+}
+</script>
+
+<script>
+function flush(){
+	document.getElementById("contractTitle").value="";
+//document.getElementById("owner").value="";
+	document.getElementById("template").value="";
+	document.getElementById("requirementsList").value="";
+	document.getElementById("submissionOffersList").value="";
+	document.getElementById("startDate").value="";
+	document.getElementById("endDate").value="";
+	
+	document.getElementById("orgRelationId").value="";
+	
+	document.getElementById("vendorContact").value="";
+	document.getElementById("clientOrgRelationId").value="";
+	document.getElementById("clientContact").value="";
+	document.getElementById("approver").value="";
+	document.getElementById("description").value="";
+	
+	document.getElementById("hoursPerWeek").value="";
+	document.getElementById("overTimeHours").value="";
+	document.getElementById("totalHoursEstimated").value="";
+	document.getElementById("overtimeRate").value="";
+	document.getElementById("overtimeRateType").value="";
+	
+	document.getElementById("invoiceFrequency").value="";
+	document.getElementById("taxFlatRateType").value="";
+	document.getElementById("submissionOffersList").value="";
+	
+	
+	
+	$("newcontract_form").validate().resetForm();
+}
+</script>
+
+<script>
+function cancelContract(){
+	var sourceleadUrl = '${sourceleadUrl}';
+	location.replace(sourceleadUrl+"/contractListbyStatus");
+}
+
+</script>
 
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />

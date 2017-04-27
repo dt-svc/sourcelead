@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Org;
@@ -33,5 +34,13 @@ public interface ContractsTemplateService {
 	Contracts getChildContractById(Long contractId);
 
 	Contracts approveContracts(long parseLong, String status, OrgLocations orgLocation, User user, Org org)throws Exception;
+	
+
+	ContractsTemplate saveContractTemplate(ContractsTemplate contractsTemplate) throws Exception;
+
+	ContractsTemplate findByContractTemplateName(String templateName,Long orgLocationId) throws Exception;
+
+	List<Contracts> getListOfContractsEnvId();
+
 	
 }

@@ -35,8 +35,8 @@ bottom:-14px;
 		</div>
 		<div class="pull-right brud-crum">
 			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="<c:url value='/template'/>">Template List </a>&raquo;
-			Add Template
+				href="<c:url value='/template'/>">Requirement Template List </a>&raquo;
+			Add Requirement Template
 		</div>
 	</section>
 	<div class="content-area content-new clearfix">
@@ -44,7 +44,7 @@ bottom:-14px;
 			<div class="form-horizontal req-dtls myForm row mb">
 				<div class="clearfix">
 					<div class="col-lg-12">
-						<h3>Add Template Details</h3>
+						<h3>Add Requirement Template Details</h3>
 					</div>
 
 					<div
@@ -178,7 +178,7 @@ bottom:-14px;
 
 						
 
-						<div class="form-group">
+					<%-- 	<div class="form-group">
 							<label class="col-md-3">Description</label>
 							<div class="col-md-9">
 								<textarea rows="2" class="form-control" id="description"
@@ -187,7 +187,16 @@ bottom:-14px;
 									data-validation="validate_length length2-5000"
 									data-validation-optional="true">${requirement.description}</textarea>
 							</div>
-						</div>
+						</div> --%>
+						
+						
+						<div class="clearfix mb">
+				          <label class="col-md-3">Description</label>
+				          <div class="col-md-12 txtEditor_p">
+				          <textarea id="txtEditor" name="description" value="${requirement.description}" class="form-control newContrtextarea">${requirement.description}</textarea>
+				          </div>
+				        </div> 
+						
 
 					</div>
 				</div>
@@ -224,12 +233,22 @@ bottom:-14px;
 
         
 </script> 
+
+<script src="resources/js/editor.js"></script>
+<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
+<script>
+	$(document).ready(function() {
+		$("#txtEditor").Editor();
+		getEditRequirementDetails(requirementId);
+	});
+</script> 
+       
 <script type="text/javascript">
 	function storeRequiremetTemplate() {
 		
 		
 		 if ($('#requirementtemplate_form').validate(false, validationSettings)){ 
-			
+			 var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 			var sourceleadUrl = '${sourceleadUrl}';
 			var frm = $('#requirementtemplate_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -301,6 +320,8 @@ bottom:-14px;
 				  $("#jobTypeDiv").find('p.jquery_form_error_message').remove();
 				  $("#jobOtherType").val('');
 			}
+			
+			getEditRequirementDetails(requirementId);
 		 };
 </script> 
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
@@ -429,5 +450,38 @@ function getJobType(jobType){
 }
 </script>
 
+<script>
+$(document).ready(function() {
+	getEditRequirementDetails(requirementId)
+});
+</script>
+
+<script>
+function getEditRequirementDetails(requirementId){
+	alert("HELLLOOOO");
+	var sourceleadUrl = '${sourceleadUrl}';
+	if(templateId !=''){
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/getEditRequirementDetails?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,
+			success : function(data) {
+				alert("data"+data);
+				
+				var json = JSON.parse(data);
+				$(".Editor-container").find('.Editor-editor').html(json['description']);
+			},
+		}); 
+	}
+	
+}
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	var requirementId  = "${requirementId}";
+	getEditRequirementDetails(requirementId);
+	
+});
+</script>
 
 <jsp:include page="../masterFooter.jsp" />

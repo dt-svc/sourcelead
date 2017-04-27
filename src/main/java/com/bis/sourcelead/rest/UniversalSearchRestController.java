@@ -55,14 +55,14 @@ public class UniversalSearchRestController {
 		 */
      @SuppressWarnings("unchecked")
 		@RequestMapping(value = "/universalSearch",method = RequestMethod.GET)
-		public @ResponseBody  String universalSearch(@RequestParam(value = "searchType", required = false) String searchType,@RequestParam(value = "searchValue", required = false) String searchValue,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		public @ResponseBody  String universalSearch(@RequestParam(value = "searchType", required = false) String searchType,@RequestParam(value = "searchValue", required = false) String searchValue,@RequestParam(value = "isAssociate", required = false) String isAssociate,HttpServletRequest request,HttpServletResponse response) throws Exception {
 			String resultJson = "";
 			User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 			//List<Object> searchList = requirementService.univesalSearchRequirement(orgLocation, searchType,searchValue,org,userRole,user);
-			List<Object> searchList = universalSearchService.univesalSearch(orgLocation, searchType,searchValue,org,userRole,user);
+			List<Object> searchList = universalSearchService.univesalSearch(orgLocation, searchType,searchValue,org,userRole,user,isAssociate);
 			for(Object obj : searchList){
 				if(obj instanceof Requirement){
 					List<Requirement> searchReqList = (List<Requirement>)(Object)searchList; 

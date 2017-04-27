@@ -221,12 +221,12 @@ $(function(){
 				nicEditors.findEditor('bodytext').saveContent();
 				
 				var frm = $('#email_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-				con = con.replace(/[{}]/g, ""); 
-			    var jsonData = encodeURIComponent(con);
+				var jsonData = JSON.stringify(frm);
+				/* con = con.replace(/[{}]/g, ""); 
+			    var jsonData = encodeURIComponent(con); */
 			    var form = $('#email_form')[0];
 		  		var formData = new FormData(form);
-		  		
+		  		formData.append("json",jsonData)
 		  		var toEmails =  $('#emailsList_chosen span').size();
 		  		 
 		  		if(toEmails < 1){
@@ -234,7 +234,7 @@ $(function(){
 		   	    }
 		  		else{
 		  			var bodytext = nicEditors.findEditor('bodytext').getContent();
-		  			 if(bodytext.length < 60000){ 	
+		  			/*  if(bodytext.length < 60000){  */	
 		  			
 			  			$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 			  		 	$.ajax({
@@ -245,14 +245,14 @@ $(function(){
 			  		        processData: false,
 			  		        contentType:false, 
 			  	    	    dataType : 'json',
-			  				url : sourceleadUrl+"/sendEmailToUsers?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+			  				url : sourceleadUrl+"/sendEmailToUsers?${_csrf.parameterName}=${_csrf.token}",
 			  				success : function(result) {
 			  						location.replace(sourceleadUrl+"/mailBox");
 			  				},
 			  			}); 
-			  		  }else{
+			  		 /*  }else{
 			  			alertTextboxMsg("Message body is too large. If you have more data, Plz go with attachment");
-			  		 }  
+			  		 }   */
 		  		}
 		  		  
 				 return true
