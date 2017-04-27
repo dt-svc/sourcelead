@@ -163,6 +163,7 @@ public class LoginSessionController {
 		UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 		ModelAndView model = new ModelAndView();
 		Collection<Tabs> tabsList = null;
+		Integer associatesTabsCount = 0;
 		
 		if(null == user.getUserType() || (!user.getUserType().equalsIgnoreCase(Constants.PROFESSIONAL) && !user.getUserType().equalsIgnoreCase(Constants.INDIVIDUAL_RECRUITER))){
 			OrgLocations orgLocations = userRole.getOrgLocations();
@@ -170,9 +171,16 @@ public class LoginSessionController {
 			List<Long> modulesId = modulesService.getOrgRegisteredModules(org);
 			if(org.getOrgType().equalsIgnoreCase("Company")){
 				tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
+				for(Tabs tabs : tabsList){
+					if(tabs.getTabName().equalsIgnoreCase("Associates List") || tabs.getTabName().equalsIgnoreCase("On & Off Boarding")){
+						associatesTabsCount = associatesTabsCount+1;
+					}
+				}
+				
 			}
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
+			SourceLeadSessionManager.setSessionAttribute(request, "associatesTabsCount", associatesTabsCount);
 			
 			
 			String[] modules = org.getModulesId().split(",");

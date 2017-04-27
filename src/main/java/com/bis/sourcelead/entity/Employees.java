@@ -81,6 +81,11 @@ public class Employees implements Serializable{
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
     private OrgRelations orgRelationId;
 	    
+	
+	@ManyToOne
+    @JoinColumn(name="DEPARTMENT_ID", nullable=false )        
+    private Department departmentId;
+	
 	@ManyToOne
     @JoinColumn(name="SPOC_ID", nullable=false )        
     private OrgSpoc spocId;
@@ -363,5 +368,15 @@ public class Employees implements Serializable{
 		this.currentCurrency = currentCurrency;
 	}
 
-		
+	public Department getDepartmentId()
+	{
+		return departmentId;
+	}
+
+	public void setDepartmentId(Department departmentId)
+	{
+		this.departmentId = departmentId;
+	}
+
+			
 }
