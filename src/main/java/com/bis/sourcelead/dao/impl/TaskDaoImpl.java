@@ -203,6 +203,18 @@ public class TaskDaoImpl implements TaskDao{
 
 
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Tasks> getTasksListOnboardingId(Long onboardingId) throws Exception {
+	
+		Session session = this.sessionFactory.getCurrentSession();
+		 String query ="from Tasks tasks left join fetch tasks.onboardingId left join fetch tasks.assignedUserId where tasks.onboardingId.id = :onboardingId";
+		List<Tasks> tasksList = session.createQuery(query).setLong("onboardingId", onboardingId).setCacheable(true).list();
+		return tasksList;
+	}
+
+
+
 
 }
 
