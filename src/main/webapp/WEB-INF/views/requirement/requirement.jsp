@@ -53,11 +53,17 @@ border-radius:3px;
 background-color: #ccc;
 }
 .ratetype p {
-bottom: -14px;
+bottom: -14px !important;
 left:-20px !important;
 }
 .pras.req-title p{
 bottom:-2px;
+}
+.form-control {
+padding: 6px 12px !important; height: 34px !important;
+}
+.bootstrap-select {
+width: 100% !important;
 }
 </style>
 
@@ -289,7 +295,7 @@ $(document).ready(function () {
 		<div class="form-group">
          <label class="col-md-3">Employment Type</label>
          <div class="col-md-9">
-             <select class="selectpicker form-control" id="jobType" name="jobType" onChange="getJobType(this);" >
+             <select class="selectpicker" id="jobType" name="jobType" onChange="getJobType(this);">
 	                 <option value="">&nbsp;&nbsp;&nbsp;&nbsp;------ Select -----</option>
 	                 <option  ${requirement.jobType  == 'C2C' ? 'selected' : ''}>C2C</option>
 	                 <option  ${requirement.jobType  == 'W-2' ? 'selected' : ''}>W-2</option>
@@ -431,9 +437,9 @@ $(document).ready(function () {
                  </c:if>
                 </select>
                 </div>
-                <input type="text" class="form-control" id="rate" name="rate" field-name="Rate" value="${requirement.rate}" data-validation="validate_Space validate_int validate_length length1-8" data-validation-optional="true"  value="">
+                <input type="text" class="form-control input-sm" id="rate" name="rate" field-name="Rate" value="${requirement.rate}" data-validation="validate_Space validate_int validate_length length1-8" data-validation-optional="true"  value="">
                 <div class="input-group-btn selp-custom-min">
-                  <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Type">
+                  <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Per">
                     <option value="">Rate Per</option>
                     <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
                     <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
@@ -510,7 +516,7 @@ $(document).ready(function () {
                   </span>
                 </label>
                 
-                <input type="text" class="form-control" readonly id="uploadFile" name="docFile"  value="${requirement.fileName}" type="file"   placeholder="Upload File ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
+                <input type="text" class="form-control input-sm" readonly id="uploadFile" name="docFile"  value="${requirement.fileName}" type="file"   placeholder="Upload File ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
               <div class="clearfix"></div> <div class="clearfix"></div>
               </div>
             </div>
@@ -551,7 +557,7 @@ $(document).ready(function () {
           <div class="form-group">
 	         <label class="col-md-3">Cooling-Off Period</label>
 	         <div class="col-md-9">
-	             <select class="selectpicker form-control" id="coolingOff" name="coolingOff" >
+	             <select class="selectpicker" id="coolingOff" name="coolingOff" >
 	             
 	             		<c:if test="${requirement.requirementSubmissionStatus == 'OPEN' ||  requirement.requirementSubmissionStatus == 'ONHOLD'}">
 	                     	 <option ${requirement.reqCoolingOffPeriod  == '0 Days' ? 'selected' : ''} value="0 Days">0 Days</option>
@@ -815,7 +821,7 @@ $(document).ready(function () {
 	                </div>
 	                <input type="text" class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">
 	                <div class="input-group-btn selp-custom-min">
-	                 <select class="selectpicker ratetype"  id="clientRateType" field-name="Client Rate Type" value="${requirement.clientRateType}" name="clientRateType">
+	                 <select class="selectpicker ratetype"  id="clientRateType" field-name="Client Rate Per" value="${requirement.clientRateType}" name="clientRateType">
 	                    
 			                <option value="">Rate Per</option>
 		                    <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
@@ -1038,7 +1044,7 @@ $(document).ready(function () {
           <div class="form-group">
             <label class="col-md-3">Priority<span class="text-danger">*</span></label>
             <div class="col-md-9">
-              <select class="selectpicker form-control" id="priority" name="priority" data-validation = "required" field-name = "priority">
+              <select class="selectpicker" id="priority" name="priority" data-validation = "required" field-name = "priority">
                 <option ${requirement.priority  == 'Medium' ? 'selected' : ''}>Medium</option>
                 <option ${requirement.priority  == 'Low' ? 'selected' : ''}>Low</option>
                 <option ${requirement.priority  == 'Urgent' ? 'selected' : ''}>Urgent</option>
@@ -1611,10 +1617,11 @@ function getCities(){
 			            var option = $("<option>").val(newEducation).text(newEducation);
 			            selectone.append(option);
 			            selectone.find(option).prop('selected', true);
+			            $("#education").trigger("chosen:updated");
 			            $("#education option").each(function(){
 	                         $(this).siblings("[value='"+ this.value+"']").remove();
 	                   });
-			            $("#education").trigger("chosen:updated");
+			           
 			        }
 		    
 		    });
