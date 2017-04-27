@@ -57,7 +57,7 @@ bottom: -14px;
 left:-20px !important;
 }
 .pras.req-title p{
-bottom:-14px;
+bottom:-2px;
 }
 </style>
 
