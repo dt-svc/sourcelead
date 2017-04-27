@@ -20,5 +20,13 @@ public interface TaskDao {
 	Long getTasksCompletedTodayByLocationCodeandUserId(OrgLocations orglocationCode ,User user) throws Exception;
 	
 	List<Tasks> getTasskByAssignedUserIdAndOrgLocationId(Long orgLocationId,Long userId)throws Exception;
+	
+    List<Tasks> getTasskByAssignedUserIdAndOrgLocationIdAndOnboardingId(Long orgLocationId,Long userId,Long onboardingId)throws Exception;
+	
+	List<Tasks> getTasskByAssignedUserIdAndOrgLocationIdAndOffboardingId(Long orgLocationId,Long userId,Long offboardingId)throws Exception;
+	
+	List<Tasks> getTasksListOffboardingId(Long offboardingId)throws Exception;
+	
+	List<Tasks> getTasksListOnboardingId(Long onboardingId)throws Exception;
 
 }

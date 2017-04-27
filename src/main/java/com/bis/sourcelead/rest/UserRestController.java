@@ -13,7 +13,6 @@ import java.util.Map;
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,12 +31,14 @@ import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
@@ -47,8 +48,10 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -101,7 +104,13 @@ public class UserRestController {
 	private CommonUtil commonUtil;
 	
 	@Autowired
+	private DepartmentService departmentService;
+	
+	@Autowired
 	EmployeesService employeesService;
+	
+	@Autowired
+	OrgRelationsService orgRelationsService;
 	
 	@Autowired
 	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
@@ -172,27 +181,41 @@ public class UserRestController {
 		return resultJson;
 	}
 	
+	@RequestMapping(value = "/getDepartmentsList", method = RequestMethod.POST)
+	public @ResponseBody String getDepartmentsList(
+		   @RequestParam(value = "employeementType", required = false) String employeementType, HttpServletRequest request) throws Exception {
+		String resultJson = null;
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(orgLocations.getId());
+		resultJson = toJSON(departmentList);
+		return resultJson;
+	}
+	
 	@RequestMapping(value = "/getActiveAssociateDetails",  method = RequestMethod.POST)
-    public @ResponseBody String getAssociateDetailsById(@RequestParam(value="candidateId", required=false) Long candidateId) throws Exception {
-		
+    public @ResponseBody String getAssociateDetailsById(@RequestParam(value="candidateId", required=false) Long candidateId,HttpServletRequest request) throws Exception {
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		Candidate candidate   = candidateService.getCandidateById(candidateId);
+		if(null != candidate.getOrgRelationId()){
+			candidate.setVendorOrgRelationId(candidate.getOrgRelationId().getId().toString());
+			if(candidate.getOrgRelationId().getResponderLocationId().getId() == orgLocations.getId()){
+				candidate.setVendorName(candidate.getOrgRelationId().getLocationId().getOrg().getOrgName());	
+			}
+			if(candidate.getOrgRelationId().getLocationId().getId() == orgLocations.getId()){
+				candidate.setVendorName(candidate.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());	
+			}
 			
-	   /*ArrayList<String> associateList = new ArrayList<String>();
-	   Candidate candidate = null;
-		try {
-			candidate = candidateService.getCandidateById(candidateId);
-		} catch (Exception e) {
-			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		if(null != candidate.getSpocId()){
+			StringBuilder contactName = new StringBuilder();
+			candidate.setVendorSpocId(candidate.getSpocId().getId().toString());
+			if(null != candidate.getSpocId().getClientUser().getLastName()){
+				candidate.setVendorContactName(contactName.append(candidate.getSpocId().getVendorUser().getFirstName()).append(" ").append(candidate.getSpocId().getClientUser().getLastName()).toString());	
+			}else{
+				candidate.setVendorContactName(contactName.append(candidate.getSpocId().getVendorUser().getFirstName()).toString());
+			}
+			
 		}
 		
-		if(null != candidate)
-		{
-			associateList.add(candidate.getFirstName());
-			associateList.add(candidate.getLastName());
-			associateList.add(candidate.getEmail());
-			associateList.add(candidate.getMobilePhone());
-			
-		}*/
 		
 		return commonUtil.toJSON(candidate);
 		
@@ -1022,7 +1045,26 @@ public class UserRestController {
                 return "updated";
          }
 		
-		
+		@RequestMapping(value = "/getVendorsByOrgLocationId")
+		public String getVendorsByOrgLocationId(
+				HttpServletRequest request) throws Exception {
+		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			String resultJson = null;
+			List<OrgRelations> vendorList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
+			for(OrgRelations vendors:vendorList){
+				if(vendors.getLocationId().getId() == orgLocations.getId()){
+					vendors.setOrgName(vendors.getResponderLocationId().getOrg().getOrgName());
+				}
+				if(vendors.getResponderLocationId().getId() == orgLocations.getId()){
+					vendors.setOrgName(vendors.getLocationId().getOrg().getOrgName());
+				}
+				
+			}
+			
+			resultJson = toJSON(vendorList);
+			return resultJson;
+
+		}
 		/**
 		 * To get the reporting managers list based on role type
 		 * @author Prasad salina
