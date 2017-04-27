@@ -25,7 +25,7 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Release Jobs</h2>
+        <h2>Release Requirement</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Release Jobs</div>
     </section>
@@ -185,13 +185,7 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
                         </select>
                       </div>
                     </div>
-                    
-                    <label class="col-md-3"> Referral Link</label>
-                    <div class="select-field col-md-9 paddingLeft">
-                    <input type="text" class="form-control input-sm" field-name="RefeeralLink" id="referralLink" name="referralLink" placeholder="Referral Link" readonly="readonly"> 
-                    <i id="copyButton" class="fa fa-clipboard" aria-hidden="true"></i>
-                    </div>
-                    
+
                     <div class="clearfix col-lg-12 hidden"> <span class="text-muted">Note:</span> <span class="text-info"><b>5%</b> will be sourcelead fund and remaining....</span> </div>
                   </div>
                   
@@ -199,6 +193,13 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
                 </div>
               </div>
             </div>
+            
+            <label class="col-md-3 row"> Referral Link</label>
+            <div class="select-field col-md-6 paddingLeft row">
+            <input type="text" class="form-control input-sm" field-name="RefeeralLink" id="referralLink" name="referralLink" placeholder="Referral Link" readonly="readonly"> 
+            <i id="copyButton" class="fa fa-clipboard" aria-hidden="true"></i>
+            </div>
+            
           </div>
         </div> 
         <div class="form-footer clearfix row mt" id="releaseToCrowdSourcing" style="display: none">

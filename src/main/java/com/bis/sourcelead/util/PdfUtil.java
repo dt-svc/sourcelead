@@ -249,7 +249,7 @@ public class PdfUtil {
 	
 	
 	
-	public  File createCandidatePdfTable(java.util.List<Candidate> candidatesList, String orgName) throws IOException {
+	public  File createCandidatePdfTable(java.util.List<Candidate> candidatesList, String orgName,String isAssociate) throws IOException {
 
 		String[] headers = Constants.CANDIDATE_EXCEL_HEADERS;
 	    Document document = new Document(PageSize.LETTER.rotate());
@@ -261,7 +261,13 @@ public class PdfUtil {
 
 	    
 	    StringBuilder fileSB = new StringBuilder();
-	    File file = File.createTempFile(fileSB.append(orgName).append("_Candidate_").append(dateFormat.format(new Date())).toString(),".pdf");
+	    File file;
+	    if(isAssociate.equalsIgnoreCase(Constants.YES)){
+	    	 file = File.createTempFile(fileSB.append(orgName).append("_Associate_").append(dateFormat.format(new Date())).toString(),".pdf");	
+	    }else{
+	    	 file = File.createTempFile(fileSB.append(orgName).append("_Candidate_").append(dateFormat.format(new Date())).toString(),".pdf");
+	    }
+	    
 
 	    file.setReadable(true);
 	    
@@ -274,10 +280,21 @@ public class PdfUtil {
 	        BaseColor myBordColor = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myBordColor);
 	        StringBuilder sbCandStyle = new StringBuilder();
-	        sbCandStyle.append(orgName).append(" ").append("Candidates");
+	        if(isAssociate.equalsIgnoreCase(Constants.YES)){
+	        	sbCandStyle.append(orgName).append(" ").append("Associates");
+	        }else{
+	        	sbCandStyle.append(orgName).append(" ").append("Candidates");
+	        }
+	        
 
 	        StringBuilder orgNameSB = new StringBuilder();
-            Paragraph para = new Paragraph(orgNameSB.append(orgName).append(" Candidates.").toString(),boldFont);
+	        Paragraph para = null;
+	        if(isAssociate.equalsIgnoreCase(Constants.YES)){
+	        	para = new Paragraph(orgNameSB.append(orgName).append(" Associates").toString(),boldFont);
+	        }else{
+	        	para = new Paragraph(orgNameSB.append(orgName).append(" Candidates").toString(),boldFont);
+	        }
+            
 
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
@@ -315,7 +332,12 @@ public class PdfUtil {
                 table.completeRow();
             }
 	        
-	        document.addTitle("Candiate List Table");
+	        if(isAssociate.equalsIgnoreCase(Constants.YES)){
+	        	document.addTitle("Associate List Table");
+	        }else{
+	        	document.addTitle("Candiate List Table");
+	        }
+	        
 	        table.setSpacingBefore(15f);
 	        document.add(table);
 	        logger.info("Pdf table created !!");
@@ -350,7 +372,12 @@ public class PdfUtil {
 		if(candidate.getMobilePhone() !=null && !"".equalsIgnoreCase(candidate.getMobilePhone())){
 			candidateArray[3] = candidate.getMobilePhone();
 		}
-		if(candidate.getCountry() !=null && !"".equalsIgnoreCase(candidate.getCountry())){
+		StringBuilder loc = new StringBuilder();
+		if(candidate.getCity() !=null && !"".equalsIgnoreCase(candidate.getCity())){
+			candidateArray[4] = loc.append(candidate.getCountry()).append(",").append(candidate.getState()).append(",").append(candidate.getCity()).toString();
+		}else if(candidate.getState() !=null && !"".equalsIgnoreCase(candidate.getState())){
+			candidateArray[4] = loc.append(candidate.getCountry()).append(",").append(candidate.getState()).toString();
+		}else if(candidate.getCountry() !=null && !"".equalsIgnoreCase(candidate.getCountry())){
 			candidateArray[4] = candidate.getCountry();
 		}else{
 			candidateArray[4] = "--";

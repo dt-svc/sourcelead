@@ -156,7 +156,7 @@ public class SubmissionsRateRestController {
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-			requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
+			requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
 			requirementSubmissionHistory.setFromStage("NEW");
 			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 			
@@ -207,7 +207,7 @@ public class SubmissionsRateRestController {
 		requirementRateSubmissionNegotiation.setInitiatorOrgLocationId(requirementSubmission.getCandidate().getOrgLocationId());
 		requirementRateSubmissionNegotiation.setRateStage(SubmissionRateStatus.NEWRATE);
 		if(jsonObj.has("comment") && jsonObj.getString("comment") != null && "" != jsonObj.getString("comment")){
-			requirementRateSubmissionNegotiation.setRateReason(jsonObj.getString("comment"));
+			requirementRateSubmissionNegotiation.setRateReason(jsonObj.getString("comment").trim());
 		}
 		
 		requirementRateSubmissionNegotiation.setStatus(Constants.RECORD_ACTIVE);

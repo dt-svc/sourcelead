@@ -540,10 +540,10 @@ $(document).ready(function () {
                 <select multiple class="chosen-select form-control" name="noticePeriod" id="noticePeriod" data-validation-optional="true" onclick="getNoticeperiod();">
 					     <option  selected value="${noticePrd}">${noticePrd}</option>
 					        <option  ${requirement.noticePeriod  == 'Immediately Available' ? 'selected' : ''}>Immediately Available</option>
-	                		 <option  ${requirement.noticePeriod  == '15-Days' ? 'selected' : ''}>15-Days</option>
-	               			  <option  ${requirement.noticePeriod  == '1-Month' ? 'selected' : ''}>1-Month</option>
-	                		 <option  ${requirement.noticePeriod  == '2-Month' ? 'selected' : ''}>2-Month</option>
-	                 		<option  ${requirement.noticePeriod  == '3-Month' ? 'selected' : ''}>3-Month</option>
+	                		 <option  ${requirement.noticePeriod  == '15-Days' ? 'selected' : ''}>15 Days</option>
+	               			  <option  ${requirement.noticePeriod  == '1-Month' ? 'selected' : ''}>1 Month</option>
+	                		 <option  ${requirement.noticePeriod  == '2-Month' ? 'selected' : ''}>2 Months</option>
+	                 		<option  ${requirement.noticePeriod  == '3-Month' ? 'selected' : ''}>3 Months</option>
                 </select>
               </div>
             </div>
@@ -606,7 +606,7 @@ $(document).ready(function () {
 								value="" onclick="getTemplateVal();">
 						</c:otherwise>
 					</c:choose>
-					<label>&nbsp;&nbsp;<strong>Is Template</strong>
+					<label>&nbsp;&nbsp;<strong>Save as a template</strong>
 						&nbsp;&nbsp;
 					</label>
 				</div>
@@ -1140,6 +1140,59 @@ $(document).ready(function () {
   
   </div>
 </section>
+
+
+<script>
+var selectedFile = document.getElementById("uploadBtn");
+selectedFile.addEventListener("change", function() {
+	 $("#uploadFile").focus();
+	 if(validate_fileupload(this.value)){
+		 var docSize =  $("#uploadBtn")[0].files[0].size;
+	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  document.getElementById("uploadFile").value = '';
+	    	  $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
+			  $("input#uploadFile").after("<p class='jquery_form_error_message'>File size should be less then 2MB </span>");
+			  document.getElementById("uploadFile").setAttribute('record-exist','yes');
+			  document.getElementById("uploadFile").setAttribute('record-exist-errorMsg','File size should be less then 2MB');
+			  document.getElementById("uploadFile").value="";
+	      }else{
+	    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
+  		 $('#uploadFileGroup').find('p.jquery_form_error_message').remove(); 
+	    }
+	 }
+});
+
+/* upload file script */
+document.getElementById("uploadBtn").onchange = function () {
+	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+};
+
+</script>
+
+<script type="text/javascript">
+function validate_fileupload(fileName)
+{
+    var allowed_extensions = new Array("docx","doc","pdf","rtf");
+    var file_extension = fileName.split('.').pop(); // split function will split the filename by dot(.), and pop function will pop the last element from the array which will give you the extension as well. If there will be no extension then it will return the filename.
+
+    for(var i = 0; i <= allowed_extensions.length; i++)
+    {
+        if(allowed_extensions[i]==file_extension)
+        {
+            return true; // valid file extension
+        }
+    }
+
+    return false;
+}
+</script>
+
+
+
+
+
+
 <script type="text/javascript">
 	function storeRequirement(saveType) {
 		
@@ -1230,16 +1283,18 @@ $(document).ready(function () {
 		   if ($('#requirement_form').validate(false, validationSettings)){   
 			
 			var frm = $('#requirement_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
+			var jsonData = JSON.stringify(frm);
+			//con = con.replace(/[{}]/g, "");
 			
 			//It will escape all the special characters
-			var jsonData = encodeURIComponent(con);
+			//var jsonData = encodeURIComponent(con);
+			
+			
 			var form = $('#requirement_form')[0];
       		var formData = new FormData(form); 
-			  
+      		formData.append("json",jsonData);
 			var sourceleadUrl = '${sourceleadUrl}';
-			var text = $('textarea#bodytext').val();
+			//var text = $('textarea#bodytext').val();
 			
 			
 			$( "#submitForApproval" ).addClass('button').val('Processing..');
@@ -1253,7 +1308,7 @@ $(document).ready(function () {
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeRequirement?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType+"&json="+jsonData,
+						url : sourceleadUrl+"/storeRequirement?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType,
 						success : function(result) {
 								location.replace(sourceleadUrl+"/requirementList");
 						},
@@ -1623,6 +1678,7 @@ function getRequirementAndLookUpSkills(requirementid){
 function setTemplateValues(){
  var sourceleadUrl ='${sourceleadUrl}';
 	var requirementId = document.getElementById('template').value;
+	getEditRequirementDetails(requirementId);
 	if(requirementId != null && requirementId !='' && requirementId != 'undefined'){
 		
 		getRequirementAndLookUpSkills(requirementId);
@@ -1711,7 +1767,10 @@ function setTemplateValues(){
 			            $('#education').trigger("chosen:updated");
 					}
 			    	
-			    	$("textarea#description").val(json.description);
+			    	//$("textarea#description").val(json.description);
+			    	
+			    	$('#txtEditor').html(json.description); 
+			    	
 			    	$("#rate").val(json.rate);
 			    	
 			    	if(json.currencyCode != null && json.currencyCode != '' && json.currencyCode != 'undefined'){

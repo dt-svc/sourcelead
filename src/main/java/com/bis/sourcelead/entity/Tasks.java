@@ -1,34 +1,20 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.apache.poi.hwpf.usermodel.DateAndTime;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
-import com.bis.sourcelead.enums.Project_Status;
-import com.bis.sourcelead.enums.Status;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "TASKS")
@@ -57,6 +43,16 @@ public class Tasks implements Serializable{
 	@ManyToOne
 	@JoinColumn(name = "ASSIGNED_USER_ID")
    	private User assignedUserId;
+	
+	
+	@ManyToOne
+	@JoinColumn(name = "CANDIDATE_ON_BOARDING_ID")
+   	private CandidateOnBoarding onboardingId;
+	
+	@ManyToOne
+	@JoinColumn(name = "CANDIDATE_OFF_BOARDING_ID")
+   	private CandidateOffBoarding offboardingId;
+	
 	
 	@Column(name = "PRIORITY")
 	private String priority;
@@ -273,6 +269,22 @@ public class Tasks implements Serializable{
 
 	public void setTaskOwnerName(String taskOwnerName) {
 		this.taskOwnerName = taskOwnerName;
+	}
+
+	public CandidateOnBoarding getOnboardingId() {
+		return onboardingId;
+	}
+
+	public void setOnboardingId(CandidateOnBoarding onboardingId) {
+		this.onboardingId = onboardingId;
+	}
+
+	public CandidateOffBoarding getOffboardingId() {
+		return offboardingId;
+	}
+
+	public void setOffboardingId(CandidateOffBoarding offboardingId) {
+		this.offboardingId = offboardingId;
 	}
 }
 

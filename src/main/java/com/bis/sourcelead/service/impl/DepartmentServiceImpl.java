@@ -77,5 +77,10 @@ public class DepartmentServiceImpl implements DepartmentService{
 		Boolean flag =departmentDao.validateDepartmentnameByOrgLocationIdAndDepartmentName(orgLocationId, departmentName);
 		return flag;
 	}
+
+	@Override
+	public List<Department> getDepartmentByOrgLocationIdAndStatus(Long orgLocationId, String status) throws Exception {
+		return departmentDao.getDepartmentByOrgLocationIdAndStatus(orgLocationId, status);
+	}
 	
 }

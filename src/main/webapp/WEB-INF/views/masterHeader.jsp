@@ -42,6 +42,8 @@
 <script src="resources/js/formvalidator.js"></script>
 <script src="resources/js/bootstrap-select.min.js"></script>
 <script src="resources/js/themeswitcher.js"></script>
+<script src="resources/js/moment.min.js"></script>
+<script src="resources/js/datetime-moment.js"></script>
 <style>
 .dashboard-widget.dashboard-widget-icons{
 min-height: 225px !important;
@@ -377,7 +379,7 @@ document.onkeydown=function(e){
 
 	                     
 	                     <li><a href="<c:url value="/onboardingTemplatesList" />"><i class="fa fa-file-text" aria-hidden="true"></i>On-boarding</a></li>
-	                    <%--  <li><a href="<c:url value="/onboardingTasksList" />"><i class="fa fa-file-text" aria-hidden="true"></i>Task Docs</a></li> --%>
+	                     <li><a href="<c:url value="/offboardingTemplatesList" />"><i class="fa fa-file-text" aria-hidden="true"></i>Off-boarding</a></li>
 
 	              </ul>
 	            </div>

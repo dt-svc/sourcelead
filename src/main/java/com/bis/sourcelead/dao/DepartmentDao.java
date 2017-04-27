@@ -18,6 +18,8 @@ public interface DepartmentDao {
 	
 	 List<Department>  getDepartmentByOrgLocationId(Long orgLocationId) throws Exception;
 	 
+	 List<Department>  getDepartmentByOrgLocationIdAndStatus(Long orgLocationId,String status) throws Exception;
+	 
 	 Department validateDepartmentnameByDepartmentIdAndDepartmentName(Long departmentId,String departmentName) throws Exception;
 		
 	 Boolean validateDepartmentnameByOrgLocationIdAndDepartmentName(Long orgLocationId,String departmentName) throws Exception;

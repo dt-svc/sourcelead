@@ -25,6 +25,9 @@ margin:10px 220px 0;
       <div class="pull-left">
         <h2>Import Client & Contacts</h2>
       </div>
+        <div class="remove_pop" id="selector"  style="display: none;">
+	         <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+		</div>
       <%-- <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="clientDashboard">Client & Contact List</a> &raquo; Client & Contact Import </div> --%>
     <div class="pull-right brud-crum"><a href="#">Home</a> &raquo; <a href="clientDashboard">Client & Contact List</a> &raquo; Client & Contact Import </div>
     </section>
@@ -225,7 +228,14 @@ if ($('#upload_form').validate(false, validationSettings)){
 		    url : sourceleadUrl+"/clientExcelFileUpload?${_csrf.parameterName}=${_csrf.token}&responderType=Client", 	   
  		    success : function(data) {
  		    	$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
- 		    	prepareExcelDataDiv(data);
+ 		    	if(data == "failure"){
+ 		    		$("#selector").removeAttr("style");
+ 	    			$("#selector").css({ display: "block" });
+ 		    		$("#msgDiv").html("Mandatory fields are required");
+ 		    		msgFadein();
+ 		    	}else{
+ 		    		prepareExcelDataDiv(data);
+ 		    	}
  		    },
  		   error: function(e){
  			  alert(e);
@@ -236,6 +246,12 @@ if ($('#upload_form').validate(false, validationSettings)){
 }
 </script>
 
+<script>
+	function msgFadein() {
+		$("#selector").fadeIn(200);
+        $('#selector').delay(2000).fadeOut('slow');
+	}
+</script>  
 
 <script>
 function prepareExcelDataDiv(data){
@@ -329,7 +345,7 @@ function prepareExcelDataDiv(data){
         result = result + '</td>';
         
          result = result + '<td>';
-         if(report.reason == 'Spoc existed' || report.reason == 'Current org user' || report.reason ==  'Client name is mandatory' || report.reason ==  'Client name should contain above 2 char' || report.reason ==  'Invalid email' || report.reason ==  'Invalid moblie number'){
+         if(report.reason == 'Spoc existed' || report.reason == 'Current org user' || report.reason ==  'Client name is mandatory' || report.reason ==  'Client name should contain above 2 char' || report.reason ==  'Invalid email' || report.reason ==  'Invalid moblie number' || report.reason ==  'First Name is mandatory' || report.reason ==  'Email is Mandatory'){
         	 result = result + '<div class="proj_active" id="removeStatus'+report.id+'"><a class="text-danger fa fa-trash" title="Remove" onclick="removeRecord('+report.id+');"></a></div>';  
          }else{
         	 result = result + '<div class="tbldata-dotdot-100" id="recordStatus'+report.id+'"><a class="text-success fa fa-object-group paddingRight aa" title="Merge" onclick="mergeRecord('+report.id+');"></a> <small>|</small> <a class="text-primary fa fa-plus paddingRight" title="Add" onclick="addRecord('+report.id+');"></a> <small>|</small> <a class="text-danger fa fa-trash" title="Remove" onclick="terminateRecord('+report.id+');"></a></div>';

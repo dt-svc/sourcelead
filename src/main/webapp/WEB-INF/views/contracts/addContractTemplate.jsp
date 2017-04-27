@@ -35,8 +35,8 @@
            
             <div class="form-group">
               <label class="col-md-4">Template name<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
-                <input type="text"  id="templateName" name="templateName" value="${contractsTemplate.templateName}"  field-name="Template Name" data-validation="required" type="text" class="form-control">
+              <div class="col-md-8" id="templateDiv">
+                <input type="text"  id="templateName" name="templateName" value="${contractsTemplate.templateName}"  field-name="Template Name" data-validation="required" type="text" class="form-control" onblur="validateContractTemplateName();">
               </div>
               <input type="hidden" name="templateId" id="templateId" value="${contractsTemplate.id}"/>
             </div>
@@ -76,7 +76,7 @@
             <div class="form-group">
               <label class="col-md-4">Description</label>
               <div class="col-md-8">
-					<textarea class="form-control" rows="3" id ="description"  name="description">${contractsTemplate.description}</textarea>
+					<textarea class="form-control" rows="3" id ="description"  name="description" data-validation-optional="true" data-validation="validate_Space validate_length length1-250">${contractsTemplate.description}</textarea>
               </div>
             </div>            
             
@@ -345,6 +345,34 @@ function editContractTemplate(templateId){
 
 
 </script>
+<script>
+function validateContractTemplateName(){
+	var templateName = $('#templateName').val();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(templateName != null && templateName != ""){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateContractTemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="+templateName, 
+		        success: function(data) {
+		        	if(data == 'true'){
+		        		
+						  $("input#templateName").after("<p class='jquery_form_error_message'>"+templateName+" is Already Existed</span>");
+						  $("#save_template").attr("disabled", "disabled");
+						//  $("#save_template").addClass('button').val('Processing..');
+		        	}
+		        	else{
+		        		 $('input#templateName').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#templateDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#save_template" ).addClass('button').val('Save Template');
+                         $("#save_template").removeAttr("disabled");
+		        	}
+		        	}
+		        });
+	 }
+}
+
+</script>
+
 
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
