@@ -19,7 +19,9 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -31,6 +33,9 @@ public class DepartmentRestController {
 	
 	@Autowired
 	public DepartmentService departmentService;
+	
+	@Autowired
+	public UserService userService;
 	
 	 @Autowired
 	 CommonUtil commonUtil;
@@ -87,7 +92,7 @@ public class DepartmentRestController {
 	    if(jsonObj.has("departmentName") && !"".equalsIgnoreCase(jsonObj.getString("departmentName"))){
 			department.setDepartmentName(jsonObj.getString("departmentName"));
 		}
-		if(jsonObj.has("departmentDesc") && !"".equalsIgnoreCase(jsonObj.getString("departmentDesc"))){
+		if(jsonObj.has("departmentDesc")){
 			department.setDescription(jsonObj.getString("departmentDesc"));
 		}
 		department.setUpdatedDate(commonUtil.currentDate());
@@ -133,4 +138,14 @@ public class DepartmentRestController {
 	   }
     
 	
+    @RequestMapping(value = "/getUserList", method = RequestMethod.GET)
+ 	public @ResponseBody  String getUserList(HttpServletRequest request, HttpServletResponse response) throws Exception
+ 	{
+     	String resultJson;
+     	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+     	List<User> userList = userService.getAllUsersByOrgLocationCode(loginOrgLocation.getId());
+ 	  resultJson = commonUtil.toJSON(userList);
+ 	  return resultJson;
+ 	}
+    
 }

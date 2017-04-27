@@ -20,5 +20,3 @@ INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('a
 INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`,`CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`) VALUES('approverUpdatedContract', 'Notification', 'approverUpdatedContract', 'approver updated contract notification', 'Request to approve the contract {{approverUpdatedContract.ContractTitle}}', 'sourcelead', '', 'Request to approve the contract {{approverUpdatedContract.ContractTitle}}','N','SLADMIN', 'sourceLead.com', 'in.sourceLead.com');
 
 
-
-

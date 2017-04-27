@@ -273,7 +273,7 @@
                   <div class="form-group">
                   <label class="col-md-4 control-label">Speical Conditions</label>
                   <div class="col-md-8">
-                      <textarea rows="2" class="form-control" id="specialConditions" name="specialConditions" readonly="readonly"  value="${SourceLeadWeb_candidateOnBoarding.specialConditions}" ></textarea>
+                      <textarea rows="2" class="form-control" id="specialConditions" name="specialConditions" readonly="readonly"  >${SourceLeadWeb_candidateOnBoarding.specialConditions}</textarea>
                   </div>
                 </div>
 		</div>

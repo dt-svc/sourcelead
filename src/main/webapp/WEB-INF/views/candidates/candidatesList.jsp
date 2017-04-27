@@ -1892,8 +1892,11 @@ function getCities(){
 	    $('#rateType').val(''); 
 	    
 	    $('#country').val(''); 
-	    $('#state').val(''); 
-	    $('#city').val(''); 
+	    $("#country").val('').trigger("chosen:updated");
+	    $("#state").empty();
+	    $("#state").val('').trigger("chosen:updated");
+	    $("#city").empty();
+	    $("#city").val('').trigger("chosen:updated");
 	    $('#rateType').val(''); 
 
 	    $('#emailDiv').find('p.jquery_form_error_message').remove();
