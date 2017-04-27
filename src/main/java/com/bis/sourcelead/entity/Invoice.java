@@ -78,6 +78,10 @@ public class Invoice {
 	@Column(name = "STATUS")
 	private String status;
 	
+	
+	@Column(name = "INVOICE_STATUS")
+	private String invoiceStatus;
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -282,6 +286,16 @@ public class Invoice {
 	public void setOrgLocation(OrgLocations orgLocation)
 	{
 		this.orgLocation = orgLocation;
+	}
+
+	public String getInvoiceStatus()
+	{
+		return invoiceStatus;
+	}
+
+	public void setInvoiceStatus(String invoiceStatus)
+	{
+		this.invoiceStatus = invoiceStatus;
 	}
 
 	
