@@ -466,6 +466,13 @@ public class UserServiceImpl implements UserService {
 			employees.setDesignationOtherType(jsonObj.getString("designationOtherType"));
 		}
 		
+		if(jsonObj.has("department") && !"".equalsIgnoreCase(jsonObj.getString("department"))){
+			Department department= departmentService.getDepartmentById(Long.parseLong(jsonObj.getString("department")));
+			employees.setDepartmentId(department);
+		}else{
+			employees.setDepartmentId(null);
+		}
+		
 		if(jsonObj.has("vendors") && !"".equalsIgnoreCase(jsonObj.getString("vendors"))){
 			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("vendors")));
 			employees.setOrgRelationId(orgRelation);

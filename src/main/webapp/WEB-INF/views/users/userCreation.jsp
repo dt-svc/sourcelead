@@ -126,20 +126,20 @@
                   </div>
                 </div> 
                 
-                <!-- <div class="form-group">
+               <div class="form-group">
                   <label class="col-md-3">Department </label>
                   <div class="col-md-9" id="chosen-role">
-                         <select multiple class="form-control chosen-select" id="department" name="department" field-name="Department" onchange="getReportingManager()" data-validation-optional="true" >
+                         <select class="form-control chosen-select" id="department" name="department" field-name="Department" onchange="getReportingManager()" data-validation-optional="true" >
 		                        
 			              </select>
                   </div>
-                </div> -->
+                </div> 
                 
                 <div class="form-group">
-         <label class="col-md-3">Employment type<span class="text-danger">&nbsp;*</span></label>
+         <label class="col-md-3">Employment type<span class="text-danger"></span></label>
          <div class="col-md-9">
              <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getEmployeementType(this);" field-name="Employment type" >
-                <option value="">--Select--</option>
+                <option value="">--Select Employment type--</option>
                  <option>C2C</option>
                  <option>C2C-1099</option>
                  <option>W-2</option>
@@ -335,6 +335,7 @@ if(type == 'C2C' || type == 'C2C-1099'){
 
 <script>
 function getEmployeementType(designationType){
+	alert("hello");
 	var existingDesignationType = '${requirement.designationType}';
 	if(designationType.value == 'Other'){
 		 document.getElementById("designationTypeDiv").style.display="block";
@@ -624,19 +625,35 @@ function getEmployeementType(designationType){
 function getAssociateUserDetails(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var employeementType = document.getElementById("employeementType").value;
+	alert(employeementType);
 		$.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getActiveAssociateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+employeementType, 
-	        contentType: "application/json; charset=utf-8",
-	        dataType: "json",
+	        /* contentType: "application/json; charset=utf-8",
+	        dataType: "json", */
 	        success: function(data) {
 	        	if(data != null && data != ''){
 	        		var json = JSON.parse(data);
+	        		alert(json['id']);
 	        		  $("#associateId").val(json['id']);
 	        		  $("#FirstName").val(json['firstName']);
 	        		  $("#lastName").val(json['lastName']);
 	        		  $("#EmailId").val(json['email']);
 	        		  $("#phone").val(json['mobilePhone']);
+	        		  $("#designationType").val(json['designationType']);
+	        		  $("#designationType").selectpicker('refresh');
+	        		  employementType(json['designationType']);
+	        		  if(json['vendorOrgRelationId'] != null && json['vendorOrgRelationId'] !='undefined' && json['vendorOrgRelationId'] !=''){
+	        		  getVendors(json['vendorName'],json['vendorOrgRelationId']);
+	        		  vendorContactList(json['vendorContactName'],json['vendorOrgRelationId'],json['vendorSpocId']);
+	        		  }
+	        		  
+	        		  if(json['designationOtherType'] != null && json['designationOtherType'] !='undefined' && json['designationOtherType'] !=''){
+	        		  $("#designationOtherType").val(json['designationOtherType']);
+	        		  otherType(json['designationType']);
+	        		  }
+	        		  
+	        		  /* (val(json['designationType'])); */
 	        		  validateUserEmail();
 	        	}
 			 },
@@ -647,6 +664,69 @@ function getAssociateUserDetails(){
 	
 }
 </script>
+ <script>
+ function otherType(type){
+	 if(type == 'Other'){
+		 document.getElementById("designationTypeDiv").style.display="block";
+		  $("#designationOtherType").attr("data-validation-optional", "true");
+		  $("#designationOtherType").attr("data-validation", "validate_Space validate_length length2-250");
+	}else{
+		document.getElementById("designationTypeDiv").style.display="none";
+		  $("#designationOtherType").attr("data-validation-optional", "true");
+		  $("#designationTypeDiv").find('p.jquery_form_error_message').remove();
+		  if(existingDesignationType ==null || existingDesignationType == "" || existingDesignationType == "undefined" || existingDesignationType != 'Other'){
+			  $("#designationOtherType").val('');
+		  }
+	}
+ }
+ </script>
+ <script>
+ function getVendors(vendorName,vendorOrgRelationId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	$('#vendors').empty();
+		        	$('#vendors').append('<option value="">--select Vendor --</option>');
+		            for(var i=0;i<json.length;i++){
+		            	  var opt = json[i];
+		            	  if(vendorName != null && vendorName != 'undefined' && vendorName  != ''){
+		            		  $('#vendors').append('<option '+ (opt.id == vendorOrgRelationId ? "selected" : '') +' value="'+opt.id+'">'+opt.orgName+'</option>');
+			            	}else{
+			            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');	
+			            	}
+		            }
+		            $('#vendors').trigger("chosen:updated");
+		        }
+		 });
+ }
+ </script>
+ <script>
+ function vendorContactList(vendorContactName,vendorOrgRelationId,vendorSpocId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+			    type: "POST",
+		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+vendorOrgRelationId+"&type=Vendor",  
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	$('#vendorcontact').empty();
+		        	$('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
+		             for(var i=0;i<json.length;i++){
+		            	 var opt = json[i];
+		            	 if(vendorContactName != null && vendorContactName != 'undefined' && vendorContactName  != ''){
+		            		 $('#vendorcontact').append('<option '+ (opt.id == vendorSpocId ? "selected" : '') +' value="'+opt.id+'">'+opt.spocName+'</option>');
+			            	}else{
+			            		$('#vendorcontact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
+			            	}
+		            	 
+		            } 
+		            $('#vendorcontact').trigger("chosen:updated");
+		        }
+		 }); 
+ }
+ </script>
  
  <script>
  function getAssociateList(){
@@ -811,6 +891,6 @@ $(function(){
 		  })
 });
 </script>
-
+ 
 
 
