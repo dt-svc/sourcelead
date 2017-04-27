@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -158,7 +159,7 @@ public class CandidateOnBoardController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		sessionData.setNav(Constants.Users);
+		sessionData.setNav(Constants.OnAndOffboard);
 		
 		Candidate candidate = CandidateService.getCandidateByUUID(candidateUUId);
 		RequirementOffers offer = requirementOffersService.getRequirementOffersByUUID(offerUUID);
@@ -189,7 +190,7 @@ public class CandidateOnBoardController {
 		return model;
 	}
 	
-	
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE')")
 	@RequestMapping(value = "/onboardingTemplatesList")
  	public ModelAndView onboardingTemplatesList(HttpServletRequest request) {
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -201,7 +202,7 @@ public class CandidateOnBoardController {
  			return model;
  	}
 	
-	
+	@PreAuthorize("hasRole('ROLE_CREATE_ON_BOARD_TEMPLATE')")
 	@RequestMapping(value = "/addNewOnboardTemplate")
  	public ModelAndView addNewOnboardTemplate(HttpServletRequest request) {
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -213,6 +214,7 @@ public class CandidateOnBoardController {
  			return model;
  	}
 	
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE')")
 	@RequestMapping(value = "/viewOnboardTemplateByTemplateUUID")
  	public ModelAndView viewOnboardTemplateByTemplateUUID(@RequestParam(value="templateUUID", required=false) String templateUUID,
  			HttpServletRequest request) throws Exception {
@@ -229,6 +231,7 @@ public class CandidateOnBoardController {
  	}
 	
 	
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_ON_BOARD_USER','ROLE_VIEW_EDIT_ON_BOARD_USER','ROLE_CREATE_OFF_BOARD_USER','ROLE_VIEW_EDIT_OFF_BOARD_USER')")
 	@RequestMapping(value = "/candidateOnBoardingList")
 	public ModelAndView candidateOnBoardingList(HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
@@ -238,7 +241,7 @@ public class CandidateOnBoardController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		sessionData.setNav(Constants.Users);
+		sessionData.setNav(Constants.OnAndOffboard);
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		
@@ -255,6 +258,7 @@ public class CandidateOnBoardController {
 	}
 	
 	
+	@PreAuthorize("hasRole('ROLE_CREATE_ON_BOARD_USER')")
 	@RequestMapping(value = "/candidateOnBoardCreation")
 	public ModelAndView candidateOnBoardCreation(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
@@ -264,7 +268,7 @@ public class CandidateOnBoardController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		sessionData.setNav(Constants.Users);
+		sessionData.setNav(Constants.OnAndOffboard);
 		
 		request.getSession().setAttribute("sessionData",sessionData);
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -272,7 +276,7 @@ public class CandidateOnBoardController {
 		return model;
 	}
 	
-	
+	@PreAuthorize("hasRole('ROLE_CREATE_ON_BOARD_USER')")
 	@RequestMapping(value = "/viewOnboardCandidateDetails")
  	public ModelAndView viewOnboardCandidateDetails(@RequestParam(value="onboardUUID", required=false) String onboardUUID,
  			HttpServletRequest request) throws Exception {
@@ -284,7 +288,7 @@ public class CandidateOnBoardController {
 			{
 				sessionData = new SessionMaintainanceData();
 			}
-			sessionData.setNav(Constants.Users);
+			sessionData.setNav(Constants.OnAndOffboard);
  			
  			CandidateOnBoarding onBoarding = candidateOnBoardingService.getCandidateOnBoardingByUUID(onboardUUID);
  			
@@ -296,6 +300,7 @@ public class CandidateOnBoardController {
  	}
 	
 	
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ON_BOARD_USER')")
 	@RequestMapping(value = "/viewOnboardCandidateSummary")
  	public ModelAndView viewOnboardCandidateSummary(@RequestParam(value="onboardUUID", required=false) String onboardUUID,
  			HttpServletRequest request) throws Exception {
@@ -307,7 +312,7 @@ public class CandidateOnBoardController {
 			{
 				sessionData = new SessionMaintainanceData();
 			}
-			sessionData.setNav(Constants.Users);
+			sessionData.setNav(Constants.OnAndOffboard);
  			
  			
  			model.setViewName("onboard/viewOnboardCandidateSummary");
