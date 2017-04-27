@@ -1,11 +1,14 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.InvoiceDao;
+import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.service.InvoiceService;
 
@@ -21,6 +24,12 @@ public class InvoiceServiceImpl implements InvoiceService{
 	public Invoice saveInvoice(Invoice invoice) throws Exception
 	{
 		return invoiceDao.saveInvoce(invoice);
+	}
+
+	@Override
+	public List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId) throws Exception
+	{
+		return invoiceDao.getSowcontractListByAssociateId(candidateId,orgLocationId,orgRelationId);
 	}
 	
 }

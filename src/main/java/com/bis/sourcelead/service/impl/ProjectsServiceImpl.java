@@ -2278,5 +2278,11 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				return flag;
 			}
 
+			@Override
+			public List<Projects> getClientProjectsByOrgRelationId(Long orgRelationId, Long orgLocationId) throws Exception
+			{
+				return projectsDao.getClientProjectsByOrgRelationId(orgRelationId,orgLocationId);
+			}
+
 
 }

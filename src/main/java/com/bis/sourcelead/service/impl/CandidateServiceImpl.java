@@ -947,4 +947,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getAllActiveCandidatesByLocation(orgLocationId);
 	}
 
+	@Override
+	public List<Candidate> getAllActiveAssociatesByLocation(Long orgLocationId) throws Exception
+	{
+		return candidateDao.getAllActiveAssociatesByLocation(orgLocationId);
+	}
+
 }
