@@ -372,7 +372,12 @@ public class PdfUtil {
 		if(candidate.getMobilePhone() !=null && !"".equalsIgnoreCase(candidate.getMobilePhone())){
 			candidateArray[3] = candidate.getMobilePhone();
 		}
-		if(candidate.getCountry() !=null && !"".equalsIgnoreCase(candidate.getCountry())){
+		StringBuilder loc = new StringBuilder();
+		if(candidate.getCity() !=null && !"".equalsIgnoreCase(candidate.getCity())){
+			candidateArray[4] = loc.append(candidate.getCountry()).append(",").append(candidate.getState()).append(",").append(candidate.getCity()).toString();
+		}else if(candidate.getState() !=null && !"".equalsIgnoreCase(candidate.getState())){
+			candidateArray[4] = loc.append(candidate.getCountry()).append(",").append(candidate.getState()).toString();
+		}else if(candidate.getCountry() !=null && !"".equalsIgnoreCase(candidate.getCountry())){
 			candidateArray[4] = candidate.getCountry();
 		}else{
 			candidateArray[4] = "--";
