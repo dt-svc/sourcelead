@@ -361,8 +361,8 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 				 }else{
 					 Tasks tasks = null;
 					 tasks = getTaskDetails(onboardTasks, onboardingUser, loginUser, orgLocations);
-					 taskDao.saveTasks(tasks);
 					 tasks.setOnboardingId(candidateOnBoarding);
+					 taskDao.saveTasks(tasks);
 					 mailToUserTask(tasks);
 				 }
 			 }

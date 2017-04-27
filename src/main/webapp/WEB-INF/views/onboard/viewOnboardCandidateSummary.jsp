@@ -312,14 +312,14 @@ padding-left: 25px;
 				 }
 			   
 				
-				 if(json.onboardTemplateId != null && json.onboardTemplateId != '' && json.onboardTemplateId != 'undefined'){
+				/*  if(json.onboardTemplateId != null && json.onboardTemplateId != '' && json.onboardTemplateId != 'undefined'){
 					 result = result +'        <div class="form-group">                                                                                   ';
 					 result = result +'            <label class="col-md-3 control-label">Onboard Template </label> ';
 					 result = result +'       <div class="col-md-6">                                                                                    ';
 					 result = result +'             <p id="onboardingTemplate"></p>                                                                                  ';
 					 result = result +'       </div>                                                                                                    ';
 					 result = result +'     </div>                                                                                                      ';
-				 }
+				 } */
 				 
 				 result = result +'   </div>                                                                                                        ';
 				 result = result +'     </div>';
@@ -334,7 +334,8 @@ padding-left: 25px;
 	    });
  }
  </script>
- <script>
+ 
+ <!-- <script>
 function loadOnBoardingTemplates(onboardTemplateId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
@@ -355,7 +356,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	    }
    });
 }
-</script>
+</script> -->
 
 
 
@@ -534,69 +535,69 @@ function getOnboardingTasksList(){
 	
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	$.ajax({
-	   	type: "POST",
-	    url: sourceleadUrl+"/viewCandidateOnboardTasks?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID,	    	   
+	   	type: "GET",
+	    url: sourceleadUrl+"/viewCandidateOnboardTasksByOnboardingUUID?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID,	    	   
 	    success: function(data) {
 	    	 var json = JSON.parse(data);
         	 var result = "";
         	 
-        	if(json.length > 0){ 
-        		result = result +'	<div class="clearfix">';
-        		result = result +'      <h4 class="pull-left">Task List</h4>';
-        		result = result +'  </div>';
-	        	for (var i=0; i<json.length; i++)
-				{
-	        		var report = json[i];
-	        		
-	        		var prority = '';
-	        		var repeat = '';
-	        		
-	        		if(report.priority != null && report.priority != '' && report.priority != 'undefined'){
-	        			prority = report.priority;
-	        		}else{
-	        			prority = '----';
-	        		}
-	        		
-	        		if(report.taskRepeat != null && report.taskRepeat != '' && report.taskRepeat != 'undefined'){
-	        			repeat = report.taskRepeat;
-	        		}else{
-	        			repeat = '----';
-	        		}
-	        		
-	        		result = result +'<div class="clearfix taskwidget_inner" id="onboardTask'+report.id+'">';
-	        		result = result +'<div class="media-body">';
-	        		result = result +'<div class="clearfix taskheder">';
-	        		
-	        		result = result +"<label> <span class='paddingRight'>Subject:</span> <strong class='text-primary'>"+report.taskName+"</strong></label>";
-	        		
-	        		result = result +'<label class="small pull-right text-muted"> <span>'+report.dueAfterString+'</span> </label>';
-	        		result = result +'</div>';
-	        		result = result +'<ul class="list-inline list-description mt10">';
-	        		
-	        		result = result +'<li><span>Assign To:</span>';
-	        		
-	        		if(report.usersList.length > 0){
-	        			for(var j=0; j<report.usersList.length; j++){
-		 					result = result +'<label>'+report.usersList[j]+'</label>';
-		 				}
-	        		}else{
-	 					result = result +'Onboarding Candidate';
-	 				}
-	        		result = result +'</li>';
-	        		
-	        		result = result +'<li><span>Priority:</span>'+prority+'</li>';
-	        		result = result +'<li><span>Repeat:</span> '+repeat+'</li>';
-	        		result = result +'</ul>';
-	        		result = result +'</div>';
-	        		result = result +'</div>';
-        		   
-	        		if(report.onboardTaskType != 'Candidate Task'){
-       					result = result +"<input type='hidden' name='savedTemplateTask' id='templateTask"+report.id+"' value='"+report.id+"' />";
-       				}
-				}
-        	}else{
-        		result = result +'<div><h4>No Tasks Found</h4></div>';
-        	}
+
+        	 if(json.length > 0){ 
+         		result = result +'	<div class="clearfix">';
+         		result = result +'      <h4 class="pull-left">Task List</h4>';
+         		result = result +'  </div>';
+ 	        	for (var i=0; i<json.length; i++)
+ 				{
+ 	        		var report = json[i];
+ 	        		
+ 	        		var prority = '';
+ 	        		var repeat = '';
+ 	        		
+ 	        		if(report.priority != null && report.priority != '' && report.priority != 'undefined'){
+ 	        			prority = report.priority;
+ 	        		}else{
+ 	        			prority = '----';
+ 	        		}
+ 	        		
+ 	        		if(report.taskRepeat != null && report.taskRepeat != '' && report.taskRepeat != 'undefined'){
+ 	        			repeat = report.taskRepeat;
+ 	        		}else{
+ 	        			repeat = '----';
+ 	        		}
+ 	        		
+ 	        		result = result +'<div class="clearfix taskwidget_inner" id="onboardTask'+report.id+'">';
+ 	        		result = result +'<div class="media-body">';
+ 	        		result = result +'<div class="clearfix taskheder">';
+ 	        		
+ 	        		result = result +"<label> <span class='paddingRight'>Subject:</span> <strong class='text-primary'>"+report.subject+"</strong></label>";
+ 	        		
+ 	        		result = result +'<label class="small pull-right text-muted"> <span>'+report.taskDateStr+'</span> </label>';
+ 	        		
+ 	        		
+ 	        		
+ 	        		result = result +'</div>';
+ 	        		
+ 	        		result = result +'<ul class="list-inline list-description mt10">';
+ 	        		
+ 	        		result = result +'<li><span>Assign To:</span>';
+ 	        		
+ 	        		result = result +'<label>'+report.assignedName+'</label>';
+ 	        		
+ 	        		result = result +'</li>';
+ 	        		
+ 	        		result = result +'<li><span>Priority:</span>'+prority+'</li>';
+ 	        		result = result +'<li><span>Repeat:</span> '+repeat+'</li>';
+ 	        		result = result +'<li><span>Status:</span> '+report.taskStatus+'</li>';
+ 	        		
+ 	        		result = result +'</ul>'; 
+ 	        		result = result +'</div>';
+ 	        		result = result +'</div>';
+         		   
+ 	        		
+ 				}
+         	}else{
+         		result = result +'<div><h4>No Tasks Found</h4></div>';
+         	}
         	
     		
     		 $("#onboardTasksListViewId").empty();
