@@ -266,7 +266,7 @@ function dashboardAddInterview(){
 		result = result + '		</td>';
 
 		result = result + '		<td>';
-		result = result + '			<select class="form-control"  id="1timeZone" name="1timeZone">';
+		result = result + '			<select class="form-control"  id="1timeZone" name="1timeZone" field-name="Timezone" data-validation="required">';
 		result = result + '			</select>';
 		result = result + '		</td>';
 		
