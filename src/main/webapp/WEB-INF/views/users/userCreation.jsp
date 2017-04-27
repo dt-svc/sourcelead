@@ -335,7 +335,6 @@ if(type == 'C2C' || type == 'C2C-1099'){
 
 <script>
 function getEmployeementType(designationType){
-	alert("hello");
 	var existingDesignationType = '${requirement.designationType}';
 	if(designationType.value == 'Other'){
 		 document.getElementById("designationTypeDiv").style.display="block";
@@ -625,7 +624,6 @@ function getEmployeementType(designationType){
 function getAssociateUserDetails(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var employeementType = document.getElementById("employeementType").value;
-	alert(employeementType);
 		$.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getActiveAssociateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+employeementType, 
@@ -634,7 +632,6 @@ function getAssociateUserDetails(){
 	        success: function(data) {
 	        	if(data != null && data != ''){
 	        		var json = JSON.parse(data);
-	        		alert(json['id']);
 	        		  $("#associateId").val(json['id']);
 	        		  $("#FirstName").val(json['firstName']);
 	        		  $("#lastName").val(json['lastName']);
