@@ -42,6 +42,8 @@
 <script src="resources/js/formvalidator.js"></script>
 <script src="resources/js/bootstrap-select.min.js"></script>
 <script src="resources/js/themeswitcher.js"></script>
+<script src="resources/js/moment.min.js"></script>
+<script src="resources/js/datetime-moment.js"></script>
 <style>
 .dashboard-widget.dashboard-widget-icons{
 min-height: 225px !important;
@@ -223,6 +225,7 @@ document.onkeydown=function(e){
 	             <option data-icon="fa fa-bar-chart" ${searchType == "Projects" ?"selected='selected'":""} value="Projects">Projects</option>   	  
 	           </c:if>
 			</c:forEach>
+	             <option data-icon="fa fa-black-tie" ${searchType == "Candidate" ?"selected='selected'":""} value="Associate">Associate</option>
 		</select>
 			
 			

@@ -1761,6 +1761,7 @@ function documentpagination(){
     	"scrollCollapse": false,
     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"aaSorting": [[7,'desc']],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -2035,6 +2036,7 @@ function documentpaginationDA(){
     	"scrollCollapse": false,
     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"aaSorting": [[7,'desc']],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -2303,6 +2305,7 @@ function documentpaginationRS(){
     	"scrollCollapse": false,
     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"aaSorting": [[7,'desc']],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -2583,6 +2586,7 @@ function documentpaginationSL(){
     	"scrollCollapse": false,
     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"aaSorting": [[8,'desc']],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -2838,6 +2842,7 @@ function documentpaginationSC(){
     	"scrollCollapse": false,
     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"aaSorting": [[7,'desc']],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -3009,6 +3014,7 @@ function documentpaginationIN(){
     	"scrollCollapse": false,
     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"aaSorting": [[8,'desc']],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -3200,6 +3206,7 @@ function documentpaginationOffer(){
     	"scrollCollapse": false,
     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"aaSorting": [[8,'desc']],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -3981,6 +3988,7 @@ function recommendationpagination(){
     $('#recommendationTable').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"aaSorting": [[7,'desc']],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -4169,14 +4177,14 @@ function clientSideBar(candidateId){
 			             result = result+'                 </div>';
 			             result = result+'               <div class="col-md-6">';
 			             result = result+'                 <ul class="list-unstyled can-perdt">';
-			             result = result+'                   <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">'+json.email+'</a></li>';
-			             result = result+'                   <li><i class="fa fa-phone"></i>'+mobilePhone+'</li>';
+			             result = result+'                   <li title="'+json.email+'"><i class="fa fa-envelope-o" title="Email"></i>'+json.email+'</li>';
+			             result = result+'                   <li><i class="fa fa-phone" title="PhoneNo"></i>'+mobilePhone+'</li>';
 			                                                  
-			             result = result+'                   <li><i class="fa fa-location-arrow"></i>'+city+''+state+''+country+'</li>';
+			             result = result+'                   <li title="'+city+''+state+''+country+'"><i class="fa fa-location-arrow" title="Location"></i>'+city+''+state+''+country+'</li>';
 			             
-			             result = result+'                   <li><i class="fa fa-money"></i><b>Current Rate:&nbsp;</b>'+currentRate+'  '+currentRateType+' / '+currentRateCurrency+'</li>';
+			             result = result+'                   <li><i class="fa fa-money" title="Current Rate"></i>'+currentRate+'  '+currentRateType+' / '+currentRateCurrency+'</li>';
 			             
-			             result = result+'                   <li><i class="fa fa-money"></i><b>Expected Rate:&nbsp;</b>'+expectedRate+'  '+rateType+' / '+expectedRateCurrencey+'</li>';
+			             result = result+'                   <li><i class="fa fa-money" title="Expected rate"></i>'+expectedRate+'  '+rateType+' / '+expectedRateCurrencey+'</li>';
 			             result = result+'                 </ul>';
 			             result = result+'               </div>';
 			             result = result+'			</div>';
@@ -4497,7 +4505,7 @@ function getRateListDiv(submissionId, candidateId){
 		                     result = result + '  </div>';
 		                     
 		                     result = result + '<div class="form-group col-md-6 select-field">';
-		                     result = result + ' <select class="form-control input-sm" id="rateType" name="rateType" field-name="Rate Type" data-validation="required">';
+		                     result = result + ' <select class="form-control input-sm" id="rateType" name="rateType" field-name="Rate Per" data-validation="required">';
 		                     result = result + '	<option value="">Rate Per</option>';
 		                     result = result + '    <option>Hourly</option>';
 		                     result = result + '    <option>Weekly</option>';
@@ -4553,7 +4561,7 @@ function getRateListDiv(submissionId, candidateId){
                      result = result + '  </div>';
                      
                      result = result + '<div class="form-group col-md-6 select-field">';
-                     result = result + ' <select class="form-control input-sm" id="rateType" name="rateType" field-name="Rate Type" data-validation="required">';
+                     result = result + ' <select class="form-control input-sm" id="rateType" name="rateType" field-name="Rate Per" data-validation="required">';
                      result = result + '	<option value="">Rate Per</option>';
                      result = result + '    <option>Hourly</option>';
                      result = result + '    <option>Weekly</option>';

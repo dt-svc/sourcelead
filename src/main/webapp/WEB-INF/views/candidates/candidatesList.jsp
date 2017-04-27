@@ -214,7 +214,7 @@ else{
 	              result = result +"<td style='width:40px; display: inline-block'>";
 
 	              if(opt.isAssociate == "Y"){
-	            	  result = result +"<i class='fa fa-black-tie pull-right mt10' title='Associate'></i> ";  
+	            	  result = result +"<i class='fa fa-black-tie pull-right mt10' title='Added as Associate'></i> ";  
 	              }
 
 	              result = result +"<div class='iconClass pull-left star-rating "+isFavClass+"' id='favourite"+opt.candidateId+"'>";
@@ -314,9 +314,15 @@ function cpagination(){
  -->
 <script>
 function cpagination(){ 
+	$.fn.dataTable.moment( 'DD-MM-YYYY' );
     $('#candidatePagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 0
+			}],
+		"aaSorting": [[7,'desc']],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -1886,8 +1892,11 @@ function getCities(){
 	    $('#rateType').val(''); 
 	    
 	    $('#country').val(''); 
-	    $('#state').val(''); 
-	    $('#city').val(''); 
+	    $("#country").val('').trigger("chosen:updated");
+	    $("#state").empty();
+	    $("#state").val('').trigger("chosen:updated");
+	    $("#city").empty();
+	    $("#city").val('').trigger("chosen:updated");
 	    $('#rateType').val(''); 
 
 	    $('#emailDiv').find('p.jquery_form_error_message').remove();

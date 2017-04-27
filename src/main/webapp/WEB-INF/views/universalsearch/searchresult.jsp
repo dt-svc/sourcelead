@@ -14,15 +14,22 @@
 
 <script>
 $(document).ready(function(){
-	
    var searchType = "${searchType}";
    var searchValue = "${searchValue}";
+  
+   if(searchType == "Associate"){
+	   var isAssociate = "Y";
+	   var searchType = "Candidate";
+   }else if(searchType == "Candidate"){
+	   var isAssociate = "N";
+   }
+   
    $("#searchKey").val(searchValue);
    if(searchType=="All"){
 	   getSearchResultsForAll(searchType,searchValue);
    }
    else{
-	   getSearchResults(searchType,searchValue);
+	   getSearchResults(searchType,searchValue,isAssociate);
    }
 });
 </script>
@@ -44,11 +51,11 @@ $(document).ready(function(){
 	</section>
 
 <script type="text/javascript">
-function getSearchResults(searchType,searchValue){
+function getSearchResults(searchType,searchValue,isAssociate){
 	var sourceleadUrl = '${sourceleadUrl}';
 	  $.ajax({
 	   	type: "GET",
-	    url: sourceleadUrl+"/universalSearch?${_csrf.parameterName}=${_csrf.token}&searchType="+searchType+"&searchValue="+searchValue,	    	   
+	    url: sourceleadUrl+"/universalSearch?${_csrf.parameterName}=${_csrf.token}&searchType="+searchType+"&searchValue="+searchValue+"&isAssociate="+isAssociate,	    	   
 	    success: function(data) {
 	    	var result='';
 	    	var json = JSON.parse(data);
@@ -134,7 +141,12 @@ function getSearchResults(searchType,searchValue){
 	    	 /*========== Universal Search list of Candidate ==========*/ 
 	    	else if(searchType == 'Candidate'){
 	    		if(checkSize > 0){
-	    		result = result+'   <h4>Candidate</h4>';
+	    			if(isAssociate == "Y"){
+	    				result = result+'   <h4>Associate</h4>';		
+	    			}else{
+	    				result = result+'   <h4>Candidate</h4>';
+	    			}
+	    		
 		    	 for (var i = 0; i < checkSize; i++) {
 		             var report= json[i];
 		             var location = "";
@@ -411,7 +423,7 @@ function getSearchResults(searchType,searchValue){
 
 <script type="text/javascript">
 function getSearchResultsForAll(searchType,searchValue){
-	 $("#loading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	
 	var sourceleadUrl = '${sourceleadUrl}';
 	  $.ajax({

@@ -1676,11 +1676,53 @@ function certificationSubmissionProfile(candidateId){
      }); 
 }
 </script>
+<script>
+function updateDesignationOtherType(){
+	var employementType = $('#designationType1').val(); 
+	
+	if(employementType == 'C2C'){
+		document.getElementById("hideVendor").style.display="block";
+		 $('#vendorName').attr("data-validation","required"); 
+		 $('#vendorcontactName').attr("data-validation","required"); 
+	}else{
+		 document.getElementById("hideVendor").style.display="none";
+		 $('#vendorName').removeAttr("data-validation","required"); 
+		 $('#vendorcontactName').removeAttr("data-validation","required"); 
+		 
+		 $('#vendorName').val(''); 
+		 $('#vendorcontactName').val(''); 
+		 
+	}
+	
+	if(employementType == 'C2C-1099'){
+		 document.getElementById("hideVendor").style.display="block";
+		 $('#vendorName').attr("data-validation-optional", "true"); 
+		 $('#vendorcontactName').attr("data-validation-optional", "true");  
+		 
+		 $("#errorvendor").find("p.jquery_form_error_message").remove();
+		 $("#errorvendorContact").find("p.jquery_form_error_message").remove();
+	}else{
+		 $('#vendorName').removeAttr("data-validation-optional", "true"); 
+		 $('#vendorcontactName').removeAttr("data-validation-optional", "true");  
+		 
+		 $('#vendorName').val(''); 
+		 $('#vendorcontactName').val(''); 
+	} 
+	
+	 
+	$('#designationType1 + p').remove();
+	
+}
 
+
+
+
+
+</script>
 <script>
 function employementType(){
 	 var employementType = $('#designationType1').val(); 
-		if(employementType == 'C2C' || employementType == 'C2C-1099'){
+		if(employementType == 'C2C'){
 			document.getElementById("hideVendor").style.display="block";
 			 $('#vendorName').attr("data-validation","required"); 
 			 $('#vendorcontactName').attr("data-validation","required"); 
@@ -1693,13 +1735,26 @@ function employementType(){
 			 $('#vendorcontactName').val(''); 
 			 
 		}
+		
+		if(employementType == 'C2C-1099'){
+			 document.getElementById("hideVendor").style.display="block";
+			 $('#vendorName').attr("data-validation-optional", "true"); 
+			 $('#vendorcontactName').attr("data-validation-optional", "true");  
+			 
+			 $("#errorvendor").find("p.jquery_form_error_message").remove();
+			 $("#errorvendorContact").find("p.jquery_form_error_message").remove();
+		}else{
+			 $('#vendorName').removeAttr("data-validation-optional", "true"); 
+			 $('#vendorcontactName').removeAttr("data-validation-optional", "true");  
+			 
+			 $('#vendorName').val(''); 
+			 $('#vendorcontactName').val(''); 
+		} 
+		
+		 
 		$('#designationType1 + p').remove();
 		
-		/* $('.chosen-select').each(function() {
-			var $this = $(this);
-			$this.next().css({'width': '100%'});
-	  })
-	   $(".chosen-container").css("width","100%"); */
+	 
 }
 </script>
 

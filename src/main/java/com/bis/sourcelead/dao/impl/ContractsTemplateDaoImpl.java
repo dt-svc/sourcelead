@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ContractsTemplateDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -165,6 +166,33 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 			contracts = contractsList.get(0);
 		}
 		return contracts;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ContractsTemplate findByContractTemplateName(String templateName, Long orgLocationId) throws Exception {
+			Session session = this.sessionFactory.getCurrentSession();
+			List<ContractsTemplate> contractsTemp = new ArrayList<ContractsTemplate>();
+			try{
+				contractsTemp = session.createQuery("from ContractsTemplate conTemp where conTemp.templateName=:templateName and conTemp.orgLocationId.id = :orgLocationId" )
+						.setString( "templateName", templateName ).setLong("orgLocationId", orgLocationId ).setCacheable(true).list();
+				if (contractsTemp.size() > 0) {
+					return contractsTemp.get(0);
+				} else {
+					return null;
+				}
+			}catch(Exception e){
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+			return null;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Contracts> getListOfContractsEnvId() {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Contracts>  contractsList = session.createQuery("from Contracts ct where ct.parentContractId.id IS NULL").setCacheable(true).list();
+		return contractsList;
 	}
 
 

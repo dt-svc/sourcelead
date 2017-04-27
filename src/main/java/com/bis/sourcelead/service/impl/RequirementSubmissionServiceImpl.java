@@ -320,6 +320,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 						 candidate.setExperienceMonths(jsonObj.getString("monthExp"));
 					 }
 					candidate.setCandidateType("Candidate");
+					candidate.setIsAssociate(Constants.NO);
 					candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 					candidate.setCreatedBy(user.getUserCode());
 					candidate.setCreatedDate(new Date());
@@ -1888,7 +1889,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 requirementSubmissionTemplateFieldsDao.storeRequirementSubmissionTemplateFields(clientSubmissionFields);
    		 RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
    		 requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
-   		 requirementSubmissionHistory.setToStage(submission.getSubmissionStatus().getValue());
+   		 requirementSubmissionHistory.setToStage(submission.getSubmissionStatus().toString());
    		 submission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMIT_TO_CLIENT);
    		 submission.setUpdatedBy(user.getUserCode());
    		 submission.setUpdatedDate(commonUtil.currentDate());
