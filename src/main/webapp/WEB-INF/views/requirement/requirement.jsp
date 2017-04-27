@@ -57,7 +57,7 @@ bottom: -14px;
 left:-20px !important;
 }
 .pras.req-title p{
-bottom:-14px;
+bottom:-2px;
 }
 </style>
 
@@ -540,10 +540,10 @@ $(document).ready(function () {
                 <select multiple class="chosen-select form-control" name="noticePeriod" id="noticePeriod" data-validation-optional="true" onclick="getNoticeperiod();">
 					     <option  selected value="${noticePrd}">${noticePrd}</option>
 					        <option  ${requirement.noticePeriod  == 'Immediately Available' ? 'selected' : ''}>Immediately Available</option>
-	                		 <option  ${requirement.noticePeriod  == '15-Days' ? 'selected' : ''}>15-Days</option>
-	               			  <option  ${requirement.noticePeriod  == '1-Month' ? 'selected' : ''}>1-Month</option>
-	                		 <option  ${requirement.noticePeriod  == '2-Month' ? 'selected' : ''}>2-Month</option>
-	                 		<option  ${requirement.noticePeriod  == '3-Month' ? 'selected' : ''}>3-Month</option>
+	                		 <option  ${requirement.noticePeriod  == '15-Days' ? 'selected' : ''}>15 Days</option>
+	               			  <option  ${requirement.noticePeriod  == '1-Month' ? 'selected' : ''}>1 Month</option>
+	                		 <option  ${requirement.noticePeriod  == '2-Month' ? 'selected' : ''}>2 Months</option>
+	                 		<option  ${requirement.noticePeriod  == '3-Month' ? 'selected' : ''}>3 Months</option>
                 </select>
               </div>
             </div>
@@ -606,7 +606,7 @@ $(document).ready(function () {
 								value="" onclick="getTemplateVal();">
 						</c:otherwise>
 					</c:choose>
-					<label>&nbsp;&nbsp;<strong>Is Template</strong>
+					<label>&nbsp;&nbsp;<strong>Save as a template</strong>
 						&nbsp;&nbsp;
 					</label>
 				</div>

@@ -173,13 +173,7 @@
            success :function(data) {
            	
                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
-              		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-              		 else if (data.indexOf('exception') >= 0) {
-              			 location.replace(sourceleadUrl+"/errorPage");
-              		 }
-              		 else{
+              		
               			 
               			var result = '';
               			result = result +'<input type="hidden" id="emailListType" value='+type+'>';
@@ -252,7 +246,6 @@
 	                     $("#mailBoxList").append(result); 
 	                     pagination(); 
 	                     $("#mailLoading").removeAttr("style"); 
-			    	} 
                 }else{
  	    	         
                	var result ="";
