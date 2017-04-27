@@ -5,6 +5,6 @@ import com.bis.sourcelead.entity.User;
 
 public interface TimesheetReportService {
 
-	String prepareTimeSheetDiv(String frequencyYear, String frequencyMonth,User loginUser,OrgLocations orgLocations);
+	String prepareTimeSheetDiv(String frequencyYear, String frequencyMonth,User loginUser,OrgLocations orgLocations) throws Exception;
 
 }

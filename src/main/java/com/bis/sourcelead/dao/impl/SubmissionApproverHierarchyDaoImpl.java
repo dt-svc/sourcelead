@@ -850,6 +850,48 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		return sah;
 	}
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(Long approverUserId,Long projectMemberId, Date startDate, Date endDate) throws Exception {
+			
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlStartDate = null;
+		if(startDate != null){
+			sqlStartDate = new java.sql.Date(startDate.getTime());
+		}
+		
+		java.sql.Date sqlEndDate = null;
+		if(endDate != null){
+			sqlEndDate = new java.sql.Date(endDate.getTime());
+		}
+		
+		String query = "from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee  emp  left join fetch emp.user "
+				+ " where  pm.id = :projectMemberId and (sah.frequencyStartDate = :startDate OR sah.frequencyEndDate = :endDate OR :startDate BETWEEN sah.frequencyStartDate and sah.frequencyEndDate) and sah.submissionId.status = '1'"
+				+ "  and ( "
+				/*
+				*  logged in user as approver in project_approver_hierarchy (Either Admins/project_managers/team leads ...etc)
+				*/
+				+ "  hierarchy.approverUserId.id = :userId "
+				/*
+				 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
+				 */
+				+ "  OR ( :userId NOT IN( select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.status = '1' and subsah.submissionId.projectMembers.id = pm.id  and subsah.frequencyStartDate = :startDate and subsah.frequencyEndDate = :endDate) and "+Constants.loginUserAsAdminWithMaxHeirarchyLevel+") "
+				+ "   ) ";
+		@SuppressWarnings("unchecked")
+		List<SubmissionApproverHierarchy> submissionApproverHierarchyList =session.createQuery(query.toString()).setLong("userId", approverUserId).setLong("projectMemberId", projectMemberId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setCacheable(true).list(); 
+	    SubmissionApproverHierarchy submissionApproverHierarchy = null;
+	    if(submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()){
+	    	submissionApproverHierarchy = submissionApproverHierarchyList.iterator().next();
+	    }
+	    else{
+	    	submissionApproverHierarchy = new SubmissionApproverHierarchy();
+	    	submissionApproverHierarchy.setTotalHours(0f);
+             submissionApproverHierarchy.setSubmissionStatus(Submission_Status.NEW);
+             submissionApproverHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.NEW);
+	    }
+		
+		return submissionApproverHierarchy;
+	}
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })

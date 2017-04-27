@@ -417,6 +417,12 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 		return  submissionApproverHierarchyDao.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMemberId);
 	}
 
+	@Override
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(
+			Long approverUserId, Long projectMemberId, Date startDate, Date endDate) throws Exception {
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(approverUserId, projectMemberId, startDate, endDate);
+	}
+
 	
 	
 	
