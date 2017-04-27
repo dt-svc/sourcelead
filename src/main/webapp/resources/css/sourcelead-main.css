@@ -1618,18 +1618,10 @@ div.pages-404.width {
 overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 80px; display: block;
 }
 .tbldata-dotdot-100 {
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	width: 100px;
-	display: block;
+overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100px; display: block;
 }
 .tbldata-dotdot {
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	width: 180px;
-	display: block;
+overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 180px; display: block;
 }
 .tbldata-dotdot-vsm {
 	overflow: hidden;
@@ -6390,14 +6382,18 @@ margin-top: 2px;
 .timesheet_header .glyphicon-play {
 top: 5px !important; right: 20px !important;
 }
-.invoice_table s.table_footer {
-    border-top:1px solid #ccc; border-bottom:1px solid #ccc;
+.OpenJob h5 ul li {
+    border: 1px solid rgba(3, 169, 244, 0.17); background-color: rgba(3, 169, 244, 0.1); border-radius: 5px !important;
+    padding: 4px 10px !important; margin-right: 5px !important;
+}
+.invoice_table .table_footer tr td {
+    border-top:1px solid #ccc; border-bottom:1px solid #ccc; background: #cfd8dc !important;
 }
 .user_details_cta.templatesdetails {
        min-height: auto;
 }
 .pb{
-       padding-bottom: 15px;
+    padding-bottom: 15px;
 }
 .user_summary_edit.user_summaryEdit {
 height: auto; padding: 5px 5px; top: 45px; left: inherit; right: 30px; width: 90%;
@@ -6420,6 +6416,92 @@ margin: 0; bottom: -10px;
 .displyBlock .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
     display: block;
 }
+.selectRateper {
+   width: 130px !important;
+}
+.viewTemplate.checklist{
+	padding: 0;
+}
+.viewTemplate.checklist .sjfb-field{
+	width: 100%; margin: 0; margin-bottom: 15px; font-weight: normal; background-color: rgba(255, 255, 255, 0.9); border-radius:5px;
+	padding: 10px; box-shadow: 0px 0px 2px rgba(0,0,0,0.1);
+}
+.viewTemplate.checklist .sjfb-field:nth-child(2n+2){
+	margin-left: 0;
+}
+.viewTemplate.checklist .sjfb-field label{
+	font-weight: normal; width: 20%; margin-right: 5px;margin-bottom: 0;font-size: 14px;
+}
+.viewTemplate.checklist .choices{
+	float: left; width:78.5%;
+}
+.viewTemplate.checklist .choices label{
+	width: 100%; margin-bottom: 10px;
+}
+.viewTemplate.checklist input[type=checkbox], .viewTemplate.checklist input[type=radio]{
+	margin: 0 10px 0 0; position: relative; top:2px;
+}
+.invoice_table .form-horizontal .control-label {
+    padding-top: 0;
+}
+.btn-sm.buttonCustom {
+    padding: 1px 3px;margin-left: 10px; line-height: inherit;
+}
+.invoiceAttachment span{
+    max-width:100% !important;
+}
+.project_wrap_table.invoice_table {
+    width: 97.5%; margin: 15px auto 0; overflow-y: auto;
+}
+.project_wrap_table.invoice_table table {
+    border-bottom: 1px solid #ccc; margin-bottom: 15px;
+}
+.project_wrap_table.invoice_table table tr td {
+    padding: 5px 15px;
+}
+div.inputCustom {
+    width: 225px;
+}
+.inputCustom input[type="text"] {
+    border:none; background-color: none; border-bottom: 1px solid #ddd; padding: 5px; width: 49%;
+}
+.hide_image .btn-group a[href="#InsertImage"]{
+    display: none;
+}
+.ratetype p {
+    left: 0 !important; position: absolute; bottom: -14px;
+}
+/* invoice dashboard styels */
+.receiveBtn {
+    cursor: pointer; border: 1px solid; color:#fff; padding: 1px 5px; border-radius: 3px;
+    background-color: #337ab7; border-color: #2e6da4; font-size:13px;
+}
+.menuWidget {
+    cursor: pointer;
+}
+.menuWidget .fa-ellipsis-h {
+    cursor: pointer; color: #787878;
+}
+.menuWidget ul.menupop {
+    position: absolute; top: 5px; right: 15px; padding: 5px 10px; border: 1px solid #ededed; background: #fff;
+    width: 195px; box-shadow: -1px 1px 2px #333; display: none;
+}
+.menuWidget ul li{
+    cursor: pointer; color: #263238;
+}
+.menuWidget ul li:hover{
+    color: #455a64;
+}
+.menuWidget ul li:last-child{
+    border-left: 1px solid #90a4ae;
+}
+.addtax_table table thead th {
+    padding: 5px 5px;background: #e0e0e0;
+}
+.addtax_table table tr td{
+    padding: 5px 5px;
+}
+/* invoice dashboard styels */
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

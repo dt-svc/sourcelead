@@ -194,7 +194,7 @@
           </c:forEach>
           				 
      <%--  <li class="${sessionData.nav == 'SocialInviter' ? 'side-nav-active' : ''}"><a href="<c:url value='/socialinviter'/>" title="SocialInviter"><span><i class="fa fa-bar-chart"></i></span>Social Inviter</a></li> --%>
-
+		<li class="${sessionData.nav == 'Billing' ? 'side-nav-active' : ''}"><a href="<c:url value='/invoiceList'/>" title="Biling"><span><i class="fa fa-money"></i></span>Billing</a></li>
         </ul>
       </div>
     </div>
