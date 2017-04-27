@@ -9,6 +9,16 @@
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+
+<style type="text/css">
+.onboardLabel p {
+margin-bottom: 0; margin-top: 7px;
+}
+.onboardLabel label.control-label:after{
+content:":";
+padding-left: 25px;	
+}
+</style>
  <script> 
 	$(document).ready(function(){
 		onboardCandidateSummaryDetails();
@@ -100,11 +110,11 @@
 	        		zipCode = "";
 	        	}
 	        	 var result = "";
-				 result = result +'	 <div class="col-md-12">                                                                                          ';
+				 result = result +'	 <div class="col-md-12 onboardLabel">                                                                                          ';
 				 result = result +'   <div class="form-horizontal">                                                                                   ';
 				 result = result +'     <p><strong>Employee Details</strong></p>                                                                      ';
 				 result = result +'     <div class="form-group">                                                                                      ';
-				 result = result +'       <label class="col-md-3 control-label">First Name <span class="text-danger paddingLeft">*</span></label>     ';
+				 result = result +'       <label class="col-md-3 control-label">First Name <span class="text-danger paddingLeft">*</span></label>';
 				 result = result +'       <div class="col-md-6">                                                                                      ';
 				 result = result +'           <label>'+json.firstName+'</label>                                                                      ';
 				 result = result +'       </div>                                                                                                      ';
@@ -306,7 +316,7 @@
 					 result = result +'        <div class="form-group">                                                                                   ';
 					 result = result +'            <label class="col-md-3 control-label">Onboard Template </label> ';
 					 result = result +'       <div class="col-md-6">                                                                                    ';
-					 result = result +'             <div id="onboardingTemplate"></div>                                                                                  ';
+					 result = result +'             <p id="onboardingTemplate"></p>                                                                                  ';
 					 result = result +'       </div>                                                                                                    ';
 					 result = result +'     </div>                                                                                                      ';
 				 }
