@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
@@ -23,6 +24,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
@@ -58,6 +60,10 @@ public class UserController {
 	@Autowired
 	UserRoleService userRoleService;
 	
+	@Autowired
+    CountriesService countriesService;
+	
+	
 	/**
 	 * To forward user creation jsp page
 	 * @param request
@@ -73,6 +79,12 @@ public class UserController {
 		
 		    Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
 		
+		    Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			if(null != countries){
+            model.addObject("loginCountryName", countries.getName());
+            model.addObject("currencyCode", countries.getCurrency());
+			}
+		    
 			List<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
 		    model.addObject("org_projectsList", projectsList);
 		    
@@ -104,7 +116,11 @@ public class UserController {
 		
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			String isTimeSheetEnrolled = (String) SourceLeadSessionManager.getSessionAttribute(request,"timesheet");
-			
+			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			if(null != countries){
+            model.addObject("loginCountryName", countries.getName());
+            model.addObject("currencyCode", countries.getCurrency());
+			}
 			User user = userService.getUserByIdAndOrgLocationsId(userId, orgLocations.getId());
 			if(user != null){
 				// to get a project list by userId
