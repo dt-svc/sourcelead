@@ -29,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OnBoardingTemplate;
@@ -1903,6 +1904,36 @@ public class CandidateOnBoardRestController {
 			 return "success";
 			 
 		   }
+		 
+		 
+		 @RequestMapping(value = "/viewCandidateOnboardTasksByOnboardingUUID" , method = RequestMethod.GET)
+		 public @ResponseBody  String viewCandidateOnboardTasksByOnboardingUUID(@RequestParam(value="onBoardingUUID", required=false) String onBoardingUUID,
+				 HttpServletRequest request,HttpServletResponse response) throws Exception {
+			 
+			 
+			 CandidateOnBoarding onboarding = candidateOnBoardingService.getCandidateOnBoardingByUUID(onBoardingUUID);
+			 
+			 List<Tasks> tasksList = taskService.getTasksListOnboardingId(onboarding.getId());
+				List<Tasks> taskList = new ArrayList<Tasks>();
+				if(null != tasksList && tasksList.size() > 0){
+					for(Tasks tasks : tasksList){
+						tasks.setTaskDateStr(Constants.DMY.format(tasks.getTaskDate()));
+						
+						StringBuilder userName = new StringBuilder();
+						if(null != tasks.getAssignedUserId().getLastName()){
+							tasks.setAssignedName(userName.append(tasks.getAssignedUserId().getFirstName()).append(" ").append(tasks.getAssignedUserId().getLastName()).toString());
+						}else{
+							tasks.setAssignedName(userName.append(tasks.getAssignedUserId().getFirstName()).toString());
+						}
+						taskList.add(tasks);
+					}
+					
+				}
+			 
+				return commonUtil.toJSON(taskList);
+			 
+		   }
+		 
 		 
 		 
 }
