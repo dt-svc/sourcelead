@@ -14,7 +14,7 @@
           <div class="pull-left">
             <h2>On-board Template</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='onboardingTemplatesList'/>">Templates List</a> &raquo; Create User </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='onboardingTemplatesList'/>">Templates List</a> &raquo; Create Template </div>
     </section>
     
     <div class="content-area content-new clearfix">
@@ -129,8 +129,8 @@
                 <div class="form-footer">
                   <div class="pull-right mr">
                      <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/dashboard/${SourceLeadWeb_orgLocationId}'">
-                    <input type="button" value="Save" id="save_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
-                    <input type="button" value="Save and Continue" id="save_continue_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
+                    <input type="button" value="Save" id="save_doc_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
+                    <input type="button" value="Save and Continue" id="save_continue_doc_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
                 </div>
                 </form>
@@ -788,6 +788,9 @@ function createTemplate(saveType){
 	        
 	        var sourceleadUrl ='${sourceleadUrl}';
 	        
+	    	$("#save_button").attr("disabled", "disabled");
+    		$("#save_continue_button").attr("disabled", "disabled");
+	        
 	       
 	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	        $.ajax({
@@ -808,6 +811,10 @@ function createTemplate(saveType){
 	     	        $("#templateId").val(templateId);
 	     	        $("#onboardtemplateId").val(templateId);
 	     	        $("#documentstemplateId").val(templateId);
+	     	        
+	     	        $("#save_button").removeAttr("disabled")
+	        	    $("#save_continue_button").removeAttr("disabled")
+	        	    
 	     	        $("#loading").removeAttr("style");
 		        },
 		    }); 
@@ -844,6 +851,8 @@ function createTemplateDocs(saveType){
       
 	   var form = $('#templateDocuments_form')[0];
 	   var formData = new FormData(form); 
+	   $("#save_doc_button").attr("disabled", "disabled");
+	   $("#save_continue_doc_button").attr("disabled", "disabled");
 	
    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	$.ajax({
@@ -865,9 +874,12 @@ function createTemplateDocs(saveType){
 	        	}else{
 	        		getTemplatePolicyDocumentsDetails();
 	        		getTemplateSupportingDocumentsDetails();
-	        		getTemplateContractsDocumentsDetails(templateId);
-	        		getTemplateFormsDocumentsDetails(templateId);
+	        		getTemplateContractsDocumentsDetails();
+	        		getTemplateFormsDocumentsDetails();
 	        	}
+	    	  
+	    	  $("#save_doc_button").removeAttr("disabled");
+      	      $("#save_continue_doc_button").removeAttr("disabled");
 	    	  $("#loading").removeAttr("style");
 	    	  
 	      }
@@ -1290,7 +1302,7 @@ function getOnboardingTasksList(){
         	
         	result = result +'<div class="form-footer clearfix mt">';
     		result = result +'<div class="pull-right mr">';
-    		result = result +'<input type="button" value="Finish" onclick="saveAndFinishOnboardTemplate('+templateId+');" class="btn btn-sm btn-primary">';
+    		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishOnboardTemplate('+templateId+');" class="btn btn-sm btn-primary">';
     		result = result +'</div>';
     		result = result +'</div>';
     		
@@ -1329,12 +1341,13 @@ function deleteTask(taskId){
 function saveAndFinishOnboardTemplate(templateId){
 	
 	var sourceleadUrl = '${sourceleadUrl}';
+	$("#finish_task").attr("disabled", "disabled");
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/saveAndFinishOnboardTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
 	    success: function(data) {
-       	 
+	    	 $("#finish_task").removeAttr("disabled");
 	    	 $("#loading").removeAttr("style");
 	    }
   }); 
