@@ -27,7 +27,6 @@
 .user_summary_edit_cta p{
     margin: -5px 15px;
 }
-
 .remove_user_pop input{
 	color: #333;
 }
@@ -166,8 +165,6 @@ $(document).ready(function(){
 			    var roles = "";
 			    
 			    var socialLinks = "";
-			    
-			    
 			    if(json.user.linkedIn != null && json.user.linkedIn != "" && json.user.linkedIn != 'undefined' ){
 			    	socialLinks =  socialLinks + '&nbsp;&nbsp;<a href='+json.user.linkedIn+' title="linkedIn" target="_new"><i class="fa fa-linkedin-square text-primary fa-2x"></i></a>';
 			    }
@@ -195,7 +192,6 @@ $(document).ready(function(){
 			    }
 			    
 			    var userName = '';
-			    
 			    if(json.user.lastName != null && json.user.lastName != '' && json.user.lastName != 'undefined'){
 			    	userName = json.user.firstName+" "+json.user.lastName;
 			    }else{
@@ -305,6 +301,36 @@ $(document).ready(function(){
 					result = result + ' 		</div>';
 				}
 				
+				 if(json.userEmploymentType != null && json.userEmploymentType != "" && json.userEmploymentType != 'undefined'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				<strong>Employment Type:</strong><span class="fix">'+json.userEmploymentType+'</span><div class="clearfix"></div>';
+					result = result + '			</div>';
+				} 
+				 
+				 if(json.vendorName != null && json.vendorName != "" && json.vendorName != 'undefined'){
+						result = result + '			<div class="project_details_cta">';
+						result = result + '				<strong>Vendor:</strong><span class="fix">'+json.vendorName+'</span><div class="clearfix"></div>';
+						result = result + '			</div>';
+					} 
+				 
+				 if(json.designationOtherType != null && json.designationOtherType != "" && json.designationOtherType != 'undefined'){
+					 result = result + '			<div class="project_details_cta">';
+						result = result + '				<strong>Employment Other Type:</strong><span class="fix">'+json.designationOtherType+'</span><div class="clearfix"></div>';
+						result = result + '			</div>';
+				 }
+				 
+				 if(json.vendorContactName != null && json.vendorContactName != "" && json.vendorContactName != 'undefined'){
+						result = result + '			<div class="project_details_cta">';
+						result = result + '				<strong>Vendor Contact:</strong><span class="fix">'+json.vendorContactName+'</span><div class="clearfix"></div>';
+						result = result + '			</div>';
+					} 
+				
+				 if(json.currentCurrency != null && json.currentCurrency != "" && json.currentCurrency != 'undefined'){
+						result = result + '			<div class="project_details_cta">';
+						result = result + '				 <strong>Currency:</strong><span class="fix" title="'+json.currentCurrency+'">'+json.currentCurrency+'</span><div class="clearfix"></div>';
+						result = result + ' 		</div>';
+					}
+				 
 				if(json.rate != null && json.rate != "" && json.rate != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				 <strong>Rate:</strong><span class="fix" title="'+json.rate+'">'+json.rate+'</span><div class="clearfix"></div>';
@@ -346,17 +372,28 @@ $(document).ready(function(){
 					result = result + '			</div>';
 				}
 				
+				if(json.roleChangeReason != null && json.roleChangeReason != "" && json.roleChangeReason != 'undefined'){
+					result = result + ' 		<div class="project_details_cta">';
+					result = result + '				<strong>RoleChangeReason:</strong><span class="fix">'+json.roleChangeReason+'</span><div class="clearfix"></div>';
+					result = result + '			</div>';
+				}
+				
 				if(json.userState != null && json.userState != "" && json.userState == 'INACTIVE'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				<strong>Reason:</strong><span class="fix">'+json.terminateReason+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
 				}
 				
-				
+				/* if(json.departmentName != null && json.departmentName != "" && json.departmentName != 'undefined'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				 <strong>Department Name:</strong><span class="fix" title="'+json.departmentName+'">'+json.departmentName+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+				} */
 				result = result + '	   </div>';				
-				result = result + ' <div class="user_summary_edit" id="editUserDiv"></div>';
+				/* result = result + ' <div class="user_summary_edit user_summaryEdit" id="editUserDiv"></div>'; */
 				result = result + '	  <div class="clearfix"></div>';
 				result = result + '	   </div>';
+				result = result + ' <div class="user_summary_edit user_summaryEdit" id="editUserDiv"></div>';
 				result = result + '	  <div class="clearfix"></div>';
 				result = result + '	</div>';
 				result = result + '</div>';
@@ -378,7 +415,6 @@ $(document).ready(function(){
 			  		$('.chosen-select').each(function() {
 			  			var $this = $(this);
 			  			$this.next().css({'width': '100%'});
-
 			           });
 	    
 	      },
@@ -667,7 +703,35 @@ function getChangeRole(userId,userRoleId){
 }
 </script>
 
-
+<script>
+ function getDepartmentsList(){
+	 var departmentName = $("#updatedepartment").val();
+		var departmentOrgRelationId = $("#updateDepartmentOrgRelationId").val();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+	    	type: "POST",
+	    	url: sourceleadUrl+"/getDepartmentsList?${_csrf.parameterName}=${_csrf.token}",
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	
+	        	$('#department').append('<option value="">--Select Department --</option>');
+	            for(var i=0;i<json.length;i++){
+	            	  var opt = json[i];
+	            	  if(departmentName != null && departmentName != 'undefined' && departmentName  != ''){
+	            		  $('#department').append('<option '+ (opt.id == departmrnt ? "selected" : '') +' value="'+opt.id+'">'+opt.departmentName+'</option>');
+		            	}else{
+		            		$('#department').append('<option value='+opt.id+' >'+opt.departmentName+'</option>');	
+		            	}
+	            	  
+	            }
+	        	$("#department").empty();
+		        $("#department").append(output);
+		        $('#department').trigger("chosen:updated");
+	        },
+	    });
+ }
+ 
+ </script>  
 
 
 
@@ -850,24 +914,25 @@ function getChangeRole(userId,userRoleId){
      var EmployeeId = document.getElementById("EmployeeId").value;
      var EmailId = document.getElementById("EmailId").value;
      var sourceleadUrl ='${sourceleadUrl}';
-     var RatePer = document.getElementById("RatePer").value;
-	 if(RatePer != null && RatePer != ""){
-		 $('#Rate').removeAttr('data-validation-optional');
-		 $('#Rate').attr("data-validation","required"); 
-	 }else{
-		 $('#Rate').removeAttr('data-validation');
-	 	 $('#Rate').attr("data-validation-optional","true"); 
-		 $('#RatePer').removeAttr('data-validation');
-	 	 $('#RatePer').attr("data-validation-optional","true"); 
-	 }
-     var Rate = document.getElementById("Rate").value;
-     if(Rate != null && Rate != ""){
-         $('#RatePer').removeAttr('data-validation-optional');
-         $('#RatePer').attr("data-validation","required");
-     }else{
-         $('#RatePer').removeAttr('data-validation');
-         $('#RatePer').attr("data-validation-optional","true");
-     }
+     
+     var RatePer = document.getElementById("RatePer").value; 
+		if(RatePer != null && RatePer != ""){
+			$('#Rate').removeAttr('data-validation-optional');
+			$('#Rate').attr("data-validation","required validate_Space validate_float validate_length length1-8"); 
+		}else{
+			$('#Rate').removeAttr('data-validation');
+			$('#Rate').attr("data-validation-optional","true"); 
+		}
+		 
+		var Rate = document.getElementById("Rate").value; 
+		if(Rate != null && Rate != ""){
+			$('#RatePer').removeAttr('data-validation-optional');
+			$('#RatePer').attr("data-validation","required");
+			$('#Rate').attr("data-validation","required validate_Space validate_float validate_length length1-8");
+		}else{
+			$('#RatePer').removeAttr('data-validation');
+			$('#RatePer').attr("data-validation-optional","true"); 
+		}
      
       if ($('#editUser_form').validate(false, validationSettings)){
     	  if(EmployeeId!=null&&EmployeeId!="" && empId != EmployeeId){
@@ -1149,10 +1214,18 @@ $("#editRoleDetailsList").empty();
 			    var dailyHours = "";
 			    var emailId= "";
 			    var manager = "";
-			    
+			    var designationOtherType = "";
 				if(json.employeeId != null && json.employeeId != "" && json.employeeId != 'undefined'){
 					employeeId = json.employeeId;
 				}
+				
+				if(json.designationOtherType != null && json.designationOtherType != "" && json.designationOtherType != 'undefined'){
+					designationOtherType = json.designationOtherType;
+				}
+				
+				/* if(json.userEmploymentType != null && json.userEmploymentType != "" && json.userEmploymentType != 'undefined'){
+					userEmploymentType = json.userEmploymentType;
+				} */
 				
 				if(json.user.lastName != null && json.user.lastName != "" && json.user.lastName != 'undefined'){
 					lastName = json.user.lastName;
@@ -1185,9 +1258,11 @@ $("#editRoleDetailsList").empty();
 					result = result + ' </div>';
 					
 					result = result + ' <div class="user_summary_edit_cta">';
-					result = result + '<strong>Role:</strong><span class="fix">'+json.roles.displayName+'</span></div>';
+					result = result + ' <label><strong>Role:</strong></label>';
+					result = result + '<div class="clearfix mt10"><span>'+json.roles.displayName+'</span></div>';
+					/* result = result + '<strong>Role:</strong><span class="fix">'+json.roles.displayName+'</span></div>'; */
 					result = result + ' </div>'; 
-					
+					result = result + ' <div class="clearfix"></div>';
 					result = result + ' <div class="user_summary_edit_cta" id="EmployeeIdDiv">';
 					result = result + ' <label>Employee Id</label>';
 					result = result + ' <input type="text" value="'+employeeId+'" name="EmployeeId" id="EmployeeId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" onKeyUp="validateEmployeeId('+json.id+','+json.user.id+');">';
@@ -1213,6 +1288,7 @@ $("#editRoleDetailsList").empty();
 						result = result + ' </div>';
 					}
 					
+					
 					if(json.allReportingManagers != null && json.allReportingManagers != "" && json.allReportingManagers != 'undefined' && json.allReportingManagers.length > 0){
 						result = result + ' <div class="user_summary_edit_cta">';
 						result = result + ' <label>Manager</label>';
@@ -1230,9 +1306,67 @@ $("#editRoleDetailsList").empty();
 			 	     	result = result+"</select>"; 
 			 	     	result = result + ' </div>';
 					}
-		 	     	
-					result = result + ' <div class="user_summary_edit_cta">';
+					// moving date bottom to top
+					/* result = result + ' <div class="user_summary_edit_cta">';
+					    result = result + ' <label>Department</label>';
+						result = result + '<select multiple class="form-control chosen-select" id="department" name="department"  field-name="Department" '+json.departmentName+'>';
+						result = result + '</select>';
+						result = result + '<input type="hidden" name="updatedepartment" id="updatedepartment" value="'+json.departmentName+'">';
+						result = result + '<input type="hidden" name="updateDepartmentOrgRelationId" id="updateDepartmentOrgRelationId" value="'+json.departmrnt+'">';	
+						result = result + '</div>'; */
+					
+					   result = result + '<div class="user_summary_edit_cta">';
+ 					   result = result + ' <label>Employment type</label>';
+						result = result + '<select class="form-control" id="designationType" name="designationType"  onchange="getEmployeementType();updateUserDesignationOtherType();" field-name="Employment type">';
+						result = result + '<option value="">--Select Employment Type--</option>';
+						result = result + ' <option '+(json.userEmploymentType == "C2C" ? "selected" : '') +'>C2C</option>';
+						result = result + ' <option '+(json.userEmploymentType == "C2C-1099" ? "selected" : '') +'>C2C-1099</option>';
+						result = result + '<option  '+ (json.userEmploymentType == "W-2" ? "selected" : '') +'>W-2</option>';
+						result = result + ' <option '+(json.userEmploymentType == "C2H" ? "selected" : '') +'>C2H</option>';
+						result = result + ' <option '+(json.userEmploymentType == "C2H -1099" ? "selected" : '') +'>C2H -1099</option>';
+						result = result + '<option  '+(json.userEmploymentType == "Part Time" ? "selected" : '') +'>Part Time</option>';
+						result = result + '<option  '+(json.userEmploymentType == "Full Time" ? "selected" : '') +'>Full Time</option>';
+						result = result + '<option  '+(json.userEmploymentType == "Other" ? "selected" : '') +'>Other</option>';
+						result = result + ' </select>';
+						result = result + '</div>';
+						
+						result = result + '<div class="user_summary_edit_cta select-field" id="designationTypeDiv" style="display:none">';
+						result = result + ' <label>Employment Other Type </label>';
+						result = result + '<input type="text" class="form-control" name="designationOtherType"  id="designationOtherType" value="'+designationOtherType+'" placeholder="Employment Other Type" field-name="Employment Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
+						result = result + '</div>';
+					    result = result + '<span class="" id="hideVendor" style="display:none">'; 
+						result = result + '<div class="user_summary_edit_cta" id="vendor">';
+						result = result + ' <label>Vendor</label>';
+						result = result + '<select  class="chosen-select form-control" name="vendors"  id="vendors" value="'+json.vendorName+'" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();">';
+						result = result + '</select>';
+						result = result + '<input type="hidden" name="updateVendorName" id="updateVendorName" value="'+json.vendorName+'">';
+						result = result + '<input type="hidden" name="updateVendorOrgRelationId" id="updateVendorOrgRelationId" value="'+json.vendorOrgRelationId+'">';
+						result = result + '</div>'; 
+						
+						result = result + '<div class="user_summary_edit_cta select-field" id="vendorContacterr">';
+						result = result + ' <label>Vendor Contact</label>';
+						result = result + '<select  class="chosen-select form-control" name="vendorcontact"  value="'+json.vendorContactName+'" id="vendorcontact" field-name="Vendor Contact"  placeholder="select Vendor Contact">';
+						result = result + '</select>';
+						result = result + '<input type="hidden" name="updateVendorContactName" id="updateVendorContactName" value="'+json.vendorContactName+'" />';
+						result = result + '<input type="hidden" name="updateSpocId" id="updateSpocId" value="'+json.vendorSpocId+'" />';
+						result = result + '</div>';
+						 
+						result = result + '</span>';
+						
+					
+					
+					
+					// moving date bottom to top
+					result = result + ' <div class="user_summary_edit_cta select-field">';
 					result = result + ' <label>Rate</label>';
+		            result = result+'  <select class="rate_sele" id="currentCurrency" name="currentCurrency"> ';
+					result = result + ' <option '+(json.currentCurrency == "INR" ? "selected" : '') +'>INR</option>';
+					result = result + ' <option '+(json.currentCurrency == "AUD" ? "selected" : '') +'>AUD</option>';
+					result = result + ' <option '+(json.currentCurrency == "USD" ? "selected" : '') +'>USD</option>';
+					result = result + ' <option '+(json.currentCurrency == "GBP" ? "selected" : '') +'>GBP</option>';
+					result = result + ' <option '+(json.currentCurrency == "SGD" ? "selected" : '') +'>SGD</option>';
+					result = result + '<option   '+(json.currentCurrency == "EUR" ? "selected" : '') +'>EUR</option>'; 
+					result = result+'</select>';
 					result = result + ' <input type="text" class="rate_filed" value="'+rate+'" id="Rate" field-name="Rate" name="Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
 					result = result + ' <select class="rate_sele" id="RatePer" name="RatePer" field-name="Rate Per">';
 					result = result + ' <option value="">-Rate Per-</option>';
@@ -1246,12 +1380,14 @@ $("#editRoleDetailsList").empty();
 					result = result + ' </select>';
 					result = result + ' </div>';	
 					
+					result = result + ' <div class="clearfix"></div>';
+					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Date of join</label>';
 					if(json.hireDateStr != null && json.hireDateStr != "" && json.hireDateStr != "undefined"){
-						result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" readonly="readonly">';
+						result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" readonly="readonly" class="calendar">';
 					}else{
-						result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" readonly="readonly">';
+						result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" readonly="readonly" class="calendar">';
 					}
 					result = result + ' </div>';	
 					
@@ -1259,6 +1395,7 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <label>Day hours</label>';
 					result = result + ' <input type="text" value="'+dailyHours+'" name="DayHours" id="DayHours" data-validation="validate_Space validate_int validate_length length1-2" data-validation-optional="true" onblur="validateDayHours();">';
 					result = result + ' </div>';
+					
 					
 					result = result + ' <div class="clearfix"></div>';
 					result = result + ' <div class="user_summary_edit_cta">';
@@ -1275,12 +1412,112 @@ $("#editRoleDetailsList").empty();
 				$(".error").removeClass("error");
 				$('#editUserDiv').find('p.jquery_form_error_message').remove();
 			    $("#editUserDiv").empty(); 
-			    $("#editUserDiv").append(result);  
+			    $("#editUserDiv").append(result);
+			    
+			    $("#vendorcontact").chosen();
+			    $("#vendorcontact, #user_department").trigger("chosen:updated");
+			    
+			    var config = {
+				  		  '.chosen-select'           : {},
+				  		  '.chosen-select-deselect'  : {allow_single_deselect:true},
+				  		  '.chosen-select-no-single' : {disable_search_threshold:10},
+				  		  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+				  		  '.chosen-select-width'     : {width:"95%"}
+				  		}
+				  		for (var selector in config) {
+				  		  $(selector).chosen(config[selector]);
+				  		}
+				  		$('.chosen-select').each(function() {
+				  			var $this = $(this);
+				  			$this.next().css({'width': '100%'});
+				           });
+			    
+			    if(json.userEmploymentType == "Other"){
+			    	$("#designationTypeDiv").show();
+			      }
+			    getEmployeementType();
+			    getVendorsByOrgLocationId();
+			    getDepartmentsList();
 	        },
 		});
 }
 </script>
 
+
+<script>
+function updateUserDesignationOtherType(){
+	var userOtherType = $('#designationType').val(); 
+	if(userOtherType == 'Other' &&  userOtherType != '' && userOtherType !='undefined'){
+		  document.getElementById("designationTypeDiv").style.display="block";
+		  $("#designationOtherType").attr("data-validation-optional", "true");
+		  $("#designationOtherType").attr("data-validation", "validate_Space validate_length length2-250");
+	}else{
+		   document.getElementById("designationTypeDiv").style.display="none";
+		  $("#designationOtherType").attr("data-validation-optional", "true");
+		  $("#designationOtherType").find('p.jquery_form_error_message').remove();
+	} 
+}
+</script>
+
+<script>
+ function getVendorsByOrgLocationId(){
+	 var vendorName = $("#updateVendorName").val();
+	var vendorOrgRelationId = $("#updateVendorOrgRelationId").val();
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getVendorsByOrgLocationId?", 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	//$('#vendors').empty();
+		        	$('#vendors').append('<option value="">--select Vendor --</option>');
+		            for(var i=0;i<json.length;i++){
+		            	  var opt = json[i];
+		            	  if(vendorName != null && vendorName != 'undefined' && vendorName  != ''){
+		            		  $('#vendors').append('<option '+ (opt.id == vendorOrgRelationId ? "selected" : '') +' value="'+opt.id+'">'+opt.orgName+'</option>');
+			            	}else{
+			            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');	
+			            	}
+		            	  
+		            }
+		            $('#vendors').trigger("chosen:updated");
+		            getVendorContactList();
+		            
+		        }
+		 });
+ }
+ </script>
+
+<script>
+ function getVendorContactList(){
+	 $('#vendorcontact').val('').trigger("chosen:updated");
+	 var orgRelationID = $('#vendors').val();
+	 if(orgRelationID != null && orgRelationID != '' && orgRelationID != 'undefined'){
+		 var vendorContactName = $("#updateVendorContactName").val();
+		 var vendorSpocId = $("#updateSpocId").val();
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+			    type: "POST",
+		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	$('#vendorcontact').empty();
+		        	$('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
+		             for(var i=0;i<json.length;i++){
+		            	 var opt = json[i];
+		            	 if(vendorContactName != null && vendorContactName != 'undefined' && vendorContactName  != ''){
+		            		 $('#vendorcontact').append('<option '+ (opt.id == vendorSpocId ? "selected" : '') +' value="'+opt.id+'">'+opt.spocName+'</option>');
+			            	}else{
+			            		$('#vendorcontact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
+			            	}
+		            	 
+		            }
+		            $('#vendorcontact').trigger("chosen:updated");
+		        }
+		 });
+	 }
+ }
+ </script>
 
 <script>
 function getCalendar(){
@@ -1290,6 +1527,26 @@ function getCalendar(){
 }
 </script>
 
+<script>
+function getEmployeementType(){
+	 var employementType = $('#designationType').val(); 
+		if(employementType == 'C2C' || employementType == 'C2C-1099'){
+			document.getElementById("hideVendor").style.display="block";
+			 $('#vendors').attr("data-validation","required"); 
+			 $('#vendorcontact').attr("data-validation","required"); 
+		}else{
+			 document.getElementById("hideVendor").style.display="none";
+			 $('#vendors').removeAttr("data-validation","required"); 
+			 $('#vendorcontact').removeAttr("data-validation","required"); 
+			 
+			 $('#vendors').val(''); 
+			 $('#vendorcontact').val(''); 
+			 
+		}
+		$('#designationType + p').remove();
+}
+</script>
+      
 
 <script>
 function removeUser(userId){
