@@ -28,7 +28,7 @@ window.onload = function () {
 			<div class="project_tabs_inn_head">
 			  <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
 			  	 <a href="<c:url value='/addDepartment'/>"><i class="fa fa-plus"></i>Department</a>
-			     <a href="<c:url value='/roleHierarchy'/>"><i class="fa fa-plus"></i>Add Hierarchy</a>
+			     <a href="<c:url value='/roleHierarchy'/>"><i class="fa fa-plus"></i>Hierarchy</a>
                  <a href="javascript:void(0)" class="addcon-pop"><i class="glyphicon glyphicon-plus"></i>Add Role</a>
               </sec:authorize>
               

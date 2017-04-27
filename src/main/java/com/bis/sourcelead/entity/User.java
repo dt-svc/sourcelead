@@ -201,6 +201,9 @@ public class User implements Serializable{
 	@Transient
     private long userRejectedApplicantsCount;
 	
+	@Transient
+	private String dateOfJoin;
+	
 	
 
 	public Status getPreviousUserState() {
@@ -620,7 +623,14 @@ public class User implements Serializable{
 	public void setRegisterOptionalServiceId(String registerOptionalServiceId) {
 		this.registerOptionalServiceId = registerOptionalServiceId;
 	}
-	
-	
+
+	public String getDateOfJoin() {
+		return dateOfJoin;
+	}
+
+	public void setDateOfJoin(String dateOfJoin) {
+		this.dateOfJoin = dateOfJoin;
+	}
+
 	
 }

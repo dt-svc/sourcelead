@@ -175,7 +175,7 @@ public class UserServiceImpl implements UserService {
 	   String password = null;
 	   UserRole userRole = null;
 	   boolean isUserActive = false;
-	   user = userDao.findByEmail(jsonObj.getString("email"));
+	   user = userDao.findByUserName(jsonObj.getString("email"));
 	   if(null != user){
 		  isUserActive = userRoleService.isUserActive(user.getId());
 	   }
@@ -1193,6 +1193,11 @@ public class UserServiceImpl implements UserService {
 	public LinkedHashSet<User> getUsersListAsReoprtingManagersByOrgLocationIdHavingTabAccess(Long orgLocationsId, User user, Long tabId) throws Exception
 		{
 		return userDao.getUsersListAsReoprtingManagersByOrgLocationIdHavingTabAccess(orgLocationsId,user,tabId);
+	}
+
+	@Override
+	public List<User> getUsersByOrgLocationIdExceptLoggedInUser(Long orgLocationsId, Long userId) throws Exception {
+		return userDao.getUsersByOrgLocationIdExceptLoggedInUser(orgLocationsId, userId);
 	}
 	
 }

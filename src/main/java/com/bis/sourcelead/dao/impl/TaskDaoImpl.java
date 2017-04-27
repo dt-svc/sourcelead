@@ -161,6 +161,48 @@ public class TaskDaoImpl implements TaskDao{
 
 
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Tasks> getTasskByAssignedUserIdAndOrgLocationIdAndOnboardingId(Long orgLocationId, Long userId,
+			Long onboardingId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		 String query ="from Tasks tasks left join fetch tasks.ownerOrglocationId orglocation  left join fetch tasks.assignedUserId assignUser "
+		 		+ " left join fetch tasks.onboardingId where assignUser.id = :userId and orglocation.id = :orgLocationId "
+		 		+ " and tasks.onboardingId.id = :onboardingId";
+		List<Tasks> tasksScheduledList = session.createQuery(query).setLong("userId",userId).setLong("orgLocationId",orgLocationId).setLong("onboardingId", onboardingId).setCacheable(true).list();
+		return tasksScheduledList;
+	}
+
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Tasks> getTasskByAssignedUserIdAndOrgLocationIdAndOffboardingId(Long orgLocationId, Long userId,
+			Long offboardingId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		 String query ="from Tasks tasks left join fetch tasks.ownerOrglocationId orglocation  left join fetch tasks.assignedUserId assignUser "
+		 		+ " left join fetch tasks.offboardingId where assignUser.id = :userId and orglocation.id = :orgLocationId "
+		 		+ " and tasks.offboardingId.id = :offboardingId";
+		List<Tasks> tasksScheduledList = session.createQuery(query).setLong("userId",userId).setLong("orgLocationId",orgLocationId).setLong("offboardingId", offboardingId).setCacheable(true).list();
+		return tasksScheduledList;
+	}
+
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Tasks> getTasksListOffboardingId(Long offboardingId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		 String query ="from Tasks tasks left join fetch tasks.offboardingId left join fetch tasks.assignedUserId where tasks.offboardingId.id = :offboardingId";
+		List<Tasks> tasksList = session.createQuery(query).setLong("offboardingId", offboardingId).setCacheable(true).list();
+		return tasksList;
+	}
+
+
+
 
 }
 

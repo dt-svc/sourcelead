@@ -65,7 +65,7 @@ $(document).ready(function() {
                     <div class="form-horizontal clearfix">
                       <div class="clearfix mb10">
                         <div class="col-md-12" id="departmentNameDiv">
-                          <input type="text" class="form-control input-sm" value="" placeholder="Name *" name="departmentName" id="departmentName" data-validation="required validate_length length2-100" field-name="Department Name" onkeyup="validDepartmentname();">
+                          <input type="text" class="form-control input-sm" value="" placeholder="Name *" name="departmentName" id="departmentName" data-validation="required validate_length length2-100" field-name="Name" onkeyup="validDepartmentname();">
                         </div>
                       </div>
                       <div class="clearfix mb10">

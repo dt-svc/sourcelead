@@ -23,6 +23,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OnBoardingTemplateDocumentsService;
@@ -64,6 +65,9 @@ public class CandidateOnBoardController {
 	
 	@Autowired
 	RequirementOffersService requirementOffersService;
+	
+	@Autowired
+	CandidateOffBoardingService candidateOffBoardingService;
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -119,7 +123,9 @@ public class CandidateOnBoardController {
 		 
 		ModelAndView model = new ModelAndView();
 		
-		List<Tasks> tasksList = taskService.getTasskByAssignedUserIdAndOrgLocationId(orgLocations.getId(),user.getId());
+		CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(user.getId(), orgLocations.getId());
+		
+		List<Tasks> tasksList = taskService.getTasskByAssignedUserIdAndOrgLocationIdAndOnboardingId(orgLocations.getId(),user.getId(),candidateOnBoarding.getId());
 		List<Tasks> taskList = new ArrayList<Tasks>();
 		if(null != tasksList && tasksList.size() > 0){
 			for(Tasks tasks : tasksList){
@@ -238,9 +244,12 @@ public class CandidateOnBoardController {
 		
 		Integer onboardCount = candidateOnBoardingService.getCandidateOnBoardingListCountByOrgLocationId(orgLocations.getId());
 		
+		Integer offboardCount = candidateOffBoardingService.getCandidateOffBoardingListCountByOrgLocationId(orgLocations.getId());
+		
 		request.getSession().setAttribute("sessionData",sessionData);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("onboardCount", onboardCount);
+		model.addObject("offboardCount", offboardCount);
 		model.setViewName("onboard/candidateOnBoardingList");
 		return model;
 	}
@@ -260,24 +269,6 @@ public class CandidateOnBoardController {
 		request.getSession().setAttribute("sessionData",sessionData);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("onboard/candidateOnBoardCreation");
-		return model;
-	}
-	
-	
-	@RequestMapping(value = "/candidateOffBoardCreation")
-	public ModelAndView candidateOffBoardCreation(HttpServletRequest request) {
-		ModelAndView model = new ModelAndView();
-		
-		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-		if(sessionData == null)
-		{
-			sessionData = new SessionMaintainanceData();
-		}
-		sessionData.setNav(Constants.Users);
-		
-		request.getSession().setAttribute("sessionData",sessionData);
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("onboard/candidateOffBoardCreation");
 		return model;
 	}
 	

@@ -375,6 +375,23 @@ public Long getTasksCompletedTodayByLocationCodeandUserId(OrgLocations orglocati
 public List<Tasks> getTasskByAssignedUserIdAndOrgLocationId(Long orgLocationId, Long userId) throws Exception {
 	return taskDao.getTasskByAssignedUserIdAndOrgLocationId(orgLocationId, userId);
 }
+
+@Override
+public List<Tasks> getTasskByAssignedUserIdAndOrgLocationIdAndOnboardingId(Long orgLocationId, Long userId,
+		Long onboardingId) throws Exception {
+	return taskDao.getTasskByAssignedUserIdAndOrgLocationIdAndOnboardingId(orgLocationId, userId, onboardingId);
+}
+
+@Override
+public List<Tasks> getTasskByAssignedUserIdAndOrgLocationIdAndOffboardingId(Long orgLocationId, Long userId,
+		Long offboardingId) throws Exception {
+	return taskDao.getTasskByAssignedUserIdAndOrgLocationIdAndOffboardingId(orgLocationId, userId, offboardingId);
+}
+
+@Override
+public List<Tasks> getTasksListOffboardingId(Long offboardingId) throws Exception {
+	return taskDao.getTasksListOffboardingId(offboardingId);
+}
 }
 	
 
