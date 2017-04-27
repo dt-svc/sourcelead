@@ -54,7 +54,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		prepareTimeSheetDiv.append("<div class='timesheet_head timesheetRep'>");
 		          prepareTimeSheetDiv.append("<div class='timeReFi'>");
 			  	          LinkedHashSet<String>  tsrYearsList = CalendarUtil.getYearsListFromCurrentDate(2, 2);
-				          prepareTimeSheetDiv.append("		                <select id='frequencyYear' name='frequencyYear' class='form-control chosen-select' onchange=''  >");
+				          prepareTimeSheetDiv.append("		                <select id='frequencyYear' name='frequencyYear' class='form-control chosen-select'   >");
 							for (String yrStr : tsrYearsList) {
 								    StringBuilder isSelected = new StringBuilder("");
 								    String currentYear = CalendarUtil.getCurrentYear();
@@ -62,7 +62,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 								    	isSelected.append("selected='selected'");
 								    	selectedYear.append(yrStr);
 								    }
-								    else if(StringUtils.isNotEmpty(frequencyYear) && currentYear.equalsIgnoreCase(yrStr)){
+								    else if(StringUtils.isNotEmpty(frequencyYear) && frequencyYear.equalsIgnoreCase(yrStr)){
 								    	isSelected.append("selected='selected'");
 								    	selectedYear.append(yrStr);
 								    }  
@@ -74,7 +74,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 					 prepareTimeSheetDiv.append("	            </div>");
 					 prepareTimeSheetDiv.append("<div class='timeReFi'>");
 					 LinkedList<String>  tsrMonthsList = CalendarUtil.getAllMonths();
-			          prepareTimeSheetDiv.append("		                <select id='frequencyMonth' name='frequencyMonth' class='form-control chosen-select' onchange=''  >");
+			          prepareTimeSheetDiv.append("		                <select id='frequencyMonth' name='frequencyMonth' class='form-control chosen-select'  >");
 						for (String monthStr : tsrMonthsList) {
 							    StringBuilder isSelected = new StringBuilder("");
 							    String currentMonth = CalendarUtil.getCurrentMonth();
@@ -82,7 +82,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 							    	isSelected.append("selected='selected'");
 							    	selectedMonth.append(monthStr);
 							    }
-							    else if(StringUtils.isNotEmpty(frequencyMonth) && currentMonth.equalsIgnoreCase(monthStr)){
+							    else if(StringUtils.isNotEmpty(frequencyMonth) && frequencyMonth.equalsIgnoreCase(monthStr)){
 							    	isSelected.append("selected='selected'");
 							    	selectedMonth.append(monthStr);
 							    }  
@@ -92,6 +92,9 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 						}
 						prepareTimeSheetDiv.append("		                </select>");
 				prepareTimeSheetDiv.append("	            </div>");
+				 prepareTimeSheetDiv.append("<div class='timeReFi'>");
+					prepareTimeSheetDiv.append("	            <input type='button' onclick='timesheetReportsDiv();' class='btn btn-success' value='View'>	");
+				 prepareTimeSheetDiv.append("	            </div>");
 					
 				 StringBuilder statusDiv = timesheetReportsTableDiv(selectedYear.toString(),selectedMonth.toString(),orgLocations,loginUser);
 				 prepareTimeSheetDiv.append(statusDiv);		
@@ -154,6 +157,12 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 					} catch (Exception e) {}
 				}
 			}
+			timesheetApprovalDiv.append("	                    <th>Total</th>             ");
+			timesheetApprovalDiv.append("	                    <th>Project to Date</th>   ");
+			timesheetApprovalDiv.append("	                    <th>Last month</th>        ");
+			timesheetApprovalDiv.append("	                    <th>Stage</th>             ");
+			
+			 	 	 	
 			timesheetApprovalDiv.append("	                </tr>");
 			timesheetApprovalDiv.append("				</thead>");
 			timesheetApprovalDiv.append("	        	<tbody>");
@@ -214,10 +223,59 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 				    	    	                           
 				    	    	                        .append(" </div>")
 				    	    	                     .append("</td>");
+				    	    	 
+				    	    	 
+				    	    	
 				    	     }
 				     }
 			    	 
-			    	 
+				     timesheetApprovalDiv.append("<td>")
+                     .append(" <div class='week'>")
+                       .append(" <span class='draft'>").append(0.0).append("</span>")
+                          .append(" <div class='progress'>")
+                                  .append(" <div class='progress-bar progress-bar-striped active progress-bar-info' role='progressbar' style='width:60%'>")
+                                     .append(0.0)
+                                  .append("</div>")
+                                  .append(" <div class='progress-bar progress-bar-striped active progress-bar-warning' role='progressbar' style='width:40%'>")
+                                     .append(0.0)
+                                  .append("</div>")
+                          .append(" </div>")
+                        
+                     .append(" </div>")
+                  .append("</td>");
+				     
+				     timesheetApprovalDiv.append("<td>")
+                     .append(" <div class='week'>")
+                       .append(" <span class='draft'>").append(0.0).append("</span>")
+                          .append(" <div class='progress'>")
+                                  .append(" <div class='progress-bar progress-bar-striped active progress-bar-info' role='progressbar' style='width:60%'>")
+                                     .append(0.0)
+                                  .append("</div>")
+                                  .append(" <div class='progress-bar progress-bar-striped active progress-bar-warning' role='progressbar' style='width:40%'>")
+                                     .append(0.0)
+                                  .append("</div>")
+                          .append(" </div>")
+                        
+                     .append(" </div>")
+                  .append("</td>");
+				     
+				     timesheetApprovalDiv.append("<td>")
+                     .append(" <div class='week'>")
+                       .append(" <span class='draft'>").append(0.0).append("</span>")
+                          .append(" <div class='progress'>")
+                                  .append(" <div class='progress-bar progress-bar-striped active progress-bar-info' role='progressbar' style='width:60%'>")
+                                     .append(0.0)
+                                  .append("</div>")
+                                  .append(" <div class='progress-bar progress-bar-striped active progress-bar-warning' role='progressbar' style='width:40%'>")
+                                     .append(0.0)
+                                  .append("</div>")
+                          .append(" </div>")
+                        
+                     .append(" </div>")
+                  .append("</td>");
+				     
+				    timesheetApprovalDiv.append("<td><div class='sm'><b class='action'>Action Required</b></div></td>");
+				     
 			    	 
 			        timesheetApprovalDiv.append("</tr>");
 		  }
