@@ -45,7 +45,7 @@ window.onload = function () {
      <h3 id="role"></h3>
 	<select id="test-select" multiple="multiple">
 		 <c:forEach var="action" items="${actionsList}">
-		  <option value="${action.id}" data-section="${action.tabs.tabName == 'My Timesheets' || action.tabs.tabName == 'Timesheet Approval' ? 'Timesheets' : action.tabs.tabName}" ${action.isActionConfigured  == 'Y' ? 'selected' : ''} >${action.actionName}</option>
+		  <option value="${action.id}" data-section="${action.tabs.tabName == 'My Timesheets' || action.tabs.tabName == 'Timesheet Approval' ? 'Timesheets' : action.tabs.tabName == 'Associates List' ? 'Associates' : action.tabs.tabName}" ${action.isActionConfigured  == 'Y' ? 'selected' : ''} >${action.actionName}</option>
 	     </c:forEach>
     </select>
      </div>
