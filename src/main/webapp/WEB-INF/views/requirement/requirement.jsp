@@ -264,7 +264,7 @@ $(document).ready(function () {
 	                </span>
 	            </label>
                 <select class="form-control chosen-select" id="template"  onChange="setTemplateValues();">
-                   <option value=""  selected>Select template</option>
+                   <option value=""  selected>--- Select template ---</option>
                     <c:forEach var="title" items="${jobsTemplateList}">
 	                    <option value="${title.id}">${title.jobTitle}</option>
                      </c:forEach>   
@@ -296,7 +296,7 @@ $(document).ready(function () {
          <label class="col-md-3">Employment Type</label>
          <div class="col-md-9">
              <select class="selectpicker" id="jobType" name="jobType" onChange="getJobType(this);">
-	                 <option value="">&nbsp;&nbsp;&nbsp;&nbsp;------ Select -----</option>
+	                 <option value="" disabled selected>------ Select -----</option>
 	                 <option  ${requirement.jobType  == 'C2C' ? 'selected' : ''}>C2C</option>
 	                 <option  ${requirement.jobType  == 'W-2' ? 'selected' : ''}>W-2</option>
 	                 <option  ${requirement.jobType  == 'C2H' ? 'selected' : ''}>C2H</option>
@@ -355,7 +355,7 @@ $(document).ready(function () {
               <div class="form-group">
               <label class="col-md-3">Education</label>
               <div class="col-md-9">
-                <select multiple class="chosen-select form-control" name="education" id="education" data-validation-optional="true">
+                <select multiple class="chosen-select form-control" name="education" data-placeholder="Select Education Options" id="education" data-validation-optional="true">
                <c:forEach var="education" items="${educationsList}">
                		<c:set var = "NUM" value = "${0}"/>
                		<c:forEach var="existedEducation" items="${requirement.reqEducationListString}">
@@ -377,10 +377,10 @@ $(document).ready(function () {
             <div class="col-md-9">
               <div class="row">
 	                <div class="col-md-6">
-	                 <input type="text" class="form-control" placeholder="minExp" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-3 validate_float" data-validation-optional="true" onblur="minMaxExperience();" value="">
+	                 <input type="text" class="form-control" placeholder="MinExp" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-3 validate_float" data-validation-optional="true" onblur="minMaxExperience();" value="">
 	                </div>
 	                <div class="col-md-6" >
-	                <input type="text" class="form-control" id="maxExp" name="maxExp" placeholder="maxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_length length1-3 validate_float" data-validation-optional="true" onblur="minMaxExperience();" value="">
+	                <input type="text" class="form-control" id="maxExp" name="maxExp" placeholder="MaxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_length length1-3 validate_float" data-validation-optional="true" onblur="minMaxExperience();" value="">
 	                </div>
               </div>
               <div class="row" id="expId">
@@ -487,7 +487,7 @@ $(document).ready(function () {
          <div class="form-group">
               <label class="col-md-3">Skills</label>
               <div class="col-md-9">
-                <select multiple class="chosen-select form-control" name="skills" id="skills" data-validation-optional="true">
+                <select multiple class="chosen-select form-control" name="skills" id="skills" data-placeholder="Select Skills" data-validation-optional="true">
                <c:forEach var="skill" items="${skillsList}">
                		<c:set var = "NUM" value = "${0}"/>
                		<c:forEach var="existedSkill" items="${requirement.reqSkillsListString}">
@@ -543,7 +543,7 @@ $(document).ready(function () {
           <div class="form-group">
               <label class="col-md-3">Notice Period</label>
               <div class="col-md-9">
-                <select multiple class="chosen-select form-control" name="noticePeriod" id="noticePeriod" data-validation-optional="true" onclick="getNoticeperiod();">
+                <select multiple class="chosen-select form-control" name="noticePeriod" data-placeholder="Select Notice Period"  id="noticePeriod" data-validation-optional="true" onclick="getNoticeperiod();">
 					     <option  selected value="${noticePrd}">${noticePrd}</option>
 					        <option  ${requirement.noticePeriod  == 'Immediately Available' ? 'selected' : ''}>Immediately Available</option>
 	                		 <option  ${requirement.noticePeriod  == '15-Days' ? 'selected' : ''}>15 Days</option>
@@ -655,7 +655,7 @@ $(document).ready(function () {
               <div class="form-group">
                 <label class="col-md-3">Client<span class="text-danger">*</span></label>
                 <div class="col-md-9">
-                  <div class="form-icon">
+                  <div>
                    <c:set var="val" value="${requirement.isClientJob}"/>
                    <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
@@ -930,7 +930,7 @@ $(document).ready(function () {
          <div class="form-group parallel" style="display:none;">
                 <label class="col-md-3">Approver<span class="text-danger">*</span></label>
                 <div class="col-md-9">
-                    <select multiple class="chosen-select form-control" id="parallelApprover" name="parallelApprover" field-name="Approver" data-validation="required" data-validation-optional="true">
+                    <select multiple class="chosen-select form-control" id="parallelApprover" name="parallelApprover" field-name="Approver" data-validation="required" data-validation-optional="true" data-placeholder="Select Approver">
                        <c:if test="${requirement.requirementSubmissionStatus == 'OPEN' ||  requirement.requirementSubmissionStatus == 'ONHOLD'}">
                        <option disabled>Select Approver</option>
                        <c:forEach var="report" items="${approverList}">
@@ -1022,7 +1022,7 @@ $(document).ready(function () {
                   <input type="text" id="assignedTo" placeholder="Assign Team" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="popupWindow(${requirement.id});">
 
                   </span>
-                  <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();"></i> </span>
+                  <span data-target="#addTeam" data-toggle="modal" title="Add Team"> <i class="fa fa-plus btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();"></i> </span>
                   </div>
                 <!-- Modal content Assign To -->
                 <div role="dialog" id="assignTeam"   class="modal fade">
