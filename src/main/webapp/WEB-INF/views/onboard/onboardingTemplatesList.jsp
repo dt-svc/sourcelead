@@ -21,7 +21,9 @@
 			<div class="project_wrap">
 			<div class="timesheet_head">
 			<ul>
-			<li><a href="<c:url value='/addNewOnboardTemplate'/>"><i class="fa fa-plus"></i>Add Template</a></li>
+			 <sec:authorize access="hasRole('ROLE_CREATE_ON_BOARD_TEMPLATE')"> 
+			 	<li><a href="<c:url value='/addNewOnboardTemplate'/>"><i class="fa fa-plus"></i>Add Template</a></li>
+		 	 </sec:authorize>
 			</ul>
 			     
             </div>
@@ -61,7 +63,12 @@ function onboardingTemplatesList(){
 	                     result = result +"    <th>Description</th>";
 	                     result = result +"    <th>Created Date</th>";
 	                     result = result +"    <th>Created By</th>"; 
-	                     result = result +"<th>Actions</th>";
+	                     result = result +"    <th>Status</th>";
+	                    
+	                     '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE\')">'
+	                    		 result = result +"<th>Actions</th>";
+	                     '</sec:authorize>';
+	                     
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
@@ -80,8 +87,11 @@ function onboardingTemplatesList(){
 	                    		 
 	                    		 result = result +"<td><div><span>"+opt.createdUser+"</span></div></td>";
 	                    		 
-			                     result = result +"<td><div class=''><a href='"+sourceleadUrl+"/viewOnboardTemplateByTemplateUUID?templateUUID="+opt.templateUUID+"'>View</a></div></td>"; 
-
+	                    		 result = result +"<td><div><span>"+opt.templateStatus+"</span></div></td>";
+	                    		 
+	                    		 '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE\')">'
+			                    	 result = result +"<td><div class=''><a href='"+sourceleadUrl+"/viewOnboardTemplateByTemplateUUID?templateUUID="+opt.templateUUID+"'>View</a></div></td>"; 
+			                     '</sec:authorize>';
 		                     
 		                     result = result +"</tr>";
 		                     result = result +"</tr>";

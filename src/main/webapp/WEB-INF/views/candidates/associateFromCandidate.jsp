@@ -600,7 +600,6 @@ function getStates(state){
 function getCities(city){
 	var countryName = $("#country").val();
 	var stateName = $("#state").val();
-	
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
 		$.ajax({
 	    	type: "POST",
@@ -611,10 +610,12 @@ function getCities(city){
 	        	$('#city').empty();
 	        	$('#city').append('<option value="">---select city---</option>');
 	            for(var i=0;i<json.length;i++){
-	            	if(city != null && city != "" && city !="undefined" && json[i] == city){
-	            		selected = 'selected';
-	            	}
-	            	$('#city').append('<option value="'+json[i]+'" '+selected+'>'+json[i]+'</option>');
+	            	
+	            	 if(city != null && city != 'undefined' && json[i] == city){
+	            		$('#city').append('<option value="'+city+'" selected>'+json[i]+'</option>');
+	            	}else{ 
+	            		$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');	
+	            	 } 
 	            }
 	            $('#city').trigger("chosen:updated");
 	        },
@@ -1313,8 +1314,9 @@ function getCandidateDetails(){
 		        		 $("#state").val('').trigger("chosen:updated");
 		        		 $("select[name=state]").val('');
 		        	 }
-		        	 
+
 		        	 if(json['city'] != null && json['city'] != "" && json['city'] != 'undefined'){
+		        		 $("select[name=city]").val(json['city']);
 		        		 getCities(json['city']);
 		        	 }else{
 		        		 $("#city").val('').trigger("chosen:updated");

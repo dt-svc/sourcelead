@@ -1188,9 +1188,9 @@ public class CandidateListRestController {
 			List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange,candidateType,isAssociate);
 			File file = null;
 			if(!"pdf".equalsIgnoreCase(exportType)){
-			file = candidateService.getCandidateExcelFile(candidatesList,org.getOrgName());
+			file = candidateService.getCandidateExcelFile(candidatesList,org.getOrgName(),isAssociate);
 			}else{
-			file = candidateService.getCandidatePdf(candidatesList,org.getOrgName());
+			file = candidateService.getCandidatePdf(candidatesList,org.getOrgName(),isAssociate);
 			}
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {

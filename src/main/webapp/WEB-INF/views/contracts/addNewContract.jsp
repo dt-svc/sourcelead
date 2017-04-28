@@ -53,8 +53,8 @@
           	
           	<div class="form-group">
               <label class="col-md-4">Contract title<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
-                <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="" data-validation="required validate_Space validate_length length1-250" field-name="Contract Title">
+              <div class="col-md-8" id="titleDiv">
+                <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="" data-validation="required validate_Space validate_length length1-250" field-name="Contract Title" onblur="validateContractTitle();">
               </div>
             </div>
                        
@@ -166,7 +166,7 @@
           <div class="form-group">
               <label class="col-md-4">Approver</label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="approver" name="approver">
+                  <select class="chosen-select form-control" id="approver" name="approver" onchange="changeSaveButton();">
                   <option value=''>--Select Owner--</option>
                   <c:forEach var="user" items="${userList}">
                    <%-- to Enable login user as approver ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} --%>
@@ -342,10 +342,12 @@
       
       <div class="form-footer clearfix contrFoot">
         <div class="col-lg-12">
-          <div class="pull-right">
-            <input type="button" value="Save Draft" id="draft_template" onclick="saveNewContract('draft');" class="btn btn-primary">
-            <input type="button" value="Save" id="save_template" onclick="saveNewContract('pending');" class="btn btn-success ml10">
-            <input type="button" value="Cancel" class="btn btn-danger ml10" id="cancel_contract" onclick="cancelContract();">
+          <div class="pull-right mt">
+            <input type="button" value="Save Draft" id="draft_template" onclick="saveNewContract('draft');" class="btn btn-primary pull-left">
+            <input type="button" value="Save" id="save_template" onclick="saveNewContract('pending');" class="btn btn-success ml10 pull-left">
+
+            <input type="button" value="SubmitToApprover" id="save_approver_template" onclick="saveNewContract('pending');" class="btn btn-success ml10 pull-left" style="display:none">
+            <input type="button" value="Cancel" class="btn btn-danger ml10 pull-left" id="cancel_contract" onclick="cancelContract();">
           </div>
         </div>
       </div>
@@ -1056,6 +1058,18 @@ function getTaxPercentageValue(){
 	
 }
 </script>
+<script>
+function changeSaveButton(){
+	 var approverId = $("#approver").val();
+	if(approverId !='' && approverId != null){
+		document.getElementById("save_approver_template").style.display="block";
+		document.getElementById("save_template").style.display="none";
+	}else{
+		document.getElementById("save_approver_template").style.display="none";
+		document.getElementById("save_template").style.display="block";
+	}
+}
+</script>
 
 <script>
 function flush(){
@@ -1095,6 +1109,34 @@ function flush(){
 function cancelContract(){
 	var sourceleadUrl = '${sourceleadUrl}';
 	location.replace(sourceleadUrl+"/contractListbyStatus");
+}
+
+</script>
+
+<script>
+function validateContractTitle(){
+	var contractTitle = $('#contractTitle').val();
+	var contractType = $('#contractType').val();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(contractTitle != null && contractTitle != "" && contractType != null && contractType != ""){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateContractTitle?${_csrf.parameterName}=${_csrf.token}&contractTitle="+contractTitle+"&contractType="+contractType, 
+		        success: function(data) {
+		        	if(data == 'true'){
+						  $("input#contractTitle").after("<p class='jquery_form_error_message'>"+contractTitle+" is Already Existed</span>");
+						  $("#save_template").attr("disabled", "disabled");
+		        	}
+		        	else{
+		        		 $('input#contractTitle').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#titleDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#save_template" ).addClass('button').val('Save Template');
+                        $("#save_template").removeAttr("disabled");
+		        	}
+		        	}
+		        });
+	 }
+	
 }
 
 </script>
