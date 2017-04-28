@@ -43,7 +43,7 @@ public class SignatureRequestUtil {
 	@Autowired
 	private Html2PdfUtil html2PdfUtil;
 	
-	public Contracts sendDocumentForSignatureRequest(User vendorUser, ContractsTemplate contractsTemplate, OrgLocations orgLocation, User loginUser, Contracts contracts, Org org) throws DocumentException, ApiException{
+	public Contracts sendDocumentForSignatureRequest(User vendorUser, ContractsTemplate contractsTemplate, OrgLocations orgLocation, User loginUser, Contracts contracts, Org org) throws Exception{
 		
 		// Enter your DocuSign credentials:
 		String UserName = "prasannavadla9@gmail.com";
