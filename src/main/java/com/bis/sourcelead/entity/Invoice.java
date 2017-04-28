@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -96,6 +97,13 @@ public class Invoice {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
 	private Set<InvoiceLineItems> invoiceLineItems;
+	
+	@Transient
+	private String clientName;
+	
+	@Transient
+	private String clientContactName;
+	
 
 	public Long getId()
 	{
@@ -298,6 +306,19 @@ public class Invoice {
 		this.invoiceStatus = invoiceStatus;
 	}
 
-	
-	
+	public String getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
+	}
+
+	public String getClientContactName() {
+		return clientContactName;
+	}
+
+	public void setClientContactName(String clientContactName) {
+		this.clientContactName = clientContactName;
+	}
 }

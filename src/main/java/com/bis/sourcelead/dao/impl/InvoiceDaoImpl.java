@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.List;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.InvoiceDao;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Invoice;
 
 @Repository
@@ -33,4 +36,16 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 		return invoice;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Invoice invoce  where invoce.orgLocation.id =:orgLocationId and invoce.status = '1' "; 
+		List<Invoice> departmentList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		return departmentList;
+	}
+	
+	
+
 }

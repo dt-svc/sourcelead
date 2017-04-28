@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,11 @@ public class InvoiceServiceImpl implements InvoiceService{
 	public Invoice saveInvoice(Invoice invoice) throws Exception
 	{
 		return invoiceDao.saveInvoce(invoice);
+	}
+
+	@Override
+	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId) throws Exception {
+		return invoiceDao.invoiceListByOrgLocationId(orgLocationId);
 	}
 	
 }
