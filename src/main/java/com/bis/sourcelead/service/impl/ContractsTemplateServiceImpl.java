@@ -653,8 +653,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	}
 	
 	@Override
-	public ContractsTemplate findByContractTemplateName(String templateName,Long orgLocationId) throws Exception {
-		return contractsTemplateDao.findByContractTemplateName(templateName, orgLocationId);
+	public ContractsTemplate findByContractTemplateName(String templateName,String contractType,Long orgLocationId) throws Exception {
+		return contractsTemplateDao.findByContractTemplateName(templateName,contractType,orgLocationId);
 	}
 
 	@Override
@@ -662,6 +662,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		return  contractsTemplateDao.getListOfContractsEnvId();
 	}
 
+	@Override
+	public Contracts findContractTitleByOrgLocationAndContractType(String contractTitle, String contractType,
+			Long orgLocationId) {
+		return contractsTemplateDao.findContractTitleByOrgLocationAndContractType(contractTitle, contractType, orgLocationId);
+			}
+			
 	@Override
 	public Contracts saveExistigContract(JSONObject jsonObj,MultipartFile multiFile, OrgLocations orgLocation, User user, Org org) throws Exception {
 		Contracts contracts = new Contracts();
