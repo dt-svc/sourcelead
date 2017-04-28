@@ -104,6 +104,11 @@ public class Invoice {
 	@Transient
 	private String clientContactName;
 	
+	@Transient
+	private String invoiceDateStr;
+	
+	@Transient
+	private String dueDateStr;
 
 	public Long getId()
 	{
@@ -321,4 +326,21 @@ public class Invoice {
 	public void setClientContactName(String clientContactName) {
 		this.clientContactName = clientContactName;
 	}
+
+	public String getInvoiceDateStr() {
+		return invoiceDateStr;
+	}
+
+	public void setInvoiceDateStr(String invoiceDateStr) {
+		this.invoiceDateStr = invoiceDateStr;
+	}
+
+	public String getDueDateStr() {
+		return dueDateStr;
+	}
+
+	public void setDueDateStr(String dueDateStr) {
+		this.dueDateStr = dueDateStr;
+	}
+	
 }

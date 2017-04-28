@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
@@ -146,6 +147,8 @@ public class InvoiceRestController {
 			}else{
 				invoice.setClientContactName(contactName.append(invoice.getContactContactUser().getFirstName()).toString());
 			}
+			invoice.setDueDateStr(Constants.DF_DMY.format(invoice.getDueDate()));
+			invoice.setInvoiceDateStr(Constants.DF_DMY.format(invoice.getInvoiceDate()));
 			
 		}
 	    resultJson = commonUtil.toJSON(invoiceList);
