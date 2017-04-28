@@ -22,8 +22,13 @@ min-height: 150px;
 top:-63px !important;
 }
 .dataTable thead {
-background: #368ee0;
-color:#fff;
+background: #375d81; color:#fff; height: 34px;
+}
+.dataTable thead tr th {
+vertical-align: middle;
+}
+.dataTable thead tr td {
+text-align: center;
 }
 table.dataTable.no-footer {
 border-bottom:0;
@@ -64,6 +69,9 @@ padding: 6px 12px !important; height: 34px !important;
 }
 .bootstrap-select {
 width: 100% !important;
+}
+.icon-inside .form-control {
+    padding: 6px 12px 6px 30px !important;
 }
 </style>
 
@@ -1019,8 +1027,7 @@ $(document).ready(function () {
                 <div class="form-icon">
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
 				
-                  <input type="text" id="assignedTo" placeholder="Assign Team" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="popupWindow(${requirement.id});">
-
+                 <input type="text" id="assignedTo" placeholder="Assign Team" field-name ="Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="popupWindow(${requirement.id});">
                   </span>
                   <span data-target="#addTeam" data-toggle="modal" title="Add Team"> <i class="fa fa-plus btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();"></i> </span>
                   </div>
@@ -1117,7 +1124,7 @@ $(document).ready(function () {
                             </div>
                             <div class="form-group">
                             <label class="col-lg-4">Team Lead <span class="text-danger">*</span></label>
-                            <div class="col-lg-8">
+                            <div class="col-lg-8 select-field">
                              <select class="form-control"  name="ownerUserId" id="ownerUserId" placeholder="Team Lead *" data-validation="required validate_Space" field-name="Team Lead"  onchange="getTeamMembers();">
 			                    	
 			                  </select>
@@ -1126,7 +1133,7 @@ $(document).ready(function () {
                             <div class="form-group">
                             <label class="col-lg-4">Team Members <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
-                             <select multiple class="chosen-select form-control select-bg" name="memberUserId" id="memberUserId" placeholder="Team Member *" data-validation="required validate_Space" field-name="Team Member">
+                             <select multiple class="chosen-select form-control select-bg" name="memberUserId" id="memberUserId" data-placeholder="Select Team Member" data-validation="required validate_Space" field-name="Team Member">
 					                  
 		                       </select>
                               </div>
@@ -1134,7 +1141,7 @@ $(document).ready(function () {
                           </div>
                         </div>
                       </div>
-                      <div class="modal-footer">
+                      <div class="modal-footer mt">
                         <button class="btn btn-primary" type="button" id="add_team" onclick="storeTeam();" >Save</button>
                         <button data-dismiss="modal" class="btn btn-default"   type="button">Cancel</button>
                       </div>
