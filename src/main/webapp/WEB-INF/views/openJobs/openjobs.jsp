@@ -19,6 +19,7 @@
 <link rel="stylesheet" href="resources/css/jquery.timepicker.css">
 <link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
 
+
 <script src="resources/js/jquery-1.11.1.min.js"></script>
 <script src="resources/js/masterHeaderAction.js"></script>
 <script src="resources/js/bootstrap.min.js"></script>
@@ -29,14 +30,31 @@
 <script src="resources/js/jquery.timepicker.js"></script>
 <script src="resources/js/themeswitcher.js"></script>
 <script type="text/javascript" src="resources/js/modernizr.custom.86080.js"></script>
+<script src="resources/js/jobs/js/controls.js"></script>
 <script src="resources/js/jquery-1.12.4.min.js"></script>
 <script src="resources/js/jquery.sldr.js"></script>
 <script src="resources/js/masonry.pkgd.min.js"></script>
 <script src="resources/js/jobs/js/bootstrap.js"></script>
 <script src="resources/js/jobs/js/bootstrap-select.min.js"></script>
-<script src="resources/js/jobs/js/controls.js"></script>
 <script src="resources/js/jobs/js/jquery-1.11.3.min.js"></script>
 <script src="resources/js/jobs/js/chosen.jquery.min.js"></script>
+
+<script type="text/javascript">
+window.onload = function () {
+	
+	setTimeout(function() {
+		$(".pageLoad").fadeOut();
+	}, 1000);
+	if(${requirementUUID != null}){
+		getOpenJobsRequirementSummary('${requirementUUID}');
+		getDropDownCount();
+	}else{
+		getOpenJobsELKList();
+		getDropDownCount();
+	}
+ };
+</script>
+
 <script>
  function socialPostSucess(service,status){
 	 msgFadein();
@@ -68,17 +86,6 @@ function getPostValueDetails(){
 
 </script>
 
-<script type="text/javascript">
-	$(window).load(function() {
-		if(${requirementUUID != null} ){
-			getOpenJobsRequirementSummary('${requirementUUID}');
-			getDropDownCount();
-		}else{
-		getOpenJobsELKList();
-		getDropDownCount();
-	  }
-	});
-</script>
 <script>
 	function msgFadein() {
 		$("#selector").fadeIn(200);
@@ -167,124 +174,141 @@ display: none;}
 	</div>
 	
 <section class="innerContent">
-		<!--<div class="filter">
+		<div class="filter">
 			<h2>Fliter your search</h2>
-			<div class="filterCta">
+			<div class="filterCta" id="dateFilterId">
 				<h3>Fliter Header<i class="fa fa-caret-down arrAc"></i></h3>
 				<ul id="show">
 					<li class="control-group">
-						<label class="control control--checkbox">Fliter 1
-						  <input type="checkbox"/><div class="control__indicator"></div>
+						<label class="control-radio control--checkbox-ra">Today
+						  <input type="radio" name="dateFilter" value="today" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
-						<label class="control control--checkbox">Fliter 2
-						  <input type="checkbox"/><div class="control__indicator"></div>
+						<label class="control-radio control--checkbox-ra">1 day ago
+						  <input type="radio" name="dateFilter" value="1 Day Ago" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
-						<label class="control control--checkbox">Fliter 3
-						  <input type="checkbox"/><div class="control__indicator"></div>
+						<label class="control-radio control--checkbox-ra">3 day ago
+						  <input type="radio" name="dateFilter" value="3 Days Ago" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
-						<label class="control control--checkbox">Fliter 4
-						  <input type="checkbox"/><div class="control__indicator"></div>
+						<label class="control-radio control--checkbox-ra">1 week ago
+						  <input type="radio" name="dateFilter" value="1 Week Ago" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
-						<label class="control control--checkbox">Fliter 5
-						  <input type="checkbox"/><div class="control__indicator"></div>
+						<label class="control-radio control--checkbox-ra">2 Weeks Ago 
+						  <input type="radio" name="dateFilter" value="2 Weeks Ago" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
 						</label>
-					</li>																	
+					</li>
+					<li class="control-group">
+						<label class="control-radio control--checkbox-ra">1 Month Ago
+						  <input type="radio" name="dateFilter" value="1 Month Ago" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
+						</label>
+					</li>
+					<li class="control-group">
+						<label class="control-radio control--checkbox-ra">3 Months Ago
+						  <input type="radio" name="dateFilter" value="3 Months Ago" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
+						</label>
+					</li>		
+				</ul>
+			</div>
+			
+			
+			<div class="filterCta" id="dateFilterId">
+				<h3>Country <i class="fa fa-caret-down arrAc"></i></h3>
+				<ul>
+					<li class="control-group">
+						<label class="control-radio control--checkbox-ra">Australia
+						  <input type="radio" name="countryFilter" value="Australia" onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
+						</label>
+					</li>
+					<li class="control-group">
+						<label class="control-radio control--checkbox-ra">France
+						  <input type="radio" name="countryFilter" value="France" onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
+						</label>
+					</li>
+					<li class="control-group">
+						<label class="control-radio control--checkbox-ra">India
+						  <input type="radio" name="countryFilter" value="India" onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
+						</label>
+					</li>
+					<li class="control-group">
+						<label class="control-radio control--checkbox-ra">Singapore
+						  <input type="radio" name="countryFilter" value="Singapore" onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
+						</label>
+					</li>
+					<li class="control-group">
+						<label class="control-radio control--checkbox-ra">United Kingdom
+						  <input type="radio" name="countryFilter" value="United Kingdom" onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
+						</label>
+					</li>
+					<li class="control-group">
+						<label class="control-radio control--checkbox-ra">United States
+						  <input type="radio" name="countryFilter" value="United States" onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
+						</label>
+					</li>
 				</ul>
 			</div>
 
 			<div class="filterCta">
-				<h3>Fliter Header<i class="fa fa-caret-down"></i></h3>
+				<h3>Employment Type Fliter<i class="fa fa-caret-down"></i></h3>
 				<ul>
 					<li class="control-group">
-						<label class="control control--checkbox">Fliter 1
-						  <input type="checkbox"/><div class="control__indicator"></div>
+						<label class="control control--checkbox">C2C
+						  <input type="checkbox" name="typeFilter" value="C2C" onclick="requirementsFilter();"/><div class="control__indicator"></div>
 						</label>
 					</li>
 					<li class="control-group">
-						<label class="control control--checkbox">Fliter 2
-						  <input type="checkbox"/><div class="control__indicator"></div>
+						<label class="control control--checkbox">W-2
+						  <input type="checkbox" name="typeFilter" value="W-2" onclick="requirementsFilter();"/><div class="control__indicator"></div>
 						</label>
 					</li>
 					<li class="control-group">
-						<label class="control control--checkbox">Fliter 3
-						  <input type="checkbox"/><div class="control__indicator"></div>
+						<label class="control control--checkbox">C2H
+						  <input type="checkbox" name="typeFilter" value="C2H" onclick="requirementsFilter();"/><div class="control__indicator"></div>
 						</label>
 					</li>
 					<li class="control-group">
-						<label class="control control--checkbox">Fliter 4
-						  <input type="checkbox"/><div class="control__indicator"></div>
+						<label class="control control--checkbox">Contract
+						  <input type="checkbox" name="typeFilter" value="Contract" onclick="requirementsFilter();"/><div class="control__indicator"></div>
 						</label>
 					</li>
 					<li class="control-group">
-						<label class="control control--checkbox">Fliter 5
-						  <input type="checkbox"/><div class="control__indicator"></div>
+						<label class="control control--checkbox">Part Time
+						  <input type="checkbox" name="typeFilter" value="Part Time" onclick="requirementsFilter();"/><div class="control__indicator"></div>
 						</label>
 					</li>
 					<li class="control-group">
-						<label class="control control--checkbox">Fliter 6
-						  <input type="checkbox"/><div class="control__indicator"></div>
+						<label class="control control--checkbox">Full Time
+						  <input type="checkbox" name="typeFilter" value="Full Time" onclick="requirementsFilter();"/><div class="control__indicator"></div>
 						</label>
 					</li>
 					<li class="control-group">
-						<label class="control control--checkbox">Fliter 7
-						  <input type="checkbox"/><div class="control__indicator"></div>
+						<label class="control control--checkbox">Other
+						  <input type="checkbox" name="typeFilter" value="Other" onclick="requirementsFilter();"/><div class="control__indicator"></div>
 						</label>
 					</li>
-					<li class="control-group">
-						<label class="control control--checkbox">Fliter 8
-						  <input type="checkbox"/><div class="control__indicator"></div>
-						</label>
-					</li>																																
 				</ul>
 			</div>
 			
 			<div class="filterCta">
-				<h3>Fliter Header<i class="fa fa-caret-down"></i></h3>
-				<ul>
-					<li class="control-group">
-						<label class="control control--checkbox">Fliter 1
-						  <input type="checkbox"/><div class="control__indicator"></div>
-						</label>
-					</li>
-					<li class="control-group">
-						<label class="control control--checkbox">Fliter 2
-						  <input type="checkbox"/><div class="control__indicator"></div>
-						</label>
-					</li>
-					<li class="control-group">
-						<label class="control control--checkbox">Fliter 3
-						  <input type="checkbox"/><div class="control__indicator"></div>
-						</label>
-					</li>
-					<li class="control-group">
-						<label class="control control--checkbox">Fliter 4
-						  <input type="checkbox"/><div class="control__indicator"></div>
-						</label>
-					</li>
-					<li class="control-group">
-						<label class="control control--checkbox">Fliter 5
-						  <input type="checkbox"/><div class="control__indicator"></div>
-						</label>
-					</li>																	
-				</ul>
+				<h3 onclick="getOrgsList('none','main');">Companies<i class="fa fa-caret-down"></i></h3>
+				<ul id="orgList"></ul>
 			</div>														
 			
-			<div class="filLoad">
+			<!-- <div class="filLoad">
 				<h2 class="gradi"></h2><p class="gradi"></p><p class="gradi"></p><p class="gradi"></p><br>
 				<h2 class="gradi"></h2><p class="gradi"></p><p class="gradi"></p><p class="gradi"></p><br>
 				<h2 class="gradi"></h2>
-			</div>
+			</div> -->
 			
-		</div>-->
-		<div class="jobResults">
+		</div>
+		
+		<div class="jobResults jobResults_New">
 <!--		
 			<div class="fliterHead">
 				<div>
@@ -318,6 +342,71 @@ display: none;}
 			
 		</div>
 		<div class="clear"></div>
+		
+		<!-- for popup -->
+		
+		<div class="filPop">
+			<div class="filPopHead clearfix">
+				<span>Companies</span>
+<!-- 				<span><input type="text" placeholder="Search" class="filSearch"></span> -->
+				<!-- <span class="selectCountry">
+					<select class="chosen-select" data-placeholder="Employers" id="orgCountry" onchange="getOrgsList('none','sub');">
+					  <option value="">--Select Country--</option>
+					  <option value="Australia">Australia</option>
+	                  <option value="France">France</option>
+	                  <option value="India">India</option>
+	                  <option value="Singapore">Singapore</option>
+	                  <option value="United Kingdom">United Kingdom</option>
+	                  <option value="United States">United States</option>
+					</select>			
+				</span> -->
+				<i class="fa fa-times filPopClose CP" onclick="clearcheck();"></i>
+			</div>
+			<div class="filPopInn">
+			
+				<div class="LettSelec">
+					<a onclick="getOrgsList('none','sub');">ALL</a>
+					<a onclick="getOrgsList('A','sub');">A</a>
+					<a onclick="getOrgsList('B','sub');">B</a>
+					<a onclick="getOrgsList('C','sub');">C</a>
+					<a onclick="getOrgsList('D','sub');">D</a>
+					<a onclick="getOrgsList('E','sub');">E</a>
+					<a onclick="getOrgsList('F','sub');">F</a>
+					<a onclick="getOrgsList('G','sub');">G</a>
+					<a onclick="getOrgsList('H','sub');">H</a>
+					<a onclick="getOrgsList('I','sub');">I</a>
+					<a onclick="getOrgsList('J','sub');">J</a>
+					<a onclick="getOrgsList('K','sub');">K</a>
+					<a onclick="getOrgsList('L','sub');">L</a>
+					<a onclick="getOrgsList('M','sub');">M</a>
+					<a onclick="getOrgsList('N','sub');">N</a>
+					<a onclick="getOrgsList('O','sub');">O</a>
+					<a onclick="getOrgsList('P','sub');">P</a>
+					<a onclick="getOrgsList('Q','sub');">Q</a>
+					<a onclick="getOrgsList('R','sub');">R</a>
+					<a onclick="getOrgsList('S','sub');">S</a>
+					<a onclick="getOrgsList('T','sub');">T</a>
+					<a onclick="getOrgsList('U','sub');">U</a>
+					<a onclick="getOrgsList('V','sub');">V</a>
+					<a onclick="getOrgsList('W','sub');">W</a>
+					<a onclick="getOrgsList('X','sub');">X</a>
+					<a onclick="getOrgsList('Y','sub');">Y</a>
+					<a onclick="getOrgsList('Z','sub');">Z</a>
+					<a onclick="getOrgsList('Others','sub');">Others</a>
+				</div>
+				
+				<ul id="remainingOrgs" class="clearfix">
+				</ul>		
+			</div>
+			<div class="filPopBot clearfix">
+				<div class="pull-right">
+<!-- 					<input type="button" class="btn btn-danger CP" value="Cancel"/> -->
+					<input type="button" class="btn btn-primary" onclick="clearcheck();" value="Clear All"/>
+					<input type="button" class="btn btn-success CP" onclick="requirementsFilter();" value="Search"/>
+				</div>
+			</div>
+		</div>
+		
 </section>	
 <section class="asMask" onclick="adSearchClose();"></section>
 
@@ -574,9 +663,20 @@ display: none;}
 </footer> 
 
 
+<section class="pageLoad"></section> 
+
+
 <!-- Footer Area -->
 <%-- <jsp:include page="../masterFooter.jsp" /> --%>
 <!-- Footer Area -->
+
+<script>
+function clearcheck(){
+	$('#remainingOrgs').find('input[type=checkbox]:checked').removeAttr('checked');
+}
+
+</script>
+
 
 <script>
 	function getDropDownCount() {
@@ -595,6 +695,44 @@ display: none;}
 	}
 </script>
 
+<script>
+function requirementsFilter(){
+	var reqType = [];
+	$('input:checkbox[name=typeFilter]:checked').each(function() 
+    {
+		reqType.push($(this).val());
+    });
+	
+	var orgLocationIds = [];
+	$('input:checkbox[name=orgName]:checked').each(function() 
+    {
+		orgLocationIds.push($(this).val());
+    });
+	
+	var dates = "";
+	$('input:radio[name=dateFilter]:checked').each(function() 
+    {
+		dates = ($(this).val());
+    });
+	
+	var country = "";
+	$('input:radio[name=countryFilter]:checked').each(function() 
+    {
+		country = ($(this).val());
+    });
+	
+	
+	var sourceleadUrl = '${sourceleadUrl}';
+	var offset = 0;
+	 $.ajax({ 
+	   	type: "POST",
+	   	url: sourceleadUrl+"/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&reqType="+reqType+"&orgLocationIds="+orgLocationIds+"&dates="+dates+"&country="+country,
+	    success: function(data) {
+	    	prepareOpenJobsElkList(data,sourceleadUrl);
+	    }
+	 }); 
+}
+</script>
 
 
 <script>
@@ -608,142 +746,209 @@ function getOpenJobsELKList(){
 	   	type: "POST",
 	   	url: sourceleadUrl+"/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&openJobsRequirementTitle="+openJobsRequirementTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience,
 	    success: function(data) {
-	     $("#openJobsRequirementsList").empty();
-	     var json = JSON.parse(data);
-       	 var experience ="";
-       	 var location = "";
-	     if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){ 	
-	   	  if(json.length > 0)
-	   		{
-	 			for(var i=0; i<json.length; i++){
-	 				var requirements = json[i];
-	 				var title="";
-					var link="";
-					var picture="";
-					var description='';
-					var comment='';
-	 				if(requirements.minExperience != '' && requirements.maxExperience == ''){
-	 					experience = requirements.minExperience+" Years";
-	 				}else if(requirements.minExperience == '' && requirements.maxExperience != ''){
-	 					experience = requirements.maxExperience+" Years";
-	 				}else if(requirements.minExperience != '' && requirements.maxExperience != ''){
-	 					experience = requirements.minExperience+" to "+requirements.maxExperience+" Years";
-	 				}else{
-	 					experience = 'No Data';
-	 				}
-	 				
-	 				if(requirements.state != null && requirements.state != '' && requirements.state != 'undefined'){
-	 					location = requirements.state+", "+requirements.country;
-	 				}else{
-	 					location = requirements.country;
-	 				}
-	 				var result = "";
-	 				result = result +'	<div class="jobResultsCta">';
-					result = result +'	<div class="jobResultsInn">';
-					result = result +'	<a href="#" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');"><h3 style="font-size:20px;color:#368ee0;">'+requirements.jobTitle+'</h3></a>';
-					description =  description+'Job Title:'+requirements.jobTitle+";";
-					
-					link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
-					
-					if(requirements.postedOrg != null && requirements.postedOrg != '' && requirements.postedOrg !='undefined'){
-					result = result +'	<h4>'+requirements.postedOrg+'</h4>';	
-					description =  description+'Posted By :'+requirements.postedOrg+";";
-					}else{
-					result = result +'	<h4>--</h4>';
-					}
-					result = result +'	<div class="skills">';
-					result = result +'	<strong>Skills :</strong>';
-					if(requirements.skills != null && requirements.skills != '' && requirements.skills !='undefined'){
-					result = result +'  <span>'+requirements.skills+'</span>';
-					description =  description+'Skills :'+requirements.skills+";";
-					}else{
-					result = result +'  <span>--</span>';	
-					}
-					result = result +'	</div>';					
-					result = result +'	<span>';
-					if(requirements.jobType != null && requirements.jobType != '' && requirements.jobType !='undefined'){
-					result = result +'	<b><i class="fa fa-clock-o"></i>'+requirements.jobType+'</b>';
-					description =  description+'Job Type:'+requirements.jobType+";";
-					}else{
-					result = result +'	<b><i class="fa fa-clock-o"></i>--</b>';
-					}
-					if(experience != null && experience != '' && experience !='undefined'){
-					result = result +'	<b><i class="fa fa-briefcase"></i>'+experience+'</b>';
-					if(experience != null && experience != 'No Data'){
-						description =  description+'Experience :'+experience+";";
-					}
-					
-					}else{
-					result = result +'	<b><i class="fa fa-briefcase"></i>--</b>';	
-					}
-					if(location != null && location != '' && location !='undefined'){
-					result = result +'	<b><i class="fa fa-map-marker"></i>'+location+'</b>';
-					description =  description+'Job Location: '+location+";";
-					}else{
-					result = result +'	<b><i class="fa fa-map-marker"></i>--</b>';	
-					}
-					if(requirements.noticePeriod != null && requirements.noticePeriod != '' && requirements.noticePeriod !='undefined'){
-					result = result +'	<b><i class="fa fa-bell"></i>'+requirements.noticePeriod+'</b>';
-					description =  description+'Notice Period :'+requirements.noticePeriod+";";
-					}else{
-					result = result +'	<b><i class="fa fa-bell"></i>--</b>';	
-					}
-					result = result +'	</span>';
-					result = result +'	</div>';
-					result = result +'	<div class="jobShare">';
-					if(requirements.createdDate != null && requirements.createdDate != '' && requirements.createdDate !='undefined'){
-					var creadtedDateString = requirements.createdDate;
-					var creadtedDateStringArray = creadtedDateString.split("-");
-					var convertedDate = creadtedDateStringArray[2]+'-'+creadtedDateStringArray[1]+'-'+creadtedDateStringArray[0];
-					result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i>'+convertedDate+'</div>';
-					description =  description+'Posted Date :'+convertedDate+";";
-					}else{
-					result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i>--</div>';	
-					}
-					result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
-					result = result +'	<div class="share">';
-					
-					/* result = result +'	<div class="socialinviter holder break" type="socialpost"></div>'; */ 
-				    result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
-					result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';				  
-					result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>';
-					result = result +'  </div>'
-					result = result +'	<div class="clear"></div>';
-					result = result +'	</div>';
-					result = result +'	<div class="jobApply"><a href="'+sourceleadUrl+'/login">Apply</a>';
-					if(requirements.isCrowdSourcingJob == 'Y'){
-					result = result +'	<a href="'+sourceleadUrl+'/login" style="background-color:#eb821c;">Refer</a></div>';
-					}
-/* 					result = result +'	<div class="filLoad">';
-					result = result +'	<h2 class="gradi"></h2><p class="gradi"></p><p class="gradi"></p><p class="gradi"></p><br>';
-					result = result +'	<p class="gradi"></p>';
-					result = result +'	</div>'; */				
-					result = result +'	</div>';
-					if((json.length -1) == i ){
-						result = result +' <section class="loadJob"><i class="fa fa-spinner fa-spin"></i>No More Data</section>';	
-					}
-					$("#openJobsRequirementsSummary").empty();
-					$("#openJobsRequirementsList").append(result); 
-					$("#openJobsRequirementTitleId").val('');
-					$("#openJobsLocationId").val('');
-					$("#openJobsExperienceId").val('');
-	 			}
-	 			}
- 			}else{
-			   	$("#openJobsRequirementTitleId").val('');
-				$("#openJobsLocationId").val('');
-				$("#openJobsExperienceId").val('');
- 			}
-	     socialInviterScripts();
+	    	prepareOpenJobsElkList(data,sourceleadUrl);
 	    }
 	 }); 
  }
 </script>
 
+<script>
+function prepareOpenJobsElkList(data,sourceleadUrl){
+	$("#openJobsRequirementsList").empty();
+    var json = JSON.parse(data);
+  	 var experience ="";
+  	 var location = "";
+    if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){ 	
+  	  if(json.length > 0)
+  		{
+			for(var i=0; i<json.length; i++){
+				var requirements = json[i];
+				var title="";
+				var link="";
+				var picture="";
+				var description='';
+				var comment='';
+				if(requirements.minExperience != '' && requirements.maxExperience == ''){
+					experience = requirements.minExperience+" Years";
+				}else if(requirements.minExperience == '' && requirements.maxExperience != ''){
+					experience = requirements.maxExperience+" Years";
+				}else if(requirements.minExperience != '' && requirements.maxExperience != ''){
+					experience = requirements.minExperience+" to "+requirements.maxExperience+" Years";
+				}else{
+					experience = 'No Data';
+				}
+				
+				if(requirements.state != null && requirements.state != '' && requirements.state != 'undefined'){
+					location = requirements.state+", "+requirements.country;
+				}else{
+					location = requirements.country;
+				}
+				var result = "";
+				result = result +'	<div class="jobResultsCta">';
+				result = result +'	<div class="jobResultsInn">';
+				result = result +'	<h3 style="font-size:20px;color:#368ee0;" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');">'+requirements.jobTitle+'</h3>';
+				description =  description+'Job Title:'+requirements.jobTitle+";";
+				
+				link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
+				
+				if(requirements.postedOrg != null && requirements.postedOrg != '' && requirements.postedOrg !='undefined'){
+				result = result +'	<h4>'+requirements.postedOrg+'</h4>';	
+				description =  description+'Posted By :'+requirements.postedOrg+";";
+				}else{
+				result = result +'	<h4>--</h4>';
+				}
+				result = result +'	<div class="skills">';
+				result = result +'	<strong>Skills :</strong>';
+				if(requirements.skills != null && requirements.skills != '' && requirements.skills !='undefined'){
+				result = result +'  <span>'+requirements.skills+'</span>';
+				description =  description+'Skills :'+requirements.skills+";";
+				}else{
+				result = result +'  <span>--</span>';	
+				}
+				result = result +'	</div>';					
+				result = result +'	<span>';
+				if(requirements.jobType != null && requirements.jobType != '' && requirements.jobType !='undefined'){
+				result = result +'	<b><i class="fa fa-clock-o"></i>'+requirements.jobType+'</b>';
+				description =  description+'Job Type:'+requirements.jobType+";";
+				}else{
+				result = result +'	<b><i class="fa fa-clock-o"></i>--</b>';
+				}
+				if(experience != null && experience != '' && experience !='undefined'){
+				result = result +'	<b><i class="fa fa-briefcase"></i>'+experience+'</b>';
+				if(experience != null && experience != 'No Data'){
+					description =  description+'Experience :'+experience+";";
+				}
+				
+				}else{
+				result = result +'	<b><i class="fa fa-briefcase"></i>--</b>';	
+				}
+				if(location != null && location != '' && location !='undefined'){
+				result = result +'	<b><i class="fa fa-map-marker"></i>'+location+'</b>';
+				description =  description+'Job Location: '+location+";";
+				}else{
+				result = result +'	<b><i class="fa fa-map-marker"></i>--</b>';	
+				}
+				if(requirements.noticePeriod != null && requirements.noticePeriod != '' && requirements.noticePeriod !='undefined'){
+				result = result +'	<b><i class="fa fa-bell"></i>'+requirements.noticePeriod+'</b>';
+				description =  description+'Notice Period :'+requirements.noticePeriod+";";
+				}else{
+				result = result +'	<b><i class="fa fa-bell"></i>--</b>';	
+				}
+				result = result +'	</span>';
+				result = result +'	</div>';
+				result = result +'	<div class="jobShare">';
+				if(requirements.createdDate != null && requirements.createdDate != '' && requirements.createdDate !='undefined'){
+				var creadtedDateString = requirements.createdDate;
+				var creadtedDateStringArray = creadtedDateString.split("-");
+				var convertedDate = creadtedDateStringArray[2]+'-'+creadtedDateStringArray[1]+'-'+creadtedDateStringArray[0];
+				result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i>'+convertedDate+'</div>';
+				description =  description+'Posted Date :'+convertedDate+";";
+				}else{
+				result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i>--</div>';	
+				}
+				result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
+				result = result +'	<div class="share">';
+				
+				/* result = result +'	<div class="socialinviter holder break" type="socialpost"></div>'; */ 
+			    result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
+				result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';				  
+				result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>';
+				result = result +'  </div>'
+				result = result +'	<div class="clear"></div>';
+				result = result +'	</div>';
+				result = result +'	<div class="jobApply"><a href="'+sourceleadUrl+'/login">Apply</a>';
+				if(requirements.isCrowdSourcingJob == 'Y'){
+				result = result +'	<a href="'+sourceleadUrl+'/login" style="background-color:#eb821c;">Refer</a></div>';
+				}
+/* 					result = result +'	<div class="filLoad">';
+				result = result +'	<h2 class="gradi"></h2><p class="gradi"></p><p class="gradi"></p><p class="gradi"></p><br>';
+				result = result +'	<p class="gradi"></p>';
+				result = result +'	</div>'; */				
+				result = result +'	</div>';
+				if((json.length -1) == i ){
+					result = result +' <section class="loadJob"><i class="fa fa-spinner fa-spin"></i>No More Data</section>';	
+				}
+				$("#openJobsRequirementsSummary").empty();
+				$("#openJobsRequirementsList").append(result); 
+				$("#openJobsRequirementTitleId").val('');
+				$("#openJobsLocationId").val('');
+				$("#openJobsExperienceId").val('');
+			}
+			}
+		}else{
+		   	$("#openJobsRequirementTitleId").val('');
+			$("#openJobsLocationId").val('');
+			$("#openJobsExperienceId").val('');
+		}
+    socialInviterScripts();
+}
+</script>
+
+<script>
+function getOrgsList(alphabet,type){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var country = "";
+	$('input:radio[name=countryFilter]:checked').each(function() 
+    {
+		country = ($(this).val());
+    });
+	
+	 $.ajax({ 
+	   	type: "POST",
+	   	url: sourceleadUrl+"/getOrgsListforOpenJobs?${_csrf.parameterName}=${_csrf.token}&alphabet="+alphabet+"&country="+country,
+	    success: function(data) {
+	    	var json = JSON.parse(data);
+	    	var result = "";
+	    	if(type != 'main'){
+	    		var org = "";    	
+				for(var i=0; i<json.length; i++){
+					var opt = json[i];
+					org = org +'	<li class="control-group">';
+					org = org +'		<label class="control control--checkbox"><span>'+opt.orgName+'</span>';
+					org = org +'		  <input type="checkbox" name="orgName" value="'+opt.id+'"/><div class="control__indicator"></div>';
+					org = org +'	</label>';
+					org = org +'	</li>';
+				}
+				$("#remainingOrgs").empty();
+				$("#remainingOrgs").append(org);
+	    	}else{
+	    		for(var i=0; i<5; i++){
+		    		var opt = json[i];
+		    		result = result +'<li class="control-group">';
+			    	result = result +'<label class="control control--checkbox" ><span>'+opt.orgName+'</span>';
+			    	result = result +'  <input type="checkbox" name="orgName" value="'+opt.id+'" onclick="requirementsFilter();"/><div class="control__indicator"></div>';
+			    	result = result +'</label>';
+			    	result = result +'</li>';
+		    	}
+	    		if(json.length > 5){
+	    			var orgCount = json.length - 5 ;
+			    	result = result +'<a onclick="openPopup();" class="popOpen">+'+orgCount+' More</a>';
+	    		}
+				var org = "";    	
+				for(var i=0; i<json.length; i++){
+					var opt1 = json[i];
+					org = org +'	<li class="control-group">';
+					org = org +'		<label class="control control--checkbox" ><span>'+opt1.orgName+'</span>';
+					org = org +'		  <input type="checkbox" name="orgName" value="'+opt1.id+'"/><div class="control__indicator"></div>';
+					org = org +'	</label>';
+					org = org +'	</li>';
+				}
+		    	$("#orgList").empty();
+				$("#orgList").append(result);
+				$("#remainingOrgs").empty();
+				$("#remainingOrgs").append(org);
+	    	}
+	    }
+	 }); 
+}
 
 
+function openPopup(){
+	$(".filPop").fadeIn(100);
+};
+</script>
 
- <script>
+<script>
 function getOpenJobsRequirementSummary(requirementsUUID){
 	 var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
@@ -1159,8 +1364,6 @@ function getCities(){
 	        		
 		        }
 		    });
-		    
-		    
 		      $("#country").on('change', function (e) {
 		    	   getStates();
 		       });
@@ -1319,16 +1522,36 @@ function loadOpenJobsChosenRequirementScripts(){
 					$(".asMask").fadeIn(200);
 					$(".adSearch").fadeIn(100);
 				});
-				
 				// Remove or hide functions
 				function adSearchClose(){
 					$(".asMask").fadeOut(200);
 					$(".adSearch").fadeOut(100);
 				}
+				
+				$(".filterCta h3").click(function(){
+					$(this).find("i").toggleClass("arrAc");
+					$(this).next().slideToggle(200);
+				});	
+				
+				$(".CP").click(function(){
+					$(".filPop").fadeOut(100);
+				});
+
+				$(".Rcolor").click(function(){
+					$(this).text('Referred');
+				});
+				
 /* 				$(".asMask, .close-div").click(function(){
 					$(".filter").removeClass("filAc");
 					$(".asMask").fadeOut(200);
 					$(".adSearch").fadeOut(100);
 				});	 */	  
+</script>
+
+<script>
+$(".LettSelec a").click(function(){
+	$(".LettSelec a").removeClass("actL");
+	$(this).toggleClass("actL");
+});	  
 </script>
 <jsp:include page="../socialinviterscripts.jsp" />
