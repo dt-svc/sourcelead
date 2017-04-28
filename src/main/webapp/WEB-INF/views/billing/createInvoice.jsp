@@ -7,8 +7,10 @@
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<script src="resources/js/mask-time.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
+	$("#0totalHours").mask("9999:99");
 	getUserList("0");
 });
 </script>
@@ -138,10 +140,10 @@ $(document).ready(function(){
                 </td>
                 <td>
                   <div class="tbldata-dotdot-vsm">
-                    <input type="text" class="form-control input-sm" placeholder="Total Hours" id="0totalHours" name="0totalHours">
+                    <input type="text" class="form-control input-sm" placeholder="HHHH:MM" id="0totalHours" name="0totalHours">
                   </div>
                 </td>
-                <td><div class="tbldata-dotdot-100 text-right">10236985741</div></td>
+                <td><div class="tbldata-dotdot-100 text-right" id="0amount" name="0amount"></div></td>
                 <td><a class="text-danger tblminwidth-50" title="Remove row"><i class="fa fa-remove"></i></a></td>
               </tr>
                
@@ -149,8 +151,11 @@ $(document).ready(function(){
             <tfoot class="table_footer">
               <tr>
                 <td colspan="4"></td>
-                <td><strong>Total</strong></td>
-                <td>1000000.00</td>
+                <td><strong>Subtotal</strong></td>
+                <td><div>  <input type="text" value = "0" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div>
+                <!-- <td><div class="tbldata-dotdot-100 text-right" id="inoviceTotal" name="inoviceTotal"><span id="zero">0</span></div> -->
+                <input type="hidden" value = "" id="hiddenTotal">
+                <!-- <input class="tbldata-dotdot-100 text-right" id="inoviceTotal" name="inoviceTotal" value="00:00" readonly> --></td>
                 <td>&nbsp;</td>
               </tr>
             </tfoot>
@@ -203,27 +208,27 @@ $(document).ready(function(){
           
            <div class="col-md-7">
             <div class="form-horizontal">
-              <div class="form-group">
+            <!--   <div class="form-group">
                 <label class="col-md-7 text-right"><strong>Subtotal</strong></label>
                 <div class="col-md-5 text-right" id="subTotal" name="subTotal"><span><strong>120000.00</strong></span></div>
-              </div>
+              </div> -->
               
               <div class="form-group">
                 <div class="col-md-7 select-field">
                   <div class="row">
                     <div class="col-md-7 paddingRight">
                       <select class="form-control input-sm" id="disCount" name="disCount">
-                        <option selected="" disabled="">Discount %</option>
-                        <option>Discount Value</option>
+                        <option value="percentage" selected="">Discount %</option>
+                        <option value="flat">Discount Value</option>
                       </select>
                     </div>
                     <div class="col-md-5 paddingLeft">
-                      <input type="text" class="form-control input-sm" value="10%">
+                      <input type="text" class="form-control input-sm" id="discountValue" name="discountValue" onblur="calculateDiscount();">
                     </div>
                   </div>
                 </div>
                 <div class="col-md-5 text-right">
-                  <input type="text" class="form-control input-sm" value="333">
+                  <input type="text" class="form-control input-sm" id="discountTotal" name="discountTotal" readonly>
                 </div>
               </div>
               
@@ -285,7 +290,8 @@ $(document).ready(function(){
             </div>
             <div class="form-group mt">
                 <label class="col-md-7 text-right"><strong>Total</strong></label>
-                    <div class="col-md-5 text-right" id="grandTotal" name="grandTotal"><span><strong>120000.00</strong></span></div>
+               <div class="col-md-5 text-right"> <input type="text" value = "00.00" id="grandTotal" name="grandTotal" class="ReadTextFli"></div>
+                   <!--  <div  id="grandTotal" name="grandTotal"><span><strong>00.00</strong></span></div> -->
               </div>
             </div>
           </div>
@@ -321,18 +327,18 @@ $(document).ready(function(){
 	
 	<div id="divTaskTd4" style="display: none; float: left;">
        <div class="tbldata-dotdot-100">
-       <input type="text" class="form-control input-sm" placeholder="Rate" id="REPLACEROWIDrate" name="REPLACEROWIDrate">
+       <input type="text" class="form-control input-sm" placeholder="Rate" id="REPLACEROWIDrate" name="REPLACEROWIDrate" >
        </div>
 	</div>
 
 	<div id="divTaskTd5" style="display: none; float: left;">
 	<div class="tbldata-dotdot-vsm">
-	     <input type="text" class="form-control input-sm" placeholder="Total Hours" id="REPLACEROWIDtotlaHours" name="REPLACEROWIDtotlaHours">
+	     <input type="text" class="form-control input-sm" placeholder="HHHH:MM" id="REPLACEROWIDtotlaHours" name="REPLACEROWIDtotlaHours" onblur="calculateAmount(REPLACEROWID);">
 	     </div>
 	</div>
 	
 	<div id="divTaskTd6" style="display: none; float: left;">
-	     <div class="tbldata-dotdot-100 text-right">741.00</div>
+	     <div class="tbldata-dotdot-100 text-right" id="REPLACEROWIDamount" name="REPLACEROWIDamount" ></div>
 	</div>
 	
 	<div id="divTaskTd7" style="display: none; float: left;">
@@ -421,6 +427,7 @@ $(document).ready(function(){
 		cell1.innerHTML = divTsTd7Str;
 		
 		getUserList(maxRowNum);
+		$("#"+maxRowNum+"totalHours").mask("9999:99");
 		/* getSow(maxRowNum); */
 		
 	}
@@ -482,7 +489,59 @@ $(document).ready(function(){
   
   </script>
   
+  <script>
+  function calculateAmount(rowId){
+	  var rate = $("#"+rowId+"rate").val();
+	  var totalHours = $("#"+rowId+"totlaHours").val();
+	  
+	     var split = totalHours.split(':');
+	     var hours = split[0];
+ 	     var minute = split[1];
+		 var hourminits = hours * 60;
+		 var finalmin = parseInt(hourminits) + parseInt(minute);
+	     var perMinit = rate / 60;
+	     var totlalAmount = (perMinit * finalmin);
+	     $('#'+rowId+'amount').empty();
+	     $('#'+rowId+'amount').append(totlalAmount.toFixed(2));
+	     calTotalamount(rowId,totlalAmount);
+	  
+  }
+  </script>
+  <script>
+  function  calTotalamount(rowId,totlalAmount){
+   var hiddenTotal = +document.getElementById("hiddenTotal").value;
+   var grandTotal = parseFloat(hiddenTotal) + parseFloat(totlalAmount);
+   var arroundGrand = grandTotal.toFixed(2)
+   $("#inoviceTotal").val(arroundGrand);
+   $("#hiddenTotal").val(arroundGrand);
+   $("#discountTotal").val(arroundGrand);
+   $("#grandTotal").val(arroundGrand);
+   
+   
+   
+  }
+  </script>
   
+ <script type="text/javascript">
+function calculateDiscount(){
+	var discountType = $("#disCount").val();
+	var subTotal = $("#inoviceTotal").val();
+	var discountValue = $("#discountValue").val();
+	
+	var total ='';
+	if(discountType == 'flat'){
+		total = subTotal-discountValue;
+		$("#discountTotal").val(discountValue);
+		$("#grandTotal").val(total);
+	}
+	if(discountType == 'percentage'){
+		var perCentValue = (subTotal * discountValue)/100;
+		total = subTotal - perCentValue;
+		$("#discountTotal").val(perCentValue);
+		$("#grandTotal").val(total);
+	}
+}
+</script>
   
   <!-- ********************************************* Add Rows Invoice Table functionality End  ************************************************************ -->
   
