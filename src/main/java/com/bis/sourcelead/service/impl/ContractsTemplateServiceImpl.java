@@ -13,9 +13,11 @@ import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
@@ -658,6 +660,182 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	@Override
 	public List<Contracts> getListOfContractsEnvId() {
 		return  contractsTemplateDao.getListOfContractsEnvId();
+	}
+
+	@Override
+	public Contracts saveExistigContract(JSONObject jsonObj,MultipartFile multiFile, OrgLocations orgLocation, User user, Org org) throws Exception {
+		Contracts contracts = new Contracts();
+		Contracts vendorContracts = new Contracts();
+		String pattern = "dd-MM-yyyy";
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        
+		contracts.setContractType(jsonObj.getString("contractType"));
+		
+		if(jsonObj.has("submissionOffersList") && null != jsonObj.getString("submissionOffersList") && !"".equals(jsonObj.getString("submissionOffersList"))){
+			RequirementSubmission rs = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(jsonObj.getString("submissionOffersList")));
+			contracts.setRequirementSubmission(rs);
+		}
+		
+		if(jsonObj.has("hoursPerWeek") && null != jsonObj.getString("hoursPerWeek") && !"".equals(jsonObj.getString("hoursPerWeek"))){
+			contracts.setHoursPerWeek(jsonObj.getString("hoursPerWeek"));
+		}
+		
+		if(jsonObj.has("overTimeHours") && null != jsonObj.getString("overTimeHours") && !"".equals(jsonObj.getString("overTimeHours"))){
+			contracts.setOverTimeHours(jsonObj.getString("overTimeHours"));
+		}
+		
+		if(jsonObj.has("totalHoursEstimated") && null != jsonObj.getString("totalHoursEstimated") && !"".equals(jsonObj.getString("totalHoursEstimated"))){
+			contracts.setTotalHours(jsonObj.getString("totalHoursEstimated"));
+		}
+		
+		if(jsonObj.has("overtimeRate") && null != jsonObj.getString("overtimeRate") && !"".equals(jsonObj.getString("overtimeRate"))){
+			contracts.setOvertimeRate(jsonObj.getString("overtimeRate"));
+		}
+		
+		if(jsonObj.has("overtimeRateType") && null != jsonObj.getString("overtimeRateType") && !"".equals(jsonObj.getString("overtimeRateType"))){
+			contracts.setOvertimeRateType(jsonObj.getString("overtimeRateType"));
+		}
+		
+		contracts.setContractTitle(jsonObj.getString("contractTitle"));
+		vendorContracts.setContractTitle(jsonObj.getString("contractTitle"));
+		User ownerUser = userService.getUserById(Long.parseLong(jsonObj.getString("owner")));
+		contracts.setOwnerUserId(ownerUser);
+        Date startDate = format.parse(jsonObj.getString("startDate"));
+		contracts.setStartDate(startDate);
+		vendorContracts.setStartDate(startDate);
+		if(jsonObj.has("endDate")){
+			if(null != jsonObj.getString("endDate") && !"".equals(jsonObj.getString("endDate"))){
+				Date endDate = format.parse(jsonObj.getString("endDate"));
+				contracts.setEndDate(endDate);
+				vendorContracts.setEndDate(endDate);
+			}
+		}
+		User approverUser = null;
+		User vendorContactsUser = null;
+		if("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
+			contracts.setInitiatorType("Client");
+			contracts.setOrgLocationId(orgLocation);
+			OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("orgRelationId")));
+			contracts.setOrgRelations(orgRelations);
+			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+				contracts.setContractOrgLocationId(orgRelations.getLocationId());
+			}else if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+				contracts.setContractOrgLocationId(orgRelations.getResponderLocationId());
+			}
+			vendorContactsUser = userService.getUserById(Long.parseLong(jsonObj.getString("vendorContact")));
+			contracts.setContactUser(vendorContactsUser);
+		}
+		if("Client MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
+			contracts.setInitiatorType("Vendor");
+			contracts.setOrgLocationId(orgLocation);
+			OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("clientOrgRelationId")));
+			contracts.setOrgRelations(orgRelations);
+			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+				contracts.setContractOrgLocationId(orgRelations.getLocationId());
+			}else if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+				contracts.setContractOrgLocationId(orgRelations.getResponderLocationId());
+			}
+			vendorContactsUser = userService.getUserById(Long.parseLong(jsonObj.getString("clientContact")));
+			contracts.setContactUser(vendorContactsUser);
+		}
+		
+		if(jsonObj.has("percentageReward") && null != jsonObj.getString("percentageReward") && !"".equals(jsonObj.getString("percentageReward")) ){
+			contracts.setBillingAmount(jsonObj.getString("percentageReward"));
+			vendorContracts.setBillingAmount(jsonObj.getString("percentageReward"));
+				contracts.setBillingPer("Percentage");
+				vendorContracts.setBillingPer("Percentage");
+		}
+		if(jsonObj.has("flatReward") && null != jsonObj.getString("flatReward") && !"".equals(jsonObj.getString("flatReward")) ){
+			contracts.setBillingAmount(jsonObj.getString("flatReward"));
+			vendorContracts.setBillingAmount(jsonObj.getString("flatReward"));
+			
+			if(jsonObj.has("flatRateType") && null != jsonObj.getString("flatRateType") && !"".equals(jsonObj.getString("flatRateType")) ){
+				contracts.setBillingPer(jsonObj.getString("flatRateType"));
+				vendorContracts.setBillingPer(jsonObj.getString("flatRateType"));
+			}
+		}
+		
+		if(multiFile != null){
+			contracts.setDocFile(multiFile.getBytes());
+			contracts.setFileName(multiFile.getOriginalFilename());
+			contracts.setFileType(multiFile.getContentType());
+		 }
+		
+		contracts.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+		vendorContracts.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+		
+		if(jsonObj.has("paymentFrequency") && null != jsonObj.getString("paymentFrequency") && !"".equals(jsonObj.getString("paymentFrequency")) ){
+			contracts.setPaymentTerm(jsonObj.getString("paymentFrequency"));
+			vendorContracts.setPaymentTerm(jsonObj.getString("paymentFrequency"));
+		}
+		
+		if(jsonObj.has("taxPercentageReward") && null != jsonObj.getString("taxPercentageReward") && !"".equals(jsonObj.getString("taxPercentageReward")) ){
+			contracts.setTax(jsonObj.getString("taxPercentageReward"));
+			vendorContracts.setTax(jsonObj.getString("taxPercentageReward"));
+			contracts.setTaxType("Percentage");
+			vendorContracts.setTaxType("Percentage");
+		}
+		if(jsonObj.has("taxFlatReward") && null != jsonObj.getString("taxFlatReward") && !"".equals(jsonObj.getString("taxFlatReward")) ){
+			contracts.setTax(jsonObj.getString("taxFlatReward"));
+			vendorContracts.setTax(jsonObj.getString("taxFlatReward"));
+			contracts.setTaxType(jsonObj.getString("taxFlatRateType"));
+			vendorContracts.setTaxType(jsonObj.getString("taxFlatRateType"));
+		}
+		
+		
+		
+		if(jsonObj.has("description") && null != jsonObj.getString("description") && !"".equals(jsonObj.getString("description"))){
+			contracts.setDescription(jsonObj.getString("description"));
+			vendorContracts.setDescription(jsonObj.getString("description"));
+		}
+		if(jsonObj.has("jurisdiction") && null != jsonObj.getString("jurisdiction") && !"".equals(jsonObj.getString("jurisdiction"))){
+			contracts.setStateJurisdiction(jsonObj.getString("jurisdiction"));
+		}
+		contracts.setStatus("0");
+		vendorContracts.setTemplateSubmissionStatus("Finalized");
+		contracts.setTemplateSubmissionStatus("Finalized");
+		vendorContracts.setStatus("0");
+		contracts.setCreatedDate(new Date());
+		contracts.setCreatedBy(user.getUserCode());
+		contracts.setUpdatedDate(new Date());
+		contracts.setUpdatedBy(user.getUserCode());
+		Contracts savedContracts = contractsTemplateDao.saveNewContract(contracts);
+			if("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
+				vendorContracts.setContractType("Client MSA");
+				vendorContracts.setInitiatorType("Client");
+				vendorContracts.setContractOrgLocationId(orgLocation);
+				vendorContracts.setParentContractId(savedContracts);
+				OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("orgRelationId")));
+				vendorContracts.setOrgRelations(orgRelations);
+				if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+					vendorContracts.setOrgLocationId(orgRelations.getLocationId());
+				}else if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+					vendorContracts.setOrgLocationId(orgRelations.getResponderLocationId());
+				}
+				
+				User vendorUser = userService.getUserById(Long.parseLong(jsonObj.getString("vendorContact")));
+				vendorContracts.setOwnerUserId(vendorUser);
+				vendorContracts.setContactUser(ownerUser);
+			}
+			
+			if("Client MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
+				vendorContracts.setContractType("Vendor MSA");
+				vendorContracts.setInitiatorType("Vendor");
+				vendorContracts.setParentContractId(savedContracts);
+				vendorContracts.setContractOrgLocationId(orgLocation);
+				OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("clientOrgRelationId")));
+				vendorContracts.setOrgRelations(orgRelations);
+				if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+					vendorContracts.setOrgLocationId(orgRelations.getLocationId());
+				}else if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+					vendorContracts.setOrgLocationId(orgRelations.getResponderLocationId());
+				}
+				User vendorUser = userService.getUserById(Long.parseLong(jsonObj.getString("clientContact")));
+				vendorContracts.setOwnerUserId(vendorUser);
+				vendorContracts.setContactUser(ownerUser);
+			}
+			Contracts savedChildContracts = contractsTemplateDao.saveNewContract(vendorContracts);
+		return savedContracts;
 	}
 	
 }
