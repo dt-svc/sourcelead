@@ -190,7 +190,7 @@ public class AssociatesRestController {
 
 		}
 	   
-	   @RequestMapping(value = "/getVendorsByOrgLocation")
+	   @RequestMapping(value = "/getVendorsByOrgLocation", method = RequestMethod.GET)
 		public String getVendorsByOrgLocation(@RequestParam(value = "candidateId", required = false) Long candidateId,
 				HttpServletRequest request) throws Exception {
 		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
