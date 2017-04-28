@@ -34,4 +34,6 @@ public interface TaskService {
 	
 	List<Tasks> getTasksListOffboardingId(Long offboardingId)throws Exception;
 	
+	List<Tasks> getTasksListOnboardingId(Long onboardingId)throws Exception;
+	
 }

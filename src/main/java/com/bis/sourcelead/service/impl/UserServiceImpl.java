@@ -20,6 +20,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -38,12 +39,15 @@ import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.UserIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
@@ -53,8 +57,11 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.UserProfile;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
@@ -111,7 +118,12 @@ public class UserServiceImpl implements UserService {
 	@Autowired
     private SourceleadELKBaseIndexer<UserIndex> sourceleadELKBaseIndexer;
 	
-	 
+	@Autowired
+	private OrgSpocService orgSpocService;
+	
+	@Autowired
+	private OrgRelationsService orgRelationsService;
+	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
@@ -126,6 +138,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	OrgDao orgDao;
+	
+	@Autowired
+	private DepartmentService departmentService;
 	
 	@Autowired
 	private CandidateService  candidateService;
@@ -168,7 +183,7 @@ public class UserServiceImpl implements UserService {
 	   if(null == user){
 		   user = getUserDetails(jsonObj,loginuser.getUserCode());
 		   password = SourceLeadRandomCodeHelper.generateRandomPassword();
-		   user.setPassword(sourceleadPasswordEncoder.encode(password));
+ 		   user.setPassword(sourceleadPasswordEncoder.encode(password));
 		}else if(isUserActive == false){
 			password = SourceLeadRandomCodeHelper.generateRandomPassword();
 			user.setPassword(sourceleadPasswordEncoder.encode(password));
@@ -353,7 +368,8 @@ public class UserServiceImpl implements UserService {
 		
 		if(jsonObj.has("email")){
 			user.setUserName(jsonObj.getString("email"));
-		}
+		}  
+		
 		
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		user.setCreatedBy(userCode);
@@ -361,7 +377,7 @@ public class UserServiceImpl implements UserService {
 		return user;
 	}
 	
-	private UserRole getUserRoleDetails(JSONObject jsonObj,User user,String userCode, Long orgLocationsId) throws NumberFormatException, JSONException {
+	private UserRole getUserRoleDetails(JSONObject jsonObj,User user,String userCode, Long orgLocationsId) throws Exception {
 		UserRole userRole = new UserRole();
 		userRole.setUser(user);
 		
@@ -406,6 +422,11 @@ public class UserServiceImpl implements UserService {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		
+		if(jsonObj.has("department") && !"".equalsIgnoreCase(jsonObj.getString("department"))){
+			
+			List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(orgLocations.getId());
+		}
+		
 		userRole.setRoles(roles);
 		userRole.setUserType(roles.getDisplayName());
 		userRole.setCreatedDate(commonUtil.currentDate());
@@ -415,7 +436,7 @@ public class UserServiceImpl implements UserService {
 		return userRole;
 	}
 	
-	private Employees getEmployeeDetails(User user,JSONObject jsonObj, Long orgLocationsId,String userCode) throws JSONException {
+	private Employees getEmployeeDetails(User user,JSONObject jsonObj, Long orgLocationsId,String userCode) throws NumberFormatException, Exception {
 		Employees employees = new Employees();
 		employees.setUser(user);
 		OrgLocations orgLocations = new OrgLocations();
@@ -432,6 +453,38 @@ public class UserServiceImpl implements UserService {
 		}
 		if(jsonObj.has("DayHours")){
 			employees.setDailyHours(jsonObj.getString("DayHours"));
+		}
+		if(jsonObj.has("currentCurrency")){
+			employees.setCurrentCurrency(jsonObj.getString("currentCurrency"));
+		}
+		
+		if(jsonObj.has("designationType")){
+			employees.setUserEmploymentType(jsonObj.getString("designationType"));
+		}
+		
+		if(jsonObj.has("designationOtherType")){
+			employees.setDesignationOtherType(jsonObj.getString("designationOtherType"));
+		}
+		
+		if(jsonObj.has("department") && !"".equalsIgnoreCase(jsonObj.getString("department"))){
+			Department department= departmentService.getDepartmentById(Long.parseLong(jsonObj.getString("department")));
+			employees.setDepartmentId(department);
+		}else{
+			employees.setDepartmentId(null);
+		}
+		
+		if(jsonObj.has("vendors") && !"".equalsIgnoreCase(jsonObj.getString("vendors"))){
+			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("vendors")));
+			employees.setOrgRelationId(orgRelation);
+		}else{
+			employees.setOrgRelationId(null);
+		}
+		
+		if(jsonObj.has("vendorcontact") && !"".equalsIgnoreCase(jsonObj.getString("vendorcontact"))){
+			OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(jsonObj.getString("vendorcontact")));
+			employees.setSpocId(orgspoc);
+		}else{
+			employees.setSpocId(null);
 		}
 		/*if(jsonObj.has("invoiceFrequency")){
 			if(jsonObj.getString("invoiceFrequency") != null && !"".equalsIgnoreCase(jsonObj.getString("invoiceFrequency"))){
