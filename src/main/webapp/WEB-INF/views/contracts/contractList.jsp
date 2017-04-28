@@ -208,7 +208,7 @@ function preparedContractList(data){
 		         result = result + '<div class="tbldata-dotdot-sm">';
 		         if(report.parentId != null && report.parentId != '' && report.parentId != 'undefined'){
 		     		 if(report.templateSubmissionStatus == "Finalized"){
-		     			result = result + '<div id="removeStatus'+report.id+'">Finalized</a></div>';
+		     			result = result + '<div id="removeStatus'+report.id+'">--</a></div>';
 		            	 }
 		     		 else{
 			         	 	opt = opt + '<div><span>--</span></div>';
@@ -218,7 +218,7 @@ function preparedContractList(data){
 		     			result = result + '<div id="removeStatus'+report.id+'"><a class="btn btn-sm btn-success" title="finalize" onclick="finalizeContract('+report.id+',\'Waiting To Be Verify\');">finalize</a></div>';
 		            	 }
 		        	  if(report.templateSubmissionStatus == "Finalized"){
-		        		  result = result + '<div id="removeStatus'+report.id+'">Finalized</a></div>';
+		        		  result = result + '<div id="removeStatus'+report.id+'">--</a></div>';
 		            	 }
 		        	  
 		        	  if(report.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
@@ -286,7 +286,7 @@ function preparedContractList(data){
 	         opt = opt + '<div class="tbldata-dotdot-sm">';
 	         if(output.parentId != null && output.parentId != '' && output.parentId != 'undefined'){
 	     		 if(output.templateSubmissionStatus == "Finalized"){
-	     			opt = opt + '<div id="removeStatus'+output.id+'">Finalized</a></div>';
+	     			opt = opt + '<div id="removeStatus'+output.id+'">--</a></div>';
 	            	 }
 	     		
 	     		 else{
@@ -294,7 +294,7 @@ function preparedContractList(data){
 		        	  }
 	     	}else{
 	        	  if(output.templateSubmissionStatus == "Finalized"){
-	        		  opt = opt + '<div id="removeStatus'+output.id+'">Finalized</a></div>';
+	        		  opt = opt + '<div id="removeStatus'+output.id+'">--</a></div>';
 	            	 }
 	        	  else if(output.contractStatus == "completed" && output.templateSubmissionStatus != "Finalized"){
 		     			opt = opt +  '<div id="removeStatus'+output.id+'"><a class="btn btn-sm btn-success" title="finalize" onclick="finalizeContract('+output.id+',\'Waiting To Be Verify\');">finalize</a></div>';
