@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
+import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Projects;
@@ -126,6 +127,30 @@ public class InvoiceRestController {
  	  return resultJson;
  	}
     
-    
+    @RequestMapping(value = "/getInvoiceList")
+	public String getInvoiceList(HttpServletRequest request) throws Exception {
+		String resultJson;
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<Invoice> invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId());
+		for(Invoice invoice :invoiceList){
+			if(invoice.getClientOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+				invoice.setClientName(invoice.getClientOrgRelationID().getResponderLocationId().getOrg().getOrgName());
+			}
+			if(invoice.getClientOrgRelationID().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+				invoice.setClientName(invoice.getClientOrgRelationID().getLocationId().getOrg().getOrgName());
+			}
+				
+			StringBuilder contactName = new StringBuilder();
+			if(invoice.getContactContactUser().getLastName() != null){
+				invoice.setClientContactName(contactName.append(invoice.getContactContactUser().getFirstName()).append(" ").append(invoice.getContactContactUser().getLastName()).toString());	
+			}else{
+				invoice.setClientContactName(contactName.append(invoice.getContactContactUser().getFirstName()).toString());
+			}
+			
+		}
+	    resultJson = commonUtil.toJSON(invoiceList);
+	  return resultJson;
+	}
+	
     
 }
