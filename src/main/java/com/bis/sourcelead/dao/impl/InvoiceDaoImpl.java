@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.bis.sourcelead.dao.InvoiceDao;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 
@@ -37,6 +37,18 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		return invoice;
 	}
 
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Invoice invoce  where invoce.orgLocation.id =:orgLocationId and invoce.status = '1' "; 
+		List<Invoice> departmentList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		return departmentList;
+	}
+	
+	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
@@ -52,4 +64,5 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	  return contractsList;
 		 
 	}
+
 }

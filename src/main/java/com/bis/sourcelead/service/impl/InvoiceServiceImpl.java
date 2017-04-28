@@ -27,6 +27,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 	}
 
 	@Override
+	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId) throws Exception {
+		return invoiceDao.invoiceListByOrgLocationId(orgLocationId);
+	}
 	public List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId) throws Exception
 	{
 		return invoiceDao.getSowcontractListByAssociateId(candidateId,orgLocationId,orgRelationId);
