@@ -96,11 +96,6 @@ function getUsersSearchResult(searchValue){
       <div class="pull-left cand-advsrche onboardBtn">
        <input id="searchElement" type="hidden"></input>
        
-       
-              <a href="<c:url value='/candidateOnBoardingList'/>" class="btn btn-primary btn-sm" > 
-			  <i class="fa fa-user paddingRight"></i>ONBOARD & OFFBOARD 
-			  </a>
-			  
 			  <%--<a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
 			  Advanced Search&nbsp;&nbsp;
 			  <i class="fa fa-search"></i>

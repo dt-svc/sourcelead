@@ -384,11 +384,11 @@ $(document).ready(function(){
 					result = result + '			</div>';
 				}
 				
-				/* if(json.departmentName != null && json.departmentName != "" && json.departmentName != 'undefined'){
+				 if(json.departmentName != null && json.departmentName != "" && json.departmentName != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				 <strong>Department Name:</strong><span class="fix" title="'+json.departmentName+'">'+json.departmentName+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
-				} */
+				} 
 				result = result + '	   </div>';				
 				/* result = result + ' <div class="user_summary_edit user_summaryEdit" id="editUserDiv"></div>'; */
 				result = result + '	  <div class="clearfix"></div>';
@@ -705,28 +705,28 @@ function getChangeRole(userId,userRoleId){
 
 <script>
  function getDepartmentsList(){
-	 var departmentName = $("#updatedepartment").val();
-		var departmentOrgRelationId = $("#updateDepartmentOrgRelationId").val();
+	 var updatedepartment = $("#updatedepartment").val();
+	 var updateDepartmentOrgRelationId = $("#updateDepartmentOrgRelationId").val();
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getDepartmentsList?${_csrf.parameterName}=${_csrf.token}",
 	        success: function(data) {
 	        	var json = JSON.parse(data);
-	        	
-	        	$('#department').append('<option value="">--Select Department --</option>');
-	            for(var i=0;i<json.length;i++){
-	            	  var opt = json[i];
-	            	  if(departmentName != null && departmentName != 'undefined' && departmentName  != ''){
-	            		  $('#department').append('<option '+ (opt.id == departmrnt ? "selected" : '') +' value="'+opt.id+'">'+opt.departmentName+'</option>');
+	        	$('#department').append('<option value="">--select Department --</option>');
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var opt = json[i];
+	            	  if(updatedepartment != null && updatedepartment != 'undefined' && updatedepartment  != ''){
+	            		  $('#department').append('<option '+ (opt.id == updateDepartmentOrgRelationId ? "selected" : '') +' value="'+opt.id+'">'+opt.departmentName+'</option>');
 		            	}else{
 		            		$('#department').append('<option value='+opt.id+' >'+opt.departmentName+'</option>');	
 		            	}
-	            	  
-	            }
-	        	$("#department").empty();
-		        $("#department").append(output);
+	        		
+				}
+	        	
 		        $('#department').trigger("chosen:updated");
+		        
 	        },
 	    });
  }
@@ -1307,13 +1307,13 @@ $("#editRoleDetailsList").empty();
 			 	     	result = result + ' </div>';
 					}
 					// moving date bottom to top
-					/* result = result + ' <div class="user_summary_edit_cta">';
+					 result = result + ' <div class="user_summary_edit_cta">';
 					    result = result + ' <label>Department</label>';
-						result = result + '<select multiple class="form-control chosen-select" id="department" name="department"  field-name="Department" '+json.departmentName+'>';
+						result = result + '<select class="form-control chosen-select" id="department" name="department"  field-name="Department" '+json.departmentName+'>';
 						result = result + '</select>';
 						result = result + '<input type="hidden" name="updatedepartment" id="updatedepartment" value="'+json.departmentName+'">';
-						result = result + '<input type="hidden" name="updateDepartmentOrgRelationId" id="updateDepartmentOrgRelationId" value="'+json.departmrnt+'">';	
-						result = result + '</div>'; */
+						result = result + '<input type="hidden" name="updateDepartmentOrgRelationId" id="updateDepartmentOrgRelationId" value="'+json.department+'">';	
+						result = result + '</div>'; 
 					
 					   result = result + '<div class="user_summary_edit_cta">';
  					   result = result + ' <label>Employment type</label>';
