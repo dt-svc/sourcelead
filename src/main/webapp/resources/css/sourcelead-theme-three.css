@@ -115,6 +115,9 @@ ul.timesheet-menu li a:hover{
 	color:#333;
 	text-shadow:none;
 }
+.custom-navbar-inner .reportsH a .fa-pie-chart {
+	color: #757575;
+}
 .side-bar .user-panel.user-panel-active .image img {
     width: 100%;
 }
@@ -166,6 +169,7 @@ ul.timesheet-menu li a:hover{
     color: #6F8793;
     text-shadow: none;
 }
+
 .bell {
     color: #6F8793;
 }

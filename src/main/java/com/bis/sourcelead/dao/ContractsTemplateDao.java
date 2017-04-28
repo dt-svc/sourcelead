@@ -28,8 +28,10 @@ public interface ContractsTemplateDao {
 
 	Contracts getChildContractById(Long contractId);
 	
-	ContractsTemplate findByContractTemplateName(String templateName,Long orgLocationId) throws Exception;
+	ContractsTemplate findByContractTemplateName(String templateName,String contractType, Long orgLocationId) throws Exception;
 
 	List<Contracts> getListOfContractsEnvId();
+
+	Contracts findContractTitleByOrgLocationAndContractType(String contractTitle,String contractType,Long orgLocationId);
 	
 }

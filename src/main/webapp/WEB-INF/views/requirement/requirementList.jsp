@@ -274,7 +274,7 @@ function prepareRequirementData(data){
    	 
    	result = result +"<td>";
    	if(opt.jobId != '' && opt.jobId != null){
-	   	result = result +"<div class='tbldata-dotdot-100' title='"+opt.jobId+"'>"+opt.jobId+"</span></div>";
+	   	result = result +"<div class='tbldata-dotdot_50' title='"+opt.jobId+"'>"+opt.jobId+"</span></div>";
    	}else{
    		result = result +"<div>-----</div>";
    	}
@@ -282,21 +282,21 @@ function prepareRequirementData(data){
 	
    	 if(opt.jobId != '' && opt.jobId != null){
    	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-        	result = result +"<td><a href='<c:url value='/requirementSummary?requirementUUID="+opt.requirementUUID+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+        	result = result +"<td><a href='<c:url value='/requirementSummary?requirementUUID="+opt.requirementUUID+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
         '</sec:authorize>';
         '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-        	result = result +"<td><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
+        	result = result +"<td><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
         '</sec:authorize>';
    	 }else{
    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-            	result = result +"<td><a href='<c:url value='/requirementSummary?requirementUUID="+opt.requirementUUID+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+            	result = result +"<td><a href='<c:url value='/requirementSummary?requirementUUID="+opt.requirementUUID+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
             '</sec:authorize>';
             '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-            	result = result +"<td><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
+            	result = result +"<td><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
             '</sec:authorize>';
    	 }
         if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
-       	 result = result +"<td><div title='"+opt.clientName+"'><span>"+opt.clientName+"</span></div></td>";
+       	 result = result +"<td><div title='"+opt.clientName+"' class='tbldata-dotdot-100'>"+opt.clientName+"</div></td>";
         }else{
        	 result = result +"<td><div>-----</div></td>";
         }
@@ -328,9 +328,9 @@ function prepareRequirementData(data){
     	 }
        
         if(opt.state!=null && opt.state !='' && opt.state !='undefined' &&  opt.city !='undefined' && opt.city !='' &&  opt.city!=null){
-            result = result +"<td><div><span title='"+opt.city+', '+opt.state+', '+opt.country+"'>"+opt.city+', '+opt.state+', '+opt.country+"</span></div></td>";
+            result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.city+', '+opt.state+', '+opt.country+"'>"+opt.city+', '+opt.state+', '+opt.country+"</span></div></td>";
         }else if(opt.state!=null && opt.state !='' && opt.state !='undefined'){
-            result = result +"<td><div><span title='"+opt.state+', '+opt.country+"'>"+opt.state+', '+opt.country+"</span></div></td>";
+            result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.state+', '+opt.country+"'>"+opt.state+', '+opt.country+"</span></div></td>";
 
         }else{
             result = result +"<td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
@@ -346,7 +346,7 @@ function prepareRequirementData(data){
        	 result = result +"<td><div>0</div></td>";
         } */
         if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
-       	 result = result +"<td><div><span title='"+opt.manager+"'>"+opt.manager+"</span></div></td>";
+       	 result = result +"<td><div class='tbldata-dotdot-100' title='"+opt.manager+"'>"+opt.manager+"</div></td>";
         }else{
        	 result = result +"<td><div>----</div></td>";
         }
@@ -355,7 +355,7 @@ function prepareRequirementData(data){
            }else{
           	 result = result +"<td><div class='tblminwidth-75'>----</div></td>";
            }
-          result = result +"<td><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+");'  id='changeStatusId"+opt.id+"'>";
+          result = result +"<td><div style='width:75px'><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+");'  id='changeStatusId"+opt.id+"'>";
            if(opt.requirementSubmissionStatus == "DRAFT"){
 				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
 				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
@@ -472,8 +472,8 @@ function prepareRequirementData(data){
 			}
 
 			result = result +" </select>";	
-           result = result +" </td>";
-           result = result +" <td>";
+           result = result +" </div></td>";
+           result = result +" <td><div class='widthIcon'>";
            
 	        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
 		        if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
@@ -493,7 +493,7 @@ function prepareRequirementData(data){
 		else{
            result = result +"<div>--</div>";
        }    '</sec:authorize>';    
-		result = result +"</td>";
+		result = result +"</div></td>";
         result = result +"</tr>";
         result = result +"</tr>";
        
