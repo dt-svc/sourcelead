@@ -4123,3 +4123,7 @@ position: relative; padding: 0px 0px 5px 0px;
 .viewTemplate.checklist input[type=checkbox], .viewTemplate.checklist input[type=radio]{
 	margin: 0 10px 0 0; position: relative; top:2px;
 }
+
+.pofix {
+	position: fixed !important;
+}
