@@ -398,7 +398,7 @@ function getSeheduledInterviewsList(){
         				result = result + '<th>Applicant</th>';
         				result = result + '<th>Interview Type</th>';
         				result = result + '<th>Start Date</th>';
-        				result = result + '<th>End Date</th>';	
+        				result = result + '<th>Start time - End time</th>';	
         				result = result + '<th>Time Zone</th>';
         				result = result + '<th>Details</th>';
         				result = result + '<th>Interviewer</th>';
@@ -426,18 +426,23 @@ function getSeheduledInterviewsList(){
 	                 	result = result + '       </td>';
 	                 	
 	                 	result = result + '       <td>';
+	                 	var sTime = "";
 	                 	if(null != opt.interviewTimeZoneStartTimeStr && '' != opt.interviewTimeZoneStartTimeStr && 'undefined' != opt.interviewTimeZoneStartTimeStr){
-	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">'+opt.interviewTimeZoneStartTimeStr+'</div>';
+	                 		sTime = opt.interviewTimeZoneStartTimeStr.substr(opt.interviewTimeZoneStartTimeStr.length - 8);
+	                 		var iDate = opt.interviewTimeZoneStartTimeStr.substring(0, 10)
+	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">'+iDate+'</div>';
 	                 	}else{
 	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">---</div>';
 	                 	}
 	                 	result = result + '       </td>';
 	                 	
 	                 	result = result + '       <td>';
+	                 	var eTime = "";
 	                 	if(null != opt.interviewTimeZoneEndTimeStr && '' != opt.interviewTimeZoneEndTimeStr && 'undefined' != opt.interviewTimeZoneEndTimeStr){
-	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">'+opt.interviewTimeZoneEndTimeStr+'</div>';
+	                 		eTime = opt.interviewTimeZoneEndTimeStr.substr(opt.interviewTimeZoneEndTimeStr.length - 8);
+	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">'+sTime+" - "+eTime+'</div>';
 	                 	}else{
-	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">---</div>';
+	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">'+sTime+'</div>';
 	                 	}
 	                 	result = result + '       </td>';
 	                 	

@@ -693,7 +693,7 @@ function configCoolingOff(){
 					result = result + '<input type="submit" value="Save" id="saveCoolingOff_button" class="btn btn-primary mr">';
 					result = result + '</div>';
 					result = result + ' </form>';
-					
+					$("#coolingOffPeriodDiv").empty(); 
 					$("#coolingOffPeriodDiv").append(result);
 					
 					 var config = {
