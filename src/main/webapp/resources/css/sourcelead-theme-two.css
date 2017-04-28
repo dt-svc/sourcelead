@@ -123,6 +123,9 @@ ul.timesheet-menu li a:hover{
     font-size: 13px;
     text-transform: uppercase;
 }
+.custom-navbar-inner .reportsH a .fa-pie-chart {
+	color: #333;
+}
 .bell {
     color: #333;
 }

@@ -1,7 +1,10 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
- <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+ 
+<jsp:include page="candidatesQuickView.jsp"></jsp:include>
+ 
 <style>
 .clsDatePicker {
 	z-index: 100000 !important;
@@ -134,6 +137,7 @@ function storeCertificate(candidateId){
 			            			$("#cerMsgDiv").html("Success!! New Certification added");
 				               		candidateCertificateList(candidateId);
 				               		cerMsgFadein();
+				               		qwikCertificates(candidateId);
 							    	}
 							   }
 						},
@@ -698,7 +702,7 @@ function addCertification(candidateId) {
 	            			$("#cerMsgDiv").html("Certification details updated");
 							candidateCertificateList(candidateId);
 							cerMsgFadein();
-							candidateQuickViewProfile(candidateId);
+							qwikCertificates(candidateId);
 						},
 					});
 			return true;
