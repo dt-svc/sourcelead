@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.InvoiceDao;
+import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.service.InvoiceService;
 
@@ -28,6 +29,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 	@Override
 	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId) throws Exception {
 		return invoiceDao.invoiceListByOrgLocationId(orgLocationId);
+	}
+	public List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId) throws Exception
+	{
+		return invoiceDao.getSowcontractListByAssociateId(candidateId,orgLocationId,orgRelationId);
 	}
 	
 }

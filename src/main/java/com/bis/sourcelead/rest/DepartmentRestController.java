@@ -136,16 +136,6 @@ public class DepartmentRestController {
     	   }
 		return flag;
 	   }
-    
-	
-    @RequestMapping(value = "/getUserList", method = RequestMethod.GET)
- 	public @ResponseBody  String getUserList(HttpServletRequest request, HttpServletResponse response) throws Exception
- 	{
-     	String resultJson;
-     	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-     	List<User> userList = userService.getAllUsersByOrgLocationCode(loginOrgLocation.getId());
- 	  resultJson = commonUtil.toJSON(userList);
- 	  return resultJson;
- 	}
+
     
 }

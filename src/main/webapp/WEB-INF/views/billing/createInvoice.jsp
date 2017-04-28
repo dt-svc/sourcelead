@@ -21,60 +21,74 @@ $(document).ready(function(){
       <div class="pull-right brud-crum">Home » Invoice</div>
     </section>
     <div class="content-area content-new clearfix">
+    <div id="invoiceLoading"></div>
+     <form:form id="invoice_form"  name="invoice_form" method="post" > 
       <div class="clearfix form-horizontal inner-content">
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <div class="form-group">
               <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field">
-                <select class="form-control">
-                  <option selected="" disabled="">--Select Customer--</option>
+                <select class="form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();">
+                 <option value=''>--Select Customer--</option>
+                   <c:forEach var="orgrelations" items="${clientList}">
+                         <option value="${orgrelations.id}">${orgrelations.orgName}</option>
+                  </c:forEach>
+                 <!--  <option selected="" disabled="">--Select Customer--</option>
                   <option>Customer-1</option>
                   <option>Customer-2</option>
-                  <option>Customer-3</option>
+                  <option>Customer-3</option> -->
                 </select>
               </div>
             </div>
-            <div class="form-group">
-              <label class="col-md-3">Client Contact</label>
-              <div class="col-md-9">
-                <input type="text" class="form-control" name="Website" value="" placeholder="Email / Phone">
+             <div class="form-group">
+              <label class="col-md-4">Client Contact<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-8">
+                  <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Vendor Contact">
+                  </select>
               </div>
             </div>
+            <!-- <div class="form-group">
+              <label class="col-md-3">Client Contact</label>
+              <div class="col-md-9">
+                <input type="text" class="form-control"id="clientContact" name="clientContact" value="" placeholder="Client Contact">
+              </div>
+            </div> -->
             <div class="form-group">
               <label class="col-md-3">Invoice Id</label>
               <div class="col-md-9">
-                <input type="text" class="form-control" name="Website" value="" placeholder="Invoice Id">
+                <input type="text" class="form-control" id="invoiceId" name="invoiceId" value="" placeholder="Invoice Id">
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-3">Invoice Date</label>
               <div class="col-md-9 select-field">
-                <input type="text" class="form-control calendar" name="Website" value="" placeholder="Invoice Date" id="invoiceDate" readonly>
+                <input type="text" class="form-control calendar" id="invoiceDate" name="invoiceDate" value="" placeholder="Invoice Date" id="invoiceDate" readonly>
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-3">Due Date</label>
               <div class="col-md-9">
-                <input type="text" class="form-control calendar" name="Website" value="" placeholder="Invoice Date" id="dueDate" readonly>
+                <input type="text" class="form-control calendar" id="dueDate" name="dueDate" value="" placeholder="Invoice Date" id="dueDate" readonly>
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-3">Billing Address</label>
               <div class="col-md-9">
-                <textarea class="form-control" rows="2" placeholder="Billing Address"></textarea>
+                <textarea class="form-control" rows="2" id="billingAddress" name="billingAddress" placeholder="Billing Address"></textarea>
               </div>
             </div>
+            
+           <!--  <div class="form-group">
+              <label class="col-md-3">Preojects<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-9 select-field">
+                <select class="form-control" id="projectId" name="projectId" onchange="getProjects();">
+                </select>
+              </div>
+            </div> -->
           </div>
         </div>
-        <div class="form-footer clearfix mt hidden">
-          <div class="col-lg-12">
-            <div class="pull-right">
-              <input type="button" value="Save" class="btn btn-primary">
-              <input type="button" value="Cancel" class="btn btn-default ml">
-            </div>
-          </div>
-        </div>
+       
         <div class="clearfix"></div>
         <!-- Drap and Drop Table Row -->
         
@@ -100,31 +114,31 @@ $(document).ready(function(){
                 <!-- <td><a href="javascript:void(0)"><i class="fa fa-ellipsis-h"></i></a></td> -->
                 <td>
                   <div class="inputCustom">
-                    <input type="text" class="calendar paddingRight" id="sdate-input0" placeholder="Start Date" name="invoiceStartDate">
-                    <input type="text" class="calendar paddingLeft" id="edate-input0" placeholder="End Date" name="invoiceEndDate">
+                    <input type="text" class="calendar paddingRight" id="0sdate-input" placeholder="Start Date" name="0invoiceStartDate">
+                    <input type="text" class="calendar paddingLeft" id="0edate-input" placeholder="End Date" name="0invoiceEndDate">
                   </div>
                 </td>
                 <td>
                   <div class="tbldata-dotdot-vsm select-field">
-                    <select class="form-control input-sm" id="0candidateId" name="candidate">
+                    <select class="form-control input-sm" id="0candidateId" name="0candidate">
                     </select>
                   </div>
                 </td>
                 <td>
                   <div class="tbldata-dotdot-100 select-field">
-                    <select class="form-control input-sm" id="0sow" name="sow">
-                      <option>Sow</option>
+                    <select class="form-control input-sm" id="0sow" name="0sow">
+                      <option value="">selcet Sow</option>
                     </select>
                   </div>
                 </td>
                 <td>
                   <div class="tbldata-dotdot-100">
-                    <input type="text" class="form-control input-sm" placeholder="Rate" name="0rate" name="rate">
+                    <input type="text" class="form-control input-sm" placeholder="Rate" name="0rate" name="0rate">
                   </div>
                 </td>
                 <td>
                   <div class="tbldata-dotdot-vsm">
-                    <input type="text" class="form-control input-sm" placeholder="Total Hours" id="0totalHours" name="totalHours">
+                    <input type="text" class="form-control input-sm" placeholder="Total Hours" id="0totalHours" name="0totalHours">
                   </div>
                 </td>
                 <td><div class="tbldata-dotdot-100 text-right">10236985741</div></td>
@@ -153,15 +167,15 @@ $(document).ready(function(){
             </div>
             <div class="clearfix mb"><p>Do you want to raise separate invoice for each item</p>
               <label class="paddingRight">
-                <input type="radio" name="raise">
+                <input type="radio" id="seperateInvoice" name="seperateInvoice">
                 <strong class="paddingLeft">Yes</strong></label>
               <label class="paddingLeft">
-                <input type="radio" name="raise">
+                <input type="radio" id="seperateInvoice" name="seperateInvoice">
                 <strong class="paddingLeft">No</strong></label>
             </div>
             <div class="clearfix mb">
               <label><strong>Message</strong></label>
-              <textarea class="form-control" rows="2"></textarea>
+              <textarea class="form-control" rows="2" id="comment" name="comment"></textarea>
             </div>
             
             
@@ -191,14 +205,14 @@ $(document).ready(function(){
             <div class="form-horizontal">
               <div class="form-group">
                 <label class="col-md-7 text-right"><strong>Subtotal</strong></label>
-                <div class="col-md-5 text-right"><span><strong>120000.00</strong></span></div>
+                <div class="col-md-5 text-right" id="subTotal" name="subTotal"><span><strong>120000.00</strong></span></div>
               </div>
               
               <div class="form-group">
                 <div class="col-md-7 select-field">
                   <div class="row">
                     <div class="col-md-7 paddingRight">
-                      <select class="form-control input-sm">
+                      <select class="form-control input-sm" id="disCount" name="disCount">
                         <option selected="" disabled="">Discount %</option>
                         <option>Discount Value</option>
                       </select>
@@ -257,21 +271,21 @@ $(document).ready(function(){
                                     <span class="text-danger"><i class="fa fa-remove"></i></span>
                                 </td>
                             </tr>
-                            <tr class="hide-row">
+                           <!--  <tr class="hide-row">
                                 <td colspan="2">
                                 </td>
                                 <td>
-                                <strong>Total: </strong>
+                                <strong>Total:4444444444</strong>
                                 </td>
-                                <td colspan="2" align="right"><strong>120000000.00</strong></td>
-                            </tr>
+                                <td colspan="2" align="right" id="grandTotal" name="grandTotal"><strong>1800000.00</strong></td>
+                            </tr> -->
                         </tbody>
                     </table>
                     <!-- AddTax Table Starts here -->
             </div>
             <div class="form-group mt">
                 <label class="col-md-7 text-right"><strong>Total</strong></label>
-                    <div class="col-md-5 text-right"><span><strong>120000.00</strong></span></div>
+                    <div class="col-md-5 text-right" id="grandTotal" name="grandTotal"><span><strong>120000.00</strong></span></div>
               </div>
             </div>
           </div>
@@ -280,12 +294,13 @@ $(document).ready(function(){
           <!-- Drap and Drop Table Row --> 
       <footer class="form-footer">
               <div class="pull-right mr">
-                  <button type="button" class="btn btn-sm btn-primary">Save</button>
+                  <button type="button" class="btn btn-sm btn-primary" onclick="saveInvoice('DRAFT')">Save</button>
                   <button type="button" class="btn btn-sm btn-success ml">Send</button>
                   <button type="button" class="btn btn-sm btn-default ml">Cancel</button>
               </div>
           </footer>
       </div>
+      </form:form>
     </div>
   </section>
   
@@ -294,13 +309,13 @@ $(document).ready(function(){
 <!-- ********************************************* Add Rows Invoice Table functionality start  ************************************************************ -->	
 	<div id="divTaskTd2" style="display: none; float: left;">
 	<div class="tbldata-dotdot-vsm select-field">
-       <select class="form-control input-sm" id="REPLACEROWIDcandidateId" name="REPLACEROWIDcandidate"> </select>
+       <select class="form-control input-sm" id="REPLACEROWIDcandidateId" name="REPLACEROWIDcandidate" onchange="getSow(REPLACEROWID)"> </select>
        </div>
 	</div>
 	
 	<div id="divTaskTd3" style="display: none; float: left;">
        <div class="tbldata-dotdot-100 select-field">
-       <select class="form-control input-sm" id="REPLACEROWIDsow" name="REPLACEROWIDsow"> <option>Sow</option>  </select>
+       <select class="form-control input-sm" id="REPLACEROWIDsow" name="REPLACEROWIDsow"> </select>
        </div>
 	</div>
 	
@@ -349,12 +364,12 @@ $(document).ready(function(){
 		var text = "";
 		var cell0 = row.insertCell(0);
 		text = text+"<div  class='inputCustom'>";
-		text = text+'<input type="text" class="calendar paddingRight" id="sdate-input'+maxRowNum+'" name="invoiceStartDate'+maxRowNum+'" placeholder="Start Date">';
-		text = text+'<input type="text" class="calendar paddingLeft" id="edate-input'+maxRowNum+'" name="invoiceEndDate'+maxRowNum+'" placeholder="End Date">';
+		text = text+'<input type="text" class="calendar paddingRight" id="'+maxRowNum+'sdate-input" name="'+maxRowNum+'invoiceStartDate" placeholder="Start Date">';
+		text = text+'<input type="text" class="calendar paddingLeft" id="'+maxRowNum+'edate-input" name="'+maxRowNum+'invoiceEndDate" placeholder="End Date">';
 		text = text+'</div>';
 		cell0.innerHTML = text;
 		
-		$( "#sdate-input"+maxRowNum+"" ).datepicker({
+		$( "#"+maxRowNum+"sdate-input" ).datepicker({
 			  changeMonth: true,
 		      changeYear: true,
 		      dateFormat : 'dd-mm-yy',
@@ -363,7 +378,7 @@ $(document).ready(function(){
 		 	  }
 		    });
 		
-		$( "#edate-input"+maxRowNum+"" ).datepicker({
+		$( "#"+maxRowNum+"edate-input" ).datepicker({
 			  changeMonth: true,
 		      changeYear: true,
 		      dateFormat : 'dd-mm-yy',
@@ -406,6 +421,7 @@ $(document).ready(function(){
 		cell1.innerHTML = divTsTd7Str;
 		
 		getUserList(maxRowNum);
+		/* getSow(maxRowNum); */
 		
 	}
   </script>
@@ -416,15 +432,21 @@ $(document).ready(function(){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getUserList?${_csrf.parameterName}=${_csrf.token}",
+	        url: sourceleadUrl+"/getAssociatesList?${_csrf.parameterName}=${_csrf.token}",
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var output = "";
-	        	output = output + "<option value=''>-Select User-</option>"; 
+	        	output = output + "<option value=''>-Select Associates-</option>"; 
 	        	for (var i=0; i<json.length; i++)
 				{
 		        		var opt = json[i];
-		        		$('#'+rowId+'candidateId').append('<option value='+opt.id+' >'+opt.firstName+' '+opt.lastName+'</option>');
+		        		if(opt.lastName != null && opt.lastName != '' && opt.lastName !='undefined'){
+		        			lastName = opt.lastName;
+		        		}else{
+		        			lastName = "";
+		        		}
+		        		
+		        		$('#'+rowId+'candidateId').append('<option value='+opt.id+' >'+opt.firstName+' '+lastName+'</option>');
 				}
 	        	
 	        },
@@ -433,6 +455,34 @@ $(document).ready(function(){
   
   }
   </script>
+  <script>
+  function getSow(rowId){
+	  var candidateId = $('#'+rowId+'candidateId').val();
+	  var orgRelationId = $("#clientOrgRelationId").val();
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId,
+	        success: function(data) {
+	        	if(data != null && data != ''){
+	        		var json = JSON.parse(data);
+		        	var output = "";
+		        	output = output + "<option value=''>-Select sow-</option>"; 
+		        	 for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		$('#'+rowId+'sow').empty();
+			        		$('#'+rowId+'sow').append('<option value='+opt.id+' >'+opt.contractTitle+'</option>');
+					} 
+	        	}
+	        },
+	        
+	    });
+  }
+  
+  </script>
+  
+  
   
   <!-- ********************************************* Add Rows Invoice Table functionality End  ************************************************************ -->
   
@@ -494,7 +544,7 @@ $(document).ready(function(){
 	    });
 	  });
 	  
-	  $( "#sdate-input0" ).datepicker({
+	  $( "#0sdate-input" ).datepicker({
 		  changeMonth: true,
 	      changeYear: true,
 	      dateFormat : 'dd-mm-yy',
@@ -503,7 +553,7 @@ $(document).ready(function(){
 	 	  }
 	    });
 	
-	$( "#edate-input0" ).datepicker({
+	$( "#0edate-input" ).datepicker({
 		  changeMonth: true,
 	      changeYear: true,
 	      dateFormat : 'dd-mm-yy',
@@ -542,7 +592,106 @@ $(document).ready(function(){
 	    </script>
 	    <script>
 	    function cloneTax(){
-	        alert('hi');
 	    }
 	    </script>
+	    
+	    
+	    
+<!-- added by Rajashekar -->
+<script>
+function getClientContacts(){
+	var orgRelationId = $("#clientOrgRelationId").val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+	type : "GET",
+	url: sourceleadUrl+"/getClientContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
+	success :function(data) {
+	var json = JSON.parse(data);
+	var output = "";
+	output = output + "<option value=''>Select Client Contact</option>";
+	for (var i=0; i<json.length; i++)
+	{
+	var opt = json[i];
+	// need to use in edit
+	//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
+	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"</option>";
+	}
+	$("#clientContact").empty();
+	$("#clientContact").append(output);
+	$('#clientContact').trigger("chosen:updated");
+	},
+	});
+
+	}
+</script>
+
+
+
+<script>
+function getProjectsList(){
+	var orgRelationId = $("#clientOrgRelationId").val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+	type : "GET",
+	url: sourceleadUrl+"/getClientProjectsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
+	success :function(data) {
+	var json = JSON.parse(data);
+	var output = "";
+	output = output + "<option value=''>Select Client Contact</option>";
+	for (var i=0; i<json.length; i++)
+	{
+	var opt = json[i];
+	// need to use in edit
+	//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
+	output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>";
+	}
+	$("#projectId").empty();
+	$("#projectId").append(output);
+	$('#projectId').trigger("chosen:updated");
+	},
+	});
+
+	}
+</script>
+<script>
+function saveInvoice(saveType){
+	/* var validationSettings = {
+	        errorMessagePosition : 'element',
+	       borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+         };  */
+	
+	 /*  if ($('#addonboardTask_form').validate(false, validationSettings)){  */
+		    var frm = $('#invoice_form').serializeFormJSON();
+	        var con = JSON.stringify(frm);
+	        con = con.replace(/[{}]/g, "");
+	        //It will escape all the special characters
+	        var jsonData = encodeURIComponent(con);
+	        
+	        var sourceleadUrl ='${sourceleadUrl}';
+	        $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	        $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/saveInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&saveType="+saveType, 
+		        success: function(result) {
+		     		$("#invoiceLoading").removeAttr("style");
+		        },
+		    });  
+	        /* return true; */
+		
+	 /*  }else{
+		return false;
+	  } */
+}
+
+/* $('body').on('blur', '#addonboardTask_form', function() {
+	$("#addonboardTask_form").showHelpOnFocus();
+	$("#addonboardTask_form").validateOnBlur(false, validationSettings);  
+}); */
+</script>
+<!-- End by Rajashekar -->
+	    
+	    
+	    
  <jsp:include page="../masterFooter.jsp" />	
