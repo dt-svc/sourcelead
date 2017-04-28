@@ -5,6 +5,9 @@
 .chosen-container {
     width: 100% !important;
 }
+.validationError p.jquery_form_error_message {
+width: 75px; padding: 0 !important;
+}
 </style>
  <!-- Applicant Authorization -->
       <div class="dashboard-widget clearfix mb eventAlert">
@@ -262,7 +265,7 @@ function dashboardAddInterview(){
 		result = result + '		</td>';
 
 		result = result + '		<td>';
-		result = result + '			<div class="pull-left timeZone" id="timeDiv"> <span class="positionRelative"><input class="form-control input-sm timepicker" placeholder="Start Time" name="1startTime" id="1startTime" onBlur="validateEndTime();" type="text" data-validation="required" field-name="Start Time"/></span> <span class="positionRelative"><input class="form-control input-sm timepicker" placeholder="End Time" name="1endTime" id="1endTime" onBlur="validateEndTime();" type="text" field-name="End Time"/></span></div>';
+		result = result + '			<div class="pull-left timeZone validationError" id="timeDiv"> <span class="positionRelative"><input class="form-control input-sm timepicker" placeholder="Start Time" name="1startTime" id="1startTime" onBlur="validateEndTime();" type="text" data-validation="required" field-name="Start Time"/></span> <span class="positionRelative"><input class="form-control input-sm timepicker" placeholder="End Time" name="1endTime" id="1endTime" onBlur="validateEndTime();" type="text" field-name="End Time"/></span></div>';
 		result = result + '		</td>';
 
 		result = result + '		<td>';
