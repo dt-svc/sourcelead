@@ -668,6 +668,14 @@ function getTimezonesList(){
 		}
 </script>
 
+<script>
+function cancelAddInterviewDiv(){
+	 $(".add_inter_wrap").removeClass("add_inter_wrap_active");
+	 $(".side_mask").fadeOut(200);
+ 	 $("body").css('overflow-y', 'auto');
+}
+</script>
+
 
 <script type="text/javascript">
    	$('body').on('submit', '#addInterview_form', function(e){
