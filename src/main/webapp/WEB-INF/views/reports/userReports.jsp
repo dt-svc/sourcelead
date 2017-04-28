@@ -28,6 +28,8 @@
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
+   <c:if test="${requirementTabAccess == true }">
+    
     <div class="pull-left">
       <h2> Reports Dashboard</h2>
     </div>
@@ -44,7 +46,9 @@
 				    <li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
 				</ul>
 			</div>
-		</div>  
+		</div> 
+		
+   </c:if>		 
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo;   Reports Dashboard</div>
  <div class="clearfix"></div>
  
@@ -53,6 +57,8 @@
  
   </section>
    
+ 
+ <c:if test="${requirementTabAccess == true }">
   <div style="overflow: auto;" class=" vendor_wrap"> 
    
    <div class="pull-left reportBtns">
@@ -80,12 +86,13 @@
 		<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
 		<div class="clearfix"></div>
   </div>
+      
       <div class="candidate_wrap_table recruiterReports_table">
         <div id="usersList"></div>
       </div> 
  </div>
- 
- 
+ </c:if>
+ <c:if test="${vendorTabAccess == true }">
  <div class="timesheet_out mt40">
     <div class="vendor_wrap">
       <div class="timesheet_head">
@@ -134,7 +141,8 @@
 
 
   </div>
- 
+  </div>
+  </c:if>
   </section>    
       
 <div class="mask_time"></div>
