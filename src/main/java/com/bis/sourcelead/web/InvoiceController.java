@@ -56,7 +56,7 @@ public class InvoiceController {
  * @return model
  * @throws Exception
  */
-	@RequestMapping(value = "/invoiceList")
+	@RequestMapping(value = "/createInvoice")
 	public ModelAndView invoiceList(@RequestParam(value="type", required=false) String type ,HttpServletRequest request) throws Exception {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -85,7 +85,7 @@ public class InvoiceController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		model.setViewName("billing/invoiceList");
+		model.setViewName("billing/createInvoice");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		sessionData.setNav(Constants.Billing);
 		request.getSession().setAttribute("sessionData",sessionData);
@@ -93,7 +93,7 @@ public class InvoiceController {
 	}
 	
 	
-	@RequestMapping(value = "/createInvoice")
+	@RequestMapping(value = "/invoiceList")
 	public ModelAndView createInvoice(@RequestParam(value="type", required=false) String type ,HttpServletRequest request) throws Exception {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -108,7 +108,7 @@ public class InvoiceController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		model.setViewName("billing/createInvoice");
+		model.setViewName("billing/invoiceList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		sessionData.setNav(Constants.Billing);
 		request.getSession().setAttribute("sessionData",sessionData);
