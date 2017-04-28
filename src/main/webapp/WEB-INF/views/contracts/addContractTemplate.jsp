@@ -36,7 +36,7 @@
             <div class="form-group">
               <label class="col-md-4">Template name<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="templateDiv">
-                <input type="text"  id="templateName" name="templateName" value="${contractsTemplate.templateName}"  field-name="Template Name" data-validation="required" type="text" class="form-control" onblur="validateContractTemplateName();">
+                <input type="text"  id="templateName" name="templateName" value="${contractsTemplate.templateName}"  field-name="Template Name" data-validation="required validate_Space" type="text" class="form-control">
               </div>
               <input type="hidden" name="templateId" id="templateId" value="${contractsTemplate.id}"/>
             </div>
@@ -44,8 +44,8 @@
             <div class="form-group">
               <label class="col-md-4">Template Type<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="contractType" field-name="Template Type"  name="contractType" onchange="contractTemplateType();">
-                   <!-- <option value="">&nbsp;&nbsp;&nbsp;&nbsp;---Select Template Type---</option> -->
+                  <select class="chosen-select form-control" id="contractType" field-name="Template Type"  name="contractType" onchange="contractTemplateType(); validateContractTemplateName();">
+                     <option value="">&nbsp;&nbsp;&nbsp;&nbsp;---Select Template Type---</option>
 	                 <option  ${contractsTemplate.templateType  == 'Client MSA' ? 'selected' : ''}>Client MSA</option>
 	                 <option  ${contractsTemplate.templateType  == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
 	                 <option  ${contractsTemplate.templateType  == 'Client SOW' ? 'selected' : ''}>Client SOW</option>
@@ -377,11 +377,12 @@ function editContractTemplate(templateId){
 <script>
 function validateContractTemplateName(){
 	var templateName = $('#templateName').val();
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 if(templateName != null && templateName != ""){
+	var contractType = $('#contractType').val(); 
+	var sourceleadUrl ='${sourceleadUrl}';
+	 if(templateName != null && templateName != "" && contractType != null && contractType != ""){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateContractTemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="+templateName, 
+		        url: sourceleadUrl+"/validateContractTemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="+templateName+"&contractType="+contractType, 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		
