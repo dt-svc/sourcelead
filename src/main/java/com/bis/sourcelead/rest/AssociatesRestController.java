@@ -190,9 +190,8 @@ public class AssociatesRestController {
 
 		}
 	   
-	   @RequestMapping(value = "/getVendorsByOrgLocation")
-		public String getVendorsByOrgLocation(@RequestParam(value = "candidateId", required = false) Long candidateId,
-				HttpServletRequest request) throws Exception {
+	   @RequestMapping(value = "/getVendorsByOrgLocation", method = RequestMethod.GET)
+		public String getVendorsByOrgLocation(HttpServletRequest request) throws Exception {
 		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			String resultJson = null;
 			List<OrgRelations> vendorList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());

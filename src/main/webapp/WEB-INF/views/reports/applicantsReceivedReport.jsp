@@ -65,7 +65,7 @@ function prepareReportDataDiv(data){
     	
     	 result = result + '<td>';
          if(report.applicantName != null && report.applicantName != '' && report.applicantName !='undefined'&& report.applicantName != null && report.applicantName != ''){
-        		result = result + '<div><span>'+report.applicantName+'</span></div>';
+        		result = result + '<div><span title="'+report.applicantName+'">'+report.applicantName+'</span></div>';
   			} else{
  				result = result + '<div><span>---</span></div>';
  		    }
@@ -73,7 +73,7 @@ function prepareReportDataDiv(data){
          
          result = result + '<td>';
          if(report.source != null && report.source != '' && report.source !='undefined'&& report.source != null && report.source != ''){
-         		result = result + '<div><span>'+report.source+'</span></div>';
+         		result = result + '<div><span title="'+report.source+'">'+report.source+'</span></div>';
    			} else{
   				result = result + '<div><span>---</span></div>';
   		    }
@@ -88,7 +88,7 @@ function prepareReportDataDiv(data){
          result = result + '</td>';
          
         result = result + '<td>';
-        result = result + '<div><span>'+report.requirementTitle+'</span></div> ';
+        result = result + '<div><span title="'+report.requirementTitle+'">'+report.requirementTitle+'</span></div> ';
         result = result + '</td>';
 
         result = result + '<td>';
