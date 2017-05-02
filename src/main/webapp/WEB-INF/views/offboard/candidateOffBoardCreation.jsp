@@ -61,7 +61,7 @@
               <small>Acceptance &amp; Policy Documents</small> </a> </li>
              <li onclick="getOffboardingCheckList();"> <a href="#offboardCheckList" data-toggle="tab" id="checkList"> <i class="fa fa-check-square-o paddingRight"></i> <span>Check List</span> <br>
               <small>Check List</small> </a></li>
-            <li onclick="getOffboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Taks</span> <br>
+            <li onclick="getOffboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Tasks</span> <br>
               <small>List of tasks</small> </a></li>
           </ul>
           <input type="hidden" name="candidateOffBoardId" id="candidateOffBoardId" value=""/>
@@ -287,7 +287,7 @@
                                 <div class="row">
                                 
                                 <div class="col-md-12 mb10">
-                                  <label>Subject <span class="text-danger paddingLeft">*</span></label>
+                                  <label>Subject <span class="text-danger">*</span></label>
                                   <input type="text" class="form-control input-sm" placeholder="Subject" field-name="Subject" id="taskName" name="taskName"  data-validation="required validate_Space validate_length length2-100">
                                 </div>
                                 
@@ -332,7 +332,7 @@
 	                                <div class="row">
 	                                
 	                                <div class="col-md-12 mb10">
-                                  <label>Assign To <span class="text-danger paddingLeft">*</span></label>
+                                  <label>Assign To <span class="text-danger">*</span></label>
                                   
                                   <div class="">
                                     <label class="radio-inline">
@@ -353,7 +353,7 @@
 	                               <div class="col-md-12 mb10">
                                   <div class="row">
                                     <div class="col-md-12">
-                                      <label><strong>Due after:</strong><span class="text-danger paddingLeft">*</span></label>
+                                      <label><strong>Due after:</strong><span class="text-danger">*</span></label>
                                                                             
                                       <!-- Form inline Due after -->
                                       
