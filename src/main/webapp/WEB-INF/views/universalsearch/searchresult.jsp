@@ -156,17 +156,16 @@ function getSearchResults(searchType,searchValue,isAssociate){
 				    	result = result+' </figure>';
 				    	
 				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
-				    	if(report.candidateName !=null && report.candidateName != '' && report.candidateName !="undefined" && report.designationType !=null && report.designationType != '' && report.designationType !="undefined"){
-				    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>';	
-				    	}else{													
+				    	if(report.candidateName !=null && report.candidateName != '' && report.candidateName !="undefined" && report.designationType !=null && report.designationType != '' && report.designationType !="undefined" && report.experienceYears !=null && report.experienceYears !='' && report.experienceYears !='undefined' && report.experienceMonths !=null && report.experienceMonths !='' && report.experienceMonths !='undefined'){
+				    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>,<label>'+report.experienceYears+' Years -'+report.experienceMonths+' Months</label>';	
+				    	}else if(report.candidateName !=null && report.candidateName != '' && report.candidateName !="undefined" && report.designationType !=null && report.designationType != '' && report.designationType !="undefined" && report.experienceYears !=null && report.experienceYears !='' && report.experienceYears !='undefined'){
+				    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>,<label>'+report.experienceYears+' Years </label>';	
+
+				    	}
+				    	else{													
 				    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>';	
 				    	}
-				    	if(report.email !=null && report.email !='' && report.email !='undefined' && report.mobilePhone !=null && report.mobilePhone !='' && report.mobilePhone !='undefined' ){
-				    		result = result+'<p><label><strong><a href="#">'+report.email+'</a></strong></label>, <label>'+report.mobilePhone+'</label>';	
-				    	}else{
-				    		result = result+'<p><label><strong><a href="#">'+report.email+'</a></strong></label>';
-				    	}
-				    	if(report.experienceYears !=null && report.experienceYears !='' && report.experienceYears !='undefined'){
+				    	/* if(report.experienceYears !=null && report.experienceYears !='' && report.experienceYears !='undefined'){
 				    		experience = experience + report.experienceYears+" Years"; 
 				    	}
 				    	if(report.experienceYears !=null && report.experienceYears !='' && report.experienceYears !='undefined' && report.experienceMonths !=null && report.experienceMonths !='' && report.experienceMonths !='undefined'){
@@ -174,7 +173,13 @@ function getSearchResults(searchType,searchValue,isAssociate){
 				    	}
 				    	if(report.experienceMonths !=null && report.experienceMonths !='' && report.experienceMonths !='undefined'){
 				    		experience = experience + report.experienceMonths+" Months";	
+				    	} */
+				    	if(report.email !=null && report.email !='' && report.email !='undefined' && report.mobilePhone !=null && report.mobilePhone !='' && report.mobilePhone !='undefined' ){
+				    		result = result+'<p><label><strong><a href="#">'+report.email+'</a></strong></label>, <label>'+report.mobilePhone+'</label>';	
+				    	}else{
+				    		result = result+'<p><label><strong><a href="#">'+report.email+'</a></strong></label>';
 				    	}
+				    	
 				    	if(report.noticePeriod !=null && report.noticePeriod !='' && report.noticePeriod !='undefined'){
 				    		experience = experience +","+report.noticePeriod;
 				    	}
@@ -622,11 +627,6 @@ function getSearchResultsForAll(searchType,searchValue){
 								    	}else{													
 								    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>';	
 								    	}
-								    	if(report.email !=null && report.email !='' && report.email !='undefined' && report.mobilePhone !=null && report.mobilePhone !='' && report.mobilePhone !='undefined' ){
-								    		result = result+'<p><label><strong>'+report.email+'</strong></label>, <label>'+report.mobilePhone+'</label>';	
-								    	}else{
-								    		result = result+'<p><label><strong>'+report.email+'</strong></label>';
-								    	}
 								    	if(report.experienceYears !=null && report.experienceYears !='' && report.experienceYears !='undefined'){
 								    		experience = experience + report.experienceYears+" Years"; 
 								    	}
@@ -636,6 +636,12 @@ function getSearchResultsForAll(searchType,searchValue){
 								    	if(report.experienceMonths !=null && report.experienceMonths !='' && report.experienceMonths !='undefined'){
 								    		experience = experience + report.experienceMonths+" Months";	
 								    	}
+								    	if(report.email !=null && report.email !='' && report.email !='undefined' && report.mobilePhone !=null && report.mobilePhone !='' && report.mobilePhone !='undefined' ){
+								    		result = result+'<p><label><strong>'+report.email+'</strong></label>, <label>'+report.mobilePhone+'</label>';	
+								    	}else{
+								    		result = result+'<p><label><strong>'+report.email+'</strong></label>';
+								    	}
+								    	
 								    	if(report.noticePeriod !=null && report.noticePeriod !='' && report.noticePeriod !='undefined'){
 								    		experience = experience +","+report.noticePeriod;
 								    	}
