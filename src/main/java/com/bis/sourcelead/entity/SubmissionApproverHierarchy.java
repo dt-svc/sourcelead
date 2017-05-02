@@ -123,6 +123,38 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	@Transient
 	private LinkedHashMap<Date,Float> weekTotals;
 	
+    @Transient
+	private LinkedHashMap<Date,Submission_ApprovalStatus> weekApprovalStatusMap;
+    
+    @Transient
+	private LinkedHashMap<Date,Float> weekBillableHoursMap;
+    
+    @Transient
+	private LinkedHashMap<Date,Float> weekNonBillableHoursMap;
+    
+    @Transient
+	private LinkedHashMap<Date,Float> weekTotalHoursMap;
+    
+    
+    @Transient
+	private Float previousMonthBillableHours;
+    
+    @Transient
+	private Float previousMonthNonBillableHours;
+    
+    @Transient
+	private Float previousMonthTotalHours;
+    
+    @Transient
+	private Float projectToDateBillableHours;
+    
+    @Transient
+	private Float projectToDateNonBillableHours;
+    
+    @Transient
+	private Float projectToDateTotalHours;
+    
+	
 
 	public Long getId() {
 		return id;
@@ -339,6 +371,88 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	public void setWeekTotals(LinkedHashMap<Date, Float> weekTotals) {
 		this.weekTotals = weekTotals;
 	}
+
+	public LinkedHashMap<Date, Submission_ApprovalStatus> getWeekApprovalStatusMap() {
+		return weekApprovalStatusMap;
+	}
+
+	public void setWeekApprovalStatusMap(LinkedHashMap<Date, Submission_ApprovalStatus> weekApprovalStatusMap) {
+		this.weekApprovalStatusMap = weekApprovalStatusMap;
+	}
+
+	public LinkedHashMap<Date, Float> getWeekBillableHoursMap() {
+		return weekBillableHoursMap;
+	}
+
+	public void setWeekBillableHoursMap(LinkedHashMap<Date, Float> weekBillableHoursMap) {
+		this.weekBillableHoursMap = weekBillableHoursMap;
+	}
+
+	public LinkedHashMap<Date, Float> getWeekNonBillableHoursMap() {
+		return weekNonBillableHoursMap;
+	}
+
+	public void setWeekNonBillableHoursMap(LinkedHashMap<Date, Float> weekNonBillableHoursMap) {
+		this.weekNonBillableHoursMap = weekNonBillableHoursMap;
+	}
+
+	public LinkedHashMap<Date, Float> getWeekTotalHoursMap() {
+		return weekTotalHoursMap;
+	}
+
+	public void setWeekTotalHoursMap(LinkedHashMap<Date, Float> weekTotalHoursMap) {
+		this.weekTotalHoursMap = weekTotalHoursMap;
+	}
+
+	public Float getPreviousMonthBillableHours() {
+		return previousMonthBillableHours;
+	}
+
+	public void setPreviousMonthBillableHours(Float previousMonthBillableHours) {
+		this.previousMonthBillableHours = previousMonthBillableHours;
+	}
+
+	public Float getPreviousMonthNonBillableHours() {
+		return previousMonthNonBillableHours;
+	}
+
+	public void setPreviousMonthNonBillableHours(Float previousMonthNonBillableHours) {
+		this.previousMonthNonBillableHours = previousMonthNonBillableHours;
+	}
+
+	public Float getPreviousMonthTotalHours() {
+		return previousMonthTotalHours;
+	}
+
+	public void setPreviousMonthTotalHours(Float previousMonthTotalHours) {
+		this.previousMonthTotalHours = previousMonthTotalHours;
+	}
+
+	public Float getProjectToDateBillableHours() {
+		return projectToDateBillableHours;
+	}
+
+	public void setProjectToDateBillableHours(Float projectToDateBillableHours) {
+		this.projectToDateBillableHours = projectToDateBillableHours;
+	}
+
+	public Float getProjectToDateNonBillableHours() {
+		return projectToDateNonBillableHours;
+	}
+
+	public void setProjectToDateNonBillableHours(Float projectToDateNonBillableHours) {
+		this.projectToDateNonBillableHours = projectToDateNonBillableHours;
+	}
+
+	public Float getProjectToDateTotalHours() {
+		return projectToDateTotalHours;
+	}
+
+	public void setProjectToDateTotalHours(Float projectToDateTotalHours) {
+		this.projectToDateTotalHours = projectToDateTotalHours;
+	}
+
+	
 	
 	
 }
