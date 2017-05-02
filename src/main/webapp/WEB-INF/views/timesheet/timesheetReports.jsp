@@ -1,0 +1,166 @@
+<jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterSideNav.jsp" />
+
+<!-- this is for mask -->
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
+<script src="resources/js/formvalidator.js"></script>
+
+<style type ="text/css">
+.timesheet_container {
+background: #f5f5f5;
+box-shadow: 0px 0px 3px #707070;
+    -webkit-box-shadowbox-shadow: 0px 0px 3px #707070;
+    -moz-box-shadow: 0px 0px 3px #707070;
+    padding:0;
+    -moz-transition: all ease-in-out 0.3s;
+    -ms-transition: all ease-in-out 0.3s;
+    -webkit-transition: all ease-in-out;
+    overflow-x: auto; border-radius: 3px;
+}
+.timesheet_container .content-area {
+box-shadow:none;
+}
+</style>
+
+
+
+<script>
+// project side bar tabs
+$(document).ready(function() {
+	timesheetReportsDiv();
+});
+</script>  
+
+<script>  
+	function timesheetReportsDiv(){ 
+               var sourceleadUrl ='${sourceleadUrl}';
+               var frequencyYear = $("#frequencyYear").val();
+               if(frequencyYear == null || frequencyYear == '' || frequencyYear == 'undefined')
+            	   frequencyYear = '';
+               
+  	           var frequencyMonth = $('#frequencyMonth').val();
+  	           if(frequencyMonth == null || frequencyMonth == '' || frequencyMonth == 'undefined')
+  	        	 frequencyMonth = '';
+	           
+               $("#timesheetReportsDiv").empty();
+               $("#timesheetReportsDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+        	   $.ajax({
+	      	          type : "POST",
+	          	      dataType : 'json',
+        	      	  url: sourceleadUrl+"/timesheetReportsDiv?${_csrf.parameterName}=${_csrf.token}&frequencyYear="+frequencyYear+"&frequencyMonth="+frequencyMonth,		
+        		      success :function(result) {
+        		    	    $("#timesheetReportsDiv").removeAttr("style");
+        		    	    $("#timesheetReportsDiv").empty();
+        		    	  	$("#timesheetReportsDiv").append(result);
+        		    	  	prepareChosenScripts();
+        		    	  	pagination();
+        		      }
+        	    }); 
+	}
+</script>
+<script type="text/javascript">
+         function prepareChosenScripts(){ 
+        	      var config = {
+        			  '.chosen-select'           : {},
+        			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+        			  '.chosen-select-no-single' : {disable_search_threshold:10},
+        			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+        			  '.chosen-select-width'     : {width:"95%"}
+        			};
+        	      
+        		   for (var selector in config) {
+        			  $(selector).chosen(config[selector]);
+        			};
+           };
+				
+</script> 
+<script>
+function pagination(){ 
+    $('#timesheetReportsPageNation').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 0
+			}],
+		"aaSorting": [[7,'desc']],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    } );
+}
+</script>
+
+
+
+<script>
+/*     function mypop(){
+		$("#exportPop").toggle();
+		$(".export_pop, #filter2ApprovedPop").slideUp();
+    }
+ */
+ function exportToggle(){
+	 $("#exportPop").toggle();
+	 $(".export_pop").slideUp();
+	 
+ 	 $("html").click(function(){
+	 $("#exportPop").hide();
+	   });
+	 $("#exportPop, #mypop").click(function(e) {  
+	     e.stopPropagation();
+	 });
+ }
+</script>
+
+<script type="text/javascript">
+function exportTimeSheetReportsToPdf(type){
+	var sourceleadUrl ='${sourceleadUrl}';
+	 var frequencyYear = $("#frequencyYear").val();
+     if(frequencyYear == null || frequencyYear == '' || frequencyYear == 'undefined')
+  	   frequencyYear = '';
+       var frequencyMonth = $('#frequencyMonth').val();
+       if(frequencyMonth == null || frequencyMonth == '' || frequencyMonth == 'undefined')
+    	 frequencyMonth = '';
+       
+	window.location.href = sourceleadUrl+"/timeSheetReportExportList?${_csrf.parameterName}=${_csrf.token}&frequencyYear="+frequencyYear+"&frequencyMonth="+frequencyMonth+"&exportType="+type;
+	
+	
+}
+</script>
+
+<body>
+      <%-- <section class="content-wraper">
+        <section class="content-header clearfix">
+          <div class="pull-left">
+            <h2>Timesheet Monthly Reports</h2>
+          </div>
+            <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Dashboard</div>
+           <div class="clearfix"></div>
+        </section>
+		<div id="timesheetReportsDiv"></div>
+         </section> --%>
+         
+        <section class="content-wraper">
+		<section class="content-header clearfix">
+  		<div class="pull-left">
+    	<h2>Timesheet Reports</h2>
+ 		</div>
+ 		<div class="pull-right brud-crum">Home &raquo; List by status</div>
+		</section>
+        <div id="timesheetReportsDiv" class="timesheet_container"></div>
+        </section>   
+ </body>
+    
+
+<jsp:include page="../masterFooter.jsp" />
+ 
+      
+    
