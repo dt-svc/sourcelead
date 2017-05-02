@@ -28,6 +28,37 @@
 	});
 </script>
 
+<script>
+function resetPassword(){
+	
+	 $('input#currentPassword').val('');
+	 $('input#password').val('');
+	 $('input#confirmPassword').val('');
+	
+    $('#currentPwdDiv').find('p.jquery_form_error_message').remove();
+    $('#newPwdDiv').find('p.jquery_form_error_message').remove();
+    $('#confirmPwdDiv').find('p.jquery_form_error_message').remove();
+   
+    $("#save_button").removeAttr("disabled");
+}
+
+function resetProfile(){
+	document.getElementById("profileSettings_form").reset();
+	
+	$('#firstNameDiv').find('p.jquery_form_error_message').remove();
+	$('#lastNameDiv').find('p.jquery_form_error_message').remove();
+	$('#designationDiv').find('p.jquery_form_error_message').remove();
+	$('#phoneDiv').find('p.jquery_form_error_message').remove();
+	$('#loactionDiv').find('p.jquery_form_error_message').remove();
+	
+	$('#linkedInDiv').find('p.jquery_form_error_message').remove();
+	$('#twitterDiv').find('p.jquery_form_error_message').remove();
+	$('#fbDiv').find('p.jquery_form_error_message').remove();
+	$('#gplusDiv').find('p.jquery_form_error_message').remove();
+	
+}
+</script>
+
 <body>
   <!-- Content Area -->
   <!-- Tab for Profile setting-area starts -->
@@ -46,8 +77,8 @@
 		    <!-- Tab for Profile setting-area -->
 		  <div class="accountsettings-tab">
 		  <ul class="nav nav-tabs">
-			<li class="active"><a data-toggle="tab" href="#profile">Profile</a></li>
-			<li><a data-toggle="tab" href="#password">Password</a></li>
+			<li class="active" onclick="resetPassword();"><a data-toggle="tab" href="#profile">Profile</a></li>
+			<li onclick="resetProfile();"><a data-toggle="tab" href="#password">Password</a></li>
 		  </ul>
 
 		  <div class="tab-content panel-body">
@@ -81,20 +112,20 @@
 		   <div class="col-xs-12 col-sm-9 col-md-9">
 			   <div class="row mt">
 				<div class="col-md-6">
-					<div class="form-group">
-					<label class="col-md-4">First Name</label>
+					<div class="form-group" id="firstNameDiv">
+					<label class="col-md-4">First Name<span class="text-danger paddingLeft">*</span></label>
 					<div class="col-md-8">
 					  <input type="text" name="firstName" value="${SourceLeadWeb_user.firstName}" field-name="First Name" class="form-control" data-validation="required validate_Alphanumeric validate_Space validate_length length2-100"  >
 					</div>
 					</div>
-				   <div class="form-group">
+				   <div class="form-group" id="lastNameDiv">
 					<label class="col-md-4">Last Name</label>
 					<div class="col-md-8">
 					  <input type="text" name="lastName" value="${SourceLeadWeb_user.lastName}" field-name="Last Name" class="form-control" data-validation="validate_Alphanumeric validate_Space validate_length length2-100" data-validation-optional="true" />
 					</div>
 				   </div>
 				  <div class="form-group">
-					<label class="col-md-4">Email</label>
+					<label class="col-md-4">Email<span class="text-danger paddingLeft">*</span></label>
 					<div class="col-md-8">
 					<input type="text" readonly="readonly" value="${SourceLeadWeb_user.email}" class="form-control">
 					</div>
@@ -103,19 +134,19 @@
 				</div>
 		
 				<div class="col-md-6">
-						  <div class="form-group">
+						  <div class="form-group" id="designationDiv">
 							<label class="col-md-4">Designation</label>
 							<div class="col-md-8">
 							  <input type="text" name="designation" field-name="Designation" value="${SourceLeadWeb_designation}" class="form-control" data-validation-optional="true" data-validation="validate_length length2-100" />
 							</div>
 						  </div>
-						  <div class="form-group">
+						  <div class="form-group" id="phoneDiv">
 							<label class="col-md-4">Phone</label>
 							<div class="col-md-8">
 							  <input type="text" name="mobilePhone" field-name="Mobile Phone" value="${SourceLeadWeb_user.mobilePhone}" class="form-control" data-validation-optional="true" data-validation="validate_Space validate_length length9-20 validate_phone" />
 							</div>
 						  </div>
-						  <div class="form-group">
+						  <div class="form-group" id="loactionDiv">
 							<label class="col-md-4">Location</label>
 							<div class="col-md-8">
 							  <textarea rows="1" name="location" field-name="Location" class="form-control" data-validation-optional="true" data-validation="validate_length length2-500" />${SourceLeadWeb_user.location}</textarea>
@@ -130,13 +161,13 @@
 			</div>
 					
 			<div class="col-md-6">
-					<div class="form-group">
+					<div class="form-group" id="linkedInDiv">
 					<label class="col-md-4">LinkedIn</label>
 					<div class="col-md-8">
 					  <input type="text" name="linkedIn" value="${SourceLeadWeb_user.linkedIn}" field-name="Linked In" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true" >
 					</div>
 					</div>
-				   <div class="form-group">
+				   <div class="form-group" id="fbDiv">
 					<label class="col-md-4">Facebook</label>
 					<div class="col-md-8">
 					  <input type="text" name="facebook" value="${SourceLeadWeb_user.facebook}" field-name="Facebook" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true" />
@@ -144,14 +175,14 @@
 				   </div>
 				</div>
 				
-				<div class="col-md-6">
+				<div class="col-md-6" id="twitterDiv">
 					<div class="form-group">
 					<label class="col-md-4">Twitter</label>
 					<div class="col-md-8">
 					  <input type="text" name="twitter" value="${SourceLeadWeb_user.twitter}" field-name="Twiter" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true" >
 					</div>
 					</div>
-				   <div class="form-group">
+				   <div class="form-group" id="gplusDiv">
 					<label class="col-md-4">Google+</label>
 					<div class="col-md-8">
 					  <input type="text" name="googlePlus" value="${SourceLeadWeb_user.googlePlus}" field-name="Google+" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true" />
@@ -183,20 +214,20 @@
 					<form:form class="login-form clearfix"  id="passwordSettings_form"  name="passwordSettings_form" method="post" >
 					<div class="col-md-8">
 					 <div id=passwordDiv>	
-						<div class="form-group">
-						<label class="col-md-4">Current Password</label>
+						<div class="form-group" id="currentPwdDiv">
+						<label class="col-md-4">Current Password<span class="text-danger paddingLeft">*</span></label>
 						<div class="col-md-6">
-						  <input type="password" id="currentPassword" name="currentPassword" field-name="Current Password" value="${currentPassword}"  class="form-control"  onblur="validateCurrentPassword();" data-validation="required" />
+						  <input type="password" id="currentPassword" name="currentPassword" field-name="Current Password"   class="form-control"  onblur="validateCurrentPassword();" data-validation="required" />
 						</div>
 						</div>
-						<div class="form-group">
-						<label class="col-md-4">New Password</label>
+						<div class="form-group" id="newPwdDiv">
+						<label class="col-md-4">New Password<span class="text-danger paddingLeft">*</span></label>
 						<div class="col-md-6">
-						  <input type="password" name="password"  value="${password}" id="password" field-name="New Password" class="form-control" data-validation="required validate_length length6-100"   />
+						  <input type="password" name="password" id="password" field-name="New Password" class="form-control" data-validation="required validate_length length6-100"   />
 						</div>
 				       </div>
-					  <div class="form-group">
-						<label class="col-md-4">Confirm Password</label>
+					  <div class="form-group" id="confirmPwdDiv">
+						<label class="col-md-4">Confirm Password<span class="text-danger paddingLeft">*</span></label>
 						<div class="col-md-6">
 						<input type="password"  value="" id="confirmPassword" class="form-control" field-name="Confirm Password" onblur="checkPass();" data-validation="required"/>
 						</div>
@@ -273,7 +304,7 @@
 
 <script type="text/javascript">
 	 function checkPass() {   
-		var pass1 =$('input#password').val();  
+		var pass1 = $('input#password').val();  
 	    var pass2 = $('input#confirmPassword').val();
 	    if((pass1 != null && pass1 != '' && pass1 != 'undefined') && (pass2 != null && pass2 != '' && pass2 != 'undefined')){
 	    	if(pass1 == pass2){
