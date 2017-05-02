@@ -9,6 +9,25 @@
 <script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
 <script src="resources/js/formvalidator.js"></script>
 
+<style type ="text/css">
+.timesheet_container {
+background: #f5f5f5;
+box-shadow: 0px 0px 3px #707070;
+    -webkit-box-shadowbox-shadow: 0px 0px 3px #707070;
+    -moz-box-shadow: 0px 0px 3px #707070;
+    padding:0;
+    -moz-transition: all ease-in-out 0.3s;
+    -ms-transition: all ease-in-out 0.3s;
+    -webkit-transition: all ease-in-out;
+    overflow-x: auto; border-radius: 3px;
+}
+.timesheet_container .content-area {
+box-shadow:none;
+}
+</style>
+
+
+
 <script>
 // project side bar tabs
 $(document).ready(function() {
@@ -18,7 +37,6 @@ $(document).ready(function() {
 
 <script>  
 	function timesheetReportsDiv(){ 
-		
                var sourceleadUrl ='${sourceleadUrl}';
                var frequencyYear = $("#frequencyYear").val();
                if(frequencyYear == null || frequencyYear == '' || frequencyYear == 'undefined')
@@ -62,20 +80,62 @@ $(document).ready(function() {
 </script> 
 <script>
 function pagination(){ 
-    $('#example').DataTable( { 
+    $('#timesheetReportsPageNation').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
-    	"lengthMenu": [[10, 15, 20, -1], [5, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 0
+			}],
+		"aaSorting": [[7,'desc']],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
-    		"sSearch": "",
-    		"sZeroRecords": "", "sEmptyTable": ""
-    	}
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
     } );
 }
 </script>
+
+
+
+<script>
+/*     function mypop(){
+		$("#exportPop").toggle();
+		$(".export_pop, #filter2ApprovedPop").slideUp();
+    }
+ */
+ function exportToggle(){
+	 $("#exportPop").toggle();
+	 $(".export_pop").slideUp();
+	 
+ 	 $("html").click(function(){
+	 $("#exportPop").hide();
+	   });
+	 $("#exportPop, #mypop").click(function(e) {  
+	     e.stopPropagation();
+	 });
+ }
+</script>
+
+<script type="text/javascript">
+function exportTimeSheetReportsToPdf(type){
+	var sourceleadUrl ='${sourceleadUrl}';
+	 var frequencyYear = $("#frequencyYear").val();
+     if(frequencyYear == null || frequencyYear == '' || frequencyYear == 'undefined')
+  	   frequencyYear = '';
+       var frequencyMonth = $('#frequencyMonth').val();
+       if(frequencyMonth == null || frequencyMonth == '' || frequencyMonth == 'undefined')
+    	 frequencyMonth = '';
+       
+	window.location.href = sourceleadUrl+"/timeSheetReportExportList?${_csrf.parameterName}=${_csrf.token}&frequencyYear="+frequencyYear+"&frequencyMonth="+frequencyMonth+"&exportType="+type;
+	
+	
+}
+</script>
+
 <body>
       <%-- <section class="content-wraper">
         <section class="content-header clearfix">
@@ -95,7 +155,7 @@ function pagination(){
  		</div>
  		<div class="pull-right brud-crum">Home &raquo; List by status</div>
 		</section>
-        <div id="timesheetReportsDiv"></div>
+        <div id="timesheetReportsDiv" class="timesheet_container"></div>
         </section>   
  </body>
     
