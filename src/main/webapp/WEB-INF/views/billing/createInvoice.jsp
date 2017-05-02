@@ -7,10 +7,9 @@
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="resources/js/mask-time.js"></script>
+<script src="resources/js/jquery.mask.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
-	$("#0totalHours").mask("9999:99");
 	getUserList("0");
 });
 </script>
@@ -135,12 +134,12 @@ $(document).ready(function(){
                 </td>
                 <td>
                   <div class="tbldata-dotdot-100">
-                    <input type="text" class="form-control input-sm" placeholder="Rate" name="0rate" name="0rate">
+                    <input type="text" class="form-control input-sm" placeholder="Rate" name="0rate" id="0rate">
                   </div>
                 </td>
                 <td>
                   <div class="tbldata-dotdot-vsm">
-                    <input type="text" class="form-control input-sm" placeholder="HHHH:MM" id="0totalHours" name="0totalHours">
+                    <input type="text" class="form-control input-sm dateMask" placeholder="HHHH:MM" id="0totalHours" name="0totalHours" onblur="singleRowTotalhour();" >
                   </div>
                 </td>
                 <td><div class="tbldata-dotdot-100 text-right" id="0amount" name="0amount"></div></td>
@@ -152,10 +151,8 @@ $(document).ready(function(){
               <tr>
                 <td colspan="4"></td>
                 <td><strong>Subtotal</strong></td>
-                <td><div>  <input type="text" value = "0" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div>
-                <!-- <td><div class="tbldata-dotdot-100 text-right" id="inoviceTotal" name="inoviceTotal"><span id="zero">0</span></div> -->
+                <td><div>  <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div>
                 <input type="hidden" value = "" id="hiddenTotal">
-                <!-- <input class="tbldata-dotdot-100 text-right" id="inoviceTotal" name="inoviceTotal" value="00:00" readonly> --></td>
                 <td>&nbsp;</td>
               </tr>
             </tfoot>
@@ -237,18 +234,19 @@ $(document).ready(function(){
               
               
               <div class="addtax_table">
+              <input type="hidden" id="maxTaxRowNum" name="maxTaxRowNum" value="1" />
                     <table width="100%" cellpadding="0" cellspacing="0" class="table-bordered table-striped table-responsive">
-                        <thead>
+                        <thead id="addTaxTbl">
                             <tr>
                                 <th colspan="5">
                                 Add Tax
-                                    <button type="button" class="btn btn-sm btn-primary buttonCustom" title="Add Tax" onclick="cloneTax()">
-                      <i class="fa fa-plus"></i></button>
+                                    <button type="button" class="btn btn-sm btn-primary buttonCustom" title="Add Tax" onclick="addTax()">
+                                         <i class="fa fa-plus"></i></button>
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <tr id='divTaxTsRow0'>
                                 <td>
                                    <div class="select-field tblminwidth-75">
                                        <div class="tblminwidth-50">
@@ -269,7 +267,7 @@ $(document).ready(function(){
                                 </td>
                                 <td>
                                     <div class="tblminwidth-75">
-                                        <input type="text" class="form-control input-sm" value="" placeholder="Total Value">
+                                        <input type="text" class="form-control input-sm" value="" placeholder="00.00"  readonly>
                                     </div>
                                 </td>
                                 <td>
@@ -333,12 +331,12 @@ $(document).ready(function(){
 
 	<div id="divTaskTd5" style="display: none; float: left;">
 	<div class="tbldata-dotdot-vsm">
-	     <input type="text" class="form-control input-sm" placeholder="HHHH:MM" id="REPLACEROWIDtotlaHours" name="REPLACEROWIDtotlaHours" onblur="calculateAmount(REPLACEROWID);">
+	     <input type="text" class="form-control input-sm dateMask" placeholder="HHHH:MM" id="REPLACEROWIDtotlaHours" name="REPLACEROWIDtotlaHours" onblur="calculateAmount(REPLACEROWID);">
 	     </div>
 	</div>
 	
 	<div id="divTaskTd6" style="display: none; float: left;">
-	     <div class="tbldata-dotdot-100 text-right" id="REPLACEROWIDamount" name="REPLACEROWIDamount" ></div>
+	     <div class="tbldata-dotdot-100 text-right" id="REPLACEROWIDamount" name="REPLACEROWIDamount"><input type="text" value = "00:00" class="ReadTextFli"></div>
 	</div>
 	
 	<div id="divTaskTd7" style="display: none; float: left;">
@@ -425,11 +423,7 @@ $(document).ready(function(){
 		var divTsTd7Str = document.getElementById("divTaskTd7").innerHTML;
 		divTsTd7Str = divTsTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
 		cell1.innerHTML = divTsTd7Str;
-		
 		getUserList(maxRowNum);
-		$("#"+maxRowNum+"totalHours").mask("9999:99");
-		/* getSow(maxRowNum); */
-		
 	}
   </script>
   
@@ -542,6 +536,29 @@ function calculateDiscount(){
 	}
 }
 </script>
+
+<script>
+  function singleRowTotalhour(e){
+// 	  var rate = $("#0rate").val();
+	   var totalHours = $("0totalHours").val(); 
+	   alert("split"+totalHours)
+	    /*  var split = totalHours.split(':');
+	     alert("split"+split);
+	     var hours = split[0];
+ 	     var minute = split[1];
+		 var hourminits = hours * 60;
+		 var finalmin = parseInt(hourminits) + parseInt(minute);
+	     var perMinit = rate / 60;
+	     var totlalAmount = (perMinit * finalmin);
+	     $('#0amount').empty();
+	     $('#0amount').append(totlalAmount.toFixed(2));
+	     calTotalamount(rowId,totlalAmount);  */
+	  
+  }
+  </script>
+  
+
+
   
   <!-- ********************************************* Add Rows Invoice Table functionality End  ************************************************************ -->
   
@@ -594,6 +611,118 @@ function calculateDiscount(){
   
   <!-- ********************************************* Add Rows resume Table functionality End  ************************************************************ -->
   
+  
+  
+  
+  
+  <!-- ********************************************* Add Rows AddTax Table functionality start  ************************************************************ -->	
+  
+  <div id="divTaxTd1" style="display: none; float: left;">
+	<div class="select-field tblminwidth-75">
+		  <div class="tblminwidth-50">
+		        <input type="text" class="form-control input-sm" value="" placeholder="Tax type" name='REPLACEROWIDtaxType' id='REPLACEROWIDtaxType'>
+		  </div>
+	 </div>
+</div>
+
+  <div id="divTaxTd2" style="display: none; float: left;">
+	 <div class="btn-group tblminwidth-75">
+	 <select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType" name="REPLACEROWIDtaxdiscountType">
+		 <option value="percentage">Discount</option>
+		 <option value="flat">Flat</option>
+ 		  </select>
+	  </div>
+  </div>
+  
+  <div id="divTaxTd3" style="display: none; float: left;">
+     <div class="tblminwidth-75">
+        <input type="text" class="form-control input-sm" value="" placeholder="Flat / Discount" name='REPLACEROWIDtaxdiscountvalue' id='REPLACEROWIDtaxdiscountvalue' onblur="calculateTaxDiscount(REPLACEROWID);">
+    </div>
+  </div>
+  
+  <div id="divTaxTd4" style="display: none; float: left;">
+	  <div class="tblminwidth-75">  
+	       <input type="text" class="form-control input-sm" value ="00.00" placeholder="Total Value" name='REPLACEROWIDtaxTotal' id='REPLACEROWIDtaxTotal' readonly="readonly">
+	   </div>
+  </div>
+  <div id="divTaxTd5" style="display: none; float: left;">
+         <a class="text-danger tblminwidth-50" title="Remove row" onclick="removeTaxRow(REPLACEROWID)"><i class="fa fa-remove"></i></a>
+  </div>
+  <script>
+	function addTax(){  
+				var checkMaxTsRowNum = $("#maxTaxRowNum").val();
+				var tbl = document.getElementById("addTaxTbl");
+				var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
+				$("input[name = 'maxTaxRowNum']").val(maxRowNum + 1);
+				
+				var row = tbl.insertRow(maxRowNum);
+				row.setAttribute("id", "divTaxRow" + maxRowNum);
+				
+				var cell0 = row.insertCell(0);
+				var divTaxTdStr = document.getElementById("divTaxTd1").innerHTML;
+				divTaxTdStr = divTaxTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+				cell0.innerHTML = divTaxTdStr;
+				
+				var cell1 = row.insertCell(1);
+				var divTaxTdStr1 = document.getElementById("divTaxTd2").innerHTML;
+				divTaxTdStr1 = divTaxTdStr1.replace(/REPLACEROWID/g, (maxRowNum));
+				cell1.innerHTML = divTaxTdStr1;
+				
+				var cell2 = row.insertCell(2);
+				var divTaxTdStr2 = document.getElementById("divTaxTd3").innerHTML;
+				divTaxTdStr2 = divTaxTdStr2.replace(/REPLACEROWID/g, (maxRowNum));
+				cell2.innerHTML = divTaxTdStr2;
+				
+				
+				var cell3 = row.insertCell(3);
+				var divTaxTdStr3 = document.getElementById("divTaxTd4").innerHTML;
+				divTaxTdStr3 = divTaxTdStr3.replace(/REPLACEROWID/g, (maxRowNum));
+				cell3.innerHTML = divTaxTdStr3;
+				
+				var cell4 = row.insertCell(4);
+				var divTaxTdStr4 = document.getElementById("divTaxTd5").innerHTML;
+				divTaxTdStr4 = divTaxTdStr4.replace(/REPLACEROWID/g, (maxRowNum));
+				cell4.innerHTML = divTaxTdStr4;
+				
+	}			
+</script>
+  
+  <script type="text/javascript">
+	function removeTaxRow(rowId) {
+		document.getElementById('divTaxRow' + rowId).style.display = 'none';
+		var r = document.getElementById('addTaxTbl').rows[rowId];
+		var count = 2 * (r.cells.length);
+		for (i = 0; i <= count; i++) {
+			r.deleteCell(0);
+		}
+	}
+</script>
+  
+  <script type="text/javascript">
+function calculateTaxDiscount(rowId){
+	var taxType = $("#"+rowId+"taxdiscountType").val();
+	var subTotal = $("#inoviceTotal").val();
+// 	var subTotal = 100;
+	var taxValue = $("#"+rowId+"taxdiscountvalue").val();
+	
+	 var total ='';
+	if(taxType == 'flat'){
+		total = subTotal-taxValue;
+		$("#"+rowId+"taxTotal").val(taxValue);
+		$("#grandTotal").val(total);
+	}
+	if(taxType == 'percentage'){
+		var perCentValue = (subTotal * taxValue)/100;
+		total = subTotal - perCentValue;
+		$("#"+rowId+"taxTotal").val(perCentValue);
+		$("#grandTotal").val(total);
+	}  
+}
+</script>
+  
+  
+  
+  <!-- ********************************************* Add Rows AddTax Table functionality end  ************************************************************ -->	
   
 	<script>
 	  $(function() {
@@ -750,7 +879,9 @@ function saveInvoice(saveType){
 }); */
 </script>
 <!-- End by Rajashekar -->
-	    
-	    
-	    
+<script>
+$(document).ready(function(){
+	$(".dateMask").mask('9999:99');
+});
+</script>	    
  <jsp:include page="../masterFooter.jsp" />	

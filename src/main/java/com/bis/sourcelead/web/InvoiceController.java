@@ -41,9 +41,6 @@ public class InvoiceController {
 	CountriesService countriesService;
 	
 	@Autowired
-	InvoiceService invoiceService;
-	
-	@Autowired
 	OrgRelationsService orgRelationsService;
 	
 	 @Autowired
@@ -114,34 +111,6 @@ public class InvoiceController {
 		request.getSession().setAttribute("sessionData",sessionData);
 	return model;
 	}
-	
-	
-	@RequestMapping(value = "/getInvoiceList")
-	public String getInvoiceList(HttpServletRequest request) throws Exception {
-		String resultJson;
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<Invoice> invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId());
-		for(Invoice invoice :invoiceList){
-			if(invoice.getClientOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-				invoice.setClientName(invoice.getClientOrgRelationID().getResponderLocationId().getOrg().getOrgName());
-			}
-			if(invoice.getClientOrgRelationID().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-				invoice.setClientName(invoice.getClientOrgRelationID().getLocationId().getOrg().getOrgName());
-			}
-				
-			StringBuilder contactName = new StringBuilder();
-			if(invoice.getContactContactUser().getLastName() != null){
-				invoice.setClientContactName(contactName.append(invoice.getContactContactUser().getFirstName()).append(" ").append(invoice.getContactContactUser().getLastName()).toString());	
-			}else{
-				invoice.setClientContactName(contactName.append(invoice.getContactContactUser().getFirstName()).toString());
-			}
-			
-		}
-	    resultJson = commonUtil.toJSON(invoiceList);
-	  return resultJson;
-	}
-	
-	
 	
 	
 	private boolean isNullOrEmpty(String msg) {

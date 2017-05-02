@@ -9,7 +9,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	getUserList("0");
+	getInvoiceList();
 });
 </script>
 
@@ -98,66 +98,18 @@ $(document).ready(function(){
                       <div class="clearfix"></div>
                     </ul>
                     <div class="clearfix"></div>
-                    <div class="remove_search">
-                      <input type="text" placeholder="search">
-                    </div>
+                     
                   </div>
+                  
+                  
                   <div class="candidate_wrap_table">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>ID</th>
-                          <th>Client Name</th>
-                          <th>Contact</th>
-                          <th>Due date</th>
-                          <th>Invoice</th>
-                          <th>Total</th>
-                          <th>Due</th>
-                          <th>Status</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>
-                            <div class="tbldata-dotdot_80">1005</div>
-                          </td>
-                          <td>
-                            <div class="tbldata-dotdot-vsm">Tata Consultancy Services Pvt Ltd</div>
-                          </td>
-                          <td>
-                            <div class="tbldata-dotdot-vsm">Rahulkumar Jain</div>
-                          </td>
-                          <td>
-                            <div class="tblminwidth-50">12/05/2017</div>
-                          </td>
-                          <td>
-                            <div class="tblminwidth-50">12/05/2017</div>
-                          </td>
-                          <td>
-                            <div class="tbldata-dotdot_80">2000000.00</div>
-                          </td>
-                          <td>
-                            <div class="tbldata-dotdot_80">1050000.00</div>
-                          </td>
-                          <td>
-                            <div class="tbldata-dotdot_100">Penaltiy Paid</div>
-                          </td>
-                          <td>
-                            <div class="pull-right positionRelative menuWidget"><i class="fa fa-ellipsis-v" onclick="showMenu();"></i>
-                              <ul class="list-inline list-unstyled menupop">
-                                <li><i class="fa fa-bullhorn paddingRight"></i>Send review</li>
-                                <li><i class="fa fa-print paddingLeft paddingRight"></i>Print</li>
-                              </ul>
-                            </div>
-                            <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop();">Receive</span> </td>
-                        </tr>
-                      </tbody>
-                    </table>
+	                  <div id="invoiceList"></div>
                   </div>
                 </div>
               </div>
             </div>
+            
+            
             
             <!-- TAB 2 -->
             <div class="tab-pane" id="unpaid">
@@ -194,9 +146,7 @@ $(document).ready(function(){
                       <div class="clearfix"></div>
                     </ul>
                     <div class="clearfix"></div>
-                    <div class="remove_search">
-                      <input type="text" placeholder="search">
-                    </div>
+                     
                   </div>
                   <div class="candidate_wrap_table">
                     <table>
@@ -411,6 +361,111 @@ $(document).ready(function(){
 </div>
 </div>
 <!-- modal pop --> 
+
+<script>
+function getInvoiceList(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+    	type: "GET",
+        url: sourceleadUrl+"/getInvoiceList?${_csrf.parameterName}=${_csrf.token}",
+        success: function(data) {
+        	var json = JSON.parse(data);
+        	var result = "";
+			result = result +'	<table id="invoiceListPagination">                                                                                                         ';
+			result = result +'     <thead>                                                                                                           ';
+			result = result +'       <tr>                                                                                                            ';
+			result = result +'         <th>ID</th>                                                                                                   ';
+			result = result +'         <th>Client Name</th>                                                                                          ';
+			result = result +'         <th>Contact</th>                                                                                              ';
+			result = result +'         <th>Due date</th>                                                                                             ';
+			result = result +'         <th>Invoice</th>                                                                                              ';
+			result = result +'         <th>Total</th>                                                                                                ';
+			result = result +'         <th>Due</th>                                                                                                  ';
+			result = result +'         <th>Status</th>                                                                                               ';
+			result = result +'         <th>Action</th>                                                                                               ';
+			result = result +'       </tr>                                                                                                           ';
+			result = result +'     </thead>                                                                                                          ';
+			result = result +'     <tbody>                                                                                                           ';
+			
+        	for (var i=0; i<json.length; i++)
+    		{  
+        		var report = json[i];
+        		if(report.dueDateStr != null && report.dueDateStr != '' && report.dueDateStr !='undefined'){
+        			dueDateStr = report.dueDateStr;
+        		}else{
+        			dueDateStr = "";
+        		}
+        		
+        		if(report.invoiceDateStr != null && report.invoiceDateStr != '' && report.invoiceDateStr != 'undefined'){
+        			invoiceDateStr = report.invoiceDateStr;
+        		}else{
+        			invoiceDateStr = "";
+        		}
+        		
+				result = result +'       <tr>                                                                                                            ';
+				result = result +'         <td>                                                                                                          ';
+				result = result +'           <div class="tbldata-dotdot_80">'+report.invoiceId+'</div>                                                                   ';
+				result = result +'         </td>                                                                                                         ';
+				result = result +'         <td>                                                                                                          ';
+				result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientName+'">'+report.clientName+'</div>                                     ';
+				result = result +'         </td>                                                                                                         ';
+				result = result +'         <td>                                                                                                          ';
+				result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientContactName+'">'+report.clientContactName+'</div>                                                       ';
+				result = result +'         </td>                                                                                                         ';
+				result = result +'         <td>                                                                                                          ';
+				result = result +'           <div class="tblminwidth-100">'+dueDateStr+'</div>                                                                ';
+				result = result +'         </td>                                                                                                         ';
+				result = result +'         <td>                                                                                                          ';
+				result = result +'           <div class="tblminwidth-100">'+invoiceDateStr+'</div>                                                                ';
+				result = result +'         </td>                                                                                                         ';
+				result = result +'         <td>                                                                                                          ';
+				result = result +'           <div class="tbldata-dotdot_80">2000000.00</div>                                                             ';
+				result = result +'         </td>                                                                                                         ';
+				result = result +'         <td>                                                                                                          ';
+				result = result +'           <div class="tbldata-dotdot_80">1050000.00</div>                                                             ';
+				result = result +'         </td>                                                                                                         ';
+				result = result +'         <td>                                                                                                          ';
+				result = result +'           <div class="tbldata-dotdot_100">Penaltiy Paid</div>                                                         ';
+				result = result +'         </td>                                                                                                         ';
+				result = result +'         <td>                                                                                                          ';
+				result = result +'           <div class="pull-right positionRelative menuWidget"><i class="fa fa-ellipsis-v" onclick="showMenu();"></i>  ';
+				result = result +'             <ul class="list-inline list-unstyled menupop">                                                            ';
+				result = result +'               <li><i class="fa fa-bullhorn paddingRight"></i>Send review</li>                                         ';
+				result = result +'               <li><i class="fa fa-print paddingLeft paddingRight"></i>Print</li>                                      ';
+				result = result +'             </ul>                                                                                                     ';
+				result = result +'           </div>                                                                                                      ';
+				result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop();">Receive</span> </td>          ';
+				result = result +'       </tr>                                                                                                           ';
+
+    		}
+        	result = result +'     </tbody>                                                                                                          ';
+			result = result +'   </table>                                                                                                            ';
+			$("#invoiceList").empty();  
+		    $("#invoiceList").append(result)
+		    invoicePagination()
+        },
+        
+    });
+	
+	
+}
+</script>
+
+<script>
+function invoicePagination(){  
+    $('#invoiceListPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    } );
+}
+</script>
 
 <script>
 function cancelbtn(){
