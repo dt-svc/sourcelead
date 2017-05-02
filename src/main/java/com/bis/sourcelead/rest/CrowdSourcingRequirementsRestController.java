@@ -235,7 +235,12 @@ public class CrowdSourcingRequirementsRestController {
 	    	 boolQueryBuilder.must(anyLocationBoolQueryBuilder);
 	     }
 		 
-		 boolQueryBuilder.must(QueryBuilders.matchQuery("requirementStatus", "OPEN"));
+	    
+	     BoolQueryBuilder anyStatusBoolQueryBuilder = QueryBuilders.boolQuery();
+	     anyStatusBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementStatus", "NEW"));
+	     anyStatusBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementStatus", "OPEN"));
+	     anyStatusBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementStatus", "APPROVED"));
+		 boolQueryBuilder.must(anyStatusBoolQueryBuilder);
 		
 	   
 	    try {
@@ -585,7 +590,12 @@ public class CrowdSourcingRequirementsRestController {
 		     
 		     boolQueryBuilder = getSearchRequirementsResults(boolQueryBuilder,jsonObj);   
 		     
-		     boolQueryBuilder.must(QueryBuilders.matchQuery("requirementStatus", "OPEN"));
+		     BoolQueryBuilder anyStatusBoolQueryBuilder = QueryBuilders.boolQuery();
+		     anyStatusBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementStatus", "NEW"));
+		     anyStatusBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementStatus", "OPEN"));
+		     anyStatusBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementStatus", "APPROVED"));
+			 boolQueryBuilder.must(anyStatusBoolQueryBuilder);
+			
 				
 			   
 			    try {

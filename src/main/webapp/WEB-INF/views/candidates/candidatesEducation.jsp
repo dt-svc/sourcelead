@@ -11,6 +11,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<jsp:include page="candidatesQuickView.jsp"></jsp:include>
+
 <style>
 .addUser-org {
     overflow-x: auto;
@@ -710,6 +712,7 @@ function candidateEducationStore(candidateId){
 			            				$("#eduMsgDiv").html("Success!! New Education added");
 				               			candidateEducationList(candidateId);
 				               			eduMsgFadein();
+				               			qveducationSubmission(candidateId);
 							    	}
 				                 }   
 				      }, 
@@ -884,7 +887,7 @@ function clearSearchKey() {
 		            			$("#eduMsgDiv").html("Education details updated");
 							candidateEducationList(candidateId)
 							eduMsgFadein();
-							candidateQuickViewProfile(candidateId);
+							qveducationSubmission(candidateId);
 						},
 					});
 			return true;
