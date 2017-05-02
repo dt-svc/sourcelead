@@ -4,7 +4,6 @@ import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Year;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -548,6 +547,19 @@ public  class CalendarUtil {
 			calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
 			dateList.put("ENDDATE", calendar.getTime());
 		} catch (ParseException e) {}
+		return dateList;
+	}
+	
+	public static LinkedHashMap<String,Date> getPreviousMonthStartDateAndEndDateFromGivenStartDateForTsReports(Date startDate){
+		LinkedHashMap<String,Date> dateList = new LinkedHashMap<String,Date>();
+		final Calendar calendar = Calendar.getInstance();
+		calendar.setTime(startDate);
+		calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+		calendar.add(Calendar.MONTH, -1);
+		dateList.put("STARTDATE", calendar.getTime());
+
+		calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+		dateList.put("ENDDATE", calendar.getTime());
 		return dateList;
 	}
 

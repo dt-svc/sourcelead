@@ -112,18 +112,9 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		  Date startDate = dateList.get("STARTDATE");
 		  Date endDate = dateList.get("ENDDATE");
 		  
-	     Calendar cal = Calendar.getInstance(TimeZone.getDefault());
-		 cal.setLenient(false);
-		 cal.setTime(startDate);
-		 Date startMondayDate = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON").getTime();
-		 
-		 Calendar endCal = Calendar.getInstance(TimeZone.getDefault());
-		 endCal.setLenient(false);
-		 endCal.setTime(endDate);
-		 Date endSundayDate = CalendarUtil.getCurrentWeekDayByCalendar(endCal, "SUN").getTime();
 
         StringBuilder timesheetApprovalDiv = new StringBuilder();
-        List<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByOrgLocationsIdAndApproverUserId(startMondayDate, endSundayDate, orgLocations.getId(), loginUser.getId());
+        List<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByOrgLocationsIdAndApproverUserId(startDate, endDate, orgLocations.getId(), loginUser.getId());
         if(projectMembers != null && !projectMembers.isEmpty()){
 
         	int tdSpanLength = 6;
@@ -136,7 +127,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			timesheetApprovalDiv.append("	                    <th>Frequency</th>             ");
 			
 			LinkedHashMap<Date, Date> displayWeeksList = new LinkedHashMap<>();
-			Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListForTsReports(startMondayDate, endSundayDate);
+			Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startDate), format.format(endDate));
 			if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
 				for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
 		    		 String  k = entry.getKey();
@@ -182,42 +173,90 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 				     timesheetApprovalDiv.append("<td><div class='md'><i title='").append(projectMember.getProjects().getProjectName()).append("'>").append(projectMember.getProjects().getProjectName()).append("</i></div></td>");
 			    	 timesheetApprovalDiv.append("<td><div class='sm'>").append(projectMember.getProjects().getInvoiceFrequency()).append("</div></td>");
 		        
+			    	 SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),projectMember.getId(),startDate,endDate);
+			    	 Submission_ApprovalStatus combinedApprovalStatus = null; 
+				     float monthTotalHours            = 0f;
+					 float monthBillableTotalHours    = 0f;
+					 float monthNonBillableTotalHours = 0f;
 				     if(displayWeeksList != null && !displayWeeksList.isEmpty()){
 				    	    for (Map.Entry<Date,Date> entry : displayWeeksList.entrySet()) { 
-				    	    	 SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),projectMember.getId(),entry.getKey(), entry.getValue());
 				    	    	
+				    	    	Submission_ApprovalStatus approvalStatus = Submission_ApprovalStatus.NEW;
+				    	    	if(sah.getWeekApprovalStatusMap().get(entry.getKey()) != null){
+				    	    		approvalStatus = sah.getWeekApprovalStatusMap().get(entry.getKey());
+				    	    	}
+				    	    	Float  weekBillableHours = 0f;
+				    	    	if(sah.getWeekBillableHoursMap().get(entry.getKey()) != null){
+				    	    		weekBillableHours = sah.getWeekBillableHoursMap().get(entry.getKey());
+				    	    	}
+				    	    	Float  weekNonBillableHours = 0f;
+				    	    	if(sah.getWeekNonBillableHoursMap().get(entry.getKey()) != null){
+				    	    		weekNonBillableHours = sah.getWeekNonBillableHoursMap().get(entry.getKey());
+				    	    	}
+				    	    	Float  weekTotalHours = 0f;
+				    	    	if(sah.getWeekTotalHoursMap().get(entry.getKey()) != null){
+				    	    		 weekTotalHours = sah.getWeekTotalHoursMap().get(entry.getKey());
+				    	    	}
 				    	    	 String approvalClass = "class='draft'";
-				    	    	 Float weekTotalHours = 0f;
-				    	    	 Float weekBillableHours = 0f;
-				    	    	 Float weekNonBillableHours = 0f;
-				    	    	 if(sah != null && sah.getSubmissionId() != null && StringUtils.isNotEmpty(sah.getSubmissionId().getTotalHours())){
-				    	    		 weekTotalHours = Float.parseFloat(sah.getSubmissionId().getTotalHours());
-				    	    	 }
-				    	    	 if(sah != null && sah.getSubmissionId() != null && StringUtils.isNotEmpty(sah.getSubmissionId().getBillableHours())){
-				    	    		 weekTotalHours = Float.parseFloat(sah.getSubmissionId().getBillableHours());
-				    	    	 }
-				    	    	 if(sah != null && sah.getSubmissionId() != null && StringUtils.isNotEmpty(sah.getSubmissionId().getNonBillableHours())){
-				    	    		 weekTotalHours = Float.parseFloat(sah.getSubmissionId().getNonBillableHours());
-				    	    	 }
-				    	         if(sah.getSubmissionApprovalStatus() != null && sah.getSubmissionApprovalStatus().equals(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL)){
+				    	         if(approvalStatus.equals(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL)){
 				    	        	  approvalClass = "class='subm'";
 				    	    	 }
-				    	    	 else  if(sah.getSubmissionApprovalStatus() != null && sah.getSubmissionApprovalStatus().equals(Submission_ApprovalStatus.APPROVED)){
+				    	    	 else  if(approvalStatus.equals(Submission_ApprovalStatus.APPROVED)){
 				    	    		 approvalClass = "class='appr'";
 				    	    	 }
-				    	    	 else  if(sah.getSubmissionApprovalStatus() != null && sah.getSubmissionApprovalStatus().equals(Submission_ApprovalStatus.REJECTED)){
+				    	    	 else  if(approvalStatus.equals(Submission_ApprovalStatus.REJECTED)){
 				    	    		 approvalClass = "class='reje'";
 				    	    	 }
-				    	    	  
+				    	         
+				    	         
+				    	        if(approvalStatus == Submission_ApprovalStatus.REJECTED){
+				    	        	if(combinedApprovalStatus == null || combinedApprovalStatus == Submission_ApprovalStatus.REJECTED){
+				    	        		combinedApprovalStatus = Submission_ApprovalStatus.REJECTED;
+				    	        	}
+				    	        	else{
+				    	        		combinedApprovalStatus = Submission_ApprovalStatus.ACTIONREQUIRED;
+				    	        	}
+				 					
+				 				}
+				 				else if(approvalStatus == Submission_ApprovalStatus.NEW){
+				 					if(combinedApprovalStatus == null || combinedApprovalStatus == Submission_ApprovalStatus.NEW){
+				 						combinedApprovalStatus = Submission_ApprovalStatus.NEW;
+				 					}
+				 					else{
+				    	        		combinedApprovalStatus = Submission_ApprovalStatus.ACTIONREQUIRED;
+				    	        	}
+				 					
+				 				}
+				 				else if(approvalStatus == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
+				 					if(combinedApprovalStatus == null || combinedApprovalStatus == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
+				 						combinedApprovalStatus = Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL;
+				 					}
+				 					else{
+				    	        		combinedApprovalStatus = Submission_ApprovalStatus.ACTIONREQUIRED;
+				    	        	}
+				 					
+				 				}
+				 				else if(approvalStatus == Submission_ApprovalStatus.APPROVED){
+				 					if(combinedApprovalStatus == null || combinedApprovalStatus == Submission_ApprovalStatus.APPROVED){
+				 						combinedApprovalStatus = Submission_ApprovalStatus.APPROVED;
+				 					}
+				 					else{
+				    	        		combinedApprovalStatus = Submission_ApprovalStatus.ACTIONREQUIRED;
+				    	        	}
+				 					
+				 				}
+				    	        monthTotalHours = CommonUtil.getCombinedHours(monthTotalHours, weekTotalHours);
+				    	        monthBillableTotalHours = CommonUtil.getCombinedHours(monthBillableTotalHours, weekBillableHours);
+				    	        monthNonBillableTotalHours =  CommonUtil.getCombinedHours(monthNonBillableTotalHours, weekNonBillableHours);
 				    	    	 timesheetApprovalDiv.append("<td>")
 				    	    	                        .append(" <div class='week'>")
-				    	    	                          .append(" <span "+approvalClass+">").append(weekTotalHours).append("</span>")
+				    	    	                          .append(" <span "+approvalClass+">").append(CommonUtil.getHoursDisplayFormat(weekTotalHours)).append("</span>")
 				    	    	                             .append(" <div class='progress'>")
 				    	    	                                     .append(" <div class='progress-bar progress-bar-striped active progress-bar-info' role='progressbar' style='width:60%'>")
-				    	    	                                        .append(weekBillableHours)
+				    	    	                                        .append(CommonUtil.getHoursDisplayFormat(weekBillableHours))
 				    	    	                                     .append("</div>")
 				    	    	                                     .append(" <div class='progress-bar progress-bar-striped active progress-bar-warning' role='progressbar' style='width:40%'>")
-				    	    	                                        .append(weekNonBillableHours)
+				    	    	                                        .append(CommonUtil.getHoursDisplayFormat(weekNonBillableHours))
 				    	    	                                     .append("</div>")
 				    	    	                             .append(" </div>")
 				    	    	                           
@@ -231,13 +270,13 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			    	 
 				     timesheetApprovalDiv.append("<td>")
                      .append(" <div class='week'>")
-                       .append(" <span class='draft'>").append(0.0).append("</span>")
+                       .append(" <span class='draft'>").append(CommonUtil.getHoursDisplayFormat(monthTotalHours)).append("</span>")
                           .append(" <div class='progress'>")
                                   .append(" <div class='progress-bar progress-bar-striped active progress-bar-info' role='progressbar' style='width:60%'>")
-                                     .append(0.0)
+                                     .append(CommonUtil.getHoursDisplayFormat(monthBillableTotalHours))
                                   .append("</div>")
                                   .append(" <div class='progress-bar progress-bar-striped active progress-bar-warning' role='progressbar' style='width:40%'>")
-                                     .append(0.0)
+                                     .append(CommonUtil.getHoursDisplayFormat(monthNonBillableTotalHours))
                                   .append("</div>")
                           .append(" </div>")
                         
@@ -246,13 +285,13 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 				     
 				     timesheetApprovalDiv.append("<td>")
                      .append(" <div class='week'>")
-                       .append(" <span class='draft'>").append(0.0).append("</span>")
+                       .append(" <span class='draft'>").append(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateTotalHours())).append("</span>")
                           .append(" <div class='progress'>")
                                   .append(" <div class='progress-bar progress-bar-striped active progress-bar-info' role='progressbar' style='width:60%'>")
-                                     .append(0.0)
+                                     .append(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateBillableHours()))
                                   .append("</div>")
                                   .append(" <div class='progress-bar progress-bar-striped active progress-bar-warning' role='progressbar' style='width:40%'>")
-                                     .append(0.0)
+                                     .append(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateNonBillableHours()))
                                   .append("</div>")
                           .append(" </div>")
                         
@@ -261,22 +300,32 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 				     
 				     timesheetApprovalDiv.append("<td>")
                      .append(" <div class='week'>")
-                       .append(" <span class='draft'>").append(0.0).append("</span>")
+                       .append(" <span class='draft'>").append(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthTotalHours())).append("</span>")
                           .append(" <div class='progress'>")
                                   .append(" <div class='progress-bar progress-bar-striped active progress-bar-info' role='progressbar' style='width:60%'>")
-                                     .append(0.0)
+                                     .append(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthBillableHours()))
                                   .append("</div>")
                                   .append(" <div class='progress-bar progress-bar-striped active progress-bar-warning' role='progressbar' style='width:40%'>")
-                                     .append(0.0)
+                                     .append(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthNonBillableHours()))
                                   .append("</div>")
                           .append(" </div>")
                         
                      .append(" </div>")
                   .append("</td>");
 				     
-				    timesheetApprovalDiv.append("<td><div class='sm'><b class='action'>Action Required</b></div></td>");
 				     
-			    	 
+				     String combinedApprovalClass = "class='action'";
+				     String combinedApprStatus = "Action Required";
+	    	         if(combinedApprovalStatus.equals(Submission_ApprovalStatus.APPROVED)){
+	    	    		 combinedApprovalClass = "class='proj_active'";
+	    	    		  combinedApprStatus = "Approved";
+	    	    	 }
+	    	    	 else  if(combinedApprovalStatus.equals(Submission_ApprovalStatus.REJECTED)){
+	    	    		 combinedApprovalClass = "class='proj_closed'";
+	    	    		  combinedApprStatus = "Rejected";
+	    	    	 }
+				     
+				    timesheetApprovalDiv.append("<td><div class='sm'><b "+combinedApprovalClass+">"+combinedApprStatus+"</b></div></td>");
 			        timesheetApprovalDiv.append("</tr>");
 		  }
 		
