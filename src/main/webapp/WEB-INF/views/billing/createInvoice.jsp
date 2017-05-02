@@ -142,7 +142,7 @@ $(document).ready(function(){
                     <input type="text" class="form-control input-sm dateMask" placeholder="HHHH:MM" id="0totalHours" name="0totalHours" onblur="singleRowTotalhour();" >
                   </div>
                 </td>
-                <td><div class="tbldata-dotdot-100 text-right" id="0amount" name="0amount"></div></td>
+                <td><div class="tbldata-dotdot-100 text-right" id="0amount" name="0amount"><input type="text" id="remove0Ammount" value = "00:00" class="ReadTextFli"> </div></td>
                 <td><a class="text-danger tblminwidth-50" title="Remove row"><i class="fa fa-remove"></i></a></td>
               </tr>
                
@@ -225,7 +225,7 @@ $(document).ready(function(){
                   </div>
                 </div>
                 <div class="col-md-5 text-right">
-                  <input type="text" class="form-control input-sm" id="discountTotal" name="discountTotal" readonly>
+                  <input type="text" class="form-control input-sm" id="discountTotal" name="discountTotal" placeholder="00.00" readonly>
                 </div>
               </div>
               
@@ -256,8 +256,10 @@ $(document).ready(function(){
                                 </td>
                                 <td>
                                  <div class="btn-group tblminwidth-75">
-                                  <button type="button" class="btn btn-sm btn-primary" title="Discount">%</button>
-                                  <button type="button" class="btn btn-sm  btn-primary" title="Flat">Flat</button>
+                                 <select class="form-control input-sm" id="0taxdiscountType" name="0taxdiscountType">
+									 <option value="percentage">Discount</option>
+									 <option value="flat">Flat</option>
+							 	</select>
                                 </div>
                                 </td>
                                 <td>
@@ -345,12 +347,30 @@ $(document).ready(function(){
 	
 <script type="text/javascript">
 	function removeRow(rowId) {
+		 var rate = $("#"+rowId+"rate").val();
+		 var totalHours = $("#"+rowId+"totlaHours").val();
+		 var subTotal = $("#inoviceTotal").val();
+		 
+	     var split = totalHours.split(':');
+	     var hours = split[0];
+ 	     var minute = split[1];
+		 var hourminits = hours * 60;
+		 var finalmin = parseInt(hourminits) + parseInt(minute);
+	     var perMinit = rate / 60;
+	     var totlalAmount = (perMinit * finalmin);
+	     var subtractTotal = subTotal - totlalAmount.toFixed(2)
+	     $('#inoviceTotal').val(subtractTotal);
+	     $("#grandTotal").val(subtractTotal);
+	     $("#hiddenTotal").val(subtractTotal);
+	     
 		document.getElementById('divTsRow' + rowId).style.display = 'none';
 		var r = document.getElementById('addInvoiceTbl').rows[rowId];
 		var count = 2 * (r.cells.length);
 		for (i = 0; i <= count; i++) {
 			r.deleteCell(0);
 		}
+		
+		
 	}
 </script>
 
@@ -487,7 +507,6 @@ $(document).ready(function(){
   function calculateAmount(rowId){
 	  var rate = $("#"+rowId+"rate").val();
 	  var totalHours = $("#"+rowId+"totlaHours").val();
-	  
 	     var split = totalHours.split(':');
 	     var hours = split[0];
  	     var minute = split[1];
@@ -503,12 +522,12 @@ $(document).ready(function(){
   </script>
   <script>
   function  calTotalamount(rowId,totlalAmount){
+	  
    var hiddenTotal = +document.getElementById("hiddenTotal").value;
    var grandTotal = parseFloat(hiddenTotal) + parseFloat(totlalAmount);
    var arroundGrand = grandTotal.toFixed(2)
    $("#inoviceTotal").val(arroundGrand);
    $("#hiddenTotal").val(arroundGrand);
-   $("#discountTotal").val(arroundGrand);
    $("#grandTotal").val(arroundGrand);
    
    
@@ -538,22 +557,21 @@ function calculateDiscount(){
 </script>
 
 <script>
-  function singleRowTotalhour(e){
-// 	  var rate = $("#0rate").val();
-	   var totalHours = $("0totalHours").val(); 
-	   alert("split"+totalHours)
-	    /*  var split = totalHours.split(':');
-	     alert("split"+split);
+  function singleRowTotalhour(){
+	  document.getElementById("remove0Ammount").style.display="none";
+	  var rate = $("#0rate").val();
+	   var totalHours = $("#0totalHours").val(); 
+	     var split = totalHours.split(':');
 	     var hours = split[0];
  	     var minute = split[1];
 		 var hourminits = hours * 60;
 		 var finalmin = parseInt(hourminits) + parseInt(minute);
 	     var perMinit = rate / 60;
-	     var totlalAmount = (perMinit * finalmin);
-	     $('#0amount').empty();
-	     $('#0amount').append(totlalAmount.toFixed(2));
-	     calTotalamount(rowId,totlalAmount);  */
-	  
+	     var singleRowTotlalAmount = (perMinit * finalmin).toFixed(2);
+	     $('#0amount').append(singleRowTotlalAmount);
+	     $('#inoviceTotal').val(singleRowTotlalAmount);
+	     $("#hiddenTotal").val(singleRowTotlalAmount);
+	     $("#grandTotal").val(singleRowTotlalAmount);
   }
   </script>
   
