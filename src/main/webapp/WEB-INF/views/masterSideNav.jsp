@@ -95,12 +95,12 @@
 	                 <c:if test="${timesheetTabExist == 'N' && (userTabs.tabName == 'My Timesheets' || userTabs.tabName == 'Timesheet Approval')}">
 	                 <sec:authorize access="hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS') && hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS')"> 
 				           <li class="${sessionData.nav == 'TimeSheet' || sessionData.nav == 'TimeSheetApproval' ? 'side-nav-active' : ''}">
-							  <a href="#" class="tree-view-new" title="TimeSheets">
+							  <a href="#" class="tree-view-new" title="Timesheets">
 								<span><i class="fa fa-clock-o"></i></span>
 							  Timesheets <i class="fa fa-fw fa-caret-down"></i>
 							  </a>
 							  
-							  <a href="#" class="tree-view" title="TimeSheets">
+							  <a href="#" class="tree-view" title="Timesheets">
 								<span><i class="fa fa-clock-o"></i></span>
 							  Timesheets <i class="fa fa-fw fa-caret-down"></i>
 							  </a>
