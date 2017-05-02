@@ -28,6 +28,8 @@
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
+   <c:if test="${requirementTabAccess == true }">
+    
     <div class="pull-left">
       <h2> Reports Dashboard</h2>
     </div>
@@ -45,7 +47,9 @@
 				    <li><a href="<c:url value='/timeSheetReports'/>"><span><i class="fa fa-briefcase"></i></span>TimeSheet Reports</a></li>
 				</ul>
 			</div>
-		</div>  
+		</div> 
+		
+   </c:if>		 
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo;   Reports Dashboard</div>
  <div class="clearfix"></div>
  
@@ -54,13 +58,15 @@
  
   </section>
    
+ 
+ <c:if test="${requirementTabAccess == true }">
   <div style="overflow: auto;" class=" vendor_wrap"> 
    
    <div class="pull-left reportBtns">
 <h4 class="pull-left">Recruiters Report</h4>
 		  <div class="reportBtn select-field  pull-left ml">
 			<select class="form-control" id="reportTypeId" onChange="flushCustom(); getDayWiseReports(); custdates();">
-			 <option value="">select</option>
+<!-- 			 <option value="">select</option> -->
 			  <option value="today">Today</option>
 			  <option value="yesterday">Yesterday</option>
 			  <option value="week">1 week</option>
@@ -81,12 +87,13 @@
 		<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
 		<div class="clearfix"></div>
   </div>
+      
       <div class="candidate_wrap_table recruiterReports_table">
         <div id="usersList"></div>
       </div> 
  </div>
- 
- 
+ </c:if>
+ <c:if test="${vendorTabAccess == true }">
  <div class="timesheet_out mt40">
     <div class="vendor_wrap">
       <div class="timesheet_head">
@@ -135,7 +142,8 @@
 
 
   </div>
- 
+  </div>
+  </c:if>
   </section>    
       
 <div class="mask_time"></div>
@@ -167,7 +175,8 @@ width: 100% !important;
 </style>
 
 <script>
-function usersList(timePeriod){  
+function usersList(){ 
+	var timePeriod = $('#reportTypeId').val(); 
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
            type : "POST",

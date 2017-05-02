@@ -1,7 +1,10 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
- <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+ 
+<jsp:include page="candidatesQuickView.jsp"></jsp:include>
+ 
 <style>
 .clsDatePicker {
 	z-index: 100000 !important;
@@ -32,12 +35,12 @@ function candidateCertificate(candidateId){
     
 	result = result +'<div id="msgDiv"></div>';
 	if(window.candidateStatusGlobal == '0'){
-		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
+		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_ADD_ASSOCIATE_CERTIFICATION_DETAILS\')"> ';
 		 result  = result + '   	<a href="javascript:void(0)" class="addUser-org"></a> ';
 		 result = result +' </sec:authorize>';
 	}
 	else{
-	  	 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
+	  	 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_ADD_ASSOCIATE_CERTIFICATION_DETAILS\')"> ';
 		 result  = result + '   	<span class="pad-sea"> <a href="javascript:void(0)" id="newCandidate" onClick="addCertification('+candidateId+');flushCandiadate();" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a></span> ';
 		 result = result +' </sec:authorize>';
 	}
@@ -134,6 +137,7 @@ function storeCertificate(candidateId){
 			            			$("#cerMsgDiv").html("Success!! New Certification added");
 				               		candidateCertificateList(candidateId);
 				               		cerMsgFadein();
+				               		qwikCertificates(candidateId);
 							    	}
 							   }
 						},
@@ -267,21 +271,21 @@ function candidateCertificateList(candidateId){
 	                    	 result  = result + '           <td><div class="tblicons tblminwidth-75">';
 	                    	 
 	                    	 if(window.candidateStatusGlobal == '0'){
-	                    		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
+	                    		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_VIEW_EDIT_ASSOCIATE_CERTIFICATION_DETAILS\')"> ';
 	                    		 result = result  +'	            <a href="javascript:void(0)" disabled="disabled" class="glyphicon glyphicon-pencil" id="editCandidateCertificate"></a>';
 	                    		 result = result +' </sec:authorize>';
 	                    	 }else{
-	                    		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
+	                    		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_VIEW_EDIT_ASSOCIATE_CERTIFICATION_DETAILS\')"> ';
 	                    		result = result  +'	            <a href="javascript:void(0)" class="glyphicon glyphicon-pencil" id="editCandidateCertificate" href="javascript:void(0)" onClick="editCertification('+ opt.id+ ','+ candidateId+ ');"></a>';
 	                    		result = result +' </sec:authorize>';
 	                    	 }
 	                    	 
 	                    	 if(window.candidateStatusGlobal == '0'){
-	                    		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
+	                    		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_VIEW_DELETE_ASSOCIATE_CERTIFICATION_DETAILS\')"> ';
 	                    		 result = result  +'<i class="glyphicon glyphicon-trash"></i>';
 	                    		 result = result +' </sec:authorize>';
 	                    	}else{
-	                    		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
+	                    		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_VIEW_DELETE_ASSOCIATE_CERTIFICATION_DETAILS\')"> ';
 	                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate"></i>';
 	                    		 result = result +' </sec:authorize>';
 	                    	}
@@ -394,7 +398,7 @@ function addCertification(candidateId) {
 		result  = result + '                   </div>';
 		result  = result + '                 </div>';
 		result  = result + '                 <div class="clearfix mr">';
-		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
+		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_ADD_ASSOCIATE_CERTIFICATION_DETAILS\')"> ';
 		result  = result + '                   <button type="button" class="btn btn-sm btn-primary pull-right" id="addCandidate"  onclick="storeCertificate('+candidateId+');"  >Add</button>';
 		result = result +' </sec:authorize>';
 		result  = result + '                 </div>';
@@ -698,7 +702,7 @@ function addCertification(candidateId) {
 	            			$("#cerMsgDiv").html("Certification details updated");
 							candidateCertificateList(candidateId);
 							cerMsgFadein();
-							candidateQuickViewProfile(candidateId);
+							qwikCertificates(candidateId);
 						},
 					});
 			return true;

@@ -21,6 +21,7 @@ import com.bis.sourcelead.entity.User;
 import com.docusign.esign.api.AuthenticationApi;
 import com.docusign.esign.api.EnvelopesApi;
 import com.docusign.esign.client.ApiClient;
+import com.docusign.esign.client.ApiException;
 import com.docusign.esign.client.Configuration;
 import com.docusign.esign.model.Document;
 import com.docusign.esign.model.EnvelopeDefinition;
@@ -42,12 +43,12 @@ public class SignatureRequestUtil {
 	@Autowired
 	private Html2PdfUtil html2PdfUtil;
 	
-	public String sendDocumentForSignatureRequest(User vendorUser, ContractsTemplate contractsTemplate, OrgLocations orgLocation, User loginUser, Contracts contracts, Org org) throws DocumentException{
+	public Contracts sendDocumentForSignatureRequest(User vendorUser, ContractsTemplate contractsTemplate, OrgLocations orgLocation, User loginUser, Contracts contracts, Org org) throws Exception{
 		
 		// Enter your DocuSign credentials:
-		String UserName = "rajasekhar.chelpuri@gmail.com";
-		String Password = "rajashekarbis";    
-		String IntegratorKey = "52592fb6-498c-4311-979c-1dfe90de6555";
+		String UserName = "prasannavadla9@gmail.com";
+		String Password = "prasanna";    
+		String IntegratorKey = "d5a84b14-1b12-4735-a455-604a8f7c9754";
 
 		// for production environment update to "www.docusign.net/restapi"
 		String BaseUrl = "https://demo.docusign.net/restapi";
@@ -111,8 +112,8 @@ public class SignatureRequestUtil {
 		String base64Doc = Base64.getEncoder().encodeToString(fileBytes);
 		doc.setDocumentBase64(base64Doc);
 		doc.setName(contractsTemplate.getTemplateName()+".pdf");    // can be different from actual file name
-		doc.setDocumentId("1");
-		
+		/*doc.setDocumentId("1");*/
+		doc.setDocumentId(SourceLeadRandomCodeHelper.generateSubmissionXlsRandomCode());
 		// create a list of docs and add it to the envelope
 		List<Document> docs = new ArrayList<Document>();
 		docs.add(doc);
@@ -127,7 +128,7 @@ public class SignatureRequestUtil {
 		// create a signHere tab somewhere on the document for the signer to sign
 		// default unit of measurement is pixels, can be mms, cms, inches also
 		SignHere signHere = new SignHere();
-		signHere.setDocumentId("1");
+		signHere.setDocumentId(doc.getDocumentId());
 		signHere.setPageNumber("1");
 		signHere.setRecipientId("1");
 		signHere.setXPosition("100");
@@ -148,8 +149,7 @@ public class SignatureRequestUtil {
 		// send the envelope by setting |status| to "sent". To save as a draft set to "created"
 		envDef.setStatus("sent");
 
-		try
-		{
+		
 			// use the |accountId| we retrieved through the Login API to create the Envelope
 			String accountId = loginAccounts.get(0).getAccountId();
 			
@@ -159,14 +159,14 @@ public class SignatureRequestUtil {
 			// call the createEnvelope() API to send the signature request!
 			EnvelopeSummary envelopeSummary = envelopesApi.createEnvelope(accountId, envDef);
 			
+			Contracts con  = new Contracts();
+			con.setTempdocId(doc.getDocumentId());
+			con.setTempEnvId(envelopeSummary.getEnvelopeId());
+			con.setContractStatus(envDef.getStatus());
 			//logger.info("EnvelopeSummary: " + envelopeSummary);
-		}
-		catch (com.docusign.esign.client.ApiException ex)
-		{
-			logger.info("Exception: " + ex);
-		}
 		
-		return null;
+		
+		return con;
 	}
 	
 }

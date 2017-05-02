@@ -10,6 +10,7 @@
 <script>
  window.onload = function() { 
 	 viewRequirementTemplateDetails();
+	
 };
 </script>
 
@@ -25,13 +26,16 @@
 	</section>
 		      <div class="content-area">
 		      				<div id="viewReqTemplateDiv" class="mt clearfix">
-						     </div>  
+						     </div>
+						     <div class="modal-body pb">  
+						    <div id="formatedTextone"></div>
+						    </div>
 		      </div>
           </div>
 <script>
  function viewRequirementTemplateDetails(){  
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 var requirementId= ${requirementId}
+	 var requirementId= '${requirementId}';
 	 $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getRequirementTemplateByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 
@@ -82,7 +86,7 @@
 		        result = result + ' </div>';
 		        result = result + ' <div class="clearfix"></div>';
 			    
-				 result = result + '<div class="user_details_cta mt">';
+				 result = result + '<div class="user_details_cta templatesdetails mt">';
 				 result = result + '<div class="clearfix">';
 				 if(json.jobTitle != null && json.jobTitle != "" && json.jobTitle != 'undefined'){
 					result = result + '<div class="project_details_cta project_details_view">';
@@ -140,13 +144,11 @@
 				 
 						result = result + '<div class="project_details_cta clearfix">';
 				 
-						result = result + '<div class="project_details_cta project_details_view clearfix">';
+						/* result = result + '<div class="project_details_cta project_details_view clearfix">';
 
 						result = result + '<strong>Description :</strong>';
-						if(json.description != null && json.description != "" && json.description != 'undefined'){
-						result = result + '<span class="fix" title="'+json.description+'">'+json.description+'</span>';
-						 }
-						result = result + '</div>';
+						result = result + '<div id="formatedTextone"></div>';
+						result = result + '</div>'; */
 					
 				 
 				result = result + '	</div>';
@@ -154,8 +156,8 @@
 				$("#viewReqTemplateDiv").empty();  
    	    	    $("#viewReqTemplateDiv").append(result);
 				
-   	    	 
-	    
+   	    	    $('#formatedTextone').html(json.description); 
+   	    	 getEditRequirementDetails(requirementId);
 	      },
 	});
  }

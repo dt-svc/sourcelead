@@ -65,7 +65,7 @@ $(document).ready(function() {
                     <div class="form-horizontal clearfix">
                       <div class="clearfix mb10">
                         <div class="col-md-12" id="departmentNameDiv">
-                          <input type="text" class="form-control input-sm" value="" placeholder="Name *" name="departmentName" id="departmentName" data-validation="required validate_length length2-100" field-name="Department Name" onkeyup="validDepartmentname();">
+                          <input type="text" class="form-control input-sm" value="" placeholder="Name *" name="departmentName" id="departmentName" data-validation="required validate_length length2-100" field-name="Name" onkeyup="validDepartmentname();">
                         </div>
                       </div>
                       <div class="clearfix mb10">
@@ -148,7 +148,7 @@ $(document).ready(function() {
    		    		if(report.status == 1){
    		    			result = result +'<a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onclick="deleteProject('+report.id+');"></a>';	
    		    		}else{
-   		    			result = result +'<a class="glyphicon ml re-Assign" title="Add Department List" onclick="editDepartment('+report.id+');"><i class="fa-2x fa fa-plus-circle"></i></a>';
+   		    			result = result +'<a class="glyphicon ml re-Assign" title="Add Department List" onclick="editDepartment('+report.id+');"><i class="fa-2x fa fa-reply" aria-hidden="true"></i></a>';
    		    		}
    		    		
    		    		

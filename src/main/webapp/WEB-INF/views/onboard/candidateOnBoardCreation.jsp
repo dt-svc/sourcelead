@@ -64,7 +64,7 @@
               <small>Employee details &amp; Postion details</small> </a> </li>
             <li onclick="getTemplatePolicyDocumentsDetails();getTemplateSupportingDocumentsDetails();getTemplateContractsDocumentsDetails();getTemplateFormsDocumentsDetails();"><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
               <small>Acceptance &amp; Policy Documents</small> </a> </li>
-            <li onclick="getOnboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Taks</span> <br>
+            <li onclick="getOnboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Tasks</span> <br>
               <small>List of tasks</small> </a></li>
           </ul>
           <input type="hidden" name="candidateOnBoardId" id="candidateOnBoardId" value=""/>
@@ -99,13 +99,13 @@
                 <div class="form-group">
                   <label class="col-md-3 control-label">Street Address 1 <span class="text-danger paddingLeft">*</span></label>
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="address1" name="address1" field-name="Address 1" data-validation="required validate_Space">
+                    <input type="text" class="form-control input-sm" id="address1" name="address1" field-name="Street Address 1" data-validation="required validate_Space">
                   </div>
                 </div>
                 <div class="form-group">
                   <label class="col-md-3 control-label">Street Address 2</label>
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="address2" name="address2" field-name="Address 2" data-validation-optional="true"  data-validation="validate_Space">
+                    <input type="text" class="form-control input-sm" id="address2" name="address2" field-name="Street Address 2" data-validation-optional="true"  data-validation="validate_Space">
                   </div>
                 </div>
                   
@@ -143,7 +143,7 @@
                 </div>
 
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Mobile number <span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">Mobile Number <span class="text-danger paddingLeft">*</span></label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber" >
                   </div>
@@ -352,8 +352,8 @@
                 <div class="form-footer">
                   <div class="pull-right mr">
                      <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/candidateOnBoardingList'">
-                    <input type="button" value="Save" id="save_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
-                    <input type="button" value="Save and Continue" id="save_continue_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
+                    <input type="button" value="Save" id="save_docs_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
+                    <input type="button" value="Save and Continue" id="save_continue_docs_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
                 </div>
                 </form>
@@ -388,7 +388,7 @@
                                 <div class="row">
                                 
                                 <div class="col-md-12 mb10">
-                                  <label>Subject <span class="text-danger paddingLeft">*</span></label>
+                                  <label>Subject <span class="text-danger">*</span></label>
                                   <input type="text" class="form-control input-sm" placeholder="Subject" field-name="Subject" id="taskName" name="taskName"  data-validation="required validate_Space validate_length length2-100">
                                 </div>
                                 
@@ -433,7 +433,7 @@
 	                                <div class="row">
 	                                
 	                                <div class="col-md-12 mb10">
-                                  <label>Assign To <span class="text-danger paddingLeft">*</span></label>
+                                  <label>Assign To <span class="text-danger">*</span></label>
                                   
                                   <div class="">
                                     <label class="radio-inline">
@@ -454,7 +454,7 @@
 	                               <div class="col-md-12 mb10">
                                   <div class="row">
                                     <div class="col-md-12">
-                                      <label><strong>Due after:</strong><span class="text-danger paddingLeft">*</span></label>
+                                      <label><strong>Due after:</strong><span class="text-danger">*</span></label>
                                                                             
                                       <!-- Form inline Due after -->
                                       
@@ -943,7 +943,6 @@ function validateUploadFile(id)
 			    	 $("#personalEmail").val(json['email']);
 			    	 getOnBoardCandidateCountry(json['country'])
 			    	 getOnBoardCandidateStates(json['country'],json['state']);
-			    	 getOnBoardCandidateStates(json['state'],json['city']);
 			    	 getOnBoardCandidateCities(json['country'],json['state'],json['city']);
 			    	 
 			    	 validateOnboardCandidate(json['email']);
@@ -980,7 +979,6 @@ function validateUploadFile(id)
 			    	 $("#personalEmail").val(json['email']);
 			    	 getOnBoardCandidateCountry(json['country'])
 			    	 getOnBoardCandidateStates(json['country'],json['state']);
-			    	 getOnBoardCandidateStates(json['state'],json['city']);
 			    	 getOnBoardCandidateCities(json['country'],json['state'],json['city']);
 			    	 
 			    }
@@ -1054,7 +1052,7 @@ function getOnBoardCandidateCountry(country){
           success: function(data) {
         	var json = JSON.parse(data);
         	$('#country').empty();
-        	$('#country').append('<option value="">---Select---</option>');
+        	$('#country').append('<option value="">---Select Country---</option>');
             for(var i=0;i<json.length;i++){
             	if(json[i] == country){
             		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -1083,7 +1081,7 @@ function getOnBoardCandidateStates(country,state){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
-	        	$('#state').append('<option value="">---Select---</option>');
+	        	$('#state').append('<option value="">---Select State---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(state != null && state != 'undefined' && json[i] == state){
 	            		$('#state').append('<option value="'+state+'" selected>'+json[i]+'</option>');
@@ -1117,7 +1115,7 @@ function getOnBoardCandidateCities(country,state,city){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
-	        	$('#city').append('<option value="">---Select---</option>');
+	        	$('#city').append('<option value="">---Select City---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	var selected = '';
 	            	if(city != null && city != "" && city !="undefined" && json[i] == city){
@@ -1132,7 +1130,7 @@ function getOnBoardCandidateCities(country,state,city){
 	    });
 	}else{
 		$('#city').empty();
-    	$('#city').append('<option value="">---Select---</option>');
+    	$('#city').append('<option value="">---Select City---</option>');
     	$('#city').trigger("chosen:updated");
 	}
 }
@@ -1325,7 +1323,9 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	        
 	        var sourceleadUrl ='${sourceleadUrl}';
 	        
-	       
+	        $("#save_onboardUser").attr("disabled", "disabled");
+	        $("#saveAndContinue_onboardUser").attr("disabled", "disabled");
+	        
 	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	         $.ajax({
 		    	type: "POST",
@@ -1346,6 +1346,10 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		        	}
 		        	
 	     	        $("#candidateOnBoardId").val(onboardId);
+	     	        
+	     	       $("#save_onboardUser").removeAttr("disabled");
+	   	           $("#saveAndContinue_onboardUser").removeAttr("disabled");
+	   	        
 	     	        $("#loading").removeAttr("style");
 		        },
 		    }); 
@@ -1418,7 +1422,6 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		    	
 		    	getOnBoardCandidateCountry(json['country']);
 		    	getOnBoardCandidateStates(json['country'],json['state']);
-		    	getOnBoardCandidateStates(json['state'],json['city']);
 		    	getOnBoardCandidateCities(json['country'],json['state'],json['city']);
 		    	
 		    	loadCandidateRoles(json['onBoardRoleId']);
@@ -1817,6 +1820,10 @@ function createTemplateDocs(saveType){
       
 	   var form = $('#templateDocuments_form')[0];
 	   var formData = new FormData(form); 
+	   
+	   
+	   $("#save_docs_button").attr("disabled", "disabled");
+	   $("#save_continue_docs_button").attr("disabled", "disabled");
 	
    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	$.ajax({
@@ -1841,6 +1848,9 @@ function createTemplateDocs(saveType){
 	        		getTemplateContractsDocumentsDetails();
 		     	    getTemplateFormsDocumentsDetails();
 	        	}
+	    	  
+	    	  $("#save_docs_button").removeAttr("disabled");
+	   	      $("#save_continue_docs_button").removeAttr("disabled");
 	    	  $("#loading").removeAttr("style");
 	    	  
 	      }
@@ -2067,7 +2077,7 @@ function getOnboardingTasksList(){
         	
         	result = result +'<div class="form-footer clearfix mt">';
     		result = result +'<div class="pull-right mr">';
-    		result = result +'<input type="button" value="Finish" onclick="saveAndFinishOnboardTemplate('+onboardId+');" class="btn btn-sm btn-primary">';
+    		result = result +'<input type="button" id="finish_task" value="Finish" onclick="saveAndFinishOnboardTemplate('+onboardId+');" class="btn btn-sm btn-primary">';
     		result = result +'</div>';
     		result = result +'</div>';
     		
@@ -2112,6 +2122,8 @@ function deleteTask(taskId,taskType){
 <script>
 function saveAndFinishOnboardTemplate(onboardId){
 	
+	$("#finish_task").attr("disabled", "disabled");
+	
 	var tasksIds = document.getElementsByName("savedTemplateTask");
 	var tasks = '';
 	for(var i=0; i < tasksIds.length; i++){
@@ -2127,7 +2139,7 @@ function saveAndFinishOnboardTemplate(onboardId){
 	   	type: "POST",
 	    url: sourceleadUrl+"/saveAndFinishCandidateOnboard?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&tasks="+tasks, 	    	   
 	    success: function(data) {
-       	 
+	    	$("#finish_task").removeAttr("disabled");
 	    	location.replace(sourceleadUrl+"/candidateOnBoardingList");  
 	    }
   });   

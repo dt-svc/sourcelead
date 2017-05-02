@@ -215,7 +215,7 @@ public class CandidateServiceTest {
 			candidatesList.add(can1);
 			
 			String orgName="bis";
-			File file = candidateService.getCandidateExcelFile(candidatesList ,orgName);
+			File file = candidateService.getCandidateExcelFile(candidatesList ,orgName,"Y");
 			System.out.println("rakshith"+file.getName());
 		}
 		
@@ -237,7 +237,7 @@ public class CandidateServiceTest {
 			candidatesList.add(can1);
 			
 			String orgName="bis";
-			File file = candidateService.getCandidatePdf(candidatesList, orgName);
+			File file = candidateService.getCandidatePdf(candidatesList, orgName,"Y");
 			System.out.println("rakshith"+file.getName());
 			
 

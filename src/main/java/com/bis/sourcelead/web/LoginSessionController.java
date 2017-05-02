@@ -31,6 +31,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Employees;
@@ -46,6 +47,7 @@ import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
@@ -146,6 +148,9 @@ public class LoginSessionController {
 	@Autowired
 	OnBoardingTemplateDocumentsService onBoardingTemplateDocumentsService;
 	
+	@Autowired
+	CandidateOffBoardingService candidateOffBoardingService;
+	
 
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -158,6 +163,7 @@ public class LoginSessionController {
 		UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 		ModelAndView model = new ModelAndView();
 		Collection<Tabs> tabsList = null;
+		Integer associatesTabsCount = 0;
 		
 		if(null == user.getUserType() || (!user.getUserType().equalsIgnoreCase(Constants.PROFESSIONAL) && !user.getUserType().equalsIgnoreCase(Constants.INDIVIDUAL_RECRUITER))){
 			OrgLocations orgLocations = userRole.getOrgLocations();
@@ -165,9 +171,16 @@ public class LoginSessionController {
 			List<Long> modulesId = modulesService.getOrgRegisteredModules(org);
 			if(org.getOrgType().equalsIgnoreCase("Company")){
 				tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
+				for(Tabs tabs : tabsList){
+					if(tabs.getTabName().equalsIgnoreCase("Associates List") || tabs.getTabName().equalsIgnoreCase("On & Off Boarding")){
+						associatesTabsCount = associatesTabsCount+1;
+					}
+				}
+				
 			}
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
+			SourceLeadSessionManager.setSessionAttribute(request, "associatesTabsCount", associatesTabsCount);
 			
 			
 			String[] modules = org.getModulesId().split(",");
@@ -195,19 +208,40 @@ public class LoginSessionController {
 			}
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			
-			CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(user.getId(), orgLocations.getId());
-			if(null != candidateOnBoarding){
-				SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding", candidateOnBoarding);
-				if(candidateOnBoarding.getOnboardSubmitted().equalsIgnoreCase("N")){
-				   getOnboardingDetails(candidateOnBoarding,user,orgLocations,request);
-				   model.setViewName("onboard/welcome");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			String currentDate = sdf.format(new Date());
+			Date todayDate = sdf.parse(currentDate);
+			
+			CandidateOffBoarding candidateOffBoarding =  candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(user.getId(), orgLocations.getId());
+			if(null != candidateOffBoarding){
+				
+				String endDate = sdf.format(candidateOffBoarding.getEndDate());
+				Date onboardEndDte = sdf.parse(endDate);
+				if(onboardEndDte.equals(todayDate) || todayDate.after(onboardEndDte)){
+					SourceLeadSessionManager.setSessionAttribute(request, "candidateOffBoarding", candidateOffBoarding);
+					if(candidateOffBoarding.getOffboardSubmitted().equalsIgnoreCase("N")){
+						model.setViewName("offboard/offboardStep1");
+					}else{
+						model.setViewName("offboard/offboardUser");
+					}
 				}else{
 					model.setViewName("dashboard");
 				}
 			}else{
-				model.setViewName("dashboard");
+				
+				CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				if(null != candidateOnBoarding){
+					SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding", candidateOnBoarding);
+					if(candidateOnBoarding.getOnboardSubmitted().equalsIgnoreCase("N")){
+					   getOnboardingDetails(candidateOnBoarding,user,orgLocations,request);
+					   model.setViewName("onboard/welcome");
+					}else{
+						model.setViewName("dashboard");
+					}
+				}else{
+					model.setViewName("dashboard");
+				}
 			}
-			
 			
 			List<LookUpData> skillList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 			model.addObject("skillList", skillList);
@@ -301,17 +335,39 @@ public class LoginSessionController {
 			setLoginSession(request, authentication,user,userRole);
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			
-			CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(user.getId(), orgLocations.getId());
-			if(null != candidateOnBoarding){
-				SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding", candidateOnBoarding);
-				if(candidateOnBoarding.getOnboardSubmitted().equalsIgnoreCase("N")){
-				   getOnboardingDetails(candidateOnBoarding,user,orgLocations,request);
-				   model.setViewName("onboard/welcome");
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			String currentDate = sdf.format(new Date());
+			Date todayDate = sdf.parse(currentDate);
+			
+			CandidateOffBoarding candidateOffBoarding =  candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(user.getId(), orgLocations.getId());
+			if(null != candidateOffBoarding){
+				
+				String endDate = sdf.format(candidateOffBoarding.getEndDate());
+				Date onboardEndDte = sdf.parse(endDate);
+				if(onboardEndDte.equals(todayDate) || todayDate.after(onboardEndDte)){
+					SourceLeadSessionManager.setSessionAttribute(request, "candidateOffBoarding", candidateOffBoarding);
+					if(candidateOffBoarding.getOffboardSubmitted().equalsIgnoreCase("N")){
+						model.setViewName("offboard/offboardStep1");
+					}else{
+						model.setViewName("offboard/offboardUser");
+					}
 				}else{
 					model.setViewName("dashboard");
 				}
 			}else{
-				model.setViewName("dashboard");
+				CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				if(null != candidateOnBoarding){
+					SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding", candidateOnBoarding);
+					if(candidateOnBoarding.getOnboardSubmitted().equalsIgnoreCase("N")){
+					   getOnboardingDetails(candidateOnBoarding,user,orgLocations,request);
+					   model.setViewName("onboard/welcome");
+					}else{
+						model.setViewName("dashboard");
+					}
+				}else{
+					model.setViewName("dashboard");
+				}
 			}
 			
 			List<LookUpData> skillList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);

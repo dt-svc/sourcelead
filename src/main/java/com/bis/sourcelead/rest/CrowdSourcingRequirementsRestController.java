@@ -235,7 +235,12 @@ public class CrowdSourcingRequirementsRestController {
 	    	 boolQueryBuilder.must(anyLocationBoolQueryBuilder);
 	     }
 		 
-		 boolQueryBuilder.must(QueryBuilders.matchQuery("requirementStatus", "OPEN"));
+	    
+	     BoolQueryBuilder anyStatusBoolQueryBuilder = QueryBuilders.boolQuery();
+	     anyStatusBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementStatus", "NEW"));
+	     anyStatusBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementStatus", "OPEN"));
+	     anyStatusBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementStatus", "APPROVED"));
+		 boolQueryBuilder.must(anyStatusBoolQueryBuilder);
 		
 	   
 	    try {
@@ -503,7 +508,7 @@ public class CrowdSourcingRequirementsRestController {
 				"orgLocations");
 		RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmissionFromCrowdSourcing(jsonObj,user, con,orgLocations,multiFile);
 		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
+		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
 		requirementSubmissionHistory.setFromStage("NEW");
 		
 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
@@ -585,7 +590,12 @@ public class CrowdSourcingRequirementsRestController {
 		     
 		     boolQueryBuilder = getSearchRequirementsResults(boolQueryBuilder,jsonObj);   
 		     
-		     boolQueryBuilder.must(QueryBuilders.matchQuery("requirementStatus", "OPEN"));
+		     BoolQueryBuilder anyStatusBoolQueryBuilder = QueryBuilders.boolQuery();
+		     anyStatusBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementStatus", "NEW"));
+		     anyStatusBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementStatus", "OPEN"));
+		     anyStatusBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementStatus", "APPROVED"));
+			 boolQueryBuilder.must(anyStatusBoolQueryBuilder);
+			
 				
 			   
 			    try {

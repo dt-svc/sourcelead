@@ -246,7 +246,7 @@ public class SubmissionsRestController {
 		RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(jsonObj,user, orgLocations, con, multiFile,loginUserRole);
 
 		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
+		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
 		requirementSubmissionHistory.setFromStage("NEW");
 //		requirementSubmission.get
 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
@@ -562,8 +562,8 @@ public class SubmissionsRestController {
 
 		// to update submission history
 		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-		requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().getValue());
-		requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.REJECTED.getValue());
+		requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
+		requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.REJECTED.toString());
 
 		// to update Submission status
 		requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
@@ -851,7 +851,7 @@ public class SubmissionsRestController {
 		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 		requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.REJECTED.getValue());
 		if(requirementSubmission.getPreviousSubmissionStatus()!=null){
-		requirementSubmissionHistory.setToStage(requirementSubmission.getPreviousSubmissionStatus().getValue());
+		requirementSubmissionHistory.setToStage(requirementSubmission.getPreviousSubmissionStatus().toString());
 		}
 
 		// to update Submission status

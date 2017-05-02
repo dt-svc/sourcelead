@@ -25,7 +25,7 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Release Jobs</h2>
+        <h2>Release Requirement</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Release Jobs</div>
     </section>
@@ -333,6 +333,7 @@ function releaseTo(){
 		var contactsIds = new Array();
 		var contactsTable = $('#candidatePagination').DataTable();
 		var contactsRowcollection =  contactsTable.$(".contactscheckbox:checked", {"page": "all"});
+		var requirementUUID = '${requirementUUID}';
 		contactsRowcollection.each(function()		
 		{
 			contactsIds.push($(this).attr('id'));
@@ -378,8 +379,7 @@ function releaseTo(){
 	 		           type : "POST",
 	 		           url: sourceleadUrl+"/releaseJobsToClientsOrVendors?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds,    
 	 		            success :function(data) {
-	 							location.replace(sourceleadUrl+"/requirementList");
-	 		            },
+	 		            	location.replace(sourceleadUrl+"/releaseRequirementToClientOrVendors?requirementUUID="+requirementUUID);	 		            },
 	 		    });  
 	 	    }else{
 	 	    	$('span.jquery_form_error_message').show();

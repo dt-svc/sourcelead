@@ -11,6 +11,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<jsp:include page="candidatesQuickView.jsp"></jsp:include>
+
 <style>
 .addUser-org {
     overflow-x: auto;
@@ -36,11 +38,11 @@ function candidateEducation(candidateId){
     result  = result + '<i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span>';
     result  = result + '</div>';
 	if(window.candidateStatusGlobal == '0'){
-		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 	
+		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_ADD_ASSOCIATE_EDUCATION_DETAILS\')">'; 	
 		result = result  +'<a href="javascript:void(0)"  class="addUser-org" ></a> ';
 		'</sec:authorize>';
 	}else{
-		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
+		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_ADD_ASSOCIATE_EDUCATION_DETAILS\')">';
 		result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onClick="addEducation('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a></span>';
 		'</sec:authorize>';
 	}
@@ -183,12 +185,12 @@ function candidateEducationList(candidateId){
 	                    			 result = result+' <td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 	                    		 }
 	                    		 else{
-	                    			 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');"></a></sec:authorize>';	 
+	                    			 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');"></a></sec:authorize>';	 
 	                    		 }
 	                    		 if(window.candidateStatusGlobal == '0'){
 									result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
 	                    		 }else{
-	                    			 result = result+'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');"></i></sec:authorize></div></td>'; 
+	                    			 result = result+'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');"></i></sec:authorize></div></td>'; 
 	                    		 }
 	                    	}
 	                    	 result  = result + '</tr>';
@@ -710,6 +712,7 @@ function candidateEducationStore(candidateId){
 			            				$("#eduMsgDiv").html("Success!! New Education added");
 				               			candidateEducationList(candidateId);
 				               			eduMsgFadein();
+				               			qveducationSubmission(candidateId);
 							    	}
 				                 }   
 				      }, 
@@ -884,7 +887,7 @@ function clearSearchKey() {
 		            			$("#eduMsgDiv").html("Education details updated");
 							candidateEducationList(candidateId)
 							eduMsgFadein();
-							candidateQuickViewProfile(candidateId);
+							qveducationSubmission(candidateId);
 						},
 					});
 			return true;
