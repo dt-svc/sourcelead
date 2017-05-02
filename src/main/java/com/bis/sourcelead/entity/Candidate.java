@@ -317,6 +317,9 @@ public class Candidate implements Serializable{
 	 @Transient
 	 private  List<String> candidateSkillsList;
 	 
+	 @Transient
+	 private String employer;
+	 
 	 
 	public Long getId() {
 		return id;
@@ -1199,6 +1202,16 @@ public class Candidate implements Serializable{
 
 	public void setCandidateSkillsList(List<String> candidateSkillsList) {
 		this.candidateSkillsList = candidateSkillsList;
+	}
+
+
+	public String getEmployer() {
+		return employer;
+	}
+
+
+	public void setEmployer(String employer) {
+		this.employer = employer;
 	}
 	
 }

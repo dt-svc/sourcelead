@@ -297,29 +297,34 @@ public class MailBoxController {
 		
 	    if(!isNullOrEmpty(candidatesListType)){
 	    	if(candidatesListType.equalsIgnoreCase("consultants")){
-	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("isFavourite", Constants.RECORD_INACTIVE));
+	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("isFavouriteAssociate", Constants.RECORD_INACTIVE));
 	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("teamId", Constants.RECORD_INACTIVE ));
-	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", Constants.CONSULTANT));
-	    		 maxResults = candidateService.getAllActiveCandidatesCountForCampaignByLocation(orgLocations.getId(),Constants.CONSULTANT);
+	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", Constants.CANDIDATE));
+	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", Constants.YES));
+	    		 maxResults = candidateService.getAllActiveCandidatesCountForCampaignByLocation(orgLocations.getId(),Constants.ASSOCIATE);
 	    		 
 	    	}else if(candidatesListType.equalsIgnoreCase("candidates")){
 	    		
 	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("isFavourite", Constants.RECORD_INACTIVE));
 	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("teamId", Constants.RECORD_INACTIVE ));
 	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", Constants.CANDIDATE));
+	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", Constants.NO));
 	    		 
 	    		 maxResults = candidateService.getAllActiveCandidatesCountForCampaignByLocation(orgLocations.getId(),Constants.CANDIDATE);
 	    		 
 	    	}
 	    	else if(candidatesListType.equalsIgnoreCase("openHotlist")){
 	    		
-	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("isFavourite", Constants.RECORD_ACTIVE));
+	    		 BoolQueryBuilder anyCandidateTypeBoolQueryBuilder = QueryBuilders.boolQuery();
+	    		 anyCandidateTypeBoolQueryBuilder.should(QueryBuilders.matchQuery("isFavourite", Constants.RECORD_ACTIVE));
+	    		 anyCandidateTypeBoolQueryBuilder.should(QueryBuilders.matchQuery("isFavouriteAssociate", Constants.RECORD_ACTIVE));
+		    	 boolQueryBuilder.must(anyCandidateTypeBoolQueryBuilder);
 	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("teamId", Constants.RECORD_INACTIVE ));
 	    		 maxResults = candidateService.getAllHotlistCandidatesCountNotAssignedToTeamByLocation(orgLocations.getId());
 	    		 
 	    	}
 	    	
-	    	else if(candidatesListType.equalsIgnoreCase("hotlistConsultants") || candidatesListType.equalsIgnoreCase("hotlistCandidates")){
+	    	else if(candidatesListType.equalsIgnoreCase("hotlistConsultants")){
 	    		UserRole userRole = userRoleService.getUserByUserId(user.getId());
 	    		if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_ADMIN") || userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
 	    			teamIdsList = teamService.getTeamIdsListByOrgLocationID(orgLocations.getId());
@@ -334,11 +339,9 @@ public class MailBoxController {
 	    				boolQueryBuilder.must(boolSubQueryBuilder);
 	    			
 	    			if(candidatesListType.equalsIgnoreCase("hotlistConsultants")){
-	    				 boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", Constants.CONSULTANT));
-	    				 maxResults = candidateService.getAllCandidatesCountForCampaignByTeam(teamIdsList, Constants.CONSULTANT, orgLocations.getId());
-		    		}else if(candidatesListType.equalsIgnoreCase("hotlistCandidates")){
-		    			 boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", Constants.CANDIDATE));
-		    			 maxResults = candidateService.getAllCandidatesCountForCampaignByTeam(teamIdsList, Constants.CANDIDATE, orgLocations.getId());
+	    				 boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", Constants.CANDIDATE));
+	    				 boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", Constants.YES));
+	    				 maxResults = candidateService.getAllCandidatesCountForCampaignByTeam(teamIdsList, Constants.ASSOCIATE, orgLocations.getId());
 		    		}
 	    		}
 	    		
