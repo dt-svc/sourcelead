@@ -65,14 +65,14 @@ overflow-x: auto;
           <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
             <div class="row">
               <div class="col-md-4">
-                <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
+                <label>Any of Keyword</label>
 	                 <div class="clearfix">
 					        <select class="chosen-select form-control input-sm" multiple data-placeholder="Any Keyword" id="anyOfKeyword" name="anyOfKeyword">
 	                        </select>
 				    </div>
               </div>
               <div class="col-md-4">
-                <label>All Keywords <i class="fa fa-info-circle" title="All Keywords"></i></label>
+                <label>All Keywords</label>
                 <div class="clearfix">
                   <div class="clearfix">
 					  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="All Keywords" id="allKeywords" name="allKeywords">
@@ -81,7 +81,7 @@ overflow-x: auto;
                 </div>
               </div>
               <div class="col-md-4">
-                <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
+                <label>Exclude Keyword</label>
                 <div class="clearfix">
 				  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord"></select>
 	            </div>
@@ -205,7 +205,7 @@ overflow-x: auto;
 		                <div class="col-md-4">
 		                  <label>Owner</label>
 		                  <div class="clearfix">
-		                   <select class="chosen-select form-control input-sm" multiple data-placeholder="Owner" id="ownerAdvanced" name="ownerAdvanced">
+		                   <select class="chosen-select form-control input-sm" data-placeholder="Owner" id="ownerAdvanced" name="ownerAdvanced"  multiple>
                            </select>
 		                  </div>
 		                </div>
@@ -213,7 +213,7 @@ overflow-x: auto;
 		                <div class="col-md-4">
 		                  <label>Client</label>
 		                  <div class="clearfix">
-		                     <select class="chosen-select form-control input-sm" multiple data-placeholder="Client" id="orgAdvanced" name="orgAdvanced">
+		                     <select class="chosen-select form-control input-sm" data-placeholder="Client" id="orgAdvanced" name="orgAdvanced" multiple>
                              	<c:forEach var="client" items="${clientsList}">
                             	    <option value="${client.clientName}">${client.clientName}</option>
                          		</c:forEach>

@@ -2,6 +2,9 @@
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<jsp:include page="candidatesQuickView.jsp"></jsp:include>
+
 <%-- 
      @author : David Sammeta.
      this script is for upDate Candidate Details .
@@ -113,6 +116,7 @@ function closeCertificatePopup(){
 			            			$("#empMsgDiv").html("Success!! New Employer added");
 									candidateEmployersList(candidateId);
 									empMsgFadein();
+									qvemployeeSubmission(candidateId);
 								}
 							}
 
@@ -637,8 +641,7 @@ function employeePagination(){
 	            			$("#empMsgDiv").html("Employer details updated");
 							candidateEmployersList(candidateId);
 							empMsgFadein();
-							candidateQuickViewProfile(candidateId);
-							
+							qvemployeeSubmission(candidateId);
 						},
 					});
 			return true;

@@ -83,6 +83,7 @@ $(document).ready(function(){
 		<div class="clearfix"></div>
             
 	</div>
+	<div id="loading"></div>
     <div class="project_wrap_table">
     <div id="vendorContractsList" ></div>
      <div id="clientContractsList" style="display: none"></div>
@@ -208,7 +209,7 @@ function preparedContractList(data){
 		         result = result + '<div class="tbldata-dotdot-sm">';
 		         if(report.parentId != null && report.parentId != '' && report.parentId != 'undefined'){
 		     		 if(report.templateSubmissionStatus == "Finalized"){
-		     			result = result + '<div id="removeStatus'+report.id+'">Finalized</a></div>';
+		     			result = result + '<div id="removeStatus'+report.id+'">--</a></div>';
 		            	 }
 		     		 else{
 			         	 	opt = opt + '<div><span>--</span></div>';
@@ -218,12 +219,12 @@ function preparedContractList(data){
 		     			result = result + '<div id="removeStatus'+report.id+'"><a class="btn btn-sm btn-success" title="finalize" onclick="finalizeContract('+report.id+',\'Waiting To Be Verify\');">finalize</a></div>';
 		            	 }
 		        	  if(report.templateSubmissionStatus == "Finalized"){
-		        		  result = result + '<div id="removeStatus'+report.id+'">Finalized</a></div>';
+		        		  result = result + '<div id="removeStatus'+report.id+'">--</a></div>';
 		            	 }
 		        	  
 		        	  if(report.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
 		        		 '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_CONTRACT\')">';
-		            		result = result + '<div><div class="CurDiv" id="removeStatus'+report.id+'"><a class="btn btn-sm btn-success pull-left" title="approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');">Approve</a></div><div class="CurDiv" id="removeReject'+report.id+'"><a class="btn btn-sm btn-danger ml" title="REJECTED" onclick="approveContract('+report.id+',\'REJECTED\');">Reject</a></div></div>'; 
+		            		result = result + '<div class="CurDiv" id="removeStatus'+report.id+'"><a class="btn btn-sm btn-success pull-left" title="approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');">Approve</a></div><div class="CurDiv" id="removeReject'+report.id+'"><a class="btn btn-sm btn-danger ml" title="REJECTED" onclick="approveContract('+report.id+',\'REJECTED\');">Reject</a></div>'; 
 		            	 '</sec:authorize>';
 		        	  }
 		        	  else{
@@ -286,7 +287,7 @@ function preparedContractList(data){
 	         opt = opt + '<div class="tbldata-dotdot-sm">';
 	         if(output.parentId != null && output.parentId != '' && output.parentId != 'undefined'){
 	     		 if(output.templateSubmissionStatus == "Finalized"){
-	     			opt = opt + '<div id="removeStatus'+output.id+'">Finalized</a></div>';
+	     			opt = opt + '<div id="removeStatus'+output.id+'">--</a></div>';
 	            	 }
 	     		
 	     		 else{
@@ -294,7 +295,7 @@ function preparedContractList(data){
 		        	  }
 	     	}else{
 	        	  if(output.templateSubmissionStatus == "Finalized"){
-	        		  opt = opt + '<div id="removeStatus'+output.id+'">Finalized</a></div>';
+	        		  opt = opt + '<div id="removeStatus'+output.id+'">--</a></div>';
 	            	 }
 	        	  else if(output.contractStatus == "completed" && output.templateSubmissionStatus != "Finalized"){
 		     			opt = opt +  '<div id="removeStatus'+output.id+'"><a class="btn btn-sm btn-success" title="finalize" onclick="finalizeContract('+output.id+',\'Waiting To Be Verify\');">finalize</a></div>';
@@ -380,7 +381,7 @@ function approveContract(recordId,status){
     	    	 $("#removeReject"+recordId).html("");
     	        $("#removeStatus"+recordId).html("<span>APPROVED</span>").addClass('text-success');
         	}
-        	
+        	$("#loading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
        },
    });  
 }

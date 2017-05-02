@@ -170,21 +170,16 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ContractsTemplate findByContractTemplateName(String templateName, Long orgLocationId) throws Exception {
+	public ContractsTemplate findByContractTemplateName(String templateName,String contractType, Long orgLocationId) throws Exception {
 			Session session = this.sessionFactory.getCurrentSession();
 			List<ContractsTemplate> contractsTemp = new ArrayList<ContractsTemplate>();
-			try{
-				contractsTemp = session.createQuery("from ContractsTemplate conTemp where conTemp.templateName=:templateName and conTemp.orgLocationId.id = :orgLocationId" )
-						.setString( "templateName", templateName ).setLong("orgLocationId", orgLocationId ).setCacheable(true).list();
+				contractsTemp = session.createQuery("from ContractsTemplate conTemp where conTemp.templateName=:templateName and conTemp.templateType=:contractType and conTemp.orgLocationId.id = :orgLocationId" )
+						.setString( "templateName", templateName ).setString("contractType", contractType).setLong("orgLocationId", orgLocationId ).setCacheable(true).list();
 				if (contractsTemp.size() > 0) {
 					return contractsTemp.get(0);
 				} else {
 					return null;
 				}
-			}catch(Exception e){
-				logger.error(ExceptionUtils.getFullStackTrace(e));
-			}
-			return null;
 	}
 
 	@Override
@@ -195,8 +190,18 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		return contractsList;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Contracts findContractTitleByOrgLocationAndContractType(String contractTitle, String contractType,Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Contracts> contracts = new ArrayList<Contracts>();
+			contracts = session.createQuery("from Contracts contracts where contracts.contractTitle=:contractTitle and contracts.contractType = :contractType and contracts.orgLocationId.id = :orgLocationId" )
+					.setString( "contractTitle", contractTitle ).setString("contractType", contractType).setLong("orgLocationId", orgLocationId ).setCacheable(true).list();
+		if (contracts.size() > 0) {
+			return contracts.get(0);
+		} else {
+			return null;
+		}
+	}
 
-	
-
-	
 }

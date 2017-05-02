@@ -64,7 +64,7 @@
               <small>Employee details &amp; Postion details</small> </a> </li>
             <li onclick="getTemplatePolicyDocumentsDetails();getTemplateSupportingDocumentsDetails();getTemplateContractsDocumentsDetails();getTemplateFormsDocumentsDetails();"><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
               <small>Acceptance &amp; Policy Documents</small> </a> </li>
-            <li onclick="getOnboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Taks</span> <br>
+            <li onclick="getOnboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Tasks</span> <br>
               <small>List of tasks</small> </a></li>
           </ul>
           <input type="hidden" name="candidateOnBoardId" id="candidateOnBoardId" value=""/>
@@ -99,13 +99,13 @@
                 <div class="form-group">
                   <label class="col-md-3 control-label">Street Address 1 <span class="text-danger paddingLeft">*</span></label>
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="address1" name="address1" field-name="Address 1" data-validation="required validate_Space">
+                    <input type="text" class="form-control input-sm" id="address1" name="address1" field-name="Street Address 1" data-validation="required validate_Space">
                   </div>
                 </div>
                 <div class="form-group">
                   <label class="col-md-3 control-label">Street Address 2</label>
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="address2" name="address2" field-name="Address 2" data-validation-optional="true"  data-validation="validate_Space">
+                    <input type="text" class="form-control input-sm" id="address2" name="address2" field-name="Street Address 2" data-validation-optional="true"  data-validation="validate_Space">
                   </div>
                 </div>
                   
@@ -388,7 +388,7 @@
                                 <div class="row">
                                 
                                 <div class="col-md-12 mb10">
-                                  <label>Subject <span class="text-danger paddingLeft">*</span></label>
+                                  <label>Subject <span class="text-danger">*</span></label>
                                   <input type="text" class="form-control input-sm" placeholder="Subject" field-name="Subject" id="taskName" name="taskName"  data-validation="required validate_Space validate_length length2-100">
                                 </div>
                                 
@@ -433,7 +433,7 @@
 	                                <div class="row">
 	                                
 	                                <div class="col-md-12 mb10">
-                                  <label>Assign To <span class="text-danger paddingLeft">*</span></label>
+                                  <label>Assign To <span class="text-danger">*</span></label>
                                   
                                   <div class="">
                                     <label class="radio-inline">
@@ -454,7 +454,7 @@
 	                               <div class="col-md-12 mb10">
                                   <div class="row">
                                     <div class="col-md-12">
-                                      <label><strong>Due after:</strong><span class="text-danger paddingLeft">*</span></label>
+                                      <label><strong>Due after:</strong><span class="text-danger">*</span></label>
                                                                             
                                       <!-- Form inline Due after -->
                                       
@@ -1052,7 +1052,7 @@ function getOnBoardCandidateCountry(country){
           success: function(data) {
         	var json = JSON.parse(data);
         	$('#country').empty();
-        	$('#country').append('<option value="">---Select---</option>');
+        	$('#country').append('<option value="">---Select Country---</option>');
             for(var i=0;i<json.length;i++){
             	if(json[i] == country){
             		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -1081,7 +1081,7 @@ function getOnBoardCandidateStates(country,state){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
-	        	$('#state').append('<option value="">---Select---</option>');
+	        	$('#state').append('<option value="">---Select State---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(state != null && state != 'undefined' && json[i] == state){
 	            		$('#state').append('<option value="'+state+'" selected>'+json[i]+'</option>');
@@ -1115,7 +1115,7 @@ function getOnBoardCandidateCities(country,state,city){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
-	        	$('#city').append('<option value="">---Select---</option>');
+	        	$('#city').append('<option value="">---Select City---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	var selected = '';
 	            	if(city != null && city != "" && city !="undefined" && json[i] == city){
@@ -1130,7 +1130,7 @@ function getOnBoardCandidateCities(country,state,city){
 	    });
 	}else{
 		$('#city').empty();
-    	$('#city').append('<option value="">---Select---</option>');
+    	$('#city').append('<option value="">---Select City---</option>');
     	$('#city').trigger("chosen:updated");
 	}
 }

@@ -115,7 +115,7 @@
 	                     result = result +"    <th>Date Of Join</th>";
 	                     result = result +"    <th>Onboard<br/>Documents</th>";
 	                     result = result +"    <th>Stage</th>"; 
-	                     result = result +"    <th>Candidate Onboard Stage</th>"; 
+	                     result = result +"    <th>Onboard Stage</th>"; 
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
@@ -202,7 +202,7 @@
 	                     result = result +"    <th>Date Of Join</th>";
 	                     result = result +"    <th>End Date</th>";
 	                     result = result +"    <th>Stage</th>"; 
-	                     result = result +"    <th>Candidate Offboard Stage</th>"; 
+	                     result = result +"    <th>Offboard Stage</th>"; 
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 

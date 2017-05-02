@@ -72,19 +72,19 @@ function prepareReportDataDiv(data){
     	var report= json[i];
     	result = result + '<tr>';
         result = result + '<td>';
-        result = result + '<div><span>'+report.jobTitle+'</span></div> ';
+        result = result + '<div><span title="'+report.jobTitle+'">'+report.jobTitle+'</span></div> ';
         result = result + '</td>';
 
         result = result + '<td>';
         if(report.clientName != null && report.clientName != '' && report.clientName !='undefined'&& report.clientName != null && report.clientName != ''){
-       	result = result + '<div><span>'+report.clientName+'</span></div>';
+       	result = result + '<div><span title="'+report.clientName+'">'+report.clientName+'</span></div>';
  		} else{
 		result = result + '<div><span>---</span></div>';
 		    }
         result = result + '</td>';
         result = result + '<td>';
         if(report.jobType != null && report.jobType != '' && report.jobType !='undefined'&& report.jobType != null && report.jobType != ''){
-         result = result + '<div><span>'+report.jobType+'</span></div>';
+         result = result + '<div><span title="'+report.jobType+'">'+report.jobType+'</span></div>';
         }
         else{
 		 result = result + '<div><span>---</span></div>';
