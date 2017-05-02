@@ -61,6 +61,7 @@ window.onload = function () {
      $("#msgDiv").html(" Job is Successfully Posted on Your "+service+" Wall.");
  }
 </script>
+
 <script type="text/javascript">
 var postdatavalues = { title: "", link: "", picture: "", description: "", comment: "" };
 function setPostValues(title,link,picture,description,comment){
@@ -79,7 +80,8 @@ function setPostValues(title,link,picture,description,comment){
      if (description) {
          postdatavalues.comment = description;
      }
-}
+};
+
 function getPostValueDetails(){
 	 return postdatavalues;
   }
@@ -96,6 +98,7 @@ function getPostValueDetails(){
 .footer-area {
 display: none;}
 </style>
+
 
 <!-- Content Area -->
 <div  id="loadTime"></div> 
@@ -166,18 +169,18 @@ display: none;}
 			<span><i class="fa fa-search"></i><input type="text" placeholder="Search" id= "openJobsRequirementTitleId" class="searchHome"></span>
 			<span><i class="fa fa-map-marker"></i><input type="text" placeholder="Location" id="openJobsLocationId" class="searchHome"></span>
 			<span><i class="fa fa-briefcase"></i> <p id = "dropDownCountId"></p></span>
-			
-			<span><input type="button" value="Search" class="searchBtn" onclick="getOpenJobsELKList();"></span>
+			<span><input type="button" value="Search" class="searchBtn" onclick="getOpenJobsELKList(); clearFilters();"></span>
 			<h3><b id="ADS">Advanced Search</b></h3>
 			<div class="clear"></div>
 		</section>
 	</div>
 	
 <section class="innerContent">
+<input type="hidden" name="openJobsOffset" id="openJobsOffset" value="0"/>
 		<div class="filter">
-			<h2>Fliter your search</h2>
+			<h2>Fliter your search <i class="fa fa-refresh" aria-hidden="true" onclick="clearFilters();" style="cursor: pointer;"></i></h2>
 			<div class="filterCta" id="dateFilterId">
-				<h3>Fliter Header<i class="fa fa-caret-down arrAc"></i></h3>
+				<h3>Posted on<i class="fa fa-caret-down arrAc"></i></h3>
 				<ul id="show">
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">Today
@@ -185,12 +188,12 @@ display: none;}
 						</label>
 					</li>
 					<li class="control-group">
-						<label class="control-radio control--checkbox-ra">1 day ago
+						<label class="control-radio control--checkbox-ra">1 days ago
 						  <input type="radio" name="dateFilter" value="1 Day Ago" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
-						<label class="control-radio control--checkbox-ra">3 day ago
+						<label class="control-radio control--checkbox-ra">3 days ago
 						  <input type="radio" name="dateFilter" value="3 Days Ago" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
@@ -200,17 +203,17 @@ display: none;}
 						</label>
 					</li>
 					<li class="control-group">
-						<label class="control-radio control--checkbox-ra">2 Weeks Ago 
+						<label class="control-radio control--checkbox-ra">2 Weeks ago 
 						  <input type="radio" name="dateFilter" value="2 Weeks Ago" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
-						<label class="control-radio control--checkbox-ra">1 Month Ago
+						<label class="control-radio control--checkbox-ra">1 Month ago
 						  <input type="radio" name="dateFilter" value="1 Month Ago" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
-						<label class="control-radio control--checkbox-ra">3 Months Ago
+						<label class="control-radio control--checkbox-ra">3 Months ago
 						  <input type="radio" name="dateFilter" value="3 Months Ago" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>		
@@ -218,8 +221,8 @@ display: none;}
 			</div>
 			
 			
-			<div class="filterCta" id="dateFilterId">
-				<h3>Country <i class="fa fa-caret-down arrAc"></i></h3>
+			<div class="filterCta" id="countryFilterId">
+				<h3>Location <i class="fa fa-caret-down arrAc"></i></h3>
 				<ul>
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">Australia
@@ -254,8 +257,8 @@ display: none;}
 				</ul>
 			</div>
 
-			<div class="filterCta">
-				<h3>Employment Type Fliter<i class="fa fa-caret-down"></i></h3>
+			<div class="filterCta" id="empTypediv">
+				<h3>Employment Type<i class="fa fa-caret-down"></i></h3>
 				<ul>
 					<li class="control-group">
 						<label class="control control--checkbox">C2C
@@ -334,8 +337,10 @@ display: none;}
 			<div class="filLoad filLoad_a"><h2 class="gradi"></h2></div>
 				
 			</div>-->
-			
+			<div id="loading"></div>
 			<div id= "openJobsRequirementsList"></div>
+			<div id="loadMoreDiv"></div> 
+			<div class="loadJob" onClick="loadMoreReq();" id="loadMoreReq" style="display: block; cursor: pointer;">View more</div>
 			<div id= "openJobsRequirementsSummary"></div>
 			
 		
@@ -364,8 +369,8 @@ display: none;}
 			</div>
 			<div class="filPopInn">
 			
-				<div class="LettSelec">
-					<a onclick="getOrgsList('none','sub');">ALL</a>
+				<div class="LettSelec" id="selectLetter">
+					<a id="all" onclick="getOrgsList('none','sub');">ALL</a>
 					<a onclick="getOrgsList('A','sub');">A</a>
 					<a onclick="getOrgsList('B','sub');">B</a>
 					<a onclick="getOrgsList('C','sub');">C</a>
@@ -670,11 +675,32 @@ display: none;}
 <%-- <jsp:include page="../masterFooter.jsp" /> --%>
 <!-- Footer Area -->
 
+<!-- this script is for load more...  -->
+<script>
+	function loadMoreReq(){
+    	var avilableCount = $("#openJobsOffset").val();
+    	avilableCount = parseInt(avilableCount) + parseInt(10); 
+    	$("#openJobsOffset").val(avilableCount);
+    	requirementsFilter("more");
+	}
+</script>
+
+
+
 <script>
 function clearcheck(){
 	$('#remainingOrgs').find('input[type=checkbox]:checked').removeAttr('checked');
+	$(".LettSelec a").removeClass("actL");
 }
 
+function clearFilters(){
+	$('#remainingOrgs').find('input[type=checkbox]:checked').removeAttr('checked');
+	$('#dateFilterId').find('input[type=radio]:checked').removeAttr('checked');
+	$('#countryFilterId').find('input[type=radio]:checked').removeAttr('checked');
+	$('#empTypediv').find('input[type=checkbox]:checked').removeAttr('checked');
+	$('#orgList').find('input[type=checkbox]:checked').removeAttr('checked');
+	$(".LettSelec a").removeClass("actL");
+}
 </script>
 
 
@@ -724,11 +750,26 @@ function requirementsFilter(){
 	
 	var sourceleadUrl = '${sourceleadUrl}';
 	var offset = 0;
+	if(type == "more"){
+		offset = $("#openJobsOffset").val();
+	}
 	 $.ajax({ 
 	   	type: "POST",
 	   	url: sourceleadUrl+"/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&reqType="+reqType+"&orgLocationIds="+orgLocationIds+"&dates="+dates+"&country="+country,
 	    success: function(data) {
-	    	prepareOpenJobsElkList(data,sourceleadUrl);
+	    	var json = JSON.parse(data);
+	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){ 
+	    		prepareOpenJobsElkList(data,sourceleadUrl,offset);
+	    	}else{
+	        	$("#openJobsRequirementTitleId").val('');
+				$("#openJobsLocationId").val('');
+				$("#openJobsExperienceId").val('');
+	        	$('#loadMoreReq').empty(); 
+	        	$('#openJobsRequirementsList').empty(); 
+	        	/* var result ="";
+	         	result = result + '<div>No Records Found...</div>';
+	         	$('#loadMoreReq').append(result); */
+	        }
 	    }
 	 }); 
 }
@@ -736,31 +777,45 @@ function requirementsFilter(){
 
 
 <script>
-function getOpenJobsELKList(){
+function getOpenJobsELKList(type){
 	var openJobsRequirementTitle = document.getElementById("openJobsRequirementTitleId").value;
 	var openJobsLocation = document.getElementById("openJobsLocationId").value;
 	var openJobsExperience = $("#openJobsExperienceId").val();
 	var sourceleadUrl = '${sourceleadUrl}';
 	var offset = 0;
+	if(type == "more"){
+		offset = $("#openJobsOffset").val();
+	}
 	 $.ajax({ 
 	   	type: "POST",
 	   	url: sourceleadUrl+"/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&openJobsRequirementTitle="+openJobsRequirementTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience,
 	    success: function(data) {
-	    	prepareOpenJobsElkList(data,sourceleadUrl);
+	    	var json = JSON.parse(data);
+	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){ 	
+	    		prepareOpenJobsElkList(data,sourceleadUrl,offset);
+	    	}else{
+	        	$("#openJobsRequirementTitleId").val('');
+				$("#openJobsLocationId").val('');
+				$("#openJobsExperienceId").val('');
+	        	$('#loadMoreReq').empty(); 
+	        	var result ="";
+	         	result = result + '<div>No Records Found...</div>';
+	         	$('#loadMoreReq').append(result);
+	        }
 	    }
 	 }); 
  }
 </script>
 
 <script>
-function prepareOpenJobsElkList(data,sourceleadUrl){
-	$("#openJobsRequirementsList").empty();
+function prepareOpenJobsElkList(data,sourceleadUrl,offset){
     var json = JSON.parse(data);
   	 var experience ="";
   	 var location = "";
     if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){ 	
   	  if(json.length > 0)
   		{
+  		var result = "";
 			for(var i=0; i<json.length; i++){
 				var requirements = json[i];
 				var title="";
@@ -768,12 +823,10 @@ function prepareOpenJobsElkList(data,sourceleadUrl){
 				var picture="";
 				var description='';
 				var comment='';
-				if(requirements.minExperience != '' && requirements.maxExperience == ''){
-					experience = requirements.minExperience+" Years";
-				}else if(requirements.minExperience == '' && requirements.maxExperience != ''){
-					experience = requirements.maxExperience+" Years";
-				}else if(requirements.minExperience != '' && requirements.maxExperience != ''){
+				if(requirements.minExperience != null && requirements.minExperience != '' && requirements.minExperience != 'undefined' && requirements.maxExperience != null && requirements.maxExperience != '' && requirements.maxExperience != 'undefined'){
 					experience = requirements.minExperience+" to "+requirements.maxExperience+" Years";
+				}else if(requirements.maxExperience != null && requirements.maxExperience != '' && requirements.maxExperience != 'undefined'){
+					experience = requirements.maxExperience+" Years";
 				}else{
 					experience = 'No Data';
 				}
@@ -783,7 +836,7 @@ function prepareOpenJobsElkList(data,sourceleadUrl){
 				}else{
 					location = requirements.country;
 				}
-				var result = "";
+				
 				result = result +'	<div class="jobResultsCta">';
 				result = result +'	<div class="jobResultsInn">';
 				result = result +'	<h3 style="font-size:20px;color:#368ee0;" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');">'+requirements.jobTitle+'</h3>';
@@ -860,25 +913,22 @@ function prepareOpenJobsElkList(data,sourceleadUrl){
 				if(requirements.isCrowdSourcingJob == 'Y'){
 				result = result +'	<a href="'+sourceleadUrl+'/login" style="background-color:#eb821c;">Refer</a></div>';
 				}
-/* 					result = result +'	<div class="filLoad">';
-				result = result +'	<h2 class="gradi"></h2><p class="gradi"></p><p class="gradi"></p><p class="gradi"></p><br>';
-				result = result +'	<p class="gradi"></p>';
-				result = result +'	</div>'; */				
 				result = result +'	</div>';
-				if((json.length -1) == i ){
-					result = result +' <section class="loadJob"><i class="fa fa-spinner fa-spin"></i>No More Data</section>';	
-				}
-				$("#openJobsRequirementsSummary").empty();
+				result = result +'	</div>';
+			}
+			$("#openJobsRequirementsSummary").empty();
+			if(offset > 0){
+// 				$('#loadMoreDiv').empty(); 
+				$("#loadMoreDiv").append(result); 
+			}else{
+				$("#openJobsRequirementsList").empty();
 				$("#openJobsRequirementsList").append(result); 
-				$("#openJobsRequirementTitleId").val('');
-				$("#openJobsLocationId").val('');
-				$("#openJobsExperienceId").val('');
 			}
-			}
-		}else{
-		   	$("#openJobsRequirementTitleId").val('');
+			$("#openJobsRequirementTitleId").val('');
 			$("#openJobsLocationId").val('');
 			$("#openJobsExperienceId").val('');
+			
+			}
 		}
     socialInviterScripts();
 }
@@ -922,7 +972,7 @@ function getOrgsList(alphabet,type){
 		    	}
 	    		if(json.length > 5){
 	    			var orgCount = json.length - 5 ;
-			    	result = result +'<a onclick="openPopup();" class="popOpen">+'+orgCount+' More</a>';
+			    	result = result +'<a onclick="openPopup(); getOrgsList(\'none\',\'sub\');" class="popOpen">+'+orgCount+' More</a>';
 	    		}
 				var org = "";    	
 				for(var i=0; i<json.length; i++){
@@ -945,11 +995,14 @@ function getOrgsList(alphabet,type){
 
 function openPopup(){
 	$(".filPop").fadeIn(100);
+	$("#all").toggleClass("actL");
 };
 </script>
 
 <script>
 function getOpenJobsRequirementSummary(requirementsUUID){
+	$("#loadMoreReq").css("display", "none");
+	$("#openJobsRequirementsSummary").show();
 	 var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
 		 type: "POST",
@@ -958,6 +1011,11 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] ){ 	
 	    	  var json = JSON.parse(data);
 		      var result = "";
+		      
+		      result = result +' <div class="beard clearfix">';
+		      result = result +'	<a href="javascript:void(0)" onclick="backtoList();">Back to List</a>';
+		      result = result +'</div>';
+		      
 				result = result +'	<section class="innerContent">';
 				result = result +'  <div class="jobDetails">';
 				result = result +'	<div class="jobResultsInn">';
@@ -1059,7 +1117,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				result = result +'	</div>';
 				result = result +'	<div style="clear:both;"></div>';		
 				result = result +'	</section>'; 
-				$("#openJobsRequirementsList").empty();
+				$("#openJobsRequirementsList").hide();
 				$("#openJobsRequirementsSummary").empty();
 				$("#openJobsRequirementsSummary").append(result);  
 				
@@ -1067,6 +1125,13 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 	   	   	}
 		});  
 }
+
+function backtoList(){
+	$("#openJobsRequirementsList").show();
+	$("#openJobsRequirementsSummary").hide();
+	$("#loadMoreReq").css("display", "block");
+}
+
 </script>
 
 
