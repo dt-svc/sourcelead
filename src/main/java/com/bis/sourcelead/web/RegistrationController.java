@@ -131,8 +131,8 @@ public class RegistrationController {
 				 modulesList = modulesService.getSourceLeadModules();
 				 model.addObject("modulesList", modulesList);
 				 
-				 List<Timezone> timezoneList= timeZoneService.getAllTimeZones();
-				 model.addObject("timezoneList", timezoneList);
+				 /*List<Timezone> timezoneList= timeZoneService.getAllTimeZones();
+				 model.addObject("timezoneList", timezoneList);*/
 				 
 				 requirementSubModulesList = moduleService.getRequirementSubModules();
 				 model.addObject("requirementSubModulesList", requirementSubModulesList);

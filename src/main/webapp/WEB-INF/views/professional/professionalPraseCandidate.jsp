@@ -110,7 +110,7 @@
         <div class="form-group" id="emailDiv">
           <label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="email" name="email" readonly="readonly" value="${SourceLeadWeb_user.email}"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateCandidateEmail();"  value="">
+            <input type="text" class="form-control" id="email" name="email" readonly="readonly" value="${SourceLeadWeb_user.email}"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email"   value="">
           <span class="hidden">Valid Email</span>
           </div>
         </div>
@@ -666,6 +666,7 @@ function getCities(){
 
 <script type="text/javascript">
  function validateCandidateEmail() {
+	 alert("hi");
 	 var email = document.getElementById("email").value; 
 	 $('#emailDiv').find('p.jquery_form_error_message').remove();
 	 var sourceleadUrl ='${sourceleadUrl}';
@@ -757,7 +758,6 @@ function getCities(){
 	     						}
 	     						
 	     						$("#mobilePhone").val(json.phoneNumbers);
-	     						validateCandidateEmail();
 	     						$("#candidateSkills").empty();
 	     						 var internalOutput = "";
 	     						 <c:forEach var="skill" items="${skillsList}">

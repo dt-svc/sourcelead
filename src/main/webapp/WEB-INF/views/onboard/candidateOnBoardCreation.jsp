@@ -387,7 +387,7 @@
                               <div class="col-md-6">
                                 <div class="row">
                                 
-                                <div class="col-md-12 mb10">
+                                <div class="col-md-12 mb10" id="taskNameDiv">
                                   <label>Subject <span class="text-danger">*</span></label>
                                   <input type="text" class="form-control input-sm" placeholder="Subject" field-name="Subject" id="taskName" name="taskName"  data-validation="required validate_Space validate_length length2-100">
                                 </div>
@@ -1346,6 +1346,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		        	}
 		        	
 	     	        $("#candidateOnBoardId").val(onboardId);
+	     	        $("#savedonboardId").val(onboardId);
 	     	        
 	     	       $("#save_onboardUser").removeAttr("disabled");
 	   	           $("#saveAndContinue_onboardUser").removeAttr("disabled");
@@ -1888,6 +1889,11 @@ function createTemplateDocs(saveType){
   <script>
   function flushOnboardTask(){
 	  document.getElementById("addonboardTask_form").reset();
+	  $('#taskMonths').removeAttr('data-validation-optional');
+	  $("#taskMonths").attr("data-validation", "required");
+	  
+	  $('#dueAfterDiv').find('p.jquery_form_error_message').remove();	
+	  $('#taskNameDiv').find('p.jquery_form_error_message').remove();
 	
   }
   </script>

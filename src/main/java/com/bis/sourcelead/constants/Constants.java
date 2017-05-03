@@ -524,6 +524,8 @@ public class Constants {
     
     public static String CONSULTANT = "Consultant";
     
+    public static String ASSOCIATE = "Associate";
+    
     
     public static String MAIL_TRASH = "Trash";
     public static String MAIL_DELETE = "Deleted";

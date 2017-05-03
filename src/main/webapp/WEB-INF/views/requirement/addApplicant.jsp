@@ -102,7 +102,7 @@ function getAddApplicant(requirementId){
 	
     result = result + '<div class="row">';
     result = result + '	<div class="col-md-6 upresume mb" id="employmentTypeDiv" style="display: none;">';
-	result = result + '<label class="col-md-4">Employment Type</label>';
+	result = result + '<label class="col-md-4">Employment Type<span class="paddingLeft">*</span></label>';
 	result = result + '<div class="col-md-8">';
 	result = result + '<select class="form-control" id="designationType" name="designationType" onchange="getEmployementType();" field-name="Employment Type">';
 	result = result + '<option value="">--Select--</option>';
@@ -192,10 +192,21 @@ function getAddApplicant(requirementId){
 	   
 	   
 	 //Adding Customized Skills to the list
-       var select, chosen;
+        var select, chosen;
 	    select = $("#candidateSkills");
 	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
 	    chosen = select.data('chosen');
+	    
+	    
+	 /*    
+	    $("#candidateSkills").chosen().change(function(event) {
+	    	 var sourceleadUrl ='${sourceleadUrl}';
+	    	 var allSkills = $(event.target).val();
+	 
+	    	
+	    });
+	     */
+	    
 	    chosen.search_field.on('keyup', function(e)
 	    {
 	    	var newSkill = this.value.replace(",","");
@@ -205,13 +216,7 @@ function getAddApplicant(requirementId){
 	            var option = $("<option>").val(newSkill).text(newSkill);
 	            select.append(option);
 	            select.find(option).prop('selected', true);
-	          //to doesn't allow duplicates
-                  $("#candidateSkills option").each(function(){
-                        $(this).siblings("[value='"+ this.value+"']").remove();
-                  });
-                  //end
-       		$("#candidateSkills").trigger("chosen:updated");
-       		
+       		    $("#candidateSkills").trigger("chosen:updated");
 	        }
 	    });
 	    //Adding Customized Skills to the list
@@ -449,6 +454,16 @@ function discordApplicant(){
 	 $('#sjfb-fields').find('p.jquery_form_error_message').remove();
 	 $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
 	 $('#uploadFileGroup1').find('p.jquery_form_error_message').remove();
+	 
+	 $("input[name=AlternateNumber]").val(''); 
+	 $("input[name=DOB]").val('');
+	 $("input[name='Current/LastCompany']").val('');
+	 $("select[name=WorkExperience]").val(0);
+	 $("select[name=monthExp]").val(0);
+	 if($("#needApplicantPermit").is(':checked')){
+		 document.getElementById("needApplicantPermit").checked = false;
+		 $("#needApplicantPermit").val('N');
+	 }
 	 
 	 $('#candidateId').removeAttr('data-validation-optional');
 	 $("#candidateId").attr("data-validation", "required");
@@ -1187,6 +1202,12 @@ function getCandidateDetails(){
 		        		 $("input[name=Designation]").val(json['designation']);
 		        	 }else{
 		        		 $("input[name=Designation]").val(''); 
+		        	 }
+		        	 
+		        	 if(json['employer'] != null && json['employer'] != "" && json['employer'] != 'undefined'){
+		        		 $("input[name='Current/LastCompany']").val(json['employer']);
+		        	 }else{
+		        		 $("input[name='Current/LastCompany']").val(''); 
 		        	 }
 		        	 
 		        	 if(json['candidateEdu'] != null && json['candidateEdu'] != "" && json['candidateEdu'] != 'undefined'){

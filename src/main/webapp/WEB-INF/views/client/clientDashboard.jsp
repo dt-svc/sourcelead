@@ -59,7 +59,7 @@ overflow-x: auto;
 			
 			<!-- Advanced Search -->
   <div class="timesheet_out">
-  <div class="cand-advsrch pull-left">
+  <div class="cand-advsrch pull-left candAdvsrch">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
             <form:form id="clientlist_form" name="clientlist_form"  enctype='multipart/form-data' >
           <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
@@ -438,6 +438,9 @@ function getClientUniversalSearchList(searchValue,searchType){
     				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
     				  '.chosen-select-width'     : {width:"95%"}
     	   }
+    	   
+    	       
+				
 			//Adding Customized Any Of Keyword to the list 
 		    var select, chosen;
 		    select = $("#anyOfKeyword");
@@ -677,6 +680,7 @@ function getClientUniversalSearchList(searchValue,searchType){
 				for (var selector in config) {
 				  $(selector).chosen(config[selector]);
 				}
+				
 				$('.chosen-select').each(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
@@ -705,13 +709,17 @@ function getClientUniversalSearchList(searchValue,searchType){
 	    $('#stateSearch').val(''); 
 	    $('#citySearch').val(''); 
 	    
+	    $('#orgNameAdvanced').val(''); 
+	    
 	    $("#anyOfKeyword").val('').trigger("chosen:updated");
 	    $("#allKeywords").val('').trigger("chosen:updated");
 	    $("#excludeKeyWord").val('').trigger("chosen:updated");
+	    $("#orgNameAdvanced").val('').trigger("chosen:updated");
 
 	    $("#anyOfKeyword").empty();
 	    $("#allKeywords").empty();
 	    $("#excludeKeyWord").empty();
+	    $("#orgNameAdvanced").empty();
 	}
 </script>   
 
@@ -1868,8 +1876,8 @@ function terminateSpoc1(spocId, orgRelationID){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Do you want to delete this client contact?</p>";
-	result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc'  placeholder='Comments here'></textarea>";
+	//result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc'  placeholder='Comments here'></textarea>";
+	result = result +"		<textarea id='reasonForSpoc' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Terminate Reason' rows='2'></textarea>";
 	result = result + ' <div id="reasonForSpocDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 	result = result +"	</div>";
@@ -1883,14 +1891,13 @@ function terminateSpoc1(spocId, orgRelationID){
 function saveReason1(spocId, orgRelationID){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
-	if(reason.match(/^[^\s-](.*)*$/) != null){
-		 reason = encodeURIComponent(reason);
-		$("#reasonForSpocDiv").empty();
-		
-		 $("#row"+spocId).empty();
-		 $("#row"+spocId).html("<td colspan='8'  id='loading"+spocId+"'></td>");
-		 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
-		
+	if(reason == null || reason == '' || reason == 'undefined'){
+	      
+	  $("#reasonForSpocDiv").find('p.jquery_form_error_message').remove();
+  	  $("#reasonForSpocDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
+  	  
+	}else{
+	  $("#reasonForSpocDiv").find('p.jquery_form_error_message').remove();
 		$.ajax({
 		   	type: "POST",
 		   url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
@@ -1908,12 +1915,6 @@ function saveReason1(spocId, orgRelationID){
 	             msgFadein();
 		    }
 	   });
-	}else{
-		if(reason){
-			$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
-		}else{
-			$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Comment is required</font>") ; 
-		}
 	}
 	  
 }
