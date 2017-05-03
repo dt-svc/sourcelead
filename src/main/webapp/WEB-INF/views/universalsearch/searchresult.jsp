@@ -103,17 +103,14 @@ function getSearchResults(searchType,searchValue,isAssociate){
 	   			    		result = result+'          <p><label><strong>'+report.clientName+'</strong></label></p>';	
 	   			    	}
 	   			    	
-	   			    	if(report.minExp !=null && report.minExp != '' && report.minExp !="undefined"){
-	   			    		exp = exp + report.minExp;
-	   			    	}
 	   			    	if(report.minExp !=null && report.minExp != '' && report.minExp !="undefined" && report.maxExp !=null && report.maxExp != '' && report.maxExp !="undefined"){
-	   			    		exp = exp + "-";
+	   			    		result = result+'          <p><label class="fa fa-black-tie" title="Experience"> '+report.minExp+' - '+report.maxExp+' years</label></p>';
+	   			    	}else if(report.minExp !=null && report.minExp != '' && report.minExp !="undefined"){
+	   			    		result = result+'          <p><label class="fa fa-black-tie" title="Experience"> '+report.minExp+' years</label></p>';
+	   			    	}else if(report.maxExp !=null && report.maxExp != '' && report.maxExp !="undefined"){
+	   			    		result = result+'          <p><label class="fa fa-black-tie" title="Experience"> '+report.maxExp+' years</label></p>';
 	   			    	}
 	   			    	
-	   			    	if(report.maxExp !=null && report.maxExp != '' && report.maxExp !="undefined"){
-	   			    		exp = exp + report.maxExp;
-	   			    	}
-	   			    	result = result+'          <p><label>'+exp+'</label></p>';
 	   			    	if(report.skills !=null && report.skills != '' && report.skills != 'undefined'){
 	   			    		result = result+'<p><label>'+report.skills+'</label></p>';
 	   			    	}
@@ -156,6 +153,7 @@ function getSearchResults(searchType,searchValue,isAssociate){
 				    	result = result+' </figure>';
 				    	
 				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
+
 				    	if(report.candidateName !=null && report.candidateName != '' && report.candidateName !="undefined" && report.designationType !=null && report.designationType != '' && report.designationType !="undefined" && report.experienceYears !=null && report.experienceYears !='' && report.experienceYears !='undefined' && report.experienceMonths !=null && report.experienceMonths !='' && report.experienceMonths !='undefined'){
 				    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>,<label>'+report.experienceYears+' Years -'+report.experienceMonths+' Months</label>';	
 				    	}else if(report.candidateName !=null && report.candidateName != '' && report.candidateName !="undefined" && report.designationType !=null && report.designationType != '' && report.designationType !="undefined" && report.experienceYears !=null && report.experienceYears !='' && report.experienceYears !='undefined'){
@@ -184,14 +182,39 @@ function getSearchResults(searchType,searchValue,isAssociate){
 				    		experience = experience +","+report.noticePeriod;
 				    	}
 				    	result = result+'<label>'+experience+'</label>';
+
 				    	
-				    	if(report.city !=null && report.city != '' && report.city !="undefined"){
-	   			    		result = result+'          <label>'+report.city+' , '+report.state+' , '+report.country+'</label>';
-	   			    	}else if(report.state !=null && report.state != '' && report.state !="undefined"){
-	   			    		result = result+'          <label>'+report.state+' , '+report.country+'</label>';
-	   			    	}else if(report.country !=null && report.country != '' && report.country !="undefined"){
-	   			    		result = result+'          <label>'+report.country+'</label>';
-	   			    	}
+				    	if(report.experienceYears !=null && report.experienceYears !='' && report.experienceYears !='undefined' && report.experienceMonths !=null && report.experienceMonths !='' && report.experienceMonths !='undefined'){
+ 				    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>, <label>'+report.experienceYears+' Years - '+report.experienceMonths+' Months</label>';
+				    		 }else if(report.experienceYears !=null && report.experienceYears !='' && report.experienceYears !='undefined'){
+				    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>, <label>'+report.experienceYears+' Years</label>';
+				    		 }else if(report.experienceMonths !=null && report.experienceMonths !='' && report.experienceMonths !='undefined'){
+				    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>, <label>'+report.experienceMonths+' Months</label>';
+				    		}else{													
+				    			result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>';
+				    		}
+					    	
+					    	if(report.mobilePhone !=null && report.mobilePhone !='' && report.mobilePhone !='undefined'){
+					    		if(report.city !=null && report.city != '' && report.city !="undefined"){
+						    		result = result+'<p><label><strong>'+report.email+'</strong></label>, <label>'+report.mobilePhone+'</label>, <label>'+report.city+' , '+report.state+' , '+report.country+'</label>';
+						    	}else if(report.state !=null && report.state != '' && report.state !="undefined"){
+						    		result = result+'<p><label><strong>'+report.email+'</strong></label>, <label>'+report.mobilePhone+'</label>, <label>'+report.state+' , '+report.country+'</label>';
+						    	}else if(report.country !=null && report.country != '' && report.country !="undefined"){
+						    		result = result+'<p><label><strong>'+report.email+'</strong></label>, <label>'+report.mobilePhone+'</label>, <label>'+report.country+'</label>';
+						    	}else{
+						    		result = result+'<p><label><strong>'+report.email+'</strong></label>, <label>'+report.mobilePhone+'</label>';	
+						    	}
+					    	}else{
+					    		if(report.city !=null && report.city != '' && report.city !="undefined"){
+							    		result = result+'<p><label><strong>'+report.email+'</strong></label>,<label>'+report.city+' , '+report.state+' , '+report.country+'</label>';
+							    	}else if(report.state !=null && report.state != '' && report.state !="undefined"){
+							    		result = result+'<p><label><strong>'+report.email+'</strong></label>, <label>'+report.state+' , '+report.country+'</label>';
+							    	}else if(report.country !=null && report.country != '' && report.country !="undefined"){
+							    		result = result+'<p><label><strong>'+report.email+'</strong></label>, <label>'+report.country+'</label>';
+							    	}else{
+							    		result = result+'<p><label><strong>'+report.email+'</strong></label>';	
+							    	}
+					    	}
 				    
 				    	result = result+'          </p>';
 				    	if(report.skillSet !=null && report.skillSet != '' && report.skillSet !="undefined"){
@@ -347,7 +370,7 @@ function getSearchResults(searchType,searchValue,isAssociate){
 				    	}
 				    	result = result+'<p><label>'+manager+'</label></p>';
 				    	if(report.startDate !=null && report.startDate != '' && report.startDate !="undefined" && report.endDate !=null && report.endDate !='' && report.endDate !='undefined'){
-				    		result = result+'<p><label><strong><a href="#">'+report.startDate+'</a></strong></label>, <label>'+report.endDate+'</label>';
+				    		result = result+'<p><label>'+report.startDate+'</label>To <label>'+report.endDate+'</label>';
 				    	}
 				    	result = result+'<span href="#" class="reqstatus-btn">'+report.projectStatus+'</span>';
 				    	result = result+'</div>';
@@ -485,17 +508,14 @@ function getSearchResultsForAll(searchType,searchValue){
 									    		result = result+'          <p><label><strong>'+report.clientName+'</strong></label></p>';	
 									    	}
 									    	
-									    	if(report.minExp !=null && report.minExp != '' && report.minExp !="undefined"){
-									    		exp = exp + report.minExp;
-									    	}
 									    	if(report.minExp !=null && report.minExp != '' && report.minExp !="undefined" && report.maxExp !=null && report.maxExp != '' && report.maxExp !="undefined"){
-									    		exp = exp + "-";
-									    	}
+						   			    		result = result+'          <p><label class="fa fa-black-tie" title="Experience"> '+report.minExp+' - '+report.maxExp+' years</label></p>';
+						   			    	}else if(report.minExp !=null && report.minExp != '' && report.minExp !="undefined"){
+						   			    		result = result+'          <p><label class="fa fa-black-tie" title="Experience"> '+report.minExp+' years</label></p>';
+						   			    	}else if(report.maxExp !=null && report.maxExp != '' && report.maxExp !="undefined"){
+						   			    		result = result+'          <p><label class="fa fa-black-tie" title="Experience"> '+report.maxExp+' years</label></p>';
+						   			    	}
 									    	
-									    	if(report.maxExp !=null && report.maxExp != '' && report.maxExp !="undefined"){
-									    		exp = exp + report.maxExp;
-									    	}
-									    	result = result+'          <p><label>'+exp+'</label></p>';
 									    	if(report.skills !=null && report.skills != '' && report.skills != 'undefined'){
 									    		result = result+'          <p><label>'+report.skills+'</label></p>';
 									    	}
@@ -590,7 +610,7 @@ function getSearchResultsForAll(searchType,searchValue){
 				  				    	}
 				  				    	result = result+'<p><label>'+manager+'</label></p>';
 				  				    	if(report.startDate !=null && report.startDate != '' && report.startDate !="undefined" && report.endDate !=null && report.endDate !='' && report.endDate !='undefined'){
-				  				    		result = result+'<p><label><strong><a href="#">'+report.startDate+'</a></strong></label>, <label>'+report.endDate+'</label>';
+				  				    		result = result+'<p><label>'+report.startDate+'</label>To <label>'+report.endDate+'</label>';
 				  				    	}
 				  				    	result = result+'<span href="#" class="reqstatus-btn">'+report.projectStatus+'</span>';
 				  				    	result = result+'</div>';
@@ -622,20 +642,13 @@ function getSearchResultsForAll(searchType,searchValue){
 								    	
 								    	
 								    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
+
 								    	if(report.candidateName !=null && report.candidateName != '' && report.candidateName !="undefined" && report.designationType !=null && report.designationType != '' && report.designationType !="undefined"){
 								    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>';	
 								    	}else{													
 								    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>';	
 								    	}
-								    	if(report.experienceYears !=null && report.experienceYears !='' && report.experienceYears !='undefined'){
-								    		experience = experience + report.experienceYears+" Years"; 
-								    	}
-								    	if(report.experienceYears !=null && report.experienceYears !='' && report.experienceYears !='undefined' && report.experienceMonths !=null && report.experienceMonths !='' && report.experienceMonths !='undefined'){
-								    		experience = experience +"-";				    	
-								    	}
-								    	if(report.experienceMonths !=null && report.experienceMonths !='' && report.experienceMonths !='undefined'){
-								    		experience = experience + report.experienceMonths+" Months";	
-								    	}
+								    	
 								    	if(report.email !=null && report.email !='' && report.email !='undefined' && report.mobilePhone !=null && report.mobilePhone !='' && report.mobilePhone !='undefined' ){
 								    		result = result+'<p><label><strong>'+report.email+'</strong></label>, <label>'+report.mobilePhone+'</label>';	
 								    	}else{
@@ -646,14 +659,40 @@ function getSearchResultsForAll(searchType,searchValue){
 								    		experience = experience +","+report.noticePeriod;
 								    	}
 								    	result = result+'<label>'+experience+'</label>';
+
 								    	
-								    	if(report.city !=null && report.city != '' && report.city !="undefined"){
-					   			    		result = result+'          <label>'+report.city+' , '+report.state+' , '+report.country+'</label>';
-					   			    	}else if(report.state !=null && report.state != '' && report.state !="undefined"){
-					   			    		result = result+'          <label>'+report.state+' , '+report.country+'</label>';
-					   			    	}else if(report.country !=null && report.country != '' && report.country !="undefined"){
-					   			    		result = result+'          <label>'+report.country+'</label>';
-					   			    	}
+								    	if(report.experienceYears !=null && report.experienceYears !='' && report.experienceYears !='undefined' && report.experienceMonths !=null && report.experienceMonths !='' && report.experienceMonths !='undefined'){
+			 				    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>, <label>'+report.experienceYears+' Years - '+report.experienceMonths+' Months</label>';
+							    		 }else if(report.experienceYears !=null && report.experienceYears !='' && report.experienceYears !='undefined'){
+							    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>, <label>'+report.experienceYears+' Years</label>';
+							    		 }else if(report.experienceMonths !=null && report.experienceMonths !='' && report.experienceMonths !='undefined'){
+							    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>, <label>'+report.experienceMonths+' Months</label>';
+							    		}else{													
+							    			result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>';
+							    		}
+
+								    	
+								    	if(report.mobilePhone !=null && report.mobilePhone !='' && report.mobilePhone !='undefined'){
+								    		if(report.city !=null && report.city != '' && report.city !="undefined"){
+									    		result = result+'<p><label><strong>'+report.email+'</strong></label>, <label>'+report.mobilePhone+'</label>, <label>'+report.city+' , '+report.state+' , '+report.country+'</label>';
+									    	}else if(report.state !=null && report.state != '' && report.state !="undefined"){
+									    		result = result+'<p><label><strong>'+report.email+'</strong></label>, <label>'+report.mobilePhone+'</label>, <label>'+report.state+' , '+report.country+'</label>';
+									    	}else if(report.country !=null && report.country != '' && report.country !="undefined"){
+									    		result = result+'<p><label><strong>'+report.email+'</strong></label>, <label>'+report.mobilePhone+'</label>, <label>'+report.country+'</label>';
+									    	}else{
+									    		result = result+'<p><label><strong>'+report.email+'</strong></label>, <label>'+report.mobilePhone+'</label>';	
+									    	}
+								    	}else{
+								    		if(report.city !=null && report.city != '' && report.city !="undefined"){
+										    		result = result+'<p><label><strong>'+report.email+'</strong></label>,<label>'+report.city+' , '+report.state+' , '+report.country+'</label>';
+										    	}else if(report.state !=null && report.state != '' && report.state !="undefined"){
+										    		result = result+'<p><label><strong>'+report.email+'</strong></label>, <label>'+report.state+' , '+report.country+'</label>';
+										    	}else if(report.country !=null && report.country != '' && report.country !="undefined"){
+										    		result = result+'<p><label><strong>'+report.email+'</strong></label>, <label>'+report.country+'</label>';
+										    	}else{
+										    		result = result+'<p><label><strong>'+report.email+'</strong></label>';	
+										    	}
+								    	}
 								    	
 								    	result = result+'          </p>';
 								    	if(report.skillSet !=null && report.skillSet != '' && report.skillSet !="undefined"){

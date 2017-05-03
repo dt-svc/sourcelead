@@ -270,7 +270,7 @@ overflow-x: auto;
 	<div class="timesheet_head datatbl-filters customtimesheet-head">
         	<ul>
         	
-        	<li  id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Vendor</span><i class="glyphicon glyphicon-play" id="vendorsList" ></i>|
+        	<%-- <li  id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Vendor</span><i class="glyphicon glyphicon-play" id="vendorsList" ></i>|
 		                	<div id="filter1ApprovedPop" class="approved_pop">
 		                    	<ul>
 		                    	  <c:forEach var="report" items="${vendor_list}">  
@@ -278,7 +278,7 @@ overflow-x: auto;
 								  </c:forEach>
 		                        </ul>
 		                    </div>                	
-		                </li>
+		                </li> --%>
 	               
 		                <li id= "filter3ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="vendorSatatus"></i>|
 	                	<div id="filter3ApprovedPop" class="approved_pop">
@@ -1380,10 +1380,10 @@ function terminateSpoc1(spocId, orgRelationID){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Vendor delete message here</p>";
+	result = result +"		<p>Do you want to delete this vendor contact?</p>";
 	result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="reasonForSpocDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1423,7 +1423,7 @@ function saveReason1(spocId, orgRelationID){
 		if(reason){
 			$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
 		}else{
-			$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+			$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Comment is required</font>") ; 
 		}
 		
 	}
@@ -1866,7 +1866,7 @@ function listChange(sel){
 		 document.getElementById("vendorContactList").style.display="none";
 		 document.getElementById("vendorContactList_wrapper").style.display="none";
 		 document.getElementById("contactLevel").style.display="block";
-		 document.getElementById("vendorsList").style.display="none";
+// 		 document.getElementById("vendorsList").style.display="none";
 		 document.getElementById("vendorSatatus").style.display="none";
 		 document.getElementById("vendorInvitation").style.display="none";
          '<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDORS\')">'; 
@@ -1875,7 +1875,7 @@ function listChange(sel){
 		'<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDOR_CONTACTS\')">'; 
 		 document.getElementById("VendorContactImports").style.display="none";
 		 '</sec:authorize> ';
-		 document.getElementById("filter1ApprovePop").style.display="none";
+	//	 document.getElementById("filter1ApprovePop").style.display="none";
 		 document.getElementById("filter3ApprovePop").style.display="none";
 		 document.getElementById("filter4ApprovePop").style.display="none";
 		 //getVendorLists();
@@ -1888,7 +1888,7 @@ function listChange(sel){
 		 document.getElementById("vendorList_wrapper").style.display="none";
 		 document.getElementById("vendorContactList_wrapper").style.display="block";
 		 document.getElementById("contactLevel").style.display="none";
-		 document.getElementById("vendorsList").style.display="block";
+// 		 document.getElementById("vendorsList").style.display="block";
 		 document.getElementById("vendorSatatus").style.display="block";
 		 document.getElementById("vendorInvitation").style.display="block";
 		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDORS\')">'; 
@@ -1897,7 +1897,7 @@ function listChange(sel){
 		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDOR_CONTACTS\')">'; 
 		 document.getElementById("VendorContactImports").style.display="block";
 		 '</sec:authorize> ';
-		 document.getElementById("filter1ApprovePop").style.display="block";
+	//	 document.getElementById("filter1ApprovePop").style.display="block";
 		 document.getElementById("filter3ApprovePop").style.display="block";
 		 document.getElementById("filter4ApprovePop").style.display="block";
 		

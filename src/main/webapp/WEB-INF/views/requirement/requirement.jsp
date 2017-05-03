@@ -1617,17 +1617,19 @@ function getCities(){
 		    chosenone = selectone.data('chosen');
 		    chosenone.search_field.on('keyup', function(e1)
 		    {
-		    	var newEducation = this.value.replace(",","");
+		    	var newEducation = this.value.replace("\'","");
 		    	   if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
 			        {
 		    		   var par = this.parent;
 			            var option = $("<option>").val(newEducation).text(newEducation);
 			            selectone.append(option);
 			            selectone.find(option).prop('selected', true);
-			            $("#education").trigger("chosen:updated");
+			            
 			            $("#education option").each(function(){
 	                         $(this).siblings("[value='"+ this.value+"']").remove();
 	                   });
+			            
+			            $("#education").trigger("chosen:updated");
 			           
 			        }
 		    

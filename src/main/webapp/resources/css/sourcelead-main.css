@@ -4143,7 +4143,7 @@ import-tranhd  [class*="col-md-"]{
 }
 .compose-mail.form-horizontal .control-label {
 	position: relative;
-	top: 16px;
+	top: 5px;
 }
 .compose-mail .form-control[readonly]{
 	background: none;
@@ -6420,6 +6420,32 @@ margin: 0; bottom: -10px;
 .displyBlock .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
     display: block;
 }
+/* May2nd, 2017: Ajit */
+.centerDiv {
+float:none; margin:0 auto;
+}
+.tblminwidth-30 {
+	min-width: 30px !important;
+}
+.dropdown-select.paddingNone select {
+	padding:0 !important;
+}
+.candAdvsrch .chosen-container-multi .chosen-choices li.search-field input[type="text"] {
+width: 100% !important;
+}
+.brud-crum a:hover{
+	border-bottom: 1px solid #368ee0;
+}
+div.tree-multiselect .select-all-container span.select-all, div.tree-multiselect .select-all-container span.unselect-all {
+	color:#368ee0; font-weight: 500; margin-bottom: 10px;
+}
+div.tree-multiselect .select-all-container span.select-all:hover, div.tree-multiselect .select-all-container span.unselect-all:hover {
+	border-bottom: 1px solid #368ED7; color:#368ED7;
+}
+.tree-multiselect .select-all-container {
+	margin-bottom: 5px;
+}
+/* May2nd, 2017: Ajit */
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
@@ -6723,6 +6749,30 @@ width: 230px; transform: translateX(0); -webkit-transform: translateX(0); -ms-tr
 	-webkit-transform: translateY(43px); -ms-transform: translateY(43px); -moz-transform: translateY(43px); transform: translateY(43px);
 }
 }
+
+/* Srinivas 25th April */
+.user_summary_edit.user_summaryEdit {
+height: auto; padding: 5px 5px; top: 45px; left: inherit; right: 30px; width: 90%;
+}
+.user_summary_edit.user_summaryEdit {
+padding: 5px 5px;
+}
+.user_summary_edit.user_summaryEdit .user_summary_edit_cta {
+	padding-bottom:0px; width: 29%; min-height: 60px;
+}
+.user_summary_edit.user_summaryEdit .user_summary_edit_cta p{
+margin: 0; bottom: -10px;
+}
+.user_summary_edit.user_summaryEdit .user_summary_edit_cta select.rate_sele {
+	width: 25% !important;
+}
+.user_summary_edit.user_summaryEdit .user_summary_edit_cta input.rate_filed {
+	width: 45% !important;
+}
+.displyBlock .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
+	display: block;
+}
+/* Srinivas 25th April */
 
 @media (max-width: 767px) {
 .universalSrch {

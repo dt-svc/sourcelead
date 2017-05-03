@@ -226,9 +226,11 @@ width: auto;
 			var frm = $('#negotiation_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
+			//It will escape all the special characters
+		    var jsonData = encodeURIComponent(con);
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&json="+con+"&submissionId="+submissionId+"&type="+type,
+						url : sourceleadUrl+'/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&json='+jsonData+'&submissionId='+submissionId+'&type='+type,
 						success : function(result) {
 							$('#rateProposal').val('');
 							$('#rateType').val('');

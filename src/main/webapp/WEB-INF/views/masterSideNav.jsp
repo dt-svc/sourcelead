@@ -215,7 +215,7 @@
 	                 
 	                 
 	                 <c:if test="${userTabs.tabName == 'Contracts'}">
-	                   <li class="${sessionData.nav == 'Contract' ? 'side-nav-active' : ''}"><a href="<c:url value='/contractListbyStatus'/>" title="Vendors"><span><i class="fa fa-object-ungroup"></i></span>Contracts</a></li>
+	                   <li class="${sessionData.nav == 'Contract' ? 'side-nav-active' : ''}"><a href="<c:url value='/contractListbyStatus'/>" title="Contracts"><span><i class="fa fa-object-ungroup"></i></span>Contracts</a></li>
 	                </c:if> 
 	                 
 
