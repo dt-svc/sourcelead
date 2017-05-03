@@ -9,9 +9,9 @@
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Hirerachy Level</h2>
+        <h2>Hierarchy Level</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="orgRolesList">Roles List</a> &raquo; Add Hierarchy </div>
+      <div class="pull-right brud-crum"><a href="orgRolesList">Roles List</a> &raquo; Hierarchy List </div>
     </section>
     
    <!-- Role Persmission -->
@@ -39,7 +39,7 @@
         </div>
         <div class="modal-body">
            <div class="form-group" id="levelDiv">
-            <input type="text" class="form-control input-sm" data-validation="required validate_Space validate_length length2-20" field-name="Level Name" onblur="validateLevelName();" placeholder="Enter Level" name="level" id="level" autocomplete="off" autofocus>
+            <input type="text" class="form-control input-sm" data-validation="required validate_Space validate_length length2-20" field-name="Level" onblur="validateLevelName();"onkeyup="validateLevelName();"  placeholder="Enter Level" name="level" id="level" autocomplete="off" autofocus>
             <input type="hidden" name="hierarchyId" id="hierarchyId">
            </div>
         </div>

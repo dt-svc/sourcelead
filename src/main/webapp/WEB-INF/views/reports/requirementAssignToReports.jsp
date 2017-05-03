@@ -81,30 +81,26 @@ function prepareReportDataDiv(data){
 	var report = json[i];
 			result = result + '<tr>';
 			result = result + '<td>';
-			result = result + '<div><span>' + report.jobTitle
-					+ '</span></div> ';
+			result = result + '<div><span title="'+report.jobTitle+'">'+report.jobTitle+'</span></div> ';
 			result = result + '</td>';
 
 			result = result + '<td>';
 			if (report.postedOn != null && report.postedOn != ''&& report.postedOn != 'undefined') {
-				result = result + '<div><span>' + report.postedOn
-						+ '</span></div>';
+				result = result + '<div><span>'+report.postedOn+'</span></div>';
 			} else {
 				result = result + '<div><span>---</span></div>';
 			}
 			result = result + '</td>';
 			result = result + '<td>';
 			if (report.client != null && report.client != ''&& report.client != 'undefined') {
-				result = result + '<div><span>' + report.client
-						+ '</span></div>';
+				result = result + '<div><span title="'+report.client+'">'+report.client+'</span></div>';
 			} else {
 				result = result + '<div><span>---</span></div>';
 			}
 			result = result + '</td>';
 			result = result + '<td>';
 			if (report.owner != null && report.owner != ''&& report.owner != 'undefined') {
-				result = result + '<div><span>' + report.owner
-						+ '</span></div>';
+				result = result + '<div><span title="'+report.owner+'">'+report.owner+'</span></div>';
 			} else {
 				result = result + '<div><span>---</span></div>';
 			}
@@ -112,8 +108,7 @@ function prepareReportDataDiv(data){
 
 			result = result + '<td>';
 			if (report.assignedUser != null && report.assignedUser != ''&& report.assignedUser != 'undefined') {
-				result = result + '<div><span>' + report.assignedUser
-						+ '</span></div>';
+				result = result + '<div><span title="'+report.assignedUser+'">'+report.assignedUser+'</span></div>';
 			} else {
 				result = result + '<div><span>---</span></div>';
 			}
@@ -130,8 +125,7 @@ function prepareReportDataDiv(data){
 
 			result = result + '<td>';
 			if (report.teamName != null && report.teamName != '' && report.teamName != 'undefined') {
-				result = result + '<div><span>' + report.teamName
-						+ '</span></div>';
+				result = result + '<div><span title="'+report.teamName+'">'+report.teamName+'</span></div>';
 			} else {
 				result = result + '<div><span>---</span></div>';
 			}

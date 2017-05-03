@@ -51,6 +51,10 @@ public class Constants {
 	public static final String LEVEL = "Tier";
 	public static final String VENDOR_NAME = "Vendor Name*";
 	public static final String JOB_OTHER = "Other";
+	
+	
+	public static final String TASK_BILLABLE = "Billable";
+	public static final String TASK_NON_BILLABLE = "Non-Billable";
 
 	public static final Integer RECORD_ACTIVE = 1;
 	public static final Integer RECORD_INACTIVE = 0;
@@ -67,10 +71,12 @@ public class Constants {
 	public static DateFormat DF_STD_FORMAT = new SimpleDateFormat("MM/dd/yyyy");
 	
 	public static transient DateFormat MY = new SimpleDateFormat("MMMM-yyyy");
+	public static transient DateFormat Y = new SimpleDateFormat("yyyy");
+	public static transient DateFormat M = new SimpleDateFormat("MMMM");
 	
 	public static DateFormat DF_DMY = new SimpleDateFormat("dd-MM-yyyy");
 	public static DateFormat DF_STD_DMY = new SimpleDateFormat("dd/MM/yyyy");
-	public static DateFormat SHORT_DF_STD_DM = new SimpleDateFormat("dd/MM");
+	public static DateFormat SHORT_DF_STD_DM = new SimpleDateFormat("ddMMM");
 	public static DateFormat SHORT_DF_MM_DD = new SimpleDateFormat("MMM-dd");
 	
 	public static final DateFormat TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'HH:mm:ss");
@@ -517,6 +523,8 @@ public class Constants {
     public static String CANDIDATE = "Candidate"; 
     
     public static String CONSULTANT = "Consultant";
+    
+    public static String ASSOCIATE = "Associate";
     
     
     public static String MAIL_TRASH = "Trash";

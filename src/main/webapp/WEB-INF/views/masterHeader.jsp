@@ -225,7 +225,7 @@ document.onkeydown=function(e){
 	             <option data-icon="fa fa-bar-chart" ${searchType == "Projects" ?"selected='selected'":""} value="Projects">Projects</option>   	  
 	           </c:if>
 			</c:forEach>
-	             <option data-icon="fa fa-black-tie" ${searchType == "Candidate" ?"selected='selected'":""} value="Associate">Associate</option>
+	             <option data-icon="fa fa-black-tie" ${searchType == "Associate" ?"selected='selected'":""} value="Associate">Associate</option>
 		</select>
 			
 			
@@ -283,11 +283,13 @@ document.onkeydown=function(e){
 	            </div>
 	          </li>
             </c:if> --%>
-            <li class="reportsH">
-
-				<a title="Reports" title="Reports" href="<c:url value='${sourceleadUrl}/recruitersReports'/>"><i class="fa fa-pie-chart"></i></a>
-				
-            </li>
+            
+            <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+	            <li class="reportsH">
+					<a title="Reports" title="Reports" href="<c:url value='${sourceleadUrl}/recruitersReports'/>"><i class="fa fa-pie-chart"></i></a>
+	            </li>
+            </c:if>
+            
             <sec:authorize access="hasAnyRole('ROLE_MAIL_BOX','ROLE_HOTLIST_CAMPAIGN')">
             	<li><a href="<c:url value='${sourceleadUrl}/mailBox'/>" title="Mailbox" id="mailbox"><i class="fa fa-envelope"></i>  <span class="label label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </a></li>
             </sec:authorize>
@@ -368,7 +370,7 @@ document.onkeydown=function(e){
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
 	                        <li><a href="<c:url value="/orgRolesList" />"><i class="fa fa-key" aria-hidden="true"></i>Role Configuration</a></li>
 	                     </sec:authorize>
-	                     <sec:authorize access="hasAnyRole('ROLE_VIEW_ORG_SETTINGS','ROLE_EDIT_ORG_SETTINGS')"> 
+	                      <sec:authorize access="hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')"> 
 	               		      <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
 	               		 </sec:authorize>
 	               		 <sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE')"> 

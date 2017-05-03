@@ -34,17 +34,16 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.Countries;
-import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
@@ -65,13 +64,13 @@ import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserMailBoxService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.itextpdf.text.log.SysoLogger;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
@@ -150,6 +149,9 @@ public class LoginSessionController {
 	
 	@Autowired
 	CandidateOffBoardingService candidateOffBoardingService;
+	
+	@Autowired
+	TimeZoneService timeZoneService;
 	
 
 	protected static boolean isNullOrEmpty(String str) {
@@ -252,6 +254,8 @@ public class LoginSessionController {
 			Boolean isAdmin = userRoleService.isUserAdminByOrgLocationId(user.getId(),orgLocations.getId());
 			model.addObject("isAdmin",isAdmin);
 			
+			Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+			model.addObject("timezone",timezone.getTimeZoneId());
 		}
 		else{
 			commonUtil.highLightMenu(Constants.Dashboard, request);
@@ -287,6 +291,9 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "candidateId", candidate.getId());
 			
 			model.addObject("sourceleadUrl", sourceleadUrl);
+			
+			Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+			model.addObject("timezone",timezone.getTimeZoneId());
 		}
 	   
 		return model;
@@ -375,6 +382,9 @@ public class LoginSessionController {
 			
 			Boolean isManagerWithSubmissionRateStatusAsRequestOrAccept = requirementService.checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(user.getId(), orgLocations.getId());
 			model.addObject("isManagerWithSubmissionRateStatusAsRequestOrAccept", isManagerWithSubmissionRateStatusAsRequestOrAccept);
+			
+			Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+			model.addObject("timezone",timezone.getTimeZoneId());
 		   
 		}else{
 			model.setViewName("registration/persmissionDenied");
