@@ -99,7 +99,7 @@ display: none;
         <div class="clearfix">
           <div class="col-md-6">
             <label class="col-md-4 control-label text-info small">Salutation</label>
-            <div class="col-md-8 saluation field-border">
+            <div class="col-md-3 saluation field-border">
               <select id="saluation" name="saluation">
                 <option value="Hi" selected>Hi</option>
                 <option value="Hello">Hello</option>
@@ -129,7 +129,7 @@ display: none;
               <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-paperclip"></i>
                 <input type="file" name="attachfile" style="display: none;" multiple id="attachfileBtn" class="upload">
                 </b> </label>
-              <input type="text" class="form-control" readonly id="attachfile-mail" placeholder="Files are not selected...">
+              <input type="text" class="form-control" readonly id="attachfile-mail" placeholder="Upload files ...">
             </div>
           </div>
         </div>

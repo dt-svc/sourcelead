@@ -220,7 +220,7 @@ function getRolesList(){
    	        	var result = "";
    		    	result = result +'<thead>';
    		    	result = result +'	<tr>';
-   		    	result = result +'	<th>Role</th>';
+   		    	result = result +'	<th>Role Name</th>';
    		    	result = result +'    <th>Level</th>'; 
    		    	result = result +'     <th>Number Of Actions</th>';
    		    	result = result +'     <th>Action</th>';
@@ -233,9 +233,9 @@ function getRolesList(){
    		    		
    		    		result = result +'<tr>';
    		    		
-   		    		result = result +'<td><div class="tbldata-dotdot-me" title="'+report.displayName+'">'+report.displayName+'</div></td>';
-   		    		result = result +'<td><div class="tbldata-dotdot-sm" title="'+report.hierarchyName+'">'+report.hierarchyName+'</div></td>';
-   		    		result = result +'<td><div class="tbldata-dotdot-vsm" title="'+report.actionsCount+'">'+report.actionsCount+'</div></td>';
+   		    		result = result +'<td align="center"><div class="tbldata-dotdot-me" title="'+report.displayName+'">'+report.displayName+'</div></td>';
+   		    		result = result +'<td align="center"><div class="tbldata-dotdot-sm" title="'+report.hierarchyName+'">'+report.hierarchyName+'</div></td>';
+   		    		result = result +'<td align="right"><div class="tbldata-dotdot-vsm" title="'+report.actionsCount+'">'+report.actionsCount+'</div></td>';
    		    		result = result +'<td>';
    		    		result = result +'<div>';
    		    		result = result +'<label class="label label-success">';
