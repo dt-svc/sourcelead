@@ -6558,6 +6558,51 @@ div.tree-multiselect .select-all-container span.select-all:hover, div.tree-multi
 .tree-multiselect .select-all-container {
     margin-bottom: 5px;
 }
+/* Billing Dashboard css */
+.billing_dashboard {
+padding: 15px 15px 25px 15px;
+}
+.billing_dashboard h4{
+    font-size: 14px; color: #606060; margin-bottom: 5px; font-weight: normal;
+}
+.billing_dashboard .nav-tabs li a {
+    display: inline-block; padding:5px 10px; color: #333; min-width: 175px; border-radius: 3px;
+}
+.billing_dashboard .nav-tabs > li {
+    margin-right: 5px;
+}
+.billing_dashboard .nav-tabs > li .count{
+    font-size: 20px; text-align: right;
+}
+.billing_dashboard .nav-tabs > li h5{
+    font-size: 14px; font-weight: 400; margin:2px 0; float: right;
+}
+.billing_dashboard .nav-tabs > li h5 span{
+    font-size: 20px;
+}
+.billbg_orange {
+    background: #ffb74d;
+}
+.billbg_green {
+    background: #a5d6a7;
+}
+.billbg_orange {
+    background: #ffb74d;
+}
+.billingbg_red {
+    background: #ef9a9a;
+}
+.billingbgRed {
+    background: #ffcdd2;
+}
+.billing_dashboard .nav-tabs > li.active > a, .billing_dashboard  .nav-tabs > li.active > a:focus, .billing_dashboard  .nav-tabs > li.active > a:hover {
+    background-color:none !important;
+}
+.icon_fa {
+    position: relative; top: 5px;
+}
+/* Billing Dashboard css */
+
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
