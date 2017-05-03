@@ -18,6 +18,9 @@ body {
 	font-family:'Roboto', sans-serif  !important;
     min-height: 100%;
 }
+table tr td {
+       text-align: center;
+}
 @-ms-viewport{
 width:auto!important;
 }
@@ -704,7 +707,7 @@ min-height: 100%; border-radius: 5px; min-height:100px; padding: 0; -moz-transit
 	border-radius: 3px;
 }
 .section-action-btns ul li .fa {
-	color: #909090;
+	color: #545454;
 	padding-right: 5px;
 }
 /* content Area Styels ends */
@@ -1618,18 +1621,10 @@ div.pages-404.width {
 overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 80px; display: block;
 }
 .tbldata-dotdot-100 {
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	width: 100px;
-	display: block;
+overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100px; display: block;
 }
 .tbldata-dotdot {
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	width: 180px;
-	display: block;
+overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 180px; display: block;
 }
 .tbldata-dotdot-vsm {
 	overflow: hidden;
@@ -1658,6 +1653,26 @@ overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 80px; displa
 	white-space: nowrap;
 	width: 275px;
 	display: block;
+}
+.tbldata-dotdot_140 {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 140px;
+	display: block;
+}
+.tbldata-dotdot_50 {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 50px;
+	display: block;
+}
+.require_wrap_table select {
+appearance:none; -webkit-appearance:none; -moz-appearance:none; -ms-appearance:none; -o-appearance:none;
+}
+.require_wrap_table select::-ms-expand {
+	display:none;
 }
 .tbl-cumstom-data table tr td:first-child {
 	width: 200px;
@@ -6390,14 +6405,18 @@ margin-top: 2px;
 .timesheet_header .glyphicon-play {
 top: 5px !important; right: 20px !important;
 }
-.invoice_table s.table_footer {
-    border-top:1px solid #ccc; border-bottom:1px solid #ccc;
+.OpenJob h5 ul li {
+    border: 1px solid rgba(3, 169, 244, 0.17); background-color: rgba(3, 169, 244, 0.1); border-radius: 5px !important;
+    padding: 4px 10px !important; margin-right: 5px !important;
+}
+.invoice_table .table_footer tr td {
+    border-top:1px solid #ccc; border-bottom:1px solid #ccc; background: #cfd8dc !important;
 }
 .user_details_cta.templatesdetails {
        min-height: auto;
 }
 .pb{
-       padding-bottom: 15px;
+    padding-bottom: 15px;
 }
 .user_summary_edit.user_summaryEdit {
 height: auto; padding: 5px 5px; top: 45px; left: inherit; right: 30px; width: 90%;
@@ -6419,6 +6438,125 @@ margin: 0; bottom: -10px;
 }
 .displyBlock .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
     display: block;
+}
+.selectRateper {
+   width: 130px !important;
+}
+.viewTemplate.checklist{
+	padding: 0;
+}
+.viewTemplate.checklist .sjfb-field{
+	width: 100%; margin: 0; margin-bottom: 15px; font-weight: normal; background-color: rgba(255, 255, 255, 0.9); border-radius:5px;
+	padding: 10px; box-shadow: 0px 0px 2px rgba(0,0,0,0.1);
+}
+.viewTemplate.checklist .sjfb-field:nth-child(2n+2){
+	margin-left: 0;
+}
+.viewTemplate.checklist .sjfb-field label{
+	font-weight: normal; width: 20%; margin-right: 5px;margin-bottom: 0;font-size: 14px;
+}
+.viewTemplate.checklist .choices{
+	float: left; width:78.5%;
+}
+.viewTemplate.checklist .choices label{
+	width: 100%; margin-bottom: 10px;
+}
+.viewTemplate.checklist input[type=checkbox], .viewTemplate.checklist input[type=radio]{
+	margin: 0 10px 0 0; position: relative; top:2px;
+}
+.invoice_table .form-horizontal .control-label {
+    padding-top: 0;
+}
+.btn-sm.buttonCustom {
+    padding: 1px 3px;margin-left: 10px; line-height: inherit;
+}
+.invoiceAttachment span{
+    max-width:100% !important;
+}
+.project_wrap_table.invoice_table {
+    width: 97.5%; margin: 15px auto 0; overflow-y: auto;
+}
+.project_wrap_table.invoice_table table {
+    border-bottom: 1px solid #ccc; margin-bottom: 15px;
+}
+.project_wrap_table.invoice_table table tr td {
+    padding: 5px 15px;
+}
+div.inputCustom {
+    width: 225px;
+}
+.inputCustom input[type="text"] {
+    border:none; background-color: none; border-bottom: 1px solid #ddd; padding: 5px; width: 49%;
+}
+.hide_image .btn-group a[href="#InsertImage"]{
+    display: none;
+}
+.ratetype p {
+    left: 0 !important; position: absolute; bottom: -14px;
+}
+/* invoice dashboard styels */
+.receiveBtn {
+    cursor: pointer; border: 1px solid; color:#fff; padding: 1px 5px; border-radius: 3px;
+    background-color: #337ab7; border-color: #2e6da4; font-size:13px;
+}
+.menuWidget {
+    cursor: pointer;
+}
+.menuWidget .fa-ellipsis-h {
+    cursor: pointer; color: #787878;
+}
+.menuWidget ul.menupop {
+    position: absolute; top: 5px; right: 15px; padding: 5px 10px; border: 1px solid #ededed; background: #fff;
+    width: 210px; box-shadow: -1px 1px 2px #333; display: none;
+}
+.menuWidget ul li{
+    cursor: pointer; color: #263238;
+}
+.menuWidget ul li:hover{
+    color: #455a64;
+}
+.menuWidget ul li:last-child{
+    border-left: 1px solid #90a4ae;
+}
+.addtax_table table thead th {
+    padding: 5px 5px;background: #e0e0e0;
+}
+.addtax_table table tr td{
+    padding: 5px 5px;
+}
+/* invoice dashboard styels */
+.require_wrap_table select {
+appearance:none; -webkit-appearance:none; -moz-appearance:none; -ms-appearance:none; -o-appearance:none;
+}
+.require_wrap_table select::-ms-expand {
+       display:none;
+}
+.widthIcon {
+       width: 50px; display: inline-block; margin: 0 auto;
+}
+ .centerDiv {
+float:none; margin:0 auto;
+}
+.tblminwidth-30 {
+    min-width: 30px !important;
+}
+.dropdown-select.paddingNone select {
+    padding:0 !important;
+}
+.candAdvsrch .chosen-container-multi .chosen-choices li.search-field input[type="text"] {
+width: 100% !important;
+}
+.brud-crum a:hover{
+    border-bottom: 1px solid #368ee0;
+}
+div.tree-multiselect .select-all-container span.select-all, div.tree-multiselect .select-all-container span.unselect-all {
+    color:#368ee0; font-weight: 500; margin-bottom: 10px;
+}
+div.tree-multiselect .select-all-container span.select-all:hover, div.tree-multiselect .select-all-container span.unselect-all:hover {
+    border-bottom: 1px solid #368ED7; color:#368ED7;
+}
+.tree-multiselect .select-all-container {
+    margin-bottom: 5px;
 }
 /* media 320px */
 @media (max-width: 320px) {

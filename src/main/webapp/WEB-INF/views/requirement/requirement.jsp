@@ -19,10 +19,10 @@ padding-bottom: 15px;
 min-height: 150px;
 }
 .popupFilter #example_filter {
-top:-63px !important;
+top:-55px !important;
 }
-.dataTable thead {
-background: #375d81; color:#fff; height: 34px;
+.dataTable thead th {
+background: #375d81; color:#fff; height: 34px; padding-top: 5px; padding-bottom: 5px;
 }
 .dataTable thead tr th {
 vertical-align: middle;
@@ -47,7 +47,7 @@ margin-top: 15px;
 padding: 0 !important;
 margin-top: 10px;
 }
-.dataTables_wrapper .dataTables_filter input {
+dataTables_wrapper .dataTables_filter input {
 background-color:#fff;
 height: 34px;
 width:400px;
@@ -1617,17 +1617,19 @@ function getCities(){
 		    chosenone = selectone.data('chosen');
 		    chosenone.search_field.on('keyup', function(e1)
 		    {
-		    	var newEducation = this.value.replace(",","");
+		    	var newEducation = this.value.replace("\'","");
 		    	   if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
 			        {
 		    		   var par = this.parent;
 			            var option = $("<option>").val(newEducation).text(newEducation);
 			            selectone.append(option);
 			            selectone.find(option).prop('selected', true);
-			            $("#education").trigger("chosen:updated");
+			            
 			            $("#education option").each(function(){
 	                         $(this).siblings("[value='"+ this.value+"']").remove();
 	                   });
+			            
+			            $("#education").trigger("chosen:updated");
 			           
 			        }
 		    
@@ -2059,7 +2061,7 @@ function popupWindow(reqId){
  		result = result +'       </div>';
  		
  		result = result +'       <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">';
- 		result = result +'          <select id="rolesDiv" class="selectpicker" multiple data-actions-box="true" onchange="filterTeamMembers();" style="display:block !important">';
+ 		result = result +'          <select id="rolesDiv" class="selectpicker" multiple data-actions-box="true" onchange="filterTeamMembers();" style="display:block !important" title="--Select Assign Team--">';
  		result = result +'          </select>';
  		result = result +'       </div>';
  		

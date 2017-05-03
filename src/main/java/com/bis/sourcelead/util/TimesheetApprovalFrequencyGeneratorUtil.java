@@ -434,6 +434,37 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 		return timesheetFrequencyList;
 		
 	}
+	
+	
+	public Map<String,String> getTabFrequencyListForTsReports(Date startDate,Date endDate) throws Exception{
+		Map<String,String> timesheetFrequencyList = new LinkedHashMap<String,String>();
+		 	    DateFormat format = Constants.DF_DMY;
+		            
+					  Calendar tsCal = Calendar.getInstance(TimeZone.getDefault());
+					  tsCal.setTime(startDate);
+					  
+					  int totalWeeks = CalendarUtil.getNumberOfWeeks(startDate, endDate);
+					  Date tsStartDate = null;
+					  Date tsEndDate = null;
+					  for (int week = 0; week < totalWeeks; week++) {
+						  
+						    if(tsStartDate == null){
+								tsCal.setTime(startDate);
+								tsStartDate = CalendarUtil.getCurrentWeekDayByCalendar(tsCal, "MON").getTime();
+								tsEndDate = CalendarUtil.getCurrentWeekDayByCalendar(tsCal, "SUN").getTime();
+							}
+							else{
+								tsCal.setTime(tsStartDate);
+							}
+						    timesheetFrequencyList.put(format.format(tsStartDate), format.format(tsEndDate));
+						    tsStartDate = CalendarUtil.getNextWeekDayByCalendar(tsCal, "MON").getTime();
+							tsEndDate = CalendarUtil.getNextWeekDayByCalendar(tsCal, "SUN").getTime();
+					  }
+					 
+
+		return timesheetFrequencyList;
+		
+	}
 	public Date getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(Projects projects) throws Exception{
 		Date biWeeklyStartMondayDate = null;
 		Calendar projCal = Calendar.getInstance(TimeZone.getDefault());

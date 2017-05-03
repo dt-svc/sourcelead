@@ -864,9 +864,9 @@ function loadSignature(){
 						if(opt.labelName != 'Logo'){
 						
 						if(opt.labelName == "Sign Off"){
-							result = result + '<div class="col-md-3" title="Text Box"><input type="text" name=\''+name+'\' field-name="Sign Off" data-validation="required validate_Space validate_length length2-100" value="'+labelText+'" class="form-control input-sm" placeholder="Text Box"></div>';
+							result = result + '<div class="col-md-3"><input type="text" name=\''+name+'\' field-name="Sign Off" data-validation="required validate_Space validate_length length2-100" value="'+labelText+'" class="form-control input-sm" placeholder="Text Box"></div>';
 						}else{
-							result = result + '<div class="col-md-3" title="Text Box"><input type="text" '+readonly+' value="'+labelText+'" class="form-control input-sm" placeholder="Text Box"></div>';
+							result = result + '<div class="col-md-3"><input type="text" '+readonly+' value="'+labelText+'" class="form-control input-sm"></div>';
 						}
 						
 						result = result + '<div class="col-md-2 select-field">';
@@ -908,19 +908,19 @@ function loadSignature(){
 						result = result + '<div class="pull-left positionRelative">';
 						result = result + '<label class="btn-styles">';
 						result = result + '<input type="checkbox" name="bold'+opt.id+'" id="bold'+opt.id+'" '+boldChecked+'  '+boldValue+' onclick="getboldStyle('+opt.id+')" >';
-						result = result + '<i class="btn btn-default btn-sm fa fa-bold '+boldClass+'" id="boldActive'+opt.id+'" ></i>';
+						result = result + '<i title="Bold" class="btn btn-default btn-sm fa fa-bold '+boldClass+'" id="boldActive'+opt.id+'" ></i>';
 						result = result + '</label>';
 						result = result + '</div>';
 						result = result + '<div class="pull-left positionRelative">';
 						result = result + '<label class="btn-styles">';
 						result = result + '<input type="checkbox" name="underline'+opt.id+'" id="underline'+opt.id+'" '+underlineChecked+' '+underlineValue+' onclick="getunderlineStyle('+opt.id+')" >';
-						result = result + '<i class="btn btn-default btn-sm fa fa-underline '+underlineClass+'" id="underlineActive'+opt.id+'"></i>';
+						result = result + '<i title="Underline" class="btn btn-default btn-sm fa fa-underline '+underlineClass+'" id="underlineActive'+opt.id+'"></i>';
 						result = result + '</label>';
 						result = result + '</div>';
 						result = result + '<div class="pull-left positionRelative">';
 						result = result + '<label class="btn-styles">';
 						result = result + '<input type="checkbox" name="italic'+opt.id+'" id="italic'+opt.id+'" '+italicChecked+' '+italicValue+' onclick="getitalicStyle('+opt.id+')" >';
-						result = result + '<i class="btn btn-default btn-sm fa fa-italic '+italicClass+'" id="italicActive'+opt.id+'"></i>';
+						result = result + '<i title="Italic" class="btn btn-default btn-sm fa fa-italic '+italicClass+'" id="italicActive'+opt.id+'"></i>';
 						result = result + '</label>';
 						result = result + '</div>';
 						result = result + '</div>';
