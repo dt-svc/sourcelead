@@ -412,7 +412,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		 Date endSundayDate = CalendarUtil.getCurrentWeekDayByCalendar(endCal, "SUN").getTime();
 		 int tdSpanLength = 6;
 		LinkedHashMap<Date, Date> displayWeeksList = new LinkedHashMap<>();
-		Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListForTsReports(startMondayDate, endSundayDate);
+		Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startDate), format.format(endDate));
 		if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
 			for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
 	    		 String  k = entry.getKey();
@@ -438,8 +438,10 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		String hed = weekFrequencyDates.toString();
 		String[] dateHeaders =hed.split(",");
 		LinkedList<String> headersLinkedList = new LinkedList<>();
-		String[] firstheaders = {"Employee","Project","Frequency"};
-		String[] secondHeader ={"Total","ProjectToDate","LastMonth","Stage"};
+		String[] firstheaders = {"Emp Id","Employee Name","Employee Email","Project","Frequency"};
+		String[] secondHeader ={"Total","Total Billable","Total Non-Billable","ProjectToDate","Project Hours Billable","Project Hours Non-Billable","LastMonth","LastMonth Billable","LastMonth  Non-Billable","Stage"};
+		
+		
 				headersLinkedList.addAll(Arrays.asList(firstheaders));
 				headersLinkedList.addAll(Arrays.asList(dateHeaders));
 				headersLinkedList.addAll(Arrays.asList(secondHeader));
@@ -450,7 +452,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		String [] head = new String[headderList.size()];
 		String [] header = headderList.toArray(head);
 		
-	    Document document = new Document(PageSize.LETTER.rotate());
+	    Document document = new Document(PageSize.LETTER_LANDSCAPE.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 	    
 	    StringBuilder sbTsReports =  new StringBuilder();
@@ -470,10 +472,14 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	        PdfPTable table = new PdfPTable(header.length);
 	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
 	        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
-	        cell1.setColspan(14);
+	        cell1.setColspan(20);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
-            table.setWidths(new int[]{5,5,3,3,3,3,3,3,3,3,3,5});
+	        if(header.length < 20){
+            table.setWidths(new int[]{3,5,5,5,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,5});
+	        }else{
+	        table.setWidths(new int[]{3,5,5,5,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,5});	
+	        }
             table.addCell(cell1);
             for (int i = 0; i < header.length; i++) {
 	            String headerString = header[i];
@@ -488,7 +494,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
             List<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByOrgLocationsIdAndApproverUserId(startMondayDate, endSundayDate, orgLocations.getId(), loginUser.getId());
             java.util.List<String[]> reportList = new ArrayList<>();
             for(ProjectMembers promembers:projectMembers){
-            	reportList.add(prepareTimesheetReportData(promembers,header,displayWeeksList,loginUser));
+            	reportList.add(prepareTimesheetReportData(promembers,header,displayWeeksList,loginUser,startDate,endDate));
             }
             for (String[] tsreportList: reportList) {
                 for (int i = 0; i < tsreportList.length; i++) {
@@ -510,62 +516,80 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		return file;
 	}
 	
-	private String[] prepareTimesheetReportData(ProjectMembers projectMember, String[] header, LinkedHashMap<Date, Date> displayWeeksList, User loginUser) throws Exception {
+	private String[] prepareTimesheetReportData(ProjectMembers projectMember, String[] header, LinkedHashMap<Date, Date> displayWeeksList, User loginUser, Date startDate, Date endDate) throws Exception {
 		String timeSheetReportsArray[] = new String[header.length];
 			if(projectMember.getEmployee().getUser().getFullName() !=null){
-				StringBuilder sb = new StringBuilder();
-				timeSheetReportsArray[0] = sb.append(projectMember.getEmployee().getUser().getFullName()).append(projectMember.getEmployee().getUser().getEmail()).toString();
+				timeSheetReportsArray[0] = projectMember.getEmployee().getUser().getId().toString();
 			 }else{
 				 timeSheetReportsArray[0] = "--";
 			 }
-			if(projectMember.getProjects().getProjectName() !=null){
-				timeSheetReportsArray[1] = projectMember.getProjects().getProjectName();
+			if(projectMember.getEmployee().getUser().getFullName() !=null){
+				timeSheetReportsArray[1] = projectMember.getEmployee().getUser().getFullName();
 			 }else{
 				 timeSheetReportsArray[1] = "--";
 			 }
-			if(projectMember.getProjects().getInvoiceFrequency() !=null){
-				timeSheetReportsArray[2] = projectMember.getProjects().getInvoiceFrequency();
+			if(projectMember.getEmployee().getUser().getEmail() !=null){
+				timeSheetReportsArray[2] = projectMember.getEmployee().getUser().getEmail();
 			 }else{
 				 timeSheetReportsArray[2] = "--";
+			 }if(projectMember.getProjects().getProjectName() !=null){
+				timeSheetReportsArray[3] = projectMember.getProjects().getProjectName();
+			 }else{
+				 timeSheetReportsArray[3] = "--";
 			 }
-			int count = 3;
+			if(projectMember.getProjects().getInvoiceFrequency() !=null){
+				timeSheetReportsArray[4] = projectMember.getProjects().getInvoiceFrequency();
+			 }else{
+				 timeSheetReportsArray[4] = "--";
+			 }
+			int count = 5;
+			SubmissionApproverHierarchy sah= null;
+			float monthTotalHours = 0f;
+			 float weekTotalHours = 0f;
+			 float  weekBillableHours = 0f;
+			 float  monthBillableTotalHours = 0f;
+			 float weekNonBillableHours = 0f;
+			 float monthNonBillableTotalHours = 0f;
+			 
 			if(displayWeeksList != null && !displayWeeksList.isEmpty()){
 	    	    for (Map.Entry<Date,Date> entry : displayWeeksList.entrySet()) { 
-	    	    	 SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),projectMember.getId(),entry.getKey(), entry.getValue());
+	    	    	 sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),projectMember.getId(),startDate,endDate);
 	    	    	
 	    	    	 //String approvalClass = "class='draft'";
-	    	    	 Float weekTotalHours = 0f;
-	    	    	 Float weekBillableHours = 0f;
-	    	    	 Float weekNonBillableHours = 0f;
-	    	    	 if(sah != null && sah.getSubmissionId() != null && StringUtils.isNotEmpty(sah.getSubmissionId().getTotalHours())){
-	    	    		 weekTotalHours = Float.parseFloat(sah.getSubmissionId().getTotalHours());
-	    	    	 }
-	    	    	 if(sah != null && sah.getSubmissionId() != null && StringUtils.isNotEmpty(sah.getSubmissionId().getBillableHours())){
-	    	    		 weekTotalHours = Float.parseFloat(sah.getSubmissionId().getBillableHours());
-	    	    	 }
-	    	    	 if(sah != null && sah.getSubmissionId() != null && StringUtils.isNotEmpty(sah.getSubmissionId().getNonBillableHours())){
-	    	    		 weekTotalHours = Float.parseFloat(sah.getSubmissionId().getNonBillableHours());
-	    	    	 }
-	    	         /*if(sah.getSubmissionApprovalStatus() != null && sah.getSubmissionApprovalStatus().equals(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL)){
-	    	        	  approvalClass = "class='subm'";
-	    	    	 }
-	    	    	 else  if(sah.getSubmissionApprovalStatus() != null && sah.getSubmissionApprovalStatus().equals(Submission_ApprovalStatus.APPROVED)){
-	    	    		 approvalClass = "class='appr'";
-	    	    	 }
-	    	    	 else  if(sah.getSubmissionApprovalStatus() != null && sah.getSubmissionApprovalStatus().equals(Submission_ApprovalStatus.REJECTED)){
-	    	    		 approvalClass = "class='reje'";
-	    	    	 }*/
-	    	         
+	    	    	 monthTotalHours = CommonUtil.getCombinedHours(monthTotalHours, weekTotalHours);
+		    	     monthBillableTotalHours = CommonUtil.getCombinedHours(monthBillableTotalHours, weekBillableHours);
+		    	     monthNonBillableTotalHours =  CommonUtil.getCombinedHours(monthNonBillableTotalHours, weekNonBillableHours);
+	    	    	
+		    	    if(sah.getWeekTotalHoursMap().get(entry.getKey()) != null){
+		    	    	 weekTotalHours = sah.getWeekTotalHoursMap().get(entry.getKey());
+		    	    }
+	    	    	if(sah.getWeekBillableHoursMap().get(entry.getKey()) != null){
+	    	    		weekBillableHours = sah.getWeekBillableHoursMap().get(entry.getKey());
+	    	    	}
+	    	    	if(sah.getWeekNonBillableHoursMap().get(entry.getKey()) != null){
+	    	    		weekNonBillableHours = sah.getWeekNonBillableHoursMap().get(entry.getKey());
+	    	    	}
+	    	    	 
 	    	    	 StringBuilder listSb = new StringBuilder();
-	    	         timeSheetReportsArray[count] = listSb.append(weekTotalHours).append("Billable :"+weekBillableHours).append("NonBillabe :"+weekNonBillableHours).toString();
-	    	         
+	    	         timeSheetReportsArray[count] = listSb.append(CommonUtil.getHoursDisplayFormat(weekTotalHours)).toString();
+	    	         timeSheetReportsArray[count+1] = listSb.append(CommonUtil.getHoursDisplayFormat(weekBillableHours)).toString();
+	    	         timeSheetReportsArray[count+2] = listSb.append(CommonUtil.getHoursDisplayFormat(weekNonBillableHours)).toString();
 	    	         count++;
 	    	     }
 	     }
-				timeSheetReportsArray[count] ="0.0";
-				timeSheetReportsArray[count+1] ="0.0";
-				timeSheetReportsArray[count+2] ="0.0";
-				timeSheetReportsArray[count+3] ="ACTION REQUIRED";
+				timeSheetReportsArray[count] =  CommonUtil.getHoursDisplayFormat(monthTotalHours);
+				timeSheetReportsArray[count+1] = CommonUtil.getHoursDisplayFormat(monthBillableTotalHours);
+				timeSheetReportsArray[count+2] = CommonUtil.getHoursDisplayFormat(monthNonBillableTotalHours);
+				
+				timeSheetReportsArray[count+3] = CommonUtil.getHoursDisplayFormat(sah.getProjectToDateTotalHours());
+				timeSheetReportsArray[count+4] = CommonUtil.getHoursDisplayFormat(sah.getProjectToDateBillableHours());
+				timeSheetReportsArray[count+5] = CommonUtil.getHoursDisplayFormat(sah.getProjectToDateNonBillableHours());
+				
+				timeSheetReportsArray[count+6] =CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthTotalHours());
+				timeSheetReportsArray[count+7] =CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthBillableHours());
+				timeSheetReportsArray[count+8] =CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthNonBillableHours());
+				
+				timeSheetReportsArray[count+9] ="ACTION REQUIRED";
 			
 		return timeSheetReportsArray;
 	}
@@ -603,7 +627,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		 Date endSundayDate = CalendarUtil.getCurrentWeekDayByCalendar(endCal, "SUN").getTime();
 		 int tdSpanLength = 6;
 		LinkedHashMap<Date, Date> displayWeeksList = new LinkedHashMap<>();
-		Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListForTsReports(startMondayDate, endSundayDate);
+		Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startDate), format.format(endDate));
 		if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
 			for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
 	    		 String  k = entry.getKey();
@@ -639,7 +663,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		 List<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByOrgLocationsIdAndApproverUserId(startMondayDate, endSundayDate, orgLocations.getId(), loginUser.getId());
 		 for(ProjectMembers promembers:projectMembers){
 			 writeRow = createExcelsheet.createRow(column + 2);
-			 createExcelsheet = prepareTimesheetReportDataExcel(promembers,displayWeeksList,loginUser,createExcelsheet,writeRow);
+			 createExcelsheet = prepareTimesheetReportDataExcel(promembers,displayWeeksList,loginUser,createExcelsheet,writeRow,startDate,endDate);
 			 column++;
          }
 		 StringBuilder fileSB = new StringBuilder();
@@ -660,8 +684,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		String hed = weekFrequencyDates.toString();
 		String[] dateHeaders =hed.split(",");
 		LinkedList<String> headersLinkedList = new LinkedList<>();
-		String[] firstheaders = {"Employee","Project","Frequency"};
-		String[] secondHeader ={"Total","ProjectToDate","LastMonth","Stage"};
+		String[] firstheaders = {"Emp Id","Employee Name","Employee Email","Project","Frequency"};
+		String[] secondHeader ={"Total","Total Billable","Total Non-Billable","ProjectToDate","Project Hours Billable","Project Hours Non-Billable","LastMonth","LastMonth Billable","LastMonth  Non-Billable","Stage"};
 				headersLinkedList.addAll(Arrays.asList(firstheaders));
 				headersLinkedList.addAll(Arrays.asList(dateHeaders));
 				headersLinkedList.addAll(Arrays.asList(secondHeader));
@@ -676,56 +700,75 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	   return createExcelsheet;
 	}
 	
-	private Sheet prepareTimesheetReportDataExcel(ProjectMembers projectMember, LinkedHashMap<Date, Date> displayWeeksList,User loginUser, Sheet createExcelsheet, Row writeRow) throws Exception {
-		StringBuilder sb = new StringBuilder();
+	private Sheet prepareTimesheetReportDataExcel(ProjectMembers projectMember, LinkedHashMap<Date, Date> displayWeeksList,User loginUser, Sheet createExcelsheet, Row writeRow, Date startDate, Date endDate) throws Exception {
+		
 		
 		if(projectMember.getEmployee().getUser().getFullName() != null){
-			 writeRow.createCell(0).setCellValue(sb.append(projectMember.getEmployee().getUser().getFullName()).append(projectMember.getEmployee().getUser().getEmail()).toString()); 
+			 writeRow.createCell(0).setCellValue(projectMember.getEmployee().getUser().getId()); 
+		}
+		if(projectMember.getEmployee().getUser().getFullName() != null){
+			StringBuilder sb = new StringBuilder();
+			 writeRow.createCell(1).setCellValue(sb.append(projectMember.getEmployee().getUser().getFullName()).toString()); 
+		}
+		if(projectMember.getEmployee().getUser().getEmail() != null){
+			 writeRow.createCell(2).setCellValue(projectMember.getEmployee().getUser().getEmail()); 
 		}
 		if(null != projectMember.getProjects().getProjectName()){
-			 writeRow.createCell(1).setCellValue(projectMember.getProjects().getProjectName()); 
+			 writeRow.createCell(3).setCellValue(projectMember.getProjects().getProjectName()); 
 		}
 		if(null != projectMember.getProjects().getInvoiceFrequency()){
-			 writeRow.createCell(2).setCellValue(projectMember.getProjects().getInvoiceFrequency()); 
+			 writeRow.createCell(4).setCellValue(projectMember.getProjects().getInvoiceFrequency()); 
 		}
-		int count = 3;
+		int count = 5;
+		SubmissionApproverHierarchy sah = null;
+		 Float weekTotalHours = 0f;
+    	 Float weekBillableHours = 0f;
+    	 Float weekNonBillableHours = 0f;
+    	 float monthTotalHours =0f; 
+    	 float monthBillableTotalHours =0f;
+    	 float monthNonBillableTotalHours  =0f;
+    	 
 		if(displayWeeksList != null && !displayWeeksList.isEmpty()){
     	    for (Map.Entry<Date,Date> entry : displayWeeksList.entrySet()) { 
-    	    	 SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),projectMember.getId(),entry.getKey(), entry.getValue());
+    	    	 sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),projectMember.getId(),startDate,endDate);
+    	    	 
+    	    	 
+    	    	 monthTotalHours = CommonUtil.getCombinedHours(monthTotalHours, weekTotalHours);
+	    	     monthBillableTotalHours = CommonUtil.getCombinedHours(monthBillableTotalHours, weekBillableHours);
+	    	     monthNonBillableTotalHours =  CommonUtil.getCombinedHours(monthNonBillableTotalHours, weekNonBillableHours);
     	    	
-    	    	 //String approvalClass = "class='draft'";
-    	    	 Float weekTotalHours = 0f;
-    	    	 Float weekBillableHours = 0f;
-    	    	 Float weekNonBillableHours = 0f;
-    	    	 if(sah != null && sah.getSubmissionId() != null && StringUtils.isNotEmpty(sah.getSubmissionId().getTotalHours())){
-    	    		 weekTotalHours = Float.parseFloat(sah.getSubmissionId().getTotalHours());
-    	    	 }
-    	    	 if(sah != null && sah.getSubmissionId() != null && StringUtils.isNotEmpty(sah.getSubmissionId().getBillableHours())){
-    	    		 weekTotalHours = Float.parseFloat(sah.getSubmissionId().getBillableHours());
-    	    	 }
-    	    	 if(sah != null && sah.getSubmissionId() != null && StringUtils.isNotEmpty(sah.getSubmissionId().getNonBillableHours())){
-    	    		 weekTotalHours = Float.parseFloat(sah.getSubmissionId().getNonBillableHours());
-    	    	 }
-    	         /*if(sah.getSubmissionApprovalStatus() != null && sah.getSubmissionApprovalStatus().equals(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL)){
-    	        	  approvalClass = "class='subm'";
-    	    	 }
-    	    	 else  if(sah.getSubmissionApprovalStatus() != null && sah.getSubmissionApprovalStatus().equals(Submission_ApprovalStatus.APPROVED)){
-    	    		 approvalClass = "class='appr'";
-    	    	 }
-    	    	 else  if(sah.getSubmissionApprovalStatus() != null && sah.getSubmissionApprovalStatus().equals(Submission_ApprovalStatus.REJECTED)){
-    	    		 approvalClass = "class='reje'";
-    	    	 }*/
-    	         
+	    	    if(sah.getWeekTotalHoursMap().get(entry.getKey()) != null){
+	    	    	 weekTotalHours = sah.getWeekTotalHoursMap().get(entry.getKey());
+	    	    }
+    	    	if(sah.getWeekBillableHoursMap().get(entry.getKey()) != null){
+    	    		weekBillableHours = sah.getWeekBillableHoursMap().get(entry.getKey());
+    	    	}
+    	    	if(sah.getWeekNonBillableHoursMap().get(entry.getKey()) != null){
+    	    		weekNonBillableHours = sah.getWeekNonBillableHoursMap().get(entry.getKey());
+    	    	}
+    	    	 
     	    	 StringBuilder listSb = new StringBuilder();
-    	    	 writeRow.createCell(count).setCellValue(listSb.append(weekTotalHours).append("Billable :"+weekBillableHours).append("NonBillabe :"+weekNonBillableHours).toString());
-    	         
+    	    	 writeRow.createCell(count).setCellValue(listSb.append(CommonUtil.getHoursDisplayFormat(weekTotalHours)).toString());
+    	    	 writeRow.createCell(count+1).setCellValue( listSb.append(CommonUtil.getHoursDisplayFormat(weekBillableHours)).toString());
+    	    	 writeRow.createCell(count+2).setCellValue(listSb.append(CommonUtil.getHoursDisplayFormat(weekNonBillableHours)).toString());
     	         count++;
     	     }
      }
-		writeRow.createCell(count).setCellValue("0.0");
-		writeRow.createCell(count+1).setCellValue("0.0");
-		writeRow.createCell(count+2).setCellValue("0.0");
-		writeRow.createCell(count+3).setCellValue("ACTION REQUIREDD");
+		
+		
+		writeRow.createCell(count).setCellValue( CommonUtil.getHoursDisplayFormat(monthTotalHours));
+		writeRow.createCell(count+1).setCellValue( CommonUtil.getHoursDisplayFormat(monthBillableTotalHours));
+		writeRow.createCell(count+2).setCellValue( CommonUtil.getHoursDisplayFormat(monthNonBillableTotalHours));
+		
+		writeRow.createCell(count+3).setCellValue( CommonUtil.getHoursDisplayFormat(sah.getProjectToDateTotalHours()));
+		writeRow.createCell(count+4).setCellValue( CommonUtil.getHoursDisplayFormat(sah.getProjectToDateBillableHours()));
+		writeRow.createCell(count+5).setCellValue( CommonUtil.getHoursDisplayFormat(sah.getProjectToDateNonBillableHours()));
+		
+		writeRow.createCell(count+6).setCellValue( CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthTotalHours()));
+		writeRow.createCell(count+7).setCellValue( CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthBillableHours()));
+		writeRow.createCell(count+8).setCellValue( CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthNonBillableHours()));
+		
+		writeRow.createCell(count+9).setCellValue("ACTION REQUIRED");
 		
 		return createExcelsheet;
 	}

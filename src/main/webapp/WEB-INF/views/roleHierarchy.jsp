@@ -194,7 +194,7 @@ function validateLevelName(){
 	var levelName = document.getElementById("level").value;
 	var hierarchyId = document.getElementById("hierarchyId").value;
 	var sourceleadUrl = '${sourceleadUrl}';
-	if(levelName != null && levelName != '') {
+	if(levelName) {
 		$("#add_hierarchy").attr("disabled", "disabled");
 		$.ajax({
 			type : "GET",
@@ -202,19 +202,22 @@ function validateLevelName(){
 			success : function(data) {
 				var result = data;
 				if (result == "invalid") {
-					$("input#level").after( "<p class='jquery_form_error_message'>" + levelName + " is already existed</span>");
-					document.getElementById("level").setAttribute( 'record-exist', 'yes');
-					document.getElementById("level").setAttribute( 'record-exist-errorMsg', levelName +"  already existed");
-					$('input#level').removeAttr( "record-exist record-exist-errorMsg");
+					$("#add_hierarchy").removeAttr("disabled");
+				    $('#levelDiv').find('p.jquery_form_error_message').remove(); 
+		    	    $("input#level").after("<p class='jquery_form_error_message'>"+levelName+" is Already Existed</span>");
+    				$('input#level').attr('record-exist','yes');
+    				$('input#level').attr('record-exist-errorMsg',levelName+' is Invalid');
 					
 				}else{
 					$("#add_hierarchy").removeAttr("disabled");
 					$('input#level').removeAttr("class record-exist record-exist-errormsg");
 					$('input#level').attr('class','valid form-control');
 					$('#levelDiv').find('p.jquery_form_error_message').remove();
-					$("#add_hierarchy").click(function() {
-						
-					});
+					
+					 $( "#add_hierarchy" ).click(function() {
+						 if ($(this).validate(false, validationSettings)){
+						 }
+						});
 				}
 			},
 
