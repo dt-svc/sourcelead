@@ -914,6 +914,8 @@ function loadOffBoardingTemplates(offboardTemplateId){
 		     	       $("#documentstemplateId").val(offboardId);
 		        	}
 		        	
+		        	
+		        	$("#savedoffboardId").val(offboardId);
 	     	        $("#candidateOffBoardId").val(offboardId);
 	     	        
 	     	       $("#save_offboardUser").removeAttr("disabled");
