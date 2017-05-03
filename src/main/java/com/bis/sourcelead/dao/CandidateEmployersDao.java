@@ -15,4 +15,8 @@ public interface CandidateEmployersDao {
 	public List<CandidateEmployers>   getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
 
 	public CandidateEmployers getCandidateEmployerBycandidateIdandCandidateEmployerID(Long candidateEmployersId,Long candidateId);
+	
+	CandidateEmployers getCandidateCurrentEmployer(Long candidateId, Long orgLocationId) throws Exception;
+	
+	CandidateEmployers getCandidateLastCompanyEmployer(Long candidateId, Long orgLocationId) throws Exception;
 }
