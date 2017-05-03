@@ -106,6 +106,7 @@ public class SecurityConfig  {
     			.antMatchers("/getOptionalValueList").permitAll() 
     			.antMatchers("/openRequirements/**").permitAll() 
     			.antMatchers("/getOpenJobsELK").permitAll()
+    			.antMatchers("/getOrgsListforOpenJobs").permitAll()
     			.antMatchers("/openRequirementsRedirect").permitAll()
     			.antMatchers("/openRequirementsSummary").permitAll()
     			.antMatchers("/openJobsPublicPage").permitAll()
