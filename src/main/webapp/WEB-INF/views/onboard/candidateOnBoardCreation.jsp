@@ -1346,6 +1346,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		        	}
 		        	
 	     	        $("#candidateOnBoardId").val(onboardId);
+	     	        $("#savedonboardId").val(onboardId);
 	     	        
 	     	       $("#save_onboardUser").removeAttr("disabled");
 	   	           $("#saveAndContinue_onboardUser").removeAttr("disabled");
