@@ -32,6 +32,7 @@ import com.bis.sourcelead.elk.index.helper.RequirementHelper;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -48,6 +49,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateEducationService;
+import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -125,6 +127,9 @@ public class SubmissionsRestController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Autowired
+	CandidateEmployersService candidateEmployersService;
+	
 	
 
 	@RequestMapping(value = "/getCandidateResumes")
@@ -143,6 +148,7 @@ public class SubmissionsRestController {
 	public String getCandidateDetails(@RequestParam(value = "candidateId", required = false) Long candidateId,
 			HttpServletRequest request) throws Exception {
 
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String resultJson = null;
 		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 		List<String> educationList = candidateEducationService.getCandidateEducationNamesByCandidateId(candidateId);
@@ -154,6 +160,17 @@ public class SubmissionsRestController {
 			
 			candidate.setCandidateEdu(education.substring(0,education.length()-2).toString());
 		}
+		
+		CandidateEmployers currentEmployer = candidateEmployersService.getCandidateCurrentEmployer(candidateId, orgLocation.getId());
+		if(null != currentEmployer){
+			candidate.setEmployer(currentEmployer.getName());
+		}else{
+			CandidateEmployers lastCompanyEmployer = candidateEmployersService.getCandidateLastCompanyEmployer(candidateId, orgLocation.getId());
+			if(null != lastCompanyEmployer){
+				candidate.setEmployer(lastCompanyEmployer.getName());
+			}
+		}
+		
 		resultJson = toJSON(candidate);
 		return resultJson;
 
@@ -381,6 +398,10 @@ public class SubmissionsRestController {
 		boolean submitToClient = true;
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		
+		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		
 		if(null != requirement){
 			if(null != requirement.getParentRequirement() && requirement.getIsClientJob().equalsIgnoreCase("Y")){
 				if(!requirement.getParentRequirement().getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.OPEN) && 
@@ -394,7 +415,7 @@ public class SubmissionsRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		List<RequirementSubmission> shortlistedList = requirementSubmissionService
-				.getAllShortLitstedCandidatesForClientSubmissionByRequirementId(orgLocations.getId(), requirementId);
+				.getAllShortLitstedCandidatesForClientSubmissionByRequirementId(orgLocations, requirement,user,loginUserRole);
 		ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
 
 		for (RequirementSubmission requirementSubmission : shortlistedList) {

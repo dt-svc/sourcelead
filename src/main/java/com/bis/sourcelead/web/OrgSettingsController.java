@@ -53,7 +53,7 @@ public class OrgSettingsController {
 	@Autowired
 	TimeZoneService timeZoneService;
 	
-	@PreAuthorize("hasAnyRole('ROLE_VIEW_ORG_SETTINGS','ROLE_EDIT_ORG_SETTINGS')")
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/orgSettings")
  	public ModelAndView orgSettings(HttpServletRequest request) throws Exception {
 		logger.debug("Org settings");
