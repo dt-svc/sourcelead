@@ -1137,7 +1137,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 
 
 			
-			  String isFileCreated = "failed";
+			  String isFileCreated = "success";
 			  String fn = multipartFile.getOriginalFilename();
 			  String fname = getFileName(fn);
 			  File file = new File(multipartFile.getOriginalFilename());
@@ -1172,7 +1172,9 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		      }
 		      Iterator rows = sheet.rowIterator(); // Now we have rows ready from the sheet
 		      createExcelsheet = setClientExcelHeader(createExcelsheet,responderType);
-		     while (rows.hasNext()) 
+		      boolean isValid =  isValidTemplate(rows,responderType);
+		      if(isValid){
+		    	 while (rows.hasNext()) 
 			      { 
 				       Row row = (Row) rows.next();
 				        		 if(row.getRowNum() > 0){
@@ -1238,10 +1240,39 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 									return "empty";
 						       }*/
 			      }
-			  inp.close();
-			return isFileCreated;
+		    	 inp.close();
+					//return isFileCreated;
+		     }else{
+		    	 isFileCreated = "invalid";
+		     }
+			  
+		     return isFileCreated;
 		
-		
+		}
+		private boolean isValidTemplate(Iterator rows,String responderType) {
+           boolean isValid = false;
+			Row row = (Row) rows.next();
+			String name = "";
+			if(responderType.equalsIgnoreCase(Constants.CLIENT)){
+				name = Constants.CLIENT_NAME;
+			}else{
+				name = Constants.VENDOR_NAME;
+			}
+			
+			 if(row.getRowNum() == 0){
+		    	   if(name.equalsIgnoreCase(row.getCell(0).getStringCellValue())){
+		    		   if(Constants.WEBSITE.equalsIgnoreCase(row.getCell(1).getStringCellValue())){
+		    			   if(Constants.country.equalsIgnoreCase(row.getCell(2).getStringCellValue())){
+		    				   if(Constants.SATATE.equalsIgnoreCase(row.getCell(3).getStringCellValue())){
+		    					   if(Constants.CITY.equalsIgnoreCase(row.getCell(4).getStringCellValue())){
+		    						   isValid = true;
+		    					   }
+		    				   }
+		    			   }
+		    		   }  
+		       }
+			 }
+			return isValid;
 		}
 		@Override
 		public List<BulkClientDetails> getbulkClientDetailsByOrgLocationId(OrgLocations orgLocations,User user, Org org, String isMailSent, String responderType) throws Exception

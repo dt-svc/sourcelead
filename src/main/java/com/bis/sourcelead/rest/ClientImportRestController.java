@@ -60,6 +60,7 @@ public class ClientImportRestController {
 	@ResponseBody
 	public String fileUploaded(MultipartHttpServletRequest request,@RequestParam(value = "responderType", required = false) String responderType)throws Exception{
 
+		String isSuccess =  "failure";
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -75,12 +76,14 @@ public class ClientImportRestController {
 		isFileCreated = clientImportsService.clientExcelDataSave(multipartFile,user,orgLocation,org,"Y",responderType);
 		}
 		if("empty".equalsIgnoreCase(isFileCreated)){
-			SourceLeadSessionManager.setSessionAttribute(request, "importCreateMsg", "Mandatory fields are required");
+			isSuccess = "empty";
+		}else if("invalid".equalsIgnoreCase(isFileCreated)){
+			isSuccess = "invalid";
 		}else{
 			List<BulkClientDetails> bulkClientDetailsList = clientImportsService.getbulkClientDetailsByOrgLocationId(orgLocation,user,org,"Y",responderType);
 			return commonUtil.toJSON(bulkClientDetailsList);
 		}
-		return "failure";
+		return isSuccess;
 	}
 	
 //	/deleteRecordFromBulk
