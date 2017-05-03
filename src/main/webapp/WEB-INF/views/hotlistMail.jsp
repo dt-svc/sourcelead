@@ -110,7 +110,7 @@ display: none;
                 <div class="modal-content">
                   <div class="modal-header">
                     <button data-dismiss="modal" class="close" type="button">×</button>
-                    <h4 class="modal-title">Select Candidates / Consultants</h4>
+                    <h4 class="modal-title">Select Candidates / Associates</h4>
                   </div>
                   
                   <div class="modal-body clearfix">
@@ -118,12 +118,10 @@ display: none;
                       <div class="row">
                         <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100 select-field">
                           <select class="form-control" id="candidatesListType" onchange="candidateListChange();">
-                            <option value="consultants" selected>Consultants</option>
+                            <option value="consultants" selected>Associates</option>
                             <option value="candidates">Candidates</option>
                              <option value="openHotlist">Open Hotlist</option>
-                            <option value="hotlistConsultants">Hostlist Consultants</option>
-                            <option value="hotlistCandidates">Hostlist Candidates</option>
-                          
+                            <option value="hotlistConsultants">Hostlist Associates</option>
                           </select>
                         </div>
                       </div>
@@ -703,7 +701,12 @@ function getCandidates(candidatesListType){
 		                    	 result = result +'<td>'+mobile+'</td>';
 		                    	 result = result +'<td>'+designation+'</td>';
 		                    	 if(candidatesListType == 'openHotlist'){
-		                    		 result = result +'<td>'+opt.candidateType+'</td>'; 
+		                    		 if(opt.isAssociate == 'Y'){
+		                    			 result = result +'<td>Associate</td>'; 
+		                    		 }else{
+		                    			 result = result +'<td>Candidate</td>'; 
+		                    		 }
+		                    		 
 		                    	 }
 		                    	 result = result +'<td>'+designationType+'</td>';
 		                    	 result = result +'</tr>';

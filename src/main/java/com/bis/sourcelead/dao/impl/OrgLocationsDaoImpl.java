@@ -138,7 +138,7 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 	public List<OrgLocations> getAllOrgLocations() throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<OrgLocations> orgLocationsList = null;
-		Query citiesListQuery= session.createQuery("from OrgLocations");
+		Query citiesListQuery= session.createQuery("from OrgLocations orgloc left join fetch orgloc.org");
 		orgLocationsList=citiesListQuery.list();
 		return orgLocationsList;
 	}
@@ -250,6 +250,20 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 			return orgLocation;
 		
 		
+	}
+
+	@Override
+	@Transactional
+	public List<OrgLocations> getAllOrgsStartsWithAlphabet(String alphabet) {
+		Session session = this.sessionFactory.getCurrentSession();
+	      String query = "";
+	      if("Others".equalsIgnoreCase(alphabet)){
+	    	  query = ("from OrgLocations orgLocations left join fetch orgLocations.org where orgLocations.org.orgName IN (select org.orgName from Org org where org.orgName <= '@' or org.orgName >= '{')");
+	      }else{
+	    	  query = ("from OrgLocations orgLocations left join fetch orgLocations.org where orgLocations.org.orgName IN (select org.orgName from Org org where org.orgName like '"+alphabet+"%')");
+	      }
+	      List<OrgLocations> locationList = session.createQuery(query.toString()).setCacheable(true).list();
+		return locationList;
 	}
 
 }

@@ -186,7 +186,7 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 	result = result  +'                    <div class="col-md-12">                                                                                                            ';
-	result = result  +'                      <input type="text" name="docName"  id="docName" field-name="Name" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Name *">                                          ';
+	result = result  +'                      <input type="text" name="docName"  id="docName" field-name="Document Name" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Document Name *">                                          ';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';

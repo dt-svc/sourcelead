@@ -19,10 +19,10 @@ padding-bottom: 15px;
 min-height: 150px;
 }
 .popupFilter #example_filter {
-top:-63px !important;
+top:-55px !important;
 }
-.dataTable thead {
-background: #375d81; color:#fff; height: 34px;
+.dataTable thead th {
+background: #375d81; color:#fff; height: 34px; padding-top: 5px; padding-bottom: 5px;
 }
 .dataTable thead tr th {
 vertical-align: middle;
@@ -47,7 +47,7 @@ margin-top: 15px;
 padding: 0 !important;
 margin-top: 10px;
 }
-.dataTables_wrapper .dataTables_filter input {
+dataTables_wrapper .dataTables_filter input {
 background-color:#fff;
 height: 34px;
 width:400px;
@@ -63,6 +63,9 @@ left:-20px !important;
 }
 .pras.req-title p{
 bottom:-2px;
+}
+.payrate_p p.jquery_form_error_message{
+ bottom: -13px;padding-left: 0 !important;
 }
 .form-control {
 padding: 6px 12px !important; height: 34px !important;
@@ -418,10 +421,10 @@ $(document).ready(function () {
             </div>
           </div>
           
-          <div class="form-group">
+          <div class="form-group" >
             <label class="col-md-3">Pay Rate/Salary</label>
             <div class="col-md-9">
-             <div class="input-group">
+             <div class="input-group payrate_p">
                 <div class="input-group-btn selp-custom-min">
                   
                   <select class="selectpicker" id="currencyCode" name="currencyCode" >
@@ -445,8 +448,8 @@ $(document).ready(function () {
                  </c:if>
                 </select>
                 </div>
-                <input type="text" class="form-control input-sm" id="rate" name="rate" field-name="Rate" value="${requirement.rate}" data-validation="validate_Space validate_int validate_length length1-8" data-validation-optional="true"  value="">
-                <div class="input-group-btn selp-custom-min">
+                <input type="text" class="form-control input-sm" id="rate" name="rate" field-name="Rate" value="${requirement.rate}" data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="">
+                <div class="input-group-btn selp-custom-min payrate_p">
                   <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Per">
                     <option value="">Rate Per</option>
                     <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
@@ -1259,7 +1262,7 @@ function validate_fileupload(fileName)
           var rateType = document.getElementById("rateType").value; 
   		 if(rateType != null && rateType != ""){
   			 $('#rate').removeAttr('data-validation-optional');
-  			 $('#rate').attr("data-validation","required validate_Space validate_float validate_length length1-8"); 
+  			 $('#rate').attr("data-validation","required validate_Space validate_int validate_length length1-8"); 
   		 }else{
   			 $('#rate').removeAttr('data-validation');
   			 $('#rate').attr("data-validation-optional","true"); 
@@ -1269,7 +1272,7 @@ function validate_fileupload(fileName)
  		 if(rate != null && rate != ""){
  			 $('#rateType').removeAttr('data-validation-optional');
  			 $('#rateType').attr("data-validation","required");
- 			 $('#rate').attr("data-validation","required validate_Space validate_float validate_length length1-8");
+ 			 $('#rate').attr("data-validation","required validate_Space validate_int validate_length length1-8");
  		 }else{
  			 $('#rateType').removeAttr('data-validation');
  			 $('#rateType').attr("data-validation-optional","true"); 
@@ -1617,17 +1620,19 @@ function getCities(){
 		    chosenone = selectone.data('chosen');
 		    chosenone.search_field.on('keyup', function(e1)
 		    {
-		    	var newEducation = this.value.replace(",","");
+		    	var newEducation = this.value.replace("\'","");
 		    	   if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
 			        {
 		    		   var par = this.parent;
 			            var option = $("<option>").val(newEducation).text(newEducation);
 			            selectone.append(option);
 			            selectone.find(option).prop('selected', true);
-			            $("#education").trigger("chosen:updated");
+			            
 			            $("#education option").each(function(){
 	                         $(this).siblings("[value='"+ this.value+"']").remove();
 	                   });
+			            
+			            $("#education").trigger("chosen:updated");
 			           
 			        }
 		    
@@ -2059,7 +2064,7 @@ function popupWindow(reqId){
  		result = result +'       </div>';
  		
  		result = result +'       <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">';
- 		result = result +'          <select id="rolesDiv" class="selectpicker" multiple data-actions-box="true" onchange="filterTeamMembers();" style="display:block !important">';
+ 		result = result +'          <select id="rolesDiv" class="selectpicker" multiple data-actions-box="true" onchange="filterTeamMembers();" style="display:block !important" title="--Select Assign Team--">';
  		result = result +'          </select>';
  		result = result +'       </div>';
  		
