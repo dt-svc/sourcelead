@@ -337,7 +337,7 @@ display: none;}
 			<div class="filLoad filLoad_a"><h2 class="gradi"></h2></div>
 				
 			</div>-->
-			<div id="loading"></div>
+			<div id="loadinggif"></div>
 			<div id= "openJobsRequirementsList"></div>
 			<div id="loadMoreDiv"></div> 
 			<div class="loadJob" onClick="loadMoreReq();" id="loadMoreReq" style="display: block; cursor: pointer;">View more</div>
@@ -658,7 +658,7 @@ display: none;}
     <jsp:include page="../masterFooter.jsp" />
     <div class="copyrightOut">
     	<div class="copyright">
-    	<b>Â© 2016 SourceLead. All rights reserved.</b>
+    	<b>© 2016 SourceLead. All rights reserved.</b>
         <span>
         	<a href="../privacy.html">Privacy Policy</a>
             <a href="../terms.html">Terms of Use</a>
@@ -722,7 +722,7 @@ function clearFilters(){
 </script>
 
 <script>
-function requirementsFilter(){
+function requirementsFilter(type){
 	var reqType = [];
 	$('input:checkbox[name=typeFilter]:checked').each(function() 
     {
@@ -753,19 +753,27 @@ function requirementsFilter(){
 	if(type == "more"){
 		offset = $("#openJobsOffset").val();
 	}
+	
+	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	
 	 $.ajax({ 
 	   	type: "POST",
 	   	url: sourceleadUrl+"/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&reqType="+reqType+"&orgLocationIds="+orgLocationIds+"&dates="+dates+"&country="+country,
 	    success: function(data) {
 	    	var json = JSON.parse(data);
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){ 
+	    		$("#loadMoreReq").css("display", "block");
 	    		prepareOpenJobsElkList(data,sourceleadUrl,offset);
+	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	    	}else{
+	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	        	$("#openJobsRequirementTitleId").val('');
 				$("#openJobsLocationId").val('');
 				$("#openJobsExperienceId").val('');
-	        	$('#loadMoreReq').empty(); 
-	        	$('#openJobsRequirementsList').empty(); 
+	        	$('#openJobsRequirementsList').empty();
+	        	$("#openJobsRequirementsList").show();
+	        	$("#openJobsRequirementsSummary").hide();
+	        	$("#loadMoreReq").css("display", "none");
 	        	/* var result ="";
 	         	result = result + '<div>No Records Found...</div>';
 	         	$('#loadMoreReq').append(result); */
@@ -791,16 +799,14 @@ function getOpenJobsELKList(type){
 	   	url: sourceleadUrl+"/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&openJobsRequirementTitle="+openJobsRequirementTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience,
 	    success: function(data) {
 	    	var json = JSON.parse(data);
-	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){ 	
+	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){ 
+	    		$("#loadMoreReq").css("display", "block");
 	    		prepareOpenJobsElkList(data,sourceleadUrl,offset);
 	    	}else{
 	        	$("#openJobsRequirementTitleId").val('');
 				$("#openJobsLocationId").val('');
 				$("#openJobsExperienceId").val('');
-	        	$('#loadMoreReq').empty(); 
-	        	var result ="";
-	         	result = result + '<div>No Records Found...</div>';
-	         	$('#loadMoreReq').append(result);
+				$("#loadMoreReq").css("display", "none");
 	        }
 	    }
 	 }); 
@@ -809,6 +815,8 @@ function getOpenJobsELKList(type){
 
 <script>
 function prepareOpenJobsElkList(data,sourceleadUrl,offset){
+	$("#openJobsRequirementsList").show();
+	$("#openJobsRequirementsSummary").hide();
     var json = JSON.parse(data);
   	 var experience ="";
   	 var location = "";
