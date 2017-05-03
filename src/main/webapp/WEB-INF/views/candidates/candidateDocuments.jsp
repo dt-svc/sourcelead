@@ -120,8 +120,8 @@ function candDocumentsList(candidateId){
 				           		result = result+'<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
 			           		}else{
 			           			var docUUID = opt.documentUUID;
-			           			result = result+' <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+candidateId+',\''+docUUID+'\'); getDocument('+candidateId+', '+opt.id+');"></a>';
-				           		result = result+'<i class="glyphicon glyphicon-trash" onclick="deleteDocument('+candidateId+','+opt.id+');"></i>';
+			           			result = result+' <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+candidateId+',\''+docUUID+'\'); getDocument('+candidateId+', '+opt.id+');" title="Edit"></a>';
+				           		result = result+'<i class="glyphicon glyphicon-trash" onclick="deleteDocument('+candidateId+','+opt.id+');" title= "Remove"></i>';
 			           		}
 			           		result = result+'</div></td>';
 	                    	 result  = result + '</tr>';

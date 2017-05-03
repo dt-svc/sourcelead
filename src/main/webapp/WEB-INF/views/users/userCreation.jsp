@@ -622,6 +622,8 @@ function getEmployeementType(designationType){
  
  <script>
 function getAssociateUserDetails(){
+	var role = document.getElementById("role").value;
+	 var reportingManager = document.getElementById("reportingManager").value;  
 	var sourceleadUrl ='${sourceleadUrl}';
 	var employeementType = document.getElementById("employeementType").value;
 		$.ajax({
@@ -649,7 +651,10 @@ function getAssociateUserDetails(){
 	        		  $("#designationOtherType").val(json['designationOtherType']);
 	        		  otherType(json['designationType']);
 	        		  }
-	        		  
+	        		  $("#role").val('');
+		        		 $('#role').trigger("chosen:updated");
+		        		 $("#reportingManager").val('');
+			        	 $('#reportingManager').trigger("chosen:updated");
 	        		  /* (val(json['designationType'])); */
 	        		  validateUserEmail();
 	        	}

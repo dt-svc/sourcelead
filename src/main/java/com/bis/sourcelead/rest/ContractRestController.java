@@ -112,12 +112,14 @@ public class ContractRestController {
 	public @ResponseBody  void testController(@PathVariable("id") String id,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateById(Long.parseLong(id));		
+		String header = "<div style='text-align: center;'>"+contractsTemplate.getTemplateName()+"<br></div><br>";
+		String totalBody = header + contractsTemplate.getTemplateContent();
     	ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
   	    Document document = new Document();
   	    PdfWriter.getInstance(document, byteArray);
   	    document.open();
   	    HTMLWorker htmlWorker = new HTMLWorker(document);
-  	    htmlWorker.parse(new StringReader(contractsTemplate.getTemplateContent()));
+  	    htmlWorker.parse(new StringReader(totalBody));
   	    document.close();
   	    byte[] pdfBytes = byteArray.toByteArray();
   	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");

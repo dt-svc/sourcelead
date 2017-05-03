@@ -10,6 +10,7 @@
 <script>
 	$(document).ready(function() {
 		document.getElementById("createOrg_form").reset();
+		getTimezonesList();
 	});
 </script>
 
@@ -49,7 +50,7 @@
              <div class="form-group">
 	            <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
 	            <div class="col-md-9">
-	              <select class="form-control select-bg" name="country" field-name="Country" data-validation="required" value="${country}" >
+	              <select class="form-control select-bg" name="country" id="countryListId" field-name="Country" data-validation="required" value="${country}" onchange="getTimezonesList();" >
 	                <option value="" >Select Location</option>
 	                <option value="Australia">Australia</option>
 	                <option value="France">France</option>
@@ -66,10 +67,6 @@
 	            <label class="col-md-3">Time Zone<span class="text-danger">&nbsp;*</span></label>
 	            <div class="col-md-9">
 					 <select class="chosen-select form-control" data-placeholder="Time Zone" field-name="Timezone" data-validation="required" id="timeZone" name="timeZone">
-					 <option value="" >Select Timezone</option>
-                        <c:forEach var="option" items="${timezoneList}">
-	                          <option value="${option.id}">${option.timeZoneId}</option>
-                         </c:forEach>
                      </select>
                      <span class="hidden">Time Zone</span>
 				</div>
@@ -477,5 +474,56 @@ function validateCompanyEmail(){
 
         
 </script> 
+<script>
+function getTimezonesList(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var country = $('#countryListId').val();
+	 $.ajax({
+	    	type: "POST",
+	    	url : sourceleadUrl+"/getTimezonesList?${_csrf.parameterName}=${_csrf.token}", 
+	        success: function(data) {
+	        var json = JSON.parse(data);
+	        var output = "";
+	        output = output + "<option value=''>--Select--</option>";
+	        if(country == 'India'){
+    			output = output + "<option value='246' selected> Asia/Kolkata </option>";
+    		}else if(country == 'United States'){
+    			output = output + "<option value='132' selected> America/Chicago </option>";
+    		}else if(country == 'United Kingdom'){
+    			output = output + "<option value='333' selected> Europe/London </option>";
+    		}else if(country == 'Singapore'){
+    			output = output + "<option value='272' selected> Asia/Singapore </option>";
+    		}else if(country == 'France'){
+    			output = output + "<option value='342' selected> Europe/Paris </option>";
+    		}else if(country == 'Australia'){
+    			output = output + "<option value='298' selected> Australia/Adelaide </option>";
+    		}
+	        	for (var i=0; i<json.length; i++){
+	        		var opt = json[i];
+	        		output = output + "<option value='" +opt.id+ "'>"+opt.timeZoneId+"</option>";
+				}
+	        	$("#timeZone").empty();
+	        	$("#timeZone").append(output);
+	        	$("#timeZone").trigger("chosen:updated");
+	        }
+	 });
+}
+</script>
 
-
+<script type="text/javascript">
+$(function(){
+	       var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+	       
+	      
+	       $('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+		  })
+});
+</script>

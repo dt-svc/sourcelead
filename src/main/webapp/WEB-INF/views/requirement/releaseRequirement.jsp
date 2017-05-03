@@ -390,12 +390,17 @@ function releaseTo(){
 function releaseToOneContact(contactscheckboxId){
 	$('input:checkbox[name="contactscheckbox"]').prop('checked',false);
 	$("#" + contactscheckboxId).prop('checked', true);
+	$("#releaseToClientIconDiv").empty();
+	$('#releaseToClientIconDiv').prepend('<i class="fa fa-cog fa-spin"></i>');
 	releaseTo();
 }
 
 function releaseToOneVendor(vendorcheckboxId){
 	$('input:checkbox[name="vendorcheckbox"]').prop('checked',false);
 	$("#" + vendorcheckboxId).prop('checked', true);
+	
+	$("#releaseToVendorIconDiv").empty();
+	$('#releaseToVendorIconDiv').prepend('<i class="fa fa-cog fa-spin"></i>');
 	releaseTo();
 }
 </script>
@@ -575,7 +580,7 @@ function getContactsLists(){
 					        		}
 									if(report.releasedRequirement =="false"){
 										'<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
-											result = result +'<div><a href="javascript:void(0)"><i class="fa fa-bullhorn" onclick="releaseToOneContact('+report.id+');"></i></a></div>';
+											result = result +'<div id="releaseToClientIconDiv"><a href="javascript:void(0)"><i class="fa fa-bullhorn" onclick="releaseToOneContact('+report.id+');"></i></a></div>';
 										'</sec:authorize>';
 										'<sec:authorize access="!hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
 											result = result +'<div class="fa fa-bullhorn"></div>';
@@ -746,7 +751,7 @@ function getVendorLists(){
 	                			result = result +'<div><b class="proj_active">Released</b></div>';
 	                		}else if(report.noOfNonReleasedContacts > 0){
 									'<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
-										result = result +'<div><a href="javascript:void(0)"><i class="fa fa-bullhorn" onclick="releaseToOneVendor('+report.id+');"></i></a></div>';
+										result = result +'<div id="releaseToVendorIconDiv"><a href="javascript:void(0)"><i class="fa fa-bullhorn" onclick="releaseToOneVendor('+report.id+');"></i></a></div>';
 									'</sec:authorize>';
 									'<sec:authorize access="!hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
 										result = result +'<div class="fa fa-bullhorn"></div>';

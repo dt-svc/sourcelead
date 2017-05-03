@@ -1316,7 +1316,7 @@ jQueryFormUtils.LANG =  {
     tooLongEnd : ' characters',
     tooShortStart : 'You have given an answer shorter than ',
     tooShortEnd : ' characters',
-    badLength : 'The values Entered must be between',
+    badLength : 'The values should be between',
     notConfirmed : 'Values could not be confirmed',
     badDomain : 'Incorrect domain value',
 	badspace : 'Must not Start With Space',

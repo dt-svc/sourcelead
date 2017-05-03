@@ -185,12 +185,12 @@ function candidateEducationList(candidateId){
 	                    			 result = result+' <td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 	                    		 }
 	                    		 else{
-	                    			 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');"></a></sec:authorize>';	 
+	                    			 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');" title="Edit"></a></sec:authorize>';	 
 	                    		 }
 	                    		 if(window.candidateStatusGlobal == '0'){
 									result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
 	                    		 }else{
-	                    			 result = result+'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');"></i></sec:authorize></div></td>'; 
+	                    			 result = result+'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');" title="Remove"></i></sec:authorize></div></td>'; 
 	                    		 }
 	                    	}
 	                    	 result  = result + '</tr>';
@@ -271,7 +271,7 @@ function addEducation(candidateId) {
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
 	result = result  +'                  <div class="clearfix mb10 col-md-12" id="nameIdDiv"> ';
-	result = result  +'						<select label=" " class="chosen-select form-control" field-name="Education" data-placeholder = "Select Education" name="name" id="name" data-validation=" required" onchange="validateEduname('+candidateId+');">';
+	result = result  +'						<select label=" " class="chosen-select form-control" field-name="Education" data-placeholder = "Select Education" name="name" id="name" data-validation=" required" onchange="validateEduname('+candidateId+');" onkeyup = "validateEduname('+candidateId+');">';
 	
 											 <c:forEach var="edu" items="${educationsList}">
     result = result  +'	                        <option value="" disabled selected></option>';										 
@@ -467,7 +467,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
 	result = result  +'                  <div class="clearfix mb10"> ';
-	result = result + "<select  class='chosen-select form-control' name='name' id='name' data-validation='validate_Space' data-validation-optional='true' onchange='validateEduname("+candidateId+");'>";
+	result = result + "<select  class='chosen-select form-control' name='name' id='name' data-validation='validate_Space' data-validation-optional='true' onchange='validateEduname("+candidateId+");'onkeyup = 'validateEduname("+candidateId+");'>";
 		                /*  for (var j = 0; j < json.educationList.length; j++) {
 								var education = json.educationList[j];
 								   if(education.name == json.name){
