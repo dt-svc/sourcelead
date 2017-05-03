@@ -64,6 +64,9 @@ left:-20px !important;
 .pras.req-title p{
 bottom:-2px;
 }
+.payrate_p p.jquery_form_error_message{
+ bottom: -13px;padding-left: 0 !important;
+}
 .form-control {
 padding: 6px 12px !important; height: 34px !important;
 }
@@ -418,10 +421,10 @@ $(document).ready(function () {
             </div>
           </div>
           
-          <div class="form-group">
+          <div class="form-group" >
             <label class="col-md-3">Pay Rate/Salary</label>
             <div class="col-md-9">
-             <div class="input-group">
+             <div class="input-group payrate_p">
                 <div class="input-group-btn selp-custom-min">
                   
                   <select class="selectpicker" id="currencyCode" name="currencyCode" >
@@ -445,8 +448,8 @@ $(document).ready(function () {
                  </c:if>
                 </select>
                 </div>
-                <input type="text" class="form-control input-sm" id="rate" name="rate" field-name="Rate" value="${requirement.rate}" data-validation="validate_Space validate_int validate_length length1-8" data-validation-optional="true"  value="">
-                <div class="input-group-btn selp-custom-min">
+                <input type="text" class="form-control input-sm" id="rate" name="rate" field-name="Rate" value="${requirement.rate}" data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="">
+                <div class="input-group-btn selp-custom-min payrate_p">
                   <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Per">
                     <option value="">Rate Per</option>
                     <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
@@ -1259,7 +1262,7 @@ function validate_fileupload(fileName)
           var rateType = document.getElementById("rateType").value; 
   		 if(rateType != null && rateType != ""){
   			 $('#rate').removeAttr('data-validation-optional');
-  			 $('#rate').attr("data-validation","required validate_Space validate_float validate_length length1-8"); 
+  			 $('#rate').attr("data-validation","required validate_Space validate_int validate_length length1-8"); 
   		 }else{
   			 $('#rate').removeAttr('data-validation');
   			 $('#rate').attr("data-validation-optional","true"); 
@@ -1269,7 +1272,7 @@ function validate_fileupload(fileName)
  		 if(rate != null && rate != ""){
  			 $('#rateType').removeAttr('data-validation-optional');
  			 $('#rateType').attr("data-validation","required");
- 			 $('#rate').attr("data-validation","required validate_Space validate_float validate_length length1-8");
+ 			 $('#rate').attr("data-validation","required validate_Space validate_int validate_length length1-8");
  		 }else{
  			 $('#rateType').removeAttr('data-validation');
  			 $('#rateType').attr("data-validation-optional","true"); 
