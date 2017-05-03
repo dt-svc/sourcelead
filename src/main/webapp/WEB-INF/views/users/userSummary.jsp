@@ -39,7 +39,7 @@
 			<div class="pull-left">
 				<h2>User Summary</h2>
 			</div>
-			<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="usersList">Users List</a> &raquo; <span id = "fname"></a> </div>				
+			<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="usersList">Users</a> &raquo; User Summary <span id = "fname"></a> </div>				
 		</section>
 
 		<!-- Timesheet -->
@@ -213,7 +213,7 @@ $(document).ready(function(){
 				    '</sec:authorize>';
 				      
 				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_USER\')">'
-						result = result + ' <a id="remove-user" href="javascript:removeUser('+userId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a>';
+						result = result + ' <a id="remove-user" href="javascript:removeUser('+userId+');"><i class="glyphicon glyphicon-trash"></i>Terminate</a>';
 						result = result + ' <form id="deleteUser_form"  name="deleteUser_form" method="post">';	
 						result = result + ' <div id="remove_user_id" class="remove_user_pop" >';
 									
@@ -230,7 +230,7 @@ $(document).ready(function(){
 				     
 				     result = result + ' <div id="edit_role_pop" class="edit_role_pop" >';
 				     result = result + ' <div id="editRoleLoading" ></div>';
-				     result = result + ' <div class="user_summary_edit_cta">';
+				     result = result + ' <div class="user_summary_edit_cta centerDiv">';
 				     result = result + ' <form id="editRole_form"  name="editRole_form" method="post">';
 				     result = result + ' <label>Change Role</label>';
 						 result = result + '<select class="chosen-select" id="userChangeRole"  onchange="getChangeRole('+userId+','+json.roles.id+');" data-validation="required" field-name="Role" name="userChangeRole"  >';
@@ -242,9 +242,9 @@ $(document).ready(function(){
 						  result = result + '<div class="clearfix mb10 mt">';
 						  result = result + '</div>';
 					      result = result + '<div class="clearfix"></div>';
-						  result = result + '<div class="user_summary_edit_cta">';
-						  result = result + '<input class="us-btn us-btn_a " type="button" value="Update" type="button" onclick="updateRole('+userId+');"/>';
-						  result = result + '&nbsp;<input class="us-btn" onclick="cancelEditRole();" type="button" value="Cancel"/>';
+						  result = result + '<div class="user_summary_edit_cta centerDiv">';
+						  result = result + '<input class="us-btn" type="button" value="Update" type="button" onclick="updateRole('+userId+');"/>';
+						  result = result + '&nbsp;<input class="us-btn us-btn_a" onclick="cancelEditRole();" type="button" value="Cancel"/>';
 						  result = result + '</div>';
 						result = result + ' </form>';
 					 result = result + ' </div>';
@@ -1315,6 +1315,7 @@ $("#editRoleDetailsList").empty();
 						result = result + '<input type="hidden" name="updateDepartmentOrgRelationId" id="updateDepartmentOrgRelationId" value="'+json.department+'">';	
 						result = result + '</div>'; 
 					
+						
 					   result = result + '<div class="user_summary_edit_cta">';
  					   result = result + ' <label>Employment type</label>';
 						result = result + '<select class="form-control" id="designationType" name="designationType"  onchange="getEmployeementType();updateUserDesignationOtherType();" field-name="Employment type">';
@@ -1329,7 +1330,7 @@ $("#editRoleDetailsList").empty();
 						result = result + '<option  '+(json.userEmploymentType == "Other" ? "selected" : '') +'>Other</option>';
 						result = result + ' </select>';
 						result = result + '</div>';
-						
+						result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="user_summary_edit_cta select-field" id="designationTypeDiv" style="display:none">';
 						result = result + ' <label>Employment Other Type </label>';
 						result = result + '<input type="text" class="form-control" name="designationOtherType"  id="designationOtherType" value="'+designationOtherType+'" placeholder="Employment Other Type" field-name="Employment Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
@@ -1367,7 +1368,7 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <option '+(json.currentCurrency == "SGD" ? "selected" : '') +'>SGD</option>';
 					result = result + '<option   '+(json.currentCurrency == "EUR" ? "selected" : '') +'>EUR</option>'; 
 					result = result+'</select>';
-					result = result + ' <input type="text" class="rate_filed" value="'+rate+'" id="Rate" field-name="Rate" name="Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
+					result = result + ' <input type="text" class="rate_filed" value="'+rate+'" id="Rate" field-name="Rate" name="Rate" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">';
 					result = result + ' <select class="rate_sele" id="RatePer" name="RatePer" field-name="Rate Per">';
 					result = result + ' <option value="">-Rate Per-</option>';
 					result = result + ' <option '+selected1+'>Hourly</option>';
@@ -1380,7 +1381,6 @@ $("#editRoleDetailsList").empty();
 					result = result + ' </select>';
 					result = result + ' </div>';	
 					
-					result = result + ' <div class="clearfix"></div>';
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Date of join</label>';
@@ -1398,8 +1398,8 @@ $("#editRoleDetailsList").empty();
 					
 					
 					result = result + ' <div class="clearfix"></div>';
-					result = result + ' <div class="user_summary_edit_cta">';
-					result = result + ' <input class="us-btn" value="Save" id="update_user" type="button" onclick="updateUser('+json.id+','+userId+',\''+json.user.email+'\',\''+json.employeeId+'\');" > <input class="us-btn us-btn_a" value="Cancel" onClick="editUserDetails('+userId+');" type="button">';
+					result = result + ' <div class="user_summary_edit_cta pull-right">';
+					result = result + ' <input class="us-btn" value="Update" id="update_user" type="button" onclick="updateUser('+json.id+','+userId+',\''+json.user.email+'\',\''+json.employeeId+'\');" > <input class="us-btn us-btn_a" value="Cancel" onClick="editUserDetails('+userId+');" type="button">';
 					result = result + ' </div>';
 					
 					result = result + ' <div class="clearfix"></div>';
@@ -1751,8 +1751,8 @@ function removeUser(userId){
 						  	result = result + '</div>';
 						  result = result + '</div>';
 					  result = result + '<div class="clearfix"></div>';
-							result = result + '<div class="user_summary_edit_cta">';
-							result = result + '<input class="us-btn us-btn_a " type="button" value="Delete" type="button" onclick="deleteUser('+userId+');"/>';
+							result = result + '<div class="user_summary_edit_cta pull-right">';
+							result = result + '<input class="us-btn us-btn_a " type="button" value="Terminate" type="button" onclick="deleteUser('+userId+');"/>';
 								result = result + '&nbsp;<input class="us-btn" onclick="cancelUser();" type="button" value="Cancel"/>';
 								result = result + '</div>';
 	        	
