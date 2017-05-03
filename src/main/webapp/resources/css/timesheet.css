@@ -230,7 +230,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .timesheet_week_comm {
     }      
 .commentTime {
-    float:left; width:50%;
+    float:right; width:50%;
     }   
 .timesheet_week_comm textarea {
     width:100%; font-size:13px; font-weight:500; color:#333; padding:5px 10px; resize:none; border-radius:3px;
@@ -2841,7 +2841,7 @@ margin: 6px 0px 0px 0px;
     
     
 .totalWrap {
-    float: right;
+    float: left;
 }
 .totalWrap ul {
     margin: 0px 0px; padding: 0px 0px;
@@ -3606,13 +3606,19 @@ position: relative; padding: 0px 0px 5px 0px;
 }
 .step3 span {
 	float:left; width: 100px; height: 100px; background-color: #fff; box-shadow: 0px 0px 2px rgba(0,0,0,0.2);
-	display: block; border-radius: 2px; padding: 5px; text-align: center; position: relative;
+	display: block; border-radius: 2px; padding: 5px; text-align: center;
 }
 .step3 span a {
 	font-size:45px; padding: 22px 0px; display: block; color: #6EA244;
 }
-.step3Wrap .fa-file-text {
+.step3Wrap .fa-file-excel-o {
+	color:#6189E4;
+}
+.step3Wrap .fa-file-word-o {
 	color:#25A7AA;
+}
+.step3Wrap .fa-file-pdf-o {
+	color:#DD3C3C;
 }
 .step3 strong {
 	display:block; float: left; width: 70%; padding: 0px 0px 0px 15px;
@@ -3982,10 +3988,6 @@ position: relative; padding: 0px 0px 5px 0px;
 	border-left: 2px solid #368ee0; box-shadow: 0px 0px 2px rgba(0,0,0,0.15); cursor: pointer; position: relative;
 	font-size: 14px; font-weight: 400; color: #666;
 }
-.contrCus ul span {
-	position:absolute; top: -5px; right: 25px; display: block; background-color: #fff; padding: 3px 10px; border-radius: 2px;
-	box-shadow: 0px 0px 3px rgba(0,0,0,0.1);
-}
 .contrCus ul li i {
 	display:inline-block; width: 16px; height: 16px; position: absolute; border: 1px dotted #ccc; right: 8px; top: 6px;
 }
@@ -4088,7 +4090,7 @@ position: relative; padding: 0px 0px 5px 0px;
 }
 .welFile{  
 	width: 80%; display: inline-block; background-color: #367fa9 !important; border: 1px solid #1f6791; padding: 4px 6px;
-	border-radius: 2px; color: #fff; margin-bottom: 10px; height: auto;
+	border-radius: 2px; color: #fff; margin-bottom: 10px;
 }
 .step3 strong p.deleDocu {
 	 color: #DF4B4E; cursor: pointer; width: 65%;
@@ -4096,117 +4098,32 @@ position: relative; padding: 0px 0px 5px 0px;
 .deleDocu i {
 	display: inline-block; padding: 0px 5px 0px 0px;
 }
-
-.welCo1 h5.offH {
-	margin:0px 0px 5px 0px; border-bottom:none;
-}
-.offBCheck {
-	margin: 0px 0px 15px 0px;
-}
-.offBCheck span {
-	width:33.333%; padding: 2px 10px 2px 0px;
-}
-
-.chosen-container .chosen-results {
-	float: none;
-}
-.timesheetRep .chosen-container .chosen-results li.active-result, .timesheetRep .chosen-container-multi .chosen-drop .result-selected {
-	float: none;
-}
-.timesheetRep .chosen-container-multi .chosen-choices li.search-choice span {
-	padding: 0px; color: #666; font-weight: 400; font-size: 13px;
-}
-.timesheetRep .chosen-container-multi .chosen-choices li.search-field input[type="text"] {
-	height:30px;
-}
-.timeReFi {
-	float:left; width: 170px; padding: 5px 5px 0px 10px;
-}
-.timeReFi.timeReFi_a {
-	width: 250px;
-}
-
-.timesheetRepTab {
-    width:100%;  overflow-x: auto;
-}  
-.timesheetRepTab table {
-    width:100%; font-size:14px; font-weight:400; border-bottom:1px solid #CCC; border:none;
-    }
-.timesheetRepTab table tr:nth-child(even) {background: #fff;}
-.timesheetRepTab table tr:nth-child(odd) {background: #eef1fc;}         
-.timesheetRepTab table tr th {
-    background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 15px; height:40px;
-    border-right:1px solid #4576a4 !important; -moz-border-right:1px solid #4576a4;
-    } 
-.timesheetRepTab table tr td {
-    color:#333; padding:6px 10px; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; 
-	font-weight:400;
-    } 
-.timesheetRepTab table div {
-    position:relative;
-    }
-.timesheetRepTab table div i {
-	font-style: normal; display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; width: 100%;
-}
-.timesheetRepTab table div.lg {
-	width: 160px;
-}
-.uimg {
-	width:35px; height: 35px; float: left; border-radius: 10px; margin: 2px 0px 0px 0px;
-}
-.uimg img {
-	width:100%; border-radius: 12px; max-height: 35px; min-height: 35px;
-}
-.Utext {
-	width:115px; float: left; text-overflow: ellipsis; overflow: hidden;  padding: 0px 0px 0px 10px; white-space: nowrap;
-}
-.timesheetRepTab table div.md {
-	width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-.timesheetRepTab table div.sm {
-	width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center;
-}
-.timesheetRepTab table div.week {
-	width: 60px; text-align: center;
-}
-.timesheetRepTab table div.week span {
-	display:inline-block; /*background-color: #0cc26e;*/ padding: 1px 15px; margin-bottom: 1px; font-size: 14px; font-weight: 500;
-	color: #333333; border-radius: 2px;
-}
-.timesheetRepTab table div.week span.appr {
-	/*background-color: #de3434;*/ color: #0cc26e;
-}
-.timesheetRepTab table div.week span.reje {
-	/*background-color: #de3434;*/ color: #de3434;
-}
-.timesheetRepTab table div.week span.draft {
-	/*background-color: #656565;*/ color: #656565;
-}
-.timesheetRepTab table div.week span.subm {
-	/*background-color: #f17c38;*/ color: #f17c38;
-}
-.timesheetRepTab .progress {
-	margin: 0px; height: 14px;
-} 
-.timesheetRepTab .progress-bar-info { background-color: #0f9fa1;}
-.timesheetRepTab .progress-bar-warning { background-color: #e58339;}
-.timesheetRepTab .progress-bar {line-height: 14px; font-size: 11px;}
-.timesheetRepTab table tr td b {
-    font-weight:400; display: inline-block; padding:3px 0px; color:#FFF; font-size:11px; border-radius:3px; background-color:#656565;
-    text-align:center; width:100%; margin:1.5px 0px;
-    }  
-.timesheetRepTab table tr td b.proj_active { background-color:#34c244;}
-.timesheetRepTab table tr td b.proj_closed { background-color:#d94747;}
-.timesheetRepTab table tr td b.proj_process { background-color:#ff9800;}
-.timesheetRepTab table tr td b.action { background-color:#368ee0;}
-
-.timPag {
-	margin: 15px; float: right;
-}
 .nomr{
-margin: 0px auto !important;
+	margin: 0px auto !important;
 }
-.commentTime textarea {
-	width: 100%;
+.viewTemplate.checklist{
+	padding: 0;
+}
+.viewTemplate.checklist .sjfb-field{
+	width: 100%; margin: 0; margin-bottom: 15px; font-weight: normal; background-color: rgba(255, 255, 255, 0.9); border-radius:5px;
+	padding: 10px; box-shadow: 0px 0px 2px rgba(0,0,0,0.1);
+}
+.viewTemplate.checklist .sjfb-field:nth-child(2n+2){
+	margin-left: 0;
+}
+.viewTemplate.checklist .sjfb-field label{
+	font-weight: normal; width: 20%; margin-right: 5px;margin-bottom: 0;font-size: 14px;
+}
+.viewTemplate.checklist .choices{
+	float: left; width:78.5%;
+}
+.viewTemplate.checklist .choices label{
+	width: 100%; margin-bottom: 10px;
+}
+.viewTemplate.checklist input[type=checkbox], .viewTemplate.checklist input[type=radio]{
+	margin: 0 10px 0 0; position: relative; top:2px;
 }
 
+.pofix {
+	position: fixed !important;
+}

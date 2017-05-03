@@ -440,8 +440,16 @@ public class CandidateDaoImpl implements CandidateDao {
 		logger.debug("In getAllActiveCandidatesCountForCampaignByLocation method");
 		Session session = this.sessionFactory.getCurrentSession();
 
-		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and candidate.candidateType = :type and candidate.status = '1' and (candidate.isFavourite = '0' OR candidate.isFavourite IS NULL) ";  
-		List<Long> candidatesCount = session.createQuery(query.toString()).setString("type", type).setLong("orgLocationId", orgLocationId).list();
+		
+		String subQuery = null;
+		if(type.equalsIgnoreCase(Constants.ASSOCIATE)){
+			subQuery = "candidate.isAssociate = 'Y' ";
+		}else{
+			subQuery = "candidate.isAssociate = 'N' ";
+		}
+		
+		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and "+subQuery+" and candidate.status = '1' and (candidate.isFavourite = '0' OR candidate.isFavourite IS NULL) ";  
+		List<Long> candidatesCount = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 		Integer count = 0;
 		if(candidatesCount != null && !candidatesCount.isEmpty()){
 				count = candidatesCount.get(0).intValue();
@@ -456,7 +464,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		logger.debug("In getAllHotlistCandidatesCountNotAssignedToTeamByLocation method");
 		Session session = this.sessionFactory.getCurrentSession();
 
-		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.isFavourite = '1' and candidate.teamId IS NULL ";  
+		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and (candidate.isFavourite = '1' OR candidate.isFavouriteAssociate = '1') and candidate.teamId IS NULL ";  
 		List<Long> candidatesCount = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 		Integer count = 0;
 		if(candidatesCount != null && !candidatesCount.isEmpty()){
@@ -471,9 +479,16 @@ public class CandidateDaoImpl implements CandidateDao {
 		
 		logger.debug("In getAllCandidatesCountForCampaignByTeam method");
 		Session session = this.sessionFactory.getCurrentSession();
+		
+		String subQuery = null;
+		if(type.equalsIgnoreCase(Constants.ASSOCIATE)){
+			subQuery = "candidate.isAssociate = 'Y' ";
+		}else{
+			subQuery = "candidate.isAssociate = 'N' ";
+		}
 
-		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and candidate.candidateType = :type and candidate.status = '1' and candidate.teamId.id IN (:teamId) ";  
-		List<Long> candidatesCount = session.createQuery(query.toString()).setString("type", type).setLong("orgLocationId", orgLocationId).setParameterList("teamId", teamId).list();
+		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and "+subQuery+" and candidate.status = '1' and candidate.teamId.id IN (:teamId) ";  
+		List<Long> candidatesCount = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setParameterList("teamId", teamId).list();
 		Integer count = 0;
 		if(candidatesCount != null && !candidatesCount.isEmpty()){
 				count = candidatesCount.get(0).intValue();
@@ -691,7 +706,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		String query = "";
 		List<Candidate> candidateList = null;
 		if(employeementType != null && employeementType != "" && employeementType != "undefined"){
-			query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.isAssociate ='Y'  and candidate.designationType =:employeementType and candidate.consultantUser ='NULL'";
+			query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.isAssociate ='Y'  and candidate.designationType =:employeementType and candidate.consultantUser IS NULL";
 			candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("employeementType", employeementType).setCacheable(true).list();
 		}else{
 			query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.isAssociate ='Y' and candidate.consultantUser IS NULL"; 
@@ -883,4 +898,13 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getAllActiveCandidatesByLocation(Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId and cnadidate.status ='1' ORDER BY cnadidate.id DESC";  
+        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	}
+
 }
+

@@ -350,6 +350,7 @@ public class Constants {
 	public static  String Vendors = "Vendors";
 	public static  String Candidates = "Candidates";
 	public static  String Associates = "Associates";
+	public static  String OnAndOffboard = "OnAndOffboard";
 	
 	public static String SOURCELEAD_ORGCODE = "sourcelead.com";
 	public static String SOURCELEAD_LOCATIONCODE_IN = "in.sourcelead.com";
@@ -522,6 +523,8 @@ public class Constants {
     public static String CANDIDATE = "Candidate"; 
     
     public static String CONSULTANT = "Consultant";
+    
+    public static String ASSOCIATE = "Associate";
     
     
     public static String MAIL_TRASH = "Trash";

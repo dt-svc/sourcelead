@@ -87,7 +87,7 @@ public class DepartmentRestController {
 	    if(jsonObj.has("departmentName") && !"".equalsIgnoreCase(jsonObj.getString("departmentName"))){
 			department.setDepartmentName(jsonObj.getString("departmentName"));
 		}
-		if(jsonObj.has("departmentDesc") && !"".equalsIgnoreCase(jsonObj.getString("departmentDesc"))){
+		if(jsonObj.has("departmentDesc")){
 			department.setDescription(jsonObj.getString("departmentDesc"));
 		}
 		department.setUpdatedDate(commonUtil.currentDate());

@@ -2,6 +2,9 @@
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<jsp:include page="candidatesQuickView.jsp"></jsp:include>
+
 <%-- 
      @author : David Sammeta.
      this script is for upDate Candidate Details .
@@ -22,11 +25,11 @@
 	    result  = result + '</div>';
 		result =result +'<div id = "msgDiv2"></div>';
 		if(window.candidateStatusGlobal == '0'){
-		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_EMPLOYEER\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 	
+		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_EMPLOYEER\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_ADD_ASSOCIATE_EMPLOYER\')">'; 	
 		result = result	+ '<a href="javascript:void(0)" class="addUser-org" ></a>';
 		'</sec:authorize>';
 		}else{
-			'<sec:authorize access="hasAnyRole(\'ROLE_ADD_EMPLOYEER\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
+			'<sec:authorize access="hasAnyRole(\'ROLE_ADD_EMPLOYEER\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_ADD_ASSOCIATE_EMPLOYER\')">';
 			result = result	+ '<span class="pad-sea"><a href="javascript:void(0)"  onClick="addExperience('+ candidateId+ ');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a> </span> ';
 			'</sec:authorize>';
 		}
@@ -113,6 +116,7 @@ function closeCertificatePopup(){
 			            			$("#empMsgDiv").html("Success!! New Employer added");
 									candidateEmployersList(candidateId);
 									empMsgFadein();
+									qvemployeeSubmission(candidateId);
 								}
 							}
 
@@ -498,11 +502,11 @@ function closeCertificatePopup(){
 									if(window.candidateStatusGlobal == '0'){
 				                   result = result+'<td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 									}else{
-										result = result+'<td><div class="tblicons"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEER\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editEmployer('+ opt.id+ ','+ candidateId+ ');"></a></sec:authorize>';	
+										result = result+'<td><div class="tblicons"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEER\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_VIEW_EDIT_ASSOCIATE_EMPLOYER\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editEmployer('+ opt.id+ ','+ candidateId+ ');"></a></sec:authorize>';	
 									}if(window.candidateStatusGlobal == '0'){
 										result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
 									}else{
-										result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_EMPLOYEER\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><i class="glyphicon glyphicon-trash" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ');"></i></sec:authorize></div></td>';
+										result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_EMPLOYEER\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_VIEW_DELETE_ASSOCIATE_EMPLOYER\')"><i class="glyphicon glyphicon-trash" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ');"></i></sec:authorize></div></td>';
 									}
 									result = result + '</tr>';
 								}
@@ -637,8 +641,7 @@ function employeePagination(){
 	            			$("#empMsgDiv").html("Employer details updated");
 							candidateEmployersList(candidateId);
 							empMsgFadein();
-							candidateQuickViewProfile(candidateId);
-							
+							qvemployeeSubmission(candidateId);
 						},
 					});
 			return true;
