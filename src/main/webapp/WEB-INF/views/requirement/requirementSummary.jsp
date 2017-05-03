@@ -831,7 +831,7 @@ function sideBar(requirementId){
 							 
 							 var submitToClient = '';
 						     if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
-	           				    submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
+	           				    submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to client</a>';
 	           			     }
 							
 				            result = result +'<div id="actionsDiv" class="timesheet_head timesheetHead candidateHead recruitmentHead headersummary clearfix zindex" style="display: none;">';
@@ -1226,7 +1226,9 @@ function requirementDetails(requirementId){
 	  	
 					            }
 				            }
-				            
+				               result = result +'</div>';
+		          	           
+					           result = result +'<div class="clearfix"></div>';
 				           	            
 				            
 				            //  Checking  for approval mechanism type  Parallel or Sequential
@@ -4501,7 +4503,7 @@ function getRateListDiv(submissionId, candidateId){
 		                     result = result + '<div class="clearfix row">';
 		                     result = result + '<form name="rate_form" id="rate_form" method="post">';
 		                     result = result + '  <div class="form-group col-md-6">';
-		                     result = result + '    <input type="text" class="form-control input-sm" placeholder="Rate" id="rateProposal" name="rateProposal" field-name="Rate" data-validation="required  validate_Space validate_float validate_length length1-10">';
+		                     result = result + '    <input type="text" class="form-control input-sm" placeholder="Rate" id="rateProposal" name="rateProposal" field-name="Rate" data-validation="required  validate_Space validate_float validate_length length1-8">';
 		                     result = result + '  </div>';
 		                     
 		                     result = result + '<div class="form-group col-md-6 select-field">';

@@ -361,8 +361,8 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 				 }else{
 					 Tasks tasks = null;
 					 tasks = getTaskDetails(onboardTasks, onboardingUser, loginUser, orgLocations);
-					 taskDao.saveTasks(tasks);
 					 tasks.setOnboardingId(candidateOnBoarding);
+					 taskDao.saveTasks(tasks);
 					 mailToUserTask(tasks);
 				 }
 			 }
@@ -511,7 +511,18 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 	    	userRole.setReportingManager(reportingManager);
 	    }
 	    userRole.setOrgLocations(orgLocations);
-	    userRole.setIsPrimary(1);
+	    
+	    try {
+			boolean isUserActive = userRoleDao.isUserActive(onboardingUser.getId());
+			 if(isUserActive == false){
+				  userRole.setIsPrimary(1);
+			  }else{
+				  userRole.setIsPrimary(0);
+			  }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	   
 	    userRole.setUserState(Status.NOT_LOGGEDIN);
 	    userRole.setCreatedBy(loginUser.getUserCode());
 	    userRole.setCreatedDate(commonUtil.currentDate());

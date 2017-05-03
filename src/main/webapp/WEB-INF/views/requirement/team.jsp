@@ -895,8 +895,8 @@ function deleteSelectedTeam(teamId){
    		    success: function(data) {
    		    	
    		    	if(data != null && data != 'undefined' && data != ""){
+   		    		    $("#loading"+teamId).removeAttr("style");
              			document.getElementById("deleteTeam"+teamId).remove();
-             			$("#loading"+teamId).removeAttr("style"); 
    		    	}
    		    }
 	     }); 

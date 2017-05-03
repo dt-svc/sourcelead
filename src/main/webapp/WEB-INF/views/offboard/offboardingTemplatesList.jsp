@@ -21,7 +21,9 @@
 			<div class="project_wrap">
 			<div class="timesheet_head">
 			<ul>
+			<sec:authorize access="hasRole('ROLE_CREATE_OFF_BOARD_TEMPLATE')"> 
 			<li><a href="<c:url value='/addNewOffboardTemplate'/>"><i class="fa fa-plus"></i>Add Template</a></li>
+			</sec:authorize>
 			</ul>
 			     
             </div>
@@ -62,7 +64,9 @@ function offboardingTemplatesList(){
 	                     result = result +"    <th>Created Date</th>";
 	                     result = result +"    <th>Created By</th>";
 	                     result = result +"    <th>Status</th>";
-	                     result = result +"<th>Actions</th>";
+	                     '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE\')">'
+	                    	 result = result +"<th>Actions</th>";
+	                     '</sec:authorize>';
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
@@ -83,8 +87,9 @@ function offboardingTemplatesList(){
 	                    		 
 	                    		 result = result +"<td><div><span>"+opt.templateStatus+"</span></div></td>";
 	                    		 
-			                     result = result +"<td><div class=''><a href='"+sourceleadUrl+"/viewOffboardTemplateByTemplateUUID?templateUUID="+opt.templateUUID+"'>View</a></div></td>"; 
-
+	                    		 '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE\')">'
+			                     	result = result +"<td><div class=''><a href='"+sourceleadUrl+"/viewOffboardTemplateByTemplateUUID?templateUUID="+opt.templateUUID+"'>View</a></div></td>"; 
+			                     '</sec:authorize>';
 		                     
 		                     result = result +"</tr>";
 		                     result = result +"</tr>";

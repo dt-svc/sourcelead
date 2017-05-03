@@ -36,7 +36,7 @@
             <div class="form-group">
               <label class="col-md-4">Template name<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="templateDiv">
-                <input type="text"  id="templateName" name="templateName" value="${contractsTemplate.templateName}"  field-name="Template Name" data-validation="required" type="text" class="form-control" onblur="validateContractTemplateName();">
+                <input type="text"  id="templateName" name="templateName" value="${contractsTemplate.templateName}"  field-name="Template Name" data-validation="required validate_Space" type="text" class="form-control">
               </div>
               <input type="hidden" name="templateId" id="templateId" value="${contractsTemplate.id}"/>
             </div>
@@ -44,8 +44,8 @@
             <div class="form-group">
               <label class="col-md-4">Template Type<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="contractType" field-name="Template Type"  name="contractType" onchange="contractTemplateType();">
-                   <!-- <option value="">&nbsp;&nbsp;&nbsp;&nbsp;---Select Template Type---</option> -->
+                  <select class="chosen-select form-control" id="contractType" field-name="Template Type"  name="contractType" onchange="contractTemplateType(); validateContractTemplateName();">
+                     <option value="">&nbsp;&nbsp;&nbsp;&nbsp;---Select Template Type---</option>
 	                 <option  ${contractsTemplate.templateType  == 'Client MSA' ? 'selected' : ''}>Client MSA</option>
 	                 <option  ${contractsTemplate.templateType  == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
 	                 <option  ${contractsTemplate.templateType  == 'Client SOW' ? 'selected' : ''}>Client SOW</option>
@@ -98,48 +98,77 @@
                 <li onclick="copyToClipboard('text_element3')"><i></i><p class="copyText" id="text_element3">[Client location]</p></li>
                 <li onclick="copyToClipboard('text_element4')"><i></i><p class="copyText" id="text_element4">[Company Location]</p></li>
                 <li onclick="copyToClipboard('text_element5')"><i></i><p class="copyText" id="text_element5">[Company Name]</p></li>
+                <li onclick="copyToClipboard('text_element6')"><i></i><p class="copyText" id="text_element6">[Start Date]</p></li>
+                <li onclick="copyToClipboard('text_element7')"><i></i><p class="copyText" id="text_element7">[End date]</li>
+                <li onclick="copyToClipboard('text_element8')"><i></i><p class="copyText" id="text_element8">[State Of Jurisdiction]</p></li>
+                <li onclick="copyToClipboard('text_element9')"><i></i><p class="copyText" id="text_element9">[Offer Rate]</li>
+				 <li onclick="copyToClipboard('text_element10')"><i></i><p class="copyText" id="text_element10">[Billing Rate]</li>
+				 <li onclick="copyToClipboard('text_element11')"><i></i><p class="copyText" id="text_element11">[Overtime]</li>
+				 <li onclick="copyToClipboard('text_element12')"><i></i><p class="copyText" id="text_element12">[Payment Term]</li>
             </ul>
             
             <ul id="vendormsa" style="display:none">
-                <li onclick="copyToClipboard('text_element11')"><i></i><p class="copyText" id="text_element11">[Vendor Name]</p></li>
-                <li onclick="copyToClipboard('text_element12')"><i></i><p class="copyText" id="text_element12">[Vendor Contact]</p></li>
-                <li onclick="copyToClipboard('text_element13')"><i></i><p class="copyText" id="text_element13">[Vendor location]</p></li>
-                <li onclick="copyToClipboard('text_element14')"><i></i><p class="copyText" id="text_element14">[Company Location]</p></li>
-                <li onclick="copyToClipboard('text_element15')"><i></i><p class="copyText" id="text_element15">[Company Name]</p></li>
+                <li onclick="copyToClipboard('text_element13')"><i></i><p class="copyText" id="text_element13">[Vendor Name]</p></li>
+                <li onclick="copyToClipboard('text_element14')"><i></i><p class="copyText" id="text_element14">[Vendor Contact]</p></li>
+                <li onclick="copyToClipboard('text_element15')"><i></i><p class="copyText" id="text_element15">[Vendor location]</p></li>
+                <li onclick="copyToClipboard('text_element16')"><i></i><p class="copyText" id="text_element16">[Company Location]</p></li>
+                <li onclick="copyToClipboard('text_element17')"><i></i><p class="copyText" id="text_element17">[Company Name]</p></li>
+                <li onclick="copyToClipboard('text_element18')"><i></i><p class="copyText" id="text_element18">[Start Date]</p></li>
+                <li onclick="copyToClipboard('text_element19')"><i></i><p class="copyText" id="text_element19">[End date]</li>
+                <li onclick="copyToClipboard('text_element20')"><i></i><p class="copyText" id="text_element20">[State Of Jurisdiction]</p></li>
+                <li onclick="copyToClipboard('text_element21')"><i></i><p class="copyText" id="text_element21">[Offer Rate]</li>
+				 <li onclick="copyToClipboard('text_element22')"><i></i><p class="copyText" id="text_element22">[Billing Rate]</li>
+				 <li onclick="copyToClipboard('text_element23')"><i></i><p class="copyText" id="text_element23">[Overtime]</li>
+				 <li onclick="copyToClipboard('text_element24')"><i></i><p class="copyText" id="text_element24">[Payment Term]</li>
             </ul>
-			
 			<ul id="clientsow" style="display:none">
-				<li onclick="copyToClipboard('text_element')"><i></i><p class="copyText" id="text_element">[Client Name]</p></li>
-				<li><i></i>Client Contact</li>
-				<li><i></i>Client Location</li>
-				<li><i></i>Requirement Title</li>
-				<li><i></i>Associate Name</li>
-				<li><i></i>Offer Rate</li>
-				<li><i></i>{Company Name}</li>
-				<li><i></i>{Company Location}</li>
+				<li onclick="copyToClipboard('text_element25')"><i></i><p class="copyText" id="text_element25">[Client Name]</p></li>
+				 <li onclick="copyToClipboard('text_element26')"><i></i><p class="copyText" id="text_element26">[Client Contact]</li>
+				 <li onclick="copyToClipboard('text_element27')"><i></i><p class="copyText" id="text_element27">[Associate Name]</li>
+				 <li onclick="copyToClipboard('text_element28')"><i></i><p class="copyText" id="text_element28">[Client Location]</li>
+				 <li onclick="copyToClipboard('text_element29')"><i></i><p class="copyText" id="text_element29">[Requirement Title]</li>
+				 <li onclick="copyToClipboard('text_element30')"><i></i><p class="copyText" id="text_element30">[Associate Name]</li>
+				 <li onclick="copyToClipboard('text_element31')"><i></i><p class="copyText" id="text_element31">[Offer Rate]</li>
+				 <li onclick="copyToClipboard('text_element32')"><i></i><p class="copyText" id="text_element32">[Billing Rate]]</li>
+				 <li onclick="copyToClipboard('text_element33')"><i></i><p class="copyText" id="text_element33">[Overtime]</li>
+				 <li onclick="copyToClipboard('text_element34')"><i></i><p class="copyText" id="text_element34">[Payment Term]</li>
+				 <li onclick="copyToClipboard('text_element35')"><i></i><p class="copyText" id="text_element35">[Start Date]</p></li>
+				 <li onclick="copyToClipboard('text_element36')"><i></i><p class="copyText" id="text_element36">[End date]</li>
+				 <li onclick="copyToClipboard('text_element37')"><i></i><p class="copyText" id="text_element37">[Company Location]</p></li>
+                <li onclick="copyToClipboard('text_element38')"><i></i><p class="copyText" id="text_element38">[Company Name]</p></li>
 			</ul>
 			
 			<ul id="vendorsow" style="display:none">
-				<li><i></i>Vendor Name</li>
-				<li><i></i>Vendor Contact</li>
-				<li><i></i>Vendor Location</li>
-				<li><i></i>Requirement Title</li>
-				<li><i></i>Associate Name</li>
-				<li><i></i>Offer Rate</li>
-				<li><i></i>{Company Name}</li>
-				<li><i></i>{Company Location}</li>
+				 <li onclick="copyToClipboard('text_element39')"><i></i><p class="copyText" id="text_element39">[Client Name]</p></li>
+				 <li onclick="copyToClipboard('text_element40')"><i></i><p class="copyText" id="text_element40">[Client Contact]</li>
+				 <li onclick="copyToClipboard('text_element41')"><i></i><p class="copyText" id="text_element41">[Associate Name]</li>
+				 <li onclick="copyToClipboard('text_element42')"><i></i><p class="copyText" id="text_element42">[Client Location]</li>
+				 <li onclick="copyToClipboard('text_element43')"><i></i><p class="copyText" id="text_element43">[Requirement Title]</li>
+				 <li onclick="copyToClipboard('text_element44')"><i></i><p class="copyText" id="text_element44">[Associate Name]</li>
+				 <li onclick="copyToClipboard('text_element45')"><i></i><p class="copyText" id="text_element45">[Offer Rate]</li>
+				 <li onclick="copyToClipboard('text_element46')"><i></i><p class="copyText" id="text_element46">[Billing Rate]</li>
+				 <li onclick="copyToClipboard('text_element47')"><i></i><p class="copyText" id="text_element47">[Overtime]</li>
+				 <li onclick="copyToClipboard('text_element48')"><i></i><p class="copyText" id="text_element48">[Payment Term]</li>
+				 <li onclick="copyToClipboard('text_element49')"><i></i><p class="copyText" id="text_element49">[End date]</li>
+				 <li onclick="copyToClipboard('text_element50')"><i></i><p class="copyText" id="text_element50">[Company Location]</p></li>
+                <li onclick="copyToClipboard('text_element51')"><i></i><p class="copyText" id="text_element51">[Company Name]</p></li>
 			</ul>
 			<ul id="nda" style="display:none">
-				<li><i></i>Vendor Name</li>
-				<li><i></i>Vendor Contact</li>
-				<li><i></i>Vendor Location</li>
+				 <li onclick="copyToClipboard('text_element52')"><i></i><p class="copyText" id="text_element52">[Vendor Name]</li>
+				 <li onclick="copyToClipboard('text_element53')"><i></i><p class="copyText" id="text_element53">[Vendor Contact]</li>
+				 <li onclick="copyToClipboard('text_element54')"><i></i><p class="copyText" id="text_element54">[Vendor Location]</li>
+				 <li onclick="copyToClipboard('text_element55')"><i></i><p class="copyText" id="text_element55">[Company Location]</p></li>
+                <li onclick="copyToClipboard('text_element56')"><i></i><p class="copyText" id="text_element56">[Company Name]</p></li>
+                 <li onclick="copyToClipboard('text_element63')"><i></i><p class="copyText" id="text_element63">[State Of Jurisdiction]</p></li>
+                
 			</ul>
 			<ul id="nsa" style="display:none">
-				<li><i></i>Vendor Name</li>
-				<li><i></i>Vendor Contact</li>
-				<li><i></i>Vendor Location</li>
-				<li><i></i>{Company Name}</li>
-				<li><i></i>{Company Location}</li>
+				 <li onclick="copyToClipboard('text_element57')"><i></i><p class="copyText" id="text_element57">[Vendor Name]</li>
+				 <li onclick="copyToClipboard('text_element58')"><i></i><p class="copyText" id="text_element58">[Vendor Contact]</li>
+				 <li onclick="copyToClipboard('text_element59')"><i></i><p class="copyText" id="text_element59">[Vendor Location]</li>
+				 <li onclick="copyToClipboard('text_element60')"><i></i><p class="copyText" id="text_element60">[Company Location]</p></li>
+                <li onclick="copyToClipboard('text_element61')"><i></i><p class="copyText" id="text_element61">[Company Name]</p></li>
+                 <li onclick="copyToClipboard('text_element62')"><i></i><p class="copyText" id="text_element62">[State Of Jurisdiction]</p></li>
 			</ul>
 		</div>  		      
 	</div>
@@ -348,11 +377,12 @@ function editContractTemplate(templateId){
 <script>
 function validateContractTemplateName(){
 	var templateName = $('#templateName').val();
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 if(templateName != null && templateName != ""){
+	var contractType = $('#contractType').val(); 
+	var sourceleadUrl ='${sourceleadUrl}';
+	 if(templateName != null && templateName != "" && contractType != null && contractType != ""){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateContractTemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="+templateName, 
+		        url: sourceleadUrl+"/validateContractTemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="+templateName+"&contractType="+contractType, 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		

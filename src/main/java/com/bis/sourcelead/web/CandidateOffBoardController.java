@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -147,6 +148,7 @@ public class CandidateOffBoardController {
 	}
 	
 	
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_OFF_BOARD_USER')")
 	@RequestMapping(value = "/viewOffboardCandidateSummaryDetails")
 	public ModelAndView viewOffboardCandidateSummaryDetails(@RequestParam(value="offboardUUID", required=false) String offboardUUID,HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
@@ -156,7 +158,7 @@ public class CandidateOffBoardController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		sessionData.setNav(Constants.Users);
+		sessionData.setNav(Constants.OnAndOffboard);
 		
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 model.addObject("offboardUUID", offboardUUID);
@@ -166,7 +168,7 @@ public class CandidateOffBoardController {
 	}
 	
 	
-	
+	@PreAuthorize("hasRole('ROLE_CREATE_OFF_BOARD_USER')")
 	@RequestMapping(value = "/candidateOffBoardCreation")
 	public ModelAndView candidateOffBoardCreation(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
@@ -176,7 +178,7 @@ public class CandidateOffBoardController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		sessionData.setNav(Constants.Users);
+		sessionData.setNav(Constants.OnAndOffboard);
 		
 		request.getSession().setAttribute("sessionData",sessionData);
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -184,7 +186,7 @@ public class CandidateOffBoardController {
 		return model;
 	}
 	
-	
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')")
 	@RequestMapping(value = "/offboardingTemplatesList")
  	public ModelAndView offboardingTemplatesList(HttpServletRequest request) {
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -197,7 +199,7 @@ public class CandidateOffBoardController {
  	}
 	
 	
-	
+	@PreAuthorize("hasRole('ROLE_CREATE_OFF_BOARD_TEMPLATE')")
 	@RequestMapping(value = "/addNewOffboardTemplate")
  	public ModelAndView addNewOffboardTemplate(HttpServletRequest request) {
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -210,6 +212,7 @@ public class CandidateOffBoardController {
  	}
 	
 	
+	@PreAuthorize("hasRole('ROLE_CREATE_OFF_BOARD_TEMPLATE')")
 	@RequestMapping(value = "/viewOffboardTemplateByTemplateUUID")
  	public ModelAndView viewOffboardTemplateByTemplateUUID(@RequestParam(value="templateUUID", required=false) String templateUUID,
  			HttpServletRequest request) throws Exception {
@@ -225,7 +228,7 @@ public class CandidateOffBoardController {
  			return model;
  	}
 	
-	
+	@PreAuthorize("hasRole('ROLE_CREATE_OFF_BOARD_USER')")
 	@RequestMapping(value = "/viewOffboardCandidateDetails")
  	public ModelAndView viewOffboardCandidateDetails(@RequestParam(value="offboardUUID", required=false) String offboardUUID,
  			HttpServletRequest request) throws Exception {
@@ -237,7 +240,7 @@ public class CandidateOffBoardController {
 			{
 				sessionData = new SessionMaintainanceData();
 			}
-			sessionData.setNav(Constants.Users);
+			sessionData.setNav(Constants.OnAndOffboard);
  			
  			CandidateOffBoarding offBoarding = candidateOffBoardingService.getCandidateOffBoardingByOffboardUUID(offboardUUID);
  			

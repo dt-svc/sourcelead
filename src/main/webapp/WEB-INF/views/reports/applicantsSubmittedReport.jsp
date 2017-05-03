@@ -66,7 +66,7 @@ function prepareReportDataDiv(data){
     	
     	 result = result + '<td>';
          if(report.candidateName != null && report.candidateName != '' && report.candidateName !='undefined'&& report.candidateName != null && report.applicantName != ''){
-        		result = result + '<div><span>'+report.candidateName+'</span></div>';
+        		result = result + '<div><span title="'+report.candidateName+'">'+report.candidateName+'</span></div>';
   			} else{
  				result = result + '<div><span>---</span></div>';
  		    }
@@ -74,7 +74,7 @@ function prepareReportDataDiv(data){
          
          result = result + '<td>';
          if(report.orgName != null && report.orgName != '' && report.orgName !='undefined'&& report.orgName != null && report.orgName != ''){
-         		result = result + '<div><span>'+report.orgName+'</span></div>';
+         		result = result + '<div><span title="'+report.orgName+'">'+report.orgName+'</span></div>';
    			} else{
   				result = result + '<div><span>---</span></div>';
   		    }
@@ -82,7 +82,7 @@ function prepareReportDataDiv(data){
          
          result = result + '<td>';
          if(report.submittedBy != null && report.submittedBy != '' && report.submittedBy !='undefined'&& report.submittedBy != null && report.submittedBy != ''){
-         		result = result + '<div><span>'+report.submittedBy+'</span></div>';
+         		result = result + '<div><span title="'+report.submittedBy+'">'+report.submittedBy+'</span></div>';
    			} else{
   				result = result + '<div><span>---</span></div>';
   		    }
@@ -97,7 +97,7 @@ function prepareReportDataDiv(data){
          result = result + '</td>';
          
         result = result + '<td>';
-        result = result + '<div><span>'+report.requirementName+'</span></div> ';
+        result = result + '<div><span title="'+report.requirementName+'">'+report.requirementName+'</span></div> ';
         result = result + '</td>';
 
         result = result + '<td>';

@@ -28,6 +28,8 @@
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
+   <c:if test="${requirementTabAccess == true }">
+    
     <div class="pull-left">
       <h2> Reports Dashboard</h2>
     </div>
@@ -45,7 +47,9 @@
 				    <li><a href="<c:url value='/timeSheetReports'/>"><span><i class="fa fa-briefcase"></i></span>TimeSheet Reports</a></li>
 				</ul>
 			</div>
-		</div>  
+		</div> 
+		
+   </c:if>		 
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo;   Reports Dashboard</div>
  <div class="clearfix"></div>
  
@@ -54,6 +58,8 @@
  
   </section>
    
+ 
+ <c:if test="${requirementTabAccess == true }">
   <div style="overflow: auto;" class=" vendor_wrap"> 
    
    <div class="pull-left reportBtns">
@@ -81,12 +87,13 @@
 		<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
 		<div class="clearfix"></div>
   </div>
+      
       <div class="candidate_wrap_table recruiterReports_table">
         <div id="usersList"></div>
       </div> 
  </div>
- 
- 
+ </c:if>
+ <c:if test="${vendorTabAccess == true }">
  <div class="timesheet_out mt40">
     <div class="vendor_wrap">
       <div class="timesheet_head">
@@ -135,7 +142,8 @@
 
 
   </div>
- 
+  </div>
+  </c:if>
   </section>    
       
 <div class="mask_time"></div>
@@ -405,15 +413,15 @@ function getCustomReports(){
                 	 result = result +"<table id='reportPagination' class='display' cellspacing='0' width='99.9%' >"; 
                      result = result +"<thead>"; 
                      result = result +"  <tr>"; 
-                     result = result +"    <th>Name</th>";
-                     result = result +"    <th>Requirements</th>";
-                     result = result +"    <th>Candidates</th>";
-                     result = result +"    <th>Applicants</th>"; 
-                     result = result +"    <th>Shortlisted</th>"; 
-                     result = result +"    <th>Submitted</th>"; 
-                     result = result +"    <th>Interviewed</th>"; 
-                     result = result +"    <th>Offered</th>"; 
-                     result = result +"<th>Rejected</th>";
+                     result = result +"<th><i class='fa fa-address-book-o fa-2x'></i> <div class='small'>Name</div></th>";
+                     result = result +"<th><i class='fa fa-briefcase fa-2x'></i><div class='small'>Requirements</div></th>";
+                     result = result +"<th><i class='fa fa-user-circle fa-2x'></i><div class='small'>Candidates</div></th>";
+                     result = result +"<th><i class='fa fa-users fa-2x'></i><div class='small'>Applicants</div></th>"; 
+                     result = result +"<th><i class='fa fa-list-ul fa-2x'></i><div class='small'>Shortlisted</div></th>"; 
+                     result = result +"<th><i class='fa fa-send fa-2x'></i><div class='small'>Submitted</div></th>"; 
+                     result = result +"<th><i class='fa fa-handshake-o fa-2x'></i><div class='small'>Interviewed</div></th>"; 
+                     result = result +"<th><i class='fa fa-envelope-open-o fa-2x'></i><div class='small'>Offered</div></th>"; 
+                     result = result +"<th><i class='fa fa-ban fa-2x'></i><div class='small'>Rejected</div></th>";
                      result = result +"  </tr>"; 
                      result = result +"</thead>";
                      result = result +"<tbody>"; 
@@ -442,52 +450,52 @@ function getCustomReports(){
                     	 }
                     	 
                     	 if(opt.userRequirementsCount !=null && opt.userRequirementsCount !='' && opt.userRequirementsCount !='undefined'){
-                    		  result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.userRequirementsCount+"'>"+opt.userRequirementsCount+"</span></div></td>";
+                    		  result = result +"<td><div class='small'><span title='"+opt.userRequirementsCount+"'>"+opt.userRequirementsCount+"</span></div></td>";
                     	 }else{
-                    		 result = result +"<td><div class='tbldata-dotdot-100'> <span>0</span></div></td>"; 
+                    		 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
                     	 }
 	                    
                     	 if(opt.userCandidatesCount !=null && opt.userCandidatesCount !='' && opt.userCandidatesCount !='undefined'){
-                    		  result = result +"<td><div class='tbldata-dotdot-100'> <span title='"+opt.userCandidatesCount+"'>"+opt.userCandidatesCount+"</span></div></td>";
+                    		  result = result +"<td><div class='small'> <span title='"+opt.userCandidatesCount+"'>"+opt.userCandidatesCount+"</span></div></td>";
                     	 }else{
-                    		 result = result +"<td><div class='tbldata-dotdot-100'> <span>0</span></div></td>"; 
+                    		 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
                     	 }
                     	 
                     	 if(opt.userApplicantsCount !=null && opt.userApplicantsCount !='' && opt.userApplicantsCount !='undefined'){
-                    		  result = result +"<td><div class='tbldata-dotdot-100'> <span title='"+opt.userApplicantsCount+"'>"+opt.userApplicantsCount+"</span></div></td>";
+                    		  result = result +"<td><div class='small'> <span title='"+opt.userApplicantsCount+"'>"+opt.userApplicantsCount+"</span></div></td>";
                     	 }else{
-                    		 result = result +"<td><div class='tbldata-dotdot-100'> <span>0</span></div></td>"; 
+                    		 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
                     	 }
                     	 
                     	 
                     	 if(opt.userShortlisteApplicantsCount !=null && opt.userShortlisteApplicantsCount !='' && opt.userShortlisteApplicantsCount !='undefined'){
-                    		  result = result +"<td><div class='tbldata-dotdot-100'> <span title='"+opt.userShortlisteApplicantsCount+"'>"+opt.userShortlisteApplicantsCount+"</span></div></td>";
+                    		  result = result +"<td><div class='small'> <span title='"+opt.userShortlisteApplicantsCount+"'>"+opt.userShortlisteApplicantsCount+"</span></div></td>";
                     	 }else{
-                    		 result = result +"<td><div class='tbldata-dotdot-100'> <span>0</span></div></td>"; 
+                    		 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
                     	 }
                     	 
                     	 if(opt.userSubmittedApplicantsCount !=null && opt.userSubmittedApplicantsCount !='' && opt.userSubmittedApplicantsCount !='undefined'){
-                    		  result = result +"<td><div class='tbldata-dotdot-100'> <span title='"+opt.userSubmittedApplicantsCount+"'>"+opt.userSubmittedApplicantsCount+"</span></div></td>";
+                    		  result = result +"<td><div class='small'> <span title='"+opt.userSubmittedApplicantsCount+"'>"+opt.userSubmittedApplicantsCount+"</span></div></td>";
                     	 }else{
-                    		 result = result +"<td><div class='tbldata-dotdot-100'> <span>0</span></div></td>"; 
+                    		 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
                     	 }
                     	 
                     	 if(opt.userInterviewedApplicantsCount !=null && opt.userInterviewedApplicantsCount !='' && opt.userInterviewedApplicantsCount !='undefined'){
-                    		  result = result +"<td><div class='tbldata-dotdot-100'> <span title='"+opt.userInterviewedApplicantsCount+"'>"+opt.userInterviewedApplicantsCount+"</span></div></td>";
+                    		  result = result +"<td><div class='small'> <span title='"+opt.userInterviewedApplicantsCount+"'>"+opt.userInterviewedApplicantsCount+"</span></div></td>";
                     	 }else{
-                    		 result = result +"<td><div class='tbldata-dotdot-100'> <span>0</span></div></td>"; 
+                    		 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
                     	 }
                     	 
                     	 if(opt.userOfferedApplicantsCount !=null && opt.userOfferedApplicantsCount !='' && opt.userOfferedApplicantsCount !='undefined'){
-                    		  result = result +"<td><div class='tbldata-dotdot-100'> <span title='"+opt.userOfferedApplicantsCount+"'>"+opt.userOfferedApplicantsCount+"</span></div></td>";
+                    		  result = result +"<td><div class='small'> <span title='"+opt.userOfferedApplicantsCount+"'>"+opt.userOfferedApplicantsCount+"</span></div></td>";
                     	 }else{
-                    		 result = result +"<td><div class='tbldata-dotdot-100'> <span>0</span></div></td>"; 
+                    		 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
                     	 }
                     	 
                     	 if(opt.userRejectedApplicantsCount !=null && opt.userRejectedApplicantsCount !='' && opt.userRejectedApplicantsCount !='undefined'){
-                    		  result = result +"<td><div class='tbldata-dotdot-100'> <span title='"+opt.userRejectedApplicantsCount+"'>"+opt.userRejectedApplicantsCount+"</span></div></td>";
+                    		  result = result +"<td><div class='small'> <span title='"+opt.userRejectedApplicantsCount+"'>"+opt.userRejectedApplicantsCount+"</span></div></td>";
                     	 }else{
-                    		 result = result +"<td><div class='tbldata-dotdot-100'> <span>0</span></div></td>"; 
+                    		 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
                     	 }
 	                    
 	                     result = result +"</tr>";

@@ -49,7 +49,7 @@
         <li class="${sessionData.nav == 'Dashboard' ? 'side-nav-active' : ''}"><a href="<c:url value='/recruiterDashboard'/>" title="Dashboard"><span><i class="fa fa-dashboard"></i></span>Dashboard</a></li>
         </c:if> 
           
-           <c:set var="timesheetTabExist" scope="session" value="N"/>
+          <c:set var="timesheetTabExist" scope="session" value="N"/>
           <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
                     <c:if test="${userTabs.tabName == 'Clients'}">
                  	  <li class="${sessionData.nav == 'Clients' ? 'side-nav-active' : ''}"><a href="<c:url value='/clientDashboard'/>" title="Clients"><span><i class="fa fa-user-plus"></i></span>Clients</a></li>
@@ -73,10 +73,8 @@
 	                 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
 	                   <li class="${sessionData.nav == 'Candidates' ? 'side-nav-active' : ''}"><a href="<c:url value='/candidatesList'/>" title="Candidates"><span><i class="fa fa-user"></i></span>Candidates</a></li>
 	                 </c:if>
-	                 
-	                   <li class="${sessionData.nav == 'Associates' ? 'side-nav-active' : ''}"><a href="<c:url value='/associatesList'/>" title="Associates"><span><i class="fa fa-black-tie"></i></span>Associates</a></li>
-	                 
 	                </c:if> 
+	                
                 
 	                <c:if test="${userTabs.tabName == 'Vendors'}">
 	                   <li class="${sessionData.nav == 'Vendors' ? 'side-nav-active' : ''}"><a href="<c:url value='/vendorsList'/>" title="Vendors"><span><i class="fa fa-suitcase"></i></span>Vendors</a></li>
@@ -97,12 +95,12 @@
 	                 <c:if test="${timesheetTabExist == 'N' && (userTabs.tabName == 'My Timesheets' || userTabs.tabName == 'Timesheet Approval')}">
 	                 <sec:authorize access="hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS') && hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS')"> 
 				           <li class="${sessionData.nav == 'TimeSheet' || sessionData.nav == 'TimeSheetApproval' ? 'side-nav-active' : ''}">
-							  <a href="#" class="tree-view-new" title="TimeSheets">
+							  <a href="#" class="tree-view-new" title="Timesheets">
 								<span><i class="fa fa-clock-o"></i></span>
 							  Timesheets <i class="fa fa-fw fa-caret-down"></i>
 							  </a>
 							  
-							  <a href="#" class="tree-view" title="TimeSheets">
+							  <a href="#" class="tree-view" title="Timesheets">
 								<span><i class="fa fa-clock-o"></i></span>
 							  Timesheets <i class="fa fa-fw fa-caret-down"></i>
 							  </a>
@@ -153,19 +151,6 @@
 							  Back Office <i class="fa fa-fw fa-caret-down"></i>
 							  </a>
 							  
-							  <%-- <c:if test="${sessionData.nav == 'Finance' || sessionData.nav == 'AssetManagement'}">
-							  <ul class="collapses" style="display: block">
-							  	<li class="${sessionData.nav == 'Finance' ? 'treview-active' : ''}"><a href="<c:url value='/finance'/>" title="Finance">Finance</a></li>
-									<li class="${sessionData.nav == 'AssetManagement' ? 'treview-active' : ''}"><a href="<c:url value='/assetManagement'/>" title="Asset Management">Asset Management</a></li>
-							  </ul>
-							  </c:if>
-							  <c:if test="${sessionData.nav != 'Finance' || sessionData.nav != 'AssetManagement'}">
-							  <ul class="collapses" style="display: none">
-							  	<li class="${sessionData.nav == 'BackOffice' ? 'treview-active' : ''}"><a href="<c:url value='/finance'/>" title="Finance">Finance</a></li>
-									<li class="${sessionData.nav == 'AssetManagement' ? 'treview-active' : ''}"><a href="<c:url value='/assetManagement'/>" title="Asset Management">Asset Management</a></li>
-							  </ul>
-							  </c:if> --%>
-							  
 							   <c:if test="${sessionData.nav == 'Finance' || sessionData.nav == 'AssetManagement'}">
                               <ul class="collapses" style="display: block">
                                   <li class="${sessionData.nav == 'Finance' ? 'treview-active' : ''}"><a href="<c:url value='/finance'/>" title="Finance">Finance</a></li>
@@ -186,12 +171,56 @@
 						  </li>
 	                 </c:if>
 	                 
+	                                 
+	                 
+                     <c:if test="${SourceLeadWeb_associatesTabsCount == 2 && userTabs.tabName == 'Associates List'}">
+	                   <li class="${sessionData.nav == 'Associates' || sessionData.nav == 'OnAndOffboard' ? 'side-nav-active' : ''}">
+							  <a href="#" class="tree-view-new" title="Associates">
+								<span><i class="fa fa-black-tie"></i></span>
+							  Associates <i class="fa fa-fw fa-caret-down"></i>
+							  </a>
+							  
+							  <a href="#" class="tree-view" title="Associates">
+								<span><i class="fa fa-black-tie"></i></span>
+							  Associates <i class="fa fa-fw fa-caret-down"></i>
+							  </a>
+							  
+						   
+						   <c:if test="${sessionData.nav == 'Associates' || sessionData.nav == 'OnAndOffboard'}">
+                              <ul class="collapses" style="display: block">
+                                  <li class="${sessionData.nav == 'Associates' ? 'treview-active' : ''}"><a href="<c:url value='/associatesList'/>" title="Associates List">Associates List</a></li>
+                                  <li class="${sessionData.nav == 'OnAndOffboard' ? 'treview-active' : ''}"><a href="<c:url value='/candidateOnBoardingList'/>" title="On / Off Boarding">On / Off Boarding</a></li>
+                              </ul>
+                           </c:if>
+                              
+                           <c:if test="${sessionData.nav != 'Associates' || sessionData.nav != 'OnAndOffboard'}">
+                           <ul class="collapses" style="display: none">
+                               <li class="${sessionData.nav == 'Associates' ? 'treview-active' : ''}"><a href="<c:url value='/associatesList'/>" title="Associates List">Associates List</a></li>
+                               <li class="${sessionData.nav == 'OnAndOffboard' ? 'treview-active' : ''}"><a href="<c:url value='/candidateOnBoardingList'/>" title="On / Off Boarding">On / Off Boarding</a></li>
+                           </ul>
+                           </c:if>
+                           
+                              
+						  </li>
+	                 </c:if>
+	                 
+	                 <c:if test="${SourceLeadWeb_associatesTabsCount < 2 && userTabs.tabName == 'Associates List'}">
+	                   <li class="${sessionData.nav == 'Associates' ? 'side-nav-active' : ''}"><a href="<c:url value='/associatesList'/>" title="Associates List"><span><i class="fa fa-black-tie"></i></span>Associates List</a></li>
+	                 </c:if>
+	                 
+	                 <c:if test="${SourceLeadWeb_associatesTabsCount < 2 && userTabs.tabName == 'On & Off Boarding'}">
+	                 <li class="${sessionData.nav == 'OnAndOffboard' ? 'side-nav-active' : ''}"><a href="<c:url value='/candidateOnBoardingList'/>" title="On / Off Boarding"><span><i class="fa fa-black-tie"></i></span>On / Off Boarding</a></li>
+	                 </c:if>
+	                 
+	                 
+	                 
 	                 <c:if test="${userTabs.tabName == 'Contracts'}">
-	                   <li class="${sessionData.nav == 'Contract' ? 'side-nav-active' : ''}"><a href="<c:url value='/contractListbyStatus'/>" title="Vendors"><span><i class="fa fa-object-ungroup"></i></span>Contracts</a></li>
+	                   <li class="${sessionData.nav == 'Contract' ? 'side-nav-active' : ''}"><a href="<c:url value='/contractListbyStatus'/>" title="Contracts"><span><i class="fa fa-object-ungroup"></i></span>Contracts</a></li>
 	                </c:if> 
 	                 
 
           </c:forEach>
+          
           				 
      <%--  <li class="${sessionData.nav == 'SocialInviter' ? 'side-nav-active' : ''}"><a href="<c:url value='/socialinviter'/>" title="SocialInviter"><span><i class="fa fa-bar-chart"></i></span>Social Inviter</a></li> --%>
 

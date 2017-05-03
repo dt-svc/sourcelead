@@ -21,7 +21,6 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
-import org.h2.schema.Constant;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
