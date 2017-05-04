@@ -75,6 +75,7 @@ textarea {
 }
 .main-header {
 	max-height: 100px; position: relative; z-index: 1030; background: #368ee0; box-shadow: 1px 1px 3px #00105a;
+    position: fixed; width: 100%;
 }
 .main-header span.logo {
 	background: #3081cb; padding: 0 15px; line-height: 50px; width: 230px; box-sizing: border-box; height: 50px; float: left;
@@ -572,7 +573,7 @@ line-height: 39px; border-bottom: 1px solid #325475; transition: all 0.5s ease-i
 .content-wraper {
 background: #e0e0e0; min-height: 620px; margin-left: 230px; padding: 0 30px 30px;
 -moz-transition: all ease-in-out 0.3s; -ms-transition: all ease-in-out 0.3s; -webkit-transition: all ease-in-out 0.5s;
-transition: all ease-in-out 0.3s;
+transition: all ease-in-out 0.3s; padding-top: 50px;
 }
 .content-wraper.content-wraper-active {
 	margin-left: 50px;
@@ -3294,8 +3295,7 @@ addTask-widget table tr th {
 	color:#fff;
 }
 .side-nav-fixed{
-	position:fixed;
-	padding-top:0;
+	position:fixed; padding-top:50px;
 }
 
 /* Add Role Styles */
@@ -3622,7 +3622,7 @@ ul.pipeline li{
 	background-color:#333;
 }
 .collapse-div-adduser.addrole {
-	right:25px;
+	right:275px;
 }
 .headersummary ul{
 	padding: 2px 245px 2px 0px !important;
@@ -6867,7 +6867,7 @@ top:100px;
 width: 230px; transform: translateX(0); -webkit-transform: translateX(0); -ms-transform: translateX(0);
 }
 .content-wraper {
-	padding: 10px;
+	padding: 10px; padding-top: 100px;
 }
 .form-icon .form-control {
 	width: 80%;
