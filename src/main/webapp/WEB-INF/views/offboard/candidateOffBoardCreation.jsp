@@ -1536,6 +1536,7 @@ function saveAndFinishOffboardTemplate(offboardId){
 	  document.getElementById("assignToUserDiv").style.display="none";
 	  $('#onboardAssignedTo').removeAttr('data-validation');
 	  $("#onboardAssignedTo").attr("data-validation-optional", "true");
+	  $('#assignToUserDiv').find('p.jquery_form_error_message').remove();
   }
   </script>
   
