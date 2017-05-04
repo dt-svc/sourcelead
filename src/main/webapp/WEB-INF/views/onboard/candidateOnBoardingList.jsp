@@ -10,6 +10,14 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
+
+
+<style>
+.settPop .form-control {
+    height: auto !important; 
+}
+</style>
+
 <script> 
 	$(document).ready(function(){
 		
@@ -38,7 +46,7 @@
       <div class="pull-left">
         <h2>Onboard & Offboard Dashboard</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/usersList'/>">Users List</a> &raquo; Onboard & Offboard List </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; Onboard & Offboard List </div>
  </section>
  
  <div class="content-area content-new clearfix">
@@ -85,6 +93,9 @@
 	          <div id="onboardingLoading"></div>
 	          <div id="onboardingCandidatesList"></div>
 	          <div id="offboardingCandidatesList"></div>
+	          
+	          <div class="vendor_wrap_mask"></div>
+	          <div id="rejectedReasonDiv"></div>
           </div>
         
       </div>
@@ -114,8 +125,8 @@
 	                     result = result +"    <th>Type</th>";
 	                     result = result +"    <th>Date Of Join</th>";
 	                     result = result +"    <th>Onboard<br/>Documents</th>";
-	                     result = result +"    <th>Stage</th>"; 
-	                     result = result +"    <th>Onboard Stage</th>"; 
+	                     result = result +"    <th>Status</th>"; 
+	                     result = result +"    <th>Actions</th>"; 
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
@@ -141,7 +152,7 @@
 	                    	 '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ON_BOARD_USER\')">'
 		                    	 if(opt.candidateOnBoardStatus == 'Draft'){
 		                    		 result = result +"<b class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOnboardCandidateDetails?onboardUUID="+opt.onboardCandidateUUID+"'> <i class='fa fa-binoculars'></i> </a> </b> </div>";
-		                    	 }else if(opt.candidateOnBoardStatus == 'Finished'){
+		                    	 }else if(opt.candidateOnBoardStatus == 'Finished' || opt.candidateOnBoardStatus == 'Submitted' || opt.candidateOnBoardStatus == 'Rejected' || opt.candidateOnBoardStatus == 'Accepted'){
 		                    		 result = result +"<b class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOnboardCandidateSummary?onboardUUID="+opt.onboardCandidateUUID+"'> <i class='fa fa-binoculars'></i> </a> </b> </div>";
 		                    	 }
 	                    	 '</sec:authorize>';
@@ -152,13 +163,28 @@
                     		 result = result +"<td><div><span>Onboard</span></div></td>";
                     		 result = result +"<td><div><span>"+joiningDate+"</span></div></td>";
                     		 result = result +"<td><div><span>"+opt.documentsAcceptedCount+" / "+opt.documentsCount+"</span></div></td>";
-                    		 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div></td>";
                     		 
-                    		 if(opt.onboardSubmitted == 'Y'){
-                    			 result = result +"<td><div><span class='text-success'>Submitted</span></div></td>";
+                    		 if(opt.onboardSubmitted != 'Y'){
+                    			 if(opt.candidateOnBoardStatus == 'Finished'){
+                        			 result = result +"<td><div><span>Sent</span></div></td>";
+                        		 }else{
+                        			 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div></td>";
+                        		 }
                     		 }else{
-                    			 result = result +"<td><div><span class='text-warning'>Pending</span></div></td>";
+                    			 result = result +"<td><div><span class='text-success'>Submitted</span></div></td>";
                     		 }
+                    		 
+                    		 
+                    		 if(opt.candidateOnBoardStatus == 'Accepted'){
+                    			 result = result +"<td><div><span class='text-success'>"+opt.candidateOnBoardStatus+"</span></div></td>";
+                    		 }else{
+                    			 if(opt.onboardSubmitted == 'Y'){
+                        			 result = result	+ '<td><div><span><a><i class="fa fa-check text-success" onclick="acceptOnboardingCandiate(\''+opt.onboardCandidateUUID+'\');"></i></a></span>&nbsp;&nbsp;&nbsp;<span><a><i class="fa fa-close text-danger" onclick="rejectedReason(\''+opt.onboardCandidateUUID+'\',\''+opt.candidateName+'\',\''+opt.userEmail+'\');"></i></a></span></div></td>';
+                        		 }else{
+                        			 result = result	+ '<td><div>-----</div></td>';
+                        		 }
+                    		 }
+                    		
                     
 		                     
 		                     result = result +"</tr>";
@@ -176,7 +202,6 @@
        }); 
  }
  </script>
- 
  
  
  <script>
@@ -199,8 +224,8 @@
 	                     result = result +"  <tr>"; 
 	                     result = result +"    <th>Candidate Name</th>";
 	                     result = result +"    <th>Type</th>";
-	                     result = result +"    <th>Date Of Join</th>";
 	                     result = result +"    <th>End Date</th>";
+	                     result = result +"    <th>Effective Date</th>";
 	                     result = result +"    <th>Stage</th>"; 
 	                     result = result +"    <th>Offboard Stage</th>"; 
 	                     result = result +"  </tr>"; 
@@ -232,8 +257,8 @@
 	                    	 
 	                    	 
                     		 result = result +"<td><div><span>Offboard</span></div></td>";
-                    		 result = result +"<td><div><span>"+opt.dateOfJoinStr+"</span></div></td>";
                     		 result = result +"<td><div><span>"+opt.endDateStr+"</span></div></td>";
+                    		 result = result +"<td><div><span>"+opt.effectiveDateStr+"</span></div></td>";
                     		 result = result +"<td><div><span>"+opt.offBoardStatus+"</span></div></td>";
                     		 
                     		 if(opt.offboardSubmitted == 'Y'){
@@ -290,6 +315,152 @@ function offboardingPagenation(){
 	       }
 	    } );
 }
+</script>
+
+
+
+<script>
+ function rejectedReason(onboardCandidateUUID,candidateName,candidateEmail){
+	
+	    var result = "";
+		result = result + '	<div class="settPop">';
+		result = result + '	<div id="loading"></div>';
+		result = result + '<form id="rejectedReason_form" name="rejectedReason_form" method="post">';
+		result = result + '<input type="hidden" name="onboardCandidateUUID" value="'+onboardCandidateUUID+'">';
+		result = result + '	<h3>Onboard Rejected Reason<i class="fa fa-times" onclick="cancelRejectedReason();"></i></h3>  ';
+		result = result + '	<div class="settPopInn"> ';
+		
+		result = result + '		<div class="clearfix">  ';
+		result = result + '		<div class="col-md-12">  ';
+		result = result + '		  <label class="col-md-2 paddingLeft" for="Candidate Name">Name :</label> ';
+		result = result + '		  <label class="col-md-8 paddingRight">'+candidateName+'</label> ';
+		result = result + '		</div>  ';
+
+		result = result + '		<div class="col-md-12">  ';
+		result = result + '		  <label class="col-md-2 paddingLeft" for="Email">Email :</label> ';
+		result = result + '		  <label class="col-md-8 paddingRight">'+candidateEmail+'</label> ';
+		result = result + '		</div>  ';
+		
+		
+		result = result + '		  <label class="col-md-12 mt10" for="Project Id">Reason</label> ';
+		result = result + '		  <div class="col-md-12 taskdesp mt10">   ';
+		result = result + '			<textarea class="form-control" name="rejectedReason" id="rejectedReason" field-name="Reason" data-validation="required  validate_length length2-500" rows="2"></textarea>';
+		result = result + '			<span class="hidden"></span> </div>  ';
+		result = result + '		</div>';
+		result = result + '		<div class="col-md-12 mt5 clearfix"> ';
+		result = result + '		<div class="pull-right">  ';
+		result = result + '		  <input type="submit" value="Save" id="submit_rejectedReason"  class="btn btn-primary" >';
+		result = result + '		  <input type="button" value="Cancel" class="btn btn-default ml10" onclick="cancelRejectedReason();">';
+		result = result + '		</div>';
+		result = result + '		</div>';
+		result = result + '		<div class="clearfix"></div>   ';
+		result = result + '	</div>  ';
+		result = result + '</form>';
+		result = result + '	</div>';
+	    $("#rejectedReasonDiv").empty();
+	    $("#rejectedReasonDiv").append(result);
+	    
+	    $(".settPop").slideDown(200);
+		$(".vendor_wrap_mask").fadeIn(200);
+	    
+ }
+ </script> 
+ 
+ 
+<script>
+function cancelRejectedReason(){
+	$(".settPop").slideUp(200);
+	$(".vendor_wrap_mask").fadeOut(200);
+}
+</script>
+ 
+ 
+<script type="text/javascript">
+$(document).ready(function() {
+    $(".glyphicon-edit").click(function(){
+		$(".settPop").slideDown(200);
+		$(".vendor_wrap_mask").fadeIn(200);
+	});
+	$(".settPop i, .btn-default").click(function(){
+		$(".settPop").slideUp(200);
+		$(".vendor_wrap_mask").fadeOut(200);
+	});
+});		
+	
+</script> 
+
+
+<script type="text/javascript">
+$('body').on('submit', '#rejectedReason_form', function(e){
+	  if ($(this).validate(false, validationSettings)){
+      e.preventDefault();
+     
+      var frm = $('#rejectedReason_form').serializeFormJSON();
+      var con = JSON.stringify(frm);
+      con = con.replace(/[{}]/g, "");
+      
+      //It will escape all the special characters
+      var jsonData = encodeURIComponent(con);
+      var sourceleadUrl ='${sourceleadUrl}';
+      
+        $("#submit_rejectedReason").attr("disabled", "disabled");
+		
+        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	 	 $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/rejectOnboardedCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+		        success: function(result) {
+		        	cancelRejectedReason();
+		        	getOnboardCandidatesList();
+		        },
+		    }); 
+      return true; 
+    }
+    else{
+    	return false;	
+       }
+  });
+
+	$('body').on('blur', '#rejectedReason_form', function() {
+		$("#rejectedReason_form").showHelpOnFocus();
+		$("#rejectedReason_form").validateOnBlur(false, validationSettings);
+	});
+  </script>
+  
+  
+  
+  <script>
+  function acceptOnboardingCandiate(onboardCandidateUUID){
+	  var sourceleadUrl ='${sourceleadUrl}';
+	 	 $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/acceptOnboardingCandiate?${_csrf.parameterName}=${_csrf.token}&onboardCandidateUUID="+onboardCandidateUUID, 
+		        success: function(result) {
+		        	getOnboardCandidatesList();
+		        },
+		    }); 
+  }
+  </script>
+  
+ <script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
 </script>
  
     
