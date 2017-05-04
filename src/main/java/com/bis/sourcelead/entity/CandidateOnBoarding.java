@@ -133,6 +133,10 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "CANDIDATE_ONBOARD_STATUS")
 	private String candidateOnBoardStatus;
 	
+	@Column(name = "REJECTED_REASON")
+	@Type(type="text")
+	private String rejectedReason;
+	
 	@Column(name = "STATUS")
 	private Integer status;
 	
@@ -201,6 +205,9 @@ private static final long serialVersionUID = 1L;
 	
 	@Transient
 	private Integer documentsAcceptedCount;
+	
+	@Transient
+	private String userEmail;
 	
 
 	public Long getId() {
@@ -633,5 +640,21 @@ private static final long serialVersionUID = 1L;
 
 	public void setDocumentsAcceptedCount(Integer documentsAcceptedCount) {
 		this.documentsAcceptedCount = documentsAcceptedCount;
+	}
+
+	public String getRejectedReason() {
+		return rejectedReason;
+	}
+
+	public void setRejectedReason(String rejectedReason) {
+		this.rejectedReason = rejectedReason;
+	}
+
+	public String getUserEmail() {
+		return userEmail;
+	}
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
 	}
 }

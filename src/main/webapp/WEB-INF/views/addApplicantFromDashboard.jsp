@@ -77,20 +77,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
                         
 	result = result + '</div>';
 	
-	
-	/* result = result + '<div class="row">';
-    result = result + '	<div class="col-md-6 upresume mb" id="employmentTypeDiv" style="display: none;">';
-	result = result + '<label class="col-md-4">Employment Type</label>';
-	result = result + '<div class="col-md-8">';
-	result = result + '<select class="form-control" id="designationType" name="designationType" onchange="getEmployementType();" field-name="Employment Type">';
-	result = result + '<option value="">--Select--</option>';
-	result = result + '</select>';
-	result = result + '</div>';
-	result = result + '</div>';
-	result = result + '</div>'; */
-	
-	
-	
+		
 	result = result + '<div class="row">';
     result = result + '	<div class="col-md-6 upresume mb" id="skillsDiv" style="display: none;">';
 	result = result + '<label class="col-md-4">Skills</label>';
@@ -103,6 +90,53 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	result = result + '		 </div>';
 	result = result + '	 </div>';
 	result = result + '	 </div>';
+	
+	
+	
+	result = result + '<div class="row">';
+    result = result + '	<div class="col-md-6 upresume mb" id="employmentTypeDiv" style="display: none;">';
+	result = result + '<label class="col-md-4">Employment<br/> Type<span class="paddingLeft">*</span></label>';
+	result = result + '<div class="col-md-8">';
+	result = result + '<select class="form-control" id="designationType" style="width: 100%;" name="designationType" onchange="getEmployementType();" field-name="Employment Type">';
+	result = result + '<option value="">--Select--</option>';
+	result = result + '</select>';
+	result = result + '</div>';
+	result = result + '</div>';
+	result = result + '</div>'; 
+	
+	
+    result = result + '<div class="row">';
+    result = result + '	<div class="col-md-6 upresume mb" id="employmentOtherTypeDiv" style="display: none;">';
+    result = result + '<label class="col-md-4"></label>';
+    result = result + '<div class="col-md-8">';
+	result = result + '<input type="text" class="form-control" placeholder="Employment Other Type" id="designationOtherType" name="designationOtherType" field-name="Employment Other Type" >';
+	result = result + '</div>';
+	result = result + '</div>';
+	result = result + '</div>'; 
+	
+	
+    result = result + '<div class="row">';
+    result = result + '	<div class="col-md-6 upresume mb" id="vendorsDiv" style="display: none;">';
+	result = result + '<label class="col-md-4">Vendors</label>';
+	result = result + '<div class="col-md-8">';
+	result = result + '<select class="chosen-select form-control" id="vendors" name="vendors" onchange="getAddApplicantVendorContactList();" field-name="Vendors">';
+	result = result + '</select>';
+	result = result + '</div>';
+	result = result + '</div>';
+	result = result + '</div>';
+	
+	
+	result = result + '<div class="row">';
+    result = result + '	<div class="col-md-6 upresume mb" id="vendorContactsDiv" style="display: none;">';
+	result = result + '<label class="col-md-4">Vendor Contacts</label>';
+	result = result + '<div class="col-md-8">';
+	result = result + '<select class="chosen-select form-control" id="vendorContact" name="vendorContact"  field-name="vendor Contacts">';
+	result = result + '<option value="">--Select Vendor Contacts--</option>';
+	result = result + '</select>';
+	result = result + '</div>';
+	result = result + '</div>';
+	result = result + '</div>'; 
+	
 	
 	
 	result = result + '<div class="row">';
@@ -302,6 +336,16 @@ function discordApplicant(){
 	 $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
 	 $('#uploadFileGroup1').find('p.jquery_form_error_message').remove();
 	 
+	 $("input[name=AlternateNumber]").val(''); 
+	 $("input[name=DOB]").val('');
+	 $("input[name='Current/LastCompany']").val('');
+	 $("select[name=WorkExperience]").val(0);
+	 $("select[name=monthExp]").val(0);
+	 if($("#needApplicantPermit").is(':checked')){
+		 document.getElementById("needApplicantPermit").checked = false;
+		 $("#needApplicantPermit").val('N');
+	 }
+	 
 	 $('#candidateId').removeAttr('data-validation-optional');
 	 $("#candidateId").attr("data-validation", "required");
 	 
@@ -315,13 +359,13 @@ function discordApplicant(){
 			 $("#candidateSkills").val('').trigger("chosen:updated");
 		 }
 		 
-		/*  var employmentTypeDiv = document.getElementById('employmentTypeDiv');
+		 var employmentTypeDiv = document.getElementById('employmentTypeDiv');
 		 if(employmentTypeDiv != null){
 			 document.getElementById("employmentTypeDiv").style.display="none";
 			 $("#designationType").removeAttr("data-validation");
 		     $('#designationType').attr("data-validation-optional","true");
 		     $("#designationType").empty();
-		 } */
+		 } 
 		 
 		 
 		 if(requirementId != null && requirementId != "" && requirementId != 'undefined'){
@@ -384,9 +428,9 @@ function discordApplicant(){
 			 document.getElementById("newResumeDiv").style.display="none";
 			 document.getElementById("skillsDiv").style.display="";
 			 
-			/*  document.getElementById("employmentTypeDiv").style.display="";
+			 document.getElementById("employmentTypeDiv").style.display="";
 			 $("#designationType").removeAttr("data-validation-optional");
-		     $('#designationType').attr("data-validation","required"); */
+		     $('#designationType').attr("data-validation","required"); 
 			
 		     $("#candidateSkills").val('').trigger("chosen:updated");
 			 $('#newUploadFile').removeAttr('data-validation');
@@ -399,9 +443,9 @@ function discordApplicant(){
 	    	 document.getElementById("newResumeDiv").style.display="";
 	    	 document.getElementById("skillsDiv").style.display="";
 	    	 
-	    /* 	 document.getElementById("employmentTypeDiv").style.display="";
+	     	 document.getElementById("employmentTypeDiv").style.display="";
 	    	 $("#designationType").removeAttr("data-validation-optional");
-		     $('#designationType').attr("data-validation","required"); */
+		     $('#designationType').attr("data-validation","required"); 
 	    	
 		     $("#candidateSkills").val('').trigger("chosen:updated");
 			 $('#newUploadFile').removeAttr('data-validation-optional');
@@ -422,8 +466,6 @@ function discordApplicant(){
 	 
 	 $("input[name=PhoneNumber]").val('');
 	 $("input[name=Designation]").val('');
-	 $("select[name=state]").val('');
-	 $("select[name=city]").val('');
 	 $("select[name=NoticePeriod]").val('');
 	 $("select[name=WorkExperience]").val(0);
 	 $("input[name=ExpectedCTC]").val('');
@@ -432,6 +474,9 @@ function discordApplicant(){
 	 
 	 $("#newUploadFile").val('');
 	 $("#uploadFile").val('');
+	 
+	 getCandidateStates();
+	 getSubmissionCandidateCities();
 	
  }
 </script>
@@ -634,15 +679,17 @@ function getCandidateSelectionType(){
 	var output = "";
 	output = output + "<option value=''>-- Select --</option>"; 
 	output = output + "<option value='C2C'>C2C</option>"; 
+	output = output + "<option value='C2C-1099'>C2C-1099</option>"; 
 	output = output + "<option value='W-2'>W-2</option>"; 
 	output = output + "<option value='C2H'>C2H</option>"; 
+	output = output + "<option value='C2H-1099'>C2H-1099</option>"; 
 	output = output + "<option value='Part Time'>Part Time</option>"; 
 	output = output + "<option value='Full Time'>Full Time</option>"; 
+	output = output + "<option value='Other'>Other</option>"; 
 	$("#designationType").empty();
     $("#designationType").append(output);
 }
 </script>
-
 
 <script type="text/javascript">
  function getCandidateResumes() {
@@ -865,6 +912,13 @@ function getCandidateDetails(){
 		        		 $("input[name=AlternateNumber]").val(json['alternateMobilePhone']);
 		        	 }else{
 		        		 $("input[name=AlternateNumber]").val(''); 
+		        	 }
+		        	 
+		        	 
+		        	 if(json['employer'] != null && json['employer'] != "" && json['employer'] != 'undefined'){
+		        		 $("input[name='Current/LastCompany']").val(json['employer']);
+		        	 }else{
+		        		 $("input[name='Current/LastCompany']").val(''); 
 		        	 }
 		        	 
 		        	 if(json['designation'] != null && json['designation'] != "" && json['designation'] != 'undefined'){
@@ -1369,7 +1423,8 @@ function validate_fileupload(fileName)
  <script>
  function getEmployementType(){
 	 var designationType = document.getElementById("designationType").value;
-	 if(designationType == 'C2H'){
+	 
+	 if(designationType == 'C2C'){
 		 $("#needApplicantPermit").attr("disabled", "disabled");
 		 document.getElementById("needApplicantPermit").checked = false;
 		 $("#needApplicantPermit").val('N');
@@ -1377,7 +1432,124 @@ function validate_fileupload(fileName)
 		 $("#needApplicantPermit").removeAttr("disabled");
 		
 	 }
+	 
+	 if(designationType == 'C2C'){
+		 document.getElementById("vendorsDiv").style.display="";
+		 document.getElementById("vendorContactsDiv").style.display="";
+		 document.getElementById("employmentOtherTypeDiv").style.display="none";
+		
+		 $('#vendors').removeAttr("data-validation-optional"); 
+		 $('#vendorContact').removeAttr("data-validation-optional"); 
+		 
+		 $('#vendors').attr("data-validation","required"); 
+		 $('#vendorContact').attr("data-validation","required");  
+		 
+		 $('#designationOtherType').removeAttr("data-validation"); 
+		 $('#designationOtherType').attr("data-validation-optional", "true"); 
+		 $('#designationOtherType').attr("data-validation","validate_Space validate_length length2-250"); 
+		 
+		 getVendorsByOrgLocationForAddApplicant();
+	 }
+	 else if(designationType == 'C2C-1099'){
+		 document.getElementById("vendorsDiv").style.display="";
+		 document.getElementById("vendorContactsDiv").style.display="";
+		 document.getElementById("employmentOtherTypeDiv").style.display="none";
+		
+		 $('#vendors').removeAttr("data-validation"); 
+		 $('#vendorContact').removeAttr("data-validation"); 
+		 
+		 $('#vendors').attr("data-validation-optional", "true"); 
+		 $('#vendorContact').attr("data-validation-optional", "true"); 
+		 
+		 $('#designationOtherType').removeAttr("data-validation"); 
+		 $('#designationOtherType').attr("data-validation-optional", "true"); 
+		 $('#designationOtherType').attr("data-validation","validate_Space validate_length length2-250"); 
+		 
+		 getVendorsByOrgLocationForAddApplicant();
+	 }else if(designationType == 'Other'){
+		 
+		 document.getElementById("vendorsDiv").style.display="none";
+		 document.getElementById("vendorContactsDiv").style.display="none";
+		 document.getElementById("employmentOtherTypeDiv").style.display="";
+		 
+		 $('#vendors').removeAttr("data-validation"); 
+		 $('#vendorContact').removeAttr("data-validation"); 
+		 
+		 $('#vendors').attr("data-validation-optional", "true"); 
+		 $('#vendorContact').attr("data-validation-optional", "true");  
+		 
+		 $('#designationOtherType').removeAttr("data-validation-optional"); 
+		 $('#designationOtherType').attr("data-validation","required validate_Space validate_length length2-250"); 
+		 
+	 }
+	 else{
+		 
+		 
+		 document.getElementById("employmentOtherTypeDiv").style.display="none";
+		 document.getElementById("vendorsDiv").style.display="none";
+		 document.getElementById("vendorContactsDiv").style.display="none";
+		 
+		 $('#vendors').removeAttr("data-validation"); 
+		 $('#vendorContact').removeAttr("data-validation"); 
+		 
+		 $('#vendors').attr("data-validation-optional", "true"); 
+		 $('#vendorContact').attr("data-validation-optional", "true");   
+		 
+		 $('#designationOtherType').removeAttr("data-validation"); 
+		 $('#designationOtherType').attr("data-validation-optional", "true"); 
+		 $('#designationOtherType').attr("data-validation","validate_Space validate_length length2-250"); 
+		 
+	 }
+	 
+	 
  }
  </script>
  
+ <script>
+ function getVendorsByOrgLocationForAddApplicant(){
+	 
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getVendorsByOrgLocation?${_csrf.parameterName}=${_csrf.token}", 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	var output = "";
+	        	output = output + "<option value=''>--Select Vendor--</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		
+		        		output = output + "<option value='" +opt.id+ "'>"+opt.orgName+"</option>";
+				}
+	        	$("#vendors").empty();
+		        $("#vendors").append(output);
+		        $('#vendors').trigger("chosen:updated"); 
+		        
+	        },
+	    }); 
+	 
+ }
+ </script>
+ 
+ <script>
+ function getAddApplicantVendorContactList(){
+	 var orgRelationID = $('#vendors').val();
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+			    type: "POST",
+		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	$('#vendorContact').empty();
+		        	$('#vendorContact').append('<option value="">--Select Vendor contact--</option>');
+		             for(var i=0;i<json.length;i++){
+		            	 var opt = json[i];
+		            	 $('#vendorContact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
+		            } 
+		            $('#vendorContact').trigger("chosen:updated");
+		        }
+		 }); 
+ }
+ </script>
  

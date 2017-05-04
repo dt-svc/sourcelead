@@ -246,16 +246,41 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		params.put("userId",userId);
 		subquerys.add(subQuery);
 		
+
 		String subQuery3 = "";
 		String subQuery4 = "";
 		String subQuery5 = ""; 
+		String firstWord="";
+		String lastWord="";
+		String subQuery8="";
+		if(userName.contains(" "))
+		{
+			 String s1 =userName;
+			 String[] words =s1.split("\\s");
+				 firstWord = words[0];
+				 lastWord = words[1];
+		
+		
+		}
+		
+		
+		if(!firstWord.equals("") && !lastWord.equals("")){
+			 subQuery8 = " and ((userRole.user.firstName LIKE '" + firstWord + "%') OR (userRole.user.firstName LIKE '" + lastWord + "%') OR  (userRole.user.lastName LIKE '"+ firstWord + "%') OR  (userRole.user.lastName LIKE '"+ lastWord + "%'))";
+			 subquerys.add(subQuery8);
+		 }
+		
+		else{
+			 subQuery8 =""; 
+		 }
 		
 		 /*
 		  *  to check the if the search  parameter is given or not
 		 */
-		 if(!"".equalsIgnoreCase(userName)){
-			 subQuery3 = " and ( (userRole.user.firstName LIKE '" + userName + "%') OR (userRole.user.lastName LIKE '"+ userName + "%') OR (userRole.user.email LIKE '" + userName + "') )";
+		 if(!"".equalsIgnoreCase(userName) && !userName.contains(" ")){
+			 subQuery3 = " and ((userRole.user.firstName LIKE '" + userName + "%') OR  (userRole.user.lastName LIKE '"+ userName + "%') OR (userRole.user.email LIKE '" + userName + "'))";
 			 subquerys.add(subQuery3);
+		
+		
 		 }else{
 			 subQuery3 =""; 
 		 }
