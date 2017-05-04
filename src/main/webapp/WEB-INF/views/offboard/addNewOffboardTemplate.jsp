@@ -36,6 +36,7 @@
               <small>List of tasks</small> </a></li>
           </ul>
           <input type="hidden" name="templateId" id="templateId" value=""/>
+          <input type="hidden" id="offboardTaskDiv" value="N"/>
           <div class="tab-content"> 
             
             <!-- Employee Details -->
@@ -422,6 +423,7 @@
   	      document.getElementById("templateDocs").disabled = false;
   	      document.getElementById("templateTasks").disabled = false;
   	      document.getElementById("checkList").disabled = false;
+  	      $("#offboardTaskDiv").val('Y');
 		}
 		
 		getTemplateDetails();
@@ -1026,81 +1028,88 @@ function validateTemplateName(){
 
 <script>
 function getOffboardingTasksList(){
-	var templateId = document.getElementById("templateId").value;
-	var sourceleadUrl = '${sourceleadUrl}';
-	var locationId = '${SourceLeadWeb_orgLocationId}';
 	
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	$.ajax({
-	   	type: "POST",
-	    url: sourceleadUrl+"/getOffboardTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
-	    success: function(data) {
-	    	 var json = JSON.parse(data);
-        	 var result = "";
-        	 
-        	if(json.length > 0){ 
-	        	for (var i=0; i<json.length; i++)
-				{
-	        		var report = json[i];
-	        		
-	        		var prority = '';
-	        		var repeat = '';
-	        		
-	        		if(report.priority != null && report.priority != '' && report.priority != 'undefined'){
-	        			prority = report.priority;
-	        		}else{
-	        			prority = '----';
-	        		}
-	        		
-	        		if(report.taskRepeat != null && report.taskRepeat != '' && report.taskRepeat != 'undefined'){
-	        			repeat = report.taskRepeat;
-	        		}else{
-	        			repeat = '----';
-	        		}
-	        		
-	        		result = result +'<div class="clearfix taskwidget_inner" id="onboardTask'+report.id+'">';
-	        		result = result +'<div class="media-body">';
-	        		result = result +'<div class="clearfix taskheder">';
-	        		result = result +'<label> <span class="paddingRight">Subject:</span> <strong class="text-primary">'+report.taskName+'</strong><i class="fa fa-trash text-danger paddingLeft" onClick="deleteTask('+report.id+');"></i> </label>';
-	        		result = result +'<label class="small pull-right text-muted"> <span>'+report.dueAfterString+'</span> </label>';
-	        		result = result +'</div>';
-	        		result = result +'<ul class="list-inline list-description mt10">';
-	        		
-	        		result = result +'<li><span>Assign To:</span>';
-	        		
-	        		if(report.usersList.length > 0){
-	        			for(var j=0; j<report.usersList.length; j++){
-		 					result = result +'<label>'+report.usersList[j]+'</label>';
+	var offboardTaskDiv = document.getElementById("offboardTaskDiv").value;
+	if(offboardTaskDiv == 'Y'){
+	
+		var templateId = document.getElementById("templateId").value;
+		var sourceleadUrl = '${sourceleadUrl}';
+		var locationId = '${SourceLeadWeb_orgLocationId}';
+		
+		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/getOffboardTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
+		    success: function(data) {
+		    	 var json = JSON.parse(data);
+	        	 var result = "";
+	        	 
+	        	if(json.length > 0){ 
+		        	for (var i=0; i<json.length; i++)
+					{
+		        		var report = json[i];
+		        		
+		        		var prority = '';
+		        		var repeat = '';
+		        		
+		        		if(report.priority != null && report.priority != '' && report.priority != 'undefined'){
+		        			prority = report.priority;
+		        		}else{
+		        			prority = '----';
+		        		}
+		        		
+		        		if(report.taskRepeat != null && report.taskRepeat != '' && report.taskRepeat != 'undefined'){
+		        			repeat = report.taskRepeat;
+		        		}else{
+		        			repeat = '----';
+		        		}
+		        		
+		        		result = result +'<div class="clearfix taskwidget_inner" id="onboardTask'+report.id+'">';
+		        		result = result +'<div class="media-body">';
+		        		result = result +'<div class="clearfix taskheder">';
+		        		result = result +'<label> <span class="paddingRight">Subject:</span> <strong class="text-primary">'+report.taskName+'</strong><i class="fa fa-trash text-danger paddingLeft" onClick="deleteTask('+report.id+');"></i> </label>';
+		        		result = result +'<label class="small pull-right text-muted"> <span>'+report.dueAfterString+'</span> </label>';
+		        		result = result +'</div>';
+		        		result = result +'<ul class="list-inline list-description mt10">';
+		        		
+		        		result = result +'<li><span>Assign To:</span>';
+		        		
+		        		if(report.usersList.length > 0){
+		        			for(var j=0; j<report.usersList.length; j++){
+			 					result = result +'<label>'+report.usersList[j]+'</label>';
+			 				}
+		        		}else{
+		 					result = result +'Onboarding Candidate';
 		 				}
-	        		}else{
-	 					result = result +'Onboarding Candidate';
-	 				}
-	        		result = result +'</li>';
-	        		
-	        		result = result +'<li><span>Priority:</span>'+prority+'</li>';
-	        		result = result +'<li><span>Repeat:</span> '+repeat+'</li>';
-	        		result = result +'</ul>';
-	        		result = result +'</div>';
-	        		result = result +'</div>';
-				}
-        	}else{
-        		result = result +'<div><h4>No Tasks Found</h4></div>';
-        	}
-        	
-        	result = result +'<div class="form-footer clearfix mt">';
-    		result = result +'<div class="pull-right mr">';
-    		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishOffboardTemplate('+templateId+');" class="btn btn-sm btn-primary">';
-    		result = result +'</div>';
-    		result = result +'</div>';
-    		
-    		 $("#offboardTasksList").empty();
-           	 $("#offboardTasksList").append(result); 
-    		
-        	 
-	    }
-   }); 
-	
-  $("#loading").removeAttr("style");
+		        		result = result +'</li>';
+		        		
+		        		result = result +'<li><span>Priority:</span>'+prority+'</li>';
+		        		result = result +'<li><span>Repeat:</span> '+repeat+'</li>';
+		        		result = result +'</ul>';
+		        		result = result +'</div>';
+		        		result = result +'</div>';
+					}
+	        	}else{
+	        		result = result +'<div><h4>No Tasks Found</h4></div>';
+	        	}
+	        	
+	        	result = result +'<div class="form-footer clearfix mt">';
+	    		result = result +'<div class="pull-right mr">';
+	    		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishOffboardTemplate('+templateId+');" class="btn btn-sm btn-primary">';
+	    		result = result +'</div>';
+	    		result = result +'</div>';
+	    		
+	    		 $("#offboardTasksList").empty();
+	           	 $("#offboardTasksList").append(result); 
+	    		
+	        	 
+		    }
+		    
+	   }); 
+		
+	  $("#loading").removeAttr("style");
+  
+	}
 	
 }
 </script>
@@ -1364,6 +1373,7 @@ function createTemplateCheckList(saveType){
 	      		        		var $tabs = $('.tabbable li');
 	      		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
 	      		     	        document.getElementById("templateTasks").disabled = false;
+	      		     	        $("#offboardTaskDiv").val('Y');
 	      		     	        getOffboardingTasksList();
 	      		        	}else{
 	      		        		getOffboardingCheckList();

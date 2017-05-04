@@ -31,6 +31,7 @@
   	        document.getElementById("checkList").disabled = false;
   	        $("#candidateOffBoardUUID").val('${offBoardingUUID}');
   	        $("#documentstemplateId").val(offBoardingId);
+  	        $("#offboardTaskDiv").val('Y');
   	        
   	        loadOffboardingUser('${offBoardingUUID}');
 		}else{
@@ -66,6 +67,7 @@
           </ul>
           <input type="hidden" name="candidateOffBoardId" id="candidateOffBoardId" value=""/>
           <input type="hidden" name="candidateOffBoardUUID" id="candidateOffBoardUUID" value=""/>
+          <input type="hidden" id="offboardTaskDiv" value="N"/>
           <div class="tab-content"> 
             
             <!-- Employee Details -->
@@ -1346,6 +1348,7 @@ function createOffboardCheckList(saveType){
 	      		        		var $tabs = $('.tabbable li');
 	      		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
 	      		     	        document.getElementById("templateTasks").disabled = false;
+	      		     	        $("#offboardTaskDiv").val('Y');
 	      		     	        getOffboardingTasksList();
 	      		        	}else{
 	      		        		getOffboardingCheckList();
@@ -1404,6 +1407,10 @@ function cancel(){
 
 <script>
 function getOffboardingTasksList(){
+	
+	var offboardTaskDiv = document.getElementById("offboardTaskDiv").value;
+	if(offboardTaskDiv == 'Y'){
+	
 	var offboardId = document.getElementById("candidateOffBoardId").value;
 	var sourceleadUrl = '${sourceleadUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
@@ -1490,7 +1497,7 @@ function getOffboardingTasksList(){
 	
   $("#loading").removeAttr("style");
 }
-	
+	}
 }
 </script>
 
