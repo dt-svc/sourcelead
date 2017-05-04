@@ -210,10 +210,10 @@ document.onkeydown=function(e){
 	                 <option data-icon="fa fa-users"  ${searchType == "Users" ?"selected='selected'":""} value="Users">Users</option>
 	           </c:if>
 	           <c:if test="${userTabs.tabName == 'Requirement'}"> 
-	                <option data-icon="fa fa-briefcase" ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Requirement</option>
+	                <option data-icon="fa fa-briefcase" ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Requirements</option>
 	           </c:if>
 	           <c:if test="${userTabs.tabName == 'Candidates'}">
-	                <option data-icon="fa fa-user-circle" ${searchType == "Candidate" ?"selected='selected'":""} value="Candidate">Candidate</option>
+	                <option data-icon="fa fa-user-circle" ${searchType == "Candidate" ?"selected='selected'":""} value="Candidate">Candidates</option>
 	           </c:if> 
 	           <c:if test="${userTabs.tabName == 'Clients'}">
                  	  <option data-icon="fa fa-user-plus" ${searchType == "Client" ?"selected='selected'":""} value="Client">Clients</option>
@@ -225,7 +225,7 @@ document.onkeydown=function(e){
 	             <option data-icon="fa fa-bar-chart" ${searchType == "Projects" ?"selected='selected'":""} value="Projects">Projects</option>   	  
 	           </c:if>
 			</c:forEach>
-	             <option data-icon="fa fa-black-tie" ${searchType == "Associate" ?"selected='selected'":""} value="Associate">Associate</option>
+	             <option data-icon="fa fa-black-tie" ${searchType == "Associate" ?"selected='selected'":""} value="Associate">Associates</option>
 		</select>
 			
 			
