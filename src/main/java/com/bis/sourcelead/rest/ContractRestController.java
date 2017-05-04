@@ -131,6 +131,20 @@ public class ContractRestController {
           sos.close();
 	}
 	
+	@RequestMapping(value = "/viewContractPdf/{id}", method = RequestMethod.GET)
+	public @ResponseBody  void viewContractPdf(@PathVariable("id") String id,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		Contracts contract =	contractsTemplateService.getContractById(Long.parseLong(id));		
+  	    byte[] pdfBytes = contract.getDocFile();
+  	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
+  	    response.setContentType("application/pdf");
+  	    response.setContentLength(pdfBytes.length);
+          ServletOutputStream sos = response.getOutputStream();
+          sos.write(pdfBytes);
+          sos.flush();
+          sos.close();
+	}
+	
 
 	
 	@RequestMapping(value = "/getAllTemplatesByOrgLocationId", method = RequestMethod.GET)
@@ -207,10 +221,10 @@ public class ContractRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getAllContractsByOrgLocationIdandStatus", method = RequestMethod.GET)
-	public @ResponseBody String getAllContractsByOrgLocationIdandStatus(@RequestParam(value = "contractSubmissionType", required = false) String contractSubmissionType,@RequestParam(value = "tabType", required = false) String tabType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+	public @ResponseBody String getAllContractsByOrgLocationIdandStatus(@RequestParam(value = "contractSubmissionType", required = false) String contractSubmissionType,@RequestParam(value = "tabType", required = false) String tabType, @RequestParam(value = "contractsType", required = false) String contractsType, HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Contracts contracts = contractsTemplateService.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,tabType);
+		Contracts contracts = contractsTemplateService.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,tabType, contractsType);
 		return commonUtil.toJSON(contracts);
 	} 
 	
@@ -273,13 +287,13 @@ public class ContractRestController {
 		 contractsTemplateService.saveNewContract(contracts);
 		}*/
 		
-		if(("Waiting To Be Verify").equalsIgnoreCase(status)){
+		if(("WAITING_TO_BE_VERIFY").equalsIgnoreCase(status)){
 			Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
 			if(null != childContarct.getParentContractId()){
 				childContarct.setId(childContarct.getId());
-				childContarct.setTemplateSubmissionStatus("Finalized");
+				childContarct.setTemplateSubmissionStatus("FINALIZED");
 				contracts.setId(contracts.getId());
-				contracts.setTemplateSubmissionStatus("Finalized");
+				contracts.setTemplateSubmissionStatus("FINALIZED");
 			}
 			 contractsTemplateService.saveNewContract(childContarct);
 			 contractsTemplateService.saveNewContract(contracts);
