@@ -126,7 +126,7 @@
 	                     result = result +"    <th>Date Of Join</th>";
 	                     result = result +"    <th>Onboard<br/>Documents</th>";
 	                     result = result +"    <th>Status</th>"; 
-	                     result = result +"    <th>Action</th>"; 
+	                     result = result +"    <th>Actions</th>"; 
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
