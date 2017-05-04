@@ -8,12 +8,21 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script src="resources/js/jquery.mask.min.js"></script>
+<script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
 	getUserList("0");
 });
 </script>
+<script>
+function errRemoveClient(){
+	$("#errClient").find("p.jquery_form_error_message").remove();
+}
+function errRemoveClientContact(){
+	$("#errClientContact").find("p.jquery_form_error_message").remove();
+}
 
+</script>
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -23,29 +32,25 @@ $(document).ready(function(){
     </section>
     <div class="content-area content-new clearfix">
     <div id="invoiceLoading"></div>
-     <form:form id="invoice_form"  name="invoice_form" method="post" > 
+     <form:form id="invoice_form"  name="invoice_form" method="post"  enctype='multipart/form-data'> 
       <div class="clearfix form-horizontal inner-content">
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <div class="form-group">
               <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 select-field">
-                <select class="form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();">
-                 <option value=''>--Select Customer--</option>
+              <div class="col-md-9 select-field" id="errClient">
+                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();" data-validation="required" field-name="Client Name">
+                 <option value=''>--Select Clinet--</option>
                    <c:forEach var="orgrelations" items="${clientList}">
                          <option value="${orgrelations.id}">${orgrelations.orgName}</option>
                   </c:forEach>
-                 <!--  <option selected="" disabled="">--Select Customer--</option>
-                  <option>Customer-1</option>
-                  <option>Customer-2</option>
-                  <option>Customer-3</option> -->
                 </select>
               </div>
             </div>
              <div class="form-group">
-              <label class="col-md-4">Client Contact<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
-                  <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Vendor Contact">
+              <label class="col-md-3">Client Contact<span class="text-danger">*</span></label>
+              <div class="col-md-9" id="errClientContact">
+                  <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Vendor Contact" onchange="errRemoveClientContact();">
                   </select>
               </div>
             </div>
@@ -56,21 +61,34 @@ $(document).ready(function(){
               </div>
             </div> -->
             <div class="form-group">
-              <label class="col-md-3">Invoice Id</label>
+              <label class="col-md-3">Invoice Id<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9">
-                <input type="text" class="form-control" id="invoiceId" name="invoiceId" value="" placeholder="Invoice Id">
+                <input type="text" class="form-control" id="invoiceId" name="invoiceId" value="" placeholder="Invoice Id" data-validation="required" field-name="Invoice Id">
               </div>
             </div>
             <div class="form-group">
-              <label class="col-md-3">Invoice Date</label>
-              <div class="col-md-9 select-field">
-                <input type="text" class="form-control calendar" id="invoiceDate" name="invoiceDate" value="" placeholder="Invoice Date" id="invoiceDate" readonly>
+              <label class="col-md-3">Invoice Date<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-9 select-field" id="errInvoiceDate">
+                <input type="text" class="form-control calendar" id="invoiceDate" name="invoiceDate" value="" placeholder="Invoice Date" id="invoiceDate" readonly data-validation="required" field-name="Invoice Date">
               </div>
             </div>
             <div class="form-group">
-              <label class="col-md-3">Due Date</label>
-              <div class="col-md-9">
-                <input type="text" class="form-control calendar" id="dueDate" name="dueDate" value="" placeholder="Invoice Date" id="dueDate" readonly>
+              <label class="col-md-3">Payment terms</label>
+              <div class="col-md-9" id="errPayment">
+                  <select class="chosen-select form-control" id="paymentFrequency" name="paymentFrequency" >
+                    <option value="">Select frequency</option>
+                    <option value="10 days">10 days</option>
+                    <option value="15 days">15 days</option>
+                    <option value="30 days">30 days</option>
+                    <option value="45 days">45 days</option>
+                     <option value="60 days">60 days</option>
+                  </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3">Due Date<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-9" id="errDuedate">
+                <input type="text" class="form-control calendar" id="dueDate" name="dueDate" value="" placeholder="Invoice Date" id="dueDate" readonly data-validation="required" field-name="Due Date">
               </div>
             </div>
             <div class="form-group">
@@ -80,6 +98,7 @@ $(document).ready(function(){
               </div>
             </div>
             
+             
            <!--  <div class="form-group">
               <label class="col-md-3">Preojects<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field">
@@ -122,6 +141,7 @@ $(document).ready(function(){
                 <td>
                   <div class="tbldata-dotdot-vsm select-field">
                     <select class="form-control input-sm" id="0candidateId" name="0candidate">
+                    <option value="">--selcet Associate--</option>
                     </select>
                   </div>
                 </td>
@@ -139,10 +159,10 @@ $(document).ready(function(){
                 </td>
                 <td>
                   <div class="tbldata-dotdot-vsm">
-                    <input type="text" class="form-control input-sm dateMask" placeholder="HHHH:MM" id="0totalHours" name="0totalHours" onblur="singleRowTotalhour();" >
+                    <input type="text" class="form-control input-sm inline_field" placeholder="HH:MM" id="0totalHours" name="0totalHours" onblur="singleRowTotalhour();" >
                   </div>
                 </td>
-                <td><div class="tbldata-dotdot-100 text-right" id="0amount" name="0amount"><input type="text" id="remove0Ammount" value = "00:00" class="ReadTextFli"> </div></td>
+                <td><div class="tbldata-dotdot-100 text-right"  ><input type="text" name="0amount" id="0amount" placeholder = "00:00" class="ReadTextFli" readinly> </div></td>
                 <td><a class="text-danger tblminwidth-50" title="Remove row"><i class="fa fa-remove"></i></a></td>
               </tr>
                
@@ -167,14 +187,14 @@ $(document).ready(function(){
               <button type="button" class="btn btn-sm btn-primary mr" onclick="addInvoice();"><i class="fa fa-plus paddingRight"></i>Add</button>
               <!-- <button type="button" class="btn btn-sm btn-default" onclick="deleteRow()"><i class="fa fa-close paddingRight"></i>Clear</button> -->
             </div>
-            <div class="clearfix mb"><p>Do you want to raise separate invoice for each item</p>
+           <!--  <div class="clearfix mb"><p>Do you want to raise separate invoice for each item</p>
               <label class="paddingRight">
-                <input type="radio" id="seperateInvoice" name="seperateInvoice">
+                <input type="radio" value="Y" id="seperateInvoice" name="seperateInvoice">
                 <strong class="paddingLeft">Yes</strong></label>
               <label class="paddingLeft">
-                <input type="radio" id="seperateInvoice" name="seperateInvoice">
+                <input type="radio" value="N" id="seperateInvoice" name="seperateInvoice">
                 <strong class="paddingLeft">No</strong></label>
-            </div>
+            </div> -->
             <div class="clearfix mb">
               <label><strong>Message</strong></label>
               <textarea class="form-control" rows="2" id="comment" name="comment"></textarea>
@@ -183,15 +203,15 @@ $(document).ready(function(){
             
             <div class="clearfix mb invoiceAttachment">
             <input type='hidden' name='invoiceAttcahmentMaxRowNumber'  id='invoiceAttcahmentMaxRowNumber' value='1' />
-            <table width="100%" width="100%" cellpadding="0" cellspacing="0">
-            <tbody id="invoiceAttachmentTbl">
-            <tr id='divAttachmentTsRow0'>
+            <table width="100%" width="100%" cellpadding="0" cellspacing="0"  id="invoiceAttachmentTbl">
+            <tbody>
+              <tr id='divAttachmentTsRow0'>
             	<td>
               	<label><strong>Attachments</strong></label>
 	              <div class="timesheet_week_comm col-md-12 " >
-	                <div class="form-group"> 
+	                <div class="form-group" id='0invoicedocFileuploadFileGroup'> 
 	                <span>
-	                  <input type='file' name='0invoicedocFile' id='0invoicedocFile' field-name='Attachment' onchange='validateContractsUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addInvoiceAttachment()'></i>
+	                  <input type='file' name='0invoicedocFile' id='0invoicedocFile' field-name='Attachment'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addInvoiceAttachment()'></i>
 	                 </span> </div>
 	              </div>
             	</td>
@@ -205,22 +225,19 @@ $(document).ready(function(){
           
            <div class="col-md-7">
             <div class="form-horizontal">
-            <!--   <div class="form-group">
-                <label class="col-md-7 text-right"><strong>Subtotal</strong></label>
-                <div class="col-md-5 text-right" id="subTotal" name="subTotal"><span><strong>120000.00</strong></span></div>
-              </div> -->
+              
               
               <div class="form-group">
                 <div class="col-md-7 select-field">
                   <div class="row">
                     <div class="col-md-7 paddingRight">
                       <select class="form-control input-sm" id="disCount" name="disCount">
-                        <option value="percentage" selected="">Discount %</option>
+                        <option value="percentage">Discount %</option>
                         <option value="flat">Discount Value</option>
                       </select>
                     </div>
                     <div class="col-md-5 paddingLeft">
-                      <input type="text" class="form-control input-sm" id="discountValue" name="discountValue" onblur="calculateDiscount();">
+                      <input type="text" class="form-control input-sm" id="discountValue" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();">
                     </div>
                   </div>
                 </div>
@@ -228,11 +245,10 @@ $(document).ready(function(){
                   <input type="text" class="form-control input-sm" id="discountTotal" name="discountTotal" placeholder="00.00" readonly>
                 </div>
               </div>
-              
-              
-              
-              
-              
+              <div class="form-group">
+                <label class="col-md-7 text-right"><strong>After Discount Total</strong></label>
+                <div class="col-md-5 text-right" ><input type="text"  id="afterDiscountTotal" name="afterDiscountTotal"  value="00.00" class="ReadTextFli" readinly></div>
+              </div>
               <div class="addtax_table">
               <input type="hidden" id="maxTaxRowNum" name="maxTaxRowNum" value="1" />
                     <table width="100%" cellpadding="0" cellspacing="0" class="table-bordered table-striped table-responsive">
@@ -250,40 +266,33 @@ $(document).ready(function(){
                                 <td>
                                    <div class="select-field tblminwidth-75">
                                        <div class="tblminwidth-50">
-                                        <input type="text" class="form-control input-sm" value="" placeholder="Tax type">
+                                        <input type="text" class="form-control input-sm" value="" placeholder="Tax type" id="0taxType" name="0taxType">
                                     </div>
                                    </div>
                                 </td>
                                 <td>
                                  <div class="btn-group tblminwidth-75">
                                  <select class="form-control input-sm" id="0taxdiscountType" name="0taxdiscountType">
-									 <option value="percentage">Discount</option>
+									 <option value="percentage">Percentage</option>
 									 <option value="flat">Flat</option>
 							 	</select>
                                 </div>
                                 </td>
                                 <td>
                                     <div class="tblminwidth-75">
-                                        <input type="text" class="form-control input-sm" value="" placeholder="Flat / Discount">
+                                        <input type="text" class="form-control input-sm" value="" placeholder="Flat / Discount" id="0taxdiscountvalue" name="0taxdiscountvalue" onblur="singleRowTaxDiscount();">
                                     </div>
                                 </td>
                                 <td>
                                     <div class="tblminwidth-75">
-                                        <input type="text" class="form-control input-sm" value="" placeholder="00.00"  readonly>
+                                        <input type="text" class="form-control input-sm" value="" placeholder="00.00" id="0taxTotal" name="0taxTotal" readonly>
                                     </div>
                                 </td>
                                 <td>
                                     <span class="text-danger"><i class="fa fa-remove"></i></span>
                                 </td>
                             </tr>
-                           <!--  <tr class="hide-row">
-                                <td colspan="2">
-                                </td>
-                                <td>
-                                <strong>Total:4444444444</strong>
-                                </td>
-                                <td colspan="2" align="right" id="grandTotal" name="grandTotal"><strong>1800000.00</strong></td>
-                            </tr> -->
+                          
                         </tbody>
                     </table>
                     <!-- AddTax Table Starts here -->
@@ -302,7 +311,7 @@ $(document).ready(function(){
               <div class="pull-right mr">
                   <button type="button" class="btn btn-sm btn-primary" onclick="saveInvoice('DRAFT')">Save</button>
                   <button type="button" class="btn btn-sm btn-success ml">Send</button>
-                  <button type="button" class="btn btn-sm btn-default ml">Cancel</button>
+                  <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:location.href = '<c:url value='/invoiceList'/>'">Cancel</button>
               </div>
           </footer>
       </div>
@@ -321,7 +330,9 @@ $(document).ready(function(){
 	
 	<div id="divTaskTd3" style="display: none; float: left;">
        <div class="tbldata-dotdot-100 select-field">
-       <select class="form-control input-sm" id="REPLACEROWIDsow" name="REPLACEROWIDsow"> </select>
+       <select class="form-control input-sm" id="REPLACEROWIDsow" name="REPLACEROWIDsow">
+          <option value=''>-Select sow-</option>
+        </select>
        </div>
 	</div>
 	
@@ -333,12 +344,13 @@ $(document).ready(function(){
 
 	<div id="divTaskTd5" style="display: none; float: left;">
 	<div class="tbldata-dotdot-vsm">
-	     <input type="text" class="form-control input-sm dateMask" placeholder="HHHH:MM" id="REPLACEROWIDtotlaHours" name="REPLACEROWIDtotlaHours" onblur="calculateAmount(REPLACEROWID);">
+	     <input type="text" class="form-control input-sm inline_field" placeholder="HH:MM" id="REPLACEROWIDtotalHours" name="REPLACEROWIDtotalHours" onblur="calculateAmount(REPLACEROWID);">
 	     </div>
 	</div>
 	
 	<div id="divTaskTd6" style="display: none; float: left;">
-	     <div class="tbldata-dotdot-100 text-right" id="REPLACEROWIDamount" name="REPLACEROWIDamount"><input type="text" value = "00:00" class="ReadTextFli"></div>
+	<div class="tbldata-dotdot-100 text-right"  ><input type="text" name="REPLACEROWIDamount" id="REPLACEROWIDamount" placeholder = "00:00" class="ReadTextFli" > </div>
+<!-- 	     <div class="tbldata-dotdot-100 text-right" id="REPLACEROWIDamount" name="REPLACEROWIDamount"><input type="text" value = "00:00" class="ReadTextFli"></div> -->
 	</div>
 	
 	<div id="divTaskTd7" style="display: none; float: left;">
@@ -348,7 +360,7 @@ $(document).ready(function(){
 <script type="text/javascript">
 	function removeRow(rowId) {
 		 var rate = $("#"+rowId+"rate").val();
-		 var totalHours = $("#"+rowId+"totlaHours").val();
+		 var totalHours = $("#"+rowId+"totalHours").val();
 		 var subTotal = $("#inoviceTotal").val();
 		 
 	     var split = totalHours.split(':');
@@ -360,9 +372,48 @@ $(document).ready(function(){
 	     var totlalAmount = (perMinit * finalmin);
 	     var subtractTotal = subTotal - totlalAmount.toFixed(2)
 	     $('#inoviceTotal').val(subtractTotal);
-	     $("#grandTotal").val(subtractTotal);
+	    /*  $("#grandTotal").val(subtractTotal); */
 	     $("#hiddenTotal").val(subtractTotal);
 	     
+	     //==============
+	     var discountValue = $("#discountValue").val();
+	     var discountType = $("#disCount").val();
+	     var subtractValueFromRow = $("#hiddenTotal").val();
+	     var total ='';
+	 	 if(discountType == 'flat'){
+	 		total = subtractValueFromRow-discountValue;
+	 		$("#discountTotal").val(discountValue);
+	 		$("#grandTotal").val(total);
+	 		$("#afterDiscountTotal").val(total);
+	 		
+	 	  }
+	 	  if(discountType == 'percentage'){
+	 		var perCentValue = (subtractValueFromRow * discountValue)/100;
+	 		total = subtractValueFromRow - perCentValue;
+	 		$("#discountTotal").val(perCentValue);
+	 		$("#grandTotal").val(total);
+	 		$("#afterDiscountTotal").val(total);
+	 	 }	    	 
+	    	 
+	    	 //===================
+	    
+	     var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
+	     var afterDiscountTotal = $("#afterDiscountTotal").val();
+	     
+		    for(var i=0; i< maxRowNum; i++){
+		         var taxType = $("#"+i+"taxdiscountType").val();
+		         var taxValue = $("#"+i+"taxdiscountvalue").val();
+		         var taxTotal = $("#"+i+"taxTotal").val();
+		         
+		            var tot = $("#grandTotal").val();
+		             
+		            var first=parseFloat(tot);
+		             var second=parseFloat(taxTotal); 
+		             var total  = (first+second);
+	                
+		             $("#grandTotal").val(total);
+		    }
+		
 		document.getElementById('divTsRow' + rowId).style.display = 'none';
 		var r = document.getElementById('addInvoiceTbl').rows[rowId];
 		var count = 2 * (r.cells.length);
@@ -371,6 +422,8 @@ $(document).ready(function(){
 		}
 		
 		
+		
+	
 	}
 </script>
 
@@ -444,6 +497,7 @@ $(document).ready(function(){
 		divTsTd7Str = divTsTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
 		cell1.innerHTML = divTsTd7Str;
 		getUserList(maxRowNum);
+		maskme(); 
 	}
   </script>
   
@@ -487,14 +541,14 @@ $(document).ready(function(){
 	        success: function(data) {
 	        	if(data != null && data != ''){
 	        		var json = JSON.parse(data);
-		        	var output = "";
-		        	output = output + "<option value=''>-Select sow-</option>"; 
 		        	 for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
 			        		$('#'+rowId+'sow').empty();
 			        		$('#'+rowId+'sow').append('<option value='+opt.id+' >'+opt.contractTitle+'</option>');
 					} 
+	        	}else{
+	        		
 	        	}
 	        },
 	        
@@ -506,18 +560,59 @@ $(document).ready(function(){
   <script>
   function calculateAmount(rowId){
 	  var rate = $("#"+rowId+"rate").val();
-	  var totalHours = $("#"+rowId+"totlaHours").val();
+	  var totalHours = $("#"+rowId+"totalHours").val();
 	     var split = totalHours.split(':');
 	     var hours = split[0];
  	     var minute = split[1];
-		 var hourminits = hours * 60;
+ 	     
+ 	     var hours1 = hours.charAt(0);
+		 var hours2 = hours.charAt(1);
+		 var min1 = minute.charAt(0);
+		 var min2 = minute.charAt(1);
+		
+		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
+			 $("#"+rowId+"totalHours").val("0"+hours1+":00");
+			calAddRowAmount("0"+hours1,"00",rowId);
+		 }
+		 if(isNaN(hours1) && !isNaN(hours2) && isNaN(min1) && isNaN(min2)){
+			 $("#"+rowId+"totalHours").val("0"+hours2+":00");
+			calAddRowAmount("0"+hours2,"00",rowId);
+		 }
+		 else if(isNaN(hours)  && !isNaN(min1) && isNaN(min2)){
+			 $("#"+rowId+"totalHours").val("00:"+min1+"0");
+			calAddRowAmount("00",min1+"0",rowId);
+		 }
+		 else if(isNaN(hours)  && isNaN(min1) && !isNaN(min2)){
+			 $("#"+rowId+"totalHours").val("00:0"+min2);
+			calAmount("00","0"+min2,rowId);
+		 }
+		 else if(!isNaN(hours)  && isNaN(min1) && isNaN(min2)){
+			 $("#"+rowId+"totalHours").val(hours+":00");
+			calAddRowAmount(hours,"00",rowId);
+		 }
+		 else if(!isNaN(hours)&& !isNaN(min1) && isNaN(min2)){
+			 $("#"+rowId+"totalHours").val(hours+":"+"0"+min1);
+			calAddRowAmount(hours+":","0"+min1,rowId);
+		 }
+		 else if(!isNaN(hours)&& isNaN(min1) && !isNaN(min2)){
+			 $("#"+rowId+"totalHours").val(hours+":"+"0"+min2);
+			calAddRowAmount(hours+":","0"+min2,rowId);
+		 }
+		 else if(!isNaN(hours)&& !isNaN(minute)){
+			 calAddRowAmount(hours,minute,rowId);
+		 }
+	    
+	  
+  }
+  function calAddRowAmount(hours,minute,rowId){
+	  var rate = $("#"+rowId+"rate").val();
+	  var hourminits = hours * 60;
 		 var finalmin = parseInt(hourminits) + parseInt(minute);
 	     var perMinit = rate / 60;
 	     var totlalAmount = (perMinit * finalmin);
 	     $('#'+rowId+'amount').empty();
-	     $('#'+rowId+'amount').append(totlalAmount.toFixed(2));
+	     $('#'+rowId+'amount').val(totlalAmount.toFixed(2));
 	     calTotalamount(rowId,totlalAmount);
-	  
   }
   </script>
   <script>
@@ -529,49 +624,146 @@ $(document).ready(function(){
    $("#inoviceTotal").val(arroundGrand);
    $("#hiddenTotal").val(arroundGrand);
    $("#grandTotal").val(arroundGrand);
+   $("#afterDiscountTotal").val(arroundGrand);
    
+   
+   /* =====================  After adding the rows calculate the discount start  ===================== */
+   var discountValue =  $("#discountValue").val();
+   var discountType =  $("#disCount").val();
+  
+   if(discountValue != null && discountValue != ''){
+		var total ='';
+		if(discountType == 'flat'){
+			total = arroundGrand-discountValue;
+			$("#discountTotal").val(discountValue);
+			$("#grandTotal").val(total);
+			$("#afterDiscountTotal").val(total);
+			
+		}
+		if(discountType == 'percentage'){
+			var perCentValue = (arroundGrand * discountValue)/100;
+			total = arroundGrand - perCentValue;
+			$("#discountTotal").val(perCentValue);
+			$("#grandTotal").val(total);
+			$("#afterDiscountTotal").val(total);
+		}
+   }
+   
+   /* =====================  After adding the rows calculate the discount end  ===================== */
+   
+   /* =====================  After adding the rows calculate the tax start  ===================== */
+   
+   var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
+   var afterDiscountTotal = $("#afterDiscountTotal").val();
+   
+	    for(var i=0; i< maxRowNum; i++){
+	         var taxType = $("#"+i+"taxdiscountType").val();
+	         var taxValue = $("#"+i+"taxdiscountvalue").val();
+	         var taxTotal = $("#"+i+"taxTotal").val();
+	         
+	            var tot = $("#grandTotal").val();
+	             
+	            var first=parseFloat(tot);
+	             var second=parseFloat(taxTotal); 
+	             var total  = (first+second);
+              
+	             $("#grandTotal").val(total);
+	    }
+   /* =====================  After adding the rows calculate the tax end  ===================== */
    
    
   }
   </script>
   
- <script type="text/javascript">
+<script type="text/javascript">
 function calculateDiscount(){
 	var discountType = $("#disCount").val();
 	var subTotal = $("#inoviceTotal").val();
 	var discountValue = $("#discountValue").val();
-	
 	var total ='';
 	if(discountType == 'flat'){
 		total = subTotal-discountValue;
 		$("#discountTotal").val(discountValue);
 		$("#grandTotal").val(total);
+		$("#afterDiscountTotal").val(total);
+		
 	}
 	if(discountType == 'percentage'){
 		var perCentValue = (subTotal * discountValue)/100;
 		total = subTotal - perCentValue;
 		$("#discountTotal").val(perCentValue);
 		$("#grandTotal").val(total);
+		$("#afterDiscountTotal").val(total);
+	}
+	var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
+	if(maxRowNum > 1){
+	    for(var i=1;i<=maxRowNum;i++){
+	         document.getElementById("divTaxRow"+i+"").style.display="none";
+	    }
+	    $("#grandTotal").val(subTotal);
 	}
 }
 </script>
 
 <script>
   function singleRowTotalhour(){
-	  document.getElementById("remove0Ammount").style.display="none";
-	  var rate = $("#0rate").val();
-	   var totalHours = $("#0totalHours").val(); 
+	     var rate = $("#0rate").val();
+	     var totalHours = $("#0totalHours").val(); 
 	     var split = totalHours.split(':');
 	     var hours = split[0];
  	     var minute = split[1];
-		 var hourminits = hours * 60;
+ 	     
+ 	     var hours1 = hours.charAt(0);
+ 		 var hours2 = hours.charAt(1);
+ 		 var min1 = minute.charAt(0);
+ 		 var min2 = minute.charAt(1);
+ 		
+ 		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
+ 			$("#0totalHours").val("0"+hours1+":00");
+ 			calAmount("0"+hours1,"00");
+ 		 }
+ 		 if(isNaN(hours1) && !isNaN(hours2) && isNaN(min1) && isNaN(min2)){
+ 			$("#0totalHours").val("0"+hours2+":00");
+ 			calAmount("0"+hours2,"00");
+ 		 }
+ 		 else if(isNaN(hours)  && !isNaN(min1) && isNaN(min2)){
+ 			$("#0totalHours").val("00:"+min1+"0");
+ 			calAmount("00",min1+"0");
+ 		 }
+ 		 else if(isNaN(hours)  && isNaN(min1) && !isNaN(min2)){
+ 			$("#0totalHours").val("00:0"+min2);
+ 			calAmount("00","0"+min2);
+ 		 }
+ 		 else if(!isNaN(hours)  && isNaN(min1) && isNaN(min2)){
+ 			$("#0totalHours").val(hours+":00");
+ 			calAmount(hours,"00");
+ 		 }
+ 		 else if(!isNaN(hours)&& !isNaN(min1) && isNaN(min2)){
+ 			$("#0totalHours").val(hours+":"+"0"+min1);
+ 			calAmount(hours+":","0"+min1);
+ 		 }
+ 		 else if(!isNaN(hours)&& isNaN(min1) && !isNaN(min2)){
+ 			$("#0totalHours").val(hours+":"+"0"+min2);
+ 			calAmount(hours+":","0"+min2);
+ 		 }
+ 		 else if(!isNaN(hours)&& !isNaN(minute)){
+ 			calAmount(hours,minute);
+ 		 }
+ 	     
+		
+  }
+  function calAmount(hours,minute){
+	  var rate = $("#0rate").val();
+	     var parshours = parseInt(hours);
+	     var hourminits = parshours * 60;
 		 var finalmin = parseInt(hourminits) + parseInt(minute);
-	     var perMinit = rate / 60;
+	     var perMinit =   rate / 60;
 	     var singleRowTotlalAmount = (perMinit * finalmin).toFixed(2);
-	     $('#0amount').append(singleRowTotlalAmount);
+	     $('#0amount').val(singleRowTotlalAmount);
 	     $('#inoviceTotal').val(singleRowTotlalAmount);
 	     $("#hiddenTotal").val(singleRowTotlalAmount);
 	     $("#grandTotal").val(singleRowTotlalAmount);
+	     $("#afterDiscountTotal").val(singleRowTotlalAmount); 
   }
   </script>
   
@@ -585,7 +777,7 @@ function calculateDiscount(){
   
   <div id="divInvoiceAttachmentTd1" style="display: none; float: left;">
   			<div class="timesheet_week_comm col-md-12 ">
-                <div class="form-group" id="REPLACEROWIDInvoicedocFileuploadFileGroup"> 
+                <div class="form-group" id="REPLACEROWIDinvoicedocFileuploadFileGroup"> 
                		 <span> 
                		 	<input type="file" name='REPLACEROWIDinvoicedocFile' id='REPLACEROWIDinvoicedocFile' onchange='validateContractsUploadFile(REPLACEROWID)'>
                		    <i class="fa fa-times" onclick="removeInvoiceAttachmentRow(REPLACEROWID);"></i>
@@ -646,7 +838,7 @@ function calculateDiscount(){
   <div id="divTaxTd2" style="display: none; float: left;">
 	 <div class="btn-group tblminwidth-75">
 	 <select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType" name="REPLACEROWIDtaxdiscountType">
-		 <option value="percentage">Discount</option>
+		 <option value="percentage">Percentage</option>
 		 <option value="flat">Flat</option>
  		  </select>
 	  </div>
@@ -707,48 +899,117 @@ function calculateDiscount(){
   
   <script type="text/javascript">
 	function removeTaxRow(rowId) {
+		
+		//After removing the row calculate the amount and append the grand total
+		var grandTotal =  $("#grandTotal").val();
+		var taxTotal = $("#"+rowId+"taxTotal").val(); 
+		var first=parseFloat(grandTotal);
+        var second=parseFloat(taxTotal);
+        total = (first-second);
+        $("#grandTotal").val(total);
+       //=======================================
+        
 		document.getElementById('divTaxRow' + rowId).style.display = 'none';
 		var r = document.getElementById('addTaxTbl').rows[rowId];
 		var count = 2 * (r.cells.length);
 		for (i = 0; i <= count; i++) {
 			r.deleteCell(0);
 		}
+		
 	}
 </script>
   
-  <script type="text/javascript">
+ <script type="text/javascript">
 function calculateTaxDiscount(rowId){
 	var taxType = $("#"+rowId+"taxdiscountType").val();
-	var subTotal = $("#inoviceTotal").val();
-// 	var subTotal = 100;
-	var taxValue = $("#"+rowId+"taxdiscountvalue").val();
-	
-	 var total ='';
-	if(taxType == 'flat'){
-		total = subTotal-taxValue;
-		$("#"+rowId+"taxTotal").val(taxValue);
-		$("#grandTotal").val(total);
-	}
-	if(taxType == 'percentage'){
-		var perCentValue = (subTotal * taxValue)/100;
-		total = subTotal - perCentValue;
-		$("#"+rowId+"taxTotal").val(perCentValue);
-		$("#grandTotal").val(total);
-	}  
+    var taxValue = $("#"+rowId+"taxdiscountvalue").val();
+    var afterDiscountTotal = $("#afterDiscountTotal").val();
+    var grandTotal =  $("#grandTotal").val();
+     var total ='';
+    if(taxType == 'flat'){
+    	 var first=parseFloat(taxValue);
+         var second=parseFloat(grandTotal);
+         total = (first+second);
+         
+        $("#"+rowId+"taxTotal").val(first);
+        $("#grandTotal").val(total);
+    }
+    if(taxType == 'percentage'){
+        var perCentValue = (afterDiscountTotal * taxValue)/100;
+        var first=parseFloat(perCentValue.toFixed(2));
+        var second=parseFloat(grandTotal);
+        total = (first+second);
+        $("#"+rowId+"taxTotal").val(first);
+        $("#grandTotal").val(total);
+    }   
+}
+</script>
+
+<script type="text/javascript">
+function singleRowTaxDiscount(){
+	var taxType = $("#0taxdiscountType").val();
+    var taxValue = $("#0taxdiscountvalue").val();
+    var afterDiscountTotal = $("#afterDiscountTotal").val();
+   
+     var total ='';
+    if(taxType == 'flat'){
+        total = parseInt(afterDiscountTotal) + parseInt(taxValue);
+        $("#0taxTotal").val(taxValue);
+        $("#grandTotal").val(total);
+    }
+    if(taxType == 'percentage'){
+        var perCentValue = (afterDiscountTotal * taxValue)/100;
+        var first=parseFloat(perCentValue.toFixed(2));
+        var second=parseFloat(afterDiscountTotal);
+        total = (first+second).toFixed(2);
+        $("#0taxTotal").val(first);
+        $("#grandTotal").val(total);
+    }   
 }
 </script>
   
   
   
   <!-- ********************************************* Add Rows AddTax Table functionality end  ************************************************************ -->	
-  
+  <script>
+	$(function() {
+		$('#invoiceDate').datepicker({
+			dateFormat : 'dd-mm-yy',
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+					errInvoiceDate();
+			}
+		});
+	  $('#dueDate').datepicker({
+			dateFormat : 'dd-mm-yy',
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				errDueDate();
+			}
+		});
+		
+	});
+</script>
+<script>
+function errInvoiceDate(){
+	$('#errInvoiceDate').find('p.jquery_form_error_message').remove(); 
+}
+function errDueDate(){
+	$('#errDuedate').find('p.jquery_form_error_message').remove(); 
+}
+
+</script>
+   
 	<script>
-	  $(function() {
+	 /*  $(function() {
 	    $( "#invoiceDate, #dueDate" ).datepicker({
+	    	dateFormat : 'dd-mm-yy',
 		  changeMonth: true,
 	      changeYear: true,
 	    });
-	  });
+	  }); */
 	  
 	  $( "#0sdate-input" ).datepicker({
 		  changeMonth: true,
@@ -868,38 +1129,73 @@ function saveInvoice(saveType){
 			dateFormat : 'yyyy/mm/dd' 
          };  */
 	
-	 /*  if ($('#addonboardTask_form').validate(false, validationSettings)){  */
+	   if ($('#invoice_form').validate(false, validationSettings)){  
 		    var frm = $('#invoice_form').serializeFormJSON();
 	        var con = JSON.stringify(frm);
 	        con = con.replace(/[{}]/g, "");
 	        //It will escape all the special characters
 	        var jsonData = encodeURIComponent(con);
 	        
+	        var form = $('#invoice_form')[0];
+	 	   var formData = new FormData(form); 
 	        var sourceleadUrl ='${sourceleadUrl}';
 	        $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	        $.ajax({
 		    	type: "POST",
+		    	 data: formData,
+			      contentType : 'application/json; charset=utf-8',
+			      enctype: 'multipart/form-data',
+		        processData: false,
+		        contentType:false,
+			      dataType : 'json',
 		    	 url: sourceleadUrl+"/saveInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&saveType="+saveType, 
 		        success: function(result) {
 		     		$("#invoiceLoading").removeAttr("style");
+		     		location.replace(sourceleadUrl+"/invoiceList");
+		     		
 		        },
 		    });  
-	        /* return true; */
+	         return true; 
 		
-	 /*  }else{
+	   }else{
 		return false;
-	  } */
+	  } 
 }
 
-/* $('body').on('blur', '#addonboardTask_form', function() {
-	$("#addonboardTask_form").showHelpOnFocus();
-	$("#addonboardTask_form").validateOnBlur(false, validationSettings);  
-}); */
+$('body').on('blur', '#invoice_form', function() {
+	$("#invoice_form").showHelpOnFocus();
+	$("#invoice_form").validateOnBlur(false, validationSettings);  
+}); 
 </script>
 <!-- End by Rajashekar -->
-<script>
+<!-- <script>
 $(document).ready(function(){
 	$(".dateMask").mask('9999:99');
 });
-</script>	    
+</script> -->
+<script>
+$(document).ready(function() {  
+	maskme();    
+ });
+</script>  	
+<script>
+function maskme(){
+	$.mask.definitions['H'] = "[0-9]";
+    $.mask.definitions['h'] = "[0-9]";
+    $.mask.definitions['M'] = "[0-9]";
+    $.mask.definitions['m'] = "[0-9]";
+    $.mask.definitions['P'] = "[AaPp]";
+    $.mask.definitions['p'] = "[Mm]";
+    $(".inline_field").mask("Hh:Mm"); 
+}
+</script>
+<script>
+var validationSettings = {
+		errorMessagePosition : 'element',
+		borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd'
+	};
+</script>
+  
  <jsp:include page="../masterFooter.jsp" />	
