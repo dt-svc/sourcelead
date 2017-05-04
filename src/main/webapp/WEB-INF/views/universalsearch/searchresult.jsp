@@ -315,6 +315,20 @@ function getSearchResults(searchType,searchValue,isAssociate){
 		             var report= json[i];
 		             var manager = "";
 		             var date = "";
+		          // split the date format
+		             	var projectStartdate = report.startDate;
+		             	var projectEnddate = report.endDate;
+		             	if(projectStartdate != null && projectStartdate !="" && projectStartdate !='undefined'){
+		             	var array = new Array();
+		             	array = projectStartdate.split('-');
+		             	var newDate = (array[2] + "-" + array[1] + "-" + array[0]);
+		             	}
+		             	if(projectEnddate != null && projectEnddate !="" && projectEnddate !='undefined'){
+
+		             	var array2 = new Array();
+		             	array2 = projectEnddate.split('-');
+		             	var newEndDate = (array2[2] + "-" + array2[1] + "-" + array2[0]);
+		             	}
 				    	result = result+'  <div class="srchresult clearfix">';
 				    	
 				    	result = result+' <figure class="image_parent">';
@@ -339,9 +353,11 @@ function getSearchResults(searchType,searchValue,isAssociate){
 				    		manager = manager + report.level2ManagerName;
 				    	}
 				    	result = result+'<p><label>'+manager+'</label></p>';
-				    	if(report.startDate !=null && report.startDate != '' && report.startDate !="undefined" && report.endDate !=null && report.endDate !='' && report.endDate !='undefined'){
-				    		result = result+'<p><label>'+report.startDate+'</label>To <label>'+report.endDate+'</label>';
-				    	}
+				    	if(newDate !=null && newDate != '' && newDate !="undefined" && newEndDate !=null && newEndDate !='' && newEndDate !='undefined'){
+  				    		result = result+'<p><label>'+newDate+'</label>To <label>'+newEndDate+'</label>';
+  				    	}else{
+  				    		result = result+'<p><label>'+newDate+'</label>';
+  				    	}
 				    	result = result+'<span href="#" class="reqstatus-btn">'+report.projectStatus+'</span>';
 				    	result = result+'</div>';
 				    	result = result+'</div>';
@@ -553,6 +569,21 @@ function getSearchResultsForAll(searchType,searchValue){
 					            	 }
 				            		   var manager = "";
 				  		             	var date = "";
+				  		           // split the date format
+				  		             	var projectStartdate = report.startDate;
+				  		             	var projectEnddate = report.endDate;
+				  		             	if(projectStartdate != null && projectStartdate !="" && projectStartdate !='undefined'){
+				  		             	var array = new Array();
+				  		             	array = projectStartdate.split('-');
+				  		             	var newDate = (array[2] + "-" + array[1] + "-" + array[0]);
+				  		             	}
+				  		             	if(projectEnddate != null && projectEnddate !="" && projectEnddate !='undefined'){
+
+				  		             	var array2 = new Array();
+				  		             	array2 = projectEnddate.split('-');
+				  		             	var newEndDate = (array2[2] + "-" + array2[1] + "-" + array2[0]);
+				  		             	}
+
 				  				    	result = result+'  <div class="srchresult clearfix">';
 				  				    	
 						                result = result+' <figure class="image_parent">';
@@ -579,8 +610,10 @@ function getSearchResultsForAll(searchType,searchValue){
 				  				    		manager = manager + report.level2ManagerName;
 				  				    	}
 				  				    	result = result+'<p><label>'+manager+'</label></p>';
-				  				    	if(report.startDate !=null && report.startDate != '' && report.startDate !="undefined" && report.endDate !=null && report.endDate !='' && report.endDate !='undefined'){
-				  				    		result = result+'<p><label>'+report.startDate+'</label>To <label>'+report.endDate+'</label>';
+				  				    	if(newDate !=null && newDate != '' && newDate !="undefined" && newEndDate !=null && newEndDate !='' && newEndDate !='undefined'){
+				  				    		result = result+'<p><label>'+newDate+'</label>To <label>'+newEndDate+'</label>';
+				  				    	}else{
+				  				    		result = result+'<p><label>'+newDate+'</label>';
 				  				    	}
 				  				    	result = result+'<span href="#" class="reqstatus-btn">'+report.projectStatus+'</span>';
 				  				    	result = result+'</div>';
@@ -700,7 +733,7 @@ function getSearchResultsForAll(searchType,searchValue){
 								    	
 								    	if(opt.length>5 && j==4){
 							                result = result+'  <div class="clearfix">';
-							result = result+' <a href="#" onclick="loadClient();" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+										result = result+' <a href="#" onclick="loadClient();" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
 									    	result = result+'  </div>';
 							             }
 				            	 }

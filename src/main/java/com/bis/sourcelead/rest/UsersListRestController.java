@@ -804,26 +804,24 @@ public class UsersListRestController {
 						orgLocations.getId(), "Client");
 				if (null != orgSpocList) {
 					for (OrgSpoc orgSpoc : orgSpocList) {
-						/*if (orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId()
-								.longValue()) {
-							//orgSpoc.setOwnerUser(clientOwnerOrUser);
-							orgSpoc.set
-						} else if (orgSpoc.getOrgRelations().getLocationId().getId().longValue() != orgLocations.getId()
-								.longValue()) {
-							//orgSpoc.setSpocUser(clientOwnerOrUser);
-						}*/
-						if((orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId().longValue())&&(orgSpoc.getClientUser().getId()==orgSpoc.getOwnerUser().getId())){
-							orgSpoc.setOwnerUser(clientOwnerOrUser);
-							orgSpoc.setClientUser(clientOwnerOrUser);
+					
+						boolean flag = orgSpocService.getOwnerUserExistedByOrgRelationIdAndOwnerUserId(orgSpoc.getOrgRelations().getId(), clientOwnerOrUser.getId());
+						if(flag == false){
+							if((orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId().longValue())&&(orgSpoc.getClientUser().getId()==orgSpoc.getOwnerUser().getId())){
+								orgSpoc.setOwnerUser(clientOwnerOrUser);
+								orgSpoc.setClientUser(clientOwnerOrUser);
+							}else{
+								orgSpoc.setClientUser(clientOwnerOrUser);
+							}
 						}else{
-							orgSpoc.setClientUser(clientOwnerOrUser);
+							orgSpoc.setStatus("0");
 						}
 						
 						orgSpoc.setUpdatedBy(user.getUserCode());
 						orgSpoc.setUpdatedDate(new Date());
 						orgSpocService.addOrgSpoc(orgSpoc);
-						 ClientVendorContactsIndex clientVendorContactsIndex = clientVendorContactsIndexHelper.getClientVendorContactIndexFromSpoc(orgSpoc);
-						  sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorContactsIndex, Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,orgSpoc.getId().toString());
+						ClientVendorContactsIndex clientVendorContactsIndex = clientVendorContactsIndexHelper.getClientVendorContactIndexFromSpoc(orgSpoc);
+						sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorContactsIndex, Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,orgSpoc.getId().toString());
 					}
 				}
 
@@ -836,24 +834,25 @@ public class UsersListRestController {
 						orgLocations.getId(), "Vendor");
 				if (null != orgSpocList) {
 					for (OrgSpoc orgSpoc : orgSpocList) {
-						/*if (orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId()
-								.longValue()) {
-							//orgSpoc.setOwnerUser(vendorOwnerOrUser);
-						} else if (orgSpoc.getOrgRelations().getLocationId().getId().longValue() != orgLocations.getId()
-								.longValue()) {
-							//orgSpoc.setSpocUser(vendorOwnerOrUser);
-						}*/
-						if((orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId().longValue())&&(orgSpoc.getVendorUser().getId()==orgSpoc.getOwnerUser().getId())){
-							orgSpoc.setOwnerUser(vendorOwnerOrUser);
-							orgSpoc.setVendorUser(vendorOwnerOrUser);
+						
+						boolean flag = orgSpocService.getOwnerUserExistedByOrgRelationIdAndOwnerUserId(orgSpoc.getOrgRelations().getId(), vendorOwnerOrUser.getId());
+						
+						if(flag == false){
+							if((orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId().longValue())&&(orgSpoc.getVendorUser().getId()==orgSpoc.getOwnerUser().getId())){
+								orgSpoc.setOwnerUser(vendorOwnerOrUser);
+								orgSpoc.setVendorUser(vendorOwnerOrUser);
+							}else{
+								orgSpoc.setVendorUser(vendorOwnerOrUser);
+							}
 						}else{
-							orgSpoc.setVendorUser(vendorOwnerOrUser);
+							orgSpoc.setStatus("0");
 						}
+						
 						orgSpoc.setUpdatedBy(user.getUserCode());
 						orgSpoc.setUpdatedDate(new Date());
 						orgSpocService.addOrgSpoc(orgSpoc);
-						 ClientVendorContactsIndex clientVendorContactsIndex = clientVendorContactsIndexHelper.getClientVendorContactIndexFromSpoc(orgSpoc);
-						  sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorContactsIndex, Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,orgSpoc.getId().toString());
+						ClientVendorContactsIndex clientVendorContactsIndex = clientVendorContactsIndexHelper.getClientVendorContactIndexFromSpoc(orgSpoc);
+						sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorContactsIndex, Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,orgSpoc.getId().toString());
 					}
 				}
 

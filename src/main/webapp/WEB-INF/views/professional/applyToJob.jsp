@@ -1314,14 +1314,14 @@ function getRecruiterCandidateDetails(){
 		        	 
 		        	 if(json['state'] != null && json['state'] != "" && json['state'] != 'undefined'){
 		        		 $("select[name=state]").val(json['state']);
-		        		 getCandidateStates();
+		        		 getCandidateStates(json['state']);
 		        	 }else{
 		        		 $("select[name=state]").val('');
 		        	 }
 		        	 
 		        	 if(json['city'] != null && json['city'] != "" && json['city'] != 'undefined'){
 		        		 $("select[name=city]").val(json['city']);
-		        		 getCandidateCities(json['city']);
+		        		 getCandidateCities(json['state'],json['city']);
 		        	 }else{
 		        		 $("select[name=city]").val('');
 		        	 }
@@ -1484,14 +1484,14 @@ function getCandidateDetails(){
 	        	 
 	        	 if(json['state'] != null && json['state'] != "" && json['state'] != 'undefined'){
 	        		 $("select[name=state]").val(json['state']);
-	        		 getCandidateStates();
+	        		 getCandidateStates(json['state']);
 	        	 }else{
 	        		 $("select[name=state]").val('');
 	        	 }
 	        	 
 	        	 if(json['city'] != null && json['city'] != "" && json['city'] != 'undefined'){
 	        		 $("select[name=city]").val(json['city']);
-	        		 getCandidateCities(json['city']);
+	        		 getCandidateCities(json['state'],json['city']);
 	        	 }else{
 	        		 $("select[name=city]").val('');
 	        	 }
@@ -1678,13 +1678,12 @@ function getAllSubmissionCandidateCountries(){
 </script>
 
 <script>
-function getCandidateStates(){
+function getCandidateStates(stateName){
 	
 	var countryName = $("#submissionCountry").val();
-     var stateName = $("#submissionState").val();
 	
 	if(stateName == null || stateName == "" || stateName =="undefined"){
-		stateName = document.getElementById("state").value;
+		stateName = document.getElementById("submissionState").value;
 	}
 	
 	if(countryName != null && countryName != "" && countryName !="undefined"){
@@ -1724,13 +1723,12 @@ function getCandidateStates(){
 
 
 <script>
-function getCandidateCities(city){
+function getCandidateCities(stateName,city){
 	
 	var countryName = $("#submissionCountry").val();
-	var stateName = $("#submissionState").val();
 	
 	if(stateName == null || stateName == "" || stateName =="undefined"){
-		stateName = document.getElementById("state");
+		stateName = document.getElementById("submissionState").value;
 	}
 	
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
@@ -1898,11 +1896,11 @@ $('body').on('submit', '#applyToJob_form', function(e){
       
       con = encodeURIComponent(con);
      
-      
+      var requirementUUID = '${requirementUUID}';
 		
        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
       
-  	     $.ajax({
+  	    $.ajax({
 	    	type: "POST",
 	    	data: formData,
  	        contentType : 'application/json; charset=utf-8',
@@ -1918,18 +1916,25 @@ $('body').on('submit', '#applyToJob_form', function(e){
 		    		$(".side_mask").fadeOut(200);
 		    		$("body").css('overflow-y', 'auto');
 		    		
-		        	document.getElementById('requirementType').value = 'AppliedJobs';
-		    		document.getElementById('appliedjobs').checked = true;
-		    		document.getElementById('appliedActive').className = 'activeBackground'
-		    		document.getElementById("crowdActive").removeAttribute("class")
-		       		document.getElementById("openActive").removeAttribute("class");
 		        	
-		       		requirementsList(0);
+		    		if(requirementUUID == '' || requirementUUID == null || requirementUUID == 'undefined' ){
+		    			document.getElementById('requirementType').value = 'AppliedJobs';
+			    		document.getElementById('appliedjobs').checked = true;
+			    		document.getElementById('appliedActive').className = 'activeBackground'
+			    		document.getElementById("crowdActive").removeAttribute("class")
+			       		document.getElementById("openActive").removeAttribute("class");
+			        	
+			       		requirementsList(0);
+		    		}else{
+		    			location.replace(sourceleadUrl+"/requirementProfileDetails?requirementUUID="+requirementUUID); 
+		    		}
+		    		
+		    		
 	        	}else{
-	        		location.replace(sourceleadUrl+"/professionalRequirements");  
+	        		 
 	        	}
 	        },
-	    }); 
+	    });  
       return true; 
     }
     else{
