@@ -53,6 +53,7 @@ function prepareReportDataDiv(data){
 	result = result + "    <th><i class='fa fa-handshake-o fa-2x'></i> <div class='small'>Interviewed</div></th>";
 	result = result + "    <th><i class='fa fa-envelope-open-o fa-2x'></i> <div class='small'>Offered</div></th>";
 	result = result + "    <th><i class='fa fa-ban fa-2x'></i> <div class='small'>Rejected</div></th>";
+	result = result + "    <th><i class='fa fa-arrow-circle-left fa-2x'></i> <div class='small'>Back-Out</div></th>";
 	result = result + "   </tr>";
 	result = result + '	</thead>';
 	result = result + '	<tbody>';
@@ -62,7 +63,7 @@ function prepareReportDataDiv(data){
     	var report= json[i];
     	result = result + '<tr>';
         result = result + '<td>';
-        result = result + '<div onclick="getVendorSpocs('+report.id+');" class="tbldata-dotdot-me">'+report.vendorName+'</div> ';
+        result = result + '<div onclick="getVendorSpocs('+report.id+');" class="tbldata-dotdot-me" title="'+report.vendorName+'"><a>'+report.vendorName+'</a></div> ';
         result = result + '</td>';
         result = result + '<td>';
         if(report.reqReleasedCount != null && report.reqReleasedCount != '' && report.reqReleasedCount !='undefined'){
@@ -108,6 +109,10 @@ function prepareReportDataDiv(data){
      		} else{
     		result = result + '<div class="small"><span>0</span></div>';
     		    }
+        result = result + '</td>';
+        
+        result = result + '<td>';
+   		result = result + '<div class="small"><span>0</span></div>';
         result = result + '</td>';
         
         result = result + '</tr>';

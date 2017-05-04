@@ -1175,13 +1175,13 @@ jQuery('.main-header').removeClass('navbar-fixed-top');}
 });
 </script> -->
 <script>
-jQuery(window).scroll(function () {
+/* jQuery(window).scroll(function () {
 if( jQuery(window).scrollTop() > jQuery('.main-header').offset().top + 100 && !(jQuery('.main-header').hasClass('navbar-fixed-top'))){
 jQuery('.main-header').addClass('navbar-fixed-top').animate({"top":"0%"}, 500);
 } else if (jQuery(window).scrollTop() <= 50){
 jQuery('.main-header').removeClass('navbar-fixed-top').css({"top":"-20%"});
 }
-});
+}); */
 
 // Select picker updated script for universalSerch
 
