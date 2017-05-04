@@ -35,6 +35,7 @@
               <small>List of tasks</small> </a></li>
           </ul>
           <input type="hidden" name="templateId" id="templateId" value=""/>
+          <input type="hidden" id="onboardTaskDiv" value="N"/>
           <div class="tab-content"> 
             
             <!-- Employee Details -->
@@ -432,7 +433,8 @@
   	        $("#documentstemplateId").val(templateId);
   	        
   	      document.getElementById("templateDocs").disabled = false;
-  	    document.getElementById("templateTasks").disabled = false;
+  	      document.getElementById("templateTasks").disabled = false;
+  	      $("#onboardTaskDiv").val('Y');
 		}
 		
 		getTemplateDetails();
@@ -878,6 +880,7 @@ function createTemplateDocs(saveType){
 	        		var $tabs = $('.tabbable li');
 	     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
 	     	        document.getElementById("templateTasks").disabled = false;
+	     	        $("#onboardTaskDiv").val('Y');
 	     	        getOnboardingTasksList();
 	        	}else{
 	        		getTemplatePolicyDocumentsDetails();
@@ -1248,6 +1251,10 @@ function validateTemplateName(){
 <script>
 function getOnboardingTasksList(){
 	var templateId = document.getElementById("templateId").value;
+	var onboardTaskDiv = document.getElementById("onboardTaskDiv").value;
+	
+	if(onboardTaskDiv == 'Y'){
+	
 	var sourceleadUrl = '${sourceleadUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	
@@ -1323,6 +1330,7 @@ function getOnboardingTasksList(){
 	
   $("#loading").removeAttr("style");
 	
+ }
 }
 </script>
 
