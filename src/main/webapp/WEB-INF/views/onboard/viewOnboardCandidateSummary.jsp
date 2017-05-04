@@ -39,11 +39,11 @@ padding-left: 25px;
         <div class="tabbable">
           <ul class="nav nav-tabs" id="tab_bar">
             <li class="active"> <a href="#details" data-toggle="tab" onclick="onboardCandidateSummaryDetails();"> <i class="fa fa-th-list paddingRight"></i> <span>Details</span> <br>
-              <small>Employee details &amp; Postion details</small> </a> </li>
+              <small>Employee details &amp; Position details</small> </a> </li>
             <li><a href="#documents" data-toggle="tab" onclick="getTemplateContractsDocumentsDetails();getTemplateFormsDocumentsDetails();getTemplatePolicyDocumentsDetails();getTemplateSupportingDocumentsDetails();"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
               <small>Acceptance &amp; Policy Documents</small> </a> </li>
 
-              <li onclick="getOnboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Taks</span> <br>
+              <li onclick="getOnboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Tasks</span> <br>
               <small>List of tasks</small> </a></li>
              
           </ul>
@@ -140,7 +140,7 @@ padding-left: 25px;
 				
 				 
 				 result = result +'     <div class="form-group">                                                                                      ';
-				 result = result +'       <label class="col-md-3 control-label">Street Addess 1 </label>';
+				 result = result +'       <label class="col-md-3 control-label">Street Address 1 </label>';
 				 result = result +'       <div class="col-md-6">                                                                                      ';
 				 result = result +'           <label>'+json.address1+'</label>                                      ';
 				 result = result +'       </div>                                                                                                      ';
@@ -148,7 +148,7 @@ padding-left: 25px;
 				
 				 if(json.address2 != null && json.address2 != '' && json.address2 != 'undefined'){
 					 result = result +'     <div class="form-group">                                                                                      ';
-					 result = result +'       <label class="col-md-3 control-label">Street Addess 2</label>';
+					 result = result +'       <label class="col-md-3 control-label">Street Address 2</label>';
 					 result = result +'       <div class="col-md-6">    ';
 					 result = result +'           <label>'+json.address2+'</label> ';
 					 result = result +'       </div>                                                                                                      ';
