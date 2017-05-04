@@ -713,8 +713,13 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 			
 			if(null != candidateOffBoardingList && candidateOffBoardingList.size() > 0){
 				for(CandidateOffBoarding candidateOffBoarding : candidateOffBoardingList){
+					
 					if(null != candidateOffBoarding.getDateOfJoin()){
 						candidateOffBoarding.setDateOfJoinStr(Constants.DMY.format(candidateOffBoarding.getDateOfJoin()));
+					}
+					
+					if(null != candidateOffBoarding.getEffectiveDate()){
+						candidateOffBoarding.setEffectiveDateStr(Constants.DMY.format(candidateOffBoarding.getEffectiveDate()));
 					}
 					
 					if(null != candidateOffBoarding.getEndDate()){
@@ -755,8 +760,10 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 				
 				candidateOffBoarding.setOffBoardUserId(candidateOffBoarding.getUserId().getId());
 			
+				if(null != candidateOffBoarding.getDateOfJoin()){
+					candidateOffBoarding.setDateOfJoinStr(Constants.DMY.format(candidateOffBoarding.getDateOfJoin()));
+				}
 				
-				candidateOffBoarding.setDateOfJoinStr(Constants.DMY.format(candidateOffBoarding.getDateOfJoin()));
 				
 				if(null != candidateOffBoarding.getEndDate()){
 					candidateOffBoarding.setEndDateStr(Constants.DMY.format(candidateOffBoarding.getEndDate()));
@@ -1388,8 +1395,6 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 			 
 			 
 			 CandidateOffBoarding offboarding = candidateOffBoardingService.getCandidateOffBoardingByOffboardUUID(offboardUUID);
-			 
-			 List<OffBoardingDocuments>  offboardDocumentsList = new ArrayList<OffBoardingDocuments>();
 			 
 			 List<OffBoardingDocuments> resignationDocumentsList = offBoardingDocumentsService.getOffBoardingDocumentsByCandidateOffBoardingId(offboarding.getId(), "Resignation");
 			 List<OffBoardingDocuments> offboardPackDocumentsList = offBoardingDocumentsService.getOffBoardingDocumentsByCandidateOffBoardingId(offboarding.getId(), "Offboard Pack");
