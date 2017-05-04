@@ -1032,11 +1032,11 @@ public class RequirementDaoImpl implements RequirementDao {
 
 		@Override
 		@Transactional(rollbackFor = { Exception.class })
-		public List<Requirement> getTotalRequirementsReleasedToSpoc(Long relationId, Long spocId) {
+		public List<Requirement> getTotalRequirementsReleasedToSpoc(Long relationId, Long spocId,Date startDateUTC, Date endDateUTC) {
 			Session session = this.sessionFactory.getCurrentSession();
 	 		
-	 		String query = "from Requirement requirement left join fetch requirement.parentRequirement where   requirement.clientId.id =:relationId and  requirement.spocId.id =:spocId";
-	        List<Requirement> requirementList = session.createQuery(query).setLong("relationId", relationId).setLong("spocId", spocId).setCacheable(true).list();
+	 		String query = "from Requirement requirement left join fetch requirement.parentRequirement where   requirement.clientId.id =:relationId and  requirement.spocId.id =:spocId and ( requirement.createdDate >= :startDateUTC and requirement.createdDate <= :endDateUTC )";
+	        List<Requirement> requirementList = session.createQuery(query).setLong("relationId", relationId).setLong("spocId", spocId).setParameter("startDateUTC", startDateUTC).setParameter( "endDateUTC", endDateUTC ).setCacheable(true).list();
 	 		return requirementList;
 		}
 		
@@ -1156,6 +1156,21 @@ public class RequirementDaoImpl implements RequirementDao {
         }
 		return query.setCacheable(true).list();
 		
+		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<Requirement> getAllReleasedJobsForVendorBasedOnStartAndEndDates(Long orgLocationId,
+				Long orgRelationId, Date startDateUTC, Date endDateUTC) {
+			logger.debug("getAllReleasedJobsForVendor start");
+			Session session = this.sessionFactory.getCurrentSession();
+			List<Requirement> releasedJobsList = null;
+			String query = "";
+			if(orgRelationId != null && orgLocationId != null){
+				query = "from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId and ( requirement.createdDate >= :startDateUTC and requirement.createdDate <= :endDateUTC ) and requirement.parentRequirement IS NOT NULL group by requirement.clientId.id";
+				releasedJobsList = session.createQuery(query).setLong( "orgRelationId", orgRelationId ).setParameter("startDateUTC", startDateUTC).setParameter( "endDateUTC", endDateUTC ).setCacheable(true).list();
+			}
+	        return releasedJobsList;
 		}
 		
 }
