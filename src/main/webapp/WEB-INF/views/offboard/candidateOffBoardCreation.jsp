@@ -31,6 +31,7 @@
   	        document.getElementById("checkList").disabled = false;
   	        $("#candidateOffBoardUUID").val('${offBoardingUUID}');
   	        $("#documentstemplateId").val(offBoardingId);
+  	        $("#offboardTaskDiv").val('Y');
   	        
   	        loadOffboardingUser('${offBoardingUUID}');
 		}else{
@@ -49,7 +50,7 @@
       <div class="pull-left">
         <h2>Employee offboarding</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/usersList'/>">Users List</a> &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Employee Offboarding </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Employee Offboarding </div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="applicant_accept">
@@ -66,6 +67,7 @@
           </ul>
           <input type="hidden" name="candidateOffBoardId" id="candidateOffBoardId" value=""/>
           <input type="hidden" name="candidateOffBoardUUID" id="candidateOffBoardUUID" value=""/>
+          <input type="hidden" id="offboardTaskDiv" value="N"/>
           <div class="tab-content"> 
             
             <!-- Employee Details -->
@@ -353,7 +355,7 @@
 	                               <div class="col-md-12 mb10">
                                   <div class="row">
                                     <div class="col-md-12">
-                                      <label><strong>Due after:</strong><span class="text-danger">*</span></label>
+                                      <label><strong>Due before:</strong><span class="text-danger">*</span></label>
                                                                             
                                       <!-- Form inline Due after -->
                                       
@@ -1346,6 +1348,7 @@ function createOffboardCheckList(saveType){
 	      		        		var $tabs = $('.tabbable li');
 	      		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
 	      		     	        document.getElementById("templateTasks").disabled = false;
+	      		     	        $("#offboardTaskDiv").val('Y');
 	      		     	        getOffboardingTasksList();
 	      		        	}else{
 	      		        		getOffboardingCheckList();
@@ -1404,6 +1407,10 @@ function cancel(){
 
 <script>
 function getOffboardingTasksList(){
+	
+	var offboardTaskDiv = document.getElementById("offboardTaskDiv").value;
+	if(offboardTaskDiv == 'Y'){
+	
 	var offboardId = document.getElementById("candidateOffBoardId").value;
 	var sourceleadUrl = '${sourceleadUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
@@ -1475,7 +1482,7 @@ function getOffboardingTasksList(){
         	
         	result = result +'<div class="form-footer clearfix mt">';
     		result = result +'<div class="pull-right mr">';
-    		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishOffboardTemplate('+offboardId+');" class="btn btn-sm btn-primary">';
+    		result = result +'<input type="button" value="Send" id="finish_task" onclick="saveAndFinishOffboardTemplate('+offboardId+');" class="btn btn-sm btn-primary">';
     		result = result +'</div>';
     		result = result +'</div>';
     		
@@ -1490,7 +1497,7 @@ function getOffboardingTasksList(){
 	
   $("#loading").removeAttr("style");
 }
-	
+	}
 }
 </script>
 
@@ -1532,6 +1539,11 @@ function saveAndFinishOffboardTemplate(offboardId){
 	  
 	  $('#dueAfterDiv').find('p.jquery_form_error_message').remove();	
 	  $('#taskNameDiv').find('p.jquery_form_error_message').remove();
+	  
+	  document.getElementById("assignToUserDiv").style.display="none";
+	  $('#onboardAssignedTo').removeAttr('data-validation');
+	  $("#onboardAssignedTo").attr("data-validation-optional", "true");
+	  $('#assignToUserDiv').find('p.jquery_form_error_message').remove();
   }
   </script>
   

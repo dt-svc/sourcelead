@@ -88,7 +88,7 @@ public interface RequirementDao {
 	
 	Long getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC) throws Exception ;
 
-	public List<Requirement> getTotalRequirementsReleasedToSpoc(Long relationId, Long spocId);
+	public List<Requirement> getTotalRequirementsReleasedToSpoc(Long relationId, Long spocId, Date startDateUTC, Date endDateUTC);
 	
 	List<Requirement> getRequirementsForSOWByOrgLocationId(Long orgLocationId, String sowType) throws Exception ;
 
@@ -97,4 +97,7 @@ public interface RequirementDao {
 	Requirement getRequirementDetailsById(long parseLong)throws Exception;
 	
 	List<Requirement> getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(Long orgLocationId, String userType, Long userId, String userCode, String numberOfDays) throws Exception;
+
+	public List<Requirement> getAllReleasedJobsForVendorBasedOnStartAndEndDates(Long orgLocationId, Long orgRelationId,
+			Date startDateUTC, Date endDateUTC);
 }
