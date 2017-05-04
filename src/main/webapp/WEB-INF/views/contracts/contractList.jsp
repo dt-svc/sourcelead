@@ -16,7 +16,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-   getTemplateList('draft');
+   getTemplateList('DRAFT');
 });
 </script>.
 
@@ -35,11 +35,11 @@ $(document).ready(function(){
 
 <section class="contrHead"> 
 <ul> 
-<li title="Draft"><a href="#" id="draft" class="draft" onClick="mainTabEnable(this);getTemplateList('draft');">Draft</a></li>
+<li title="Draft"><a href="#" id="draft" class="draft" onClick="mainTabEnable(this);getTemplateList('DRAFT');">Draft</a></li>
 <li title="Waiting for Approval"><a href="#" id="approve"  onClick="mainTabEnable(this);getTemplateList('WAITING_FOR_APPROVER');"><i class="fa fa-clock-o fa-2"></i>Approve</a></li> 
-<li title="Waiting to be sign"><a href="#" id="sign" onClick="mainTabEnable(this);getTemplateList('Waiting to be signed');"><i class="fa fa-clock-o fa-2"></i>Sign</a></li>
-<li title="Waiting for Verify"><a href="#" id="verify" onClick="mainTabEnable(this);getTemplateList('Waiting To Be Verify');"><i class="fa fa-clock-o fa-2"></i>Verify</a></li>
-<li title="Finalised"><a href="#" id="finalised"  onClick="mainTabEnable(this); getTemplateList('Finalized');">Finalized</a></li>
+<li title="Waiting to be sign"><a href="#" id="sign" onClick="mainTabEnable(this);getTemplateList('WAITING_TO_BE_SIGNED');"><i class="fa fa-clock-o fa-2"></i>Sign</a></li>
+<li title="Waiting for Verify"><a href="#" id="verify" onClick="mainTabEnable(this);getTemplateList('WAITING_TO_BE_VERIFY');"><i class="fa fa-clock-o fa-2"></i>Verify</a></li>
+<li title="Finalised"><a href="#" id="finalised"  onClick="mainTabEnable(this); getTemplateList('FINALIZED');">Finalized</a></li>
 <li title="Expired"><a href="#" id="expired" onClick="mainTabEnable(this);">Expired</a></li>
 <li title="Rejected"><a href="#" id="rejected"  onClick="mainTabEnable(this);getTemplateList('REJECTED');">Rejected</a></li>
 <input type="hidden" name="contractStage" id="contractStage" >
@@ -203,6 +203,7 @@ function preparedContractList(data){
 		result = result + '	<thead>';
 		result = result + '   <tr>';
 		result = result + '    <th>Contract Title</th>';
+		result = result + '    <th>Type</th>';
 		result = result + '    <th>Owner</th>';
 		result = result + '    <th>Start date</th>';
 		result = result + '    <th>End date</th>'; 
@@ -220,6 +221,9 @@ function preparedContractList(data){
 		    	result = result + '<tr id="row'+report.id+'">';
 		        result = result + '<td>';
 		           	result = result + '<div><span>'+report.contractTitle+'</span></div>';
+		         result = result + '</td>';
+		         result = result + '<td>';
+		           	result = result + '<div><span>'+report.typeOfContract+'</span></div>';
 		         result = result + '</td>';
 		    	 result = result + '<td>';
 		       	 result = result + '<div><span>'+report.ownerName+'</span></div>';
@@ -248,17 +252,17 @@ function preparedContractList(data){
 		         result = result + '<td>';//Waiting to be signed
 		         result = result + '<div class="tbldata-dotdot-sm">';
 		         if(report.parentId != null && report.parentId != '' && report.parentId != 'undefined'){
-		     		 if(report.templateSubmissionStatus == "Finalized"){
+		     		 if(report.templateSubmissionStatus == "FINALIZED"){
 		     			result = result + '<div id="removeStatus'+report.id+'">--</a></div>';
 		            	 }
 		     		 else{
 			         	 	opt = opt + '<div><span>--</span></div>';
 			        	  }
 		     	}else{
-		     		if(report.contractStatus == "completed" && report.templateSubmissionStatus != "Finalized"){
-		     			result = result + '<div id="removeStatus'+report.id+'"><a class="btn btn-sm btn-success" title="finalize" onclick="finalizeContract('+report.id+',\'Waiting To Be Verify\');">finalize</a></div>';
+		     		if(report.contractStatus == "completed" && report.templateSubmissionStatus != "FINALIZED"){
+		     			result = result + '<div id="removeStatus'+report.id+'"><a class="btn btn-sm btn-success" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\');">finalize</a></div>';
 		            	 }
-		        	  if(report.templateSubmissionStatus == "Finalized"){
+		        	  if(report.templateSubmissionStatus == "FINALIZED"){
 		        		  result = result + '<div id="removeStatus'+report.id+'">--</a></div>';
 		            	 }
 		        	  
@@ -289,6 +293,7 @@ function preparedContractList(data){
 	opt = opt + '	<thead>';
 	opt = opt + '   <tr>';
 	opt = opt + '    <th>Contract Title</th>';
+	opt = opt + '    <th>Type</th>';
 	opt = opt + '    <th>Owner</th>';
 	opt = opt + '    <th>Start date</th>';
 	opt = opt + '    <th>End date</th>'; 
@@ -307,6 +312,9 @@ function preparedContractList(data){
 	        opt = opt + '<td>';
 	       		 opt = opt + '<div><span>'+output.contractTitle+'</span></div>';
 	         opt = opt + '</td>';
+	         opt = opt + '<td>';
+       			 opt = opt + '<div><span>'+output.typeOfContract+'</span></div>';
+       		 opt = opt + '</td>';
 	    	 opt = opt + '<td>';
 	       	 opt = opt + '<div><span>'+output.ownerName+'</span></div>';
 	         opt = opt + '</td>';
@@ -332,7 +340,7 @@ function preparedContractList(data){
 	         opt = opt + '<td>';//Waiting to be signed
 	         opt = opt + '<div class="tbldata-dotdot-sm">';
 	         if(output.parentId != null && output.parentId != '' && output.parentId != 'undefined'){
-	     		 if(output.templateSubmissionStatus == "Finalized"){
+	     		 if(output.templateSubmissionStatus == "FINALIZED"){
 	     			opt = opt + '<div id="removeStatus'+output.id+'">--</a></div>';
 	            	 }
 	     		
@@ -340,11 +348,11 @@ function preparedContractList(data){
 		         	 	opt = opt + '<div><span>--</span></div>';
 		        	  }
 	     	}else{
-	        	  if(output.templateSubmissionStatus == "Finalized"){
+	        	  if(output.templateSubmissionStatus == "FINALIZED"){
 	        		  opt = opt + '<div id="removeStatus'+output.id+'">--</a></div>';
 	            	 }
-	        	  else if(output.contractStatus == "completed" && output.templateSubmissionStatus != "Finalized"){
-		     			opt = opt +  '<div id="removeStatus'+output.id+'"><a class="btn btn-sm btn-success" title="finalize" onclick="finalizeContract('+output.id+',\'Waiting To Be Verify\');">finalize</a></div>';
+	        	  else if(output.contractStatus == "completed" && output.templateSubmissionStatus != "FINALIZED"){
+		     			opt = opt +  '<div id="removeStatus'+output.id+'"><a class="btn btn-sm btn-success" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\');">finalize</a></div>';
 		     		}
 	        	  else if(output.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
 	        		   '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_CONTRACT\')">';
@@ -431,12 +439,12 @@ function approveContract(recordId,status){
         		$("#row"+recordId).empty();
     	    	$("#row"+recordId).html(rowHtmlContent);
     	    	 $("#removeStatus"+recordId).html("");
-    	        $("#removeReject"+recordId).html("<span>REJECTED</span>").addClass('text-success');
+    	        $("#removeReject"+recordId).html("<span>Rejected</span>").addClass('text-success');
         	}else{
         		$("#row"+recordId).empty();
     	    	$("#row"+recordId).html(rowHtmlContent);
     	    	 $("#removeReject"+recordId).html("");
-    	        $("#removeStatus"+recordId).html("<span>APPROVED</span>").addClass('text-success');
+    	        $("#removeStatus"+recordId).html("<span>Approved</span>").addClass('text-success');
         	}
         	$("#loading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
        },
@@ -525,7 +533,7 @@ function mainTabEnable(local){
         $("#expired").removeClass("expi");
         $("#rejected").removeClass("rej");
         
-        $("#contractStage").val("Waiting to be signed");
+        $("#contractStage").val("WAITING_TO_BE_SIGNED");
         }
     if(tabId == 'verify'){
     	$("#draft").removeClass("draft"); 
@@ -536,7 +544,7 @@ function mainTabEnable(local){
         $("#expired").removeClass("exp");
         $("#rejected").removeClass("rej");
         
-        $("#contractStage").val("Waiting To Be Verify");
+        $("#contractStage").val("WAITING_TO_BE_VERIFY");
         }
     if(tabId == 'finalised'){  
     	$("#draft").removeClass("draft"); 

@@ -287,13 +287,13 @@ public class ContractRestController {
 		 contractsTemplateService.saveNewContract(contracts);
 		}*/
 		
-		if(("Waiting To Be Verify").equalsIgnoreCase(status)){
+		if(("WAITING_TO_BE_VERIFY").equalsIgnoreCase(status)){
 			Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
 			if(null != childContarct.getParentContractId()){
 				childContarct.setId(childContarct.getId());
-				childContarct.setTemplateSubmissionStatus("Finalized");
+				childContarct.setTemplateSubmissionStatus("FINALIZED");
 				contracts.setId(contracts.getId());
-				contracts.setTemplateSubmissionStatus("Finalized");
+				contracts.setTemplateSubmissionStatus("FINALIZED");
 			}
 			 contractsTemplateService.saveNewContract(childContarct);
 			 contractsTemplateService.saveNewContract(contracts);

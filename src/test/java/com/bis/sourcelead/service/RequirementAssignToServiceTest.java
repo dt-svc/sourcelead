@@ -176,7 +176,7 @@ public class RequirementAssignToServiceTest {
 	        				childContarct.setId(childContarct.getId());
 	        				childContarct.setTemplateSubmissionStatus("Send For Verification");
 	        				contracts.setId(contracts.getId());
-	        				pCt.setTemplateSubmissionStatus("Waiting To Be Verify");
+	        				pCt.setTemplateSubmissionStatus("WAITING_TO_BE_VERIFY");
 	        			}
 	            	}
 	            	if(evp.getStatus().equalsIgnoreCase("declined")){
