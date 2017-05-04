@@ -75,6 +75,7 @@ textarea {
 }
 .main-header {
 	max-height: 100px; position: relative; z-index: 1030; background: #368ee0; box-shadow: 1px 1px 3px #00105a;
+    position: fixed; width: 100%;
 }
 .main-header span.logo {
 	background: #3081cb; padding: 0 15px; line-height: 50px; width: 230px; box-sizing: border-box; height: 50px; float: left;
@@ -572,7 +573,7 @@ line-height: 39px; border-bottom: 1px solid #325475; transition: all 0.5s ease-i
 .content-wraper {
 background: #e0e0e0; min-height: 620px; margin-left: 230px; padding: 0 30px 30px;
 -moz-transition: all ease-in-out 0.3s; -ms-transition: all ease-in-out 0.3s; -webkit-transition: all ease-in-out 0.5s;
-transition: all ease-in-out 0.3s;
+transition: all ease-in-out 0.3s; padding-top: 50px;
 }
 .content-wraper.content-wraper-active {
 	margin-left: 50px;
@@ -3294,8 +3295,7 @@ addTask-widget table tr th {
 	color:#fff;
 }
 .side-nav-fixed{
-	position:fixed;
-	padding-top:0;
+	position:fixed; padding-top:50px;
 }
 
 /* Add Role Styles */
@@ -3622,7 +3622,7 @@ ul.pipeline li{
 	background-color:#333;
 }
 .collapse-div-adduser.addrole {
-	right:25px;
+	right:275px;
 }
 .headersummary ul{
 	padding: 2px 245px 2px 0px !important;
@@ -6558,6 +6558,51 @@ div.tree-multiselect .select-all-container span.select-all:hover, div.tree-multi
 .tree-multiselect .select-all-container {
     margin-bottom: 5px;
 }
+/* Billing Dashboard css */
+.billing_dashboard {
+padding: 15px 15px 25px 15px;
+}
+.billing_dashboard h4{
+    font-size: 14px; color: #606060; margin-bottom: 5px; font-weight: normal;
+}
+.billing_dashboard .nav-tabs li a {
+    display: inline-block; padding:5px 10px; color: #333; min-width: 175px; border-radius: 3px;
+}
+.billing_dashboard .nav-tabs > li {
+    margin-right: 5px;
+}
+.billing_dashboard .nav-tabs > li .count{
+    font-size: 20px; text-align: right;
+}
+.billing_dashboard .nav-tabs > li h5{
+    font-size: 14px; font-weight: 400; margin:2px 0; float: right;
+}
+.billing_dashboard .nav-tabs > li h5 span{
+    font-size: 20px;
+}
+.billbg_orange {
+    background: #ffb74d;
+}
+.billbg_green {
+    background: #a5d6a7;
+}
+.billbg_orange {
+    background: #ffb74d;
+}
+.billingbg_red {
+    background: #ef9a9a;
+}
+.billingbgRed {
+    background: #ffcdd2;
+}
+.billing_dashboard .nav-tabs > li.active > a, .billing_dashboard  .nav-tabs > li.active > a:focus, .billing_dashboard  .nav-tabs > li.active > a:hover {
+    background-color:none !important;
+}
+.icon_fa {
+    position: relative; top: 5px;
+}
+/* Billing Dashboard css */
+
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
@@ -6822,7 +6867,7 @@ top:100px;
 width: 230px; transform: translateX(0); -webkit-transform: translateX(0); -ms-transform: translateX(0);
 }
 .content-wraper {
-	padding: 10px;
+	padding: 10px; padding-top: 100px;
 }
 .form-icon .form-control {
 	width: 80%;

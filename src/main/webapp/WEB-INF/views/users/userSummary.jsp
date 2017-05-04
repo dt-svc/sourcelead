@@ -23,6 +23,8 @@
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 <script src="resources/js/chosen.jquery.min.js"></script> 
  -->
+<script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
+ 
 <style>
 .user_summary_edit_cta p{
     margin: -5px 15px;
@@ -855,17 +857,29 @@ function getChangeRole(userId,userRoleId){
 })(jQuery);
 </script>
 
-<script type="text/javascript">
+ <script type="text/javascript">
  function validateDayHours() {
-	 var DayHours = document.getElementById("DayHours").value; 
+	
+	 var DayHours = document.getElementById("dayHoursEdit").value; 
 	 $('#DayHoursDiv').find('p.jquery_form_error_message').remove();
-	if(DayHours > 24){
-		 $("input#DayHours").after("<p class='jquery_form_error_message'>Day Hours should less than 24 Hours</span>");
-		 document.getElementById("DayHours").setAttribute('record-exist','yes');
-		 document.getElementById("DayHours").setAttribute('record-exist-errorMsg','Day Hours should less than 24 Hours');
-	}else{
+	 var military = /^\s*([01]?\d|2[0-3]):[0-5]\d\s*$/i;
+     var standard = /^\s*(0?\d|1[0-2]):[0-5]\d(\s+(AM|PM))?\s*$/i;
+	
+	if(DayHours.match(military) || DayHours.match(standard)){
+		
 		 $('#DayHoursDiv').find('p.jquery_form_error_message').remove();
-		 $('input#DayHours').removeAttr( "record-exist record-exist-errormsg");
+		 $('input#dayHoursEdit').removeAttr( "record-exist record-exist-errormsg"); 
+	/* 	$("input#DayHours").after("<p class='jquery_form_error_message'>Day Hours should less than 24 Hours</span>");
+		 document.getElementById("DayHours").setAttribute('record-exist','yes');
+		 document.getElementById("DayHours").setAttribute('record-exist-errorMsg','Day Hours should less than 24 Hours');  */
+	}else{
+		
+		$("input#dayHoursEdit").after("<p class='jquery_form_error_message'>Day Hours should less than 24 Hours</span>");
+		 document.getElementById("dayHoursEdit").setAttribute('record-exist','yes');
+		 document.getElementById("dayHoursEdit").setAttribute('record-exist-errorMsg','Day Hours should less than 24 Hours'); 
+	
+		/*  $('#DayHoursDiv').find('p.jquery_form_error_message').remove();
+		 $('input#DayHours').removeAttr( "record-exist record-exist-errormsg");  */
 	}
 	
  }
@@ -1393,7 +1407,7 @@ $("#editRoleDetailsList").empty();
 					
 					result = result + ' <div class="user_summary_edit_cta" id="DayHoursDiv">';
 					result = result + ' <label>Day hours</label>';
-					result = result + ' <input type="text" value="'+dailyHours+'" name="DayHours" id="DayHours" data-validation="validate_Space validate_int validate_length length1-2" data-validation-optional="true" onblur="validateDayHours();">';
+					result = result + ' <input type="text" value="'+dailyHours+'" id="dayHoursEdit" placeholder="HH:MM" name="DayHours"  data-validation="validate_Space validate_dayHours validate_length length1-9" data-validation-optional="true" onblur="editMe(this);validateDayHours();">';
 					result = result + ' </div>';
 					
 					
@@ -1401,7 +1415,7 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <div class="user_summary_edit_cta pull-right">';
 					result = result + ' <input class="us-btn" value="Update" id="update_user" type="button" onclick="updateUser('+json.id+','+userId+',\''+json.user.email+'\',\''+json.employeeId+'\');" > <input class="us-btn us-btn_a" value="Cancel" onClick="editUserDetails('+userId+');" type="button">';
 					result = result + ' </div>';
-					
+					 
 					result = result + ' <div class="clearfix"></div>';
 					result = result + ' </form>';
 				result = result + ' </div>';
@@ -1438,6 +1452,7 @@ $("#editRoleDetailsList").empty();
 			    getEmployeementType();
 			    getVendorsByOrgLocationId();
 			    getDepartmentsList();
+			    maskme(); 
 	        },
 		});
 }
@@ -2368,6 +2383,24 @@ function reActiveProject(projectMemberId,ProjectName,startDate,endDate,projectEn
 	});
  
 </script>
+
+
+
+<script>
+function maskme(){
+
+	$.mask.definitions['H'] = "[0-9]";
+    $.mask.definitions['h'] = "[0-9]";
+    $.mask.definitions['M'] = "[0-9]";
+    $.mask.definitions['m'] = "[0-9]";
+    $.mask.definitions['P'] = "[AaPp]";
+    $.mask.definitions['p'] = "[Mm]";
+    $("#dayHoursEdit").mask("Hh:Mm"); 
+}
+</script>
+
+
+
 <script type="text/javascript">
 function flushReProject(){
 	$('#Re-StartDate').val('');
@@ -2377,6 +2410,54 @@ function flushReProject(){
 }
 </script>
 
-<
 
-<!-- () -->
+<script>
+function editMe(local){
+
+ var id = local.id;
+	 var inputValue =  $("#"+id).val();
+	 var split = inputValue.split(':');
+	 var hours = split[0];
+	 var minutes = split[1];
+	 var hours1 = hours.charAt(0);
+	 var hours2 = hours.charAt(1);
+	 var min1 = minutes.charAt(0);
+	 var min2 = minutes.charAt(1);
+	
+	 if(!isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
+		 $("#"+id).val("0"+hours1+":00");
+	 }
+	 if(isNaN(hours1) && !isNaN(hours2) && isNaN(min1) && isNaN(min2)){
+		 $("#"+id).val("0"+hours2+":00");
+	 }
+	 else if(isNaN(hours)  && !isNaN(min1) && isNaN(min2)){
+		 $("#"+id).val("00:"+min1+"0");
+	 }
+	 else if(isNaN(hours)  && isNaN(min1) && !isNaN(min2)){
+		 $("#"+id).val("00:0"+min2);
+	 }
+	 else if(!isNaN(hours)  && isNaN(min1) && isNaN(min2)){
+		 $("#"+id).val(hours+":00");
+	 }
+	 else if(!isNaN(hours)&& !isNaN(min1) && isNaN(min2)){
+		 $("#"+id).val(hours+":"+"0"+min1);
+	 }
+	 else if(!isNaN(hours)&& isNaN(min1) && !isNaN(min2)){
+		 $("#"+id).val(hours+":"+"0"+min2);
+	 }
+	 else if(!isNaN(hours)&& !isNaN(minutes)){
+		
+		  var hrmin= hours * 60;
+		  var totalMin = parseInt(hrmin) + parseInt(minutes);
+		  hours = Math.floor(totalMin / 60); 
+		  minutes = totalMin % 60;
+		  if(hours<=9){
+			  hours = "0"+hours;
+		  }
+		  if(minutes<=9){
+			  minutes = "0"+minutes;
+		  }
+		  $("#"+id).val(hours+":"+minutes);
+	 }
+	 }
+	 </script>

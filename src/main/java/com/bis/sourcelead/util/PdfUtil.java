@@ -374,9 +374,9 @@ public class PdfUtil {
 		}
 		StringBuilder loc = new StringBuilder();
 		if(candidate.getCity() !=null && !"".equalsIgnoreCase(candidate.getCity())){
-			candidateArray[4] = loc.append(candidate.getCountry()).append(",").append(candidate.getState()).append(",").append(candidate.getCity()).toString();
+			candidateArray[4] = loc.append(candidate.getCity()).append(",").append(candidate.getState()).append(",").append(candidate.getCountry()).toString();
 		}else if(candidate.getState() !=null && !"".equalsIgnoreCase(candidate.getState())){
-			candidateArray[4] = loc.append(candidate.getCountry()).append(",").append(candidate.getState()).toString();
+			candidateArray[4] = loc.append(candidate.getState()).append(",").append(candidate.getCountry()).toString();
 		}else if(candidate.getCountry() !=null && !"".equalsIgnoreCase(candidate.getCountry())){
 			candidateArray[4] = candidate.getCountry();
 		}else{
@@ -747,7 +747,7 @@ public class PdfUtil {
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 	        // Create an instance of PdfPTable. After that we transform the header 
-            int[] columnWidths = new int[]{3, 5, 3,5, 2,3,3};
+            int[] columnWidths = new int[]{3, 5, 5,3, 2,3,3};
             PdfPTable table = getPdfTable(headers,columnWidths,titleName.toString()); 
 	        table.completeRow();
 	        java.util.List<String[]> cantactsList = new ArrayList<>();

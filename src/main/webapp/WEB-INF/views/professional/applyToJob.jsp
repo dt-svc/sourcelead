@@ -1314,7 +1314,7 @@ function getRecruiterCandidateDetails(){
 		        	 
 		        	 if(json['state'] != null && json['state'] != "" && json['state'] != 'undefined'){
 		        		 $("select[name=state]").val(json['state']);
-		        		 getCandidateStates();
+		        		 getCandidateStates(json['state']);
 		        	 }else{
 		        		 $("select[name=state]").val('');
 		        	 }
@@ -1484,7 +1484,7 @@ function getCandidateDetails(){
 	        	 
 	        	 if(json['state'] != null && json['state'] != "" && json['state'] != 'undefined'){
 	        		 $("select[name=state]").val(json['state']);
-	        		 getCandidateStates();
+	        		 getCandidateStates(json['state']);
 	        	 }else{
 	        		 $("select[name=state]").val('');
 	        	 }
@@ -1678,10 +1678,9 @@ function getAllSubmissionCandidateCountries(){
 </script>
 
 <script>
-function getCandidateStates(){
+function getCandidateStates(stateName){
 	
 	var countryName = $("#submissionCountry").val();
-     var stateName = $("#submissionState").val();
 	
 	if(stateName == null || stateName == "" || stateName =="undefined"){
 		stateName = document.getElementById("submissionState").value;
@@ -1729,7 +1728,7 @@ function getCandidateCities(stateName,city){
 	var countryName = $("#submissionCountry").val();
 	
 	if(stateName == null || stateName == "" || stateName =="undefined"){
-		stateName = document.getElementById("submissionState");
+		stateName = document.getElementById("submissionState").value;
 	}
 	
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){

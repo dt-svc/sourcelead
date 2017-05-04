@@ -192,10 +192,21 @@ function getAddApplicant(requirementId){
 	   
 	   
 	 //Adding Customized Skills to the list
-       var select, chosen;
+        var select, chosen;
 	    select = $("#candidateSkills");
 	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
 	    chosen = select.data('chosen');
+	    
+	    
+	 /*    
+	    $("#candidateSkills").chosen().change(function(event) {
+	    	 var sourceleadUrl ='${sourceleadUrl}';
+	    	 var allSkills = $(event.target).val();
+	 
+	    	
+	    });
+	     */
+	    
 	    chosen.search_field.on('keyup', function(e)
 	    {
 	    	var newSkill = this.value.replace(",","");
@@ -205,13 +216,7 @@ function getAddApplicant(requirementId){
 	            var option = $("<option>").val(newSkill).text(newSkill);
 	            select.append(option);
 	            select.find(option).prop('selected', true);
-	          //to doesn't allow duplicates
-                  $("#candidateSkills option").each(function(){
-                        $(this).siblings("[value='"+ this.value+"']").remove();
-                  });
-                  //end
-       		$("#candidateSkills").trigger("chosen:updated");
-       		
+       		    $("#candidateSkills").trigger("chosen:updated");
 	        }
 	    });
 	    //Adding Customized Skills to the list
@@ -580,8 +585,6 @@ function discordApplicant(){
 	 
 	 $("input[name=PhoneNumber]").val('');
 	 $("input[name=Designation]").val('');
-	 $("select[name=state]").val('');
-	 $("select[name=city]").val('');
 	 $("select[name=NoticePeriod]").val('');
 	 $("select[name=WorkExperience]").val(0);
 	 $("input[name=ExpectedCTC]").val('');
@@ -591,6 +594,8 @@ function discordApplicant(){
 	 $("#newUploadFile").val('');
 	 $("#uploadFile").val('');
 	
+	 getCandidateStates();
+	 getSubmissionCandidateCities();
  }
 </script>
 

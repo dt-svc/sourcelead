@@ -101,7 +101,10 @@ content p i {
 	position: relative;
 }
 .filter h2 {
-	padding:10px 20px; margin: 0px 0px; font-size: 17px; font-weight: 400; color: #3081cb;
+	padding:10px 20px; margin: 0px 0px; font-size: 17px; font-weight: 400; color: #3081cb; position: relative;
+}
+.filter h2 i {
+    position: absolute; right: 10px; top: 10px; font-size: 16px; color: #4fc396; padding: 2px 5px; border-radius: 2px; cursor: pointer;
 }
 .resClick {
 	display: none; cursor: pointer;
