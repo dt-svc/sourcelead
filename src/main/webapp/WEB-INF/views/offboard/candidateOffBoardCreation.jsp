@@ -353,7 +353,7 @@
 	                               <div class="col-md-12 mb10">
                                   <div class="row">
                                     <div class="col-md-12">
-                                      <label><strong>Due after:</strong><span class="text-danger">*</span></label>
+                                      <label><strong>Due before:</strong><span class="text-danger">*</span></label>
                                                                             
                                       <!-- Form inline Due after -->
                                       
@@ -1532,6 +1532,10 @@ function saveAndFinishOffboardTemplate(offboardId){
 	  
 	  $('#dueAfterDiv').find('p.jquery_form_error_message').remove();	
 	  $('#taskNameDiv').find('p.jquery_form_error_message').remove();
+	  
+	  document.getElementById("assignToUserDiv").style.display="none";
+	  $('#onboardAssignedTo').removeAttr('data-validation');
+	  $("#onboardAssignedTo").attr("data-validation-optional", "true");
   }
   </script>
   

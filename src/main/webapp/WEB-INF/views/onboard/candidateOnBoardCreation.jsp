@@ -1894,6 +1894,10 @@ function createTemplateDocs(saveType){
 	  
 	  $('#dueAfterDiv').find('p.jquery_form_error_message').remove();	
 	  $('#taskNameDiv').find('p.jquery_form_error_message').remove();
+	  
+	  document.getElementById("assignToUserDiv").style.display="none";
+	  $('#onboardAssignedTo').removeAttr('data-validation');
+	  $("#onboardAssignedTo").attr("data-validation-optional", "true");
 	
   }
   </script>

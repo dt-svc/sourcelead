@@ -373,6 +373,9 @@
 	  
 	  $('#dueAfterDiv').find('p.jquery_form_error_message').remove();	
 	  $('#taskNameDiv').find('p.jquery_form_error_message').remove();
+	  document.getElementById("assignToUserDiv").style.display="none";
+	  $('#onboardAssignedTo').removeAttr('data-validation');
+	  $("#onboardAssignedTo").attr("data-validation-optional", "true");
   }
   </script>
   
@@ -1353,6 +1356,7 @@ function saveAndFinishOnboardTemplate(templateId){
 	    success: function(data) {
 	    	 $("#finish_task").removeAttr("disabled");
 	    	 $("#loading").removeAttr("style");
+	    	 location.replace(sourceleadUrl+"/onboardingTemplatesList"); 
 	    }
   }); 
 	
