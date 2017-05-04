@@ -42,7 +42,7 @@ $(document).ready(function(){
 <li title="Finalised"><a href="#" id="finalised"  onClick="mainTabEnable(this); getTemplateList('Finalized');">Finalized</a></li>
 <li title="Expired"><a href="#" id="expired" onClick="mainTabEnable(this);">Expired</a></li>
 <li title="Rejected"><a href="#" id="rejected"  onClick="mainTabEnable(this);getTemplateList('REJECTED');">Rejected</a></li>
-
+<input type="hidden" name="contractStage" id="contractStage" >
 <div class="conBtn">
   <span>Add<i class="fa fa-caret-down"></i></span>
   <ul>  
@@ -69,9 +69,28 @@ $(document).ready(function(){
 			<a href="#" id="Client1" class="tabActivation" onclick="tabEnable(this);Check('Clients');">Clients</a>
 		</div>
 		<ul>
+			<li id="filterContractTypePop"><i class="fa fa-filter"></i><span>Type</span><i class="glyphicon glyphicon-play"></i>
+	           	<div class="statusFiler-1">
+					<ul class="list-unstyled">
+						<li><input id="c1" type="checkbox" name="contractType" value="MSA" onclick="getTemplateList();"><label>MSA</label></li>
+						<li><input id="c2" type="checkbox" name="contractType" value="SOW" onclick="getTemplateList();"><label>SOW</label></li>
+						<li><input id="c3" type="checkbox" name="contractType" value="NDA" onclick="getTemplateList();"><label>NDA</label></li>
+						<li><input id="c4" type="checkbox" name="contractType" value="NCA" onclick="getTemplateList();"><label>NCA</label></li>
+					</ul>
+				</div>	                	
+			</li>
+			<!-- <li id="filterContractTypePop-2"><i class="fa fa-filter"></i><span>Contract Type</span><i class="glyphicon glyphicon-play"></i>
+	           	<div class="statusFiler-3">
+					<ul class="list-unstyled">
+						<li>StatusFiler-3</li>
+						<li>StatusFiler-3</li>
+						<li>StatusFiler-4</li>
+					</ul>
+				</div>	                	
+			</li> -->
 			<li id="export-pop"><i class="glyphicon glyphicon-export"></i>
-				<div class="export_pop">
-					<ul>
+				<div class="statusFiler-2">
+					<ul class="list-unstyled">
 						<li>PDF<i class="fa fa-file-pdf-o"></i></li>
 						<li>Excel<i class="fa fa-file-excel-o"></i></li>
 						<li>Word<i class="fa fa-file-word-o"></i></li>
@@ -126,29 +145,49 @@ $(document).ready(function(){
     $("#uasrch").selectpicker('refresh');
 	
 // Export Popup
-$(document).ready(function() {
     $("#export-pop").click(function(){
-		$(".export_pop").show();
+		$(".statusFiler-2").toggle();
+		$(".statusFiler-1, .statusFiler-3").hide();
 	});
     $("html").click(function() {
-        $(".export_pop").hide();
+        $(".statusFiler-2, .statusFiler-1").hide();
     });
     $(".export_pop, #export-pop").click(function(e) {
         e.stopPropagation();
     });	
-});		
+    $("html").click(function() {
+        $(".filterContractType_pop").hide();
+    });
+    $(".filterContractType_pop, #filterContractTypePop, .statusFiler-1, .statusFiler-2").click(function(e) {
+        e.stopPropagation();
+    });
+	$("#filterContractTypePop").click(function(){
+		$(".statusFiler-1").toggle();
+		$(".statusFiler-2, .statusFiler-3").hide();
+	});
+	$("#filterContractTypePop-2").click(function(){
+		$(".statusFiler-3").toggle();
+		$(".statusFiler-2, .statusFiler-1").hide();
+	});
+
 </script>
 
 <script type="text/javascript">
-function getTemplateList(contractSubmissionType){
+function getTemplateList(){
+	var contractSubmissionType = $("#contractStage").val();
+	var contractsType = [];
+	$('input:checkbox[name=contractType]:checked').each(function() 
+    {
+		contractsType.push($(this).val());
+    });
 	var tabType = $("#tabType").val();
 	var sourceleadUrl ='${sourceleadUrl}';
+	var selectedContractType = "";
 	 $.ajax({
       type : "GET",
-       url: sourceleadUrl+"/getAllContractsByOrgLocationIdandStatus?${_csrf.parameterName}=${_csrf.token}&contractSubmissionType="+contractSubmissionType+"&tabType="+tabType,       
+       url: sourceleadUrl+"/getAllContractsByOrgLocationIdandStatus?${_csrf.parameterName}=${_csrf.token}&contractSubmissionType="+contractSubmissionType+"&tabType="+tabType+"&contractsType="+contractsType,       
        success :function(data) {
     	   preparedContractList(data);
-      	
       },
   }); 
 }
@@ -171,6 +210,7 @@ function preparedContractList(data){
 		result = result + '    <th>Vendor Contact</th>';
 		result = result + '    <th>Status</th>';
 		result = result + '    <th>Action</th>';
+		result = result + '    <th>Doc View</th>';
 		result = result + '   </tr>';
 		result = result + '	</thead>';
 		result = result + '	<tbody>';
@@ -233,6 +273,11 @@ function preparedContractList(data){
 		          }
 		         result = result + '</div>';
 		     	 result = result + '</td>';
+		     	 
+		     	 result = result + '<td>';
+		         result = result + '<div class="tbldata-dotdot-vsm"><a href="#" title="Preview" class="mr"><i class="fa fa-eye" onclick="previewContractPDF('+report.id+')"></i></a></div>';
+		         result = result + '</td>';
+		     	 
 		        result = result + '</tr>';
 		    }
 			
@@ -251,6 +296,7 @@ function preparedContractList(data){
 	opt = opt + '    <th>Client Contact</th>';
 	opt = opt + '    <th>Status</th>';
 	opt = opt + '    <th>Action</th>';
+	opt = opt + '    <th>Doc View</th>';
 	opt = opt + '   </tr>';
 	opt = opt + '	</thead>';
 	opt = opt + '	<tbody>';
@@ -311,6 +357,11 @@ function preparedContractList(data){
 	          }
 	         opt = opt + '</div>';
 	     	opt = opt + '</td>';
+	     	
+	     	opt = opt + '<td>';
+	     	opt = opt + '<div class="tbldata-dotdot-vsm"><a href="#" title="Preview" class="mr"><i class="fa fa-eye" onclick="previewContractPDF('+output.id+')"></i></a></div>';
+	     	opt = opt + '</td>';
+	     	
 	     	opt = opt + '</tr>';
 	    }
 		
@@ -328,6 +379,12 @@ function preparedContractList(data){
 	
 }
 </script>
+
+<script type="text/javascript">
+function previewContractPDF(id) {
+	var sourceleadUrl ='${sourceleadUrl}';
+	window.open(sourceleadUrl+'/viewContractPdf/'+id+'','_newtab');
+}</script>
 
 <script>
 function removeRecord(recordId,status){
@@ -432,7 +489,10 @@ function tabEnable(local){
 
 <script>
 function mainTabEnable(local){
-   
+	var arrMarkChk = document.getElementsByName("contractType");
+	   for (var i = 0; i < arrMarkChk.length; i++) {
+		   arrMarkChk[i].checked = false;
+	   }
 	var tabId = local.id;
     if(tabId == 'draft'){
 	$("#draft").addClass("draft"); 
@@ -442,6 +502,8 @@ function mainTabEnable(local){
     $("#finalised").removeClass("fin");
     $("#expired").removeClass("exp");
     $("#rejected").removeClass("rej");
+    
+    $("#contractStage").val("draft");
     }
     if(tabId == 'approve'){
     	$("#draft").removeClass("draft"); 
@@ -451,6 +513,8 @@ function mainTabEnable(local){
         $("#finalised").removeClass("fin");
         $("#expired").removeClass("exp");
         $("#rejected").removeClass("rej");
+        
+        $("#contractStage").val("WAITING_FOR_APPROVER");
         }
     if(tabId == 'sign'){
     	$("#draft").removeClass("draft"); 
@@ -460,6 +524,8 @@ function mainTabEnable(local){
         $("#finalised").removeClass("fin");
         $("#expired").removeClass("expi");
         $("#rejected").removeClass("rej");
+        
+        $("#contractStage").val("Waiting to be signed");
         }
     if(tabId == 'verify'){
     	$("#draft").removeClass("draft"); 
@@ -469,6 +535,8 @@ function mainTabEnable(local){
         $("#finalised").removeClass("fin");
         $("#expired").removeClass("exp");
         $("#rejected").removeClass("rej");
+        
+        $("#contractStage").val("Waiting To Be Verify");
         }
     if(tabId == 'finalised'){  
     	$("#draft").removeClass("draft"); 
@@ -478,6 +546,8 @@ function mainTabEnable(local){
         $("#finalised").addClass("fin");
         $("#expired").removeClass("exp");
         $("#rejected").removeClass("rej");
+        
+        $("#contractStage").val("Finalized");
         }
     if(tabId == 'expired'){
     	$("#draft").removeClass("draft"); 
@@ -487,6 +557,8 @@ function mainTabEnable(local){
         $("#finalised").removeClass("fin");
         $("#expired").addClass("exp");
         $("#rejected").removeClass("rej");
+        
+        $("#contractStage").val("expired");
         }
     if(tabId == 'rejected'){
     	$("#draft").removeClass("draft"); 
@@ -496,6 +568,8 @@ function mainTabEnable(local){
         $("#finalised").removeClass("fin");
         $("#expired").removeClass("exp");
         $("#rejected").addClass("rej");
+        
+        $("#contractStage").val("REJECTED");
         }
 	
 }
