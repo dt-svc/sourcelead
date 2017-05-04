@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,7 +34,9 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementReferService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
@@ -61,11 +64,18 @@ public class OpenJobsRestController {
 	@Autowired
 	private RequirementService requirementService;
 	
+	@Autowired
+	OrgLocationService orgLocationService;
+	
 	@RequestMapping(value = "/getOpenJobsELK")
 	public @ResponseBody String getOpenJobsELK(@RequestParam(value = "offset", required = false) Integer offset,
 			@RequestParam(value = "openJobsRequirementTitle", required = false) String openJobsRequirementTitle,
 			@RequestParam(value = "openJobsLocation", required = false) String openJobsLocation,
 			@RequestParam(value = "openJobsExperience", required = false) String openJobsExperience,
+			@RequestParam(value = "reqType", required = false) String reqType,
+			@RequestParam(value = "orgLocationIds", required = false) String orgLocationIds,
+			@RequestParam(value = "dates", required = false) String dates,
+			@RequestParam(value = "country", required = false) String country,
 			HttpServletRequest request) throws Exception{
 		
 		boolean isELKSearchEnable = true;
@@ -145,6 +155,62 @@ public class OpenJobsRestController {
 			     combinedQueryBuilder.should(crowdSourcingJobsQueryBuilder);
 			     boolQueryBuilder.must(combinedQueryBuilder);
 			     boolQueryBuilder.must(QueryBuilders.matchQuery("requirementStatus", "OPEN"));
+			     
+			     //for country filter
+			     if(!isNullOrEmpty(country)){
+			    	 BoolQueryBuilder countryQueryBuilder = QueryBuilders.boolQuery();
+			    	 countryQueryBuilder.should(QueryBuilders.matchQuery("country", country));
+			    	 boolQueryBuilder.must(countryQueryBuilder);
+					}
+			     
+			     //for dates filter
+			     if(!isNullOrEmpty(dates)){
+						String upOn = UpdateOnToDate(dates);
+						if(!Constants.ALL_RECORDS.equalsIgnoreCase(upOn)){
+						 RangeQueryBuilder qb = QueryBuilders.rangeQuery("createdDate").gte(upOn);
+						boolQueryBuilder.must(qb);
+						}
+					}
+			     
+			     //for employment type filter
+			     String[] employmentType = null;
+					if(null != reqType && !"".equals(reqType)){	
+						employmentType = reqType.split(",");
+					}
+					
+				List<String> empTypeList = new ArrayList<>();
+				if(null != employmentType){
+					for(int i=0;i<employmentType.length;i++){
+						empTypeList.add(employmentType[i]);
+					}
+				}
+				if(!empTypeList.isEmpty()){
+					BoolQueryBuilder openJobsBuilder = QueryBuilders.boolQuery();
+			        for(String jobType : empTypeList){
+			        	BoolQueryBuilder openJobscombinedReqTypeQueryBuilder = QueryBuilders.boolQuery();
+			        	openJobscombinedReqTypeQueryBuilder.should(QueryBuilders.matchQuery("jobType", jobType));
+			        	openJobsBuilder.should(openJobscombinedReqTypeQueryBuilder);
+			        }
+			        boolQueryBuilder.must(openJobsBuilder);
+				}
+				
+				
+				//for org specific job filter
+				String[] Locations = null;
+				if(null != orgLocationIds && !"".equals(orgLocationIds)){	
+					Locations = orgLocationIds.split(",");
+				}
+				
+				if(null != Locations){
+					BoolQueryBuilder orgOpenJobsBuilder = QueryBuilders.boolQuery();
+			        for(String locationId : Locations){
+			        	BoolQueryBuilder openJobscombinedOrgQueryBuilder = QueryBuilders.boolQuery();
+			        	openJobscombinedOrgQueryBuilder.should(QueryBuilders.matchQuery("orgLocationId", Long.parseLong(locationId)));
+			        	orgOpenJobsBuilder.should(openJobscombinedOrgQueryBuilder);
+			        }
+			        boolQueryBuilder.must(orgOpenJobsBuilder);
+				}
+				
 		}
 	   
 	    try {
@@ -526,4 +592,32 @@ public class OpenJobsRestController {
 		 return commonUtil.toJSON(requirementDeatilsSummary);
 		 
 	 }
+	 
+	@RequestMapping(value = "/getOrgsListforOpenJobs")
+	 public @ResponseBody  String getOrgsListforOpenJobs(@RequestParam(value = "alphabet", required = false) String alphabet,@RequestParam(value = "country", required = false) String country) throws Exception{
+		 List<OrgLocations> locationsList = null;
+		 String json;
+		 if("none".equalsIgnoreCase(alphabet)){
+			 locationsList = orgLocationService.getAllOrgLocations();
+		 }else{
+			 locationsList = orgLocationService.getAllOrgsStartsWithAlphabet(alphabet);
+		 }
+		 List<OrgLocations> countryfiltered = new ArrayList<>();
+		 for(OrgLocations loc : locationsList){
+			 if(null != country && country.equalsIgnoreCase(loc.getCountry())){
+				 loc.setOrgName(loc.getOrg().getOrgName());
+				 countryfiltered.add(loc);
+			 }else{
+				 loc.setOrgName(loc.getOrg().getOrgName());
+			 }
+		 }
+		
+		 if(null != country && !"".equalsIgnoreCase(country)){
+			 json =  commonUtil.toJSON(countryfiltered);
+		 }else{
+			 json =  commonUtil.toJSON(locationsList);
+		 }
+		 return json;
+	 }
+	 
 }

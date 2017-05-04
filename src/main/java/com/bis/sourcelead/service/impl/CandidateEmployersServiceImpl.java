@@ -59,6 +59,7 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	public CandidateEmployers storeCandidateEmployers(JSONObject jsonObject, User user, OrgLocations orgLocationId,Long candidateId) throws Exception {
 
         CandidateEmployers candidateEmployers = new CandidateEmployers();
+        CandidateEmployers currentEmployer = null;
 		
         if(candidateId!=null){
         	if(jsonObject.has("candidateEmployeeId")){
@@ -74,9 +75,16 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
         	candidateEmployers.setDesignation(jsonObject.getString("designation"));
 
         	if(jsonObject.has("isCurrentPosition") && !(jsonObject.getString("isCurrentPosition").isEmpty())){
-	        	if(jsonObject.getString("isCurrentPosition")!=null && !jsonObject.getString("isCurrentPosition").isEmpty()){
+	        	
+        		currentEmployer = candidateEmployersDao.getCandidateCurrentEmployer(candidateId, orgLocationId.getId());
+        		if(null != currentEmployer){
+        			currentEmployer.setIsCurrentPosition(Constants.NO);
+        		}
+        		
+        		if(jsonObject.getString("isCurrentPosition")!=null && !jsonObject.getString("isCurrentPosition").isEmpty()){
 	        		candidateEmployers.setIsCurrentPosition(jsonObject.getString("isCurrentPosition"));
 	        	}
+        		
         	}else{
         		candidateEmployers.setIsCurrentPosition("N");
         	}
@@ -97,6 +105,9 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 		}
 		
         candidateEmployers = candidateEmployersDao.storeCandidateEmployers(candidateEmployers);
+        if(null != currentEmployer){
+        	candidateEmployersDao.storeCandidateEmployers(currentEmployer);
+        }
 		
 		/*
 		 * updating Candidate Employer DB data in existing candidateindex
@@ -228,6 +239,16 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 			}
 			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateId.toString());
 		}
+	}
+
+	@Override
+	public CandidateEmployers getCandidateCurrentEmployer(Long candidateId, Long orgLocationId) throws Exception {
+		return candidateEmployersDao.getCandidateCurrentEmployer(candidateId, orgLocationId);
+	}
+
+	@Override
+	public CandidateEmployers getCandidateLastCompanyEmployer(Long candidateId, Long orgLocationId) throws Exception {
+		return candidateEmployersDao.getCandidateLastCompanyEmployer(candidateId, orgLocationId);
 	}
 
 }

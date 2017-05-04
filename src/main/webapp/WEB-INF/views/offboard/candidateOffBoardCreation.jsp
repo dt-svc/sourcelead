@@ -286,7 +286,7 @@
                               <div class="col-md-6">
                                 <div class="row">
                                 
-                                <div class="col-md-12 mb10">
+                                <div class="col-md-12 mb10" id="taskNameDiv">
                                   <label>Subject <span class="text-danger">*</span></label>
                                   <input type="text" class="form-control input-sm" placeholder="Subject" field-name="Subject" id="taskName" name="taskName"  data-validation="required validate_Space validate_length length2-100">
                                 </div>
@@ -439,7 +439,7 @@
                                 <div class="clearfix mt col-md-12 form-footer">
                                   <div class="pull-right">
                                     <input type="button" id="offboardtask_submit" class="btn btn-primary btn-sm" onclick="saveOffboardTask();"  value="Save">
-                                    <input type="button" class="btn btn-default btn-sm ml10" value="Cancel" data-dismiss="modal" onclick="flushOnboardTask();">
+                                    <input type="button" class="btn btn-default btn-sm ml10" value="Cancel" data-dismiss="modal" onclick="flushOffboardTask();">
                                   </div>
                                 </div>
                               </div>
@@ -478,8 +478,6 @@
 	  			<i class="fa fa-times" onclick="removeOffboardPackAttachmentRow(REPLACEROWID);"></i>
 	  		</div>
 </div>
-
-
 
 
 <script>
@@ -916,6 +914,8 @@ function loadOffBoardingTemplates(offboardTemplateId){
 		     	       $("#documentstemplateId").val(offboardId);
 		        	}
 		        	
+		        	
+		        	$("#savedoffboardId").val(offboardId);
 	     	        $("#candidateOffBoardId").val(offboardId);
 	     	        
 	     	       $("#save_offboardUser").removeAttr("disabled");
@@ -1527,6 +1527,11 @@ function saveAndFinishOffboardTemplate(offboardId){
   <script>
   function flushOffboardTask(){
 	  document.getElementById("addoffboardTask_form").reset();
+	  $('#taskMonths').removeAttr('data-validation-optional');
+	  $("#taskMonths").attr("data-validation", "required");
+	  
+	  $('#dueAfterDiv').find('p.jquery_form_error_message').remove();	
+	  $('#taskNameDiv').find('p.jquery_form_error_message').remove();
   }
   </script>
   
@@ -1663,9 +1668,9 @@ function saveOffboardTask(){
 	  }
 }
 
-$('body').on('blur', '#addonboardTask_form', function() {
-	$("#addonboardTask_form").showHelpOnFocus();
-	$("#addonboardTask_form").validateOnBlur(false, validationSettings);  
+$('body').on('blur', '#addoffboardTask_form', function() {
+	$("#addoffboardTask_form").showHelpOnFocus();
+	$("#addoffboardTask_form").validateOnBlur(false, validationSettings);  
 });
 </script>
 

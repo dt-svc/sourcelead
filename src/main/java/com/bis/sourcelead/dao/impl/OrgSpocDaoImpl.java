@@ -20,6 +20,7 @@ import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -594,6 +595,23 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			List<OrgSpoc> spocsList = query.setLong("orgRelations", orgRelationId).setCacheable(true).list();
 			 
 			return spocsList;
+		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public boolean getOwnerUserExistedByOrgRelationIdAndOwnerUserId(Long orgRelationId, Long ownerUserId)
+				throws Exception {
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			List<OrgSpoc> orgSpoc = new ArrayList<OrgSpoc>();
+			logger.debug("getOwnerUserExistedByOrgRelationIdAndOwnerUserId start");
+			orgSpoc = session.createQuery("from OrgSpoc spoc where spoc.orgRelations.id = :orgRelationId and spoc.ownerUser.id = :ownerUserId and spoc.status = '1' ").setLong("orgRelationId", orgRelationId).setLong("ownerUserId", ownerUserId).setCacheable(true).list();
+			logger.debug("getOwnerUserExistedByOrgRelationIdAndOwnerUserId End");
+			Boolean flag = false;
+			if (orgSpoc.size() > 0) {
+				flag = true;
+			} 
+			return flag;
 		}
 
 }

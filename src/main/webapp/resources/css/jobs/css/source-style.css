@@ -110,12 +110,12 @@ header.headerInpage	{
 	
 .menuGap {}
 .menuGapFix { height:75px;}	
-.menuGapInpage { height:90px;}			
+.menuGapInpage { height:92px;}			
 .head_inn {
-	width:1150px; margin:0px auto; position:relative; padding:6px 0px;
+	width:1150px; margin:0px auto; position:relative; padding:5px 0px 2px;
 	}
 .logo {
-	width:250px; float:left; padding:2px 0px 0px 0px;
+	width:280px; float:left; padding:0px 0px 0px 0px;
 	}
 .logo img {
 	width:100%;
@@ -706,19 +706,6 @@ footer {
 	padding:12px 0px 0px 0px; margin:0px 0px; font-size:14px; font-weight:400; color:#454545; line-height:26px; display:block;
 	}
 .staticPage b {padding:3px 0px 0px 10px;}	
-
-.faqWrap {
-	width:1150px; margin:0px auto; padding:30px 0px 20px;
-	}
-.faqCta {
-	width:100%; background-color:#fff; border-radius:4px; box-shadow:0px 0px 2px rgba(0,0,0,0.1); margin:0px 0px 15px; padding:20px 25px;
-	}	
-.faqCta h3 {
-	padding:4px 0px 0px 0px; margin:0px 0px; font-size:16px; font-weight:500; color:#f15a29; line-height:25px;
-	}
-.faqCta p {
-	padding:10px 0px 0px 0px; margin:0px 0px; font-size:14px; font-weight:400; color:#454545; line-height:25px; display:block;
-	}
 	
 .testiWrap {
 	background:url(../images/testi-bg.jpg) repeat center; padding:40px 0px; background-attachment:fixed;
@@ -762,7 +749,7 @@ footer {
 	float:left; width:67.5%; 
 	}
 .blogInn {
-	background-color:#fff; border-radius:3px; box-shadow: 0px 0px 1px rgba(0,0,0,0.1); padding:20px; margin-bottom:25px;
+	background-color:#fff; border-radius:3px; box-shadow: 0px 0px 2px rgba(0,0,0,0.1); padding:20px; margin-bottom:15px;
 	}
 .blogInn h1 {
 	padding:0px 0px 8px 0px; font-size:20px; font-weight:400; color:#f15a29; border-bottom:1px dotted #dedede;
@@ -800,7 +787,7 @@ footer {
 }
 
 .blogWrapRight {
-	float:right; width:30%; box-shadow: 0px 0px 1px rgba(0,0,0,0.1); background-color:#fff; border-radius:3px; padding:0px;
+	float:right; width:30%; box-shadow: 0px 0px 2px rgba(0,0,0,0.1); background-color:#fff; border-radius:3px; padding:0px;
 	}
 .blogWrapRight h2 {
 	font-size:18px; font-weight:400; padding:10px 15px 10px; color:#3777b4; 
@@ -1549,5 +1536,178 @@ label.test{
 .pageLoad {
 	position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; background-color:#f1f1f1; z-index: 10000; display: block;
 	background-image: url(../images/loadlogo-1.gif); background-position: center center; background-repeat: no-repeat;
-	background-size: 150px;
+	background-size: 80px;
 }
+
+
+
+.blogNewWrap {
+	background:url(../images/testi-bg.jpg) repeat center; padding:30px 0px; background-attachment:fixed;
+	}
+.blogNewInn {
+	width: 1150px; margin: 0px auto;
+}
+.blogNewInn article {
+	width: 31.3333%; float: left; background-color: #fff; margin: 1%; box-shadow: 0px 0px 2px rgba(0,0,0,0.2);
+	min-height: 420px; transition: 0.2s all; -webkit-transition: 0.2s all; -moz-transition: 0.2s all; border-radius: 2px;
+}
+.blogNewInn article span {
+	display: block; padding: 2px;
+}
+.blogNewInn article span img {
+	width: 100%;
+}
+.blogNewInn article h2 {
+	padding: 10px 15px 6px; margin: 0px 0px; font-size: 17px; font-weight: 400; color: #2d3447;
+}
+.blogNewInn article p {
+	padding: 6px 15px; margin: 0px 0px; font-size: 14px; font-weight: 400; color: #666; line-height: 22px;
+}
+.blogNewInn article b {
+	display: block; text-align: right; padding: 0px 15px;
+}
+.blogNewInn article:hover {
+	box-shadow: 0px 2px 6px rgba(0,0,0,0.3);
+}
+
+
+.blogComm {
+	background-color:#fff; border-radius:3px; box-shadow: 0px 0px 2px rgba(0,0,0,0.1); padding:15px 15px; margin-bottom:20px;
+}
+.blogCommHead {
+	border-bottom: 1px dotted #dedede; padding: 0px 0px 2px 0px; font-size: 18px;
+}
+.blogCommHead i {
+	display: inline-block; padding: 0px 10px 0px 0px;
+}
+.blogCommHead a {
+	float: right; font-size: 14px; font-weight: 500; color: #fff; background-color: #2d3447; padding: 6px 10px;
+	border-radius: 2px;
+}
+.blogCommHead a:hover {
+	background-color: #212737; 
+}
+.blogMainCom {
+	background-color: #f5f5f5; padding: 10px; display: none;
+}
+.blogMainCom textarea {
+	resize: none; height: 80px; width: 100%;
+}
+.comWrap {
+	padding: 10px;
+}
+.comUser {
+	float: left; width: 40px; height: 40px; background-color: #f1f1f1; border-radius: 3px; margin: 0px 20px 0px 0px;
+	text-align: center;
+}
+.comUser img {
+	width:90%; padding: 5%;
+}
+.comInn {
+	float: left; width: 88%;
+}
+.comText {
+	position: relative; background-color: #fff; border: 1px solid #f1f1f1;
+}
+.comText:after {
+	right: 100%; top: 20px; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
+	border-color: rgba(136, 183, 213, 0); border-right-color: #dedede; border-width: 10px; margin-top: -10px;
+}
+.comText p {
+	padding: 13px; font-size: 13px; color: #454545;
+}
+.comText span {
+	display:block; text-align: right; background-color: #f5f5f5; padding: 3px 15px;
+}
+.comText span b {
+	display:inline-block; margin: 0px 0px 0px 16px; font-size: 13px; color: #454545; font-weight: 500; cursor: pointer;
+}
+.comText span b:first-child {
+	color: #1a9020; cursor: default;
+}
+.comText span b i {
+	display:inline-block; padding: 0px 5px 0px 0px;
+}
+.comText span b.like {}
+.comText span b.like.col {
+	color: #2e4dc3;
+}
+.comText span b.like:before {
+    content: "\f087"; font-family: FontAwesome; font-size: 14px; padding-right: 2px;
+}
+.replyWrap {
+	background-color: #f5f5f5; padding: 6px; display: none; margin: 5px 0px 0px 0px;
+}
+.replyWrap textarea {
+	resize: none; height: 35px; width: 100%;
+}
+
+.comWrap .comWrap_a {
+	padding:10px 0px;
+}
+.comWrap .comWrap_a .comInn {
+	float:right;
+}
+.comWrap .comWrap_a .comText p {
+	padding: 10px;
+}
+
+.faqBan {
+	background:url(../images/faq-bg.jpg) no-repeat center; background-size: 100%; text-align: center;
+}
+.faqBan h1 {
+	padding:120px 0px 50px; margin: 0px 0px; text-transform: uppercase; color: #fff; font-size: 38px; font-weight: 300;
+	text-shadow: 0px 2px 2px rgba(0,0,0,0.2);
+}
+.faqWrap {
+	background-color: #fff; box-shadow: 0px 2px 2px rgba(0,0,0,0.2); padding: 20px; width: 1150px; margin: 0px auto; min-height: 400px;
+}
+.faqWrap .nav-tabs {
+	padding: 0px 0px 0px 50px;
+}
+.faqWrap .panel {
+	border: none; box-shadow: 0 0px 0px rgba(0,0,0,.05); margin: 0px;
+}
+.faqWrap .nav-tabs li a{
+	padding: 10px 30px; font-size: 16px;
+}
+.tabText {
+	padding:20px 10px 10px;
+}
+.tabText h2 {
+	padding:0px 0px; margin: 0px 0px 15px 0px; font-size: 20px; font-weight: 400; color: #454545;
+}
+.faqQu {
+	background:#fff; margin: 10px 0px 0px 0px; border: 1px solid #ededed; border-radius: 2px;
+}
+.faqWrap .panel-heading {
+	padding:9px 15px; background-color: #f1f1f1; font-size: 16px; font-weight: 400; color: #333; cursor: pointer;
+	position: relative; border: 1px solid #dedede;
+}
+.faqWrap .panel-heading i {
+	color: #787878; padding: 2px 0px 0px 0px;
+}
+.faqWrapAns  {
+	border: 1px solid #dedede; padding: 12px 15px !important; font-size: 14px; font-weight: 400; color: #454545;
+	line-height: 22px; border-top: none;
+}
+.fmb {
+	margin:0px 0px 8px 0px !important;
+}
+
+
+/*   Back to top  */
+.backtotop {
+    width:50px; position:fixed; bottom:20px; right:15px; cursor:pointer; display: none; outline:none !important; z-index:30; text-align:center;
+    animation:bounce 1s infinite; -webkit-animation:bounce 1s infinite; -moz-animation:bounce 1s infinite;
+}
+.backtotop img { width:90%; padding:5% 0px 0px 0px;}
+
+@-webkit-keyframes bounce {
+  0%       { bottom:5px; }
+  25%, 75% { bottom:15px; }
+  50%      { bottom:20px; }
+  100%     {bottom:0;}
+} 
+
+

@@ -831,7 +831,7 @@ function sideBar(requirementId){
 							 
 							 var submitToClient = '';
 						     if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
-	           				    submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
+	           				    submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to client</a>';
 	           			     }
 							
 				            result = result +'<div id="actionsDiv" class="timesheet_head timesheetHead candidateHead recruitmentHead headersummary clearfix zindex" style="display: none;">';
