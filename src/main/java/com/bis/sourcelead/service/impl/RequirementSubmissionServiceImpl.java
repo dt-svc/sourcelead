@@ -4176,13 +4176,19 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public List<RequirementSubmission> getVendorSpocSubmissions(String userCode, Long orgLocationId) {
-		return requirementSubmissionDao.getVendorSpocSubmissions(userCode,orgLocationId);
+	public List<RequirementSubmission> getVendorSpocSubmissions(String userCode, Long orgLocationId, Date startDateUTC, Date endDateUTC) {
+		return requirementSubmissionDao.getVendorSpocSubmissions(userCode,orgLocationId,startDateUTC,endDateUTC);
 	}
 	
 	@Override
 	public List<RequirementSubmission> getSubmissionsForSOWByRequirementId(Long requirementId, String sowType) {
 		return requirementSubmissionDao.getSubmissionsForSOWByRequirementId(requirementId, sowType);
+	}
+
+	@Override
+	public List<RequirementSubmission> getApplicantCountSubmittedByVendorBasedOnStartAndEndDate(Long orgLocationId,
+			Long orgRelationId, Date startUTCDate, Date endUTCDate) {
+		return requirementSubmissionDao.getApplicantCountSubmittedByVendorBasedOnStartAndEndDate(orgLocationId,orgRelationId, startUTCDate, endUTCDate);
 	}
 
 }
