@@ -1078,9 +1078,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 
 	//to get candidates for submit to client
 	@Override
-	public List<RequirementSubmission> getAllShortLitstedCandidatesForClientSubmissionByRequirementId(Long orgLocationsId,
-			Long requirementId) throws Exception {
-		return requirementSubmissionDao.getAllShortLitstedCandidatesForClientSubmissionByRequirementId(orgLocationsId, requirementId);
+	public List<RequirementSubmission> getAllShortLitstedCandidatesForClientSubmissionByRequirementId(OrgLocations loginOrgLocation,
+			Requirement requirement,User user,String loginUserRole) throws Exception {
+		return requirementSubmissionDao.getAllShortLitstedCandidatesForClientSubmissionByRequirementId(loginOrgLocation, requirement,user,loginUserRole);
 	}
 	
 	@Override

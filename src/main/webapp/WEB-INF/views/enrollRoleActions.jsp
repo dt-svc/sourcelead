@@ -41,7 +41,7 @@ window.onload = function () {
     <section class="clearfix">
      <div class="select-role clearfix section-action-btns">
      <div id="loading"></div>
-     <div class="clearfix mt">
+     <div class="clearfix">
      <h3 id="role"></h3>
 	<select id="test-select" multiple="multiple">
 		 <c:forEach var="action" items="${actionsList}">

@@ -518,10 +518,19 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	//to get candidates for submit to client
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<RequirementSubmission> getAllShortLitstedCandidatesForClientSubmissionByRequirementId(Long orgLocationsId, Long requirementId) throws Exception {
+	public List<RequirementSubmission> getAllShortLitstedCandidatesForClientSubmissionByRequirementId(OrgLocations loginOrgLocation, Requirement requirement,User user,String loginUserRole) throws Exception {
 		 Session session = this.sessionFactory.getCurrentSession();
-		 String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERHIRED' ) ";
-		 List<RequirementSubmission>  shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocationsId).setLong( "requirementId", requirementId).setCacheable(true).list();
+		 
+		 String subQuery = "";
+		 Boolean teamFlag = teamDao.getTeamOwnersListByUserIdAndRequirementId(user,loginOrgLocation.getId(),requirement.getId());
+		 if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && teamFlag == false ) {
+			 subQuery = " and ((rs.createdBy = '"+user.getUserCode()+"') OR (rs.vendorLocationId IS NOT NULL) OR (rs.candidate.candidateType = 'Professional') OR (rs.recruiterUserId IS NOT NULL)) ";
+		 }
+		 
+		 
+		 String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes where rs.orgLocations.id = :orgLocationsId "
+		 		+ " and rs.requirement.id = :requirementId "+subQuery+" and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERHIRED' ) ";
+		 List<RequirementSubmission>  shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", loginOrgLocation.getId()).setLong( "requirementId", requirement.getId()).setCacheable(true).list();
 	     return shortListCandidatesList;
 	}
 	

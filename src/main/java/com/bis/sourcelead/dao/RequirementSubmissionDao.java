@@ -37,7 +37,7 @@ public interface RequirementSubmissionDao {
 	
 	Integer getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(OrgLocations orgLocations,Long requirementId,User user,String loginUserRole) throws Exception;
 	
-	List<RequirementSubmission> getAllShortLitstedCandidatesForClientSubmissionByRequirementId(Long id,Long requirementId) throws Exception;
+	List<RequirementSubmission> getAllShortLitstedCandidatesForClientSubmissionByRequirementId(OrgLocations loginOrgLocation,Requirement requirement,User user,String loginUserRole) throws Exception;
 	
 	RequirementSubmission getRequirementSubmissionByIdAndSubmissionStatus(Long submissionId,String submissionStatus)throws Exception;
 	
