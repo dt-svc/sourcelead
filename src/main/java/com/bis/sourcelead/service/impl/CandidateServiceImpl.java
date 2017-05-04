@@ -21,7 +21,6 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
-import org.h2.schema.Constant;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -514,9 +513,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	
 	StringBuilder loc = new StringBuilder();
 	if(candidate.getCity() !=null && !"".equalsIgnoreCase(candidate.getCity())){
-		writeRow.createCell(4).setCellValue(loc.append(candidate.getCountry()).append(",").append(candidate.getState()).append(",").append(candidate.getCity()).toString());
+		writeRow.createCell(4).setCellValue(loc.append(candidate.getCity()).append(",").append(candidate.getState()).append(",").append(candidate.getCountry()).toString());
 	}else if(candidate.getState() !=null && !"".equalsIgnoreCase(candidate.getState())){
-		writeRow.createCell(4).setCellValue(loc.append(candidate.getCountry()).append(",").append(candidate.getState()).toString());
+		writeRow.createCell(4).setCellValue(loc.append(candidate.getState()).append(",").append(candidate.getCountry()).toString());
 	}else if(candidate.getCountry() !=null && !"".equalsIgnoreCase(candidate.getCountry())){
 		writeRow.createCell(4).setCellValue(candidate.getCountry());
 	}else{

@@ -228,10 +228,20 @@ if ($('#upload_form').validate(false, validationSettings)){
 		    url : sourceleadUrl+"/clientExcelFileUpload?${_csrf.parameterName}=${_csrf.token}&responderType=Client", 	   
  		    success : function(data) {
  		    	$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
- 		    	if(data == "failure"){
+ 		    	if(data == "empty"){
  		    		$("#selector").removeAttr("style");
  	    			$("#selector").css({ display: "block" });
  		    		$("#msgDiv").html("Mandatory fields are required");
+ 		    		msgFadein();
+ 		    	}else if(data == "invalid"){
+ 		    		$("#selector").removeAttr("style");
+ 	    			$("#selector").css({ display: "block" });
+ 		    		$("#msgDiv").html("Please import valid Template");
+ 		    		msgFadein();
+ 		    	}else if(data == "success"){
+ 		    		$("#selector").removeAttr("style");
+ 	    			$("#selector").css({ display: "block" });
+ 		    		$("#msgDiv").html("Inserted successfully");
  		    		msgFadein();
  		    	}else{
  		    		prepareExcelDataDiv(data);

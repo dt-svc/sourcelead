@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <script src="resources/js/formvalidator.js"></script>
+<script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
 
 <!-- <script src="resources/js/masklist.js" type="text/javascript"></script>
 <script src="resources/js/jquery.inputmask.js" type="text/javascript"></script> 
@@ -16,6 +17,7 @@
 		window.onload = function () {
 			getAssociateList();
 			getDepartmentsList();
+			maskme();
 		 };
 	</script>
 <script>
@@ -239,7 +241,7 @@
             <div class="form-group " id = "DayHoursDiv">
                   <label class="col-md-3">Day hours</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="DayHours" name="DayHours" data-validation="validate_Space validate_int validate_length length1-2" data-validation-optional="true" value="" onblur="validateDayHours();">
+                    <input type="text" class="form-control" id="DayHours" placeholder="HH:MM" name="DayHours" data-validation="validate_Space validate_dayHours validate_length length1-9" data-validation-optional="true" value="" onblur="editMe(this);validateDayHours();">
                   </div>
                 </div>
             
@@ -367,13 +369,24 @@ function getEmployeementType(designationType){
  function validateDayHours() {
 	 var DayHours = document.getElementById("DayHours").value; 
 	 $('#DayHoursDiv').find('p.jquery_form_error_message').remove();
-	if(DayHours > 24){
-		 $("input#DayHours").after("<p class='jquery_form_error_message'>Day Hours should less than 24 Hours</span>");
-		 document.getElementById("DayHours").setAttribute('record-exist','yes');
-		 document.getElementById("DayHours").setAttribute('record-exist-errorMsg','Day Hours should less than 24 Hours');
-	}else{
+	 var military = /^\s*([01]?\d|2[0-3]):[0-5]\d\s*$/i;
+     var standard = /^\s*(0?\d|1[0-2]):[0-5]\d(\s+(AM|PM))?\s*$/i;
+	
+	if(DayHours.match(military) || DayHours.match(standard)){
+		
 		 $('#DayHoursDiv').find('p.jquery_form_error_message').remove();
-		 $('input#DayHours').removeAttr( "record-exist record-exist-errormsg");
+		 $('input#DayHours').removeAttr( "record-exist record-exist-errormsg"); 
+	/* 	$("input#DayHours").after("<p class='jquery_form_error_message'>Day Hours should less than 24 Hours</span>");
+		 document.getElementById("DayHours").setAttribute('record-exist','yes');
+		 document.getElementById("DayHours").setAttribute('record-exist-errorMsg','Day Hours should less than 24 Hours');  */
+	}else{
+		
+		$("input#DayHours").after("<p class='jquery_form_error_message'>Day Hours should less than 24 Hours</span>");
+		 document.getElementById("DayHours").setAttribute('record-exist','yes');
+		 document.getElementById("DayHours").setAttribute('record-exist-errorMsg','Day Hours should less than 24 Hours'); 
+	
+		/*  $('#DayHoursDiv').find('p.jquery_form_error_message').remove();
+		 $('input#DayHours').removeAttr( "record-exist record-exist-errormsg");  */
 	}
 	
  }
@@ -895,4 +908,66 @@ $(function(){
 </script>
  
 
+<script>
+function maskme(){
+	$.mask.definitions['H'] = "[0-9]";
+    $.mask.definitions['h'] = "[0-9]";
+    $.mask.definitions['M'] = "[0-9]";
+    $.mask.definitions['m'] = "[0-9]";
+    $.mask.definitions['P'] = "[AaPp]";
+    $.mask.definitions['p'] = "[Mm]";
+    $("#DayHours").mask("Hh:Mm"); 
+}
+</script>
+
+<script>
+function editMe(local){
+	
+ var id = local.id;
+	 var inputValue =  $("#"+id).val();
+	 var split = inputValue.split(':');
+	 var hours = split[0];
+	 var minutes = split[1];
+	 var hours1 = hours.charAt(0);
+	 var hours2 = hours.charAt(1);
+	 var min1 = minutes.charAt(0);
+	 var min2 = minutes.charAt(1);
+	
+	 if(!isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
+		 $("#"+id).val("0"+hours1+":00");
+	 }
+	 if(isNaN(hours1) && !isNaN(hours2) && isNaN(min1) && isNaN(min2)){
+		 $("#"+id).val("0"+hours2+":00");
+	 }
+	 else if(isNaN(hours)  && !isNaN(min1) && isNaN(min2)){
+		 $("#"+id).val("00:"+min1+"0");
+	 }
+	 else if(isNaN(hours)  && isNaN(min1) && !isNaN(min2)){
+		 $("#"+id).val("00:0"+min2);
+	 }
+	 else if(!isNaN(hours)  && isNaN(min1) && isNaN(min2)){
+		 $("#"+id).val(hours+":00");
+	 }
+	 else if(!isNaN(hours)&& !isNaN(min1) && isNaN(min2)){
+		 $("#"+id).val(hours+":"+"0"+min1);
+	 }
+	 else if(!isNaN(hours)&& isNaN(min1) && !isNaN(min2)){
+		 $("#"+id).val(hours+":"+"0"+min2);
+	 }
+	 else if(!isNaN(hours)&& !isNaN(minutes)){
+		
+		  var hrmin= hours * 60;
+		  var totalMin = parseInt(hrmin) + parseInt(minutes);
+		  hours = Math.floor(totalMin / 60); 
+		  minutes = totalMin % 60;
+		  if(hours<=9){
+			  hours = "0"+hours;
+		  }
+		  if(minutes<=9){
+			  minutes = "0"+minutes;
+		  }
+		  $("#"+id).val(hours+":"+minutes);
+	 }
+	 }
+	 </script>
 

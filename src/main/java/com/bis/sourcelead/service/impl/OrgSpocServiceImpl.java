@@ -532,5 +532,11 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	{
 		return orgSpocDao.getSpoclistByDomain(orgRelationId,domain);
 	}
+
+	@Override
+	public boolean getOwnerUserExistedByOrgRelationIdAndOwnerUserId(Long orgRelationId, Long ownerUserId)
+			throws Exception {
+		return orgSpocDao.getOwnerUserExistedByOrgRelationIdAndOwnerUserId(orgRelationId, ownerUserId);
+	}
 	
 }

@@ -51,7 +51,7 @@ overflow-x: auto;
 <div class="timesheet_out timesheet_background">
  <!-- Advanced Search -->
   <div class="timesheet_bg">
-  <div class="cand-advsrch pull-left">
+  <div class="cand-advsrch pull-left candAdvsrch">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
           <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop();"><i class="fa fa-close"></i></a>
           <form:form id="vendorList_form" name="vendorList_form"  enctype='multipart/form-data' >
@@ -794,14 +794,14 @@ function preparedVendorsListFromElk(data){
 		   		result = result +'<tr>';
 		   		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
 		   			result = result +'<td>';
-		   			result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+orgName+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+		   			result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+orgName+'\');"><span class="tbldata-dotdot-me" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
 		   			result = result +'</div>';
 		   			result = result +'</td>';
 		   		'</sec:authorize>';
 		   		
 		   		'<sec:authorize access="!hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
 					result = result +'<td>';
-					result = result +'<div class="proj_show" ><span class="tbldata-dotdot-vsm" title="${report.orgName}">'+report.orgName+'</span>';
+					result = result +'<div class="proj_show"><span class="tbldata-dotdot-me" title="${report.orgName}">'+report.orgName+'</span>';
 					result = result +'</div>';
 					result = result +'</td>';
 				'</sec:authorize>';
@@ -810,7 +810,7 @@ function preparedVendorsListFromElk(data){
 		   		if( report.website != null && report.website != '' && report.website != 'undefined'){
 		   			result = result +'<td>';
 		   			result = result +'<div>';
-		   			result = result +'<span class="tbldata-dotdot-sm" title='+report.website+'>'+report.website+'</span>';
+		   			result = result +'<span class="tbldata-dotdot-vsm" title='+report.website+'>'+report.website+'</span>';
 		   			result = result +'</div>';
 		   			result = result +'</td>';
 		   		}else{
@@ -820,24 +820,24 @@ function preparedVendorsListFromElk(data){
 		   		if(location != null && location  != '' && location  != 'undefined'){
 		   			result = result +'<td>';
 		   			result = result +'<div>';
-		   			result = result +'<span class="tbldata-dotdot-me" title="'+location+'">'+location+'</span>';
+		   			result = result +'<span class="tbldata-dotdot" title="'+location+'">'+location+'</span>';
 		   			result = result +'</div>';
 		   			result = result +'</td>';
 		   		}else{
 		   			result = result +'<td><div>--</div></td>';
 		   		}
 				
-		   	    result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.initiatorLevel+'">'+report.initiatorLevel+'</span>';
+		   	    result = result +' <td><div><span class="tbldata-dotdot_80" title="'+report.initiatorLevel+'">'+report.initiatorLevel+'</span>';
 		   	    
 		   	 if(null != report.createdBy && report.createdBy  != '' && report.createdBy  != 'undefined'){
-					result = result +' <td><div>'+report.createdBy+'</div></td>';
+					result = result +' <td><div class="tbldata-dotdot-vsm">'+report.createdBy+'</div></td>';
 			   	}else{
 			   		result = result +'<td><div>---</div></td>';
 			   	}
-				result = result +' <td><div id="releasedJobsCount'+report.orgRelationId+'">---</div></td>';
+				result = result +' <td><div id="releasedJobsCount'+report.orgRelationId+'" class="tbldata-dotdot_80">---</div></td>';
 				
 				if(null != report.noContacts && report.noContacts  != '' && report.noContacts  != 'undefined'){
-					result = result +'<td><div >'+report.noContacts+'</div></td>';
+					result = result +'<td><div class="tbldata-dotdot_80">'+report.noContacts+'</div></td>';
 				}else{
 					result = result +'<td><div >---</div></td>';
 				}
@@ -1007,7 +1007,7 @@ function pagination1(){
 	document.getElementById("vendorContactList").style.display="none";
     $('#vendorList').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
+    	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -1138,24 +1138,24 @@ function preparedVendorContactListFromElk(data){
 		   		
 		   		
 		   		
-		   		result = result +'<td><div><span title='+report.spocEmail+'>'+report.spocEmail+'</span></div></td>';
+		   		result = result +'<td><div class="tbldata-dotdot-vsm" title='+report.spocEmail+'>'+report.spocEmail+'</div></td>';
 		   		if(report.spocMobilePhone != null && report.spocMobilePhone  != '' && report.spocMobilePhone  != 'undefined'){
-		   			result = result +'<td><div><span>'+report.spocMobilePhone+'</span></div></td>';
+		   			result = result +'<td><div class="tbldata-dotdot-100" title="'+report.spocMobilePhone+'">'+report.spocMobilePhone+'</div></td>';
 		   		}else{
 		   			result = result +'<td><div>--</div></td>';
 		   		}
 		   		// from ELK ownerNames
 		   		if(null != report.ownerNames  &&  '' != report.ownerNames  && 'undefined' != report.ownerNames){
-		   			result = result +'<td><div><span title="'+report.ownerNames+'">'+report.ownerNames+'</span></div></td>';
+		   			result = result +'<td><div class="tbldata-dotdot-100" title="'+report.ownerNames+'">'+report.ownerNames+'</div></td>';
 		   		}
 		   		//from db ownerName
 		   		else if(null != report.ownerName && '' != report.ownerName && 'undefined' != report.ownerName){
-		   			result = result +'<td><div><span title="'+report.ownerName+'">'+report.ownerName+'</span></div></td>';
+		   			result = result +'<td><div class="tbldata-dotdot-100" title="'+report.ownerName+'">'+report.ownerName+'</div></td>';
 		   		}
-		   		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
+		   		result = result +'<td><div class="tbldata-dotdot-100" title="'+report.orgName+'">'+report.orgName+'</div></td>';
 		   		
 		   		
-		   		result = result + ' <td><div>';
+		   		result = result + ' <td><div class="tblminwidth-30 dropdown-select paddingNone">';
    	        		if(report.invitationStatus == 'Rejected'){
    	        			result = result + '<span>'+report.spocStatus+'</span>';
    	        		}else{
@@ -1171,7 +1171,7 @@ function preparedVendorContactListFromElk(data){
    	        		}
    	        		result = result + ' </div></td>';
 		   			
-   	        	result = result +' <td><div id="invitationStatus'+report.id+'">';	
+   	        	result = result +' <td><div id="invitationStatus'+report.id+'" class="tblminwidth-30">';	
 		   		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
 		   		  result = result +' <i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i>';
 		   		}
@@ -1207,7 +1207,7 @@ function preparedVendorContactListFromElk(data){
 		   		/* result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
 		   		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';
-		   	    result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelationId+'\')";></i></div></td>';
+		   	    result = result + '<td><div class="tblminwidth-50"><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelationId+'\')";></i></div></td>';
 		   	 '</sec:authorize>';
 		   	 
 		   	'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';
@@ -1381,8 +1381,8 @@ function terminateSpoc1(spocId, orgRelationID){
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Do you want to delete this vendor contact?</p>";
-	result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc'  placeholder='Comments here'></textarea>";
-	result = result + ' <div id="reasonForSpocDiv"/>';
+	result = result +"		<textarea id='reasonForSpoc' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result + ' <div id="reasonForVendorSpocDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
@@ -1395,14 +1395,13 @@ function terminateSpoc1(spocId, orgRelationID){
 function saveReason1(spocId, orgRelationID){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
-	if(reason.match(/^[^\s-](.*)*$/) != null){
-		 reason = encodeURIComponent(reason);
-		 $("#reasonForSpocDiv").empty();
-		
-		 $("#row"+spocId).empty();
-		 $("#row"+spocId).html("<td colspan='8'  id='loading"+spocId+"'></td>");
-		 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
-		
+	if(reason == null || reason == '' || reason == 'undefined'){
+	      
+		  $("#reasonForVendorSpocDiv").find('p.jquery_form_error_message').remove();
+	  	  $("#reasonForVendorSpocDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
+	  	  
+		}else{
+		  $("#reasonForVendorSpocDiv").find('p.jquery_form_error_message').remove();
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
@@ -1419,13 +1418,6 @@ function saveReason1(spocId, orgRelationID){
 	 			 msgFadein();
 		    }
 	   });
-	}else{
-		if(reason){
-			$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
-		}else{
-			$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Comment is required</font>") ; 
-		}
-		
 	}
 	  
 }
@@ -1459,7 +1451,7 @@ function pagination(){
 	 document.getElementById("vendorList_paginate").style.display="none";  */
     $('#vendorContactList').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
+    	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -1599,6 +1591,7 @@ function pagination1(){
 	 document.getElementById("vendorList_paginate").style.display="none";  */
     $('#vendorList').DataTable( { 
     	"scrollCollapse": false,
+    	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -1607,7 +1600,6 @@ function pagination1(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-		
     } );
 	 
 	 
