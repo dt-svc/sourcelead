@@ -447,7 +447,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		Contracts contracts  = contractsTemplateDao.getContractById(recordId);
 		Contracts upadatedContracts = null;
 		if(!"REJECTED".equalsIgnoreCase(status)){
-			contracts.setTemplateSubmissionStatus("pending");
+			contracts.setTemplateSubmissionStatus("PENDING");
 			 upadatedContracts = contractsTemplateDao.saveNewContract(contracts);
 			Contracts childContract = new Contracts();
 			childContract.setContractTitle(contracts.getContractTitle());
