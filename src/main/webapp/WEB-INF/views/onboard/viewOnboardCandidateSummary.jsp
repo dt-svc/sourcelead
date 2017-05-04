@@ -114,7 +114,7 @@ padding-left: 25px;
 				 result = result +'   <div class="form-horizontal">                                                                                   ';
 				 result = result +'     <p><strong>Employee Details</strong></p>                                                                      ';
 				 result = result +'     <div class="form-group">                                                                                      ';
-				 result = result +'       <label class="col-md-3 control-label">First Name <span class="text-danger paddingLeft">*</span></label>';
+				 result = result +'       <label class="col-md-3 control-label">First Name </label>';
 				 result = result +'       <div class="col-md-6">                                                                                      ';
 				 result = result +'           <label>'+json.firstName+'</label>                                                                      ';
 				 result = result +'       </div>                                                                                                      ';
@@ -140,7 +140,7 @@ padding-left: 25px;
 				
 				 
 				 result = result +'     <div class="form-group">                                                                                      ';
-				 result = result +'       <label class="col-md-3 control-label">Street Addess 1 <span class="text-danger paddingLeft">*</span></label>';
+				 result = result +'       <label class="col-md-3 control-label">Street Addess 1 </label>';
 				 result = result +'       <div class="col-md-6">                                                                                      ';
 				 result = result +'           <label>'+json.address1+'</label>                                      ';
 				 result = result +'       </div>                                                                                                      ';
@@ -157,7 +157,7 @@ padding-left: 25px;
 				 
 				 
 				 result = result +'  <div class="form-group">                                                                    ';
-				 result = result +'       <label class="col-md-3 control-label">Country <span class="text-danger paddingLeft">*</span></label>        ';
+				 result = result +'       <label class="col-md-3 control-label">Country </label>        ';
 				 result = result +'       <div class="col-md-6">                                   ';
 				 result = result +'           <label>'+json.country+'</label>                                 ';
 				 result = result +'       </div>                                                   ';
@@ -194,7 +194,7 @@ padding-left: 25px;
 				 if(json.personalEmail != null && json.personalEmail != '' && json.personalEmail != 'undefined'){
 					 result = result +'                                                                          ';
 					 result = result +'     <div class="form-group">                                             ';
-					 result = result +'       <label class="col-md-3 control-label">Personal Email <span class="text-danger paddingLeft">*</span></label> ';
+					 result = result +'       <label class="col-md-3 control-label">Personal Email </label> ';
 					 result = result +'       <div class="col-md-6">                                                                                      ';
 					 result = result +'           <label>'+json.personalEmail+'</label>                                                            ';
 					 result = result +'       </div>                                                                                                      ';
@@ -203,7 +203,7 @@ padding-left: 25px;
 			    
 				if(json.mobileNumber != null && json.mobileNumber != '' && json.mobileNumber != 'undefined'){
 					 result = result +'     <div class="form-group">                                                                                      ';
-					 result = result +'       <label class="col-md-3 control-label">Mobile number <span class="text-danger paddingLeft">*</span></label>  ';
+					 result = result +'       <label class="col-md-3 control-label">Mobile number </label>  ';
 					 result = result +'       <div class="col-md-6">                                                                                      ';
 					 result = result +'           <label>'+json.mobileNumber+'</label>                                                                           ';
 					 result = result +'       </div>                                                                                                      ';
@@ -212,7 +212,7 @@ padding-left: 25px;
 				
 				 if(json.roleName != null && json.roleName != '' && json.roleName != 'undefined'){
 					 result = result +'   <div class="form-group">                                                                                        ';
-					 result = result +'       <label class="col-md-3 control-label">Role <span class="text-danger paddingLeft">*</span></label>                                                          ';
+					 result = result +'       <label class="col-md-3 control-label">Role </label>                                                          ';
 					 result = result +'       <div class="col-md-6">                                                                                      ';
 					 result = result +'           <label>'+json.roleName+'</label>                                                                                   ';
 					 result = result +'       </div>                                                                                                      ';
@@ -221,7 +221,7 @@ padding-left: 25px;
 			     
 				 
 			     result = result +'       <div class="form-group">                                                                                    ';
-				 result = result +'       <label class="col-md-3 control-label">Date Of Join<span class="text-danger paddingLeft">*</span></label>      ';
+				 result = result +'       <label class="col-md-3 control-label">Date Of Join</label>      ';
 				 result = result +'       <div class="col-md-6">                                                                                      ';
 				 result = result +'         <label>'+json.joiningDateStr+'                                                                                        ';
 				 result = result +'       </label></div>                                                                                              ';
@@ -238,7 +238,7 @@ padding-left: 25px;
 				
 				 
 				 result = result +'     <div class="form-group">                                                                                      ';
-				 result = result +'       <label class="col-md-3 control-label">Rate / Salary <span class="text-danger paddingLeft">*</span></label>  ';
+				 result = result +'       <label class="col-md-3 control-label">Rate / Salary </label>  ';
 				 result = result +'       <div class="col-md-6">                                                                                      ';
 				 result = result +'         <label>'+json.salaryRate+'</label>                                                                                  ';
 				 result = result +'       </div>                                                                                                      ';
