@@ -49,7 +49,7 @@
       <div class="pull-left">
         <h2>Employee offboarding</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/usersList'/>">Users List</a> &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Employee Offboarding </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Employee Offboarding </div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="applicant_accept">
@@ -1475,7 +1475,7 @@ function getOffboardingTasksList(){
         	
         	result = result +'<div class="form-footer clearfix mt">';
     		result = result +'<div class="pull-right mr">';
-    		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishOffboardTemplate('+offboardId+');" class="btn btn-sm btn-primary">';
+    		result = result +'<input type="button" value="Send" id="finish_task" onclick="saveAndFinishOffboardTemplate('+offboardId+');" class="btn btn-sm btn-primary">';
     		result = result +'</div>';
     		result = result +'</div>';
     		
