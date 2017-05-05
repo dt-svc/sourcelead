@@ -1033,7 +1033,13 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] ){ 	
 	    	  var json = JSON.parse(data);
 		      var result = "";
-		      
+
+		      var title="";
+				var link="";
+				var picture="";
+				var description='';
+				var comment='';		      
+    
 		      result = result +' <div class="beard clearfix">';
 		      result = result +'	<a href="javascript:void(0)" onclick="backtoList();">Back to List</a>';
 		      result = result +'</div>';
@@ -1055,6 +1061,10 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				}
 				result = result +'	</div>';					
 				result = result +'	<span>';
+				
+				link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+json.requirementUUID;
+				description =  description+'Job Title:'+json.jobTitle+";";
+				
 				if(json.jobType != null && json.jobType != '' && json.jobType !='undefined'){
 				result = result +'	<b><i class="fa fa-clock-o"></i>'+json.jobType+'</b>';
 				}else{
@@ -1087,12 +1097,10 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				result = result +'	<a href="'+sourceleadUrl+'/login" class="btn2" style="background-color:#eb821c;">Refer</a>';
 				}
 				result = result +'	<div style="clear:both;"></div>';
-				result = result +'	<div class="share mt10">';
-				result = result +'	<a href="javascript:void(0)">Share</a>';
-				result = result +'	<a href="javascript:void(0)"><i class="fa fa-linkedin-square"></i></a>';
-				result = result +'	<a href="javascript:void(0)"><i class="fa fa-twitter-square"></i></a>';			  
-				result = result +'	<a href="javascript:void(0)"><i class="fa fa-facebook-square"></i></a>';
-				result = result +'	<a href="javascript:void(0)"><i class="fa fa-envelope-square"></i></a>';				  	
+				result = result +'	<div class="share">';
+				result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
+				result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';			  
+				result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>';
 				result = result +'	</div>';
 				result = result +'    </div>';
 				result = result +'    <div style="clear:both;"></div>';
@@ -1129,10 +1137,9 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				}
 				result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
 				result = result +'	<div class="share">';
-				result = result +'	<a href="javascript:void(0)"><i class="fa fa-linkedin-square"></i></a>';
-				result = result +'	<a href="javascript:void(0)"><i class="fa fa-twitter-square"></i></a>';				  
-				result = result +'	<a href="javascript:void(0)"><i class="fa fa-facebook-square"></i></a>';
-				result = result +'	<a href="javascript:void(0)"><i class="fa fa-envelope-square"></i></a>';					  	
+				result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
+				result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';			  
+				result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>';
 				result = result +'	</div>';
 				result = result +'	<div style="clear:both;"></div>';
 				result = result +'	</div>';  	
@@ -1220,6 +1227,11 @@ function openJobSearchRequirement(){
 						 					location = requirements.country;
 						 				}
 						 				var result = "";
+						 				var title="";
+						 				var link="";
+						 				var picture="";
+						 				var description='';
+						 				var comment='';
 						 				result = result +'	<div class="jobResultsCta">';
 										result = result +'	<div class="jobResultsInn">';
 										result = result +'	<a href="<c:url value="/openRequirementsSummary?requirementUUID='+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3>';
@@ -1234,14 +1246,18 @@ function openJobSearchRequirement(){
 										result = result +'	<b><i class="fa fa-map-marker"></i>'+location+'</b>';
 										result = result +'	</span>';
 										result = result +'	</div>';
+										
+
+										link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
+										description =  description+'Job Title:'+requirements.jobTitle+";";
+										
 										result = result +'	<div class="jobShare">';
 										result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i>'+requirements.createdDate+'</div>';
 										result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
 										result = result +'	<div class="share">';
-										result = result +'	<a href="javascript:void(0)"><i class="fa fa-linkedin-square"></i></a>';
-										result = result +'  <a href="javascript:void(0)"><i class="fa fa-twitter-square"></i></a>';				  
-										result = result +'  <a href="javascript:void(0)"><i class="fa fa-facebook-square"></i></a>';
-										result = result +'  <a href="javascript:void(0)"><i class="fa fa-envelope-square"></i></a>';					  	
+										result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
+										result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';				  
+										result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>';
 										result = result +'  </div>';
 										result = result +'	<div class="clear"></div>';
 										result = result +'	</div>';

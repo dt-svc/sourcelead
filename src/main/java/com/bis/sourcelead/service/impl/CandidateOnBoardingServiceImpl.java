@@ -210,6 +210,8 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			User reportingManager = new User();
 			reportingManager.setId(Long.valueOf(jsonObj.getString("reportingManager")));
 			candidateOnBoarding.setManagerUserId(reportingManager);
+		}else{
+			candidateOnBoarding.setManagerUserId(null);
 		}
 		
 		if(jsonObj.has("team") && !isNullOrEmpty(jsonObj.getString("team"))){
