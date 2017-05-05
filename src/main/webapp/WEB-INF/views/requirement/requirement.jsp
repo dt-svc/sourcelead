@@ -276,7 +276,7 @@ $(document).ready(function () {
 	            </label>
                 <select class="form-control chosen-select" id="template"  onChange="setTemplateValues();">
                    <option value=""  selected>--- Select template ---</option>
-                    <c:forEach var=" title" items="${jobsTemplateList}">
+                    <c:forEach var="title" items="${jobsTemplateList}">
 	                    <option value="${title.id}">${title.jobTitle}</option>
                      </c:forEach>   
                 </select>
