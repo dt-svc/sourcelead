@@ -1099,7 +1099,7 @@ function requirementDetails(requirementId){
 				            if(json.isClientJob  == 'Y')
 				            	{
 				            	
-				            result = result +'   <h2>Client details:</h2>';
+				            result = result +'   <h2>Client Details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            
 				            if(json.spocName != '' && json.spocName !=null && json.spocName != 'undefined'){
@@ -1214,7 +1214,7 @@ function requirementDetails(requirementId){
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
 				            
-				            result = result +'   <h2>Internal details:</h2>';
+				            result = result +'   <h2>Internal Details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            //result = result +'     <div class="require_wrap_details_cta"> <b>Manager:</b> <span>Manager</span>';
 				            if(json.isClientJob  == 'N'){
