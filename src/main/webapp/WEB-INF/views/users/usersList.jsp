@@ -225,7 +225,7 @@ function getUsersSearchResult(searchValue){
 				<option value="ACTIVE" >Active</option>
 				<option value="">All</option>
 				<option value="INACTIVE" >In Active</option>
-				<option value="NOT_LOGGEDIN">Not Logged IN</option>
+				<option value="NOT_LOGGEDIN">Not Logged in</option>
 			   </select>
           
           </li>

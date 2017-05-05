@@ -1099,7 +1099,7 @@ function requirementDetails(requirementId){
 				            if(json.isClientJob  == 'Y')
 				            	{
 				            	
-				            result = result +'   <h2>Client details:</h2>';
+				            result = result +'   <h2>Client Details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            
 				            if(json.spocName != '' && json.spocName !=null && json.spocName != 'undefined'){
@@ -1214,7 +1214,7 @@ function requirementDetails(requirementId){
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
 				            
-				            result = result +'   <h2>Internal details:</h2>';
+				            result = result +'   <h2>Internal Details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            //result = result +'     <div class="require_wrap_details_cta"> <b>Manager:</b> <span>Manager</span>';
 				            if(json.isClientJob  == 'N'){
@@ -1696,7 +1696,13 @@ function requirementPipeline(requirementId,submissionType){
 							        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
 							        	   }		  
 							           }else{
-							        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+							        	   result = result + '<td><div class="tblwidth-150">';
+							        	   result = result + '<select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";>';
+							        	   result = result + "<option value='Status'>"+report.submissionStatus+"</option><option value='Reject'>Reject</option>";
+							        	   if(report.submissionStatus == 'OFFERACCEPTED'){
+							        		   result = result + '<option value="backout">Back-Out</option>';
+							        	   }
+							        	   result = result + '</select>';
 								           result = result + '</div></td>';
 							           }
 							           
@@ -1973,7 +1979,13 @@ function requirementPipelineDA(requirementId,submissionType){
 							        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
 							        	   }		  
 							           }else{
-							        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+							        	   result = result + '<td><div class="tblwidth-150">';
+							        	   result = result + '<select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";>';
+							        	   result = result + "<option value='Status'>"+report.submissionStatus+"</option><option value='Reject'>Reject</option>";
+							        	   if(report.submissionStatus == 'OFFERACCEPTED'){
+							        		   result = result + '<option value="backout">Back-Out</option>';
+							        	   }
+							        	   result = result + '</select>';
 								           result = result + '</div></td>';
 							           }
 						           result = result + '</div></td>';
@@ -2243,7 +2255,13 @@ function requirementPipelineRS(requirementId,submissionType){
 							        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
 							        	   }		  
 							           }else{
-							        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+							        	   result = result + '<td><div class="tblwidth-150">';
+							        	   result = result + '<select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";>';
+							        	   result = result + "<option value='Status'>"+report.submissionStatus+"</option><option value='Reject'>Reject</option>";
+							        	   if(report.submissionStatus == 'OFFERACCEPTED'){
+							        		   result = result + '<option value="backout">Back-Out</option>';
+							        	   }
+							        	   result = result + '</select>';
 								           result = result + '</div></td>';
 							           }
 							           
@@ -2524,7 +2542,13 @@ function requirementPipelineSL(requirementId,submissionType){
 								        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
 								        	   }		  
 								           }else{
-								        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+								        	   result = result + '<td><div class="tblwidth-150">';
+								        	   result = result + '<select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";>';
+								        	   result = result + "<option value='Status'>"+report.submissionStatus+"</option><option value='Reject'>Reject</option>";
+								        	   if(report.submissionStatus == 'OFFERACCEPTED'){
+								        		   result = result + '<option value="backout">Back-Out</option>';
+								        	   }
+								        	   result = result + '</select>';
 									           result = result + '</div></td>';
 								           }
 								           
@@ -2779,7 +2803,13 @@ function requirementPipelineSC(requirementId,submissionType){
 							        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
 							        	   }		  
 							           }else{
-							        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+							        	   result = result + '<td><div class="tblwidth-150">';
+							        	   result = result + '<select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";>';
+							        	   result = result + "<option value='Status'>"+report.submissionStatus+"</option><option value='Reject'>Reject</option>";
+							        	   if(report.submissionStatus == 'OFFERACCEPTED'){
+							        		   result = result + '<option value="backout">Back-Out</option>';
+							        	   }
+							        	   result = result + '</select>';
 								           result = result + '</div></td>';
 							           }
 							           
@@ -2952,7 +2982,13 @@ function requirementPipelineIN(requirementId,submissionType){
 							        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
 							        	   }		  
 							           }else{
-							        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+							        	   result = result + '<td><div class="tblwidth-150">';
+							        	   result = result + '<select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";>';
+							        	   result = result + "<option value='Status'>"+report.submissionStatus+"</option><option value='Reject'>Reject</option>";
+							        	   if(report.submissionStatus == 'OFFERACCEPTED'){
+							        		   result = result + '<option value="backout">Back-Out</option>';
+							        	   }
+							        	   result = result + '</select>';
 								           result = result + '</div></td>';
 							           }
 							           
@@ -3144,7 +3180,13 @@ function requirementPipelineOffer(requirementId,submissionType){
 							        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
 							        	   }		  
 							           }else{
-							        	   result = result + '<td><div class="tblwidth-150"><select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";><option value="Status">'+report.submissionStatus+'</option><option value="Reject">Reject</option></select>';
+							        	   result = result + '<td><div class="tblwidth-150">';
+							        	   result = result + '<select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";>';
+							        	   result = result + "<option value='Status'>"+report.submissionStatus+"</option><option value='Reject'>Reject</option>";
+							        	   if(report.submissionStatus == 'OFFERACCEPTED'){
+							        		   result = result + '<option value="backout">Back-Out</option>';
+							        	   }
+							        	   result = result + '</select>';
 								           result = result + '</div></td>';
 							           }
 						           result = result + '</div></td>';
@@ -3487,7 +3529,9 @@ function rejectApplicant(submissionId,requirementId,submissionType){
 	var reqId = requirementId;
 	var subType = submissionType;
 	var selectBox = $('#rejectApplicantSelectspocState'+submissionId).val();
-    if(selectBox != "Status"){
+	if(selectBox == "backout"){
+		backOutApplicant(submissionId,requirementId,submissionType);
+	}else if(selectBox == "Reject"){
     	var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='rejectApplicant"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
@@ -3564,6 +3608,19 @@ function saveRejectApplicantReason(submissionId,requirementId,submissionType){
 			$("#reasonForApplicantDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
 		}
 	}
+}
+</script>
+
+<script>
+function backOutApplicant(submissionId,requirementId,submissionType){
+	var sourceleadUrl = '${sourceleadUrl}';
+		$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/backoutApplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,	    	   
+		    success: function(data) {
+   			    requirementPipeline(requirementId,submissionType);
+		    }
+	   });
 }
 </script>
 

@@ -13,6 +13,7 @@ public enum ApplicantSubmissionStatus {
 	/*OFFER("offer"),*/
 	REQUEST_SENT("request_sent"),
 	REJECTED("rejected"),
+	BACKOUT("backout"),
     SUBMIT_TO_CLIENT("submit_to_client"),
     OFFERMADE("offer_made"),
     OFFERACCEPTED("offer_accepted"),
