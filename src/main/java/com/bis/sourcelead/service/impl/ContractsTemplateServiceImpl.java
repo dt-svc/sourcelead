@@ -204,25 +204,26 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		User ownerUser = userService.getUserById(Long.parseLong(jsonObj.getString("owner")));
 		contracts.setOwnerUserId(ownerUser);
 		
-		
-		String currentTimeStr = Constants.TZ_DF.format(jsonObj.getString("startDate"));  
+	/*	Date currentTimeStr1 = Constants.TZ_DF.parse(jsonObj.getString("startDate"));  
+		String currentTimeStr = Constants.TZ_DF.format(currentTimeStr1);  
 		String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
 		contracts.setStartDate(convertedDate);
 		if(jsonObj.has("endDate")){
 			if(null != jsonObj.getString("endDate") && !"".equals(jsonObj.getString("endDate"))){
-				String endDateStr = Constants.TZ_DF.format(jsonObj.getString("endDate"));  
+				Date endTimeStr = Constants.TZ_DF.parse(jsonObj.getString("endDate"));  
+				String endDateStr = Constants.TZ_DF.format(endTimeStr);  
 				String endTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", endDateStr);
 				Date convertedEndDate = TZ_DF_TS.parse(endTimeUTC);
 				contracts.setEndDate(convertedEndDate);
 				vendorContracts.setEndDate(convertedEndDate);
 			}
 		}
+		*/
 		
 		
-		
-   /*     Date startDate = format.parse(jsonObj.getString("startDate"));
+       Date startDate = format.parse(jsonObj.getString("startDate"));
 		contracts.setStartDate(startDate);
 		vendorContracts.setStartDate(startDate);
 		if(jsonObj.has("endDate")){
@@ -231,14 +232,14 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				contracts.setEndDate(endDate);
 				vendorContracts.setEndDate(endDate);
 			}
-		}*/
+		}
 		User approverUser = null;
 		User vendorContactsUser = null;
 		if(jsonObj.has("approver") && null != jsonObj.getString("approver") && !"".equals(jsonObj.getString("approver"))){
 			 approverUser = userService.getUserById(Long.parseLong(jsonObj.getString("approver")));
 			contracts.setApproverUser(approverUser);
 		}
-		if("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
+		if(("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType"))|| "NDA".equalsIgnoreCase(jsonObj.getString("contractType")) || "NSA".equalsIgnoreCase(jsonObj.getString("contractType")))){
 			contracts.setInitiatorType("Client");
 			contracts.setOrgLocationId(orgLocation);
 			OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("orgRelationId")));
@@ -337,6 +338,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		contracts.setUpdatedBy(user.getUserCode());
 		Contracts savedContracts = contractsTemplateDao.saveNewContract(contracts);
 		if(null == approverUser && !"DRAFT".equalsIgnoreCase(savedContracts.getTemplateSubmissionStatus())){
+			vendorContracts.setParentContractId(savedContracts);
 			if("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
 				vendorContracts.setContractType("Client MSA");
 				vendorContracts.setInitiatorType("Client");
@@ -748,18 +750,14 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		vendorContracts.setContractTitle(jsonObj.getString("contractTitle"));
 		User ownerUser = userService.getUserById(Long.parseLong(jsonObj.getString("owner")));
 		contracts.setOwnerUserId(ownerUser);
-		String currentTimeStr = Constants.TZ_DF.format(jsonObj.getString("startDate"));  
-		String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
-		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-		Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
-		contracts.setStartDate(convertedDate);
+		Date startDate = format.parse(jsonObj.getString("startDate"));
+		contracts.setStartDate(startDate);
+		vendorContracts.setStartDate(startDate);
 		if(jsonObj.has("endDate")){
 			if(null != jsonObj.getString("endDate") && !"".equals(jsonObj.getString("endDate"))){
-				String endDateStr = Constants.TZ_DF.format(jsonObj.getString("endDate"));  
-				String endTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", endDateStr);
-				Date convertedEndDate = TZ_DF_TS.parse(endTimeUTC);
-				contracts.setEndDate(convertedEndDate);
-				vendorContracts.setEndDate(convertedEndDate);
+				Date endDate = format.parse(jsonObj.getString("endDate"));
+				contracts.setEndDate(endDate);
+				vendorContracts.setEndDate(endDate);
 			}
 		}
 		User approverUser = null;
