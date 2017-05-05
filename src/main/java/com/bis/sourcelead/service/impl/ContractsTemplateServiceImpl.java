@@ -159,6 +159,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		ContractsTemplate contractsTemplate = contractsTemplateDao.getContractTemplateById(Long.parseLong(jsonObj.getString("template")));
 		if(null != contractsTemplate){
 			contracts.setContractsTemplate(contractsTemplate);
+			vendorContracts.setContractsTemplate(contractsTemplate);
 		}
 		contracts.setTypeOfContract("New");
 		vendorContracts.setTypeOfContract("New");
@@ -292,10 +293,14 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 //		contracts.setTemplateSubmissionStatus("pending");
 		vendorContracts.setTemplateSubmissionStatus("WAITING_TO_BE_SIGNED");
 		vendorContracts.setStatus("0");
-		if(null != approverUser){
+		if(null != approverUser &&! "DRAFT".equalsIgnoreCase(saveType)){
 			contracts.setTemplateSubmissionStatus("WAITING_FOR_APPROVER");
 			sendMailToContractApprover(user,approverUser,contracts,orgLocation);
-		}else{
+		}
+		else if("DRAFT".equalsIgnoreCase(saveType)){
+			contracts.setTemplateSubmissionStatus("DRAFT");
+		}
+		else{
 			contracts.setTemplateSubmissionStatus(saveType);
 		}
 		contracts.setCreatedDate(new Date());
@@ -346,8 +351,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		            Contracts con = signatureRequestUtil.sendDocumentForSignatureRequest(vendorContactsUser,contractsTemplate,orgLocation,user,savedContracts,org);
 		            savedContracts.setDocId(con.getTempdocId());
 		            savedContracts.setEnvelopId(con.getTempEnvId());
-		            savedContracts.setContractStatus(con.getStatus());
+		            savedContracts.setContractStatus(con.getContractStatus());
+		            vendorContracts.setDocId(con.getTempdocId());
+		            vendorContracts.setEnvelopId(con.getTempEnvId());
+		            vendorContracts.setContractStatus(con.getContractStatus());
 		        	Contracts updateEnvContracts = contractsTemplateDao.saveNewContract(savedContracts);
+		        	contractsTemplateDao.saveNewContract(vendorContracts);
 			  }
 		}
 		return savedContracts;
@@ -704,6 +713,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		
 		contracts.setTypeOfContract("Existing");
+		vendorContracts.setTypeOfContract("Existing");
 		contracts.setContractTitle(jsonObj.getString("contractTitle"));
 		vendorContracts.setContractTitle(jsonObj.getString("contractTitle"));
 		User ownerUser = userService.getUserById(Long.parseLong(jsonObj.getString("owner")));
