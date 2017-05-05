@@ -606,8 +606,8 @@ function getContractTemplates(){
 	if(contractType == "NDA" || contractType == "NCA"){
 		document.getElementById("clientDiv").style.display="none";
 		document.getElementById("clientContactDiv").style.display="none";
-		document.getElementById("vendorDiv").style.display="none";
-		document.getElementById("vendorContactDiv").style.display="none";
+		document.getElementById("vendorDiv").style.display="block";
+		document.getElementById("vendorContactDiv").style.display="block"; 
 		document.getElementById("billingDiv").style.display="none";
 	}
 		 
@@ -618,7 +618,7 @@ function getContractTemplates(){
       success :function(data) {
     	var json = JSON.parse(data);
       	var output = "";
-      	output = output + "<option>Select Vendor Contact</option>";
+      	output = output + "<option>Select Template</option>";
       	for (var i=0; i<json.length; i++)
 			{
 	        var opt = json[i];
@@ -704,10 +704,10 @@ function contractTypeLabels(){
 		$('#clientContact').removeAttr('data-validation');
 		$('#clientContact').attr('data-validation-optional',"true");
 		
-		$('#orgRelationId').removeAttr('data-validation');
-		$('#orgRelationId').attr('data-validation-optional',"true");
-		$('#vendorContact').removeAttr('data-validation');
-		$('#vendorContact').attr('data-validation-optional',"true");
+		/* $('#orgRelationId').removeAttr('data-validation');
+		$('#orgRelationId').attr('data-validation-optional',"true"); */
+		/* $('#vendorContact').removeAttr('data-validation');
+		$('#vendorContact').attr('data-validation-optional',"true"); */
 		
 		
 		
