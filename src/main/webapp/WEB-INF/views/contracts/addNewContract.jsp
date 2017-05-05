@@ -274,7 +274,7 @@
                     </div>
             </div>
             <div class="form-group">
-              <label class="col-md-4">invoice frequency<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-4">Invoice frequency<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="errInvoice">
                   <select class="chosen-select form-control" id="invoiceFrequency" name="invoiceFrequency" data-validation="required" field-name="Invoice Frequency">
                     <option value="">Select frequency</option>
@@ -343,10 +343,10 @@
       <div class="form-footer clearfix contrFoot">
         <div class="col-lg-12">
           <div class="pull-right mt">
-            <input type="button" value="Save Draft" id="draft_template" onclick="saveNewContract('draft');" class="btn btn-primary pull-left">
-            <input type="button" value="Save" id="save_template" onclick="saveNewContract('pending');" class="btn btn-success ml10 pull-left">
+            <input type="button" value="Save Draft" id="draft_template" onclick="saveNewContract('DRAFT');" class="btn btn-primary pull-left">
+            <input type="button" value="Save" id="save_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left">
 
-            <input type="button" value="SubmitToApprover" id="save_approver_template" onclick="saveNewContract('pending');" class="btn btn-success ml10 pull-left" style="display:none">
+            <input type="button" value="SubmitToApprover" id="save_approver_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left" style="display:none">
             <input type="button" value="Cancel" class="btn btn-danger ml10 pull-left" id="cancel_contract" onclick="cancelContract();">
           </div>
         </div>

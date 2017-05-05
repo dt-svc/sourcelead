@@ -170,7 +170,7 @@ function getOrgDetails()
             <div class="col-md-9">
               <div class="clearfix">
                 <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="client name" onchange="validateEmail();getSpocUserDetails();getRolesList();" data-validation="required">
-                  <option value="">Client Name</option>
+                  <option value="">Select Client</option>
                    <c:forEach var="report" items="${clientContactList}">
                      <c:if test="${report.locationId.id == loginOrgLocId}">  
                     <option value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.org.orgName}</option>
