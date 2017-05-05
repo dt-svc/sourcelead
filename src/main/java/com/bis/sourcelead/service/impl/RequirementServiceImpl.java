@@ -2570,7 +2570,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 					reqTemplate.setJobType(jsonObj.getString("jobType"));
 			}	
 			
-			if(jsonObj.has("jobOtherType") &&  "Other".equalsIgnoreCase(jsonObj.getString("jobType"))){
+		if(jsonObj.has("jobOtherType") && jsonObj.has("jobType") && "Other".equalsIgnoreCase(jsonObj.getString("jobType"))){
 				reqTemplate.setOtherJobType(jsonObj.getString("jobOtherType"));
 			}else{
 				reqTemplate.setOtherJobType(null);

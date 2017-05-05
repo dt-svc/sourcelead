@@ -20,6 +20,9 @@
 vendor_wrap {
 overflow-x: auto;
 }
+.dropdown-select.paddingNone select {
+border:none; background-color: none !important; padding:0 5px !important;
+}
 </style>
     <!-- Content Area -->
       <section class="content-wraper">
