@@ -293,13 +293,13 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'        <div class="col-md-12 clearfix">                                            ';
 	result = result +'        <form class="form-horizontal clearfix" id="receivePayment-form" name="receivePayment-form" enctype="multipart/form-data">                                     ';
 	result = result +'          <div class="row mt">                                                      ';
-	result = result +'            <div class="col-md-4">     ';
+	result = result +'            <div class="col-md-4" id="errPaymentDate">     ';
 	result = result +'              <label>Payment Date<span class="text-danger paddingLeft">*</span></label>    ';
-	result = result +'              <input class="form-control input-sm calendar" placeholder="Payment Date" type="text" id="paymentDate" name="paymentDate"> ';
+	result = result +'              <input class="form-control input-sm calendar" placeholder="Payment Date" type="text" id="paymentDate" name="paymentDate" data-validation="required" field-name="Payment Date"> ';
 	result = result +'            </div>';
-	result = result +'            <div class="col-md-4 select-field">';
-	result = result +'              <label>Payment Method</label> ';
-	result = result +'              <select class="form-control" id="paymentMethod" name="paymentMethod"> ';
+	result = result +'            <div class="col-md-4 select-field" id="errPaymethod">';
+	result = result +'              <label>Payment Method<span class="text-danger paddingLeft">*</span></label> ';
+	result = result +'              <select class="form-control" id="paymentMethod" name="paymentMethod" data-validation="required" field-name="Payment Method" onchange="removeErr();"> ';
 	result = result +'                <option selected="" disabled="">-- Select Method --</option>';
 	result = result +'                <option value="Cash">Cash</option>   ';
 	result = result +'                <option value="Cheque">Cheque</option> ';
@@ -307,8 +307,8 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'              </select>   ';
 	result = result +'            </div>  ';
 	result = result +'            <div class="col-md-4">  ';
-	result = result +'              <label>Reference No</label> ';
-	result = result +'              <input class="form-control input-sm" placeholder="Reference No" type="text" id="referenceNumber" name="referenceNumber"> ';
+	result = result +'              <label>Reference No<span class="text-danger paddingLeft">*</span></label> ';
+	result = result +'              <input class="form-control input-sm" placeholder="Reference No" type="text" id="referenceNumber" name="referenceNumber" data-validation="required" field-name="Reference No"> ';
 	result = result +'            </div>        ';
 	result = result +'          </div>          ';
 	result = result +'          <div class="row mt">                                 ';
@@ -369,11 +369,21 @@ function receivePaymentPop1(invoiceId,total){
 		dateFormat : 'dd-mm-yy',
 		changeMonth: true,
 		changeYear: true, 
+		onSelect : function(selected) {
+			removeValidate();
+		}
 	});
 }
 
 </script>  
-  
+<script>
+function removeValidate(){
+	$('#errPaymentDate').find('p.jquery_form_error_message').remove(); 
+}
+function removeErr(){
+	$('#errPaymethod').find('p.jquery_form_error_message').remove(); 
+}
+</script>  
   <!-- modal pop -->
 <div class="modal-backdrop" style="display: none"></div>
 <div id="recvPymntpop" class="modal" style="display: none;">
@@ -414,6 +424,10 @@ function saveReceivePayment(invoiceId){
 		return false;
 	  } 
 }
+$('body').on('blur', '#receivePayment-form', function() {
+	$("#receivePayment-form").showHelpOnFocus();
+	$("#receivePayment-form").validateOnBlur(false, validationSettings);  
+});
 </script>
 
 <!-- <script>
