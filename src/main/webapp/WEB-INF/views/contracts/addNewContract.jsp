@@ -274,7 +274,7 @@
                     </div>
             </div>
             <div class="form-group">
-              <label class="col-md-4">invoice frequency<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-4">Invoice frequency<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="errInvoice">
                   <select class="chosen-select form-control" id="invoiceFrequency" name="invoiceFrequency" data-validation="required" field-name="Invoice Frequency">
                     <option value="">Select frequency</option>

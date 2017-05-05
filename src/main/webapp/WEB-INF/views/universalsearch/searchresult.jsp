@@ -38,7 +38,7 @@ $(document).ready(function(){
 <section class="content-wraper">
 <section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Universal Search Result</h2>
+			<h2>Universal Search Results</h2>
 		</div>
 		<div class="pull-right brud-crum hide"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/projectDashboard'/>">ProjectList</a> &raquo;Create Project
 	</section>
