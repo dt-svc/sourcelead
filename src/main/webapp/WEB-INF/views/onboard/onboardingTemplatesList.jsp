@@ -13,7 +13,7 @@
     <div id="onboardingLoading"></div>
     <section class="content-header clearfix">
           <div class="pull-left">
-            <h2>On-board Templates List</h2>
+            <h2>Onboard Templates List</h2>
           </div>
     </section>
     
