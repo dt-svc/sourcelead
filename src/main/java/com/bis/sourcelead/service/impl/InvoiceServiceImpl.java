@@ -217,7 +217,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 	     SimpleDateFormat format = new SimpleDateFormat(pattern);
 		
 		 int maxRowCount = Integer.parseInt(jsonObj.getString("maxTsRowNum"));
-		 for(int i=0;i<maxRowCount;i++){
+		 for(int i=1;i<maxRowCount;i++){
 			 if(null != jsonObj.getString(i+"invoiceStartDate") || null != jsonObj.getString(i+"invoiceEndDate") || null != jsonObj.getString(i+"candidate") ||  null != jsonObj.getString(i+"sow") || null != jsonObj.getString(i+"rate") || null != jsonObj.getString(i+"totalHours") ||
 					  !"".equalsIgnoreCase(jsonObj.getString(i+"invoiceStartDate")) ||!"".equalsIgnoreCase(jsonObj.getString(i+"invoiceEndDate")) || !"".equalsIgnoreCase(jsonObj.getString(i+"candidate")) || !"".equalsIgnoreCase(jsonObj.getString(i+"sow")) ||!"".equalsIgnoreCase(jsonObj.getString(i+"rate")) ||!"".equalsIgnoreCase(jsonObj.getString(i+"totalHours"))){
 				 

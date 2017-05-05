@@ -405,13 +405,7 @@ function getClientContacts(){
             success :function(data) {
             	
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
-               		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-               		 else if (data.indexOf('exception') >= 0) {
-               			 location.replace(sourceleadUrl+"/errorPage");
-               		 }
-               		 else{
+               		
 	                	   
                			    var result = '';
 	                	    result = result +'<div class="modal-body clearfix">';
@@ -466,7 +460,6 @@ function getClientContacts(){
 	                 	 $("#clientsList").empty(); 
 	                     $("#clientsList").append(result); 
 	                     pagination(); 
-			    	} 
                  }else{
   	    	         
                 	var result ="";
